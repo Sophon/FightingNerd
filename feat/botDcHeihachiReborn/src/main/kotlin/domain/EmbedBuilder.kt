@@ -17,10 +17,25 @@ class EmbedBuilder {
         color = Color(GREEN)
 
         field(name = "Startup", value = move.startup,)
-        field(name = "OH", value = move.hit,)
-        field(name = "OB", value = move.block,)
-        field(name = "CH", value = move.ch ?: move.hit,)
+        field(name = "OH", value = move.onHit,)
+        field(name = "OB", value = move.onBlock,)
+        field(name = "CH", value = move.onCH ?: move.onHit,)
         field(name = "Level", value = move.level,)
+        if (move.recoveryOnWhiff.isNullOrEmpty().not()) {
+            field(name = "Recovery", value = move.recoveryOnWhiff)
+        }
+
+        var propertyString = ""
+        if (move.isHeatEngager) {
+            propertyString += "🔥 "
+        }
+        if (move.isPowerCrushFrom != null) {
+            propertyString += "🛡️ (${move.isPowerCrushFrom}) "
+        }
+        if (propertyString.isNotEmpty()) {
+            field(name = "Properties", value = propertyString, inline = false)
+        }
+
         field(name = "Damage", value = move.damage.orEmpty(),)
 
         field(

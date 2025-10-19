@@ -1,6 +1,5 @@
 package model
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
@@ -10,22 +9,25 @@ import kotlinx.serialization.Serializable
 data class Move(
     val id: String,
     val input: String,
-    @SerialName("target") val level: String? = null,
+    val level: String? = null,
     val name: String? = null,
     val parent: String? = null,
     val damage: String? = null,
     val startup: String? = null,
-    @SerialName("recv") val recovery: String? = null,
-    @SerialName("tot") val totalFrames: String? = null,
-    val crush: String? = null,
-    val block: String? = null,
-    val hit: String? = null,
-    val ch: String? = null,
+    val recoveryOnWhiff: String? = null,
+    val totalFrames: String? = null,
+    @Deprecated("calculate") val crush: String? = null,
+    val onBlock: String? = null,
+    val onHit: String? = null,
+    val onCH: String? = null,
     val notes: String? = null,
     val alias: String? = null,
     val image: String? = null,
-    val video: String? = null,
+    val videoId: String? = null,
     val alt: String? = null,
+
+    val isHeatEngager: Boolean = false,
+    val isPowerCrushFrom: Int?,
 ) {
     val characterName get() = id.substringBefore('-')
 }
