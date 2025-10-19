@@ -1,3 +1,6 @@
+package domain
+
+import BotError
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import model.GlossaryItem

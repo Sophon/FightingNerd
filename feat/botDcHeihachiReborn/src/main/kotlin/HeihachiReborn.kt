@@ -1,6 +1,3 @@
-import com.example.core.domain.Result
-import com.example.core.domain.onError
-import com.example.core.domain.onSuccess
 import com.example.core.util.isAtLeast
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -13,14 +10,12 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.embed
+import domain.serviceRegistry.Command
+import domain.serviceRegistry.FrameDataService
+import domain.serviceRegistry.GlossaryService
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import model.Command
-import usecase.SearchFrameDataUseCase
-import usecase.SearchGlossaryUseCase
-import usecase.StartGlossaryUseCase
-import usecase.StartWikiUseCase
 import util.removeTag
 import kotlin.time.ExperimentalTime
 
@@ -30,21 +25,22 @@ interface HeihachiReborn {
 
 internal class HeihachiRebornImpl(
     private val apiKey: String,
-    private val startGlossaryUseCase: StartGlossaryUseCase,
-    private val searchGlossaryUseCase: SearchGlossaryUseCase,
-    private val startWikiUseCase: StartWikiUseCase,
-    private val searchFrameDataUseCase: SearchFrameDataUseCase,
-    private val embedBuilder: EmbedBuilder,
+    frameDataService: FrameDataService,
+    glossaryService: GlossaryService,
 ): HeihachiReborn {
     private lateinit var kord: Kord
-
+    private val services = listOf(
+        frameDataService,
+        glossaryService,
+    )
 
     override suspend fun startSession() {
         Napier.d(tag = TAG) { "Starting with API: $apiKey" }
 
         coroutineScope {
-            launch { startGlossaryUseCase.invoke() }
-            launch { startWikiUseCase.invoke() }
+            services.forEach { service ->
+                launch { service.start() }
+            }
         }
         startKord()
     }
@@ -53,7 +49,7 @@ internal class HeihachiRebornImpl(
     private suspend fun startKord() {
         kord = Kord(token = apiKey)
 
-        createCommandsForTestServer()
+        createGlobalCommand()
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             handleCommand()
         }
@@ -77,84 +73,75 @@ internal class HeihachiRebornImpl(
     private suspend fun MessageCreateEvent.handleMessage() {
         if (kord.selfId !in message.mentionedUserIds) return
 
-        val query = message.content.removeTag().takeIf { it.isAtLeast(2) } ?: return
-        val command = query.substringBefore(' ')
+        val rawQuery = message.content.removeTag().takeIf { it.isAtLeast(wordCount = 2) } ?: return
+        val firstWord = rawQuery.substringBefore(' ')
+        val command = Command.entries.find {
+            it.name.equals(firstWord, ignoreCase = true)
+        } ?: Command.FD
 
-        //either a command or frame-data query
-        when (command.uppercase()) {
-            Command.GL.name -> {
-                handleResult(searchGlossaryUseCase.invoke(query)) { glossaryItem ->
-                    embedBuilder.glossaryEmbed(glossaryItem)
-                }
-            }
-            else -> {
-                handleResult(searchFrameDataUseCase.invoke(query)) { move ->
-                    embedBuilder.moveEmbed(move)
-                }
-            }
+        /**
+         * raw = "kaz 112" -> command = FD, query = "kaz 112"
+         *
+         * raw = "gl fireball" -> command = GL, query = "fireball"
+         */
+        val query = when (command) {
+            Command.FD -> firstWord.lowercase() + rawQuery.substring(firstWord.length)
+            else -> rawQuery.substringAfter(' ', rawQuery)
         }
+        val service = services.first { it.mainCommand == command }
+
+        message.channel.createEmbed(
+            service.execute(command, query)
+        )
     }
 
     private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
-        when (interaction.command.rootName.uppercase()) {
-            Command.GL.name -> {
-                val query = interaction.command.strings["term"] ?: return
+        val command = Command.entries
+            .find { it.name.equals(interaction.command.rootName, ignoreCase = true) }
+            ?: return //this should NEVER happen
+        val service = services.first { it.mainCommand == command }
+        val args = interaction.command.strings
+        val query = service.buildQuery(args, command)
+        val embedBuilder = service.execute(command, query)
 
-                searchGlossaryUseCase.invoke(query = query)
-                    .onSuccess { glossaryItem ->
-                        interaction.respondPublic { embed(embedBuilder.glossaryEmbed(glossaryItem)) }
-                    }
-                    .onError { error ->
-                        interaction.respondPublic { embed(embedBuilder.errorEmbed(error)) }
-                    }
-            }
-            Command.FD.name -> {
-                val character = interaction.command.strings["character"]
-                val move = interaction.command.strings["move"]
-
-                searchFrameDataUseCase.invoke("$character $move")
-                    .onSuccess { move ->
-                        interaction.respondPublic { embed(embedBuilder.moveEmbed(move)) }
-                    }
-                    .onError { error ->
-                        interaction.respondPublic { embed(embedBuilder.errorEmbed(error)) }
-                    }
-            }
-        }
-    }
-
-    private suspend fun <T, E: BotError> MessageCreateEvent.handleResult(
-        result: Result<T, E>,
-        createEmbed: (T) -> dev.kord.rest.builder.message.EmbedBuilder.() -> Unit,
-    ) {
-        when (result) {
-            is Result.Success -> message.channel.createEmbed(createEmbed(result.data))
-            is Result.Error -> message.channel.createEmbed(embedBuilder.errorEmbed(result.error))
-        }
+        interaction.respondPublic { embed(embedBuilder) }
     }
 
     private suspend fun createCommandsForTestServer() {
-        val guildId = Snowflake(TEST_SERVER_ID)
-        kord.createGuildChatInputCommand(
-            guildId = guildId,
-            name = Command.FD.name.lowercase(),
-            description = "frame data"
-        ) {
-            string("character", "Character name") { required = true }
-            string("move", "Move input") { required = true }
-        }
+        val testGuildId = Snowflake(TEST_SERVER_ID)
 
-        kord.createGuildChatInputCommand(
-            guildId = guildId,
-            name = Command.GL.name.lowercase(),
-            description = "frame data"
-        ) {
-            string("term", "Term") { required = true }
+        services.forEach { service ->
+            service.slashCommands.forEach { slashCommand ->
+                kord.createGuildChatInputCommand(
+                    guildId = testGuildId,
+                    name = slashCommand.name.name.lowercase(),
+                    description = slashCommand.description,
+                ) {
+                    slashCommand.arguments.forEach { argument ->
+                        string(name = argument.name, description = argument.description) {
+                            required = argument.isRequired
+                        }
+                    }
+                }
+            }
         }
     }
 
-    private suspend fun creatGlobalCommand() {
-        kord.createGlobalChatInputCommand("fd", "frame data")
+    private suspend fun createGlobalCommand() {
+        services.forEach { service ->
+            service.slashCommands.forEach { slashCommand ->
+                kord.createGlobalChatInputCommand(
+                    name = slashCommand.name.name.lowercase(),
+                    description = slashCommand.description,
+                ) {
+                    slashCommand.arguments.forEach { argument ->
+                        string(name = argument.name, description = argument.description) {
+                            required = argument.isRequired
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 
