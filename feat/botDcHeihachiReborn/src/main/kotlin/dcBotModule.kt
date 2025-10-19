@@ -1,5 +1,7 @@
 import com.example.core.coreModule
 import domain.EmbedBuilder
+import domain.serviceRegistry.FrameDataService
+import domain.serviceRegistry.GlossaryService
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
@@ -34,4 +36,7 @@ fun dcBotModule(apiKey: String) = module {
     singleOf(::SearchGlossaryUseCase)
     singleOf(::StartWikiUseCase)
     singleOf(::SearchFrameDataUseCase)
+
+    singleOf(::FrameDataService)
+    singleOf(::GlossaryService)
 }

@@ -15,6 +15,8 @@ import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.embed
 import domain.EmbedBuilder
 import domain.serviceRegistry.Command
+import domain.serviceRegistry.FrameDataService
+import domain.serviceRegistry.GlossaryService
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -31,21 +33,26 @@ interface HeihachiReborn {
 
 internal class HeihachiRebornImpl(
     private val apiKey: String,
-    private val startGlossaryUseCase: StartGlossaryUseCase,
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
-    private val startWikiUseCase: StartWikiUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val embedBuilder: EmbedBuilder,
+
+    private val frameDataService: FrameDataService,
+    private val glossaryService: GlossaryService,
 ): HeihachiReborn {
     private lateinit var kord: Kord
-
+    private val services = listOf(
+        frameDataService,
+        glossaryService,
+    )
 
     override suspend fun startSession() {
         Napier.d(tag = TAG) { "Starting with API: $apiKey" }
 
         coroutineScope {
-            launch { startGlossaryUseCase.invoke() }
-            launch { startWikiUseCase.invoke() }
+            services.forEach { service ->
+                service.start()
+            }
         }
         startKord()
     }
@@ -78,22 +85,22 @@ internal class HeihachiRebornImpl(
     private suspend fun MessageCreateEvent.handleMessage() {
         if (kord.selfId !in message.mentionedUserIds) return
 
-        val query = message.content.removeTag().takeIf { it.isAtLeast(2) } ?: return
-        val command = query.substringBefore(' ')
-
-        //either a command or frame-data query
-        when (command.uppercase()) {
-            Command.GL.name -> {
-                handleResult(searchGlossaryUseCase.invoke(query)) { glossaryItem ->
-                    embedBuilder.glossaryEmbed(glossaryItem)
-                }
-            }
-            else -> {
-                handleResult(searchFrameDataUseCase.invoke(query)) { move ->
-                    embedBuilder.moveEmbed(move)
-                }
-            }
+        val rawQuery = message.content.removeTag().takeIf { it.isAtLeast(wordCount = 2) } ?: return
+        val firstWord = rawQuery.substringBefore(' ')
+        val command = Command.entries.find { it.name.equals(firstWord, ignoreCase = true) }
+            ?: Command.FD
+        val query = if (command == Command.FD) {
+            // "kaz 112" -> query = "kaz 112"
+            firstWord.lowercase() + rawQuery.substring(firstWord.length)
+        } else {
+            // "gl term" -> command = GL, query = "term"
+            rawQuery.substringAfter(' ', rawQuery)
         }
+        val service = services.first { it.command == command }
+
+        message.channel.createEmbed(
+            service.execute(command, query)
+        )
     }
 
     private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
@@ -121,16 +128,6 @@ internal class HeihachiRebornImpl(
                         interaction.respondPublic { embed(embedBuilder.errorEmbed(error)) }
                     }
             }
-        }
-    }
-
-    private suspend fun <T, E: BotError> MessageCreateEvent.handleResult(
-        result: Result<T, E>,
-        createEmbed: (T) -> dev.kord.rest.builder.message.EmbedBuilder.() -> Unit,
-    ) {
-        when (result) {
-            is Result.Success -> message.channel.createEmbed(createEmbed(result.data))
-            is Result.Error -> message.channel.createEmbed(embedBuilder.errorEmbed(result.error))
         }
     }
 

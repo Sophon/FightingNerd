@@ -8,6 +8,9 @@ interface RegisteredService {
 
     suspend fun start()
 
+    /**
+     * Service:Command is 1:n
+     */
     suspend fun execute(
         command: Command,
         vararg args: String
