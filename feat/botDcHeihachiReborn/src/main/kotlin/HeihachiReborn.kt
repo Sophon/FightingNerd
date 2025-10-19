@@ -138,17 +138,31 @@ internal class HeihachiRebornImpl(
         kord.createGuildChatInputCommand(
             guildId = guildId,
             name = Command.GL.name.lowercase(),
-            description = "frame data"
+            description = "Tekken 8 frame data",
         ) {
-            string("term", "Term") { required = true }
+            string(KEY_TERM, "Term") { required = true }
         }
     }
 
     private suspend fun creatGlobalCommand() {
-        kord.createGlobalChatInputCommand("fd", "frame data")
+        kord.createGlobalChatInputCommand(
+            name = Command.FD.name.lowercase(),
+            description = "Frame data"
+        ) {
+            string(KEY_CHAR_NAME, "Character name") { required = true }
+            string(KEY_MOVE, "Move input") { required = true }
+        }
+
+        kord.createGlobalChatInputCommand(
+            name = Command.GL.name.lowercase(),
+            description = "Fighting game glossary",
+        ) {
+            string(KEY_TERM, "Term") { required = true }
+        }
     }
 }
 
 private const val TAG = "HeihachiRebornBot"
 private const val KEY_CHAR_NAME = "character"
 private const val KEY_MOVE = "move"
+private const val KEY_TERM = "term"
