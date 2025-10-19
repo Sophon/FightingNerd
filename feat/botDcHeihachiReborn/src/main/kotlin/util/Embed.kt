@@ -16,7 +16,7 @@ internal fun EmbedBuilder.field(
     }
 }
 
-internal fun createError(error: BotError): EmbedBuilder.() -> Unit = {
+internal fun createErrorEmbed(error: BotError): EmbedBuilder.() -> Unit = {
     title = "Error"
     description = error.toString()
     color = Color(RED)

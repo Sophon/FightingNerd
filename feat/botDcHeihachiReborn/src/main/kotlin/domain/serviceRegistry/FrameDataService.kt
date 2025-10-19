@@ -6,7 +6,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import model.Move
 import usecase.SearchFrameDataUseCase
 import usecase.StartWikiUseCase
-import util.createError
+import util.createErrorEmbed
 import util.field
 
 internal class FrameDataService(
@@ -53,7 +53,7 @@ internal class FrameDataService(
                 createEmbed(move = result.data)
             }
             is Result.Error -> {
-                createError(error = result.error)
+                createErrorEmbed(error = result.error)
             }
         }
     }

@@ -11,37 +11,6 @@ import util.replaceItalic
 import util.replaceUnderline
 
 class EmbedBuilder {
-    fun moveEmbed(
-        move: Move,
-        info: ServiceInfo,
-    ): EmbedBuilder.() -> Unit = {
-        title = move.characterName //TODO: clickable
-        description = "${move.id} - ${move.name}" //TODO: clickable
-        color = Color(GREEN)
-
-        field(name = "Startup", value = move.startup,)
-        field(name = "OH", value = move.onHit,)
-        field(name = "OB", value = move.onBlock,)
-        field(name = "CH", value = move.onCH ?: move.onHit,)
-        field(name = "Level", value = move.level,)
-        if (move.recoveryOnWhiff.isNullOrEmpty().not()) {
-            field(name = "Recovery", value = move.recoveryOnWhiff)
-        }
-
-        field(name = "Damage", value = move.damage.orEmpty(),)
-
-        field(
-            name = "📝 Notes",
-            value = move.notes.joinToString(separator = "") { "* $it\n" },
-            inline = false,
-        )
-
-        //TODO: feedback command
-        footer {
-            text = info.name
-            icon = info.iconUrl
-        }
-    }
 
     fun glossaryEmbed(
         item: GlossaryItem,
