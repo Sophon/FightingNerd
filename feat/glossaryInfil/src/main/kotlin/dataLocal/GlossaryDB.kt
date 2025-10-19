@@ -1,8 +1,8 @@
 package dataLocal
 
+import GlossaryError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
-import GlossaryError
 import model.GlossaryItem
 
 interface GlossaryDB {

@@ -3,14 +3,14 @@ import dataLocal.GlossaryDB
 import dataLocal.InMemoryGlossaryDB
 import dataRemote.InfilGlossaryDataSource
 import dataRemote.InfilGlossaryDataSourceImpl
-import usecase.CacheGlossaryUseCase
-import usecase.DownloadGlossaryUseCase
-import usecase.FetchDataForTermUseCase
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import usecase.CacheGlossaryUseCase
+import usecase.DownloadGlossaryUseCase
+import usecase.FetchDataForTermUseCase
 
 fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
     config?.invoke(this)

@@ -1,9 +1,9 @@
 package usecase
 
+import GlossaryError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import dataLocal.GlossaryDB
-import GlossaryError
 import model.GlossaryItem
 
 class CacheGlossaryUseCase(

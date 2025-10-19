@@ -1,10 +1,10 @@
 package usecase
 
+import GlossaryError
 import com.example.core.domain.Result
 import com.example.core.domain.map
 import com.example.core.util.removeWhiteSpace
 import dataLocal.GlossaryDB
-import GlossaryError
 import model.GlossaryItem
 
 class FetchDataForTermUseCase(
