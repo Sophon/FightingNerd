@@ -1,16 +1,16 @@
 package usecase
 
+import BotError
 import InfilGlossary
 import com.example.core.domain.Result
-import BotError
-import model.GlossaryItem
 import io.github.aakira.napier.Napier
+import model.GlossaryItem
 
 internal class SearchGlossaryUseCase(
     private val glossary: InfilGlossary,
     private val startGlossaryUseCase: StartGlossaryUseCase,
 ) {
-    suspend fun search(query: String): Result<GlossaryItem, BotError> {
+    suspend fun invoke(query: String): Result<GlossaryItem, BotError> {
         val cleanQuery = query.substringAfter(' ')
         return when (val result = glossary.search(cleanQuery)) {
             is Result.Success -> {

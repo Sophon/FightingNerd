@@ -1,6 +1,5 @@
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import BotError
 import model.GlossaryItem
 import model.Move
 

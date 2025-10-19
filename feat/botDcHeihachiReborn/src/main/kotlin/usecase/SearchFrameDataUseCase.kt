@@ -1,10 +1,10 @@
 package usecase
 
+import BotError
+import WavuError
 import WavuWikiClient
 import com.example.core.domain.Result
 import com.example.core.util.dropFirstAndJoin
-import BotError
-import WavuError
 import model.Move
 
 internal class SearchFrameDataUseCase(

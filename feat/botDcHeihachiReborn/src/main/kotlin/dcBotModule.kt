@@ -1,13 +1,13 @@
 import com.example.core.coreModule
-import usecase.SearchFrameDataUseCase
-import usecase.SearchGlossaryUseCase
-import usecase.StartGlossaryUseCase
-import usecase.StartWikiUseCase
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import usecase.SearchFrameDataUseCase
+import usecase.SearchGlossaryUseCase
+import usecase.StartGlossaryUseCase
+import usecase.StartWikiUseCase
 
 fun initKoin(
     apiKey: String,
