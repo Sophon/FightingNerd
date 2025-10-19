@@ -5,6 +5,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 interface RegisteredService {
     val command: Command
     val serviceInfo: ServiceInfo
+    val slashCommands: List<SlashCommand>
 
     suspend fun start()
 
@@ -23,7 +24,14 @@ data class ServiceInfo(
     val iconUrl: String? = null,
 )
 
-enum class Command {
-    GL,
-    FD,
+data class SlashCommand(
+    val name: Command,
+    val description: String,
+    val arguments: List<Argument>
+) {
+    data class Argument(
+        val name: String,
+        val description: String,
+        val isRequired: Boolean = true,
+    )
 }

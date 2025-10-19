@@ -16,6 +16,18 @@ internal class GlossaryService(
         url = "https://glossary.infil.net/",
         iconUrl = "https://i.imgur.com/0cnTzNk.png",
     )
+    override val slashCommands = listOf(
+        SlashCommand(
+            name = Command.GL,
+            description = "Fighting-game glossary",
+            arguments = listOf(
+                SlashCommand.Argument(
+                    name = KEY_TERM,
+                    description = "Term"
+                )
+            )
+        )
+    )
 
     override suspend fun start() {
         startGlossaryUseCase.invoke()
@@ -39,3 +51,5 @@ internal class GlossaryService(
         }
     }
 }
+
+private const val KEY_TERM = "term"

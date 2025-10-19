@@ -1,6 +1,3 @@
-import com.example.core.domain.Result
-import com.example.core.domain.onError
-import com.example.core.domain.onSuccess
 import com.example.core.util.isAtLeast
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -13,17 +10,11 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.embed
-import domain.EmbedBuilder
 import domain.serviceRegistry.Command
 import domain.serviceRegistry.FrameDataService
 import domain.serviceRegistry.GlossaryService
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
-import usecase.SearchFrameDataUseCase
-import usecase.SearchGlossaryUseCase
-import usecase.StartGlossaryUseCase
-import usecase.StartWikiUseCase
 import util.removeTag
 import kotlin.time.ExperimentalTime
 
@@ -33,7 +24,7 @@ interface HeihachiReborn {
 
 internal class HeihachiRebornImpl(
     private val apiKey: String,
-    frameDataService: FrameDataService,
+    private val frameDataService: FrameDataService,
     glossaryService: GlossaryService,
 ): HeihachiReborn {
     private lateinit var kord: Kord
@@ -112,57 +103,51 @@ internal class HeihachiRebornImpl(
     }
 
     private fun GuildChatInputCommandInteractionCreateEvent.buildQueryFromInteraction(command: Command): String {
-        return when (command) {
-            Command.FD -> {
-                val charName = interaction.command.strings[KEY_CHAR_NAME]
-                val move = interaction.command.strings[KEY_MOVE]
-                "$charName $move"
-            }
-            Command.GL -> {
-                interaction.command.strings["term"] ?: ""
-            }
+        val service = services.first { it.command == command }
+        val slashCommand = service.slashCommands.first { it.name == command }
+        val argValues = slashCommand.arguments.map { arg ->
+            interaction.command.strings[arg.name] ?: ""
         }
+
+        return argValues.joinToString(" ").trim()
     }
 
     private suspend fun createCommandsForTestServer() {
-        val guildId = Snowflake(TEST_SERVER_ID)
-        kord.createGuildChatInputCommand(
-            guildId = guildId,
-            name = Command.FD.name.lowercase(),
-            description = "frame data"
-        ) {
-            string(KEY_CHAR_NAME, "Character name") { required = true }
-            string(KEY_MOVE, "Move input") { required = true }
-        }
+        val testGuildId = Snowflake(TEST_SERVER_ID)
 
-        kord.createGuildChatInputCommand(
-            guildId = guildId,
-            name = Command.GL.name.lowercase(),
-            description = "Tekken 8 frame data",
-        ) {
-            string(KEY_TERM, "Term") { required = true }
+        services.forEach { service ->
+            service.slashCommands.forEach { slashCommand ->
+                kord.createGuildChatInputCommand(
+                    guildId = testGuildId,
+                    name = slashCommand.name.name.lowercase(),
+                    description = slashCommand.description,
+                ) {
+                    slashCommand.arguments.forEach { argument ->
+                        string(name = argument.name, description = argument.description) {
+                            required = argument.isRequired
+                        }
+                    }
+                }
+            }
         }
     }
 
     private suspend fun creatGlobalCommand() {
-        kord.createGlobalChatInputCommand(
-            name = Command.FD.name.lowercase(),
-            description = "Frame data"
-        ) {
-            string(KEY_CHAR_NAME, "Character name") { required = true }
-            string(KEY_MOVE, "Move input") { required = true }
-        }
-
-        kord.createGlobalChatInputCommand(
-            name = Command.GL.name.lowercase(),
-            description = "Fighting game glossary",
-        ) {
-            string(KEY_TERM, "Term") { required = true }
+        services.forEach { service ->
+            service.slashCommands.forEach { slashCommand ->
+                kord.createGlobalChatInputCommand(
+                    name = slashCommand.name.name.lowercase(),
+                    description = slashCommand.description,
+                ) {
+                    slashCommand.arguments.forEach { argument ->
+                        string(name = argument.name, description = argument.description) {
+                            required = argument.isRequired
+                        }
+                    }
+                }
+            }
         }
     }
 }
 
 private const val TAG = "HeihachiRebornBot"
-private const val KEY_CHAR_NAME = "character"
-private const val KEY_MOVE = "move"
-private const val KEY_TERM = "term"

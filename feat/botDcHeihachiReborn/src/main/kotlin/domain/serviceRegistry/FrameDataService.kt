@@ -16,6 +16,22 @@ internal class FrameDataService(
         url = "https://wavu.wiki/",
         iconUrl = "https://i.imgur.com/0cnTzNk.png",
     )
+    override val slashCommands: List<SlashCommand> = listOf(
+        SlashCommand(
+            name = Command.FD,
+            description = "Tekken 8 frame data",
+            arguments = listOf(
+                SlashCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SlashCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move",
+                )
+            )
+        )
+    )
 
     override suspend fun start() {
         startWikiUseCase.invoke()
@@ -39,3 +55,7 @@ internal class FrameDataService(
         }
     }
 }
+
+
+private const val KEY_CHAR_NAME = "character"
+private const val KEY_MOVE = "move"
