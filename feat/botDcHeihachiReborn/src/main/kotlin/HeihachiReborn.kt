@@ -15,6 +15,7 @@ import domain.serviceRegistry.FrameDataService
 import domain.serviceRegistry.GlossaryService
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import util.removeTag
 import kotlin.time.ExperimentalTime
 
@@ -38,7 +39,7 @@ internal class HeihachiRebornImpl(
 
         coroutineScope {
             services.forEach { service ->
-                service.start()
+                launch { service.start() }
             }
         }
         startKord()
