@@ -1,10 +1,10 @@
 package usecase
 
+import BotError
 import InfilGlossary
 import com.example.core.domain.Result
-import BotError
-import model.GlossaryItem
 import io.github.aakira.napier.Napier
+import model.GlossaryItem
 
 internal class SearchGlossaryUseCase(
     private val glossary: InfilGlossary,
