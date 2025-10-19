@@ -49,7 +49,7 @@ internal class HeihachiRebornImpl(
     private suspend fun startKord() {
         kord = Kord(token = apiKey)
 
-        createCommandsForTestServer()
+        createGlobalCommand()
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             handleCommand()
         }
@@ -127,7 +127,7 @@ internal class HeihachiRebornImpl(
         }
     }
 
-    private suspend fun creatGlobalCommand() {
+    private suspend fun createGlobalCommand() {
         services.forEach { service ->
             service.slashCommands.forEach { slashCommand ->
                 kord.createGlobalChatInputCommand(
