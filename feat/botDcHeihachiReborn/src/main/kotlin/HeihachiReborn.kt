@@ -33,12 +33,8 @@ interface HeihachiReborn {
 
 internal class HeihachiRebornImpl(
     private val apiKey: String,
-    private val searchGlossaryUseCase: SearchGlossaryUseCase,
-    private val searchFrameDataUseCase: SearchFrameDataUseCase,
-    private val embedBuilder: EmbedBuilder,
-
-    private val frameDataService: FrameDataService,
-    private val glossaryService: GlossaryService,
+    frameDataService: FrameDataService,
+    glossaryService: GlossaryService,
 ): HeihachiReborn {
     private lateinit var kord: Kord
     private val services = listOf(
@@ -104,29 +100,26 @@ internal class HeihachiRebornImpl(
     }
 
     private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
-        when (interaction.command.rootName.uppercase()) {
-            Command.GL.name -> {
-                val query = interaction.command.strings["term"] ?: return
+        val command = Command.entries
+            .find { it.name.equals(interaction.command.rootName, ignoreCase = true) }
+            ?: return //this should NEVER happen
+        val service = services.first { it.command == command }
+        val query = buildQueryFromInteraction(command)
 
-                searchGlossaryUseCase.invoke(query = query)
-                    .onSuccess { glossaryItem ->
-                        interaction.respondPublic { embed(embedBuilder.glossaryEmbed(glossaryItem)) }
-                    }
-                    .onError { error ->
-                        interaction.respondPublic { embed(embedBuilder.errorEmbed(error)) }
-                    }
+        interaction.respondPublic {
+            embed(service.execute(command, query))
+        }
+    }
+
+    private fun GuildChatInputCommandInteractionCreateEvent.buildQueryFromInteraction(command: Command): String {
+        return when (command) {
+            Command.FD -> {
+                val charName = interaction.command.strings[KEY_CHAR_NAME]
+                val move = interaction.command.strings[KEY_MOVE]
+                "$charName $move"
             }
-            Command.FD.name -> {
-                val character = interaction.command.strings["character"]
-                val move = interaction.command.strings["move"]
-
-                searchFrameDataUseCase.invoke("$character $move")
-                    .onSuccess { move ->
-                        interaction.respondPublic { embed(embedBuilder.moveEmbed(move)) }
-                    }
-                    .onError { error ->
-                        interaction.respondPublic { embed(embedBuilder.errorEmbed(error)) }
-                    }
+            Command.GL -> {
+                interaction.command.strings["term"] ?: ""
             }
         }
     }
@@ -138,8 +131,8 @@ internal class HeihachiRebornImpl(
             name = Command.FD.name.lowercase(),
             description = "frame data"
         ) {
-            string("character", "Character name") { required = true }
-            string("move", "Move input") { required = true }
+            string(KEY_CHAR_NAME, "Character name") { required = true }
+            string(KEY_MOVE, "Move input") { required = true }
         }
 
         kord.createGuildChatInputCommand(
@@ -157,3 +150,5 @@ internal class HeihachiRebornImpl(
 }
 
 private const val TAG = "HeihachiRebornBot"
+private const val KEY_CHAR_NAME = "character"
+private const val KEY_MOVE = "move"
