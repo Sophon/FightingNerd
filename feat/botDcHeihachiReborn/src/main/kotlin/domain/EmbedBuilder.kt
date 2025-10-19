@@ -16,31 +16,20 @@ class EmbedBuilder {
         description = "${move.id} - ${move.name}" //TODO: clickable
         color = Color(GREEN)
 
-        field(name = "Startup", value = move.startup,)
-        field(name = "OH", value = move.onHit,)
-        field(name = "OB", value = move.onBlock,)
-        field(name = "CH", value = move.onCH ?: move.onHit,)
+        field(name = "⚡️Startup", value = move.startup,)
+        field(name = "🟢 OH", value = move.onHit,)
+        field(name = "🌕 OB", value = move.onBlock,)
+        field(name = "🔴 CH", value = move.onCH ?: move.onHit,)
         field(name = "Level", value = move.level,)
         if (move.recoveryOnWhiff.isNullOrEmpty().not()) {
-            field(name = "Recovery", value = move.recoveryOnWhiff)
+            field(name = "💨 Recovery", value = move.recoveryOnWhiff)
         }
 
-        var propertyString = ""
-        if (move.isHeatEngager) {
-            propertyString += "🔥 "
-        }
-        if (move.isPowerCrushFrom != null) {
-            propertyString += "🛡️ (${move.isPowerCrushFrom}) "
-        }
-        if (propertyString.isNotEmpty()) {
-            field(name = "Properties", value = propertyString, inline = false)
-        }
-
-        field(name = "Damage", value = move.damage.orEmpty(),)
+        field(name = "🗡️ Damage", value = move.damage.orEmpty(),)
 
         field(
-            name = "Notes",
-            value = move.notes,
+            name = "📝 Notes",
+            value = move.notes.joinToString(separator = "") { "* $it\n" },
             inline = false,
         )
 

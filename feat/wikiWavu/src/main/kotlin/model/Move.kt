@@ -20,7 +20,7 @@ data class Move(
     val onBlock: String? = null,
     val onHit: String? = null,
     val onCH: String? = null,
-    val notes: String? = null,
+    val notes: List<String> = listOf(),
     val alias: String? = null,
     val image: String? = null,
     val videoId: String? = null,

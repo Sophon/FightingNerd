@@ -47,7 +47,7 @@ internal class DownloadMoveListUseCase(
                             onBlock = move.block,
                             onHit = move.hit,
                             onCH = move.ch,
-                            notes = move.notes,
+                            notes = move.emojifiedNotes(),
                             alias = move.alias,
                             image = move.image,
                             videoId = move.video,
@@ -112,7 +112,7 @@ internal class DownloadMoveListUseCase(
     }
 
     private fun MoveDto.isHE(): Boolean {
-        return notes?.contains("Heat Engager") == true
+        return notes?.contains("Heat") == true
     }
 
     private fun MoveDto.isPowerCrushFrom(): Int? {
@@ -121,5 +121,27 @@ internal class DownloadMoveListUseCase(
             ?.removePrefix("pc")
             ?.removeSuffix("~")
             ?.toIntOrNull()
+    }
+
+    private fun MoveDto.emojifiedNotes(): List<String> {
+        val finalNotes = notes.orEmpty()
+            .trimIndent()
+            .lines()
+            .filter { it.isNotEmpty() }
+            .map { it.removePrefix("* ").trim() }
+            .map {
+                if (it.contains("Heat", ignoreCase = true)) {
+                    "🔥 $it"
+                } else {
+                    it
+                }
+            }
+            .toMutableList()
+
+        if (crush?.contains("pc") == true) {
+            finalNotes += "🛡️ $crush"
+        }
+
+        return finalNotes
     }
 }
