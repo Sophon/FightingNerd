@@ -13,10 +13,11 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.embed
+import domain.EmbedBuilder
+import domain.serviceRegistry.Command
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import model.Command
 import usecase.SearchFrameDataUseCase
 import usecase.SearchGlossaryUseCase
 import usecase.StartGlossaryUseCase

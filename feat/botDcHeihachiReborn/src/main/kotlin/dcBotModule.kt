@@ -1,4 +1,5 @@
 import com.example.core.coreModule
+import domain.EmbedBuilder
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
