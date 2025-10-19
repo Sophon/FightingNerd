@@ -8,7 +8,6 @@ import com.example.core.domain.map
 import dataRemote.MoveDto
 import dataRemote.WavuWikiDataSource
 import model.Move
-import kotlin.collections.map
 
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,
@@ -119,7 +118,6 @@ internal class DownloadMoveListUseCase(
         return (crush?.contains("pc", ignoreCase = true) == true)
     }
 
-    //TODO: this should be in the embed package
     private fun MoveDto.splitNotes(): List<String> {
         val finalNotes = notes.orEmpty()
             .trimIndent()

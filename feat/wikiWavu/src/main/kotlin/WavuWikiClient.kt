@@ -3,12 +3,12 @@ import com.example.core.domain.Result
 import com.example.core.domain.Service
 import com.example.core.domain.Source
 import com.example.core.domain.onError
+import io.github.aakira.napier.Napier
 import model.Move
 import usecase.CacheMoveListUseCase
 import usecase.DownloadMoveListUseCase
 import usecase.FetchCharacterListUseCase
 import usecase.FetchMoveDataUseCase
-import io.github.aakira.napier.Napier
 
 interface WavuWikiClient: Service {
     suspend fun downloadCompleteMoveList(): EmptyResult<WavuError>

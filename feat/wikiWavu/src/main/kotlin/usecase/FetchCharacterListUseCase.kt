@@ -1,13 +1,13 @@
 package usecase
 
 import CHAR_LIST
-import com.example.core.domain.Result
 import WavuError
-import model.CharacterList
+import com.example.core.domain.Result
 import io.github.aakira.napier.Napier
 import kotlinx.io.files.FileNotFoundException
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import model.CharacterList
 import java.io.File
 
 class FetchCharacterListUseCase(

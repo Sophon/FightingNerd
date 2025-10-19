@@ -1,6 +1,5 @@
 package dataRemote
 
-import model.Move
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
