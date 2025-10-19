@@ -83,7 +83,7 @@ internal class HeihachiRebornImpl(
             // "gl term" -> command = GL, query = "term"
             rawQuery.substringAfter(' ', rawQuery)
         }
-        val service = services.first { it.command == command }
+        val service = services.first { it.mainCommand == command }
 
         message.channel.createEmbed(
             service.execute(command, query)
@@ -94,7 +94,7 @@ internal class HeihachiRebornImpl(
         val command = Command.entries
             .find { it.name.equals(interaction.command.rootName, ignoreCase = true) }
             ?: return //this should NEVER happen
-        val service = services.first { it.command == command }
+        val service = services.first { it.mainCommand == command }
         val query = buildQueryFromInteraction(command)
 
         interaction.respondPublic {
@@ -103,7 +103,7 @@ internal class HeihachiRebornImpl(
     }
 
     private fun GuildChatInputCommandInteractionCreateEvent.buildQueryFromInteraction(command: Command): String {
-        val service = services.first { it.command == command }
+        val service = services.first { it.mainCommand == command }
         val slashCommand = service.slashCommands.first { it.name == command }
         val argValues = slashCommand.arguments.map { arg ->
             interaction.command.strings[arg.name] ?: ""

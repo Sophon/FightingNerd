@@ -10,7 +10,7 @@ internal class FrameDataService(
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val embedBuilder: EmbedBuilder,
 ): RegisteredService {
-    override val command: Command = Command.FD
+    override val mainCommand: Command = Command.FD
     override val serviceInfo = ServiceInfo(
         name = "Wavu Wiki",
         url = "https://wavu.wiki/",

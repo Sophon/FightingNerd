@@ -10,7 +10,7 @@ internal class GlossaryService(
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
     private val embedBuilder: EmbedBuilder,
 ): RegisteredService {
-    override val command: Command = Command.GL
+    override val mainCommand: Command = Command.GL
     override val serviceInfo = ServiceInfo(
         name = "Infil Glossary",
         url = "https://glossary.infil.net/",

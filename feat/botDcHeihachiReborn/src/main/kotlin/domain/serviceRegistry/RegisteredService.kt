@@ -3,7 +3,7 @@ package domain.serviceRegistry
 import dev.kord.rest.builder.message.EmbedBuilder
 
 interface RegisteredService {
-    val command: Command
+    val mainCommand: Command //TODO: refactor to List<Command>
     val serviceInfo: ServiceInfo
     val slashCommands: List<SlashCommand>
 
