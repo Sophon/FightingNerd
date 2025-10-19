@@ -3,11 +3,15 @@ package domain
 import BotError
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import domain.serviceRegistry.ServiceInfo
 import model.GlossaryItem
 import model.Move
 
 class EmbedBuilder {
-    fun moveEmbed(move: Move): EmbedBuilder.() -> Unit = {
+    fun moveEmbed(
+        move: Move,
+        info: ServiceInfo,
+    ): EmbedBuilder.() -> Unit = {
         title = move.characterName //TODO: clickable
         description = "${move.input} - ${move.name}" //TODO: clickable
         color = Color(GREEN)
@@ -27,12 +31,15 @@ class EmbedBuilder {
 
         //TODO: feedback command
         footer {
-            text = "Wavu Wiki"
-            icon = "https://i.imgur.com/0cnTzNk.png"
+            text = info.name
+            icon = info.iconUrl
         }
     }
 
-    fun glossaryEmbed(item: GlossaryItem): EmbedBuilder.() -> Unit = {
+    fun glossaryEmbed(
+        item: GlossaryItem,
+        info: ServiceInfo,
+    ): EmbedBuilder.() -> Unit = {
         val formattedItem = item.format()
         title = formattedItem.term
         color = Color(ORANGE)
@@ -44,8 +51,8 @@ class EmbedBuilder {
         field(name = "🇯🇵", value = japaneseValueString, inline = false)
 
         footer {
-            text = "Infil Glossary"
-            icon = "https://i.imgur.com/OigKJBY.png"
+            text = info.name
+            icon = info.iconUrl
         }
     }
 

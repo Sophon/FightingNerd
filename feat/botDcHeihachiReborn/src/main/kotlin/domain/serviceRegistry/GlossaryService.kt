@@ -43,7 +43,10 @@ internal class GlossaryService(
 
         return when (result) {
             is Result.Success -> {
-                embedBuilder.glossaryEmbed(result.data)
+                embedBuilder.glossaryEmbed(
+                    item = result.data,
+                    info = serviceInfo,
+                )
             }
             is Result.Error -> {
                 embedBuilder.errorEmbed(result.error)

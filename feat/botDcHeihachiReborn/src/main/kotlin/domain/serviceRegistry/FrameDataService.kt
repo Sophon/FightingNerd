@@ -47,7 +47,10 @@ internal class FrameDataService(
 
         return when (result) {
             is Result.Success -> {
-                embedBuilder.moveEmbed(result.data)
+                embedBuilder.moveEmbed(
+                    move = result.data,
+                    info = serviceInfo,
+                )
             }
             is Result.Error -> {
                 embedBuilder.errorEmbed(result.error)
