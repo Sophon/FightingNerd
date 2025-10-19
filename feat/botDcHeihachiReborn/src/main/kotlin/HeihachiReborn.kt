@@ -103,16 +103,6 @@ internal class HeihachiRebornImpl(
         interaction.respondPublic { embed(embedBuilder) }
     }
 
-    private fun GuildChatInputCommandInteractionCreateEvent.buildQueryFromInteraction(command: Command): String {
-        val service = services.first { it.mainCommand == command }
-        val slashCommand = service.slashCommands.first { it.name == command }
-        val argValues = slashCommand.arguments.map { arg ->
-            interaction.command.strings[arg.name] ?: ""
-        }
-
-        return argValues.joinToString(" ").trim()
-    }
-
     private suspend fun createCommandsForTestServer() {
         val testGuildId = Snowflake(TEST_SERVER_ID)
 
