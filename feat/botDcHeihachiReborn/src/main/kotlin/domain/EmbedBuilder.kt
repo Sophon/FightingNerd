@@ -13,7 +13,7 @@ class EmbedBuilder {
         info: ServiceInfo,
     ): EmbedBuilder.() -> Unit = {
         title = move.characterName //TODO: clickable
-        description = "${move.input} - ${move.name}" //TODO: clickable
+        description = "${move.id} - ${move.name}" //TODO: clickable
         color = Color(GREEN)
 
         field(name = "Startup", value = move.startup,)
