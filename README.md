@@ -8,7 +8,6 @@ A shared code-base with various tools:
 ### TODO's:
 - Discord bot
   - frame data
-    - `/fd` command
     - `/ms` command 
       - moves that are the same start-up or faster
     - `/heat` command
