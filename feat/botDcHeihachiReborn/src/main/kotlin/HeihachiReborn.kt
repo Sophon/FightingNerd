@@ -24,7 +24,7 @@ interface HeihachiReborn {
 
 internal class HeihachiRebornImpl(
     private val apiKey: String,
-    private val frameDataService: FrameDataService,
+    frameDataService: FrameDataService,
     glossaryService: GlossaryService,
 ): HeihachiReborn {
     private lateinit var kord: Kord
