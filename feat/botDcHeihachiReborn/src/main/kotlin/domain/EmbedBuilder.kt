@@ -6,6 +6,9 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import domain.serviceRegistry.ServiceInfo
 import model.GlossaryItem
 import model.Move
+import util.field
+import util.replaceItalic
+import util.replaceUnderline
 
 class EmbedBuilder {
     fun moveEmbed(
@@ -66,47 +69,11 @@ class EmbedBuilder {
     }
 
 
-    private fun EmbedBuilder.field(
-        name: String,
-        value: String?,
-        inline: Boolean = true,
-    ) {
-        field {
-            this.name = name
-            this.value = value.orEmpty()
-            this.inline = inline
-        }
-    }
-
     private fun GlossaryItem.format(): GlossaryItem {
         return this.copy(
             definition = this.definition.replaceUnderline(),
             jpTranslation = this.jpTranslation.map { it.replaceItalic() }
         )
-    }
-
-    private fun String.replaceItalic(): String {
-        return this
-            .replace("<em>", "*")
-            .replace("</em>", "*")
-    }
-
-    /**
-     * Replaces HTML tags with Markdown.
-     *
-     * Examples:
-     * - `!<'block'>` → `__block__`
-     * - `!<'whiff punish','whiff'>` → `__whiff__`
-     *
-     * Takes the last comma-separated value if multiple are present.
-     */
-    private fun String.replaceUnderline(): String {
-        return this.replace(Regex("!<'([^']+)'(?:,'[^']*')*>")) { matchResult ->
-            val content = matchResult.groupValues[1]
-            val words = content.split("','")
-            val lastWord = words.last()
-            "**__${lastWord}__**"
-        }
     }
 }
 
