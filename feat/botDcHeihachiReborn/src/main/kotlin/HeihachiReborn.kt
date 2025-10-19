@@ -95,11 +95,11 @@ internal class HeihachiRebornImpl(
             .find { it.name.equals(interaction.command.rootName, ignoreCase = true) }
             ?: return //this should NEVER happen
         val service = services.first { it.mainCommand == command }
-        val query = buildQueryFromInteraction(command)
+        val args = interaction.command.strings
+        val query = service.buildQuery(args, command)
+        val embedBuilder = service.execute(command, query)
 
-        interaction.respondPublic {
-            embed(service.execute(command, query))
-        }
+        interaction.respondPublic { embed(embedBuilder) }
     }
 
     private fun GuildChatInputCommandInteractionCreateEvent.buildQueryFromInteraction(command: Command): String {

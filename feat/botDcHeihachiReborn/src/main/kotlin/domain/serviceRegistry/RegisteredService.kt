@@ -16,6 +16,17 @@ interface RegisteredService {
         command: Command,
         vararg args: String
     ): EmbedBuilder.() -> Unit
+
+    fun buildQuery(
+        args: Map<String, String>,
+        command: Command
+    ): String {
+        val slashCommand = slashCommands.first { it.name == command }
+        return slashCommand.arguments
+            .mapNotNull { args[it.name] }
+            .joinToString(" ")
+            .trim()
+    }
 }
 
 data class ServiceInfo(
