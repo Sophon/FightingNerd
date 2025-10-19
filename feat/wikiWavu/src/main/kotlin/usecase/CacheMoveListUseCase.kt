@@ -1,9 +1,9 @@
 package usecase
 
+import WavuError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import dataLocal.MoveListDB
-import WavuError
 import model.Character
 import model.Move
 

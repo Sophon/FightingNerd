@@ -1,9 +1,9 @@
 package usecase
 
-import com.example.core.domain.Result
-import dataLocal.MoveListDB
 import WavuError
 import cleanMoveInput
+import com.example.core.domain.Result
+import dataLocal.MoveListDB
 import model.Move
 
 class FetchMoveDataUseCase(

@@ -5,9 +5,9 @@ import cleanMoveInput
 import com.example.core.domain.DataError
 import com.example.core.domain.Result
 import com.example.core.domain.map
+import dataRemote.MoveDto
 import dataRemote.WavuWikiDataSource
 import model.Move
-import kotlin.collections.map
 
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,
@@ -28,11 +28,31 @@ internal class DownloadMoveListUseCase(
 
                 movesById
                     .mapValues { (_, move) ->
-                        move.copy(
-                            input = move.id.substringAfter("-"),
-                            level = formCompleteDataFromParent(move, movesById) { it.level },
-                            damage = formCompleteDataFromParent(move, movesById) { it.damage },
+                        Move(
+                            id = move.id.substringAfter("-"),
+                            input = move.input,
+                            level = formCompleteDataFromParent(move, movesById) {
+                                it.target
+                            },
+                            name = move.name,
+                            parent = move.parent,
+                            damage = formCompleteDataFromParent(move, movesById) {
+                                it.damage
+                            },
                             startup = getRootStartup(move, movesById),
+                            recoveryOnWhiff = move.recv,
+                            totalFrames = move.tot,
+                            crush = move.crush,
+                            onBlock = move.block,
+                            onHit = move.hit,
+                            onCH = move.ch,
+                            notes = move.splitNotes(),
+                            alias = move.alias,
+                            image = move.image,
+                            videoId = move.video,
+                            alt = move.alt,
+                            isHeatEngager = move.isHE(),
+                            isPowerCrush = move.isPowerCrush(),
                         )
                     }
                     .mapKeys { (id, _) ->
@@ -53,11 +73,11 @@ internal class DownloadMoveListUseCase(
      *  So we have to traverse through parents to form the complete string
      */
     private fun formCompleteDataFromParent(
-        move: Move,
-        movesById: Map<String, Move>,
-        fieldSelector: (Move) -> String?,
+        move: MoveDto,
+        movesById: Map<String, MoveDto>,
+        fieldSelector: (MoveDto) -> String?,
     ): String? {
-        var current: Move? = move
+        var current: MoveDto? = move
         val reverseLevel = mutableListOf<String>()
 
         while (current != null) {
@@ -74,9 +94,12 @@ internal class DownloadMoveListUseCase(
     /**
      * Similar to the issue above, just with startup
      */
-    private fun getRootStartup(move: Move, movesById: Map<String, Move>): String? {
-        var current: Move? = move
-        var root: Move = move
+    private fun getRootStartup(
+        move: MoveDto,
+        movesById: Map<String, MoveDto>
+    ): String? {
+        var current: MoveDto? = move
+        var root: MoveDto = move
 
         // Traverse up to find the topmost parent
         while (current != null) {
@@ -85,5 +108,23 @@ internal class DownloadMoveListUseCase(
         }
 
         return root.startup
+    }
+
+    private fun MoveDto.isHE(): Boolean {
+        return notes?.contains("Heat", ignoreCase = true) == true
+    }
+
+    private fun MoveDto.isPowerCrush(): Boolean {
+        return (crush?.contains("pc", ignoreCase = true) == true)
+    }
+
+    private fun MoveDto.splitNotes(): List<String> {
+        val finalNotes = notes.orEmpty()
+            .trimIndent()
+            .lines()
+            .filter { it.isNotEmpty() }
+            .map { it.removePrefix("* ").trim() }
+
+        return finalNotes
     }
 }

@@ -1,14 +1,19 @@
 package domain.serviceRegistry
 
 import com.example.core.domain.Result
-import domain.EmbedBuilder
+import dev.kord.common.Color
+import dev.kord.rest.builder.message.EmbedBuilder
+import model.GlossaryItem
 import usecase.SearchGlossaryUseCase
 import usecase.StartGlossaryUseCase
+import util.createErrorEmbed
+import util.field
+import util.replaceItalic
+import util.replaceUnderline
 
 internal class GlossaryService(
     private val startGlossaryUseCase: StartGlossaryUseCase,
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
-    private val embedBuilder: EmbedBuilder,
 ): RegisteredService {
     override val mainCommand: Command = Command.GL
     override val serviceInfo = ServiceInfo(
@@ -36,20 +41,48 @@ internal class GlossaryService(
     override suspend fun execute(
         command: Command,
         vararg args: String
-    ): dev.kord.rest.builder.message.EmbedBuilder.() -> Unit {
+    ): EmbedBuilder.() -> Unit {
         val result = searchGlossaryUseCase.invoke(
             args.joinToString(" ")
         )
 
         return when (result) {
             is Result.Success -> {
-                embedBuilder.glossaryEmbed(result.data)
+                createEmbed(item = result.data)
             }
             is Result.Error -> {
-                embedBuilder.errorEmbed(result.error)
+                createErrorEmbed(error = result.error)
             }
         }
+    }
+
+
+    private fun createEmbed(
+        item: GlossaryItem
+    ): EmbedBuilder.() -> Unit = {
+        val formattedItem = item.format()
+        title = formattedItem.term
+        color = Color(BROWN)
+
+        field(name = "", value = formattedItem.definition.replaceUnderline(), inline = false)
+
+        val japaneseValueString = formattedItem.jpTranslation
+            .joinToString(separator = "") { "* $it\n" }
+        field(name = "🇯🇵", value = japaneseValueString, inline = false)
+
+        footer {
+            text = serviceInfo.name
+            icon = serviceInfo.iconUrl
+        }
+    }
+
+    private fun GlossaryItem.format(): GlossaryItem {
+        return this.copy(
+            definition = this.definition.replaceUnderline(),
+            jpTranslation = this.jpTranslation.map { it.replaceItalic() }
+        )
     }
 }
 
 private const val KEY_TERM = "term"
+private const val BROWN = 0xDAA06D

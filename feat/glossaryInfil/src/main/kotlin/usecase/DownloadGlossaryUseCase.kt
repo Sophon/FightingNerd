@@ -1,8 +1,8 @@
 package usecase
 
+import GlossaryError
 import com.example.core.domain.Result
 import dataRemote.InfilGlossaryDataSource
-import GlossaryError
 import model.GlossaryItem
 
 internal class DownloadGlossaryUseCase(

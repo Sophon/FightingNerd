@@ -1,7 +1,7 @@
 package dataLocal
 
-import com.example.core.domain.Result
 import WavuError
+import com.example.core.domain.Result
 import model.Move
 
 class InMemoryMoveListDB: MoveListDB {

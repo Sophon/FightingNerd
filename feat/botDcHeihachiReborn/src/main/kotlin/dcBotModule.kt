@@ -1,5 +1,4 @@
 import com.example.core.coreModule
-import domain.EmbedBuilder
 import domain.serviceRegistry.FrameDataService
 import domain.serviceRegistry.GlossaryService
 import org.koin.core.context.startKoin
@@ -30,7 +29,6 @@ fun dcBotModule(apiKey: String) = module {
     single { apiKey }
 
     singleOf(::HeihachiRebornImpl).bind<HeihachiReborn>()
-    singleOf(::EmbedBuilder)
 
     singleOf(::StartGlossaryUseCase)
     singleOf(::SearchGlossaryUseCase)

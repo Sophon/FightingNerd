@@ -1,9 +1,9 @@
 package dataLocal
 
+import GlossaryError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import com.example.core.util.removeWhiteSpace
-import GlossaryError
 import model.GlossaryItem
 
 class InMemoryGlossaryDB: GlossaryDB {
