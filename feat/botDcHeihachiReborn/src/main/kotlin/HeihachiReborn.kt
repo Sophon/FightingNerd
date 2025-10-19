@@ -75,14 +75,18 @@ internal class HeihachiRebornImpl(
 
         val rawQuery = message.content.removeTag().takeIf { it.isAtLeast(wordCount = 2) } ?: return
         val firstWord = rawQuery.substringBefore(' ')
-        val command = Command.entries.find { it.name.equals(firstWord, ignoreCase = true) }
-            ?: Command.FD
-        val query = if (command == Command.FD) {
-            // "kaz 112" -> query = "kaz 112"
-            firstWord.lowercase() + rawQuery.substring(firstWord.length)
-        } else {
-            // "gl term" -> command = GL, query = "term"
-            rawQuery.substringAfter(' ', rawQuery)
+        val command = Command.entries.find {
+            it.name.equals(firstWord, ignoreCase = true)
+        } ?: Command.FD
+
+        /**
+         * raw = "kaz 112" -> command = FD, query = "kaz 112"
+         *
+         * raw = "gl fireball" -> command = GL, query = "fireball"
+         */
+        val query = when (command) {
+            Command.FD -> firstWord.lowercase() + rawQuery.substring(firstWord.length)
+            else -> rawQuery.substringAfter(' ', rawQuery)
         }
         val service = services.first { it.mainCommand == command }
 
