@@ -7,28 +7,6 @@ import model.GlossaryItem
 import model.Move
 
 class EmbedBuilder {
-    fun testEmbed(): EmbedBuilder.() -> Unit = {
-        title = "Test Embed"
-        description = "This is a test embed message"
-        color = Color(0x00FF00) // Green color
-
-        field {
-            name = "Field 1"
-            value = "This is a field value"
-            inline = false
-        }
-
-        field {
-            name = "Field 2"
-            value = "Inline field"
-            inline = true
-        }
-
-        footer {
-            text = "Test Footer"
-        }
-    }
-
     fun moveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = move.characterName //TODO: clickable
         description = move.input //TODO: clickable
