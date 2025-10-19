@@ -16,7 +16,7 @@ data class Move(
     val startup: String? = null,
     val recoveryOnWhiff: String? = null,
     val totalFrames: String? = null,
-    @Deprecated("calculate") val crush: String? = null,
+    val crush: String? = null,
     val onBlock: String? = null,
     val onHit: String? = null,
     val onCH: String? = null,

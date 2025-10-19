@@ -47,7 +47,7 @@ internal class DownloadMoveListUseCase(
                             onBlock = move.block,
                             onHit = move.hit,
                             onCH = move.ch,
-                            notes = move.emojifiedNotes(),
+                            notes = move.splitNotes(),
                             alias = move.alias,
                             image = move.image,
                             videoId = move.video,
@@ -112,40 +112,20 @@ internal class DownloadMoveListUseCase(
     }
 
     private fun MoveDto.isHE(): Boolean {
-        return notes?.contains("Heat") == true
+        return notes?.contains("Heat", ignoreCase = true) == true
     }
 
     private fun MoveDto.isPowerCrush(): Boolean {
-        return (crush?.contains("pc") == true)
+        return (crush?.contains("pc", ignoreCase = true) == true)
     }
 
     //TODO: this should be in the embed package
-    private fun MoveDto.emojifiedNotes(): List<String> {
+    private fun MoveDto.splitNotes(): List<String> {
         val finalNotes = notes.orEmpty()
             .trimIndent()
             .lines()
             .filter { it.isNotEmpty() }
             .map { it.removePrefix("* ").trim() }
-            .map {
-                if (it.contains("Heat", ignoreCase = true)) {
-                    "🔥 $it"
-                } else it
-            }
-            .map {
-                if (it.contains("Balcony Break", ignoreCase = true)) {
-                    "⏆ $it"
-                } else it
-            }
-            .map {
-                if (it.contains("Spike", ignoreCase = true)) {
-                    "⏈ $it"
-                } else it
-            }
-            .toMutableList()
-
-        if (crush?.contains("pc") == true) {
-            finalNotes += "🛡️ $crush"
-        }
 
         return finalNotes
     }

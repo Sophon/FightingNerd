@@ -47,7 +47,6 @@ internal class FrameDataService(
         val result = searchFrameDataUseCase.invoke(
             query = args.joinToString(" ")
         )
-
         return when (result) {
             is Result.Success -> {
                 createEmbed(move = result.data)
@@ -63,20 +62,22 @@ internal class FrameDataService(
         description = "${move.id} - ${move.name}" //TODO: clickable
         color = Color(GREEN)
 
-        field(name = "Startup", value = move.startup,)
-        field(name = "OH", value = move.onHit,)
-        field(name = "OB", value = move.onBlock,)
-        field(name = "CH", value = move.onCH ?: move.onHit,)
-        field(name = "Level", value = move.level,)
-        if (move.recoveryOnWhiff.isNullOrEmpty().not()) {
-            field(name = "Recovery", value = move.recoveryOnWhiff)
-        }
+        field(name = "Startup", value = move.startup)
+        field(name = "OH", value = move.onHit)
+        field(name = "OB", value = move.onBlock)
+        field(name = "CH", value = move.onCH ?: move.onHit)
+        field(name = "Level", value = move.level)
+        move.recoveryOnWhiff
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { field(name = "Recovery", value = it) }
 
         field(name = "Damage", value = move.damage.orEmpty(),)
 
         field(
             name = "📝 Notes",
-            value = move.notes.joinToString(separator = "") { "* $it\n" },
+            value = move.notes
+                .emojify(crush = move.crush)
+                .joinToString(separator = "") { "* $it\n" },
             inline = false,
         )
 
@@ -84,6 +85,29 @@ internal class FrameDataService(
         footer {
             text = serviceInfo.name
             icon = serviceInfo.iconUrl
+        }
+    }
+
+    private fun List<String>.emojify(
+        crush: String?
+    ): List<String> {
+        return buildList {
+            this@emojify.forEach { note ->
+                val emojified = buildString {
+                    if (note.contains("Heat", ignoreCase = true)) append("🔥 ")
+                    if (note.contains("Balcony Break", ignoreCase = true)) append("⏆ ")
+                    if (note.contains("Spike", ignoreCase = true)) append("⬇️ ")
+                    if (note.contains("Tornado", ignoreCase = true)) append("🌪️ ")
+                    if (note.contains("Tailspin", ignoreCase = true)) append("️🔃 ")
+                    if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
+                    append(note)
+                }
+                add(emojified)
+            }
+
+            crush?.takeIf { it.contains("pc", ignoreCase = true) }?.let {
+                add("🛡️ $it")
+            }
         }
     }
 }
