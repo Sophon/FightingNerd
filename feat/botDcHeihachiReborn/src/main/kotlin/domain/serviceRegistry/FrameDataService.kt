@@ -63,9 +63,9 @@ internal class FrameDataService(
         color = Color(GREEN)
 
         field(name = "Startup", value = move.startup)
-        field(name = "OH", value = move.onHit)
+        field(name = "OH", value = move.onHit.removeFollowups() ?: "-")
         field(name = "OB", value = move.onBlock)
-        field(name = "CH", value = move.onCH ?: move.onHit)
+        field(name = "CH", value = move.onCH.removeFollowups() ?: move.onHit ?: "-")
         field(name = "Level", value = move.level)
         move.recoveryOnWhiff
             ?.takeIf { it.isNotEmpty() }
@@ -74,7 +74,7 @@ internal class FrameDataService(
         field(name = "Damage", value = move.damage.orEmpty(),)
 
         field(
-            name = "📝 Notes",
+            name = "📝 NOTES",
             value = move.notes
                 .emojify(crush = move.crush)
                 .joinToString(separator = "") { "* $it\n" },
@@ -109,6 +109,12 @@ internal class FrameDataService(
                 add("🛡️ $it")
             }
         }
+    }
+
+    private fun String?.removeFollowups(): String? {
+        return this
+            ?.substringAfterLast("|")
+            ?.removeSuffix("]]")
     }
 }
 
