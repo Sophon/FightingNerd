@@ -53,7 +53,7 @@ internal class DownloadMoveListUseCase(
                             videoId = move.video,
                             alt = move.alt,
                             isHeatEngager = move.isHE(),
-                            isPowerCrushFrom = move.isPowerCrushFrom(),
+                            isPowerCrush = move.isPowerCrush(),
                         )
                     }
                     .mapKeys { (id, _) ->
@@ -115,14 +115,11 @@ internal class DownloadMoveListUseCase(
         return notes?.contains("Heat") == true
     }
 
-    private fun MoveDto.isPowerCrushFrom(): Int? {
-        return crush
-            ?.takeIf { it.contains("pc") }
-            ?.removePrefix("pc")
-            ?.removeSuffix("~")
-            ?.toIntOrNull()
+    private fun MoveDto.isPowerCrush(): Boolean {
+        return (crush?.contains("pc") == true)
     }
 
+    //TODO: this should be in the embed package
     private fun MoveDto.emojifiedNotes(): List<String> {
         val finalNotes = notes.orEmpty()
             .trimIndent()
@@ -132,9 +129,17 @@ internal class DownloadMoveListUseCase(
             .map {
                 if (it.contains("Heat", ignoreCase = true)) {
                     "🔥 $it"
-                } else {
-                    it
-                }
+                } else it
+            }
+            .map {
+                if (it.contains("Balcony Break", ignoreCase = true)) {
+                    "⏆ $it"
+                } else it
+            }
+            .map {
+                if (it.contains("Spike", ignoreCase = true)) {
+                    "⏈ $it"
+                } else it
             }
             .toMutableList()
 
