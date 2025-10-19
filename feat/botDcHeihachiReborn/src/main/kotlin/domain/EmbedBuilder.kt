@@ -9,15 +9,15 @@ import model.Move
 class EmbedBuilder {
     fun moveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = move.characterName //TODO: clickable
-        description = move.input //TODO: clickable
+        description = "${move.input} - ${move.name}" //TODO: clickable
         color = Color(GREEN)
 
+        field(name = "Startup", value = move.startup,)
+        field(name = "OH", value = move.hit,)
+        field(name = "OB", value = move.block,)
+        field(name = "CH", value = move.ch ?: move.hit,)
         field(name = "Level", value = move.level,)
         field(name = "Damage", value = move.damage.orEmpty(),)
-        field(name = "Startup", value = move.startup,)
-        field(name = "OB", value = move.block,)
-        field(name = "OH", value = move.hit,)
-        field(name = "CH", value = move.ch ?: move.hit,)
 
         field(
             name = "Notes",
