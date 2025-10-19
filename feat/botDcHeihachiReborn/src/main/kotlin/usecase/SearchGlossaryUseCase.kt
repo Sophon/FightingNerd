@@ -10,7 +10,7 @@ internal class SearchGlossaryUseCase(
     private val glossary: InfilGlossary,
     private val startGlossaryUseCase: StartGlossaryUseCase,
 ) {
-    suspend fun search(query: String): Result<GlossaryItem, BotError> {
+    suspend fun invoke(query: String): Result<GlossaryItem, BotError> {
         val cleanQuery = query.substringAfter(' ')
         return when (val result = glossary.search(cleanQuery)) {
             is Result.Success -> {
