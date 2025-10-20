@@ -49,8 +49,8 @@ internal class HeihachiRebornImpl(
     private suspend fun startKord() {
         kord = Kord(token = apiKey)
 
-//        createGlobalCommand()
-        createCommandsForTestServer()
+        createGlobalCommand()
+//        createCommandsForTestServer()
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             handleCommand()
         }
