@@ -1,5 +1,6 @@
 package domain.serviceRegistry
 
+import BotError
 import MAX_LENGTH_EMBED
 import com.example.core.domain.Result
 import com.example.core.util.truncate
@@ -74,7 +75,7 @@ internal class FrameDataService(
             Command.FD -> searchFrameData(*args)
             Command.PC -> searchPowerCrushMoves(*args)
             Command.HEAT -> searchHeatMoves(*args)
-            else -> throw IllegalStateException("invalid command")
+            else -> createErrorEmbed(BotError.BOT_LOGIC_ERROR)
         }
     }
 
