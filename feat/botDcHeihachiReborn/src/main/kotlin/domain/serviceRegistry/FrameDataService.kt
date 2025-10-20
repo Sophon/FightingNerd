@@ -65,15 +65,18 @@ internal class FrameDataService(
         color = Color(GREEN)
 
         field(name = "Startup", value = move.startup)
-        field(name = "OH", value = move.onHit.removeFollowups() ?: "-")
-        field(name = "OB", value = move.onBlock)
-        field(name = "CH", value = move.onCH.removeFollowups() ?: move.onHit ?: "-")
+        field(name = "OH", value = move.onHit.removeFollowups().orDash())
+        field(name = "OB", value = move.onBlock.orDash())
+        field(
+            name = "CH",
+            value = move.onCH.removeFollowups() ?: move.onHit.removeFollowups().orDash()
+        )
         field(name = "Level", value = move.level)
         move.recoveryOnWhiff
             ?.takeIf { it.isNotEmpty() }
             ?.let { field(name = "Recovery", value = it) }
 
-        field(name = "Damage", value = move.damage.orEmpty(),)
+        field(name = "Damage", value = move.damage.orDash())
 
         field(
             name = "📝 NOTES",
@@ -121,6 +124,8 @@ internal class FrameDataService(
             ?.substringAfterLast("|")
             ?.removeSuffix("]]")
     }
+
+    private fun String?.orDash(): String = this ?: "-"
 }
 
 
