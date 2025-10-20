@@ -215,6 +215,7 @@ internal class FrameDataService(
                     if (note.contains("Tailspin", ignoreCase = true)) append("️🌀 ")
                     if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
                     if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
+                    if (note.contains("Throw", ignoreCase = true)) append("️🤝 ")
                     append(note)
                 }
                 add(emojified)
