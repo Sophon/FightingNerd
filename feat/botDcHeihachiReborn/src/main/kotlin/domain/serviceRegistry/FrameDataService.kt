@@ -95,11 +95,13 @@ internal class FrameDataService(
             this@emojify.forEach { note ->
                 val emojified = buildString {
                     if (note.contains("Heat", ignoreCase = true)) append("🔥 ")
-                    if (note.contains("Balcony Break", ignoreCase = true)) append("⏆ ")
+                    if (note.contains("Balcony Break", ignoreCase = true)) append("➡️ ")
                     if (note.contains("Spike", ignoreCase = true)) append("⬇️ ")
+                    if (note.contains("Floor break", ignoreCase = true)) append("⬇️ ")
                     if (note.contains("Tornado", ignoreCase = true)) append("🌪️ ")
-                    if (note.contains("Tailspin", ignoreCase = true)) append("️🔃 ")
+                    if (note.contains("Tailspin", ignoreCase = true)) append("️🌀 ")
                     if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
+                    if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
                     append(note)
                 }
                 add(emojified)
