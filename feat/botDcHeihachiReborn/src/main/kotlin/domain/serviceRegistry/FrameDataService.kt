@@ -6,6 +6,7 @@ import com.example.core.util.truncate
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import model.Move
+import usecase.GetHeatMovesUseCase
 import usecase.GetPowerCrushMovesUseCase
 import usecase.SearchFrameDataUseCase
 import usecase.StartWikiUseCase
@@ -16,6 +17,7 @@ internal class FrameDataService(
     private val startWikiUseCase: StartWikiUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
+    private val getHeatMovesUseCase: GetHeatMovesUseCase,
 ): RegisteredService {
     override val mainCommand: Command = Command.FD
     override val serviceInfo = ServiceInfo(
@@ -47,7 +49,17 @@ internal class FrameDataService(
                     description = "Character name",
                 ),
             )
-        )
+        ),
+        SlashCommand(
+            name = Command.HEAT,
+            description = "Tekken 8 Power Crush moves",
+            arguments = listOf(
+                SlashCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+            )
+        ),
     )
 
     override suspend fun start() {
@@ -61,6 +73,7 @@ internal class FrameDataService(
         return when (command) {
             Command.FD -> searchFrameData(*args)
             Command.PC -> searchPowerCrushMoves(*args)
+            Command.HEAT -> searchHeatMoves(*args)
             else -> throw IllegalStateException("invalid command")
         }
     }
@@ -86,6 +99,20 @@ internal class FrameDataService(
         return when (result) {
             is Result.Success -> {
                 createMoveListEmbed(category = "Power Crush", moves = result.data)
+            }
+            is Result.Error -> {
+                createErrorEmbed(error = result.error)
+            }
+        }
+    }
+
+    private suspend fun searchHeatMoves(vararg  args: String): EmbedBuilder.() -> Unit {
+        val result = getHeatMovesUseCase.invoke(
+            charName = args.joinToString(" ")
+        )
+        return when (result) {
+            is Result.Success -> {
+                createMoveListEmbed(category = "Heat", moves = result.data)
             }
             is Result.Error -> {
                 createErrorEmbed(error = result.error)

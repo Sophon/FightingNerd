@@ -15,6 +15,7 @@ interface WavuWikiClient: Service {
     suspend fun downloadCompleteMoveList(): EmptyResult<WavuError>
     suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WavuError>
     suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WavuError>
+    suspend fun getHeatMoves(charName: String): Result<List<Move>, WavuError>
 }
 
 internal class WavuWikiClientImpl(
@@ -69,6 +70,12 @@ internal class WavuWikiClientImpl(
         charName: String
     ): Result<List<Move>, WavuError> {
         return fetchMovesWithPropertyUseCase.invoke(charName) { it.isPowerCrush }
+    }
+
+    override suspend fun getHeatMoves(
+        charName: String
+    ): Result<List<Move>, WavuError> {
+        return fetchMovesWithPropertyUseCase.invoke(charName) { it.isHeat }
     }
 }
 
