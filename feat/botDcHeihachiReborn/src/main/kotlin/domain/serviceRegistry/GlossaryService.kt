@@ -21,7 +21,7 @@ internal class GlossaryService(
     override val serviceInfo = ServiceInfo(
         name = "Infil Glossary",
         url = "https://glossary.infil.net/",
-        iconUrl = "https://i.imgur.com/0cnTzNk.png",
+        iconUrl = "https://i.imgur.com/OigKJBY.png",
     )
     override val slashCommands = listOf(
         SlashCommand(
@@ -64,6 +64,7 @@ internal class GlossaryService(
     ): EmbedBuilder.() -> Unit = {
         val formattedItem = item.format()
         title = formattedItem.term
+        url = item.url
         color = Color(BROWN)
 
         field(

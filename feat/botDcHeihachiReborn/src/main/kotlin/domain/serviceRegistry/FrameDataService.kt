@@ -14,6 +14,7 @@ import usecase.SearchFrameDataUseCase
 import usecase.StartWikiUseCase
 import util.createErrorEmbed
 import util.field
+import util.orDash
 
 internal class FrameDataService(
     private val startWikiUseCase: StartWikiUseCase,
@@ -190,7 +191,8 @@ internal class FrameDataService(
         val formattedValue = if (url == null) {
             value
         } else {
-            "[${value.removeFollowups()}]($url)"
+            val pure = value.substringAfter("|").removeSuffix("]]")
+            "[${pure}]($url)"
         }
 
         field(
@@ -223,14 +225,6 @@ internal class FrameDataService(
             }
         }
     }
-
-    private fun String.removeFollowups(): String? {
-        return this
-            .substringAfterLast("|")
-            .removeSuffix("]]")
-    }
-
-    private fun String?.orDash(): String = this ?: "-"
 }
 
 

@@ -1,5 +1,6 @@
 package model
 
+import TERM_URL
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -11,4 +12,6 @@ data class GlossaryItem(
     val videos: List<String> = listOf(), //TODO: refactor
     val games: List<String> = listOf(),
     @SerialName("jp") val jpTranslation: List<String> = listOf(),
-)
+) {
+    val url: String get() = (TERM_URL + term)
+}
