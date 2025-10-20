@@ -30,7 +30,7 @@ fun initKoin(
 fun dcBotModule(apiKey: String) = module {
     single { apiKey }
 
-    singleOf(::HeihachiRebornImpl).bind<HeihachiReborn>()
+    singleOf(::DiscordBotImpl).bind<DiscordBot>()
 
     singleOf(::StartGlossaryUseCase)
     singleOf(::SearchGlossaryUseCase)
