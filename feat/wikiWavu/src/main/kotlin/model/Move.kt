@@ -8,6 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Move(
+    val charName: String,
     val id: String,
     val input: String,
     val level: String? = null,

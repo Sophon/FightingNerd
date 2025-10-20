@@ -2,9 +2,7 @@ import model.Character
 import model.Move
 
 class UrlProvider {
-    fun moveUrl(character: Character, move: Move): String {
-        return MOVE_URL + "${character.name}_movelist" + "#${character.name}-${move.id}"
-    }
+    fun charUrl(charName: String): String = MOVE_URL + charName
 
     fun videoUrl(move: Move): String? {
         return move.videoId?.let { VIDEO_URL + it }

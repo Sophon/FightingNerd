@@ -126,9 +126,10 @@ internal class FrameDataService(
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
-        title = move.id //TODO: clickable
+        title = move.charName
+        url = urlProvider.charUrl(move.charName)
 
-        description = move.name //TODO: clickable
+        description = "**${move.id}**: ${move.name}"
         color = Color(GREEN)
 
         field(name = "SU", value = move.startup)
