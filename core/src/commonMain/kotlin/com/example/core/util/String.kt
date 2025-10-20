@@ -16,3 +16,9 @@ fun String.isAtLeast(wordCount: Int): Boolean {
         .split(' ')
         .size >= wordCount
 }
+
+fun String.truncate(maxLength: Int): String {
+    return if (length > maxLength) {
+        take(maxLength - 3) + "..."
+    } else this
+}

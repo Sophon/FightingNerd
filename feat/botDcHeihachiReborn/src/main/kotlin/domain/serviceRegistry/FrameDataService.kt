@@ -1,6 +1,8 @@
 package domain.serviceRegistry
 
+import MAX_LENGTH_EMBED
 import com.example.core.domain.Result
+import com.example.core.util.truncate
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import model.Move
@@ -63,21 +65,25 @@ internal class FrameDataService(
         color = Color(GREEN)
 
         field(name = "Startup", value = move.startup)
-        field(name = "OH", value = move.onHit.removeFollowups() ?: "-")
-        field(name = "OB", value = move.onBlock)
-        field(name = "CH", value = move.onCH.removeFollowups() ?: move.onHit ?: "-")
+        field(name = "OH", value = move.onHit.removeFollowups().orDash())
+        field(name = "OB", value = move.onBlock.orDash())
+        field(
+            name = "CH",
+            value = move.onCH.removeFollowups() ?: move.onHit.removeFollowups().orDash()
+        )
         field(name = "Level", value = move.level)
         move.recoveryOnWhiff
             ?.takeIf { it.isNotEmpty() }
             ?.let { field(name = "Recovery", value = it) }
 
-        field(name = "Damage", value = move.damage.orEmpty(),)
+        field(name = "Damage", value = move.damage.orDash())
 
         field(
             name = "📝 NOTES",
             value = move.notes
                 .emojify(crush = move.crush)
-                .joinToString(separator = "") { "* $it\n" },
+                .joinToString(separator = "") { "* $it\n" }
+                .truncate(MAX_LENGTH_EMBED),
             inline = false,
         )
 
@@ -95,11 +101,13 @@ internal class FrameDataService(
             this@emojify.forEach { note ->
                 val emojified = buildString {
                     if (note.contains("Heat", ignoreCase = true)) append("🔥 ")
-                    if (note.contains("Balcony Break", ignoreCase = true)) append("⏆ ")
+                    if (note.contains("Balcony Break", ignoreCase = true)) append("➡️ ")
                     if (note.contains("Spike", ignoreCase = true)) append("⬇️ ")
+                    if (note.contains("Floor break", ignoreCase = true)) append("⬇️ ")
                     if (note.contains("Tornado", ignoreCase = true)) append("🌪️ ")
-                    if (note.contains("Tailspin", ignoreCase = true)) append("️🔃 ")
+                    if (note.contains("Tailspin", ignoreCase = true)) append("️🌀 ")
                     if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
+                    if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
                     append(note)
                 }
                 add(emojified)
@@ -116,6 +124,8 @@ internal class FrameDataService(
             ?.substringAfterLast("|")
             ?.removeSuffix("]]")
     }
+
+    private fun String?.orDash(): String = this ?: "-"
 }
 
 
