@@ -21,6 +21,14 @@ A shared code-base with various tools:
   - Mermaid diagram and description for code-base structure
   - guide on running the Discord bot 
 
+# Features
+### Frame data
+![Frame data](https://i.imgur.com/yFxK5fY.mp4)
+
+### Fighting game glossary
+![Glossary](https://i.imgur.com/syUzrJe.mp4)
+
+
 ### Long term goals:
 - Twitch bot
 - Docker, pipelines, updates
