@@ -1,8 +1,9 @@
-import model.Character
 import model.Move
 
 class WavuUrlProvider {
-    fun charUrl(charName: String): String = MOVE_URL + charName
+    fun charUrl(charName: String): String {
+        return MOVE_URL + charName.replace(" ", "_")
+    }
 
     fun videoUrl(move: Move): String? {
         return move.videoId?.let { VIDEO_URL + it }
