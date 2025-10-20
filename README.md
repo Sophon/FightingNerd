@@ -23,6 +23,9 @@ A shared code-base with various tools:
 
 </details>
 
+### Modularity
+
+
 ### TODO's:
 - Discord bot
   - frame data
