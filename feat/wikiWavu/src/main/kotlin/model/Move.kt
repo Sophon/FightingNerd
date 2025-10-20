@@ -28,6 +28,4 @@ data class Move(
 
     val isHeat: Boolean = false,
     val isPowerCrush: Boolean = false,
-) {
-    val characterName get() = id.substringBefore('-')
-}
+)
