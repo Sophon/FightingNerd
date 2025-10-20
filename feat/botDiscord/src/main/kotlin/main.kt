@@ -12,10 +12,10 @@ suspend fun main() = coroutineScope {
     Napier.base(DebugAntilog())
     initKoin(apiKey)
 
-    val heihachi = getKoin().get<HeihachiReborn>()
+    val discordBot = getKoin().get<DiscordBot>()
 
     launch {
-        heihachi.startSession()
+        discordBot.startSession()
     }.join()
 }
 
@@ -26,5 +26,5 @@ private fun getApiKey(): String {
     }
     val dcConfig = json.decodeFromString<DcConfig>(configFile.readText())
 
-    return dcConfig.heihachiRebornApiKey
+    return dcConfig.discordBotApiKey
 }

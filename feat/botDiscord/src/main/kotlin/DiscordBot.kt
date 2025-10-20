@@ -19,15 +19,15 @@ import kotlinx.coroutines.launch
 import util.removeTag
 import kotlin.time.ExperimentalTime
 
-interface HeihachiReborn {
+interface DiscordBot {
     suspend fun startSession()
 }
 
-internal class HeihachiRebornImpl(
+internal class DiscordBotImpl(
     private val apiKey: String,
     frameDataService: FrameDataService,
     glossaryService: GlossaryService,
-): HeihachiReborn {
+): DiscordBot {
     private lateinit var kord: Kord
     private val services = listOf(
         frameDataService,
@@ -150,4 +150,4 @@ internal class HeihachiRebornImpl(
     }
 }
 
-private const val TAG = "HeihachiRebornBot"
+private const val TAG = "DiscordBot"
