@@ -131,7 +131,7 @@ internal class FrameDataService(
         description = move.name //TODO: clickable
         color = Color(GREEN)
 
-        field(name = "Startup", value = move.startup)
+        field(name = "SU", value = move.startup)
         clickableField(name = "OH", value = move.onHit.orDash())
         clickableField(
             name = "OH",
@@ -142,12 +142,12 @@ internal class FrameDataService(
             name = "CH",
             value = move.onCH ?: move.onHit.orDash()
         )
-        field(name = "Level", value = move.level)
+        field(name = "LVL", value = move.level)
         move.recoveryOnWhiff
             ?.takeIf { it.isNotEmpty() }
             ?.let { field(name = "Recovery", value = it) }
 
-        field(name = "Damage", value = move.damage.orDash())
+        field(name = "DMG", value = move.damage.orDash())
 
         field(
             name = "📝 NOTES",
