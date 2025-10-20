@@ -9,20 +9,6 @@ A shared code-base with various tools:
 
 # Features
 
-<details>
-<summary>Frame data</summary>
-
-![Frame data](repoAssets/framedata.gif)
-
-</details>
-
-<details>
-<summary>Fighting game glossary</summary>
-
-![Glossary](repoAssets/glossary.gif)
-
-</details>
-
 ### Modularity
 ```mermaid
 graph LR
@@ -60,6 +46,20 @@ graph LR
     style wikiWavu fill:#10B981,stroke:#059669,color:#fff
     style yourWiki fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
 ```
+
+<details>
+<summary>Frame data</summary>
+
+![Frame data](repoAssets/framedata.gif)
+
+</details>
+
+<details>
+<summary>Fighting game glossary</summary>
+
+![Glossary](repoAssets/glossary.gif)
+
+</details>
 
 
 ### TODO's:
