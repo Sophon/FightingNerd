@@ -1,6 +1,8 @@
 package domain.serviceRegistry
 
+import MAX_LENGTH_EMBED
 import com.example.core.domain.Result
+import com.example.core.util.truncate
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import model.GlossaryItem
@@ -64,7 +66,13 @@ internal class GlossaryService(
         title = formattedItem.term
         color = Color(BROWN)
 
-        field(name = "", value = formattedItem.definition.replaceUnderline(), inline = false)
+        field(
+            name = "",
+            value = formattedItem.definition
+                .replaceUnderline()
+                .truncate(MAX_LENGTH_EMBED),
+            inline = false
+        )
 
         val japaneseValueString = formattedItem.jpTranslation
             .joinToString(separator = "") { "* $it\n" }

@@ -29,3 +29,4 @@ internal fun String.replaceUnderline(): String {
         "**__${lastWord}__**"
     }
 }
+

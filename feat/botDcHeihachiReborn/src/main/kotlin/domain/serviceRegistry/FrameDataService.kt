@@ -1,6 +1,8 @@
 package domain.serviceRegistry
 
+import MAX_LENGTH_EMBED
 import com.example.core.domain.Result
+import com.example.core.util.truncate
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import model.Move
@@ -77,7 +79,8 @@ internal class FrameDataService(
             name = "📝 NOTES",
             value = move.notes
                 .emojify(crush = move.crush)
-                .joinToString(separator = "") { "* $it\n" },
+                .joinToString(separator = "") { "* $it\n" }
+                .truncate(MAX_LENGTH_EMBED),
             inline = false,
         )
 
