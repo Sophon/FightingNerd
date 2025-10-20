@@ -49,7 +49,8 @@ internal class HeihachiRebornImpl(
     private suspend fun startKord() {
         kord = Kord(token = apiKey)
 
-        createGlobalCommand()
+//        createGlobalCommand()
+        createCommandsForTestServer()
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             handleCommand()
         }
@@ -88,7 +89,9 @@ internal class HeihachiRebornImpl(
             Command.FD -> firstWord.lowercase() + rawQuery.substring(firstWord.length)
             else -> rawQuery.substringAfter(' ', rawQuery)
         }
-        val service = services.first { it.mainCommand == command }
+        val service = services.first { service ->
+            service.slashCommands.any { it.name == command }
+        }
 
         message.channel.createEmbed(
             service.execute(command, query)
@@ -99,7 +102,9 @@ internal class HeihachiRebornImpl(
         val command = Command.entries
             .find { it.name.equals(interaction.command.rootName, ignoreCase = true) }
             ?: return //this should NEVER happen
-        val service = services.first { it.mainCommand == command }
+        val service = services.first { service ->
+            service.slashCommands.any { it.name == command }
+        }
         val args = interaction.command.strings
         val query = service.buildQuery(args, command)
         val embedBuilder = service.execute(command, query)

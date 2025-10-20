@@ -51,7 +51,7 @@ internal class DownloadMoveListUseCase(
                             image = move.image,
                             videoId = move.video,
                             alt = move.alt,
-                            isHeatEngager = move.isHE(),
+                            isHeat = move.isHE(),
                             isPowerCrush = move.isPowerCrush(),
                         )
                     }
@@ -111,7 +111,7 @@ internal class DownloadMoveListUseCase(
     }
 
     private fun MoveDto.isHE(): Boolean {
-        return notes?.contains("Heat", ignoreCase = true) == true
+        return notes?.contains("Heat Engager", ignoreCase = true) == true
     }
 
     private fun MoveDto.isPowerCrush(): Boolean {

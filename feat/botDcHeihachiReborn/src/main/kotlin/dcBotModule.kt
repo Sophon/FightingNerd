@@ -6,6 +6,8 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import usecase.GetHeatMovesUseCase
+import usecase.GetPowerCrushMovesUseCase
 import usecase.SearchFrameDataUseCase
 import usecase.SearchGlossaryUseCase
 import usecase.StartGlossaryUseCase
@@ -34,6 +36,8 @@ fun dcBotModule(apiKey: String) = module {
     singleOf(::SearchGlossaryUseCase)
     singleOf(::StartWikiUseCase)
     singleOf(::SearchFrameDataUseCase)
+    singleOf(::GetPowerCrushMovesUseCase)
+    singleOf(::GetHeatMovesUseCase)
 
     singleOf(::FrameDataService)
     singleOf(::GlossaryService)

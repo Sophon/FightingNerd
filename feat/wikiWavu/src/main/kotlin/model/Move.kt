@@ -26,7 +26,7 @@ data class Move(
     val videoId: String? = null,
     val alt: String? = null,
 
-    val isHeatEngager: Boolean = false,
+    val isHeat: Boolean = false,
     val isPowerCrush: Boolean = false,
 ) {
     val characterName get() = id.substringBefore('-')

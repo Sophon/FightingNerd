@@ -7,8 +7,12 @@ import model.Move
 class InMemoryMoveListDB: MoveListDB {
     private var database: MutableMap<String, Map<String, Move>> = mutableMapOf()
 
-    override suspend fun fetchMoveListFor(charName: String): Map<String, Move> {
-        return database[charName] ?: mapOf()
+    override suspend fun fetchMoveListFor(
+        charName: String
+    ): Result<Map<String, Move>, WavuError> {
+        return database[charName]
+            ?.let { Result.Success(it) }
+            ?: Result.Error(WavuError.UNKNOWN_CHARACTER)
     }
 
     override suspend fun fetchMoveDataFor(

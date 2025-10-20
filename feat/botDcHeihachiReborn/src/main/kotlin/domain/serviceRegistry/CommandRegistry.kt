@@ -5,5 +5,8 @@ package domain.serviceRegistry
  */
 enum class Command {
     GL,
+
     FD,
+    PC,
+    HEAT,
 }

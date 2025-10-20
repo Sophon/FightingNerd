@@ -12,6 +12,7 @@ import usecase.CacheMoveListUseCase
 import usecase.DownloadMoveListUseCase
 import usecase.FetchCharacterListUseCase
 import usecase.FetchMoveDataUseCase
+import usecase.FetchMovesWithPropertyUseCase
 
 fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
     config?.invoke(this)
@@ -31,4 +32,5 @@ val wavuModule = module {
     singleOf(::DownloadMoveListUseCase)
     singleOf(::CacheMoveListUseCase)
     singleOf(::FetchMoveDataUseCase)
+    singleOf(::FetchMovesWithPropertyUseCase)
 }
