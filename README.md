@@ -7,6 +7,22 @@ A shared code-base with various tools:
   - [frame data](./feat/wikiWavu/src/main/kotlin/WavuWikiClient.kt) and other functionalities from [Wavu Wiki](https://wavu.wiki/)
   - [Discord bot](./feat/botDiscord/src/main/kotlin/DiscordBot.kt)
 
+# Features
+
+<details>
+<summary>Frame data</summary>
+
+![Frame data](repoAssets/framedata.gif)
+
+</details>
+
+<details>
+<summary>Fighting game glossary</summary>
+
+![Glossary](repoAssets/glossary.gif)
+
+</details>
+
 ### TODO's:
 - Discord bot
   - frame data
@@ -20,14 +36,6 @@ A shared code-base with various tools:
 - documentation
   - Mermaid diagram and description for code-base structure
   - guide on running the Discord bot 
-
-# Features
-### Frame data
-![Frame data](repoAssets/framedata.gif)
-
-### Fighting game glossary
-![Glossary](repoAssets/glossary.gif)
-
 
 ### Long term goals:
 - Twitch bot
