@@ -1,15 +1,10 @@
 # A set of tools for fighting games
 
-A shared code-base with various tools:
-- [modular](https://github.com/Sophon/Cornerman/wiki/Extending-the-Discord-bot) - easily extend support for SuperCombo Wiki, Dustloop etc
-- Tekken 8
-  - [fighting-game glossary](./feat/glossaryInfil/src/main/kotlin/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
-  - [frame data](./feat/wikiWavu/src/main/kotlin/WavuWikiClient.kt) and other functionalities from [Wavu Wiki](https://wavu.wiki/)
-  - [Discord bot](./feat/botDiscord/src/main/kotlin/DiscordBot.kt)
+A fully [modular](https://github.com/Sophon/Cornerman/wiki/Extending-the-Discord-bot) set of tools for the fighting game community.
 
-# Features
+# FEATURES
 
-### Modularity
+### 🌟 Modularity
 ```mermaid
 graph LR
     subgraph Bots
@@ -48,21 +43,27 @@ graph LR
 ```
 
 <details>
-<summary>Frame data</summary>
+<summary>🌟 Frame data</summary>
 
 ![Frame data](repoAssets/framedata.gif)
 
 </details>
 
 <details>
-<summary>Fighting game glossary</summary>
+<summary>🌟 Fighting game glossary</summary>
 
 ![Glossary](repoAssets/glossary.gif)
 
 </details>
 
+# CURRENT MODULES
+- [Discord bot](./feat/botDiscord/src/main/kotlin/DiscordBot.kt)
+- [fighting-game glossary](./feat/glossaryInfil/src/main/kotlin/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
+- [Tekken 8 frame data](./feat/wikiWavu/src/main/kotlin/WavuWikiClient.kt) from [Wavu Wiki](https://wavu.wiki/)
+- Tekken 8 `pc` and `heat` commands
 
-### TODO's:
+
+# TODO's:
 - Discord bot
   - frame data
     - `/ms` command 
@@ -71,14 +72,16 @@ graph LR
     - also banlist
   - reaction commands for Discord embeds
   - bot version
-  - SuperCombo wiki
-  - Dustloop wiki
-  - config for modules
+  - other wikis
+    - SuperCombo wiki
+    - Dustloop wiki
+  - module configuration
+- Docker, pipelines, updates
 - mobile client
 
+
 ### Long term goals:
-- Twitch bot
-- Docker, pipelines, updates
-- frame data for older games
 - Wank Wavu functionality
+- Twitch bot
+- frame data for older games
 
