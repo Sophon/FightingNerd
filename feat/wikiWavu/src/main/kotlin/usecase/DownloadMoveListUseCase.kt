@@ -29,6 +29,7 @@ internal class DownloadMoveListUseCase(
                 movesById
                     .mapValues { (_, move) ->
                         Move(
+                            charName = charName,
                             id = move.id.substringAfter("-"),
                             input = move.input,
                             level = formCompleteDataFromParent(move, movesById) {

@@ -30,3 +30,4 @@ internal fun String.replaceUnderline(): String {
     }
 }
 
+internal fun String?.orDash(): String = this ?: "-"

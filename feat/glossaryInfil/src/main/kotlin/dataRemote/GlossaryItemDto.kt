@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 data class GlossaryItemDto(
     val term: String,
     val def: String,
-    val altterm: List<String> = listOf(),
-    val videos: List<String> = listOf(), //TODO: refactor
-    val games: List<String> = listOf(),
+    val altterm: List<String>? = null,
+    val video: List<String>? = null,
+    val games: List<String>? = null,
     val jp: String? = null,
 )

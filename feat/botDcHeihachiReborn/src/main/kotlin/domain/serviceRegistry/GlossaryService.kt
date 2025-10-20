@@ -1,6 +1,7 @@
 package domain.serviceRegistry
 
 import MAX_LENGTH_EMBED
+import InfilUrlProvider
 import com.example.core.domain.Result
 import com.example.core.util.truncate
 import dev.kord.common.Color
@@ -16,12 +17,13 @@ import util.replaceUnderline
 internal class GlossaryService(
     private val startGlossaryUseCase: StartGlossaryUseCase,
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
+    private val urlProvider: InfilUrlProvider,
 ): RegisteredService {
     override val mainCommand: Command = Command.GL
     override val serviceInfo = ServiceInfo(
         name = "Infil Glossary",
         url = "https://glossary.infil.net/",
-        iconUrl = "https://i.imgur.com/0cnTzNk.png",
+        iconUrl = "https://i.imgur.com/OigKJBY.png",
     )
     override val slashCommands = listOf(
         SlashCommand(
@@ -64,6 +66,7 @@ internal class GlossaryService(
     ): EmbedBuilder.() -> Unit = {
         val formattedItem = item.format()
         title = formattedItem.term
+        url = urlProvider.termUrl(item)
         color = Color(BROWN)
 
         field(
@@ -77,6 +80,10 @@ internal class GlossaryService(
         val japaneseValueString = formattedItem.jpTranslation
             .joinToString(separator = "") { "* $it\n" }
         field(name = "🇯🇵", value = japaneseValueString, inline = false)
+
+        urlProvider.videoUrl(item)?.let { url ->
+            field(name = "Video", value = "[Link](${url})")
+        }
 
         footer {
             text = serviceInfo.name

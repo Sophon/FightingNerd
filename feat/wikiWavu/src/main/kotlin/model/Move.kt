@@ -1,5 +1,6 @@
 package model
 
+import VIDEO_URL
 import kotlinx.serialization.Serializable
 
 /**
@@ -7,6 +8,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class Move(
+    val charName: String,
     val id: String,
     val input: String,
     val level: String? = null,
@@ -28,6 +30,4 @@ data class Move(
 
     val isHeat: Boolean = false,
     val isPowerCrush: Boolean = false,
-) {
-    val characterName get() = id.substringBefore('-')
-}
+)

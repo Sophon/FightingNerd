@@ -2,6 +2,7 @@ package domain.serviceRegistry
 
 import BotError
 import MAX_LENGTH_EMBED
+import WavuUrlProvider
 import com.example.core.domain.Result
 import com.example.core.util.truncate
 import dev.kord.common.Color
@@ -13,12 +14,14 @@ import usecase.SearchFrameDataUseCase
 import usecase.StartWikiUseCase
 import util.createErrorEmbed
 import util.field
+import util.orDash
 
 internal class FrameDataService(
     private val startWikiUseCase: StartWikiUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
+    private val urlProvider: WavuUrlProvider,
 ): RegisteredService {
     override val mainCommand: Command = Command.FD
     override val serviceInfo = ServiceInfo(
@@ -79,7 +82,9 @@ internal class FrameDataService(
         }
     }
 
-    private suspend fun searchFrameData(vararg args: String): EmbedBuilder.() -> Unit {
+    private suspend fun searchFrameData(
+        vararg args: String
+    ): EmbedBuilder.() -> Unit {
         val result = searchFrameDataUseCase.invoke(
             query = args.joinToString(" ")
         )
@@ -122,23 +127,29 @@ internal class FrameDataService(
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
-        title = move.characterName //TODO: clickable
-        description = "${move.id} - ${move.name}" //TODO: clickable
+        title = move.charName
+        url = urlProvider.charUrl(move.charName)
+
+        description = "**${move.id}**: ${move.name}"
         color = Color(GREEN)
 
-        field(name = "Startup", value = move.startup)
-        field(name = "OH", value = move.onHit.removeFollowups().orDash())
-        field(name = "OB", value = move.onBlock.orDash())
-        field(
-            name = "CH",
-            value = move.onCH.removeFollowups() ?: move.onHit.removeFollowups().orDash()
+        field(name = "SU", value = move.startup)
+        clickableField(name = "OH", value = move.onHit.orDash())
+        clickableField(
+            name = "OH",
+            value = move.onHit.orDash()
         )
-        field(name = "Level", value = move.level)
+        field(name = "OB", value = move.onBlock.orDash())
+        clickableField(
+            name = "CH",
+            value = move.onCH ?: move.onHit.orDash()
+        )
+        field(name = "LVL", value = move.level)
         move.recoveryOnWhiff
             ?.takeIf { it.isNotEmpty() }
             ?.let { field(name = "Recovery", value = it) }
 
-        field(name = "Damage", value = move.damage.orDash())
+        field(name = "DMG", value = move.damage.orDash())
 
         field(
             name = "📝 NOTES",
@@ -149,7 +160,10 @@ internal class FrameDataService(
             inline = false,
         )
 
-        //TODO: feedback command
+        urlProvider.videoUrl(move)?.let { url ->
+            field(name = "Video", value = "[Link](${url})")
+        }
+
         footer {
             text = serviceInfo.name
             icon = serviceInfo.iconUrl
@@ -169,6 +183,24 @@ internal class FrameDataService(
         )
     }
 
+    private fun EmbedBuilder.clickableField(
+        name: String,
+        value: String,
+    ) {
+        val url = urlProvider.followUpUrl(value)
+        val formattedValue = if (url == null) {
+            value
+        } else {
+            val pure = value.substringAfter("|").removeSuffix("]]")
+            "[${pure}]($url)"
+        }
+
+        field(
+            name = name,
+            value = formattedValue,
+        )
+    }
+
     private fun List<String>.emojify(
         crush: String?
     ): List<String> {
@@ -183,6 +215,7 @@ internal class FrameDataService(
                     if (note.contains("Tailspin", ignoreCase = true)) append("️🌀 ")
                     if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
                     if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
+                    if (note.contains("Throw", ignoreCase = true)) append("️🤝 ")
                     append(note)
                 }
                 add(emojified)
@@ -193,14 +226,6 @@ internal class FrameDataService(
             }
         }
     }
-
-    private fun String?.removeFollowups(): String? {
-        return this
-            ?.substringAfterLast("|")
-            ?.removeSuffix("]]")
-    }
-
-    private fun String?.orDash(): String = this ?: "-"
 }
 
 
