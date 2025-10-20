@@ -76,6 +76,14 @@ graph LR
   - config for modules
 - mobile client
 
+# Features
+### Frame data
+![Frame data](https://i.imgur.com/yFxK5fY.mp4)
+
+### Fighting game glossary
+![Glossary](https://i.imgur.com/syUzrJe.mp4)
+
+
 ### Long term goals:
 - Twitch bot
 - Docker, pipelines, updates
