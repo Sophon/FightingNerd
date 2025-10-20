@@ -4,8 +4,8 @@ A shared code-base with various tools:
 - [modular](https://github.com/Sophon/Cornerman/wiki/Extending-the-bot) - easily extend support for SuperCombo Wiki, Dustloop etc
 - Tekken 8
   - [fighting-game glossary](./feat/glossaryInfil/src/main/kotlin/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
-  - [frame data](./feat/wikiWavu) and other functionalities from [Wavu Wiki](https://wavu.wiki/)
-  - [Discord bot](./feat/botDiscord)
+  - [frame data](./feat/wikiWavu/src/main/kotlin/WavuWikiClient.kt) and other functionalities from [Wavu Wiki](https://wavu.wiki/)
+  - [Discord bot](./feat/botDiscord/src/main/kotlin/)
 
 ### TODO's:
 - Discord bot
