@@ -1,4 +1,4 @@
-rootProject.name = "TekkenAssistant"
+rootProject.name = "Cornerman"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -35,5 +35,5 @@ plugins {
 include(":composeApp")
 include(":core")
 include(":feat:glossaryInfil")
-include(":feat:botDcHeihachiReborn")
+include(":feat:botDiscord")
 include(":feat:wikiWavu")

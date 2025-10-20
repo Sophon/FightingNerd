@@ -53,11 +53,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.tekkenassistant"
+    namespace = "com.example.cornerman"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.tekkenassistant"
+        applicationId = "com.example.cornerman"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -85,11 +85,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.example.tekkenassistant.MainKt"
+        mainClass = "com.example.cornerman.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.example.tekkenassistant"
+            packageName = "com.example.cornerman"
             packageVersion = "1.0.0"
         }
     }
