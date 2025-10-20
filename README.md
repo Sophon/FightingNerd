@@ -1,7 +1,7 @@
 # A set of tools for fighting games
 
 A shared code-base with various tools:
-- [modular](https://github.com/Sophon/Cornerman/wiki/Extending-the-bot) - easily extend support for SuperCombo Wiki, Dustloop etc
+- [modular](https://github.com/Sophon/Cornerman/wiki/Extending-the-Discord-bot) - easily extend support for SuperCombo Wiki, Dustloop etc
 - Tekken 8
   - [fighting-game glossary](./feat/glossaryInfil/src/main/kotlin/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
   - [frame data](./feat/wikiWavu/src/main/kotlin/WavuWikiClient.kt) and other functionalities from [Wavu Wiki](https://wavu.wiki/)
@@ -71,10 +71,10 @@ graph LR
     - also banlist
   - reaction commands for Discord embeds
   - bot version
+  - SuperCombo wiki
+  - Dustloop wiki
+  - config for modules
 - mobile client
-- documentation
-  - Mermaid diagram and description for code-base structure
-  - guide on running the Discord bot 
 
 ### Long term goals:
 - Twitch bot
