@@ -1,19 +1,18 @@
-# A set of tools for Tekken 8
+# A set of tools for fighting games
 
 A shared code-base with various tools:
-- fighting-game glossary (from [Infil](https://glossary.infil.net/))
-- frame data (from [Wavu Wiki](https://wavu.wiki/))
-- Discord bot
+- modular
+  - easily extend support for SuperCombo Wiki, Dustloop etc
+- Tekken 8
+  - fighting-game glossary (from [Infil](https://glossary.infil.net/))
+  - frame data (from [Wavu Wiki](https://wavu.wiki/))
+  - Discord bot
 
 ### TODO's:
 - Discord bot
   - frame data
     - `/ms` command 
       - moves that are the same start-up or faster
-    - `/heat` command
-      - for Heat Engagers and Heat Dash moves
-    - `/pc` command
-      - for power crushes
   - `/feedback` command
     - also banlist
   - reaction commands for Discord embeds
