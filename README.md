@@ -1,8 +1,7 @@
 # A set of tools for fighting games
 
 A shared code-base with various tools:
-- modular
-  - easily extend support for SuperCombo Wiki, Dustloop etc
+- [modular](https://github.com/Sophon/Cornerman/wiki/Extending-the-bot) - easily extend support for SuperCombo Wiki, Dustloop etc
 - Tekken 8
   - fighting-game glossary (from [Infil](https://glossary.infil.net/))
   - frame data (from [Wavu Wiki](https://wavu.wiki/))
