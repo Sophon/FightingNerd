@@ -35,5 +35,5 @@ plugins {
 include(":composeApp")
 include(":core")
 include(":feat:glossaryInfil")
-include(":feat:botDcHeihachiReborn")
+include(":feat:botDiscord")
 include(":feat:wikiWavu")
