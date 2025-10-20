@@ -149,7 +149,15 @@ internal class FrameDataService(
             inline = false,
         )
 
-        //TODO: feedback command
+        move.videoUrl
+            ?.takeIf { it.isNotEmpty() }
+            ?.let { url ->
+                field(
+                    name = "Video",
+                    value = "[Link](${url})",
+                )
+            }
+
         footer {
             text = serviceInfo.name
             icon = serviceInfo.iconUrl
