@@ -6,6 +6,7 @@ import com.example.core.util.truncate
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import model.Move
+import usecase.GetPowerCrushMovesUseCase
 import usecase.SearchFrameDataUseCase
 import usecase.StartWikiUseCase
 import util.createErrorEmbed
@@ -14,6 +15,7 @@ import util.field
 internal class FrameDataService(
     private val startWikiUseCase: StartWikiUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
+    private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
 ): RegisteredService {
     override val mainCommand: Command = Command.FD
     override val serviceInfo = ServiceInfo(
@@ -35,6 +37,16 @@ internal class FrameDataService(
                     description = "Move",
                 )
             )
+        ),
+        SlashCommand(
+            name = Command.PC,
+            description = "Tekken 8 Power Crush moves",
+            arguments = listOf(
+                SlashCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+            )
         )
     )
 
@@ -46,12 +58,20 @@ internal class FrameDataService(
         command: Command,
         vararg args: String
     ): EmbedBuilder.() -> Unit {
+        return when (command) {
+            Command.FD -> searchFrameData(*args)
+            Command.PC -> searchPowerCrushMoves(*args)
+            else -> throw IllegalStateException("invalid command")
+        }
+    }
+
+    private suspend fun searchFrameData(vararg args: String): EmbedBuilder.() -> Unit {
         val result = searchFrameDataUseCase.invoke(
             query = args.joinToString(" ")
         )
         return when (result) {
             is Result.Success -> {
-                createEmbed(move = result.data)
+                createMoveEmbed(move = result.data)
             }
             is Result.Error -> {
                 createErrorEmbed(error = result.error)
@@ -59,7 +79,21 @@ internal class FrameDataService(
         }
     }
 
-    private fun createEmbed(move: Move): EmbedBuilder.() -> Unit = {
+    private suspend fun searchPowerCrushMoves(vararg  args: String): EmbedBuilder.() -> Unit {
+        val result = getPowerCrushMovesUseCase.invoke(
+            charName = args.joinToString(" ")
+        )
+        return when (result) {
+            is Result.Success -> {
+                createMoveListEmbed(category = "Power Crush", moves = result.data)
+            }
+            is Result.Error -> {
+                createErrorEmbed(error = result.error)
+            }
+        }
+    }
+
+    private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = move.characterName //TODO: clickable
         description = "${move.id} - ${move.name}" //TODO: clickable
         color = Color(GREEN)
@@ -82,7 +116,7 @@ internal class FrameDataService(
             name = "📝 NOTES",
             value = move.notes
                 .emojify(crush = move.crush)
-                .joinToString(separator = "") { "* $it\n" }
+                .joinToString(separator = "") { note -> "* $note\n" }
                 .truncate(MAX_LENGTH_EMBED),
             inline = false,
         )
@@ -92,6 +126,19 @@ internal class FrameDataService(
             text = serviceInfo.name
             icon = serviceInfo.iconUrl
         }
+    }
+
+    private fun createMoveListEmbed(
+        category: String,
+        moves: List<Move>
+    ): EmbedBuilder.() -> Unit = {
+        field(
+            name = "$category moves".uppercase(),
+            value = moves
+                .joinToString(separator = "") { move -> "* ${move.id}\n" }
+                .truncate(MAX_LENGTH_EMBED),
+            inline = false,
+        )
     }
 
     private fun List<String>.emojify(

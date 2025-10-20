@@ -9,10 +9,12 @@ import usecase.CacheMoveListUseCase
 import usecase.DownloadMoveListUseCase
 import usecase.FetchCharacterListUseCase
 import usecase.FetchMoveDataUseCase
+import usecase.FetchMovesWithPropertyUseCase
 
 interface WavuWikiClient: Service {
     suspend fun downloadCompleteMoveList(): EmptyResult<WavuError>
     suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WavuError>
+    suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WavuError>
 }
 
 internal class WavuWikiClientImpl(
@@ -20,6 +22,7 @@ internal class WavuWikiClientImpl(
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val fetchMoveDataUseCase: FetchMoveDataUseCase,
+    private val fetchMovesWithPropertyUseCase: FetchMovesWithPropertyUseCase,
 ): WavuWikiClient {
     override suspend fun downloadCompleteMoveList(): EmptyResult<WavuError> {
         return when (val result = fetchCharacterListUseCase.invoke()) {
@@ -60,6 +63,12 @@ internal class WavuWikiClientImpl(
             name = SERVICE_NAME,
             iconUrl = "https://i.imgur.com/0cnTzNk.png"
         )
+    }
+
+    override suspend fun getPowerCrushMoves(
+        charName: String
+    ): Result<List<Move>, WavuError> {
+        return fetchMovesWithPropertyUseCase.invoke(charName) { it.isPowerCrush }
     }
 }
 
