@@ -78,10 +78,10 @@ graph LR
 
 # Features
 ### Frame data
-![Frame data](https://i.imgur.com/yFxK5fY.mp4)
+![Frame data](repoAssets/framedata.gif)
 
 ### Fighting game glossary
-![Glossary](https://i.imgur.com/syUzrJe.mp4)
+![Glossary](repoAssets/glossary.gif)
 
 
 ### Long term goals:
