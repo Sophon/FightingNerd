@@ -1,7 +1,7 @@
 import model.Character
 import model.Move
 
-class UrlProvider {
+class WavuUrlProvider {
     fun charUrl(charName: String): String = MOVE_URL + charName
 
     fun videoUrl(move: Move): String? {

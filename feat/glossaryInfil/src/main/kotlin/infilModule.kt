@@ -30,4 +30,6 @@ val infilModule = module {
     singleOf(::DownloadGlossaryUseCase)
     singleOf(::CacheGlossaryUseCase)
     singleOf(::FetchDataForTermUseCase)
+
+    singleOf(::InfilUrlProvider)
 }

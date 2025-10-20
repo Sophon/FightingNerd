@@ -16,7 +16,7 @@ internal class DownloadGlossaryUseCase(
                         term = item.term,
                         definition = item.def,
                         altTerm = item.altterm,
-                        videos = item.videos,
+                        video = item.video,
                         games = item.games,
                         jpTranslation = item.jp
                             ?.split("<br>")

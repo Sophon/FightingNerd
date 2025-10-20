@@ -34,5 +34,5 @@ val wavuModule = module {
     singleOf(::FetchMoveDataUseCase)
     singleOf(::FetchMovesWithPropertyUseCase)
 
-    singleOf(::UrlProvider)
+    singleOf(::WavuUrlProvider)
 }

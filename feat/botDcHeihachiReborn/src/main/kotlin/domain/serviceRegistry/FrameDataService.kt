@@ -2,7 +2,7 @@ package domain.serviceRegistry
 
 import BotError
 import MAX_LENGTH_EMBED
-import UrlProvider
+import WavuUrlProvider
 import com.example.core.domain.Result
 import com.example.core.util.truncate
 import dev.kord.common.Color
@@ -21,7 +21,7 @@ internal class FrameDataService(
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
-    private val urlProvider: UrlProvider,
+    private val urlProvider: WavuUrlProvider,
 ): RegisteredService {
     override val mainCommand: Command = Command.FD
     override val serviceInfo = ServiceInfo(
