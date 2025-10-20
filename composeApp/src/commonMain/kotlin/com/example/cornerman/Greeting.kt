@@ -1,4 +1,4 @@
-package com.example.tekkenassistant
+package com.example.cornerman
 
 class Greeting {
     private val platform = getPlatform()

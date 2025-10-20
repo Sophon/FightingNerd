@@ -1,4 +1,4 @@
-rootProject.name = "TekkenAssistant"
+rootProject.name = "Cornerman"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

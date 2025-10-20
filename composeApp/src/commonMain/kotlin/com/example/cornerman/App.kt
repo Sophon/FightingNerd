@@ -1,4 +1,4 @@
-package com.example.tekkenassistant
+package com.example.cornerman
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-import tekkenassistant.composeapp.generated.resources.Res
-import tekkenassistant.composeapp.generated.resources.compose_multiplatform
+import cornerman.composeapp.generated.resources.Res
+import cornerman.composeapp.generated.resources.compose_multiplatform
 
 @Composable
 @Preview

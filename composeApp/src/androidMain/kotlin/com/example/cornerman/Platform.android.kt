@@ -1,4 +1,4 @@
-package com.example.tekkenassistant
+package com.example.cornerman
 
 import android.os.Build
 

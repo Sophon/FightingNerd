@@ -1,4 +1,4 @@
-package com.example.tekkenassistant
+package com.example.cornerman
 
 import platform.UIKit.UIDevice
 
