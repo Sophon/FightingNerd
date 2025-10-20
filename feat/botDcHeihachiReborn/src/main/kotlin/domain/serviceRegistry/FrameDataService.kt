@@ -2,6 +2,7 @@ package domain.serviceRegistry
 
 import BotError
 import MAX_LENGTH_EMBED
+import UrlProvider
 import com.example.core.domain.Result
 import com.example.core.util.truncate
 import dev.kord.common.Color
@@ -19,6 +20,7 @@ internal class FrameDataService(
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
+    private val urlProvider: UrlProvider,
 ): RegisteredService {
     override val mainCommand: Command = Command.FD
     override val serviceInfo = ServiceInfo(
@@ -79,7 +81,9 @@ internal class FrameDataService(
         }
     }
 
-    private suspend fun searchFrameData(vararg args: String): EmbedBuilder.() -> Unit {
+    private suspend fun searchFrameData(
+        vararg args: String
+    ): EmbedBuilder.() -> Unit {
         val result = searchFrameDataUseCase.invoke(
             query = args.joinToString(" ")
         )
@@ -123,15 +127,20 @@ internal class FrameDataService(
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = move.id //TODO: clickable
+
         description = move.name //TODO: clickable
         color = Color(GREEN)
 
         field(name = "Startup", value = move.startup)
-        field(name = "OH", value = move.onHit.removeFollowups().orDash())
+        clickableField(name = "OH", value = move.onHit.orDash())
+        clickableField(
+            name = "OH",
+            value = move.onHit.orDash()
+        )
         field(name = "OB", value = move.onBlock.orDash())
-        field(
+        clickableField(
             name = "CH",
-            value = move.onCH.removeFollowups() ?: move.onHit.removeFollowups().orDash()
+            value = move.onCH ?: move.onHit.orDash()
         )
         field(name = "Level", value = move.level)
         move.recoveryOnWhiff
@@ -149,14 +158,9 @@ internal class FrameDataService(
             inline = false,
         )
 
-        move.videoUrl
-            ?.takeIf { it.isNotEmpty() }
-            ?.let { url ->
-                field(
-                    name = "Video",
-                    value = "[Link](${url})",
-                )
-            }
+        urlProvider.videoUrl(move)?.let { url ->
+            field(name = "Video", value = "[Link](${url})")
+        }
 
         footer {
             text = serviceInfo.name
@@ -174,6 +178,23 @@ internal class FrameDataService(
                 .joinToString(separator = "") { move -> "* ${move.id}\n" }
                 .truncate(MAX_LENGTH_EMBED),
             inline = false,
+        )
+    }
+
+    private fun EmbedBuilder.clickableField(
+        name: String,
+        value: String,
+    ) {
+        val url = urlProvider.followUpUrl(value)
+        val formattedValue = if (url == null) {
+            value
+        } else {
+            "[${value.removeFollowups()}]($url)"
+        }
+
+        field(
+            name = name,
+            value = formattedValue,
         )
     }
 
@@ -202,10 +223,10 @@ internal class FrameDataService(
         }
     }
 
-    private fun String?.removeFollowups(): String? {
+    private fun String.removeFollowups(): String? {
         return this
-            ?.substringAfterLast("|")
-            ?.removeSuffix("]]")
+            .substringAfterLast("|")
+            .removeSuffix("]]")
     }
 
     private fun String?.orDash(): String = this ?: "-"

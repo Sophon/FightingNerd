@@ -29,6 +29,4 @@ data class Move(
 
     val isHeat: Boolean = false,
     val isPowerCrush: Boolean = false,
-) {
-    val videoUrl: String? get() = (VIDEO_URL + videoId)
-}
+)
