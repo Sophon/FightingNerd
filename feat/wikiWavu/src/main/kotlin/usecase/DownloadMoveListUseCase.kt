@@ -54,6 +54,7 @@ internal class DownloadMoveListUseCase(
                             alt = move.alt,
                             isHeat = move.isHE(),
                             isPowerCrush = move.isPowerCrush(),
+                            isHoming = move.isHoming(),
                         )
                     }
                     .mapKeys { (id, _) ->
@@ -117,6 +118,10 @@ internal class DownloadMoveListUseCase(
 
     private fun MoveDto.isPowerCrush(): Boolean {
         return (crush?.contains("pc", ignoreCase = true) == true)
+    }
+
+    private fun MoveDto.isHoming(): Boolean {
+        return notes?.contains("Homing", ignoreCase = true) == true
     }
 
     private fun MoveDto.splitNotes(): List<String> {

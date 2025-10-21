@@ -9,4 +9,5 @@ enum class Command {
     FD,
     PC,
     HEAT,
+    HOMING,
 }

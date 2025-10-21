@@ -9,6 +9,7 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import model.Move
 import usecase.GetHeatMovesUseCase
+import usecase.GetHomingMovesUseCase
 import usecase.GetPowerCrushMovesUseCase
 import usecase.SearchFrameDataUseCase
 import usecase.StartWikiUseCase
@@ -21,6 +22,7 @@ internal class FrameDataService(
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
+    private val getHomingMovesUseCase: GetHomingMovesUseCase,
     private val urlProvider: WavuUrlProvider,
 ): RegisteredService {
     override val mainCommand: Command = Command.FD
@@ -64,6 +66,16 @@ internal class FrameDataService(
                 ),
             )
         ),
+        SlashCommand(
+            name = Command.HOMING,
+            description = "Tekken 8 homing moves",
+            arguments = listOf(
+                SlashCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+            )
+        ),
     )
 
     override suspend fun start() {
@@ -78,6 +90,7 @@ internal class FrameDataService(
             Command.FD -> searchFrameData(*args)
             Command.PC -> searchPowerCrushMoves(*args)
             Command.HEAT -> searchHeatMoves(*args)
+            Command.HOMING -> searchHomingMoves(*args)
             else -> createErrorEmbed(BotError.BOT_LOGIC_ERROR)
         }
     }
@@ -98,7 +111,7 @@ internal class FrameDataService(
         }
     }
 
-    private suspend fun searchPowerCrushMoves(vararg  args: String): EmbedBuilder.() -> Unit {
+    private suspend fun searchPowerCrushMoves(vararg args: String): EmbedBuilder.() -> Unit {
         val result = getPowerCrushMovesUseCase.invoke(
             charName = args.joinToString(" ")
         )
@@ -112,13 +125,27 @@ internal class FrameDataService(
         }
     }
 
-    private suspend fun searchHeatMoves(vararg  args: String): EmbedBuilder.() -> Unit {
+    private suspend fun searchHeatMoves(vararg args: String): EmbedBuilder.() -> Unit {
         val result = getHeatMovesUseCase.invoke(
             charName = args.joinToString(" ")
         )
         return when (result) {
             is Result.Success -> {
                 createMoveListEmbed(category = "Heat", moves = result.data)
+            }
+            is Result.Error -> {
+                createErrorEmbed(error = result.error)
+            }
+        }
+    }
+
+    private suspend fun searchHomingMoves(vararg args: String): EmbedBuilder.() -> Unit {
+        val result = getHomingMovesUseCase.invoke(
+            charName = args.joinToString(" ")
+        )
+        return when (result) {
+            is Result.Success -> {
+                createMoveListEmbed(category = "Homing", moves = result.data)
             }
             is Result.Error -> {
                 createErrorEmbed(error = result.error)

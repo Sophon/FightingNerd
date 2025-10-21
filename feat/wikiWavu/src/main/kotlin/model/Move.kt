@@ -30,4 +30,5 @@ data class Move(
 
     val isHeat: Boolean = false,
     val isPowerCrush: Boolean = false,
+    val isHoming: Boolean = false,
 )
