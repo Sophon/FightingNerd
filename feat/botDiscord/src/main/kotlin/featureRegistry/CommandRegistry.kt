@@ -1,4 +1,4 @@
-package domain.serviceRegistry
+package featureRegistry
 
 /**
  * Add registered service commands HERE

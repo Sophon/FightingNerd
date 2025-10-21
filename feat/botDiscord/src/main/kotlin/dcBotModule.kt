@@ -1,6 +1,6 @@
 import com.example.core.coreModule
-import domain.serviceRegistry.FrameDataService
-import domain.serviceRegistry.GlossaryService
+import featureRegistry.FrameDataFeature
+import featureRegistry.GlossaryFeature
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
@@ -41,6 +41,6 @@ fun dcBotModule(apiKey: String) = module {
     singleOf(::GetHeatMovesUseCase)
     singleOf(::GetHomingMovesUseCase)
 
-    singleOf(::FrameDataService)
-    singleOf(::GlossaryService)
+    singleOf(::FrameDataFeature)
+    singleOf(::GlossaryFeature)
 }

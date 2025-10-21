@@ -10,9 +10,9 @@ import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.embed
-import domain.serviceRegistry.Command
-import domain.serviceRegistry.FrameDataService
-import domain.serviceRegistry.GlossaryService
+import featureRegistry.Command
+import featureRegistry.FrameDataFeature
+import featureRegistry.GlossaryFeature
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -25,20 +25,20 @@ interface DiscordBot {
 
 internal class DiscordBotImpl(
     private val apiKey: String,
-    frameDataService: FrameDataService,
-    glossaryService: GlossaryService,
+    frameDataFeature: FrameDataFeature,
+    glossaryFeature: GlossaryFeature,
 ): DiscordBot {
     private lateinit var kord: Kord
-    private val services = listOf(
-        frameDataService,
-        glossaryService,
+    private val features = listOf(
+        frameDataFeature,
+        glossaryFeature,
     )
 
     override suspend fun startSession() {
         Napier.d(tag = TAG) { "Starting with API: $apiKey" }
 
         coroutineScope {
-            services.forEach { service ->
+            features.forEach { service ->
                 launch { service.start() }
             }
         }
@@ -89,7 +89,7 @@ internal class DiscordBotImpl(
             Command.FD -> firstWord.lowercase() + rawQuery.substring(firstWord.length)
             else -> rawQuery.substringAfter(' ', rawQuery)
         }
-        val service = services.first { service ->
+        val service = features.first { service ->
             service.slashCommands.any { it.name == command }
         }
 
@@ -102,7 +102,7 @@ internal class DiscordBotImpl(
         val command = Command.entries
             .find { it.name.equals(interaction.command.rootName, ignoreCase = true) }
             ?: return //this should NEVER happen
-        val service = services.first { service ->
+        val service = features.first { service ->
             service.slashCommands.any { it.name == command }
         }
         val args = interaction.command.strings
@@ -115,7 +115,7 @@ internal class DiscordBotImpl(
     private suspend fun createCommandsForTestServer() {
         val testGuildId = Snowflake(TEST_SERVER_ID)
 
-        services.forEach { service ->
+        features.forEach { service ->
             service.slashCommands.forEach { slashCommand ->
                 kord.createGuildChatInputCommand(
                     guildId = testGuildId,
@@ -133,7 +133,7 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun createGlobalCommand() {
-        services.forEach { service ->
+        features.forEach { service ->
             service.slashCommands.forEach { slashCommand ->
                 kord.createGlobalChatInputCommand(
                     name = slashCommand.name.name.lowercase(),

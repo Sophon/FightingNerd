@@ -1,4 +1,4 @@
-package domain.serviceRegistry
+package featureRegistry
 
 import BotError
 import MAX_LENGTH_EMBED
@@ -17,14 +17,14 @@ import util.createErrorEmbed
 import util.field
 import util.orDash
 
-internal class FrameDataService(
+internal class FrameDataFeature(
     private val startWikiUseCase: StartWikiUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
     private val getHomingMovesUseCase: GetHomingMovesUseCase,
     private val urlProvider: WavuUrlProvider,
-): RegisteredService {
+): RegisteredFeature {
     override val mainCommand: Command = Command.FD
     override val serviceInfo = ServiceInfo(
         name = "Wavu Wiki",

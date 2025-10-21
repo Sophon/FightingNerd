@@ -1,8 +1,8 @@
-package domain.serviceRegistry
+package featureRegistry
 
 import dev.kord.rest.builder.message.EmbedBuilder
 
-interface RegisteredService {
+interface RegisteredFeature {
     val mainCommand: Command //TODO: refactor to List<Command>
     val serviceInfo: ServiceInfo
     val slashCommands: List<SlashCommand>
