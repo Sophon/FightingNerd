@@ -2,9 +2,6 @@
 
 A fully [modular](https://github.com/Sophon/Cornerman/wiki/Adding-new-features) set of tools for the fighting game community.
 
-# FEATURES
-
-### 🌟 Modularity
 ```mermaid
 graph LR
     subgraph Bots
@@ -42,28 +39,20 @@ graph LR
     style yourWiki fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
 ```
 
-<details>
-<summary>🌟 Frame data</summary>
+### FEATURES
+- [🌟 frame data commands](https://github.com/Sophon/Cornerman/wiki/Tekken-8-features)
+- [🌟 fighting game glossary](https://github.com/Sophon/Cornerman/wiki/Fighting-game-glossary)
 
-![Frame data](repoAssets/framedata.gif)
-
-</details>
-
-<details>
-<summary>🌟 Fighting game glossary</summary>
-
-![Glossary](repoAssets/glossary.gif)
-
-</details>
-
-# CURRENT MODULES
+### CURRENT FEATURE MODULES
 - [Discord bot](./feat/botDiscord/src/main/kotlin/DiscordBot.kt)
 - [fighting-game glossary](./feat/glossaryInfil/src/main/kotlin/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
 - [Tekken 8 frame data](./feat/wikiWavu/src/main/kotlin/WavuWikiClient.kt) from [Wavu Wiki](https://wavu.wiki/)
 - Tekken 8 `pc` and `heat` commands
 
+# [CHECK THE WIKI](https://github.com/Sophon/Cornerman/wiki/Adding-new-features)
 
-# TODO's:
+
+### TODO's:
 - Discord bot
   - frame data
     - `/ms` command 

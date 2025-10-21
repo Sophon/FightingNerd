@@ -19,8 +19,17 @@ suspend fun main() = coroutineScope {
     }.join()
 }
 
+// Just update this function that's already there
 private fun getApiKey(): String {
+    // Try environment variable first (for production/Docker)
+    System.getenv("DISCORD_API_KEY")?.let { return it }
+
+    // Fall back to config file (for local development)
     val configFile = File(CONFIG_FILE_NAME)
+    if (!configFile.exists()) {
+        throw IllegalStateException("No API key found. Set DISCORD_API_KEY env var or create $CONFIG_FILE_NAME")
+    }
+
     val json = Json {
         ignoreUnknownKeys = true
     }
