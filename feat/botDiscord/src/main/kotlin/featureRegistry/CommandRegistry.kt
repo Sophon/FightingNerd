@@ -1,4 +1,4 @@
-package domain.serviceRegistry
+package featureRegistry
 
 /**
  * Add registered service commands HERE
@@ -9,4 +9,5 @@ enum class Command {
     FD,
     PC,
     HEAT,
+    HOMING,
 }

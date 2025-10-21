@@ -1,4 +1,4 @@
-package domain.serviceRegistry
+package featureRegistry
 
 import MAX_LENGTH_EMBED
 import InfilUrlProvider
@@ -14,11 +14,11 @@ import util.field
 import util.replaceItalic
 import util.replaceUnderline
 
-internal class GlossaryService(
+internal class GlossaryFeature(
     private val startGlossaryUseCase: StartGlossaryUseCase,
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
     private val urlProvider: InfilUrlProvider,
-): RegisteredService {
+): RegisteredFeature {
     override val mainCommand: Command = Command.GL
     override val serviceInfo = ServiceInfo(
         name = "Infil Glossary",
