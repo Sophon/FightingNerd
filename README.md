@@ -1,6 +1,6 @@
 # A set of tools for fighting games
 
-A fully [modular](https://github.com/Sophon/Cornerman/wiki/Extending-the-Discord-bot) set of tools for the fighting game community.
+A fully [modular](https://github.com/Sophon/Cornerman/wiki/Adding-new-features) set of tools for the fighting game community.
 
 # FEATURES
 
@@ -17,7 +17,7 @@ graph LR
         iOS[iOS]
     end
     
-    subgraph Sources
+    subgraph Features
         glossaryInfil[Glossary Infil]
         wikiWavu[Wiki Wavu]
         yourWiki[Your Wiki]
@@ -35,7 +35,7 @@ graph LR
     
     style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
     style yourBot fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
-    style android fill:#10B981,stroke:#059669,color:#fff
+    style android fill:#A78BFA,stroke:#7C3AED,color:#fff,stroke-dasharray: 5 5
     style iOS fill:#A78BFA,stroke:#7C3AED,color:#fff,stroke-dasharray: 5 5
     style glossaryInfil fill:#10B981,stroke:#059669,color:#fff
     style wikiWavu fill:#10B981,stroke:#059669,color:#fff
