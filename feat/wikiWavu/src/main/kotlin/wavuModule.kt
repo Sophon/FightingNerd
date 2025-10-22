@@ -3,6 +3,9 @@ import dataLocal.InMemoryMoveListDB
 import dataLocal.MoveListDB
 import dataRemote.WavuWikiDataSource
 import dataRemote.WavuWikiDataSourceImpl
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
@@ -24,6 +27,10 @@ fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
 }
 
 val wavuModule = module {
+    single {
+        CoroutineScope(SupervisorJob() + Dispatchers.Default)
+    }
+
     singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
     singleOf(::WavuWikiClientImpl).bind<WavuWikiClient>()
     singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
@@ -35,4 +42,5 @@ val wavuModule = module {
     singleOf(::FetchMovesWithPropertyUseCase)
 
     singleOf(::WavuUrlProvider)
+    singleOf(::Scheduler)
 }

@@ -1,6 +1,5 @@
 package model
 
-import VIDEO_URL
 import kotlinx.serialization.Serializable
 
 /**
