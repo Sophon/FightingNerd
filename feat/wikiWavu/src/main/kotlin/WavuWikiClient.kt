@@ -6,10 +6,10 @@ import com.example.core.domain.onError
 import io.github.aakira.napier.Napier
 import model.Move
 import usecase.CacheMoveListUseCase
-import usecase.DownloadMoveListUseCase
 import usecase.FetchCharacterListUseCase
 import usecase.FetchMoveDataUseCase
 import usecase.FetchMovesWithPropertyUseCase
+import usecase.DownloadMoveListUseCase
 
 interface WavuWikiClient: Service {
     suspend fun downloadCompleteMoveList(): EmptyResult<WavuError>
@@ -30,11 +30,11 @@ internal class WavuWikiClientImpl(
         return when (val result = fetchCharacterListUseCase.invoke()) {
             is Result.Success -> {
                 result.data.characterList.forEach { character ->
-                    when (val moveListResult = downloadMoveListUseCase.invoke(character.name)) {
+                    when (val moveListResult = downloadMoveListUseCase.invoke(character)) {
                         is Result.Success -> {
-                            cacheMoveListUseCase.invoke(character, moveListResult.data)
+                            cacheMoveListUseCase.invoke(characterMoveList = moveListResult.data)
                             Napier.d(tag = TAG) {
-                                "${moveListResult.data.size} moves for ${character.name} (${character.alias}) added"
+                                "${moveListResult.data.moveList.size} moves for ${character.name} (${character.alias}) added"
                             }
                         }
                         is Result.Error -> {

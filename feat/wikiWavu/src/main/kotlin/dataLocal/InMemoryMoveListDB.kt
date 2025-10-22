@@ -27,7 +27,7 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(moveData)
     }
 
-    override suspend fun insertMoveList(charName: String, moveList: Map<String, Move>) {
-        database.put(key = charName, value = moveList)
+    override suspend fun insertMoveList(charName: String, moveList: List<Move>) {
+        database.put(key = charName, value = moveList.associateBy { it.id })
     }
 }

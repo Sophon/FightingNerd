@@ -6,64 +6,56 @@ import com.example.core.domain.DataError
 import com.example.core.domain.Result
 import com.example.core.domain.map
 import dataRemote.MoveDto
+import dataRemote.MoveListResponseDto
 import dataRemote.WavuWikiDataSource
+import model.Character
+import model.CharacterMoveList
 import model.Move
 
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,
 ) {
-    suspend fun invoke(charName: String): Result<Map<String, Move>, DataError.Remote> {
-        return source.fetchMoveList(charName)
-            .map { dto -> dto.cargoQuery.map { it.title } }
-            .map { moves ->
-                val movesById = moves
-                    .map { move ->
-                        move.copy(
-                            notes = move.notes
-                                ?.cleanHtml()
-                                ?.replace("\n\n", "\n"),
-                        )
-                    }
-                    .associateBy { it.id }
-
-                movesById
-                    .mapValues { (_, move) ->
+    suspend fun invoke(character: Character): Result<CharacterMoveList, DataError.Remote> {
+        return source.fetchMoveList(character.name)
+            .map { it.extractDto() }
+            .map { moveList: List<MoveDto> ->
+                moveList
+                    .map { moveDto ->
                         Move(
-                            charName = charName,
-                            id = move.id.substringAfter("-"),
-                            input = move.input,
-                            level = formCompleteDataFromParent(move, movesById) {
-                                it.target
-                            },
-                            name = move.name,
-                            parent = move.parent,
-                            damage = formCompleteDataFromParent(move, movesById) {
-                                it.damage
-                            },
-                            startup = getRootStartup(move, movesById),
-                            recoveryOnWhiff = move.recv,
-                            totalFrames = move.tot,
-                            crush = move.crush,
-                            onBlock = move.block,
-                            onHit = move.hit,
-                            onCH = move.ch,
-                            notes = move.splitNotes(),
-                            alias = move.alias,
-                            image = move.image,
-                            videoId = move.video,
-                            alt = move.alt,
-                            isHeat = move.isHE(),
-                            isPowerCrush = move.isPowerCrush(),
-                            isHoming = move.isHoming(),
+                            charName = character.name,
+                            id = moveDto.id
+                                .substringAfter("-")
+                                .cleanMoveInput(),
+                            input = moveDto.input,
+                            level = formCompleteDataFromParent(moveDto, moveList) { it.target },
+                            name = moveDto.name,
+                            parent = moveDto.parent,
+                            damage = formCompleteDataFromParent(moveDto, moveList) { it.damage },
+                            startup = getRootStartup(moveDto, moveList),
+                            recoveryOnWhiff = moveDto.recv,
+                            totalFrames =  moveDto.tot,
+                            crush = moveDto.crush,
+                            onBlock = moveDto.block,
+                            onHit = moveDto.hit,
+                            onCH = moveDto.ch,
+                            notes = moveDto.splitNotes(),
+                            alias = moveDto.alias,
+                            image = moveDto.image,
+                            videoId = moveDto.video,
+                            alt = moveDto.alt,
+                            isHeat = moveDto.isHE(),
+                            isPowerCrush = moveDto.isPowerCrush(),
+                            isHoming = moveDto.isHoming(),
                         )
-                    }
-                    .mapKeys { (id, _) ->
-                        id
-                            .substringAfter("-")
-                            .cleanMoveInput()
                     }
             }
+            .map { moveList: List<Move> ->
+                CharacterMoveList(character, moveList)
+            }
     }
+
+
+    private fun MoveListResponseDto.extractDto(): List<MoveDto> = cargoQuery.map { it.title }
 
     /**
      * Kazuya's 112 is actually:
@@ -75,16 +67,18 @@ internal class DownloadMoveListUseCase(
      *  So we have to traverse through parents to form the complete string
      */
     private fun formCompleteDataFromParent(
-        move: MoveDto,
-        movesById: Map<String, MoveDto>,
+        moveDto: MoveDto,
+        moveList: List<MoveDto>,
         fieldSelector: (MoveDto) -> String?,
     ): String? {
-        var current: MoveDto? = move
+        var current: MoveDto? = moveDto
         val reverseLevel = mutableListOf<String>()
 
         while (current != null) {
             fieldSelector(current)?.let { reverseLevel.add(it) }
-            current = current.parent?.let { parent -> movesById[parent] }
+            current = current.parent?.let { parent ->
+                moveList.firstOrNull { it.id == parent }
+            }
         }
 
         return reverseLevel
@@ -97,19 +91,31 @@ internal class DownloadMoveListUseCase(
      * Similar to the issue above, just with startup
      */
     private fun getRootStartup(
-        move: MoveDto,
-        movesById: Map<String, MoveDto>
+        moveDto: MoveDto,
+        moveList: List<MoveDto>,
     ): String? {
-        var current: MoveDto? = move
-        var root: MoveDto = move
+        var current: MoveDto? = moveDto
+        var root: MoveDto = moveDto
 
         // Traverse up to find the topmost parent
         while (current != null) {
             root = current
-            current = current.parent?.let { movesById[it] }
+            current = current.parent?.let { parent -> moveList.firstOrNull { it.id == parent } }
         }
 
         return root.startup
+    }
+
+    private fun MoveDto.splitNotes(): List<String> {
+        val finalNotes = notes.orEmpty()
+            .trimIndent()
+            .cleanHtml()
+            .replace("\n\n", "\n")
+            .lines()
+            .filter { it.isNotEmpty() }
+            .map { it.removePrefix("* ").trim() }
+
+        return finalNotes
     }
 
     private fun MoveDto.isHE(): Boolean {
@@ -122,15 +128,5 @@ internal class DownloadMoveListUseCase(
 
     private fun MoveDto.isHoming(): Boolean {
         return notes?.contains("Homing", ignoreCase = true) == true
-    }
-
-    private fun MoveDto.splitNotes(): List<String> {
-        val finalNotes = notes.orEmpty()
-            .trimIndent()
-            .lines()
-            .filter { it.isNotEmpty() }
-            .map { it.removePrefix("* ").trim() }
-
-        return finalNotes
     }
 }
