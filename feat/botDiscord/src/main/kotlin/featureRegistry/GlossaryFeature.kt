@@ -1,7 +1,7 @@
 package featureRegistry
 
-import MAX_LENGTH_EMBED
 import InfilUrlProvider
+import MAX_LENGTH_EMBED
 import com.example.core.domain.Result
 import com.example.core.util.truncate
 import dev.kord.common.Color

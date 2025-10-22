@@ -1,6 +1,7 @@
 package usecase
 
 import BotError
+import WavuError
 import WavuWikiClient
 import com.example.core.domain.Result
 import model.Move
