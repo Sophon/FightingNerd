@@ -7,6 +7,7 @@ enum class BotError: Error {
     EMPTY_GLOSSARY,
     GLOSSARY_TERM_NOT_FOUND,
     CHARACTER_LIST_FILE_ERROR,
+    DOWNLOAD_ERROR,
 
     BOT_LOGIC_ERROR,
 }

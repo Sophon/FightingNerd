@@ -82,7 +82,7 @@ internal class WavuWikiClientImpl(
     private suspend fun downloadCompleteMoveList(): EmptyResult<WavuError> {
         return when (val result = fetchCharacterListUseCase.invoke()) {
             is Result.Success -> {
-                result.data.characterList.forEach { character ->
+                for (character in result.data.characterList) {
                     when (val moveListResult = downloadMoveListUseCase.invoke(character)) {
                         is Result.Success -> {
                             cacheMoveListUseCase.invoke(characterMoveList = moveListResult.data)
@@ -92,7 +92,7 @@ internal class WavuWikiClientImpl(
                         }
                         is Result.Error -> {
                             Napier.e(tag = TAG) { "Error: ${moveListResult.error} for $character" }
-                            moveListResult.error
+                            return Result.Error(moveListResult.error)
                         }
                     }
                 }

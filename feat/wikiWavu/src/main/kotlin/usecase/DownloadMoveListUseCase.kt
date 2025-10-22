@@ -1,10 +1,9 @@
 package usecase
 
+import WavuError
 import cleanHtml
 import cleanMoveInput
-import com.example.core.domain.DataError
 import com.example.core.domain.Result
-import com.example.core.domain.map
 import dataRemote.MoveDto
 import dataRemote.MoveListResponseDto
 import dataRemote.WavuWikiDataSource
@@ -15,47 +14,57 @@ import model.Move
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,
 ) {
-    suspend fun invoke(character: Character): Result<CharacterMoveList, DataError.Remote> {
-        return source.fetchMoveList(character.name)
-            .map { it.extractDto() }
-            .map { moveList: List<MoveDto> ->
-                moveList
-                    .map { moveDto ->
-                        Move(
-                            charName = character.name,
-                            id = moveDto.id
-                                .substringAfter("-")
-                                .cleanMoveInput(),
-                            input = moveDto.input,
-                            level = formCompleteDataFromParent(moveDto, moveList) { it.target },
-                            name = moveDto.name,
-                            parent = moveDto.parent,
-                            damage = formCompleteDataFromParent(moveDto, moveList) { it.damage },
-                            startup = getRootStartup(moveDto, moveList),
-                            recoveryOnWhiff = moveDto.recv,
-                            totalFrames =  moveDto.tot,
-                            crush = moveDto.crush,
-                            onBlock = moveDto.block,
-                            onHit = moveDto.hit,
-                            onCH = moveDto.ch,
-                            notes = moveDto.splitNotes(),
-                            alias = moveDto.alias,
-                            image = moveDto.image,
-                            videoId = moveDto.video,
-                            alt = moveDto.alt,
-                            isHeat = moveDto.isHE(),
-                            isPowerCrush = moveDto.isPowerCrush(),
-                            isHoming = moveDto.isHoming(),
-                        )
-                    }
+    suspend fun invoke(character: Character): Result<CharacterMoveList, WavuError> {
+        return when (val result = source.fetchMoveList(character.name)) {
+            is Result.Success -> {
+                val downloadedMoves: List<MoveDto> = result.data.extractDto()
+                val movesById = downloadedMoves.associateBy { it.id }
+
+                val moveList: List<Move> = downloadedMoves
+                    .map { it.mapToDomain(character, movesById) }
+
+                Result.Success(CharacterMoveList(character, moveList))
             }
-            .map { moveList: List<Move> ->
-                CharacterMoveList(character, moveList)
+            is Result.Error -> {
+                Result.Error(WavuError.DOWNLOAD_ERROR)
             }
+        }
     }
 
 
     private fun MoveListResponseDto.extractDto(): List<MoveDto> = cargoQuery.map { it.title }
+
+    private fun MoveDto.mapToDomain(
+        character: Character,
+        movesById: Map<String, MoveDto>,
+    ): Move {
+        return Move(
+            charName = character.name,
+            id = id
+                .substringAfter("-")
+                .cleanMoveInput(),
+            input = input,
+            level = formCompleteDataFromParent(movesById) { it.target },
+            name = name,
+            parent = parent,
+            damage = formCompleteDataFromParent(movesById) { it.damage },
+            startup = getRootStartup(movesById),
+            recoveryOnWhiff = recv,
+            totalFrames =  tot,
+            crush = crush,
+            onBlock = block,
+            onHit = hit,
+            onCH = ch,
+            notes = splitNotes(),
+            alias = alias,
+            image = image,
+            videoId = video,
+            alt = alt,
+            isHeat = isHE(),
+            isPowerCrush = isPowerCrush(),
+            isHoming = isHoming(),
+        )
+    }
 
     /**
      * Kazuya's 112 is actually:
@@ -66,19 +75,16 @@ internal class DownloadMoveListUseCase(
      *
      *  So we have to traverse through parents to form the complete string
      */
-    private fun formCompleteDataFromParent(
-        moveDto: MoveDto,
-        moveList: List<MoveDto>,
+    private fun MoveDto.formCompleteDataFromParent(
+        movesById: Map<String, MoveDto>,
         fieldSelector: (MoveDto) -> String?,
     ): String? {
-        var current: MoveDto? = moveDto
+        var current: MoveDto? = this
         val reverseLevel = mutableListOf<String>()
 
         while (current != null) {
             fieldSelector(current)?.let { reverseLevel.add(it) }
-            current = current.parent?.let { parent ->
-                moveList.firstOrNull { it.id == parent }
-            }
+            current = current.parent?.let { parent -> movesById[parent] }
         }
 
         return reverseLevel
@@ -90,17 +96,16 @@ internal class DownloadMoveListUseCase(
     /**
      * Similar to the issue above, just with startup
      */
-    private fun getRootStartup(
-        moveDto: MoveDto,
-        moveList: List<MoveDto>,
+    private fun MoveDto.getRootStartup(
+        movesById: Map<String, MoveDto>
     ): String? {
-        var current: MoveDto? = moveDto
-        var root: MoveDto = moveDto
+        var current: MoveDto? = this
+        var root: MoveDto = this
 
         // Traverse up to find the topmost parent
         while (current != null) {
             root = current
-            current = current.parent?.let { parent -> moveList.firstOrNull { it.id == parent } }
+            current = current.parent?.let { movesById[it] }
         }
 
         return root.startup
