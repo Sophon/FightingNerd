@@ -1,20 +1,20 @@
 # A set of tools for fighting games
 
-A fully [modular](https://github.com/Sophon/Cornerman/wiki/Adding-new-features) set of tools for the fighting game community.
+A highly [modular](https://github.com/Sophon/Cornerman/wiki/Code-base-architecture) set of tools for the fighting game community.
 
 ```mermaid
 graph LR
-    subgraph Bots
+    subgraph "Bot clients"
         discordBot[Discord Bot]
         yourBot[Your Bot]
     end
     
-    subgraph "Mobile Clients"
+    subgraph "Mobile clients"
         android[Android]
         iOS[iOS]
     end
     
-    subgraph Features
+    subgraph "Feature modules"
         glossaryInfil[Glossary Infil]
         wikiWavu[Wiki Wavu]
         yourWiki[Your Wiki]
@@ -39,38 +39,26 @@ graph LR
     style yourWiki fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
 ```
 
-### FEATURES
-- [🌟 frame data commands](https://github.com/Sophon/Cornerman/wiki/Tekken-8-features)
-- [🌟 fighting game glossary](https://github.com/Sophon/Cornerman/wiki/Fighting-game-glossary)
-
-### CURRENT FEATURE MODULES
+### [CURRENT FEATURE MODULES](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules)
 - [Discord bot](./feat/botDiscord/src/main/kotlin/DiscordBot.kt)
 - [fighting-game glossary](./feat/glossaryInfil/src/main/kotlin/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
 - [Tekken 8 frame data](./feat/wikiWavu/src/main/kotlin/WavuWikiClient.kt) from [Wavu Wiki](https://wavu.wiki/)
-- Tekken 8 `pc` and `heat` commands
+   - frame data
+   - power crush, heat or homing move-lists
 
-# [CHECK THE WIKI](https://github.com/Sophon/Cornerman/wiki/Adding-new-features)
+# [CHECK THE WIKI](https://github.com/Sophon/Cornerman/wiki)
 
 
-### TODO's:
-- Discord bot
-  - frame data
-    - `/ms` command 
-      - moves that are the same start-up or faster
-  - `/feedback` command
-    - also banlist
-  - reaction commands for Discord embeds
-  - bot version
-  - other wikis
-    - SuperCombo wiki
-    - Dustloop wiki
-  - module configuration
+### [TODO's](https://github.com/Sophon/Cornerman/wiki/Features#planned-feature-module-improvements)
 - Docker, pipelines, updates
-- mobile client
+- other feature modules
+  - SuperCombo wiki
+  - Dustloop wiki
+- module configuration
+- mobile clients
 
 
-### Long term goals:
+### [Long term goals](https://github.com/Sophon/Cornerman/wiki/Features#planned-feature-modules):
 - Wank Wavu functionality
 - Twitch bot
-- frame data for older games
 
