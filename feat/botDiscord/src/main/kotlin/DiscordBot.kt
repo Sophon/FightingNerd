@@ -1,7 +1,7 @@
 import com.example.core.util.isAtLeast
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
-import dev.kord.core.behavior.channel.createEmbed
+import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
@@ -9,6 +9,7 @@ import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
+import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
 import featureRegistry.Command
 import featureRegistry.FrameDataFeature
@@ -92,10 +93,13 @@ internal class DiscordBotImpl(
         val service = features.first { service ->
             service.slashCommands.any { it.name == command }
         }
+        val embedBuilder = service.execute(command, query)
 
-        message.channel.createEmbed(
-            service.execute(command, query)
-        )
+        message.channel.createMessage {
+            messageReference = message.id
+            allowedMentions { repliedUser = false }
+            embed(embedBuilder)
+        }
     }
 
     private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
