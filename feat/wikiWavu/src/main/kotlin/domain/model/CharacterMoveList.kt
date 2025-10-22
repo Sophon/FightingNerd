@@ -1,4 +1,4 @@
-package model
+package domain.model
 
 data class CharacterMoveList(
     val character: Character,

@@ -1,3 +1,4 @@
+package util
 
 fun String.cleanMoveInput(): String {
     var result = this.trim().lowercase()

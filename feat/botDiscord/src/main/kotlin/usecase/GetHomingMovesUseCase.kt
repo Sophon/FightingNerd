@@ -4,7 +4,7 @@ import BotError
 import WavuError
 import WavuWikiClient
 import com.example.core.domain.Result
-import model.Move
+import domain.model.Move
 
 class GetHomingMovesUseCase(
     private val wiki: WavuWikiClient,

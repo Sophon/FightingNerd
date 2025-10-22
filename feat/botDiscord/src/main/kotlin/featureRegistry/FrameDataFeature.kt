@@ -2,12 +2,12 @@ package featureRegistry
 
 import BotError
 import MAX_LENGTH_EMBED
-import WavuUrlProvider
 import com.example.core.domain.Result
 import com.example.core.util.truncate
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import model.Move
+import domain.WavuUrlProvider
+import domain.model.Move
 import usecase.GetHeatMovesUseCase
 import usecase.GetHomingMovesUseCase
 import usecase.GetPowerCrushMovesUseCase

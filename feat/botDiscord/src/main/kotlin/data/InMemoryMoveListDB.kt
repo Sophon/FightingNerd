@@ -1,8 +1,8 @@
-package dataLocal
+package data
 
 import WavuError
 import com.example.core.domain.Result
-import model.Move
+import domain.model.Move
 
 class InMemoryMoveListDB: MoveListDB {
     private var database: MutableMap<String, Map<String, Move>> = mutableMapOf()

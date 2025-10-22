@@ -1,15 +1,15 @@
 package usecase
 
 import WavuError
-import cleanHtml
-import cleanMoveInput
 import com.example.core.domain.Result
-import dataRemote.MoveDto
-import dataRemote.MoveListResponseDto
-import dataRemote.WavuWikiDataSource
-import model.Character
-import model.CharacterMoveList
-import model.Move
+import data.MoveDto
+import data.MoveListResponseDto
+import data.WavuWikiDataSource
+import util.cleanHtml
+import util.cleanMoveInput
+import domain.model.Character
+import domain.model.CharacterMoveList
+import domain.model.Move
 
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,

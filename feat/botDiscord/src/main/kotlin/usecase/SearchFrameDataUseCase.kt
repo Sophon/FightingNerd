@@ -5,7 +5,7 @@ import WavuError
 import WavuWikiClient
 import com.example.core.domain.Result
 import com.example.core.util.dropFirstAndJoin
-import model.Move
+import domain.model.Move
 
 internal class SearchFrameDataUseCase(
     private val wavuWikiClient: WavuWikiClient,

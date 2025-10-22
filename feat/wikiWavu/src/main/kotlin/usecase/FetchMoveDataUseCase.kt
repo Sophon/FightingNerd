@@ -1,10 +1,10 @@
 package usecase
 
 import WavuError
-import cleanMoveInput
 import com.example.core.domain.Result
-import dataLocal.MoveListDB
-import model.Move
+import data.MoveListDB
+import domain.model.Move
+import util.cleanMoveInput
 
 class FetchMoveDataUseCase(
     private val db: MoveListDB,

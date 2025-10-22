@@ -3,8 +3,8 @@ package usecase
 import WavuError
 import com.example.core.domain.Result
 import com.example.core.domain.map
-import dataLocal.MoveListDB
-import model.Move
+import data.MoveListDB
+import domain.model.Move
 
 class FetchMovesWithPropertyUseCase(
     private val db: MoveListDB,

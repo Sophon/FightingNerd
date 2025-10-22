@@ -3,10 +3,11 @@ import com.example.core.domain.Result
 import com.example.core.domain.Service
 import com.example.core.domain.Source
 import com.example.core.domain.onError
+import domain.Scheduler
+import domain.model.Move
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import model.Move
 import usecase.CacheMoveListUseCase
 import usecase.DownloadMoveListUseCase
 import usecase.FetchCharacterListUseCase
