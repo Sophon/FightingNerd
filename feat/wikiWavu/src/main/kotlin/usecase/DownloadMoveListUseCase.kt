@@ -1,68 +1,69 @@
 package usecase
 
+import WavuError
 import cleanHtml
 import cleanMoveInput
-import com.example.core.domain.DataError
 import com.example.core.domain.Result
-import com.example.core.domain.map
 import dataRemote.MoveDto
+import dataRemote.MoveListResponseDto
 import dataRemote.WavuWikiDataSource
+import model.Character
+import model.CharacterMoveList
 import model.Move
 
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,
 ) {
-    suspend fun invoke(charName: String): Result<Map<String, Move>, DataError.Remote> {
-        return source.fetchMoveList(charName)
-            .map { dto -> dto.cargoQuery.map { it.title } }
-            .map { moves ->
-                val movesById = moves
-                    .map { move ->
-                        move.copy(
-                            notes = move.notes
-                                ?.cleanHtml()
-                                ?.replace("\n\n", "\n"),
-                        )
-                    }
-                    .associateBy { it.id }
+    suspend fun invoke(character: Character): Result<CharacterMoveList, WavuError> {
+        return when (val result = source.fetchMoveList(character.name)) {
+            is Result.Success -> {
+                val downloadedMoves: List<MoveDto> = result.data.extractDto()
+                val movesById = downloadedMoves.associateBy { it.id }
 
-                movesById
-                    .mapValues { (_, move) ->
-                        Move(
-                            charName = charName,
-                            id = move.id.substringAfter("-"),
-                            input = move.input,
-                            level = formCompleteDataFromParent(move, movesById) {
-                                it.target
-                            },
-                            name = move.name,
-                            parent = move.parent,
-                            damage = formCompleteDataFromParent(move, movesById) {
-                                it.damage
-                            },
-                            startup = getRootStartup(move, movesById),
-                            recoveryOnWhiff = move.recv,
-                            totalFrames = move.tot,
-                            crush = move.crush,
-                            onBlock = move.block,
-                            onHit = move.hit,
-                            onCH = move.ch,
-                            notes = move.splitNotes(),
-                            alias = move.alias,
-                            image = move.image,
-                            videoId = move.video,
-                            alt = move.alt,
-                            isHeat = move.isHE(),
-                            isPowerCrush = move.isPowerCrush(),
-                            isHoming = move.isHoming(),
-                        )
-                    }
-                    .mapKeys { (id, _) ->
-                        id
-                            .substringAfter("-")
-                            .cleanMoveInput()
-                    }
+                val moveList: List<Move> = downloadedMoves
+                    .map { it.mapToDomain(character, movesById) }
+
+                Result.Success(CharacterMoveList(character, moveList))
             }
+            is Result.Error -> {
+                Result.Error(WavuError.DOWNLOAD_ERROR)
+            }
+        }
+    }
+
+
+    private fun MoveListResponseDto.extractDto(): List<MoveDto> = cargoQuery.map { it.title }
+
+    private fun MoveDto.mapToDomain(
+        character: Character,
+        movesById: Map<String, MoveDto>,
+    ): Move {
+        return Move(
+            charName = character.name,
+            id = id
+                .substringAfter("-")
+                .cleanMoveInput(),
+            input = input,
+            level = formCompleteDataFromParent(movesById) { it.target },
+            name = name,
+            parent = parent,
+            damage = formCompleteDataFromParent(movesById) { it.damage },
+            startup = getRootStartup(movesById),
+            recoveryOnWhiff = recv,
+            totalFrames =  tot,
+            crush = crush,
+            onBlock = block,
+            onHit = hit,
+            onCH = ch,
+            notes = splitNotes(),
+            alias = alias,
+            image = image,
+            videoId = video,
+            alt = alt,
+            isHeat = isHE(),
+            isPowerCrush = isPowerCrush(),
+            isHoming = isHoming(),
+        )
     }
 
     /**
@@ -74,12 +75,11 @@ internal class DownloadMoveListUseCase(
      *
      *  So we have to traverse through parents to form the complete string
      */
-    private fun formCompleteDataFromParent(
-        move: MoveDto,
+    private fun MoveDto.formCompleteDataFromParent(
         movesById: Map<String, MoveDto>,
         fieldSelector: (MoveDto) -> String?,
     ): String? {
-        var current: MoveDto? = move
+        var current: MoveDto? = this
         val reverseLevel = mutableListOf<String>()
 
         while (current != null) {
@@ -96,12 +96,11 @@ internal class DownloadMoveListUseCase(
     /**
      * Similar to the issue above, just with startup
      */
-    private fun getRootStartup(
-        move: MoveDto,
+    private fun MoveDto.getRootStartup(
         movesById: Map<String, MoveDto>
     ): String? {
-        var current: MoveDto? = move
-        var root: MoveDto = move
+        var current: MoveDto? = this
+        var root: MoveDto = this
 
         // Traverse up to find the topmost parent
         while (current != null) {
@@ -110,6 +109,18 @@ internal class DownloadMoveListUseCase(
         }
 
         return root.startup
+    }
+
+    private fun MoveDto.splitNotes(): List<String> {
+        val finalNotes = notes.orEmpty()
+            .trimIndent()
+            .cleanHtml()
+            .replace("\n\n", "\n")
+            .lines()
+            .filter { it.isNotEmpty() }
+            .map { it.removePrefix("* ").trim() }
+
+        return finalNotes
     }
 
     private fun MoveDto.isHE(): Boolean {
@@ -122,15 +133,5 @@ internal class DownloadMoveListUseCase(
 
     private fun MoveDto.isHoming(): Boolean {
         return notes?.contains("Homing", ignoreCase = true) == true
-    }
-
-    private fun MoveDto.splitNotes(): List<String> {
-        val finalNotes = notes.orEmpty()
-            .trimIndent()
-            .lines()
-            .filter { it.isNotEmpty() }
-            .map { it.removePrefix("* ").trim() }
-
-        return finalNotes
     }
 }

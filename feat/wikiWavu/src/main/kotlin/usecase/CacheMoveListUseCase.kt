@@ -4,22 +4,20 @@ import WavuError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import dataLocal.MoveListDB
-import model.Character
-import model.Move
+import model.CharacterMoveList
 
 class CacheMoveListUseCase(
     private val db: MoveListDB,
 ) {
     suspend fun invoke(
-        character: Character,
-        moveList: Map<String, Move>
+        characterMoveList: CharacterMoveList,
     ): EmptyResult<WavuError> {
         db.insertMoveList(
-            charName = character.name.lowercase(),
-            moveList = moveList
+            charName = characterMoveList.character.name.lowercase(),
+            moveList = characterMoveList.moveList,
         )
-        character.alias.forEach { alias ->
-            db.insertMoveList(charName = alias, moveList = moveList)
+        characterMoveList.character.alias.forEach { alias ->
+            db.insertMoveList(charName = alias, moveList = characterMoveList.moveList)
         }
         return Result.Success(Unit)
     }

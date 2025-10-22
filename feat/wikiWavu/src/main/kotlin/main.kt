@@ -9,7 +9,7 @@ suspend fun main() = coroutineScope {
     Napier.base(DebugAntilog())
     val client = getKoin().get<WavuWikiClient>()
 
-    client.downloadCompleteMoveList()
+    client.startSession()
 
     println("========")
 

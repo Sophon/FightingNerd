@@ -6,6 +6,6 @@ class StartWikiUseCase(
     private val wikiClient: WavuWikiClient,
 ) {
     suspend fun invoke() {
-        wikiClient.downloadCompleteMoveList()
+        wikiClient.startSession()
     }
 }

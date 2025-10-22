@@ -4,15 +4,18 @@ import com.example.core.domain.Service
 import com.example.core.domain.Source
 import com.example.core.domain.onError
 import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import model.Move
 import usecase.CacheMoveListUseCase
 import usecase.DownloadMoveListUseCase
 import usecase.FetchCharacterListUseCase
 import usecase.FetchMoveDataUseCase
 import usecase.FetchMovesWithPropertyUseCase
+import kotlin.time.Duration.Companion.hours
 
 interface WavuWikiClient: Service {
-    suspend fun downloadCompleteMoveList(): EmptyResult<WavuError>
+    suspend fun startSession()
     suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WavuError>
     suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getHeatMoves(charName: String): Result<List<Move>, WavuError>
@@ -25,29 +28,19 @@ internal class WavuWikiClientImpl(
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val fetchMoveDataUseCase: FetchMoveDataUseCase,
     private val fetchMovesWithPropertyUseCase: FetchMovesWithPropertyUseCase,
+    private val scheduler: Scheduler,
+    private val scope: CoroutineScope,
 ): WavuWikiClient {
-    override suspend fun downloadCompleteMoveList(): EmptyResult<WavuError> {
-        return when (val result = fetchCharacterListUseCase.invoke()) {
-            is Result.Success -> {
-                result.data.characterList.forEach { character ->
-                    when (val moveListResult = downloadMoveListUseCase.invoke(character.name)) {
-                        is Result.Success -> {
-                            cacheMoveListUseCase.invoke(character, moveListResult.data)
-                            Napier.d(tag = TAG) {
-                                "${moveListResult.data.size} moves for ${character.name} (${character.alias}) added"
-                            }
-                        }
-                        is Result.Error -> {
-                            Napier.e(tag = TAG) { "Error: ${moveListResult.error} for $character" }
-                            moveListResult.error
-                        }
-                    }
-                }
 
-                Result.Success(Unit)
-            }
-            is Result.Error -> {
-                Result.Error(result.error)
+    override suspend fun startSession() {
+        scope.launch {
+            scheduler.start(
+                period = 1.hours,
+                task = ::downloadCompleteMoveList,
+            ).collect {
+                it.onError { error ->
+                    Napier.e(tag = TAG) { error.toString() }
+                }
             }
         }
     }
@@ -83,6 +76,33 @@ internal class WavuWikiClientImpl(
         charName: String
     ): Result<List<Move>, WavuError> {
         return fetchMovesWithPropertyUseCase.invoke(charName) { it.isHoming }
+    }
+
+
+    private suspend fun downloadCompleteMoveList(): EmptyResult<WavuError> {
+        return when (val result = fetchCharacterListUseCase.invoke()) {
+            is Result.Success -> {
+                for (character in result.data.characterList) {
+                    when (val moveListResult = downloadMoveListUseCase.invoke(character)) {
+                        is Result.Success -> {
+                            cacheMoveListUseCase.invoke(characterMoveList = moveListResult.data)
+                            Napier.d(tag = TAG) {
+                                "${moveListResult.data.moveList.size} moves for ${character.name} (${character.alias}) added"
+                            }
+                        }
+                        is Result.Error -> {
+                            Napier.e(tag = TAG) { "Error: ${moveListResult.error} for $character" }
+                            return Result.Error(moveListResult.error)
+                        }
+                    }
+                }
+
+                Result.Success(Unit)
+            }
+            is Result.Error -> {
+                Result.Error(result.error)
+            }
+        }
     }
 }
 
