@@ -1,4 +1,8 @@
-import model.Move
+package domain
+
+import MOVE_URL
+import VIDEO_URL
+import domain.model.Move
 
 class WavuUrlProvider {
     fun charUrl(charName: String): String {

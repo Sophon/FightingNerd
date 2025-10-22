@@ -3,8 +3,8 @@ package usecase
 import WavuError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
-import dataLocal.MoveListDB
-import model.CharacterMoveList
+import data.MoveListDB
+import domain.model.CharacterMoveList
 
 class CacheMoveListUseCase(
     private val db: MoveListDB,

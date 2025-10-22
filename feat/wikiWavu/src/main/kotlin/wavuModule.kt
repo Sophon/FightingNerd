@@ -1,8 +1,8 @@
 import com.example.core.coreModule
-import dataLocal.InMemoryMoveListDB
-import dataLocal.MoveListDB
-import dataRemote.WavuWikiDataSource
-import dataRemote.WavuWikiDataSourceImpl
+import data.WavuWikiDataSource
+import data.WavuWikiDataSourceImpl
+import domain.Scheduler
+import domain.WavuUrlProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -33,7 +33,7 @@ val wavuModule = module {
 
     singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
     singleOf(::WavuWikiClientImpl).bind<WavuWikiClient>()
-    singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
+//    singleOf(::InMemoryMoveListDB).bind<data.MoveListDB>()
 
     singleOf(::FetchCharacterListUseCase)
     singleOf(::DownloadMoveListUseCase)

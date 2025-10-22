@@ -1,8 +1,8 @@
-package dataLocal
+package data
 
 import WavuError
 import com.example.core.domain.Result
-import model.Move
+import domain.model.Move
 
 interface MoveListDB {
     suspend fun fetchMoveListFor(charName: String): Result<Map<String, Move>, WavuError>
