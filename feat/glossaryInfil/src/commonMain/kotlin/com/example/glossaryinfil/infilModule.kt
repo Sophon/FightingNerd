@@ -1,15 +1,17 @@
+package com.example.glossaryinfil
+
 import com.example.core.coreModule
-import data.InfilGlossaryDataSource
-import data.InfilGlossaryDataSourceImpl
-import domain.InfilUrlProvider
+import com.example.glossaryinfil.data.InfilGlossaryDataSource
+import com.example.glossaryinfil.data.InfilGlossaryDataSourceImpl
+import com.example.glossaryinfil.domain.InfilUrlProvider
+import com.example.glossaryinfil.usecase.CacheGlossaryUseCase
+import com.example.glossaryinfil.usecase.DownloadGlossaryUseCase
+import com.example.glossaryinfil.usecase.FetchDataForTermUseCase
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import usecase.CacheGlossaryUseCase
-import usecase.DownloadGlossaryUseCase
-import usecase.FetchDataForTermUseCase
 
 fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
     config?.invoke(this)

@@ -1,3 +1,5 @@
+package com.example.glossaryinfil
+
 import com.example.core.domain.Error
 
 enum class GlossaryError: Error {

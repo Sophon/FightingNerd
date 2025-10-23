@@ -1,10 +1,10 @@
-package usecase
+package com.example.glossaryinfil.usecase
 
-import GlossaryError
+import com.example.glossaryinfil.GlossaryError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
-import data.GlossaryDB
-import domain.GlossaryItem
+import com.example.glossaryinfil.data.GlossaryDB
+import com.example.glossaryinfil.domain.GlossaryItem
 
 class CacheGlossaryUseCase(
     private val db: GlossaryDB,

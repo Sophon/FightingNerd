@@ -1,4 +1,4 @@
-package domain
+package com.example.glossaryinfil.domain
 
 import kotlinx.serialization.Serializable
 

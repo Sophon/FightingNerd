@@ -1,7 +1,7 @@
-package domain
+package com.example.glossaryinfil.domain
 
-import TERM_URL
-import VIDEO_URL
+import com.example.glossaryinfil.TERM_URL
+import com.example.glossaryinfil.VIDEO_URL
 import io.ktor.http.encodeURLParameter
 
 class InfilUrlProvider {

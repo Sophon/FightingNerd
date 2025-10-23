@@ -1,10 +1,10 @@
-package usecase
+package com.example.botdiscord.usecase
 
-import BotError
-import InfilGlossary
+import com.example.botdiscord.BotError
 import com.example.core.domain.Result
+import com.example.glossaryinfil.InfilGlossary
+import com.example.glossaryinfil.domain.GlossaryItem
 import io.github.aakira.napier.Napier
-import domain.GlossaryItem
 
 internal class SearchGlossaryUseCase(
     private val glossary: InfilGlossary,

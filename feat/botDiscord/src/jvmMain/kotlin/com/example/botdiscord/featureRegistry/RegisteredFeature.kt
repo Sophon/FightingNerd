@@ -1,4 +1,4 @@
-package featureRegistry
+package com.example.botdiscord.featureRegistry
 
 import dev.kord.rest.builder.message.EmbedBuilder
 

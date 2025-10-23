@@ -1,4 +1,4 @@
-package util
+package com.example.botdiscord.util
 
 internal fun String.removeTag(): String {
     return this

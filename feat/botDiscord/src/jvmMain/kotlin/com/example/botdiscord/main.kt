@@ -1,9 +1,7 @@
 package com.example.botdiscord
 
 import CONFIG_FILE_NAME
-import DiscordBot
-import config.DcConfig
-import initKoin
+import com.example.botdiscord.config.DcConfig
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope

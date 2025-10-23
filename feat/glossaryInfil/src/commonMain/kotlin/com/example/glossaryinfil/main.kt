@@ -1,7 +1,9 @@
+package com.example.glossaryinfil
+
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
-import org.koin.java.KoinJavaComponent.getKoin
+import org.koin.mp.KoinPlatform.getKoin
 
 suspend fun main() = coroutineScope {
     initKoin()

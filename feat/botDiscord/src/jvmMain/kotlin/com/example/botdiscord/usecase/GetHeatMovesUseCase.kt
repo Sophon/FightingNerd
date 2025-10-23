@@ -1,9 +1,9 @@
-package usecase
+package com.example.botdiscord.usecase
 
-import BotError
+import com.example.botdiscord.BotError
+import com.example.core.domain.Result
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.WavuWikiClient
-import com.example.core.domain.Result
 import com.example.wikiwavu.domain.model.Move
 
 class GetHeatMovesUseCase(

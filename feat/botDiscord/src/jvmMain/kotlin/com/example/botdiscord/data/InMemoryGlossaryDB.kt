@@ -1,10 +1,11 @@
-package data
+package com.example.botdiscord.data
 
-import GlossaryError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import com.example.core.util.removeWhiteSpace
-import domain.GlossaryItem
+import com.example.glossaryinfil.GlossaryError
+import com.example.glossaryinfil.data.GlossaryDB
+import com.example.glossaryinfil.domain.GlossaryItem
 
 class InMemoryGlossaryDB: GlossaryDB {
     private var glossary = mutableMapOf<String, GlossaryItem>()

@@ -1,4 +1,4 @@
-package featureRegistry
+package com.example.botdiscord.featureRegistry
 
 /**
  * Add registered service commands HERE

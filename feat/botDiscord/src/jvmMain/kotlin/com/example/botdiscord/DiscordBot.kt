@@ -1,3 +1,6 @@
+package com.example.botdiscord
+
+import TEST_SERVER_ID
 import com.example.core.util.isAtLeast
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -11,13 +14,13 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
-import featureRegistry.Command
-import featureRegistry.FrameDataFeature
-import featureRegistry.GlossaryFeature
+import com.example.botdiscord.featureRegistry.Command
+import com.example.botdiscord.featureRegistry.FrameDataFeature
+import com.example.botdiscord.featureRegistry.GlossaryFeature
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import util.removeTag
+import com.example.botdiscord.util.removeTag
 import kotlin.time.ExperimentalTime
 
 interface DiscordBot {

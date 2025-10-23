@@ -1,4 +1,4 @@
-package config
+package com.example.botdiscord.config
 
 import kotlinx.serialization.Serializable
 

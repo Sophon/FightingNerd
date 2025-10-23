@@ -1,6 +1,6 @@
-package util
+package com.example.botdiscord.util
 
-import BotError
+import com.example.botdiscord.BotError
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 

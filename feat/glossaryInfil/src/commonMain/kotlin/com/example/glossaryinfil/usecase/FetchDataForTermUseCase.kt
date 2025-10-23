@@ -1,11 +1,11 @@
-package usecase
+package com.example.glossaryinfil.usecase
 
-import GlossaryError
+import com.example.glossaryinfil.GlossaryError
 import com.example.core.domain.Result
 import com.example.core.domain.map
 import com.example.core.util.removeWhiteSpace
-import data.GlossaryDB
-import domain.GlossaryItem
+import com.example.glossaryinfil.data.GlossaryDB
+import com.example.glossaryinfil.domain.GlossaryItem
 
 class FetchDataForTermUseCase(
     private val db: GlossaryDB,

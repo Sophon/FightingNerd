@@ -1,23 +1,61 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    id("java-library")
-    alias(libs.plugins.jetbrainsKotlinJvm)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
 }
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
+
 kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
+    }
+
+    androidTarget {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_21)
+        }
+    }
+
+    listOf(
+        iosX64(),
+        iosArm64(),
+        iosSimulatorArm64()
+    ).forEach { iosTarget ->
+        iosTarget.binaries.framework {
+            baseName = "GlossaryInfil"
+            isStatic = true
+        }
+    }
+
+    sourceSets {
+        commonMain.dependencies {
+            implementation(project(":core"))
+
+            implementation(libs.bundles.ktor)
+            implementation(libs.napier)
+
+            api(libs.koin.core)
+        }
+
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
     }
 }
 
-dependencies {
-    implementation(project(":core"))
+android {
+    namespace = "com.example.cornerman.glossaryinfil"
+    compileSdk = 35
 
-    implementation(libs.bundles.ktor)
-    implementation(libs.napier)
+    defaultConfig {
+        minSdk = 24
+    }
 
-    api(libs.koin.core)
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
+    }
 }

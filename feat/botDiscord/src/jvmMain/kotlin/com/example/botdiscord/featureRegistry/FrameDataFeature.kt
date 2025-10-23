@@ -1,21 +1,21 @@
-package featureRegistry
+package com.example.botdiscord.featureRegistry
 
-import BotError
+import com.example.botdiscord.BotError
 import MAX_LENGTH_EMBED
 import com.example.core.domain.Result
 import com.example.core.util.truncate
-import dev.kord.common.Color
-import dev.kord.rest.builder.message.EmbedBuilder
 import com.example.wikiwavu.domain.WavuUrlProvider
 import com.example.wikiwavu.domain.model.Move
-import usecase.GetHeatMovesUseCase
-import usecase.GetHomingMovesUseCase
-import usecase.GetPowerCrushMovesUseCase
-import usecase.SearchFrameDataUseCase
-import usecase.StartWikiUseCase
-import util.createErrorEmbed
-import util.field
-import util.orDash
+import dev.kord.common.Color
+import dev.kord.rest.builder.message.EmbedBuilder
+import com.example.botdiscord.usecase.GetHeatMovesUseCase
+import com.example.botdiscord.usecase.GetHomingMovesUseCase
+import com.example.botdiscord.usecase.GetPowerCrushMovesUseCase
+import com.example.botdiscord.usecase.SearchFrameDataUseCase
+import com.example.botdiscord.usecase.StartWikiUseCase
+import com.example.botdiscord.util.createErrorEmbed
+import com.example.botdiscord.util.field
+import com.example.botdiscord.util.orDash
 
 internal class FrameDataFeature(
     private val startWikiUseCase: StartWikiUseCase,

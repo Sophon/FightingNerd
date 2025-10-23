@@ -1,6 +1,6 @@
-package usecase
+package com.example.botdiscord.usecase
 
-import InfilGlossary
+import com.example.glossaryinfil.InfilGlossary
 
 class StartGlossaryUseCase(
     private val glossary: InfilGlossary,

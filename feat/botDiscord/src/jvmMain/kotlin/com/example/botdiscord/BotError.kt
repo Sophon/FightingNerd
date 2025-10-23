@@ -1,3 +1,5 @@
+package com.example.botdiscord
+
 import com.example.core.domain.Error
 
 enum class BotError: Error {

@@ -1,18 +1,18 @@
-package featureRegistry
+package com.example.botdiscord.featureRegistry
 
-import domain.InfilUrlProvider
 import MAX_LENGTH_EMBED
+import com.example.botdiscord.usecase.SearchGlossaryUseCase
+import com.example.botdiscord.usecase.StartGlossaryUseCase
 import com.example.core.domain.Result
 import com.example.core.util.truncate
+import com.example.glossaryinfil.domain.GlossaryItem
+import com.example.glossaryinfil.domain.InfilUrlProvider
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import domain.GlossaryItem
-import usecase.SearchGlossaryUseCase
-import usecase.StartGlossaryUseCase
-import util.createErrorEmbed
-import util.field
-import util.replaceItalic
-import util.replaceUnderline
+import com.example.botdiscord.util.createErrorEmbed
+import com.example.botdiscord.util.field
+import com.example.botdiscord.util.replaceItalic
+import com.example.botdiscord.util.replaceUnderline
 
 internal class GlossaryFeature(
     private val startGlossaryUseCase: StartGlossaryUseCase,

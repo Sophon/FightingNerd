@@ -1,6 +1,6 @@
-package data
+package com.example.glossaryinfil.data
 
-import BASE_URL
+import com.example.glossaryinfil.BASE_URL
 import com.example.core.domain.DataError
 import com.example.core.domain.Result
 import com.example.core.network.safeCall

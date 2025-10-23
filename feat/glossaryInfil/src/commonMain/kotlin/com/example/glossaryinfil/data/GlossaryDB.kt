@@ -1,9 +1,9 @@
-package data
+package com.example.glossaryinfil.data
 
-import GlossaryError
+import com.example.glossaryinfil.GlossaryError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
-import domain.GlossaryItem
+import com.example.glossaryinfil.domain.GlossaryItem
 
 interface GlossaryDB {
     suspend fun fetchDataFor(query: String): Result<List<GlossaryItem>, GlossaryError>

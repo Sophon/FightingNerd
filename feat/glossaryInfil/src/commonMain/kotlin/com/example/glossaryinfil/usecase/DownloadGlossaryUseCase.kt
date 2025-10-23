@@ -1,9 +1,9 @@
-package usecase
+package com.example.glossaryinfil.usecase
 
-import GlossaryError
+import com.example.glossaryinfil.GlossaryError
 import com.example.core.domain.Result
-import data.InfilGlossaryDataSource
-import domain.GlossaryItem
+import com.example.glossaryinfil.data.InfilGlossaryDataSource
+import com.example.glossaryinfil.domain.GlossaryItem
 
 internal class DownloadGlossaryUseCase(
     private val dataSource: InfilGlossaryDataSource,
