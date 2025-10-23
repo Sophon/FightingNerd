@@ -1,6 +1,8 @@
 import com.example.core.coreModule
+import data.InMemoryGlossaryDB
 import data.InMemoryMoveListDB
 import data.MoveListDB
+import data.GlossaryDB
 import featureRegistry.FrameDataFeature
 import featureRegistry.GlossaryFeature
 import org.koin.core.context.startKoin
@@ -44,6 +46,7 @@ fun dcBotModule(apiKey: String) = module {
     singleOf(::GetHomingMovesUseCase)
 
     singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
+    singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 
     singleOf(::FrameDataFeature)
     singleOf(::GlossaryFeature)

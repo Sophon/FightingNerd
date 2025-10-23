@@ -1,8 +1,7 @@
 import com.example.core.coreModule
-import dataLocal.GlossaryDB
-import dataLocal.InMemoryGlossaryDB
-import dataRemote.InfilGlossaryDataSource
-import dataRemote.InfilGlossaryDataSourceImpl
+import data.InfilGlossaryDataSource
+import data.InfilGlossaryDataSourceImpl
+import domain.InfilUrlProvider
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
@@ -25,7 +24,6 @@ fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
 val infilModule = module {
     singleOf(::InfilGlossaryDataSourceImpl).bind<InfilGlossaryDataSource>()
     singleOf(::InfilGlossaryImpl).bind<InfilGlossary>()
-    singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 
     singleOf(::DownloadGlossaryUseCase)
     singleOf(::CacheGlossaryUseCase)

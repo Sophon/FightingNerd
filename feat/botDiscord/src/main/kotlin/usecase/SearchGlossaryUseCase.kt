@@ -4,7 +4,7 @@ import BotError
 import InfilGlossary
 import com.example.core.domain.Result
 import io.github.aakira.napier.Napier
-import model.GlossaryItem
+import domain.GlossaryItem
 
 internal class SearchGlossaryUseCase(
     private val glossary: InfilGlossary,

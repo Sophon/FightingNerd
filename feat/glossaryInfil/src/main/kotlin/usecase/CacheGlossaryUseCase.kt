@@ -3,8 +3,8 @@ package usecase
 import GlossaryError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
-import dataLocal.GlossaryDB
-import model.GlossaryItem
+import data.GlossaryDB
+import domain.GlossaryItem
 
 class CacheGlossaryUseCase(
     private val db: GlossaryDB,
