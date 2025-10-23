@@ -1,5 +1,6 @@
 package com.example.core.domain
 
+//TODO: remove, deprecated
 interface Service {
     fun source(): Source
 }
