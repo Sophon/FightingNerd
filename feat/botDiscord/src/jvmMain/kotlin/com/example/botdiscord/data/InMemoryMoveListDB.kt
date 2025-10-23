@@ -29,6 +29,14 @@ class InMemoryMoveListDB: MoveListDB {
     }
 
     override suspend fun insertMoveList(charName: String, moveList: List<Move>) {
-        database.put(key = charName, value = moveList.associateBy { it.id })
+        val indexedMoves = buildMap {
+            moveList.forEach { move ->
+                put(move.id, move)
+                move.aliases.forEach { alias ->
+                    put(alias, move)
+                }
+            }
+        }
+        database[charName] = indexedMoves
     }
 }

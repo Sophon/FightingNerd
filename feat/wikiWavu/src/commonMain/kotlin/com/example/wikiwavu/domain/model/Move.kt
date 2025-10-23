@@ -22,7 +22,7 @@ data class Move(
     val onHit: String? = null,
     val onCH: String? = null,
     val notes: List<String> = listOf(),
-    val alias: String? = null,
+    val aliases: List <String> = listOf(),
     val image: String? = null,
     val videoId: String? = null,
     val alt: String? = null,
