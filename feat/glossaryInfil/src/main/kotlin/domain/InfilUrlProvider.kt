@@ -1,4 +1,7 @@
-import model.GlossaryItem
+package domain
+
+import TERM_URL
+import VIDEO_URL
 
 class InfilUrlProvider {
     fun termUrl(item: GlossaryItem): String {

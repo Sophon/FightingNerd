@@ -1,4 +1,4 @@
-package dataRemote
+package data
 
 import BASE_URL
 import com.example.core.domain.DataError

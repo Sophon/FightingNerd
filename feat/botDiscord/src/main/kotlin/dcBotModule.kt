@@ -2,7 +2,7 @@ import com.example.core.coreModule
 import data.InMemoryGlossaryDB
 import data.InMemoryMoveListDB
 import data.MoveListDB
-import dataLocal.GlossaryDB
+import data.GlossaryDB
 import featureRegistry.FrameDataFeature
 import featureRegistry.GlossaryFeature
 import org.koin.core.context.startKoin

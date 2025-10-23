@@ -2,8 +2,8 @@ import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import com.example.core.domain.Service
 import com.example.core.domain.Source
+import domain.GlossaryItem
 import io.github.aakira.napier.Napier
-import model.GlossaryItem
 import usecase.CacheGlossaryUseCase
 import usecase.DownloadGlossaryUseCase
 import usecase.FetchDataForTermUseCase

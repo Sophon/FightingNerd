@@ -1,6 +1,7 @@
 import com.example.core.coreModule
-import dataRemote.InfilGlossaryDataSource
-import dataRemote.InfilGlossaryDataSourceImpl
+import data.InfilGlossaryDataSource
+import data.InfilGlossaryDataSourceImpl
+import domain.InfilUrlProvider
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration

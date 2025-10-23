@@ -1,9 +1,9 @@
-package dataLocal
+package data
 
 import GlossaryError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
-import model.GlossaryItem
+import domain.GlossaryItem
 
 interface GlossaryDB {
     suspend fun fetchDataFor(query: String): Result<List<GlossaryItem>, GlossaryError>

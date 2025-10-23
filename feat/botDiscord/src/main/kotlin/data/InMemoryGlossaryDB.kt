@@ -4,8 +4,7 @@ import GlossaryError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import com.example.core.util.removeWhiteSpace
-import dataLocal.GlossaryDB
-import model.GlossaryItem
+import domain.GlossaryItem
 
 class InMemoryGlossaryDB: GlossaryDB {
     private var glossary = mutableMapOf<String, GlossaryItem>()

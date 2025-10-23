@@ -4,8 +4,8 @@ import GlossaryError
 import com.example.core.domain.Result
 import com.example.core.domain.map
 import com.example.core.util.removeWhiteSpace
-import dataLocal.GlossaryDB
-import model.GlossaryItem
+import data.GlossaryDB
+import domain.GlossaryItem
 
 class FetchDataForTermUseCase(
     private val db: GlossaryDB,

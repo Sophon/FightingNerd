@@ -1,12 +1,12 @@
 package featureRegistry
 
-import InfilUrlProvider
+import domain.InfilUrlProvider
 import MAX_LENGTH_EMBED
 import com.example.core.domain.Result
 import com.example.core.util.truncate
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import model.GlossaryItem
+import domain.GlossaryItem
 import usecase.SearchGlossaryUseCase
 import usecase.StartGlossaryUseCase
 import util.createErrorEmbed
