@@ -27,3 +27,8 @@ kotlin {
         }
     }
 }
+
+// Use matching instead of named
+tasks.matching { it.name == "jvmRun" }.configureEach {
+    (this as JavaExec).workingDir = rootProject.projectDir
+}

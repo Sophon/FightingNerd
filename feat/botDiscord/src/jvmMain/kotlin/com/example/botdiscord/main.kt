@@ -24,7 +24,7 @@ suspend fun main() = coroutineScope {
 
 private fun getApiKey(): String {
     // env var first (for production/Docker)
-    System.getenv("DISCORD_API_KEY")?.let { return it }
+    System.getenv("discordBotApiKey")?.let { return it }
 
     // fall back to config file (for local development)
     val configFile = File(CONFIG_FILE_NAME)
