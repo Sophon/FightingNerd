@@ -49,15 +49,16 @@ internal fun String.cleanHtml(): String {
         .trim()
 }
 
-internal fun String.decodeHtmlEntities(): String {
+internal fun String.removeHtmlTags(): String {
+    return this.replace(Regex("<[^>]*>"), "")
+}
+
+
+private fun String.decodeHtmlEntities(): String {
     return this
         .replace("&lt;", "<")
         .replace("&gt;", ">")
         .replace("&quot;", "\"")
         .replace("&amp;", "&")
         .replace("&nbsp;", " ")
-}
-
-internal fun String.removeHtmlTags(): String {
-    return this.replace(Regex("<[^>]*>"), "")
 }

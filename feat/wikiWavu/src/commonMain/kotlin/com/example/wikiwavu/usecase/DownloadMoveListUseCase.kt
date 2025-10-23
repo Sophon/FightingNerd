@@ -10,6 +10,7 @@ import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.util.cleanHtml
 import com.example.wikiwavu.util.cleanMoveInput
+import com.example.wikiwavu.util.removeHtmlTags
 
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,
@@ -56,7 +57,7 @@ internal class DownloadMoveListUseCase(
             onHit = hit,
             onCH = ch,
             notes = splitNotes(),
-            alias = alias,
+            aliases = parseAliases(),
             image = image,
             videoId = video,
             alt = alt,
@@ -133,5 +134,18 @@ internal class DownloadMoveListUseCase(
 
     private fun MoveDto.isHoming(): Boolean {
         return notes?.contains("Homing", ignoreCase = true) == true
+    }
+
+    private fun MoveDto.parseAliases(): List<String> {
+        return alias.orEmpty()
+            .cleanHtml()
+            .lines()
+            .map {
+                it
+                    .removePrefix("* ")
+                    .trim()
+                    .cleanMoveInput()
+            }
+            .filter { it.isNotEmpty() }
     }
 }
