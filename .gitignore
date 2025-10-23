@@ -270,3 +270,5 @@ lint/tmp/
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.kotlinx-kotlinx-serialization-json-1.7.3-nativeMain-O4ZS7Q.klib
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.kotlinx-kotlinx-serialization-json-io-1.7.3-commonMain-w7DiNw.klib
 /config.json
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/io.github.aakira-napier-2.7.1-commonMain-UpJokw.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/io.github.aakira-napier-2.7.1-darwinMain-EnitAw.klib
