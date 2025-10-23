@@ -154,10 +154,10 @@ internal class FrameDataFeature(
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
-        title = move.charName
+        title = move.id
         url = urlProvider.charUrl(move.charName)
 
-        description = "**${move.id}**: ${move.name}"
+        description = "**${move.charName}**: ${move.name}"
         color = Color(GREEN)
 
         field(name = "SU", value = move.startup)
