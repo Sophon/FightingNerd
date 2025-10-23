@@ -3,7 +3,6 @@ package com.example.glossaryinfil.domain
 import com.example.core.util.urlEncode
 import com.example.glossaryinfil.TERM_URL
 import com.example.glossaryinfil.VIDEO_URL
-import io.ktor.http.encodeURLParameter
 
 class InfilUrlProvider {
     fun termUrl(item: GlossaryItem): String {
