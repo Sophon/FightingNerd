@@ -1,16 +1,16 @@
 package usecase
 
 import BotError
-import WavuError
-import WavuWikiClient
+import com.example.wikiwavu.WavuError
+import com.example.wikiwavu.WavuWikiClient
 import com.example.core.domain.Result
-import domain.model.Move
+import com.example.wikiwavu.domain.model.Move
 
-class GetHomingMovesUseCase(
+class GetPowerCrushMovesUseCase(
     private val wiki: WavuWikiClient,
 ) {
     suspend fun invoke(charName: String): Result<List<Move>, BotError> {
-        return when (val result = wiki.getHomingMoves(charName)) {
+        return when (val result = wiki.getPowerCrushMoves(charName)) {
             is Result.Success -> Result.Success(result.data)
             is Result.Error -> {
                 Result.Error(

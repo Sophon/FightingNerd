@@ -1,6 +1,6 @@
 package usecase
 
-import WavuWikiClient
+import com.example.wikiwavu.WavuWikiClient
 
 class StartWikiUseCase(
     private val wikiClient: WavuWikiClient,

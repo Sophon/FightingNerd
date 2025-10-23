@@ -6,8 +6,8 @@ import com.example.core.domain.Result
 import com.example.core.util.truncate
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import domain.WavuUrlProvider
-import domain.model.Move
+import com.example.wikiwavu.domain.WavuUrlProvider
+import com.example.wikiwavu.domain.model.Move
 import usecase.GetHeatMovesUseCase
 import usecase.GetHomingMovesUseCase
 import usecase.GetPowerCrushMovesUseCase

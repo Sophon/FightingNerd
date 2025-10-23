@@ -1,11 +1,11 @@
 package usecase
 
 import BotError
-import WavuError
-import WavuWikiClient
+import com.example.wikiwavu.WavuError
+import com.example.wikiwavu.WavuWikiClient
 import com.example.core.domain.Result
 import com.example.core.util.dropFirstAndJoin
-import domain.model.Move
+import com.example.wikiwavu.domain.model.Move
 
 internal class SearchFrameDataUseCase(
     private val wavuWikiClient: WavuWikiClient,

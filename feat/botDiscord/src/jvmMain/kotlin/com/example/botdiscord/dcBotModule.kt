@@ -1,7 +1,8 @@
 import com.example.core.coreModule
 import data.InMemoryGlossaryDB
 import data.InMemoryMoveListDB
-import data.MoveListDB
+import com.example.wikiwavu.data.MoveListDB
+import com.example.wikiwavu.wavuModule
 import data.GlossaryDB
 import featureRegistry.FrameDataFeature
 import featureRegistry.GlossaryFeature

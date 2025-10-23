@@ -1,25 +1,29 @@
 plugins {
-    id("java-library")
-    alias(libs.plugins.jetbrainsKotlinJvm)
+    alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
 }
-java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
-}
+
 kotlin {
-    compilerOptions {
-        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21
+    jvm {
+        compilerOptions {
+            jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+        }
+        @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
+        mainRun {
+            mainClass.set("com.example.botdiscord.MainKt")
+        }
     }
-}
 
-dependencies {
-    implementation(project(":core"))
-    implementation(project(":feat:glossaryInfil"))
-    implementation(project(":feat:wikiWavu"))
+    sourceSets {
+        jvmMain.dependencies {
+            implementation(project(":core"))
+            implementation(project(":feat:glossaryInfil"))
+            implementation(project(":feat:wikiWavu"))
 
-    implementation(libs.napier)
-    implementation(libs.kord)
+            implementation(libs.napier)
+            implementation(libs.kord)
 
-    api(libs.koin.core)
+            api(libs.koin.core)
+        }
+    }
 }

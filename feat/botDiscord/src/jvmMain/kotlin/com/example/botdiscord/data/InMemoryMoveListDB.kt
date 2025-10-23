@@ -1,8 +1,9 @@
 package data
 
-import WavuError
+import com.example.wikiwavu.WavuError
 import com.example.core.domain.Result
-import domain.model.Move
+import com.example.wikiwavu.data.MoveListDB
+import com.example.wikiwavu.domain.model.Move
 
 class InMemoryMoveListDB: MoveListDB {
     private var database: MutableMap<String, Map<String, Move>> = mutableMapOf()

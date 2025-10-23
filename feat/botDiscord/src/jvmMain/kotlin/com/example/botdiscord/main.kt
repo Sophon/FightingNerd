@@ -1,4 +1,9 @@
+package com.example.botdiscord
+
+import CONFIG_FILE_NAME
+import DiscordBot
 import config.DcConfig
+import initKoin
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
@@ -19,14 +24,13 @@ suspend fun main() = coroutineScope {
     }.join()
 }
 
-// Just update this function that's already there
 private fun getApiKey(): String {
-    // Try environment variable first (for production/Docker)
+    // env var first (for production/Docker)
     System.getenv("DISCORD_API_KEY")?.let { return it }
 
-    // Fall back to config file (for local development)
+    // fall back to config file (for local development)
     val configFile = File(CONFIG_FILE_NAME)
-    if (!configFile.exists()) {
+    if (configFile.exists().not()) {
         throw IllegalStateException("No API key found. Set DISCORD_API_KEY env var or create $CONFIG_FILE_NAME")
     }
 
