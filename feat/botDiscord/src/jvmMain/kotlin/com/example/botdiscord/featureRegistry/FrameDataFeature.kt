@@ -178,14 +178,7 @@ internal class FrameDataFeature(
 
         field(name = "DMG", value = move.damage.orDash())
 
-        field(
-            name = "📝 NOTES",
-            value = move.notes
-                .emojify(crush = move.crush)
-                .joinToString(separator = "") { note -> "* $note\n" }
-                .truncate(MAX_LENGTH_EMBED),
-            inline = false,
-        )
+        createNotes(move)
 
         urlProvider.videoUrl(move)?.let { url ->
             field(name = "Video", value = "[Link](${url})")
@@ -195,6 +188,26 @@ internal class FrameDataFeature(
             text = serviceInfo.name
             icon = serviceInfo.iconUrl
         }
+    }
+
+    private fun EmbedBuilder.createNotes(move: Move) {
+        val aliasNote = if (move.aliases.isNotEmpty()) {
+            "Alt inputs: ${move.aliases.joinToString("; ")}"
+        } else null
+
+        val allNotes = buildList {
+            addAll(move.notes)
+            aliasNote?.let { add(it) }
+        }
+
+        return field(
+            name = "📝 NOTES",
+            value = allNotes
+                .emojify(crush = move.crush)
+                .joinToString(separator = "") { note -> "* $note\n" }
+                .truncate(MAX_LENGTH_EMBED),
+            inline = false,
+        )
     }
 
     private fun createMoveListEmbed(
