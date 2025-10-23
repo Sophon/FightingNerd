@@ -1,0 +1,11 @@
+package com.example.wikiwavu.data
+
+import com.example.wikiwavu.WavuError
+import com.example.core.domain.Result
+import com.example.wikiwavu.domain.model.Move
+
+interface MoveListDB {
+    suspend fun fetchMoveListFor(charName: String): Result<Map<String, Move>, WavuError>
+    suspend fun fetchMoveDataFor(charName: String, moveQuery: String): Result<Move, WavuError>
+    suspend fun insertMoveList(charName: String, moveList: List<Move>)
+}
