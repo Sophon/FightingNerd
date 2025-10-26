@@ -272,3 +272,10 @@ lint/tmp/
 /config.json
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/io.github.aakira-napier-2.7.1-commonMain-UpJokw.klib
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/io.github.aakira-napier-2.7.1-darwinMain-EnitAw.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/com.willowtreeapps.assertk-assertk-0.25-commonMain--mc4yQ.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/com.willowtreeapps.assertk-assertk-0.25-nativeMain--mc4yQ.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/com.willowtreeapps.opentest4k-opentest4k-1.2.2-commonMain-zQl0mg.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/com.willowtreeapps.opentest4k-opentest4k-1.2.2-nativeMain-zQl0mg.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/com.willowtreeapps.opentest4k-opentest4k-1.2.2-otherMain-zQl0mg.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.kotlinx-kotlinx-coroutines-test-1.9.0-commonMain-P2q3fQ.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.kotlinx-kotlinx-coroutines-test-1.9.0-nativeMain-P2q3fQ.klib
