@@ -1,3 +1,5 @@
+package com.example.glossaryinfil.usecase
+
 import com.example.core.domain.Result
 import assertk.assertThat
 import assertk.assertions.hasSize
@@ -7,7 +9,6 @@ import com.example.core.domain.EmptyResult
 import com.example.glossaryinfil.GlossaryError
 import com.example.glossaryinfil.data.GlossaryDB
 import com.example.glossaryinfil.domain.GlossaryItem
-import com.example.glossaryinfil.usecase.FetchDataForTermUseCase
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest
