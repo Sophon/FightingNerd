@@ -17,7 +17,7 @@ data class Move(
     val startup: String? = null,
     val recoveryOnWhiff: String? = null,
     val totalFrames: String? = null,
-    val crush: String? = null,
+    val crushes: List<String> = listOf(),
     val onBlock: String? = null,
     val onHit: String? = null,
     val onCH: String? = null,

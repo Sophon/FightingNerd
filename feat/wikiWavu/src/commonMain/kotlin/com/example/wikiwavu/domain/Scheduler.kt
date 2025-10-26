@@ -6,7 +6,6 @@ import kotlinx.coroutines.flow.flow
 import kotlin.time.Duration
 
 class Scheduler {
-
     fun <T>start(
         period: Duration,
         task: suspend () -> T,

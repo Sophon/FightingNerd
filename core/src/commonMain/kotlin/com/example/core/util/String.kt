@@ -14,8 +14,11 @@ fun String.dropFirstAndJoin(delimiter: Char): String {
 }
 
 fun String.isAtLeast(wordCount: Int): Boolean {
+    if (isBlank()) return wordCount == 0
+
     return this
         .split(' ')
+        .filter { it.isNotBlank() }
         .size >= wordCount
 }
 

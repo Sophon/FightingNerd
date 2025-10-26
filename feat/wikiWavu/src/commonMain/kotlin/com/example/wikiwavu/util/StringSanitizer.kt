@@ -35,8 +35,8 @@ fun String.cleanMoveInput(): String {
     }
 
     result = result
-        .replace("rage", "r.")
-        .replace("heat", "h.")
+        .replace("rage.", "r.")
+        .replace("heat.", "h.")
 
     return result
 }

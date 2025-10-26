@@ -11,9 +11,14 @@ class CacheGlossaryUseCase(
 ) {
     suspend fun invoke(items: List<GlossaryItem>): EmptyResult<GlossaryError> {
         items.forEach { item ->
-            db.insertData(term = item.term, item = item)
+            db.insertData(term = item.term, item = item).let { result ->
+                if (result is Result.Error) return result
+            }
+
             item.altTerm.forEach { alias ->
-                db.insertData(term = alias, item = item)
+                db.insertData(term = alias, item = item).let { result ->
+                    if (result is Result.Error) return result
+                }
             }
         }
 
