@@ -138,7 +138,7 @@ class FetchDataForTermUseCaseTest {
     }
 
     @Test
-    fun `query with whitespace is normalized for matching`() = runTest {
+    fun `exact match first followed by partial matches`() = runTest {
         // Given
         val query = "frame data"
         val items = listOf(
@@ -153,8 +153,10 @@ class FetchDataForTermUseCaseTest {
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
         val data = (result as Result.Success).data
-        // "framedata" should come first as exact match without whitespace
-        assertThat(data[0].term).isEqualTo("framedata")
+        // "Frame Data" is exact match (case insensitive), should come first
+        assertThat(data[0].term).isEqualTo("Frame Data")
+        // "framedata" is exact match without whitespace, should come second
+        assertThat(data[1].term).isEqualTo("framedata")
     }
 
     @Test
