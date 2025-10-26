@@ -244,7 +244,7 @@ class CacheMoveListUseCaseTest {
                 startup = "i15",
                 recoveryOnWhiff = "23",
                 totalFrames = "38",
-                crush = "cs9~",
+                crushes = listOf("cs9~"),
                 onBlock = "-12",
                 onHit = "+33g",
                 onCH = "Launch",

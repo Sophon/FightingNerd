@@ -197,7 +197,7 @@ internal class FrameDataFeature(
         return field(
             name = "📝 NOTES",
             value = allNotes
-                .emojify(crush = move.crush)
+                .emojify(crushes = move.crushes)
                 .joinToString(separator = "") { note -> "* $note\n" }
                 .truncate(MAX_LENGTH_EMBED),
             inline = false,
@@ -236,7 +236,7 @@ internal class FrameDataFeature(
     }
 
     private fun List<String>.emojify(
-        crush: String?
+        crushes: List<String>,
     ): List<String> {
         return buildList {
             this@emojify.forEach { note ->
@@ -255,9 +255,11 @@ internal class FrameDataFeature(
                 add(emojified)
             }
 
-            crush?.takeIf { it.contains("pc", ignoreCase = true) }?.let {
-                add("🛡️ $it")
-            }
+            crushes
+                .filter { it.contains("pc", ignoreCase = true) }
+                .forEach { crush ->
+                    add("🛡️ $crush")
+                }
         }
     }
 }

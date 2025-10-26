@@ -10,7 +10,6 @@ import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.util.cleanHtml
 import com.example.wikiwavu.util.cleanMoveInput
-import com.example.wikiwavu.util.removeHtmlTags
 
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,
@@ -52,7 +51,7 @@ internal class DownloadMoveListUseCase(
             startup = getRootStartup(movesById),
             recoveryOnWhiff = recv,
             totalFrames = tot,
-            crush = crush,
+            crushes = splitCrush(),
             onBlock = block,
             onHit = hit,
             onCH = ch,
@@ -122,6 +121,18 @@ internal class DownloadMoveListUseCase(
             .map { it.removePrefix("* ").trim() }
 
         return finalNotes
+    }
+
+    //input: <div class="plainlist">\n* is1~20\n* js25~39\n* fs40~42</div>
+    private fun MoveDto.splitCrush(): List<String> {
+        val finalCrushes = crush.orEmpty()
+            .trimIndent()
+            .cleanHtml()
+            .lines()
+            .filterNot { it.isEmpty() }
+            .map { it.removePrefix("* ").trim() }
+
+        return finalCrushes
     }
 
     private fun MoveDto.isHE(): Boolean {
