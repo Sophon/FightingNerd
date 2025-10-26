@@ -15,6 +15,7 @@ import com.example.botdiscord.usecase.SearchFrameDataUseCase
 import com.example.botdiscord.usecase.StartWikiUseCase
 import com.example.botdiscord.util.createErrorEmbed
 import com.example.botdiscord.util.field
+import com.example.botdiscord.util.orClickable
 import com.example.botdiscord.util.orDash
 
 internal class FrameDataFeature(
@@ -161,16 +162,9 @@ internal class FrameDataFeature(
         color = Color(GREEN)
 
         field(name = "SU", value = move.startup)
-        clickableField(name = "OH", value = move.onHit.orDash())
-        clickableField(
-            name = "OH",
-            value = move.onHit.orDash()
-        )
+        field(name = "OH", value = move.onHit.orClickable().orDash())
         field(name = "OB", value = move.onBlock.orDash())
-        clickableField(
-            name = "CH",
-            value = move.onCH ?: move.onHit.orDash()
-        )
+        field(name = "CH", value = (move.onCH ?: move.onHit).orClickable().orDash())
         field(name = "LVL", value = move.level)
         move.recoveryOnWhiff
             ?.takeIf { it.isNotEmpty() }
@@ -196,7 +190,7 @@ internal class FrameDataFeature(
         } else null
 
         val allNotes = buildList {
-            addAll(move.notes)
+            addAll(move.notes.mapNotNull { it.orClickable() })
             aliasNote?.let { add(it) }
         }
 

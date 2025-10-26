@@ -1,5 +1,7 @@
 package com.example.core.util
 
+import io.ktor.http.encodeURLParameter
+
 fun String.removeWhiteSpace(): String {
     return this.replace("\\s".toRegex(), "")
 }
@@ -22,3 +24,5 @@ fun String.truncate(maxLength: Int): String {
         take(maxLength - 3) + "..."
     } else this
 }
+
+fun String.urlEncode(): String = encodeURLParameter()

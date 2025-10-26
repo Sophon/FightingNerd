@@ -1,5 +1,6 @@
 package com.example.wikiwavu.domain
 
+import com.example.core.util.urlEncode
 import com.example.wikiwavu.MOVE_URL
 import com.example.wikiwavu.VIDEO_URL
 import com.example.wikiwavu.domain.model.Move
@@ -10,7 +11,7 @@ class WavuUrlProvider {
     }
 
     fun videoUrl(move: Move): String? {
-        return move.videoId?.let { VIDEO_URL + it }
+        return move.videoId?.let { VIDEO_URL + it.urlEncode() }
     }
 
     fun followUpUrl(query: String): String? {

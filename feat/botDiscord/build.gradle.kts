@@ -25,6 +25,14 @@ kotlin {
 
             api(libs.koin.core)
         }
+
+        jvmTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.kotlin.test)
+            implementation(libs.kotlin.testJunit)
+            implementation(libs.test.assertk)
+            implementation(libs.kotlinx.coroutines.test)
+        }
     }
 }
 
