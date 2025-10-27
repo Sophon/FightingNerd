@@ -29,3 +29,5 @@ fun String.truncate(maxLength: Int): String {
 }
 
 fun String.urlEncode(): String = encodeURLParameter()
+
+fun String?.orDash(): String = this ?: "-"
