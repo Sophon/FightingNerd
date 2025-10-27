@@ -41,21 +41,30 @@ kotlin {
         }
 
         commonTest.dependencies {
-            implementation(libs.junit)
             implementation(libs.kotlin.test)
-            implementation(libs.kotlin.testJunit)
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.test.turbine)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.kotlin.testJunit)
+        }
+
+        androidUnitTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.kotlin.testJunit)
         }
     }
 }
 
 android {
     namespace = "com.example.cornerman.glossaryinfil"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 30
     }
 
     compileOptions {
