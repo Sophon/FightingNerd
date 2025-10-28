@@ -16,7 +16,7 @@ import com.example.botdiscord.usecase.StartWikiUseCase
 import com.example.botdiscord.util.createErrorEmbed
 import com.example.botdiscord.util.field
 import com.example.botdiscord.util.orClickable
-import com.example.botdiscord.util.orDash
+import com.example.core.util.orDash
 
 internal class FrameDataFeature(
     private val startWikiUseCase: StartWikiUseCase,

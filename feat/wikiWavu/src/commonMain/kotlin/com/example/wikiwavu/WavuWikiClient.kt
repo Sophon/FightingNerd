@@ -6,6 +6,8 @@ import com.example.core.domain.Service
 import com.example.core.domain.Source
 import com.example.core.domain.onError
 import com.example.wikiwavu.domain.Scheduler
+import com.example.wikiwavu.domain.model.Character
+import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.usecase.CacheMoveListUseCase
 import com.example.wikiwavu.usecase.DownloadMoveListUseCase
@@ -23,6 +25,7 @@ interface WavuWikiClient: Service {
     suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getHeatMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getHomingMoves(charName: String): Result<List<Move>, WavuError>
+    suspend fun getMoveListFor(character: Character): Result<CharacterMoveList, WavuError>
 }
 
 internal class WavuWikiClientImpl(
@@ -79,6 +82,18 @@ internal class WavuWikiClientImpl(
         charName: String
     ): Result<List<Move>, WavuError> {
         return fetchMovesWithPropertyUseCase.invoke(charName) { it.isHoming }
+    }
+
+    override suspend fun getMoveListFor(character: Character): Result<CharacterMoveList, WavuError> {
+        return when (val result = downloadMoveListUseCase.invoke(character)) {
+            is Result.Success -> {
+                Result.Success(result.data)
+            }
+            is Result.Error -> {
+                Napier.e(tag = TAG) { "Error: ${result.error} for $character" }
+                Result.Error(result.error)
+            }
+        }
     }
 
 
