@@ -1,6 +1,7 @@
 package com.example.cornerman.screens.moveList.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,8 +39,12 @@ fun MoveListBottomBar(
         modifier = modifier
             .fillMaxWidth()
             .shadow(elevation = 8.dp)
+            .border(
+                width = .5.dp,
+                color = MaterialTheme.colorScheme.outline.copy(.1f),
+            )
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(vertical = 4.dp, horizontal = 8.dp),
+            .padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 24.dp),
     ) {
         BottomBarItem(
             icon = Icons.Outlined.Home,
