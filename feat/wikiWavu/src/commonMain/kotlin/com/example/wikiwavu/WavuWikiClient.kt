@@ -2,8 +2,6 @@ package com.example.wikiwavu
 
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
-import com.example.core.domain.Service
-import com.example.core.domain.Source
 import com.example.core.domain.onError
 import com.example.wikiwavu.domain.Scheduler
 import com.example.wikiwavu.domain.model.Character
@@ -19,7 +17,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.hours
 
-interface WavuWikiClient: Service {
+interface WavuWikiClient {
     suspend fun startSession()
     suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WavuError>
     suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WavuError>
@@ -57,13 +55,6 @@ internal class WavuWikiClientImpl(
     ): Result<Move, WavuError> {
         return fetchMoveDataUseCase.invoke(charName, moveQuery)
             .onError { Napier.e(tag = TAG) { it.toString() } }
-    }
-
-    override fun source(): Source {
-        return Source(
-            name = SERVICE_NAME,
-            iconUrl = "https://i.imgur.com/0cnTzNk.png"
-        )
     }
 
     override suspend fun getPowerCrushMoves(
