@@ -32,7 +32,13 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.ktor.android)
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
+
+            implementation(libs.napier)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -56,12 +62,16 @@ kotlin {
             implementation(libs.coil.svg)
             implementation(libs.coil.network.ktor)
 
+            implementation(libs.napier)
+
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
         }

@@ -78,7 +78,7 @@ private fun MoveItem(
         )
 
         MainInformation(move)
-        Spacer(Modifier.height(2.dp))
+        Spacer(Modifier.height(4.dp))
 
         SecondaryInformation(move)
         Spacer(Modifier.height(4.dp))
@@ -171,7 +171,6 @@ private fun Field(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodySmall,
         )
-        Spacer(Modifier.height(2.dp))
 
         if (text != null) {
             Text(
