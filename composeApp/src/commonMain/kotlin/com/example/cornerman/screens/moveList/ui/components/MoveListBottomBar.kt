@@ -44,7 +44,7 @@ fun MoveListBottomBar(
                 color = MaterialTheme.colorScheme.outline.copy(.1f),
             )
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(top = 4.dp, start = 16.dp, end = 16.dp, bottom = 24.dp),
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 24.dp),
     ) {
         BottomBarItem(
             icon = Icons.Outlined.Home,
