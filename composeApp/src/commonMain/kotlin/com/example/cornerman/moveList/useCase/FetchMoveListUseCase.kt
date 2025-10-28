@@ -2,6 +2,8 @@ package com.example.cornerman.moveList.useCase
 
 import com.example.core.domain.Result
 import com.example.cornerman.moveList.MoveListError
+import com.example.cornerman.moveList.mapper.toDomain
+import com.example.cornerman.moveList.model.MoveCategory
 import com.example.wikiwavu.WavuWikiClient
 import com.example.wikiwavu.domain.model.Character
 import com.example.wikiwavu.domain.model.CharacterMoveList
@@ -9,10 +11,10 @@ import com.example.wikiwavu.domain.model.CharacterMoveList
 class FetchMoveListUseCase(
     private val wiki: WavuWikiClient,
 ) {
-    suspend fun invoke(character: Character): Result<CharacterMoveList, MoveListError> {
+    suspend fun invoke(character: Character): Result<List<MoveCategory>, MoveListError> {
         return when (val result = wiki.getMoveListFor(character)) {
             is Result.Success -> {
-                Result.Success(result.data)
+                Result.Success(result.data.toDomain())
             }
             is Result.Error -> {
                 Result.Error(MoveListError.UNKNOWN) //TODO: mapper
@@ -20,3 +22,4 @@ class FetchMoveListUseCase(
         }
     }
 }
+

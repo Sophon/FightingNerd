@@ -3,6 +3,7 @@ package com.example.cornerman.moveList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.Result
+import com.example.cornerman.moveList.model.MoveCategory
 import com.example.cornerman.moveList.useCase.FetchMoveListUseCase
 import com.example.wikiwavu.domain.model.Character
 import io.github.aakira.napier.Napier
@@ -45,7 +46,8 @@ class MoveListVM(
         val result = fetchMoveListUseCase.invoke(character)
         when (result) {
             is Result.Success -> {
-                Napier.d(tag = TAG) { "Fetched ${result.data.moveList.size} moves for ${character.name}" }
+//                Napier.d(tag = TAG) { "Fetched ${result.data.moveList.size} moves for ${character.name}" }
+                cacheMoves(result.data)
             }
             is Result.Error -> {
                 Napier.e(tag = TAG) { result.error.toString() }
@@ -60,6 +62,10 @@ class MoveListVM(
             portraitUrl = "https://i.imgur.com/MZClYKp.png",
             wavuPageUrl =  "https://wavu.wiki/t/Dragunov",
         )
+    }
+
+    private fun cacheMoves(categories: List<MoveCategory>) {
+        _state.update { it.copy(movesByCategory = categories) }
     }
 }
 
