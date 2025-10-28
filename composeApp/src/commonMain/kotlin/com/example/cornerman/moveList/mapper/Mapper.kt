@@ -15,11 +15,11 @@ internal fun CharacterMoveList.toDomain(): List<MoveCategory> {
     return categorizedMoves
 }
 
-private fun Move.getCategoryName(): String {
+internal fun Move.getCategoryName(): String {
     return when {
         isHeat -> "Heat"
-        isStance() != null -> isStance()!!
-        isDirectional() != null -> isDirectional()!!
+        (isStance() != null) -> isStance()!!
+        (isDirectional() != null) -> isDirectional()!!
         isMotion() -> "Motion Input"
         isCrouch() -> "Crouch"
         isWS() -> "WS"
@@ -31,7 +31,7 @@ private fun Move.getCategoryName(): String {
     }
 }
 
-private fun String.getCategorySortOrder(): Int {
+internal fun String.getCategorySortOrder(): Int {
     return when (this) {
         "Heat" -> 1
         "n" -> 2
@@ -81,7 +81,7 @@ internal fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() ==
 
 //TODO: this should prob be a property of Move
 internal fun Move.isStance(): String? {
-    // Check if input contains a dot
+    if (input.startsWith("FC.")) return null
     if (input.contains(".").not()) return null
 
     val prefix = input.substringBefore(".")

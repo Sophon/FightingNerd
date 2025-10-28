@@ -70,6 +70,9 @@ kotlin {
 
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.test.assertk)
+            implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.test.turbine)
         }
 
         jvmMain.dependencies {
