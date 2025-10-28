@@ -1,12 +1,11 @@
-package com.example.cornerman.moveList.useCase
+package com.example.cornerman.screens.moveList.useCase
 
 import com.example.core.domain.Result
-import com.example.cornerman.moveList.MoveListError
-import com.example.cornerman.moveList.mapper.toDomain
-import com.example.cornerman.moveList.model.MoveCategory
+import com.example.cornerman.screens.moveList.MoveListError
+import com.example.cornerman.screens.moveList.mapper.toDomain
+import com.example.cornerman.screens.moveList.model.MoveCategory
 import com.example.wikiwavu.WavuWikiClient
 import com.example.wikiwavu.domain.model.Character
-import com.example.wikiwavu.domain.model.CharacterMoveList
 
 class FetchMoveListUseCase(
     private val wiki: WavuWikiClient,

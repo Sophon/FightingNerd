@@ -1,4 +1,4 @@
-package com.example.cornerman.charOverview
+package com.example.cornerman.screens.charOverview
 
 import com.example.wikiwavu.domain.model.Move
 import org.jetbrains.compose.resources.StringResource

@@ -1,4 +1,4 @@
-package com.example.cornerman.moveList.data
+package com.example.cornerman.screens.moveList.data
 
 import com.example.core.domain.Result
 import com.example.wikiwavu.WavuError

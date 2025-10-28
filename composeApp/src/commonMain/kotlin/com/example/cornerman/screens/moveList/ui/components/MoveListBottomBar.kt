@@ -1,4 +1,4 @@
-package com.example.cornerman.moveList.ui.components
+package com.example.cornerman.screens.moveList.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

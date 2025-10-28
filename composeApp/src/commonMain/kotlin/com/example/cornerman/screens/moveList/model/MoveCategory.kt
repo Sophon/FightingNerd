@@ -1,4 +1,4 @@
-package com.example.cornerman.moveList.model
+package com.example.cornerman.screens.moveList.model
 
 import com.example.wikiwavu.domain.model.Move
 

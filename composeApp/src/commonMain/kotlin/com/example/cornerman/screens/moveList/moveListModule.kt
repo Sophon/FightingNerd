@@ -1,8 +1,8 @@
-package com.example.cornerman.moveList
+package com.example.cornerman.screens.moveList
 
-import com.example.cornerman.moveList.data.InMemoryMoveListDB
-import com.example.cornerman.moveList.ui.MoveListVM
-import com.example.cornerman.moveList.useCase.FetchMoveListUseCase
+import com.example.cornerman.screens.moveList.data.InMemoryMoveListDB
+import com.example.cornerman.screens.moveList.ui.MoveListVM
+import com.example.cornerman.screens.moveList.useCase.FetchMoveListUseCase
 import com.example.wikiwavu.data.MoveListDB
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf

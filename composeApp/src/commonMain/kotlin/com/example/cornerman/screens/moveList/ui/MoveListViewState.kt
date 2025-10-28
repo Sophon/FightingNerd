@@ -1,6 +1,6 @@
-package com.example.cornerman.moveList.ui
+package com.example.cornerman.screens.moveList.ui
 
-import com.example.cornerman.moveList.model.MoveCategory
+import com.example.cornerman.screens.moveList.model.MoveCategory
 import com.example.wikiwavu.domain.model.Move
 import org.jetbrains.compose.resources.StringResource
 

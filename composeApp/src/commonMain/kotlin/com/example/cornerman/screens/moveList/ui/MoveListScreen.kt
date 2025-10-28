@@ -1,4 +1,4 @@
-package com.example.cornerman.moveList.ui
+package com.example.cornerman.screens.moveList.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -19,9 +19,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.cornerman.moveList.model.MoveCategory
-import com.example.cornerman.moveList.ui.components.MoveListBottomBar
-import com.example.cornerman.moveList.ui.components.Section
+import com.example.cornerman.screens.moveList.model.MoveCategory
+import com.example.cornerman.screens.moveList.ui.components.MoveListBottomBar
+import com.example.cornerman.screens.moveList.ui.components.Section
 import com.example.cornerman.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -60,7 +60,6 @@ private fun Content(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
-//            .background(Color.Red)
     ) { paddingValues ->
         Box(
             modifier = Modifier
