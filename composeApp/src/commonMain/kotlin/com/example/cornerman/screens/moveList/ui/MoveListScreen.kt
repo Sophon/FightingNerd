@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -14,12 +13,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cornerman.screens.moveList.model.MoveCategory
+import com.example.cornerman.screens.moveList.ui.components.CategoriesBar
 import com.example.cornerman.screens.moveList.ui.components.MoveListBottomBar
 import com.example.cornerman.screens.moveList.ui.components.Section
 import com.example.cornerman.theme.AppTheme
@@ -46,7 +46,7 @@ private fun Content(
     onNotesExpandClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var isCategoriesBarShown by remember { mutableStateOf(true) }
+    var isCategoriesBarShown by remember { mutableStateOf(false) }
 
     Scaffold(
         containerColor = Color.Transparent,
@@ -72,7 +72,15 @@ private fun Content(
                 onNotesExpandClick = onNotesExpandClick,
             )
 
-            //TODO: contents sidebar
+            if (isCategoriesBarShown) {
+                CategoriesBar(
+                    categories = state.movesByCategory,
+                    onCategoryClick = {},
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(end = 8.dp, bottom = 8.dp)
+                )
+            }
         }
     }
 }
@@ -96,7 +104,6 @@ private fun MoveList(
                 onNotesExpandClick = onNotesExpandClick,
                 modifier = Modifier
                     .padding(4.dp)
-                    .clip(RoundedCornerShape(8.dp))
             )
         }
     }
