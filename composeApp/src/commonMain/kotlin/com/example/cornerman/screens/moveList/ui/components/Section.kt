@@ -97,14 +97,15 @@ private fun MoveItem(
         SecondaryInformation(move)
         Spacer(Modifier.height(4.dp))
 
-        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(.3f))
-        Spacer(Modifier.height(4.dp))
-
-        Notes(
-            isExpanded = isNotesExpanded,
-            onExpandClick = onNotesExpandClick,
-            notes = move.notes,
-        )
+        if (move.notes.isNotEmpty()) {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(.3f))
+            Spacer(Modifier.height(4.dp))
+            Notes(
+                isExpanded = isNotesExpanded,
+                onExpandClick = onNotesExpandClick,
+                notes = move.notes,
+            )
+        }
         Spacer(Modifier.height(4.dp))
     }
 }
@@ -157,10 +158,12 @@ private fun SecondaryInformation(
             text = move.damage,
         )
 
-        Field(
-            title = "Recovery",
-            text = move.recoveryOnWhiff,
-        )
+        move.recoveryOnWhiff?.let { recovery ->
+            Field(
+                title = "Recovery",
+                text = recovery,
+            )
+        }
     }
 }
 
