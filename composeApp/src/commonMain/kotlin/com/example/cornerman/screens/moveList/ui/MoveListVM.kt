@@ -52,6 +52,7 @@ class MoveListVM(
                 Napier.e(tag = TAG) { result.error.toString() }
             }
         }
+        _state.update { it.copy(isLoading = false) }
     }
 
     private fun mockCharacter(): Character {

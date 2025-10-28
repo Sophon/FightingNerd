@@ -9,7 +9,7 @@ data class MoveListViewState(
     val expandedNotesId: Set<String> = emptySet(),
 
     val error: StringResource? = null,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
 ) {
     companion object {
         val PREVIEW = MoveListViewState(
