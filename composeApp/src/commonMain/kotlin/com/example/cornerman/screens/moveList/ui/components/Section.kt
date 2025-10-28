@@ -153,11 +153,12 @@ private fun SecondaryInformation(
             title = "Level",
             text = move.level.orDash(),
         )
-        Field(
-            title = "Damage",
-            text = move.damage,
-        )
-
+        move.damage?.let { damage ->
+            Field(
+                title = "Damage",
+                text = damage,
+            )
+        }
         move.recoveryOnWhiff?.let { recovery ->
             Field(
                 title = "Recovery",
