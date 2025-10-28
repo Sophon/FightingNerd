@@ -1,6 +1,6 @@
-package com.example.cornerman.screens.moveList.mapper
+package com.example.cornerman.screens.moveList.domain
 
-import com.example.cornerman.screens.moveList.model.MoveCategory
+import com.example.cornerman.screens.moveList.domain.MoveCategory
 import com.example.cornerman.screens.moveList.util.cleanComboLinks
 import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move

@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.cornerman.screens.moveList.model.MoveCategory
+import com.example.cornerman.screens.moveList.domain.MoveCategory
 import com.example.cornerman.screens.moveList.ui.components.CategoriesBar
 import com.example.cornerman.screens.moveList.ui.components.MoveListBottomBar
 import com.example.cornerman.screens.moveList.ui.components.Section

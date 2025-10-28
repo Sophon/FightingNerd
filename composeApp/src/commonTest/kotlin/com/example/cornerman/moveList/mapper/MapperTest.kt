@@ -2,17 +2,17 @@ package com.example.cornerman.moveList.mapper
 
 import assertk.assertThat
 import assertk.assertions.*
-import com.example.cornerman.screens.moveList.mapper.getCategoryName
-import com.example.cornerman.screens.moveList.mapper.getCategorySortOrder
-import com.example.cornerman.screens.moveList.mapper.isBT
-import com.example.cornerman.screens.moveList.mapper.isCD
-import com.example.cornerman.screens.moveList.mapper.isCrouch
-import com.example.cornerman.screens.moveList.mapper.isDirectional
-import com.example.cornerman.screens.moveList.mapper.isMotion
-import com.example.cornerman.screens.moveList.mapper.isNeutralInput
-import com.example.cornerman.screens.moveList.mapper.isStance
-import com.example.cornerman.screens.moveList.mapper.isThrow
-import com.example.cornerman.screens.moveList.mapper.isWS
+import com.example.cornerman.screens.moveList.domain.getCategoryName
+import com.example.cornerman.screens.moveList.domain.getCategorySortOrder
+import com.example.cornerman.screens.moveList.domain.isBT
+import com.example.cornerman.screens.moveList.domain.isCD
+import com.example.cornerman.screens.moveList.domain.isCrouch
+import com.example.cornerman.screens.moveList.domain.isDirectional
+import com.example.cornerman.screens.moveList.domain.isMotion
+import com.example.cornerman.screens.moveList.domain.isNeutralInput
+import com.example.cornerman.screens.moveList.domain.isStance
+import com.example.cornerman.screens.moveList.domain.isThrow
+import com.example.cornerman.screens.moveList.domain.isWS
 import com.example.wikiwavu.domain.model.Move
 import kotlin.test.Test
 

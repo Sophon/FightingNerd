@@ -1,9 +1,7 @@
-package com.example.cornerman.screens.moveList.useCase
+package com.example.cornerman.screens.moveList.domain
 
 import com.example.core.domain.Result
-import com.example.cornerman.screens.moveList.MoveListError
-import com.example.cornerman.screens.moveList.mapper.toDomain
-import com.example.cornerman.screens.moveList.model.MoveCategory
+import com.example.cornerman.screens.moveList.domain.MoveListError
 import com.example.wikiwavu.WavuWikiClient
 import com.example.wikiwavu.domain.model.Character
 
@@ -21,4 +19,3 @@ class FetchMoveListUseCase(
         }
     }
 }
-

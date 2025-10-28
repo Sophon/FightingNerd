@@ -1,4 +1,4 @@
-package com.example.cornerman.screens.moveList
+package com.example.cornerman.screens.moveList.domain
 
 import com.example.core.domain.Error
 
