@@ -279,3 +279,5 @@ lint/tmp/
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/com.willowtreeapps.opentest4k-opentest4k-1.2.2-otherMain-zQl0mg.klib
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.kotlinx-kotlinx-coroutines-test-1.9.0-commonMain-P2q3fQ.klib
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.kotlinx-kotlinx-coroutines-test-1.9.0-nativeMain-P2q3fQ.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.compose.material-material-icons-core-1.7.3-commonMain-OY6u5w.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.compose.material-material-icons-extended-1.7.3-commonMain-m2wuDA.klib
