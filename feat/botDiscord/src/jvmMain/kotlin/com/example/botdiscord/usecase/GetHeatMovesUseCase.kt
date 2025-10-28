@@ -13,6 +13,7 @@ class GetHeatMovesUseCase(
         return when (val result = wiki.getHeatMoves(charName)) {
             is Result.Success -> Result.Success(result.data)
             is Result.Error -> {
+                //TODO: mapper
                 Result.Error(
                     when (result.error) {
                         WavuError.UNKNOWN_CHARACTER -> BotError.UNKNOWN_CHARACTER

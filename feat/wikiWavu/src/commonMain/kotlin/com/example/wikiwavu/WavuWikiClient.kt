@@ -2,10 +2,10 @@ package com.example.wikiwavu
 
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
-import com.example.core.domain.Service
-import com.example.core.domain.Source
 import com.example.core.domain.onError
 import com.example.wikiwavu.domain.Scheduler
+import com.example.wikiwavu.domain.model.Character
+import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.usecase.CacheMoveListUseCase
 import com.example.wikiwavu.usecase.DownloadMoveListUseCase
@@ -17,12 +17,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.hours
 
-interface WavuWikiClient: Service {
+interface WavuWikiClient {
     suspend fun startSession()
     suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WavuError>
     suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getHeatMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getHomingMoves(charName: String): Result<List<Move>, WavuError>
+    suspend fun getMoveListFor(character: Character): Result<CharacterMoveList, WavuError>
 }
 
 internal class WavuWikiClientImpl(
@@ -56,13 +57,6 @@ internal class WavuWikiClientImpl(
             .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
-    override fun source(): Source {
-        return Source(
-            name = SERVICE_NAME,
-            iconUrl = "https://i.imgur.com/0cnTzNk.png"
-        )
-    }
-
     override suspend fun getPowerCrushMoves(
         charName: String
     ): Result<List<Move>, WavuError> {
@@ -79,6 +73,18 @@ internal class WavuWikiClientImpl(
         charName: String
     ): Result<List<Move>, WavuError> {
         return fetchMovesWithPropertyUseCase.invoke(charName) { it.isHoming }
+    }
+
+    override suspend fun getMoveListFor(character: Character): Result<CharacterMoveList, WavuError> {
+        return when (val result = downloadMoveListUseCase.invoke(character)) {
+            is Result.Success -> {
+                Result.Success(result.data)
+            }
+            is Result.Error -> {
+                Napier.e(tag = TAG) { "Error: ${result.error} for $character" }
+                Result.Error(result.error)
+            }
+        }
     }
 
 

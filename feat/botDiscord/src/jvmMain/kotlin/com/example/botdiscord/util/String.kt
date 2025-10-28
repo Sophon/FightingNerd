@@ -29,5 +29,3 @@ internal fun String.replaceUnderline(): String {
         "**__${lastWord}__**"
     }
 }
-
-internal fun String?.orDash(): String = this ?: "-"

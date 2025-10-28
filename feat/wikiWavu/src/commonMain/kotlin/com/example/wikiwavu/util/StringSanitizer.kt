@@ -40,25 +40,3 @@ fun String.cleanMoveInput(): String {
 
     return result
 }
-
-internal fun String.cleanHtml(): String {
-    return this
-        .decodeHtmlEntities()
-        .removeHtmlTags()
-        .replace(Regex("\\*\\s*\\n"), "* ")
-        .trim()
-}
-
-internal fun String.removeHtmlTags(): String {
-    return this.replace(Regex("<[^>]*>"), "")
-}
-
-
-private fun String.decodeHtmlEntities(): String {
-    return this
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&quot;", "\"")
-        .replace("&amp;", "&")
-        .replace("&nbsp;", " ")
-}

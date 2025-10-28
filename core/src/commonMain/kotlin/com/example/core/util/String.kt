@@ -29,3 +29,28 @@ fun String.truncate(maxLength: Int): String {
 }
 
 fun String.urlEncode(): String = encodeURLParameter()
+
+fun String?.orDash(): String = this ?: "-"
+
+fun String.cleanHtml(): String {
+    return this
+        .decodeHtmlEntities()
+        .removeHtmlTags()
+        .replace(Regex("\\*\\s*\\n"), "* ")
+        .trim()
+}
+
+private fun String.decodeHtmlEntities(): String {
+    return this
+        .replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&quot;", "\"")
+        .replace("&amp;", "&")
+        .replace("&nbsp;", " ")
+        .replace("&#039;", "'")
+        .replace("&apos;", "'")
+}
+
+internal fun String.removeHtmlTags(): String {
+    return this.replace(Regex("<[^>]*>"), "")
+}
