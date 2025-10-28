@@ -1,13 +1,14 @@
 package com.example.core.util
 
 import assertk.assertThat
+import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import kotlin.test.Test
 
 class StringExtensionsTest {
-
+    //region Whitespace
     @Test
     fun `removeWhiteSpace removes all spaces`() {
         // Given
@@ -67,7 +68,9 @@ class StringExtensionsTest {
         // Then
         assertThat(result).isEqualTo("")
     }
+    //endregion
 
+    //region Drop first and join
     @Test
     fun `dropFirstAndJoin drops first element and rejoins`() {
         // Given
@@ -139,7 +142,9 @@ class StringExtensionsTest {
         // Then
         assertThat(result).isEqualTo(",,")
     }
+    //endregion
 
+    //region Is at least
     @Test
     fun `isAtLeast returns true when word count is exact`() {
         // Given
@@ -243,7 +248,9 @@ class StringExtensionsTest {
         assertThat(input.isAtLeast(3)).isTrue()
         assertThat(input.isAtLeast(4)).isFalse()
     }
+    //endregion
 
+    //region Truncate
     @Test
     fun `truncate returns original string when shorter than max`() {
         // Given
@@ -318,7 +325,9 @@ class StringExtensionsTest {
         assertThat(result).isEqualTo("...")
         assertThat(result.length).isEqualTo(3)
     }
+    //endregion
 
+    //region URL encode
     @Test
     fun `urlEncode encodes spaces`() {
         // Given
@@ -390,4 +399,376 @@ class StringExtensionsTest {
         // Then
         assertThat(result).isEqualTo("path%2Fto%2Fresource")
     }
+    //endregion
+
+    //region cleanHtml - Basic HTML Cleaning
+    @Test
+    fun `cleanHtml removes simple HTML tags`() {
+        // Given
+        val input = "<div>Test</div>"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Test")
+    }
+
+    @Test
+    fun `cleanHtml removes multiple HTML tags`() {
+        // Given
+        val input = "<div><span>Test</span></div>"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Test")
+    }
+
+    @Test
+    fun `cleanHtml removes self-closing tags`() {
+        // Given
+        val input = "Test<br/>Content"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("TestContent")
+    }
+
+    @Test
+    fun `cleanHtml removes tags with attributes`() {
+        // Given
+        val input = "<div class=\"test\">Content</div>"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Content")
+    }
+
+    @Test
+    fun `cleanHtml removes tags with complex attributes`() {
+        // Given
+        val input = "<div style=\"display: block; border-width: 0;\">Content</div>"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Content")
+    }
+    //endregion
+
+    //region cleanHtml - Bullet Point Formatting
+    @Test
+    fun `cleanHtml normalizes bullet point spacing`() {
+        // Given
+        val input = "* \nItem"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("* Item")
+    }
+
+    @Test
+    fun `cleanHtml handles multiple bullet points with newlines`() {
+        // Given
+        val input = "* \nFirst\n* \nSecond"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("* First\n* Second")
+    }
+
+    @Test
+    fun `cleanHtml handles bullet points with extra spaces`() {
+        // Given
+        val input = "*   \nItem"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("* Item")
+    }
+    //endregion
+
+    //region cleanHtml - Whitespace Handling
+    @Test
+    fun `cleanHtml trims leading whitespace`() {
+        // Given
+        val input = "   Test"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Test")
+    }
+
+    @Test
+    fun `cleanHtml trims trailing whitespace`() {
+        // Given
+        val input = "Test   "
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Test")
+    }
+
+    @Test
+    fun `cleanHtml trims both leading and trailing whitespace`() {
+        // Given
+        val input = "   Test   "
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Test")
+    }
+
+    @Test
+    fun `cleanHtml preserves internal whitespace`() {
+        // Given
+        val input = "Test Content"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Test Content")
+    }
+    //endregion
+
+    //region cleanHtml - Real World Examples
+    @Test
+    fun `cleanHtml handles yoshimitsu notes into a list`() {
+        // Given
+        val input = """
+        &lt;div class=&quot;plainlist&quot;&gt;
+        * Floor Break
+        * Weapon
+        &lt;/div&gt;
+    """
+            .trimIndent()
+
+        // When
+        val cleaned = input.cleanHtml()
+        val notes = cleaned
+            .lines()
+            .filter { it.isNotEmpty() }
+            .map { it.removePrefix("* ").trim() }
+            .filter { it.isNotEmpty() }
+
+        // Then
+        assertThat(notes).hasSize(2)
+        assertThat(notes[0]).isEqualTo("Floor Break")
+        assertThat(notes[1]).isEqualTo("Weapon")
+    }
+
+    @Test
+    fun `cleanHtml handles complex yoshimitsu move note`() {
+        // Given
+        val input = """
+            &lt;div class=&quot;plainlist&quot;&gt;
+            * 
+            &lt;div
+              style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;
+              class=&quot;movedata-icon border-blue homing&quot;
+            &gt;Homing&lt;/div&gt;
+            * Throw break 1 or 2&lt;/div&gt;
+        """.trimIndent()
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result.contains("Homing")).isEqualTo(true)
+        assertThat(result.contains("Throw break 1 or 2")).isEqualTo(true)
+    }
+    //endregion
+
+    //region cleanHtml - Edge Cases
+    @Test
+    fun `cleanHtml handles empty string`() {
+        // Given
+        val input = ""
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("")
+    }
+
+    @Test
+    fun `cleanHtml handles only whitespace`() {
+        // Given
+        val input = "   "
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("")
+    }
+
+    @Test
+    fun `cleanHtml handles string with no HTML`() {
+        // Given
+        val input = "Plain text"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Plain text")
+    }
+
+    @Test
+    fun `cleanHtml handles unclosed tags`() {
+        // Given
+        val input = "<div>Test"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Test")
+    }
+    //endregion
+
+    //region cleanHtml - HTML Entity Decoding
+    @Test
+    fun `cleanHtml decodes numeric apostrophe entity`() {
+        // Given
+        val input = "Can&#039;t Heat Dash"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Can't Heat Dash")
+    }
+
+    @Test
+    fun `cleanHtml decodes named apostrophe entity`() {
+        // Given
+        val input = "Can&apos;t Heat Dash"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Can't Heat Dash")
+    }
+
+    @Test
+    fun `cleanHtml decodes less than entity`() {
+        // Given
+        val input = "Damage &lt;10"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Damage <10")
+    }
+
+    @Test
+    fun `cleanHtml decodes greater than entity`() {
+        // Given
+        val input = "Damage &gt;50"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Damage >50")
+    }
+
+    @Test
+    fun `cleanHtml decodes quote entity`() {
+        // Given
+        val input = "Move &quot;description&quot;"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Move \"description\"")
+    }
+
+    @Test
+    fun `cleanHtml decodes ampersand entity`() {
+        // Given
+        val input = "Fast &amp; powerful"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Fast & powerful")
+    }
+
+    @Test
+    fun `cleanHtml decodes non-breaking space entity`() {
+        // Given
+        val input = "Word&nbsp;spacing"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Word spacing")
+    }
+
+    @Test
+    fun `cleanHtml decodes multiple entities in one string`() {
+        // Given
+        val input = "Can&#039;t use &quot;special&quot; moves &amp; combos"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Can't use \"special\" moves & combos")
+    }
+
+    @Test
+    fun `cleanHtml handles both tags and entities`() {
+        // Given
+        val input = "<div>Can&#039;t block</div>"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result).isEqualTo("Can't block")
+    }
+
+    @Test
+    fun `cleanHtml handles entities in complex HTML`() {
+        // Given
+        val input = "<div class=\"plainlist\">\n* Can&#039;t Heat Dash\n* Won&#039;t track</div>"
+
+        // When
+        val result = input.cleanHtml()
+
+        // Then
+        assertThat(result.contains("Can't Heat Dash")).isTrue()
+        assertThat(result.contains("Won't track")).isTrue()
+    }
+//endregion
 }
