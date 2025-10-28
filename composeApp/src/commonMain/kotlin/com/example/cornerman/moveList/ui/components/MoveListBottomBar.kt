@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Search
@@ -22,10 +23,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
+import com.example.cornerman.theme.AppTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MoveListBottomBar(
-    modifier: Modifier = Modifier
+    onContentsClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -51,6 +55,12 @@ fun MoveListBottomBar(
             icon = Icons.Outlined.Search,
             text = "Search",
             onClick = {},
+        )
+
+        BottomBarItem(
+            icon = Icons.AutoMirrored.Outlined.FormatListBulleted,
+            text = "Contents",
+            onClick = onContentsClick,
         )
     }
 }
@@ -84,3 +94,16 @@ private fun BottomBarItem(
         )
     }
 }
+
+
+//region PREVIEW
+@Composable
+@Preview(showBackground = true)
+private fun BottomBarPreview() {
+    AppTheme {
+        MoveListBottomBar(
+            onContentsClick = {},
+        )
+    }
+}
+//endregion

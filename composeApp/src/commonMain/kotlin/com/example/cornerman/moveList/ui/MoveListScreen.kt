@@ -4,9 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
@@ -57,26 +60,30 @@ private fun Content(
     onNotesExpandClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var categoriesSheetIsShown by remember { mutableStateOf(true) }
+    var isCategoriesBarShown by remember { mutableStateOf(true) }
 
     Scaffold(
-        floatingActionButton = {
-            FAB(
-                onClick = { categoriesSheetIsShown = true },
-                categories = state.movesByCategory.map { it.name },
-                onDismiss = { categoriesSheetIsShown = false },
-            )
-        },
         bottomBar = {
-            MoveListBottomBar()
+            MoveListBottomBar(
+                onContentsClick = {
+                    isCategoriesBarShown = isCategoriesBarShown.not()
+                }
+            )
         },
         modifier = modifier,
     ) { paddingValues ->
-        MoveList(
-            movesByCategory = state.movesByCategory,
-            expandedNotes = state.expandedNotesId,
-            onNotesExpandClick = onNotesExpandClick,
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            MoveList(
+                movesByCategory = state.movesByCategory,
+                expandedNotes = state.expandedNotesId,
+                onNotesExpandClick = onNotesExpandClick,
+            )
+
+            //TODO: contents sidebar
+        }
     }
 }
 
@@ -87,44 +94,16 @@ private fun MoveList(
     onNotesExpandClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
     ) {
-        movesByCategory.forEach { moveCategory ->
+        items(movesByCategory) { moveCategory ->
             Section(
                 title = moveCategory.name,
                 moves = moveCategory.moves,
                 expandedNotes = expandedNotes,
                 onNotesExpandClick = onNotesExpandClick,
-            )
-        }
-    }
-}
-
-@Composable
-private fun FAB(
-    onClick: () -> Unit,
-    categories: List<String>,
-    onDismiss: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier,
-    ) {
-        CategoriesBar(
-            categories = categories,
-            onCategoryClick = {},
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-
-        FloatingActionButton(
-            onClick = onClick,
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Outlined.FormatListBulleted,
-                contentDescription = null,
             )
         }
     }
