@@ -57,6 +57,10 @@ data class MoveListViewState(
                     )
                 ),
                 MoveCategory(
+                    name = "n",
+                    moves = listOf(),
+                ),
+                MoveCategory(
                     name = "df",
                     moves = listOf(
                         Move(
@@ -100,6 +104,18 @@ data class MoveListViewState(
                             )
                         ),
                     )
+                ),
+                MoveCategory(
+                    name = "d",
+                    moves = listOf(),
+                ),
+                MoveCategory(
+                    name = "db",
+                    moves = listOf(),
+                ),
+                MoveCategory(
+                    name = "b",
+                    moves = listOf(),
                 ),
             )
         }
