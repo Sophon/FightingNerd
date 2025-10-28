@@ -38,11 +38,12 @@ fun Section(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.primary)
+            .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Text(
             text = title,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.headlineMedium,
         )
         Spacer(Modifier.height(8.dp))
@@ -72,7 +73,7 @@ private fun MoveItem(
     ) {
         Text(
             text = move.id,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.titleMedium,
         )
 
@@ -83,11 +84,9 @@ private fun MoveItem(
         Spacer(Modifier.height(4.dp))
 
         HorizontalDivider(
-            Modifier
-                .height(1.dp)
-                .background(MaterialTheme.colorScheme.primary.copy(.1f))
+            color = MaterialTheme.colorScheme.outlineVariant
         )
-        Spacer(Modifier.height(2.dp))
+        Spacer(Modifier.height(4.dp))
 
         Notes(
             isExpanded = isNotesExpanded,
@@ -169,7 +168,7 @@ private fun Field(
     ) {
         Text(
             text = title,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             style = MaterialTheme.typography.bodySmall,
         )
         Spacer(Modifier.height(2.dp))
@@ -177,7 +176,7 @@ private fun Field(
         if (text != null) {
             Text(
                 text = text,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
             )
         }
@@ -203,7 +202,7 @@ private fun Notes(
         ) {
             Text(
                 text = "NOTES",
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleSmall,
             )
 
@@ -213,7 +212,7 @@ private fun Notes(
                 } else {
                     Icons.TwoTone.ExpandMore
                 },
-                tint = MaterialTheme.colorScheme.onPrimary,
+                tint = MaterialTheme.colorScheme.onSurface,
                 contentDescription = null,
             )
         }
@@ -223,7 +222,7 @@ private fun Notes(
             notes.forEach { note ->
                 Text(
                     text = "• $note",
-                    color = MaterialTheme.colorScheme.onPrimary,
+                    color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(Modifier.height(1.dp))
@@ -232,22 +231,43 @@ private fun Notes(
     }
 }
 
-@Composable
-private fun Video(
-    id: String,
-    isExpanded: Boolean,
-    onExpandClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    //TODO
-}
-
 
 //region PREVIEW
 @Composable
 @Preview(showBackground = true)
-private fun SectionPreview() {
-    AppTheme {
+private fun SectionPreviewDark() {
+    AppTheme(darkTheme = true) {
+        Section(
+            title = "Heat",
+            moves = listOf(
+                Move(
+                    charName = "Dragunov",
+                    id = "df3+4",
+                    input = "df3+4",
+                    startup = "i22~24",
+                    onHit = "+12g",
+                    onBlock = "-7",
+                    onCH = "+12g",
+                    level = "m",
+                    damage = "19",
+                    recoveryOnWhiff = "r29",
+                    notes = listOf(
+                        "Strong Aerial Tailspin",
+                        "Homing",
+                        "Balcony Break",
+                    )
+                )
+            ),
+            expandedNotes = emptySet(),
+            onNotesExpandClick = {},
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun SectionPreviewLight() {
+    AppTheme(darkTheme = false) {
         Section(
             title = "Heat",
             moves = listOf(

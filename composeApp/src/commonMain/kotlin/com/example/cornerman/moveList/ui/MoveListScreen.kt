@@ -1,33 +1,22 @@
 package com.example.cornerman.moveList.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cornerman.moveList.model.MoveCategory
@@ -47,10 +36,7 @@ fun MoveListScreen(
     Content(
         state = state,
         onNotesExpandClick = vm::onExpandNotesFor,
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.primary)
-            .padding(8.dp)
+        modifier = modifier,
     )
 }
 
@@ -63,6 +49,7 @@ private fun Content(
     var isCategoriesBarShown by remember { mutableStateOf(true) }
 
     Scaffold(
+        containerColor = Color.Transparent,
         bottomBar = {
             MoveListBottomBar(
                 onContentsClick = {
@@ -70,11 +57,15 @@ private fun Content(
                 }
             )
         },
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.surface)
+//            .background(Color.Red)
     ) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
         ) {
             MoveList(
                 movesByCategory = state.movesByCategory,
@@ -104,46 +95,10 @@ private fun MoveList(
                 moves = moveCategory.moves,
                 expandedNotes = expandedNotes,
                 onNotesExpandClick = onNotesExpandClick,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .clip(RoundedCornerShape(8.dp))
             )
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun CategoriesBar(
-    categories: List<String>,
-    onCategoryClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        shape = RoundedCornerShape(4.dp),
-        color = MaterialTheme.colorScheme.primary,
-        modifier = modifier
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(.5f),
-                shape = RoundedCornerShape(4.dp),
-            ),
-        tonalElevation = 3.dp,
-        shadowElevation = 8.dp,
-    ) {
-        Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            modifier = Modifier
-                .padding(bottom = 16.dp, start = 2.dp, end = 2.dp)
-        ) {
-            categories.forEachIndexed { index, category ->
-                Text(
-                    text = category,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onPrimary,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable { onCategoryClick(index) }
-                        .padding(horizontal = 12.dp, vertical = 8.dp)
-                )
-            }
         }
     }
 }
@@ -152,9 +107,21 @@ private fun CategoriesBar(
 //region PREVIEW
 @Composable
 @Preview(showBackground = true)
-private fun MoveListPreview() {
+private fun MoveListPreviewDark() {
     val state = MoveListViewState.PREVIEW
-    AppTheme {
+    AppTheme(darkTheme = true) {
+        Content(
+            state = state,
+            onNotesExpandClick = {},
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun MoveListPreviewLight() {
+    val state = MoveListViewState.PREVIEW
+    AppTheme(darkTheme = false) {
         Content(
             state = state,
             onNotesExpandClick = {},

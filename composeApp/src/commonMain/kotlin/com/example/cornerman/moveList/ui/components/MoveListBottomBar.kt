@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.example.cornerman.theme.AppTheme
@@ -36,7 +37,8 @@ fun MoveListBottomBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.primary)
+            .shadow(elevation = 8.dp)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(vertical = 4.dp, horizontal = 8.dp),
     ) {
         BottomBarItem(
@@ -80,7 +82,7 @@ private fun BottomBarItem(
     ) {
         Icon(
             imageVector = icon,
-            tint = MaterialTheme.colorScheme.onPrimary,
+            tint = MaterialTheme.colorScheme.onSurface,
             contentDescription = null,
             modifier = Modifier
                 .size(32.dp)
@@ -90,7 +92,7 @@ private fun BottomBarItem(
         Text(
             text = text,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -99,8 +101,17 @@ private fun BottomBarItem(
 //region PREVIEW
 @Composable
 @Preview(showBackground = true)
-private fun BottomBarPreview() {
-    AppTheme {
+private fun BottomBarPreviewDark() {
+    AppTheme(darkTheme = true) {
+        MoveListBottomBar(
+            onContentsClick = {},
+        )
+    }
+}
+@Composable
+@Preview(showBackground = true)
+private fun BottomBarPreviewLight() {
+    AppTheme(darkTheme = false) {
         MoveListBottomBar(
             onContentsClick = {},
         )
