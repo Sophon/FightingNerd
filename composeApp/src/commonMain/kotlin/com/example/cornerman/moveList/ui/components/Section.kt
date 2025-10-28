@@ -30,18 +30,15 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun Section(
     title: String,
     moves: List<Move>,
+    expandedNotes: Set<String>,
     onNotesExpandClick: (String) -> Unit,
-    isNotesExpanded: Boolean,
-    onVideoExpandClick: (String) -> Unit,
-    isVideoExpanded: Boolean,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.primary)
-            .padding(horizontal = 8.dp, vertical = 4.dp),
     ) {
         Text(
             text = title,
@@ -54,9 +51,7 @@ fun Section(
             MoveItem(
                 move = move,
                 onNotesExpandClick = { onNotesExpandClick(move.id) },
-                isNotesExpanded = isNotesExpanded,
-                onVideoExpandClick = { onVideoExpandClick(move.id) },
-                isVideoExpanded = isVideoExpanded,
+                isNotesExpanded = move.id in expandedNotes,
                 modifier = Modifier.padding(horizontal = 4.dp)
             )
             Spacer(Modifier.height(4.dp))
@@ -69,8 +64,6 @@ private fun MoveItem(
     move: Move,
     isNotesExpanded: Boolean,
     onNotesExpandClick: () -> Unit,
-    isVideoExpanded: Boolean,
-    onVideoExpandClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -104,11 +97,7 @@ private fun MoveItem(
         Spacer(Modifier.height(4.dp))
 
         move.videoId?.ifBlank { null }?.let { id ->
-            Video(
-                id = id,
-                isExpanded = isVideoExpanded,
-                onExpandClick = onVideoExpandClick,
-            )
+            //
         }
     }
 }
@@ -280,9 +269,7 @@ private fun SectionPreview() {
                     )
                 )
             ),
-            isNotesExpanded = true,
-            isVideoExpanded = false,
-            onVideoExpandClick = {},
+            expandedNotes = emptySet(),
             onNotesExpandClick = {},
         )
     }
