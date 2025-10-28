@@ -46,7 +46,6 @@ class MoveListVM(
         val result = fetchMoveListUseCase.invoke(character)
         when (result) {
             is Result.Success -> {
-//                Napier.d(tag = TAG) { "Fetched ${result.data.moveList.size} moves for ${character.name}" }
                 cacheMoves(result.data)
             }
             is Result.Error -> {

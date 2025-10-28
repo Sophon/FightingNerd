@@ -6,32 +6,6 @@ import com.example.wikiwavu.domain.model.Move
 import kotlin.test.Test
 
 class MapperTest {
-    // Test data helper using actual move structure from Yoshimitsu dataset
-    private fun createMove(
-        input: String,
-        notes: List<String> = emptyList(),
-        isHeat: Boolean = false
-    ) = Move(
-        charName = "Charname",
-        id = "test-${input}",
-        name = "Test Move",
-        input = input,
-        level = "m",
-        damage = "10",
-        startup = "i10",
-        recoveryOnWhiff = "r20",
-        crushes = listOf(),
-        onBlock = "+0",
-        onHit = "+5",
-        onCH = null,
-        notes = notes,
-        aliases = listOf(),
-        image = null,
-        videoId = null,
-        alt = null,
-        isHeat = isHeat
-    )
-
     //region isDirectional() tests
     @Test
     fun `isDirectional returns df for df+1 input`() {
@@ -879,4 +853,30 @@ class MapperTest {
         assertThat(result).isEqualTo(14)
     }
     //endregion
+
+
+    private fun createMove(
+        input: String,
+        notes: List<String> = emptyList(),
+        isHeat: Boolean = false
+    ) = Move(
+        charName = "Charname",
+        id = "test-${input}",
+        name = "Test Move",
+        input = input,
+        level = "m",
+        damage = "10",
+        startup = "i10",
+        recoveryOnWhiff = "r20",
+        crushes = listOf(),
+        onBlock = "+0",
+        onHit = "+5",
+        onCH = null,
+        notes = notes,
+        aliases = listOf(),
+        image = null,
+        videoId = null,
+        alt = null,
+        isHeat = isHeat
+    )
 }

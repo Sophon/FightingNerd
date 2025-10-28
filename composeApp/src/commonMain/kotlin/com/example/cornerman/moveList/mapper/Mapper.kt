@@ -1,6 +1,7 @@
 package com.example.cornerman.moveList.mapper
 
 import com.example.cornerman.moveList.model.MoveCategory
+import com.example.cornerman.moveList.util.cleanComboLinks
 import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 
@@ -8,7 +9,7 @@ internal fun CharacterMoveList.toDomain(): List<MoveCategory> {
     val categorizedMoves = moveList
         .groupBy { it.getCategoryName() }
         .map { (categoryName, moves) ->
-            MoveCategory(name = categoryName, moves = moves)
+            MoveCategory(name = categoryName, moves = moves.map { it.cleanComboLinks() })
         }
         .sortedBy { it.name.getCategorySortOrder() }
 
