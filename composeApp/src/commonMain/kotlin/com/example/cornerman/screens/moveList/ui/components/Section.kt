@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.twotone.ExpandLess
@@ -74,11 +76,20 @@ private fun MoveItem(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Text(
-            text = move.id,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.titleMedium,
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth(),
+        ) {
+            Text(
+                text = move.id,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+            )
+            Spacer(Modifier.width(8.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(.3f))
+        }
+        Spacer(Modifier.height(4.dp))
 
         MainInformation(move)
         Spacer(Modifier.height(4.dp))
@@ -86,9 +97,7 @@ private fun MoveItem(
         SecondaryInformation(move)
         Spacer(Modifier.height(4.dp))
 
-        HorizontalDivider(
-            color = MaterialTheme.colorScheme.outlineVariant
-        )
+        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(.3f))
         Spacer(Modifier.height(4.dp))
 
         Notes(
@@ -97,10 +106,6 @@ private fun MoveItem(
             notes = move.notes,
         )
         Spacer(Modifier.height(4.dp))
-
-        move.videoId?.ifBlank { null }?.let { id ->
-            //
-        }
     }
 }
 
@@ -201,11 +206,12 @@ private fun Notes(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(onClick = onExpandClick)
+                .padding(vertical = 8.dp)
         ) {
             Text(
                 text = "NOTES",
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall,
+                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
             )
 
             Icon(
@@ -216,6 +222,7 @@ private fun Notes(
                 },
                 tint = MaterialTheme.colorScheme.onSurface,
                 contentDescription = null,
+                modifier = Modifier.size(24.dp)
             )
         }
         Spacer(Modifier.height(2.dp))
