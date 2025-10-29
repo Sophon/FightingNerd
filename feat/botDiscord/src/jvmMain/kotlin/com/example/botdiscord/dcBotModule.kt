@@ -2,7 +2,7 @@ package com.example.botdiscord
 
 import com.example.botdiscord.data.InMemoryGlossaryDB
 import com.example.botdiscord.data.InMemoryMoveListDB
-import com.example.botdiscord.infrastructure.JVMFileReader
+import com.example.botdiscord.infrastructure.FileReaderJVM
 import com.example.core.coreModule
 import com.example.glossaryinfil.data.GlossaryDB
 import com.example.glossaryinfil.infilModule
@@ -57,5 +57,5 @@ fun dcBotModule(apiKey: String) = module {
     singleOf(::FrameDataFeature)
     singleOf(::GlossaryFeature)
 
-    singleOf(::JVMFileReader).bind<FileReader>()
+    singleOf(::FileReaderJVM).bind<FileReader>()
 }

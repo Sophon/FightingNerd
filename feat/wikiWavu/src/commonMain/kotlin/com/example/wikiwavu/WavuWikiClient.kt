@@ -90,7 +90,7 @@ internal class WavuWikiClientImpl(
     }
 
     override suspend fun getCharacterList(): Result<List<Character>, WavuError> {
-        return downloadCharacterListUseCase.invoke().map { it.characterList }
+        return downloadCharacterListUseCase.invoke()
     }
 
 
