@@ -89,9 +89,11 @@ private fun BottomBarItem(
         modifier = modifier
             .clickable(enabled = isEnabled, onClick = onClick),
     ) {
+        val alpha = if (isEnabled) 1f else .5f
+
         Icon(
             imageVector = icon,
-            tint = MaterialTheme.colorScheme.onSurface,
+            tint = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha),
             contentDescription = null,
             modifier = Modifier
                 .size(32.dp)
@@ -101,7 +103,7 @@ private fun BottomBarItem(
         Text(
             text = text,
             style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
         )
     }
 }
