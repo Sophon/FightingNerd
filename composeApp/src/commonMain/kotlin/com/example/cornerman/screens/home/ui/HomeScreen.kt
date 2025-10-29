@@ -12,6 +12,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Bookmarks
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.example.cornerman.theme.AppTheme
+import com.example.cornerman.uiGallery.AppBottomBar
+import com.example.cornerman.uiGallery.BottomBarItem
 import com.example.wikiwavu.domain.model.Character
 import cornerman.composeapp.generated.resources.Res
 import cornerman.composeapp.generated.resources.compose_multiplatform
@@ -44,6 +50,9 @@ fun HomeScreen(
     Content(
         state = state,
         onCharacterClick = onCharacterClick,
+        onSavedClick = vm::onSavedClick,
+        onSearchClick = vm::onSearchClick,
+        onSettingsClick = vm::onSettingsClick,
         modifier = modifier,
     )
 }
@@ -52,10 +61,20 @@ fun HomeScreen(
 private fun Content(
     state: HomeViewState,
     onCharacterClick: (String) -> Unit,
+    onSavedClick: () -> Unit,
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
         containerColor = Color.Transparent,
+        bottomBar = {
+            HomeBottomBar(
+                onSavedClick = onSavedClick,
+                onSearchClick = onSearchClick,
+                onSettingsClick = onSettingsClick,
+            )
+        },
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface),
@@ -117,6 +136,38 @@ private fun CharacterPanel(
     }
 }
 
+@Composable
+private fun HomeBottomBar(
+    onSavedClick: () -> Unit,
+    onSearchClick: () -> Unit,
+    onSettingsClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AppBottomBar(
+        items = listOf(
+            BottomBarItem(
+                icon = Icons.Outlined.Bookmarks,
+                text = "Saved",
+                onClick = onSavedClick,
+                isEnabled = false,
+            ),
+            BottomBarItem(
+                icon = Icons.Outlined.Search,
+                text = "Search",
+                onClick = onSearchClick,
+                isEnabled = false,
+            ),
+            BottomBarItem(
+                icon = Icons.Outlined.Settings,
+                text = "Settings",
+                onClick = onSettingsClick,
+                isEnabled = false,
+            )
+        ),
+        modifier = modifier,
+    )
+}
+
 
 //region PREVIEW
 @Composable
@@ -126,6 +177,9 @@ private fun HomeScreenPreviewDark() {
         Content(
             state = HomeViewState.PREVIEW,
             onCharacterClick = {},
+            onSavedClick = {},
+            onSearchClick = {},
+            onSettingsClick = {},
         )
     }
 }
@@ -137,6 +191,9 @@ private fun HomeScreenPreviewLight() {
         Content(
             state = HomeViewState.PREVIEW,
             onCharacterClick = {},
+            onSavedClick = {},
+            onSearchClick = {},
+            onSettingsClick = {},
         )
     }
 }
