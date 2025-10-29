@@ -3,8 +3,13 @@ package com.example.cornerman.screens.moveList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.Result
-import com.example.cornerman.screens.moveList.domain.FetchMoveListUseCase
+import com.example.core.domain.map
+import com.example.core.domain.onError
+import com.example.core.domain.onSuccess
+import com.example.cornerman.screens.moveList.domain.usecase.FetchMoveListUseCase
 import com.example.cornerman.screens.moveList.domain.MoveCategory
+import com.example.cornerman.screens.moveList.domain.MoveListError
+import com.example.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
 import com.example.wikiwavu.domain.model.Character
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,8 +18,14 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
+/**
+ * TODO:
+ *
+ *  2. fetch the move list from database
+ */
 class MoveListVM(
     private val charName: String,
+    private val fetchCharacterListUseCase: FetchCharacterListUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListViewState())
@@ -78,26 +89,38 @@ class MoveListVM(
 
 
     private suspend fun fetchMoves() {
-        val character = mockCharacter()
-        val result = fetchMoveListUseCase.invoke(character)
-        when (result) {
-            is Result.Success -> {
-                cacheMoves(result.data)
+        getCharacterFromName(charName)
+            .onSuccess { character ->
+                when (val result = fetchMoveListUseCase.invoke(character)) {
+                    is Result.Success -> {
+                        cacheMoves(result.data)
+                    }
+                    is Result.Error -> {
+                        Napier.e(tag = TAG) { result.error.toString() }
+                        _state.update { it.copy(error = result.error.toString()) }
+                    }
+                }
             }
-            is Result.Error -> {
-                Napier.e(tag = TAG) { result.error.toString() }
+            .onError { error ->
+                _state.update { it.copy(error = error.toString()) }
             }
-        }
+
+
         _state.update { it.copy(isLoading = false) }
     }
 
-    private fun mockCharacter(): Character {
-        return Character(
-            name = "Dragunov",
-            alias = listOf("drag"),
-            portraitUrl = "https://i.imgur.com/MZClYKp.png",
-            wavuPageUrl =  "https://wavu.wiki/t/Dragunov",
-        )
+    private suspend fun getCharacterFromName(charName: String): Result<Character, MoveListError> {
+        return when (val result = fetchCharacterListUseCase.invoke()) {
+            is Result.Success -> {
+                val foundCharacter = result.data.firstOrNull { it.name == charName }
+
+                return if (foundCharacter == null)
+                    Result.Error(MoveListError.UNKNOWN_CHARACTER)
+                else
+                    Result.Success(foundCharacter)
+            }
+            is Result.Error -> Result.Error(result.error)
+        }
     }
 
     //TODO: refactor to Database

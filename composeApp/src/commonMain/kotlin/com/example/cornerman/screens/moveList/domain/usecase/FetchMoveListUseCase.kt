@@ -1,6 +1,9 @@
-package com.example.cornerman.screens.moveList.domain
+package com.example.cornerman.screens.moveList.domain.usecase
 
 import com.example.core.domain.Result
+import com.example.cornerman.screens.moveList.domain.MoveCategory
+import com.example.cornerman.screens.moveList.domain.MoveListError
+import com.example.cornerman.screens.moveList.domain.toDomain
 import com.example.wikiwavu.WavuWikiClient
 import com.example.wikiwavu.domain.model.Character
 
@@ -13,7 +16,7 @@ class FetchMoveListUseCase(
                 Result.Success(result.data.toDomain())
             }
             is Result.Error -> {
-                Result.Error(MoveListError.UNKNOWN) //TODO: mapper
+                Result.Error(result.error.toDomain())
             }
         }
     }
