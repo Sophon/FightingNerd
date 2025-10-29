@@ -7,6 +7,7 @@ import com.example.core.domain.Result
 import com.example.wikiwavu.CHAR_LIST
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.infrastructure.FileReader
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -26,26 +27,24 @@ class DownloadCharacterListUseCaseTest {
     }
 
     @Test
-    fun `invoke returns Success when file content is valid`() {
+    fun `invoke returns Success when file content is valid`() = runTest {
         // Given
         val validJson = """
+    [
         {
-            "characterList": [
-                {
-                    "name": "Jin",
-                    "portrait": "https://i.imgur.com/example1.png",
-                    "wavu_page": "https://wavu.wiki/t/Jin",
-                    "alias": ["devil"]
-                },
-                {
-                    "name": "Kazuya",
-                    "portrait": "https://i.imgur.com/example2.png",
-                    "wavu_page": "https://wavu.wiki/t/Kazuya",
-                    "alias": []
-                }
-            ]
+          "name": "Jin",
+          "portrait": "https://i.imgur.com/ucx6sUa.png",
+          "wavu_page": "https://wavu.wiki/t/Jin",
+          "alias": ["jim"]
+        },
+        {
+          "name": "Kazuya",
+          "portrait": "https://i.imgur.com/HhPyKVn.png",
+          "wavu_page": "https://wavu.wiki/t/Kazuya",
+          "alias": ["kaz", "masku"]
         }
-    """.trimIndent()
+    ]
+""".trimIndent()
         fakeFileReader.fileContent = validJson
 
         // When
@@ -54,13 +53,13 @@ class DownloadCharacterListUseCaseTest {
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
         val characterList = (result as Result.Success).data
-        assertThat(characterList.characterList.size).isEqualTo(2)
-        assertThat(characterList.characterList[0].name).isEqualTo("Jin")
-        assertThat(characterList.characterList[0].alias).isEqualTo(listOf("devil"))
+        assertThat(characterList.size).isEqualTo(2)
+        assertThat(characterList[0].name).isEqualTo("Jin")
+        assertThat(characterList[0].alias).isEqualTo(listOf("jim")) // Fixed to match the JSON
     }
 
     @Test
-    fun `invoke returns CHARACTER_SERIALIZATION_ERROR when JSON is malformed`() {
+    fun `invoke returns CHARACTER_SERIALIZATION_ERROR when JSON is malformed`() = runTest {
         // Given
         fakeFileReader.fileContent = "{ invalid json }"
 
@@ -74,7 +73,7 @@ class DownloadCharacterListUseCaseTest {
     }
 
     @Test
-    fun `invoke returns CHARACTER_LIST_NOT_FOUND when file reader throws exception`() {
+    fun `invoke returns CHARACTER_LIST_NOT_FOUND when file reader throws exception`() = runTest {
         // Given
         fakeFileReader.shouldThrow = true
 
@@ -88,7 +87,7 @@ class DownloadCharacterListUseCaseTest {
     }
 
     @Test
-    fun `invoke verifies correct file path is used`() {
+    fun `invoke verifies correct file path is used`() = runTest {
         // Given
         fakeFileReader.fileContent = """{"characters": []}"""
 
@@ -106,7 +105,7 @@ class FakeFileReader : FileReader {
     var shouldThrow: Boolean = false
     var lastPathUsed: String? = null
 
-    override fun readFile(path: String): String {
+    override suspend fun readFile(path: String): String {
         lastPathUsed = path
         if (shouldThrow) throw Exception("File not found")
         return fileContent
