@@ -3,19 +3,24 @@ package com.example.cornerman.screens.home.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Bookmarks
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -79,22 +85,43 @@ private fun Content(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface),
     ) { paddingValues ->
+        val focusManager = LocalFocusManager.current
 
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(
-                space = 4.dp,
-                alignment = Alignment.CenterHorizontally,
-            ),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
+        Box(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(paddingValues)
-                .padding(horizontal = 8.dp, vertical = 8.dp)
-                .fillMaxWidth()
+                .clickable(
+                    onClick = {
+                        focusManager.clearFocus()
+//                        onSearchDone()
+                    }
+                )
         ) {
-            state.characterList.forEachIndexed { index, character ->
-                CharacterPanel(
-                    character = character,
-                    onClick = { onCharacterClick(character.name) },
+            LazyVerticalStaggeredGrid(
+                columns = StaggeredGridCells.Adaptive(100.dp),
+                horizontalArrangement = Arrangement.spacedBy(
+                    space = 4.dp,
+                    alignment = Alignment.CenterHorizontally,
+                ),
+                verticalItemSpacing = 4.dp,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 8.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                itemsIndexed(state.characterList) { index, character ->
+                    CharacterPanel(
+                        character = character,
+                        onClick = { onCharacterClick(character.name) },
+                    )
+                }
+            }
+
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(92.dp)
+                        .align(Alignment.Center)
                 )
             }
         }
