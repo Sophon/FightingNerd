@@ -1,8 +1,8 @@
 package com.example.botdiscord.featureRegistry
 
 import MAX_LENGTH_EMBED
-import com.example.botdiscord.usecase.SearchGlossaryUseCase
-import com.example.botdiscord.usecase.StartGlossaryUseCase
+import com.example.botdiscord.domain.usecase.SearchGlossaryUseCase
+import com.example.botdiscord.domain.usecase.StartGlossaryUseCase
 import com.example.core.domain.Result
 import com.example.core.util.truncate
 import com.example.glossaryinfil.domain.GlossaryItem

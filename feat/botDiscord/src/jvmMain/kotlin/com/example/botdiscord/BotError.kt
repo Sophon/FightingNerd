@@ -12,4 +12,6 @@ enum class BotError: Error {
     DOWNLOAD_ERROR,
 
     BOT_LOGIC_ERROR,
+
+    UNKNOWN,
 }

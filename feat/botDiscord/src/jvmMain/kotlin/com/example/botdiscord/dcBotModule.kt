@@ -15,13 +15,13 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import com.example.botdiscord.usecase.GetHeatMovesUseCase
-import com.example.botdiscord.usecase.GetHomingMovesUseCase
-import com.example.botdiscord.usecase.GetPowerCrushMovesUseCase
-import com.example.botdiscord.usecase.SearchFrameDataUseCase
-import com.example.botdiscord.usecase.SearchGlossaryUseCase
-import com.example.botdiscord.usecase.StartGlossaryUseCase
-import com.example.botdiscord.usecase.StartWikiUseCase
+import com.example.botdiscord.domain.usecase.GetHeatMovesUseCase
+import com.example.botdiscord.domain.usecase.GetHomingMovesUseCase
+import com.example.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
+import com.example.botdiscord.domain.usecase.SearchFrameDataUseCase
+import com.example.botdiscord.domain.usecase.SearchGlossaryUseCase
+import com.example.botdiscord.domain.usecase.StartGlossaryUseCase
+import com.example.botdiscord.domain.usecase.StartWikiUseCase
 import com.example.wikiwavu.infrastructure.FileReader
 
 fun initKoin(
