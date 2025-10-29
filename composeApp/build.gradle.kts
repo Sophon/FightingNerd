@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -67,6 +69,9 @@ kotlin {
 
             implementation(libs.kotlinx.serialization.json)
 
+            implementation(libs.room.runtime)
+            implementation(libs.sqlite.bundled)
+
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
         }
@@ -125,4 +130,8 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }
