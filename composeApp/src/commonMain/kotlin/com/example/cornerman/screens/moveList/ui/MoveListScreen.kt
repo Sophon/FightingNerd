@@ -42,12 +42,16 @@ import com.example.cornerman.uiGallery.BottomBarItem
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 fun MoveListScreen(
+    charName: String,
     modifier: Modifier = Modifier
 ) {
-    val vm = koinViewModel<MoveListVM>()
+    val vm = koinViewModel<MoveListVM>(
+        parameters = { parametersOf(charName) }
+    )
     val state by vm.state.collectAsStateWithLifecycle()
 
     Content(

@@ -34,13 +34,16 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    onCharacterClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val vm = koinViewModel<HomeVM>()
     val state by vm.state.collectAsStateWithLifecycle()
 
     Content(
         state = state,
-        onCharacterClick = vm::onCharacterClick,
+        onCharacterClick = onCharacterClick,
         modifier = modifier,
     )
 }
@@ -48,7 +51,7 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun Content(
     state: HomeViewState,
-    onCharacterClick: (Int) -> Unit,
+    onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Scaffold(
@@ -72,7 +75,7 @@ private fun Content(
             state.characterList.forEachIndexed { index, character ->
                 CharacterPanel(
                     character = character,
-                    onClick = { onCharacterClick(index) },
+                    onClick = { onCharacterClick(character.name) },
                 )
             }
         }
