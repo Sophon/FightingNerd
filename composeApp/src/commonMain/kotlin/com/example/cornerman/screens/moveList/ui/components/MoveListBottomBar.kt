@@ -31,6 +31,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun MoveListBottomBar(
     onContentsClick: () -> Unit,
+    onSearchClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -50,18 +51,20 @@ fun MoveListBottomBar(
             icon = Icons.Outlined.Home,
             text = "Home",
             onClick = {},
+            isEnabled = false
         )
 
         BottomBarItem(
             icon = Icons.Outlined.BookmarkBorder, //TODO: should be BookmarkAdd or BookmarkRemove
             text = "Save",
             onClick = {},
+            isEnabled = false,
         )
 
         BottomBarItem(
             icon = Icons.Outlined.Search,
             text = "Search",
-            onClick = {},
+            onClick = onSearchClick,
         )
 
         BottomBarItem(
@@ -77,13 +80,14 @@ private fun BottomBarItem(
     icon: ImageVector,
     text: String,
     onClick: () -> Unit,
+    isEnabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     Column(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .clickable(onClick = onClick),
+            .clickable(enabled = isEnabled, onClick = onClick),
     ) {
         Icon(
             imageVector = icon,
@@ -110,6 +114,7 @@ private fun BottomBarPreviewDark() {
     AppTheme(darkTheme = true) {
         MoveListBottomBar(
             onContentsClick = {},
+            onSearchClick = {},
         )
     }
 }
@@ -119,6 +124,7 @@ private fun BottomBarPreviewLight() {
     AppTheme(darkTheme = false) {
         MoveListBottomBar(
             onContentsClick = {},
+            onSearchClick = {},
         )
     }
 }

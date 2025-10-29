@@ -1,6 +1,7 @@
 package com.example.cornerman.screens.moveList.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -23,11 +24,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cornerman.screens.moveList.domain.MoveCategory
 import com.example.cornerman.screens.moveList.ui.components.CategoriesBar
 import com.example.cornerman.screens.moveList.ui.components.MoveListBottomBar
+import com.example.cornerman.screens.moveList.ui.components.SearchBar
 import com.example.cornerman.screens.moveList.ui.components.Section
 import com.example.cornerman.theme.AppTheme
 import kotlinx.coroutines.launch
@@ -44,6 +47,10 @@ fun MoveListScreen(
     Content(
         state = state,
         onNotesExpandClick = vm::onExpandNotesFor,
+        onStartSearch = vm::onStartSearch,
+        onSearch = vm::onSearch,
+        onSearchDone = vm::onSearchDone,
+        onClearSearch = vm::onClearSearch,
         modifier = modifier,
     )
 }
@@ -52,6 +59,10 @@ fun MoveListScreen(
 private fun Content(
     state: MoveListViewState,
     onNotesExpandClick: (String) -> Unit,
+    onStartSearch: () -> Unit,
+    onSearch: (String) -> Unit,
+    onSearchDone: () -> Unit,
+    onClearSearch: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var isCategoriesBarShown by remember { mutableStateOf(false) }
@@ -85,20 +96,29 @@ private fun Content(
             MoveListBottomBar(
                 onContentsClick = {
                     isCategoriesBarShown = isCategoriesBarShown.not()
-                }
+                },
+                onSearchClick = onStartSearch,
             )
         },
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
     ) { paddingValues ->
+        val focusManager = LocalFocusManager.current
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .clickable(
+                    onClick = {
+                        focusManager.clearFocus()
+                        onSearchDone()
+                    }
+                )
         ) {
             MoveList(
-                movesByCategory = state.movesByCategory,
+                movesByCategory = state.allMoves,
                 expandedNotes = state.expandedNotesId,
                 onNotesExpandClick = onNotesExpandClick,
                 listState = moveListState,
@@ -106,13 +126,26 @@ private fun Content(
 
             if (isCategoriesBarShown) {
                 CategoriesBar(
-                    categories = state.movesByCategory,
+                    categories = state.allMoves,
                     onCategoryClick = onCategoryClick,
                     listState = categoriesBarState,
                     currentCategoryIndex = currentCategoryIndex,
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(end = 8.dp, bottom = 8.dp)
+                )
+            }
+
+            state.searchBar?.let { searchBar ->
+                SearchBar(
+                    type = searchBar.type,
+                    query = searchBar.query,
+                    onSearch = onSearch,
+                    onSearchDone = onSearchDone,
+                    onClearSearch = onClearSearch,
+                    focusManager = focusManager,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
                 )
             }
 
@@ -163,6 +196,10 @@ private fun MoveListPreviewDark() {
         Content(
             state = state,
             onNotesExpandClick = {},
+            onStartSearch = {},
+            onSearch = {},
+            onSearchDone = {},
+            onClearSearch = {},
         )
     }
 }
@@ -175,6 +212,10 @@ private fun MoveListPreviewLight() {
         Content(
             state = state,
             onNotesExpandClick = {},
+            onStartSearch = {},
+            onSearch = {},
+            onSearchDone = {},
+            onClearSearch = {},
         )
     }
 }

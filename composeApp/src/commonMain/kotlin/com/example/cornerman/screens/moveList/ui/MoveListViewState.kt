@@ -5,15 +5,28 @@ import com.example.wikiwavu.domain.model.Move
 import org.jetbrains.compose.resources.StringResource
 
 data class MoveListViewState(
-    val movesByCategory: List<MoveCategory> = emptyList(),
+    val allMoves: List<MoveCategory> = emptyList(),
+    val filteredMoves: List<MoveCategory> = emptyList(),
     val expandedNotesId: Set<String> = emptySet(),
+
+    val searchBar: SearchBar? = null,
 
     val error: StringResource? = null,
     val isLoading: Boolean = true,
 ) {
+    data class SearchBar(
+        val query: String = "",
+        val type: Type,
+    ) {
+        enum class Type {
+            CHIP,
+            FIELD,
+        }
+    }
+
     companion object {
         val PREVIEW = MoveListViewState(
-            movesByCategory = testMoves(),
+            allMoves = testMoves(),
             expandedNotesId = setOf("df2")
         )
 

@@ -41,6 +41,40 @@ class MoveListVM(
         }
     }
 
+    fun onStartSearch() {
+        _state.update { it.copy(searchBar = MoveListViewState.SearchBar(type = MoveListViewState.SearchBar.Type.FIELD)) }
+    }
+
+    fun onSearch(query: String) {
+        Napier.d(tag = TAG) { "Searching: $query" }
+        _state.update {
+            it.copy(
+                searchBar = MoveListViewState.SearchBar(
+                    query = query,
+                    type = MoveListViewState.SearchBar.Type.FIELD
+                )
+            )
+        }
+    }
+
+    fun onSearchDone() {
+        Napier.d(tag = TAG) { "Search done" }
+        _state.update {
+            it.copy(
+                searchBar = MoveListViewState.SearchBar(
+                    query = it.searchBar?.query.orEmpty(),
+                    type = MoveListViewState.SearchBar.Type.CHIP
+                )
+            )
+        }
+    }
+
+    fun onClearSearch() {
+        Napier.d(tag = TAG) { "Clear search" }
+        _state.update { it.copy(searchBar = null) }
+    }
+
+
     private suspend fun fetchMoves() {
         val character = mockCharacter()
         val result = fetchMoveListUseCase.invoke(character)
@@ -65,7 +99,7 @@ class MoveListVM(
     }
 
     private fun cacheMoves(categories: List<MoveCategory>) {
-        _state.update { it.copy(movesByCategory = categories) }
+        _state.update { it.copy(allMoves = categories) }
     }
 }
 
