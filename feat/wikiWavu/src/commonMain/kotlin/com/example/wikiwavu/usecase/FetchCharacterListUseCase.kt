@@ -3,6 +3,7 @@ package com.example.wikiwavu.usecase
 import com.example.core.domain.Result
 import com.example.wikiwavu.CHAR_LIST
 import com.example.wikiwavu.WavuError
+import com.example.wikiwavu.domain.FileReader
 import com.example.wikiwavu.domain.model.CharacterList
 import io.github.aakira.napier.Napier
 import kotlinx.serialization.SerializationException
@@ -15,11 +16,12 @@ import kotlinx.serialization.json.Json
  * 2. read from the /res/characters.json
  */
 class FetchCharacterListUseCase(
+    private val fileReader: FileReader,
     private val json: Json,
 ) {
     internal fun invoke(): Result<CharacterList, WavuError> {
         return try {
-            val fileContent = readResourceFile("res/${CHAR_LIST}")
+            val fileContent = fileReader.readFile(path = "res/${CHAR_LIST}")
             val charList = json.decodeFromString<CharacterList>(fileContent)
             Result.Success(charList)
         } catch (e: SerializationException) {
@@ -31,7 +33,5 @@ class FetchCharacterListUseCase(
         }
     }
 }
-
-internal expect fun readResourceFile(path: String): String
 
 private const val TAG = "FetchCharactersListUseCase"
