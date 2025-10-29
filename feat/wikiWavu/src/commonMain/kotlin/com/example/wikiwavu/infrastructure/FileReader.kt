@@ -1,4 +1,4 @@
-package com.example.wikiwavu.domain
+package com.example.wikiwavu.infrastructure
 
 interface FileReader {
     fun readFile(path: String): String

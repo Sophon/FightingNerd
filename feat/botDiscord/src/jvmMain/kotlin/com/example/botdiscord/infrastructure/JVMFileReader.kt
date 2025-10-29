@@ -1,6 +1,6 @@
-package com.example.botdiscord.data
+package com.example.botdiscord.infrastructure
 
-import com.example.wikiwavu.domain.FileReader
+import com.example.wikiwavu.infrastructure.FileReader
 import java.io.File
 
 class JVMFileReader: FileReader {

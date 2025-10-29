@@ -3,7 +3,7 @@ package com.example.wikiwavu.usecase
 import com.example.core.domain.Result
 import com.example.wikiwavu.CHAR_LIST
 import com.example.wikiwavu.WavuError
-import com.example.wikiwavu.domain.FileReader
+import com.example.wikiwavu.infrastructure.FileReader
 import com.example.wikiwavu.domain.model.CharacterList
 import io.github.aakira.napier.Napier
 import kotlinx.serialization.SerializationException
@@ -15,7 +15,7 @@ import kotlinx.serialization.json.Json
  * 1. [Char list](https://raw.githubusercontent.com/pbruvoll/tekkendocs/refs/heads/main/utils/wavu-importer/src/resources/character_list.json)
  * 2. read from the /res/characters.json
  */
-class FetchCharacterListUseCase(
+class DownloadCharacterListUseCase(
     private val fileReader: FileReader,
     private val json: Json,
 ) {

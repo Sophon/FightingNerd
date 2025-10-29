@@ -10,7 +10,7 @@ import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.usecase.CacheMoveListUseCase
 import com.example.wikiwavu.usecase.DownloadMoveListUseCase
-import com.example.wikiwavu.usecase.FetchCharacterListUseCase
+import com.example.wikiwavu.usecase.DownloadCharacterListUseCase
 import com.example.wikiwavu.usecase.FetchMoveDataUseCase
 import com.example.wikiwavu.usecase.FetchMovesWithPropertyUseCase
 import io.github.aakira.napier.Napier
@@ -29,7 +29,7 @@ interface WavuWikiClient {
 }
 
 internal class WavuWikiClientImpl(
-    private val fetchCharacterListUseCase: FetchCharacterListUseCase,
+    private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val fetchMoveDataUseCase: FetchMoveDataUseCase,
@@ -90,7 +90,7 @@ internal class WavuWikiClientImpl(
     }
 
     override suspend fun getCharacterList(): Result<List<Character>, WavuError> {
-        return fetchCharacterListUseCase.invoke().map { it.characterList }
+        return downloadCharacterListUseCase.invoke().map { it.characterList }
     }
 
 

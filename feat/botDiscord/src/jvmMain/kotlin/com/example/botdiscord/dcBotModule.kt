@@ -2,7 +2,7 @@ package com.example.botdiscord
 
 import com.example.botdiscord.data.InMemoryGlossaryDB
 import com.example.botdiscord.data.InMemoryMoveListDB
-import com.example.botdiscord.data.JVMFileReader
+import com.example.botdiscord.infrastructure.JVMFileReader
 import com.example.core.coreModule
 import com.example.glossaryinfil.data.GlossaryDB
 import com.example.glossaryinfil.infilModule
@@ -22,7 +22,7 @@ import com.example.botdiscord.usecase.SearchFrameDataUseCase
 import com.example.botdiscord.usecase.SearchGlossaryUseCase
 import com.example.botdiscord.usecase.StartGlossaryUseCase
 import com.example.botdiscord.usecase.StartWikiUseCase
-import com.example.wikiwavu.domain.FileReader
+import com.example.wikiwavu.infrastructure.FileReader
 
 fun initKoin(
     apiKey: String,
