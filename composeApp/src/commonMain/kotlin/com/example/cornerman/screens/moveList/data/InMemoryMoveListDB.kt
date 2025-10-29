@@ -1,5 +1,6 @@
 package com.example.cornerman.screens.moveList.data
 
+import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
@@ -29,7 +30,9 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(moveData)
     }
 
-    override suspend fun insertMoveList(charName: String, moveList: List<Move>) {
+    override suspend fun insertMoveList(
+        charName: String, moveList: List<Move>
+    ): EmptyResult<WavuError> {
         val indexedMoves = buildMap {
             moveList.forEach { move ->
                 put(move.id, move)
@@ -39,5 +42,11 @@ class InMemoryMoveListDB: MoveListDB {
             }
         }
         database[charName] = indexedMoves
+        return Result.Success(Unit)
+    }
+
+    override suspend fun wipe(): EmptyResult<WavuError> {
+        database.clear()
+        return Result.Success(Unit)
     }
 }

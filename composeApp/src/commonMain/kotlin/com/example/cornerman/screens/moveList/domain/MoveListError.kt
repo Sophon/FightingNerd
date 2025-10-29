@@ -9,5 +9,7 @@ enum class MoveListError: Error {
     CHARACTER_SERIALIZATION_ERROR,
     DOWNLOAD_ERROR,
 
+    DATABASE_ERROR,
+
     UNKNOWN,
 }

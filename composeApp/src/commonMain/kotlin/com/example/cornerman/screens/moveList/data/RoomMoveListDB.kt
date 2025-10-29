@@ -1,9 +1,13 @@
 package com.example.cornerman.screens.moveList.data
 
+import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
+import com.example.cornerman.screens.moveList.domain.toDomain
+import com.example.cornerman.screens.moveList.domain.toEntity
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
 import com.example.wikiwavu.domain.model.Move
+import io.github.aakira.napier.Napier
 
 class RoomMoveListDB(
     private val dao: MoveDao,
@@ -11,20 +15,59 @@ class RoomMoveListDB(
     override suspend fun fetchMoveListFor(
         charName: String
     ): Result<Map<String, Move>, WavuError> {
-        TODO("Not yet implemented")
+        return try {
+            val moveEntities = dao.fetchMoveListFor(charName)
+            if (moveEntities.isEmpty()) {
+                Result.Error(WavuError.UNKNOWN_CHARACTER) //TODO: maybe different error?
+            } else {
+                Result.Success(moveEntities.associate { it.id to it.toDomain() })
+            }
+        } catch (e: Exception) {
+            Napier.e(tag = TAG) { e.toString() }
+            Result.Error(WavuError.DATABASE_ERROR)
+        }
     }
 
     override suspend fun fetchMoveDataFor(
         charName: String,
         moveQuery: String,
     ): Result<Move, WavuError> {
-        TODO("Not yet implemented")
+        return try {
+            val moveEntity = dao.fetchMoveDataFor(charName, moveQuery)
+            if (moveEntity == null) {
+                Result.Error(WavuError.UNKNOWN_MOVE)
+            } else {
+                Result.Success(moveEntity.toDomain())
+            }
+        } catch (e: Exception) {
+            Napier.e(tag = TAG) { e.toString() }
+            Result.Error(WavuError.DATABASE_ERROR)
+        }
     }
 
     override suspend fun insertMoveList(
         charName: String,
         moveList: List<Move>
-    ) {
-        TODO("Not yet implemented")
+    ): EmptyResult<WavuError> {
+        return try {
+            dao.insertMoveList(moveList.map { it.toEntity() })
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Napier.e(tag = TAG) { e.toString() }
+            Result.Error(WavuError.DATABASE_ERROR)
+        }
+    }
+
+    override suspend fun wipe(): EmptyResult<WavuError> {
+        return try {
+            dao.deleteAllMoves()
+            Result.Success(Unit)
+        } catch (e: Exception) {
+            Napier.e(tag = TAG) { e.toString() }
+            Result.Error(WavuError.DATABASE_ERROR)
+        }
     }
 }
+
+
+private const val TAG = "RoomMoveListDB"

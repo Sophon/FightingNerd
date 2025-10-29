@@ -95,7 +95,7 @@ internal fun Move.isStance(): String? {
     }
 }
 
-internal fun Move.toEntity(charName: String): MoveEntity {
+internal fun Move.toEntity(): MoveEntity {
     return MoveEntity(
         charName = charName,
         id = id,
