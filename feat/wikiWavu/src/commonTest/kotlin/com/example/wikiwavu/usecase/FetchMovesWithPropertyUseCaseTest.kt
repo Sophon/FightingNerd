@@ -13,6 +13,8 @@ import com.example.core.domain.Result
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class FetchMovesWithPropertyUseCaseTest {
     private lateinit var mockDb: MockMoveListDB
@@ -419,6 +421,38 @@ class FetchMovesWithPropertyUseCaseTest {
         assertThat(result.data.map { it.id }).isEqualTo(listOf("df2", "bf23", "f4"))
     }
     //endregion
+
+    @Test
+    fun `invoke with mixed case character name converts to lowercase and filters correctly`() = runTest {
+        // Given
+        val mockDB = MockMoveListDB()
+        val useCase = FetchMovesWithPropertyUseCase(mockDB)
+
+        val move1 = createTestMove(id = "1", isHeat = true)
+        val move2 = createTestMove(id = "2", isHeat = false)
+        val move3 = createTestMove(id = "3", isHeat = true)
+
+        val moveMap = mapOf(
+            "1" to move1,
+            "2" to move2,
+            "3" to move3
+        )
+
+        mockDB.mockResponse = Result.Success(moveMap)
+
+        // When - Call with mixed case "NaMe"
+        val result = useCase.invoke(
+            charName = "NaMe",
+            predicate = { it.isHeat }
+        )
+
+        // Then
+        assertTrue(result is Result.Success)
+        assertEquals(2, result.data.size)
+        assertTrue(result.data.all { it.isHeat })
+        assertTrue(result.data.any { it.id == "1" })
+        assertTrue(result.data.any { it.id == "3" })
+    }
 
     private fun createTestMove(
         id: String,
