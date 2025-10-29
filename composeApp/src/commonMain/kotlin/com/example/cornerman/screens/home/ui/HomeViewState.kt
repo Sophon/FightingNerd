@@ -1,4 +1,4 @@
-package com.example.cornerman.screens.home
+package com.example.cornerman.screens.home.ui
 
 import com.example.wikiwavu.domain.model.Character
 

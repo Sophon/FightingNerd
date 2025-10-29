@@ -10,6 +10,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -29,10 +34,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.cornerman.screens.moveList.domain.MoveCategory
 import com.example.cornerman.screens.moveList.ui.components.CategoriesBar
-import com.example.cornerman.screens.moveList.ui.components.MoveListBottomBar
 import com.example.cornerman.screens.moveList.ui.components.SearchBar
 import com.example.cornerman.screens.moveList.ui.components.Section
 import com.example.cornerman.theme.AppTheme
+import com.example.cornerman.uiGallery.AppBottomBar
+import com.example.cornerman.uiGallery.BottomBarItem
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -93,11 +99,14 @@ private fun Content(
     Scaffold(
         containerColor = Color.Transparent,
         bottomBar = {
+            //TODO: implement functions
             MoveListBottomBar(
+                onHomeClick = {},
+                onSaveClick = {},
+                onSearchClick = onStartSearch,
                 onContentsClick = {
                     isCategoriesBarShown = isCategoriesBarShown.not()
                 },
-                onSearchClick = onStartSearch,
             )
         },
         modifier = modifier
@@ -158,6 +167,43 @@ private fun Content(
             }
         }
     }
+}
+
+@Composable
+private fun MoveListBottomBar(
+    onHomeClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    onSearchClick: () -> Unit,
+    onContentsClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    AppBottomBar(
+        items = listOf(
+            BottomBarItem(
+                icon = Icons.Outlined.Home,
+                text = "Home",
+                onClick = onHomeClick,
+                isEnabled = false
+            ),
+            BottomBarItem(
+                icon = Icons.Outlined.BookmarkBorder,
+                text = "Save",
+                onClick = onSaveClick,
+                isEnabled = false,
+            ),
+            BottomBarItem(
+                icon = Icons.Outlined.Search,
+                text = "Search",
+                onClick = onSearchClick,
+            ),
+            BottomBarItem(
+                icon = Icons.AutoMirrored.Outlined.FormatListBulleted,
+                text = "Contents",
+                onClick = onContentsClick,
+            )
+        ),
+        modifier = modifier,
+    )
 }
 
 @Composable

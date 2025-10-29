@@ -1,4 +1,4 @@
-package com.example.cornerman.screens.home
+package com.example.cornerman.screens.home.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -56,11 +56,16 @@ private fun Content(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface),
-    ) {
+    ) { paddingValues ->
+
         FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(
+                space = 4.dp,
+                alignment = Alignment.CenterHorizontally,
+            ),
             verticalArrangement = Arrangement.spacedBy(4.dp),
             modifier = Modifier
+                .padding(paddingValues)
                 .padding(horizontal = 8.dp, vertical = 8.dp)
                 .fillMaxWidth()
         ) {

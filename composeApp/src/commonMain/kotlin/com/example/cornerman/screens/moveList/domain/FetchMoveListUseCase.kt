@@ -1,7 +1,6 @@
 package com.example.cornerman.screens.moveList.domain
 
 import com.example.core.domain.Result
-import com.example.cornerman.screens.moveList.domain.MoveListError
 import com.example.wikiwavu.WavuWikiClient
 import com.example.wikiwavu.domain.model.Character
 

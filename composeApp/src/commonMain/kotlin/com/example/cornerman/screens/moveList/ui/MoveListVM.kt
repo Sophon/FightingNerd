@@ -3,8 +3,8 @@ package com.example.cornerman.screens.moveList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.Result
-import com.example.cornerman.screens.moveList.domain.MoveCategory
 import com.example.cornerman.screens.moveList.domain.FetchMoveListUseCase
+import com.example.cornerman.screens.moveList.domain.MoveCategory
 import com.example.wikiwavu.domain.model.Character
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
