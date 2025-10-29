@@ -49,7 +49,10 @@ fun CategoriesBar(
             .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        itemsIndexed(categories) { index, category ->
+        itemsIndexed(
+            items = categories,
+            key = { index, category -> category.name },
+        ) { index, category ->
             val isSelected = (index == currentCategoryIndex)
             val color = if (isSelected) MaterialTheme.colorScheme.inversePrimary else Color.Transparent
 

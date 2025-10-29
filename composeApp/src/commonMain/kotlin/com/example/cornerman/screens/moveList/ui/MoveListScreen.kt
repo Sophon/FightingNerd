@@ -173,7 +173,10 @@ private fun MoveList(
         modifier = modifier
             .fillMaxSize()
     ) {
-        items(movesByCategory) { moveCategory ->
+        items(
+            items = movesByCategory,
+            key = { moveCategory -> moveCategory.name }
+        ) { moveCategory ->
             Section(
                 title = moveCategory.name,
                 moves = moveCategory.moves,
