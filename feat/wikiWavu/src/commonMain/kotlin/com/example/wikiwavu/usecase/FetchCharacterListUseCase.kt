@@ -8,6 +8,12 @@ import io.github.aakira.napier.Napier
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
+/**
+ * TODO: ideally we first attempt to download the github json
+ *
+ * 1. [Char list](https://raw.githubusercontent.com/pbruvoll/tekkendocs/refs/heads/main/utils/wavu-importer/src/resources/character_list.json)
+ * 2. read from the /res/characters.json
+ */
 class FetchCharacterListUseCase(
     private val json: Json,
 ) {
