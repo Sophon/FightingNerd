@@ -118,7 +118,7 @@ private fun Content(
                 )
         ) {
             MoveList(
-                movesByCategory = state.allMoves,
+                movesByCategory = state.filteredMoves,
                 expandedNotes = state.expandedNotesId,
                 onNotesExpandClick = onNotesExpandClick,
                 listState = moveListState,
@@ -126,7 +126,7 @@ private fun Content(
 
             if (isCategoriesBarShown) {
                 CategoriesBar(
-                    categories = state.allMoves,
+                    categories = state.filteredMoves,
                     onCategoryClick = onCategoryClick,
                     listState = categoriesBarState,
                     currentCategoryIndex = currentCategoryIndex,

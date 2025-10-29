@@ -27,7 +27,8 @@ data class MoveListViewState(
     companion object {
         val PREVIEW = MoveListViewState(
             allMoves = testMoves(),
-            expandedNotesId = setOf("df2")
+            expandedNotesId = setOf("df2"),
+            isLoading = false,
         )
 
         private fun testMoves(): List<MoveCategory> {

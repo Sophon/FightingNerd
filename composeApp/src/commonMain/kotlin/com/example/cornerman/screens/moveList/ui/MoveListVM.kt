@@ -52,7 +52,8 @@ class MoveListVM(
                 searchBar = MoveListViewState.SearchBar(
                     query = query,
                     type = MoveListViewState.SearchBar.Type.FIELD
-                )
+                ),
+                filteredMoves = filterMoves(query),
             )
         }
     }
@@ -71,7 +72,7 @@ class MoveListVM(
 
     fun onClearSearch() {
         Napier.d(tag = TAG) { "Clear search" }
-        _state.update { it.copy(searchBar = null) }
+        _state.update { it.copy(searchBar = null, filteredMoves = it.allMoves) }
     }
 
 
@@ -98,8 +99,20 @@ class MoveListVM(
         )
     }
 
+    //TODO: refactor to Database
     private fun cacheMoves(categories: List<MoveCategory>) {
-        _state.update { it.copy(allMoves = categories) }
+        _state.update { it.copy(allMoves = categories, filteredMoves = categories) }
+    }
+
+    private fun filterMoves(query: String): List<MoveCategory> {
+        return _state.value.allMoves.mapNotNull { moveCategory ->
+            val filteredMoves = moveCategory.moves.filter { move ->
+                move.id.contains(query, ignoreCase = true)
+                        || move.notes.any { it.contains(query, ignoreCase = true) }
+            }
+
+            if (filteredMoves.isEmpty()) null else moveCategory.copy(moves = filteredMoves)
+        }
     }
 }
 
