@@ -1,6 +1,7 @@
 package com.example.cornerman
 
 import com.example.core.coreModule
+import com.example.cornerman.screens.home.homeModule
 import com.example.cornerman.screens.moveList.moveListModule
 import com.example.wikiwavu.wavuModule
 import org.koin.core.context.startKoin
@@ -13,5 +14,6 @@ fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
         coreModule,
         wavuModule,
         moveListModule(),
+        homeModule,
     )
 }
