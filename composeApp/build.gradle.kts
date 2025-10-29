@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -63,6 +64,8 @@ kotlin {
             implementation(libs.coil.network.ktor)
 
             implementation(libs.napier)
+
+            implementation(libs.kotlinx.serialization.json)
 
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))

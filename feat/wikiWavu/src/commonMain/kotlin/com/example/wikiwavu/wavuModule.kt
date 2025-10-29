@@ -7,7 +7,7 @@ import com.example.wikiwavu.domain.Scheduler
 import com.example.wikiwavu.domain.WavuUrlProvider
 import com.example.wikiwavu.usecase.CacheMoveListUseCase
 import com.example.wikiwavu.usecase.DownloadMoveListUseCase
-import com.example.wikiwavu.usecase.FetchCharacterListUseCase
+import com.example.wikiwavu.usecase.DownloadCharacterListUseCase
 import com.example.wikiwavu.usecase.FetchMoveDataUseCase
 import com.example.wikiwavu.usecase.FetchMovesWithPropertyUseCase
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +37,7 @@ val wavuModule = module {
     singleOf(::WavuWikiClientImpl).bind<WavuWikiClient>()
 //    singleOf(::InMemoryMoveListDB).bind<com.example.wikiWavu.MoveListDB>()
 
-    singleOf(::FetchCharacterListUseCase)
+    singleOf(::DownloadCharacterListUseCase)
     singleOf(::DownloadMoveListUseCase)
     singleOf(::CacheMoveListUseCase)
     singleOf(::FetchMoveDataUseCase)

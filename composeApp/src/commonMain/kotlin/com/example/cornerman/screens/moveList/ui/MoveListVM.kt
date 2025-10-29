@@ -3,8 +3,8 @@ package com.example.cornerman.screens.moveList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.Result
-import com.example.cornerman.screens.moveList.domain.MoveCategory
 import com.example.cornerman.screens.moveList.domain.FetchMoveListUseCase
+import com.example.cornerman.screens.moveList.domain.MoveCategory
 import com.example.wikiwavu.domain.model.Character
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,12 +14,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 class MoveListVM(
-//    character: Character,
+    private val charName: String,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListViewState())
     val state = _state
         .onStart {
+            Napier.d(tag = TAG) { "bingo: $charName" }
             fetchMoves()
         }
         .stateIn(

@@ -2,6 +2,7 @@ package com.example.wikiwavu
 
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
+import com.example.core.domain.map
 import com.example.core.domain.onError
 import com.example.wikiwavu.domain.Scheduler
 import com.example.wikiwavu.domain.model.Character
@@ -9,7 +10,7 @@ import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.usecase.CacheMoveListUseCase
 import com.example.wikiwavu.usecase.DownloadMoveListUseCase
-import com.example.wikiwavu.usecase.FetchCharacterListUseCase
+import com.example.wikiwavu.usecase.DownloadCharacterListUseCase
 import com.example.wikiwavu.usecase.FetchMoveDataUseCase
 import com.example.wikiwavu.usecase.FetchMovesWithPropertyUseCase
 import io.github.aakira.napier.Napier
@@ -24,10 +25,11 @@ interface WavuWikiClient {
     suspend fun getHeatMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getHomingMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getMoveListFor(character: Character): Result<CharacterMoveList, WavuError>
+    suspend fun getCharacterList(): Result<List<Character>, WavuError>
 }
 
 internal class WavuWikiClientImpl(
-    private val fetchCharacterListUseCase: FetchCharacterListUseCase,
+    private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val fetchMoveDataUseCase: FetchMoveDataUseCase,
@@ -87,11 +89,15 @@ internal class WavuWikiClientImpl(
         }
     }
 
+    override suspend fun getCharacterList(): Result<List<Character>, WavuError> {
+        return downloadCharacterListUseCase.invoke()
+    }
+
 
     private suspend fun downloadCompleteMoveList(): EmptyResult<WavuError> {
-        return when (val result = fetchCharacterListUseCase.invoke()) {
+        return when (val result = getCharacterList()) {
             is Result.Success -> {
-                for (character in result.data.characterList) {
+                for (character in result.data) {
                     when (val moveListResult = downloadMoveListUseCase.invoke(character)) {
                         is Result.Success -> {
                             cacheMoveListUseCase.invoke(characterMoveList = moveListResult.data)

@@ -1,4 +1,4 @@
-package com.example.cornerman.screens.moveList.ui.components
+package com.example.cornerman.uiGallery
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -28,10 +28,16 @@ import androidx.compose.ui.unit.dp
 import com.example.cornerman.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
+data class BottomBarItem(
+    val icon: ImageVector,
+    val onClick: () -> Unit,
+    val text: String? = null,
+    val isEnabled: Boolean = true,
+)
+
 @Composable
-fun MoveListBottomBar(
-    onContentsClick: () -> Unit,
-    onSearchClick: () -> Unit,
+fun AppBottomBar(
+    items: List<BottomBarItem>,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -47,38 +53,22 @@ fun MoveListBottomBar(
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 24.dp),
     ) {
-        BottomBarItem(
-            icon = Icons.Outlined.Home,
-            text = "Home",
-            onClick = {},
-            isEnabled = false
-        )
-
-        BottomBarItem(
-            icon = Icons.Outlined.BookmarkBorder, //TODO: should be BookmarkAdd or BookmarkRemove
-            text = "Save",
-            onClick = {},
-            isEnabled = false,
-        )
-
-        BottomBarItem(
-            icon = Icons.Outlined.Search,
-            text = "Search",
-            onClick = onSearchClick,
-        )
-
-        BottomBarItem(
-            icon = Icons.AutoMirrored.Outlined.FormatListBulleted,
-            text = "Contents",
-            onClick = onContentsClick,
-        )
+        items.forEach { item ->
+            BottomBarItem(
+                icon = item.icon,
+                text = item.text,
+                isEnabled = item.isEnabled,
+                onClick = item.onClick,
+                modifier = Modifier,
+            )
+        }
     }
 }
 
 @Composable
 private fun BottomBarItem(
     icon: ImageVector,
-    text: String,
+    text: String?,
     onClick: () -> Unit,
     isEnabled: Boolean = true,
     modifier: Modifier = Modifier
@@ -101,7 +91,7 @@ private fun BottomBarItem(
         Spacer(Modifier.height(2.dp))
 
         Text(
-            text = text,
+            text = text.orEmpty(),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = alpha),
         )
@@ -114,9 +104,31 @@ private fun BottomBarItem(
 @Preview(showBackground = true)
 private fun BottomBarPreviewDark() {
     AppTheme(darkTheme = true) {
-        MoveListBottomBar(
-            onContentsClick = {},
-            onSearchClick = {},
+        AppBottomBar(
+            items = listOf(
+                BottomBarItem(
+                    icon = Icons.Outlined.Home,
+                    text = "Home",
+                    onClick = {},
+                    isEnabled = false
+                ),
+                BottomBarItem(
+                    icon = Icons.Outlined.BookmarkBorder,
+                    text = "Save",
+                    onClick = {},
+                    isEnabled = false,
+                ),
+                BottomBarItem(
+                    icon = Icons.Outlined.Search,
+                    text = "Search",
+                    onClick = {},
+                ),
+                BottomBarItem(
+                    icon = Icons.AutoMirrored.Outlined.FormatListBulleted,
+                    text = "Contents",
+                    onClick = {},
+                )
+            )
         )
     }
 }
@@ -124,9 +136,31 @@ private fun BottomBarPreviewDark() {
 @Preview(showBackground = true)
 private fun BottomBarPreviewLight() {
     AppTheme(darkTheme = false) {
-        MoveListBottomBar(
-            onContentsClick = {},
-            onSearchClick = {},
+        AppBottomBar(
+            items = listOf(
+                BottomBarItem(
+                    icon = Icons.Outlined.Home,
+                    text = "Home",
+                    onClick = {},
+                    isEnabled = false
+                ),
+                BottomBarItem(
+                    icon = Icons.Outlined.BookmarkBorder,
+                    text = "Save",
+                    onClick = {},
+                    isEnabled = false,
+                ),
+                BottomBarItem(
+                    icon = Icons.Outlined.Search,
+                    text = "Search",
+                    onClick = {},
+                ),
+                BottomBarItem(
+                    icon = Icons.AutoMirrored.Outlined.FormatListBulleted,
+                    text = "Contents",
+                    onClick = {},
+                )
+            )
         )
     }
 }
