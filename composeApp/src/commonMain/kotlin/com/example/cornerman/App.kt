@@ -1,6 +1,7 @@
 package com.example.cornerman
 
 import androidx.compose.runtime.Composable
+import com.example.cornerman.screens.home.HomeScreen
 import com.example.cornerman.screens.moveList.ui.MoveListScreen
 import com.example.cornerman.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -9,6 +10,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Preview
 fun App() {
     AppTheme {
-        MoveListScreen()
+//        MoveListScreen()
+        HomeScreen()
     }
 }
