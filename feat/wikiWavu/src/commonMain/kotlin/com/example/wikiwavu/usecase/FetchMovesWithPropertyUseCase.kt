@@ -13,7 +13,7 @@ class FetchMovesWithPropertyUseCase(
         charName: String,
         predicate: (Move) -> Boolean
     ): Result<List<Move>, WavuError> {
-        return db.fetchMoveListFor(charName)
+        return db.fetchMoveListFor(charName.lowercase())
             .map { map ->
                 map
                     .values
