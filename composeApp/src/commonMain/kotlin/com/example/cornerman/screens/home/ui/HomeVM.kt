@@ -32,6 +32,18 @@ class HomeVM(
         Napier.d(tag = TAG) { "clicked on: ${character?.name}" }
     }
 
+    fun onSavedClick() {
+        //TODO:
+    }
+
+    fun onSearchClick() {
+        //TODO
+    }
+
+    fun onSettingsClick() {
+        //TODO:
+    }
+
 
     private suspend fun fetchCharacterList() {
         when (val result = fetchCharacterListUseCase.invoke()) {
