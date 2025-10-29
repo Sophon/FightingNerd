@@ -3,8 +3,8 @@ package com.example.cornerman.screens.moveList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.Result
-import com.example.cornerman.screens.moveList.model.MoveCategory
-import com.example.cornerman.screens.moveList.useCase.FetchMoveListUseCase
+import com.example.cornerman.screens.moveList.domain.MoveCategory
+import com.example.cornerman.screens.moveList.domain.FetchMoveListUseCase
 import com.example.wikiwavu.domain.model.Character
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +41,41 @@ class MoveListVM(
         }
     }
 
+    fun onStartSearch() {
+        _state.update { it.copy(searchBar = MoveListViewState.SearchBar(type = MoveListViewState.SearchBar.Type.FIELD)) }
+    }
+
+    fun onSearch(query: String) {
+        Napier.d(tag = TAG) { "Searching: $query" }
+        _state.update {
+            it.copy(
+                searchBar = MoveListViewState.SearchBar(
+                    query = query,
+                    type = MoveListViewState.SearchBar.Type.FIELD
+                ),
+                filteredMoves = filterMoves(query),
+            )
+        }
+    }
+
+    fun onSearchDone() {
+        Napier.d(tag = TAG) { "Search done" }
+        _state.update {
+            it.copy(
+                searchBar = MoveListViewState.SearchBar(
+                    query = it.searchBar?.query.orEmpty(),
+                    type = MoveListViewState.SearchBar.Type.CHIP
+                )
+            )
+        }
+    }
+
+    fun onClearSearch() {
+        Napier.d(tag = TAG) { "Clear search" }
+        _state.update { it.copy(searchBar = null, filteredMoves = it.allMoves) }
+    }
+
+
     private suspend fun fetchMoves() {
         val character = mockCharacter()
         val result = fetchMoveListUseCase.invoke(character)
@@ -64,8 +99,20 @@ class MoveListVM(
         )
     }
 
+    //TODO: refactor to Database
     private fun cacheMoves(categories: List<MoveCategory>) {
-        _state.update { it.copy(movesByCategory = categories) }
+        _state.update { it.copy(allMoves = categories, filteredMoves = categories) }
+    }
+
+    private fun filterMoves(query: String): List<MoveCategory> {
+        return _state.value.allMoves.mapNotNull { moveCategory ->
+            val filteredMoves = moveCategory.moves.filter { move ->
+                move.id.contains(query, ignoreCase = true)
+                        || move.notes.any { it.contains(query, ignoreCase = true) }
+            }
+
+            if (filteredMoves.isEmpty()) null else moveCategory.copy(moves = filteredMoves)
+        }
     }
 }
 
