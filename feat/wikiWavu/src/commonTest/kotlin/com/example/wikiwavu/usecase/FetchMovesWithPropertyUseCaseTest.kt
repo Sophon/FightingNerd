@@ -9,6 +9,7 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
+import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
@@ -502,8 +503,16 @@ class FetchMovesWithPropertyUseCaseTest {
             return Result.Error(WavuError.UNKNOWN_MOVE)
         }
 
-        override suspend fun insertMoveList(charName: String, moveList: List<Move>) {
-            // Not used in FetchMovesWithPropertyUseCase
+        override suspend fun insertMoveList(
+            charName: String, moveList: List<Move>
+        ): EmptyResult<WavuError> {
+            // Not used in FetchMoveDataUseCase
+            return Result.Success(Unit)
+        }
+
+        override suspend fun wipe(): EmptyResult<WavuError> {
+            //not used
+            return Result.Success(Unit)
         }
     }
 }

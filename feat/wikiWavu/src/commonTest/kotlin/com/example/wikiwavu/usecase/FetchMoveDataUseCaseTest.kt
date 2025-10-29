@@ -3,6 +3,7 @@ package com.example.wikiwavu.usecase
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
+import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
@@ -439,8 +440,16 @@ class FetchMoveDataUseCaseTest {
             return mockResponse ?: Result.Error(WavuError.UNKNOWN_MOVE)
         }
 
-        override suspend fun insertMoveList(charName: String, moveList: List<Move>) {
+        override suspend fun insertMoveList(
+            charName: String, moveList: List<Move>
+        ): EmptyResult<WavuError> {
             // Not used in FetchMoveDataUseCase
+            return Result.Success(Unit)
+        }
+
+        override suspend fun wipe(): EmptyResult<WavuError> {
+            //not used
+            return Result.Success(Unit)
         }
     }
     //endregion
