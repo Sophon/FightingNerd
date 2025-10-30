@@ -36,6 +36,7 @@ kotlin {
 
             implementation(libs.bundles.ktor)
             implementation(libs.napier)
+            implementation(libs.kotlin.date.time)
 
             api(libs.koin.core)
         }

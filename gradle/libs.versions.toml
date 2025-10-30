@@ -19,12 +19,13 @@ composeHotReload = "1.0.0-beta07"
 composeMultiplatform = "1.9.0"
 core = "1.7.0"
 core-ktx = "1.7.0"
+datastore = "1.1.1"
 jetbrainsKotlinJvm = "2.2.20"
 junit = "4.13.2"
 koin = "4.0.0"
 kord = "0.17.0"
 kotlin = "2.2.20"
-kotlin-date-time = "0.6.1"
+kotlin-date-time = "0.6.2"
 kotlinStdlib = "2.2.20"
 kotlinx-coroutines = "1.10.2"
 kotlinx-coroutines-test = "1.9.0"
@@ -99,6 +100,9 @@ test-compose-manifest = { module = "androidx.compose.ui:ui-test-manifest", versi
 test-compose-ui-junit4-android = { module = "androidx.compose.ui:ui-test-junit4-android", version.ref = "compose-test" }
 test-core-ktx = { module = "androidx.test:core-ktx", version.ref = "core-ktx" }
 test-turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+
+# Persistance
+datastore = { module = "androidx.datastore:datastore-preferences-core", version.ref = "datastore" }
 
 # Misc
 biometric = { module = "androidx.biometric:biometric", version.ref = "biometry" }

@@ -21,7 +21,6 @@ import dev.kord.rest.builder.message.embed
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlin.time.ExperimentalTime
 
 interface DiscordBot {
     suspend fun startSession()
@@ -87,7 +86,6 @@ internal class DiscordBotImpl(
         }
     }
 
-    @OptIn(ExperimentalTime::class)
     private suspend fun MessageCreateEvent.handleMessage() {
         if (kord.selfId !in message.mentionedUserIds) return
 

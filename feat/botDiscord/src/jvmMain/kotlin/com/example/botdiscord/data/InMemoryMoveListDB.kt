@@ -5,9 +5,9 @@ import com.example.core.domain.Result
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
 import com.example.wikiwavu.domain.model.Move
+import kotlinx.datetime.Instant
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 class InMemoryMoveListDB: MoveListDB {
@@ -58,7 +58,7 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(Unit)
     }
 
-    override fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
+    override suspend fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
         return Result.Success(insertTimeInstant)
     }
 }

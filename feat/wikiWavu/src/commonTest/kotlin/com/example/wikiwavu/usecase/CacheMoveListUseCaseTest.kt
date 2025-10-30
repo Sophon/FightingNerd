@@ -12,10 +12,9 @@ import com.example.wikiwavu.domain.model.Character
 import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 class CacheMoveListUseCaseTest {
     private lateinit var db: FakeMoveListDB
@@ -352,7 +351,6 @@ class CacheMoveListUseCaseTest {
             }
         }
 
-        @OptIn(ExperimentalTime::class)
         override fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
             // Not used in current tests
             return Result.Success(null)

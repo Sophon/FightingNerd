@@ -14,15 +14,13 @@ import com.example.wikiwavu.usecase.FetchMoveListUseCase
 import com.example.wikiwavu.usecase.FetchMovesWithPropertyUseCase
 import com.example.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import io.github.aakira.napier.Napier
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
+import kotlinx.datetime.Instant
 
-@OptIn(ExperimentalTime::class)
 interface WavuWikiClient {
     suspend fun downloadCharacterList(): Result<List<Character>, WavuError>
     suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WavuError>
     suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WavuError>
-    fun getLastUpdateTimeStamp(): Result<Instant?, WavuError>
+    suspend fun getLastUpdateTimeStamp(): Result<Instant?, WavuError>
     suspend fun clearCache(): EmptyResult<WavuError>
 
     suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WavuError>
@@ -33,7 +31,6 @@ interface WavuWikiClient {
     suspend fun getCharacterList(): Result<List<Character>, WavuError>
 }
 
-@OptIn(ExperimentalTime::class)
 internal class WavuWikiClientImpl(
     private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
@@ -81,7 +78,7 @@ internal class WavuWikiClientImpl(
         return result
     }
 
-    override fun getLastUpdateTimeStamp(): Result<Instant?, WavuError> {
+    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WavuError> {
         return getLastCacheInsertInstantUseCase.invoke()
     }
 

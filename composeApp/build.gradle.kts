@@ -72,6 +72,10 @@ kotlin {
             implementation(libs.room.runtime)
             implementation(libs.sqlite.bundled)
 
+            implementation(libs.kotlin.date.time)
+
+            implementation(libs.datastore)
+
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
         }

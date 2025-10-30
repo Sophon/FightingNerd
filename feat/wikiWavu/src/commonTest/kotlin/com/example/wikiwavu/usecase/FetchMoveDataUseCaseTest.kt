@@ -9,10 +9,9 @@ import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
 import com.example.wikiwavu.domain.model.Move
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 class FetchMoveDataUseCaseTest {
     private lateinit var mockDb: MockMoveListDB
@@ -454,7 +453,6 @@ class FetchMoveDataUseCaseTest {
             return Result.Success(Unit)
         }
 
-        @OptIn(ExperimentalTime::class)
         override fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
             // Not used in current tests
             return Result.Success(null)
