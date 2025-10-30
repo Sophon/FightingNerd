@@ -1,6 +1,10 @@
 package com.example.botdiscord
 
 import TEST_SERVER_ID
+import com.example.botdiscord.featureRegistry.Command
+import com.example.botdiscord.featureRegistry.GlossaryFeature
+import com.example.botdiscord.featureRegistry.frameData.FrameDataFeature
+import com.example.botdiscord.util.removeTag
 import com.example.core.util.isAtLeast
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
@@ -14,13 +18,9 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
-import com.example.botdiscord.featureRegistry.Command
-import com.example.botdiscord.featureRegistry.FrameDataFeature
-import com.example.botdiscord.featureRegistry.GlossaryFeature
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import com.example.botdiscord.util.removeTag
 import kotlin.time.ExperimentalTime
 
 interface DiscordBot {
@@ -47,6 +47,19 @@ internal class DiscordBotImpl(
             }
         }
         startKord()
+
+        //    override suspend fun startSession() {
+//        scope.launch {
+//            scheduler.start(
+//                period = 1.hours,
+//                task = ::downloadCompleteMoveList,
+//            ).collect {
+//                it.onError { error ->
+//                    Napier.e(tag = TAG) { error.toString() }
+//                }
+//            }
+//        }
+//    }
     }
 
 

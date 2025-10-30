@@ -1,30 +1,43 @@
-package com.example.botdiscord.featureRegistry
+package com.example.botdiscord.featureRegistry.frameData
 
-import com.example.botdiscord.BotError
 import MAX_LENGTH_EMBED
+import com.example.botdiscord.BotError
+import com.example.botdiscord.domain.usecase.DownloadMoveListUseCase
+import com.example.botdiscord.domain.usecase.GetHeatMovesUseCase
+import com.example.botdiscord.domain.usecase.GetHomingMovesUseCase
+import com.example.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
+import com.example.botdiscord.domain.usecase.SearchFrameDataUseCase
+import com.example.botdiscord.featureRegistry.Command
+import com.example.botdiscord.featureRegistry.RegisteredFeature
+import com.example.botdiscord.featureRegistry.ServiceInfo
+import com.example.botdiscord.featureRegistry.SlashCommand
+import com.example.botdiscord.util.createErrorEmbed
+import com.example.botdiscord.util.field
+import com.example.botdiscord.util.orClickable
+import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
+import com.example.core.domain.onError
+import com.example.core.util.orDash
 import com.example.core.util.truncate
 import com.example.wikiwavu.domain.WavuUrlProvider
 import com.example.wikiwavu.domain.model.Move
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import com.example.botdiscord.domain.usecase.GetHeatMovesUseCase
-import com.example.botdiscord.domain.usecase.GetHomingMovesUseCase
-import com.example.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
-import com.example.botdiscord.domain.usecase.SearchFrameDataUseCase
-import com.example.botdiscord.domain.usecase.StartWikiUseCase
-import com.example.botdiscord.util.createErrorEmbed
-import com.example.botdiscord.util.field
-import com.example.botdiscord.util.orClickable
-import com.example.core.util.orDash
+import io.github.aakira.napier.Napier
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlin.time.Duration.Companion.hours
 
 internal class FrameDataFeature(
-    private val startWikiUseCase: StartWikiUseCase,
+    private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
     private val getHomingMovesUseCase: GetHomingMovesUseCase,
     private val urlProvider: WavuUrlProvider,
+    private val scheduler: Scheduler,
+    private val scope: CoroutineScope,
 ): RegisteredFeature {
     override val mainCommand: Command = Command.FD
     override val serviceInfo = ServiceInfo(
@@ -80,7 +93,12 @@ internal class FrameDataFeature(
     )
 
     override suspend fun start() {
-        startWikiUseCase.invoke()
+        scheduler.start(
+            period = 1.hours,
+            task = ::downloadCompleteMoveList,
+        ).onEach { result ->
+            result.onError { Napier.e(tag = TAG) { it.toString() } }
+        }.launchIn(scope)
     }
 
     override suspend fun execute(
@@ -94,6 +112,11 @@ internal class FrameDataFeature(
             Command.HOMING -> searchHomingMoves(*args)
             else -> createErrorEmbed(BotError.BOT_LOGIC_ERROR)
         }
+    }
+
+
+    private suspend fun downloadCompleteMoveList(): EmptyResult<BotError> {
+        return downloadMoveListUseCase.invoke()
     }
 
     private suspend fun searchFrameData(
@@ -217,24 +240,6 @@ internal class FrameDataFeature(
         )
     }
 
-    private fun EmbedBuilder.clickableField(
-        name: String,
-        value: String,
-    ) {
-        val url = urlProvider.followUpUrl(value)
-        val formattedValue = if (url == null) {
-            value
-        } else {
-            val pure = value.substringAfter("|").removeSuffix("]]")
-            "[${pure}]($url)"
-        }
-
-        field(
-            name = name,
-            value = formattedValue,
-        )
-    }
-
     private fun List<String>.emojify(
         crushes: List<String>,
     ): List<String> {
@@ -265,6 +270,7 @@ internal class FrameDataFeature(
 }
 
 
+private const val TAG = "FrameDataFeature"
 private const val KEY_CHAR_NAME = "character"
 private const val KEY_MOVE = "move"
 private const val GREEN = 0x00FF00

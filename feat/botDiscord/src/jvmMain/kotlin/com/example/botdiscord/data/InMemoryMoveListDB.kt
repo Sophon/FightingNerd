@@ -5,9 +5,14 @@ import com.example.core.domain.Result
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
 import com.example.wikiwavu.domain.model.Move
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class InMemoryMoveListDB: MoveListDB {
     private var database: MutableMap<String, Map<String, Move>> = mutableMapOf()
+    private var insertTimeInstant: Instant? = null
 
     override suspend fun fetchMoveListFor(
         charName: String
@@ -30,7 +35,8 @@ class InMemoryMoveListDB: MoveListDB {
     }
 
     override suspend fun insertMoveList(
-        charName: String, moveList: List<Move>
+        charName: String,
+        moveList: List<Move>,
     ): EmptyResult<WavuError> {
         val indexedMoves = buildMap {
             moveList.forEach { move ->
@@ -41,11 +47,18 @@ class InMemoryMoveListDB: MoveListDB {
             }
         }
         database[charName] = indexedMoves
+        insertTimeInstant = Clock.System.now()
+
         return Result.Success(Unit)
     }
 
     override suspend fun wipe(): EmptyResult<WavuError> {
         database.clear()
+        insertTimeInstant = null
         return Result.Success(Unit)
+    }
+
+    override fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
+        return Result.Success(insertTimeInstant)
     }
 }
