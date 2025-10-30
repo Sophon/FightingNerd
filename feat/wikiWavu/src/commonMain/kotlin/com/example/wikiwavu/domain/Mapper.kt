@@ -2,16 +2,15 @@ package com.example.wikiwavu.domain
 
 import com.example.core.util.cleanHtml
 import com.example.wikiwavu.data.MoveDto
-import com.example.wikiwavu.domain.model.Character
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.util.cleanMoveInput
 
 internal fun MoveDto.mapToDomain(
-    character: Character,
+    charName: String,
     movesById: Map<String, MoveDto>,
 ): Move {
     return Move(
-        charName = character.name,
+        charName = charName,
         id = id
             .substringAfter("-")
             .cleanMoveInput(),

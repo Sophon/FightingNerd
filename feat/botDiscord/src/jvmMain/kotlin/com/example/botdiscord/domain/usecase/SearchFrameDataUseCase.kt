@@ -4,7 +4,6 @@ import com.example.botdiscord.BotError
 import com.example.botdiscord.domain.toDomain
 import com.example.core.domain.Result
 import com.example.core.util.dropFirstAndJoin
-import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.WavuWikiClient
 import com.example.wikiwavu.domain.model.Move
 

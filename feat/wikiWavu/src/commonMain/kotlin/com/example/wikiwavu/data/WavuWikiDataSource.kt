@@ -1,10 +1,10 @@
 package com.example.wikiwavu.data
 
-import com.example.wikiwavu.BASE_URL
-import com.example.wikiwavu.LIMIT_MOVES
 import com.example.core.domain.DataError
 import com.example.core.domain.Result
 import com.example.core.network.safeCall
+import com.example.wikiwavu.BASE_URL
+import com.example.wikiwavu.LIMIT_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter

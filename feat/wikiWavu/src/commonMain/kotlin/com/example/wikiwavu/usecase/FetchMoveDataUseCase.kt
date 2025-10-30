@@ -1,7 +1,7 @@
 package com.example.wikiwavu.usecase
 
-import com.example.wikiwavu.WavuError
 import com.example.core.domain.Result
+import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.util.cleanMoveInput

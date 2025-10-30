@@ -1,11 +1,14 @@
-package com.example.wikiwavu.domain
+package com.example.botdiscord.featureRegistry.frameData
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlin.time.Duration
 
-class Scheduler {
+class Scheduler(
+    private val scope: CoroutineScope,
+) {
     fun <T>start(
         period: Duration,
         task: suspend () -> T,

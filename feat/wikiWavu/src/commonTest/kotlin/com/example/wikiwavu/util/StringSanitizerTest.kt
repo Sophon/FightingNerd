@@ -1,7 +1,6 @@
 package com.example.wikiwavu.util
 
 import assertk.assertThat
-import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 

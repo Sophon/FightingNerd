@@ -22,6 +22,7 @@ kotlin {
 
             implementation(libs.napier)
             implementation(libs.kord)
+            implementation(libs.kotlin.date.time)
 
             api(libs.koin.core)
         }
