@@ -453,7 +453,7 @@ class FetchMoveDataUseCaseTest {
             return Result.Success(Unit)
         }
 
-        override fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
+        override suspend fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
             // Not used in current tests
             return Result.Success(null)
         }
