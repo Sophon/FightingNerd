@@ -178,7 +178,7 @@ internal class FrameDataFeature(
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
-        title = move.id
+        title = move.input
         url = urlProvider.charUrl(move.charName)
 
         description = "**${move.charName}**: ${move.name}"
@@ -234,7 +234,7 @@ internal class FrameDataFeature(
         field(
             name = "$category moves".uppercase(),
             value = moves
-                .joinToString(separator = "") { move -> "* ${move.id}\n" }
+                .joinToString(separator = "") { move -> "* ${move.input}\n" }
                 .truncate(MAX_LENGTH_EMBED),
             inline = false,
         )

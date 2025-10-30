@@ -70,7 +70,7 @@ class DownloadMoveListUseCaseTest {
 
         val move = moveList.first()
         assertThat(move.charName).isEqualTo("Yoshimitsu")
-        assertThat(move.id).isEqualTo("1")
+        assertThat(move.id).isEqualTo("yoshimitsu-1")
         assertThat(move.input).isEqualTo("1")
         assertThat(move.name).isEqualTo("Jab")
         assertThat(move.level).isEqualTo("h")
@@ -146,11 +146,12 @@ class DownloadMoveListUseCaseTest {
         assertThat(moveList).hasSize(2)
 
         // Check child move has aggregated data from parent
-        val child = moveList.find { it.id == "11" }
+        val child = moveList.find { it.id == "yoshimitsu-11" }
         assertThat(child).isNotNull()
-        assertThat(child!!.level).isEqualTo("h,m")
+        assertThat(child!!.input).isEqualTo("11")
+        assertThat(child.level).isEqualTo("h,m")
         assertThat(child.damage).isEqualTo("5,19")
-        assertThat(child.startup).isEqualTo("i10") // Should get root startup
+        assertThat(child.startup).isEqualTo("i10")
         assertThat(child.parent).isEqualTo("Yoshimitsu-1")
     }
 
@@ -227,11 +228,12 @@ class DownloadMoveListUseCaseTest {
         val moves = result.data
 
         // Check the deepest child aggregated all data correctly
-        val deepChild = moves.find { it.id == "112" }
+        val deepChild = moves.find { it.id == "kazuya-112" }
         assertThat(deepChild).isNotNull()
-        assertThat(deepChild!!.level).isEqualTo("h,h,m")
+        assertThat(deepChild!!.input).isEqualTo("112")
+        assertThat(deepChild.level).isEqualTo("h,h,m")
         assertThat(deepChild.damage).isEqualTo("5,4,6")
-        assertThat(deepChild.startup).isEqualTo("i10") // From grandparent
+        assertThat(deepChild.startup).isEqualTo("i10")
     }
 
     @Test
@@ -263,7 +265,7 @@ class DownloadMoveListUseCaseTest {
             parent = "TestChar-1",
             target = ",m",
             damage = ",15",
-            startup = null, // No startup defined on child
+            startup = null,
             recv = "r25",
             tot = "50",
             crush = null,
@@ -283,9 +285,10 @@ class DownloadMoveListUseCaseTest {
 
         // Then
         result as Result.Success
-        val childMove = result.data.find { it.id == "12" }
+        val childMove = result.data.find { it.id == "testchar-12" }
         assertThat(childMove).isNotNull()
-        assertThat(childMove!!.startup).isEqualTo("i12") // Should inherit from root
+        assertThat(childMove!!.input).isEqualTo("12")
+        assertThat(childMove.startup).isEqualTo("i12")
     }
     // endregion
 
@@ -321,6 +324,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-df2")
         assertThat(move.isHeat).isTrue()
     }
 
@@ -355,6 +359,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-f23")
         assertThat(move.isPowerCrush).isTrue()
     }
 
@@ -398,6 +403,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("yoshimitsu-1+3")
         assertThat(move.isHoming).isTrue()
     }
 
@@ -432,6 +438,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-1")
         assertThat(move.isHeat).isFalse()
         assertThat(move.isPowerCrush).isFalse()
         assertThat(move.isHoming).isFalse()
@@ -470,6 +477,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-1")
         assertThat(move.notes.first()).isEqualTo("Test & note with \"quotes\"")
     }
 
@@ -511,6 +519,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("yoshimitsu-11")
         assertThat(move.notes).hasSize(4)
         assertThat(move.notes).contains("Floor Break")
         assertThat(move.notes).contains("Weapon")
@@ -549,6 +558,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("yoshimitsu-1+2+3")
         assertThat(move.aliases).hasSize(1)
         assertThat(move.aliases.first()).isEqualTo("1ss1+2+3")
     }
@@ -590,6 +600,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("yoshimitsu-11")
         assertThat(move.aliases).hasSize(2)
         assertThat(move.aliases).contains("1ss11")
         assertThat(move.aliases).contains("11ss1")
@@ -626,9 +637,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
-        // "f, f+3" after substringAfter("-") becomes "f, f+3"
-        // cleanMoveInput removes spaces and commas: "ff+3" -> "ff3"
-        assertThat(move.id).isEqualTo("ff3")
+        assertThat(move.id).isEqualTo("testchar-ff3")
     }
 
     @Test
@@ -662,6 +671,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-1")
         assertThat(move.notes).isEmpty()
     }
 
@@ -696,6 +706,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-1")
         assertThat(move.aliases).isEmpty()
     }
 
@@ -730,6 +741,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("yoshimitsu-kin.1+2")
         assertThat(move.crushes).hasSize(3)
         assertThat(move.crushes).isEqualTo(listOf("is1~20", "js25~39", "fs40~42"))
     }
@@ -765,6 +777,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-f23")
         assertThat(move.crushes).hasSize(1)
         assertThat(move.crushes.first()).isEqualTo("pc8~")
     }
@@ -800,6 +813,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-1")
         assertThat(move.crushes).isEmpty()
     }
 
@@ -834,6 +848,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-df2")
         assertThat(move.crushes).hasSize(1)
         assertThat(move.crushes.first()).isEqualTo("ps3~9")
     }
@@ -873,7 +888,7 @@ class DownloadMoveListUseCaseTest {
         result as Result.Success
         val move = result.data.first()
         assertThat(move.charName).isEqualTo("Yoshimitsu")
-        assertThat(move.id).isEqualTo("1+2+3+4")
+        assertThat(move.id).isEqualTo("yoshimitsu-1+2+3+4")
         assertThat(move.input).isEqualTo("1+2+3+4")
         assertThat(move.name).isEqualTo("Ki Charge")
         assertThat(move.level).isNull()
@@ -923,6 +938,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("yoshimitsu-kin.1+2")
         assertThat(move.level).isEqualTo("m,m,m,m")
         assertThat(move.damage).isEqualTo("4,4,4,24")
         assertThat(move.startup).isEqualTo("i12~13 i6~7 i7~8 i11~13")
@@ -1037,7 +1053,7 @@ class DownloadMoveListUseCaseTest {
         // Then
         result as Result.Success
         val move = result.data.first()
-        assertThat(move.id).isEqualTo("1")
+        assertThat(move.id).isEqualTo("testchar-1")
         assertThat(move.input).isEqualTo("1")
         assertThat(move.level).isNull()
         assertThat(move.name).isNull()
@@ -1053,7 +1069,7 @@ class DownloadMoveListUseCaseTest {
         val orphanedChild = MoveDto(
             id = "TestChar-1,2",
             input = ",2",
-            parent = "TestChar-1", // This parent doesn't exist
+            parent = "TestChar-1",
             target = ",m",
             damage = ",15",
             startup = null,
@@ -1077,8 +1093,9 @@ class DownloadMoveListUseCaseTest {
         // Then - Should not crash and should handle gracefully
         result as Result.Success
         val move = result.data.first()
+        assertThat(move.id).isEqualTo("testchar-12")
         assertThat(move.parent).isEqualTo("TestChar-1")
-        // Data should only contain the child's own data
+        assertThat(move.input).isEqualTo("2")
         assertThat(move.level).isEqualTo(",m")
         assertThat(move.damage).isEqualTo(",15")
         assertThat(move.startup).isNull()

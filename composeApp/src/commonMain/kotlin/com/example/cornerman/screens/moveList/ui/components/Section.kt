@@ -82,7 +82,7 @@ private fun MoveItem(
                 .fillMaxWidth(),
         ) {
             Text(
-                text = move.id,
+                text = move.input,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
             )

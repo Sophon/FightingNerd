@@ -84,7 +84,7 @@ class MoveListVM(
     private suspend fun fetchMoves() {
         when (val result = fetchMoveListUseCase.invoke(charName)) {
             is Result.Success -> {
-                cacheMoves(result.data)
+                _state.update { it.copy(allMoves = result.data, filteredMoves = result.data) }
             }
             is Result.Error -> {
                 Napier.e(tag = TAG) { result.error.toString() }
@@ -93,11 +93,6 @@ class MoveListVM(
         }
 
         _state.update { it.copy(isLoading = false) }
-    }
-
-    //TODO: refactor to Database
-    private fun cacheMoves(categories: List<MoveCategory>) {
-        _state.update { it.copy(allMoves = categories, filteredMoves = categories) }
     }
 
     private fun filterMoves(query: String): List<MoveCategory> {

@@ -11,10 +11,10 @@ internal fun MoveDto.mapToDomain(
 ): Move {
     return Move(
         charName = charName,
-        id = id
-            .substringAfter("-")
+        id = id.cleanMoveInput(),
+        input = formCompleteDataFromParent(movesById) { it.input }
+            .orEmpty()
             .cleanMoveInput(),
-        input = input,
         level = formCompleteDataFromParent(movesById) { it.target },
         name = name,
         parent = parent,
