@@ -11,6 +11,8 @@ import com.example.wikiwavu.domain.model.Move
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class FetchMoveDataUseCaseTest {
     private lateinit var mockDb: MockMoveListDB
@@ -426,7 +428,7 @@ class FetchMoveDataUseCaseTest {
         var lastCharName: String? = null
         var lastMoveQuery: String? = null
 
-        override suspend fun fetchMoveListFor(charName: String): Result<Map<String, Move>, WavuError> {
+        override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WavuError> {
             // Not used in FetchMoveDataUseCase
             return Result.Error(WavuError.UNKNOWN_CHARACTER)
         }
@@ -450,6 +452,12 @@ class FetchMoveDataUseCaseTest {
         override suspend fun wipe(): EmptyResult<WavuError> {
             //not used
             return Result.Success(Unit)
+        }
+
+        @OptIn(ExperimentalTime::class)
+        override fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
+            // Not used in current tests
+            return Result.Success(null)
         }
     }
     //endregion

@@ -15,6 +15,8 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class FetchMovesWithPropertyUseCaseTest {
     private lateinit var mockDb: MockMoveListDB
@@ -37,7 +39,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "1", isHeat = false),
             createTestMove(id = "2", isHeat = false)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { it.isHeat }
@@ -59,7 +61,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "2", isHeat = false),
             createTestMove(id = "3", isHeat = false)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { it.isHeat }
@@ -78,7 +80,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "bf23", isHeat = true),
             createTestMove(id = "f4", isHeat = true)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { it.isHeat }
@@ -101,7 +103,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "qcf2", isPowerCrush = true),
             createTestMove(id = "1", isPowerCrush = false)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { it.isPowerCrush }
@@ -121,7 +123,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "1", isPowerCrush = false),
             createTestMove(id = "df2", isPowerCrush = false)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { it.isPowerCrush }
@@ -144,7 +146,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "df2", isHoming = false),
             createTestMove(id = "ff3", isHoming = false)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { it.isHoming }
@@ -164,7 +166,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "1", isHoming = false),
             createTestMove(id = "2", isHoming = false)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { it.isHoming }
@@ -185,7 +187,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "f23", isHeat = true, isPowerCrush = true),
             createTestMove(id = "1", isHeat = false, isPowerCrush = false)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When - Filter for moves that are both heat AND power crush
         val result = useCase.invoke(charName) { it.isHeat && it.isPowerCrush }
@@ -208,7 +210,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "bf23", isHeat = true, isHoming = true),
             createTestMove(id = "1", isHeat = false, isHoming = false)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When - Filter for moves that are heat OR homing
         val result = useCase.invoke(charName) { it.isHeat || it.isHoming }
@@ -228,7 +230,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "df2", isHeat = true, isPowerCrush = true, isHoming = false),
             createTestMove(id = "1", isHeat = false, isPowerCrush = false, isHoming = false)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When - Filter for moves with all three properties
         val result = useCase.invoke(charName) { it.isHeat && it.isPowerCrush && it.isHoming }
@@ -251,7 +253,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "1", damage = "5"),
             createTestMove(id = "bf23", damage = null)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When - Filter for moves with damage field not null
         val result = useCase.invoke(charName) { it.damage != null }
@@ -272,7 +274,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "1", name = "Jab"),
             createTestMove(id = "unnamed", name = null)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When - Filter for named moves
         val result = useCase.invoke(charName) { it.name != null }
@@ -292,7 +294,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "1", notes = listOf("High")),
             createTestMove(id = "db4", notes = listOf())
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When - Filter for moves with notes
         val result = useCase.invoke(charName) { it.notes.isNotEmpty() }
@@ -354,7 +356,7 @@ class FetchMovesWithPropertyUseCaseTest {
     fun `invoke handles empty move list from database`() = runTest {
         // Given
         val charName = "Jin"
-        mockDb.mockResponse = Result.Success(emptyMap())
+        mockDb.mockResponse = Result.Success(listOf())
 
         // When
         val result = useCase.invoke(charName) { it.isHeat }
@@ -373,7 +375,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "2"),
             createTestMove(id = "3")
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { true }
@@ -392,7 +394,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "2"),
             createTestMove(id = "3")
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { false }
@@ -411,7 +413,7 @@ class FetchMovesWithPropertyUseCaseTest {
             createTestMove(id = "bf23", isHeat = true),
             createTestMove(id = "f4", isHeat = true)
         )
-        mockDb.mockResponse = Result.Success(moves.associateBy { it.id })
+        mockDb.mockResponse = Result.Success(moves)
 
         // When
         val result = useCase.invoke(charName) { it.isHeat }
@@ -432,13 +434,9 @@ class FetchMovesWithPropertyUseCaseTest {
         val move2 = createTestMove(id = "2", isHeat = false)
         val move3 = createTestMove(id = "3", isHeat = true)
 
-        val moveMap = mapOf(
-            "1" to move1,
-            "2" to move2,
-            "3" to move3
-        )
+        val moveList = listOf(move1, move2, move3)
 
-        mockDB.mockResponse = Result.Success(moveMap)
+        mockDB.mockResponse = Result.Success(moveList)
 
         // When - Call with mixed case "NaMe"
         val result = useCase.invoke(
@@ -488,9 +486,9 @@ class FetchMovesWithPropertyUseCaseTest {
     )
 
     private class MockMoveListDB : MoveListDB {
-        var mockResponse: Result<Map<String, Move>, WavuError>? = null
+        var mockResponse: Result<List<Move>, WavuError>? = null
 
-        override suspend fun fetchMoveListFor(charName: String): Result<Map<String, Move>, WavuError> {
+        override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WavuError> {
             return mockResponse ?: Result.Error(WavuError.UNKNOWN_CHARACTER)
         }
 
@@ -512,6 +510,12 @@ class FetchMovesWithPropertyUseCaseTest {
         override suspend fun wipe(): EmptyResult<WavuError> {
             //not used
             return Result.Success(Unit)
+        }
+
+        @OptIn(ExperimentalTime::class)
+        override fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
+            // Not used in current tests
+            return Result.Success(null)
         }
     }
 }

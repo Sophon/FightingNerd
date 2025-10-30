@@ -14,6 +14,8 @@ import com.example.wikiwavu.domain.model.Move
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class CacheMoveListUseCaseTest {
     private lateinit var db: FakeMoveListDB
@@ -36,10 +38,9 @@ class CacheMoveListUseCaseTest {
             Move(charName = "Jin", id = "1", input = "1"),
             Move(charName = "Jin", id = "2", input = "2")
         )
-        val characterMoveList = CharacterMoveList(character, moves)
 
         // When
-        val result = useCase.invoke(characterMoveList)
+        val result = useCase.invoke(character, moves)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -58,10 +59,9 @@ class CacheMoveListUseCaseTest {
         val moves = listOf(
             Move(charName = "Devil Jin", id = "1", input = "1")
         )
-        val characterMoveList = CharacterMoveList(character, moves)
 
         // When
-        val result = useCase.invoke(characterMoveList)
+        val result = useCase.invoke(character, moves)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -80,10 +80,9 @@ class CacheMoveListUseCaseTest {
         val moves = listOf(
             Move(charName = "KING", id = "1", input = "1")
         )
-        val characterMoveList = CharacterMoveList(character, moves)
 
         // When
-        useCase.invoke(characterMoveList)
+        useCase.invoke(character, moves)
 
         // Then
         assertThat(db.getCachedMoveList("king")).isNotNull()
@@ -100,10 +99,9 @@ class CacheMoveListUseCaseTest {
         val moves = listOf(
             Move(charName = "Paul", id = "df2", input = "d/f+2")
         )
-        val characterMoveList = CharacterMoveList(character, moves)
 
         // When
-        val result = useCase.invoke(characterMoveList)
+        val result = useCase.invoke(character, moves)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -122,7 +120,7 @@ class CacheMoveListUseCaseTest {
         val characterMoveList = CharacterMoveList(character, emptyList())
 
         // When
-        val result = useCase.invoke(characterMoveList)
+        val result = useCase.invoke(character, listOf())
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -146,10 +144,9 @@ class CacheMoveListUseCaseTest {
                 aliases = listOf("launcher", "df+2")
             )
         )
-        val characterMoveList = CharacterMoveList(character, moves)
 
         // When
-        useCase.invoke(characterMoveList)
+        val result = useCase.invoke(character, moves)
 
         // Then
         val cachedMoves = db.getCachedMoveList("kazuya")
@@ -168,10 +165,9 @@ class CacheMoveListUseCaseTest {
             Move(charName = "Steve", id = "1", input = "1"),
             Move(charName = "Steve", id = "2", input = "2")
         )
-        val characterMoveList = CharacterMoveList(character, moves)
 
         // When
-        useCase.invoke(characterMoveList)
+        val result = useCase.invoke(character, moves)
 
         // Then
         val mainList = db.getCachedMoveList("steve")
@@ -198,8 +194,8 @@ class CacheMoveListUseCaseTest {
         val moveList2 = CharacterMoveList(character2, moves2)
 
         // When
-        useCase.invoke(moveList1)
-        useCase.invoke(moveList2)
+        useCase.invoke(character1, moves1)
+        useCase.invoke(character2, moves2)
 
         // Then
         assertThat(db.getCachedMoveList("jin")!!.size).isEqualTo(1)
@@ -219,8 +215,8 @@ class CacheMoveListUseCaseTest {
         )
 
         // When
-        useCase.invoke(CharacterMoveList(character, oldMoves))
-        useCase.invoke(CharacterMoveList(character, newMoves))
+        useCase.invoke(character, oldMoves)
+        useCase.invoke(character, newMoves)
 
         // Then
         val cachedMoves = db.getCachedMoveList("bryan")
@@ -259,10 +255,9 @@ class CacheMoveListUseCaseTest {
                 isHoming = false
             )
         )
-        val characterMoveList = CharacterMoveList(character, moves)
 
         // When
-        val result = useCase.invoke(characterMoveList)
+        val result = useCase.invoke(character, moves)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -283,10 +278,9 @@ class CacheMoveListUseCaseTest {
             alias = listOf("Yoshi")
         )
         val moves = listOf(Move(charName = "Yoshimitsu", id = "1", input = "1"))
-        val characterMoveList = CharacterMoveList(character, moves)
 
         // When
-        val result = useCase.invoke(characterMoveList)
+        val result = useCase.invoke(character, moves)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -299,10 +293,9 @@ class CacheMoveListUseCaseTest {
         // Given
         val character = Character(name = "Nina", alias = emptyList())
         val moves = listOf(Move(charName = "Nina", id = "1", input = "1"))
-        val characterMoveList = CharacterMoveList(character, moves)
 
         // When
-        val result = useCase.invoke(characterMoveList)
+        val result = useCase.invoke(character, moves)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -317,8 +310,9 @@ class CacheMoveListUseCaseTest {
             return database[charName]
         }
 
-        override suspend fun fetchMoveListFor(charName: String): Result<Map<String, Move>, WavuError> {
+        override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WavuError> {
             return database[charName]
+                ?.values?.toList()
                 ?.let { Result.Success(it) }
                 ?: Result.Error(WavuError.UNKNOWN_CHARACTER)
         }
@@ -356,6 +350,12 @@ class CacheMoveListUseCaseTest {
             } catch (e: Exception) {
                 Result.Error(WavuError.DATABASE_ERROR)
             }
+        }
+
+        @OptIn(ExperimentalTime::class)
+        override fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
+            // Not used in current tests
+            return Result.Success(null)
         }
     }
 }

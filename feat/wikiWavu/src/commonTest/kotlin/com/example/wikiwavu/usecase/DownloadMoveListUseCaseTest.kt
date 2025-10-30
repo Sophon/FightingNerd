@@ -58,17 +58,17 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         assertThat(result).isNotNull()
         result as Result.Success
 
         val moveList = result.data
-        assertThat(moveList.character).isEqualTo(character)
-        assertThat(moveList.moveList).hasSize(1)
+        assertThat(character).isEqualTo(character)
+        assertThat(moveList).hasSize(1)
 
-        val move = moveList.moveList.first()
+        val move = moveList.first()
         assertThat(move.charName).isEqualTo("Yoshimitsu")
         assertThat(move.id).isEqualTo("1")
         assertThat(move.input).isEqualTo("1")
@@ -136,13 +136,13 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(parentMove, childMove)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         assertThat(result).isNotNull()
         result as Result.Success
 
-        val moveList = result.data.moveList
+        val moveList = result.data
         assertThat(moveList).hasSize(2)
 
         // Check child move has aggregated data from parent
@@ -220,11 +220,11 @@ class DownloadMoveListUseCaseTest {
         )
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val moves = result.data.moveList
+        val moves = result.data
 
         // Check the deepest child aggregated all data correctly
         val deepChild = moves.find { it.id == "112" }
@@ -279,11 +279,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(root, child)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val childMove = result.data.moveList.find { it.id == "12" }
+        val childMove = result.data.find { it.id == "12" }
         assertThat(childMove).isNotNull()
         assertThat(childMove!!.startup).isEqualTo("i12") // Should inherit from root
     }
@@ -316,11 +316,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.isHeat).isTrue()
     }
 
@@ -350,11 +350,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.isPowerCrush).isTrue()
     }
 
@@ -393,11 +393,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.isHoming).isTrue()
     }
 
@@ -427,11 +427,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.isHeat).isFalse()
         assertThat(move.isPowerCrush).isFalse()
         assertThat(move.isHoming).isFalse()
@@ -465,11 +465,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.notes.first()).isEqualTo("Test & note with \"quotes\"")
     }
 
@@ -506,11 +506,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.notes).hasSize(4)
         assertThat(move.notes).contains("Floor Break")
         assertThat(move.notes).contains("Weapon")
@@ -544,11 +544,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.aliases).hasSize(1)
         assertThat(move.aliases.first()).isEqualTo("1ss1+2+3")
     }
@@ -585,11 +585,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.aliases).hasSize(2)
         assertThat(move.aliases).contains("1ss11")
         assertThat(move.aliases).contains("11ss1")
@@ -621,11 +621,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         // "f, f+3" after substringAfter("-") becomes "f, f+3"
         // cleanMoveInput removes spaces and commas: "ff+3" -> "ff3"
         assertThat(move.id).isEqualTo("ff3")
@@ -657,11 +657,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.notes).isEmpty()
     }
 
@@ -691,11 +691,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.aliases).isEmpty()
     }
 
@@ -725,11 +725,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.crushes).hasSize(3)
         assertThat(move.crushes).isEqualTo(listOf("is1~20", "js25~39", "fs40~42"))
     }
@@ -760,11 +760,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.crushes).hasSize(1)
         assertThat(move.crushes.first()).isEqualTo("pc8~")
     }
@@ -795,11 +795,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.crushes).isEmpty()
     }
 
@@ -829,11 +829,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.crushes).hasSize(1)
         assertThat(move.crushes.first()).isEqualTo("ps3~9")
     }
@@ -867,11 +867,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.charName).isEqualTo("Yoshimitsu")
         assertThat(move.id).isEqualTo("1+2+3+4")
         assertThat(move.input).isEqualTo("1+2+3+4")
@@ -918,11 +918,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.level).isEqualTo("m,m,m,m")
         assertThat(move.damage).isEqualTo("4,4,4,24")
         assertThat(move.startup).isEqualTo("i12~13 i6~7 i7~8 i11~13")
@@ -939,7 +939,7 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Error(DataError.Remote.SERVER_ERROR)
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         assertThat(result).isNotNull()
@@ -954,7 +954,7 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Error(DataError.Remote.NO_INTERNET)
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Error
@@ -968,7 +968,7 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Error(DataError.Remote.REQUEST_TIMEOUT)
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Error
@@ -982,7 +982,7 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Error(DataError.Remote.SERIALIZATION_ERROR)
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Error
@@ -998,11 +998,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(emptyList()))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        assertThat(result.data.moveList).isEmpty()
+        assertThat(result.data).isEmpty()
     }
 
     @Test
@@ -1032,11 +1032,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(minimalMove)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.id).isEqualTo("1")
         assertThat(move.input).isEqualTo("1")
         assertThat(move.level).isNull()
@@ -1072,11 +1072,11 @@ class DownloadMoveListUseCaseTest {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(orphanedChild)))
 
         // When
-        val result = useCase.invoke(character)
+        val result = useCase.invoke(character.name)
 
         // Then - Should not crash and should handle gracefully
         result as Result.Success
-        val move = result.data.moveList.first()
+        val move = result.data.first()
         assertThat(move.parent).isEqualTo("TestChar-1")
         // Data should only contain the child's own data
         assertThat(move.level).isEqualTo(",m")
