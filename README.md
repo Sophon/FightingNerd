@@ -1,43 +1,10 @@
+<img width="3840" height="1920" alt="banner" src="https://github.com/user-attachments/assets/c67b7e74-c079-4e40-8d02-f8a476b8d517" />
+
+
 # A set of tools for fighting games
 
 A highly [modular](https://github.com/Sophon/Cornerman/wiki/Code-base-architecture) set of tools for the fighting game community.
 
-```mermaid
-graph LR
-    subgraph "Bot clients"
-        discordBot[Discord Bot]
-        yourBot[Your Bot]
-    end
-    
-    subgraph "Mobile clients"
-        android[Android]
-        iOS[iOS]
-    end
-    
-    subgraph "Feature modules"
-        glossaryInfil[Glossary Infil]
-        wikiWavu[Wiki Wavu]
-        yourWiki[Your Wiki]
-    end
-    
-    discordBot -->|uses| glossaryInfil
-    discordBot -->|uses| wikiWavu
-    discordBot -.->|uses| yourWiki
-    
-    yourBot -.->|uses| yourWiki
-    
-    android -->|uses| wikiWavu
-    
-    iOS -->|uses| wikiWavu
-    
-    style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
-    style yourBot fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
-    style android fill:#A78BFA,stroke:#7C3AED,color:#fff,stroke-dasharray: 5 5
-    style iOS fill:#A78BFA,stroke:#7C3AED,color:#fff,stroke-dasharray: 5 5
-    style glossaryInfil fill:#10B981,stroke:#059669,color:#fff
-    style wikiWavu fill:#10B981,stroke:#059669,color:#fff
-    style yourWiki fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
-```
 
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules)
 - [Discord bot](./feat/botDiscord/src/main/kotlin/DiscordBot.kt)
