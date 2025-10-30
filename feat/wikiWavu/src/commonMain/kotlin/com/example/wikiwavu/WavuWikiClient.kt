@@ -3,23 +3,28 @@ package com.example.wikiwavu
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import com.example.core.domain.onError
-import com.example.wikiwavu.domain.Scheduler
 import com.example.wikiwavu.domain.model.Character
-import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.usecase.CacheMoveListUseCase
+import com.example.wikiwavu.usecase.ClearCacheUseCase
 import com.example.wikiwavu.usecase.DownloadCharacterListUseCase
 import com.example.wikiwavu.usecase.DownloadMoveListUseCase
 import com.example.wikiwavu.usecase.FetchMoveDataUseCase
 import com.example.wikiwavu.usecase.FetchMoveListUseCase
 import com.example.wikiwavu.usecase.FetchMovesWithPropertyUseCase
+import com.example.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import io.github.aakira.napier.Napier
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.hours
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 interface WavuWikiClient {
-    suspend fun startSession()
+    suspend fun downloadCharacterList(): Result<List<Character>, WavuError>
+    suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WavuError>
+    suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WavuError>
+    fun getLastUpdateTimeStamp(): Result<Instant?, WavuError>
+    suspend fun clearCache(): EmptyResult<WavuError>
+
     suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WavuError>
     suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getHeatMoves(charName: String): Result<List<Move>, WavuError>
@@ -28,28 +33,60 @@ interface WavuWikiClient {
     suspend fun getCharacterList(): Result<List<Character>, WavuError>
 }
 
+@OptIn(ExperimentalTime::class)
 internal class WavuWikiClientImpl(
     private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
+    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
+    private val clearCacheUseCase: ClearCacheUseCase,
+
     private val fetchMoveDataUseCase: FetchMoveDataUseCase,
     private val fetchMovesWithPropertyUseCase: FetchMovesWithPropertyUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
-    private val scheduler: Scheduler,
-    private val scope: CoroutineScope,
 ): WavuWikiClient {
+    override suspend fun downloadCharacterList(): Result<List<Character>, WavuError> {
+        val result = downloadCharacterListUseCase.invoke()
+        when (result) {
+            is Result.Success -> Napier.d(tag = TAG) { "${result.data.size} characters loaded" }
+            is Result.Error -> Napier.e(tag = TAG) { result.error.toString() }
+        }
 
-    override suspend fun startSession() {
-        scope.launch {
-            scheduler.start(
-                period = 1.hours,
-                task = ::downloadCompleteMoveList,
-            ).collect {
-                it.onError { error ->
-                    Napier.e(tag = TAG) { error.toString() }
+        return result
+    }
+
+    override suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WavuError> {
+        return when (val result = downloadMoveListUseCase.invoke(charName)) {
+            is Result.Success -> {
+                Napier.d(tag = TAG) {
+                    "${charName}: ${result.data.size} moves downloaded"
                 }
+                Result.Success(result.data)
+            }
+            is Result.Error -> {
+                Napier.e(tag = TAG) { "$charName: ${result.error}" }
+                Result.Error(result.error)
             }
         }
+    }
+
+    override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WavuError> {
+        val result = cacheMoveListUseCase.invoke(character, moveList)
+
+        when (result) {
+            is Result.Error -> Napier.d(tag = TAG) { "${character.name}: ${result.error}" }
+            else -> {}
+        }
+
+        return result
+    }
+
+    override fun getLastUpdateTimeStamp(): Result<Instant?, WavuError> {
+        return getLastCacheInsertInstantUseCase.invoke()
+    }
+
+    override suspend fun clearCache(): EmptyResult<WavuError> {
+        return clearCacheUseCase.invoke()
     }
 
     override suspend fun frameDataFor(
@@ -87,34 +124,7 @@ internal class WavuWikiClientImpl(
     override suspend fun getCharacterList(): Result<List<Character>, WavuError> {
         return downloadCharacterListUseCase.invoke()
     }
-
-
-    private suspend fun downloadCompleteMoveList(): EmptyResult<WavuError> {
-        return when (val result = getCharacterList()) {
-            is Result.Success -> {
-                for (character in result.data) {
-                    when (val moveListResult = downloadMoveListUseCase.invoke(character)) {
-                        is Result.Success -> {
-                            cacheMoveListUseCase.invoke(characterMoveList = moveListResult.data)
-                            Napier.d(tag = TAG) {
-                                "${moveListResult.data.moveList.size} moves for ${character.name} (${character.alias}) added"
-                            }
-                        }
-                        is Result.Error -> {
-                            Napier.e(tag = TAG) { "Error: ${moveListResult.error} for $character" }
-                            return Result.Error(moveListResult.error)
-                        }
-                    }
-                }
-
-                Result.Success(Unit)
-            }
-            is Result.Error -> {
-                Result.Error(result.error)
-            }
-        }
-    }
 }
 
 
-private const val TAG = "com.example.wikiWavu.WavuWikiClient"
+private const val TAG = "WavuWikiClient"

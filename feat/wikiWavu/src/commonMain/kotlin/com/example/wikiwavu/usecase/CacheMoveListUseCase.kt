@@ -1,23 +1,25 @@
 package com.example.wikiwavu.usecase
 
-import com.example.wikiwavu.WavuError
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
+import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
-import com.example.wikiwavu.domain.model.CharacterMoveList
+import com.example.wikiwavu.domain.model.Character
+import com.example.wikiwavu.domain.model.Move
 
 class CacheMoveListUseCase(
     private val db: MoveListDB,
 ) {
     suspend fun invoke(
-        characterMoveList: CharacterMoveList,
+        character: Character,
+        moveList: List<Move>,
     ): EmptyResult<WavuError> {
         db.insertMoveList(
-            charName = characterMoveList.character.name.lowercase(),
-            moveList = characterMoveList.moveList,
+            charName = character.name.lowercase(),
+            moveList = moveList,
         )
-        characterMoveList.character.alias.forEach { alias ->
-            db.insertMoveList(charName = alias, moveList = characterMoveList.moveList)
+        character.alias.forEach { alias ->
+            db.insertMoveList(charName = alias, moveList = moveList)
         }
         return Result.Success(Unit)
     }
