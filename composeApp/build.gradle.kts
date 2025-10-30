@@ -121,6 +121,7 @@ android {
 }
 
 dependencies {
+    ksp(libs.room.compiler)
     debugImplementation(compose.uiTooling)
 }
 
