@@ -1,18 +1,13 @@
 package com.example.cornerman
 
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import com.example.cornerman.screens.moveList.data.RoomMoveListDB
-import com.example.cornerman.screens.moveList.data.getDatabaseBuilder
-import com.example.wikiwavu.data.MoveListDB
-import org.koin.android.ext.koin.androidContext
+import androidx.room.RoomDatabase
+import com.example.cornerman.screens.moveList.data.MoveListDatabase
+import com.example.cornerman.screens.moveList.data.getMoveListDatabaseBuilder
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 actual val platformModule = module {
-    single {
-        getDatabaseBuilder(androidContext())
-            .setDriver(BundledSQLiteDriver())
-            .build()
-    }
-    single { get<AppDatabase>().moveDao() }
-    single< MoveListDB> { RoomMoveListDB(get()) }
+    singleOf(::getMoveListDatabaseBuilder)
+        .bind<RoomDatabase.Builder<MoveListDatabase>>()
 }

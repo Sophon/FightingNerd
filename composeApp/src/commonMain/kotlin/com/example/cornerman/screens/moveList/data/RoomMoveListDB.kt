@@ -10,7 +10,7 @@ import com.example.wikiwavu.domain.model.Move
 import io.github.aakira.napier.Napier
 
 class RoomMoveListDB(
-    private val dao: MoveDao,
+    private val dao: MoveListDao,
 ): MoveListDB {
     override suspend fun fetchMoveListFor(
         charName: String
