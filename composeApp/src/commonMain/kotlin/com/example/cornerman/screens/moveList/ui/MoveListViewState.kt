@@ -11,7 +11,7 @@ data class MoveListViewState(
 
     val searchBar: SearchBar? = null,
 
-    val error: StringResource? = null,
+    val error: String? = null,
     val isLoading: Boolean = true,
 ) {
     data class SearchBar(

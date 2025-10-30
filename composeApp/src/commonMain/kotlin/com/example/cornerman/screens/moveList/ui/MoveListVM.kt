@@ -3,9 +3,8 @@ package com.example.cornerman.screens.moveList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.Result
-import com.example.cornerman.screens.moveList.domain.FetchMoveListUseCase
 import com.example.cornerman.screens.moveList.domain.MoveCategory
-import com.example.wikiwavu.domain.model.Character
+import com.example.cornerman.screens.moveList.domain.usecase.FetchMoveListUseCase
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,6 +12,11 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
+/**
+ * TODO:
+ *
+ *  2. fetch the move list from database
+ */
 class MoveListVM(
     private val charName: String,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
@@ -78,26 +82,17 @@ class MoveListVM(
 
 
     private suspend fun fetchMoves() {
-        val character = mockCharacter()
-        val result = fetchMoveListUseCase.invoke(character)
-        when (result) {
+        when (val result = fetchMoveListUseCase.invoke(charName)) {
             is Result.Success -> {
                 cacheMoves(result.data)
             }
             is Result.Error -> {
                 Napier.e(tag = TAG) { result.error.toString() }
+                _state.update { it.copy(error = result.error.toString()) }
             }
         }
-        _state.update { it.copy(isLoading = false) }
-    }
 
-    private fun mockCharacter(): Character {
-        return Character(
-            name = "Dragunov",
-            alias = listOf("drag"),
-            portraitUrl = "https://i.imgur.com/MZClYKp.png",
-            wavuPageUrl =  "https://wavu.wiki/t/Dragunov",
-        )
+        _state.update { it.copy(isLoading = false) }
     }
 
     //TODO: refactor to Database

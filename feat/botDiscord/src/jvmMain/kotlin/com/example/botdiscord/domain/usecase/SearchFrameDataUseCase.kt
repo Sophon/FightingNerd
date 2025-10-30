@@ -1,6 +1,7 @@
-package com.example.botdiscord.usecase
+package com.example.botdiscord.domain.usecase
 
 import com.example.botdiscord.BotError
+import com.example.botdiscord.domain.toDomain
 import com.example.core.domain.Result
 import com.example.core.util.dropFirstAndJoin
 import com.example.wikiwavu.WavuError
@@ -18,16 +19,7 @@ internal class SearchFrameDataUseCase(
             val result = wavuWikiClient.frameDataFor(charName = parsedQuery.charName, moveQuery = parsedQuery.move)
         ) {
             is Result.Success -> Result.Success(result.data)
-            is Result.Error -> Result.Error(
-                when (result.error) {
-                    WavuError.UNKNOWN_CHARACTER -> BotError.UNKNOWN_CHARACTER
-                    WavuError.UNKNOWN_MOVE -> BotError.UNKNOWN_MOVE
-                    WavuError.DOWNLOAD_ERROR -> BotError.DOWNLOAD_ERROR
-                    WavuError.CHARACTER_LIST_NOT_FOUND,
-                    WavuError.CHARACTER_SERIALIZATION_ERROR,
-                        -> BotError.CHARACTER_LIST_FILE_ERROR
-                }
-            )
+            is Result.Error -> Result.Error(result.error.toDomain())
         }
     }
 

@@ -1,5 +1,6 @@
 package com.example.botdiscord.data
 
+import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
@@ -10,9 +11,9 @@ class InMemoryMoveListDB: MoveListDB {
 
     override suspend fun fetchMoveListFor(
         charName: String
-    ): Result<Map<String, Move>, WavuError> {
+    ): Result<List<Move>, WavuError> {
         return database[charName]
-            ?.let { Result.Success(it) }
+            ?.let { Result.Success(it.values.toList()) }
             ?: Result.Error(WavuError.UNKNOWN_CHARACTER)
     }
 
@@ -28,7 +29,9 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(moveData)
     }
 
-    override suspend fun insertMoveList(charName: String, moveList: List<Move>) {
+    override suspend fun insertMoveList(
+        charName: String, moveList: List<Move>
+    ): EmptyResult<WavuError> {
         val indexedMoves = buildMap {
             moveList.forEach { move ->
                 put(move.id, move)
@@ -38,5 +41,11 @@ class InMemoryMoveListDB: MoveListDB {
             }
         }
         database[charName] = indexedMoves
+        return Result.Success(Unit)
+    }
+
+    override suspend fun wipe(): EmptyResult<WavuError> {
+        database.clear()
+        return Result.Success(Unit)
     }
 }

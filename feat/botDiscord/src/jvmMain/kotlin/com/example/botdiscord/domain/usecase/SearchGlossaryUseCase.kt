@@ -1,4 +1,4 @@
-package com.example.botdiscord.usecase
+package com.example.botdiscord.domain.usecase
 
 import com.example.botdiscord.BotError
 import com.example.core.domain.Result

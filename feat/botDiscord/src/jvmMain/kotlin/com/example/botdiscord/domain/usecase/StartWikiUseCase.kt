@@ -1,4 +1,4 @@
-package com.example.botdiscord.usecase
+package com.example.botdiscord.domain.usecase
 
 import com.example.wikiwavu.WavuWikiClient
 

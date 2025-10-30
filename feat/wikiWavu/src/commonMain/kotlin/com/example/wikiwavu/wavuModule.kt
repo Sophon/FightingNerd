@@ -9,6 +9,7 @@ import com.example.wikiwavu.usecase.CacheMoveListUseCase
 import com.example.wikiwavu.usecase.DownloadMoveListUseCase
 import com.example.wikiwavu.usecase.DownloadCharacterListUseCase
 import com.example.wikiwavu.usecase.FetchMoveDataUseCase
+import com.example.wikiwavu.usecase.FetchMoveListUseCase
 import com.example.wikiwavu.usecase.FetchMovesWithPropertyUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +43,7 @@ val wavuModule = module {
     singleOf(::CacheMoveListUseCase)
     singleOf(::FetchMoveDataUseCase)
     singleOf(::FetchMovesWithPropertyUseCase)
+    singleOf(::FetchMoveListUseCase)
 
     singleOf(::WavuUrlProvider)
     singleOf(::Scheduler)

@@ -1,11 +1,12 @@
 package com.example.cornerman.screens.moveList.domain
 
+import com.example.cornerman.screens.moveList.data.MoveEntity
 import com.example.cornerman.screens.moveList.util.cleanComboLinks
 import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 
-internal fun CharacterMoveList.toDomain(): List<MoveCategory> {
-    val categorizedMoves = moveList
+internal fun List<Move>.toDomain(): List<MoveCategory> {
+    val categorizedMoves = this
         .groupBy { it.getCategoryName() }
         .map { (categoryName, moves) ->
             MoveCategory(name = categoryName, moves = moves.map { it.cleanComboLinks() })
@@ -92,4 +93,58 @@ internal fun Move.isStance(): String? {
     } else {
         null
     }
+}
+
+internal fun Move.toEntity(): MoveEntity {
+    return MoveEntity(
+        charName = charName,
+        id = id,
+        input = input,
+        level = level,
+        name = name,
+        parent = parent,
+        damage = damage,
+        startup = startup,
+        recoveryOnWhiff = recoveryOnWhiff,
+        totalFrames = totalFrames,
+        crushes = crushes.joinToString(";"),
+        onBlock = onBlock,
+        onHit = onHit,
+        onCH = onCH,
+        notes = notes.joinToString(";"),
+        aliases = aliases.joinToString(";"),
+        image = image,
+        videoId = videoId,
+        alt = alt,
+        isHeat = isHeat,
+        isPowerCrush = isPowerCrush,
+        isHoming = isHoming,
+    )
+}
+
+internal fun MoveEntity.toDomain(): Move {
+    return Move(
+        charName = charName,
+        id = id,
+        input = input,
+        level = level,
+        name = name,
+        parent = parent,
+        damage = damage,
+        startup = startup,
+        recoveryOnWhiff = recoveryOnWhiff,
+        totalFrames = totalFrames,
+        crushes = crushes?.split(";").orEmpty(),
+        onBlock = onBlock,
+        onHit = onHit,
+        onCH = onCH,
+        notes = notes?.split(";").orEmpty(),
+        aliases = aliases?.split(";").orEmpty(),
+        image = image,
+        videoId = videoId,
+        alt = alt,
+        isHeat = isHeat,
+        isPowerCrush = isPowerCrush,
+        isHoming = isHoming,
+    )
 }

@@ -1,0 +1,10 @@
+package com.example.cornerman.screens.moveList.data
+
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import java.io.File
+
+fun getMoveListDatabaseBuilder(): RoomDatabase.Builder<MoveListDatabase> {
+    val dbFile = File(System.getProperty("java.io.tmpdir"), "wavu_move_list.db")
+    return Room.databaseBuilder<MoveListDatabase>(name = dbFile.absolutePath)
+}

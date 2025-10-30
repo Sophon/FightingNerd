@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
+import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
@@ -331,16 +332,30 @@ class CacheMoveListUseCaseTest {
             return Result.Success(moveData)
         }
 
-        override suspend fun insertMoveList(charName: String, moveList: List<Move>) {
-            val indexedMoves = buildMap {
-                moveList.forEach { move ->
-                    put(move.id, move)
-                    move.aliases.forEach { alias ->
-                        put(alias, move)
+        override suspend fun insertMoveList(charName: String, moveList: List<Move>): EmptyResult<WavuError> {
+            return try {
+                val indexedMoves = buildMap {
+                    moveList.forEach { move ->
+                        put(move.id, move)
+                        move.aliases.forEach { alias ->
+                            put(alias, move)
+                        }
                     }
                 }
+                database[charName] = indexedMoves
+                Result.Success(Unit)
+            } catch (e: Exception) {
+                Result.Error(WavuError.DATABASE_ERROR)
             }
-            database[charName] = indexedMoves
+        }
+
+        override suspend fun wipe(): EmptyResult<WavuError> {
+            return try {
+                database.clear()
+                Result.Success(Unit)
+            } catch (e: Exception) {
+                Result.Error(WavuError.DATABASE_ERROR)
+            }
         }
     }
 }
