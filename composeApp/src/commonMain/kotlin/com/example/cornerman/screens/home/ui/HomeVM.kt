@@ -48,6 +48,11 @@ class HomeVM(
     }
 
 
+    /**
+     * TODO: refactor
+     *  we should have a List<RegisteredFeature>, similar to feat/botDiscord
+     *  and then call .start() on all of them
+     */
     private suspend fun startWavuSession() {
         startWavuSessionUseCase.invoke()
     }
