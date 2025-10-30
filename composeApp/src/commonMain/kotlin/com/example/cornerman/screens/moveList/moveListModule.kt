@@ -1,6 +1,7 @@
 package com.example.cornerman.screens.moveList
 
 import androidx.room.RoomDatabase
+import com.example.cornerman.infrastructure.createDataStore
 import com.example.cornerman.screens.moveList.data.MoveListDatabase
 import com.example.cornerman.screens.moveList.data.RoomMoveListDB
 import com.example.cornerman.screens.moveList.data.getMoveListDatabase
@@ -22,4 +23,6 @@ fun moveListModule() = module {
     single { get<MoveListDatabase>().moveListDao() }
     single { getMoveListDatabase(get<RoomDatabase.Builder<MoveListDatabase>>()) }
     singleOf(::RoomMoveListDB).bind<MoveListDB>()
+
+    single { createDataStore() }
 }

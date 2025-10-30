@@ -5,7 +5,7 @@ import com.example.wikiwavu.domain.model.Character
 data class HomeViewState(
     val characterList: List<Character> = listOf(),
 
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: String? = null,
 ) {
     companion object {

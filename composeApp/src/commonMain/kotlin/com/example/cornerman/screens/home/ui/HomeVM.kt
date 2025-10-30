@@ -17,7 +17,7 @@ class HomeVM(
     private val startWavuSessionUseCase: StartWavuSessionUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
-    private val _state = MutableStateFlow<HomeViewState>(HomeViewState())
+    private val _state = MutableStateFlow(HomeViewState())
     val state = _state
         .onStart {
             startWavuSession()
@@ -29,11 +29,6 @@ class HomeVM(
             initialValue = HomeViewState()
         )
 
-
-    fun onCharacterClick(index: Int) {
-        val character = _state.value.characterList.getOrNull(index)
-        Napier.d(tag = TAG) { "clicked on: ${character?.name}" }
-    }
 
     fun onSavedClick() {
         //TODO:
@@ -67,6 +62,8 @@ class HomeVM(
                 _state.update { it.copy(error = result.error.toString()) }
             }
         }
+
+        _state.update { it.copy(isLoading = false) }
     }
 
     private fun cacheCharacterList(characterList: List<Character>) {
