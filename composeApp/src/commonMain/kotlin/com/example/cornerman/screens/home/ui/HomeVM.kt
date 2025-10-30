@@ -3,7 +3,8 @@ package com.example.cornerman.screens.home.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.Result
-import com.example.cornerman.screens.home.domain.FetchCharacterListUseCase
+import com.example.cornerman.screens.home.domain.usecase.FetchCharacterListUseCase
+import com.example.cornerman.screens.home.domain.usecase.StartWavuSessionUseCase
 import com.example.wikiwavu.domain.model.Character
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,11 +14,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 class HomeVM(
+    private val startWavuSessionUseCase: StartWavuSessionUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow<HomeViewState>(HomeViewState())
     val state = _state
         .onStart {
+            startWavuSession()
             fetchCharacterList()
         }
         .stateIn(
@@ -44,6 +47,10 @@ class HomeVM(
         //TODO:
     }
 
+
+    private suspend fun startWavuSession() {
+        startWavuSessionUseCase.invoke()
+    }
 
     private suspend fun fetchCharacterList() {
         when (val result = fetchCharacterListUseCase.invoke()) {
