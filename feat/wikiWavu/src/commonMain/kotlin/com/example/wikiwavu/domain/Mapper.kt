@@ -12,7 +12,6 @@ internal fun MoveDto.mapToDomain(
     return Move(
         charName = charName,
         id = id
-            .substringAfter("-")
             .cleanMoveInput(),
         input = input,
         level = formCompleteDataFromParent(movesById) { it.target },
