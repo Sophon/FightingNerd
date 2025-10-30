@@ -2,16 +2,16 @@ package com.example.wikiwavu
 
 import com.example.core.domain.EmptyResult
 import com.example.core.domain.Result
-import com.example.core.domain.map
 import com.example.core.domain.onError
 import com.example.wikiwavu.domain.Scheduler
 import com.example.wikiwavu.domain.model.Character
 import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.usecase.CacheMoveListUseCase
-import com.example.wikiwavu.usecase.DownloadMoveListUseCase
 import com.example.wikiwavu.usecase.DownloadCharacterListUseCase
+import com.example.wikiwavu.usecase.DownloadMoveListUseCase
 import com.example.wikiwavu.usecase.FetchMoveDataUseCase
+import com.example.wikiwavu.usecase.FetchMoveListUseCase
 import com.example.wikiwavu.usecase.FetchMovesWithPropertyUseCase
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +24,7 @@ interface WavuWikiClient {
     suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getHeatMoves(charName: String): Result<List<Move>, WavuError>
     suspend fun getHomingMoves(charName: String): Result<List<Move>, WavuError>
-    suspend fun getMoveListFor(character: Character): Result<CharacterMoveList, WavuError>
+    suspend fun getMoveListFor(charName: String): Result<List<Move>, WavuError>
     suspend fun getCharacterList(): Result<List<Character>, WavuError>
 }
 
@@ -34,6 +34,7 @@ internal class WavuWikiClientImpl(
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val fetchMoveDataUseCase: FetchMoveDataUseCase,
     private val fetchMovesWithPropertyUseCase: FetchMovesWithPropertyUseCase,
+    private val fetchMoveListUseCase: FetchMoveListUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): WavuWikiClient {
@@ -77,16 +78,10 @@ internal class WavuWikiClientImpl(
         return fetchMovesWithPropertyUseCase.invoke(charName) { it.isHoming }
     }
 
-    override suspend fun getMoveListFor(character: Character): Result<CharacterMoveList, WavuError> {
-        return when (val result = downloadMoveListUseCase.invoke(character)) {
-            is Result.Success -> {
-                Result.Success(result.data)
-            }
-            is Result.Error -> {
-                Napier.e(tag = TAG) { "Error: ${result.error} for $character" }
-                Result.Error(result.error)
-            }
-        }
+    override suspend fun getMoveListFor(
+        charName: String,
+    ): Result<List<Move>, WavuError> {
+        return fetchMoveListUseCase.invoke(charName)
     }
 
     override suspend fun getCharacterList(): Result<List<Character>, WavuError> {

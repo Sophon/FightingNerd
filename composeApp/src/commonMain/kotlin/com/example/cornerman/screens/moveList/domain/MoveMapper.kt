@@ -5,8 +5,8 @@ import com.example.cornerman.screens.moveList.util.cleanComboLinks
 import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 
-internal fun CharacterMoveList.toDomain(): List<MoveCategory> {
-    val categorizedMoves = moveList
+internal fun List<Move>.toDomain(): List<MoveCategory> {
+    val categorizedMoves = this
         .groupBy { it.getCategoryName() }
         .map { (categoryName, moves) ->
             MoveCategory(name = categoryName, moves = moves.map { it.cleanComboLinks() })

@@ -14,13 +14,13 @@ class RoomMoveListDB(
 ): MoveListDB {
     override suspend fun fetchMoveListFor(
         charName: String
-    ): Result<Map<String, Move>, WavuError> {
+    ): Result<List<Move>, WavuError> {
         return try {
             val moveEntities = dao.fetchMoveListFor(charName)
             if (moveEntities.isEmpty()) {
                 Result.Error(WavuError.UNKNOWN_CHARACTER) //TODO: maybe different error?
             } else {
-                Result.Success(moveEntities.associate { it.id to it.toDomain() })
+                Result.Success(moveEntities.map { it.toDomain() })
             }
         } catch (e: Exception) {
             Napier.e(tag = TAG) { e.toString() }

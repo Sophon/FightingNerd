@@ -1,9 +1,16 @@
 package com.example.cornerman.screens.moveList.data
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "moves")
+@Entity(
+    tableName = "moves",
+    indices = [
+        Index(value = ["input"]),
+        Index(value = ["charName"]),
+    ]
+)
 data class MoveEntity(
     val charName: String,
     @PrimaryKey val id: String,

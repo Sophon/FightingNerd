@@ -1,6 +1,6 @@
 package com.example.cornerman.screens.moveList
 
-import com.example.cornerman.screens.moveList.data.InMemoryMoveListDB
+import com.example.cornerman.screens.moveList.data.RoomMoveListDB
 import com.example.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
 import com.example.cornerman.screens.moveList.domain.usecase.FetchMoveListUseCase
 import com.example.cornerman.screens.moveList.ui.MoveListVM
@@ -16,5 +16,5 @@ fun moveListModule() = module {
     singleOf(::FetchMoveListUseCase)
     singleOf(::FetchCharacterListUseCase)
 
-    singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
+    singleOf(::RoomMoveListDB).bind<MoveListDB>()
 }

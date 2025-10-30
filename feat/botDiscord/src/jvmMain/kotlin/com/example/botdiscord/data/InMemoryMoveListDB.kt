@@ -11,9 +11,9 @@ class InMemoryMoveListDB: MoveListDB {
 
     override suspend fun fetchMoveListFor(
         charName: String
-    ): Result<Map<String, Move>, WavuError> {
+    ): Result<List<Move>, WavuError> {
         return database[charName]
-            ?.let { Result.Success(it) }
+            ?.let { Result.Success(it.values.toList()) }
             ?: Result.Error(WavuError.UNKNOWN_CHARACTER)
     }
 
