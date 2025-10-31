@@ -2,7 +2,6 @@ package com.example.cornerman.screens.moveList.ui
 
 import com.example.cornerman.screens.moveList.domain.MoveCategory
 import com.example.wikiwavu.domain.model.Move
-import org.jetbrains.compose.resources.StringResource
 
 data class MoveListViewState(
     val allMoves: List<MoveCategory> = emptyList(),

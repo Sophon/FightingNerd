@@ -1,4 +1,4 @@
-package com.example.cornerman.screens.home.domain
+package com.example.cornerman.screens.home
 
 import com.example.core.domain.Error
 

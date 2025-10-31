@@ -1,10 +1,10 @@
-package com.example.cornerman.screens.home.ui
+package com.example.cornerman.featureRegistry.wavuWiki
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.Result
-import com.example.cornerman.screens.home.domain.usecase.FetchCharacterListUseCase
-import com.example.cornerman.screens.home.domain.usecase.StartWavuSessionUseCase
+import com.example.cornerman.featureRegistry.wavuWiki.usecase.StartWavuSessionUseCase
+import com.example.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
 import com.example.wikiwavu.domain.model.Character
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,11 +13,11 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-class HomeVM(
+class WavuHomeScreenVM(
     private val startWavuSessionUseCase: StartWavuSessionUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
-    private val _state = MutableStateFlow(HomeViewState())
+    private val _state = MutableStateFlow(WavuHomeScreenViewState())
     val state = _state
         .onStart {
             startWavuSession()
@@ -25,29 +25,11 @@ class HomeVM(
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = HomeViewState()
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+            initialValue = WavuHomeScreenViewState()
         )
 
 
-    fun onSavedClick() {
-        //TODO:
-    }
-
-    fun onSearchClick() {
-        //TODO
-    }
-
-    fun onSettingsClick() {
-        //TODO:
-    }
-
-
-    /**
-     * TODO: refactor
-     *  we should have a List<RegisteredFeature>, similar to feat/botDiscord
-     *  and then call .start() on all of them
-     */
     private suspend fun startWavuSession() {
         startWavuSessionUseCase.invoke()
     }
@@ -71,4 +53,5 @@ class HomeVM(
     }
 }
 
-private const val TAG = "HomeVM"
+
+private const val TAG = "WavuHomeScreenVM"

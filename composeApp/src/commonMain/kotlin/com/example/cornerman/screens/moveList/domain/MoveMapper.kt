@@ -2,7 +2,6 @@ package com.example.cornerman.screens.moveList.domain
 
 import com.example.cornerman.screens.moveList.data.MoveEntity
 import com.example.cornerman.screens.moveList.util.cleanComboLinks
-import com.example.wikiwavu.domain.model.CharacterMoveList
 import com.example.wikiwavu.domain.model.Move
 
 internal fun List<Move>.toDomain(): List<MoveCategory> {

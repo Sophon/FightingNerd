@@ -1,15 +1,15 @@
-package com.example.cornerman.screens.home.ui
+package com.example.cornerman.featureRegistry.wavuWiki
 
 import com.example.wikiwavu.domain.model.Character
 
-data class HomeViewState(
+data class WavuHomeScreenViewState(
     val characterList: List<Character> = listOf(),
 
     val isLoading: Boolean = true,
     val error: String? = null,
 ) {
     companion object {
-        internal val PREVIEW = HomeViewState(
+        internal val PREVIEW = WavuHomeScreenViewState(
             characterList = listOf(
                 Character(
                     name = "Alisa",

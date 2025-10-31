@@ -1,12 +1,12 @@
-package com.example.cornerman.screens.home.domain.usecase
+package com.example.cornerman.featureRegistry.wavuWiki.usecase
 
 import com.example.core.domain.onError
 import com.example.core.domain.onSuccess
 import com.example.wikiwavu.WavuWikiClient
 import io.github.aakira.napier.Napier
+import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.seconds
 
 //TODO: refactor - properly handle errors
 class StartWavuSessionUseCase(
@@ -43,7 +43,7 @@ class StartWavuSessionUseCase(
     }
 
     private fun Instant.isOld(): Boolean {
-        val now = kotlinx.datetime.Clock.System.now()
+        val now = Clock.System.now()
         val age = now - this
         return age >= UPDATING_PERIOD_HOURS.hours
     }
