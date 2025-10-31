@@ -9,7 +9,7 @@ internal fun MoveDto.mapToDomain(
     charName: String,
     movesById: Map<String, MoveDto>,
 ): Move {
-    return Move(
+    val move = Move(
         charName = charName,
         id = id.cleanMoveInput(),
         input = formCompleteDataFromParent(movesById) { it.input }
@@ -31,10 +31,9 @@ internal fun MoveDto.mapToDomain(
         image = image,
         videoId = video,
         alt = alt,
-        isHeat = isHE(),
-        isPowerCrush = isPowerCrush(),
-        isHoming = isHoming(),
     )
+
+    return move.copy(properties = move.getProperties())
 }
 
 /**
@@ -106,16 +105,24 @@ private fun MoveDto.splitCrush(): List<String> {
     return finalCrushes
 }
 
-private fun MoveDto.isHE(): Boolean {
-    return notes?.contains("Heat Engager", ignoreCase = true) == true
+private fun Move.getProperties(): Move.Properties {
+    return Move.Properties(
+        isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) },
+        isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) },
+        isHoming = notes.any { it.contains("Homing", ignoreCase = true) },
+        stance = input
+            .take(3)
+            .takeIf {
+                it.all { char -> char.isLetter() } && input.isMotion().not()
+            } ?: ""
+    )
 }
 
-private fun MoveDto.isPowerCrush(): Boolean {
-    return (crush?.contains("pc", ignoreCase = true) == true)
-}
-
-private fun MoveDto.isHoming(): Boolean {
-    return notes?.contains("Homing", ignoreCase = true) == true
+private fun String.isMotion(): Boolean {
+    return startsWith("wr")
+            || startsWith("ff")
+            || startsWith("qcb")
+            || startsWith("qcf")
 }
 
 private fun MoveDto.parseAliases(): List<String> {

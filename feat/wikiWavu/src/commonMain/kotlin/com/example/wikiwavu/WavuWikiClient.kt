@@ -97,19 +97,19 @@ internal class WavuWikiClientImpl(
     override suspend fun getPowerCrushMoves(
         charName: String
     ): Result<List<Move>, WavuError> {
-        return fetchMovesWithPropertyUseCase.invoke(charName) { it.isPowerCrush }
+        return fetchMovesWithPropertyUseCase.invoke(charName) { it.properties?.isPowerCrush == true }
     }
 
     override suspend fun getHeatMoves(
         charName: String
     ): Result<List<Move>, WavuError> {
-        return fetchMovesWithPropertyUseCase.invoke(charName) { it.isHeat }
+        return fetchMovesWithPropertyUseCase.invoke(charName) { it.properties?.isHeat == true }
     }
 
     override suspend fun getHomingMoves(
         charName: String
     ): Result<List<Move>, WavuError> {
-        return fetchMovesWithPropertyUseCase.invoke(charName) { it.isHoming }
+        return fetchMovesWithPropertyUseCase.invoke(charName) { it.properties?.isHoming == true }
     }
 
     override suspend fun getMoveListFor(
