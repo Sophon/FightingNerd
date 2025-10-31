@@ -1,7 +1,7 @@
-package com.example.cornerman.screens.home.domain.usecase
+package com.example.cornerman.featureRegistry.wavuWiki.usecase
 
 import com.example.core.domain.Result
-import com.example.cornerman.screens.home.domain.HomeError
+import com.example.cornerman.screens.home.HomeError
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.WavuWikiClient
 import com.example.wikiwavu.domain.model.Character

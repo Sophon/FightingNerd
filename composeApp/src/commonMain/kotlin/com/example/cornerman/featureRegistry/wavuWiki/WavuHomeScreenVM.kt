@@ -3,7 +3,7 @@ package com.example.cornerman.featureRegistry.wavuWiki
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.core.domain.Result
-import com.example.cornerman.screens.home.domain.usecase.StartWavuSessionUseCase
+import com.example.cornerman.featureRegistry.wavuWiki.usecase.StartWavuSessionUseCase
 import com.example.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
 import com.example.wikiwavu.domain.model.Character
 import io.github.aakira.napier.Napier

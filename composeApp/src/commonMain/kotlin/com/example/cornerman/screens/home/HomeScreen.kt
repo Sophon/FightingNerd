@@ -1,4 +1,4 @@
-package com.example.cornerman.screens.home.ui
+package com.example.cornerman.screens.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
