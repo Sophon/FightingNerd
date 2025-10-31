@@ -25,9 +25,9 @@ fun App() {
         ) {
             composable<Destination.Home> {
                 HomeScreen(
-                    onCharacterClick = { character ->
-                        navHostController.navigate(route = Destination.MoveList(character))
-                    }
+//                    onCharacterClick = { character ->
+//                        navHostController.navigate(route = Destination.MoveList(character))
+//                    }
                 )
             }
 

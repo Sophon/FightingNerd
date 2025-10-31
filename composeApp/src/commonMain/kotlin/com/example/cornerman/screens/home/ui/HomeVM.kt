@@ -2,26 +2,18 @@ package com.example.cornerman.screens.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.core.domain.Result
-import com.example.cornerman.screens.home.domain.usecase.FetchCharacterListUseCase
-import com.example.cornerman.screens.home.domain.usecase.StartWavuSessionUseCase
-import com.example.wikiwavu.domain.model.Character
-import io.github.aakira.napier.Napier
+import com.example.cornerman.featureRegistry.wavuWiki.WavuWikiFeature
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-class HomeVM(
-    private val startWavuSessionUseCase: StartWavuSessionUseCase,
-    private val fetchCharacterListUseCase: FetchCharacterListUseCase,
-): ViewModel() {
+class HomeVM(): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state
         .onStart {
-            startWavuSession()
-            fetchCharacterList()
+            loadFeatures()
         }
         .stateIn(
             scope = viewModelScope,
@@ -43,31 +35,12 @@ class HomeVM(
     }
 
 
-    /**
-     * TODO: refactor
-     *  we should have a List<RegisteredFeature>, similar to feat/botDiscord
-     *  and then call .start() on all of them
-     */
-    private suspend fun startWavuSession() {
-        startWavuSessionUseCase.invoke()
-    }
+    private fun loadFeatures() {
+        val registeredFeatures = listOf(
+            WavuWikiFeature(),
+        )
 
-    private suspend fun fetchCharacterList() {
-        when (val result = fetchCharacterListUseCase.invoke()) {
-            is Result.Success -> {
-                cacheCharacterList(characterList = result.data)
-            }
-            is Result.Error -> {
-                Napier.e(tag = TAG) { result.error.toString() }
-                _state.update { it.copy(error = result.error.toString()) }
-            }
-        }
-
-        _state.update { it.copy(isLoading = false) }
-    }
-
-    private fun cacheCharacterList(characterList: List<Character>) {
-        _state.update { it.copy(characterList = characterList) }
+        _state.update { it.copy(registeredFeatures = registeredFeatures) }
     }
 }
 
