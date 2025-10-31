@@ -110,19 +110,17 @@ private fun Move.getProperties(): Move.Properties {
         isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) },
         isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) },
         isHoming = notes.any { it.contains("Homing", ignoreCase = true) },
-        stance = input
-            .take(3)
-            .takeIf {
-                it.all { char -> char.isLetter() } && input.isMotion().not()
-            } ?: ""
+        stance = input.stance(),
     )
 }
 
-private fun String.isMotion(): Boolean {
-    return startsWith("wr")
-            || startsWith("ff")
-            || startsWith("qcb")
-            || startsWith("qcf")
+private fun String.stance(): String? {
+    return take(3).takeIf {
+        length >= 4
+                && it.all { char -> char.isLetter() }
+                && !startsWith("wr") && !startsWith("ff") && !startsWith("qcb") && !startsWith("qcf") && !startsWith("fc")
+                && drop(3).any { char -> char.isDigit() }
+    }
 }
 
 private fun MoveDto.parseAliases(): List<String> {

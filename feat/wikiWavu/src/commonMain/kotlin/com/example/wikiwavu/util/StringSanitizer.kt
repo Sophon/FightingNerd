@@ -22,7 +22,8 @@ fun String.cleanMoveInput(): String {
         "ss." to "ss",
         "*+" to "*",
         "ws." to "ws",
-        "fc." to "fc"
+        "fc." to "fc",
+        "bt." to "bt",
     )
 
     for ((old, new) in motionInputs) {
