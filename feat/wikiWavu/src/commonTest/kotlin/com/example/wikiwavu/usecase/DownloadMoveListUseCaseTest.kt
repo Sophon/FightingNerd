@@ -20,7 +20,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class DownloadMoveListUseCaseTest {
+class DownloadMoveListUseCaseTekken8Test {
     private lateinit var mockDataSource: MockWavuWikiDataSource
     private lateinit var useCase: DownloadMoveListUseCase
 
@@ -30,14 +30,13 @@ class DownloadMoveListUseCaseTest {
         useCase = DownloadMoveListUseCase(mockDataSource)
     }
 
-    // region Success Cases - Simple Moves
+    // region Properties - Never Null for Tekken 8
     @Test
-    fun `invoke returns success with simple move without parent`() = runTest {
+    fun `invoke ensures all boolean properties are never null for Tekken 8 moves`() = runTest {
         // Given
-        val character = createTestCharacter("Yoshimitsu")
+        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
-            id = "Yoshimitsu-1",
-            name = "Jab",
+            id = "Jin-1",
             input = "1",
             parent = null,
             target = "h",
@@ -49,7 +48,7 @@ class DownloadMoveListUseCaseTest {
             block = "+1",
             hit = "+8",
             ch = null,
-            notes = "Recovers 2f faster on hit or block (t27 r17)",
+            notes = null,
             alias = null,
             image = null,
             video = null,
@@ -61,48 +60,570 @@ class DownloadMoveListUseCaseTest {
         val result = useCase.invoke(character.name)
 
         // Then
-        assertThat(result).isNotNull()
         result as Result.Success
+        val move = result.data.first()
 
-        val moveList = result.data
-        assertThat(character).isEqualTo(character)
-        assertThat(moveList).hasSize(1)
+        assertThat(move.properties.isHeat).isNotNull()
+        assertThat(move.properties.isPowerCrush).isNotNull()
+        assertThat(move.properties.isHoming).isNotNull()
+        assertThat(move.properties.isHeat).isEqualTo(false)
+        assertThat(move.properties.isPowerCrush).isEqualTo(false)
+        assertThat(move.properties.isHoming).isEqualTo(false)
+    }
 
-        val move = moveList.first()
-        assertThat(move.charName).isEqualTo("Yoshimitsu")
-        assertThat(move.id).isEqualTo("yoshimitsu-1")
-        assertThat(move.input).isEqualTo("1")
-        assertThat(move.name).isEqualTo("Jab")
-        assertThat(move.level).isEqualTo("h")
-        assertThat(move.damage).isEqualTo("5")
-        assertThat(move.startup).isEqualTo("i10")
-        assertThat(move.recoveryOnWhiff).isEqualTo("r19")
-        assertThat(move.totalFrames).isEqualTo("29")
-        assertThat(move.onBlock).isEqualTo("+1")
-        assertThat(move.onHit).isEqualTo("+8")
-        assertThat(move.notes).hasSize(1)
-        assertThat(move.notes.first()).isEqualTo("Recovers 2f faster on hit or block (t27 r17)")
-        assertThat(move.isHeat).isFalse()
-        assertThat(move.isPowerCrush).isFalse()
-        assertThat(move.isHoming).isFalse()
+    @Test
+    fun `invoke sets heat to true when move is heat engager`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-df2",
+            input = "d/f+2",
+            parent = null,
+            target = "m",
+            damage = "15",
+            startup = "i15",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-12",
+            hit = "Launch",
+            ch = null,
+            notes = "Heat Engager on block or hit",
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.isHeat).isNotNull()
+        assertThat(move.properties.isHeat).isEqualTo(true)
+        assertThat(move.properties.isPowerCrush).isEqualTo(false)
+        assertThat(move.properties.isHoming).isEqualTo(false)
+    }
+
+    @Test
+    fun `invoke sets power crush to true when crush contains pc`() = runTest {
+        // Given
+        val character = createTestCharacter("Paul")
+        val moveDto = MoveDto(
+            id = "Paul-f23",
+            input = "f+2,3",
+            parent = null,
+            target = "m,m",
+            damage = "12,20",
+            startup = "i18",
+            recv = null,
+            tot = null,
+            crush = "pc8~",
+            block = "-12",
+            hit = "+5a",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.isPowerCrush).isNotNull()
+        assertThat(move.properties.isPowerCrush).isEqualTo(true)
+        assertThat(move.properties.isHeat).isEqualTo(false)
+        assertThat(move.properties.isHoming).isEqualTo(false)
+    }
+
+    @Test
+    fun `invoke sets homing to true when notes contain homing`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-f4",
+            input = "f+4",
+            parent = null,
+            target = "m",
+            damage = "20",
+            startup = "i15",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-9",
+            hit = "+2",
+            ch = null,
+            notes = "Homing move that tracks sidewalk",
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.isHoming).isNotNull()
+        assertThat(move.properties.isHoming).isEqualTo(true)
+        assertThat(move.properties.isHeat).isEqualTo(false)
+        assertThat(move.properties.isPowerCrush).isEqualTo(false)
+    }
+
+    @Test
+    fun `invoke handles move with multiple properties set to true`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-f1+2",
+            input = "f+1+2",
+            parent = null,
+            target = "m",
+            damage = "25",
+            startup = "i20",
+            recv = null,
+            tot = null,
+            crush = "pc12~",
+            block = "-15",
+            hit = "KND",
+            ch = null,
+            notes = "Heat Engager and Homing attack",
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.isHeat).isEqualTo(true)
+        assertThat(move.properties.isPowerCrush).isEqualTo(true)
+        assertThat(move.properties.isHoming).isEqualTo(true)
     }
     // endregion
 
-    // region Success Cases - Parent-Child Relationships
+    // region Stance Detection - Valid Stances
     @Test
-    fun `invoke correctly aggregates data from parent move`() = runTest {
+    fun `invoke correctly detects stance from input with three letters and digit`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-zen.1",
+            input = "zen.1",
+            parent = null,
+            target = "h",
+            damage = "12",
+            startup = "i12",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "+2",
+            hit = "+8",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("zen")
+    }
+
+    @Test
+    fun `invoke correctly detects stance from des dot f21 input`() = runTest {
         // Given
         val character = createTestCharacter("Yoshimitsu")
-        val parentMove = MoveDto(
-            id = "Yoshimitsu-1",
-            name = "Jab",
+        val moveDto = MoveDto(
+            id = "Yoshimitsu-des.f21",
+            input = "des.f+2,1",
+            parent = null,
+            target = "m,h",
+            damage = "15,10",
+            startup = "i18",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-5",
+            hit = "+6",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("des")
+    }
+
+    @Test
+    fun `invoke correctly detects stance from kin dot 1+2 input`() = runTest {
+        // Given
+        val character = createTestCharacter("Yoshimitsu")
+        val moveDto = MoveDto(
+            id = "Yoshimitsu-kin.1+2",
+            input = "kin.1+2",
+            parent = null,
+            target = "m",
+            damage = "20",
+            startup = "i15",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-10",
+            hit = "KND",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("kin")
+    }
+
+    @Test
+    fun `invoke correctly detects stance from fle dot 3+4 input`() = runTest {
+        // Given
+        val character = createTestCharacter("Yoshimitsu")
+        val moveDto = MoveDto(
+            id = "Yoshimitsu-fle.3+4",
+            input = "fle.3+4",
+            parent = null,
+            target = "L",
+            damage = "22",
+            startup = "i20",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-15",
+            hit = "KND",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("fle")
+    }
+
+    @Test
+    fun `invoke correctly detects uppercase stance`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-ZEN.2",
+            input = "ZEN.2",
+            parent = null,
+            target = "m",
+            damage = "18",
+            startup = "i14",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-8",
+            hit = "+3",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("zen")
+    }
+    // endregion
+
+    // region Stance Detection - Not Stances
+    @Test
+    fun `invoke returns empty stance for motion input wr`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-wr2",
+            input = "wr2",
+            parent = null,
+            target = "m",
+            damage = "22",
+            startup = "i15",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-10",
+            hit = "KND",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("")
+    }
+
+    @Test
+    fun `invoke returns empty stance for motion input ff`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-ff3",
+            input = "ff3",
+            parent = null,
+            target = "m",
+            damage = "25",
+            startup = "i20",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-12",
+            hit = "Launch",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("")
+    }
+
+    @Test
+    fun `invoke returns empty stance for motion input qcf`() = runTest {
+        // Given
+        val character = createTestCharacter("Akuma")
+        val moveDto = MoveDto(
+            id = "Akuma-qcf1",
+            input = "qcf1",
+            parent = null,
+            target = "h",
+            damage = "20",
+            startup = "i14",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-8",
+            hit = "+3",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("")
+    }
+
+    @Test
+    fun `invoke returns empty stance for motion input qcb`() = runTest {
+        // Given
+        val character = createTestCharacter("Akuma")
+        val moveDto = MoveDto(
+            id = "Akuma-qcb2",
+            input = "qcb2",
+            parent = null,
+            target = "m",
+            damage = "18",
+            startup = "i16",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-9",
+            hit = "+2",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("")
+    }
+
+    @Test
+    fun `invoke returns empty stance for input without digits`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-zen",
+            input = "zen",
+            parent = null,
+            target = null,
+            damage = null,
+            startup = null,
+            recv = null,
+            tot = null,
+            crush = null,
+            block = null,
+            hit = null,
+            ch = null,
+            notes = "Transition to zen stance",
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("")
+    }
+
+    @Test
+    fun `invoke returns empty stance for input with less than three letters`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-df2",
+            input = "d/f+2",
+            parent = null,
+            target = "m",
+            damage = "15",
+            startup = "i15",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-12",
+            hit = "Launch",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("")
+    }
+
+    @Test
+    fun `invoke returns empty stance for regular move starting with digit`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-1",
             input = "1",
             parent = null,
             target = "h",
             damage = "5",
             startup = "i10",
-            recv = "r19",
-            tot = "29",
+            recv = null,
+            tot = null,
             crush = null,
             block = "+1",
             hit = "+8",
@@ -113,64 +634,71 @@ class DownloadMoveListUseCaseTest {
             video = null,
             alt = null
         )
-        val childMove = MoveDto(
-            id = "Yoshimitsu-1,1",
-            name = "Naguri Kabuto Wari",
-            input = ",1",
-            parent = "Yoshimitsu-1",
-            target = ",m",
-            damage = ",19",
-            startup = ",i23",
-            recv = "r34 1SS",
-            tot = "67",
-            crush = null,
-            block = "-9",
-            hit = "+4c",
-            ch = "+6a",
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(parentMove, childMove)))
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
         val result = useCase.invoke(character.name)
 
         // Then
-        assertThat(result).isNotNull()
         result as Result.Success
+        val move = result.data.first()
 
-        val moveList = result.data
-        assertThat(moveList).hasSize(2)
-
-        // Check child move has aggregated data from parent
-        val child = moveList.find { it.id == "yoshimitsu-11" }
-        assertThat(child).isNotNull()
-        assertThat(child!!.input).isEqualTo("11")
-        assertThat(child.level).isEqualTo("h,m")
-        assertThat(child.damage).isEqualTo("5,19")
-        assertThat(child.startup).isEqualTo("i10")
-        assertThat(child.parent).isEqualTo("Yoshimitsu-1")
+        assertThat(move.properties.stance).isEqualTo("")
     }
 
     @Test
-    fun `invoke correctly handles deep parent chain for data aggregation`() = runTest {
-        // Given - Three level deep chain: grandparent -> parent -> child
-        val character = createTestCharacter("Kazuya")
-        val grandparent = MoveDto(
-            id = "Kazuya-1",
-            input = "1",
+    fun `invoke returns empty stance for input with special characters only`() = runTest {
+        // Given
+        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-1+2",
+            input = "1+2",
+            parent = null,
+            target = "m",
+            damage = "20",
+            startup = "i14",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-8",
+            hit = "+3",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("")
+    }
+    // endregion
+
+    // region Stance Detection - Edge Cases
+    @Test
+    fun `invoke handles stance with complex notation after stance name`() = runTest {
+        // Given
+        val character = createTestCharacter("Yoshimitsu")
+        val moveDto = MoveDto(
+            id = "Yoshimitsu-des.bt.1",
+            input = "des.bt.1",
             parent = null,
             target = "h",
-            damage = "5",
-            startup = "i10",
+            damage = "10",
+            startup = "i12",
             recv = null,
             tot = null,
             crush = null,
-            block = null,
-            hit = null,
+            block = "+2",
+            hit = "+8",
             ch = null,
             notes = null,
             alias = null,
@@ -178,34 +706,31 @@ class DownloadMoveListUseCaseTest {
             video = null,
             alt = null
         )
-        val parent = MoveDto(
-            id = "Kazuya-1,1",
-            input = ",1",
-            parent = "Kazuya-1",
-            target = ",h",
-            damage = ",4",
-            startup = null,
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("des")
+    }
+
+    @Test
+    fun `invoke detects stance with numbers in the middle`() = runTest {
+        // Given
+        val character = createTestCharacter("TestChar")
+        val moveDto = MoveDto(
+            id = "TestChar-abc.3+4",
+            input = "abc.3+4",
+            parent = null,
+            target = "m",
+            damage = "20",
+            startup = "i15",
             recv = null,
             tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        val child = MoveDto(
-            id = "Kazuya-1,1,2",
-            input = ",2",
-            parent = "Kazuya-1,1",
-            target = ",m",
-            damage = ",6",
-            startup = null,
-            recv = "r20",
-            tot = "40",
             crush = null,
             block = "-10",
             hit = "+5",
@@ -216,8 +741,81 @@ class DownloadMoveListUseCaseTest {
             video = null,
             alt = null
         )
+        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+
+        // When
+        val result = useCase.invoke(character.name)
+
+        // Then
+        result as Result.Success
+        val move = result.data.first()
+
+        assertThat(move.properties.stance).isEqualTo("abc")
+    }
+
+    @Test
+    fun `invoke handles multiple moves with different stances`() = runTest {
+        // Given
+        val character = createTestCharacter("Yoshimitsu")
+        val move1 = MoveDto(
+            id = "Yoshimitsu-kin.1",
+            input = "kin.1",
+            parent = null,
+            target = "h",
+            damage = "10",
+            startup = "i10",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "+2",
+            hit = "+8",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        val move2 = MoveDto(
+            id = "Yoshimitsu-des.2",
+            input = "des.2",
+            parent = null,
+            target = "m",
+            damage = "15",
+            startup = "i15",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-5",
+            hit = "+3",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        val move3 = MoveDto(
+            id = "Yoshimitsu-fle.4",
+            input = "fle.4",
+            parent = null,
+            target = "L",
+            damage = "20",
+            startup = "i20",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-12",
+            hit = "KND",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
         mockDataSource.mockResponse = Result.Success(
-            createMoveListResponse(listOf(grandparent, parent, child))
+            createMoveListResponse(listOf(move1, move2, move3))
         )
 
         // When
@@ -227,878 +825,10 @@ class DownloadMoveListUseCaseTest {
         result as Result.Success
         val moves = result.data
 
-        // Check the deepest child aggregated all data correctly
-        val deepChild = moves.find { it.id == "kazuya-112" }
-        assertThat(deepChild).isNotNull()
-        assertThat(deepChild!!.input).isEqualTo("112")
-        assertThat(deepChild.level).isEqualTo("h,h,m")
-        assertThat(deepChild.damage).isEqualTo("5,4,6")
-        assertThat(deepChild.startup).isEqualTo("i10")
-    }
-
-    @Test
-    fun `invoke correctly finds root startup from parent chain`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val root = MoveDto(
-            id = "TestChar-1",
-            input = "1",
-            parent = null,
-            target = "h",
-            damage = "10",
-            startup = "i12",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        val child = MoveDto(
-            id = "TestChar-1,2",
-            input = ",2",
-            parent = "TestChar-1",
-            target = ",m",
-            damage = ",15",
-            startup = null,
-            recv = "r25",
-            tot = "50",
-            crush = null,
-            block = "-5",
-            hit = "+3",
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(root, child)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val childMove = result.data.find { it.id == "testchar-12" }
-        assertThat(childMove).isNotNull()
-        assertThat(childMove!!.input).isEqualTo("12")
-        assertThat(childMove.startup).isEqualTo("i12")
-    }
-    // endregion
-
-    // region Success Cases - Boolean Flags
-    @Test
-    fun `invoke correctly detects Heat Engager from notes`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-df2",
-            input = "d/f+2",
-            parent = null,
-            target = "m",
-            damage = "15",
-            startup = "i15",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = "This move is a Heat Engager and launches on counter hit",
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-df2")
-        assertThat(move.isHeat).isTrue()
-    }
-
-    @Test
-    fun `invoke correctly detects Power Crush from crush field`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-f23",
-            input = "f+2,3",
-            parent = null,
-            target = "m,m",
-            damage = "12,20",
-            startup = "i18",
-            recv = null,
-            tot = null,
-            crush = "pc8~",
-            block = "-12",
-            hit = "+5a",
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-f23")
-        assertThat(move.isPowerCrush).isTrue()
-    }
-
-    @Test
-    fun `invoke correctly detects Homing from notes`() = runTest {
-        // Given
-        val character = createTestCharacter("Yoshimitsu")
-        val moveDto = MoveDto(
-            id = "Yoshimitsu-1+3",
-            name = "Oni Killer",
-            input = "1+3",
-            parent = null,
-            target = "t",
-            damage = "35",
-            startup = "i12~14",
-            recv = "r25",
-            tot = "39",
-            crush = null,
-            block = "-3",
-            hit = "+1d",
-            ch = null,
-            notes = """
-                <div class="plainlist">
-                * 
-                <div
-                  style="display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;"
-                  class="movedata-icon border-blue homing"
-                >Homing</div>
-                * Throw break 1 or 2</div>
-            """.trimIndent(),
-            alias = null,
-            image = null,
-            video = "File:t8-p2-yoshimitsu-1+3.mp4",
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("yoshimitsu-1+3")
-        assertThat(move.isHoming).isTrue()
-    }
-
-    @Test
-    fun `invoke sets all boolean flags to false when not present`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-1",
-            input = "1",
-            parent = null,
-            target = "h",
-            damage = "10",
-            startup = "i10",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = "Regular jab with no special properties",
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-1")
-        assertThat(move.isHeat).isFalse()
-        assertThat(move.isPowerCrush).isFalse()
-        assertThat(move.isHoming).isFalse()
-    }
-    // endregion
-
-    // region Success Cases - String Parsing
-    @Test
-    fun `invoke correctly cleans HTML entities from notes`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-1",
-            input = "1",
-            parent = null,
-            target = "h",
-            damage = "10",
-            startup = "i10",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = "&lt;div&gt;Test &amp; note with &quot;quotes&quot;&lt;/div&gt;",
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-1")
-        assertThat(move.notes.first()).isEqualTo("Test & note with \"quotes\"")
-    }
-
-    @Test
-    fun `invoke correctly parses multiple notes from HTML list`() = runTest {
-        // Given
-        val character = createTestCharacter("Yoshimitsu")
-        val moveDto = MoveDto(
-            id = "Yoshimitsu-11",
-            input = "1,1",
-            parent = null,
-            target = "h,m",
-            damage = "5,19",
-            startup = "i10",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = """
-                <div class="plainlist">
-                * Floor Break
-                * Weapon
-                * Combo from 1st hit with 1f delay
-                * Input can be delayed 3f
-                </div>
-            """.trimIndent(),
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("yoshimitsu-11")
-        assertThat(move.notes).hasSize(4)
-        assertThat(move.notes).contains("Floor Break")
-        assertThat(move.notes).contains("Weapon")
-        assertThat(move.notes).contains("Combo from 1st hit with 1f delay")
-        assertThat(move.notes).contains("Input can be delayed 3f")
-    }
-
-    @Test
-    fun `invoke correctly parses aliases from HTML list`() = runTest {
-        // Given
-        val character = createTestCharacter("Yoshimitsu")
-        val moveDto = MoveDto(
-            id = "Yoshimitsu-1+2+3",
-            input = "1+2+3",
-            parent = null,
-            target = "m",
-            damage = "0",
-            startup = "i22~40",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = "1SS.1+2+3",
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("yoshimitsu-1+2+3")
-        assertThat(move.aliases).hasSize(1)
-        assertThat(move.aliases.first()).isEqualTo("1ss1+2+3")
-    }
-
-    @Test
-    fun `invoke correctly parses multiple aliases from HTML dotlist`() = runTest {
-        // Given
-        val character = createTestCharacter("Yoshimitsu")
-        val moveDto = MoveDto(
-            id = "Yoshimitsu-11",
-            input = "1,1",
-            parent = null,
-            target = "h,m",
-            damage = "5,19",
-            startup = "i10",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = """
-                <div class="dotlist">
-                
-                * 1SS.1,1
-                * 1,1SS.1
-                </div>
-            """.trimIndent(),
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("yoshimitsu-11")
-        assertThat(move.aliases).hasSize(2)
-        assertThat(move.aliases).contains("1ss11")
-        assertThat(move.aliases).contains("11ss1")
-    }
-
-    @Test
-    fun `invoke correctly cleans move input with cleanMoveInput extension`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-f, f+3",
-            input = "f, f+3",
-            parent = null,
-            target = "m",
-            damage = "25",
-            startup = "i20",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-ff3")
-    }
-
-    @Test
-    fun `invoke handles empty notes gracefully`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-1",
-            input = "1",
-            parent = null,
-            target = "h",
-            damage = "10",
-            startup = "i10",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-1")
-        assertThat(move.notes).isEmpty()
-    }
-
-    @Test
-    fun `invoke handles empty aliases gracefully`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-1",
-            input = "1",
-            parent = null,
-            target = "h",
-            damage = "10",
-            startup = "i10",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-1")
-        assertThat(move.aliases).isEmpty()
-    }
-
-    @Test
-    fun `invoke correctly parses multiple crush values from HTML`() = runTest {
-        // Given
-        val character = createTestCharacter("Yoshimitsu")
-        val moveDto = MoveDto(
-            id = "Yoshimitsu-KIN.1+2",
-            input = "KIN.1+2",
-            parent = null,
-            target = "m,m,m,m",
-            damage = "4,4,4,24",
-            startup = "i12~13",
-            recv = null,
-            tot = null,
-            crush = "<div class=\"plainlist\">\n* is1~20\n* js25~39\n* fs40~42</div>",
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("yoshimitsu-kin.1+2")
-        assertThat(move.crushes).hasSize(3)
-        assertThat(move.crushes).isEqualTo(listOf("is1~20", "js25~39", "fs40~42"))
-    }
-
-    @Test
-    fun `invoke correctly parses single crush value`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-f23",
-            input = "f+2,3",
-            parent = null,
-            target = "m,m",
-            damage = "12,20",
-            startup = "i18",
-            recv = null,
-            tot = null,
-            crush = "pc8~",
-            block = "-12",
-            hit = "+5a",
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-f23")
-        assertThat(move.crushes).hasSize(1)
-        assertThat(move.crushes.first()).isEqualTo("pc8~")
-    }
-
-    @Test
-    fun `invoke handles empty crush gracefully`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-1",
-            input = "1",
-            parent = null,
-            target = "h",
-            damage = "10",
-            startup = "i10",
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-1")
-        assertThat(move.crushes).isEmpty()
-    }
-
-    @Test
-    fun `invoke correctly cleans HTML from crush field`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val moveDto = MoveDto(
-            id = "TestChar-df2",
-            input = "d/f+2",
-            parent = null,
-            target = "m",
-            damage = "15",
-            startup = "i15",
-            recv = null,
-            tot = null,
-            crush = "<div class=\"plainlist\">\n* ps3~9</div>",
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-df2")
-        assertThat(move.crushes).hasSize(1)
-        assertThat(move.crushes.first()).isEqualTo("ps3~9")
-    }
-    // endregion
-
-    // region Success Cases - Field Mapping
-    @Test
-    fun `invoke correctly maps all DTO fields to domain model`() = runTest {
-        // Given
-        val character = createTestCharacter("Yoshimitsu")
-        val moveDto = MoveDto(
-            id = "Yoshimitsu-1+2+3+4",
-            name = "Ki Charge",
-            input = "1+2+3+4",
-            parent = null,
-            target = null,
-            damage = null,
-            startup = null,
-            recv = "r55",
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = "Can't block for 5 seconds",
-            alias = null,
-            image = null,
-            video = "File:t8-p2-yoshimitsu-1+2+3+4.mp4",
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.charName).isEqualTo("Yoshimitsu")
-        assertThat(move.id).isEqualTo("yoshimitsu-1+2+3+4")
-        assertThat(move.input).isEqualTo("1+2+3+4")
-        assertThat(move.name).isEqualTo("Ki Charge")
-        assertThat(move.level).isNull()
-        assertThat(move.parent).isNull()
-        assertThat(move.damage).isNull()
-        assertThat(move.startup).isNull()
-        assertThat(move.recoveryOnWhiff).isEqualTo("r55")
-        assertThat(move.totalFrames).isNull()
-        assertThat(move.crushes).isEmpty()
-        assertThat(move.onBlock).isNull()
-        assertThat(move.onHit).isNull()
-        assertThat(move.onCH).isNull()
-        assertThat(move.image).isNull()
-        assertThat(move.videoId).isEqualTo("File:t8-p2-yoshimitsu-1+2+3+4.mp4")
-        assertThat(move.alt).isNull()
-    }
-
-    @Test
-    fun `invoke correctly handles multi-hit moves with complex data`() = runTest {
-        // Given
-        val character = createTestCharacter("Yoshimitsu")
-        val moveDto = MoveDto(
-            id = "Yoshimitsu-KIN.1+2",
-            name = "Ashura Blade",
-            input = "KIN.1+2",
-            parent = null,
-            target = "m,m,m,m",
-            damage = "4,4,4,24",
-            startup = "i12~13 i6~7 i7~8 i11~13",
-            recv = "r37 BT",
-            tot = "80",
-            crush = "<div class=\"plainlist\">\n* is1~20\n* js25~39\n* fs40~42</div>",
-            block = "-6",
-            hit = "+11a",
-            ch = null,
-            notes = "Combos from any hit",
-            alias = null,
-            image = null,
-            video = "File:t8-p2-yoshimitsu-kin.1+2.mp4",
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("yoshimitsu-kin.1+2")
-        assertThat(move.level).isEqualTo("m,m,m,m")
-        assertThat(move.damage).isEqualTo("4,4,4,24")
-        assertThat(move.startup).isEqualTo("i12~13 i6~7 i7~8 i11~13")
-        assertThat(move.crushes).hasSize(3)
-        assertThat(move.crushes).isEqualTo(listOf("is1~20", "js25~39", "fs40~42"))
-    }
-    // endregion
-
-    // region Error Cases
-    @Test
-    fun `invoke returns error when data source fails`() = runTest {
-        // Given
-        val character = createTestCharacter("Yoshimitsu")
-        mockDataSource.mockResponse = Result.Error(DataError.Remote.SERVER_ERROR)
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        assertThat(result).isNotNull()
-        result as Result.Error
-        assertThat(result.error).isEqualTo(WavuError.DOWNLOAD_ERROR)
-    }
-
-    @Test
-    fun `invoke returns error when data source returns network error`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        mockDataSource.mockResponse = Result.Error(DataError.Remote.NO_INTERNET)
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Error
-        assertThat(result.error).isEqualTo(WavuError.DOWNLOAD_ERROR)
-    }
-
-    @Test
-    fun `invoke returns error when data source returns timeout`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        mockDataSource.mockResponse = Result.Error(DataError.Remote.REQUEST_TIMEOUT)
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Error
-        assertThat(result.error).isEqualTo(WavuError.DOWNLOAD_ERROR)
-    }
-
-    @Test
-    fun `invoke returns error when data source returns serialization error`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        mockDataSource.mockResponse = Result.Error(DataError.Remote.SERIALIZATION_ERROR)
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Error
-        assertThat(result.error).isEqualTo(WavuError.DOWNLOAD_ERROR)
-    }
-    // endregion
-
-    // region Edge Cases
-    @Test
-    fun `invoke handles empty move list response`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(emptyList()))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        assertThat(result.data).isEmpty()
-    }
-
-    @Test
-    fun `invoke handles move with only required fields`() = runTest {
-        // Given
-        val character = createTestCharacter("TestChar")
-        val minimalMove = MoveDto(
-            id = "TestChar-1",
-            input = "1",
-            parent = null,
-            target = null,
-            name = null,
-            damage = null,
-            startup = null,
-            recv = null,
-            tot = null,
-            crush = null,
-            block = null,
-            hit = null,
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(minimalMove)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-1")
-        assertThat(move.input).isEqualTo("1")
-        assertThat(move.level).isNull()
-        assertThat(move.name).isNull()
-        assertThat(move.damage).isNull()
-        assertThat(move.notes).isEmpty()
-        assertThat(move.aliases).isEmpty()
-    }
-
-    @Test
-    fun `invoke handles parent reference to non-existent move gracefully`() = runTest {
-        // Given - Child references a parent that doesn't exist in the list
-        val character = createTestCharacter("TestChar")
-        val orphanedChild = MoveDto(
-            id = "TestChar-1,2",
-            input = ",2",
-            parent = "TestChar-1",
-            target = ",m",
-            damage = ",15",
-            startup = null,
-            recv = "r25",
-            tot = "50",
-            crush = null,
-            block = "-5",
-            hit = "+3",
-            ch = null,
-            notes = null,
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(orphanedChild)))
-
-        // When
-        val result = useCase.invoke(character.name)
-
-        // Then - Should not crash and should handle gracefully
-        result as Result.Success
-        val move = result.data.first()
-        assertThat(move.id).isEqualTo("testchar-12")
-        assertThat(move.parent).isEqualTo("TestChar-1")
-        assertThat(move.input).isEqualTo("2")
-        assertThat(move.level).isEqualTo(",m")
-        assertThat(move.damage).isEqualTo(",15")
-        assertThat(move.startup).isNull()
+        assertThat(moves).hasSize(3)
+        assertThat(moves[0].properties.stance).isEqualTo("kin")
+        assertThat(moves[1].properties.stance).isEqualTo("des")
+        assertThat(moves[2].properties.stance).isEqualTo("fle")
     }
     // endregion
 

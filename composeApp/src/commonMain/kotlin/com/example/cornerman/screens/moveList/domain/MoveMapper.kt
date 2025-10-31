@@ -67,13 +67,13 @@ internal fun Move.isMotion(): Boolean {
             || input.startsWith("qcf")
 }
 
-internal fun Move.isCrouch(): Boolean = input.startsWith("fc")
+internal fun Move.isCrouch(): Boolean = input.startsWith("fc", ignoreCase = true)
 
-internal fun Move.isWS(): Boolean = input.startsWith("ws")
+internal fun Move.isWS(): Boolean = input.startsWith("ws", ignoreCase = true)
 
-internal fun Move.isCD(): Boolean = input.startsWith("cd.")
+internal fun Move.isCD(): Boolean = input.startsWith("cd.", ignoreCase = true)
 
-internal fun Move.isBT(): Boolean = input.startsWith("bt")
+internal fun Move.isBT(): Boolean = input.startsWith("bt", ignoreCase = true)
 
 internal fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCase = true) }
 

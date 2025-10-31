@@ -114,13 +114,13 @@ private fun Move.getProperties(): Move.Properties {
     )
 }
 
-private fun String.stance(): String? {
+private fun String.stance(): String {
     return take(3).takeIf {
         length >= 4
                 && it.all { char -> char.isLetter() }
                 && !startsWith("wr") && !startsWith("ff") && !startsWith("qcb") && !startsWith("qcf") && !startsWith("fc")
                 && drop(3).any { char -> char.isDigit() }
-    }
+    } ?: ""
 }
 
 private fun MoveDto.parseAliases(): List<String> {

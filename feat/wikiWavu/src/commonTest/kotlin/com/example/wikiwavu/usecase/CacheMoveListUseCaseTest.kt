@@ -249,9 +249,11 @@ class CacheMoveListUseCaseTest {
                 image = "df2.png",
                 videoId = "abc123",
                 alt = "Alternative input",
-                isHeat = false,
-                isPowerCrush = false,
-                isHoming = false
+                properties = Move.Properties(
+                    isHeat = false,
+                    isPowerCrush = false,
+                    isHoming = false,
+                )
             )
         )
 

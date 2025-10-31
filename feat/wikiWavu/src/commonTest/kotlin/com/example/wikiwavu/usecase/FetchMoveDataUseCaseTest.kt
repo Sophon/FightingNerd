@@ -415,9 +415,12 @@ class FetchMoveDataUseCaseTest {
         image = null,
         videoId = null,
         alt = null,
-        isHeat = false,
-        isPowerCrush = false,
-        isHoming = false,
+        properties = Move.Properties(
+            isHeat = false,
+            isPowerCrush = false,
+            isHoming = false,
+            stance = ""
+        )
     )
     //endregion
 
