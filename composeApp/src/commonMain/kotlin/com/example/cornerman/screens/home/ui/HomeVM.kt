@@ -2,14 +2,16 @@ package com.example.cornerman.screens.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.cornerman.featureRegistry.wavuWiki.WavuWikiFeature
+import com.example.cornerman.featureRegistry.RegisteredFeature
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-class HomeVM(): ViewModel() {
+class HomeVM(
+    private val featureList: List<RegisteredFeature>
+): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state
         .onStart {
@@ -36,11 +38,7 @@ class HomeVM(): ViewModel() {
 
 
     private fun loadFeatures() {
-        val registeredFeatures = listOf(
-            WavuWikiFeature(),
-        )
-
-        _state.update { it.copy(registeredFeatures = registeredFeatures) }
+        _state.update { it.copy(registeredFeatures = featureList) }
     }
 }
 

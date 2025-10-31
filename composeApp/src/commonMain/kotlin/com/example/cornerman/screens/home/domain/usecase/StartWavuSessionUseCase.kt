@@ -6,7 +6,6 @@ import com.example.wikiwavu.WavuWikiClient
 import io.github.aakira.napier.Napier
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.hours
-import kotlin.time.Duration.Companion.seconds
 
 //TODO: refactor - properly handle errors
 class StartWavuSessionUseCase(

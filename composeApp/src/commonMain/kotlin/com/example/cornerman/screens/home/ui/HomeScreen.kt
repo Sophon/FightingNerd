@@ -24,12 +24,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import com.example.cornerman.uiGallery.AppBottomBar
 import com.example.cornerman.uiGallery.BottomBarItem
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun HomeScreen(
+    navHostController: NavHostController,
     modifier: Modifier = Modifier
 ) {
     val vm = koinViewModel<HomeVM>()
@@ -68,7 +70,7 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 items(state.registeredFeatures) { registeredFeature ->
-                    registeredFeature.homeScreenContent()
+                    registeredFeature.HomeScreenContent(navHostController)
                 }
             }
 

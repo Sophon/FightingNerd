@@ -24,11 +24,7 @@ fun App() {
             modifier = Modifier.fillMaxSize(),
         ) {
             composable<Destination.Home> {
-                HomeScreen(
-//                    onCharacterClick = { character ->
-//                        navHostController.navigate(route = Destination.MoveList(character))
-//                    }
-                )
+                HomeScreen(navHostController)
             }
 
             composable<Destination.MoveList> { navBackstackEntry ->
