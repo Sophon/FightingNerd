@@ -45,7 +45,7 @@ class StartWavuSessionUseCase(
     private fun Instant.isOld(): Boolean {
         val now = kotlinx.datetime.Clock.System.now()
         val age = now - this
-        return age >= UPDATING_PERIOD_HOURS.seconds
+        return age >= UPDATING_PERIOD_HOURS.hours
     }
 }
 
