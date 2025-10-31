@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.Flow
 class WavuWikiFeature: RegisteredFeature {
     override val featureInfo = FeatureInfo(
         name = "WavuWiki",
-        url = "https://wavu.wiki/t/Main_Page"
+        url = "https://wavu.wiki/t/Main_Page",
+        iconUrl = "https://i.imgur.com/0cnTzNk.png",
     )
 
     @Composable
@@ -18,9 +19,10 @@ class WavuWikiFeature: RegisteredFeature {
         navHostController: NavHostController,
     ) {
         WavuHomeScreenView(
+            featureInfo = featureInfo,
             onCharacterClick = { charName ->
                 navHostController.navigate(Destination.MoveList(charName))
-            }
+            },
         )
     }
 
