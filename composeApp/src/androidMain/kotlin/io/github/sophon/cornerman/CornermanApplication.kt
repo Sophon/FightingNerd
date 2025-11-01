@@ -1,9 +1,8 @@
-package com.example.cornerman
+package io.github.sophon.cornerman
 
 import android.app.Application
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
-import io.github.sophon.cornerman.initKoin
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.component.KoinComponent
 

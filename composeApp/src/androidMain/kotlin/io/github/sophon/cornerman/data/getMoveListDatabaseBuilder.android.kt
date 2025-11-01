@@ -1,4 +1,4 @@
-package com.example.cornerman.screens.moveList.data
+package io.github.sophon.cornerman.data
 
 import android.content.Context
 import androidx.room.Room

@@ -1,4 +1,4 @@
-package com.example.cornerman.infrastructure
+package io.github.sophon.cornerman.infrastructure
 
 import android.content.Context
 import androidx.datastore.core.DataStore
