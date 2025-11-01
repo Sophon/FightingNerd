@@ -6,6 +6,17 @@ import assertk.assertions.isFalse
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
 import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.cornerman.screens.moveList.domain.getCategoryName
+import io.github.sophon.cornerman.screens.moveList.domain.getCategorySortOrder
+import io.github.sophon.cornerman.screens.moveList.domain.isBT
+import io.github.sophon.cornerman.screens.moveList.domain.isCD
+import io.github.sophon.cornerman.screens.moveList.domain.isCrouch
+import io.github.sophon.cornerman.screens.moveList.domain.isDirectional
+import io.github.sophon.cornerman.screens.moveList.domain.isMotion
+import io.github.sophon.cornerman.screens.moveList.domain.isNeutralInput
+import io.github.sophon.cornerman.screens.moveList.domain.isStance
+import io.github.sophon.cornerman.screens.moveList.domain.isThrow
+import io.github.sophon.cornerman.screens.moveList.domain.isWS
 import kotlin.test.Test
 
 class MapperTest {

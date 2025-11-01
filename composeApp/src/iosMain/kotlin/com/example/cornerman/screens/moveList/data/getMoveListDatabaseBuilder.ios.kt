@@ -2,6 +2,7 @@ package com.example.cornerman.screens.moveList.data
 
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import io.github.sophon.cornerman.screens.moveList.data.MoveListDatabase
 import platform.Foundation.NSHomeDirectory
 
 fun getMoveListDatabaseBuilder(): RoomDatabase.Builder<MoveListDatabase> {
