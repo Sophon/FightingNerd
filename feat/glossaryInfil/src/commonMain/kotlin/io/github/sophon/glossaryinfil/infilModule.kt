@@ -1,12 +1,12 @@
-package com.example.glossaryinfil
+package io.github.sophon.glossaryinfil
 
 import io.github.sophon.core.coreModule
-import com.example.glossaryinfil.data.InfilGlossaryDataSource
-import com.example.glossaryinfil.data.InfilGlossaryDataSourceImpl
-import com.example.glossaryinfil.domain.InfilUrlProvider
-import com.example.glossaryinfil.usecase.CacheGlossaryUseCase
-import com.example.glossaryinfil.usecase.DownloadGlossaryUseCase
-import com.example.glossaryinfil.usecase.FetchDataForTermUseCase
+import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSource
+import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSourceImpl
+import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
+import io.github.sophon.glossaryinfil.usecase.CacheGlossaryUseCase
+import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase
+import io.github.sophon.glossaryinfil.usecase.FetchDataForTermUseCase
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration

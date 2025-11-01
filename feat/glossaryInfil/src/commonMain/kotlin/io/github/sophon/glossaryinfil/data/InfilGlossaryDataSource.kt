@@ -1,6 +1,6 @@
-package com.example.glossaryinfil.data
+package io.github.sophon.glossaryinfil.data
 
-import com.example.glossaryinfil.BASE_URL
+import io.github.sophon.glossaryinfil.BASE_URL
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall

@@ -1,4 +1,4 @@
-package com.example.glossaryinfil.domain
+package io.github.sophon.glossaryinfil.domain
 
 import kotlinx.serialization.Serializable
 

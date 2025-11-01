@@ -1,11 +1,11 @@
-package com.example.glossaryinfil
+package io.github.sophon.glossaryinfil
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import com.example.glossaryinfil.domain.GlossaryItem
-import com.example.glossaryinfil.usecase.CacheGlossaryUseCase
-import com.example.glossaryinfil.usecase.DownloadGlossaryUseCase
-import com.example.glossaryinfil.usecase.FetchDataForTermUseCase
+import io.github.sophon.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.usecase.CacheGlossaryUseCase
+import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase
+import io.github.sophon.glossaryinfil.usecase.FetchDataForTermUseCase
 import io.github.aakira.napier.Napier
 
 interface InfilGlossary {
@@ -40,4 +40,4 @@ internal class InfilGlossaryImpl(
 }
 
 
-private const val TAG = "com.example.glossaryinfil.InfilGlossary"
+private const val TAG = "io.github.sophon.glossaryinfil.InfilGlossary"

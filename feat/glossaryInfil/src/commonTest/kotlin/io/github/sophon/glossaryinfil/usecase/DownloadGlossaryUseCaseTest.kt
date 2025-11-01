@@ -1,4 +1,4 @@
-package com.example.glossaryinfil.usecase
+package io.github.sophon.glossaryinfil.usecase
 
 import assertk.assertThat
 import assertk.assertions.hasSize
@@ -7,9 +7,10 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
-import com.example.glossaryinfil.GlossaryError
-import com.example.glossaryinfil.data.GlossaryItemDto
-import com.example.glossaryinfil.data.InfilGlossaryDataSource
+import io.github.sophon.glossaryinfil.GlossaryError
+import io.github.sophon.glossaryinfil.data.GlossaryItemDto
+import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSource
+import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

@@ -1,4 +1,4 @@
-package com.example.glossaryinfil.usecase
+package io.github.sophon.glossaryinfil.usecase
 
 import io.github.sophon.core.domain.Result
 import assertk.assertThat
@@ -6,9 +6,10 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.domain.EmptyResult
-import com.example.glossaryinfil.GlossaryError
-import com.example.glossaryinfil.data.GlossaryDB
-import com.example.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.GlossaryError
+import io.github.sophon.glossaryinfil.data.GlossaryDB
+import io.github.sophon.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.usecase.FetchDataForTermUseCase
 import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlinx.coroutines.test.runTest

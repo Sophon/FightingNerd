@@ -1,8 +1,8 @@
-package com.example.glossaryinfil.domain
+package io.github.sophon.glossaryinfil.domain
 
 import io.github.sophon.core.util.urlEncode
-import com.example.glossaryinfil.TERM_URL
-import com.example.glossaryinfil.VIDEO_URL
+import io.github.sophon.glossaryinfil.TERM_URL
+import io.github.sophon.glossaryinfil.VIDEO_URL
 
 class InfilUrlProvider {
     fun termUrl(item: GlossaryItem): String {

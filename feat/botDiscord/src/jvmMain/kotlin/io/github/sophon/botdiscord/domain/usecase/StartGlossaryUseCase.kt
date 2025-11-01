@@ -1,6 +1,6 @@
 package io.github.sophon.botdiscord.domain.usecase
 
-import com.example.glossaryinfil.InfilGlossary
+import io.github.sophon.glossaryinfil.InfilGlossary
 
 class StartGlossaryUseCase(
     private val glossary: InfilGlossary,

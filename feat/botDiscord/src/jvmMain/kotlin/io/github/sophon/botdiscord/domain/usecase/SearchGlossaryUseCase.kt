@@ -2,8 +2,8 @@ package io.github.sophon.botdiscord.domain.usecase
 
 import io.github.sophon.botdiscord.BotError
 import io.github.sophon.core.domain.Result
-import com.example.glossaryinfil.InfilGlossary
-import com.example.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.InfilGlossary
+import io.github.sophon.glossaryinfil.domain.GlossaryItem
 import io.github.aakira.napier.Napier
 
 internal class SearchGlossaryUseCase(

@@ -14,8 +14,8 @@ import io.github.sophon.botdiscord.featureRegistry.frameData.FrameDataFeature
 import io.github.sophon.botdiscord.featureRegistry.frameData.Scheduler
 import io.github.sophon.botdiscord.infrastructure.FileReaderJVM
 import io.github.sophon.core.coreModule
-import com.example.glossaryinfil.data.GlossaryDB
-import com.example.glossaryinfil.infilModule
+import io.github.sophon.glossaryinfil.data.GlossaryDB
+import io.github.sophon.glossaryinfil.infilModule
 import com.example.wikiwavu.data.MoveListDB
 import com.example.wikiwavu.infrastructure.FileReader
 import com.example.wikiwavu.wavuModule

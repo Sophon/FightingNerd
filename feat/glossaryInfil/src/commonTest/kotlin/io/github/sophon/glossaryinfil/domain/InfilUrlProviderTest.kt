@@ -1,4 +1,4 @@
-package com.example.glossaryinfil.domain
+package io.github.sophon.glossaryinfil.domain
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

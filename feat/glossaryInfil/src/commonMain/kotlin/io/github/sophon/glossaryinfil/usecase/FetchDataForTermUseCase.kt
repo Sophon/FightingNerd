@@ -1,11 +1,11 @@
-package com.example.glossaryinfil.usecase
+package io.github.sophon.glossaryinfil.usecase
 
-import com.example.glossaryinfil.GlossaryError
+import io.github.sophon.glossaryinfil.GlossaryError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.util.removeWhiteSpace
-import com.example.glossaryinfil.data.GlossaryDB
-import com.example.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.data.GlossaryDB
+import io.github.sophon.glossaryinfil.domain.GlossaryItem
 
 class FetchDataForTermUseCase(
     private val db: GlossaryDB,

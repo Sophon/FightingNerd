@@ -1,4 +1,4 @@
-package com.example.glossaryinfil
+package io.github.sophon.glossaryinfil
 
 import io.github.sophon.core.domain.Error
 

@@ -9,8 +9,8 @@ import io.github.sophon.botdiscord.util.replaceItalic
 import io.github.sophon.botdiscord.util.replaceUnderline
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.truncate
-import com.example.glossaryinfil.domain.GlossaryItem
-import com.example.glossaryinfil.domain.InfilUrlProvider
+import io.github.sophon.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 
