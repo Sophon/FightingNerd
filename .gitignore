@@ -509,3 +509,5 @@ lint/tmp/
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.androidx.savedstate-savedstate-compose-1.3.5-commonMain-Fw7d1w.klib
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.compose.runtime-runtime-1.9.1-commonMain-QgBs-g.klib
 /.kotlin/metadata/kotlinTransformedMetadataLibraries/org.jetbrains.compose.runtime-runtime-saveable-1.9.1-commonMain-_Ef7pA.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/io.ktor-ktor-client-darwin-3.0.0-darwinMain-N9dhng.klib
+/.kotlin/metadata/kotlinTransformedMetadataLibraries/io.ktor-ktor-client-ios-3.0.0-darwinMain-VT6xVg.klib

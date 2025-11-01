@@ -65,7 +65,9 @@ kotlin {
         }
 
         androidMain {
-            dependencies {}
+            dependencies {
+                implementation(libs.ktor.android)
+            }
         }
 
         getByName("androidDeviceTest") {
@@ -79,7 +81,15 @@ kotlin {
         }
 
         iosMain {
-            dependencies {}
+            dependencies {
+                implementation(libs.ktor.ios)
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation(libs.ktor.cio)
+            }
         }
     }
 }
