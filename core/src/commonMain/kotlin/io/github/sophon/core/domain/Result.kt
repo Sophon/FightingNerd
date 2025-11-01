@@ -21,7 +21,21 @@ inline fun <T, E : Error, R> Result<T, E>.map(map: (T) -> R): Result<R, E> {
 /**
  * When we don't need the data, just the error or status
  */
-inline fun <T, E : Error> Result<T, E>.asEmptyDataResult(): EmptyResult<E> = map {}
+fun <T, E : Error> Result<T, E>.asEmptyDataResult(): EmptyResult<E> = map {}
+
+inline fun <T, E : Error, F : Error> Result<T, E>.mapError(transform: (E) -> F): Result<T, F> {
+    return when (this) {
+        is Result.Success -> Result.Success(data)
+        is Result.Error -> Result.Error(transform(error))
+    }
+}
+
+inline fun <T, U, E : Error> Result<T, E>.flatMap(transform: (T) -> Result<U, E>): Result<U, E> {
+    return when (this) {
+        is Result.Success -> transform(data)
+        is Result.Error -> Result.Error(error)
+    }
+}
 
 
 inline fun <T, E : Error> Result<T, E>.onSuccess(action: (T) -> Unit): Result<T, E> {
