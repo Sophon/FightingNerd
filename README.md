@@ -1,17 +1,26 @@
 <img width="3840" height="1920" alt="banner" src="https://github.com/user-attachments/assets/c67b7e74-c079-4e40-8d02-f8a476b8d517" />
 
 
-# A set of tools for fighting games
+# Cornerman
 
-A highly [modular](https://github.com/Sophon/Cornerman/wiki/Code-base-architecture) set of tools for the fighting game community.
+A set of tools for the Fighting Game Community:
+- 🧩 highly extensible
+  - 📘 glossary
+  - 📊 frame data
+  - 📋 move lists
+- 🌐 multiplatform:
+  - 🖥️ PC
+  - 🤖 Android
+  - 🍏 iOS
+  - 💬 Discord
 
 
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules)
 - [Discord bot](./feat/botDiscord/src/main/kotlin/DiscordBot.kt)
 - [fighting-game glossary](./feat/glossaryInfil/src/main/kotlin/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
 - [Tekken 8 frame data](./feat/wikiWavu/src/main/kotlin/WavuWikiClient.kt) from [Wavu Wiki](https://wavu.wiki/)
-   - frame data
-   - power crush, heat or homing move-lists
+  - frame data
+  - power crush, heat or homing move-lists
 
 # [CHECK THE WIKI](https://github.com/Sophon/Cornerman/wiki)
 
