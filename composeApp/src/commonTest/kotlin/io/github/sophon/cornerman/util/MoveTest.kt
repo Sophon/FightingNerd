@@ -1,4 +1,4 @@
-package com.example.cornerman.screens.moveList.util
+package io.github.sophon.cornerman.util
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
