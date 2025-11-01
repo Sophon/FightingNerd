@@ -40,7 +40,7 @@ class InMemoryMoveListDB: MoveListDB {
     ): EmptyResult<WavuError> {
         val indexedMoves = buildMap {
             moveList.forEach { move ->
-                put(move.id, move)
+                put(move.input, move)
                 move.aliases.forEach { alias ->
                     put(alias, move)
                 }

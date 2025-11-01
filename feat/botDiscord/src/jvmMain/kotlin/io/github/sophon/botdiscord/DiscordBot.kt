@@ -46,19 +46,6 @@ internal class DiscordBotImpl(
             }
         }
         startKord()
-
-        //    override suspend fun startSession() {
-//        scope.launch {
-//            scheduler.start(
-//                period = 1.hours,
-//                task = ::downloadCompleteMoveList,
-//            ).collect {
-//                it.onError { error ->
-//                    Napier.e(tag = TAG) { error.toString() }
-//                }
-//            }
-//        }
-//    }
     }
 
 
