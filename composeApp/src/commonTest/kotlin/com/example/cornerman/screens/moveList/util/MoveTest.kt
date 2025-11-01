@@ -1,8 +1,7 @@
-package com.example.cornerman.moveList.util
+package com.example.cornerman.screens.moveList.util
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.example.cornerman.screens.moveList.util.cleanComboLinks
 import com.example.wikiwavu.domain.model.Move
 import kotlin.test.Test
 

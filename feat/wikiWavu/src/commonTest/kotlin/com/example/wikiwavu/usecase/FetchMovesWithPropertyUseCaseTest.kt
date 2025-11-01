@@ -41,13 +41,13 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When
-        val result = useCase.invoke(charName) { it.isHeat }
+        val result = useCase.invoke(charName) { it.properties.isHeat == true }
 
         // Then
         assertThat(result).isNotNull()
         result as Result.Success
         assertThat(result.data).hasSize(2)
-        assertThat(result.data.all { it.isHeat }).isEqualTo(true)
+        assertThat(result.data.all { it.properties.isHeat == true }).isEqualTo(true)
         assertThat(result.data.map { it.id }).isEqualTo(listOf("df2", "bf23"))
     }
 
@@ -63,7 +63,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When
-        val result = useCase.invoke(charName) { it.isHeat }
+        val result = useCase.invoke(charName) { it.properties.isHeat == true }
 
         // Then
         result as Result.Success
@@ -82,12 +82,12 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When
-        val result = useCase.invoke(charName) { it.isHeat }
+        val result = useCase.invoke(charName) { it.properties.isHeat == true }
 
         // Then
         result as Result.Success
         assertThat(result.data).hasSize(3)
-        assertThat(result.data.all { it.isHeat }).isEqualTo(true)
+        assertThat(result.data.all { it.properties.isHeat == true }).isEqualTo(true)
     }
     //endregion
 
@@ -105,12 +105,12 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When
-        val result = useCase.invoke(charName) { it.isPowerCrush }
+        val result = useCase.invoke(charName) { it.properties.isPowerCrush == true }
 
         // Then
         result as Result.Success
         assertThat(result.data).hasSize(2)
-        assertThat(result.data.all { it.isPowerCrush }).isEqualTo(true)
+        assertThat(result.data.all { it.properties.isPowerCrush == true }).isEqualTo(true)
         assertThat(result.data.map { it.id }).isEqualTo(listOf("f23", "qcf2"))
     }
 
@@ -125,7 +125,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When
-        val result = useCase.invoke(charName) { it.isPowerCrush }
+        val result = useCase.invoke(charName) { it.properties.isPowerCrush == true }
 
         // Then
         result as Result.Success
@@ -148,12 +148,12 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When
-        val result = useCase.invoke(charName) { it.isHoming }
+        val result = useCase.invoke(charName) { it.properties.isHoming == true }
 
         // Then
         result as Result.Success
         assertThat(result.data).hasSize(2)
-        assertThat(result.data.all { it.isHoming }).isEqualTo(true)
+        assertThat(result.data.all { it.properties.isHoming == true }).isEqualTo(true)
         assertThat(result.data.map { it.id }).isEqualTo(listOf("1+3", "uf3"))
     }
 
@@ -168,7 +168,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When
-        val result = useCase.invoke(charName) { it.isHoming }
+        val result = useCase.invoke(charName) { it.properties.isHoming == true }
 
         // Then
         result as Result.Success
@@ -189,14 +189,14 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When - Filter for moves that are both heat AND power crush
-        val result = useCase.invoke(charName) { it.isHeat && it.isPowerCrush }
+        val result = useCase.invoke(charName) { it.properties.isHeat == true && it.properties.isPowerCrush == true }
 
         // Then
         result as Result.Success
         assertThat(result.data).hasSize(1)
         assertThat(result.data.first().id).isEqualTo("f23")
-        assertThat(result.data.first().isHeat).isEqualTo(true)
-        assertThat(result.data.first().isPowerCrush).isEqualTo(true)
+        assertThat(result.data.first().properties.isHeat == true).isEqualTo(true)
+        assertThat(result.data.first().properties.isPowerCrush == true).isEqualTo(true)
     }
 
     @Test
@@ -212,7 +212,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When - Filter for moves that are heat OR homing
-        val result = useCase.invoke(charName) { it.isHeat || it.isHoming }
+        val result = useCase.invoke(charName) { it.properties.isHeat == true || it.properties.isHoming == true }
 
         // Then
         result as Result.Success
@@ -232,7 +232,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When - Filter for moves with all three properties
-        val result = useCase.invoke(charName) { it.isHeat && it.isPowerCrush && it.isHoming }
+        val result = useCase.invoke(charName) { it.properties.isHeat == true && it.properties.isPowerCrush == true && it.properties.isHoming == true }
 
         // Then
         result as Result.Success
@@ -313,7 +313,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Error(WavuError.UNKNOWN_CHARACTER)
 
         // When
-        val result = useCase.invoke(charName) { it.isHeat }
+        val result = useCase.invoke(charName) { it.properties.isHeat == true }
 
         // Then
         assertThat(result).isNotNull()
@@ -328,7 +328,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Error(WavuError.UNKNOWN_CHARACTER)
 
         // When
-        val result = useCase.invoke(charName) { it.isPowerCrush }
+        val result = useCase.invoke(charName) { it.properties.isPowerCrush == true }
 
         // Then
         result as Result.Error
@@ -342,7 +342,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Error(WavuError.DOWNLOAD_ERROR)
 
         // When
-        val result = useCase.invoke(charName) { it.isHoming }
+        val result = useCase.invoke(charName) { it.properties.isHoming == true }
 
         // Then
         result as Result.Error
@@ -358,7 +358,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(listOf())
 
         // When
-        val result = useCase.invoke(charName) { it.isHeat }
+        val result = useCase.invoke(charName) { it.properties.isHeat == true }
 
         // Then
         result as Result.Success
@@ -415,7 +415,7 @@ class FetchMovesWithPropertyUseCaseTest {
         mockDb.mockResponse = Result.Success(moves)
 
         // When
-        val result = useCase.invoke(charName) { it.isHeat }
+        val result = useCase.invoke(charName) { it.properties.isHeat == true }
 
         // Then
         result as Result.Success
@@ -440,13 +440,13 @@ class FetchMovesWithPropertyUseCaseTest {
         // When - Call with mixed case "NaMe"
         val result = useCase.invoke(
             charName = "NaMe",
-            predicate = { it.isHeat }
+            predicate = { it.properties.isHeat == true }
         )
 
         // Then
         assertTrue(result is Result.Success)
         assertEquals(2, result.data.size)
-        assertTrue(result.data.all { it.isHeat })
+        assertTrue(result.data.all { it.properties.isHeat == true })
         assertTrue(result.data.any { it.id == "1" })
         assertTrue(result.data.any { it.id == "3" })
     }
@@ -479,9 +479,11 @@ class FetchMovesWithPropertyUseCaseTest {
         image = null,
         videoId = null,
         alt = null,
-        isHeat = isHeat,
-        isPowerCrush = isPowerCrush,
-        isHoming = isHoming,
+        properties = Move.Properties(
+            isHeat = isHeat,
+            isPowerCrush = isPowerCrush,
+            isHoming = isHoming,
+        ),
     )
 
     private class MockMoveListDB : MoveListDB {

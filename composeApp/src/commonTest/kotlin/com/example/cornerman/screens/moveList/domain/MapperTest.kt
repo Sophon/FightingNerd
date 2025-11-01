@@ -1,18 +1,10 @@
-package com.example.cornerman.moveList.mapper
+package com.example.cornerman.screens.moveList.domain
 
 import assertk.assertThat
-import assertk.assertions.*
-import com.example.cornerman.screens.moveList.domain.getCategoryName
-import com.example.cornerman.screens.moveList.domain.getCategorySortOrder
-import com.example.cornerman.screens.moveList.domain.isBT
-import com.example.cornerman.screens.moveList.domain.isCD
-import com.example.cornerman.screens.moveList.domain.isCrouch
-import com.example.cornerman.screens.moveList.domain.isDirectional
-import com.example.cornerman.screens.moveList.domain.isMotion
-import com.example.cornerman.screens.moveList.domain.isNeutralInput
-import com.example.cornerman.screens.moveList.domain.isStance
-import com.example.cornerman.screens.moveList.domain.isThrow
-import com.example.cornerman.screens.moveList.domain.isWS
+import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
+import assertk.assertions.isNull
+import assertk.assertions.isTrue
 import com.example.wikiwavu.domain.model.Move
 import kotlin.test.Test
 
@@ -579,7 +571,7 @@ class MapperTest {
     @Test
     fun `getCategoryName returns Heat for heat move`() {
         // given
-        val move = createMove("H.2+3", isHeat = true)
+        val move = createMove("H.2+3", properties = Move.Properties(isHeat = true))
 
         // when
         val result = move.getCategoryName()
@@ -589,9 +581,9 @@ class MapperTest {
     }
 
     @Test
-    fun `getCategoryName returns DGF for DGF dot 1 input`() {
+    fun `getCategoryName returns DGF for DGF dot 1 input with stance property`() {
         // given
-        val move = createMove("DGF.1")
+        val move = createMove("DGF.1", properties = Move.Properties(stance = "DGF"))
 
         // when
         val result = move.getCategoryName()
@@ -601,9 +593,9 @@ class MapperTest {
     }
 
     @Test
-    fun `getCategoryName returns FLE for FLE dot 3 plus 4 input`() {
+    fun `getCategoryName returns FLE for FLE dot 3 plus 4 input with stance property`() {
         // given
-        val move = createMove("FLE.3+4")
+        val move = createMove("FLE.3+4", properties = Move.Properties(stance = "FLE"))
 
         // when
         val result = move.getCategoryName()
@@ -681,7 +673,7 @@ class MapperTest {
         val result = move.getCategoryName()
 
         // then
-        assertThat(result).isEqualTo("BT")
+        assertThat(result).isEqualTo("BT (Back Turned)")
     }
 
     @Test
@@ -869,7 +861,7 @@ class MapperTest {
     private fun createMove(
         input: String,
         notes: List<String> = emptyList(),
-        isHeat: Boolean = false
+        properties: Move.Properties = Move.Properties()
     ) = Move(
         charName = "Charname",
         id = "test-${input}",
@@ -879,6 +871,7 @@ class MapperTest {
         damage = "10",
         startup = "i10",
         recoveryOnWhiff = "r20",
+        totalFrames = null,
         crushes = listOf(),
         onBlock = "+0",
         onHit = "+5",
@@ -888,6 +881,6 @@ class MapperTest {
         image = null,
         videoId = null,
         alt = null,
-        isHeat = isHeat
+        properties = properties,
     )
 }

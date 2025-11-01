@@ -17,8 +17,8 @@ internal fun List<Move>.toDomain(): List<MoveCategory> {
 
 internal fun Move.getCategoryName(): String {
     return when {
-        isHeat -> "Heat"
-        (isStance() != null) -> isStance()!!
+        (properties.isHeat == true) -> "Heat"
+        properties.stance.isNullOrEmpty().not() -> properties.stance!!
         (isDirectional() != null) -> isDirectional()!!
         isMotion() -> "Motion Input"
         isCrouch() -> "Crouch"
@@ -67,13 +67,13 @@ internal fun Move.isMotion(): Boolean {
             || input.startsWith("qcf")
 }
 
-internal fun Move.isCrouch(): Boolean = input.startsWith("FC.")
+internal fun Move.isCrouch(): Boolean = input.startsWith("fc", ignoreCase = true)
 
-internal fun Move.isWS(): Boolean = input.startsWith("ws")
+internal fun Move.isWS(): Boolean = input.startsWith("ws", ignoreCase = true)
 
-internal fun Move.isCD(): Boolean = input.startsWith("CD.")
+internal fun Move.isCD(): Boolean = input.startsWith("cd.", ignoreCase = true)
 
-internal fun Move.isBT(): Boolean = input.startsWith("BT.")
+internal fun Move.isBT(): Boolean = input.startsWith("bt", ignoreCase = true)
 
 internal fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCase = true) }
 
@@ -115,9 +115,10 @@ internal fun Move.toEntity(): MoveEntity {
         image = image,
         videoId = videoId,
         alt = alt,
-        isHeat = isHeat,
-        isPowerCrush = isPowerCrush,
-        isHoming = isHoming,
+        isHeat = properties.isHeat,
+        isPowerCrush = properties.isPowerCrush,
+        isHoming = properties.isHoming,
+        stance = properties.stance,
     )
 }
 
@@ -142,8 +143,11 @@ internal fun MoveEntity.toDomain(): Move {
         image = image,
         videoId = videoId,
         alt = alt,
-        isHeat = isHeat,
-        isPowerCrush = isPowerCrush,
-        isHoming = isHoming,
+        properties = Move.Properties(
+            isHeat = isHeat,
+            isPowerCrush = isPowerCrush,
+            isHoming = isHoming,
+            stance = stance,
+        )
     )
 }

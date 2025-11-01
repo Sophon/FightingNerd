@@ -27,7 +27,14 @@ data class Move(
     val videoId: String? = null,
     val alt: String? = null,
 
-    val isHeat: Boolean = false,
-    val isPowerCrush: Boolean = false,
-    val isHoming: Boolean = false,
-)
+    val properties: Properties = Properties(),
+) {
+    //null means non applicable
+    @Serializable
+    data class Properties(
+        val isHeat: Boolean? = null,
+        val isPowerCrush: Boolean? = null,
+        val isHoming: Boolean? = null,
+        val stance: String? = null,
+    )
+}

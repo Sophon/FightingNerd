@@ -32,7 +32,8 @@ data class MoveEntity(
     val videoId: String?,
     val alt: String?,
 
-    val isHeat: Boolean = false,
-    val isPowerCrush: Boolean = false,
-    val isHoming: Boolean = false,
+    val isHeat: Boolean? = null,
+    val isPowerCrush: Boolean? = null,
+    val isHoming: Boolean? = null,
+    val stance: String? = null,
 )

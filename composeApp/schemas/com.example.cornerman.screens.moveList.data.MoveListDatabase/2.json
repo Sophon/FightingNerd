@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 1,
-    "identityHash": "2b3cb62490ef8371e4be30a4e8624abe",
+    "version": 2,
+    "identityHash": "1393bec1f4e2e72d5a6493f906b5494f",
     "entities": [
       {
         "tableName": "moves",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`charName` TEXT NOT NULL, `id` TEXT NOT NULL, `input` TEXT NOT NULL, `level` TEXT, `name` TEXT, `parent` TEXT, `damage` TEXT, `startup` TEXT, `recoveryOnWhiff` TEXT, `totalFrames` TEXT, `crushes` TEXT, `onBlock` TEXT, `onHit` TEXT, `onCH` TEXT, `notes` TEXT, `aliases` TEXT, `image` TEXT, `videoId` TEXT, `alt` TEXT, `isHeat` INTEGER, `isPowerCrush` INTEGER, `isHoming` INTEGER, `isStance` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`charName` TEXT NOT NULL, `id` TEXT NOT NULL, `input` TEXT NOT NULL, `level` TEXT, `name` TEXT, `parent` TEXT, `damage` TEXT, `startup` TEXT, `recoveryOnWhiff` TEXT, `totalFrames` TEXT, `crushes` TEXT, `onBlock` TEXT, `onHit` TEXT, `onCH` TEXT, `notes` TEXT, `aliases` TEXT, `image` TEXT, `videoId` TEXT, `alt` TEXT, `isHeat` INTEGER, `isPowerCrush` INTEGER, `isHoming` INTEGER, `stance` TEXT, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "charName",
@@ -122,9 +122,9 @@
             "affinity": "INTEGER"
           },
           {
-            "fieldPath": "isStance",
-            "columnName": "isStance",
-            "affinity": "INTEGER"
+            "fieldPath": "stance",
+            "columnName": "stance",
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -157,7 +157,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2b3cb62490ef8371e4be30a4e8624abe')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1393bec1f4e2e72d5a6493f906b5494f')"
     ]
   }
 }
