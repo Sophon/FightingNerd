@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.screens.moveList.util
 
-import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.wikiwavu.domain.model.Move
 
 internal fun Move.cleanComboLinks(): Move {
     return copy(

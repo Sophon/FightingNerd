@@ -2,9 +2,9 @@ package io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.screens.home.HomeError
-import com.example.wikiwavu.WavuError
-import com.example.wikiwavu.WavuWikiClient
-import com.example.wikiwavu.domain.model.Character
+import io.github.sophon.wikiwavu.WavuError
+import io.github.sophon.wikiwavu.WavuWikiClient
+import io.github.sophon.wikiwavu.domain.model.Character
 
 class FetchCharacterListUseCase(
     private val wiki: WavuWikiClient,

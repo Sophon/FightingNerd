@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.StartWavuSessionUseCase
 import io.github.sophon.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
-import com.example.wikiwavu.domain.model.Character
+import io.github.sophon.wikiwavu.domain.model.Character
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted

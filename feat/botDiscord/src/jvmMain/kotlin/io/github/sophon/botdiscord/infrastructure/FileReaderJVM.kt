@@ -1,6 +1,6 @@
 package io.github.sophon.botdiscord.infrastructure
 
-import com.example.wikiwavu.infrastructure.FileReader
+import io.github.sophon.wikiwavu.infrastructure.FileReader
 import java.io.File
 
 class FileReaderJVM: FileReader {

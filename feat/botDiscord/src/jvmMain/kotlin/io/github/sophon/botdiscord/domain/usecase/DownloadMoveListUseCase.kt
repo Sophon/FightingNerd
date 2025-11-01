@@ -4,7 +4,7 @@ import io.github.sophon.botdiscord.BotError
 import io.github.sophon.botdiscord.domain.toDomain
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import com.example.wikiwavu.WavuWikiClient
+import io.github.sophon.wikiwavu.WavuWikiClient
 
 class DownloadMoveListUseCase(
     private val wiki: WavuWikiClient,

@@ -5,7 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isNull
 import assertk.assertions.isTrue
-import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.wikiwavu.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.domain.getCategoryName
 import io.github.sophon.cornerman.screens.moveList.domain.getCategorySortOrder
 import io.github.sophon.cornerman.screens.moveList.domain.isBT

@@ -8,9 +8,9 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.screens.moveList.domain.toDomain
 import io.github.sophon.cornerman.screens.moveList.domain.toEntity
-import com.example.wikiwavu.WavuError
-import com.example.wikiwavu.data.MoveListDB
-import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.wikiwavu.WavuError
+import io.github.sophon.wikiwavu.data.MoveListDB
+import io.github.sophon.wikiwavu.domain.model.Move
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock

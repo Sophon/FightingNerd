@@ -2,7 +2,7 @@ package io.github.sophon.cornerman.util
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.wikiwavu.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.util.cleanComboLinks
 import kotlin.test.Test
 

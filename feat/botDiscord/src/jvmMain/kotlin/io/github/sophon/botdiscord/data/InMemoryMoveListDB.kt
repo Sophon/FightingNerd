@@ -2,9 +2,9 @@ package io.github.sophon.botdiscord.data
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import com.example.wikiwavu.WavuError
-import com.example.wikiwavu.data.MoveListDB
-import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.wikiwavu.WavuError
+import io.github.sophon.wikiwavu.data.MoveListDB
+import io.github.sophon.wikiwavu.domain.model.Move
 import kotlinx.datetime.Instant
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime

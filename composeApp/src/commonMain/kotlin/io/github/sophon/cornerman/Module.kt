@@ -4,7 +4,7 @@ import io.github.sophon.core.coreModule
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.wavuWikiFeatureModule
 import io.github.sophon.cornerman.screens.home.homeModule
 import io.github.sophon.cornerman.screens.moveList.moveListModule
-import com.example.wikiwavu.wavuModule
+import io.github.sophon.wikiwavu.wavuModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.KoinAppDeclaration

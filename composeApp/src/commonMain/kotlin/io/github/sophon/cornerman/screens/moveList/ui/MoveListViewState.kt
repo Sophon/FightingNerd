@@ -1,7 +1,7 @@
 package io.github.sophon.cornerman.screens.moveList.ui
 
 import io.github.sophon.cornerman.screens.moveList.domain.MoveCategory
-import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.wikiwavu.domain.model.Move
 
 data class MoveListViewState(
     val allMoves: List<MoveCategory> = emptyList(),

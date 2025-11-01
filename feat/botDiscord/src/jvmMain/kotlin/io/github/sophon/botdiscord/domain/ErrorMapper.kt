@@ -1,7 +1,7 @@
 package io.github.sophon.botdiscord.domain
 
 import io.github.sophon.botdiscord.BotError
-import com.example.wikiwavu.WavuError
+import io.github.sophon.wikiwavu.WavuError
 
 internal fun WavuError.toDomain(): BotError {
     return when (this) {

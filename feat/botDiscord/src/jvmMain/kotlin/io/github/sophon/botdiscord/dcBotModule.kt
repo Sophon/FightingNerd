@@ -16,9 +16,9 @@ import io.github.sophon.botdiscord.infrastructure.FileReaderJVM
 import io.github.sophon.core.coreModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
-import com.example.wikiwavu.data.MoveListDB
-import com.example.wikiwavu.infrastructure.FileReader
-import com.example.wikiwavu.wavuModule
+import io.github.sophon.wikiwavu.data.MoveListDB
+import io.github.sophon.wikiwavu.infrastructure.FileReader
+import io.github.sophon.wikiwavu.wavuModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

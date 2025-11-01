@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.sophon.core.util.orDash
 import io.github.sophon.cornerman.theme.AppTheme
-import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.wikiwavu.domain.model.Move
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable

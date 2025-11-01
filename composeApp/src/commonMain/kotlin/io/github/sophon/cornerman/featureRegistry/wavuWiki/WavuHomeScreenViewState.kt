@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.featureRegistry.wavuWiki
 
-import com.example.wikiwavu.domain.model.Character
+import io.github.sophon.wikiwavu.domain.model.Character
 
 data class WavuHomeScreenViewState(
     val characterList: List<Character> = listOf(),

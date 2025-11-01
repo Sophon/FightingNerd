@@ -4,8 +4,8 @@ import io.github.sophon.botdiscord.BotError
 import io.github.sophon.botdiscord.domain.toDomain
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.dropFirstAndJoin
-import com.example.wikiwavu.WavuWikiClient
-import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.wikiwavu.WavuWikiClient
+import io.github.sophon.wikiwavu.domain.model.Move
 
 internal class SearchFrameDataUseCase(
     private val wavuWikiClient: WavuWikiClient,

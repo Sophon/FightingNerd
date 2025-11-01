@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.screens.moveList.domain
 
-import com.example.wikiwavu.WavuError
+import io.github.sophon.wikiwavu.WavuError
 
 internal fun WavuError.toDomain(): MoveListError {
     return when (this) {

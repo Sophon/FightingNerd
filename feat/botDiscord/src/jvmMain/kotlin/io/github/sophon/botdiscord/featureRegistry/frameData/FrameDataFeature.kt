@@ -19,8 +19,8 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
-import com.example.wikiwavu.domain.WavuUrlProvider
-import com.example.wikiwavu.domain.model.Move
+import io.github.sophon.wikiwavu.domain.WavuUrlProvider
+import io.github.sophon.wikiwavu.domain.model.Move
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
