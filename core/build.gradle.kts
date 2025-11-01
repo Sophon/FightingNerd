@@ -8,7 +8,7 @@ kotlin {
     jvm()
 
     androidLibrary {
-        namespace = "com.example.core"
+        namespace = "io.github.sophon.core"
         compileSdk = 36
         minSdk = 30
 
@@ -65,7 +65,9 @@ kotlin {
         }
 
         androidMain {
-            dependencies {}
+            dependencies {
+                implementation(libs.ktor.android)
+            }
         }
 
         getByName("androidDeviceTest") {
@@ -79,7 +81,15 @@ kotlin {
         }
 
         iosMain {
-            dependencies {}
+            dependencies {
+                implementation(libs.ktor.ios)
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation(libs.ktor.cio)
+            }
         }
     }
 }

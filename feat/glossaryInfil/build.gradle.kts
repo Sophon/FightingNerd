@@ -60,7 +60,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.cornerman.glossaryinfil"
+    namespace = "io.github.sophon.glossaryinfil"
     compileSdk = 36
 
     defaultConfig {

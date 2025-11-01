@@ -61,7 +61,7 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.cornerman.wikiwavu"
+    namespace = "io.github.sophon.wikiwavu"
     compileSdk = 36
 
     defaultConfig {

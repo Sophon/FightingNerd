@@ -53,6 +53,8 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.androidx.navigation.compose)
+            implementation(libs.androidx.navigation.runtime)
 
             api(libs.koin.core)
             implementation(libs.koin.compose)
@@ -94,11 +96,11 @@ kotlin {
 }
 
 android {
-    namespace = "com.example.cornerman"
+    namespace = "io.github.sophon.cornerman"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "com.example.cornerman"
+        applicationId = "io.github.sophon.cornerman"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -127,11 +129,11 @@ dependencies {
 
 compose.desktop {
     application {
-        mainClass = "com.example.cornerman.MainKt"
+        mainClass = "io.github.sophon.cornerman.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "com.example.cornerman"
+            packageName = "io.github.sophon.cornerman"
             packageVersion = "1.0.0"
         }
     }
