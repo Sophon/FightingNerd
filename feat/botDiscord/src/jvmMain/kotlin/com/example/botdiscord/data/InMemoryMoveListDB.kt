@@ -1,7 +1,7 @@
 package com.example.botdiscord.data
 
-import com.example.core.domain.EmptyResult
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.data.MoveListDB
 import com.example.wikiwavu.domain.model.Move

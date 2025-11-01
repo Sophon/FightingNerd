@@ -1,7 +1,7 @@
 package com.example.glossaryinfil.usecase
 
 import com.example.glossaryinfil.GlossaryError
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.Result
 import com.example.glossaryinfil.data.InfilGlossaryDataSource
 import com.example.glossaryinfil.domain.GlossaryItem
 

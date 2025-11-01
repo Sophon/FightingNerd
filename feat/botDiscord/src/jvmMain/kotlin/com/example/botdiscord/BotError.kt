@@ -1,6 +1,6 @@
 package com.example.botdiscord
 
-import com.example.core.domain.Error
+import io.github.sophon.core.domain.Error
 
 enum class BotError: Error {
     INVALID_QUERY,

@@ -1,6 +1,6 @@
 package com.example.wikiwavu.usecase
 
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.Result
 import com.example.wikiwavu.CHAR_LIST
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.domain.model.Character

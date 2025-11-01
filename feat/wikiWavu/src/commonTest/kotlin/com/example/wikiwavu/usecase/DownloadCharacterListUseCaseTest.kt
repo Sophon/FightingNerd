@@ -3,7 +3,7 @@ package com.example.wikiwavu.usecase
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.Result
 import com.example.wikiwavu.CHAR_LIST
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.infrastructure.FileReader

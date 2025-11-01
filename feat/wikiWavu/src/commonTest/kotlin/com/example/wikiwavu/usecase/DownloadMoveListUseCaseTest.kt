@@ -1,17 +1,11 @@
 package com.example.wikiwavu.usecase
 
 import assertk.assertThat
-import assertk.assertions.contains
 import assertk.assertions.hasSize
-import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import assertk.assertions.isFalse
 import assertk.assertions.isNotNull
-import assertk.assertions.isNull
-import assertk.assertions.isTrue
-import com.example.core.domain.DataError
-import com.example.core.domain.Result
-import com.example.wikiwavu.WavuError
+import io.github.sophon.core.domain.DataError
+import io.github.sophon.core.domain.Result
 import com.example.wikiwavu.data.MoveDto
 import com.example.wikiwavu.data.MoveListResponseDto
 import com.example.wikiwavu.data.WavuWikiDataSource

@@ -1,4 +1,4 @@
-package com.example.core.util
+package io.github.sophon.core.util
 
 import io.ktor.http.encodeURLParameter
 

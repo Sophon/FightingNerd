@@ -1,7 +1,7 @@
 package io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase
 
-import com.example.core.domain.onError
-import com.example.core.domain.onSuccess
+import io.github.sophon.core.domain.onError
+import io.github.sophon.core.domain.onSuccess
 import com.example.wikiwavu.WavuWikiClient
 import io.github.aakira.napier.Napier
 import kotlinx.datetime.Clock

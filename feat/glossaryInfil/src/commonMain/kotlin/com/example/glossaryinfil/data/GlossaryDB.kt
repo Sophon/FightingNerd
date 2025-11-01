@@ -1,8 +1,8 @@
 package com.example.glossaryinfil.data
 
 import com.example.glossaryinfil.GlossaryError
-import com.example.core.domain.EmptyResult
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
 import com.example.glossaryinfil.domain.GlossaryItem
 
 interface GlossaryDB {

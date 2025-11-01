@@ -1,4 +1,4 @@
-package com.example.core.util
+package io.github.sophon.core.util
 
 import assertk.assertThat
 import assertk.assertions.hasSize

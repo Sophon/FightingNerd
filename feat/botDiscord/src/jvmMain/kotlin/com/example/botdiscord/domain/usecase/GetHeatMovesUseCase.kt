@@ -1,7 +1,7 @@
 package com.example.botdiscord.domain.usecase
 
 import com.example.botdiscord.BotError
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.Result
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.WavuWikiClient
 import com.example.wikiwavu.domain.model.Move

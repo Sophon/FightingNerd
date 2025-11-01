@@ -8,7 +8,7 @@ kotlin {
     jvm()
 
     androidLibrary {
-        namespace = "com.example.core"
+        namespace = "io.github.sophon.core"
         compileSdk = 36
         minSdk = 30
 

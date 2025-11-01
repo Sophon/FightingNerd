@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase
 
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.screens.home.HomeError
 import com.example.wikiwavu.WavuError
 import com.example.wikiwavu.WavuWikiClient

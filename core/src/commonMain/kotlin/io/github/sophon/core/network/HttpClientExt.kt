@@ -1,7 +1,7 @@
-package com.example.core.network
+package io.github.sophon.core.network
 
-import com.example.core.domain.DataError
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.DataError
+import io.github.sophon.core.domain.Result
 import io.ktor.client.call.body
 import io.ktor.client.network.sockets.SocketTimeoutException
 import io.ktor.client.statement.HttpResponse

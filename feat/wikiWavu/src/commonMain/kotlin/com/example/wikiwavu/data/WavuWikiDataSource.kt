@@ -1,8 +1,8 @@
 package com.example.wikiwavu.data
 
-import com.example.core.domain.DataError
-import com.example.core.domain.Result
-import com.example.core.network.safeCall
+import io.github.sophon.core.domain.DataError
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.network.safeCall
 import com.example.wikiwavu.BASE_URL
 import com.example.wikiwavu.LIMIT_MOVES
 import io.ktor.client.HttpClient

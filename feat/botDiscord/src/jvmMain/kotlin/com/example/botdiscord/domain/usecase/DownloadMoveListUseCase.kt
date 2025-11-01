@@ -2,8 +2,8 @@ package com.example.botdiscord.domain.usecase
 
 import com.example.botdiscord.BotError
 import com.example.botdiscord.domain.toDomain
-import com.example.core.domain.EmptyResult
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
 import com.example.wikiwavu.WavuWikiClient
 
 class DownloadMoveListUseCase(

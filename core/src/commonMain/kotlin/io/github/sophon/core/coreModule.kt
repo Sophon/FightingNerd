@@ -1,6 +1,6 @@
-package com.example.core
+package io.github.sophon.core
 
-import com.example.core.network.HttpClientFactory
+import io.github.sophon.core.network.HttpClientFactory
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO

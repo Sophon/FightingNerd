@@ -2,8 +2,8 @@ package com.example.botdiscord.domain.usecase
 
 import com.example.botdiscord.BotError
 import com.example.botdiscord.domain.toDomain
-import com.example.core.domain.Result
-import com.example.core.util.dropFirstAndJoin
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.util.dropFirstAndJoin
 import com.example.wikiwavu.WavuWikiClient
 import com.example.wikiwavu.domain.model.Move
 

@@ -1,6 +1,6 @@
 package com.example.wikiwavu.domain
 
-import com.example.core.util.cleanHtml
+import io.github.sophon.core.util.cleanHtml
 import com.example.wikiwavu.data.MoveDto
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.util.cleanMoveInput

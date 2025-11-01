@@ -1,6 +1,6 @@
 package com.example.glossaryinfil
 
-import com.example.core.domain.Error
+import io.github.sophon.core.domain.Error
 
 enum class GlossaryError: Error {
     EMPTY_GLOSSARY,

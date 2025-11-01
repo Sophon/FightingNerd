@@ -1,8 +1,8 @@
 package com.example.wikiwavu
 
-import com.example.core.domain.EmptyResult
-import com.example.core.domain.Result
-import com.example.core.domain.onError
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.onError
 import com.example.wikiwavu.domain.model.Character
 import com.example.wikiwavu.domain.model.Move
 import com.example.wikiwavu.usecase.CacheMoveListUseCase

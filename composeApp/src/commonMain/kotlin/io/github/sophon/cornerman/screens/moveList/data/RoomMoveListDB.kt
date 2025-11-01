@@ -4,8 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
-import com.example.core.domain.EmptyResult
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.screens.moveList.domain.toDomain
 import io.github.sophon.cornerman.screens.moveList.domain.toEntity
 import com.example.wikiwavu.WavuError

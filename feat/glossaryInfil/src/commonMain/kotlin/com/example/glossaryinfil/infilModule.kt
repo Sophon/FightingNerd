@@ -1,6 +1,6 @@
 package com.example.glossaryinfil
 
-import com.example.core.coreModule
+import io.github.sophon.core.coreModule
 import com.example.glossaryinfil.data.InfilGlossaryDataSource
 import com.example.glossaryinfil.data.InfilGlossaryDataSourceImpl
 import com.example.glossaryinfil.domain.InfilUrlProvider

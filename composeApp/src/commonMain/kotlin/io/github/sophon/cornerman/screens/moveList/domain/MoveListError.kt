@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.screens.moveList.domain
 
-import com.example.core.domain.Error
+import io.github.sophon.core.domain.Error
 
 enum class MoveListError: Error {
     UNKNOWN_CHARACTER,

@@ -13,7 +13,7 @@ import com.example.botdiscord.featureRegistry.GlossaryFeature
 import com.example.botdiscord.featureRegistry.frameData.FrameDataFeature
 import com.example.botdiscord.featureRegistry.frameData.Scheduler
 import com.example.botdiscord.infrastructure.FileReaderJVM
-import com.example.core.coreModule
+import io.github.sophon.core.coreModule
 import com.example.glossaryinfil.data.GlossaryDB
 import com.example.glossaryinfil.infilModule
 import com.example.wikiwavu.data.MoveListDB

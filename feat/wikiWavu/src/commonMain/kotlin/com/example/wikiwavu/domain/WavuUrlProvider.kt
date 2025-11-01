@@ -1,6 +1,6 @@
 package com.example.wikiwavu.domain
 
-import com.example.core.util.urlEncode
+import io.github.sophon.core.util.urlEncode
 import com.example.wikiwavu.MOVE_URL
 import com.example.wikiwavu.VIDEO_URL
 import com.example.wikiwavu.domain.model.Move

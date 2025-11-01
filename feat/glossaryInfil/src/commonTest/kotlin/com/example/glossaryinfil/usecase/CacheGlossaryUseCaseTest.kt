@@ -1,11 +1,11 @@
 package com.example.glossaryinfil.usecase
 
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.Result
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import com.example.core.domain.EmptyResult
+import io.github.sophon.core.domain.EmptyResult
 import com.example.glossaryinfil.GlossaryError
 import com.example.glossaryinfil.data.GlossaryDB
 import com.example.glossaryinfil.domain.GlossaryItem

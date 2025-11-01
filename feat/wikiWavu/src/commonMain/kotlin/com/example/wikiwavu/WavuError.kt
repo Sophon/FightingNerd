@@ -1,6 +1,6 @@
 package com.example.wikiwavu
 
-import com.example.core.domain.Error
+import io.github.sophon.core.domain.Error
 
 enum class WavuError: Error {
     UNKNOWN_CHARACTER,

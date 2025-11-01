@@ -5,7 +5,7 @@ import com.example.botdiscord.featureRegistry.Command
 import com.example.botdiscord.featureRegistry.GlossaryFeature
 import com.example.botdiscord.featureRegistry.frameData.FrameDataFeature
 import com.example.botdiscord.util.removeTag
-import com.example.core.util.isAtLeast
+import io.github.sophon.core.util.isAtLeast
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.createMessage

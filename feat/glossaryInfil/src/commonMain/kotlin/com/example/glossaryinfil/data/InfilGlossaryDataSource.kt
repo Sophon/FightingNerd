@@ -1,9 +1,9 @@
 package com.example.glossaryinfil.data
 
 import com.example.glossaryinfil.BASE_URL
-import com.example.core.domain.DataError
-import com.example.core.domain.Result
-import com.example.core.network.safeCall
+import io.github.sophon.core.domain.DataError
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.network.safeCall
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 

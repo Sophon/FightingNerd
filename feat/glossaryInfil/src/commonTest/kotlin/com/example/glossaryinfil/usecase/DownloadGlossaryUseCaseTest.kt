@@ -5,8 +5,8 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import com.example.core.domain.DataError
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.DataError
+import io.github.sophon.core.domain.Result
 import com.example.glossaryinfil.GlossaryError
 import com.example.glossaryinfil.data.GlossaryItemDto
 import com.example.glossaryinfil.data.InfilGlossaryDataSource

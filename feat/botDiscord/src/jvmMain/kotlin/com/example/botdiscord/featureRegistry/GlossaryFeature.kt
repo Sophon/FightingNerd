@@ -7,8 +7,8 @@ import com.example.botdiscord.util.createErrorEmbed
 import com.example.botdiscord.util.field
 import com.example.botdiscord.util.replaceItalic
 import com.example.botdiscord.util.replaceUnderline
-import com.example.core.domain.Result
-import com.example.core.util.truncate
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.util.truncate
 import com.example.glossaryinfil.domain.GlossaryItem
 import com.example.glossaryinfil.domain.InfilUrlProvider
 import dev.kord.common.Color

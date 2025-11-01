@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.screens.home
 
-import com.example.core.domain.Error
+import io.github.sophon.core.domain.Error
 
 enum class HomeError: Error {
     UNKNOWN_CHARACTER,

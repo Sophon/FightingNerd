@@ -1,9 +1,9 @@
 package com.example.glossaryinfil.usecase
 
 import com.example.glossaryinfil.GlossaryError
-import com.example.core.domain.Result
-import com.example.core.domain.map
-import com.example.core.util.removeWhiteSpace
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.map
+import io.github.sophon.core.util.removeWhiteSpace
 import com.example.glossaryinfil.data.GlossaryDB
 import com.example.glossaryinfil.domain.GlossaryItem
 

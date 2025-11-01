@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.screens.moveList.domain.usecase
 
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.screens.moveList.domain.MoveListError
 import io.github.sophon.cornerman.screens.moveList.domain.toDomain
 import com.example.wikiwavu.WavuWikiClient

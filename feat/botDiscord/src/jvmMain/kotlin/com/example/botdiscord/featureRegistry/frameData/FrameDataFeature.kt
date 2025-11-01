@@ -14,11 +14,11 @@ import com.example.botdiscord.featureRegistry.SlashCommand
 import com.example.botdiscord.util.createErrorEmbed
 import com.example.botdiscord.util.field
 import com.example.botdiscord.util.orClickable
-import com.example.core.domain.EmptyResult
-import com.example.core.domain.Result
-import com.example.core.domain.onError
-import com.example.core.util.orDash
-import com.example.core.util.truncate
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.onError
+import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.truncate
 import com.example.wikiwavu.domain.WavuUrlProvider
 import com.example.wikiwavu.domain.model.Move
 import dev.kord.common.Color

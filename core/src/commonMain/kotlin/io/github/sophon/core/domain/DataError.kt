@@ -1,4 +1,4 @@
-package com.example.core.domain
+package io.github.sophon.core.domain
 
 sealed interface DataError: Error {
     enum class Local: DataError {

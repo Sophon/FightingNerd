@@ -1,7 +1,7 @@
 package com.example.glossaryinfil
 
-import com.example.core.domain.EmptyResult
-import com.example.core.domain.Result
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
 import com.example.glossaryinfil.domain.GlossaryItem
 import com.example.glossaryinfil.usecase.CacheGlossaryUseCase
 import com.example.glossaryinfil.usecase.DownloadGlossaryUseCase

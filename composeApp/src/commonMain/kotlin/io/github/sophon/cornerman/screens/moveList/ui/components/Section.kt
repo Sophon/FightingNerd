@@ -25,7 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.core.util.orDash
+import io.github.sophon.core.util.orDash
 import io.github.sophon.cornerman.theme.AppTheme
 import com.example.wikiwavu.domain.model.Move
 import org.jetbrains.compose.ui.tooling.preview.Preview
