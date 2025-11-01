@@ -1,6 +1,5 @@
-package com.example.cornerman
+package io.github.sophon.cornerman
 
 import androidx.compose.ui.window.ComposeUIViewController
-import io.github.sophon.cornerman.App
 
 fun MainViewController() = ComposeUIViewController { App() }
