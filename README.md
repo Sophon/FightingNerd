@@ -6,10 +6,11 @@
 A set of tools for the Fighting Game Community:
 - 🧩 highly extensible
   - 📘 glossary
-  - 📊 frame data
-  - 📋 move lists
+  - 📚 [any community wiki](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules):
+     - 📊 frame data
+     - 📋 move lists
 - 🌐 multiplatform:
-  - 🖥️ PC
+  - 🖥️ desktop
   - 🤖 Android
   - 🍏 iOS
   - 💬 Discord
