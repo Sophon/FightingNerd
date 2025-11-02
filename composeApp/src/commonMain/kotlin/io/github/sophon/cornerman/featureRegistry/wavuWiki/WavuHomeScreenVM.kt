@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-class WavuHomeScreenVM(
+internal class WavuHomeScreenVM(
     private val startWavuSessionUseCase: StartWavuSessionUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
