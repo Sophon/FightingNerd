@@ -8,7 +8,12 @@ internal fun List<Move>.toDomain(): List<MoveCategory> {
     val categorizedMoves = this
         .groupBy { it.getCategoryName() }
         .map { (categoryName, moves) ->
-            MoveCategory(name = categoryName, moves = moves.map { it.cleanComboLinks() })
+            MoveCategory(
+                name = categoryName,
+                moves = moves.map {
+                    it.cleanComboLinks().toDomain()
+                },
+            )
         }
         .sortedBy { it.name.getCategorySortOrder() }
 
@@ -79,21 +84,45 @@ internal fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCa
 
 internal fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() == true)
 
-//TODO: this should prob be a property of Move
-internal fun Move.isStance(): String? {
-    if (input.startsWith("FC.")) return null
-    if (input.contains(".").not()) return null
+private fun Move.toDomain(): UiMove {
+    return UiMove(
+        id = id,
+        input = input,
+        mandatoryFields = listOf(
+            UiMove.Field("Startup", startup),
+            UiMove.Field("OH", onHit),
+            UiMove.Field("OB", onBlock),
+            UiMove.Field("CH", onCH),
+            UiMove.Field("Level", level),
+        ),
+        optionalFields = listOf(
+            UiMove.Field("Damage", damage),
+            UiMove.Field("Whiff", recoveryOnWhiff),
+        ),
+        notes = notes,
+        properties = getProperties(),
+    )
+}
 
-    val prefix = input.substringBefore(".")
+private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
+    if (properties.isHeat == true) add(UiMove.Property.HEAT)
+    if (properties.isPowerCrush == true) add(UiMove.Property.PC)
+    if (properties.isHoming == true) add(UiMove.Property.HOMING)
 
-    // Check if it's all uppercase letters (stances are uppercase like CD, JGS, BT, JGR, FC)
-    return if (prefix.all { it.isUpperCase() || it.isDigit() }) {
-        prefix
-    } else {
-        null
+    notes.forEach { note ->
+        when {
+            note.contains("Tornado", ignoreCase = true) -> add(UiMove.Property.TORNADO)
+            note.contains("Throw", ignoreCase = true) -> add(UiMove.Property.THROW)
+            note.contains("Floor break", ignoreCase = true) -> add(UiMove.Property.FLOOR_BREAK)
+            note.contains("Balcony break", ignoreCase = true) ||
+                    note.contains("Wall break", ignoreCase = true) -> add(UiMove.Property.WALL_BREAK)
+            note.contains("cs", ignoreCase = true) -> add(UiMove.Property.HIGH_CRUSH)
+            note.contains("js", ignoreCase = true) -> add(UiMove.Property.LOW_CRUSH)
+        }
     }
 }
 
+//region Entity
 internal fun Move.toEntity(): MoveEntity {
     return MoveEntity(
         charName = charName,
@@ -151,3 +180,4 @@ internal fun MoveEntity.toDomain(): Move {
         )
     )
 }
+//endregion
