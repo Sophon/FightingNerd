@@ -104,13 +104,11 @@ private fun Move.toDomain(): UiMove {
     )
 }
 
-private fun Move.getProperties(): List<UiMove.Property> = buildList {
-    // Property-based checks
+private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
     if (properties.isHeat == true) add(UiMove.Property.HEAT)
     if (properties.isPowerCrush == true) add(UiMove.Property.PC)
     if (properties.isHoming == true) add(UiMove.Property.HOMING)
 
-    // Note-based checks (more efficient - single pass through notes)
     notes.forEach { note ->
         when {
             note.contains("Tornado", ignoreCase = true) -> add(UiMove.Property.TORNADO)
@@ -118,8 +116,8 @@ private fun Move.getProperties(): List<UiMove.Property> = buildList {
             note.contains("Floor break", ignoreCase = true) -> add(UiMove.Property.FLOOR_BREAK)
             note.contains("Balcony break", ignoreCase = true) ||
                     note.contains("Wall break", ignoreCase = true) -> add(UiMove.Property.WALL_BREAK)
-            //TODO: high crush
-            //TODO: low crush
+            note.contains("cs", ignoreCase = true) -> add(UiMove.Property.HIGH_CRUSH)
+            note.contains("js", ignoreCase = true) -> add(UiMove.Property.LOW_CRUSH)
         }
     }
 }

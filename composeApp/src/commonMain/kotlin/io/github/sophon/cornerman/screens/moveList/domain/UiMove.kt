@@ -19,7 +19,7 @@ data class UiMove(
     val optionalFields: List<Field>,
     val isStance: Boolean = false,
     val notes: List<String> = listOf(),
-    val properties: List<Property> = listOf(),
+    val properties: Set<Property> = setOf(),
 ) {
     data class Field(
         val title: String,

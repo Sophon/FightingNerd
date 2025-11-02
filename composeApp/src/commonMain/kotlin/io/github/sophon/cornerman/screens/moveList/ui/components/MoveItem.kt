@@ -83,7 +83,7 @@ fun MoveItem(
 
 @Composable
 private fun PropertyIcons(
-    properties: List<UiMove.Property>,
+    properties: Set<UiMove.Property>,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -211,7 +211,7 @@ private fun MoveItemPreviewDark() {
                     UiMove.Field("Damage", "20"),
                     UiMove.Field("Recovery", "r34"),
                 ),
-                properties = listOf(
+                properties = setOf(
                     UiMove.Property.HEAT,
                     UiMove.Property.HOMING,
                 ),
@@ -241,7 +241,7 @@ private fun MoveItemPreviewLight() {
                     UiMove.Field("Damage", "35"),
                     UiMove.Field("Recovery", "r24"),
                 ),
-                properties = listOf(
+                properties = setOf(
                     UiMove.Property.TORNADO,
                     UiMove.Property.THROW,
                 )
