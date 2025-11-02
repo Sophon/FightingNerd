@@ -14,7 +14,6 @@ import io.github.sophon.cornerman.screens.moveList.domain.isCrouch
 import io.github.sophon.cornerman.screens.moveList.domain.isDirectional
 import io.github.sophon.cornerman.screens.moveList.domain.isMotion
 import io.github.sophon.cornerman.screens.moveList.domain.isNeutralInput
-import io.github.sophon.cornerman.screens.moveList.domain.isStance
 import io.github.sophon.cornerman.screens.moveList.domain.isThrow
 import io.github.sophon.cornerman.screens.moveList.domain.isWS
 import kotlin.test.Test
@@ -465,116 +464,6 @@ class MapperTest {
 
         // then
         assertThat(result).isFalse()
-    }
-    //endregion
-
-    //region isStance() tests
-    @Test
-    fun `isStance returns DGF for DGF dot 1 input`() {
-        // given
-        val move = createMove("DGF.1")
-
-        // when
-        val result = move.isStance()
-
-        // then
-        assertThat(result).isEqualTo("DGF")
-    }
-
-    @Test
-    fun `isStance returns FLE for FLE dot 1 input`() {
-        // given
-        val move = createMove("FLE.1")
-
-        // when
-        val result = move.isStance()
-
-        // then
-        assertThat(result).isEqualTo("FLE")
-    }
-
-    @Test
-    fun `isStance returns KIN for KIN dot 1 input`() {
-        // given
-        val move = createMove("KIN.1")
-
-        // when
-        val result = move.isStance()
-
-        // then
-        assertThat(result).isEqualTo("KIN")
-    }
-
-    @Test
-    fun `isStance returns IND for IND dot 1 input`() {
-        // given
-        val move = createMove("IND.1")
-
-        // when
-        val result = move.isStance()
-
-        // then
-        assertThat(result).isEqualTo("IND")
-    }
-
-    @Test
-    fun `isStance returns BT for BT dot 1 input`() {
-        // given
-        val move = createMove("BT.1")
-
-        // when
-        val result = move.isStance()
-
-        // then
-        assertThat(result).isEqualTo("BT")
-    }
-
-    @Test
-    fun `isStance returns BDS for BDS dot 1 input`() {
-        // given
-        val move = createMove("BDS.1")
-
-        // when
-        val result = move.isStance()
-
-        // then
-        assertThat(result).isEqualTo("BDS")
-    }
-
-    @Test
-    fun `isStance returns null for neutral input 1`() {
-        // given
-        val move = createMove("1")
-
-        // when
-        val result = move.isStance()
-
-        // then
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun `isStance returns null for df plus 1 input`() {
-        // given
-        val move = createMove("df+1")
-
-        // when
-        val result = move.isStance()
-
-        // then
-        assertThat(result).isNull()
-    }
-
-    @Test
-    fun `isStance returns null for f comma n comma d comma df plus 1 input`() {
-        // given
-        val move = createMove("f,n,d,df+1")
-
-        // when
-        val result = move.isStance()
-
-        // then
-        assertThat(result).isNull()
     }
     //endregion
 

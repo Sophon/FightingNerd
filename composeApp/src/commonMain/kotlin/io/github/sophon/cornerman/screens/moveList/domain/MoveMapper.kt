@@ -20,7 +20,7 @@ internal fun List<Move>.toDomain(): List<MoveCategory> {
     return categorizedMoves
 }
 
-private fun Move.getCategoryName(): String {
+internal fun Move.getCategoryName(): String {
     return when {
         (properties.isHeat == true) -> "Heat"
         properties.stance.isNullOrEmpty().not() -> properties.stance!!
@@ -36,7 +36,7 @@ private fun Move.getCategoryName(): String {
     }
 }
 
-private fun String.getCategorySortOrder(): Int {
+internal fun String.getCategorySortOrder(): Int {
     return when (this) {
         "Heat" -> 1
         "n" -> 2
@@ -53,7 +53,7 @@ private fun String.getCategorySortOrder(): Int {
     }
 }
 
-private fun Move.isDirectional(): String? {
+internal fun Move.isDirectional(): String? {
     return when {
         input.startsWith("df") -> "df"
         input.startsWith("db") -> "db"
@@ -65,24 +65,24 @@ private fun Move.isDirectional(): String? {
     }
 }
 
-private fun Move.isMotion(): Boolean {
+internal fun Move.isMotion(): Boolean {
     return input.startsWith("wr")
             || input.startsWith("ff")
             || input.startsWith("qcb")
             || input.startsWith("qcf")
 }
 
-private fun Move.isCrouch(): Boolean = input.startsWith("fc", ignoreCase = true)
+internal fun Move.isCrouch(): Boolean = input.startsWith("fc", ignoreCase = true)
 
-private fun Move.isWS(): Boolean = input.startsWith("ws", ignoreCase = true)
+internal fun Move.isWS(): Boolean = input.startsWith("ws", ignoreCase = true)
 
-private fun Move.isCD(): Boolean = input.startsWith("cd.", ignoreCase = true)
+internal fun Move.isCD(): Boolean = input.startsWith("cd.", ignoreCase = true)
 
-private fun Move.isBT(): Boolean = input.startsWith("bt", ignoreCase = true)
+internal fun Move.isBT(): Boolean = input.startsWith("bt", ignoreCase = true)
 
-private fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCase = true) }
+internal fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCase = true) }
 
-private fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() == true)
+internal fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() == true)
 
 private fun Move.toDomain(): UiMove {
     return UiMove(
