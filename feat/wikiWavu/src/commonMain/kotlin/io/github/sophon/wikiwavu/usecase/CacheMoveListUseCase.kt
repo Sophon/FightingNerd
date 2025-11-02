@@ -2,6 +2,8 @@ package io.github.sophon.wikiwavu.usecase
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.asEmptyDataResult
+import io.github.sophon.core.domain.flatMap
 import io.github.sophon.wikiwavu.WavuError
 import io.github.sophon.wikiwavu.data.MoveListDB
 import io.github.sophon.wikiwavu.domain.model.Character
@@ -14,13 +16,20 @@ class CacheMoveListUseCase(
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<WavuError> {
-        db.insertMoveList(
+        return db.insertMoveList(
             charName = character.name.lowercase(),
-            moveList = moveList,
+            moveList = moveList
         )
-        character.alias.forEach { alias ->
-            db.insertMoveList(charName = alias, moveList = moveList)
-        }
-        return Result.Success(Unit)
+            .asEmptyDataResult()
+            .flatMap {
+                character.alias.fold(Result.Success(Unit) as EmptyResult<WavuError>) { acc, alias ->
+                    acc.flatMap {
+                        db.insertMoveList(
+                            charName = alias,
+                            moveList = moveList,
+                        ).asEmptyDataResult()
+                    }
+                }
+            }
     }
 }
