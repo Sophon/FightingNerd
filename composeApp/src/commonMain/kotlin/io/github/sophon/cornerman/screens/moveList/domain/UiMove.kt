@@ -11,24 +11,20 @@ import cornerman.composeapp.generated.resources.ic_throw
 import cornerman.composeapp.generated.resources.ic_tornado
 import cornerman.composeapp.generated.resources.ic_wall_break
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.Resource
 
 data class UiMove(
     val id: String,
     val input: String,
-    val level: String? = null,
-    val name: String? = null,
-    val damage: String? = null,
-    val startup: String? = null,
-    val recoveryOnWhiff: String? = null,
-    val totalFrames: String? = null,
-    val onBlock: String? = null,
-    val onHit: String? = null,
-    val onCH: String? = null,
+    val mandatoryFields: List<Field>,
+    val optionalFields: List<Field>,
+    val isStance: Boolean = false,
     val notes: List<String> = listOf(),
-
     val properties: List<Property> = listOf(),
 ) {
+    data class Field(
+        val title: String,
+        val value: String? = null,
+    )
 
     enum class Property(
         val resource: DrawableResource,

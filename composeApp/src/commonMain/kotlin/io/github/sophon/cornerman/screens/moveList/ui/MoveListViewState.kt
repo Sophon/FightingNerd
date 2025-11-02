@@ -39,10 +39,16 @@ data class MoveListViewState(
                         UiMove(
                             id = "2+3",
                             input = "2+3",
-                            level = "m",
-                            startup = "i16",
-                            onHit = "+1",
-                            onBlock = "+2c",
+                            mandatoryFields = listOf(
+                                UiMove.Field("Startup", "i16"),
+                                UiMove.Field("OH", "+1"),
+                                UiMove.Field("OB", "+2c"),
+                                UiMove.Field("CH", null),
+                                UiMove.Field("Level", "m"),
+                            ),
+                            optionalFields = listOf(
+                                UiMove.Field("Damage", "12")
+                            ),
                             notes = listOf(
                                 "Heat Burst",
                                 "100% recoverable damage",
@@ -54,16 +60,22 @@ data class MoveListViewState(
                         UiMove(
                             id = "H.2+3",
                             input = "H.2+3",
-                            level = "m,m,m",
-                            startup = "i15~16,i30~32,i31~32",
-                            onHit = "+3d",
-                            onBlock = "+6",
+                            mandatoryFields = listOf(
+                                UiMove.Field("Startup", "i15~16,i30~32,i31~32"),
+                                UiMove.Field("OH", "+3d"),
+                                UiMove.Field("OB", "+6"),
+                                UiMove.Field("CH", null),
+                            ),
+                            optionalFields = listOf(
+                                UiMove.Field("Damage", "25, 14, 23"),
+                                UiMove.Field("Recovery", null),
+                            ),
                             notes = listOf(
                                 "Heat Smash",
                                 "Balcony Break",
                                 "Only 1st and 3rd hit",
                                 "7 Chip damage on block",
-                                "Throw on 1st hit - 50 damage"
+                                "Throw on 1st hit - 50 damage",
                             )
                         )
                     )
@@ -78,23 +90,33 @@ data class MoveListViewState(
                         UiMove(
                             id = "df1",
                             input = "df1",
-                            level = "m",
-                            startup = "i13",
-                            onHit = "+7",
-                            onBlock = "-2",
-                            recoveryOnWhiff = "r23",
+                            mandatoryFields = listOf(
+                                UiMove.Field("Startup", "i13"),
+                                UiMove.Field("OH", "+7"),
+                                UiMove.Field("OB", "-2"),
+                                UiMove.Field("CH", null),
+                            ),
+                            optionalFields = listOf(
+                                UiMove.Field("Damage", "13"),
+                                UiMove.Field("Recovery", "r23"),
+                            ),
                             notes = listOf(
-                                "Enter -2,-11 Pigeon Roll with 3+4 (or d3+4)"
+                                "Enter -2,-11 Pigeon Roll with 3+4 (or d3+4)",
                             )
                         ),
                         UiMove(
                             id = "df14",
                             input = "df14",
-                            level = "m,h",
-                            startup = "i13",
-                            onHit = "+22a (+13)",
-                            onBlock = "-7",
-                            onCH = "+58a",
+                            mandatoryFields = listOf(
+                                UiMove.Field("Startup", "i13"),
+                                UiMove.Field("OH", "+22a (+13)"),
+                                UiMove.Field("OB", "+-7"),
+                                UiMove.Field("CH", "+58a"),
+                            ),
+                            optionalFields = listOf(
+                                UiMove.Field("Damage", "13,23"),
+                                UiMove.Field("Recovery", "r27"),
+                            ),
                             notes = listOf(
                                 "Balcony Break",
                                 "Combo from 1st CH with 8f delay",
@@ -104,12 +126,18 @@ data class MoveListViewState(
                         UiMove(
                             id = "df2",
                             input = "df2",
-                            level = "m",
-                            startup = "i15",
-                            onHit = "+28a (+18)",
-                            onBlock = "-12",
+                            mandatoryFields = listOf(
+                                UiMove.Field("Startup", "i15~16"),
+                                UiMove.Field("OH", "+28a"),
+                                UiMove.Field("OB", "-12"),
+                                UiMove.Field("CH", null),
+                            ),
+                            optionalFields = listOf(
+                                UiMove.Field("Damage", "14"),
+                                UiMove.Field("Recovery", "r31"),
+                            ),
                             notes = listOf(
-                                "Launches crouching opponent"
+                                "Launches crouching opponent",
                             )
                         ),
                     )

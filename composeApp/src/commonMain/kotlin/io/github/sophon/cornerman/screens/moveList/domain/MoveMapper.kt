@@ -84,34 +84,21 @@ private fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCas
 
 private fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() == true)
 
-//TODO: this should prob be a property of Move
-private fun Move.isStance(): String? {
-    if (input.startsWith("FC.")) return null
-    if (input.contains(".").not()) return null
-
-    val prefix = input.substringBefore(".")
-
-    // Check if it's all uppercase letters (stances are uppercase like CD, JGS, BT, JGR, FC)
-    return if (prefix.all { it.isUpperCase() || it.isDigit() }) {
-        prefix
-    } else {
-        null
-    }
-}
-
 private fun Move.toDomain(): UiMove {
     return UiMove(
         id = id,
         input = input,
-        level = level,
-        name = name,
-        damage = damage,
-        startup = startup,
-        recoveryOnWhiff = recoveryOnWhiff,
-        totalFrames = totalFrames,
-        onBlock = onBlock,
-        onHit = onHit,
-        onCH = onCH,
+        mandatoryFields = listOf(
+            UiMove.Field("Startup", startup),
+            UiMove.Field("OH", onHit),
+            UiMove.Field("OB", onBlock),
+            UiMove.Field("CH", onCH),
+            UiMove.Field("Level", level),
+        ),
+        optionalFields = listOf(
+            UiMove.Field("Damage", damage),
+            UiMove.Field("Whiff", recoveryOnWhiff),
+        ),
         notes = notes,
         properties = getProperties(),
     )

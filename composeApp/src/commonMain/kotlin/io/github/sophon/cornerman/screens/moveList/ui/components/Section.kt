@@ -67,8 +67,6 @@ fun Section(
 }
 
 
-
-
 //region PREVIEW
 @Composable
 @Preview(showBackground = true)
@@ -80,13 +78,16 @@ private fun SectionPreviewDark() {
                 UiMove(
                     id = "df3+4",
                     input = "df3+4",
-                    startup = "i22~24",
-                    onHit = "+12g",
-                    onBlock = "-7",
-                    onCH = "+12g",
-                    level = "m",
-                    damage = "19",
-                    recoveryOnWhiff = "r29",
+                    mandatoryFields = listOf(
+                        UiMove.Field("Startup", "i22~24"),
+                        UiMove.Field("OH", "+12g"),
+                        UiMove.Field("OB", "-7"),
+                        UiMove.Field("CH", "+12g"),
+                    ),
+                    optionalFields = listOf(
+                        UiMove.Field("Damage", "19"),
+                        UiMove.Field("Recovery", "r29"),
+                    ),
                     notes = listOf(
                         "Strong Aerial Tailspin",
                         "Homing",
@@ -110,13 +111,16 @@ private fun SectionPreviewLight() {
                 UiMove(
                     id = "df3+4",
                     input = "df3+4",
-                    startup = "i22~24",
-                    onHit = "+12g",
-                    onBlock = "-7",
-                    onCH = "+12g",
-                    level = "m",
-                    damage = "19",
-                    recoveryOnWhiff = "r29",
+                    mandatoryFields = listOf(
+                        UiMove.Field("Startup", "i22~24"),
+                        UiMove.Field("OH", "+12g"),
+                        UiMove.Field("OB", "-7"),
+                        UiMove.Field("CH", "+12g"),
+                    ),
+                    optionalFields = listOf(
+                        UiMove.Field("Damage", "19"),
+                        UiMove.Field("Recovery", "r29"),
+                    ),
                     notes = listOf(
                         "Strong Aerial Tailspin",
                         "Homing",

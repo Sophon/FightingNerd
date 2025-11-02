@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,7 +27,6 @@ import androidx.compose.ui.unit.dp
 import io.github.sophon.core.util.orDash
 import io.github.sophon.cornerman.screens.moveList.domain.UiMove
 import io.github.sophon.cornerman.theme.AppTheme
-import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -62,10 +62,10 @@ fun MoveItem(
         }
         Spacer(Modifier.height(4.dp))
 
-        MainInformation(move)
+        Fields(fieldList = move.mandatoryFields, isMandatory = true)
         Spacer(Modifier.height(4.dp))
 
-        SecondaryInformation(move)
+        Fields(fieldList = move.optionalFields, isMandatory = false)
         Spacer(Modifier.height(4.dp))
 
         if (move.notes.isNotEmpty()) {
@@ -95,112 +95,50 @@ private fun PropertyIcons(
         modifier = modifier,
     ) {
         properties.forEach { property ->
-            PropertyIcon(
-                drawable = property.resource,
+            Icon(
+                painter = painterResource(property.resource),
                 contentDescription = property.contentDescription,
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = modifier
+                    .size(24.dp),
             )
         }
     }
 }
 
 @Composable
-private fun PropertyIcon(
-    drawable: DrawableResource,
-    contentDescription: String? = null,
-    modifier: Modifier = Modifier,
-) {
-    Icon(
-        painter = painterResource(drawable),
-        contentDescription = contentDescription,
-        tint = MaterialTheme.colorScheme.onSurface,
-        modifier = modifier
-            .size(24.dp),
-    )
-}
-
-@Composable
-private fun MainInformation(
-    move: UiMove,
+private fun Fields(
+    fieldList: List<UiMove.Field>,
+    isMandatory: Boolean,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .fillMaxWidth(),
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(48.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
+        modifier = modifier.fillMaxWidth(),
     ) {
-        Field(
-            title = "Startup",
-            text = move.startup.orDash(),
-        )
-        Field(
-            title = "OH",
-            text = move.onHit.orDash(),
-        )
-        Field(
-            title = "OB",
-            text = move.onBlock.orDash(),
-        )
-        Field(
-            title = "CH",
-            text = move.onCH.orDash(),
-        )
-    }
-}
+        fieldList.forEach { field ->
+            if (isMandatory || field.value != null) {
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                ) {
+                    Text(
+                        text = field.title,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
 
-@Composable
-private fun SecondaryInformation(
-    move: UiMove,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier
-            .fillMaxWidth(),
-    ) {
-        Field(
-            title = "Level",
-            text = move.level.orDash(),
-        )
-        move.damage?.let { damage ->
-            Field(
-                title = "Damage",
-                text = damage,
-            )
-        }
-        move.recoveryOnWhiff?.let { recovery ->
-            Field(
-                title = "Recovery",
-                text = recovery,
-            )
+                    Text(
+                        text = field.value.orDash(),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                    )
+                }
+            }
         }
     }
 }
 
-@Composable
-private fun Field(
-    title: String,
-    text: String?,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        horizontalAlignment = Alignment.Start,
-        modifier = modifier
-    ) {
-        Text(
-            text = title,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = MaterialTheme.typography.bodySmall,
-        )
-
-        if (text != null) {
-            Text(
-                text = text,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-            )
-        }
-    }
-}
 
 @Composable
 private fun Notes(
@@ -262,6 +200,17 @@ private fun MoveItemPreviewDark() {
             move = UiMove(
                 id = "Raven-ws3+4",
                 input = "ws3+4",
+                mandatoryFields = listOf(
+                    UiMove.Field("Startup", "i16~18"),
+                    UiMove.Field("OH", "+15a (+5)"),
+                    UiMove.Field("OB", "-12"),
+                    UiMove.Field("CH", null),
+                    UiMove.Field("Level", "m"),
+                ),
+                optionalFields = listOf(
+                    UiMove.Field("Damage", "20"),
+                    UiMove.Field("Recovery", "r34"),
+                ),
                 properties = listOf(
                     UiMove.Property.HEAT,
                     UiMove.Property.HOMING,
@@ -281,6 +230,17 @@ private fun MoveItemPreviewLight() {
             move = UiMove(
                 id = "King-d1+4",
                 input = "d1+4",
+                mandatoryFields = listOf(
+                    UiMove.Field("Startup", "i12~13"),
+                    UiMove.Field("OH", "0d"),
+                    UiMove.Field("OB", null),
+                    UiMove.Field("CH", null),
+                    UiMove.Field("Level", "t(c)"),
+                ),
+                optionalFields = listOf(
+                    UiMove.Field("Damage", "35"),
+                    UiMove.Field("Recovery", "r24"),
+                ),
                 properties = listOf(
                     UiMove.Property.TORNADO,
                     UiMove.Property.THROW,
