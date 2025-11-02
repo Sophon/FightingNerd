@@ -11,7 +11,7 @@ sealed interface Result<out T, out E: Error> {
 /**
  * Allows mapping T to R on success.
  * Transformation always returns Result.Success
- * Usage: transforming the Success value
+ * USAGE: transforming the Success value
  */
 inline fun <T, E : Error, R> Result<T, E>.map(map: (T) -> R): Result<R, E> {
     return when (this) {
@@ -22,8 +22,8 @@ inline fun <T, E : Error, R> Result<T, E>.map(map: (T) -> R): Result<R, E> {
 
 /**
  * Similar to map but instead of returning a result, we pass it along.
- * Transformation can result Error
- * Usage: chaining Result
+ * Also, transformation can result Error
+ * USAGE: chaining Result if Success, otherwise short-circuit and return Error
  */
 inline fun <T, U, E : Error> Result<T, E>.flatMap(transform: (T) -> Result<U, E>): Result<U, E> {
     return when (this) {
@@ -44,6 +44,13 @@ inline fun <T, E : Error, F : Error> Result<T, E>.mapError(transform: (E) -> F):
     }
 }
 
+/**
+ * USAGE:
+ *    - side effects
+ *    - don't need to return/transform the Result
+ *    - transform
+ * Otherwise, use when (result)
+ */
 inline fun <T, E : Error> Result<T, E>.onSuccess(action: (T) -> Unit): Result<T, E> {
     return when (this) {
         is Result.Error -> this
