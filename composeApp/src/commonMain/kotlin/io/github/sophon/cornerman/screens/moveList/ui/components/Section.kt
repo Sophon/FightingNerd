@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.sophon.core.util.orDash
+import io.github.sophon.cornerman.screens.moveList.domain.UiMove
 import io.github.sophon.cornerman.theme.AppTheme
 import io.github.sophon.wikiwavu.domain.model.Move
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -33,7 +34,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun Section(
     title: String,
-    moves: List<Move>,
+    moves: List<UiMove>,
     expandedNotes: Set<String>,
     onNotesExpandClick: (String) -> Unit,
     modifier: Modifier = Modifier,
@@ -76,8 +77,7 @@ private fun SectionPreviewDark() {
         Section(
             title = "Heat",
             moves = listOf(
-                Move(
-                    charName = "Dragunov",
+                UiMove(
                     id = "df3+4",
                     input = "df3+4",
                     startup = "i22~24",
@@ -107,8 +107,7 @@ private fun SectionPreviewLight() {
         Section(
             title = "Heat",
             moves = listOf(
-                Move(
-                    charName = "Dragunov",
+                UiMove(
                     id = "df3+4",
                     input = "df3+4",
                     startup = "i22~24",

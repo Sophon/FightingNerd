@@ -21,24 +21,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import cornerman.composeapp.generated.resources.Res
-import cornerman.composeapp.generated.resources.ic_heat
-import cornerman.composeapp.generated.resources.ic_homing
-import cornerman.composeapp.generated.resources.ic_power_crush
 import io.github.sophon.core.util.orDash
+import io.github.sophon.cornerman.screens.moveList.domain.UiMove
 import io.github.sophon.cornerman.theme.AppTheme
-import io.github.sophon.wikiwavu.domain.model.Move
 import org.jetbrains.compose.resources.DrawableResource
-import org.jetbrains.compose.resources.Resource
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun MoveItem(
-    move: Move,
+    move: UiMove,
     isNotesExpanded: Boolean,
     onNotesExpandClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -89,7 +83,7 @@ fun MoveItem(
 
 @Composable
 private fun PropertyIcons(
-    properties: Move.Properties,
+    properties: List<UiMove.Property>,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -100,24 +94,10 @@ private fun PropertyIcons(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier,
     ) {
-        if (properties.isHeat == true) {
+        properties.forEach { property ->
             PropertyIcon(
-                drawable = Res.drawable.ic_heat,
-                contentDescription = "Heat",
-            )
-        }
-
-        if (properties.isPowerCrush == true) {
-            PropertyIcon(
-                drawable = Res.drawable.ic_power_crush,
-                contentDescription = "Power Crush"
-            )
-        }
-
-        if (properties.isHoming == true) {
-            PropertyIcon(
-                drawable = Res.drawable.ic_homing,
-                contentDescription = "Homing",
+                drawable = property.resource,
+                contentDescription = property.contentDescription,
             )
         }
     }
@@ -140,7 +120,7 @@ private fun PropertyIcon(
 
 @Composable
 private fun MainInformation(
-    move: Move,
+    move: UiMove,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -169,7 +149,7 @@ private fun MainInformation(
 
 @Composable
 private fun SecondaryInformation(
-    move: Move,
+    move: UiMove,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -279,14 +259,13 @@ private fun Notes(
 private fun MoveItemPreviewDark() {
     AppTheme(darkTheme = true) {
         MoveItem(
-            move = Move(
-                charName = "Raven",
+            move = UiMove(
                 id = "Raven-ws3+4",
                 input = "ws3+4",
-                properties = Move.Properties(
-                    isHeat = true,
-                    isHoming = true,
-                )
+                properties = listOf(
+                    UiMove.Property.HEAT,
+                    UiMove.Property.HOMING,
+                ),
             ),
             isNotesExpanded = false,
             onNotesExpandClick = {},
@@ -299,12 +278,12 @@ private fun MoveItemPreviewDark() {
 private fun MoveItemPreviewLight() {
     AppTheme(darkTheme = false) {
         MoveItem(
-            move = Move(
-                charName = "King",
+            move = UiMove(
                 id = "King-d1+4",
                 input = "d1+4",
-                properties = Move.Properties(
-                    isHeat = true,
+                properties = listOf(
+                    UiMove.Property.TORNADO,
+                    UiMove.Property.THROW,
                 )
             ),
             isNotesExpanded = false,

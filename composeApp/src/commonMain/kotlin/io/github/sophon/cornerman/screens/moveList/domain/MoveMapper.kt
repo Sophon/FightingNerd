@@ -8,14 +8,19 @@ internal fun List<Move>.toDomain(): List<MoveCategory> {
     val categorizedMoves = this
         .groupBy { it.getCategoryName() }
         .map { (categoryName, moves) ->
-            MoveCategory(name = categoryName, moves = moves.map { it.cleanComboLinks() })
+            MoveCategory(
+                name = categoryName,
+                moves = moves.map {
+                    it.cleanComboLinks().toDomain()
+                },
+            )
         }
         .sortedBy { it.name.getCategorySortOrder() }
 
     return categorizedMoves
 }
 
-internal fun Move.getCategoryName(): String {
+private fun Move.getCategoryName(): String {
     return when {
         (properties.isHeat == true) -> "Heat"
         properties.stance.isNullOrEmpty().not() -> properties.stance!!
@@ -31,7 +36,7 @@ internal fun Move.getCategoryName(): String {
     }
 }
 
-internal fun String.getCategorySortOrder(): Int {
+private fun String.getCategorySortOrder(): Int {
     return when (this) {
         "Heat" -> 1
         "n" -> 2
@@ -48,7 +53,7 @@ internal fun String.getCategorySortOrder(): Int {
     }
 }
 
-internal fun Move.isDirectional(): String? {
+private fun Move.isDirectional(): String? {
     return when {
         input.startsWith("df") -> "df"
         input.startsWith("db") -> "db"
@@ -60,27 +65,27 @@ internal fun Move.isDirectional(): String? {
     }
 }
 
-internal fun Move.isMotion(): Boolean {
+private fun Move.isMotion(): Boolean {
     return input.startsWith("wr")
             || input.startsWith("ff")
             || input.startsWith("qcb")
             || input.startsWith("qcf")
 }
 
-internal fun Move.isCrouch(): Boolean = input.startsWith("fc", ignoreCase = true)
+private fun Move.isCrouch(): Boolean = input.startsWith("fc", ignoreCase = true)
 
-internal fun Move.isWS(): Boolean = input.startsWith("ws", ignoreCase = true)
+private fun Move.isWS(): Boolean = input.startsWith("ws", ignoreCase = true)
 
-internal fun Move.isCD(): Boolean = input.startsWith("cd.", ignoreCase = true)
+private fun Move.isCD(): Boolean = input.startsWith("cd.", ignoreCase = true)
 
-internal fun Move.isBT(): Boolean = input.startsWith("bt", ignoreCase = true)
+private fun Move.isBT(): Boolean = input.startsWith("bt", ignoreCase = true)
 
-internal fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCase = true) }
+private fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCase = true) }
 
-internal fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() == true)
+private fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() == true)
 
 //TODO: this should prob be a property of Move
-internal fun Move.isStance(): String? {
+private fun Move.isStance(): String? {
     if (input.startsWith("FC.")) return null
     if (input.contains(".").not()) return null
 
@@ -94,6 +99,45 @@ internal fun Move.isStance(): String? {
     }
 }
 
+private fun Move.toDomain(): UiMove {
+    return UiMove(
+        id = id,
+        input = input,
+        level = level,
+        name = name,
+        damage = damage,
+        startup = startup,
+        recoveryOnWhiff = recoveryOnWhiff,
+        totalFrames = totalFrames,
+        onBlock = onBlock,
+        onHit = onHit,
+        onCH = onCH,
+        notes = notes,
+        properties = getProperties(),
+    )
+}
+
+private fun Move.getProperties(): List<UiMove.Property> = buildList {
+    // Property-based checks
+    if (properties.isHeat == true) add(UiMove.Property.HEAT)
+    if (properties.isPowerCrush == true) add(UiMove.Property.PC)
+    if (properties.isHoming == true) add(UiMove.Property.HOMING)
+
+    // Note-based checks (more efficient - single pass through notes)
+    notes.forEach { note ->
+        when {
+            note.contains("Tornado", ignoreCase = true) -> add(UiMove.Property.TORNADO)
+            note.contains("Throw", ignoreCase = true) -> add(UiMove.Property.THROW)
+            note.contains("Floor break", ignoreCase = true) -> add(UiMove.Property.FLOOR_BREAK)
+            note.contains("Balcony break", ignoreCase = true) ||
+                    note.contains("Wall break", ignoreCase = true) -> add(UiMove.Property.WALL_BREAK)
+            //TODO: high crush
+            //TODO: low crush
+        }
+    }
+}
+
+//region Entity
 internal fun Move.toEntity(): MoveEntity {
     return MoveEntity(
         charName = charName,
@@ -151,3 +195,4 @@ internal fun MoveEntity.toDomain(): Move {
         )
     )
 }
+//endregion

@@ -1,6 +1,7 @@
 package io.github.sophon.cornerman.screens.moveList.ui
 
 import io.github.sophon.cornerman.screens.moveList.domain.MoveCategory
+import io.github.sophon.cornerman.screens.moveList.domain.UiMove
 import io.github.sophon.wikiwavu.domain.model.Move
 
 data class MoveListViewState(
@@ -35,8 +36,7 @@ data class MoveListViewState(
                 MoveCategory(
                     name = "Heat",
                     moves = listOf(
-                        Move(
-                            charName = "Dragunov",
+                        UiMove(
                             id = "2+3",
                             input = "2+3",
                             level = "m",
@@ -51,8 +51,7 @@ data class MoveListViewState(
                                 "Input b,b to cancel the attack"
                             )
                         ),
-                        Move(
-                            charName = "Dragunov",
+                        UiMove(
                             id = "H.2+3",
                             input = "H.2+3",
                             level = "m,m,m",
@@ -60,7 +59,7 @@ data class MoveListViewState(
                             onHit = "+3d",
                             onBlock = "+6",
                             notes = listOf(
-                                "HeatSmash",
+                                "Heat Smash",
                                 "Balcony Break",
                                 "Only 1st and 3rd hit",
                                 "7 Chip damage on block",
@@ -76,8 +75,7 @@ data class MoveListViewState(
                 MoveCategory(
                     name = "df",
                     moves = listOf(
-                        Move(
-                            charName = "Dragunov",
+                        UiMove(
                             id = "df1",
                             input = "df1",
                             level = "m",
@@ -89,8 +87,7 @@ data class MoveListViewState(
                                 "Enter -2,-11 Pigeon Roll with 3+4 (or d3+4)"
                             )
                         ),
-                        Move(
-                            charName = "Dragunov",
+                        UiMove(
                             id = "df14",
                             input = "df14",
                             level = "m,h",
@@ -104,8 +101,7 @@ data class MoveListViewState(
                                 "Input can be delayed 12f"
                             )
                         ),
-                        Move(
-                            charName = "Dragunov",
+                        UiMove(
                             id = "df2",
                             input = "df2",
                             level = "m",
