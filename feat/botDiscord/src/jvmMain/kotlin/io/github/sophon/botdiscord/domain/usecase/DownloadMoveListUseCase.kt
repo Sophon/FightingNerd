@@ -38,7 +38,7 @@ class DownloadMoveListUseCase(
     }
 
     private suspend fun downloadAndCacheMove(character: Character): EmptyResult<BotError> {
-        return wiki.downloadMoveListFor(character.name)
+        return wiki.downloadMoveListFor(character.wikiName)
             .mapError { it.toDomain() }
             .flatMap { moveList ->
                 wiki.cacheMoveList(character, moveList)

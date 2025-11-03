@@ -17,12 +17,12 @@ class CacheMoveListUseCase(
         moveList: List<Move>,
     ): EmptyResult<WavuError> {
         return db.insertMoveList(
-            charName = character.name.lowercase(),
+            charName = character.id.lowercase(),
             moveList = moveList
         )
             .asEmptyDataResult()
             .flatMap {
-                character.alias.fold(Result.Success(Unit) as EmptyResult<WavuError>) { acc, alias ->
+                character.aliasList.fold(Result.Success(Unit) as EmptyResult<WavuError>) { acc, alias ->
                     acc.flatMap {
                         db.insertMoveList(
                             charName = alias,

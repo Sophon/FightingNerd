@@ -1,5 +1,7 @@
 package io.github.sophon.wikiwavu
 
+import io.github.sophon.wikiwavu.data.TekkenDocsDataSource
+import io.github.sophon.wikiwavu.data.TekkenDocsDataSourceImpl
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
@@ -18,6 +20,7 @@ import org.koin.dsl.module
 val wavuModule = module {
     singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
     singleOf(::WavuWikiClientImpl).bind<WavuWikiClient>()
+    singleOf(::TekkenDocsDataSourceImpl).bind<TekkenDocsDataSource>()
 
     singleOf(::DownloadCharacterListUseCase)
     singleOf(::DownloadMoveListUseCase)

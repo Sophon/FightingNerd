@@ -5,8 +5,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Character(
-    val name: String,
-    @SerialName("portrait") val portraitUrl: String? = null,
-    @SerialName("wavu_page") val wavuPageUrl: String? = null,
-    val alias: List<String>,
-)
+    val id: String,
+    val displayName: String,
+    @SerialName("wavuName") val wikiName: String,
+    val aliasList: List<String> = listOf(),
+    val image: Image? = null,
+) {
+    @Serializable
+    data class Image(
+        val url: String? = null,
+        val officialUrl: String? = null,
+    )
+}

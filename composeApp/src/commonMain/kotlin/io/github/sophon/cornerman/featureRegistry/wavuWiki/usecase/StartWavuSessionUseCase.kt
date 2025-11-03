@@ -82,7 +82,7 @@ internal class StartWavuSessionUseCase(
     }
 
     private suspend fun downloadAndCacheForCharacter(character: Character): EmptyResult<HomeError> {
-        return wiki.downloadMoveListFor(charName = character.name)
+        return wiki.downloadMoveListFor(charName = character.wikiName)
             .mapError { it.toDomain() }
             .flatMap { moveList ->
                 wiki.cacheMoveList(character, moveList)
@@ -90,7 +90,7 @@ internal class StartWavuSessionUseCase(
             }
             .asEmptyDataResult()
             .onError { error ->
-                Napier.e(tag = TAG) { "Error caching ${character.name}: $error" }
+                Napier.e(tag = TAG) { "Error caching ${character.wikiName}: $error" }
             }
     }
 

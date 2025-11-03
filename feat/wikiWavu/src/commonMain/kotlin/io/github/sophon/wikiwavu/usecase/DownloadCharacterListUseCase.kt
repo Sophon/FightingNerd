@@ -1,37 +1,50 @@
 package io.github.sophon.wikiwavu.usecase
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.wikiwavu.CHAR_LIST
 import io.github.sophon.wikiwavu.WavuError
+import io.github.sophon.wikiwavu.data.CharacterListResponseDto
+import io.github.sophon.wikiwavu.data.TekkenDocsDataSource
 import io.github.sophon.wikiwavu.domain.model.Character
 import io.github.sophon.wikiwavu.infrastructure.FileReader
-import io.github.aakira.napier.Napier
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 
 /**
- * TODO: ideally we first attempt to download the github json
- *
- * 1. [Char list](https://raw.githubusercontent.com/pbruvoll/tekkendocs/refs/heads/main/utils/wavu-importer/src/resources/character_list.json)
- * 2. read from the /res/characters.json
+ * Technically, the source is not Wavu Wiki.
+ * But the appeals to make a table for Character have not been successful.
  */
-class DownloadCharacterListUseCase(
+internal class DownloadCharacterListUseCase(
+    private val source: TekkenDocsDataSource,
     private val fileReader: FileReader,
     private val json: Json,
 ) {
     internal suspend fun invoke(): Result<List<Character>, WavuError> {
+        return when (val result = source.downloadCharacterList()) {
+            is Result.Success -> Result.Success(result.data.toDomain())
+            is Result.Error -> {
+                Napier.e(tag = TAG) { "Failed to download: ${result.error}" }
+                loadFromLocalFile()
+            }
+        }
+    }
+
+    private suspend fun loadFromLocalFile(): Result<List<Character>, WavuError> {
         return try {
-            val fileContent = fileReader.readFile(path = "res/${CHAR_LIST}")
+            val fileContent = fileReader.readFile(path = "res/$CHAR_LIST")
             val charList = json.decodeFromString<List<Character>>(fileContent)
             Result.Success(charList)
         } catch (e: SerializationException) {
-            Napier.e(tag = TAG) { e.toString() }
+            Napier.e(tag = TAG) { "Serialization error: $e" }
             Result.Error(WavuError.CHARACTER_SERIALIZATION_ERROR)
         } catch (e: Exception) {
-            Napier.e(tag = TAG) { e.toString() }
+            Napier.e(tag = TAG) { "File not found: $e" }
             Result.Error(WavuError.CHARACTER_LIST_NOT_FOUND)
         }
     }
+
+    private fun CharacterListResponseDto.toDomain(): List<Character> = characters
 }
 
 private const val TAG = "FetchCharactersListUseCase"

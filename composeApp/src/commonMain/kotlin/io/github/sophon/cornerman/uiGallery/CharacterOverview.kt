@@ -46,7 +46,7 @@ fun CharacterOverview(
         characterList.forEach { character ->
             CharacterPanel(
                 character = character,
-                onClick = { onCharacterClick(character.name) },
+                onClick = { onCharacterClick(character.displayName) },
             )
         }
     }
@@ -70,15 +70,15 @@ private fun CharacterPanel(
             .padding(8.dp)
     ) {
         AsyncImage(
-            model = character.portraitUrl,
-            contentDescription = character.name,
+            model = character.image?.officialUrl,
+            contentDescription = character.displayName,
             placeholder = painterResource(Res.drawable.compose_multiplatform),
             error = painterResource(Res.drawable.compose_multiplatform),
             modifier = Modifier.size(64.dp)
         )
 
         Text(
-            text = character.name,
+            text = character.displayName,
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurface,
             textAlign = TextAlign.Center,
@@ -112,12 +112,12 @@ private fun CharacterOverviewPreviewLight() {
 }
 
 private fun mockCharacters(): List<Character> = listOf(
-    Character(name = "Zuzana", alias = listOf()),
-    Character(name = "Eva", alias = listOf()),
-    Character(name = "Karolina", alias = listOf()),
-    Character(name = "Marcela", alias = listOf()),
-    Character(name = "Zdenka", alias = listOf()),
-    Character(name = "Hana", alias = listOf()),
-    Character(name = "Nina", alias = listOf()),
+    Character(displayName = "Zuzana", aliasList = listOf(), wikiName = "", id = ""),
+    Character(displayName = "Eva", aliasList = listOf(), wikiName = "", id = ""),
+    Character(displayName = "Karolina", aliasList = listOf(), wikiName = "", id = ""),
+    Character(displayName = "Marcela", aliasList = listOf(), wikiName = "", id = ""),
+    Character(displayName = "Zdenka", aliasList = listOf(), wikiName = "", id = ""),
+    Character(displayName = "Hana", aliasList = listOf(), wikiName = "", id = ""),
+    Character(displayName = "Nina", aliasList = listOf(), wikiName = "", id = ""),
 )
 //endregion
