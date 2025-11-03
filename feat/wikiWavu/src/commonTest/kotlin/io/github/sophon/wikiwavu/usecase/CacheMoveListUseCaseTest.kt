@@ -11,7 +11,6 @@ import io.github.sophon.wikiwavu.data.MoveListDB
 import io.github.sophon.wikiwavu.domain.model.Character
 import io.github.sophon.wikiwavu.domain.model.CharacterMoveList
 import io.github.sophon.wikiwavu.domain.model.Move
-import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
@@ -31,8 +30,10 @@ class CacheMoveListUseCaseTest {
     fun `successfully caches move list for character name in lowercase`() = runTest {
         // Given
         val character = Character(
-            name = "Jin",
-            alias = emptyList()
+            id = "jin",
+            displayName = "Jin",
+            wikiName = "JIn",
+            aliasList = emptyList(),
         )
         val moves = listOf(
             Move(charName = "Jin", id = "1", input = "1"),
@@ -53,8 +54,10 @@ class CacheMoveListUseCaseTest {
     fun `caches move list for each character alias`() = runTest {
         // Given
         val character = Character(
-            name = "Devil Jin",
-            alias = listOf("DVJ", "D.Jin")
+            id = "devil-jin",
+            displayName = "Devil Jin",
+            wikiName = "Devil Jin",
+            aliasList = listOf("DVJ", "D.Jin"),
         )
         val moves = listOf(
             Move(charName = "Devil Jin", id = "1", input = "1")
@@ -65,7 +68,7 @@ class CacheMoveListUseCaseTest {
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
-        assertThat(db.getCachedMoveList("devil jin")).isNotNull()
+        assertThat(db.getCachedMoveList("devil-jin")).isNotNull()
         assertThat(db.getCachedMoveList("DVJ")).isNotNull()
         assertThat(db.getCachedMoveList("D.Jin")).isNotNull()
     }
@@ -74,8 +77,10 @@ class CacheMoveListUseCaseTest {
     fun `character name is converted to lowercase before caching`() = runTest {
         // Given
         val character = Character(
-            name = "KING",
-            alias = emptyList()
+            id = "king",
+            displayName = "King",
+            wikiName = "King",
+            aliasList = emptyList(),
         )
         val moves = listOf(
             Move(charName = "KING", id = "1", input = "1")
@@ -93,8 +98,10 @@ class CacheMoveListUseCaseTest {
     fun `handles character with no aliases`() = runTest {
         // Given
         val character = Character(
-            name = "Paul",
-            alias = emptyList()
+            id = "paul",
+            displayName = "Paul",
+            wikiName = "Paul",
+            aliasList = emptyList()
         )
         val moves = listOf(
             Move(charName = "Paul", id = "df2", input = "d/f+2")
@@ -114,8 +121,10 @@ class CacheMoveListUseCaseTest {
     fun `handles empty move list`() = runTest {
         // Given
         val character = Character(
-            name = "Law",
-            alias = listOf("Marshall")
+            id = "law",
+            displayName = "Law",
+            wikiName = "Law",
+            aliasList = listOf("Marshall")
         )
         val characterMoveList = CharacterMoveList(character, emptyList())
 
@@ -133,8 +142,10 @@ class CacheMoveListUseCaseTest {
     fun `caches moves with their aliases correctly`() = runTest {
         // Given
         val character = Character(
-            name = "Kazuya",
-            alias = emptyList()
+            id = "kazuya",
+            displayName = "Kazuya",
+            wikiName = "Kazuya",
+            aliasList = emptyList()
         )
         val moves = listOf(
             Move(
@@ -158,8 +169,10 @@ class CacheMoveListUseCaseTest {
     fun `all character aliases point to the same move list`() = runTest {
         // Given
         val character = Character(
-            name = "Steve",
-            alias = listOf("Steve Fox", "Boxer")
+            id = "steve",
+            displayName = "Steve",
+            wikiName = "Steve",
+            aliasList = listOf("Steve Fox", "Boxer")
         )
         val moves = listOf(
             Move(charName = "Steve", id = "1", input = "1"),
@@ -185,11 +198,21 @@ class CacheMoveListUseCaseTest {
     @Test
     fun `caches multiple characters independently`() = runTest {
         // Given
-        val character1 = Character(name = "Jin", alias = emptyList())
+        val character1 = Character(
+            id = "jin",
+            displayName = "Jin",
+            wikiName = "Jin",
+            aliasList = emptyList()
+        )
         val moves1 = listOf(Move(charName = "Jin", id = "1", input = "1"))
         val moveList1 = CharacterMoveList(character1, moves1)
 
-        val character2 = Character(name = "Kazuya", alias = emptyList())
+        val character2 = Character(
+            id = "kazuya",
+            displayName = "Kazuya",
+            wikiName = "Kazuya",
+            aliasList = emptyList()
+        )
         val moves2 = listOf(Move(charName = "Kazuya", id = "df2", input = "d/f+2"))
         val moveList2 = CharacterMoveList(character2, moves2)
 
@@ -207,7 +230,12 @@ class CacheMoveListUseCaseTest {
     @Test
     fun `overwrites existing move list when caching same character again`() = runTest {
         // Given
-        val character = Character(name = "Bryan", alias = emptyList())
+        val character = Character(
+            id = "bryan",
+            displayName = "Bryan",
+            wikiName = "Bryan",
+            aliasList = emptyList(),
+        )
         val oldMoves = listOf(Move(charName = "Bryan", id = "1", input = "1"))
         val newMoves = listOf(
             Move(charName = "Bryan", id = "2", input = "2"),
@@ -228,7 +256,12 @@ class CacheMoveListUseCaseTest {
     @Test
     fun `handles moves with all optional fields populated`() = runTest {
         // Given
-        val character = Character(name = "Dragunov", alias = emptyList())
+        val character = Character(
+            id = "dragunov",
+            displayName = "Dragunov",
+            wikiName = "Dragunov",
+            aliasList = emptyList(),
+        )
         val moves = listOf(
             Move(
                 charName = "Dragunov",
@@ -274,10 +307,13 @@ class CacheMoveListUseCaseTest {
     fun `handles character with portrait and wavu page urls`() = runTest {
         // Given
         val character = Character(
-            name = "Yoshimitsu",
-            portraitUrl = "https://example.com/yoshi.png",
-            wavuPageUrl = "https://wavu.wiki/yoshi",
-            alias = listOf("Yoshi")
+            id = "yoshimitsu",
+            displayName = "Yoshimitsu",
+            wikiName = "Yoshimitsu",
+            images = Character.Images(
+                officialUrl = "https://example.com/yoshi.png"
+            ),
+            aliasList = listOf("Yoshi")
         )
         val moves = listOf(Move(charName = "Yoshimitsu", id = "1", input = "1"))
 
@@ -293,7 +329,12 @@ class CacheMoveListUseCaseTest {
     @Test
     fun `always returns success`() = runTest {
         // Given
-        val character = Character(name = "Nina", alias = emptyList())
+        val character = Character(
+            id = "nina",
+            displayName = "Nina",
+            wikiName = "Nina",
+            aliasList = emptyList(),
+        )
         val moves = listOf(Move(charName = "Nina", id = "1", input = "1"))
 
         // When

@@ -14,75 +14,75 @@ data class WavuHomeScreenViewState(
                 Character(
                     id = "",
                     displayName = "Alisa",
-                    wikiName = "",
+                    wikiUrl = "",
                     aliasList = listOf(),
                 ),
                 Character(
                     id = "",
                     displayName = "Nina",
-                    wikiName = "",
+                    wikiUrl = "",
                     aliasList = listOf(),
-                    image = Character.Image(
+                    images = Character.Images(
                         url = "https://tekkendocs.com/t8/avatars/nina-brand-512.png",
                     )
                 ),
                 Character(
                     id = "lidia",
                     displayName = "Lidia",
-                    wikiName = "",
+                    wikiUrl = "",
                     aliasList = listOf(),
                 ),
                 Character(
                     id = "",
                     displayName = "Armor King",
-                    wikiName = "",
+                    wikiUrl = "",
                     aliasList = listOf(),
-                    image = Character.Image(
+                    images = Character.Images(
                         url = "https://tekkendocs.com/t8/avatars/armor-king-brand-512.png"
                     )
                 ),
                 Character(
                     id = "",
                     displayName = "Panda",
-                    wikiName = "",
+                    wikiUrl = "",
                     aliasList = listOf(),
                 ),
                 Character(
                     id = "",
                     displayName = "Shaheen",
-                    wikiName = "",
+                    wikiUrl = "",
                     aliasList = listOf(),
-                    image = Character.Image(
+                    images = Character.Images(
                         url = "https://tekkendocs.com/t8/avatars/shaheen-brand-512.png"
                     )
                 ),
                 Character(
                     id = "",
                     displayName = "Steve",
-                    wikiName = "Steve",
+                    wikiUrl = "Steve",
                     aliasList = listOf(),
                 ),
                 Character(
                     id = "",
                     displayName = "Raven",
-                    wikiName = "",
+                    wikiUrl = "",
                     aliasList = listOf(),
-                    image = Character.Image(
+                    images = Character.Images(
                         url = "https://tekkendocs.com/t8/avatars/raven-brand-512.png"
                     ),
                 ),
                 Character(
                     id = "",
                     displayName = "Yoshimitsu",
-                    wikiName = "",
+                    wikiUrl = "",
                     aliasList = listOf(),
                 ),
                 Character(
                     id = "",
                     displayName = "Paul",
-                    wikiName = "",
+                    wikiUrl = "",
                     aliasList = listOf(),
-                    image = Character.Image(
+                    images = Character.Images(
                         url = "https://tekkendocs.com/t8/avatars/paul-brand-512.png"
                     )
                 ),

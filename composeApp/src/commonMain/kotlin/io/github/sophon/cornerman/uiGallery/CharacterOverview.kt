@@ -70,7 +70,7 @@ private fun CharacterPanel(
             .padding(8.dp)
     ) {
         AsyncImage(
-            model = character.image?.officialUrl,
+            model = character.images?.officialUrl,
             contentDescription = character.displayName,
             placeholder = painterResource(Res.drawable.compose_multiplatform),
             error = painterResource(Res.drawable.compose_multiplatform),
@@ -112,12 +112,12 @@ private fun CharacterOverviewPreviewLight() {
 }
 
 private fun mockCharacters(): List<Character> = listOf(
-    Character(displayName = "Zuzana", aliasList = listOf(), wikiName = "", id = ""),
-    Character(displayName = "Eva", aliasList = listOf(), wikiName = "", id = ""),
-    Character(displayName = "Karolina", aliasList = listOf(), wikiName = "", id = ""),
-    Character(displayName = "Marcela", aliasList = listOf(), wikiName = "", id = ""),
-    Character(displayName = "Zdenka", aliasList = listOf(), wikiName = "", id = ""),
-    Character(displayName = "Hana", aliasList = listOf(), wikiName = "", id = ""),
-    Character(displayName = "Nina", aliasList = listOf(), wikiName = "", id = ""),
+    Character(displayName = "Zuzana", aliasList = listOf(), wikiUrl = "", id = ""),
+    Character(displayName = "Eva", aliasList = listOf(), wikiUrl = "", id = ""),
+    Character(displayName = "Karolina", aliasList = listOf(), wikiUrl = "", id = ""),
+    Character(displayName = "Marcela", aliasList = listOf(), wikiUrl = "", id = ""),
+    Character(displayName = "Zdenka", aliasList = listOf(), wikiUrl = "", id = ""),
+    Character(displayName = "Hana", aliasList = listOf(), wikiUrl = "", id = ""),
+    Character(displayName = "Nina", aliasList = listOf(), wikiUrl = "", id = ""),
 )
 //endregion

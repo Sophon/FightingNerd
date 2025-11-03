@@ -3,6 +3,7 @@ package io.github.sophon.wikiwavu.usecase
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.wikiwavu.CHAR_LIST
+import io.github.sophon.wikiwavu.MOVE_URL
 import io.github.sophon.wikiwavu.WavuError
 import io.github.sophon.wikiwavu.data.CharacterListResponseDto
 import io.github.sophon.wikiwavu.data.TekkenDocsDataSource
@@ -33,8 +34,8 @@ internal class DownloadCharacterListUseCase(
     private suspend fun loadFromLocalFile(): Result<List<Character>, WavuError> {
         return try {
             val fileContent = fileReader.readFile(path = "res/$CHAR_LIST")
-            val charList = json.decodeFromString<List<Character>>(fileContent)
-            Result.Success(charList)
+            val response = json.decodeFromString<CharacterListResponseDto>(fileContent)  // ← Decode to wrapper
+            Result.Success(response.toDomain())
         } catch (e: SerializationException) {
             Napier.e(tag = TAG) { "Serialization error: $e" }
             Result.Error(WavuError.CHARACTER_SERIALIZATION_ERROR)
@@ -44,7 +45,20 @@ internal class DownloadCharacterListUseCase(
         }
     }
 
-    private fun CharacterListResponseDto.toDomain(): List<Character> = characters
+    private fun CharacterListResponseDto.toDomain(): List<Character> {
+        return characters.map { dto ->
+            Character(
+                id = dto.id,
+                displayName = dto.displayName,
+                wikiUrl = MOVE_URL + dto.wavuName.replace(" ", "_"),
+                aliasList = dto.aliasList,
+                images = Character.Images(
+                    url = dto.images?.largePng,
+                    officialUrl = dto.images?.officialLargePng,
+                )
+            )
+        }
+    }
 }
 
 private const val TAG = "FetchCharactersListUseCase"
