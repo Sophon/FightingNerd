@@ -65,7 +65,7 @@ private fun CharacterPanel(
             .width(100.dp)
             .height(128.dp)
             .clickable(onClick = onClick)
-            .clip(RoundedCornerShape(16.dp))
+            .clip(RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .padding(8.dp)
     ) {
