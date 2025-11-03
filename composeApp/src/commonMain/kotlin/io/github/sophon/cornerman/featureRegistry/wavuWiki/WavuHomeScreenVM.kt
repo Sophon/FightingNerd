@@ -36,7 +36,9 @@ internal class WavuHomeScreenVM(
 
 
     private suspend fun startWavuSession() {
+        _state.update { it.copy(isLoading = true) }
         startWavuSessionUseCase.invoke()
+        _state.update { it.copy(isLoading = false) }
     }
 
     private suspend fun fetchCharacterList() {
@@ -49,8 +51,6 @@ internal class WavuHomeScreenVM(
                 _state.update { it.copy(error = result.error.toString()) }
             }
         }
-
-        _state.update { it.copy(isLoading = false) }
     }
 
     private fun cacheCharacterList(characterList: List<Character>) {

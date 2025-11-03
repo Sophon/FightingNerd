@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandCircleDown
 import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -32,6 +33,7 @@ fun FeatureInfoHeader(
     featureInfo: FeatureInfo,
     isExpanded: Boolean,
     onExpandClick: () -> Unit,
+    isLoading: Boolean,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -41,6 +43,7 @@ fun FeatureInfoHeader(
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surface)
             .padding(horizontal = 8.dp)
+            .clickable(onClick = onExpandClick, enabled = isLoading.not())
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(
@@ -66,15 +69,18 @@ fun FeatureInfoHeader(
             )
         }
 
-        val icon = if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier
-                .size(32.dp)
-                .clickable(onClick = onExpandClick)
-        )
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.size(32.dp))
+        } else {
+            val icon = if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore
+            Icon(
+                imageVector = icon,
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier
+                    .size(32.dp)
+            )
+        }
     }
 }
 
@@ -92,6 +98,24 @@ private fun FeatureInfoPreviewDark() {
             ),
             isExpanded = true,
             onExpandClick = {},
+            isLoading = false,
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun FeatureInfoLoadingPreview() {
+    AppTheme(darkTheme = true) {
+        FeatureInfoHeader(
+            featureInfo = FeatureInfo(
+                name = "Wavu Wiki",
+                url = "https://wavu.wiki/t/Main_Page",
+                iconUrl = "https://i.imgur.com/0cnTzNk.png",
+            ),
+            isExpanded = true,
+            onExpandClick = {},
+            isLoading = true,
         )
     }
 }
@@ -108,6 +132,7 @@ private fun FeatureInfoPreviewLight() {
             ),
             isExpanded = false,
             onExpandClick = {},
+            isLoading = false,
         )
     }
 }

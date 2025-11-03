@@ -65,10 +65,11 @@ private fun Content(
                 featureInfo = featureInfo,
                 isExpanded = state.isExpanded,
                 onExpandClick = onExpandClick,
+                isLoading = state.isLoading,
             )
         }
 
-        if (state.isExpanded) {
+        if (state.isExpanded && state.isLoading.not()) {
             Spacer(Modifier.height(8.dp))
 
             CharacterOverview(
