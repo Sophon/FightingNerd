@@ -830,7 +830,7 @@ class DownloadMoveListUseCaseTekken8Test {
     private fun createTestCharacter(name: String) = Character(
         id = name.lowercase(),
         displayName = name,
-        wikiName = name,
+        wikiUrl = "",
         images = Character.Images(
             officialUrl = "https://example.com/$name.png",
         ),

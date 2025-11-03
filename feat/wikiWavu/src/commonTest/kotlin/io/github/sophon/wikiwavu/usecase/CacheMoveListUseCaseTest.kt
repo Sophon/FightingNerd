@@ -32,7 +32,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "jin",
             displayName = "Jin",
-            wikiName = "JIn",
+            wikiUrl = "",
             aliasList = emptyList(),
         )
         val moves = listOf(
@@ -56,7 +56,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "devil-jin",
             displayName = "Devil Jin",
-            wikiName = "Devil Jin",
+            wikiUrl = "",
             aliasList = listOf("DVJ", "D.Jin"),
         )
         val moves = listOf(
@@ -79,7 +79,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "king",
             displayName = "King",
-            wikiName = "King",
+            wikiUrl = "",
             aliasList = emptyList(),
         )
         val moves = listOf(
@@ -100,7 +100,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "paul",
             displayName = "Paul",
-            wikiName = "Paul",
+            wikiUrl = "",
             aliasList = emptyList()
         )
         val moves = listOf(
@@ -123,7 +123,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "law",
             displayName = "Law",
-            wikiName = "Law",
+            wikiUrl = "",
             aliasList = listOf("Marshall")
         )
         val characterMoveList = CharacterMoveList(character, emptyList())
@@ -144,7 +144,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "kazuya",
             displayName = "Kazuya",
-            wikiName = "Kazuya",
+            wikiUrl = "",
             aliasList = emptyList()
         )
         val moves = listOf(
@@ -171,7 +171,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "steve",
             displayName = "Steve",
-            wikiName = "Steve",
+            wikiUrl = "",
             aliasList = listOf("Steve Fox", "Boxer")
         )
         val moves = listOf(
@@ -201,7 +201,7 @@ class CacheMoveListUseCaseTest {
         val character1 = Character(
             id = "jin",
             displayName = "Jin",
-            wikiName = "Jin",
+            wikiUrl = "",
             aliasList = emptyList()
         )
         val moves1 = listOf(Move(charName = "Jin", id = "1", input = "1"))
@@ -210,7 +210,7 @@ class CacheMoveListUseCaseTest {
         val character2 = Character(
             id = "kazuya",
             displayName = "Kazuya",
-            wikiName = "Kazuya",
+            wikiUrl = "",
             aliasList = emptyList()
         )
         val moves2 = listOf(Move(charName = "Kazuya", id = "df2", input = "d/f+2"))
@@ -233,7 +233,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "bryan",
             displayName = "Bryan",
-            wikiName = "Bryan",
+            wikiUrl = "",
             aliasList = emptyList(),
         )
         val oldMoves = listOf(Move(charName = "Bryan", id = "1", input = "1"))
@@ -259,7 +259,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "dragunov",
             displayName = "Dragunov",
-            wikiName = "Dragunov",
+            wikiUrl = "",
             aliasList = emptyList(),
         )
         val moves = listOf(
@@ -309,7 +309,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "yoshimitsu",
             displayName = "Yoshimitsu",
-            wikiName = "Yoshimitsu",
+            wikiUrl = "",
             images = Character.Images(
                 officialUrl = "https://example.com/yoshi.png"
             ),
@@ -332,7 +332,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "nina",
             displayName = "Nina",
-            wikiName = "Nina",
+            wikiUrl = "",
             aliasList = emptyList(),
         )
         val moves = listOf(Move(charName = "Nina", id = "1", input = "1"))
