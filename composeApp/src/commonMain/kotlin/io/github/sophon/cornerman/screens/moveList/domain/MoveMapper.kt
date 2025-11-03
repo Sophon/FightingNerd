@@ -23,20 +23,20 @@ internal fun List<Move>.toDomain(): List<MoveCategory> {
 internal fun Move.getCategoryName(): String {
     return when {
         (properties.isHeat == true) -> "Heat"
-        properties.stance.isNullOrEmpty().not() -> properties.stance!!
+        properties.stance.isNullOrEmpty().not() -> properties.stance!!.uppercase()
         (isDirectional() != null) -> isDirectional()!!
         isMotion() -> "Motion Input"
-        isCrouch() -> "Crouch"
-        isWS() -> "WS"
-        isCD() -> "CD (Crouch Dash)"
-        isBT() -> "BT (Back Turned)"
+        input.startsWith("fc", ignoreCase = true) -> "Crouch"
+        input.startsWith("ws", ignoreCase = true) -> "WS"
+        input.startsWith("cd.", ignoreCase = true) -> "CD (Crouch Dash)"
+        input.startsWith("bt", ignoreCase = true) -> "BT (Back Turned)"
         isThrow() -> "Throws"
         isNeutralInput() -> "n"
         else -> "Others"
     }
 }
 
-internal fun String.getCategorySortOrder(): Int {
+private fun String.getCategorySortOrder(): Int {
     return when (this) {
         "Heat" -> 1
         "n" -> 2
@@ -53,7 +53,7 @@ internal fun String.getCategorySortOrder(): Int {
     }
 }
 
-internal fun Move.isDirectional(): String? {
+private fun Move.isDirectional(): String? {
     return when {
         input.startsWith("df") -> "df"
         input.startsWith("db") -> "db"
@@ -65,24 +65,16 @@ internal fun Move.isDirectional(): String? {
     }
 }
 
-internal fun Move.isMotion(): Boolean {
+private fun Move.isMotion(): Boolean {
     return input.startsWith("wr")
             || input.startsWith("ff")
             || input.startsWith("qcb")
             || input.startsWith("qcf")
 }
 
-internal fun Move.isCrouch(): Boolean = input.startsWith("fc", ignoreCase = true)
+private fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCase = true) }
 
-internal fun Move.isWS(): Boolean = input.startsWith("ws", ignoreCase = true)
-
-internal fun Move.isCD(): Boolean = input.startsWith("cd.", ignoreCase = true)
-
-internal fun Move.isBT(): Boolean = input.startsWith("bt", ignoreCase = true)
-
-internal fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCase = true) }
-
-internal fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() == true)
+private fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() == true)
 
 private fun Move.toDomain(): UiMove {
     return UiMove(
