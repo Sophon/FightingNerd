@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -16,13 +15,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import io.github.sophon.cornerman.featureRegistry.FeatureInfo
 import io.github.sophon.cornerman.theme.AppTheme
 import io.github.sophon.cornerman.uiGallery.CharacterOverview
-import cornerman.composeapp.generated.resources.Res
-import cornerman.composeapp.generated.resources.compose_multiplatform
-import org.jetbrains.compose.resources.painterResource
+import io.github.sophon.cornerman.uiGallery.FeatureInfo
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -63,14 +59,7 @@ private fun Content(
             )
     ) {
         if (featureInfo != null) {
-            AsyncImage(
-                model = featureInfo.iconUrl,
-                contentDescription = featureInfo.name,
-                placeholder = painterResource(Res.drawable.compose_multiplatform),
-                error = painterResource(Res.drawable.compose_multiplatform),
-                modifier = Modifier
-                    .size(64.dp)
-            )
+            FeatureInfo(featureInfo)
         }
         Spacer(Modifier.height(8.dp))
 

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 class WavuWikiFeature: RegisteredFeature {
     override val featureInfo = FeatureInfo(
-        name = "WavuWiki",
+        name = "Wavu Wiki",
         url = "https://wavu.wiki/t/Main_Page",
         iconUrl = "https://i.imgur.com/0cnTzNk.png",
     )
