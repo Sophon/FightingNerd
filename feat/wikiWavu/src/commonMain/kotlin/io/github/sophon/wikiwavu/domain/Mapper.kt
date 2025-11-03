@@ -9,6 +9,7 @@ internal fun MoveDto.mapToDomain(
     charName: String,
     movesById: Map<String, MoveDto>,
 ): Move {
+    val cleanedCrushes = splitCrush()
     val move = Move(
         charName = charName,
         id = id.cleanMoveInput(),
@@ -22,11 +23,11 @@ internal fun MoveDto.mapToDomain(
         startup = getRootStartup(movesById),
         recoveryOnWhiff = recv,
         totalFrames = tot,
-        crushes = splitCrush(),
+        crushes = cleanedCrushes,
         onBlock = block,
         onHit = hit,
         onCH = ch,
-        notes = splitNotes(),
+        notes = splitNotes() + cleanedCrushes,
         aliases = parseAliases(),
         image = image,
         videoId = video,
@@ -81,18 +82,6 @@ private fun MoveDto.getRootStartup(
     return root.startup
 }
 
-private fun MoveDto.splitNotes(): List<String> {
-    val finalNotes = notes.orEmpty()
-        .trimIndent()
-        .cleanHtml()
-        .replace("\n\n", "\n")
-        .lines()
-        .filter { it.isNotEmpty() }
-        .map { it.removePrefix("* ").trim() }
-
-    return finalNotes
-}
-
 //input: <div class="plainlist">\n* is1~20\n* js25~39\n* fs40~42</div>
 private fun MoveDto.splitCrush(): List<String> {
     val finalCrushes = crush.orEmpty()
@@ -103,6 +92,18 @@ private fun MoveDto.splitCrush(): List<String> {
         .map { it.removePrefix("* ").trim() }
 
     return finalCrushes
+}
+
+private fun MoveDto.splitNotes(): List<String> {
+    val finalNotes = notes.orEmpty()
+        .trimIndent()
+        .cleanHtml()
+        .replace("\n\n", "\n")
+        .lines()
+        .filter { it.isNotEmpty() }
+        .map { it.removePrefix("* ").trim() }
+
+    return finalNotes
 }
 
 private fun Move.getProperties(): Move.Properties {
