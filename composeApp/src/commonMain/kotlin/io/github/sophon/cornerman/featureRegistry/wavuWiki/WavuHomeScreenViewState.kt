@@ -12,49 +12,79 @@ data class WavuHomeScreenViewState(
         internal val PREVIEW = WavuHomeScreenViewState(
             characterList = listOf(
                 Character(
-                    name = "Alisa",
-                    alias = listOf(),
+                    id = "",
+                    displayName = "Alisa",
+                    wikiUrl = "",
+                    aliasList = listOf(),
                 ),
                 Character(
-                    name = "Nina",
-                    alias = listOf(),
-                    portraitUrl = "https://i.imgur.com/PAUToyh.png"
+                    id = "",
+                    displayName = "Nina",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        url = "https://tekkendocs.com/t8/avatars/nina-brand-512.png",
+                    )
                 ),
                 Character(
-                    name = "Lidia",
-                    alias = listOf(),
+                    id = "lidia",
+                    displayName = "Lidia",
+                    wikiUrl = "",
+                    aliasList = listOf(),
                 ),
                 Character(
-                    name = "Armor King",
-                    alias = listOf(),
-                    portraitUrl = "https://i.imgur.com/PAUToyh.png"
+                    id = "",
+                    displayName = "Armor King",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        url = "https://tekkendocs.com/t8/avatars/armor-king-brand-512.png"
+                    )
                 ),
                 Character(
-                    name = "Panda",
-                    alias = listOf(),
+                    id = "",
+                    displayName = "Panda",
+                    wikiUrl = "",
+                    aliasList = listOf(),
                 ),
                 Character(
-                    name = "Shaheen",
-                    alias = listOf(),
-                    portraitUrl = "https://i.imgur.com/PAUToyh.png"
+                    id = "",
+                    displayName = "Shaheen",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        url = "https://tekkendocs.com/t8/avatars/shaheen-brand-512.png"
+                    )
                 ),
                 Character(
-                    name = "Steve",
-                    alias = listOf(),
+                    id = "",
+                    displayName = "Steve",
+                    wikiUrl = "Steve",
+                    aliasList = listOf(),
                 ),
                 Character(
-                    name = "Raven",
-                    alias = listOf(),
-                    portraitUrl = "https://i.imgur.com/PAUToyh.png"
+                    id = "",
+                    displayName = "Raven",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        url = "https://tekkendocs.com/t8/avatars/raven-brand-512.png"
+                    ),
                 ),
                 Character(
-                    name = "Yoshimitsu",
-                    alias = listOf(),
+                    id = "",
+                    displayName = "Yoshimitsu",
+                    wikiUrl = "",
+                    aliasList = listOf(),
                 ),
                 Character(
-                    name = "Paul",
-                    alias = listOf(),
-                    portraitUrl = "https://i.imgur.com/PAUToyh.png"
+                    id = "",
+                    displayName = "Paul",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        url = "https://tekkendocs.com/t8/avatars/paul-brand-512.png"
+                    )
                 ),
             )
         )

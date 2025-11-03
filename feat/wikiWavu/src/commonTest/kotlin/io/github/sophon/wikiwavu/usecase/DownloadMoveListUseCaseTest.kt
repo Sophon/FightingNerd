@@ -10,7 +10,6 @@ import io.github.sophon.wikiwavu.data.MoveDto
 import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import io.github.sophon.wikiwavu.domain.model.Character
-import io.github.sophon.wikiwavu.usecase.DownloadMoveListUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
@@ -52,7 +51,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -92,7 +91,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -130,7 +129,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -168,7 +167,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -206,7 +205,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -245,7 +244,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -280,7 +279,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -315,7 +314,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -350,7 +349,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -385,7 +384,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -422,7 +421,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -457,7 +456,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -492,7 +491,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -527,7 +526,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -562,7 +561,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -597,7 +596,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -632,7 +631,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -667,7 +666,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -704,7 +703,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -739,7 +738,7 @@ class DownloadMoveListUseCaseTekken8Test {
         mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -814,7 +813,7 @@ class DownloadMoveListUseCaseTekken8Test {
         )
 
         // When
-        val result = useCase.invoke(character.name)
+        val result = useCase.invoke(character.id)
 
         // Then
         result as Result.Success
@@ -829,10 +828,13 @@ class DownloadMoveListUseCaseTekken8Test {
 
     // region Helper Methods
     private fun createTestCharacter(name: String) = Character(
-        name = name,
-        portraitUrl = "https://example.com/$name.png",
-        wavuPageUrl = "https://wavu.wiki/$name",
-        alias = listOf(name.lowercase())
+        id = name.lowercase(),
+        displayName = name,
+        wikiUrl = "",
+        images = Character.Images(
+            officialUrl = "https://example.com/$name.png",
+        ),
+        aliasList = listOf(name.lowercase())
     )
 
     private fun createMoveListResponse(moves: List<MoveDto>) = MoveListResponseDto(

@@ -71,7 +71,7 @@ internal class WavuWikiClientImpl(
         val result = cacheMoveListUseCase.invoke(character, moveList)
 
         when (result) {
-            is Result.Error -> Napier.d(tag = TAG) { "${character.name}: ${result.error}" }
+            is Result.Error -> Napier.d(tag = TAG) { "${character.id}: ${result.error}" }
             else -> {}
         }
 
