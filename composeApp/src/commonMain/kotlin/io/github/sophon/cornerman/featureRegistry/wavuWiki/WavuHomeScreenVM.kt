@@ -2,11 +2,11 @@ package io.github.sophon.cornerman.featureRegistry.wavuWiki
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.StartWavuSessionUseCase
 import io.github.sophon.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiwavu.domain.model.Character
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -30,8 +30,15 @@ internal class WavuHomeScreenVM(
         )
 
 
+    fun onExpandClick() {
+        _state.update { it.copy(isExpanded = it.isExpanded.not()) }
+    }
+
+
     private suspend fun startWavuSession() {
+        _state.update { it.copy(isLoading = true) }
         startWavuSessionUseCase.invoke()
+        _state.update { it.copy(isLoading = false) }
     }
 
     private suspend fun fetchCharacterList() {
@@ -44,8 +51,6 @@ internal class WavuHomeScreenVM(
                 _state.update { it.copy(error = result.error.toString()) }
             }
         }
-
-        _state.update { it.copy(isLoading = false) }
     }
 
     private fun cacheCharacterList(characterList: List<Character>) {
