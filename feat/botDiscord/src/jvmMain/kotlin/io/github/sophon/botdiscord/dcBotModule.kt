@@ -2,7 +2,7 @@ package io.github.sophon.botdiscord
 
 import io.github.sophon.botdiscord.data.InMemoryGlossaryDB
 import io.github.sophon.botdiscord.data.InMemoryMoveListDB
-import io.github.sophon.botdiscord.domain.usecase.DownloadMoveListUseCase
+import io.github.sophon.botdiscord.domain.usecase.DownloadDataUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetHeatMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetHomingMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
@@ -56,7 +56,7 @@ fun dcBotModule(apiKey: String) = module {
     singleOf(::GetPowerCrushMovesUseCase)
     singleOf(::GetHeatMovesUseCase)
     singleOf(::GetHomingMovesUseCase)
-    singleOf(::DownloadMoveListUseCase)
+    singleOf(::DownloadDataUseCase)
 
     singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()

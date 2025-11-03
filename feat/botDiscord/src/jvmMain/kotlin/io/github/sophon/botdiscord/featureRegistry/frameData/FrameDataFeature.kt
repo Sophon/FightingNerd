@@ -2,7 +2,7 @@ package io.github.sophon.botdiscord.featureRegistry.frameData
 
 import MAX_LENGTH_EMBED
 import io.github.sophon.botdiscord.BotError
-import io.github.sophon.botdiscord.domain.usecase.DownloadMoveListUseCase
+import io.github.sophon.botdiscord.domain.usecase.DownloadDataUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetHeatMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetHomingMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.hours
 
 internal class FrameDataFeature(
-    private val downloadMoveListUseCase: DownloadMoveListUseCase,
+    private val downloadDataUseCase: DownloadDataUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
@@ -116,7 +116,7 @@ internal class FrameDataFeature(
 
 
     private suspend fun downloadCompleteMoveList(): EmptyResult<BotError> {
-        return downloadMoveListUseCase.invoke()
+        return downloadDataUseCase.invoke()
     }
 
     private suspend fun searchFrameData(

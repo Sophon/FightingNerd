@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class DownloadMoveListUseCase(
+class DownloadDataUseCase(
     private val wiki: WavuWikiClient,
 ) {
     suspend fun invoke(): EmptyResult<BotError> {
@@ -48,7 +48,7 @@ class DownloadMoveListUseCase(
     }
 
 
-    companion object {
+    companion object Companion {
         const val NUMBER_OF_CONCURRENT_REQUEST = 5
     }
 }
