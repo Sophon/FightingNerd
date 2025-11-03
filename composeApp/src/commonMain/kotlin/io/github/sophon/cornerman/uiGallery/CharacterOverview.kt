@@ -41,6 +41,7 @@ fun CharacterOverview(
         verticalArrangement = Arrangement.spacedBy(4.dp),
         modifier = modifier
             .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.surface)
     ) {
         characterList.forEach { character ->
             CharacterPanel(
@@ -65,7 +66,7 @@ private fun CharacterPanel(
             .height(128.dp)
             .clickable(onClick = onClick)
             .clip(RoundedCornerShape(16.dp))
-            .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .padding(8.dp)
     ) {
         AsyncImage(
