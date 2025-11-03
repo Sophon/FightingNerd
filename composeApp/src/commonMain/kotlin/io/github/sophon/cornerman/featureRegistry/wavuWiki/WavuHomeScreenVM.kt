@@ -2,11 +2,11 @@ package io.github.sophon.cornerman.featureRegistry.wavuWiki
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.StartWavuSessionUseCase
 import io.github.sophon.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiwavu.domain.model.Character
-import io.github.aakira.napier.Napier
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart

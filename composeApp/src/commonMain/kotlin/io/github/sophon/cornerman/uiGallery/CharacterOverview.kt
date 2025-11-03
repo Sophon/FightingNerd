@@ -20,10 +20,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import io.github.sophon.cornerman.theme.AppTheme
-import io.github.sophon.wikiwavu.domain.model.Character
 import cornerman.composeapp.generated.resources.Res
 import cornerman.composeapp.generated.resources.compose_multiplatform
+import io.github.sophon.cornerman.theme.AppTheme
+import io.github.sophon.wikiwavu.domain.model.Character
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
