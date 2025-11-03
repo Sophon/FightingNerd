@@ -30,6 +30,11 @@ internal class WavuHomeScreenVM(
         )
 
 
+    fun onExpandClick() {
+        _state.update { it.copy(isExpanded = it.isExpanded.not()) }
+    }
+
+
     private suspend fun startWavuSession() {
         startWavuSessionUseCase.invoke()
     }

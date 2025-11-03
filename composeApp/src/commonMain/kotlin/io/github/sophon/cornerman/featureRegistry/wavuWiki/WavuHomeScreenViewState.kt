@@ -4,6 +4,7 @@ import io.github.sophon.wikiwavu.domain.model.Character
 
 data class WavuHomeScreenViewState(
     val characterList: List<Character> = listOf(),
+    val isExpanded: Boolean = true,
 
     val isLoading: Boolean = true,
     val error: String? = null,

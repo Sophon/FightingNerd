@@ -18,7 +18,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.cornerman.featureRegistry.FeatureInfo
 import io.github.sophon.cornerman.theme.AppTheme
 import io.github.sophon.cornerman.uiGallery.CharacterOverview
-import io.github.sophon.cornerman.uiGallery.FeatureInfo
+import io.github.sophon.cornerman.uiGallery.FeatureInfoHeader
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -35,6 +35,7 @@ fun WavuHomeScreenView(
         state = state,
         featureInfo = featureInfo,
         onCharacterClick = onCharacterClick,
+        onExpandClick = vm::onExpandClick,
         modifier = modifier,
     )
 }
@@ -43,6 +44,7 @@ fun WavuHomeScreenView(
 private fun Content(
     state: WavuHomeScreenViewState,
     onCharacterClick: (String) -> Unit,
+    onExpandClick: () -> Unit,
     featureInfo: FeatureInfo? = null,
     modifier: Modifier = Modifier,
 ) {
@@ -59,14 +61,21 @@ private fun Content(
             )
     ) {
         if (featureInfo != null) {
-            FeatureInfo(featureInfo)
+            FeatureInfoHeader(
+                featureInfo = featureInfo,
+                isExpanded = state.isExpanded,
+                onExpandClick = onExpandClick,
+            )
         }
-        Spacer(Modifier.height(8.dp))
 
-        CharacterOverview(
-            characterList = state.characterList,
-            onCharacterClick = onCharacterClick,
-        )
+        if (state.isExpanded) {
+            Spacer(Modifier.height(8.dp))
+
+            CharacterOverview(
+                characterList = state.characterList,
+                onCharacterClick = onCharacterClick,
+            )
+        }
     }
 }
 
@@ -78,6 +87,7 @@ private fun WavuCharacterOverviewPreviewDark() {
     AppTheme(darkTheme = true) {
         Content(
             state = WavuHomeScreenViewState.PREVIEW,
+            onExpandClick = {},
             onCharacterClick = {},
         )
     }
@@ -89,6 +99,7 @@ private fun WavuCharacterOverviewPreviewLight() {
     AppTheme(darkTheme = false) {
         Content(
             state = WavuHomeScreenViewState.PREVIEW,
+            onExpandClick = {},
             onCharacterClick = {},
         )
     }
