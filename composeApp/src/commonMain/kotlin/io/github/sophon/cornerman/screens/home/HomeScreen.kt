@@ -69,7 +69,7 @@ fun HomeScreen(
                 ),
                 modifier = Modifier.fillMaxSize(),
             ) {
-                items(state.registeredFeatures) { registeredFeature ->
+                items(state.composeRegisteredFeatures) { registeredFeature ->
                     registeredFeature.HomeScreenContent(navHostController)
                 }
             }

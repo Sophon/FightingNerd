@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import io.github.sophon.core.domain.FeatureInfo
 import kotlinx.coroutines.flow.Flow
 
-interface RegisteredFeature {
+interface ComposeRegisteredFeature {
     val featureInfo: FeatureInfo
 
     @Composable

@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import io.github.sophon.core.domain.FeatureInfo
 import io.github.sophon.cornerman.Destination
-import io.github.sophon.cornerman.featureRegistry.RegisteredFeature
+import io.github.sophon.cornerman.featureRegistry.ComposeRegisteredFeature
 import kotlinx.coroutines.flow.Flow
 
-class WavuWikiFeature: RegisteredFeature {
+class WavuWikiFeatureCompose: ComposeRegisteredFeature {
     override val featureInfo = FeatureInfo(
         name = "Wavu Wiki",
         url = "https://wavu.wiki/t/Main_Page",
