@@ -15,11 +15,11 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.FeatureInfo
 
-internal class GlossaryFeature(
+internal class GlossaryFeatureDiscord(
     private val startGlossaryUseCase: StartGlossaryUseCase,
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
     private val urlProvider: InfilUrlProvider,
-): RegisteredFeature {
+): DiscordRegisteredFeature {
     override val mainCommand: Command = Command.GL
     override val featureInfo = FeatureInfo(
         name = "Infil Glossary",

@@ -8,7 +8,7 @@ import io.github.sophon.botdiscord.domain.usecase.GetHomingMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.SearchFrameDataUseCase
 import io.github.sophon.botdiscord.featureRegistry.Command
-import io.github.sophon.botdiscord.featureRegistry.RegisteredFeature
+import io.github.sophon.botdiscord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.botdiscord.featureRegistry.SlashCommand
 import io.github.sophon.botdiscord.util.createErrorEmbed
 import io.github.sophon.botdiscord.util.field
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.hours
 
-internal class FrameDataFeature(
+internal class FrameDataFeatureDiscord(
     private val downloadDataUseCase: DownloadDataUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
@@ -38,7 +38,7 @@ internal class FrameDataFeature(
     private val urlProvider: WavuUrlProvider,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
-): RegisteredFeature {
+): DiscordRegisteredFeature {
     override val mainCommand: Command = Command.FD
     override val featureInfo = FeatureInfo(
         name = "Wavu Wiki",

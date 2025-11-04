@@ -3,7 +3,7 @@ package io.github.sophon.botdiscord.featureRegistry
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.FeatureInfo
 
-interface RegisteredFeature {
+interface DiscordRegisteredFeature {
     val mainCommand: Command //TODO: refactor to List<Command>
     val featureInfo: FeatureInfo
     val slashCommands: List<SlashCommand>
