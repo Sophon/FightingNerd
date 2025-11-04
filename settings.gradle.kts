@@ -32,8 +32,8 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-include(":composeApp")
 include(":core")
+include(":composeApp")
+include(":bot:discord")
 include(":feat:glossaryInfil")
-include(":feat:botDiscord")
 include(":feat:wikiWavu")
