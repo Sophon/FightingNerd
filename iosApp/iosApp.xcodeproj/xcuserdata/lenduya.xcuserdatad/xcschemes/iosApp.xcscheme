@@ -8,7 +8,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E89F63E1FDE01A017455E86B"
-               BuildableName = "HeihachiReborn.app"
+               BuildableName = "Cornerman.app"
                BlueprintName = "iosApp"
                ReferencedContainer = "container:iosApp.xcodeproj">
             </BuildableReference>
@@ -23,7 +23,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E89F63E1FDE01A017455E86B"
-            BuildableName = "HeihachiReborn.app"
+            BuildableName = "Cornerman.app"
             BlueprintName = "iosApp"
             ReferencedContainer = "container:iosApp.xcodeproj">
          </BuildableReference>
