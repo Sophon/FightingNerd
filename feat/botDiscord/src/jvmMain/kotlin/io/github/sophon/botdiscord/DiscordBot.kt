@@ -2,8 +2,8 @@ package io.github.sophon.botdiscord
 
 import TEST_SERVER_ID
 import io.github.sophon.botdiscord.featureRegistry.Command
-import io.github.sophon.botdiscord.featureRegistry.GlossaryFeatureDiscord
-import io.github.sophon.botdiscord.featureRegistry.frameData.FrameDataFeatureDiscord
+import io.github.sophon.botdiscord.featureRegistry.infilGlossary.GlossaryFeatureDiscord
+import io.github.sophon.botdiscord.featureRegistry.wikiWavu.DiscordWavuWikiFeature
 import io.github.sophon.botdiscord.util.removeTag
 import io.github.sophon.core.util.isAtLeast
 import dev.kord.common.entity.Snowflake
@@ -28,7 +28,7 @@ interface DiscordBot {
 
 internal class DiscordBotImpl(
     private val apiKey: String,
-    frameDataFeature: FrameDataFeatureDiscord,
+    frameDataFeature: DiscordWavuWikiFeature,
     glossaryFeature: GlossaryFeatureDiscord,
 ): DiscordBot {
     private lateinit var kord: Kord

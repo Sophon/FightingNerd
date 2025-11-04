@@ -9,9 +9,9 @@ import io.github.sophon.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.SearchFrameDataUseCase
 import io.github.sophon.botdiscord.domain.usecase.SearchGlossaryUseCase
 import io.github.sophon.botdiscord.domain.usecase.StartGlossaryUseCase
-import io.github.sophon.botdiscord.featureRegistry.GlossaryFeatureDiscord
-import io.github.sophon.botdiscord.featureRegistry.frameData.FrameDataFeatureDiscord
-import io.github.sophon.botdiscord.featureRegistry.frameData.Scheduler
+import io.github.sophon.botdiscord.featureRegistry.infilGlossary.GlossaryFeatureDiscord
+import io.github.sophon.botdiscord.featureRegistry.wikiWavu.DiscordWavuWikiFeature
+import io.github.sophon.botdiscord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.botdiscord.infrastructure.FileReaderJVM
 import io.github.sophon.core.coreModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
@@ -61,7 +61,7 @@ fun dcBotModule(apiKey: String) = module {
     singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 
-    singleOf(::FrameDataFeatureDiscord)
+    singleOf(::DiscordWavuWikiFeature)
     singleOf(::GlossaryFeatureDiscord)
 
     singleOf(::FileReaderJVM).bind<FileReader>()

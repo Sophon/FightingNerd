@@ -1,4 +1,4 @@
-package io.github.sophon.botdiscord.featureRegistry.frameData
+package io.github.sophon.botdiscord.featureRegistry.wikiWavu
 
 import MAX_LENGTH_EMBED
 import io.github.sophon.botdiscord.BotError
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.hours
 
-internal class FrameDataFeatureDiscord(
+internal class DiscordWavuWikiFeature(
     private val downloadDataUseCase: DownloadDataUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
@@ -267,10 +267,12 @@ internal class FrameDataFeatureDiscord(
                 }
         }
     }
+
+
+    private companion object {
+        private const val TAG = "FrameDataFeature"
+        private const val KEY_CHAR_NAME = "character"
+        private const val KEY_MOVE = "move"
+        private const val GREEN = 0x00FF00
+    }
 }
-
-
-private const val TAG = "FrameDataFeature"
-private const val KEY_CHAR_NAME = "character"
-private const val KEY_MOVE = "move"
-private const val GREEN = 0x00FF00

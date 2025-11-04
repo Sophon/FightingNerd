@@ -1,4 +1,4 @@
-package io.github.sophon.botdiscord.featureRegistry
+package io.github.sophon.botdiscord.featureRegistry.infilGlossary
 
 import MAX_LENGTH_EMBED
 import io.github.sophon.botdiscord.domain.usecase.SearchGlossaryUseCase
@@ -13,6 +13,9 @@ import io.github.sophon.glossaryinfil.domain.GlossaryItem
 import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.botdiscord.featureRegistry.Command
+import io.github.sophon.botdiscord.featureRegistry.DiscordRegisteredFeature
+import io.github.sophon.botdiscord.featureRegistry.SlashCommand
 import io.github.sophon.core.domain.FeatureInfo
 
 internal class GlossaryFeatureDiscord(
