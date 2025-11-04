@@ -3,6 +3,7 @@ package io.github.sophon.botdiscord.util
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
+import io.github.sophon.discord.util.orClickable
 import org.junit.Test
 
 class MoveTest {
