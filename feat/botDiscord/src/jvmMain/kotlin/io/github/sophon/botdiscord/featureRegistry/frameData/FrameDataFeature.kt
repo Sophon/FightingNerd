@@ -9,7 +9,6 @@ import io.github.sophon.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.SearchFrameDataUseCase
 import io.github.sophon.botdiscord.featureRegistry.Command
 import io.github.sophon.botdiscord.featureRegistry.RegisteredFeature
-import io.github.sophon.botdiscord.featureRegistry.ServiceInfo
 import io.github.sophon.botdiscord.featureRegistry.SlashCommand
 import io.github.sophon.botdiscord.util.createErrorEmbed
 import io.github.sophon.botdiscord.util.field
@@ -24,6 +23,7 @@ import io.github.sophon.wikiwavu.domain.model.Move
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.domain.FeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -40,7 +40,7 @@ internal class FrameDataFeature(
     private val scope: CoroutineScope,
 ): RegisteredFeature {
     override val mainCommand: Command = Command.FD
-    override val serviceInfo = ServiceInfo(
+    override val featureInfo = FeatureInfo(
         name = "Wavu Wiki",
         url = "https://wavu.wiki/",
         iconUrl = "https://i.imgur.com/0cnTzNk.png",
@@ -202,8 +202,8 @@ internal class FrameDataFeature(
         }
 
         footer {
-            text = serviceInfo.name
-            icon = serviceInfo.iconUrl
+            text = featureInfo.name
+            icon = featureInfo.iconUrl
         }
     }
 

@@ -1,10 +1,11 @@
 package io.github.sophon.botdiscord.featureRegistry
 
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.domain.FeatureInfo
 
 interface RegisteredFeature {
     val mainCommand: Command //TODO: refactor to List<Command>
-    val serviceInfo: ServiceInfo
+    val featureInfo: FeatureInfo
     val slashCommands: List<SlashCommand>
 
     suspend fun start()
@@ -28,12 +29,6 @@ interface RegisteredFeature {
             .trim()
     }
 }
-
-data class ServiceInfo(
-    val name: String,
-    val url: String,
-    val iconUrl: String? = null,
-)
 
 data class SlashCommand(
     val name: Command,

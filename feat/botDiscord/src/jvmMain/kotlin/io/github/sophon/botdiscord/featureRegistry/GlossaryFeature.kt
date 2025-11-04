@@ -13,6 +13,7 @@ import io.github.sophon.glossaryinfil.domain.GlossaryItem
 import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.domain.FeatureInfo
 
 internal class GlossaryFeature(
     private val startGlossaryUseCase: StartGlossaryUseCase,
@@ -20,7 +21,7 @@ internal class GlossaryFeature(
     private val urlProvider: InfilUrlProvider,
 ): RegisteredFeature {
     override val mainCommand: Command = Command.GL
-    override val serviceInfo = ServiceInfo(
+    override val featureInfo = FeatureInfo(
         name = "Infil Glossary",
         url = "https://glossary.infil.net/",
         iconUrl = "https://i.imgur.com/OigKJBY.png",
@@ -86,8 +87,8 @@ internal class GlossaryFeature(
         }
 
         footer {
-            text = serviceInfo.name
-            icon = serviceInfo.iconUrl
+            text = featureInfo.name
+            icon = featureInfo.iconUrl
         }
     }
 

@@ -2,8 +2,8 @@ package io.github.sophon.cornerman.featureRegistry.wavuWiki
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import io.github.sophon.core.domain.FeatureInfo
 import io.github.sophon.cornerman.Destination
-import io.github.sophon.cornerman.featureRegistry.FeatureInfo
 import io.github.sophon.cornerman.featureRegistry.RegisteredFeature
 import kotlinx.coroutines.flow.Flow
 
