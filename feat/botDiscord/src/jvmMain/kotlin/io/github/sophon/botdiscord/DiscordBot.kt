@@ -1,11 +1,6 @@
 package io.github.sophon.botdiscord
 
 import TEST_SERVER_ID
-import io.github.sophon.botdiscord.featureRegistry.Command
-import io.github.sophon.botdiscord.featureRegistry.infilGlossary.GlossaryFeatureDiscord
-import io.github.sophon.botdiscord.featureRegistry.wikiWavu.DiscordWavuWikiFeature
-import io.github.sophon.botdiscord.util.removeTag
-import io.github.sophon.core.util.isAtLeast
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.createMessage
@@ -19,6 +14,10 @@ import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
 import io.github.aakira.napier.Napier
+import io.github.sophon.botdiscord.featureRegistry.Command
+import io.github.sophon.botdiscord.featureRegistry.DiscordRegisteredFeature
+import io.github.sophon.botdiscord.util.removeTag
+import io.github.sophon.core.util.isAtLeast
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
@@ -28,21 +27,16 @@ interface DiscordBot {
 
 internal class DiscordBotImpl(
     private val apiKey: String,
-    frameDataFeature: DiscordWavuWikiFeature,
-    glossaryFeature: GlossaryFeatureDiscord,
+    private val featureList: List<DiscordRegisteredFeature>,
 ): DiscordBot {
     private lateinit var kord: Kord
-    private val features = listOf(
-        frameDataFeature,
-        glossaryFeature,
-    )
 
     override suspend fun startSession() {
         Napier.d(tag = TAG) { "Starting with API: $apiKey" }
 
         coroutineScope {
-            features.forEach { service ->
-                launch { service.start() }
+            featureList.forEach { feature ->
+                launch { feature.start() }
             }
         }
         startKord()
@@ -91,8 +85,8 @@ internal class DiscordBotImpl(
             Command.FD -> firstWord.lowercase() + rawQuery.substring(firstWord.length)
             else -> rawQuery.substringAfter(' ', rawQuery)
         }
-        val service = features.first { service ->
-            service.slashCommands.any { it.name == command }
+        val service = featureList.first { feature ->
+            feature.slashCommands.any { it.name == command }
         }
         val embedBuilder = service.execute(command, query)
 
@@ -107,8 +101,8 @@ internal class DiscordBotImpl(
         val command = Command.entries
             .find { it.name.equals(interaction.command.rootName, ignoreCase = true) }
             ?: return //this should NEVER happen
-        val service = features.first { service ->
-            service.slashCommands.any { it.name == command }
+        val service = featureList.first { feature ->
+            feature.slashCommands.any { it.name == command }
         }
         val args = interaction.command.strings
         val query = service.buildQuery(args, command)
@@ -120,8 +114,8 @@ internal class DiscordBotImpl(
     private suspend fun createCommandsForTestServer() {
         val testGuildId = Snowflake(TEST_SERVER_ID)
 
-        features.forEach { service ->
-            service.slashCommands.forEach { slashCommand ->
+        featureList.forEach { feature ->
+            feature.slashCommands.forEach { slashCommand ->
                 kord.createGuildChatInputCommand(
                     guildId = testGuildId,
                     name = slashCommand.name.name.lowercase(),
@@ -138,8 +132,8 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun createGlobalCommand() {
-        features.forEach { service ->
-            service.slashCommands.forEach { slashCommand ->
+        featureList.forEach { feature ->
+            feature.slashCommands.forEach { slashCommand ->
                 kord.createGlobalChatInputCommand(
                     name = slashCommand.name.name.lowercase(),
                     description = slashCommand.description,
