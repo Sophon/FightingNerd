@@ -1,4 +1,4 @@
-package io.github.sophon.botdiscord.featureRegistry.frameData
+package io.github.sophon.botdiscord.featureRegistry.wikiWavu
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay

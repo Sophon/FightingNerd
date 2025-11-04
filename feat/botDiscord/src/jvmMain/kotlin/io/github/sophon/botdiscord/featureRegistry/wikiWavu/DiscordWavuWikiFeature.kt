@@ -1,15 +1,14 @@
-package io.github.sophon.botdiscord.featureRegistry.frameData
+package io.github.sophon.botdiscord.featureRegistry.wikiWavu
 
 import MAX_LENGTH_EMBED
 import io.github.sophon.botdiscord.BotError
-import io.github.sophon.botdiscord.domain.usecase.DownloadMoveListUseCase
+import io.github.sophon.botdiscord.domain.usecase.DownloadDataUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetHeatMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetHomingMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.SearchFrameDataUseCase
 import io.github.sophon.botdiscord.featureRegistry.Command
-import io.github.sophon.botdiscord.featureRegistry.RegisteredFeature
-import io.github.sophon.botdiscord.featureRegistry.ServiceInfo
+import io.github.sophon.botdiscord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.botdiscord.featureRegistry.SlashCommand
 import io.github.sophon.botdiscord.util.createErrorEmbed
 import io.github.sophon.botdiscord.util.field
@@ -24,13 +23,14 @@ import io.github.sophon.wikiwavu.domain.model.Move
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.domain.FeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.hours
 
-internal class FrameDataFeature(
-    private val downloadMoveListUseCase: DownloadMoveListUseCase,
+internal class DiscordWavuWikiFeature(
+    private val downloadDataUseCase: DownloadDataUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
@@ -38,9 +38,9 @@ internal class FrameDataFeature(
     private val urlProvider: WavuUrlProvider,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
-): RegisteredFeature {
+): DiscordRegisteredFeature {
     override val mainCommand: Command = Command.FD
-    override val serviceInfo = ServiceInfo(
+    override val featureInfo = FeatureInfo(
         name = "Wavu Wiki",
         url = "https://wavu.wiki/",
         iconUrl = "https://i.imgur.com/0cnTzNk.png",
@@ -116,7 +116,7 @@ internal class FrameDataFeature(
 
 
     private suspend fun downloadCompleteMoveList(): EmptyResult<BotError> {
-        return downloadMoveListUseCase.invoke()
+        return downloadDataUseCase.invoke()
     }
 
     private suspend fun searchFrameData(
@@ -202,8 +202,8 @@ internal class FrameDataFeature(
         }
 
         footer {
-            text = serviceInfo.name
-            icon = serviceInfo.iconUrl
+            text = featureInfo.name
+            icon = featureInfo.iconUrl
         }
     }
 
@@ -267,10 +267,12 @@ internal class FrameDataFeature(
                 }
         }
     }
+
+
+    private companion object {
+        private const val TAG = "FrameDataFeature"
+        private const val KEY_CHAR_NAME = "character"
+        private const val KEY_MOVE = "move"
+        private const val GREEN = 0x00FF00
+    }
 }
-
-
-private const val TAG = "FrameDataFeature"
-private const val KEY_CHAR_NAME = "character"
-private const val KEY_MOVE = "move"
-private const val GREEN = 0x00FF00

@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 //TODO: ConfigRepo
 @Serializable
-data class DcConfig(
+data class DiscordConfig(
     val discordBotApiKey: String
 )

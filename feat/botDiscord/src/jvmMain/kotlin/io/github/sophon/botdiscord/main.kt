@@ -1,7 +1,7 @@
 package io.github.sophon.botdiscord
 
 import CONFIG_FILE_NAME
-import io.github.sophon.botdiscord.config.DcConfig
+import io.github.sophon.botdiscord.config.DiscordConfig
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import kotlinx.coroutines.coroutineScope
@@ -35,7 +35,7 @@ private fun getApiKey(): String {
     val json = Json {
         ignoreUnknownKeys = true
     }
-    val dcConfig = json.decodeFromString<DcConfig>(configFile.readText())
+    val discordConfig = json.decodeFromString<DiscordConfig>(configFile.readText())
 
-    return dcConfig.discordBotApiKey
+    return discordConfig.discordBotApiKey
 }

@@ -1,17 +1,20 @@
 package io.github.sophon.botdiscord
 
+import io.github.sophon.botdiscord.config.ConfigLoader
 import io.github.sophon.botdiscord.data.InMemoryGlossaryDB
 import io.github.sophon.botdiscord.data.InMemoryMoveListDB
-import io.github.sophon.botdiscord.domain.usecase.DownloadMoveListUseCase
+import io.github.sophon.botdiscord.domain.usecase.DownloadDataUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetHeatMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetHomingMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.GetPowerCrushMovesUseCase
 import io.github.sophon.botdiscord.domain.usecase.SearchFrameDataUseCase
 import io.github.sophon.botdiscord.domain.usecase.SearchGlossaryUseCase
 import io.github.sophon.botdiscord.domain.usecase.StartGlossaryUseCase
-import io.github.sophon.botdiscord.featureRegistry.GlossaryFeature
-import io.github.sophon.botdiscord.featureRegistry.frameData.FrameDataFeature
-import io.github.sophon.botdiscord.featureRegistry.frameData.Scheduler
+import io.github.sophon.botdiscord.featureRegistry.DiscordRegisteredFeature
+import io.github.sophon.botdiscord.featureRegistry.FeatureRegistry
+import io.github.sophon.botdiscord.featureRegistry.infilGlossary.GlossaryFeatureDiscord
+import io.github.sophon.botdiscord.featureRegistry.wikiWavu.DiscordWavuWikiFeature
+import io.github.sophon.botdiscord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.botdiscord.infrastructure.FileReaderJVM
 import io.github.sophon.core.coreModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
@@ -56,13 +59,27 @@ fun dcBotModule(apiKey: String) = module {
     singleOf(::GetPowerCrushMovesUseCase)
     singleOf(::GetHeatMovesUseCase)
     singleOf(::GetHomingMovesUseCase)
-    singleOf(::DownloadMoveListUseCase)
+    singleOf(::DownloadDataUseCase)
 
     singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 
-    singleOf(::FrameDataFeature)
-    singleOf(::GlossaryFeature)
+    //region FEATURES
+    single { FeatureRegistry(getAll()) }
+
+    singleOf(::DiscordWavuWikiFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::GlossaryFeatureDiscord).bind<DiscordRegisteredFeature>()
+
+    singleOf(::ConfigLoader)
+    single<List<DiscordRegisteredFeature>> {
+        val config = get<ConfigLoader>().loadConfig()
+        val registry = get<FeatureRegistry>()
+        val enabledFeatures = config.featureList
+            .filter { it.isEnabled }
+            .map { it.name }
+        registry.getFeatures(enabledFeatures)
+    }
+    //endregion
 
     singleOf(::FileReaderJVM).bind<FileReader>()
     singleOf(::Scheduler)

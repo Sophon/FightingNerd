@@ -15,7 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.cornerman.featureRegistry.FeatureInfo
+import io.github.sophon.core.domain.FeatureInfo
 import io.github.sophon.cornerman.theme.AppTheme
 import io.github.sophon.cornerman.uiGallery.CharacterOverview
 import io.github.sophon.cornerman.uiGallery.FeatureInfoHeader
