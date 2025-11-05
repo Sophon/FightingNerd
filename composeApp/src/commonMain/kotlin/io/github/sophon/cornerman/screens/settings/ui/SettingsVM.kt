@@ -1,10 +1,62 @@
 package io.github.sophon.cornerman.screens.settings.ui
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
+import io.github.sophon.core.domain.onError
+import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.cornerman.screens.settings.usecase.GetAvailableFeaturesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 
-internal class SettingsVM(): ViewModel() {
-    private val _state = MutableStateFlow<SettingsViewState>(SettingsViewState())
-    val state = _state.asStateFlow()
+internal class SettingsVM(
+    private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
+): ViewModel() {
+    private val _state = MutableStateFlow(SettingsViewState())
+    val state = _state
+        .onStart {
+            loadFeatures()
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = SettingsViewState(),
+        )
+
+    fun toggleFeature(index: Int) {
+        val feature = _state.value.featureList.getOrNull(index)
+        if (feature == null) {
+            Napier.e(tag = TAG) { "$index: out of bounds" }
+            return
+        }
+
+        _state.update {
+            it.copy(
+                featureList = it.featureList.mapIndexed { i, feature ->
+                    if (i == index) feature.copy(isEnabled = feature.isEnabled.not())
+                    else feature
+                }
+            )
+        }
+
+        //TODO: shared preferences
+    }
+
+
+    private suspend fun loadFeatures() {
+        getAvailableFeaturesUseCase.invoke()
+            .onSuccess { featureList ->
+                _state.update { it.copy(featureList = featureList) }
+            }
+            .onError { error ->
+                Napier.e(tag = TAG) { error.toString() }
+            }
+    }
+
+    companion object {
+        private const val TAG = "SettingsVM"
+    }
 }
