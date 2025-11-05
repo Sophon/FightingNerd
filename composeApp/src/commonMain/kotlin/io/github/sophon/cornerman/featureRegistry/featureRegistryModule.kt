@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.featureRegistry
 
-import io.github.sophon.cornerman.featureRegistry.wavuWiki.WavuWikiFeatureCompose
+import io.github.sophon.cornerman.featureRegistry.wavuWiki.WavuWikiComposeFeature
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.wavuWikiFeatureModule
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -10,7 +10,7 @@ internal val featureRegistryModule = module {
     includes(
         wavuWikiFeatureModule,
     )
-    singleOf(::WavuWikiFeatureCompose).bind<ComposeRegisteredFeature>()
+    singleOf(::WavuWikiComposeFeature).bind<ComposeRegisteredFeature>()
 
     single<List<ComposeRegisteredFeature>>{ getAll() }
 

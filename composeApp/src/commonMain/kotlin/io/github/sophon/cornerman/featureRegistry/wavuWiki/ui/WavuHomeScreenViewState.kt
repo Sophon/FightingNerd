@@ -1,4 +1,4 @@
-package io.github.sophon.cornerman.featureRegistry.wavuWiki
+package io.github.sophon.cornerman.featureRegistry.wavuWiki.ui
 
 import io.github.sophon.wikiwavu.domain.model.Character
 
