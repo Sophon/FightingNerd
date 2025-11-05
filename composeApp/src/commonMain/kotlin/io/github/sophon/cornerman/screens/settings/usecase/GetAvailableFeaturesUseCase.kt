@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.cornerman.featureRegistry.FeatureRegistry
+import io.github.sophon.cornerman.screens.settings.KEY_PREFIX_FEATURE
 import io.github.sophon.cornerman.screens.settings.SettingsError
 import io.github.sophon.cornerman.screens.settings.ui.SettingsViewState
 import kotlinx.coroutines.flow.first
@@ -31,7 +32,7 @@ internal class GetAvailableFeaturesUseCase(
         return try {
             store.edit { preferences ->
                 featureList.forEach { feature ->
-                    val key = booleanPreferencesKey(KEY_PREFIX + feature.featureInfo.name)
+                    val key = booleanPreferencesKey(KEY_PREFIX_FEATURE + feature.featureInfo.name)
                     if (key !in preferences) {
                         preferences[key] = true
                     }
@@ -51,7 +52,7 @@ internal class GetAvailableFeaturesUseCase(
         return try {
             val preferences = store.data.first()
             val featureSettings = featureList.map { feature ->
-                val key = booleanPreferencesKey(KEY_PREFIX + feature.featureInfo.name)
+                val key = booleanPreferencesKey(KEY_PREFIX_FEATURE + feature.featureInfo.name)
                 val isEnabled = preferences[key] ?: true
                 SettingsViewState.FeatureSetting(feature, isEnabled)
             }
@@ -61,10 +62,5 @@ internal class GetAvailableFeaturesUseCase(
         } catch (_: Exception) {
             Result.Error(SettingsError.UNKNOWN)
         }
-    }
-
-
-    companion object {
-        private const val KEY_PREFIX = "settings_"
     }
 }

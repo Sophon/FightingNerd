@@ -6,14 +6,17 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.cornerman.screens.settings.usecase.GetAvailableFeaturesUseCase
+import io.github.sophon.cornerman.screens.settings.usecase.ToggleFeatureUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class SettingsVM(
     private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
+    private val toggleFeatureUseCase: ToggleFeatureUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(SettingsViewState())
     val state = _state
@@ -32,17 +35,22 @@ internal class SettingsVM(
             Napier.e(tag = TAG) { "$index: out of bounds" }
             return
         }
+        val newEnabledState = feature.isEnabled.not()
 
-        _state.update {
-            it.copy(
-                featureList = it.featureList.mapIndexed { i, feature ->
-                    if (i == index) feature.copy(isEnabled = feature.isEnabled.not())
-                    else feature
+        viewModelScope.launch {
+            toggleFeatureUseCase.invoke(feature = feature.feature, isEnabled = newEnabledState)
+                .onSuccess {
+                    _state.update {
+                        it.copy(
+                            featureList = it.featureList.mapIndexed { i, feature ->
+                                if (i == index) feature.copy(isEnabled = newEnabledState)
+                                else feature
+                            }
+                        )
+                    }
                 }
-            )
+                .onError { Napier.e(tag = TAG) { it.toString() } }
         }
-
-        //TODO: shared preferences
     }
 
 
