@@ -1,4 +1,4 @@
-<img width="3840" height="1920" alt="banner" src="https://github.com/user-attachments/assets/c67b7e74-c079-4e40-8d02-f8a476b8d517" />
+<img width="2560" height="1280" alt="banner" src="https://github.com/user-attachments/assets/049c3a43-9ec0-4706-8f29-9d350227dae6" />
 
 
 # Cornerman
