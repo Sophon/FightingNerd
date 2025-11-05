@@ -3,14 +3,14 @@ package io.github.sophon.cornerman.screens.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.onError
-import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.screens.home.usecase.GetAvailableFeaturesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class HomeVM(
     private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
@@ -18,7 +18,9 @@ internal class HomeVM(
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state
         .onStart {
-            loadFeatures()
+            viewModelScope.launch {
+                loadFeatures()
+            }
         }
         .stateIn(
             scope = viewModelScope,
@@ -37,11 +39,16 @@ internal class HomeVM(
 
 
     private suspend fun loadFeatures() {
-        getAvailableFeaturesUseCase.invoke()
-            .onSuccess { featureList ->
-                _state.update { it.copy(composeRegisteredFeatures = featureList) }
+        getAvailableFeaturesUseCase.invoke().collect { result ->
+            when (result) {
+                is Result.Success -> {
+                    _state.update { it.copy(composeRegisteredFeatures = result.data) }
+                }
+                is Result.Error -> {
+                    Napier.e(tag = TAG) { result.error.toString() }
+                }
             }
-            .onError { Napier.e(tag = TAG) { it.toString() } }
+        }
     }
 
     companion object {
