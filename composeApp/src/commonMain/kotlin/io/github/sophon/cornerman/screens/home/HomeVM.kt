@@ -2,15 +2,15 @@ package io.github.sophon.cornerman.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.sophon.cornerman.featureRegistry.ComposeRegisteredFeature
+import io.github.sophon.cornerman.featureRegistry.FeatureRegistry
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-class HomeVM(
-    private val featureList: List<ComposeRegisteredFeature>
+internal class HomeVM(
+    private val featureRegistry: FeatureRegistry,
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state
@@ -38,6 +38,7 @@ class HomeVM(
 
 
     private fun loadFeatures() {
+        val featureList = featureRegistry.getFeatures()
         _state.update { it.copy(composeRegisteredFeatures = featureList) }
     }
 }

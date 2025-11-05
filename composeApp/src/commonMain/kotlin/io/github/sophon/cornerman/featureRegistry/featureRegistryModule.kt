@@ -1,0 +1,19 @@
+package io.github.sophon.cornerman.featureRegistry
+
+import io.github.sophon.cornerman.featureRegistry.wavuWiki.WavuWikiFeatureCompose
+import io.github.sophon.cornerman.featureRegistry.wavuWiki.wavuWikiFeatureModule
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
+import org.koin.dsl.module
+
+internal val featureRegistryModule = module {
+    includes(
+        wavuWikiFeatureModule,
+    )
+    singleOf(::WavuWikiFeatureCompose).bind<ComposeRegisteredFeature>()
+
+    single<List<ComposeRegisteredFeature>>{ getAll() }
+
+    singleOf(::FeatureRegistry)
+    singleOf(::FeatureListLoader)
+}
