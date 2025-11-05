@@ -15,5 +15,5 @@ internal val featureRegistryModule = module {
     single<List<ComposeRegisteredFeature>>{ getAll() }
 
     singleOf(::FeatureRegistry)
-    singleOf(::FeatureListLoader)
+    singleOf(::FeatureListLoaderImpl).bind<FeatureListLoader>()
 }

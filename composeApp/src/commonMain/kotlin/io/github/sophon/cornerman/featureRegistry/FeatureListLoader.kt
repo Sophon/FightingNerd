@@ -5,10 +5,14 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.FeatureConfig
 import kotlinx.serialization.json.Json
 
-internal class FeatureListLoader(
+interface FeatureListLoader {
+    suspend fun loadFeatureList(): FeatureConfig
+}
+
+internal class FeatureListLoaderImpl(
     private val json: Json,
-) {
-    suspend fun loadFeatureList(): FeatureConfig {
+): FeatureListLoader {
+    override suspend fun loadFeatureList(): FeatureConfig {
         val featureListString = Res.readBytes(CONFIG_PATH).decodeToString()
         return json.decodeFromString<FeatureConfig>(featureListString).apply {
             Napier.d(tag = TAG) { this.toString() }
