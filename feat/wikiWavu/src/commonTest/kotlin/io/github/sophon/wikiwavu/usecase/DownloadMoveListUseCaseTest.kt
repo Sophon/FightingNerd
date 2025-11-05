@@ -6,10 +6,10 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Character
 import io.github.sophon.wikiwavu.data.MoveDto
 import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
-import io.github.sophon.wikiwavu.domain.model.Character
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

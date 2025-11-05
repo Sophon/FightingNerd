@@ -4,7 +4,6 @@ import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.wikiwavu.CHAR_LIST_URL
-import io.github.sophon.wikiwavu.domain.model.Character
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 

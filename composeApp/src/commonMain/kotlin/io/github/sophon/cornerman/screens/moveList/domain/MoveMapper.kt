@@ -1,8 +1,8 @@
 package io.github.sophon.cornerman.screens.moveList.domain
 
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.data.MoveEntity
 import io.github.sophon.cornerman.screens.moveList.util.cleanComboLinks
-import io.github.sophon.wikiwavu.domain.model.Move
 
 internal fun List<Move>.toDomain(): List<MoveCategory> {
     val categorizedMoves = this

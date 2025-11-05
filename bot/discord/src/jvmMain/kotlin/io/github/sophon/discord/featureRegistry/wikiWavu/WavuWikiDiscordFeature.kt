@@ -7,6 +7,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.FeatureInfo
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
@@ -23,7 +24,6 @@ import io.github.sophon.discord.util.createErrorEmbed
 import io.github.sophon.discord.util.field
 import io.github.sophon.discord.util.orClickable
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
-import io.github.sophon.wikiwavu.domain.model.Move
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

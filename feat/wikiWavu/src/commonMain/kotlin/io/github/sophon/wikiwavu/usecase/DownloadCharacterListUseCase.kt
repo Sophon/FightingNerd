@@ -2,12 +2,12 @@ package io.github.sophon.wikiwavu.usecase
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Character
 import io.github.sophon.wikiwavu.CHAR_LIST
 import io.github.sophon.wikiwavu.MOVE_URL
 import io.github.sophon.wikiwavu.WavuError
 import io.github.sophon.wikiwavu.data.CharacterListResponseDto
 import io.github.sophon.wikiwavu.data.TekkenDocsDataSource
-import io.github.sophon.wikiwavu.domain.model.Character
 import io.github.sophon.wikiwavu.infrastructure.FileReader
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json

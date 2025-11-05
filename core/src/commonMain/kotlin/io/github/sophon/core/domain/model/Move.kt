@@ -1,10 +1,7 @@
-package io.github.sophon.wikiwavu.domain.model
+package io.github.sophon.core.domain.model
 
 import kotlinx.serialization.Serializable
 
-/**
- * @see <a href="https://wavu.wiki/t/Template:Move">Wavu Wiki Move Template</a>
- */
 @Serializable
 data class Move(
     val charName: String,

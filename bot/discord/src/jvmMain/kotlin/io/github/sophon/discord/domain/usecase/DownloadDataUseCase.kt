@@ -5,10 +5,10 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.asEmptyDataResult
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.mapError
+import io.github.sophon.core.domain.model.Character
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomain
 import io.github.sophon.wikiwavu.WavuWikiClient
-import io.github.sophon.wikiwavu.domain.model.Character
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.firstOrNull

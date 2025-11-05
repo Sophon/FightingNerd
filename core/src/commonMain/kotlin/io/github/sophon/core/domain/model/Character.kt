@@ -1,4 +1,4 @@
-package io.github.sophon.wikiwavu.domain.model
+package io.github.sophon.core.domain.model
 
 import kotlinx.serialization.Serializable
 

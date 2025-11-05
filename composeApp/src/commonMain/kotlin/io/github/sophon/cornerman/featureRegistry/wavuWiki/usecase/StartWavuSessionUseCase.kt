@@ -6,11 +6,11 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.asEmptyDataResult
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.mapError
+import io.github.sophon.core.domain.model.Character
 import io.github.sophon.core.domain.onError
 import io.github.sophon.cornerman.screens.home.HomeError
 import io.github.sophon.cornerman.screens.home.toDomain
 import io.github.sophon.wikiwavu.WavuWikiClient
-import io.github.sophon.wikiwavu.domain.model.Character
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapMerge

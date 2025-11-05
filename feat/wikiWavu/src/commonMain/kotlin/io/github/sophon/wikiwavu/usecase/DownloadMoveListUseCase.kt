@@ -1,12 +1,12 @@
 package io.github.sophon.wikiwavu.usecase
 
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.wikiwavu.WavuError
 import io.github.sophon.wikiwavu.data.MoveDto
 import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import io.github.sophon.wikiwavu.domain.mapToDomain
-import io.github.sophon.wikiwavu.domain.model.Move
 
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,

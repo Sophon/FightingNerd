@@ -1,6 +1,5 @@
 package io.github.sophon.wikiwavu.data
 
-import io.github.sophon.wikiwavu.domain.model.Character
 import kotlinx.serialization.Serializable
 
 @Serializable

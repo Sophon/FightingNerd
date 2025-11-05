@@ -1,8 +1,8 @@
 package io.github.sophon.wikiwavu.domain
 
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.wikiwavu.data.MoveDto
-import io.github.sophon.wikiwavu.domain.model.Move
 import io.github.sophon.wikiwavu.util.cleanMoveInput
 
 internal fun MoveDto.mapToDomain(
