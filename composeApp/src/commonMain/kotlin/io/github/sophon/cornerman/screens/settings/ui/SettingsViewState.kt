@@ -35,7 +35,14 @@ internal data class SettingsViewState(
                         name = "SuperCombo",
                         url = "",
                     ),
-                    isEnabled = false,
+                    isEnabled = true,
+                ),
+                FeatureSetting(
+                    featureInfo = FeatureInfo(
+                        name = "Dustloop",
+                        url = "",
+                    ),
+                    isEnabled = true,
                 ),
             )
         )
