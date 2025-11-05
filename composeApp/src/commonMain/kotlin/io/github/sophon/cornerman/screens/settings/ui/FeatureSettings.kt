@@ -3,12 +3,15 @@ package io.github.sophon.cornerman.screens.settings.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -43,28 +46,38 @@ internal fun FeatureSettings(
             ),
     ) {
         itemsIndexed(featureSettingList) { index, featureSetting ->
-            val color = if (index % 2 == 0)
-                MaterialTheme.colorScheme.surface
-            else
-                MaterialTheme.colorScheme.surfaceVariant
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                    .padding(vertical = 4.dp, horizontal = 8.dp)
             ) {
-                Text(
-                    text = featureSetting.featureInfo.name,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
+                if (index > 0) {
+                    HorizontalDivider(
+                        Modifier
+                            .height(1.dp)
+                            .padding(horizontal = 8.dp)
+                            .background(MaterialTheme.colorScheme.outline.copy(.1f))
+                    )
+                }
 
-                Switch(
-                    checked = featureSetting.isEnabled,
-                    onCheckedChange = { onClick(index) }
-                )
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(vertical = 4.dp, horizontal = 8.dp)
+                ) {
+                    Text(
+                        text = featureSetting.featureInfo.name,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+
+                    Switch(
+                        checked = featureSetting.isEnabled,
+                        onCheckedChange = { onClick(index) }
+                    )
+                }
             }
         }
     }

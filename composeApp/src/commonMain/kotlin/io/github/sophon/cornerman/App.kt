@@ -18,6 +18,7 @@ import androidx.navigation.toRoute
 import io.github.sophon.cornerman.featureRegistry.FeatureRegistry
 import io.github.sophon.cornerman.screens.home.HomeScreen
 import io.github.sophon.cornerman.screens.moveList.ui.MoveListScreen
+import io.github.sophon.cornerman.screens.settings.ui.SettingsScreen
 import io.github.sophon.cornerman.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -50,6 +51,10 @@ fun App() {
                     MoveListScreen(
                         charName = navBackstackEntry.toRoute<Destination.MoveList>().charName,
                     )
+                }
+
+                composable<Destination.Settings> {
+                    SettingsScreen()
                 }
             }
         }

@@ -37,10 +37,6 @@ internal class HomeVM(
         //TODO
     }
 
-    fun onSettingsClick() {
-        //TODO:
-    }
-
 
     private fun loadFeatures() {
         val featureList = featureRegistry.getFeatures()

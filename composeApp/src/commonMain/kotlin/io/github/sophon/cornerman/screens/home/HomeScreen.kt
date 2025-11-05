@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import io.github.sophon.cornerman.Destination
 import io.github.sophon.cornerman.uiGallery.AppBottomBar
 import io.github.sophon.cornerman.uiGallery.BottomBarItem
 import org.koin.compose.viewmodel.koinViewModel
@@ -43,7 +44,7 @@ fun HomeScreen(
             HomeBottomBar(
                 onSavedClick = vm::onSavedClick,
                 onSearchClick = vm::onSearchClick,
-                onSettingsClick = vm::onSettingsClick,
+                onSettingsClick = { navHostController.navigate(Destination.Settings) },
             )
         },
         modifier = modifier
@@ -110,7 +111,7 @@ private fun HomeBottomBar(
                 icon = Icons.Outlined.Settings,
                 text = "Settings",
                 onClick = onSettingsClick,
-                isEnabled = false,
+                isEnabled = true,
             )
         ),
         modifier = modifier,
