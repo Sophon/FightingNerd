@@ -9,6 +9,11 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
+/**
+ * TODO: we should get the feature list from shared preferences
+ *  so we should reuse the getAvailableFeaturesUseCase
+ *  think about whether that usecase should return the full wrapper class or just FeatureInfo which we can use to get the full wrapper class from the Feature Registry.
+ */
 internal class HomeVM(
     private val featureRegistry: FeatureRegistry,
 ): ViewModel() {

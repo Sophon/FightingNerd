@@ -6,8 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.FeatureInfo
 import io.github.sophon.core.domain.Result
-import io.github.sophon.cornerman.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.cornerman.featureRegistry.FeatureRegistry
 import io.github.sophon.cornerman.screens.settings.KEY_PREFIX_FEATURE
 import io.github.sophon.cornerman.screens.settings.SettingsError
@@ -19,7 +19,7 @@ internal class GetAvailableFeaturesUseCase(
     private val store: DataStore<Preferences>,
 ) {
     suspend fun invoke(): Result<List<SettingsViewState.FeatureSetting>, SettingsError> {
-        val featureList = registry.getFeatures()
+        val featureList = registry.getFeatures().map { it.featureInfo }
         return when (val result = updatePreferences(featureList)) {
             is Result.Success -> getFeatureSettings(featureList)
             is Result.Error -> result
@@ -27,12 +27,12 @@ internal class GetAvailableFeaturesUseCase(
     }
 
     private suspend fun updatePreferences(
-        featureList: List<ComposeRegisteredFeature>
+        featureList: List<FeatureInfo>
     ): EmptyResult<SettingsError> {
         return try {
             store.edit { preferences ->
-                featureList.forEach { feature ->
-                    val key = booleanPreferencesKey(KEY_PREFIX_FEATURE + feature.featureInfo.name)
+                featureList.forEach { featureInfo ->
+                    val key = booleanPreferencesKey(KEY_PREFIX_FEATURE + featureInfo.name)
                     if (key !in preferences) {
                         preferences[key] = true
                     }
@@ -47,14 +47,14 @@ internal class GetAvailableFeaturesUseCase(
     }
 
     private suspend fun getFeatureSettings(
-        featureList: List<ComposeRegisteredFeature>,
+        featureList: List<FeatureInfo>,
     ): Result<List<SettingsViewState.FeatureSetting>, SettingsError> {
         return try {
             val preferences = store.data.first()
-            val featureSettings = featureList.map { feature ->
-                val key = booleanPreferencesKey(KEY_PREFIX_FEATURE + feature.featureInfo.name)
+            val featureSettings = featureList.map { featureInfo ->
+                val key = booleanPreferencesKey(KEY_PREFIX_FEATURE + featureInfo.name)
                 val isEnabled = preferences[key] ?: true
-                SettingsViewState.FeatureSetting(feature, isEnabled)
+                SettingsViewState.FeatureSetting(featureInfo, isEnabled)
             }
             Result.Success(featureSettings)
         } catch (_: IOException) {

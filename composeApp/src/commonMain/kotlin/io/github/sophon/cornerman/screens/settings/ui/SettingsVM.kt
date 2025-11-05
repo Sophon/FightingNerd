@@ -38,7 +38,7 @@ internal class SettingsVM(
         val newEnabledState = feature.isEnabled.not()
 
         viewModelScope.launch {
-            toggleFeatureUseCase.invoke(feature = feature.feature, isEnabled = newEnabledState)
+            toggleFeatureUseCase.invoke(featureInfo = feature.featureInfo, isEnabled = newEnabledState)
                 .onSuccess {
                     _state.update {
                         it.copy(

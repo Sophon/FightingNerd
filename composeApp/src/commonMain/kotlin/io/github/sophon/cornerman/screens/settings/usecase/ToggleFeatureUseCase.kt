@@ -6,8 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.FeatureInfo
 import io.github.sophon.core.domain.Result
-import io.github.sophon.cornerman.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.cornerman.screens.settings.KEY_PREFIX_FEATURE
 import io.github.sophon.cornerman.screens.settings.SettingsError
 
@@ -15,12 +15,12 @@ internal class ToggleFeatureUseCase(
     private val store: DataStore<Preferences>,
 ) {
     suspend fun invoke(
-        feature: ComposeRegisteredFeature,
+        featureInfo: FeatureInfo,
         isEnabled: Boolean,
     ): EmptyResult<SettingsError> {
         return try {
             store.edit {
-                val key = booleanPreferencesKey(KEY_PREFIX_FEATURE + feature.featureInfo.name)
+                val key = booleanPreferencesKey(KEY_PREFIX_FEATURE + featureInfo.name)
                 it[key] = isEnabled
             }
             Result.Success(Unit)
