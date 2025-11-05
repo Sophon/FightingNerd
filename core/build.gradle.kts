@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -48,12 +49,14 @@ kotlin {
                 implementation(libs.bundles.ktor)
                 implementation(libs.ktor.cio)
                 implementation(libs.ktor.slf)
+                implementation(libs.kotlinx.serialization.json)
+
                 api(libs.koin.core)
             }
         }
 
         commonTest.dependencies {
-            implementation(libs.kotlin.test)  // ✅ Only common test lib
+            implementation(libs.kotlin.test)
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
         }
