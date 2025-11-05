@@ -1,13 +1,13 @@
-package io.github.sophon.discord.config
+package io.github.sophon.core.domain
 
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BotConfig(
-    val featureList: List<FeatureConfig>,
+data class FeatureConfig(
+    val featureList: List<Feature>,
 ) {
     @Serializable
-    data class FeatureConfig(
+    data class Feature(
         val name: String,
         val isEnabled: Boolean,
     )

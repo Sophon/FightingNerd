@@ -12,4 +12,7 @@ sealed class Destination {
     data class MoveList(
         val charName: String,
     )
+
+    @Serializable
+    object Settings
 }

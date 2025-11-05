@@ -1,9 +1,8 @@
 package io.github.sophon.cornerman
 
 import io.github.sophon.core.coreModule
-import io.github.sophon.cornerman.featureRegistry.wavuWiki.wavuWikiFeatureModule
-import io.github.sophon.cornerman.screens.home.homeModule
-import io.github.sophon.cornerman.screens.moveList.moveListModule
+import io.github.sophon.cornerman.featureRegistry.featureRegistryModule
+import io.github.sophon.cornerman.screens.screensModule
 import io.github.sophon.wikiwavu.wavuModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -14,12 +13,13 @@ fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
 
     modules(
         platformModule,
+
         coreModule,
         wavuModule,
-        moveListModule(),
-        homeModule,
 
-        wavuWikiFeatureModule,
+        screensModule,
+
+        featureRegistryModule,
     )
 }
 

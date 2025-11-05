@@ -14,7 +14,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-fun moveListModule() = module {
+internal val moveListModule = module {
     viewModelOf(::MoveListVM)
 
     singleOf(::FetchMoveListUseCase)

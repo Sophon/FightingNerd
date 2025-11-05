@@ -13,10 +13,11 @@ import io.github.sophon.discord.domain.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.domain.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.FeatureRegistry
-import io.github.sophon.discord.featureRegistry.infilGlossary.GlossaryFeatureDiscord
-import io.github.sophon.discord.featureRegistry.wikiWavu.DiscordWavuWikiFeature
+import io.github.sophon.discord.featureRegistry.featureRegistryModule
+import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
-import io.github.sophon.discord.infrastructure.FileReaderJVM
+import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.wikiwavu.data.MoveListDB
@@ -40,8 +41,11 @@ fun initKoin(
     modules(
         coreModule,
         dcBotModule(apiKey),
+
         infilModule,
         wavuModule,
+
+        featureRegistryModule,
     )
 }
 
@@ -53,34 +57,6 @@ fun dcBotModule(apiKey: String) = module {
 
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
 
-    singleOf(::StartGlossaryUseCase)
-    singleOf(::SearchGlossaryUseCase)
-    singleOf(::SearchFrameDataUseCase)
-    singleOf(::GetPowerCrushMovesUseCase)
-    singleOf(::GetHeatMovesUseCase)
-    singleOf(::GetHomingMovesUseCase)
-    singleOf(::DownloadDataUseCase)
-
     singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
-
-    //region FEATURES
-    single { FeatureRegistry(getAll()) }
-
-    singleOf(::DiscordWavuWikiFeature).bind<DiscordRegisteredFeature>()
-    singleOf(::GlossaryFeatureDiscord).bind<DiscordRegisteredFeature>()
-
-    singleOf(::ConfigLoader)
-    single<List<DiscordRegisteredFeature>> {
-        val config = get<ConfigLoader>().loadConfig()
-        val registry = get<FeatureRegistry>()
-        val enabledFeatures = config.featureList
-            .filter { it.isEnabled }
-            .map { it.name }
-        registry.getFeatures(enabledFeatures)
-    }
-    //endregion
-
-    singleOf(::FileReaderJVM).bind<FileReader>()
-    singleOf(::Scheduler)
 }

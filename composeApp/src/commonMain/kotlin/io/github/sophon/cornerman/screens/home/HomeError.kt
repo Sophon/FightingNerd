@@ -7,6 +7,7 @@ internal enum class HomeError: Error {
     UNKNOWN_CHARACTER,
     CHARACTER_LIST_NOT_FOUND,
     DOWNLOAD_ERROR,
+    IO_ERROR,
 
     UNKNOWN,
 }

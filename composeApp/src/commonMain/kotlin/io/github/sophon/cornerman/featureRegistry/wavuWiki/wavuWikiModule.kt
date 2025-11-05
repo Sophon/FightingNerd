@@ -1,5 +1,6 @@
 package io.github.sophon.cornerman.featureRegistry.wavuWiki
 
+import io.github.sophon.cornerman.featureRegistry.wavuWiki.ui.WavuHomeScreenVM
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.FetchCharacterListUseCase
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.StartWavuSessionUseCase
 import io.github.sophon.wikiwavu.infrastructure.FileReader
