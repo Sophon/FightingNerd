@@ -18,7 +18,7 @@ import io.github.sophon.discord.util.replaceUnderline
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
 import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 
-internal class GlossaryFeatureDiscord(
+internal class InfilGlossaryDiscordFeature(
     private val startGlossaryUseCase: StartGlossaryUseCase,
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
     private val urlProvider: InfilUrlProvider,

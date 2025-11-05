@@ -1,4 +1,4 @@
-package io.github.sophon.discord.infrastructure
+package io.github.sophon.discord.featureRegistry.wikiWavu
 
 import io.github.sophon.wikiwavu.infrastructure.FileReader
 import java.io.File

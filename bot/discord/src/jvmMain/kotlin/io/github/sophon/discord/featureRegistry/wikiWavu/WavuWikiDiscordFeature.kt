@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.hours
 
-internal class DiscordWavuWikiFeature(
+internal class WavuWikiDiscordFeature(
     private val downloadDataUseCase: DownloadDataUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
@@ -269,7 +269,7 @@ internal class DiscordWavuWikiFeature(
     }
 
 
-    private companion object {
+    private companion object Companion {
         private const val TAG = "FrameDataFeature"
         private const val KEY_CHAR_NAME = "character"
         private const val KEY_MOVE = "move"
