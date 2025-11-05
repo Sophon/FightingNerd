@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.edit
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.FeatureInfo
 import io.github.sophon.core.domain.Result
-import io.github.sophon.cornerman.screens.settings.KEY_PREFIX_FEATURE
+import io.github.sophon.cornerman.screens.KEY_PREFIX_FEATURE
 import io.github.sophon.cornerman.screens.settings.SettingsError
 
 internal class ToggleFeatureUseCase(

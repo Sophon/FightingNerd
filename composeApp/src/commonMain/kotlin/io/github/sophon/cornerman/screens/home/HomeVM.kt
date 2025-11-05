@@ -2,20 +2,18 @@ package io.github.sophon.cornerman.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.sophon.cornerman.featureRegistry.FeatureRegistry
+import io.github.aakira.napier.Napier
+import io.github.sophon.core.domain.onError
+import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.cornerman.screens.home.usecase.GetAvailableFeaturesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-/**
- * TODO: we should get the feature list from shared preferences
- *  so we should reuse the getAvailableFeaturesUseCase
- *  think about whether that usecase should return the full wrapper class or just FeatureInfo which we can use to get the full wrapper class from the Feature Registry.
- */
 internal class HomeVM(
-    private val featureRegistry: FeatureRegistry,
+    private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state
@@ -38,10 +36,15 @@ internal class HomeVM(
     }
 
 
-    private fun loadFeatures() {
-        val featureList = featureRegistry.getFeatures()
-        _state.update { it.copy(composeRegisteredFeatures = featureList) }
+    private suspend fun loadFeatures() {
+        getAvailableFeaturesUseCase.invoke()
+            .onSuccess { featureList ->
+                _state.update { it.copy(composeRegisteredFeatures = featureList) }
+            }
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
+
+    companion object {
+        private const val TAG = "HomeVM"
     }
 }
-
-private const val TAG = "HomeVM"

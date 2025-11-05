@@ -1,5 +1,7 @@
 package io.github.sophon.cornerman.featureRegistry
 
+import io.github.sophon.core.domain.FeatureInfo
+
 internal class FeatureRegistry(
     private val featureListLoader: FeatureListLoader,
     private val fullFeatureList: List<ComposeRegisteredFeature>,
@@ -19,5 +21,9 @@ internal class FeatureRegistry(
 
     fun getFeatures(): List<ComposeRegisteredFeature> {
         return featureMap.values.toList()
+    }
+
+    fun getFeature(featureInfo: FeatureInfo): ComposeRegisteredFeature? {
+        return featureMap[featureInfo.name]
     }
 }
