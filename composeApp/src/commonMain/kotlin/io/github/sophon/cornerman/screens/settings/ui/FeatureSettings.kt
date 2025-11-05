@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,7 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
+import cornerman.composeapp.generated.resources.Res
+import cornerman.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.cornerman.theme.AppTheme
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -67,11 +72,25 @@ internal fun FeatureSettings(
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                         .padding(vertical = 4.dp, horizontal = 8.dp)
                 ) {
-                    Text(
-                        text = featureSetting.featureInfo.name,
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        AsyncImage(
+                            model = featureSetting.featureInfo.iconUrl,
+                            contentDescription = featureSetting.featureInfo.name,
+                            placeholder = painterResource(Res.drawable.compose_multiplatform),
+                            error = painterResource(Res.drawable.compose_multiplatform),
+                            modifier = Modifier
+                                .size(48.dp)
+                                .padding(8.dp)
+                        )
+
+                        Text(
+                            text = featureSetting.featureInfo.name,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                    }
 
                     Switch(
                         checked = featureSetting.isEnabled,
