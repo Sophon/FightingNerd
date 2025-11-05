@@ -8,7 +8,7 @@ A set of tools for the Fighting Game Community:
   - 📘 glossary
   - 📚 [any community wiki](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules):
      - 📊 frame data
-     - 📋 move lists
+     - 📋 move categories
 - 🌐 multiplatform:
   - 🖥️ desktop
   - 🤖 Android
@@ -31,12 +31,10 @@ A set of tools for the Fighting Game Community:
 - other feature modules
   - SuperCombo wiki
   - Dustloop wiki
-- module configuration
-- mobile clients
 
 
 ### [Long term goals](https://github.com/Sophon/Cornerman/wiki/Features#planned-feature-modules):
-- Wank Wavu functionality
+- [EWGF.gg](https://ewgf.gg/) functionality
 - Twitch bot
 
 ___
