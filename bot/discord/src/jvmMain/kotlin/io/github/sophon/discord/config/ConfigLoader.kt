@@ -1,15 +1,16 @@
 package io.github.sophon.discord.config
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.domain.FeatureConfig
 import kotlinx.serialization.json.Json
 import java.io.File
 
 internal class ConfigLoader(
     private val json: Json,
 ) {
-    fun loadConfig(): BotConfig {
+    fun loadConfig(): FeatureConfig {
         val configText = File(CONFIG_PATH).readText()
-        return json.decodeFromString<BotConfig>(configText).apply {
+        return json.decodeFromString<FeatureConfig>(configText).apply {
             Napier.d(tag = TAG) { this.toString() }
         }
     }
