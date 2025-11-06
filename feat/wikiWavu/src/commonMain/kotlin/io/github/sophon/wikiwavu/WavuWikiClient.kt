@@ -1,19 +1,20 @@
 package io.github.sophon.wikiwavu
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Character
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.core.domain.onError
+import io.github.sophon.core.domain.usecase.DownloadCharacterListUseCase
+import io.github.sophon.wikiwavu.data.CharacterListResponseDto
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
-import io.github.sophon.wikiwavu.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMovesWithPropertyUseCase
 import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
-import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.model.Character
-import io.github.sophon.core.domain.model.Move
 import kotlinx.datetime.Instant
 
 interface WavuWikiClient {
@@ -32,7 +33,7 @@ interface WavuWikiClient {
 }
 
 internal class WavuWikiClientImpl(
-    private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
+    private val downloadCharacterListUseCase: DownloadCharacterListUseCase<CharacterListResponseDto, WavuError>,
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
