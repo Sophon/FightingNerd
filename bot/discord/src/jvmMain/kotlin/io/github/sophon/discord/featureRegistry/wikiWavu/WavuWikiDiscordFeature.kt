@@ -188,8 +188,8 @@ internal class WavuWikiDiscordFeature(
         field(name = "OH", value = move.onHit.orClickable().orDash())
         field(name = "OB", value = move.onBlock.orDash())
         field(name = "CH", value = (move.onCH ?: move.onHit).orClickable().orDash())
-        field(name = "LVL", value = move.level)
-        move.recoveryOnWhiff
+        field(name = "LVL", value = move.t8Properties?.level.orDash())
+        move.recovery
             ?.takeIf { it.isNotEmpty() }
             ?.let { field(name = "Recovery", value = it) }
 
@@ -220,7 +220,7 @@ internal class WavuWikiDiscordFeature(
         return field(
             name = "📝 NOTES",
             value = allNotes
-                .emojify(crushes = move.crushes)
+                .emojify()
                 .joinToString(separator = "") { note -> "* $note\n" }
                 .truncate(MAX_LENGTH_EMBED),
             inline = false,
@@ -240,9 +240,7 @@ internal class WavuWikiDiscordFeature(
         )
     }
 
-    private fun List<String>.emojify(
-        crushes: List<String>,
-    ): List<String> {
+    private fun List<String>.emojify(): List<String> {
         return buildList {
             this@emojify.forEach { note ->
                 val emojified = buildString {
@@ -255,16 +253,11 @@ internal class WavuWikiDiscordFeature(
                     if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
                     if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
                     if (note.contains("Throw", ignoreCase = true)) append("️🤝 ")
+                    if (note.contains("pc", ignoreCase = true)) append("🛡️ ")
                     append(note)
                 }
                 add(emojified)
             }
-
-            crushes
-                .filter { it.contains("pc", ignoreCase = true) }
-                .forEach { crush ->
-                    add("🛡️ $crush")
-                }
         }
     }
 

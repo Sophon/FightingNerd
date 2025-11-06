@@ -10,31 +10,34 @@ internal fun MoveDto.mapToDomain(
     movesById: Map<String, MoveDto>,
 ): Move {
     val cleanedCrushes = splitCrush()
+    val unifiedNotes = splitNotes() + cleanedCrushes
+    val fullInput = formCompleteDataFromParent(movesById) { it.input }
+        .orEmpty()
+        .cleanMoveInput()
+
     val move = Move(
         charName = charName,
         id = id.cleanMoveInput(),
-        input = formCompleteDataFromParent(movesById) { it.input }
-            .orEmpty()
-            .cleanMoveInput(),
-        level = formCompleteDataFromParent(movesById) { it.target },
+        input = fullInput,
         name = name,
-        parent = parent,
         damage = formCompleteDataFromParent(movesById) { it.damage },
         startup = getRootStartup(movesById),
-        recoveryOnWhiff = recv,
-        totalFrames = tot,
-        crushes = cleanedCrushes,
+        recovery = recv,
         onBlock = block,
         onHit = hit,
         onCH = ch,
         notes = splitNotes() + cleanedCrushes,
         aliases = parseAliases(),
-        image = image,
         videoId = video,
-        alt = alt,
+        t8Properties = formProperties(
+            notes = unifiedNotes,
+            crushes = cleanedCrushes,
+            level = formCompleteDataFromParent(movesById) { it.target },
+            input = fullInput,
+        )
     )
 
-    return move.copy(properties = move.getProperties())
+    return move
 }
 
 /**
@@ -106,16 +109,22 @@ private fun MoveDto.splitNotes(): List<String> {
     return finalNotes
 }
 
-private fun Move.getProperties(): Move.Properties {
-    return Move.Properties(
+private fun formProperties(
+    level: String?,
+    notes: List<String>,
+    crushes: List<String>,
+    input: String,
+): Move.T8Properties {
+    return Move.T8Properties(
+        level = level,
         isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) },
         isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) },
         isHoming = notes.any { it.contains("Homing", ignoreCase = true) },
-        stance = input.stance(),
+        stance = input.isStance(),
     )
 }
 
-private fun String.stance(): String {
+private fun String.isStance(): String {
     return take(3).takeIf {
         length >= 4
                 && it.all { char -> char.isLetter() }
