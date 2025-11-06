@@ -70,7 +70,7 @@ private fun CharacterPanel(
             .padding(8.dp)
     ) {
         AsyncImage(
-            model = character.images?.officialUrl,
+            model = character.images?.iconUrl,
             contentDescription = character.displayName,
             placeholder = painterResource(Res.drawable.compose_multiplatform),
             error = painterResource(Res.drawable.compose_multiplatform),

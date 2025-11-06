@@ -24,7 +24,7 @@ data class WavuHomeScreenViewState(
                     wikiUrl = "",
                     aliasList = listOf(),
                     images = Character.Images(
-                        url = "https://tekkendocs.com/t8/avatars/nina-brand-512.png",
+                        iconUrl = "https://tekkendocs.com/t8/avatars/nina-brand-512.png",
                     )
                 ),
                 Character(
@@ -39,7 +39,7 @@ data class WavuHomeScreenViewState(
                     wikiUrl = "",
                     aliasList = listOf(),
                     images = Character.Images(
-                        url = "https://tekkendocs.com/t8/avatars/armor-king-brand-512.png"
+                        iconUrl = "https://tekkendocs.com/t8/avatars/armor-king-brand-512.png"
                     )
                 ),
                 Character(
@@ -54,7 +54,7 @@ data class WavuHomeScreenViewState(
                     wikiUrl = "",
                     aliasList = listOf(),
                     images = Character.Images(
-                        url = "https://tekkendocs.com/t8/avatars/shaheen-brand-512.png"
+                        iconUrl = "https://tekkendocs.com/t8/avatars/shaheen-brand-512.png"
                     )
                 ),
                 Character(
@@ -69,7 +69,7 @@ data class WavuHomeScreenViewState(
                     wikiUrl = "",
                     aliasList = listOf(),
                     images = Character.Images(
-                        url = "https://tekkendocs.com/t8/avatars/raven-brand-512.png"
+                        iconUrl = "https://tekkendocs.com/t8/avatars/raven-brand-512.png"
                     ),
                 ),
                 Character(
@@ -84,7 +84,7 @@ data class WavuHomeScreenViewState(
                     wikiUrl = "",
                     aliasList = listOf(),
                     images = Character.Images(
-                        url = "https://tekkendocs.com/t8/avatars/paul-brand-512.png"
+                        iconUrl = "https://tekkendocs.com/t8/avatars/paul-brand-512.png"
                     )
                 ),
             )
