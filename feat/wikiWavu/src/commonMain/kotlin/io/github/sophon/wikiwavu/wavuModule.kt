@@ -6,8 +6,6 @@ import io.github.sophon.core.domain.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.data.CharacterListResponseDto
 import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
-import io.github.sophon.wikiwavu.data.extractMoveDto
-import io.github.sophon.wikiwavu.data.mapToDomain
 import io.github.sophon.wikiwavu.data.toDomain
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
