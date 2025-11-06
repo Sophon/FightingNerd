@@ -10,14 +10,13 @@ import io.github.sophon.wikiwavu.LIMIT_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import kotlinx.serialization.json.Json
 
 /**
  * Technically, the source for the character list is not Wavu but Tekken Docs.
  * The appeals to make a table for Character have not been successful.
  */
 
-internal class NewWavuWikiDataSourceImpl(
+internal class WavuWikiDataSourceImpl(
     private val httpClient: HttpClient,
 ): WikiDataSource<CharacterListResponseDto, MoveListResponseDto> {
     override suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
