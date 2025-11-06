@@ -53,8 +53,7 @@ internal class DownloadCharacterListUseCase(
                 wikiUrl = MOVE_URL + dto.wavuName.replace(" ", "_"),
                 aliasList = dto.aliasList,
                 images = Character.Images(
-                    url = dto.images?.largePng,
-                    officialUrl = dto.images?.officialLargePng,
+                    iconUrl = dto.images?.officialLargePng,
                 )
             )
         }

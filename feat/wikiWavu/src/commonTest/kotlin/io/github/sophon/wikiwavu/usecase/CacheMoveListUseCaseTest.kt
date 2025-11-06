@@ -307,7 +307,7 @@ class CacheMoveListUseCaseTest {
             displayName = "Yoshimitsu",
             wikiUrl = "",
             images = Character.Images(
-                officialUrl = "https://example.com/yoshi.png"
+                bannerUrl = "https://example.com/yoshi.png"
             ),
             aliasList = listOf("Yoshi")
         )

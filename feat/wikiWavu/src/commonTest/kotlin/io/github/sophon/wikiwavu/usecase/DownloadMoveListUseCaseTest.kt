@@ -832,7 +832,7 @@ class DownloadMoveListUseCaseTekken8Test {
         displayName = name,
         wikiUrl = "",
         images = Character.Images(
-            officialUrl = "https://example.com/$name.png",
+            bannerUrl = "https://example.com/$name.png",
         ),
         aliasList = listOf(name.lowercase())
     )
