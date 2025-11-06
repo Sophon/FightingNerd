@@ -57,12 +57,12 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.isHeat).isNotNull()
-        assertThat(move.properties.isPowerCrush).isNotNull()
-        assertThat(move.properties.isHoming).isNotNull()
-        assertThat(move.properties.isHeat).isEqualTo(false)
-        assertThat(move.properties.isPowerCrush).isEqualTo(false)
-        assertThat(move.properties.isHoming).isEqualTo(false)
+        assertThat(move.t8Properties?.isHeat).isNotNull()
+        assertThat(move.t8Properties?.isPowerCrush).isNotNull()
+        assertThat(move.t8Properties?.isHoming).isNotNull()
+        assertThat(move.t8Properties?.isHeat).isEqualTo(false)
+        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(false)
+        assertThat(move.t8Properties?.isHoming).isEqualTo(false)
     }
 
     @Test
@@ -97,10 +97,10 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.isHeat).isNotNull()
-        assertThat(move.properties.isHeat).isEqualTo(true)
-        assertThat(move.properties.isPowerCrush).isEqualTo(false)
-        assertThat(move.properties.isHoming).isEqualTo(false)
+        assertThat(move.t8Properties?.isHeat).isNotNull()
+        assertThat(move.t8Properties?.isHeat).isEqualTo(true)
+        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(false)
+        assertThat(move.t8Properties?.isHoming).isEqualTo(false)
     }
 
     @Test
@@ -135,10 +135,10 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.isPowerCrush).isNotNull()
-        assertThat(move.properties.isPowerCrush).isEqualTo(true)
-        assertThat(move.properties.isHeat).isEqualTo(false)
-        assertThat(move.properties.isHoming).isEqualTo(false)
+        assertThat(move.t8Properties?.isPowerCrush).isNotNull()
+        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(true)
+        assertThat(move.t8Properties?.isHeat).isEqualTo(false)
+        assertThat(move.t8Properties?.isHoming).isEqualTo(false)
     }
 
     @Test
@@ -173,10 +173,10 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.isHoming).isNotNull()
-        assertThat(move.properties.isHoming).isEqualTo(true)
-        assertThat(move.properties.isHeat).isEqualTo(false)
-        assertThat(move.properties.isPowerCrush).isEqualTo(false)
+        assertThat(move.t8Properties?.isHoming).isNotNull()
+        assertThat(move.t8Properties?.isHoming).isEqualTo(true)
+        assertThat(move.t8Properties?.isHeat).isEqualTo(false)
+        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(false)
     }
 
     @Test
@@ -211,9 +211,9 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.isHeat).isEqualTo(true)
-        assertThat(move.properties.isPowerCrush).isEqualTo(true)
-        assertThat(move.properties.isHoming).isEqualTo(true)
+        assertThat(move.t8Properties?.isHeat).isEqualTo(true)
+        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(true)
+        assertThat(move.t8Properties?.isHoming).isEqualTo(true)
     }
     // endregion
 
@@ -250,7 +250,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("zen")
+        assertThat(move.t8Properties?.stance).isEqualTo("zen")
     }
 
     @Test
@@ -285,7 +285,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("des")
+        assertThat(move.t8Properties?.stance).isEqualTo("des")
     }
 
     @Test
@@ -320,7 +320,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("kin")
+        assertThat(move.t8Properties?.stance).isEqualTo("kin")
     }
 
     @Test
@@ -355,7 +355,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("fle")
+        assertThat(move.t8Properties?.stance).isEqualTo("fle")
     }
 
     @Test
@@ -390,7 +390,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("zen")
+        assertThat(move.t8Properties?.stance).isEqualTo("zen")
     }
     // endregion
 
@@ -427,7 +427,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("")
+        assertThat(move.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
@@ -462,7 +462,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("")
+        assertThat(move.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
@@ -497,7 +497,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("")
+        assertThat(move.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
@@ -532,7 +532,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("")
+        assertThat(move.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
@@ -567,7 +567,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("")
+        assertThat(move.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
@@ -602,7 +602,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("")
+        assertThat(move.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
@@ -637,7 +637,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("")
+        assertThat(move.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
@@ -672,7 +672,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("")
+        assertThat(move.t8Properties?.stance).isEqualTo("")
     }
     // endregion
 
@@ -709,7 +709,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("des")
+        assertThat(move.t8Properties?.stance).isEqualTo("des")
     }
 
     @Test
@@ -744,7 +744,7 @@ class DownloadMoveListUseCaseTekken8Test {
         result as Result.Success
         val move = result.data.first()
 
-        assertThat(move.properties.stance).isEqualTo("abc")
+        assertThat(move.t8Properties?.stance).isEqualTo("abc")
     }
 
     @Test
@@ -820,9 +820,9 @@ class DownloadMoveListUseCaseTekken8Test {
         val moves = result.data
 
         assertThat(moves).hasSize(3)
-        assertThat(moves[0].properties.stance).isEqualTo("kin")
-        assertThat(moves[1].properties.stance).isEqualTo("des")
-        assertThat(moves[2].properties.stance).isEqualTo("fle")
+        assertThat(moves[0].t8Properties?.stance).isEqualTo("kin")
+        assertThat(moves[1].t8Properties?.stance).isEqualTo("des")
+        assertThat(moves[2].t8Properties?.stance).isEqualTo("fle")
     }
     // endregion
 

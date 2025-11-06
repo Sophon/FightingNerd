@@ -150,8 +150,8 @@ class CacheMoveListUseCaseTest {
         val moves = listOf(
             Move(
                 charName = "Kazuya",
-                id = "df2",
-                input = "d/f+2",
+                id = "Kazuya-df2",
+                input = "df2",
                 aliases = listOf("launcher", "df+2")
             )
         )
@@ -213,7 +213,7 @@ class CacheMoveListUseCaseTest {
             wikiUrl = "",
             aliasList = emptyList()
         )
-        val moves2 = listOf(Move(charName = "Kazuya", id = "df2", input = "d/f+2"))
+        val moves2 = listOf(Move(charName = "Kazuya", id = "Kazuya-df2", input = "df2"))
         val moveList2 = CharacterMoveList(character2, moves2)
 
         // When
@@ -223,8 +223,8 @@ class CacheMoveListUseCaseTest {
         // Then
         assertThat(db.getCachedMoveList("jin")!!.size).isEqualTo(1)
         assertThat(db.getCachedMoveList("kazuya")!!.size).isEqualTo(1)
-        assertThat(db.getCachedMoveList("jin")!!["1"]?.id).isEqualTo("1")
-        assertThat(db.getCachedMoveList("kazuya")!!["df2"]?.id).isEqualTo("df2")
+        assertThat(db.getCachedMoveList("jin")!!["1"]?.input).isEqualTo("1")
+        assertThat(db.getCachedMoveList("kazuya")!!["df2"]?.input).isEqualTo("df2")
     }
 
     @Test
@@ -265,28 +265,24 @@ class CacheMoveListUseCaseTest {
         val moves = listOf(
             Move(
                 charName = "Dragunov",
-                id = "df2",
-                input = "d/f+2",
-                level = "m",
+                id = "Dragunov-df2",
+                input = "df2",
                 name = "Uppercut",
-                parent = null,
                 damage = "20",
                 startup = "i15",
-                recoveryOnWhiff = "23",
-                totalFrames = "38",
-                crushes = listOf("cs9~"),
+                recovery = "23",
                 onBlock = "-12",
                 onHit = "+33g",
                 onCH = "Launch",
-                notes = listOf("High crush", "Launcher"),
+                notes = listOf("High crush", "Launcher", "cs9~"),
                 aliases = listOf("launcher", "uppercut"),
-                image = "df2.png",
                 videoId = "abc123",
-                alt = "Alternative input",
-                properties = Move.Properties(
+                t8Properties = Move.T8Properties(
+                    level = "m",
                     isHeat = false,
                     isPowerCrush = false,
                     isHoming = false,
+                    isHighCrush = true,
                 )
             )
         )
@@ -300,7 +296,7 @@ class CacheMoveListUseCaseTest {
         assertThat(cachedMoves).isNotNull()
         assertThat(cachedMoves!!["df2"]?.damage).isEqualTo("20")
         assertThat(cachedMoves["df2"]?.startup).isEqualTo("i15")
-        assertThat(cachedMoves["df2"]?.notes?.size).isEqualTo(2)
+        assertThat(cachedMoves["df2"]?.notes?.size).isEqualTo(3)
     }
 
     @Test
@@ -373,7 +369,7 @@ class CacheMoveListUseCaseTest {
             return try {
                 val indexedMoves = buildMap {
                     moveList.forEach { move ->
-                        put(move.id, move)
+                        put(move.input, move)
                         move.aliases.forEach { alias ->
                             put(alias, move)
                         }
