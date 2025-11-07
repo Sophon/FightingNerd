@@ -42,6 +42,6 @@ fun dcBotModule(apiKey: String) = module {
 
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
 
-    singleOf(::InMemoryMoveListDB).bind<MoveListDB<BotError>>()
+    singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 }
