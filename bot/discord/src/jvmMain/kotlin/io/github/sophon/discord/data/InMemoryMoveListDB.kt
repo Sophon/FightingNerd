@@ -2,12 +2,11 @@
 
 package io.github.sophon.discord.data
 
-import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.discord.BotError
 import kotlinx.datetime.Instant
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
