@@ -23,7 +23,7 @@ internal val moveListModule = module {
 
     single { get<MoveListDatabase>().moveListDao() }
     single { getMoveListDatabase(get<RoomDatabase.Builder<MoveListDatabase>>()) }
-    singleOf(::RoomMoveListDB).bind<MoveListDB<MoveListError>>()
+    singleOf(::RoomMoveListDB).bind<MoveListDB>()
 
     single { createDataStore() }
 }

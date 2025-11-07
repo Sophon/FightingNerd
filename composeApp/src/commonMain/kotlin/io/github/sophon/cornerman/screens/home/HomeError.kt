@@ -1,6 +1,7 @@
 package io.github.sophon.cornerman.screens.home
 
 import io.github.sophon.core.domain.Error
+import io.github.sophon.core.wiki.data.WikiError
 
 internal enum class HomeError: Error {
     UNKNOWN_CHARACTER,
@@ -10,11 +11,11 @@ internal enum class HomeError: Error {
     UNKNOWN,
 }
 
-internal fun WavuError.toDomain(): HomeError {
+internal fun WikiError.toDomain(): HomeError {
     return when (this) {
-        WavuError.UNKNOWN_CHARACTER -> HomeError.UNKNOWN_CHARACTER
-        WavuError.DOWNLOAD_ERROR-> HomeError.DOWNLOAD_ERROR
-        WavuError.UNKNOWN_MOVE,
-        WavuError.DATABASE_ERROR -> HomeError.UNKNOWN
+        WikiError.UNKNOWN_CHARACTER -> HomeError.UNKNOWN_CHARACTER
+        WikiError.DOWNLOAD_ERROR-> HomeError.DOWNLOAD_ERROR
+        WikiError.UNKNOWN_MOVE,
+        WikiError.DATABASE_ERROR -> HomeError.UNKNOWN
     }
 }
