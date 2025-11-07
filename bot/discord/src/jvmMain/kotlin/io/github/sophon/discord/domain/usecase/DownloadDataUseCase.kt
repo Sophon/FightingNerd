@@ -7,7 +7,7 @@ import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.domain.toDomain
+import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.wikiwavu.WavuWikiClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
@@ -33,16 +33,16 @@ class DownloadDataUseCase(
                     .firstOrNull { it is Result.Error }
                     ?: Result.Success(Unit)
             }
-            is Result.Error -> Result.Error(charListResult.error.toDomain())
+            is Result.Error -> Result.Error(charListResult.error.toDomainError())
         }
     }
 
     private suspend fun downloadAndCacheMove(character: Character): EmptyResult<BotError> {
         return wiki.downloadMoveListFor(character.displayName)
-            .mapError { it.toDomain() }
+            .mapError { it.toDomainError() }
             .flatMap { moveList ->
                 wiki.cacheMoveList(character, moveList)
-                    .mapError { it.toDomain() }
+                    .mapError { it.toDomainError() }
             }
             .asEmptyDataResult()
     }
