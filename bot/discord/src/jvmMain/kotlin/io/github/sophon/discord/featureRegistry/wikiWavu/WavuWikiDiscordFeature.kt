@@ -5,9 +5,9 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.FeatureInfo
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.model.Move
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate

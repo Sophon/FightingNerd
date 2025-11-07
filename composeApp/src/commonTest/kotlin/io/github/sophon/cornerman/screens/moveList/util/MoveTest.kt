@@ -2,8 +2,7 @@ package io.github.sophon.cornerman.screens.moveList.util
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.domain.model.Move
-import io.github.sophon.cornerman.screens.moveList.util.cleanComboLinks
+import io.github.sophon.core.wiki.domain.model.Move
 import kotlin.test.Test
 
 class MoveTest {

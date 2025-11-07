@@ -50,6 +50,7 @@ kotlin {
                 implementation(libs.ktor.cio)
                 implementation(libs.ktor.slf)
                 implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kotlin.date.time)
 
                 api(libs.koin.core)
             }

@@ -2,7 +2,7 @@ package io.github.sophon.cornerman.featureRegistry
 
 import cornerman.composeapp.generated.resources.Res
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.FeatureConfig
+import io.github.sophon.core.feature.FeatureConfig
 import kotlinx.serialization.json.Json
 
 interface FeatureListLoader {

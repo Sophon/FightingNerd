@@ -1,7 +1,7 @@
 package io.github.sophon.discord.config
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.FeatureConfig
+import io.github.sophon.core.feature.FeatureConfig
 import kotlinx.serialization.json.Json
 import java.io.File
 

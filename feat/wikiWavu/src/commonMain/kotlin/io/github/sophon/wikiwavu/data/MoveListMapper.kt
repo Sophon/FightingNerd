@@ -1,6 +1,6 @@
 package io.github.sophon.wikiwavu.data
 
-import io.github.sophon.core.domain.model.Move
+import io.github.sophon.core.wiki.domain.model.Move
 
 internal fun toDomain(dto: MoveListResponseDto, charName: String): List<Move> {
     val downloadedMoves = dto.extractMoveDto()

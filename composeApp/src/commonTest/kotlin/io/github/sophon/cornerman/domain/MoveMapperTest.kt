@@ -2,7 +2,7 @@ package io.github.sophon.cornerman.domain
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.domain.model.Move
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.domain.getCategoryName
 import kotlin.test.Test
 

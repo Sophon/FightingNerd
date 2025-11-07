@@ -3,7 +3,7 @@ package io.github.sophon.discord.featureRegistry.infilGlossary
 import MAX_LENGTH_EMBED
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.domain.FeatureInfo
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.domain.usecase.SearchGlossaryUseCase

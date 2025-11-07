@@ -4,11 +4,11 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import io.github.sophon.core.data.WikiDataSource
+import io.github.sophon.core.wiki.data.WikiDataSource
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.model.Move
-import io.github.sophon.core.domain.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.domain.usecase.DownloadMoveListUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 

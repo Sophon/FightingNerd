@@ -1,10 +1,10 @@
-package io.github.sophon.core.domain.usecase
+package io.github.sophon.core.wiki.domain.usecase
 
-import io.github.sophon.core.data.WikiDataSource
+import io.github.sophon.core.wiki.data.WikiDataSource
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Error
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.model.Character
+import io.github.sophon.core.wiki.domain.model.Character
 
 class DownloadCharacterListUseCase<C, E: Error>(
     private val source: WikiDataSource<C, *>,

@@ -1,8 +1,8 @@
 package io.github.sophon.wikiwavu
 
-import io.github.sophon.core.data.WikiDataSource
-import io.github.sophon.core.domain.usecase.DownloadCharacterListUseCase
-import io.github.sophon.core.domain.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.data.WikiDataSource
+import io.github.sophon.core.wiki.domain.usecase.DownloadCharacterListUseCase
+import io.github.sophon.core.wiki.domain.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.data.CharacterListResponseDto
 import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl

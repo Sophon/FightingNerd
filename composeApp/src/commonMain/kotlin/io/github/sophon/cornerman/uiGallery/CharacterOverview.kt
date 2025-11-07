@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import cornerman.composeapp.generated.resources.Res
 import cornerman.composeapp.generated.resources.compose_multiplatform
-import io.github.sophon.core.domain.model.Character
+import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.cornerman.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview

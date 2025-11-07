@@ -11,8 +11,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
-import io.github.sophon.core.domain.FeatureConfig
-import io.github.sophon.core.domain.FeatureInfo
+import io.github.sophon.core.feature.FeatureConfig
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.cornerman.featureRegistry.FeatureListLoader

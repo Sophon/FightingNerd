@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.model.Character
+import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.StartWavuSessionUseCase
 import io.github.sophon.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
