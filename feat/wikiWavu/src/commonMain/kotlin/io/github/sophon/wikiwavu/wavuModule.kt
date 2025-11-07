@@ -27,17 +27,15 @@ val wavuModule = module {
     }
 
     single {
-        DownloadCharacterListUseCase<CharacterListResponseDto, WavuError>(
+        DownloadCharacterListUseCase<CharacterListResponseDto>(
             source = get(),
             toDomain = { toDomain() },
-            toDomainError = { toDomain() },
         )
     }
     single {
-        DownloadMoveListUseCase<MoveListResponseDto, WavuError>(
+        DownloadMoveListUseCase<MoveListResponseDto>(
             source = get(),
             toDomain = { dto, charName -> toDomain(dto, charName) },
-            toDomainError = { toDomain() }
         )
     }
     singleOf(::CacheMoveListUseCase)

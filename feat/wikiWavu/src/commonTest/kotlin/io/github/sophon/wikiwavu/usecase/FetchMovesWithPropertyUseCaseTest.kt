@@ -8,7 +8,6 @@ import assertk.assertions.isNotNull
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.wikiwavu.WavuError
 import io.github.sophon.core.wiki.data.MoveListDB
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant

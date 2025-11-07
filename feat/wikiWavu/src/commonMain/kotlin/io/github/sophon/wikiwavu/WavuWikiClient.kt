@@ -6,6 +6,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.domain.onError
+import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.domain.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.data.CharacterListResponseDto
@@ -19,23 +20,23 @@ import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
 interface WavuWikiClient {
-    suspend fun downloadCharacterList(): Result<List<Character>, WavuError>
-    suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WavuError>
-    suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WavuError>
-    suspend fun getLastUpdateTimeStamp(): Result<Instant?, WavuError>
-    suspend fun clearCache(): EmptyResult<WavuError>
+    suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
+    suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError>
+    suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError>
+    suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
+    suspend fun clearCache(): EmptyResult<WikiError>
 
-    suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WavuError>
-    suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WavuError>
-    suspend fun getHeatMoves(charName: String): Result<List<Move>, WavuError>
-    suspend fun getHomingMoves(charName: String): Result<List<Move>, WavuError>
-    suspend fun getMoveListFor(charName: String): Result<List<Move>, WavuError>
-    suspend fun getCharacterList(): Result<List<Character>, WavuError>
+    suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WikiError>
+    suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WikiError>
+    suspend fun getHeatMoves(charName: String): Result<List<Move>, WikiError>
+    suspend fun getHomingMoves(charName: String): Result<List<Move>, WikiError>
+    suspend fun getMoveListFor(charName: String): Result<List<Move>, WikiError>
+    suspend fun getCharacterList(): Result<List<Character>, WikiError>
 }
 
 internal class WavuWikiClientImpl(
-    private val downloadCharacterListUseCase: DownloadCharacterListUseCase<CharacterListResponseDto, WavuError>,
-    private val downloadMoveListUseCase: DownloadMoveListUseCase<MoveListResponseDto, WavuError>,
+    private val downloadCharacterListUseCase: DownloadCharacterListUseCase<CharacterListResponseDto>,
+    private val downloadMoveListUseCase: DownloadMoveListUseCase<MoveListResponseDto>,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
@@ -44,7 +45,7 @@ internal class WavuWikiClientImpl(
     private val fetchMovesWithPropertyUseCase: FetchMovesWithPropertyUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
 ): WavuWikiClient {
-    override suspend fun downloadCharacterList(): Result<List<Character>, WavuError> {
+    override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         val result = downloadCharacterListUseCase.invoke()
         when (result) {
             is Result.Success -> Napier.d(tag = TAG) { "${result.data.size} characters loaded" }
@@ -54,7 +55,7 @@ internal class WavuWikiClientImpl(
         return result
     }
 
-    override suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WavuError> {
+    override suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError> {
         return when (val result = downloadMoveListUseCase.invoke(charName)) {
             is Result.Success -> {
                 Napier.d(tag = TAG) {
@@ -69,7 +70,7 @@ internal class WavuWikiClientImpl(
         }
     }
 
-    override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WavuError> {
+    override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError> {
         val result = cacheMoveListUseCase.invoke(character, moveList)
 
         when (result) {
@@ -80,48 +81,49 @@ internal class WavuWikiClientImpl(
         return result
     }
 
-    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WavuError> {
+    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
         return getLastCacheInsertInstantUseCase.invoke()
     }
 
-    override suspend fun clearCache(): EmptyResult<WavuError> {
+    override suspend fun clearCache(): EmptyResult<WikiError> {
         return clearCacheUseCase.invoke()
     }
 
     override suspend fun frameDataFor(
         charName: String,
         moveQuery: String
-    ): Result<Move, WavuError> {
+    ): Result<Move, WikiError> {
         return fetchMoveDataUseCase.invoke(charName, moveQuery)
             .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
     override suspend fun getPowerCrushMoves(
         charName: String
-    ): Result<List<Move>, WavuError> {
+    ): Result<List<Move>, WikiError> {
         return fetchMovesWithPropertyUseCase.invoke(charName) { it.t8Properties?.isPowerCrush == true }
     }
 
     override suspend fun getHeatMoves(
         charName: String
-    ): Result<List<Move>, WavuError> {
+    ): Result<List<Move>, WikiError> {
         return fetchMovesWithPropertyUseCase.invoke(charName) { it.t8Properties?.isHeat == true }
     }
 
     override suspend fun getHomingMoves(
         charName: String
-    ): Result<List<Move>, WavuError> {
+    ): Result<List<Move>, WikiError> {
         return fetchMovesWithPropertyUseCase.invoke(charName) { it.t8Properties?.isHoming == true }
     }
 
     override suspend fun getMoveListFor(
         charName: String,
-    ): Result<List<Move>, WavuError> {
+    ): Result<List<Move>, WikiError> {
         return fetchMoveListUseCase.invoke(charName)
     }
 
-    override suspend fun getCharacterList(): Result<List<Character>, WavuError> {
-        return downloadCharacterListUseCase.invoke()
+    override suspend fun getCharacterList(): Result<List<Character>, WikiError> {
+        downloadCharacterListUseCase.invoke()
+        TODO("this should be a DB function")
     }
 }
 
