@@ -1,4 +1,4 @@
-package io.github.sophon.core.usecase
+package io.github.sophon.core.wiki.domain.usecase
 
 import assertk.assertThat
 import assertk.assertions.hasSize
@@ -8,7 +8,6 @@ import io.github.sophon.core.wiki.data.WikiDataSource
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.usecase.DownloadCharacterListUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
@@ -21,10 +20,9 @@ class DownloadCharacterListUseCaseTest {
         val mockDataSource = MockWikiDataSource<TestCharacterListDto, Unit>()
         mockDataSource.characterListResponse = Result.Success(mockResponse)
 
-        val useCase = DownloadCharacterListUseCase<TestCharacterListDto, DataError.Remote>(
+        val useCase = DownloadCharacterListUseCase(
             source = mockDataSource,
             toDomain = { this.toDomain() },
-            toDomainError = { this }
         )
 
         // When
@@ -65,7 +63,6 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(
             source = mockDataSource,
             toDomain = { this.toDomain() },
-            toDomainError = { this }
         )
 
         // When
@@ -101,7 +98,6 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(
             source = mockDataSource,
             toDomain = { this.toDomain() },
-            toDomainError = { this }
         )
 
         // When
@@ -137,7 +133,6 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(
             source = mockDataSource,
             toDomain = { this.toDomain() },
-            toDomainError = { this }
         )
 
         // When
@@ -159,7 +154,6 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(
             source = mockDataSource,
             toDomain = { this.toDomain() },
-            toDomainError = { this }
         )
 
         // When
@@ -168,92 +162,6 @@ class DownloadCharacterListUseCaseTest {
         // Then
         result as Result.Success
         assertThat(result.data).hasSize(0)
-    }
-    // endregion
-
-    // region Error Cases
-    @Test
-    fun `invoke returns error when data source fails with UNKNOWN error`() = runTest {
-        // Given
-        val mockDataSource = MockWikiDataSource<TestCharacterListDto, Unit>()
-        mockDataSource.characterListResponse = Result.Error(DataError.Remote.UNKNOWN)
-
-        val useCase = DownloadCharacterListUseCase(
-            source = mockDataSource,
-            toDomain = { this.toDomain() },
-            toDomainError = { this }
-        )
-
-        // When
-        val result = useCase.invoke()
-
-        // Then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        val error = (result as Result.Error).error
-        assertThat(error).isEqualTo(DataError.Remote.UNKNOWN)
-    }
-
-    @Test
-    fun `invoke returns error when data source fails with NO_INTERNET error`() = runTest {
-        // Given
-        val mockDataSource = MockWikiDataSource<TestCharacterListDto, Unit>()
-        mockDataSource.characterListResponse = Result.Error(DataError.Remote.NO_INTERNET)
-
-        val useCase = DownloadCharacterListUseCase(
-            source = mockDataSource,
-            toDomain = { this.toDomain() },
-            toDomainError = { this }
-        )
-
-        // When
-        val result = useCase.invoke()
-
-        // Then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        val error = (result as Result.Error).error
-        assertThat(error).isEqualTo(DataError.Remote.NO_INTERNET)
-    }
-
-    @Test
-    fun `invoke returns error when data source fails with REQUEST_TIMEOUT error`() = runTest {
-        // Given
-        val mockDataSource = MockWikiDataSource<TestCharacterListDto, Unit>()
-        mockDataSource.characterListResponse = Result.Error(DataError.Remote.REQUEST_TIMEOUT)
-
-        val useCase = DownloadCharacterListUseCase(
-            source = mockDataSource,
-            toDomain = { this.toDomain() },
-            toDomainError = { this }
-        )
-
-        // When
-        val result = useCase.invoke()
-
-        // Then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        val error = (result as Result.Error).error
-        assertThat(error).isEqualTo(DataError.Remote.REQUEST_TIMEOUT)
-    }
-
-    @Test
-    fun `invoke returns error when data source fails with SERVER_ERROR`() = runTest {
-        // Given
-        val mockDataSource = MockWikiDataSource<TestCharacterListDto, Unit>()
-        mockDataSource.characterListResponse = Result.Error(DataError.Remote.SERVER_ERROR)
-
-        val useCase = DownloadCharacterListUseCase(
-            source = mockDataSource,
-            toDomain = { this.toDomain() },
-            toDomainError = { this }
-        )
-
-        // When
-        val result = useCase.invoke()
-
-        // Then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        val error = (result as Result.Error).error
-        assertThat(error).isEqualTo(DataError.Remote.SERVER_ERROR)
     }
     // endregion
 
