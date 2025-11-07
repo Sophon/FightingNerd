@@ -2,8 +2,8 @@ package io.github.sophon.wikiwavu.data
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.wikiwavu.WavuError
-import io.github.sophon.wikiwavu.domain.model.Move
 import kotlinx.datetime.Instant
 
 interface MoveListDB {

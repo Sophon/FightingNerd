@@ -2,7 +2,7 @@ package io.github.sophon.cornerman.domain
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.wikiwavu.domain.model.Move
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.domain.getCategoryName
 import kotlin.test.Test
 
@@ -11,7 +11,7 @@ class MoveMapperTest {
     @Test
     fun `getCategoryName returns Heat for heat move`() {
         // given
-        val move = createMove("H.2+3", properties = Move.Properties(isHeat = true))
+        val move = createMove("H.2+3", properties = Move.T8Properties(isHeat = true))
 
         // when
         val result = move.getCategoryName()
@@ -23,7 +23,7 @@ class MoveMapperTest {
     @Test
     fun `getCategoryName returns DGF for DGF dot 1 input with stance property`() {
         // given
-        val move = createMove("DGF.1", properties = Move.Properties(stance = "DGF"))
+        val move = createMove("DGF.1", properties = Move.T8Properties(stance = "DGF"))
 
         // when
         val result = move.getCategoryName()
@@ -35,7 +35,7 @@ class MoveMapperTest {
     @Test
     fun `getCategoryName returns FLE for FLE dot 3 plus 4 input with stance property`() {
         // given
-        val move = createMove("FLE.3+4", properties = Move.Properties(stance = "FLE"))
+        val move = createMove("FLE.3+4", properties = Move.T8Properties(stance = "FLE"))
 
         // when
         val result = move.getCategoryName()
@@ -157,26 +157,21 @@ class MoveMapperTest {
     private fun createMove(
         input: String,
         notes: List<String> = emptyList(),
-        properties: Move.Properties = Move.Properties()
+        properties: Move.T8Properties = Move.T8Properties()
     ) = Move(
         charName = "Charname",
         id = "test-${input}",
         name = "Test Move",
         input = input,
-        level = "m",
         damage = "10",
         startup = "i10",
-        recoveryOnWhiff = "r20",
-        totalFrames = null,
-        crushes = listOf(),
+        recovery = "r20",
         onBlock = "+0",
         onHit = "+5",
         onCH = null,
         notes = notes,
         aliases = listOf(),
-        image = null,
         videoId = null,
-        alt = null,
-        properties = properties,
+        t8Properties = properties,
     )
 }

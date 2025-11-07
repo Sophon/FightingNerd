@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import cornerman.composeapp.generated.resources.Res
 import cornerman.composeapp.generated.resources.compose_multiplatform
+import io.github.sophon.core.domain.model.Character
 import io.github.sophon.cornerman.theme.AppTheme
-import io.github.sophon.wikiwavu.domain.model.Character
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -70,7 +70,7 @@ private fun CharacterPanel(
             .padding(8.dp)
     ) {
         AsyncImage(
-            model = character.images?.officialUrl,
+            model = character.images?.iconUrl,
             contentDescription = character.displayName,
             placeholder = painterResource(Res.drawable.compose_multiplatform),
             error = painterResource(Res.drawable.compose_multiplatform),

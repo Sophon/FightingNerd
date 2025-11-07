@@ -34,3 +34,7 @@ internal data class MoveDto(
     val video: String? = null,
     val alt: String? = null,
 )
+
+internal fun MoveListResponseDto.extractMoveDto(): List<MoveDto> {
+    return cargoQuery.map { it.title }
+}

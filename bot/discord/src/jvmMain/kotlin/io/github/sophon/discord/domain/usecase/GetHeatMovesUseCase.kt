@@ -1,10 +1,10 @@
 package io.github.sophon.discord.domain.usecase
 
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.wikiwavu.WavuError
 import io.github.sophon.wikiwavu.WavuWikiClient
-import io.github.sophon.wikiwavu.domain.model.Move
 
 class GetHeatMovesUseCase(
     private val wiki: WavuWikiClient,
@@ -19,9 +19,6 @@ class GetHeatMovesUseCase(
                         WavuError.UNKNOWN_CHARACTER -> BotError.UNKNOWN_CHARACTER
                         WavuError.UNKNOWN_MOVE -> BotError.UNKNOWN_MOVE
                         WavuError.DOWNLOAD_ERROR -> BotError.DOWNLOAD_ERROR
-                        WavuError.CHARACTER_LIST_NOT_FOUND,
-                        WavuError.CHARACTER_SERIALIZATION_ERROR,
-                            -> BotError.CHARACTER_LIST_FILE_ERROR
                         WavuError.DATABASE_ERROR -> BotError.UNKNOWN
                     }
                 )

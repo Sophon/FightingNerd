@@ -1,27 +1,36 @@
 package io.github.sophon.wikiwavu.data
 
+import io.github.sophon.core.data.WikiDataSource
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.wikiwavu.BASE_URL
+import io.github.sophon.wikiwavu.CHAR_LIST_URL
 import io.github.sophon.wikiwavu.LIMIT_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-internal interface WavuWikiDataSource {
-    suspend fun fetchMoveList(char: String): Result<MoveListResponseDto, DataError.Remote>
-}
+/**
+ * Technically, the source for the character list is not Wavu but Tekken Docs.
+ * The appeals to make a table for Character have not been successful.
+ */
 
 internal class WavuWikiDataSourceImpl(
     private val httpClient: HttpClient,
-): WavuWikiDataSource {
-    override suspend fun fetchMoveList(char: String): Result<MoveListResponseDto, DataError.Remote> {
+): WikiDataSource<CharacterListResponseDto, MoveListResponseDto> {
+    override suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
+        return safeCall { httpClient.get(CHAR_LIST_URL) }
+    }
+
+    override suspend fun downloadMoveListFor(
+        charName: String
+    ): Result<MoveListResponseDto, DataError.Remote> {
         return safeCall {
             httpClient.get(BASE_URL) {
                 parameter("action", "cargoquery")
                 parameter("tables", "Move")
-                parameter("where", "id LIKE '$char%'")
+                parameter("where", "id LIKE '$charName%'")
                 parameter("order_by", "id")
                 parameter("format", "json")
                 parameter("limit", LIMIT_MOVES)

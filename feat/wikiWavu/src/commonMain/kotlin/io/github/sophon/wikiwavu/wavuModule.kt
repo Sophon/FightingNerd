@@ -1,14 +1,15 @@
 package io.github.sophon.wikiwavu
 
-import io.github.sophon.wikiwavu.data.TekkenDocsDataSource
-import io.github.sophon.wikiwavu.data.TekkenDocsDataSourceImpl
-import io.github.sophon.wikiwavu.data.WavuWikiDataSource
+import io.github.sophon.core.data.WikiDataSource
+import io.github.sophon.core.domain.usecase.DownloadCharacterListUseCase
+import io.github.sophon.core.domain.usecase.DownloadMoveListUseCase
+import io.github.sophon.wikiwavu.data.CharacterListResponseDto
+import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
+import io.github.sophon.wikiwavu.data.toDomain
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
-import io.github.sophon.wikiwavu.usecase.DownloadCharacterListUseCase
-import io.github.sophon.wikiwavu.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMovesWithPropertyUseCase
@@ -18,12 +19,27 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val wavuModule = module {
-    singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
     singleOf(::WavuWikiClientImpl).bind<WavuWikiClient>()
-    singleOf(::TekkenDocsDataSourceImpl).bind<TekkenDocsDataSource>()
+    single<WikiDataSource<CharacterListResponseDto, MoveListResponseDto>> {
+        WavuWikiDataSourceImpl(
+            httpClient = get(),
+        )
+    }
 
-    singleOf(::DownloadCharacterListUseCase)
-    singleOf(::DownloadMoveListUseCase)
+    single {
+        DownloadCharacterListUseCase<CharacterListResponseDto, WavuError>(
+            source = get(),
+            toDomain = { toDomain() },
+            toDomainError = { toDomain() },
+        )
+    }
+    single {
+        DownloadMoveListUseCase<MoveListResponseDto, WavuError>(
+            source = get(),
+            toDomain = { dto, charName -> toDomain(dto, charName) },
+            toDomainError = { toDomain() }
+        )
+    }
     singleOf(::CacheMoveListUseCase)
     singleOf(::GetLastCacheInsertInstantUseCase)
     singleOf(::ClearCacheUseCase)

@@ -1,10 +1,10 @@
 package io.github.sophon.discord.domain.usecase
 
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomain
 import io.github.sophon.wikiwavu.WavuWikiClient
-import io.github.sophon.wikiwavu.domain.model.Move
 
 class GetPowerCrushMovesUseCase(
     private val wiki: WavuWikiClient,

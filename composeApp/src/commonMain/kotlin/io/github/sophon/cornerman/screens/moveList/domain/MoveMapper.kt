@@ -1,8 +1,8 @@
 package io.github.sophon.cornerman.screens.moveList.domain
 
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.data.MoveEntity
 import io.github.sophon.cornerman.screens.moveList.util.cleanComboLinks
-import io.github.sophon.wikiwavu.domain.model.Move
 
 internal fun List<Move>.toDomain(): List<MoveCategory> {
     val categorizedMoves = this
@@ -22,8 +22,8 @@ internal fun List<Move>.toDomain(): List<MoveCategory> {
 
 internal fun Move.getCategoryName(): String {
     return when {
-        (properties.isHeat == true) -> "Heat"
-        properties.stance.isNullOrEmpty().not() -> properties.stance!!.uppercase()
+        (t8Properties?.isHeat == true) -> "Heat"
+        t8Properties?.stance.isNullOrEmpty().not() -> t8Properties?.stance!!.uppercase()
         (isDirectional() != null) -> isDirectional()!!
         isMotion() -> "Motion Input"
         input.startsWith("fc", ignoreCase = true) -> "Crouch"
@@ -85,11 +85,11 @@ private fun Move.toDomain(): UiMove {
             UiMove.Field("OH", onHit),
             UiMove.Field("OB", onBlock),
             UiMove.Field("CH", onCH),
-            UiMove.Field("Level", level),
+            UiMove.Field("Level", t8Properties?.level),
         ),
         optionalFields = listOf(
             UiMove.Field("Damage", damage),
-            UiMove.Field("Whiff", recoveryOnWhiff),
+            UiMove.Field("Whiff", recovery),
         ),
         notes = notes,
         properties = getProperties(),
@@ -97,9 +97,9 @@ private fun Move.toDomain(): UiMove {
 }
 
 private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
-    if (properties.isHeat == true) add(UiMove.Property.HEAT)
-    if (properties.isPowerCrush == true) add(UiMove.Property.PC)
-    if (properties.isHoming == true) add(UiMove.Property.HOMING)
+    if (t8Properties?.isHeat == true) add(UiMove.Property.HEAT)
+    if (t8Properties?.isPowerCrush == true) add(UiMove.Property.PC)
+    if (t8Properties?.isHoming == true) add(UiMove.Property.HOMING)
 
     notes.forEach { note ->
         when {
@@ -120,26 +120,24 @@ internal fun Move.toEntity(): MoveEntity {
         charName = charName,
         id = id,
         input = input,
-        level = level,
         name = name,
-        parent = parent,
         damage = damage,
         startup = startup,
-        recoveryOnWhiff = recoveryOnWhiff,
-        totalFrames = totalFrames,
-        crushes = crushes.joinToString(";"),
+        recovery = recovery,
         onBlock = onBlock,
         onHit = onHit,
         onCH = onCH,
         notes = notes.joinToString(";"),
         aliases = aliases.joinToString(";"),
-        image = image,
         videoId = videoId,
-        alt = alt,
-        isHeat = properties.isHeat,
-        isPowerCrush = properties.isPowerCrush,
-        isHoming = properties.isHoming,
-        stance = properties.stance,
+
+        t8level = t8Properties?.level,
+        t8isHeat = t8Properties?.isHeat,
+        t8isPowerCrush = t8Properties?.isPowerCrush,
+        t8isHoming = t8Properties?.isHoming,
+        t8stance = t8Properties?.stance,
+        t8isLowCrush = t8Properties?.isLowCrush,
+        t8isHighCrush = t8Properties?.isHighCrush,
     )
 }
 
@@ -148,27 +146,21 @@ internal fun MoveEntity.toDomain(): Move {
         charName = charName,
         id = id,
         input = input,
-        level = level,
         name = name,
-        parent = parent,
         damage = damage,
         startup = startup,
-        recoveryOnWhiff = recoveryOnWhiff,
-        totalFrames = totalFrames,
-        crushes = crushes?.split(";").orEmpty(),
+        recovery = recovery,
         onBlock = onBlock,
         onHit = onHit,
         onCH = onCH,
         notes = notes?.split(";").orEmpty(),
         aliases = aliases?.split(";").orEmpty(),
-        image = image,
         videoId = videoId,
-        alt = alt,
-        properties = Move.Properties(
-            isHeat = isHeat,
-            isPowerCrush = isPowerCrush,
-            isHoming = isHoming,
-            stance = stance,
+        t8Properties = Move.T8Properties(
+            isHeat = t8isHeat == true,
+            isPowerCrush = t8isPowerCrush == true,
+            isHoming = t8isHoming == true,
+            stance = t8stance,
         )
     )
 }

@@ -7,11 +7,11 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.domain.toDomain
 import io.github.sophon.cornerman.screens.moveList.domain.toEntity
 import io.github.sophon.wikiwavu.WavuError
 import io.github.sophon.wikiwavu.data.MoveListDB
-import io.github.sophon.wikiwavu.domain.model.Move
 import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant

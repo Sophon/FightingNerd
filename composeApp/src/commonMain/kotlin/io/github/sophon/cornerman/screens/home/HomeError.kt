@@ -5,7 +5,6 @@ import io.github.sophon.wikiwavu.WavuError
 
 internal enum class HomeError: Error {
     UNKNOWN_CHARACTER,
-    CHARACTER_LIST_NOT_FOUND,
     DOWNLOAD_ERROR,
     IO_ERROR,
 
@@ -15,8 +14,6 @@ internal enum class HomeError: Error {
 internal fun WavuError.toDomain(): HomeError {
     return when (this) {
         WavuError.UNKNOWN_CHARACTER -> HomeError.UNKNOWN_CHARACTER
-        WavuError.CHARACTER_LIST_NOT_FOUND -> HomeError.CHARACTER_LIST_NOT_FOUND
-        WavuError.CHARACTER_SERIALIZATION_ERROR,
         WavuError.DOWNLOAD_ERROR-> HomeError.DOWNLOAD_ERROR
         WavuError.UNKNOWN_MOVE,
         WavuError.DATABASE_ERROR -> HomeError.UNKNOWN

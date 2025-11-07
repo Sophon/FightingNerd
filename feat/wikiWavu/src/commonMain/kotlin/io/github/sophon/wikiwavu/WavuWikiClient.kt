@@ -1,19 +1,21 @@
 package io.github.sophon.wikiwavu
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Character
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.core.domain.onError
-import io.github.sophon.wikiwavu.domain.model.Character
-import io.github.sophon.wikiwavu.domain.model.Move
+import io.github.sophon.core.domain.usecase.DownloadCharacterListUseCase
+import io.github.sophon.core.domain.usecase.DownloadMoveListUseCase
+import io.github.sophon.wikiwavu.data.CharacterListResponseDto
+import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
-import io.github.sophon.wikiwavu.usecase.DownloadCharacterListUseCase
-import io.github.sophon.wikiwavu.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMovesWithPropertyUseCase
 import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
-import io.github.aakira.napier.Napier
 import kotlinx.datetime.Instant
 
 interface WavuWikiClient {
@@ -32,8 +34,8 @@ interface WavuWikiClient {
 }
 
 internal class WavuWikiClientImpl(
-    private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
-    private val downloadMoveListUseCase: DownloadMoveListUseCase,
+    private val downloadCharacterListUseCase: DownloadCharacterListUseCase<CharacterListResponseDto, WavuError>,
+    private val downloadMoveListUseCase: DownloadMoveListUseCase<MoveListResponseDto, WavuError>,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
@@ -97,19 +99,19 @@ internal class WavuWikiClientImpl(
     override suspend fun getPowerCrushMoves(
         charName: String
     ): Result<List<Move>, WavuError> {
-        return fetchMovesWithPropertyUseCase.invoke(charName) { it.properties?.isPowerCrush == true }
+        return fetchMovesWithPropertyUseCase.invoke(charName) { it.t8Properties?.isPowerCrush == true }
     }
 
     override suspend fun getHeatMoves(
         charName: String
     ): Result<List<Move>, WavuError> {
-        return fetchMovesWithPropertyUseCase.invoke(charName) { it.properties?.isHeat == true }
+        return fetchMovesWithPropertyUseCase.invoke(charName) { it.t8Properties?.isHeat == true }
     }
 
     override suspend fun getHomingMoves(
         charName: String
     ): Result<List<Move>, WavuError> {
-        return fetchMovesWithPropertyUseCase.invoke(charName) { it.properties?.isHoming == true }
+        return fetchMovesWithPropertyUseCase.invoke(charName) { it.t8Properties?.isHoming == true }
     }
 
     override suspend fun getMoveListFor(

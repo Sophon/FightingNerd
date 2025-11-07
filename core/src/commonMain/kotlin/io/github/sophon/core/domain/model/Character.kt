@@ -1,4 +1,4 @@
-package io.github.sophon.wikiwavu.domain.model
+package io.github.sophon.core.domain.model
 
 import kotlinx.serialization.Serializable
 
@@ -12,7 +12,7 @@ data class Character(
 ) {
     @Serializable
     data class Images(
-        val url: String? = null,
-        val officialUrl: String? = null,
+        val iconUrl: String? = null,
+        val bannerUrl: String? = null,
     )
 }

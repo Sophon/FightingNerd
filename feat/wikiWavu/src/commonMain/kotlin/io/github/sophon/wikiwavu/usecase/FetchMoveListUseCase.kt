@@ -1,10 +1,10 @@
 package io.github.sophon.wikiwavu.usecase
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.wikiwavu.WavuError
 import io.github.sophon.wikiwavu.data.MoveListDB
-import io.github.sophon.wikiwavu.domain.model.Move
-import io.github.aakira.napier.Napier
 
 class FetchMoveListUseCase(
     private val db: MoveListDB,

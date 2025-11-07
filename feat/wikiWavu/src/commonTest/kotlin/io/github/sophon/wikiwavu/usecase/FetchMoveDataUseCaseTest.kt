@@ -5,10 +5,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.model.Move
 import io.github.sophon.wikiwavu.WavuError
 import io.github.sophon.wikiwavu.data.MoveListDB
-import io.github.sophon.wikiwavu.domain.model.Move
-import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
@@ -400,23 +399,18 @@ class FetchMoveDataUseCaseTest {
         charName = charName,
         id = id,
         input = input,
-        level = level,
         name = name,
-        parent = null,
         damage = damage,
         startup = startup,
-        recoveryOnWhiff = null,
-        totalFrames = null,
-        crushes = listOf(),
+        recovery = null,
         onBlock = null,
         onHit = null,
         onCH = null,
         notes = listOf(),
         aliases = listOf(),
-        image = null,
         videoId = null,
-        alt = null,
-        properties = Move.Properties(
+        t8Properties = Move.T8Properties(
+            level = level,
             isHeat = false,
             isPowerCrush = false,
             isHoming = false,
