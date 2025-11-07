@@ -1,10 +1,10 @@
 package io.github.sophon.discord.domain.usecase
 
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.model.Move
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.util.dropFirstAndJoin
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.domain.toDomain
+import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.wikiwavu.WavuWikiClient
 
 internal class SearchFrameDataUseCase(
@@ -18,7 +18,7 @@ internal class SearchFrameDataUseCase(
             val result = wavuWikiClient.frameDataFor(charName = parsedQuery.charName, moveQuery = parsedQuery.move)
         ) {
             is Result.Success -> Result.Success(result.data)
-            is Result.Error -> Result.Error(result.error.toDomain())
+            is Result.Error -> Result.Error(result.error.toDomainError())
         }
     }
 

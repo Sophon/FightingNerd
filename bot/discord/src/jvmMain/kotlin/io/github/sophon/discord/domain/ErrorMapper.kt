@@ -1,13 +1,13 @@
 package io.github.sophon.discord.domain
 
+import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.discord.BotError
-import io.github.sophon.wikiwavu.WavuError
 
-internal fun WavuError.toDomain(): BotError {
+internal fun WikiError.toDomainError(): BotError {
     return when (this) {
-        WavuError.UNKNOWN_CHARACTER -> BotError.UNKNOWN_CHARACTER
-        WavuError.UNKNOWN_MOVE -> BotError.UNKNOWN_MOVE
-        WavuError.DOWNLOAD_ERROR -> BotError.DOWNLOAD_ERROR
-        WavuError.DATABASE_ERROR -> BotError.UNKNOWN
+        WikiError.UNKNOWN_CHARACTER -> BotError.UNKNOWN_CHARACTER
+        WikiError.UNKNOWN_MOVE -> BotError.UNKNOWN_MOVE
+        WikiError.DOWNLOAD_ERROR -> BotError.DOWNLOAD_ERROR
+        WikiError.DATABASE_ERROR -> BotError.UNKNOWN
     }
 }

@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.featureRegistry
 
-import io.github.sophon.core.domain.FeatureInfo
+import io.github.sophon.core.feature.FeatureInfo
 
 internal class FeatureRegistry(
     private val featureListLoader: FeatureListLoader,

@@ -1,7 +1,7 @@
 package io.github.sophon.discord.featureRegistry
 
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.domain.FeatureInfo
+import io.github.sophon.core.feature.FeatureInfo
 
 interface DiscordRegisteredFeature {
     val mainCommand: Command //TODO: refactor to List<Command>

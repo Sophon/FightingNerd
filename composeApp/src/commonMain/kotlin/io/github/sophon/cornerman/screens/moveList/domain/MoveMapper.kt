@@ -1,7 +1,6 @@
 package io.github.sophon.cornerman.screens.moveList.domain
 
-import io.github.sophon.core.domain.model.Move
-import io.github.sophon.cornerman.screens.moveList.data.MoveEntity
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.util.cleanComboLinks
 
 internal fun List<Move>.toDomain(): List<MoveCategory> {
@@ -11,7 +10,7 @@ internal fun List<Move>.toDomain(): List<MoveCategory> {
             MoveCategory(
                 name = categoryName,
                 moves = moves.map {
-                    it.cleanComboLinks().toDomain()
+                    it.cleanComboLinks().toUi()
                 },
             )
         }
@@ -76,7 +75,7 @@ private fun Move.isThrow(): Boolean = notes.any { it.contains("throw", ignoreCas
 
 private fun Move.isNeutralInput(): Boolean = (input.firstOrNull()?.isDigit() == true)
 
-private fun Move.toDomain(): UiMove {
+private fun Move.toUi(): UiMove {
     return UiMove(
         id = id,
         input = input,
@@ -113,55 +112,3 @@ private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
         }
     }
 }
-
-//region Entity
-internal fun Move.toEntity(): MoveEntity {
-    return MoveEntity(
-        charName = charName,
-        id = id,
-        input = input,
-        name = name,
-        damage = damage,
-        startup = startup,
-        recovery = recovery,
-        onBlock = onBlock,
-        onHit = onHit,
-        onCH = onCH,
-        notes = notes.joinToString(";"),
-        aliases = aliases.joinToString(";"),
-        videoId = videoId,
-
-        t8level = t8Properties?.level,
-        t8isHeat = t8Properties?.isHeat,
-        t8isPowerCrush = t8Properties?.isPowerCrush,
-        t8isHoming = t8Properties?.isHoming,
-        t8stance = t8Properties?.stance,
-        t8isLowCrush = t8Properties?.isLowCrush,
-        t8isHighCrush = t8Properties?.isHighCrush,
-    )
-}
-
-internal fun MoveEntity.toDomain(): Move {
-    return Move(
-        charName = charName,
-        id = id,
-        input = input,
-        name = name,
-        damage = damage,
-        startup = startup,
-        recovery = recovery,
-        onBlock = onBlock,
-        onHit = onHit,
-        onCH = onCH,
-        notes = notes?.split(";").orEmpty(),
-        aliases = aliases?.split(";").orEmpty(),
-        videoId = videoId,
-        t8Properties = Move.T8Properties(
-            isHeat = t8isHeat == true,
-            isPowerCrush = t8isPowerCrush == true,
-            isHoming = t8isHoming == true,
-            stance = t8stance,
-        )
-    )
-}
-//endregion

@@ -8,7 +8,8 @@ import io.github.sophon.cornerman.screens.moveList.data.getMoveListDatabase
 import io.github.sophon.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
 import io.github.sophon.cornerman.screens.moveList.domain.usecase.FetchMoveListUseCase
 import io.github.sophon.cornerman.screens.moveList.ui.MoveListVM
-import io.github.sophon.wikiwavu.data.MoveListDB
+import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.cornerman.screens.moveList.domain.MoveListError
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind

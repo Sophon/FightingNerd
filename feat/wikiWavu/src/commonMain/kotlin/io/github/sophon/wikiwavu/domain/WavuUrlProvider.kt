@@ -1,6 +1,6 @@
 package io.github.sophon.wikiwavu.domain
 
-import io.github.sophon.core.domain.model.Move
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.wikiwavu.MOVE_URL
 import io.github.sophon.wikiwavu.VIDEO_URL

@@ -1,6 +1,6 @@
 package io.github.sophon.wikiwavu.data
 
-import io.github.sophon.core.domain.model.Move
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.wikiwavu.util.cleanMoveInput
 

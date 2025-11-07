@@ -2,14 +2,14 @@ package io.github.sophon.wikiwavu.usecase
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.model.Move
-import io.github.sophon.wikiwavu.WavuError
-import io.github.sophon.wikiwavu.data.MoveListDB
+import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.core.wiki.data.WikiError
 
 class FetchMoveListUseCase(
     private val db: MoveListDB,
 ) {
-    suspend fun invoke(charName: String): Result<List<Move>, WavuError> {
+    suspend fun invoke(charName: String): Result<List<Move>, WikiError> {
         return when (val result = db.fetchMoveListFor(charName)) {
             is Result.Success -> {
                 if (result.data.isEmpty()) {

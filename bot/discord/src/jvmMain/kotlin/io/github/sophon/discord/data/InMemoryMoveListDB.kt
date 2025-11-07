@@ -2,11 +2,12 @@
 
 package io.github.sophon.discord.data
 
+import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.model.Move
-import io.github.sophon.wikiwavu.WavuError
-import io.github.sophon.wikiwavu.data.MoveListDB
+import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.discord.BotError
 import kotlinx.datetime.Instant
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -18,20 +19,20 @@ class InMemoryMoveListDB: MoveListDB {
 
     override suspend fun fetchMoveListFor(
         charName: String
-    ): Result<List<Move>, WavuError> {
+    ): Result<List<Move>, WikiError> {
         return database[charName]
             ?.let { Result.Success(it.values.toList()) }
-            ?: Result.Error(WavuError.UNKNOWN_CHARACTER)
+            ?: Result.Error(WikiError.UNKNOWN_CHARACTER)
     }
 
     override suspend fun fetchMoveDataFor(
         charName: String,
         moveQuery: String
-    ): Result<Move, WavuError> {
+    ): Result<Move, WikiError> {
         val moveList = database[charName]
-            ?: return Result.Error(WavuError.UNKNOWN_CHARACTER)
+            ?: return Result.Error(WikiError.UNKNOWN_CHARACTER)
         val moveData = moveList[moveQuery]
-            ?: return Result.Error(WavuError.UNKNOWN_MOVE)
+            ?: return Result.Error(WikiError.UNKNOWN_MOVE)
 
         return Result.Success(moveData)
     }
@@ -39,7 +40,7 @@ class InMemoryMoveListDB: MoveListDB {
     override suspend fun insertMoveList(
         charName: String,
         moveList: List<Move>,
-    ): EmptyResult<WavuError> {
+    ): EmptyResult<WikiError> {
         val indexedMoves = buildMap {
             moveList.forEach { move ->
                 put(move.input, move)
@@ -54,13 +55,13 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(Unit)
     }
 
-    override suspend fun wipe(): EmptyResult<WavuError> {
+    override suspend fun wipe(): EmptyResult<WikiError> {
         database.clear()
         insertTimeInstant = null
         return Result.Success(Unit)
     }
 
-    override suspend fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
+    override suspend fun getLastInsertTimeStamp(): Result<Instant?, WikiError> {
         return Result.Success(insertTimeInstant)
     }
 }

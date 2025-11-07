@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.mutablePreferencesOf
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import io.github.sophon.core.domain.FeatureInfo
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.screens.KEY_PREFIX_FEATURE
 import io.github.sophon.cornerman.screens.settings.SettingsError

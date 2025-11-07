@@ -4,6 +4,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.cornerman.screens.moveList.domain.MoveCategory
 import io.github.sophon.cornerman.screens.moveList.domain.MoveListError
 import io.github.sophon.cornerman.screens.moveList.domain.toDomain
+import io.github.sophon.cornerman.screens.moveList.domain.toDomainError
 import io.github.sophon.wikiwavu.WavuWikiClient
 
 class FetchMoveListUseCase(
@@ -15,7 +16,7 @@ class FetchMoveListUseCase(
                 Result.Success(result.data.toDomain())
             }
             is Result.Error -> {
-                Result.Error(result.error.toDomain())
+                Result.Error(result.error.toDomainError())
             }
         }
     }

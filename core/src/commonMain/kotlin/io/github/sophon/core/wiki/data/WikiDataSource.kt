@@ -1,4 +1,4 @@
-package io.github.sophon.core.data
+package io.github.sophon.core.wiki.data
 
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result

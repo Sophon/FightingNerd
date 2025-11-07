@@ -1,6 +1,6 @@
 package io.github.sophon.cornerman.screens.settings.ui
 
-import io.github.sophon.core.domain.FeatureInfo
+import io.github.sophon.core.feature.FeatureInfo
 
 internal data class SettingsViewState(
     val featureList: List<FeatureSetting> = listOf(),
