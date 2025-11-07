@@ -6,8 +6,8 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.truncate
-import io.github.sophon.discord.domain.usecase.SearchGlossaryUseCase
-import io.github.sophon.discord.domain.usecase.StartGlossaryUseCase
+import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
+import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SlashCommand

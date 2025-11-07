@@ -12,11 +12,11 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.domain.usecase.DownloadDataUseCase
-import io.github.sophon.discord.domain.usecase.GetHeatMovesUseCase
-import io.github.sophon.discord.domain.usecase.GetHomingMovesUseCase
-import io.github.sophon.discord.domain.usecase.GetPowerCrushMovesUseCase
-import io.github.sophon.discord.domain.usecase.SearchFrameDataUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.DownloadDataUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHeatMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHomingMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetPowerCrushMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchFrameDataUseCase
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SlashCommand

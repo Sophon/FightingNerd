@@ -1,4 +1,4 @@
-package io.github.sophon.discord.domain.usecase
+package io.github.sophon.discord.featureRegistry.infilGlossary.usecase
 
 import io.github.sophon.glossaryinfil.InfilGlossary
 
