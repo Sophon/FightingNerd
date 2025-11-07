@@ -9,7 +9,7 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.domain.onError
 import io.github.sophon.cornerman.screens.home.HomeError
-import io.github.sophon.cornerman.screens.home.toDomain
+import io.github.sophon.cornerman.screens.home.toDomainError
 import io.github.sophon.wikiwavu.WavuWikiClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
@@ -46,7 +46,7 @@ internal class StartWavuSessionUseCase(
             }
             is Result.Error -> {
                 Napier.e(tag = TAG) { "Error getting timestamp: ${timestampResult.error}" }
-                Result.Error(timestampResult.error.toDomain())
+                Result.Error(timestampResult.error.toDomainError())
             }
         }
     }
@@ -76,17 +76,17 @@ internal class StartWavuSessionUseCase(
             }
             is Result.Error -> {
                 Napier.e(tag = TAG) { "Error downloading character list: ${charListResult.error}" }
-                Result.Error(charListResult.error.toDomain())
+                Result.Error(charListResult.error.toDomainError())
             }
         }
     }
 
     private suspend fun downloadAndCacheForCharacter(character: Character): EmptyResult<HomeError> {
         return wiki.downloadMoveListFor(charName = character.displayName)
-            .mapError { it.toDomain() }
+            .mapError { it.toDomainError() }
             .flatMap { moveList ->
                 wiki.cacheMoveList(character, moveList)
-                    .mapError { it.toDomain() }
+                    .mapError { it.toDomainError() }
             }
             .asEmptyDataResult()
             .onError { error ->
