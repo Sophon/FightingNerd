@@ -3,7 +3,7 @@ package io.github.sophon.core.wiki.domain.usecase
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.data.WikiDataSource
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.data.toDomain
+import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.model.Move
 
 class DownloadMoveListUseCase<M>(
@@ -17,7 +17,7 @@ class DownloadMoveListUseCase<M>(
                 Result.Success(moves)
             }
             is Result.Error -> {
-                Result.Error(result.error.toDomain(TAG))
+                Result.Error(result.error.toDomainError(TAG))
             }
         }
     }
