@@ -1,34 +1,16 @@
-package io.github.sophon.wikiwavu.usecase
+package io.github.sophon.wikiwavu.data
 
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import io.github.sophon.core.domain.DataError
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.model.Character
-import io.github.sophon.wikiwavu.data.MoveDto
-import io.github.sophon.wikiwavu.data.MoveListResponseDto
-import io.github.sophon.wikiwavu.data.WavuWikiDataSource
-import kotlinx.coroutines.test.runTest
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 
-class DownloadMoveListUseCaseTekken8Test {
-    private lateinit var mockDataSource: MockWavuWikiDataSource
-    private lateinit var useCase: DownloadMoveListUseCase
-
-    @BeforeTest
-    fun setup() {
-        mockDataSource = MockWavuWikiDataSource()
-        useCase = DownloadMoveListUseCase(mockDataSource)
-    }
-
+class MoveMapperTest {
     // region Properties - Never Null for Tekken 8
     @Test
-    fun `invoke ensures all boolean properties are never null for Tekken 8 moves`() = runTest {
+    fun `mapToDomain ensures all boolean properties are never null`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-1",
             input = "1",
@@ -48,27 +30,24 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.isHeat).isNotNull()
-        assertThat(move.t8Properties?.isPowerCrush).isNotNull()
-        assertThat(move.t8Properties?.isHoming).isNotNull()
-        assertThat(move.t8Properties?.isHeat).isEqualTo(false)
-        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(false)
-        assertThat(move.t8Properties?.isHoming).isEqualTo(false)
+        assertThat(result.t8Properties).isNotNull()
+        assertThat(result.t8Properties?.isHeat).isNotNull()
+        assertThat(result.t8Properties?.isPowerCrush).isNotNull()
+        assertThat(result.t8Properties?.isHoming).isNotNull()
+        assertThat(result.t8Properties?.isHeat).isEqualTo(false)
+        assertThat(result.t8Properties?.isPowerCrush).isEqualTo(false)
+        assertThat(result.t8Properties?.isHoming).isEqualTo(false)
     }
 
     @Test
-    fun `invoke sets heat to true when move is heat engager`() = runTest {
+    fun `mapToDomain sets heat to true when move is heat engager`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-df2",
             input = "d/f+2",
@@ -88,25 +67,20 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.isHeat).isNotNull()
-        assertThat(move.t8Properties?.isHeat).isEqualTo(true)
-        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(false)
-        assertThat(move.t8Properties?.isHoming).isEqualTo(false)
+        assertThat(result.t8Properties?.isHeat).isEqualTo(true)
+        assertThat(result.t8Properties?.isPowerCrush).isEqualTo(false)
+        assertThat(result.t8Properties?.isHoming).isEqualTo(false)
     }
 
     @Test
-    fun `invoke sets power crush to true when crush contains pc`() = runTest {
+    fun `mapToDomain sets power crush to true when crush contains pc`() {
         // Given
-        val character = createTestCharacter("Paul")
         val moveDto = MoveDto(
             id = "Paul-f23",
             input = "f+2,3",
@@ -126,25 +100,20 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Paul", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.isPowerCrush).isNotNull()
-        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(true)
-        assertThat(move.t8Properties?.isHeat).isEqualTo(false)
-        assertThat(move.t8Properties?.isHoming).isEqualTo(false)
+        assertThat(result.t8Properties?.isPowerCrush).isEqualTo(true)
+        assertThat(result.t8Properties?.isHeat).isEqualTo(false)
+        assertThat(result.t8Properties?.isHoming).isEqualTo(false)
     }
 
     @Test
-    fun `invoke sets homing to true when notes contain homing`() = runTest {
+    fun `mapToDomain sets homing to true when notes contain homing`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-f4",
             input = "f+4",
@@ -164,25 +133,20 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.isHoming).isNotNull()
-        assertThat(move.t8Properties?.isHoming).isEqualTo(true)
-        assertThat(move.t8Properties?.isHeat).isEqualTo(false)
-        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(false)
+        assertThat(result.t8Properties?.isHoming).isEqualTo(true)
+        assertThat(result.t8Properties?.isHeat).isEqualTo(false)
+        assertThat(result.t8Properties?.isPowerCrush).isEqualTo(false)
     }
 
     @Test
-    fun `invoke handles move with multiple properties set to true`() = runTest {
+    fun `mapToDomain handles move with multiple properties set to true`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-f1+2",
             input = "f+1+2",
@@ -202,26 +166,22 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.isHeat).isEqualTo(true)
-        assertThat(move.t8Properties?.isPowerCrush).isEqualTo(true)
-        assertThat(move.t8Properties?.isHoming).isEqualTo(true)
+        assertThat(result.t8Properties?.isHeat).isEqualTo(true)
+        assertThat(result.t8Properties?.isPowerCrush).isEqualTo(true)
+        assertThat(result.t8Properties?.isHoming).isEqualTo(true)
     }
     // endregion
 
     // region Stance Detection - Valid Stances
     @Test
-    fun `invoke correctly detects stance from input with three letters and digit`() = runTest {
+    fun `mapToDomain detects stance from zen dot 1 input`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-zen.1",
             input = "zen.1",
@@ -241,22 +201,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("zen")
+        assertThat(result.t8Properties?.stance).isEqualTo("zen")
     }
 
     @Test
-    fun `invoke correctly detects stance from des dot f21 input`() = runTest {
+    fun `mapToDomain detects stance from des dot f21 input`() {
         // Given
-        val character = createTestCharacter("Yoshimitsu")
         val moveDto = MoveDto(
             id = "Yoshimitsu-des.f21",
             input = "des.f+2,1",
@@ -276,22 +232,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Yoshimitsu", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("des")
+        assertThat(result.t8Properties?.stance).isEqualTo("des")
     }
 
     @Test
-    fun `invoke correctly detects stance from kin dot 1+2 input`() = runTest {
+    fun `mapToDomain detects stance from kin dot 1+2 input`() {
         // Given
-        val character = createTestCharacter("Yoshimitsu")
         val moveDto = MoveDto(
             id = "Yoshimitsu-kin.1+2",
             input = "kin.1+2",
@@ -311,22 +263,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Yoshimitsu", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("kin")
+        assertThat(result.t8Properties?.stance).isEqualTo("kin")
     }
 
     @Test
-    fun `invoke correctly detects stance from fle dot 3+4 input`() = runTest {
+    fun `mapToDomain detects stance from fle dot 3+4 input`() {
         // Given
-        val character = createTestCharacter("Yoshimitsu")
         val moveDto = MoveDto(
             id = "Yoshimitsu-fle.3+4",
             input = "fle.3+4",
@@ -346,22 +294,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Yoshimitsu", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("fle")
+        assertThat(result.t8Properties?.stance).isEqualTo("fle")
     }
 
     @Test
-    fun `invoke correctly detects uppercase stance`() = runTest {
+    fun `mapToDomain detects uppercase stance and normalizes to lowercase`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-ZEN.2",
             input = "ZEN.2",
@@ -381,24 +325,20 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("zen")
+        assertThat(result.t8Properties?.stance).isEqualTo("zen")
     }
     // endregion
 
     // region Stance Detection - Not Stances
     @Test
-    fun `invoke returns empty stance for motion input wr`() = runTest {
+    fun `mapToDomain returns empty stance for motion input wr`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-wr2",
             input = "wr2",
@@ -418,22 +358,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("")
+        assertThat(result.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
-    fun `invoke returns empty stance for motion input ff`() = runTest {
+    fun `mapToDomain returns empty stance for motion input ff`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-ff3",
             input = "ff3",
@@ -453,22 +389,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("")
+        assertThat(result.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
-    fun `invoke returns empty stance for motion input qcf`() = runTest {
+    fun `mapToDomain returns empty stance for motion input qcf`() {
         // Given
-        val character = createTestCharacter("Akuma")
         val moveDto = MoveDto(
             id = "Akuma-qcf1",
             input = "qcf1",
@@ -488,22 +420,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Akuma", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("")
+        assertThat(result.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
-    fun `invoke returns empty stance for motion input qcb`() = runTest {
+    fun `mapToDomain returns empty stance for motion input qcb`() {
         // Given
-        val character = createTestCharacter("Akuma")
         val moveDto = MoveDto(
             id = "Akuma-qcb2",
             input = "qcb2",
@@ -523,22 +451,49 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Akuma", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("")
+        assertThat(result.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
-    fun `invoke returns empty stance for input without digits`() = runTest {
+    fun `mapToDomain returns empty stance for motion input fc`() {
         // Given
-        val character = createTestCharacter("Jin")
+        val moveDto = MoveDto(
+            id = "Jin-fc4",
+            input = "fc4",
+            parent = null,
+            target = "L",
+            damage = "12",
+            startup = "i11",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-13",
+            hit = "+2",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        val movesById = mapOf(moveDto.id to moveDto)
+
+        // When
+        val result = moveDto.mapToDomain("Jin", movesById)
+
+        // Then
+        assertThat(result.t8Properties?.stance).isEqualTo("")
+    }
+
+    @Test
+    fun `mapToDomain returns empty stance for input without digits`() {
+        // Given
         val moveDto = MoveDto(
             id = "Jin-zen",
             input = "zen",
@@ -558,22 +513,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("")
+        assertThat(result.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
-    fun `invoke returns empty stance for input with less than three letters`() = runTest {
+    fun `mapToDomain returns empty stance for input with less than three letters`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-df2",
             input = "d/f+2",
@@ -593,22 +544,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("")
+        assertThat(result.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
-    fun `invoke returns empty stance for regular move starting with digit`() = runTest {
+    fun `mapToDomain returns empty stance for regular move starting with digit`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-1",
             input = "1",
@@ -628,22 +575,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("")
+        assertThat(result.t8Properties?.stance).isEqualTo("")
     }
 
     @Test
-    fun `invoke returns empty stance for input with special characters only`() = runTest {
+    fun `mapToDomain returns empty stance for input with special characters only`() {
         // Given
-        val character = createTestCharacter("Jin")
         val moveDto = MoveDto(
             id = "Jin-1+2",
             input = "1+2",
@@ -663,24 +606,20 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Jin", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("")
+        assertThat(result.t8Properties?.stance).isEqualTo("")
     }
     // endregion
 
     // region Stance Detection - Edge Cases
     @Test
-    fun `invoke handles stance with complex notation after stance name`() = runTest {
+    fun `mapToDomain handles stance with complex notation after stance name`() {
         // Given
-        val character = createTestCharacter("Yoshimitsu")
         val moveDto = MoveDto(
             id = "Yoshimitsu-des.bt.1",
             input = "des.bt.1",
@@ -700,22 +639,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("Yoshimitsu", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("des")
+        assertThat(result.t8Properties?.stance).isEqualTo("des")
     }
 
     @Test
-    fun `invoke detects stance with numbers in the middle`() = runTest {
+    fun `mapToDomain detects stance with numbers immediately after letters`() {
         // Given
-        val character = createTestCharacter("TestChar")
         val moveDto = MoveDto(
             id = "TestChar-abc.3+4",
             input = "abc.3+4",
@@ -735,33 +670,31 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(createMoveListResponse(listOf(moveDto)))
+        val movesById = mapOf(moveDto.id to moveDto)
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = moveDto.mapToDomain("TestChar", movesById)
 
         // Then
-        result as Result.Success
-        val move = result.data.first()
-
-        assertThat(move.t8Properties?.stance).isEqualTo("abc")
+        assertThat(result.t8Properties?.stance).isEqualTo("abc")
     }
+    // endregion
 
+    // region Parent Traversal
     @Test
-    fun `invoke handles multiple moves with different stances`() = runTest {
-        // Given
-        val character = createTestCharacter("Yoshimitsu")
-        val move1 = MoveDto(
-            id = "Yoshimitsu-kin.1",
-            input = "kin.1",
+    fun `mapToDomain constructs complete input from parent chain`() {
+        // Given - Kazuya's 1,1,2 string where each hit builds on parent
+        val parent1 = MoveDto(
+            id = "Kazuya-1",
+            input = "1",
             parent = null,
             target = "h",
-            damage = "10",
+            damage = "5",
             startup = "i10",
             recv = null,
             tot = null,
             crush = null,
-            block = "+2",
+            block = "+1",
             hit = "+8",
             ch = null,
             notes = null,
@@ -770,18 +703,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        val move2 = MoveDto(
-            id = "Yoshimitsu-des.2",
-            input = "des.2",
-            parent = null,
-            target = "m",
-            damage = "15",
-            startup = "i15",
+        val parent2 = MoveDto(
+            id = "Kazuya-1,1",
+            input = ",1",
+            parent = "Kazuya-1",
+            target = "h,h",
+            damage = ",5",
+            startup = null,
             recv = null,
             tot = null,
             crush = null,
-            block = "-5",
-            hit = "+3",
+            block = null,
+            hit = null,
             ch = null,
             notes = null,
             alias = null,
@@ -789,18 +722,18 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        val move3 = MoveDto(
-            id = "Yoshimitsu-fle.4",
-            input = "fle.4",
-            parent = null,
-            target = "L",
-            damage = "20",
-            startup = "i20",
+        val child = MoveDto(
+            id = "Kazuya-1,1,2",
+            input = ",2",
+            parent = "Kazuya-1,1",
+            target = "h,h,m",
+            damage = ",6",
+            startup = null,
             recv = null,
             tot = null,
             crush = null,
             block = "-12",
-            hit = "KND",
+            hit = "Launch",
             ch = null,
             notes = null,
             alias = null,
@@ -808,47 +741,148 @@ class DownloadMoveListUseCaseTekken8Test {
             video = null,
             alt = null
         )
-        mockDataSource.mockResponse = Result.Success(
-            createMoveListResponse(listOf(move1, move2, move3))
+        val movesById = mapOf(
+            parent1.id to parent1,
+            parent2.id to parent2,
+            child.id to child
         )
 
         // When
-        val result = useCase.invoke(character.id)
+        val result = child.mapToDomain("Kazuya", movesById)
 
         // Then
-        result as Result.Success
-        val moves = result.data
+        assertThat(result.input).isEqualTo("112")
+        assertThat(result.damage).isEqualTo("5,5,6")
+    }
 
-        assertThat(moves).hasSize(3)
-        assertThat(moves[0].t8Properties?.stance).isEqualTo("kin")
-        assertThat(moves[1].t8Properties?.stance).isEqualTo("des")
-        assertThat(moves[2].t8Properties?.stance).isEqualTo("fle")
+    @Test
+    fun `mapToDomain gets startup from root parent`() {
+        // Given
+        val parent = MoveDto(
+            id = "Jin-1",
+            input = "1",
+            parent = null,
+            target = "h",
+            damage = "5",
+            startup = "i10",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "+1",
+            hit = "+8",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        val child = MoveDto(
+            id = "Jin-1,2",
+            input = ",2",
+            parent = "Jin-1",
+            target = "h,h",
+            damage = ",8",
+            startup = null, // Child doesn't have startup
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "-1",
+            hit = "+8",
+            ch = null,
+            notes = null,
+            alias = null,
+            image = null,
+            video = null,
+            alt = null
+        )
+        val movesById = mapOf(
+            parent.id to parent,
+            child.id to child
+        )
+
+        // When
+        val result = child.mapToDomain("Jin", movesById)
+
+        // Then
+        assertThat(result.startup).isEqualTo("i10")
     }
     // endregion
 
-    // region Helper Methods
-    private fun createTestCharacter(name: String) = Character(
-        id = name.lowercase(),
-        displayName = name,
-        wikiUrl = "",
-        images = Character.Images(
-            bannerUrl = "https://example.com/$name.png",
-        ),
-        aliasList = listOf(name.lowercase())
-    )
+    // region Alias Parsing
+    @Test
+    fun `mapToDomain parses aliases correctly`() {
+        // Given
+        val moveDto = MoveDto(
+            id = "Jin-ewgf",
+            input = "f,n,d/f+2",
+            parent = null,
+            target = "m",
+            damage = "25",
+            startup = "i13",
+            recv = null,
+            tot = null,
+            crush = null,
+            block = "+5",
+            hit = "Launch",
+            ch = null,
+            notes = null,
+            alias = "* ewgf\n* electric",
+            image = null,
+            video = null,
+            alt = null
+        )
+        val movesById = mapOf(moveDto.id to moveDto)
 
-    private fun createMoveListResponse(moves: List<MoveDto>) = MoveListResponseDto(
-        cargoQuery = moves.map { MoveListResponseDto.Title(it) }
-    )
+        // When
+        val result = moveDto.mapToDomain("Jin", movesById)
+
+        // Then
+        assertThat(result.aliases).hasSize(2)
+        assertThat(result.aliases[0]).isEqualTo("ewgf")
+        assertThat(result.aliases[1]).isEqualTo("electric")
+    }
     // endregion
 
-    // region Mock Data Source
-    private class MockWavuWikiDataSource : WavuWikiDataSource {
-        var mockResponse: Result<MoveListResponseDto, DataError.Remote>? = null
+    // region Basic Mapping
+    @Test
+    fun `mapToDomain maps basic move properties correctly`() {
+        // Given
+        val moveDto = MoveDto(
+            id = "Jin-df2",
+            input = "d/f+2",
+            parent = null,
+            target = "m",
+            damage = "15",
+            startup = "i15",
+            recv = "r25",
+            tot = null,
+            crush = null,
+            block = "-12",
+            hit = "Launch",
+            ch = null,
+            notes = "Launcher",
+            alias = null,
+            image = null,
+            video = "abc123",
+            alt = null
+        )
+        val movesById = mapOf(moveDto.id to moveDto)
 
-        override suspend fun fetchMoveList(char: String): Result<MoveListResponseDto, DataError.Remote> {
-            return mockResponse ?: Result.Error(DataError.Remote.UNKNOWN)
-        }
+        // When
+        val result = moveDto.mapToDomain("Jin", movesById)
+
+        // Then
+        assertThat(result.charName).isEqualTo("Jin")
+        assertThat(result.id).isEqualTo("jin-df2")
+        assertThat(result.input).isEqualTo("df2")
+        assertThat(result.damage).isEqualTo("15")
+        assertThat(result.startup).isEqualTo("i15")
+        assertThat(result.recovery).isEqualTo("r25")
+        assertThat(result.onBlock).isEqualTo("-12")
+        assertThat(result.onHit).isEqualTo("Launch")
+        assertThat(result.videoId).isEqualTo("abc123")
+        assertThat(result.t8Properties?.level).isEqualTo("m")
     }
     // endregion
 }
