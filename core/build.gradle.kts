@@ -56,6 +56,28 @@ kotlin {
             }
         }
 
+        androidMain {
+            dependencies {
+                implementation(libs.ktor.android)
+                implementation(libs.napier)
+            }
+        }
+
+        iosMain {
+            dependencies {
+                implementation(libs.ktor.ios)
+                implementation(libs.napier)
+            }
+        }
+
+        jvmMain {
+            dependencies {
+                implementation(libs.ktor.cio)
+                // Use explicit JVM artifact to avoid variant ambiguity
+                implementation("io.github.aakira:napier-jvm:2.7.1")
+            }
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.test.assertk)
@@ -68,31 +90,13 @@ kotlin {
             implementation(libs.kotlin.testJunit)
         }
 
-        androidMain {
-            dependencies {
-                implementation(libs.ktor.android)
-            }
-        }
-
         getByName("androidDeviceTest") {
             dependencies {
                 implementation(libs.androidx.runner)
                 implementation(libs.androidx.core)
                 implementation(libs.androidx.testExt.junit)
-                implementation(libs.junit)  // Add here if needed
-                implementation(libs.kotlin.testJunit)  // Add here if needed
-            }
-        }
-
-        iosMain {
-            dependencies {
-                implementation(libs.ktor.ios)
-            }
-        }
-
-        jvmMain {
-            dependencies {
-                implementation(libs.ktor.cio)
+                implementation(libs.junit)
+                implementation(libs.kotlin.testJunit)
             }
         }
     }

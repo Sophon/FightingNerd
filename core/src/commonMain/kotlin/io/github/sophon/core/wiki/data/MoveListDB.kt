@@ -6,9 +6,9 @@ import io.github.sophon.core.wiki.domain.model.Move
 import kotlinx.datetime.Instant
 
 interface MoveListDB {
-    suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiDataError>
-    suspend fun fetchMoveDataFor(charName: String, moveQuery: String): Result<Move, WikiDataError>
-    suspend fun insertMoveList(charName: String, moveList: List<Move>): EmptyResult<WikiDataError>
-    suspend fun wipe(): EmptyResult<WikiDataError>
-    suspend fun getLastInsertTimeStamp(): Result<Instant?, WikiDataError>
+    suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError>
+    suspend fun fetchMoveDataFor(charName: String, moveQuery: String): Result<Move, WikiError>
+    suspend fun insertMoveList(charName: String, moveList: List<Move>): EmptyResult<WikiError>
+    suspend fun wipe(): EmptyResult<WikiError>
+    suspend fun getLastInsertTimeStamp(): Result<Instant?, WikiError>
 }
