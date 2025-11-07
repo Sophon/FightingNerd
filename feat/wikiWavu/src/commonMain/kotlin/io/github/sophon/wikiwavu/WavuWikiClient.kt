@@ -121,9 +121,10 @@ internal class WavuWikiClientImpl(
         return fetchMoveListUseCase.invoke(charName)
     }
 
+    @Deprecated("this should be a DB function")
     override suspend fun getCharacterList(): Result<List<Character>, WikiError> {
-        downloadCharacterListUseCase.invoke()
-        TODO("this should be a DB function")
+        //TODO: create CharacterListDB
+        return downloadCharacterListUseCase.invoke()
     }
 }
 
