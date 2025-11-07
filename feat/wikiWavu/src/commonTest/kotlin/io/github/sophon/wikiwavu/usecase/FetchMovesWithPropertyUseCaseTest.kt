@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.core.wiki.data.WikiError
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
@@ -317,7 +318,7 @@ class FetchMovesWithPropertyUseCaseTest {
     fun `invoke returns error when database returns error`() = runTest {
         // Given
         val charName = "Jin"
-        mockDb.mockResponse = Result.Error(WavuError.UNKNOWN_CHARACTER)
+        mockDb.mockResponse = Result.Error(WikiError.UNKNOWN_CHARACTER)
 
         // When
         val result = useCase.invoke(charName) { it.t8Properties?.isHeat == true }
@@ -325,35 +326,35 @@ class FetchMovesWithPropertyUseCaseTest {
         // Then
         assertThat(result).isNotNull()
         result as Result.Error
-        assertThat(result.error).isEqualTo(WavuError.UNKNOWN_CHARACTER)
+        assertThat(result.error).isEqualTo(WikiError.UNKNOWN_CHARACTER)
     }
 
     @Test
     fun `invoke returns error when character not found`() = runTest {
         // Given
         val charName = "NonExistentCharacter"
-        mockDb.mockResponse = Result.Error(WavuError.UNKNOWN_CHARACTER)
+        mockDb.mockResponse = Result.Error(WikiError.UNKNOWN_CHARACTER)
 
         // When
         val result = useCase.invoke(charName) { it.t8Properties?.isPowerCrush == true }
 
         // Then
         result as Result.Error
-        assertThat(result.error).isEqualTo(WavuError.UNKNOWN_CHARACTER)
+        assertThat(result.error).isEqualTo(WikiError.UNKNOWN_CHARACTER)
     }
 
     @Test
     fun `invoke returns error when database operation fails`() = runTest {
         // Given
         val charName = "Jin"
-        mockDb.mockResponse = Result.Error(WavuError.DOWNLOAD_ERROR)
+        mockDb.mockResponse = Result.Error(WikiError.DOWNLOAD_ERROR)
 
         // When
         val result = useCase.invoke(charName) { it.t8Properties?.isHoming == true }
 
         // Then
         result as Result.Error
-        assertThat(result.error).isEqualTo(WavuError.DOWNLOAD_ERROR)
+        assertThat(result.error).isEqualTo(WikiError.DOWNLOAD_ERROR)
     }
     //endregion
 
@@ -489,33 +490,33 @@ class FetchMovesWithPropertyUseCaseTest {
     )
 
     private class MockMoveListDB : MoveListDB {
-        var mockResponse: Result<List<Move>, WavuError>? = null
+        var mockResponse: Result<List<Move>, WikiError>? = null
 
-        override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WavuError> {
-            return mockResponse ?: Result.Error(WavuError.UNKNOWN_CHARACTER)
+        override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
+            return mockResponse ?: Result.Error(WikiError.UNKNOWN_CHARACTER)
         }
 
         override suspend fun fetchMoveDataFor(
             charName: String,
             moveQuery: String
-        ): Result<Move, WavuError> {
+        ): Result<Move, WikiError> {
             // Not used in FetchMovesWithPropertyUseCase
-            return Result.Error(WavuError.UNKNOWN_MOVE)
+            return Result.Error(WikiError.UNKNOWN_MOVE)
         }
 
         override suspend fun insertMoveList(
             charName: String, moveList: List<Move>
-        ): EmptyResult<WavuError> {
+        ): EmptyResult<WikiError> {
             // Not used in FetchMoveDataUseCase
             return Result.Success(Unit)
         }
 
-        override suspend fun wipe(): EmptyResult<WavuError> {
+        override suspend fun wipe(): EmptyResult<WikiError> {
             //not used
             return Result.Success(Unit)
         }
 
-        override suspend fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
+        override suspend fun getLastInsertTimeStamp(): Result<Instant?, WikiError> {
             // Not used in current tests
             return Result.Success(null)
         }

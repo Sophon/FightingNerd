@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.wikiwavu.domain.model.CharacterMoveList
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
@@ -348,23 +349,23 @@ class CacheMoveListUseCaseTest {
             return database[charName]
         }
 
-        override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WavuError> {
+        override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
             return database[charName]
                 ?.values?.toList()
                 ?.let { Result.Success(it) }
-                ?: Result.Error(WavuError.UNKNOWN_CHARACTER)
+                ?: Result.Error(WikiError.UNKNOWN_CHARACTER)
         }
 
-        override suspend fun fetchMoveDataFor(charName: String, moveQuery: String): Result<Move, WavuError> {
+        override suspend fun fetchMoveDataFor(charName: String, moveQuery: String): Result<Move, WikiError> {
             val moveList = database[charName]
-                ?: return Result.Error(WavuError.UNKNOWN_CHARACTER)
+                ?: return Result.Error(WikiError.UNKNOWN_CHARACTER)
             val moveData = moveList[moveQuery]
-                ?: return Result.Error(WavuError.UNKNOWN_MOVE)
+                ?: return Result.Error(WikiError.UNKNOWN_MOVE)
 
             return Result.Success(moveData)
         }
 
-        override suspend fun insertMoveList(charName: String, moveList: List<Move>): EmptyResult<WavuError> {
+        override suspend fun insertMoveList(charName: String, moveList: List<Move>): EmptyResult<WikiError> {
             return try {
                 val indexedMoves = buildMap {
                     moveList.forEach { move ->
@@ -377,20 +378,20 @@ class CacheMoveListUseCaseTest {
                 database[charName] = indexedMoves
                 Result.Success(Unit)
             } catch (e: Exception) {
-                Result.Error(WavuError.DATABASE_ERROR)
+                Result.Error(WikiError.DATABASE_ERROR)
             }
         }
 
-        override suspend fun wipe(): EmptyResult<WavuError> {
+        override suspend fun wipe(): EmptyResult<WikiError> {
             return try {
                 database.clear()
                 Result.Success(Unit)
             } catch (e: Exception) {
-                Result.Error(WavuError.DATABASE_ERROR)
+                Result.Error(WikiError.DATABASE_ERROR)
             }
         }
 
-        override suspend fun getLastInsertTimeStamp(): Result<Instant?, WavuError> {
+        override suspend fun getLastInsertTimeStamp(): Result<Instant?, WikiError> {
             // Not used in current tests
             return Result.Success(null)
         }
