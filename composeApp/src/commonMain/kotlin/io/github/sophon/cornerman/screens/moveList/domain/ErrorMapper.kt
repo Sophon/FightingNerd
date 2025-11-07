@@ -1,7 +1,5 @@
 package io.github.sophon.cornerman.screens.moveList.domain
 
-import io.github.sophon.wikiwavu.WavuError
-
 internal fun WavuError.toDomain(): MoveListError {
     return when (this) {
         WavuError.UNKNOWN_CHARACTER -> MoveListError.UNKNOWN_CHARACTER

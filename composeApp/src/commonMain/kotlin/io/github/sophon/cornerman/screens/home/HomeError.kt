@@ -1,7 +1,6 @@
 package io.github.sophon.cornerman.screens.home
 
 import io.github.sophon.core.domain.Error
-import io.github.sophon.wikiwavu.WavuError
 
 internal enum class HomeError: Error {
     UNKNOWN_CHARACTER,
