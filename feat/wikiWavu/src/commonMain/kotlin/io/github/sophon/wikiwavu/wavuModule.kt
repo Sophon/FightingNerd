@@ -8,6 +8,7 @@ import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
 import io.github.sophon.wikiwavu.data.toDomain
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
+import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
 import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
@@ -46,6 +47,7 @@ val wavuModule = module {
     singleOf(::FetchMovesWithPropertyUseCase)
     singleOf(::FetchMoveListUseCase)
     singleOf(::FetchCharacterListUseCase)
+    singleOf(::CacheCharacterListUseCase)
 
     singleOf(::WavuUrlProvider)
 }
