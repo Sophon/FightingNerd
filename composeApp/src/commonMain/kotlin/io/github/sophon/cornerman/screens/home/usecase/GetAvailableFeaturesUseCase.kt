@@ -4,8 +4,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.cornerman.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.cornerman.featureRegistry.FeatureRegistry
 import io.github.sophon.cornerman.screens.KEY_PREFIX_FEATURE

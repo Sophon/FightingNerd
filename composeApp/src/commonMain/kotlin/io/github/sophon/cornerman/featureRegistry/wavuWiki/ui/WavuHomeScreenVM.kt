@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.StartWavuSessionUseCase
+import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.SyncDataIfOldUseCase
 import io.github.sophon.cornerman.screens.moveList.domain.usecase.FetchCharacterListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 internal class WavuHomeScreenVM(
-    private val startWavuSessionUseCase: StartWavuSessionUseCase,
+    private val syncDataIfOldUseCase: SyncDataIfOldUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(WavuHomeScreenViewState())
@@ -37,7 +37,7 @@ internal class WavuHomeScreenVM(
 
     private suspend fun startWavuSession() {
         _state.update { it.copy(isLoading = true) }
-        startWavuSessionUseCase.invoke()
+        syncDataIfOldUseCase.invoke()
         _state.update { it.copy(isLoading = false) }
     }
 

@@ -1,13 +1,12 @@
 package io.github.sophon.cornerman
 
-import androidx.room.RoomDatabase
-import io.github.sophon.cornerman.screens.moveList.data.MoveListDatabase
-import io.github.sophon.cornerman.data.getMoveListDatabaseBuilder
-import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
+import io.github.sophon.cornerman.screens.moveList.data.getMoveListDatabaseBuilder
+import io.github.sophon.cornerman.screens.home.data.getCharacterListDatabase
+import io.github.sophon.cornerman.screens.home.data.getCharacterListDatabaseBuilder
+import io.github.sophon.cornerman.screens.moveList.data.getMoveListDatabase
 import org.koin.dsl.module
 
 actual val platformModule = module {
-    singleOf(::getMoveListDatabaseBuilder)
-        .bind<RoomDatabase.Builder<MoveListDatabase>>()
+    single { getMoveListDatabase(getMoveListDatabaseBuilder()) }
+    single { getCharacterListDatabase(getCharacterListDatabaseBuilder()) }
 }

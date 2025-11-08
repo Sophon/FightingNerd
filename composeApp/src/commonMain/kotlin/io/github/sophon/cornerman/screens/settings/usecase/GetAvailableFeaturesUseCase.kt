@@ -6,8 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.cornerman.featureRegistry.FeatureRegistry
 import io.github.sophon.cornerman.screens.KEY_PREFIX_FEATURE
 import io.github.sophon.cornerman.screens.settings.SettingsError

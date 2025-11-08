@@ -11,8 +11,10 @@ import io.github.sophon.core.wiki.domain.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.domain.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.data.CharacterListResponseDto
 import io.github.sophon.wikiwavu.data.MoveListResponseDto
+import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
+import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMovesWithPropertyUseCase
@@ -21,29 +23,35 @@ import kotlinx.datetime.Instant
 
 interface WavuWikiClient {
     suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
+    suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError>
+    suspend fun getCharacterList(): Result<List<Character>, WikiError>
+
     suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError>
     suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError>
     suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
-    suspend fun clearCache(): EmptyResult<WikiError>
 
     suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WikiError>
     suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WikiError>
     suspend fun getHeatMoves(charName: String): Result<List<Move>, WikiError>
     suspend fun getHomingMoves(charName: String): Result<List<Move>, WikiError>
     suspend fun getMoveListFor(charName: String): Result<List<Move>, WikiError>
-    suspend fun getCharacterList(): Result<List<Character>, WikiError>
+
+    suspend fun clearCache(): EmptyResult<WikiError>
 }
 
 internal class WavuWikiClientImpl(
     private val downloadCharacterListUseCase: DownloadCharacterListUseCase<CharacterListResponseDto>,
+    private val cacheCharacterListUseCase: CacheCharacterListUseCase,
+    private val fetchCharacterListUseCase: FetchCharacterListUseCase,
+
     private val downloadMoveListUseCase: DownloadMoveListUseCase<MoveListResponseDto>,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
-    private val clearCacheUseCase: ClearCacheUseCase,
-
     private val fetchMoveDataUseCase: FetchMoveDataUseCase,
     private val fetchMovesWithPropertyUseCase: FetchMovesWithPropertyUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
+
+    private val clearCacheUseCase: ClearCacheUseCase,
 ): WavuWikiClient {
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         val result = downloadCharacterListUseCase.invoke()
@@ -53,6 +61,16 @@ internal class WavuWikiClientImpl(
         }
 
         return result
+    }
+
+    override suspend fun getCharacterList(): Result<List<Character>, WikiError> {
+        return fetchCharacterListUseCase.invoke()
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
+
+    override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
+        return cacheCharacterListUseCase.invoke(characterList)
+            .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
     override suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError> {
@@ -68,17 +86,6 @@ internal class WavuWikiClientImpl(
                 Result.Error(result.error)
             }
         }
-    }
-
-    override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError> {
-        val result = cacheMoveListUseCase.invoke(character, moveList)
-
-        when (result) {
-            is Result.Error -> Napier.d(tag = TAG) { "${character.id}: ${result.error}" }
-            else -> {}
-        }
-
-        return result
     }
 
     override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
@@ -121,10 +128,18 @@ internal class WavuWikiClientImpl(
         return fetchMoveListUseCase.invoke(charName)
     }
 
-    @Deprecated("this should be a DB function")
-    override suspend fun getCharacterList(): Result<List<Character>, WikiError> {
-        //TODO: create CharacterListDB
-        return downloadCharacterListUseCase.invoke()
+    override suspend fun cacheMoveList(
+        character: Character,
+        moveList: List<Move>
+    ): EmptyResult<WikiError> {
+        val result = cacheMoveListUseCase.invoke(character, moveList)
+
+        when (result) {
+            is Result.Error -> Napier.d(tag = TAG) { "${character.id}: ${result.error}" }
+            else -> {}
+        }
+
+        return result
     }
 }
 

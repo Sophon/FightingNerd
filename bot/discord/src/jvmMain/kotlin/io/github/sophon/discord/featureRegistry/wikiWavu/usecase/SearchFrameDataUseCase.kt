@@ -1,8 +1,8 @@
-package io.github.sophon.discord.domain.usecase
+package io.github.sophon.discord.featureRegistry.wikiWavu.usecase
 
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.util.dropFirstAndJoin
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.wikiwavu.WavuWikiClient

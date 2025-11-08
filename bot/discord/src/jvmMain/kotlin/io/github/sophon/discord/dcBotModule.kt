@@ -1,12 +1,14 @@
 package io.github.sophon.discord
 
 import io.github.sophon.core.coreModule
+import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryGlossaryDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.featureRegistry.featureRegistryModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
-import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.wikiwavu.wavuModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -42,6 +44,7 @@ fun dcBotModule(apiKey: String) = module {
 
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
 
+    singleOf(::InMemoryCharacterListDB).bind<CharacterListDB>()
     singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 }

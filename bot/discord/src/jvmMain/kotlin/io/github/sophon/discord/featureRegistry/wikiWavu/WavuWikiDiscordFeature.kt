@@ -5,21 +5,21 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.domain.onError
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.domain.usecase.DownloadDataUseCase
-import io.github.sophon.discord.domain.usecase.GetHeatMovesUseCase
-import io.github.sophon.discord.domain.usecase.GetHomingMovesUseCase
-import io.github.sophon.discord.domain.usecase.GetPowerCrushMovesUseCase
-import io.github.sophon.discord.domain.usecase.SearchFrameDataUseCase
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SlashCommand
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHeatMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHomingMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetPowerCrushMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchFrameDataUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SyncDataUseCase
 import io.github.sophon.discord.util.createErrorEmbed
 import io.github.sophon.discord.util.field
 import io.github.sophon.discord.util.orClickable
@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.hours
 
 internal class WavuWikiDiscordFeature(
-    private val downloadDataUseCase: DownloadDataUseCase,
+    private val syncDataUseCase: SyncDataUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
@@ -95,7 +95,7 @@ internal class WavuWikiDiscordFeature(
     override suspend fun start() {
         scheduler.start(
             period = 1.hours,
-            task = ::downloadCompleteMoveList,
+            task = ::syncData,
         ).onEach { result ->
             result.onError { Napier.e(tag = TAG) { it.toString() } }
         }.launchIn(scope)
@@ -115,8 +115,8 @@ internal class WavuWikiDiscordFeature(
     }
 
 
-    private suspend fun downloadCompleteMoveList(): EmptyResult<BotError> {
-        return downloadDataUseCase.invoke()
+    private suspend fun syncData(): EmptyResult<BotError> {
+        return syncDataUseCase.invoke()
     }
 
     private suspend fun searchFrameData(
