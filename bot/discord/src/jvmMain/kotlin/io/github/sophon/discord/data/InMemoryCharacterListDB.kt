@@ -17,7 +17,12 @@ class InMemoryCharacterListDB: CharacterListDB {
     private var insertTimeInstant: Instant? = null
 
     override suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
-        database = characterList.associateBy { it.id }.toMutableMap()
+        characterList.forEach { character ->
+            database.put(key = character.id, value = character)
+            character.aliasList.forEach { alias ->
+                database.put(key = alias, value = character)
+            }
+        }
         insertTimeInstant = Clock.System.now()
         return Result.Success(Unit)
     }
