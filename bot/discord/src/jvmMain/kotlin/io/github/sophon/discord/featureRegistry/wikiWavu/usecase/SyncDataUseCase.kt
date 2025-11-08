@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class RefreshDataUseCase(
+class SyncDataUseCase(
     private val wiki: WavuWikiClient,
 ) {
     suspend fun invoke(): EmptyResult<BotError> {

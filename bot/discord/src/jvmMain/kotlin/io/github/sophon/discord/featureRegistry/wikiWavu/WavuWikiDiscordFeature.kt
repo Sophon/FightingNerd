@@ -12,7 +12,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.RefreshDataUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SyncDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHeatMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHomingMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetPowerCrushMovesUseCase
@@ -30,7 +30,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.hours
 
 internal class WavuWikiDiscordFeature(
-    private val refreshDataUseCase: RefreshDataUseCase,
+    private val syncDataUseCase: SyncDataUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
     private val getHeatMovesUseCase: GetHeatMovesUseCase,
@@ -95,7 +95,7 @@ internal class WavuWikiDiscordFeature(
     override suspend fun start() {
         scheduler.start(
             period = 1.hours,
-            task = ::refreshData,
+            task = ::syncData,
         ).onEach { result ->
             result.onError { Napier.e(tag = TAG) { it.toString() } }
         }.launchIn(scope)
@@ -115,8 +115,8 @@ internal class WavuWikiDiscordFeature(
     }
 
 
-    private suspend fun refreshData(): EmptyResult<BotError> {
-        return refreshDataUseCase.invoke()
+    private suspend fun syncData(): EmptyResult<BotError> {
+        return syncDataUseCase.invoke()
     }
 
     private suspend fun searchFrameData(

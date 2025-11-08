@@ -1,7 +1,7 @@
 package io.github.sophon.discord.featureRegistry
 
 import io.github.sophon.discord.config.ConfigLoader
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.RefreshDataUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SyncDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHeatMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHomingMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetPowerCrushMovesUseCase
@@ -19,7 +19,7 @@ import org.koin.dsl.module
 
 internal val featureRegistryModule = module {
     //region Wavu Wiki
-    singleOf(::RefreshDataUseCase)
+    singleOf(::SyncDataUseCase)
     singleOf(::SearchFrameDataUseCase)
     singleOf(::GetPowerCrushMovesUseCase)
     singleOf(::GetHeatMovesUseCase)
