@@ -1,8 +1,18 @@
 package io.github.sophon.wikiwavu.data
 
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.wikiwavu.util.cleanMoveInput
+
+internal fun MoveListResponseDto.toDomain(charName: String): List<Move> {
+    val downloadedMoves = extractMoveDto()
+    val movesById = downloadedMoves.associateBy { it.id }
+    return downloadedMoves.map { it.mapToDomain(charName, movesById) }
+}
+
+internal fun MoveListResponseDto.extractMoveDto(): List<MoveDto> {
+    return cargoQuery.map { it.title }
+}
 
 internal fun MoveDto.mapToDomain(
     charName: String,

@@ -1,17 +1,11 @@
 package io.github.sophon.wikiwavu
 
-import io.github.sophon.core.wiki.data.WikiDataSource
-import io.github.sophon.core.wiki.domain.usecase.DownloadCharacterListUseCase
-import io.github.sophon.core.wiki.domain.usecase.DownloadMoveListUseCase
-import io.github.sophon.wikiwavu.data.CharacterListResponseDto
-import io.github.sophon.wikiwavu.data.MoveListResponseDto
-import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
-import io.github.sophon.wikiwavu.data.toDomain
+import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
-import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
-import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
+import io.github.sophon.wikiwavu.usecase.DownloadCharacterListUseCase
+import io.github.sophon.wikiwavu.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMovesWithPropertyUseCase
@@ -22,32 +16,16 @@ import org.koin.dsl.module
 
 val wavuModule = module {
     singleOf(::WavuWikiClientImpl).bind<WavuWikiClient>()
-    single<WikiDataSource<CharacterListResponseDto, MoveListResponseDto>> {
-        WavuWikiDataSourceImpl(
-            httpClient = get(),
-        )
-    }
+    singleOf(::WavuWikiDataSource)
 
-    single {
-        DownloadCharacterListUseCase<CharacterListResponseDto>(
-            source = get(),
-            toDomain = { toDomain() },
-        )
-    }
-    single {
-        DownloadMoveListUseCase<MoveListResponseDto>(
-            source = get(),
-            toDomain = { dto, charName -> toDomain(dto, charName) },
-        )
-    }
+    singleOf(::DownloadCharacterListUseCase)
+    singleOf(::DownloadMoveListUseCase)
     singleOf(::CacheMoveListUseCase)
     singleOf(::GetLastCacheInsertInstantUseCase)
     singleOf(::ClearCacheUseCase)
     singleOf(::FetchMoveDataUseCase)
     singleOf(::FetchMovesWithPropertyUseCase)
     singleOf(::FetchMoveListUseCase)
-    singleOf(::FetchCharacterListUseCase)
-    singleOf(::CacheCharacterListUseCase)
 
     singleOf(::WavuUrlProvider)
 }

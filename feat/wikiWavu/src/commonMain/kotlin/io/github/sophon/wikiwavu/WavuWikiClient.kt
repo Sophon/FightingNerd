@@ -3,17 +3,16 @@ package io.github.sophon.wikiwavu
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.onError
+import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.core.domain.onError
-import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.domain.usecase.DownloadCharacterListUseCase
-import io.github.sophon.core.wiki.domain.usecase.DownloadMoveListUseCase
-import io.github.sophon.wikiwavu.data.CharacterListResponseDto
-import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
+import io.github.sophon.wikiwavu.usecase.DownloadCharacterListUseCase
+import io.github.sophon.wikiwavu.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
@@ -40,11 +39,11 @@ interface WavuWikiClient {
 }
 
 internal class WavuWikiClientImpl(
-    private val downloadCharacterListUseCase: DownloadCharacterListUseCase<CharacterListResponseDto>,
+    private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 
-    private val downloadMoveListUseCase: DownloadMoveListUseCase<MoveListResponseDto>,
+    private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val fetchMoveDataUseCase: FetchMoveDataUseCase,
@@ -54,13 +53,9 @@ internal class WavuWikiClientImpl(
     private val clearCacheUseCase: ClearCacheUseCase,
 ): WavuWikiClient {
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
-        val result = downloadCharacterListUseCase.invoke()
-        when (result) {
-            is Result.Success -> Napier.d(tag = TAG) { "${result.data.size} characters loaded" }
-            is Result.Error -> Napier.e(tag = TAG) { result.error.toString() }
-        }
-
-        return result
+        return downloadCharacterListUseCase.invoke()
+            .onSuccess { Napier.d(tag = TAG) { "${it.size} characters loaded" } }
+            .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
     override suspend fun getCharacterList(): Result<List<Character>, WikiError> {

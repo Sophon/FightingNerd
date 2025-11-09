@@ -1,6 +1,5 @@
 package io.github.sophon.wikiwavu.data
 
-import io.github.sophon.core.wiki.data.WikiDataSource
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
@@ -16,14 +15,14 @@ import io.ktor.client.request.parameter
  * The appeals to make a table for Character have not been successful.
  */
 
-internal class WavuWikiDataSourceImpl(
+internal class WavuWikiDataSource(
     private val httpClient: HttpClient,
-): WikiDataSource<CharacterListResponseDto, MoveListResponseDto> {
-    override suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
+) {
+    suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
         return safeCall { httpClient.get(CHAR_LIST_URL) }
     }
 
-    override suspend fun downloadMoveListFor(
+    suspend fun downloadMoveListFor(
         charName: String
     ): Result<MoveListResponseDto, DataError.Remote> {
         return safeCall {
