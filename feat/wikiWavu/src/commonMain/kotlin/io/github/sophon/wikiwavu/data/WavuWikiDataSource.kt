@@ -1,6 +1,5 @@
 package io.github.sophon.wikiwavu.data
 
-import io.github.sophon.core.wiki.data.WikiDataSource
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
@@ -15,10 +14,15 @@ import io.ktor.client.request.parameter
  * Technically, the source for the character list is not Wavu but Tekken Docs.
  * The appeals to make a table for Character have not been successful.
  */
+internal interface WavuWikiDataSource {
+    suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote>
+    suspend fun downloadMoveListFor(charName: String): Result<MoveListResponseDto, DataError.Remote>
+}
+
 
 internal class WavuWikiDataSourceImpl(
     private val httpClient: HttpClient,
-): WikiDataSource<CharacterListResponseDto, MoveListResponseDto> {
+): WavuWikiDataSource {
     override suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
         return safeCall { httpClient.get(CHAR_LIST_URL) }
     }
