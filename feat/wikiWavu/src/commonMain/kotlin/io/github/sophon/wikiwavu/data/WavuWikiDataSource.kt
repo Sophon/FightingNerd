@@ -14,15 +14,20 @@ import io.ktor.client.request.parameter
  * Technically, the source for the character list is not Wavu but Tekken Docs.
  * The appeals to make a table for Character have not been successful.
  */
+internal interface WavuWikiDataSource {
+    suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote>
+    suspend fun downloadMoveListFor(charName: String): Result<MoveListResponseDto, DataError.Remote>
+}
 
-internal class WavuWikiDataSource(
+
+internal class WavuWikiDataSourceImpl(
     private val httpClient: HttpClient,
-) {
-    suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
+): WavuWikiDataSource {
+    override suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
         return safeCall { httpClient.get(CHAR_LIST_URL) }
     }
 
-    suspend fun downloadMoveListFor(
+    override suspend fun downloadMoveListFor(
         charName: String
     ): Result<MoveListResponseDto, DataError.Remote> {
         return safeCall {

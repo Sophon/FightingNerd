@@ -1,6 +1,7 @@
 package io.github.sophon.wikiwavu
 
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
+import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
@@ -16,7 +17,7 @@ import org.koin.dsl.module
 
 val wavuModule = module {
     singleOf(::WavuWikiClientImpl).bind<WavuWikiClient>()
-    singleOf(::WavuWikiDataSource)
+    singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
 
     singleOf(::DownloadCharacterListUseCase)
     singleOf(::DownloadMoveListUseCase)

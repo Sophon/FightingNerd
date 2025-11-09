@@ -7,7 +7,8 @@ import io.github.sophon.wikiwavu.util.cleanMoveInput
 internal fun MoveListResponseDto.toDomain(charName: String): List<Move> {
     val downloadedMoves = extractMoveDto()
     val movesById = downloadedMoves.associateBy { it.id }
-    return downloadedMoves.map { it.mapToDomain(charName, movesById) }
+    val moveList = downloadedMoves.map { it.mapToDomain(charName, movesById) }
+    return moveList
 }
 
 internal fun MoveListResponseDto.extractMoveDto(): List<MoveDto> {
