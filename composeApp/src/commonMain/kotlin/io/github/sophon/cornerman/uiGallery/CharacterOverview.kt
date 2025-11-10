@@ -112,12 +112,12 @@ private fun CharacterOverviewPreviewLight() {
 }
 
 private fun mockCharacters(): List<Character> = listOf(
-    Character(displayName = "Zuzana", aliasList = listOf(), wikiUrl = "", id = ""),
-    Character(displayName = "Eva", aliasList = listOf(), wikiUrl = "", id = ""),
-    Character(displayName = "Karolina", aliasList = listOf(), wikiUrl = "", id = ""),
-    Character(displayName = "Marcela", aliasList = listOf(), wikiUrl = "", id = ""),
-    Character(displayName = "Zdenka", aliasList = listOf(), wikiUrl = "", id = ""),
-    Character(displayName = "Hana", aliasList = listOf(), wikiUrl = "", id = ""),
-    Character(displayName = "Nina", aliasList = listOf(), wikiUrl = "", id = ""),
+    Character(displayName = "Zuzana", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
+    Character(displayName = "Eva", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
+    Character(displayName = "Karolina", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
+    Character(displayName = "Marcela", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
+    Character(displayName = "Zdenka", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
+    Character(displayName = "Hana", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
+    Character(displayName = "Nina", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
 )
 //endregion
