@@ -4,6 +4,7 @@ import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSourceImpl
 import io.github.sophon.wikiSuperCombo.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.DownloadCharacterListUseCase
+import io.github.sophon.wikiSuperCombo.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.Qualifier
@@ -17,4 +18,5 @@ fun superComboModule(dbQualifier: Qualifier? = null) = module {
     singleOf(::DownloadCharacterListUseCase)
     factory { CacheCharacterListUseCase(get(dbQualifier)) }
     factory { FetchCharacterUseCase(get(dbQualifier)) }
+    singleOf(::DownloadMoveListUseCase)
 }

@@ -9,6 +9,7 @@ internal fun CharacterListResponseDto.toDomain(): List<Character> {
         Character(
             id = charDto.character.createId(),
             displayName = charDto.name,
+            queryName = charDto.chara,
             wikiUrl = createWikiUrlFrom(name = charDto.chara),
             aliasList = charDto.chara.createAliases(),
             images = Character.Images(

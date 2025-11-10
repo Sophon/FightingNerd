@@ -5,16 +5,19 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.wikiSuperCombo.BASE_URL
 import io.github.sophon.wikiSuperCombo.LIMIT_CHARACTERS
+import io.github.sophon.wikiSuperCombo.LIMIT_MOVES
 import io.github.sophon.wikiSuperCombo.TABLE_SF6_CHARACTERS
+import io.github.sophon.wikiSuperCombo.TABLE_SF6_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-interface SuperComboDataSource {
+internal interface SuperComboDataSource {
     suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote>
+    suspend fun downloadMoveListFor(charName: String): Result<MoveListResponseDto, DataError.Remote>
 }
 
-class SuperComboDataSourceImpl(
+internal class SuperComboDataSourceImpl(
     private val httpClient: HttpClient,
 ): SuperComboDataSource {
     override suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
@@ -22,13 +25,27 @@ class SuperComboDataSourceImpl(
             httpClient.get(BASE_URL) {
                 parameter("action", "cargoquery")
                 parameter("tables", TABLE_SF6_CHARACTERS)
-                parameter("fields", "_pageName=${getCharacterFields()}")
-                parameter("format", "json")
                 parameter("limit", LIMIT_CHARACTERS)
+                parameter("format", "json")
+                parameter("fields", "_pageName=${getCharacterFields()}")
             }
         }
     }
 
+    override suspend fun downloadMoveListFor(
+        charName: String
+    ): Result<MoveListResponseDto, DataError.Remote> {
+        return safeCall {
+            httpClient.get(BASE_URL) {
+                parameter("action", "cargoquery")
+                parameter("tables", TABLE_SF6_MOVES)
+                parameter("limit", LIMIT_MOVES)
+                parameter("format", "json")
+                parameter("fields", "_pageName=${getMoveFields()}")
+                parameter("where", "chara='$charName'")
+            }
+        }
+    }
 
     private fun getCharacterFields(): String {
         val allFields = listOf(
@@ -53,6 +70,55 @@ class SuperComboDataSourceImpl(
             "dRushMin",
             "dRushBlock",
             "dRushMax"
+        )
+
+        return allFields.joinToString(",")
+    }
+
+    private fun getMoveFields(): String {
+        val allFields = listOf(
+            "moveId",
+            "moveType",
+            "chara",
+            "input",
+            "name",
+            "images",
+            "hitboxes",
+            "damage",
+            "chip",
+            "dmgScaling",
+            "startup",
+            "active",
+            "recovery",
+            "total",
+            "guard",
+            "cancel",
+            "hitconfirm",
+            "hitAdv",
+            "blockAdv",
+            "punishAdv",
+            "perfParryAdv",
+            "DRcancelHit",
+            "DRcancelBlk",
+            "afterDRHit",
+            "afterDRBlk",
+            "hitstun",
+            "blockstun",
+            "hitstop",
+            "driveDmgBlk",
+            "driveDmgHit",
+            "driveGain",
+            "superGainHit",
+            "superGainBlk",
+            "invuln",
+            "armor",
+            "airborne",
+            "jugStart",
+            "jugIncrease",
+            "jugLimit",
+            "projSpeed",
+            "atkRange",
+            "notes"
         )
 
         return allFields.joinToString(",")
