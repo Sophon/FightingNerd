@@ -1,11 +1,15 @@
 package io.github.sophon.cornerman.featureRegistry.wavuWiki
 
+import io.github.sophon.cornerman.QUALIFIER_WAVU
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.ui.WavuHomeScreenVM
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.FetchCharacterListUseCase
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.usecase.SyncDataIfOldUseCase
+import io.github.sophon.cornerman.screens.moveList.domain.usecase.FetchMoveListUseCase
+import io.github.sophon.wikiwavu.WavuWikiClient
 import io.github.sophon.wikiwavu.infrastructure.FileReader
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -16,4 +20,8 @@ internal val wavuWikiFeatureModule = module {
     singleOf(::FetchCharacterListUseCase)
 
     singleOf(::FileReaderKMP).bind<FileReader>()
+
+    single<FetchMoveListUseCase>(named(QUALIFIER_WAVU)) {
+        FetchMoveListUseCase(get<WavuWikiClient>()::getMoveListFor)
+    }
 }

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.cornerman.Destination
+import io.github.sophon.cornerman.QUALIFIER_WAVU
 import io.github.sophon.cornerman.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.cornerman.featureRegistry.wavuWiki.ui.WavuHomeScreenView
 import kotlinx.coroutines.flow.Flow
@@ -22,7 +23,12 @@ class WavuWikiComposeFeature: ComposeRegisteredFeature {
         WavuHomeScreenView(
             featureInfo = featureInfo,
             onCharacterClick = { charName ->
-                navHostController.navigate(Destination.MoveList(charName))
+                navHostController.navigate(
+                    Destination.MoveList(
+                        charName = charName,
+                        wikiQualifier = QUALIFIER_WAVU,
+                    )
+                )
             },
         )
     }

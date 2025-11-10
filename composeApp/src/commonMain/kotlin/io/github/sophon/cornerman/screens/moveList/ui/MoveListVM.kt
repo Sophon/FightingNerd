@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-class MoveListVM(
+internal class MoveListVM(
     private val charName: String,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
 ): ViewModel() {

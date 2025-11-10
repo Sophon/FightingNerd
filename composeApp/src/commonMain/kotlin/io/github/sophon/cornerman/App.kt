@@ -50,6 +50,7 @@ fun App() {
                 composable<Destination.MoveList> { navBackstackEntry ->
                     MoveListScreen(
                         charName = navBackstackEntry.toRoute<Destination.MoveList>().charName,
+                        wikiQualifier = navBackstackEntry.toRoute<Destination.MoveList>().wikiQualifier,
                     )
                 }
 

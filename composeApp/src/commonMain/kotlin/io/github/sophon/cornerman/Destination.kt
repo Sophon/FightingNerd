@@ -11,6 +11,7 @@ sealed class Destination {
     @Serializable
     data class MoveList(
         val charName: String,
+        val wikiQualifier: String,
     )
 
     @Serializable

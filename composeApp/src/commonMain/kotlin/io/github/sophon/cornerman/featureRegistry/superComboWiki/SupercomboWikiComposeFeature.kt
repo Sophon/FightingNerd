@@ -3,6 +3,8 @@ package io.github.sophon.cornerman.featureRegistry.superComboWiki
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.cornerman.Destination
+import io.github.sophon.cornerman.QUALIFIER_SC
 import io.github.sophon.cornerman.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.cornerman.featureRegistry.superComboWiki.ui.SuperComboHomeScreenView
 import kotlinx.coroutines.flow.Flow
@@ -20,8 +22,13 @@ class SupercomboWikiComposeFeature: ComposeRegisteredFeature {
     ) {
         SuperComboHomeScreenView(
             featureInfo = featureInfo,
-            onCharacterClick = {
-                //TODO: navigate
+            onCharacterClick = { charName ->
+                navHostController.navigate(
+                    Destination.MoveList(
+                        charName = charName,
+                        wikiQualifier = QUALIFIER_SC
+                    )
+                )
             }
         )
     }

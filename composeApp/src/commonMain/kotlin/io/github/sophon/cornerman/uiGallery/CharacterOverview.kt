@@ -46,7 +46,7 @@ fun CharacterOverview(
         characterList.forEach { character ->
             CharacterPanel(
                 character = character,
-                onClick = { onCharacterClick(character.displayName) },
+                onClick = { onCharacterClick(character.queryName) },
             )
         }
     }
