@@ -4,6 +4,10 @@ import io.github.sophon.discord.config.ConfigLoader
 import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
+import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.GetMoveUseCase
+import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SearchCharacterDataUseCase
+import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SyncSuperComboDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
@@ -34,11 +38,18 @@ internal val featureRegistryModule = module {
     singleOf(::SearchGlossaryUseCase)
     //endregion
 
-    //region FEATURES
+    //region SuperCombo Wiki
+    singleOf(::SyncSuperComboDataUseCase)
+    singleOf(::SearchCharacterDataUseCase)
+    singleOf(::GetMoveUseCase)
+    //endregion
+
+    //region FEATURES SETUP
     single { FeatureRegistry(getAll()) }
 
-    singleOf(::WavuWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::InfilGlossaryDiscordFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::WavuWikiDiscordFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::SuperComboWikiDiscordFeature).bind<DiscordRegisteredFeature>()
 
     singleOf(::ConfigLoader)
     single<List<DiscordRegisteredFeature>> {

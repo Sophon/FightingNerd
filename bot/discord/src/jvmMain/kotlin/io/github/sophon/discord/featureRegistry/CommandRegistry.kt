@@ -10,4 +10,7 @@ enum class Command {
     PC,
     HEAT,
     HOMING,
+
+    FDSF6,
+    CHARSF6,
 }
