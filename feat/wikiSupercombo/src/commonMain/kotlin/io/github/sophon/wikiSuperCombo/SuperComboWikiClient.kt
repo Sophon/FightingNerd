@@ -15,6 +15,7 @@ import io.github.sophon.wikiSuperCombo.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
+import io.github.sophon.wikiSuperCombo.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
 import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
@@ -28,9 +29,10 @@ interface SuperComboWikiClient {
     suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError>
     suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError>
     suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
-    suspend fun clearCache(): EmptyResult<WikiError>
+    suspend fun fetchMove(charName: String, moveQuery: String): Result<Move, WikiError>
+    suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError>
 
-    suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WikiError>
+    suspend fun clearCache(): EmptyResult<WikiError>
 }
 
 internal class SuperComboWikiClientImpl(
@@ -41,9 +43,10 @@ internal class SuperComboWikiClientImpl(
 
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
-    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
+    private val fetchMoveListUseCase: FetchMoveListUseCase,
 
+    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val fetchMoveUseCase: FetchMoveUseCase,
 ): SuperComboWikiClient {
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
@@ -95,6 +98,19 @@ internal class SuperComboWikiClientImpl(
 
     }
 
+    override suspend fun fetchMove(
+        charName: String,
+        moveQuery: String,
+    ): Result<Move, WikiError> {
+        return fetchMoveUseCase.invoke(charName, moveQuery)
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
+
+    override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
+        return fetchMoveListUseCase.invoke(charName)
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
+
     override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
         return getLastCacheInsertInstantUseCase.invoke()
             .onError { Napier.e(tag = TAG) { it.toString() } }
@@ -104,15 +120,6 @@ internal class SuperComboWikiClientImpl(
         return clearCacheUseCase.invoke()
             .onError { Napier.e(tag = TAG) { it.toString() } }
     }
-
-    override suspend fun frameDataFor(
-        charName: String,
-        moveQuery: String,
-    ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(charName, moveQuery)
-            .onError { Napier.e(tag = TAG) { it.toString() } }
-    }
-
 
     private  companion object {
         const val TAG = "SuperComboWikiClient"
