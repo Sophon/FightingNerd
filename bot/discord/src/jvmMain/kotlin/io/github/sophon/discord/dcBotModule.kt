@@ -9,6 +9,7 @@ import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.featureRegistry.featureRegistryModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
+import io.github.sophon.wikiSuperCombo.superComboModule
 import io.github.sophon.wikiwavu.wavuModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,6 +22,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal const val QUALIFIER_WAVU = "wavu"
+internal const val QUALIFIER_SC = "superCombo"
 
 fun initKoin(
     apiKey: String,
@@ -34,6 +36,7 @@ fun initKoin(
 
         infilModule,
         wavuModule(named(QUALIFIER_WAVU)),
+        superComboModule(named(QUALIFIER_SC)),
 
         featureRegistryModule,
     )
@@ -49,8 +52,10 @@ fun dcBotModule(apiKey: String) = module {
 
     // Separate database instances per feature - bind to interfaces with qualifiers
     single<CharacterListDB>(named(QUALIFIER_WAVU)) { InMemoryCharacterListDB() }
+    single<CharacterListDB>(named(QUALIFIER_SC)) { InMemoryCharacterListDB() }
 
     single<MoveListDB>(named(QUALIFIER_WAVU)) { InMemoryMoveListDB() }
+    single<MoveListDB>(named(QUALIFIER_SC)) { InMemoryMoveListDB() }
 
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 }

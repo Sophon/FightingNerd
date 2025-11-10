@@ -4,7 +4,9 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import java.io.File
 
-fun getMoveListDatabaseBuilder(): RoomDatabase.Builder<MoveListDatabase> {
-    val dbFile = File(System.getProperty("java.io.tmpdir"), "wavu_move_list.db")
+fun getMoveListDatabaseBuilder(
+    dbName: String = "moveList.db"
+): RoomDatabase.Builder<MoveListDatabase> {
+    val dbFile = File(System.getProperty("java.io.tmpdir"), dbName)
     return Room.databaseBuilder<MoveListDatabase>(name = dbFile.absolutePath)
 }

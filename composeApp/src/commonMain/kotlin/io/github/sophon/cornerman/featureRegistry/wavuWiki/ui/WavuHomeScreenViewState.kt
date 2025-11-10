@@ -17,6 +17,7 @@ data class WavuHomeScreenViewState(
                     displayName = "Alisa",
                     wikiUrl = "",
                     aliasList = listOf(),
+                    queryName = "",
                 ),
                 Character(
                     id = "",
@@ -25,13 +26,15 @@ data class WavuHomeScreenViewState(
                     aliasList = listOf(),
                     images = Character.Images(
                         iconUrl = "https://tekkendocs.com/t8/avatars/nina-brand-512.png",
-                    )
+                    ),
+                    queryName = "",
                 ),
                 Character(
                     id = "lidia",
                     displayName = "Lidia",
                     wikiUrl = "",
                     aliasList = listOf(),
+                    queryName = "",
                 ),
                 Character(
                     id = "",
@@ -40,13 +43,15 @@ data class WavuHomeScreenViewState(
                     aliasList = listOf(),
                     images = Character.Images(
                         iconUrl = "https://tekkendocs.com/t8/avatars/armor-king-brand-512.png"
-                    )
+                    ),
+                    queryName = "",
                 ),
                 Character(
                     id = "",
                     displayName = "Panda",
                     wikiUrl = "",
                     aliasList = listOf(),
+                    queryName = "",
                 ),
                 Character(
                     id = "",
@@ -55,13 +60,15 @@ data class WavuHomeScreenViewState(
                     aliasList = listOf(),
                     images = Character.Images(
                         iconUrl = "https://tekkendocs.com/t8/avatars/shaheen-brand-512.png"
-                    )
+                    ),
+                    queryName = "",
                 ),
                 Character(
                     id = "",
                     displayName = "Steve",
                     wikiUrl = "Steve",
                     aliasList = listOf(),
+                    queryName = "",
                 ),
                 Character(
                     id = "",
@@ -71,12 +78,14 @@ data class WavuHomeScreenViewState(
                     images = Character.Images(
                         iconUrl = "https://tekkendocs.com/t8/avatars/raven-brand-512.png"
                     ),
+                    queryName = "",
                 ),
                 Character(
                     id = "",
                     displayName = "Yoshimitsu",
                     wikiUrl = "",
                     aliasList = listOf(),
+                    queryName = "",
                 ),
                 Character(
                     id = "",
@@ -85,7 +94,8 @@ data class WavuHomeScreenViewState(
                     aliasList = listOf(),
                     images = Character.Images(
                         iconUrl = "https://tekkendocs.com/t8/avatars/paul-brand-512.png"
-                    )
+                    ),
+                    queryName = "",
                 ),
             )
         )
