@@ -12,7 +12,7 @@ import kotlinx.coroutines.IO
     entities = [
         CharacterEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true,
 )
 @ConstructedBy(CharacterListDatabaseFactory::class)
