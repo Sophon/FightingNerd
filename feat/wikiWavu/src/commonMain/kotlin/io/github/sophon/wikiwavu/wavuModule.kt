@@ -14,23 +14,24 @@ import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMovesWithPropertyUseCase
 import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.Qualifier
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-val wavuModule = module {
+fun wavuModule(dbQualifier: Qualifier? = null) = module {
     singleOf(::WavuWikiClientImpl).bind<WavuWikiClient>()
     singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
 
     singleOf(::DownloadCharacterListUseCase)
+    factory { CacheCharacterListUseCase(get(dbQualifier)) }
+    factory { FetchCharacterListUseCase(get(dbQualifier)) }
     singleOf(::DownloadMoveListUseCase)
-    singleOf(::CacheMoveListUseCase)
-    singleOf(::GetLastCacheInsertInstantUseCase)
-    singleOf(::ClearCacheUseCase)
-    singleOf(::FetchMoveDataUseCase)
-    singleOf(::FetchMovesWithPropertyUseCase)
-    singleOf(::FetchMoveListUseCase)
-    singleOf(::CacheCharacterListUseCase)
-    singleOf(::FetchCharacterListUseCase)
+    factory { CacheMoveListUseCase(get(dbQualifier)) }
+    factory { GetLastCacheInsertInstantUseCase(get(dbQualifier)) }
+    factory { ClearCacheUseCase(get(dbQualifier), get(dbQualifier)) }
+    factory { FetchMoveDataUseCase(get(dbQualifier)) }
+    factory { FetchMovesWithPropertyUseCase(get(dbQualifier)) }
+    factory { FetchMoveListUseCase(get(dbQualifier)) }
 
     singleOf(::WavuUrlProvider)
 }
