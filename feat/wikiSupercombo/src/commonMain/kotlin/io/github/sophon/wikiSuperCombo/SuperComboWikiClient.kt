@@ -13,6 +13,7 @@ import io.github.sophon.wikiSuperCombo.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.ClearCacheUseCase
 import io.github.sophon.wikiSuperCombo.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.DownloadMoveListUseCase
+import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
 import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
@@ -22,6 +23,7 @@ interface SuperComboWikiClient {
     suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
     suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError>
     suspend fun getCharacter(charName: String): Result<Character, WikiError>
+    suspend fun getCharacterList(): Result<List<Character>, WikiError>
 
     suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError>
     suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError>
@@ -35,6 +37,8 @@ internal class SuperComboWikiClientImpl(
     private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
     private val fetchCharacterUseCase: FetchCharacterUseCase,
+    private val fetchCharacterListUseCase: FetchCharacterListUseCase,
+
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
@@ -62,6 +66,11 @@ internal class SuperComboWikiClientImpl(
             .onSuccess { character ->
                 Napier.d(tag = TAG) { "$charName -> ${character.id}" }
             }
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
+
+    override suspend fun getCharacterList(): Result<List<Character>, WikiError> {
+        return fetchCharacterListUseCase.invoke()
             .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 

@@ -7,6 +7,7 @@ import io.github.sophon.wikiSuperCombo.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.ClearCacheUseCase
 import io.github.sophon.wikiSuperCombo.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.DownloadMoveListUseCase
+import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
 import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
@@ -22,6 +23,7 @@ fun superComboModule(dbQualifier: Qualifier? = null) = module {
     singleOf(::DownloadCharacterListUseCase)
     factory { CacheCharacterListUseCase(get(dbQualifier)) }
     factory { FetchCharacterUseCase(get(dbQualifier)) }
+    factory { FetchCharacterListUseCase(get(dbQualifier)) }
     singleOf(::DownloadMoveListUseCase)
     factory { CacheMoveListUseCase(get(dbQualifier)) }
     factory { GetLastCacheInsertInstantUseCase(get(dbQualifier)) }
