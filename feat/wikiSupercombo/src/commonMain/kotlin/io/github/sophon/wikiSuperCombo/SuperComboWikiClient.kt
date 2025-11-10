@@ -81,7 +81,7 @@ internal class SuperComboWikiClientImpl(
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<WikiError> {
-        return cacheMoveListUseCase.invoke(character.queryName, moveList)
+        return cacheMoveListUseCase.invoke(character, moveList)
             .onError { Napier.e(tag = TAG) { it.toString() } }
 
     }

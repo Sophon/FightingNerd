@@ -9,7 +9,7 @@ internal fun MoveListResponseDto.toDomain(): List<Move> {
         Move(
             charName = dto.chara,
             id = dto.moveId,
-            input = dto.input,
+            input = dto.input.lowercase(),
             damage = dto.damage.takeIfNotTemplate(),
             startup = dto.startup.takeIfNotTemplate(),
             onBlock = dto.blockAdv.takeIfNotTemplate(),
