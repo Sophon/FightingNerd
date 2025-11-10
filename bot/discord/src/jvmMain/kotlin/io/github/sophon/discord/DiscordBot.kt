@@ -54,7 +54,7 @@ internal class DiscordBotImpl(
         }
 
         createGlobalCommands()
-        createCommandsForTestServer(testGuildSnowFlake)
+//        createCommandsForTestServer(testGuildSnowFlake)
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             handleCommand()
         }

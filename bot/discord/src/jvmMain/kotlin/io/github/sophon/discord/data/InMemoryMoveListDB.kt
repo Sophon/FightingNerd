@@ -19,7 +19,7 @@ class InMemoryMoveListDB: MoveListDB {
     override suspend fun fetchMoveListFor(
         charName: String
     ): Result<List<Move>, WikiError> {
-        return database[charName]
+        return database[charName.lowercase()]
             ?.let { Result.Success(it.values.toList()) }
             ?: Result.Error(WikiError.UNKNOWN_CHARACTER)
     }
@@ -30,7 +30,7 @@ class InMemoryMoveListDB: MoveListDB {
     ): Result<Move, WikiError> {
         val moveList = database[charName]
             ?: return Result.Error(WikiError.UNKNOWN_CHARACTER)
-        val moveData = moveList[moveQuery]
+        val moveData = moveList[moveQuery.lowercase()]
             ?: return Result.Error(WikiError.UNKNOWN_MOVE)
 
         return Result.Success(moveData)
@@ -42,13 +42,13 @@ class InMemoryMoveListDB: MoveListDB {
     ): EmptyResult<WikiError> {
         val indexedMoves = buildMap {
             moveList.forEach { move ->
-                put(move.input, move)
+                put(move.input.lowercase(), move)
                 move.aliases.forEach { alias ->
-                    put(alias, move)
+                    put(alias.lowercase(), move)
                 }
             }
         }
-        database[charName] = indexedMoves
+        database[charName.lowercase()] = indexedMoves
         insertTimeInstant = Clock.System.now()
 
         return Result.Success(Unit)
