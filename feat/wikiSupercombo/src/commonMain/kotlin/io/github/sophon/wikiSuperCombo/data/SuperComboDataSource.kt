@@ -41,7 +41,7 @@ internal class SuperComboDataSourceImpl(
                 parameter("tables", TABLE_SF6_MOVES)
                 parameter("limit", LIMIT_MOVES)
                 parameter("format", "json")
-                parameter("fields", "_pageName=${getMoveFields()}")
+                parameter("fields", getMoveFields())
                 parameter("where", "chara='$charName'")
             }
         }

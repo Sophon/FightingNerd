@@ -19,7 +19,6 @@ internal class MoveListVM(
     private val _state = MutableStateFlow(MoveListViewState())
     val state = _state
         .onStart {
-            Napier.d(tag = TAG) { "bingo: $charName" }
             fetchMoves()
         }
         .stateIn(
