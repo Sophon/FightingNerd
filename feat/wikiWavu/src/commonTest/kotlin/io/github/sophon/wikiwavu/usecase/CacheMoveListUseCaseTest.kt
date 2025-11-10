@@ -32,6 +32,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "jin",
             displayName = "Jin",
+            queryName = "",
             wikiUrl = "",
             aliasList = emptyList(),
         )
@@ -56,6 +57,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "devil-jin",
             displayName = "Devil Jin",
+            queryName = "",
             wikiUrl = "",
             aliasList = listOf("DVJ", "D.Jin"),
         )
@@ -79,6 +81,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "king",
             displayName = "King",
+            queryName = "",
             wikiUrl = "",
             aliasList = emptyList(),
         )
@@ -100,6 +103,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "paul",
             displayName = "Paul",
+            queryName = "",
             wikiUrl = "",
             aliasList = emptyList()
         )
@@ -123,6 +127,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "law",
             displayName = "Law",
+            queryName = "",
             wikiUrl = "",
             aliasList = listOf("Marshall")
         )
@@ -144,6 +149,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "kazuya",
             displayName = "Kazuya",
+            queryName = "",
             wikiUrl = "",
             aliasList = emptyList()
         )
@@ -171,6 +177,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "steve",
             displayName = "Steve",
+            queryName = "",
             wikiUrl = "",
             aliasList = listOf("Steve Fox", "Boxer")
         )
@@ -201,6 +208,7 @@ class CacheMoveListUseCaseTest {
         val character1 = Character(
             id = "jin",
             displayName = "Jin",
+            queryName = "",
             wikiUrl = "",
             aliasList = emptyList()
         )
@@ -210,6 +218,7 @@ class CacheMoveListUseCaseTest {
         val character2 = Character(
             id = "kazuya",
             displayName = "Kazuya",
+            queryName = "",
             wikiUrl = "",
             aliasList = emptyList()
         )
@@ -233,6 +242,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "bryan",
             displayName = "Bryan",
+            queryName = "",
             wikiUrl = "",
             aliasList = emptyList(),
         )
@@ -259,6 +269,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "dragunov",
             displayName = "Dragunov",
+            queryName = "",
             wikiUrl = "",
             aliasList = emptyList(),
         )
@@ -305,6 +316,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "yoshimitsu",
             displayName = "Yoshimitsu",
+            queryName = "",
             wikiUrl = "",
             images = Character.Images(
                 bannerUrl = "https://example.com/yoshi.png"
@@ -328,6 +340,7 @@ class CacheMoveListUseCaseTest {
         val character = Character(
             id = "nina",
             displayName = "Nina",
+            queryName = "",
             wikiUrl = "",
             aliasList = emptyList(),
         )
