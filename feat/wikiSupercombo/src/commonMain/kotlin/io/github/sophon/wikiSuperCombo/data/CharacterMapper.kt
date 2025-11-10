@@ -44,9 +44,6 @@ internal fun CharacterListResponseDto.toDomain(): List<Character> {
  */
 private fun String.createId(): String {
     val parts = split("/").dropLast(1)
-//    val gameInitials = parts.first()
-//        .split(" ")
-//        .joinToString("") { it.first().lowercase() }
     val charId = parts.last()
         .replace(".", "")
         .replace("-", "_")

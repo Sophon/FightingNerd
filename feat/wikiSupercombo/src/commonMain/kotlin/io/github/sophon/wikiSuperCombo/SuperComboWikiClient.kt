@@ -9,9 +9,14 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.wikiSuperCombo.usecase.CacheCharacterListUseCase
+import io.github.sophon.wikiSuperCombo.usecase.CacheMoveListUseCase
+import io.github.sophon.wikiSuperCombo.usecase.ClearCacheUseCase
 import io.github.sophon.wikiSuperCombo.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
+import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
+import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
+import kotlinx.datetime.Instant
 
 interface SuperComboWikiClient {
     suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
@@ -19,11 +24,11 @@ interface SuperComboWikiClient {
     suspend fun getCharacter(charName: String): Result<Character, WikiError>
 
     suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError>
-//    suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<SuperComboError>
-//    suspend fun getLastUpdateTimeStamp(): Result<Instant?, SuperComboError>
-//    suspend fun clearCache(): EmptyResult<SuperComboError>
-//
-//    suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, SuperComboError>
+    suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError>
+    suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
+    suspend fun clearCache(): EmptyResult<WikiError>
+
+    suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WikiError>
 }
 
 internal class SuperComboWikiClientImpl(
@@ -31,6 +36,11 @@ internal class SuperComboWikiClientImpl(
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
     private val fetchCharacterUseCase: FetchCharacterUseCase,
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
+    private val cacheMoveListUseCase: CacheMoveListUseCase,
+    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
+    private val clearCacheUseCase: ClearCacheUseCase,
+
+    private val fetchMoveUseCase: FetchMoveUseCase,
 ): SuperComboWikiClient {
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadCharacterListUseCase.invoke()
@@ -67,27 +77,32 @@ internal class SuperComboWikiClientImpl(
             .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
-//    override suspend fun cacheMoveList(
-//        character: Character,
-//        moveList: List<Move>,
-//    ): EmptyResult<SuperComboError> {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, SuperComboError> {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override suspend fun clearCache(): EmptyResult<SuperComboError> {
-//        TODO("Not yet implemented")
-//    }
-//
-//    override suspend fun frameDataFor(
-//        charName: String,
-//        moveQuery: String,
-//    ): Result<Move, SuperComboError> {
-//        TODO("Not yet implemented")
-//    }
+    override suspend fun cacheMoveList(
+        character: Character,
+        moveList: List<Move>,
+    ): EmptyResult<WikiError> {
+        return cacheMoveListUseCase.invoke(character.queryName, moveList)
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+
+    }
+
+    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
+        return getLastCacheInsertInstantUseCase.invoke()
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
+
+    override suspend fun clearCache(): EmptyResult<WikiError> {
+        return clearCacheUseCase.invoke()
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
+
+    override suspend fun frameDataFor(
+        charName: String,
+        moveQuery: String,
+    ): Result<Move, WikiError> {
+        return fetchMoveUseCase.invoke(charName, moveQuery)
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
 
 
     private  companion object {
