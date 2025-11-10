@@ -15,9 +15,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
+
+internal const val QUALIFIER_WAVU = "wavu"
 
 fun initKoin(
     apiKey: String,
@@ -30,7 +33,7 @@ fun initKoin(
         dcBotModule(apiKey),
 
         infilModule,
-        wavuModule,
+        wavuModule(named(QUALIFIER_WAVU)),
 
         featureRegistryModule,
     )
@@ -44,7 +47,10 @@ fun dcBotModule(apiKey: String) = module {
 
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
 
-    singleOf(::InMemoryCharacterListDB).bind<CharacterListDB>()
-    singleOf(::InMemoryMoveListDB).bind<MoveListDB>()
+    // Separate database instances per feature - bind to interfaces with qualifiers
+    single<CharacterListDB>(named(QUALIFIER_WAVU)) { InMemoryCharacterListDB() }
+
+    single<MoveListDB>(named(QUALIFIER_WAVU)) { InMemoryMoveListDB() }
+
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 }
