@@ -44,7 +44,7 @@ class SyncSuperComboDataUseCase(
     private suspend fun cacheCharacterList(
         characterList: List<Character>
     ): EmptyResult<BotError> {
-        return wiki.cacheCharaterList(characterList)
+        return wiki.cacheCharacterList(characterList)
             .mapError { it.toDomainError() }
     }
 

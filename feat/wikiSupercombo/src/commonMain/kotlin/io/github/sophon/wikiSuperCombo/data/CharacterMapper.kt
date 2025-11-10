@@ -12,7 +12,7 @@ internal fun CharacterListResponseDto.toDomain(): List<Character> {
             queryName = charDto.chara,
             wikiUrl = createWikiUrlFrom(name = charDto.chara),
             aliasList = charDto.chara.createAliases(),
-            images = Character.Images(
+            images = Character.Images( //TODO: fix images
                 iconUrl = charDto.icon,
                 bannerUrl = charDto.portrait,
             ),

@@ -20,7 +20,7 @@ import kotlinx.datetime.Instant
 
 interface SuperComboWikiClient {
     suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
-    suspend fun cacheCharaterList(characterList: List<Character>): EmptyResult<WikiError>
+    suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError>
     suspend fun getCharacter(charName: String): Result<Character, WikiError>
 
     suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError>
@@ -50,7 +50,7 @@ internal class SuperComboWikiClientImpl(
             .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
-    override suspend fun cacheCharaterList(characterList: List<Character>): EmptyResult<WikiError> {
+    override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
         return cacheCharacterListUseCase.invoke(characterList)
             .onError { Napier.e(tag = TAG) { it.toString() } }
     }
