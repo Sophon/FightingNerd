@@ -17,6 +17,7 @@ internal fun CharacterEntity.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
+        queryName = displayName, //TODO: add property to entity
         wikiUrl = wikiUrl,
         aliasList = aliases.orEmpty().split(";"),
         images = Character.Images(

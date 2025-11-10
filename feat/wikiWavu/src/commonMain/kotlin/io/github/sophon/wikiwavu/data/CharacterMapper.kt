@@ -8,6 +8,7 @@ internal fun CharacterListResponseDto.toDomain(): List<Character> {
         Character(
             id = dto.id,
             displayName = dto.displayName,
+            queryName = dto.displayName,
             wikiUrl = MOVE_URL + dto.wavuName.replace(" ", "_"),
             aliasList = dto.aliasList,
             images = Character.Images(

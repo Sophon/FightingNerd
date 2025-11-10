@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class Character(
     val id: String,
     val displayName: String,
+    val queryName: String,
     val wikiUrl: String,
     val aliasList: List<String> = listOf(),
     val images: Images? = null,
