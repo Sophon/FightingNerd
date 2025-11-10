@@ -19,6 +19,7 @@ import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 interface DiscordBot {
@@ -46,8 +47,14 @@ internal class DiscordBotImpl(
     private suspend fun startKord() {
         kord = Kord(token = apiKey)
 
-        createGlobalCommand()
-//        createCommandsForTestServer()
+        // Delete old guild commands FIRST (outside the builder)
+        val testGuildSnowFlake = Snowflake(TEST_SERVER_ID)
+        kord.getGuildApplicationCommands(testGuildSnowFlake).collect { command ->
+            command.delete()
+        }
+
+        createGlobalCommands()
+        createCommandsForTestServer(testGuildSnowFlake)
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             handleCommand()
         }
@@ -111,41 +118,42 @@ internal class DiscordBotImpl(
         interaction.respondPublic { embed(embedBuilder) }
     }
 
-    private suspend fun createCommandsForTestServer() {
-        val testGuildId = Snowflake(TEST_SERVER_ID)
-
-        featureList.forEach { feature ->
-            feature.slashCommands.forEach { slashCommand ->
-                kord.createGuildChatInputCommand(
-                    guildId = testGuildId,
-                    name = slashCommand.name.name.lowercase(),
-                    description = slashCommand.description,
-                ) {
-                    slashCommand.arguments.forEach { argument ->
-                        string(name = argument.name, description = argument.description) {
-                            required = argument.isRequired
+    private suspend fun createCommandsForTestServer(testGuildSnowFlake: Snowflake) {
+        kord.createGuildApplicationCommands(testGuildSnowFlake) {
+            featureList.forEach { feature ->
+                feature.slashCommands.forEach { slashCommand ->
+                    input(
+                        name = slashCommand.name.name.lowercase(),
+                        description = slashCommand.description
+                    ) {
+                        slashCommand.arguments.forEach { argument ->
+                            string(name = argument.name, description = argument.description) {
+                                required = argument.isRequired
+                            }
                         }
                     }
                 }
             }
-        }
+        }.collect()
     }
 
-    private suspend fun createGlobalCommand() {
-        featureList.forEach { feature ->
-            feature.slashCommands.forEach { slashCommand ->
-                kord.createGlobalChatInputCommand(
-                    name = slashCommand.name.name.lowercase(),
-                    description = slashCommand.description,
-                ) {
-                    slashCommand.arguments.forEach { argument ->
-                        string(name = argument.name, description = argument.description) {
-                            required = argument.isRequired
+    private suspend fun createGlobalCommands() {
+        kord.createGlobalApplicationCommands {
+            featureList.forEach { feature ->
+                feature.slashCommands.forEach { slashCommand ->
+                    input(
+                        name = slashCommand.name.name.lowercase(),
+                        description = slashCommand.description
+                    ) {
+                        slashCommand.arguments.forEach { argument ->
+                            string(name = argument.name, description = argument.description) {
+                                required = argument.isRequired
+                            }
                         }
                     }
                 }
             }
-        }
+        }.collect()
     }
 }
 
