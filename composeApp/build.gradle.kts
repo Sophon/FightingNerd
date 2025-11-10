@@ -80,6 +80,7 @@ kotlin {
 
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
+            implementation(project(":feat:wikiSupercombo"))
         }
 
         commonTest.dependencies {
