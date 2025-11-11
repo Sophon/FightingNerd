@@ -17,11 +17,14 @@ A set of tools for the Fighting Game Community:
 
 
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules)
-- [Discord bot](./feat/botDiscord/src/main/kotlin/DiscordBot.kt)
-- [fighting-game glossary](./feat/glossaryInfil/src/main/kotlin/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
-- [Tekken 8 frame data](./feat/wikiWavu/src/main/kotlin/WavuWikiClient.kt) from [Wavu Wiki](https://wavu.wiki/)
+- [Discord bot](./bot/discord/src/jvmMain/kotlin/io/github/sophon/discord/DiscordBot.kt)
+- [fighting-game glossary](./feat/glossaryInfil/src/commonMain/kotlin/io/github/sophon/glossaryinfil/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
+- [Tekken 8 frame data](./feat/wikiWavu/src/commonMain/kotlin/io/github/sophon/wikiwavu/WavuWikiClient.kt) from [Wavu Wiki](https://wavu.wiki/)
   - frame data
   - power crush, heat or homing move-lists
+- [Street Fighter 6 frame data](./feat/wikiSupercombo/src/commonMain/kotlin/io/github/sophon/wikiSuperCombo/SuperComboWikiClient.kt) from [SuperCombo](https://wiki.supercombo.gg/w/Main_Page)
+  - frame data
+  - character data
 
 # [CHECK THE WIKI](https://github.com/Sophon/Cornerman/wiki)
 
