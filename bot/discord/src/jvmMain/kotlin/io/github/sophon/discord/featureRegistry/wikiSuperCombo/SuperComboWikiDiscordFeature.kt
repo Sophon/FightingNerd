@@ -1,5 +1,6 @@
 package io.github.sophon.discord.featureRegistry.wikiSuperCombo
 
+import MAX_LENGTH_EMBED
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
@@ -8,6 +9,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
@@ -20,7 +22,6 @@ import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SyncSuper
 import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.discord.util.createErrorEmbed
 import io.github.sophon.discord.util.field
-import io.github.sophon.discord.util.orClickable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -155,10 +156,39 @@ internal class SuperComboWikiDiscordFeature(
         field(name = "SU", value = move.startup)
         field(name = "OH", value = move.onHit.orDash())
         field(name = "OB", value = move.onBlock.orDash())
-        field(name = "CH", value = (move.onCH ?: move.onHit).orDash())
         field(name = "LVL", value = move.sf6Properties?.guard.orDash())
 
         field(name = "DMG", value = move.damage.orDash())
+
+        createNotes(move)
+    }
+
+    private fun EmbedBuilder.createNotes(move: Move) {
+        return field(
+            name = "📝 NOTES",
+            value = move.notes
+                .emojify()
+                .joinToString(separator = "") { note -> "* $note\n" }
+                .truncate(MAX_LENGTH_EMBED),
+            inline = false,
+        )
+    }
+
+    private fun List<String>.emojify(): List<String> {
+        return buildList {
+            this@emojify.forEach { note ->
+                val emojified = buildString {
+                    if (note.contains("invincibility", ignoreCase = true)) append("🛡️ ")
+                    if (note.contains("juggle", ignoreCase = true)) append("🤹 ")
+                    if (note.contains("rhythm", ignoreCase = true)) append("🥁 ")
+                    if (note.contains("scaling", ignoreCase = true)) append("📉 ")
+                    if (note.contains("shimmy", ignoreCase = true)) append("💃 ")
+                    if (note.contains("throw", ignoreCase = true)) append("🤝 ")
+                    append(note)
+                }
+                add(emojified)
+            }
+        }
     }
 
     private companion object {

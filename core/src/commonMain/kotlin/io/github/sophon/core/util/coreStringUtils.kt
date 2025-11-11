@@ -36,6 +36,7 @@ fun String.cleanHtml(): String {
     return this
         .decodeHtmlEntities()
         .removeHtmlTags()
+        .removeWikiBold()
         .replace(Regex("\\*\\s*\\n"), "* ")
         .trim()
 }
@@ -51,6 +52,14 @@ private fun String.decodeHtmlEntities(): String {
         .replace("&apos;", "'")
 }
 
+// <br> & <br/>
 internal fun String.removeHtmlTags(): String {
-    return this.replace(Regex("<[^>]*>"), "")
+    return this
+        .replace(Regex("<br\\s*/?>"), "")
+        .replace(Regex("<[^>]*>"), "")
+}
+
+// wiki bold markup
+private fun String.removeWikiBold(): String {
+    return this.replace("'''", "")
 }
