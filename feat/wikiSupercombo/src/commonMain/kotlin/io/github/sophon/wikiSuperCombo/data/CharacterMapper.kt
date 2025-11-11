@@ -1,9 +1,10 @@
 package io.github.sophon.wikiSuperCombo.data
 
 import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.wikiSuperCombo.URL_ICON_BASE
 import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
 
-internal fun CharacterListResponseDto.toDomain(): List<Character> {
+internal fun CharacterListResponseDto.toDomain(imageUrlMap: Map<String, String>): List<Character> {
     return cargoquery.map { dto ->
         val charDto = dto.title
         Character(
@@ -12,9 +13,9 @@ internal fun CharacterListResponseDto.toDomain(): List<Character> {
             queryName = charDto.chara,
             wikiUrl = createWikiUrlFrom(name = charDto.chara),
             aliasList = charDto.chara.createAliases(),
-            images = Character.Images( //TODO: fix images
-                iconUrl = charDto.icon,
-                bannerUrl = charDto.portrait,
+            images = Character.Images(
+                iconUrl = charDto.icon.let { imageUrlMap[it] },
+                bannerUrl = charDto.portrait.let { imageUrlMap[it] },
             ),
             sf6Properties = Character.SF6Properties(
                 fwdWalkSpd = charDto.fwdWalkSpd,
@@ -76,4 +77,9 @@ private fun String.createAliases(): List<String> {
                 }
             }
     }
+}
+
+private fun String.toImageUrl(): String {
+    val url = URL_ICON_BASE + replace(" ", "_")
+    return url
 }
