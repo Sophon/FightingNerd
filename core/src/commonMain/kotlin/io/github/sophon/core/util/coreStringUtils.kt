@@ -55,7 +55,7 @@ private fun String.decodeHtmlEntities(): String {
 // <br> & <br/>
 internal fun String.removeHtmlTags(): String {
     return this
-        .replace(Regex("<br\\s*/?>"), " ")
+        .replace(Regex("<br\\s*/?>"), "")
         .replace(Regex("<[^>]*>"), "")
 }
 
