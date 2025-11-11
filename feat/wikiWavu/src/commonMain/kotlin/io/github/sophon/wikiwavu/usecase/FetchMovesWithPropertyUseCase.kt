@@ -6,7 +6,7 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
 
-class FetchMovesWithPropertyUseCase(
+internal class FetchMovesWithPropertyUseCase(
     private val db: MoveListDB,
 ) {
     suspend fun invoke(

@@ -12,14 +12,13 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-class MoveListVM(
+internal class MoveListVM(
     private val charName: String,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListViewState())
     val state = _state
         .onStart {
-            Napier.d(tag = TAG) { "bingo: $charName" }
             fetchMoves()
         }
         .stateIn(

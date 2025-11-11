@@ -1,12 +1,11 @@
 package io.github.sophon.wikiwavu.usecase
 
-import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.model.Move
 
-class FetchMoveListUseCase(
+internal class FetchMoveListUseCase(
     private val db: MoveListDB,
 ) {
     suspend fun invoke(charName: String): Result<List<Move>, WikiError> {

@@ -6,7 +6,7 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.wikiwavu.util.cleanMoveInput
 
-class FetchMoveDataUseCase(
+internal class FetchMoveDataUseCase(
     private val db: MoveListDB,
 ) {
     suspend fun invoke(

@@ -15,7 +15,7 @@ internal class GetMoveUseCase(
         val parsedQuery = query.parseQuery()
         if (parsedQuery == null) return Result.Error(BotError.INVALID_QUERY)
 
-        return wiki.frameDataFor(
+        return wiki.fetchMove(
             charName = parsedQuery.charName, moveQuery = parsedQuery.move
         )
             .mapError { it.toDomainError() }
