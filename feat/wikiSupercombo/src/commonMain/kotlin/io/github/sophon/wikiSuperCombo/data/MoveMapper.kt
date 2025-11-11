@@ -18,14 +18,19 @@ internal fun MoveListResponseDto.toDomain(): List<Move> {
             onCH = null, // TODO: where is it???
             name = dto.name,
             recovery = dto.recovery.takeIfNotTemplate(),
-            notes = dto.notes.takeIfNotTemplate()?.cleanHtml()?.let { listOf(it) } ?: emptyList(),  
+            notes = dto.notes.takeIfNotTemplate()?.cleanHtml()
+                .extractNotes(),
             t8Properties = null,
             sf6Properties = Move.SF6Properties(
                 type = dto.moveType,
                 active = dto.active.takeIfNotTemplate(),
                 guard = dto.guard.takeIfNotTemplate(),
-                images = dto.images.takeIfNotTemplate()?.split(",")?.map { it.trim() },
-                hitboxes = dto.hitboxes.takeIfNotTemplate()?.split(",")?.map { it.trim() },
+                images = dto.images.takeIfNotTemplate()
+                    ?.split(",")
+                    ?.map { it.trim() },
+                hitboxes = dto.hitboxes.takeIfNotTemplate()
+                    ?.split(",")
+                    ?.map { it.trim() },
                 chip = dto.chip.takeIfNotTemplate(),
                 dmgScaling = dto.dmgScaling.takeIfNotTemplate(),
                 total = dto.total.takeIfNotTemplate(),
@@ -59,4 +64,8 @@ internal fun MoveListResponseDto.toDomain(): List<Move> {
 
 private fun String?.takeIfNotTemplate(): String? {
     return this?.takeIf { !it.matches(Regex("\\{\\{\\{.+\\}\\}\\}")) }
+}
+
+private fun String?.extractNotes(): List<String> {
+    return this?.split(";") ?: emptyList()
 }
