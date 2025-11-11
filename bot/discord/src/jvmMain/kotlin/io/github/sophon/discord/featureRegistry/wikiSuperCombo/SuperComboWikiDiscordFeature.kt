@@ -155,10 +155,20 @@ internal class SuperComboWikiDiscordFeature(
         field(name = "SU", value = move.startup)
         field(name = "OH", value = move.onHit.orDash())
         field(name = "OB", value = move.onBlock.orDash())
-        field(name = "CH", value = (move.onCH ?: move.onHit).orDash())
         field(name = "LVL", value = move.sf6Properties?.guard.orDash())
 
         field(name = "DMG", value = move.damage.orDash())
+
+        createNotes(move)
+    }
+
+    private fun EmbedBuilder.createNotes(move: Move) {
+        return field(
+            name = "📝 NOTES",
+            value = move.notes
+                .joinToString(separator = "") { note -> "* $note\n" },
+            inline = false,
+        )
     }
 
     private companion object {
