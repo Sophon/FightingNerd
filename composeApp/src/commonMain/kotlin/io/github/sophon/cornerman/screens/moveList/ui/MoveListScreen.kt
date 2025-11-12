@@ -223,6 +223,7 @@ private fun MoveList(
         state = listState,
         modifier = modifier
             .fillMaxSize()
+            .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
         items(
             items = movesByCategory,
@@ -234,7 +235,7 @@ private fun MoveList(
                 expandedNotes = expandedNotes,
                 onNotesExpandClick = onNotesExpandClick,
                 modifier = Modifier
-                    .padding(4.dp)
+                    .padding(vertical = 4.dp)
             )
         }
     }

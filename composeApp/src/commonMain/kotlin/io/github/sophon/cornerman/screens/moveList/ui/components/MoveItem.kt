@@ -41,7 +41,7 @@ fun MoveItem(
         modifier = modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
-            .padding(4.dp)
+            .padding(8.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
