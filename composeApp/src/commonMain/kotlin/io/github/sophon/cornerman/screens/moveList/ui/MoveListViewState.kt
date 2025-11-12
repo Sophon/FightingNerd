@@ -81,10 +81,6 @@ data class MoveListViewState(
                     )
                 ),
                 MoveCategory(
-                    name = "n",
-                    moves = listOf(),
-                ),
-                MoveCategory(
                     name = "df",
                     moves = listOf(
                         UiMove(

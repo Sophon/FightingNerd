@@ -45,6 +45,10 @@ internal class MoveListVM(
     }
 
     fun onSearch(query: String) {
+        if (_state.value.searchBar?.query.isNullOrBlank()) {
+            return
+        }
+
         Napier.d(tag = TAG) { "Searching: $query" }
         _state.update {
             it.copy(
@@ -58,6 +62,11 @@ internal class MoveListVM(
     }
 
     fun onSearchDone() {
+        if (_state.value.searchBar?.query.isNullOrBlank()) {
+            onClearSearch()
+            return
+        }
+
         Napier.d(tag = TAG) { "Search done" }
         _state.update {
             it.copy(
