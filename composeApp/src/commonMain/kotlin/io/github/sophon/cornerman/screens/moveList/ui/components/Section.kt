@@ -42,7 +42,7 @@ fun Section(
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier
                 .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                .background(color = MaterialTheme.colorScheme.surfaceContainer)
+                .background(color = MaterialTheme.colorScheme.surfaceVariant)
                 .padding(8.dp)
         )
 

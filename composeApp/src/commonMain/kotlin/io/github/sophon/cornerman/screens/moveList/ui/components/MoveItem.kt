@@ -40,7 +40,7 @@ fun MoveItem(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .background(color = MaterialTheme.colorScheme.surfaceVariant)
             .padding(8.dp)
     ) {
         Row(
