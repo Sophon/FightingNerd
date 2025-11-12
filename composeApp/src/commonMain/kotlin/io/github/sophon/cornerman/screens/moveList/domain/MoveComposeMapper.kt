@@ -81,17 +81,23 @@ private fun Move.toUi(): UiMove {
     return UiMove(
         id = id,
         input = input,
-        mandatoryFields = listOf(
-            UiMove.Field("Startup", startup),
-            UiMove.Field("OH", onHit),
-            UiMove.Field("OB", onBlock),
-            UiMove.Field("CH", onCH),
-            UiMove.Field("Level", t8Properties?.level),
-        ),
-        optionalFields = listOf(
-            UiMove.Field("Damage", damage),
-            UiMove.Field("Whiff", recovery),
-        ),
+        mandatoryFields = buildList {
+            add(UiMove.Field("Startup", startup))
+            add(UiMove.Field("OH", onHit))
+            add(UiMove.Field("OB", onBlock))
+            onCH?.let { add(UiMove.Field("CH", it)) }
+            sf6Properties?.active?.let { add(UiMove.Field("Active", it)) }
+            add(UiMove.Field("Level", t8Properties?.level ?: sf6Properties?.guard))
+        },
+        optionalFields = buildList {
+            add(UiMove.Field("Damage", damage))
+            add(UiMove.Field("Whiff", recovery))
+            add(UiMove.Field("Invul", sf6Properties?.invulnerability))
+
+            add(UiMove.Field("JUGst", sf6Properties?.jugStart))
+            add(UiMove.Field("JUGlim", sf6Properties?.jugLimit))
+            add(UiMove.Field("JUG++", sf6Properties?.jugIncrease))
+        },
         notes = notes,
         properties = getProperties(),
     )
@@ -101,6 +107,10 @@ private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
     if (t8Properties?.isHeat == true) add(UiMove.Property.HEAT)
     if (t8Properties?.isPowerCrush == true) add(UiMove.Property.PC)
     if (t8Properties?.isHoming == true) add(UiMove.Property.HOMING)
+
+    if (sf6Properties?.invulnerability != null) add(UiMove.Property.INVULNERABLE)
+    if (sf6Properties?.armor != null) add(UiMove.Property.ARMOR)
+    if (sf6Properties?.projectileSpeed != null) add(UiMove.Property.PROJECTILE)
 
     notes.forEach { note ->
         when {
