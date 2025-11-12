@@ -13,6 +13,7 @@ import androidx.room.PrimaryKey
 data class CharacterEntity(
     @PrimaryKey val id: String,
     val displayName: String,
+    val queryName: String,
     val wikiUrl: String,
     val aliases: String? = null,
 

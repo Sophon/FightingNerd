@@ -6,6 +6,7 @@ internal fun Character.toEntity(): CharacterEntity {
     return CharacterEntity(
         id = id,
         displayName = displayName,
+        queryName = queryName,
         wikiUrl = wikiUrl,
         aliases = aliasList.joinToString(";"),
         imageIconUrl = images?.iconUrl,
@@ -34,7 +35,7 @@ internal fun CharacterEntity.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
-        queryName = displayName, //TODO: add property to entity
+        queryName = queryName,
         wikiUrl = wikiUrl,
         aliasList = aliases.orEmpty().split(";").filter { it.isNotBlank() },
         images = Character.Images(
