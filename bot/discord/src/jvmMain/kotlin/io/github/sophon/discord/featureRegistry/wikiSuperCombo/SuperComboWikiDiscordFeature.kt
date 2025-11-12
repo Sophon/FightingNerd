@@ -8,7 +8,6 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
@@ -21,7 +20,8 @@ import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SearchCha
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SyncSuperComboDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.discord.util.createErrorEmbed
-import io.github.sophon.discord.util.field
+import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.optionalField
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -120,14 +120,25 @@ internal class SuperComboWikiDiscordFeature(
         color = Color(ORANGE)
 
         character.sf6Properties?.let { properties ->
-            field(name = "Walk (b|f)", value = "${properties.fwdWalkSpd} | ${properties.bwdWalkSpd}")
-            field(name = "Dash (b|f)", value = "${properties.fwdDashSpd} | ${properties.bwdDashSpd}")
-            field(name = "Dash dist (b|f)", value = "${properties.fwdDashDist} | ${properties.bwdDashDist}")
+            mandatoryField(
+                name = "Walk (b|f)",
+                value = "${properties.fwdWalkSpd} | ${properties.bwdWalkSpd}"
+            )
+            mandatoryField(
+                name = "Dash (b|f)",
+                value = "${properties.fwdDashSpd} | ${properties.bwdDashSpd}"
+            )
+            mandatoryField(
+                name = "Dash dist (b|f)",
+                value = "${properties.fwdDashDist} | ${properties.bwdDashDist}")
 
-            field(name = "R (mn, bl, mx)", value = "${properties.dRushMin}, ${properties.dRushBlock}, ${properties.dRushMax}")
+            mandatoryField(
+                name = "R (mn, bl, mx)",
+                value = "${properties.dRushMin}, ${properties.dRushBlock}, ${properties.dRushMax}"
+            )
 
-            field {
-                name = "Additional Properties"
+            mandatoryField(
+                name = "Additional Properties",
                 value = listOf(
                     "• ❤️ HP: ${properties.hp}",
                     "• 🤝 Throw range: ${properties.throwRange}",
@@ -135,9 +146,9 @@ internal class SuperComboWikiDiscordFeature(
                     "• Jump Speed: ${properties.jumpSpd}",
                     "• Jump Apex: ${properties.jumpApex}",
                     "• Jump dist (b|f): ${properties.bwdJumpDist} | ${properties.fwdJumpDist}"
-                ).joinToString("\n")
+                ).joinToString("\n"),
                 inline = false
-            }
+            )
         }
 
         footer {
@@ -153,18 +164,18 @@ internal class SuperComboWikiDiscordFeature(
         description = "**${move.charName}**: ${move.name}"
         color = Color(ORANGE)
 
-        field(name = "SU", value = move.startup)
-        field(name = "OH", value = move.onHit.orDash())
-        field(name = "OB", value = move.onBlock.orDash())
-        field(name = "LVL", value = move.sf6Properties?.guard.orDash())
+        mandatoryField(name = "SU", value = move.startup)
+        mandatoryField(name = "OH", value = move.onHit)
+        mandatoryField(name = "OB", value = move.onBlock)
+        mandatoryField(name = "LVL", value = move.sf6Properties?.guard)
 
-        field(name = "DMG", value = move.damage.orDash())
+        optionalField(name = "DMG", value = move.damage)
 
         createNotes(move)
     }
 
     private fun EmbedBuilder.createNotes(move: Move) {
-        return field(
+        return optionalField(
             name = "📝 NOTES",
             value = move.notes
                 .emojify()
