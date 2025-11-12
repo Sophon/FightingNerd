@@ -22,6 +22,7 @@ import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.discord.util.createErrorEmbed
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.discord.util.separator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -168,8 +169,51 @@ internal class SuperComboWikiDiscordFeature(
         mandatoryField(name = "OH", value = move.onHit)
         mandatoryField(name = "OB", value = move.onBlock)
         mandatoryField(name = "LVL", value = move.sf6Properties?.guard)
-
+        mandatoryField(name = "Active", value = move.sf6Properties?.active)
         optionalField(name = "DMG", value = move.damage)
+
+        optionalField(name = "JUGst", value = move.sf6Properties?.jugStart)
+        optionalField(name = "JUGlim", value = move.sf6Properties?.jugLimit)
+        optionalField(name = "JUG++", value = move.sf6Properties?.jugIncrease)
+
+        separator()
+
+        optionalField(
+            name = "DR (OH | OB)",
+            values = listOf(
+                move.sf6Properties?.DROH,
+                move.sf6Properties?.DROB,
+            )
+        )
+        optionalField(
+            name = "DRc (OH | OB)",
+            values = listOf(
+                move.sf6Properties?.DRcOH,
+                move.sf6Properties?.DRcOB,
+            )
+        )
+        optionalField(
+            name = "DR dmg (OH | OB)",
+            values = listOf(
+                move.sf6Properties?.driveDmgOnHit,
+                move.sf6Properties?.driveDmgOnBlock,
+            )
+        )
+        optionalField(name = "DR++", value = move.sf6Properties?.driveGain)
+
+        optionalField(
+            name = "SUP++ (OH | OB)",
+            values = listOf(
+                move.sf6Properties?.superGainOnHit,
+                move.sf6Properties?.superGainOnBlock
+            )
+        )
+
+        separator()
+
+        optionalField(name = "Cancel", move.sf6Properties?.cancel)
+        optionalField(name = "Range", move.sf6Properties?.attackRange)
+        optionalField(name = "Proj spd", move.sf6Properties?.projectileSpeed)
 
         createNotes(move)
     }
