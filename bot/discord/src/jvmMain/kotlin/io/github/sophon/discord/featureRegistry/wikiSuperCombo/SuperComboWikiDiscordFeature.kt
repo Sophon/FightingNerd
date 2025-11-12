@@ -170,6 +170,7 @@ internal class SuperComboWikiDiscordFeature(
         mandatoryField(name = "OB", value = move.onBlock)
         mandatoryField(name = "LVL", value = move.sf6Properties?.guard)
         mandatoryField(name = "Active", value = move.sf6Properties?.active)
+        mandatoryField(name = "Recovery", value = move.recovery)
         optionalField(name = "DMG", value = move.damage)
 
         optionalField(name = "JUGst", value = move.sf6Properties?.jugStart)
