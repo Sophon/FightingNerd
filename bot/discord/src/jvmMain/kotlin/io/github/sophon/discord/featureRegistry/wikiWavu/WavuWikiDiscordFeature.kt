@@ -8,7 +8,6 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
@@ -21,7 +20,8 @@ import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetPowerCrushMo
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchFrameDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SyncDataUseCase
 import io.github.sophon.discord.util.createErrorEmbed
-import io.github.sophon.discord.util.field
+import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.orClickable
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
 import kotlinx.coroutines.CoroutineScope
@@ -184,22 +184,19 @@ internal class WavuWikiDiscordFeature(
         description = "**${move.charName}**: ${move.name}"
         color = Color(GREEN)
 
-        field(name = "SU", value = move.startup)
-        field(name = "OH", value = move.onHit.orClickable().orDash())
-        field(name = "OB", value = move.onBlock.orDash())
-        field(name = "CH", value = (move.onCH ?: move.onHit).orClickable().orDash())
-        field(name = "LVL", value = move.t8Properties?.level.orDash())
-        move.recovery
-            ?.takeIf { it.isNotEmpty() }
-            ?.let { field(name = "Recovery", value = it) }
+        mandatoryField(name = "SU", value = move.startup)
+        mandatoryField(name = "OH", value = move.onHit.orClickable())
+        mandatoryField(name = "OB", value = move.onBlock)
+        mandatoryField(name = "CH", value = (move.onCH ?: move.onHit).orClickable())
+        mandatoryField(name = "LVL", value = move.t8Properties?.level)
 
-        field(name = "DMG", value = move.damage.orDash())
+
+        optionalField(name = "Recovery", value = move.recovery)
+        optionalField(name = "DMG", value = move.damage)
 
         createNotes(move)
 
-        urlProvider.videoUrl(move)?.let { url ->
-            field(name = "Video", value = "[Link](${url})")
-        }
+        optionalField(name = "Video", value = "[Link](${url})")
 
         footer {
             text = featureInfo.name
@@ -217,7 +214,7 @@ internal class WavuWikiDiscordFeature(
             aliasNote?.let { add(it) }
         }
 
-        return field(
+        return optionalField(
             name = "📝 NOTES",
             value = allNotes
                 .emojify()
@@ -231,7 +228,7 @@ internal class WavuWikiDiscordFeature(
         category: String,
         moves: List<Move>
     ): EmbedBuilder.() -> Unit = {
-        field(
+        mandatoryField(
             name = "$category moves".uppercase(),
             value = moves
                 .joinToString(separator = "") { move -> "* ${move.input}\n" }

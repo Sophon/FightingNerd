@@ -30,7 +30,7 @@ fun String.truncate(maxLength: Int): String {
 
 fun String.urlEncode(): String = encodeURLParameter()
 
-fun String?.orDash(): String = this ?: "-"
+fun String?.orDash(): String = this?.takeUnless { it.isBlank() } ?: "-"
 
 fun String.cleanHtml(): String {
     return this

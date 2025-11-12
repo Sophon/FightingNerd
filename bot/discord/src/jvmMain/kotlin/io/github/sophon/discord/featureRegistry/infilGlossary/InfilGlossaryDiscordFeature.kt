@@ -12,7 +12,8 @@ import io.github.sophon.discord.featureRegistry.SlashCommand
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.util.createErrorEmbed
-import io.github.sophon.discord.util.field
+import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.replaceItalic
 import io.github.sophon.discord.util.replaceUnderline
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
@@ -73,7 +74,7 @@ internal class InfilGlossaryDiscordFeature(
         url = urlProvider.termUrl(item)
         color = Color(BROWN)
 
-        field(
+        mandatoryField(
             name = "",
             value = formattedItem.definition
                 .replaceUnderline()
@@ -83,11 +84,9 @@ internal class InfilGlossaryDiscordFeature(
 
         val japaneseValueString = formattedItem.jpTranslation
             .joinToString(separator = "") { "* $it\n" }
-        field(name = "🇯🇵", value = japaneseValueString, inline = false)
+        mandatoryField(name = "🇯🇵", value = japaneseValueString, inline = false)
 
-        urlProvider.videoUrl(item)?.let { url ->
-            field(name = "Video", value = "[Link](${url})")
-        }
+        optionalField(name = "Video", value = "[Link](${url})")
 
         footer {
             text = featureInfo.name
