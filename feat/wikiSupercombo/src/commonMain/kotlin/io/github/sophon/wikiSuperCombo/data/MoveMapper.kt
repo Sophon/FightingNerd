@@ -63,7 +63,7 @@ internal fun MoveListResponseDto.toDomain(): List<Move> {
 }
 
 private fun String?.takeIfNotTemplate(): String? {
-    return this?.takeIf { !it.matches(Regex("\\{\\{\\{.+\\}\\}\\}")) }
+    return this?.takeUnless { it.matches(Regex("\\{\\{\\{.+\\}\\}\\}")) || it == "-" }
 }
 
 private fun String?.extractNotes(): List<String> {
