@@ -21,6 +21,8 @@ internal fun List<Move>.toDomain(): List<MoveCategory> {
 
 internal fun Move.getCategoryName(): String {
     return when {
+        (type() != null) -> type()!!
+
         (t8Properties?.isHeat == true) -> "Heat"
         t8Properties?.stance.isNullOrEmpty().not() -> t8Properties?.stance!!.uppercase()
         (isDirectional() != null) -> isDirectional()!!
@@ -111,4 +113,12 @@ private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
             note.contains("js", ignoreCase = true) -> add(UiMove.Property.LOW_CRUSH)
         }
     }
+}
+
+private fun Move.type(): String? {
+    return sf6Properties?.type
+        ?.split("_")
+        ?.joinToString(" ") {
+            it.replaceFirstChar(Char::uppercase)
+        }
 }
