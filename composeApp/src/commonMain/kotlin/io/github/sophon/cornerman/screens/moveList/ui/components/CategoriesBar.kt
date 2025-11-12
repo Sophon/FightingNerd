@@ -4,10 +4,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -35,46 +37,50 @@ fun CategoriesBar(
     onCategoryClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        state = listState,
-        verticalArrangement = Arrangement.spacedBy(16.dp),
+    BoxWithConstraints(
         modifier = modifier
-            .fillMaxHeight(.75f)
-            .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp))
-            .border(
-                width = .5.dp,
-                color = MaterialTheme.colorScheme.outline.copy(.1f),
-                shape = RoundedCornerShape(8.dp)
-            )
-            .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
-            .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        itemsIndexed(
-            items = categories,
-            key = { index, category -> category.name },
-        ) { index, category ->
-            val isSelected = (index == currentCategoryIndex)
-            val color = if (isSelected) MaterialTheme.colorScheme.inversePrimary else Color.Transparent
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .height(IntrinsicSize.Min),
-            ) {
-                VerticalDivider(
-                    color = color,
-                    thickness = 4.dp,
-                    modifier = Modifier.fillMaxHeight(),
+        LazyColumn(
+            state = listState,
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            modifier = Modifier
+                .heightIn(max = maxHeight * .75f)
+                .shadow(elevation = 16.dp, shape = RoundedCornerShape(8.dp))
+                .border(
+                    width = .5.dp,
+                    color = MaterialTheme.colorScheme.outline.copy(.1f),
+                    shape = RoundedCornerShape(8.dp)
                 )
+                .background(MaterialTheme.colorScheme.surfaceContainer, RoundedCornerShape(8.dp))
+                .padding(horizontal = 16.dp, vertical = 8.dp)
+        ) {
+            itemsIndexed(
+                items = categories,
+                key = { index, category -> category.name },
+            ) { index, category ->
+                val isSelected = (index == currentCategoryIndex)
+                val color = if (isSelected) MaterialTheme.colorScheme.inversePrimary else Color.Transparent
 
-                Text(
-                    text = category.name,
-                    style = MaterialTheme.typography.titleLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                     modifier = Modifier
-                        .clickable { onCategoryClick(index) },
-                )
+                        .height(IntrinsicSize.Min),
+                ) {
+                    VerticalDivider(
+                        color = color,
+                        thickness = 4.dp,
+                        modifier = Modifier.fillMaxHeight(),
+                    )
+
+                    Text(
+                        text = category.name,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier
+                            .clickable { onCategoryClick(index) },
+                    )
+                }
             }
         }
     }
