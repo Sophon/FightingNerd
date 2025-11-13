@@ -17,13 +17,13 @@ internal fun MoveListResponseDto.toDomain(): List<Move> {
             onHit = dto.hitAdv.takeIfNotTemplate()?.cleanHtml(),  
             onCH = null,
             name = dto.name,
-            recovery = dto.recovery?.cleanHtml().takeIfNotTemplate(),
+            recovery = dto.recovery.takeIfNotTemplate()?.cleanHtml(),
             notes = dto.notes.takeIfNotTemplate()?.cleanHtml()
                 .extractNotes(),
             t8Properties = null,
             sf6Properties = Move.SF6Properties(
                 type = dto.moveType,
-                active = dto.active.takeIfNotTemplate(),
+                active = dto.active.takeIfNotTemplate()?.cleanHtml(),
                 guard = dto.guard.takeIfNotTemplate(),
                 images = dto.images.takeIfNotTemplate()
                     ?.split(",")
