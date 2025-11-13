@@ -1,5 +1,6 @@
 package io.github.sophon.cornerman.screens.moveList.domain
 
+import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.util.cleanComboLinks
 
@@ -97,6 +98,38 @@ private fun Move.toUi(): UiMove {
             add(UiMove.Field("JUGst", sf6Properties?.jugStart))
             add(UiMove.Field("JUGlim", sf6Properties?.jugLimit))
             add(UiMove.Field("JUG++", sf6Properties?.jugIncrease))
+
+            //TODO: should prob create a DRIVE field
+            if (sf6Properties?.DROH != null && sf6Properties?.DROB != null) {
+                add(UiMove.Field(
+                    "DR (OH | OB)",
+                    "${sf6Properties?.DROH.orDash()} | ${sf6Properties?.DROB.orDash()}")
+                )
+            }
+            if (sf6Properties?.DRcOH != null && sf6Properties?.DRcOB != null) {
+                add(UiMove.Field(
+                    "DRc (OH | OB)",
+                    "${sf6Properties?.DRcOH.orDash()} | ${sf6Properties?.DRcOB.orDash()}")
+                )
+            }
+            if (sf6Properties?.driveDmgOnHit != null && sf6Properties?.driveDmgOnBlock != null) {
+                add(UiMove.Field(
+                    "DR dmg (OH | OB)",
+                    "${sf6Properties?.driveDmgOnHit.orDash()} | ${sf6Properties?.driveDmgOnBlock.orDash()}")
+                )
+            }
+            add(UiMove.Field("DR++", sf6Properties?.driveGain))
+
+            if (sf6Properties?.superGainOnHit != null && sf6Properties?.superGainOnBlock != null) {
+                add(UiMove.Field(
+                    "SUP++ (OH | OB)",
+                    "${sf6Properties?.superGainOnHit.orDash()} | ${sf6Properties?.superGainOnBlock.orDash()}")
+                )
+            }
+
+            add(UiMove.Field("Cancel", sf6Properties?.cancel))
+            add(UiMove.Field("Range", sf6Properties?.attackRange))
+            add(UiMove.Field("Proj spd", sf6Properties?.projectileSpeed))
         },
         notes = notes,
         properties = getProperties(),
