@@ -87,7 +87,7 @@ internal class SyncDataIfOldUseCase(
             .asFlow()
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { character ->
                 flow {
-                    val result = wiki.downloadMoveListFor(character.displayName)
+                    val result = wiki.downloadMoveListFor(character.queryName)
                         .mapError { it.toDomainError() }
                         .map { moveList -> character to moveList }
                     emit(result)

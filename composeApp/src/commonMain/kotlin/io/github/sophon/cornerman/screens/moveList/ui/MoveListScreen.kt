@@ -2,6 +2,7 @@ package io.github.sophon.cornerman.screens.moveList.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -128,6 +129,9 @@ private fun Content(
                     onClick = {
                         focusManager.clearFocus()
                         onSearchDone()
+                        if (isCategoriesBarShown) {
+                            isCategoriesBarShown = false
+                        }
                     }
                 )
         ) {
@@ -147,6 +151,10 @@ private fun Content(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .padding(end = 8.dp, bottom = 8.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) { /* Consume clicks to prevent propagation */ }
                 )
             }
 
@@ -223,6 +231,7 @@ private fun MoveList(
         state = listState,
         modifier = modifier
             .fillMaxSize()
+            .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
         items(
             items = movesByCategory,
@@ -234,7 +243,7 @@ private fun MoveList(
                 expandedNotes = expandedNotes,
                 onNotesExpandClick = onNotesExpandClick,
                 modifier = Modifier
-                    .padding(4.dp)
+                    .padding(vertical = 4.dp)
             )
         }
     }

@@ -1,6 +1,7 @@
 package io.github.sophon.cornerman.screens.moveList.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import io.github.sophon.cornerman.screens.moveList.domain.UiMove
 import io.github.sophon.cornerman.theme.AppTheme
@@ -31,24 +33,30 @@ fun Section(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
-            .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .background(color = MaterialTheme.colorScheme.surface)
             .padding(vertical = 4.dp, horizontal = 8.dp)
     ) {
         Text(
             text = title,
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier
+                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                .padding(8.dp)
         )
-        Spacer(Modifier.height(8.dp))
 
-        moves.forEach { move ->
-            MoveItem(
-                move = move,
-                onNotesExpandClick = { onNotesExpandClick(move.id) },
-                isNotesExpanded = move.id in expandedNotes,
-                modifier = Modifier.padding(horizontal = 4.dp)
-            )
-            Spacer(Modifier.height(4.dp))
+        Column(
+            modifier = Modifier
+                .clip(RoundedCornerShape(topEnd = 8.dp, bottomStart = 8.dp, bottomEnd = 8.dp))
+        ) {
+            moves.forEach { move ->
+                MoveItem(
+                    move = move,
+                    onNotesExpandClick = { onNotesExpandClick(move.id) },
+                    isNotesExpanded = move.id in expandedNotes
+                )
+            }
         }
     }
 }
@@ -80,7 +88,26 @@ private fun SectionPreviewDark() {
                         "Homing",
                         "Balcony Break",
                     )
-                )
+                ),
+                UiMove(
+                    id = "df3+4",
+                    input = "df3+4",
+                    mandatoryFields = listOf(
+                        UiMove.Field("Startup", "i22~24"),
+                        UiMove.Field("OH", "+12g"),
+                        UiMove.Field("OB", "-7"),
+                        UiMove.Field("CH", "+12g"),
+                    ),
+                    optionalFields = listOf(
+                        UiMove.Field("Damage", "19"),
+                        UiMove.Field("Recovery", "r29"),
+                    ),
+                    notes = listOf(
+                        "Strong Aerial Tailspin",
+                        "Homing",
+                        "Balcony Break",
+                    )
+                ),
             ),
             expandedNotes = emptySet(),
             onNotesExpandClick = {},
@@ -113,7 +140,26 @@ private fun SectionPreviewLight() {
                         "Homing",
                         "Balcony Break",
                     )
-                )
+                ),
+                UiMove(
+                    id = "df3+4",
+                    input = "df3+4",
+                    mandatoryFields = listOf(
+                        UiMove.Field("Startup", "i22~24"),
+                        UiMove.Field("OH", "+12g"),
+                        UiMove.Field("OB", "-7"),
+                        UiMove.Field("CH", "+12g"),
+                    ),
+                    optionalFields = listOf(
+                        UiMove.Field("Damage", "19"),
+                        UiMove.Field("Recovery", "r29"),
+                    ),
+                    notes = listOf(
+                        "Strong Aerial Tailspin",
+                        "Homing",
+                        "Balcony Break",
+                    )
+                ),
             ),
             expandedNotes = emptySet(),
             onNotesExpandClick = {},

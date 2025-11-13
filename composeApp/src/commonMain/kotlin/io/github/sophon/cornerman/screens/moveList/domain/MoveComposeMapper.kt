@@ -1,5 +1,6 @@
 package io.github.sophon.cornerman.screens.moveList.domain
 
+import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.cornerman.screens.moveList.util.cleanComboLinks
 
@@ -21,6 +22,8 @@ internal fun List<Move>.toDomain(): List<MoveCategory> {
 
 internal fun Move.getCategoryName(): String {
     return when {
+        (type() != null) -> type()!!
+
         (t8Properties?.isHeat == true) -> "Heat"
         t8Properties?.stance.isNullOrEmpty().not() -> t8Properties?.stance!!.uppercase()
         (isDirectional() != null) -> isDirectional()!!
@@ -79,17 +82,55 @@ private fun Move.toUi(): UiMove {
     return UiMove(
         id = id,
         input = input,
-        mandatoryFields = listOf(
-            UiMove.Field("Startup", startup),
-            UiMove.Field("OH", onHit),
-            UiMove.Field("OB", onBlock),
-            UiMove.Field("CH", onCH),
-            UiMove.Field("Level", t8Properties?.level),
-        ),
-        optionalFields = listOf(
-            UiMove.Field("Damage", damage),
-            UiMove.Field("Whiff", recovery),
-        ),
+        mandatoryFields = buildList {
+            add(UiMove.Field("Startup", startup))
+            add(UiMove.Field("OH", onHit))
+            add(UiMove.Field("OB", onBlock))
+            onCH?.let { add(UiMove.Field("CH", it)) }
+            sf6Properties?.active?.let { add(UiMove.Field("Active", it)) }
+            add(UiMove.Field("Level", t8Properties?.level ?: sf6Properties?.guard))
+        },
+        optionalFields = buildList {
+            add(UiMove.Field("Damage", damage))
+            add(UiMove.Field("Whiff", recovery))
+            add(UiMove.Field("Invul", sf6Properties?.invulnerability))
+
+            add(UiMove.Field("JUGst", sf6Properties?.jugStart))
+            add(UiMove.Field("JUGlim", sf6Properties?.jugLimit))
+            add(UiMove.Field("JUG++", sf6Properties?.jugIncrease))
+
+            //TODO: should prob create a DRIVE field
+            if (sf6Properties?.DROH != null && sf6Properties?.DROB != null) {
+                add(UiMove.Field(
+                    "DR (OH | OB)",
+                    "${sf6Properties?.DROH.orDash()} | ${sf6Properties?.DROB.orDash()}")
+                )
+            }
+            if (sf6Properties?.DRcOH != null && sf6Properties?.DRcOB != null) {
+                add(UiMove.Field(
+                    "DRc (OH | OB)",
+                    "${sf6Properties?.DRcOH.orDash()} | ${sf6Properties?.DRcOB.orDash()}")
+                )
+            }
+            if (sf6Properties?.driveDmgOnHit != null && sf6Properties?.driveDmgOnBlock != null) {
+                add(UiMove.Field(
+                    "DR dmg (OH | OB)",
+                    "${sf6Properties?.driveDmgOnHit.orDash()} | ${sf6Properties?.driveDmgOnBlock.orDash()}")
+                )
+            }
+            add(UiMove.Field("DR++", sf6Properties?.driveGain))
+
+            if (sf6Properties?.superGainOnHit != null && sf6Properties?.superGainOnBlock != null) {
+                add(UiMove.Field(
+                    "SUP++ (OH | OB)",
+                    "${sf6Properties?.superGainOnHit.orDash()} | ${sf6Properties?.superGainOnBlock.orDash()}")
+                )
+            }
+
+            add(UiMove.Field("Cancel", sf6Properties?.cancel))
+            add(UiMove.Field("Range", sf6Properties?.attackRange))
+            add(UiMove.Field("Proj spd", sf6Properties?.projectileSpeed))
+        },
         notes = notes,
         properties = getProperties(),
     )
@@ -99,6 +140,10 @@ private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
     if (t8Properties?.isHeat == true) add(UiMove.Property.HEAT)
     if (t8Properties?.isPowerCrush == true) add(UiMove.Property.PC)
     if (t8Properties?.isHoming == true) add(UiMove.Property.HOMING)
+
+    if (sf6Properties?.invulnerability != null) add(UiMove.Property.INVULNERABLE)
+    if (sf6Properties?.armor != null) add(UiMove.Property.ARMOR)
+    if (sf6Properties?.projectileSpeed != null) add(UiMove.Property.PROJECTILE)
 
     notes.forEach { note ->
         when {
@@ -111,4 +156,12 @@ private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
             note.contains("js", ignoreCase = true) -> add(UiMove.Property.LOW_CRUSH)
         }
     }
+}
+
+private fun Move.type(): String? {
+    return sf6Properties?.type
+        ?.split("_")
+        ?.joinToString(" ") {
+            it.replaceFirstChar(Char::uppercase)
+        }
 }

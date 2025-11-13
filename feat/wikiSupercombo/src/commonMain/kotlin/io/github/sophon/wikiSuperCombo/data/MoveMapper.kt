@@ -15,15 +15,15 @@ internal fun MoveListResponseDto.toDomain(): List<Move> {
             startup = dto.startup.takeIfNotTemplate(),
             onBlock = dto.blockAdv.takeIfNotTemplate()?.cleanHtml(),
             onHit = dto.hitAdv.takeIfNotTemplate()?.cleanHtml(),  
-            onCH = null, // TODO: where is it???
+            onCH = null,
             name = dto.name,
-            recovery = dto.recovery.takeIfNotTemplate(),
+            recovery = dto.recovery.takeIfNotTemplate()?.cleanHtml(),
             notes = dto.notes.takeIfNotTemplate()?.cleanHtml()
                 .extractNotes(),
             t8Properties = null,
             sf6Properties = Move.SF6Properties(
                 type = dto.moveType,
-                active = dto.active.takeIfNotTemplate(),
+                active = dto.active.takeIfNotTemplate()?.cleanHtml(),
                 guard = dto.guard.takeIfNotTemplate(),
                 images = dto.images.takeIfNotTemplate()
                     ?.split(",")
@@ -67,5 +67,8 @@ private fun String?.takeIfNotTemplate(): String? {
 }
 
 private fun String?.extractNotes(): List<String> {
-    return this?.split(";") ?: emptyList()
+    return this
+        ?.split(";")
+        ?.map { it.trim() }
+        ?: emptyList()
 }

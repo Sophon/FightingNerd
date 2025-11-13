@@ -88,7 +88,7 @@ private fun CharacterPanel(
 }
 
 
-//feature PREVIEW
+//region PREVIEW
 @Composable
 @Preview(showBackground = true)
 private fun CharacterOverviewPreviewDark() {

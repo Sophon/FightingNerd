@@ -2,11 +2,13 @@ package io.github.sophon.cornerman.screens.moveList.domain
 
 import cornerman.composeapp.generated.resources.Res
 import cornerman.composeapp.generated.resources.ic_crouch
+import cornerman.composeapp.generated.resources.ic_fireball
 import cornerman.composeapp.generated.resources.ic_floor_break
 import cornerman.composeapp.generated.resources.ic_heat
 import cornerman.composeapp.generated.resources.ic_homing
 import cornerman.composeapp.generated.resources.ic_jump
-import cornerman.composeapp.generated.resources.ic_power_crush
+import cornerman.composeapp.generated.resources.ic_shield_full
+import cornerman.composeapp.generated.resources.ic_shield_half
 import cornerman.composeapp.generated.resources.ic_throw
 import cornerman.composeapp.generated.resources.ic_tornado
 import cornerman.composeapp.generated.resources.ic_wall_break
@@ -35,7 +37,7 @@ data class UiMove(
             contentDescription = "Heat",
         ),
         PC(
-            resource = Res.drawable.ic_power_crush,
+            resource = Res.drawable.ic_shield_full,
             contentDescription = "Power crush",
         ),
         HOMING(
@@ -66,5 +68,17 @@ data class UiMove(
             resource = Res.drawable.ic_crouch,
             contentDescription = "High crush",
         ),
+        INVULNERABLE(
+            resource = Res.drawable.ic_shield_full,
+            contentDescription = "Invincible",
+        ),
+        ARMOR(
+            resource = Res.drawable.ic_shield_half,
+            contentDescription = "Armor",
+        ),
+        PROJECTILE(
+            resource = Res.drawable.ic_fireball,
+            contentDescription = "Projectile",
+        )
     }
 }
