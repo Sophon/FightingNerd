@@ -14,10 +14,10 @@ import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.util.isAtLeast
-import io.github.sophon.discord.featureRegistry.Command
+import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
-import io.github.sophon.discord.util.removeTag
+import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.util.createErrorEmbed
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -29,6 +29,7 @@ interface DiscordBot {
 internal class DiscordBotImpl(
     private val apiKey: String,
     private val featureList: List<DiscordRegisteredFeature>,
+    private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
 ): DiscordBot {
     private lateinit var kord: Kord
 
@@ -77,25 +78,12 @@ internal class DiscordBotImpl(
     private suspend fun MessageCreateEvent.handleMessage() {
         if (kord.selfId !in message.mentionedUserIds) return
 
-        val rawQuery = message.content.removeTag().takeIf { it.isAtLeast(wordCount = 2) } ?: return
-        val firstWord = rawQuery.substringBefore(' ')
-        val command = Command.entries.find {
-            it.name.equals(firstWord, ignoreCase = true)
-        } ?: Command.FD
+        val result = routeCommandToFeatureUseCase.invoke(message.content)
 
-        /**
-         * raw = "kaz 112" -> command = FD, query = "kaz 112"
-         *
-         * raw = "gl fireball" -> command = GL, query = "fireball"
-         */
-        val query = when (command) {
-            Command.FD -> firstWord.lowercase() + rawQuery.substring(firstWord.length)
-            else -> rawQuery.substringAfter(' ', rawQuery)
+        val embedBuilder = when(result) {
+            is Result.Success -> result.data
+            is Result.Error -> createErrorEmbed(result.error)
         }
-        val service = featureList.first { feature ->
-            feature.slashCommands.any { it.name == command }
-        }
-        val embedBuilder = service.execute(command, query)
 
         message.channel.createMessage {
             messageReference = message.id
@@ -105,15 +93,15 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
-        val command = Command.entries
-            .find { it.name.equals(interaction.command.rootName, ignoreCase = true) }
-            ?: return //this should NEVER happen
-        val service = featureList.first { feature ->
-            feature.slashCommands.any { it.name == command }
+        val commandString = interaction.command.rootName
+        val query = interaction.command.strings.values.joinToString(" ")
+
+        val result = routeCommandToFeatureUseCase.invoke(commandString, query)
+
+        val embedBuilder = when (result) {
+            is Result.Success -> result.data
+            is Result.Error -> createErrorEmbed(result.error)
         }
-        val args = interaction.command.strings
-        val query = service.buildQuery(args, command)
-        val embedBuilder = service.execute(command, query)
 
         interaction.respondPublic { embed(embedBuilder) }
     }
@@ -121,9 +109,9 @@ internal class DiscordBotImpl(
     private suspend fun createCommandsForTestServer(testGuildSnowFlake: Snowflake) {
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
             featureList.forEach { feature ->
-                feature.slashCommands.forEach { slashCommand ->
+                feature.otherCommands.forEach { slashCommand ->
                     input(
-                        name = slashCommand.name.name.lowercase(),
+                        name = slashCommand.command.name.lowercase(),
                         description = slashCommand.description
                     ) {
                         slashCommand.arguments.forEach { argument ->
@@ -140,9 +128,9 @@ internal class DiscordBotImpl(
     private suspend fun createGlobalCommands() {
         kord.createGlobalApplicationCommands {
             featureList.forEach { feature ->
-                feature.slashCommands.forEach { slashCommand ->
+                feature.otherCommands.forEach { slashCommand ->
                     input(
-                        name = slashCommand.name.name.lowercase(),
+                        name = slashCommand.command.name.lowercase(),
                         description = slashCommand.description
                     ) {
                         slashCommand.arguments.forEach { argument ->
