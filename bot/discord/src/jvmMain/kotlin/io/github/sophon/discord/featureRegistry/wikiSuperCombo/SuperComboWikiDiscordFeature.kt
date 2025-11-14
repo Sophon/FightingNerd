@@ -131,33 +131,35 @@ internal class SuperComboWikiDiscordFeature(
 
         character.sf6Properties?.let { properties ->
             mandatoryField(
-                name = "Walk (b|f)",
-                value = "${properties.fwdWalkSpd} | ${properties.bwdWalkSpd}"
-            )
-            mandatoryField(
-                name = "Dash (b|f)",
-                value = "${properties.fwdDashSpd} | ${properties.bwdDashSpd}"
-            )
-            mandatoryField(
-                name = "Dash dist (b|f)",
-                value = "${properties.fwdDashDist} | ${properties.bwdDashDist}")
-
-            mandatoryField(
-                name = "R (mn, bl, mx)",
-                value = "${properties.dRushMin}, ${properties.dRushBlock}, ${properties.dRushMax}"
-            )
-
-            mandatoryField(
-                name = "Additional Properties",
+                name = "BASIC",
                 value = listOf(
-                    "• ❤️ HP: ${properties.hp}",
-                    "• 🤝 Throw range: ${properties.throwRange}",
-                    "• 🤝 Throw hurtbox: ${properties.throwHurtbox}",
-                    "• Jump Speed: ${properties.jumpSpd}",
-                    "• Jump Apex: ${properties.jumpApex}",
-                    "• Jump dist (b|f): ${properties.bwdJumpDist} | ${properties.fwdJumpDist}"
+                    "• ❤️ **HP**: ${properties.hp}",
+                    "• 🤝 **Throw range**: ${properties.throwRange}",
+                    "• 🤝 **Throw hurtbox**: ${properties.throwHurtbox}",
                 ).joinToString("\n"),
                 inline = false
+            )
+
+            mandatoryField(
+                name = "DRIVE",
+                value = buildString {
+                    appendLine("* **DR distance block**: ${properties.dRushBlock}")
+                    appendLine("* **DR distance min**: ${properties.dRushMin}")
+                    appendLine("* **DR distance max**: ${properties.dRushMax}")
+                },
+                inline = false,
+            )
+
+            mandatoryField(
+                name = "MOVEMENT",
+                value = buildString {
+                    appendLine("* **Walk speed**: ←${properties.bwdWalkSpd} | ${properties.fwdWalkSpd}→")
+                    appendLine("* **Dash speed**: ←${properties.bwdDashSpd} | ${properties.fwdDashSpd}→")
+                    appendLine("* **Dash distance**: ←${properties.bwdDashDist} | ${properties.fwdDashDist}→")
+                    appendLine("* **Jump distance**: ↖ ${properties.bwdJumpDist} | ${properties.fwdJumpDist} ↗")
+                    appendLine("* **Jump apex | speed**: ${properties.jumpApex} | ${properties.jumpSpd}")
+                },
+                inline = false,
             )
         }
 
