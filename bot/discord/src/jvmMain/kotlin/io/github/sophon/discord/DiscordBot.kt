@@ -48,14 +48,10 @@ internal class DiscordBotImpl(
     private suspend fun startKord() {
         kord = Kord(token = apiKey)
 
-        // Delete old guild commands FIRST (outside the builder)
-        val testGuildSnowFlake = Snowflake(TEST_SERVER_ID)
-        kord.getGuildApplicationCommands(testGuildSnowFlake).collect { command ->
-            command.delete()
-        }
-
+        cleanOldGuildCommands(kord)
         createGlobalCommands()
 //        createCommandsForTestServer(testGuildSnowFlake)
+
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             handleCommand()
         }
@@ -72,6 +68,13 @@ internal class DiscordBotImpl(
             // we need to specify this to receive the content of messages
             @OptIn(PrivilegedIntent::class)
             intents += Intent.MessageContent
+        }
+    }
+
+    private suspend fun cleanOldGuildCommands(kord: Kord) {
+        val testGuildSnowFlake = Snowflake(TEST_SERVER_ID)
+        kord.getGuildApplicationCommands(testGuildSnowFlake).collect { command ->
+            command.delete()
         }
     }
 
