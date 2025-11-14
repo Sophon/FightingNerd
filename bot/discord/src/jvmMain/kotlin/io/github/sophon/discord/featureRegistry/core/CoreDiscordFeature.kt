@@ -5,8 +5,12 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.URL_IMG_DISCORD
+import io.github.sophon.discord.URL_IMG_GITHUB
 import io.github.sophon.discord.URL_IMG_KOFI
+import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
+import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
@@ -23,7 +27,23 @@ internal class CoreDiscordFeature(): DiscordRegisteredFeature {
         description = "Dono arigato!",
         arguments = listOf(),
     )
-    override val otherCommands = listOf<SupportedCommand>() //TODO: dono list
+    override val otherCommands = listOf(
+        SupportedCommand(
+            command = Command.REPO,
+            description = "Project repository",
+            arguments = listOf(),
+        ),
+        SupportedCommand(
+            command = Command.INVITE,
+            description = "Bot invite link",
+            arguments = listOf(),
+        ),
+        SupportedCommand(
+            command = Command.DONATE,
+            description = "Dono arigato!",
+            arguments = listOf(),
+        )
+    )
 
     override suspend fun start() {/* not needed */ }
 
@@ -32,7 +52,12 @@ internal class CoreDiscordFeature(): DiscordRegisteredFeature {
         query: String,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
         return when (command) {
-            Command.TIP -> Result.Success(createTipEmbed())
+            Command.TIP,
+            Command.DONATE,
+                -> Result.Success(createTipEmbed())
+
+            Command.REPO -> Result.Success(createRepoEmbed())
+            Command.INVITE -> Result.Success(createInviteEmbed())
             else -> Result.Error(BotError.BOT_LOGIC_ERROR)
         }
     }
@@ -55,8 +80,42 @@ internal class CoreDiscordFeature(): DiscordRegisteredFeature {
         }
     }
 
+    private fun createRepoEmbed(): EmbedBuilder.() -> Unit = {
+        title = "GitHub repo"
+        url = URL_REPO
+        color = Color(BLACK)
+
+        mandatoryField(
+            name = "Project repository",
+            value = URL_REPO
+        )
+
+        footer {
+            text = "GitHub"
+            icon = URL_IMG_GITHUB
+        }
+    }
+
+    private fun createInviteEmbed(): EmbedBuilder.() -> Unit = {
+        title = "Fighting Nerd bot"
+        url = URL_REPO
+        color = Color(BLURPLE)
+
+        mandatoryField(
+            name = "Bot invite",
+            value = URL_INVITE,
+        )
+
+        footer {
+            text = "Discord"
+            icon = URL_IMG_DISCORD
+        }
+    }
+
     private companion object {
         const val TAG = "CoreDiscordFeature"
+        const val BLACK = 0x000D1117
+        const val BLURPLE = 0x005865F2
         const val PINK = 0x00FF10F0
     }
 }

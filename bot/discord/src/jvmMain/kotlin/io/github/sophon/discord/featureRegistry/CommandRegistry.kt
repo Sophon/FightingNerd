@@ -20,6 +20,10 @@ enum class Command {
     FDSF6,
     CHARSF6,
 
-    //bot specific
-    TIP,
+    //core
+    TIP, DONATE,
+    REPO,
+    INVITE,
+    BAN,
+    UNBAN,
 }
