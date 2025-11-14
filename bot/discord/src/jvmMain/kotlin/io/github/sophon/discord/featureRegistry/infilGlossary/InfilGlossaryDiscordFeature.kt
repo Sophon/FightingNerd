@@ -4,14 +4,15 @@ import MAX_LENGTH_EMBED
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.map
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.truncate
+import io.github.sophon.discord.BotError
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.SlashCommand
+import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
-import io.github.sophon.discord.util.createErrorEmbed
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.replaceItalic
@@ -24,24 +25,22 @@ internal class InfilGlossaryDiscordFeature(
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
     private val urlProvider: InfilUrlProvider,
 ): DiscordRegisteredFeature {
-    override val mainCommand: Command = Command.GL
+    override val defaultCommand = SupportedCommand(
+        command = Command.GL,
+        description = "Fighting-game glossary",
+        arguments = listOf(
+            SupportedCommand.Argument(
+                name = KEY_TERM,
+                description = "Term"
+            )
+        )
+    )
     override val featureInfo = FeatureInfo(
         name = "Infil Glossary",
         url = "https://glossary.infil.net/",
         iconUrl = "https://i.imgur.com/OigKJBY.png",
     )
-    override val slashCommands = listOf(
-        SlashCommand(
-            name = Command.GL,
-            description = "Fighting-game glossary",
-            arguments = listOf(
-                SlashCommand.Argument(
-                    name = KEY_TERM,
-                    description = "Term"
-                )
-            )
-        )
-    )
+    override val otherCommands = listOf<SupportedCommand>()
 
     override suspend fun start() {
         startGlossaryUseCase.invoke()
@@ -49,22 +48,21 @@ internal class InfilGlossaryDiscordFeature(
 
     override suspend fun execute(
         command: Command,
-        vararg args: String
-    ): EmbedBuilder.() -> Unit {
-        val result = searchGlossaryUseCase.invoke(
-            args.joinToString(" ")
-        )
-
-        return when (result) {
-            is Result.Success -> {
-                createEmbed(item = result.data)
-            }
-            is Result.Error -> {
-                createErrorEmbed(error = result.error)
-            }
+        query: String,
+    ): Result<EmbedBuilder.() -> Unit, BotError> {
+        return when (command) {
+            Command.GL -> searchTerm(query)
+            else -> Result.Error(BotError.BOT_LOGIC_ERROR)
         }
     }
 
+
+    private suspend fun searchTerm(
+        query: String,
+    ): Result<EmbedBuilder.() -> Unit, BotError> {
+        return searchGlossaryUseCase.invoke(query)
+            .map { createEmbed(it) }
+    }
 
     private fun createEmbed(
         item: GlossaryItem

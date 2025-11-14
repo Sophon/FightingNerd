@@ -6,6 +6,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.truncate
@@ -13,13 +14,12 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.SlashCommand
+import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHeatMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHomingMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetPowerCrushMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchFrameDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SyncDataUseCase
-import io.github.sophon.discord.util.createErrorEmbed
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.orClickable
@@ -39,52 +39,65 @@ internal class WavuWikiDiscordFeature(
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature {
-    override val mainCommand: Command = Command.FD
     override val featureInfo = FeatureInfo(
         name = "Wavu Wiki",
         url = "https://wavu.wiki/",
         iconUrl = "https://i.imgur.com/0cnTzNk.png",
     )
-    override val slashCommands: List<SlashCommand> = listOf(
-        SlashCommand(
-            name = Command.FD,
+    override val defaultCommand = SupportedCommand(
+        command = Command.FD,
+        description = "Global frame data",
+        arguments = listOf(
+            SupportedCommand.Argument(
+                name = KEY_CHAR_NAME,
+                description = "Character name",
+            ),
+            SupportedCommand.Argument(
+                name = KEY_MOVE,
+                description = "Move",
+            )
+        )
+    )
+    override val otherCommands: List<SupportedCommand> = listOf(
+        SupportedCommand(
+            command = Command.FDT8,
             description = "Tekken 8 frame data",
             arguments = listOf(
-                SlashCommand.Argument(
+                SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
                     description = "Character name",
                 ),
-                SlashCommand.Argument(
+                SupportedCommand.Argument(
                     name = KEY_MOVE,
                     description = "Move",
                 )
             )
         ),
-        SlashCommand(
-            name = Command.PC,
+        SupportedCommand(
+            command = Command.PC,
             description = "Tekken 8 Power Crush moves",
             arguments = listOf(
-                SlashCommand.Argument(
+                SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
                     description = "Character name",
                 ),
             )
         ),
-        SlashCommand(
-            name = Command.HEAT,
+        SupportedCommand(
+            command = Command.HEAT,
             description = "Tekken 8 Power Crush moves",
             arguments = listOf(
-                SlashCommand.Argument(
+                SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
                     description = "Character name",
                 ),
             )
         ),
-        SlashCommand(
-            name = Command.HOMING,
+        SupportedCommand(
+            command = Command.HOMING,
             description = "Tekken 8 homing moves",
             arguments = listOf(
-                SlashCommand.Argument(
+                SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
                     description = "Character name",
                 ),
@@ -103,14 +116,17 @@ internal class WavuWikiDiscordFeature(
 
     override suspend fun execute(
         command: Command,
-        vararg args: String
-    ): EmbedBuilder.() -> Unit {
+        query: String,
+    ): Result<EmbedBuilder.() -> Unit, BotError> {
         return when (command) {
-            Command.FD -> searchFrameData(*args)
-            Command.PC -> searchPowerCrushMoves(*args)
-            Command.HEAT -> searchHeatMoves(*args)
-            Command.HOMING -> searchHomingMoves(*args)
-            else -> createErrorEmbed(BotError.BOT_LOGIC_ERROR)
+            Command.FD,
+            Command.FDT8,
+                -> searchMove(query)
+
+            Command.PC -> searchPowerCrushMoves(query)
+            Command.HEAT -> searchHeatMoves(query)
+            Command.HOMING -> searchHomingMoves(query)
+            else -> Result.Error(BotError.BOT_LOGIC_ERROR)
         }
     }
 
@@ -119,62 +135,47 @@ internal class WavuWikiDiscordFeature(
         return syncDataUseCase.invoke()
     }
 
-    private suspend fun searchFrameData(
-        vararg args: String
-    ): EmbedBuilder.() -> Unit {
-        val result = searchFrameDataUseCase.invoke(
-            query = args.joinToString(" ")
-        )
-        return when (result) {
-            is Result.Success -> {
-                createMoveEmbed(move = result.data)
-            }
-            is Result.Error -> {
-                createErrorEmbed(error = result.error)
-            }
-        }
+    private suspend fun searchMove(
+        query: String,
+    ): Result<EmbedBuilder.() -> Unit, BotError> {
+        return searchFrameDataUseCase.invoke(query)
+            .map { createMoveEmbed(move = it) }
     }
 
-    private suspend fun searchPowerCrushMoves(vararg args: String): EmbedBuilder.() -> Unit {
-        val result = getPowerCrushMovesUseCase.invoke(
-            charName = args.joinToString(" ")
-        )
-        return when (result) {
-            is Result.Success -> {
-                createMoveListEmbed(category = "Power Crush", moves = result.data)
+    private suspend fun searchPowerCrushMoves(
+        query: String,
+    ): Result<EmbedBuilder.() -> Unit, BotError>{
+        return getPowerCrushMovesUseCase.invoke(charName = query)
+            .map { moveList ->
+                createMoveListEmbed(
+                    category = "Power Crush",
+                    moves = moveList
+                )
             }
-            is Result.Error -> {
-                createErrorEmbed(error = result.error)
-            }
-        }
     }
 
-    private suspend fun searchHeatMoves(vararg args: String): EmbedBuilder.() -> Unit {
-        val result = getHeatMovesUseCase.invoke(
-            charName = args.joinToString(" ")
-        )
-        return when (result) {
-            is Result.Success -> {
-                createMoveListEmbed(category = "Heat", moves = result.data)
+    private suspend fun searchHeatMoves(
+        query: String,
+    ): Result<EmbedBuilder.() -> Unit, BotError> {
+        return getHeatMovesUseCase.invoke(charName = query)
+            .map { moveList ->
+                createMoveListEmbed(
+                    category = "Heat",
+                    moves = moveList
+                )
             }
-            is Result.Error -> {
-                createErrorEmbed(error = result.error)
-            }
-        }
     }
 
-    private suspend fun searchHomingMoves(vararg args: String): EmbedBuilder.() -> Unit {
-        val result = getHomingMovesUseCase.invoke(
-            charName = args.joinToString(" ")
-        )
-        return when (result) {
-            is Result.Success -> {
-                createMoveListEmbed(category = "Homing", moves = result.data)
+    private suspend fun searchHomingMoves(
+        query: String,
+    ): Result<EmbedBuilder.() -> Unit, BotError> {
+        return getHomingMovesUseCase.invoke(charName = query)
+            .map { moveList ->
+                createMoveListEmbed(
+                    category = "Homing",
+                    moves = moveList
+                )
             }
-            is Result.Error -> {
-                createErrorEmbed(error = result.error)
-            }
-        }
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {

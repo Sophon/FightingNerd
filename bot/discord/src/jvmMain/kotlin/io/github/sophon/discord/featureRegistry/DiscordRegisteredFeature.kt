@@ -1,37 +1,26 @@
 package io.github.sophon.discord.featureRegistry
 
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.discord.BotError
 
 interface DiscordRegisteredFeature {
-    val mainCommand: Command //TODO: refactor to List<Command>
     val featureInfo: FeatureInfo
-    val slashCommands: List<SlashCommand>
+
+    val defaultCommand: SupportedCommand
+    val otherCommands: List<SupportedCommand>
 
     suspend fun start()
 
-    /**
-     * Service:Command is 1:n
-     */
     suspend fun execute(
         command: Command,
-        vararg args: String
-    ): EmbedBuilder.() -> Unit
-
-    fun buildQuery(
-        args: Map<String, String>,
-        command: Command
-    ): String {
-        val slashCommand = slashCommands.first { it.name == command }
-        return slashCommand.arguments
-            .mapNotNull { args[it.name] }
-            .joinToString(" ")
-            .trim()
-    }
+        query: String,
+    ): Result<EmbedBuilder.() -> Unit, BotError>
 }
 
-data class SlashCommand(
-    val name: Command,
+data class SupportedCommand(
+    val command: Command,
     val description: String,
     val arguments: List<Argument>
 ) {

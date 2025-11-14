@@ -7,6 +7,7 @@ import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryGlossaryDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.featureRegistry.featureRegistryModule
+import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.wikiSuperCombo.superComboModule
@@ -58,4 +59,6 @@ fun dcBotModule(apiKey: String) = module {
     single<MoveListDB>(named(QUALIFIER_SC)) { InMemoryMoveListDB() }
 
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
+
+    singleOf(::RouteCommandToFeatureUseCase)
 }

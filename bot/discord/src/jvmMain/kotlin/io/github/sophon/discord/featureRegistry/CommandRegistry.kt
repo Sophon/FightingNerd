@@ -4,13 +4,19 @@ package io.github.sophon.discord.featureRegistry
  * Add registered service commands HERE
  */
 enum class Command {
+    //general
+    FD,
+
+    //infil glossary
     GL,
 
-    FD,
+    //wavu wiki
+    FDT8,
     PC,
     HEAT,
     HOMING,
 
+    //supercombo wiki
     FDSF6,
     CHARSF6,
 }
