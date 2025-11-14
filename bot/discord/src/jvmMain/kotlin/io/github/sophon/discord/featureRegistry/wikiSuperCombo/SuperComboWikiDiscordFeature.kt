@@ -1,6 +1,5 @@
 package io.github.sophon.discord.featureRegistry.wikiSuperCombo
 
-import io.github.sophon.discord.MAX_LENGTH_EMBED
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
@@ -14,6 +13,7 @@ import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
@@ -23,7 +23,6 @@ import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SyncSuper
 import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
-import io.github.sophon.discord.util.separator
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
