@@ -13,24 +13,10 @@ interface DiscordRegisteredFeature {
 
     suspend fun start()
 
-    /**
-     * Service:Command is 1:n
-     */
     suspend fun execute(
         command: Command,
         query: String,
     ): Result<EmbedBuilder.() -> Unit, BotError>
-
-    fun buildQuery(
-        args: Map<String, String>,
-        command: Command
-    ): String {
-        val slashCommand = otherCommands.first { it.command == command }
-        return slashCommand.arguments
-            .mapNotNull { args[it.name] }
-            .joinToString(" ")
-            .trim()
-    }
 }
 
 data class SupportedCommand(
