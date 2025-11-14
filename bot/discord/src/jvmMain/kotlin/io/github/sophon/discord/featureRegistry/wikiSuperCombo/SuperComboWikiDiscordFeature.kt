@@ -81,8 +81,8 @@ internal class SuperComboWikiDiscordFeature(
         query: String,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
         return when (command) {
-            Command.FD -> searchCharacter(query)
-            Command.CHARSF6 -> searchMove(query)
+            Command.FD -> searchMove(query)
+            Command.CHARSF6 -> searchCharacter(query)
             else -> Result.Error(BotError.BOT_LOGIC_ERROR)
         }
     }
