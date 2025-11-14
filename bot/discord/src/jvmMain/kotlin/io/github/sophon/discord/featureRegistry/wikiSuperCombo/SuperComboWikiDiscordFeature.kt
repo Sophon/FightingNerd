@@ -112,7 +112,9 @@ internal class SuperComboWikiDiscordFeature(
         query: String,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
         return searchCharacterDataUseCase.invoke(charName = query)
-            .map { createCharacterEmbed(it) }
+            .map { (character, fastestMoveList) ->
+                createCharacterEmbed(character, fastestMoveList)
+            }
     }
 
     private suspend fun searchMove(
@@ -123,19 +125,26 @@ internal class SuperComboWikiDiscordFeature(
     }
 
     private fun createCharacterEmbed(
-        character: Character
+        character: Character,
+        fastestMoveList: List<Move>,
     ): EmbedBuilder.() -> Unit = {
         title = character.displayName
         url = character.wikiUrl
         color = Color(ORANGE)
 
         character.sf6Properties?.let { properties ->
+            val moves = fastestMoveList.joinToString(", ") { move ->
+                move.input
+            }
+            val startup = fastestMoveList.first().startup.orDash()
+
             mandatoryField(
                 name = "BASIC",
                 value = listOf(
-                    "• ❤️ **HP**: ${properties.hp}",
-                    "• 🤝 **Throw range**: ${properties.throwRange}",
-                    "• 🤝 **Throw hurtbox**: ${properties.throwHurtbox}",
+                    "* **Fastest normal ($startup)**: $moves",
+                    "* ❤️ **HP**: ${properties.hp}",
+                    "* 🤝 **Throw range**: ${properties.throwRange}",
+                    "* 🤝 **Throw hurtbox**: ${properties.throwHurtbox}",
                 ).joinToString("\n"),
                 inline = false
             )
