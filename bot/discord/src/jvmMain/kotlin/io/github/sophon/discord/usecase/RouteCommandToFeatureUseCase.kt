@@ -3,7 +3,6 @@ package io.github.sophon.discord.usecase
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
 
@@ -19,65 +18,107 @@ internal class RouteCommandToFeatureUseCase(
             .takeIf { it.isNotBlank() }
             ?: return Result.Error(BotError.INVALID_QUERY)
 
-        val (commandString, query) = parseFullQuery(fullQuery)
+        val firstWord = extractFirstWord(fullQuery)
 
-        return tryOnAllFeatures(commandString, query)
+        return if (firstWord.isCommand()) {
+            val (commandString, query) = formatQuery(fullQuery)
+            useExplicitCommands(commandString, query)
+        } else {
+            useDefaultCommands(fullQuery)
+        }
     }
 
     suspend fun invoke(
         commandString: String,
         query: String,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
-        return tryOnAllFeatures(commandString, query)
+        return useExplicitCommands(
+            commandString = commandString.lowercase(),
+            query = query
+        )
     }
 
-    private fun parseFullQuery(fullQuery: String): Pair<String, String> {
-        return when (val firstIndexOfSpace = fullQuery.indexOf(' ')) {
-            -1 -> {
-                val command = fullQuery.trim()
-                val query = ""
-                command to query
-            }
-            else -> {
-                val command = fullQuery.substring(0, firstIndexOfSpace).trim()
-                val query = fullQuery.substring(firstIndexOfSpace + 1).trim()
-                command to query
-            }
+    private fun extractFirstWord(query: String): String {
+        val firstIndexOfSpace = query.indexOf(' ')
+        return when (firstIndexOfSpace) {
+            -1 -> query.trim()
+            else -> query.substring(0, firstIndexOfSpace).trim()
         }
     }
 
-    private suspend fun tryOnAllFeatures(
+    private fun String.isCommand(): Boolean {
+        return featureList.any { feature ->
+            val isOtherCommand = feature.otherCommands.any {
+                it.command.name.equals(this, ignoreCase = true)
+            }
+            val isDefaultCommand = feature.defaultCommand.command.name
+                .equals(this, ignoreCase = true)
+
+            isOtherCommand || isDefaultCommand
+        }
+    }
+
+    private fun formatQuery(fullQuery: String): Pair<String, String> {
+        val command: String
+        val query: String
+        when (val firstIndexOfSpace = fullQuery.indexOf(' ')) {
+            -1 -> {
+                command = fullQuery.trim()
+                query = ""
+            }
+            else -> {
+                command = fullQuery.substring(0, firstIndexOfSpace).trim()
+                query = fullQuery.substring(firstIndexOfSpace + 1).trim()
+            }
+        }
+
+        return command to query
+    }
+
+    private suspend fun useExplicitCommands(
         commandString: String,
-        query: String
+        query: String,
+    ): Result<EmbedBuilder.() -> Unit, BotError> {
+        var result: Result<EmbedBuilder.() -> Unit, BotError> = Result.Error(BotError.INVALID_QUERY)
+
+        for (feature in featureList) {
+            val explicitCommand = feature.otherCommands
+                .firstOrNull {
+                    it.command.name.equals(commandString, ignoreCase = true)
+                }
+                ?.command
+
+            val commandToUse = explicitCommand
+                ?: if (feature.defaultCommand.command.name.equals(commandString, ignoreCase = true)) {
+                    feature.defaultCommand.command
+                } else {
+                    continue // this feature doesn't have this command
+                }
+
+            result = feature.execute(commandToUse, query)
+            if (result is Result.Success) {
+                return result
+            }
+        }
+
+        //use the last error
+        return result
+    }
+
+    private suspend fun useDefaultCommands(
+        fullQuery: String
     ): Result<EmbedBuilder.() -> Unit, BotError> {
         for (feature in featureList) {
-            val (command, isDefault) = getFeatureCommand(feature, commandString)
+            val result = feature.execute(
+                command = feature.defaultCommand.command,
+                query = fullQuery,
+            )
 
-            val result = feature.execute(command, query)
-
-            when {
-                result is Result.Success -> return result
-                isDefault.not() -> return result
+            if (result is Result.Success) {
+                return result
             }
         }
 
         return Result.Error(BotError.INVALID_QUERY)
-    }
-
-    private fun getFeatureCommand(
-        feature: DiscordRegisteredFeature,
-        commandString: String
-    ): Pair<Command, Boolean> {
-        val explicitCommand = feature.otherCommands
-            .firstOrNull {
-                it.command.name.equals(commandString, ignoreCase = true)
-            }
-            ?.command
-
-        return if (explicitCommand == null) {
-            feature.defaultCommand.command to true
-        } else {
-            explicitCommand to false
-        }
     }
 }
