@@ -19,4 +19,7 @@ enum class Command {
     //supercombo wiki
     FDSF6,
     CHARSF6,
+
+    //bot specific
+    TIP,
 }

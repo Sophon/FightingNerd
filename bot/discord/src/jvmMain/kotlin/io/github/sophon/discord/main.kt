@@ -1,6 +1,5 @@
 package io.github.sophon.discord
 
-import CONFIG_FILE_NAME
 import dev.kord.core.Kord
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
