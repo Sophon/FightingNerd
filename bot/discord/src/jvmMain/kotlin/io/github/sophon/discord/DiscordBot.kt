@@ -50,7 +50,7 @@ internal class DiscordBotImpl(
 
         cleanOldGuildCommands(kord)
         createGlobalCommands()
-//        createCommandsForTestServer(testGuildSnowFlake)
+//        createCommandsForTestServer()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             handleCommand()
@@ -109,41 +109,44 @@ internal class DiscordBotImpl(
         interaction.respondPublic { embed(embedBuilder) }
     }
 
-    private suspend fun createCommandsForTestServer(testGuildSnowFlake: Snowflake) {
+    private suspend fun createCommandsForTestServer() {
+        val testGuildSnowFlake = Snowflake(TEST_SERVER_ID)
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
-            featureList.forEach { feature ->
-                feature.otherCommands.forEach { slashCommand ->
+            featureList
+                .flatMap { feature -> feature.otherCommands + feature.defaultCommand }
+                .distinctBy { it.command.name.lowercase() }
+                .forEach { supportedCommand ->
                     input(
-                        name = slashCommand.command.name.lowercase(),
-                        description = slashCommand.description
+                        name = supportedCommand.command.name.lowercase(),
+                        description = supportedCommand.description
                     ) {
-                        slashCommand.arguments.forEach { argument ->
+                        supportedCommand.arguments.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
                             }
                         }
                     }
                 }
-            }
         }.collect()
     }
 
     private suspend fun createGlobalCommands() {
         kord.createGlobalApplicationCommands {
-            featureList.forEach { feature ->
-                feature.otherCommands.forEach { slashCommand ->
+            featureList
+                .flatMap { feature -> feature.otherCommands + feature.defaultCommand }
+                .distinctBy { it.command.name.lowercase() }
+                .forEach { supportedCommand ->
                     input(
-                        name = slashCommand.command.name.lowercase(),
-                        description = slashCommand.description
+                        name = supportedCommand.command.name.lowercase(),
+                        description = supportedCommand.description
                     ) {
-                        slashCommand.arguments.forEach { argument ->
+                        supportedCommand.arguments.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
                             }
                         }
                     }
                 }
-            }
         }.collect()
     }
 }
