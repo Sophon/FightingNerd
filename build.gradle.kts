@@ -49,7 +49,7 @@ subprojects {
 }
 
 // Aggregated test report task
-tasks.register<TestReport>("testReport") {
+tasks.register<TestReport>("unitTests") {
     destinationDirectory.set(file("${layout.buildDirectory.get().asFile}/reports/allTests"))
 
     testResults.from(subprojects.mapNotNull { subproject ->
@@ -68,7 +68,7 @@ tasks.register<TestReport>("testReport") {
 }
 
 // Verify all use cases have corresponding tests
-tasks.register("verifyUseCaseTests") {
+tasks.register("testCoverage") {
     group = "verification"
     description = "Verifies that all use case files have corresponding unit tests"
 
@@ -114,10 +114,10 @@ tasks.register("verifyUseCaseTests") {
                     val testPath = file("feat/$module/src/commonTest/kotlin/${relativePath.parent}/$testFileName")
 
                     if (!testPath.exists()) {
-                        missingTests.add("${module}: ${relativePath} -> Missing: commonTest/kotlin/${relativePath.parent}/$testFileName")
+                        missingTests.add("$module: ${useCaseFile.nameWithoutExtension} -> Missing")
                     } else {
                         testedUseCases++
-                        println("✓ ${module}: ${useCaseFile.name}")
+                        println("✓ ${module}: ${useCaseFile.nameWithoutExtension}")
                     }
                 }
         }
