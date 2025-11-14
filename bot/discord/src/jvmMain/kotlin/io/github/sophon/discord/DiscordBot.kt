@@ -13,13 +13,14 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.createErrorEmbed
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 
 interface DiscordBot {
     suspend fun startSession()
@@ -31,14 +32,23 @@ internal class DiscordBotImpl(
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
-        coroutineScope {
-            featureList.forEach { feature ->
-                launch { feature.start() }
-            }
-        }
+        startFeatures()
         startKord()
     }
 
+
+    private suspend fun startFeatures() {
+        supervisorScope {
+            featureList.forEach { feature ->
+                launch {
+                    runCatching { feature.start() }
+                        .onFailure {
+                            Napier.e(tag = TAG) { "Failed to load ${feature.featureInfo.name}: $it" }
+                        }
+                }
+            }
+        }
+    }
 
     private suspend fun startKord() {
         cleanOldGuildCommands(kord)

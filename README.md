@@ -19,6 +19,7 @@ A set of tools for the Fighting Game Community:
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules)
 - [Discord bot](./bot/discord/src/jvmMain/kotlin/io/github/sophon/discord/DiscordBot.kt)
 - [fighting-game glossary](./feat/glossaryInfil/src/commonMain/kotlin/io/github/sophon/glossaryinfil/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
+- global frame data sourced from all feature modules
 - [Tekken 8 frame data](./feat/wikiWavu/src/commonMain/kotlin/io/github/sophon/wikiwavu/WavuWikiClient.kt) from [Wavu Wiki](https://wavu.wiki/)
   - frame data
   - power crush, heat or homing move-lists
@@ -32,12 +33,12 @@ A set of tools for the Fighting Game Community:
 ### [TODO's](https://github.com/Sophon/Cornerman/wiki/Features#planned-feature-module-improvements)
 - Docker, pipelines, updates
 - other feature modules
-  - SuperCombo wiki
-  - Dustloop wiki
+  - [2XKO wiki](https://wiki.play2xko.com/en-us/) feature
+  - [DustLoop wiki](https://www.dustloop.com/wiki/) feature for GGST
+  - [DreamCancel wiki](https://dreamcancel.com/wiki/Main_Page) feature for COTW
 
 
 ### [Long term goals](https://github.com/Sophon/Cornerman/wiki/Features#planned-feature-modules):
-- [EWGF.gg](https://ewgf.gg/) functionality
 - Twitch bot
 
 ___
