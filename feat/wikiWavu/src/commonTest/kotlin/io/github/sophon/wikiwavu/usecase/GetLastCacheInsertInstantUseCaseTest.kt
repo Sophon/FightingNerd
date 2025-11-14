@@ -26,7 +26,7 @@ class GetLastCacheInsertInstantUseCaseTest {
 
         // then
         assertTrue(result is Result.Success)
-        assertEquals(expectedInstant, (result as Result.Success).data)
+        assertEquals(expectedInstant, result.data)
     }
 
     @Test
@@ -40,7 +40,7 @@ class GetLastCacheInsertInstantUseCaseTest {
 
         // then
         assertTrue(result is Result.Success)
-        assertNull((result as Result.Success).data)
+        assertNull(result.data)
     }
     //endregion
 
@@ -56,7 +56,7 @@ class GetLastCacheInsertInstantUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, (result as Result.Error).error)
+        assertEquals(WikiError.DATABASE_ERROR, result.error)
     }
     //endregion
 
