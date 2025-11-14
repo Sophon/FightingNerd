@@ -13,7 +13,6 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
-import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
@@ -27,15 +26,11 @@ interface DiscordBot {
 }
 
 internal class DiscordBotImpl(
-    private val apiKey: String,
+    private val kord: Kord,
     private val featureList: List<DiscordRegisteredFeature>,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
 ): DiscordBot {
-    private lateinit var kord: Kord
-
     override suspend fun startSession() {
-        Napier.d(tag = TAG) { "Starting with API: $apiKey" }
-
         coroutineScope {
             featureList.forEach { feature ->
                 launch { feature.start() }
@@ -46,8 +41,6 @@ internal class DiscordBotImpl(
 
 
     private suspend fun startKord() {
-        kord = Kord(token = apiKey)
-
         cleanOldGuildCommands(kord)
         createGlobalCommands()
 //        createCommandsForTestServer()
@@ -149,6 +142,9 @@ internal class DiscordBotImpl(
                 }
         }.collect()
     }
-}
 
-private const val TAG = "DiscordBot"
+
+    private companion object {
+        const val TAG = "DiscordBot"
+    }
+}

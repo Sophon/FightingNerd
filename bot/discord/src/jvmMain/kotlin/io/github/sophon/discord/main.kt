@@ -1,6 +1,7 @@
 package io.github.sophon.discord
 
 import CONFIG_FILE_NAME
+import dev.kord.core.Kord
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.Napier
 import io.github.sophon.discord.config.DiscordConfig
@@ -11,9 +12,9 @@ import org.koin.java.KoinJavaComponent.getKoin
 import java.io.File
 
 suspend fun main() = coroutineScope {
-    val apiKey = getApiKey()
     Napier.base(DebugAntilog())
-    initKoin(apiKey)
+    val kord = Kord(token = getApiKey())
+    initKoin(kord)
 
     val discordBot = getKoin().get<DiscordBot>()
 
@@ -24,7 +25,10 @@ suspend fun main() = coroutineScope {
 
 private fun getApiKey(): String {
     // env var first (for production/Docker)
-    System.getenv("discordBotApiKey")?.let { return it }
+    System.getenv("discordBotApiKey")?.let { apiKey ->
+        Napier.d(tag = TAG) { "API from env: $apiKey" }
+        return apiKey
+    }
 
     // fall back to config file (for local development)
     val configFile = File(CONFIG_FILE_NAME)
@@ -37,5 +41,9 @@ private fun getApiKey(): String {
     }
     val discordConfig = json.decodeFromString<DiscordConfig>(configFile.readText())
 
-    return discordConfig.discordBotApiKey
+    return discordConfig.discordBotApiKey.also { apiKey ->
+        Napier.d(tag = TAG) { "API from file: $apiKey" }
+    }
 }
+
+private const val TAG = "DiscordBot"
