@@ -37,7 +37,7 @@ internal class SuperComboWikiDiscordFeature(
 ): DiscordRegisteredFeature {
     override val defaultCommand = SupportedCommand(
         command = Command.FD,
-        description = "SF6 frame data",
+        description = "Global frame data",
         arguments = listOf(
             SupportedCommand.Argument(
                 name = KEY_CHAR_NAME,
@@ -55,6 +55,20 @@ internal class SuperComboWikiDiscordFeature(
         iconUrl = "https://i.imgur.com/aW5ys7q.png",
     )
     override val otherCommands = listOf(
+        SupportedCommand(
+            command = Command.FDSF6,
+            description = "SF6 frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
+                )
+            )
+        ),
         SupportedCommand(
             command = Command.CHARSF6,
             description = "SF6 character data",
@@ -81,7 +95,10 @@ internal class SuperComboWikiDiscordFeature(
         query: String,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
         return when (command) {
-            Command.FD -> searchMove(query)
+            Command.FD,
+            Command.FDSF6,
+                -> searchMove(query)
+
             Command.CHARSF6 -> searchCharacter(query)
             else -> Result.Error(BotError.BOT_LOGIC_ERROR)
         }

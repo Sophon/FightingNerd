@@ -46,7 +46,7 @@ internal class WavuWikiDiscordFeature(
     )
     override val defaultCommand = SupportedCommand(
         command = Command.FD,
-        description = "Tekken 8 frame data",
+        description = "Global frame data",
         arguments = listOf(
             SupportedCommand.Argument(
                 name = KEY_CHAR_NAME,
@@ -59,6 +59,20 @@ internal class WavuWikiDiscordFeature(
         )
     )
     override val otherCommands: List<SupportedCommand> = listOf(
+        SupportedCommand(
+            command = Command.FDT8,
+            description = "Tekken 8 frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move",
+                )
+            )
+        ),
         SupportedCommand(
             command = Command.PC,
             description = "Tekken 8 Power Crush moves",
@@ -105,7 +119,10 @@ internal class WavuWikiDiscordFeature(
         query: String,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
         return when (command) {
-            Command.FD -> searchMove(query)
+            Command.FD,
+            Command.FDT8,
+                -> searchMove(query)
+
             Command.PC -> searchPowerCrushMoves(query)
             Command.HEAT -> searchHeatMoves(query)
             Command.HOMING -> searchHomingMoves(query)

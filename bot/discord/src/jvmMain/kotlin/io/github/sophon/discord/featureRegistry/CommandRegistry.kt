@@ -11,10 +11,12 @@ enum class Command {
     GL,
 
     //wavu wiki
+    FDT8,
     PC,
     HEAT,
     HOMING,
 
     //supercombo wiki
+    FDSF6,
     CHARSF6,
 }
