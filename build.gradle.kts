@@ -104,34 +104,34 @@ tasks.register("testCoverage") {
                 .filter { it.isFile && it.path.contains("/usecase/") && it.extension == "kt" }
                 .forEach { useCaseFile ->
                     totalUseCases++
+                    val useCaseName = useCaseFile.nameWithoutExtension
 
-                    // Expected test file name (e.g., MyUseCase.kt -> MyUseCaseTest.kt)
-                    val testFileName = useCaseFile.nameWithoutExtension + "Test.kt"
+                    // Expected test file name
+                    val testFileName = useCaseName + "Test.kt"
 
-                    // Get the package path after kotlin/
-                    val kotlinDir = useCaseDir.resolve("kotlin")
-                    val relativePath = useCaseFile.relativeTo(kotlinDir)
+                    // Get the package path after kotlin/ (fixed here!)
+                    val relativePath = useCaseFile.relativeTo(useCaseDir)
                     val testPath = file("feat/$module/src/commonTest/kotlin/${relativePath.parent}/$testFileName")
 
                     if (!testPath.exists()) {
-                        missingTests.add("$module: ${useCaseFile.nameWithoutExtension} -> Missing")
+                        missingTests.add("$module: $useCaseName -> Missing")
                     } else {
                         testedUseCases++
-                        println("✓ ${module}: ${useCaseFile.nameWithoutExtension}")
+                        println("✓ ${module}: $useCaseName")
                     }
                 }
         }
+
+        val coverage = if (totalUseCases > 0) {
+            (testedUseCases.toDouble() / totalUseCases * 100).toInt()
+        } else 0
 
         println("\n========================================")
         println("📊 Use Case Test Coverage:")
         println("  Total Use Cases: $totalUseCases")
         println("  Tested: $testedUseCases")
         println("  Missing: ${missingTests.size}")
-
-        if (totalUseCases > 0) {
-            val coverage = (testedUseCases.toDouble() / totalUseCases * 100).toInt()
-            println("  Coverage: $coverage%")
-        }
+        println("  Coverage: $coverage%")
         println("========================================\n")
 
         if (missingTests.isNotEmpty()) {
