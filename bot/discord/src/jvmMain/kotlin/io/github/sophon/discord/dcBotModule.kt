@@ -1,5 +1,6 @@
 package io.github.sophon.discord
 
+import dev.kord.core.Kord
 import io.github.sophon.core.coreModule
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
@@ -26,14 +27,14 @@ internal const val QUALIFIER_WAVU = "wavu"
 internal const val QUALIFIER_SC = "superCombo"
 
 fun initKoin(
-    apiKey: String,
+    kord: Kord,
     config: KoinAppDeclaration? = null
 ) = startKoin {
     config?.invoke(this)
 
     modules(
         coreModule,
-        dcBotModule(apiKey),
+        dcBotModule(kord),
 
         infilModule,
         wavuModule(named(QUALIFIER_WAVU)),
@@ -43,11 +44,11 @@ fun initKoin(
     )
 }
 
-fun dcBotModule(apiKey: String) = module {
-    single { apiKey }
+fun dcBotModule(kord: Kord) = module {
     single {
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }
+    single { kord }
 
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
 
@@ -62,3 +63,5 @@ fun dcBotModule(apiKey: String) = module {
 
     singleOf(::RouteCommandToFeatureUseCase)
 }
+
+private const val TAG = "DiscordBotModule"
