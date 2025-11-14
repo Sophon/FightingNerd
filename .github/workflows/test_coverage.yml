@@ -24,7 +24,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Verify use case tests exist
-        run: ./gradlew verifyUseCaseTests
+        run: ./gradlew testCoverage
 
       - name: Run tests
         run: ./gradlew jvmTest

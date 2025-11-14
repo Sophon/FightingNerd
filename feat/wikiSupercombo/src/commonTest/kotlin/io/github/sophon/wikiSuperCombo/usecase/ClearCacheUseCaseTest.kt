@@ -1,0 +1,149 @@
+package io.github.sophon.wikiSuperCombo.usecase
+
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.wiki.domain.model.Move
+import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.Instant
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+
+class ClearCacheUseCaseTest {
+    //region Success Cases
+    @Test
+    fun `invoke returns success when both databases wipe successfully`() {
+        // given
+        val fakeCharDB = FakeCharacterListDB(shouldSucceed = true)
+        val fakeMoveDB = FakeMoveListDB(shouldSucceed = true)
+        val useCase = ClearCacheUseCase(fakeCharDB, fakeMoveDB)
+
+        // when
+        val result = runBlocking { useCase.invoke() }
+
+        // then
+        assertTrue(result is Result.Success)
+        assertTrue(fakeCharDB.wipeWasCalled)
+        assertTrue(fakeMoveDB.wipeWasCalled)
+    }
+    //endregion
+
+    //region Error Cases
+    @Test
+    fun `invoke returns error when character database wipe fails`() {
+        // given
+        val fakeCharDB = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeMoveDB = FakeMoveListDB(shouldSucceed = true)
+        val useCase = ClearCacheUseCase(fakeCharDB, fakeMoveDB)
+
+        // when
+        val result = runBlocking { useCase.invoke() }
+
+        // then
+        assertTrue(result is Result.Error)
+        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(fakeCharDB.wipeWasCalled)
+        assertTrue(fakeMoveDB.wipeWasCalled)
+    }
+
+    @Test
+    fun `invoke returns error when move database wipe fails`() {
+        // given
+        val fakeCharDB = FakeCharacterListDB(shouldSucceed = true)
+        val fakeMoveDB = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val useCase = ClearCacheUseCase(fakeCharDB, fakeMoveDB)
+
+        // when
+        val result = runBlocking { useCase.invoke() }
+
+        // then
+        assertTrue(result is Result.Error)
+        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(fakeCharDB.wipeWasCalled)
+        assertTrue(fakeMoveDB.wipeWasCalled)
+    }
+
+    @Test
+    fun `invoke returns character database error when both wipes fail`() {
+        // given
+        val fakeCharDB = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeMoveDB = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DOWNLOAD_ERROR)
+        val useCase = ClearCacheUseCase(fakeCharDB, fakeMoveDB)
+
+        // when
+        val result = runBlocking { useCase.invoke() }
+
+        // then
+        assertTrue(result is Result.Error)
+        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(fakeCharDB.wipeWasCalled)
+        assertTrue(fakeMoveDB.wipeWasCalled)
+    }
+    //endregion
+
+    //region Test Doubles
+    private class FakeCharacterListDB(
+        private val shouldSucceed: Boolean,
+        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+    ) : CharacterListDB {
+        var wipeWasCalled = false
+
+        override suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
+            throw NotImplementedError()
+        }
+
+        override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> {
+            throw NotImplementedError()
+        }
+
+        override suspend fun wipe(): EmptyResult<WikiError> {
+            wipeWasCalled = true
+            return if (shouldSucceed) {
+                Result.Success(Unit)
+            } else {
+                Result.Error(errorToReturn)
+            }
+        }
+
+        override suspend fun fetchCharacterDataFor(charName: String): Result<Character, WikiError> {
+            throw NotImplementedError()
+        }
+    }
+
+    private class FakeMoveListDB(
+        private val shouldSucceed: Boolean,
+        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+    ) : MoveListDB {
+        var wipeWasCalled = false
+
+        override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
+            throw NotImplementedError()
+        }
+
+        override suspend fun fetchMoveDataFor(charName: String, moveQuery: String): Result<Move, WikiError> {
+            throw NotImplementedError()
+        }
+
+        override suspend fun insertMoveList(charName: String, moveList: List<Move>): EmptyResult<WikiError> {
+            throw NotImplementedError()
+        }
+
+        override suspend fun wipe(): EmptyResult<WikiError> {
+            wipeWasCalled = true
+            return if (shouldSucceed) {
+                Result.Success(Unit)
+            } else {
+                Result.Error(errorToReturn)
+            }
+        }
+
+        override suspend fun getLastInsertTimeStamp(): Result<Instant?, WikiError> {
+            throw NotImplementedError()
+        }
+    }
+    //endregion
+}
