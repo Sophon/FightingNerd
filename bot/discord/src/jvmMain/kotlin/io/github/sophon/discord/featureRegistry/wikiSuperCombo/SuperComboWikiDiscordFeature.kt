@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
@@ -188,40 +189,7 @@ internal class SuperComboWikiDiscordFeature(
         optionalField(name = "JUGlim", value = move.sf6Properties?.jugLimit)
         optionalField(name = "JUG++", value = move.sf6Properties?.jugIncrease)
 
-        separator()
-
-        optionalField(
-            name = "DR (OH | OB)",
-            values = listOf(
-                move.sf6Properties?.DROH,
-                move.sf6Properties?.DROB,
-            )
-        )
-        optionalField(
-            name = "DRc (OH | OB)",
-            values = listOf(
-                move.sf6Properties?.DRcOH,
-                move.sf6Properties?.DRcOB,
-            )
-        )
-        optionalField(
-            name = "DR dmg (OH | OB)",
-            values = listOf(
-                move.sf6Properties?.driveDmgOnHit,
-                move.sf6Properties?.driveDmgOnBlock,
-            )
-        )
-        optionalField(name = "DR++", value = move.sf6Properties?.driveGain)
-
-        optionalField(
-            name = "SUP++ (OH | OB)",
-            values = listOf(
-                move.sf6Properties?.superGainOnHit,
-                move.sf6Properties?.superGainOnBlock
-            )
-        )
-
-        separator()
+        createDetails(move)
 
         optionalField(name = "Cancel", move.sf6Properties?.cancel)
         optionalField(name = "Range", move.sf6Properties?.attackRange)
@@ -236,6 +204,48 @@ internal class SuperComboWikiDiscordFeature(
             value = move.notes
                 .emojify()
                 .joinToString(separator = "") { note -> "* $note\n" }
+                .truncate(MAX_LENGTH_EMBED),
+            inline = false,
+        )
+    }
+
+    private fun EmbedBuilder.createDetails(move: Move) {
+        val properties = move.sf6Properties ?: return
+
+        if (
+            properties.run {
+                DROH == null && DROB == null
+                        && DRcOH == null && DRcOB == null
+                        && driveDmgOnHit == null && driveDmgOnBlock == null
+                        && driveGain == null
+                        && superGainOnHit == null && superGainOnBlock == null
+            }
+        ) return
+
+        mandatoryField(
+            name = "⭐️ DRIVE & SUPER",
+            value = buildString {
+                if (properties.DROH != null || properties.DROB != null) {
+                    appendLine("* **DR (OH | OB)**: ${properties.DROH.orDash()} | ${properties.DROB.orDash()}")
+                }
+
+                if (properties.DRcOH != null || properties.DRcOB != null) {
+                    appendLine("* **DRc (OH | OB)**: ${properties.DRcOH.orDash()} | ${properties.DRcOB.orDash()}")
+                }
+
+                if (properties.driveDmgOnHit != null || properties.driveDmgOnBlock != null) {
+                    appendLine("* **Drive damage (OH | OB)**: ${properties.driveDmgOnHit.orDash()} | ${properties.driveDmgOnBlock.orDash()}")
+                }
+
+                if (properties.driveGain != null) {
+                    appendLine("* **Drive gain**: ${properties.driveGain}")
+                }
+
+                if (properties.superGainOnHit != null || properties.superGainOnBlock != null) {
+                    append("* **SUP gain (OH | OB)**: ${properties.superGainOnHit.orDash()} | ${properties.superGainOnBlock.orDash()}")
+                }
+            }
+                .trim()
                 .truncate(MAX_LENGTH_EMBED),
             inline = false,
         )
