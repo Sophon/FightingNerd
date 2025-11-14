@@ -49,7 +49,7 @@ subprojects {
 }
 
 // Aggregated test report task
-tasks.register<TestReport>("testReport") {
+tasks.register<TestReport>("unitTests") {
     destinationDirectory.set(file("${layout.buildDirectory.get().asFile}/reports/allTests"))
 
     testResults.from(subprojects.mapNotNull { subproject ->
@@ -64,5 +64,82 @@ tasks.register<TestReport>("testReport") {
         println("📊 Aggregated Test Report:")
         println("file://${reportPath.absolutePath}")
         println("========================================\n")
+    }
+}
+
+// Verify all use cases have corresponding tests
+tasks.register("testCoverage") {
+    group = "verification"
+    description = "Verifies that all use case files have corresponding unit tests"
+
+    doLast {
+        // Automatically discover all feat modules
+        val featDir = file("feat")
+        val featModules = featDir.listFiles()
+            ?.filter { it.isDirectory && !it.name.startsWith(".") }
+            ?.map { it.name }
+            ?: emptyList()
+
+        if (featModules.isEmpty()) {
+            println("⚠️  No feature modules found in feat/ directory")
+            return@doLast
+        }
+
+        println("🔍 Scanning modules: ${featModules.joinToString(", ")}\n")
+
+        val missingTests = mutableListOf<String>()
+        var totalUseCases = 0
+        var testedUseCases = 0
+
+        featModules.forEach { module ->
+            val useCaseDir = file("feat/$module/src/commonMain/kotlin")
+
+            if (!useCaseDir.exists()) {
+                println("⚠️  Warning: Module $module commonMain directory not found")
+                return@forEach
+            }
+
+            // Find all files in usecase directories
+            useCaseDir.walk()
+                .filter { it.isFile && it.path.contains("/usecase/") && it.extension == "kt" }
+                .forEach { useCaseFile ->
+                    totalUseCases++
+                    val useCaseName = useCaseFile.nameWithoutExtension
+
+                    // Expected test file name
+                    val testFileName = useCaseName + "Test.kt"
+
+                    // Get the package path after kotlin/ (fixed here!)
+                    val relativePath = useCaseFile.relativeTo(useCaseDir)
+                    val testPath = file("feat/$module/src/commonTest/kotlin/${relativePath.parent}/$testFileName")
+
+                    if (!testPath.exists()) {
+                        missingTests.add("$module: $useCaseName -> Missing")
+                    } else {
+                        testedUseCases++
+                        println("✓ ${module}: $useCaseName")
+                    }
+                }
+        }
+
+        val coverage = if (totalUseCases > 0) {
+            (testedUseCases.toDouble() / totalUseCases * 100).toInt()
+        } else 0
+
+        println("\n========================================")
+        println("📊 Use Case Test Coverage:")
+        println("  Total Use Cases: $totalUseCases")
+        println("  Tested: $testedUseCases")
+        println("  Missing: ${missingTests.size}")
+        println("  Coverage: $coverage%")
+        println("========================================\n")
+
+        if (missingTests.isNotEmpty()) {
+            println("❌ Missing tests for ${missingTests.size} use case(s):")
+            missingTests.forEach { println("  - $it") }
+            throw GradleException("Use case test verification failed! ${missingTests.size} use case(s) are missing tests.")
+        } else {
+            println("✅ All use cases have corresponding tests!")
+        }
     }
 }

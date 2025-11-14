@@ -1,4 +1,4 @@
-name: Unit tests
+name: Test Coverage
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
     branches: [ dev ]
 
 jobs:
-  unit_tests:
+  coverage:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,12 +23,8 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Verify use case tests exist
+        run: ./gradlew verifyUseCaseTests
+
       - name: Run tests
         run: ./gradlew jvmTest
-
-      - name: Upload test results
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-results
-          path: '**/build/test-results/**/*.xml'
