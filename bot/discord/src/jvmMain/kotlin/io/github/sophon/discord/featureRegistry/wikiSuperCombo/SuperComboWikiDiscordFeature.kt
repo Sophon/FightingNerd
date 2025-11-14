@@ -177,9 +177,9 @@ internal class SuperComboWikiDiscordFeature(
         mandatoryField(name = "SU", value = move.startup)
         mandatoryField(name = "OH", value = move.onHit)
         mandatoryField(name = "OB", value = move.onBlock)
+        mandatoryField(name = "Act", value = move.sf6Properties?.active)
         mandatoryField(name = "LVL", value = move.sf6Properties?.guard)
-        mandatoryField(name = "ACT", value = move.sf6Properties?.active)
-        mandatoryField(name = "REC", value = move.recovery)
+        mandatoryField(name = "Rec", value = move.recovery)
 
         optionalField(name = "DMG", value = move.damage)
         optionalField(name = "Invul", value = move.sf6Properties?.invulnerability)

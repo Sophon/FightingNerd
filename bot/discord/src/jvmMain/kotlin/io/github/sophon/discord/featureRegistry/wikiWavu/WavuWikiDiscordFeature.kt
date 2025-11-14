@@ -192,7 +192,7 @@ internal class WavuWikiDiscordFeature(
         mandatoryField(name = "LVL", value = move.t8Properties?.level)
 
 
-        optionalField(name = "Recovery", value = move.recovery)
+        optionalField(name = "Rec", value = move.recovery)
         optionalField(name = "DMG", value = move.damage)
 
         createNotes(move)
