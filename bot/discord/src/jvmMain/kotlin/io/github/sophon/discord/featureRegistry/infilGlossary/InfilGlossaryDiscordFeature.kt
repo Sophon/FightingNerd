@@ -1,6 +1,6 @@
 package io.github.sophon.discord.featureRegistry.infilGlossary
 
-import MAX_LENGTH_EMBED
+import io.github.sophon.discord.MAX_LENGTH_EMBED
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result

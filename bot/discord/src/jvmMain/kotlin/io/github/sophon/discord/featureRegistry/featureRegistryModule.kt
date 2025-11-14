@@ -1,6 +1,7 @@
 package io.github.sophon.discord.featureRegistry
 
 import io.github.sophon.discord.config.ConfigLoader
+import io.github.sophon.discord.featureRegistry.core.CoreDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
@@ -45,8 +46,14 @@ internal val featureRegistryModule = module {
     //endregion
 
     //region FEATURES SETUP
-    single { FeatureRegistry(getAll()) }
+    single {
+        FeatureRegistry(
+            features = getAll(),
+            coreFeature = get<CoreDiscordFeature>(),
+        )
+    }
 
+    singleOf(::CoreDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::InfilGlossaryDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::WavuWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::SuperComboWikiDiscordFeature).bind<DiscordRegisteredFeature>()

@@ -1,6 +1,5 @@
 package io.github.sophon.discord
 
-import TEST_SERVER_ID
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.createMessage

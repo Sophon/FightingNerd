@@ -19,4 +19,11 @@ enum class Command {
     //supercombo wiki
     FDSF6,
     CHARSF6,
+
+    //core
+    TIP, DONATE,
+    REPO,
+    INVITE,
+    BAN,
+    UNBAN,
 }

@@ -15,6 +15,10 @@ A set of tools for the Fighting Game Community:
   - 🍏 iOS
   - 💬 Discord
 
+I don't drink coffee but feel free to support the server costs!
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V01OEMXE)
+
 
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules)
 - [Discord bot](./bot/discord/src/jvmMain/kotlin/io/github/sophon/discord/DiscordBot.kt)
