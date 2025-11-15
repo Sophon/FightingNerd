@@ -62,13 +62,15 @@ fun MoveItem(
         Spacer(Modifier.height(4.dp))
 
         Fields(fieldList = move.optionalFields, isMandatory = false)
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(8.dp))
 
         if (move.details.isNotEmpty()) {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(.3f))
             Details(
                 title = "Details",
                 items = move.details,
             )
+            Spacer(Modifier.height(4.dp))
         }
 
         if (move.notes.isNotEmpty()) {
@@ -81,7 +83,7 @@ fun MoveItem(
                 items = move.notes,
             )
         }
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(8.dp))
     }
 }
 
