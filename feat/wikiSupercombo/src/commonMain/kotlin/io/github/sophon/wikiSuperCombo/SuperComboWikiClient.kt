@@ -15,6 +15,7 @@ import io.github.sophon.wikiSuperCombo.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
+import io.github.sophon.wikiSuperCombo.usecase.FetchFastestNormalsUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
 import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
@@ -31,6 +32,7 @@ interface SuperComboWikiClient {
     suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
     suspend fun fetchMove(charName: String, moveQuery: String): Result<Move, WikiError>
     suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError>
+    suspend fun getFastestNormals(charName: String): Result<List<Move>, WikiError>
 
     suspend fun clearCache(): EmptyResult<WikiError>
 }
@@ -45,6 +47,7 @@ internal class SuperComboWikiClientImpl(
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
+    private val fetchFastestNormalsUseCase: FetchFastestNormalsUseCase,
 
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val fetchMoveUseCase: FetchMoveUseCase,
@@ -113,6 +116,11 @@ internal class SuperComboWikiClientImpl(
 
     override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
         return getLastCacheInsertInstantUseCase.invoke()
+            .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
+
+    override suspend fun getFastestNormals(charName: String): Result<List<Move>, WikiError> {
+        return fetchFastestNormalsUseCase.invoke(charName)
             .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
