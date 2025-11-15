@@ -19,30 +19,11 @@ internal class SearchCharacterDataUseCase(
         return wiki.getCharacter(charName)
             .mapError { it.toDomainError() }
             .flatMap { character ->
-                getFastestNormals(character.queryName)
+                wiki.getFastestNormals(character.queryName)
+                    .mapError { it.toDomainError() }
                     .map { moveList ->
                         character to moveList
                     }
-            }
-    }
-
-    private suspend fun getFastestNormals(
-        charName: String
-    ): Result<List<Move>, BotError> {
-        return wiki.fetchMoveListFor(charName)
-            .mapError { it.toDomainError() }
-            .map { moveList ->
-                val normals = moveList
-                    .filter { move ->
-                        val input = move.input.lowercase()
-                        input.length == 3 && input.first() in setOf('5', '2')
-                    }
-
-                normals
-                    .groupBy { it.startup?.toIntOrNull() }
-                    .minByOrNull { it.key ?: Int.MAX_VALUE }
-                    ?.value
-                    ?: emptyList()
             }
     }
 }
