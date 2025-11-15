@@ -143,8 +143,7 @@ internal class SuperComboWikiDiscordFeature(
                 value = listOf(
                     "* **Fastest normal ($startup)**: $moves",
                     "* ❤️ **HP**: ${properties.hp}",
-                    "* 🤝 **Throw range**: ${properties.throwRange}",
-                    "* 🤝 **Throw hurtbox**: ${properties.throwHurtbox}",
+                    "* 🤝 **Throw range | hurtbox**: ${properties.throwRange} | ${properties.throwHurtbox}",
                 ).joinToString("\n"),
                 inline = false
             )
@@ -152,8 +151,8 @@ internal class SuperComboWikiDiscordFeature(
             mandatoryField(
                 name = "DRIVE",
                 value = buildString {
-                    appendLine("* **DR distance block**: ${properties.dRushBlock}")
                     appendLine("* **DR distance min**: ${properties.dRushMin}")
+                    appendLine("* **DR distance block**: ${properties.dRushBlock}")
                     appendLine("* **DR distance max**: ${properties.dRushMax}")
                 },
                 inline = false,
