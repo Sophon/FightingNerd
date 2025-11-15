@@ -1,7 +1,6 @@
 package io.github.sophon.cornerman.screens.moveList.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -12,9 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.twotone.ExpandLess
-import androidx.compose.material.icons.twotone.ExpandMore
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -66,18 +62,28 @@ fun MoveItem(
         Spacer(Modifier.height(4.dp))
 
         Fields(fieldList = move.optionalFields, isMandatory = false)
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(8.dp))
+
+        if (move.details.isNotEmpty()) {
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(.3f))
+            Details(
+                title = "Details",
+                items = move.details,
+            )
+            Spacer(Modifier.height(4.dp))
+        }
 
         if (move.notes.isNotEmpty()) {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(.3f))
             Spacer(Modifier.height(4.dp))
-            Notes(
+            Details(
+                title = "📝 Notes",
                 isExpanded = isNotesExpanded,
                 onExpandClick = onNotesExpandClick,
-                notes = move.notes,
+                items = move.notes,
             )
         }
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(8.dp))
     }
 }
 
@@ -134,57 +140,6 @@ private fun Fields(
                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
                     )
                 }
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun Notes(
-    isExpanded: Boolean,
-    notes: List<String>,
-    onExpandClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onClick = onExpandClick)
-                .padding(vertical = 8.dp)
-        ) {
-            Text(
-                text = "NOTES",
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold),
-            )
-
-            Icon(
-                imageVector = if (isExpanded) {
-                    Icons.TwoTone.ExpandLess
-                } else {
-                    Icons.TwoTone.ExpandMore
-                },
-                tint = MaterialTheme.colorScheme.onSurface,
-                contentDescription = null,
-                modifier = Modifier.size(24.dp)
-            )
-        }
-        Spacer(Modifier.height(2.dp))
-
-        if (isExpanded) {
-            notes.forEach { note ->
-                Text(
-                    text = "• $note",
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Spacer(Modifier.height(1.dp))
             }
         }
     }

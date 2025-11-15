@@ -52,11 +52,6 @@ kotlin {
             implementation(libs.junit)
             implementation(libs.kotlin.testJunit)
         }
-
-        androidUnitTest.dependencies {
-            implementation(libs.junit)
-            implementation(libs.kotlin.testJunit)
-        }
     }
 }
 

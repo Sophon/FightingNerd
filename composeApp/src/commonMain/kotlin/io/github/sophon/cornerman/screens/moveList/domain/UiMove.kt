@@ -20,6 +20,7 @@ data class UiMove(
     val mandatoryFields: List<Field>,
     val optionalFields: List<Field>,
     val isStance: Boolean = false,
+    val details: List<String> = listOf(),
     val notes: List<String> = listOf(),
     val properties: Set<Property> = setOf(),
 ) {

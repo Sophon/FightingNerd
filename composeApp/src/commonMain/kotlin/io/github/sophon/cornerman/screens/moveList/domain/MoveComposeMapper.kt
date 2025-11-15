@@ -95,42 +95,11 @@ private fun Move.toUi(): UiMove {
             add(UiMove.Field("Whiff", recovery))
             add(UiMove.Field("Invul", sf6Properties?.invulnerability))
 
-            add(UiMove.Field("JUGst", sf6Properties?.jugStart))
-            add(UiMove.Field("JUGlim", sf6Properties?.jugLimit))
-            add(UiMove.Field("JUG++", sf6Properties?.jugIncrease))
-
-            //TODO: should prob create a DRIVE field
-            if (sf6Properties?.DROH != null && sf6Properties?.DROB != null) {
-                add(UiMove.Field(
-                    "DR (OH | OB)",
-                    "${sf6Properties?.DROH.orDash()} | ${sf6Properties?.DROB.orDash()}")
-                )
-            }
-            if (sf6Properties?.DRcOH != null && sf6Properties?.DRcOB != null) {
-                add(UiMove.Field(
-                    "DRc (OH | OB)",
-                    "${sf6Properties?.DRcOH.orDash()} | ${sf6Properties?.DRcOB.orDash()}")
-                )
-            }
-            if (sf6Properties?.driveDmgOnHit != null && sf6Properties?.driveDmgOnBlock != null) {
-                add(UiMove.Field(
-                    "DR dmg (OH | OB)",
-                    "${sf6Properties?.driveDmgOnHit.orDash()} | ${sf6Properties?.driveDmgOnBlock.orDash()}")
-                )
-            }
-            add(UiMove.Field("DR++", sf6Properties?.driveGain))
-
-            if (sf6Properties?.superGainOnHit != null && sf6Properties?.superGainOnBlock != null) {
-                add(UiMove.Field(
-                    "SUP++ (OH | OB)",
-                    "${sf6Properties?.superGainOnHit.orDash()} | ${sf6Properties?.superGainOnBlock.orDash()}")
-                )
-            }
-
             add(UiMove.Field("Cancel", sf6Properties?.cancel))
             add(UiMove.Field("Range", sf6Properties?.attackRange))
             add(UiMove.Field("Proj spd", sf6Properties?.projectileSpeed))
         },
+        details = getDetails(),
         notes = notes,
         properties = getProperties(),
     )
@@ -164,4 +133,32 @@ private fun Move.type(): String? {
         ?.joinToString(" ") {
             it.replaceFirstChar(Char::uppercase)
         }
+}
+
+private fun Move.getDetails(): List<String> = buildList {
+    sf6Properties?.let { properties ->
+        if (properties.DROH != null || properties.DROB != null) {
+            add("DR (OH | OB): ${properties.DROH.orDash()} | ${properties.DROB.orDash()}")
+        }
+
+        if (properties.DRcOH != null || properties.DRcOB != null) {
+            add("DRc (OH | OB): ${properties.DRcOH.orDash()} | ${properties.DRcOB.orDash()}")
+        }
+
+        if (properties.driveDmgOnHit != null || properties.driveDmgOnBlock != null) {
+            add("Drive damage (OH | OB): ${properties.driveDmgOnHit.orDash()} | ${properties.driveDmgOnBlock.orDash()}")
+        }
+
+        if (properties.driveGain != null) {
+            add("Drive gain: ${properties.driveGain}")
+        }
+
+        if (properties.superGainOnHit != null || properties.superGainOnBlock != null) {
+            add("SUP gain (OH | OB): ${properties.superGainOnHit.orDash()} | ${properties.superGainOnBlock.orDash()}")
+        }
+
+        add("JUG start: ${properties.jugStart.orDash()}")
+        add("JUG limit: ${properties.jugLimit.orDash()}")
+        add("JUG increase: ${properties.jugIncrease.orDash()}")
+    }
 }
