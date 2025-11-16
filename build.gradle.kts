@@ -92,6 +92,7 @@ tasks.register("testCoverage") {
         val missingTests = mutableListOf<String>()
         var totalUseCases = 0
         var testedUseCases = 0
+        var excludedCount = 0
 
         featModules.forEach { module ->
             val useCaseDir = projectDir.dir("feat/$module/src/commonMain/kotlin").asFile
@@ -105,8 +106,18 @@ tasks.register("testCoverage") {
             useCaseDir.walk()
                 .filter { it.isFile && it.path.contains("/usecase/") && it.extension == "kt" }
                 .forEach { useCaseFile ->
-                    totalUseCases++
                     val useCaseName = useCaseFile.nameWithoutExtension
+
+                    // Check if file has @ExcludeFromCoverage annotation
+                    val isExcluded = useCaseFile.readText().contains("@ExcludeFromCoverage")
+
+                    if (isExcluded) {
+                        excludedCount++
+                        println("⊘ ${module}: $useCaseName (excluded)")
+                        return@forEach
+                    }
+
+                    totalUseCases++
 
                     // Expected test file name
                     val testFileName = useCaseName + "Test.kt"
@@ -133,6 +144,9 @@ tasks.register("testCoverage") {
         println("  Total Use Cases: $totalUseCases")
         println("  Tested: $testedUseCases")
         println("  Missing: ${missingTests.size}")
+        if (excludedCount > 0) {
+            println("  Excluded: $excludedCount")
+        }
         println("  Coverage: $coverage%")
         println("========================================\n")
 

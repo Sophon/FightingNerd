@@ -3,11 +3,11 @@ package io.github.sophon.discord.featureRegistry.infilGlossary.usecase
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.BotError
-import io.github.sophon.glossaryinfil.InfilGlossary
+import io.github.sophon.glossaryinfil.InfilGlossaryClient
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
 
 internal class SearchGlossaryUseCase(
-    private val glossary: InfilGlossary,
+    private val glossary: InfilGlossaryClient,
     private val startGlossaryUseCase: StartGlossaryUseCase,
 ) {
     suspend fun invoke(query: String): Result<GlossaryItem, BotError> {

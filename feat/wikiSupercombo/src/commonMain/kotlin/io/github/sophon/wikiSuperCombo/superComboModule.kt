@@ -12,6 +12,7 @@ import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchFastestNormalsUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
+import io.github.sophon.wikiSuperCombo.usecase.GetFeatureInfoUseCase
 import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.Qualifier
@@ -35,4 +36,5 @@ fun superComboModule(dbQualifier: Qualifier? = null) = module {
     factory { FetchMoveUseCase(get(dbQualifier)) }
     factory { FetchMoveListUseCase(get(dbQualifier)) }
     factory { FetchFastestNormalsUseCase(get(dbQualifier)) }
+    singleOf(::GetFeatureInfoUseCase)
 }

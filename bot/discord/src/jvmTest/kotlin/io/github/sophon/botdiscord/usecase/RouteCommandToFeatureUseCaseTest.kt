@@ -19,7 +19,8 @@ class RouteCommandToFeatureUseCaseTest {
     private class FakeWavuFeature : DiscordRegisteredFeature {
         override val featureInfo = FeatureInfo(
             name = "Wavu",
-            url = ""
+            url = "",
+            version = "1.0.0"
         )
         override val defaultCommand = SupportedCommand(
             Command.FD,
@@ -82,6 +83,7 @@ class RouteCommandToFeatureUseCaseTest {
         override val featureInfo = FeatureInfo(
             name = "Infil",
             url = "",
+            version = "1.0.0"
         )
         override val defaultCommand = SupportedCommand(
             Command.GL,
@@ -120,6 +122,7 @@ class RouteCommandToFeatureUseCaseTest {
         override val featureInfo = FeatureInfo(
             name = "SuperCombo",
             url = "",
+            version = "1.0.0"
         )
         override val defaultCommand = SupportedCommand(
             Command.FD,
@@ -173,7 +176,11 @@ class RouteCommandToFeatureUseCaseTest {
     }
 
     private class FakeCoreFeature : DiscordRegisteredFeature {
-        override val featureInfo = FeatureInfo(name = "NoDefault", url = "")
+        override val featureInfo = FeatureInfo(
+            name = "NoDefault",
+            url = "",
+            version = "1.0.0"
+        )
         override val defaultCommand = null
         override val otherCommands = listOf(
             SupportedCommand(Command.HEAT, description = "", arguments = emptyList())

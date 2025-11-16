@@ -1,6 +1,5 @@
 package io.github.sophon.discord.featureRegistry.wikiWavu
 
-import io.github.sophon.discord.MAX_LENGTH_EMBED
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
@@ -8,16 +7,17 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
-import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHeatMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHomingMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetPowerCrushMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetWavuFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchFrameDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SyncDataUseCase
 import io.github.sophon.discord.util.mandatoryField
@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.hours
 
 internal class WavuWikiDiscordFeature(
+    getWavuFeatureInfoUseCase: GetWavuFeatureInfoUseCase,
     private val syncDataUseCase: SyncDataUseCase,
     private val searchFrameDataUseCase: SearchFrameDataUseCase,
     private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
@@ -39,11 +40,7 @@ internal class WavuWikiDiscordFeature(
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature {
-    override val featureInfo = FeatureInfo(
-        name = "Wavu Wiki",
-        url = "https://wavu.wiki/",
-        iconUrl = "https://i.imgur.com/0cnTzNk.png",
-    )
+    override val featureInfo = getWavuFeatureInfoUseCase.invoke()
     override val defaultCommand = SupportedCommand(
         command = Command.FD,
         description = "Global frame data",
@@ -106,6 +103,8 @@ internal class WavuWikiDiscordFeature(
     )
 
     override suspend fun start() {
+        Napier.d(tag = TAG) { "Starting: $featureInfo" }
+
         scheduler.start(
             period = 1.hours,
             task = ::syncData,
@@ -260,8 +259,8 @@ internal class WavuWikiDiscordFeature(
     }
 
 
-    private companion object Companion {
-        private const val TAG = "FrameDataFeature"
+    private companion object {
+        private const val TAG = "WavuWikiDiscordFeature"
         private const val KEY_CHAR_NAME = "character"
         private const val KEY_MOVE = "move"
         private const val GREEN = 0x00FF00

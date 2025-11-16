@@ -7,7 +7,6 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
-import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Character
@@ -18,6 +17,7 @@ import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.GetMoveUseCase
+import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.GetSuperComboFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SearchCharacterDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SyncSuperComboDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
@@ -29,12 +29,14 @@ import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.hours
 
 internal class SuperComboWikiDiscordFeature(
+    getSuperComboFeatureInfoUseCase: GetSuperComboFeatureInfoUseCase,
     private val syncDataUseCase: SyncSuperComboDataUseCase,
     private val searchCharacterDataUseCase: SearchCharacterDataUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature {
+    override val featureInfo = getSuperComboFeatureInfoUseCase.invoke()
     override val defaultCommand = SupportedCommand(
         command = Command.FD,
         description = "Global frame data",
@@ -48,11 +50,6 @@ internal class SuperComboWikiDiscordFeature(
                 description = "Move input"
             )
         )
-    )
-    override val featureInfo = FeatureInfo(
-        name = "SuperCombo Wiki",
-        url = "https://wiki.supercombo.gg/",
-        iconUrl = "https://i.imgur.com/aW5ys7q.png",
     )
     override val otherCommands = listOf(
         SupportedCommand(
@@ -82,6 +79,8 @@ internal class SuperComboWikiDiscordFeature(
     )
 
     override suspend fun start() {
+        Napier.d(tag = TAG) { "Starting: $featureInfo" }
+
         scheduler.start(
             period = 1.hours,
             task = ::syncData,
@@ -205,6 +204,11 @@ internal class SuperComboWikiDiscordFeature(
         optionalField(name = "Proj spd", move.sf6Properties?.projectileSpeed)
 
         createNotes(move)
+
+        footer {
+            text = featureInfo.name
+            icon = featureInfo.iconUrl
+        }
     }
 
     private fun EmbedBuilder.createNotes(move: Move) {
@@ -277,8 +281,9 @@ internal class SuperComboWikiDiscordFeature(
         }
     }
 
+
     private companion object {
-        const val TAG = "SuperComboFeature"
+        const val TAG = "SuperComboWikiDiscordFeature"
         const val KEY_CHAR_NAME = "character"
         const val KEY_MOVE = "move"
         const val ORANGE = 0x00FF6A01

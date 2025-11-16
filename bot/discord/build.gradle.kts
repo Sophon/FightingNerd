@@ -1,6 +1,9 @@
+import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.buildkonfig)
 }
 
 kotlin {
@@ -41,4 +44,13 @@ kotlin {
 // Use matching instead of named
 tasks.matching { it.name == "jvmRun" }.configureEach {
     (this as JavaExec).workingDir = rootProject.projectDir
+}
+
+val featureVersion = "1.0.0"
+buildkonfig {
+    packageName = "io.github.sophon.discord"
+
+    defaultConfigs {
+        buildConfigField(STRING, "VERSION", featureVersion)
+    }
 }

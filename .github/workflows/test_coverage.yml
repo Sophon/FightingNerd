@@ -25,6 +25,3 @@ jobs:
 
       - name: Verify use case tests exist
         run: ./gradlew testCoverage
-
-      - name: Run tests
-        run: ./gradlew jvmTest

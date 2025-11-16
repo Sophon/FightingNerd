@@ -7,14 +7,13 @@ import io.github.sophon.fightingnerd.Destination
 import io.github.sophon.fightingnerd.QUALIFIER_SC
 import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.ui.SuperComboHomeScreenView
+import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.usecase.GetSuperComboFeatureUseCase
 import kotlinx.coroutines.flow.Flow
 
-class SupercomboWikiComposeFeature: ComposeRegisteredFeature {
-    override val featureInfo = FeatureInfo(
-        name = "SuperCombo Wiki",
-        url = "https://wiki.supercombo.gg/w/Main_Page",
-        iconUrl = "https://i.imgur.com/aW5ys7q.png",
-    )
+internal class SupercomboWikiComposeFeature(
+    getSuperComboFeatureUseCase: GetSuperComboFeatureUseCase,
+): ComposeRegisteredFeature {
+    override val featureInfo: FeatureInfo = getSuperComboFeatureUseCase.invoke()
 
     @Composable
     override fun HomeScreenContent(

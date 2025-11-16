@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.featureRegistry.wavuWiki
 import io.github.sophon.fightingnerd.QUALIFIER_WAVU
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.ui.WavuHomeScreenVM
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.usecase.FetchCharacterListUseCase
+import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.usecase.GetWavuFeatureUseCase
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.usecase.SyncDataIfOldUseCase
 import io.github.sophon.fightingnerd.screens.moveList.domain.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.WavuWikiClient
@@ -16,6 +17,7 @@ import org.koin.dsl.module
 internal val wavuWikiFeatureModule = module {
     viewModelOf(::WavuHomeScreenVM)
 
+    singleOf(::GetWavuFeatureUseCase)
     singleOf(::SyncDataIfOldUseCase)
     singleOf(::FetchCharacterListUseCase)
 
