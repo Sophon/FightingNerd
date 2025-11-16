@@ -23,7 +23,7 @@ class ToggleFeatureUseCaseTest {
     @Test
     fun `given feature when toggle to enabled then stores true in preferences`() = runTest {
         // Given
-        val featureInfo = FeatureInfo("TestFeature", "url", "icon")
+        val featureInfo = FeatureInfo("TestFeature", "url", "icon", version = "1.0.0")
         val mockStore = FakeDataStore()
         val useCase = ToggleFeatureUseCase(mockStore)
 
@@ -40,7 +40,7 @@ class ToggleFeatureUseCaseTest {
     @Test
     fun `given feature when toggle to disabled then stores false in preferences`() = runTest {
         // Given
-        val featureInfo = FeatureInfo("TestFeature", "url", "icon")
+        val featureInfo = FeatureInfo("TestFeature", "url", "icon", version = "1.0.0")
         val initialPreferences = mutablePreferencesOf(
             booleanPreferencesKey(KEY_PREFIX_FEATURE + featureInfo.name) to true
         )
@@ -60,7 +60,7 @@ class ToggleFeatureUseCaseTest {
     @Test
     fun `given existing preference when toggle then overwrites previous value`() = runTest {
         // Given
-        val featureInfo = FeatureInfo("TestFeature", "url", "icon")
+        val featureInfo = FeatureInfo("TestFeature", "url", "icon", version = "1.0.0")
         val initialPreferences = mutablePreferencesOf(
             booleanPreferencesKey(KEY_PREFIX_FEATURE + featureInfo.name) to false
         )
@@ -82,7 +82,7 @@ class ToggleFeatureUseCaseTest {
     @Test
     fun `given datastore throws IOException when toggle then returns IO_ERROR`() = runTest {
         // Given
-        val featureInfo = FeatureInfo("TestFeature", "url", "icon")
+        val featureInfo = FeatureInfo("TestFeature", "url", "icon", version = "1.0.0")
         val mockStore = FakeDataStore(shouldThrowIOException = true)
         val useCase = ToggleFeatureUseCase(mockStore)
 
@@ -98,7 +98,7 @@ class ToggleFeatureUseCaseTest {
     @Test
     fun `given datastore throws generic exception when toggle then returns UNKNOWN error`() = runTest {
         // Given
-        val featureInfo = FeatureInfo("TestFeature", "url", "icon")
+        val featureInfo = FeatureInfo("TestFeature", "url", "icon", version = "1.0.0")
         val mockStore = FakeDataStore(shouldThrowGenericException = true)
         val useCase = ToggleFeatureUseCase(mockStore)
 
