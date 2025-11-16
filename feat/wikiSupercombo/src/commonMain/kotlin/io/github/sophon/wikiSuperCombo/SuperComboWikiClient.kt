@@ -5,6 +5,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
@@ -18,10 +19,13 @@ import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchFastestNormalsUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
+import io.github.sophon.wikiSuperCombo.usecase.GetFeatureInfoUseCase
 import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
 interface SuperComboWikiClient {
+    fun getFeatureInfo(): FeatureInfo
+
     suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
     suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError>
     suspend fun getCharacter(charName: String): Result<Character, WikiError>
@@ -38,6 +42,8 @@ interface SuperComboWikiClient {
 }
 
 internal class SuperComboWikiClientImpl(
+    private val getFeatureInfoUseCase: GetFeatureInfoUseCase,
+
     private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
     private val fetchCharacterUseCase: FetchCharacterUseCase,
@@ -52,6 +58,10 @@ internal class SuperComboWikiClientImpl(
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val fetchMoveUseCase: FetchMoveUseCase,
 ): SuperComboWikiClient {
+    override fun getFeatureInfo(): FeatureInfo {
+        return getFeatureInfoUseCase.invoke()
+    }
+
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadCharacterListUseCase.invoke()
             .onSuccess { characterList ->
