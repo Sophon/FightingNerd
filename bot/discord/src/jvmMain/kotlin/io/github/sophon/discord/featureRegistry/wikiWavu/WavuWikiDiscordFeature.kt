@@ -103,6 +103,8 @@ internal class WavuWikiDiscordFeature(
     )
 
     override suspend fun start() {
+        Napier.d(tag = TAG) { "Starting: $featureInfo" }
+
         scheduler.start(
             period = 1.hours,
             task = ::syncData,
@@ -258,7 +260,7 @@ internal class WavuWikiDiscordFeature(
 
 
     private companion object {
-        private const val TAG = "FrameDataFeature"
+        private const val TAG = "WavuWikiDiscordFeature"
         private const val KEY_CHAR_NAME = "character"
         private const val KEY_MOVE = "move"
         private const val GREEN = 0x00FF00

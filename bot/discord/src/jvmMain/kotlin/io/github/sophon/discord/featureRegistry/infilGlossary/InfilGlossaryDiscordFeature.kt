@@ -2,6 +2,7 @@ package io.github.sophon.discord.featureRegistry.infilGlossary
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.util.truncate
@@ -40,6 +41,8 @@ internal class InfilGlossaryDiscordFeature(
     override val otherCommands = listOf<SupportedCommand>()
 
     override suspend fun start() {
+        Napier.d(tag = TAG) { "Starting: $featureInfo" }
+
         startGlossaryUseCase.invoke()
     }
 
@@ -96,7 +99,9 @@ internal class InfilGlossaryDiscordFeature(
         )
     }
 
+
     private companion object {
+        const val TAG = "InfilGlossaryDiscordFeature"
         const val KEY_TERM = "term"
         const val BROWN = 0xDAA06D
     }

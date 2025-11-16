@@ -79,6 +79,8 @@ internal class SuperComboWikiDiscordFeature(
     )
 
     override suspend fun start() {
+        Napier.d(tag = TAG) { "Starting: $featureInfo" }
+
         scheduler.start(
             period = 1.hours,
             task = ::syncData,
@@ -202,6 +204,11 @@ internal class SuperComboWikiDiscordFeature(
         optionalField(name = "Proj spd", move.sf6Properties?.projectileSpeed)
 
         createNotes(move)
+
+        footer {
+            text = featureInfo.name
+            icon = featureInfo.iconUrl
+        }
     }
 
     private fun EmbedBuilder.createNotes(move: Move) {
@@ -274,8 +281,9 @@ internal class SuperComboWikiDiscordFeature(
         }
     }
 
+
     private companion object {
-        const val TAG = "SuperComboFeature"
+        const val TAG = "SuperComboWikiDiscordFeature"
         const val KEY_CHAR_NAME = "character"
         const val KEY_MOVE = "move"
         const val ORANGE = 0x00FF6A01
