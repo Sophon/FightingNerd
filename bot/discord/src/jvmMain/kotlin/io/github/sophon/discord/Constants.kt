@@ -4,7 +4,7 @@ internal const val CONFIG_FILE_NAME = "config.json"
 internal const val TEST_SERVER_ID = "717398042562658344" //TODO: move to config file
 internal const val MAX_LENGTH_EMBED = 1_024
 
-internal const val URL_REPO = "https://github.com/Sophon/Cornerman"
+internal const val URL_REPO = "https://github.com/Sophon/FightingNerd"
 internal const val URL_IMG_GITHUB = "https://i.imgur.com/PdgcKV2.png"
 
 internal const val URL_KOFI = "https://ko-fi.com/sorryuken"
