@@ -2,11 +2,11 @@ package io.github.sophon.discord.featureRegistry.core
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.URL_IMG_DISCORD
-import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.URL_IMG_GITHUB
 import io.github.sophon.discord.URL_IMG_KOFI
 import io.github.sophon.discord.URL_INVITE
@@ -17,12 +17,10 @@ import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.util.mandatoryField
 
-internal class CoreDiscordFeature(): DiscordRegisteredFeature {
-    override val featureInfo = FeatureInfo(
-        name = "Core Discord",
-        url = URL_REPO,
-        iconUrl = URL_IMG_FIGHTING_NERD,
-    )
+internal class CoreDiscordFeature(
+    getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
+): DiscordRegisteredFeature {
+    override val featureInfo: FeatureInfo = getBotFeatureInfoUseCase.invoke()
     override val defaultCommand = null
     override val otherCommands = listOf(
         SupportedCommand(
@@ -47,7 +45,9 @@ internal class CoreDiscordFeature(): DiscordRegisteredFeature {
         )
     )
 
-    override suspend fun start() {/* not needed */ }
+    override suspend fun start() {
+        Napier.d(tag = TAG) { "FightingNerd: ${featureInfo.version}" }
+    }
 
     override suspend fun execute(
         command: Command,

@@ -2,6 +2,7 @@ package io.github.sophon.discord.featureRegistry
 
 import io.github.sophon.discord.config.ConfigLoader
 import io.github.sophon.discord.featureRegistry.core.CoreDiscordFeature
+import io.github.sophon.discord.featureRegistry.core.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
@@ -26,6 +27,10 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal val featureRegistryModule = module {
+    //region CORE
+    singleOf(::GetBotFeatureInfoUseCase)
+    //endregion
+
     //region Wavu Wiki
     singleOf(::GetWavuFeatureInfoUseCase)
     singleOf(::SyncDataUseCase)
