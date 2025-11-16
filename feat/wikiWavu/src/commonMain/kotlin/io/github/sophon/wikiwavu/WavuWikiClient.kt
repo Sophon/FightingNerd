@@ -5,6 +5,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
@@ -17,10 +18,13 @@ import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMovesWithPropertyUseCase
+import io.github.sophon.wikiwavu.usecase.GetFeatureInfoUseCase
 import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
 interface WavuWikiClient {
+    fun getFeatureInfo(): FeatureInfo
+
     suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
     suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError>
     suspend fun getCharacterList(): Result<List<Character>, WikiError>
@@ -39,6 +43,8 @@ interface WavuWikiClient {
 }
 
 internal class WavuWikiClientImpl(
+    private val getFeatureInfoUseCase: GetFeatureInfoUseCase,
+
     private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
@@ -52,6 +58,10 @@ internal class WavuWikiClientImpl(
 
     private val clearCacheUseCase: ClearCacheUseCase,
 ): WavuWikiClient {
+    override fun getFeatureInfo(): FeatureInfo {
+        return getFeatureInfoUseCase.invoke()
+    }
+
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadCharacterListUseCase.invoke()
             .onSuccess { Napier.d(tag = TAG) { "${it.size} characters loaded" } }

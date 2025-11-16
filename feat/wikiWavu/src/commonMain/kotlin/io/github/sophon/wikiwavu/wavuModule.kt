@@ -12,6 +12,7 @@ import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMovesWithPropertyUseCase
+import io.github.sophon.wikiwavu.usecase.GetFeatureInfoUseCase
 import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.Qualifier
@@ -32,6 +33,7 @@ fun wavuModule(dbQualifier: Qualifier? = null) = module {
     factory { FetchMoveDataUseCase(get(dbQualifier)) }
     factory { FetchMovesWithPropertyUseCase(get(dbQualifier)) }
     factory { FetchMoveListUseCase(get(dbQualifier)) }
+    singleOf(::GetFeatureInfoUseCase)
 
     singleOf(::WavuUrlProvider)
 }
