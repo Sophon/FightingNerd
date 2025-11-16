@@ -1,4 +1,4 @@
-<img width="2560" height="1280" alt="banner" src="https://github.com/user-attachments/assets/049c3a43-9ec0-4706-8f29-9d350227dae6" />
+<img width="2560" height="1280" alt="banner" src="https://github.com/user-attachments/assets/3522ec27-e456-4f32-966d-c611e51cf957" />
 
 
 # FightingNerd
