@@ -7,14 +7,13 @@ import io.github.sophon.fightingnerd.Destination
 import io.github.sophon.fightingnerd.QUALIFIER_WAVU
 import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.ui.WavuHomeScreenView
+import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.usecase.GetWavuFeatureUseCase
 import kotlinx.coroutines.flow.Flow
 
-class WavuWikiComposeFeature: ComposeRegisteredFeature {
-    override val featureInfo = FeatureInfo(
-        name = "Wavu Wiki",
-        url = "https://wavu.wiki/t/Main_Page",
-        iconUrl = "https://i.imgur.com/0cnTzNk.png",
-    )
+internal class WavuWikiComposeFeature(
+    getWavuFeatureUseCase: GetWavuFeatureUseCase,
+): ComposeRegisteredFeature {
+    override val featureInfo: FeatureInfo = getWavuFeatureUseCase.invoke()
 
     @Composable
     override fun HomeScreenContent(

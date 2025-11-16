@@ -20,6 +20,7 @@ internal data class SettingsViewState(
                     featureInfo = FeatureInfo(
                         name = "Wavu Wiki",
                         url = "",
+                        version = "1.0.0",
                     ),
                     isEnabled = false,
                 ),
@@ -27,6 +28,7 @@ internal data class SettingsViewState(
                     featureInfo = FeatureInfo(
                         name = "Glossary Infil",
                         url = "",
+                        version = "1.5.0",
                     ),
                     isEnabled = false,
                 ),
@@ -34,6 +36,7 @@ internal data class SettingsViewState(
                     featureInfo = FeatureInfo(
                         name = "SuperCombo",
                         url = "",
+                        version = "1.0.9",
                     ),
                     isEnabled = true,
                 ),
@@ -41,6 +44,7 @@ internal data class SettingsViewState(
                     featureInfo = FeatureInfo(
                         name = "Dustloop",
                         url = "",
+                        version = "2.1.0",
                     ),
                     isEnabled = true,
                 ),
