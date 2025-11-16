@@ -1,6 +1,6 @@
 TEAM_ID=
 
-PRODUCT_NAME=FightingNerd
+PRODUCT_NAME=Fighting Nerd
 PRODUCT_BUNDLE_IDENTIFIER=io.github.sophon.fightingnerd
 
 CURRENT_PROJECT_VERSION=1
