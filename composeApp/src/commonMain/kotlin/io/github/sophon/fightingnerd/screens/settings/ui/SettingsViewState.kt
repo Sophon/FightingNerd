@@ -1,9 +1,12 @@
 package io.github.sophon.fightingnerd.screens.settings.ui
 
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.fightingnerd.BuildKonfig
 
 internal data class SettingsViewState(
     val featureList: List<FeatureSetting> = listOf(),
+
+    val appVersion: String = BuildKonfig.VERSION,
 
     val isLoading: Boolean = false,
     val isError: String? = null,
