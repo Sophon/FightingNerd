@@ -171,13 +171,33 @@ class RouteCommandToFeatureUseCaseTest {
             }
         }
     }
+
+    private class FakeCoreFeature : DiscordRegisteredFeature {
+        override val featureInfo = FeatureInfo(name = "NoDefault", url = "")
+        override val defaultCommand = null
+        override val otherCommands = listOf(
+            SupportedCommand(Command.HEAT, description = "", arguments = emptyList())
+        )
+        override suspend fun start() {}
+        override suspend fun execute(
+            command: Command,
+            query: String,
+        ): Result<EmbedBuilder.() -> Unit, BotError> {
+            return if (command == Command.HEAT && query.isNotBlank()) {
+                Result.Success { title = "NoDefault HEAT: $query" }
+            } else {
+                Result.Error(BotError.INVALID_QUERY)
+            }
+        }
+    }
     //endregion
 
     //region Setup
     private val wavuFeature = FakeWavuFeature()
     private val infilFeature = FakeInfilFeature()
     private val superComboFeature = FakeSuperComboFeature()
-    private val featureList = listOf(wavuFeature, infilFeature, superComboFeature)
+    private val coreFeature = FakeCoreFeature()
+    private val featureList = listOf(wavuFeature, coreFeature, infilFeature, superComboFeature)
     private val useCase = RouteCommandToFeatureUseCase(featureList)
     //endregion
 
@@ -240,6 +260,16 @@ class RouteCommandToFeatureUseCaseTest {
     fun `invoke with CHARSF6 explicit command and valid SF character returns success`() = runTest {
         // given
         val message = "@bot charsf6 ken"
+        // when
+        val result = useCase.invoke(message)
+        // then
+        assertThat(result).isInstanceOf(Result.Success::class)
+    }
+
+    @Test
+    fun `invoke with explicit command on feature without default command returns success`() = runTest {
+        // given - Feature has no default command but has HEAT as explicit command
+        val message = "@bot heat jin"
         // when
         val result = useCase.invoke(message)
         // then
@@ -323,6 +353,17 @@ class RouteCommandToFeatureUseCaseTest {
         assertThat(result).isInstanceOf(Result.Error::class)
         assertThat((result as Result.Error).error).isEqualTo(BotError.INVALID_QUERY)
     }
+
+    @Test
+    fun `invoke unknown command returns error`() = runTest {
+        // given - Move notation without character name
+        val message = "@bot 5lp"
+        // when
+        val result = useCase.invoke(message)
+        // then
+        assertThat(result).isInstanceOf(Result.Error::class)
+        assertThat((result as Result.Error).error).isEqualTo(BotError.INVALID_QUERY)
+    }
     //endregion
 
     //region Slash Command Flow
@@ -358,6 +399,17 @@ class RouteCommandToFeatureUseCaseTest {
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
         assertThat((result as Result.Error).error).isEqualTo(BotError.UNKNOWN_CHARACTER)
+    }
+
+    @Test
+    fun `slash command invoke with explicit command from feature without default returns success`() = runTest {
+        // given
+        val commandString = "heat"
+        val query = "jin"
+        // when
+        val result = useCase.invoke(commandString, query)
+        // then
+        assertThat(result).isInstanceOf(Result.Success::class)
     }
     //endregion
 
