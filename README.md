@@ -1,12 +1,12 @@
 <img width="2560" height="1280" alt="banner" src="https://github.com/user-attachments/assets/049c3a43-9ec0-4706-8f29-9d350227dae6" />
 
 
-# Cornerman
+# FightingNerd
 
 A set of tools for the Fighting Game Community:
 - 🧩 highly extensible
   - 📘 glossary
-  - 📚 [any community wiki](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules):
+  - 📚 [any community wiki](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules):
      - 📊 frame data
      - 📋 move categories
 - 🌐 multiplatform:
@@ -20,7 +20,7 @@ I don't drink coffee but feel free to support the server costs!
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V01OEMXE)
 
 
-### [CURRENT FEATURE MODULES](https://github.com/Sophon/Cornerman/wiki/Features#list-of-feature-modules)
+### [CURRENT FEATURE MODULES](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
 - [Discord bot](./bot/discord/src/jvmMain/kotlin/io/github/sophon/discord/DiscordBot.kt)
 - [fighting-game glossary](./feat/glossaryInfil/src/commonMain/kotlin/io/github/sophon/glossaryinfil/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
 - global frame data sourced from all feature modules
@@ -31,10 +31,10 @@ I don't drink coffee but feel free to support the server costs!
   - frame data
   - character data
 
-# [CHECK THE WIKI](https://github.com/Sophon/Cornerman/wiki)
+# [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
 
 
-### [TODO's](https://github.com/Sophon/Cornerman/wiki/Features#planned-feature-module-improvements)
+### [TODO's](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-module-improvements)
 - Docker, pipelines, updates
 - other feature modules
   - [2XKO wiki](https://wiki.play2xko.com/en-us/) feature
@@ -42,11 +42,11 @@ I don't drink coffee but feel free to support the server costs!
   - [DreamCancel wiki](https://dreamcancel.com/wiki/Main_Page) feature for COTW
 
 
-### [Long term goals](https://github.com/Sophon/Cornerman/wiki/Features#planned-feature-modules):
+### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
 - Twitch bot
 
 ___
-# [License](https://github.com/Sophon/Cornerman/blob/feat/sorry/license/LICENSE.txt)
+# [License](https://github.com/Sophon/FightingNerd/blob/feat/sorry/license/LICENSE.txt)
 ```
 License: Apache 2.0 with Commons Clause
 
