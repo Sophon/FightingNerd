@@ -85,11 +85,21 @@ internal fun FeatureSettings(
                                 .padding(8.dp)
                         )
 
-                        Text(
-                            text = featureSetting.featureInfo.name,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
+                        Column(
+                            verticalArrangement = Arrangement.SpaceBetween,
+                        ) {
+                            Text(
+                                text = featureSetting.featureInfo.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+
+                            Text(
+                                text = featureSetting.featureInfo.version,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = MaterialTheme.colorScheme.onSurface,
+                            )
+                        }
                     }
 
                     Switch(
