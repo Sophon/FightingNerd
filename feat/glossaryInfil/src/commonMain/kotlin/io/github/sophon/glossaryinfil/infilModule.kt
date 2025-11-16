@@ -7,6 +7,7 @@ import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 import io.github.sophon.glossaryinfil.usecase.CacheGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.FetchDataForTermUseCase
+import io.github.sophon.glossaryinfil.usecase.GetFeatureInfoUseCase
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
@@ -25,11 +26,12 @@ fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
 
 val infilModule = module {
     singleOf(::InfilGlossaryDataSourceImpl).bind<InfilGlossaryDataSource>()
-    singleOf(::InfilGlossaryImpl).bind<InfilGlossary>()
+    singleOf(::InfilGlossaryClientImpl).bind<InfilGlossaryClient>()
 
     singleOf(::DownloadGlossaryUseCase)
     singleOf(::CacheGlossaryUseCase)
     singleOf(::FetchDataForTermUseCase)
+    singleOf(::GetFeatureInfoUseCase)
 
     singleOf(::InfilUrlProvider)
 }
