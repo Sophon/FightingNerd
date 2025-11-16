@@ -9,11 +9,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name="io.github.sophon.cornerman.CornermanApplication"
+        android:name="io.github.sophon.fightingnerd.FightingNerdApplication"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:exported="true"
-            android:name="io.github.sophon.cornerman.MainActivity">
+            android:name="io.github.sophon.fightingnerd.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

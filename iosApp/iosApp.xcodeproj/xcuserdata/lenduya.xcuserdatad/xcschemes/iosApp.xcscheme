@@ -8,7 +8,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E89F63E1FDE01A017455E86B"
-               BuildableName = "Cornerman.app"
+               BuildableName = "FightingNerd.app"
                BlueprintName = "iosApp"
                ReferencedContainer = "container:iosApp.xcodeproj">
             </BuildableReference>
@@ -23,10 +23,14 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E89F63E1FDE01A017455E86B"
-            BuildableName = "Cornerman.app"
+            BuildableName = "FightingNerd.app"
             BlueprintName = "iosApp"
             ReferencedContainer = "container:iosApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <LocationScenarioReference
+         identifier = "com.apple.dt.IDEFoundation.CurrentLocationScenarioIdentifier"
+         referenceType = "1">
+      </LocationScenarioReference>
    </LaunchAction>
 </Scheme>
