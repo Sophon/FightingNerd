@@ -18,7 +18,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -26,6 +26,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            binaryOption("bundleId", "io.github.sophon.fightingnerd")
         }
     }
     
@@ -97,11 +98,11 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.sophon.cornerman"
+    namespace = "io.github.sophon.fightingnerd"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "io.github.sophon.cornerman"
+        applicationId = "io.github.sophon.fightingnerd"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
@@ -124,17 +125,20 @@ android {
 }
 
 dependencies {
-    ksp(libs.room.compiler)
+    add("kspAndroid", libs.room.compiler)
+    add("kspJvm", libs.room.compiler)
+    add("kspIosArm64", libs.room.compiler)
+    add("kspIosSimulatorArm64", libs.room.compiler)
     debugImplementation(compose.uiTooling)
 }
 
 compose.desktop {
     application {
-        mainClass = "io.github.sophon.cornerman.MainKt"
+        mainClass = "io.github.sophon.fightingnerd.MainKt"
 
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "io.github.sophon.cornerman"
+            packageName = "io.github.sophon.fightingnerd"
             packageVersion = "1.0.0"
         }
     }
@@ -142,4 +146,11 @@ compose.desktop {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+tasks.matching {
+    it.name.contains("Metadata") &&
+            (it.name.contains("ksp") || it.name.contains("compile"))
+}.configureEach {
+    enabled = false
 }

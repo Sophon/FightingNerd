@@ -19,7 +19,7 @@ import io.github.sophon.discord.util.mandatoryField
 internal class CoreDiscordFeature(): DiscordRegisteredFeature {
     override val featureInfo = FeatureInfo(
         name = "Core Discord",
-        url = "https://github.com/Sophon/Cornerman",
+        url = "https://github.com/Sophon/FightingNerd",
         iconUrl = null, //TODO: fill
     )
     override val defaultCommand = SupportedCommand(

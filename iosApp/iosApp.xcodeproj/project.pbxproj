@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		14CC418499E9A50C4C3DFB65 /* Cornerman.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cornerman.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		14CC418499E9A50C4C3DFB65 /* FightingNerd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FightingNerd.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -59,7 +59,7 @@
 		7F834BCE11DA3804BB2410EC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				14CC418499E9A50C4C3DFB65 /* Cornerman.app */,
+				14CC418499E9A50C4C3DFB65 /* FightingNerd.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,7 +87,7 @@
 			packageProductDependencies = (
 			);
 			productName = iosApp;
-			productReference = 14CC418499E9A50C4C3DFB65 /* Cornerman.app */;
+			productReference = 14CC418499E9A50C4C3DFB65 /* FightingNerd.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
