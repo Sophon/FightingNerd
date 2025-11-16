@@ -1,16 +1,16 @@
 package io.github.sophon.discord.featureRegistry.infilGlossary
 
-import io.github.sophon.discord.MAX_LENGTH_EMBED
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
-import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
+import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.util.mandatoryField
@@ -21,10 +21,12 @@ import io.github.sophon.glossaryinfil.domain.GlossaryItem
 import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 
 internal class InfilGlossaryDiscordFeature(
+    getInfilFeatureInfoUseCase: GetInfilFeatureInfoUseCase,
     private val startGlossaryUseCase: StartGlossaryUseCase,
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
     private val urlProvider: InfilUrlProvider,
 ): DiscordRegisteredFeature {
+    override val featureInfo = getInfilFeatureInfoUseCase.invoke()
     override val defaultCommand = SupportedCommand(
         command = Command.GL,
         description = "Fighting-game glossary",
@@ -34,11 +36,6 @@ internal class InfilGlossaryDiscordFeature(
                 description = "Term"
             )
         )
-    )
-    override val featureInfo = FeatureInfo(
-        name = "Infil Glossary",
-        url = "https://glossary.infil.net/",
-        iconUrl = "https://i.imgur.com/OigKJBY.png",
     )
     override val otherCommands = listOf<SupportedCommand>()
 
@@ -98,7 +95,9 @@ internal class InfilGlossaryDiscordFeature(
             jpTranslation = this.jpTranslation.map { it.replaceItalic() }
         )
     }
-}
 
-private const val KEY_TERM = "term"
-private const val BROWN = 0xDAA06D
+    private companion object {
+        const val KEY_TERM = "term"
+        const val BROWN = 0xDAA06D
+    }
+}
