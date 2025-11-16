@@ -6,6 +6,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.URL_IMG_DISCORD
+import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.URL_IMG_GITHUB
 import io.github.sophon.discord.URL_IMG_KOFI
 import io.github.sophon.discord.URL_INVITE
@@ -19,15 +20,16 @@ import io.github.sophon.discord.util.mandatoryField
 internal class CoreDiscordFeature(): DiscordRegisteredFeature {
     override val featureInfo = FeatureInfo(
         name = "Core Discord",
-        url = "https://github.com/Sophon/FightingNerd",
-        iconUrl = null, //TODO: fill
+        url = URL_REPO,
+        iconUrl = URL_IMG_FIGHTING_NERD,
     )
-    override val defaultCommand = SupportedCommand(
-        command = Command.TIP,
-        description = "Dono arigato!",
-        arguments = listOf(),
-    )
+    override val defaultCommand = null
     override val otherCommands = listOf(
+        SupportedCommand(
+            command = Command.TIP,
+            description = "Dono arigato!",
+            arguments = listOf(),
+        ),
         SupportedCommand(
             command = Command.REPO,
             description = "Project repository",

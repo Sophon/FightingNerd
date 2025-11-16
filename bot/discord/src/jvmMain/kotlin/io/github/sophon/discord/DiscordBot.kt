@@ -115,7 +115,7 @@ internal class DiscordBotImpl(
         val testGuildSnowFlake = Snowflake(TEST_SERVER_ID)
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
             featureList
-                .flatMap { feature -> feature.otherCommands + feature.defaultCommand }
+                .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
                 .distinctBy { it.command.name.lowercase() }
                 .forEach { supportedCommand ->
                     input(
@@ -135,7 +135,7 @@ internal class DiscordBotImpl(
     private suspend fun createGlobalCommands() {
         kord.createGlobalApplicationCommands {
             featureList
-                .flatMap { feature -> feature.otherCommands + feature.defaultCommand }
+                .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
                 .distinctBy { it.command.name.lowercase() }
                 .forEach { supportedCommand ->
                     input(

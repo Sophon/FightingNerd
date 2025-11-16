@@ -8,7 +8,7 @@ import io.github.sophon.discord.BotError
 interface DiscordRegisteredFeature {
     val featureInfo: FeatureInfo
 
-    val defaultCommand: SupportedCommand
+    val defaultCommand: SupportedCommand?
     val otherCommands: List<SupportedCommand>
 
     suspend fun start()
