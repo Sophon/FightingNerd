@@ -1,4 +1,4 @@
-rootProject.name = "Cornerman"
+rootProject.name = "FightingNerd"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
