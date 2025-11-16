@@ -51,7 +51,7 @@ internal class RouteCommandToFeatureUseCase(
             val isOtherCommand = feature.otherCommands.any {
                 it.command.name.equals(this, ignoreCase = true)
             }
-            val isDefaultCommand = feature.defaultCommand.command.name
+            val isDefaultCommand = feature.defaultCommand?.command?.name
                 .equals(this, ignoreCase = true)
 
             isOtherCommand || isDefaultCommand
@@ -88,12 +88,14 @@ internal class RouteCommandToFeatureUseCase(
                 }
                 ?.command
 
-            val commandToUse = explicitCommand
-                ?: if (feature.defaultCommand.command.name.equals(commandString, ignoreCase = true)) {
-                    feature.defaultCommand.command
+            val commandToUse = explicitCommand ?: run {
+                val defaultCommand = feature.defaultCommand ?: continue //feature has no default command, next
+                if (defaultCommand.command.name.equals(commandString, ignoreCase = true)) {
+                    defaultCommand.command
                 } else {
-                    continue // this feature doesn't have this command
+                    continue //feature doesn't have this command, next
                 }
+            }
 
             result = feature.execute(commandToUse, query)
             if (result is Result.Success) {
@@ -109,8 +111,10 @@ internal class RouteCommandToFeatureUseCase(
         fullQuery: String
     ): Result<EmbedBuilder.() -> Unit, BotError> {
         for (feature in featureList) {
+            val defaultCommand = feature.defaultCommand ?: continue
+
             val result = feature.execute(
-                command = feature.defaultCommand.command,
+                command = defaultCommand.command,
                 query = fullQuery,
             )
 

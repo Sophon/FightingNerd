@@ -6,6 +6,7 @@ internal const val MAX_LENGTH_EMBED = 1_024
 
 internal const val URL_REPO = "https://github.com/Sophon/FightingNerd"
 internal const val URL_IMG_GITHUB = "https://i.imgur.com/PdgcKV2.png"
+internal const val URL_IMG_FIGHTING_NERD = "https://i.imgur.com/TAgvOxX.png"
 
 internal const val URL_KOFI = "https://ko-fi.com/sorryuken"
 internal const val URL_IMG_KOFI = "https://i.imgur.com/8MpFC8T.png"
