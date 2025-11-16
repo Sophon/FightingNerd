@@ -18,7 +18,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosArm64(),
         iosSimulatorArm64()
@@ -26,6 +26,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            binaryOption("bundleId", "io.github.sophon.fightingnerd")
         }
     }
     
@@ -142,4 +143,11 @@ compose.desktop {
 
 room {
     schemaDirectory("$projectDir/schemas")
+}
+
+tasks.matching {
+    it.name.contains("Metadata") &&
+            (it.name.contains("ksp") || it.name.contains("compile"))
+}.configureEach {
+    enabled = false
 }
