@@ -99,7 +99,7 @@ internal class SuperComboWikiDiscordFeature(
                 -> searchMove(query)
 
             Command.CHARSF6 -> searchCharacter(query)
-            else -> Result.Error(BotError.BOT_LOGIC_ERROR)
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 

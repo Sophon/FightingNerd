@@ -21,7 +21,7 @@ class InMemoryMoveListDB: MoveListDB {
     ): Result<List<Move>, WikiError> {
         return database[charName.lowercase()]
             ?.let { Result.Success(it.values.toList()) }
-            ?: Result.Error(WikiError.UNKNOWN_CHARACTER)
+            ?: Result.Error(WikiError.UnknownCharacter(charName))
     }
 
     override suspend fun fetchMoveDataFor(
@@ -29,9 +29,9 @@ class InMemoryMoveListDB: MoveListDB {
         moveQuery: String
     ): Result<Move, WikiError> {
         val moveList = database[charName]
-            ?: return Result.Error(WikiError.UNKNOWN_CHARACTER)
+            ?: return Result.Error(WikiError.UnknownCharacter(charName))
         val moveData = moveList[moveQuery.lowercase()]
-            ?: return Result.Error(WikiError.UNKNOWN_MOVE)
+            ?: return Result.Error(WikiError.UnknownMove(charName, moveQuery))
 
         return Result.Success(moveData)
     }
