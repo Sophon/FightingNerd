@@ -1,0 +1,13 @@
+graph LR
+    DEV[dev] -->|squash and commit; push| RELEASE[release_bot]
+RELEASE -->|triggers| WORKFLOW[deploy_bot.yml]
+WORKFLOW -->|builds| DOCKER[Docker image]
+WORKFLOW -->|push| CLOUD[fly.io]
+DOCKER --> CLOUD
+
+
+style DEV fill:#30363d,stroke:#8b949e,color:#e6edf3
+style RELEASE fill:#30363d,stroke:#8b949e,color:#e6edf3
+style WORKFLOW fill:#db61a2,stroke:#bf4080,color:#fff
+style DOCKER fill:#2496ed,stroke:#1a7dc4,color:#fff
+style CLOUD fill:#7b3ff2,stroke:#5a2db8,color:#fff
