@@ -13,7 +13,6 @@ A set of tools for the Fighting Game Community:
   - 🤖 Android
   - 🍏 iOS
   - 💬 Discord
-  - 🖥️ desktop
 
 I don't drink coffee but feel free to support the server costs!
 
@@ -33,11 +32,59 @@ I don't drink coffee but feel free to support the server costs!
     - frame data
     - character data
 
+### ARCHITECTURE
+
+```mermaid
+graph TD
+    subgraph Bots
+        discordBot[Discord Bot]
+    end
+
+    subgraph "Mobile Clients"
+        android[Android]
+        iOS[iOS]
+    end
+
+    subgraph Features
+        glossaryInfil[Glossary Infil]
+        communityWiki[Community Wiki]
+    end
+
+    subgraph Community Wiki
+        wikiWavu[Wavu]
+        supercombo[SuperCombo]
+        2xko[2XKO]
+        dustloop[Dustloop]
+        dreamcancel[DreamCancel]
+    end
+
+    communityWiki --> wikiWavu
+    communityWiki --> supercombo
+    communityWiki --> 2xko
+    communityWiki --> dreamcancel
+
+    discordBot -->|uses| glossaryInfil
+    discordBot -->|uses| communityWiki
+
+    android -->|uses| communityWiki
+    iOS -->|uses| communityWiki
+
+    style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
+    style android fill:#10B981,stroke:#059669,color:#fff
+    style iOS fill:#10B981,stroke:#059669,color:#fff
+    style glossaryInfil fill:#8B6F47,color:#fff
+    style communityWiki fill:#3366CC,color:#fff
+    style wikiWavu fill:#F8F9FA,color:#000000
+    style supercombo fill:#F8F9FA,color:#000000
+    style 2xko fill:#F8F9FA,color:#000000
+    style dustloop fill:#F8F9FA,color:#000000
+    style dreamcancel fill:#F8F9FA,color:#000000
+```
+
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
 
 
 ### [TODO's](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-module-improvements)
-- Docker, pipelines, updates
 - other feature modules
   - [2XKO wiki](https://wiki.play2xko.com/en-us/) feature
   - [DustLoop wiki](https://www.dustloop.com/wiki/) feature for
