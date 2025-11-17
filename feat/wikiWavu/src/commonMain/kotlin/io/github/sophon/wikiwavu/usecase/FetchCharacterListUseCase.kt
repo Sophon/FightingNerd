@@ -12,7 +12,7 @@ internal class FetchCharacterListUseCase(
         return when (val result = db.fetchCharacterList()) {
             is Result.Success -> {
                 if (result.data.isEmpty()) {
-                    Result.Error(WikiError.DATABASE_ERROR)
+                    Result.Error(WikiError.DatabaseError("EMPTY DATABASE"))
                 } else {
                     Result.Success(result.data)
                 }
