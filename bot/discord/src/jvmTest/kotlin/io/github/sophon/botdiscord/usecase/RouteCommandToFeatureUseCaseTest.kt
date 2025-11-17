@@ -3,10 +3,12 @@ package io.github.sophon.botdiscord.usecase
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNotNull
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
@@ -51,7 +53,7 @@ class RouteCommandToFeatureUseCaseTest {
         override suspend fun execute(
             command: Command,
             query: String,
-        ): Result<EmbedBuilder.() -> Unit, BotError> {
+        ): Result<BotOutput, BotError> {
             val tekkenChars = setOf("lily", "ak", "jin", "kazuya")
 
             return when (command) {
@@ -64,13 +66,13 @@ class RouteCommandToFeatureUseCaseTest {
                     } else if (parts.size < 2) {
                         Result.Error(BotError.UnknownMove(charName.orEmpty(), query))
                     } else {
-                        Result.Success { title = "Wavu FD: $query" }
+                        Result.Success(BotOutput(embedBuilder = { title = "Wavu FD: $query" }))
                     }
                 }
                 Command.PC, Command.HEAT, Command.HOMING -> {
                     val charName = query.lowercase()
                     if (charName in tekkenChars) {
-                        Result.Success { title = "Wavu ${command.name}: $query" }
+                        Result.Success(BotOutput(embedBuilder = { title = "Wavu ${command.name}: $query" }))
                     } else {
                         Result.Error(BotError.UnknownCharacter(charName))
                     }
@@ -98,7 +100,7 @@ class RouteCommandToFeatureUseCaseTest {
         override suspend fun execute(
             command: Command,
             query: String,
-        ): Result<EmbedBuilder.() -> Unit, BotError> {
+        ): Result<BotOutput, BotError> {
             val glossaryTerms = setOf(
                 "frame",
                 "hitbox",
@@ -109,7 +111,7 @@ class RouteCommandToFeatureUseCaseTest {
             return when (command) {
                 Command.GL -> {
                     if (query.lowercase() in glossaryTerms) {
-                        Result.Success { title = "Infil GL: $query" }
+                        Result.Success(BotOutput(embedBuilder = { title = "Infil GL: $query" }))
                     } else {
                         Result.Error(BotError.GlossaryTermNotFound(query))
                     }
@@ -143,7 +145,7 @@ class RouteCommandToFeatureUseCaseTest {
         override suspend fun execute(
             command: Command,
             query: String,
-        ): Result<EmbedBuilder.() -> Unit, BotError> {
+        ): Result<BotOutput, BotError> {
             val sfChars = setOf(
                 "lily",
                 "ken",
@@ -161,12 +163,12 @@ class RouteCommandToFeatureUseCaseTest {
                     } else if (parts.size < 2) {
                         Result.Error(BotError.UnknownMove(charName.orEmpty(), query))
                     } else {
-                        Result.Success { title = "SuperCombo FD: $query" }
+                        Result.Success(BotOutput(embedBuilder = { title = "SuperCombo FD: $query" }))
                     }
                 }
                 Command.CHARSF6 -> {
                     if (query.lowercase() in sfChars) {
-                        Result.Success { title = "SuperCombo CHARSF6: $query" }
+                        Result.Success(BotOutput(embedBuilder = { title = "SuperCombo CHARSF6: $query" }))
                     } else {
                         Result.Error(BotError.UnknownCharacter(query))
                     }
@@ -190,9 +192,9 @@ class RouteCommandToFeatureUseCaseTest {
         override suspend fun execute(
             command: Command,
             query: String,
-        ): Result<EmbedBuilder.() -> Unit, BotError> {
+        ): Result<BotOutput, BotError> {
             return if (command == Command.HEAT && query.isNotBlank()) {
-                Result.Success { title = "NoDefault HEAT: $query" }
+                Result.Success(BotOutput(embedBuilder = { title = "NoDefault HEAT: $query" }))
             } else {
                 Result.Error(BotError.InvalidQuery(query))
             }
@@ -318,8 +320,9 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
-        val embedBuilder = (result as Result.Success).data
-        val title = EmbedBuilder().apply(embedBuilder).title
+        val embedBuilder = (result as Result.Success).data.embedBuilder
+        assertThat(embedBuilder).isNotNull()
+        val title = EmbedBuilder().apply(embedBuilder!!).title
         assertThat(title).isEqualTo("Wavu FD: lily 5lk")
     }
 
@@ -331,8 +334,9 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
-        val embedBuilder = (result as Result.Success).data
-        val title = EmbedBuilder().apply(embedBuilder).title
+        val embedBuilder = (result as Result.Success).data.embedBuilder
+        assertThat(embedBuilder).isNotNull()
+        val title = EmbedBuilder().apply(embedBuilder!!).title
         assertThat(title).isEqualTo("Wavu FD: ak f21")
     }
 
@@ -344,8 +348,9 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
-        val embedBuilder = (result as Result.Success).data
-        val title = EmbedBuilder().apply(embedBuilder).title
+        val embedBuilder = (result as Result.Success).data.embedBuilder
+        assertThat(embedBuilder).isNotNull()
+        val title = EmbedBuilder().apply(embedBuilder!!).title
         assertThat(title).isEqualTo("SuperCombo FD: ken dp")
     }
     //endregion
