@@ -8,6 +8,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
+import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
@@ -49,7 +50,7 @@ internal class InfilGlossaryDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return when (command) {
             Command.GL -> searchTerm(query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
@@ -59,9 +60,9 @@ internal class InfilGlossaryDiscordFeature(
 
     private suspend fun searchTerm(
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return searchGlossaryUseCase.invoke(query)
-            .map { createEmbed(it) }
+            .map { BotOutput(embedBuilder = createEmbed(it)) }
     }
 
     private fun createEmbed(

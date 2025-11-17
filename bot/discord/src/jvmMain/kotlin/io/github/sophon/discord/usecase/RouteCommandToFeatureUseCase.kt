@@ -1,8 +1,8 @@
 package io.github.sophon.discord.usecase
 
-import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
 
@@ -11,7 +11,7 @@ internal class RouteCommandToFeatureUseCase(
 ) {
     suspend fun invoke(
         message: String
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         val fullQuery = message
             .removeTag()
             .lowercase()
@@ -31,7 +31,7 @@ internal class RouteCommandToFeatureUseCase(
     suspend fun invoke(
         commandString: String,
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return useExplicitCommands(
             commandString = commandString.lowercase(),
             query = query
@@ -78,8 +78,8 @@ internal class RouteCommandToFeatureUseCase(
     private suspend fun useExplicitCommands(
         commandString: String,
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
-        var result: Result<EmbedBuilder.() -> Unit, BotError> = Result.Error(BotError.InvalidQuery(query))
+    ): Result<BotOutput, BotError> {
+        var result: Result<BotOutput, BotError> = Result.Error(BotError.InvalidQuery(query))
 
         for (feature in featureList) {
             val explicitCommand = feature.otherCommands
@@ -109,7 +109,7 @@ internal class RouteCommandToFeatureUseCase(
 
     private suspend fun useDefaultCommands(
         fullQuery: String
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         for (feature in featureList) {
             val defaultCommand = feature.defaultCommand ?: continue
 

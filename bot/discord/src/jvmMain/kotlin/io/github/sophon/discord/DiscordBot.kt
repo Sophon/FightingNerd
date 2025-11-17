@@ -14,6 +14,7 @@ import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
+import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.createErrorEmbed
@@ -85,15 +86,26 @@ internal class DiscordBotImpl(
 
         val result = routeCommandToFeatureUseCase.invoke(message.content)
 
-        val embedBuilder = when(result) {
+        val botOutput = when(result) {
             is Result.Success -> result.data
-            is Result.Error -> createErrorEmbed(result.error)
+            is Result.Error -> BotOutput(embedBuilder = createErrorEmbed(result.error))
         }
 
-        message.channel.createMessage {
-            messageReference = message.id
-            allowedMentions { repliedUser = false }
-            embed(embedBuilder)
+        when {
+            botOutput.embedBuilder != null -> {
+                message.channel.createMessage {
+                    messageReference = message.id
+                    allowedMentions { repliedUser = false }
+                    embed(botOutput.embedBuilder)
+                }
+            }
+            botOutput.plainText != null -> {
+                message.channel.createMessage {
+                    messageReference = message.id
+                    allowedMentions { repliedUser = false }
+                    content = botOutput.plainText
+                }
+            }
         }
     }
 
@@ -103,12 +115,15 @@ internal class DiscordBotImpl(
 
         val result = routeCommandToFeatureUseCase.invoke(commandString, query)
 
-        val embedBuilder = when (result) {
+        val botOutput = when (result) {
             is Result.Success -> result.data
-            is Result.Error -> createErrorEmbed(result.error)
+            is Result.Error -> BotOutput(embedBuilder = createErrorEmbed(result.error))
         }
 
-        interaction.respondPublic { embed(embedBuilder) }
+        interaction.respondPublic {
+            botOutput.embedBuilder?.let { embed(it) }
+            botOutput.plainText?.let { content = it }
+        }
     }
 
     private suspend fun createCommandsForTestServer() {
