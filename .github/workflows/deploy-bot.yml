@@ -1,0 +1,42 @@
+name: Deploy Discord Bot to Fly.io
+
+on:
+  push:
+    branches:
+      - release_bot
+
+permissions:
+  contents: write  # ← Add this to allow pushing tags
+
+jobs:
+  deploy:
+    name: Deploy to Fly.io
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # ← Fetch full history for tagging
+
+      - name: Get version from commit message
+        id: version
+        run: |
+          VERSION=$(git log -1 --pretty=%B)
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "tag=bot-${VERSION}" >> $GITHUB_OUTPUT
+
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag ${{ steps.version.outputs.tag }}
+          git push origin ${{ steps.version.outputs.tag }}
+
+      - name: Setup Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly.io
+        run: flyctl deploy --remote-only --app fightingnerd
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

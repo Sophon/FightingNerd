@@ -1,0 +1,275 @@
+package io.github.sophon.discord.featureRegistry.wikiWavu
+
+import dev.kord.common.Color
+import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.aakira.napier.Napier
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.map
+import io.github.sophon.core.domain.onError
+import io.github.sophon.core.util.truncate
+import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.discord.BotError
+import io.github.sophon.discord.MAX_LENGTH_EMBED
+import io.github.sophon.discord.featureRegistry.BotOutput
+import io.github.sophon.discord.featureRegistry.Command
+import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
+import io.github.sophon.discord.featureRegistry.SupportedCommand
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHeatMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHomingMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetPowerCrushMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetWavuFeatureInfoUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchFrameDataUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SyncDataUseCase
+import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.optionalField
+import io.github.sophon.discord.util.orClickable
+import io.github.sophon.wikiwavu.domain.WavuUrlProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlin.time.Duration.Companion.hours
+
+internal class WavuWikiDiscordFeature(
+    getWavuFeatureInfoUseCase: GetWavuFeatureInfoUseCase,
+    private val syncDataUseCase: SyncDataUseCase,
+    private val searchFrameDataUseCase: SearchFrameDataUseCase,
+    private val getPowerCrushMovesUseCase: GetPowerCrushMovesUseCase,
+    private val getHeatMovesUseCase: GetHeatMovesUseCase,
+    private val getHomingMovesUseCase: GetHomingMovesUseCase,
+    private val urlProvider: WavuUrlProvider,
+    private val scheduler: Scheduler,
+    private val scope: CoroutineScope,
+): DiscordRegisteredFeature {
+    override val featureInfo = getWavuFeatureInfoUseCase.invoke()
+    override val defaultCommand = SupportedCommand(
+        command = Command.FD,
+        description = "Global frame data",
+        arguments = listOf(
+            SupportedCommand.Argument(
+                name = KEY_CHAR_NAME,
+                description = "Character name",
+            ),
+            SupportedCommand.Argument(
+                name = KEY_MOVE,
+                description = "Move",
+            )
+        )
+    )
+    override val otherCommands: List<SupportedCommand> = listOf(
+        SupportedCommand(
+            command = Command.FDT8,
+            description = "Tekken 8 frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move",
+                )
+            )
+        ),
+        SupportedCommand(
+            command = Command.PC,
+            description = "Tekken 8 Power Crush moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+            )
+        ),
+        SupportedCommand(
+            command = Command.HEAT,
+            description = "Tekken 8 Power Crush moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+            )
+        ),
+        SupportedCommand(
+            command = Command.HOMING,
+            description = "Tekken 8 homing moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+            )
+        ),
+    )
+
+    override suspend fun start() {
+        Napier.d(tag = TAG) { "Starting: $featureInfo" }
+
+        scheduler.start(
+            period = 1.hours,
+            task = ::syncData,
+        ).onEach { result ->
+            result.onError { Napier.e(tag = TAG) { it.toString() } }
+        }.launchIn(scope)
+    }
+
+    override suspend fun execute(
+        command: Command,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return when (command) {
+            Command.FD,
+            Command.FDT8,
+                -> searchMove(query)
+
+            Command.PC -> searchPowerCrushMoves(query)
+            Command.HEAT -> searchHeatMoves(query)
+            Command.HOMING -> searchHomingMoves(query)
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
+        }
+    }
+
+
+    private suspend fun syncData(): EmptyResult<BotError> {
+        return syncDataUseCase.invoke()
+    }
+
+    private suspend fun searchMove(
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return searchFrameDataUseCase.invoke(query)
+            .map { BotOutput(embedBuilder = createMoveEmbed(move = it)) }
+    }
+
+    private suspend fun searchPowerCrushMoves(
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getPowerCrushMovesUseCase.invoke(charName = query)
+            .map { moveList ->
+                BotOutput(
+                    embedBuilder = createMoveListEmbed(
+                        category = "Power Crush",
+                        moves = moveList
+                    )
+                )
+            }
+    }
+
+    private suspend fun searchHeatMoves(
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getHeatMovesUseCase.invoke(charName = query)
+            .map { moveList ->
+                BotOutput(
+                    embedBuilder = createMoveListEmbed(
+                        category = "Heat",
+                        moves = moveList
+                    )
+                )
+            }
+    }
+
+    private suspend fun searchHomingMoves(
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getHomingMovesUseCase.invoke(charName = query)
+            .map { moveList ->
+                BotOutput(
+                    embedBuilder = createMoveListEmbed(
+                        category = "Homing",
+                        moves = moveList
+                    )
+                )
+            }
+    }
+
+    private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
+        title = move.input
+        url = urlProvider.charUrl(move.charName)
+
+        description = "**${move.charName}**: ${move.name}"
+        color = Color(GREEN)
+
+        mandatoryField(name = "SU", value = move.startup)
+        mandatoryField(name = "OH", value = move.onHit.orClickable())
+        mandatoryField(name = "OB", value = move.onBlock)
+        mandatoryField(name = "CH", value = (move.onCH ?: move.onHit).orClickable())
+        mandatoryField(name = "LVL", value = move.t8Properties?.level)
+
+
+        optionalField(name = "Rec", value = move.recovery)
+        optionalField(name = "DMG", value = move.damage)
+
+        createNotes(move)
+
+        optionalField(name = "Video", value = "[Link](${url})")
+
+        footer {
+            text = featureInfo.name
+            icon = featureInfo.iconUrl
+        }
+    }
+
+    private fun EmbedBuilder.createNotes(move: Move) {
+        val aliasNote = if (move.aliases.isNotEmpty()) {
+            "Alt inputs: ${move.aliases.joinToString("; ")}"
+        } else null
+
+        val allNotes = buildList {
+            addAll(move.notes.mapNotNull { it.orClickable() })
+            aliasNote?.let { add(it) }
+        }
+
+        return optionalField(
+            name = "📝 NOTES",
+            value = allNotes
+                .emojify()
+                .joinToString(separator = "") { note -> "* $note\n" }
+                .truncate(MAX_LENGTH_EMBED),
+            inline = false,
+        )
+    }
+
+    private fun createMoveListEmbed(
+        category: String,
+        moves: List<Move>
+    ): EmbedBuilder.() -> Unit = {
+        mandatoryField(
+            name = "$category moves".uppercase(),
+            value = moves
+                .joinToString(separator = "") { move -> "* ${move.input}\n" }
+                .truncate(MAX_LENGTH_EMBED),
+            inline = false,
+        )
+    }
+
+    private fun List<String>.emojify(): List<String> {
+        return buildList {
+            this@emojify.forEach { note ->
+                val emojified = buildString {
+                    if (note.contains("Heat", ignoreCase = true)) append("🔥 ")
+                    if (note.contains("Balcony Break", ignoreCase = true)) append("➡️ ")
+                    if (note.contains("Spike", ignoreCase = true)) append("⬇️ ")
+                    if (note.contains("Floor break", ignoreCase = true)) append("⬇️ ")
+                    if (note.contains("Tornado", ignoreCase = true)) append("🌪️ ")
+                    if (note.contains("Tailspin", ignoreCase = true)) append("️🌀 ")
+                    if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
+                    if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
+                    if (note.contains("Throw", ignoreCase = true)) append("️🤝 ")
+                    if (note.contains("pc", ignoreCase = true)) append("🛡️ ")
+                    append(note)
+                }
+                add(emojified)
+            }
+        }
+    }
+
+
+    private companion object {
+        private const val TAG = "WavuWikiDiscordFeature"
+        private const val KEY_CHAR_NAME = "character"
+        private const val KEY_MOVE = "move"
+        private const val GREEN = 0x00FF00
+    }
+}

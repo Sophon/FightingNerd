@@ -1,0 +1,16 @@
+{
+  "featureList": [
+    {
+      "name": "Wavu Wiki",
+      "isEnabled": true
+    },
+    {
+      "name": "Infil Glossary",
+      "isEnabled": true
+    },
+    {
+      "name": "SuperCombo Wiki",
+      "isEnabled": true
+    }
+  ]
+}

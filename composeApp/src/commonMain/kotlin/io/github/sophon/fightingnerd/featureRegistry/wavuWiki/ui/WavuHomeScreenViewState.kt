@@ -1,0 +1,103 @@
+package io.github.sophon.fightingnerd.featureRegistry.wavuWiki.ui
+
+import io.github.sophon.core.wiki.domain.model.Character
+
+data class WavuHomeScreenViewState(
+    val characterList: List<Character> = listOf(),
+    val isExpanded: Boolean = false,
+
+    val isLoading: Boolean = true,
+    val error: String? = null,
+) {
+    companion object {
+        internal val PREVIEW = WavuHomeScreenViewState(
+            characterList = listOf(
+                Character(
+                    id = "",
+                    displayName = "Alisa",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    queryName = "",
+                ),
+                Character(
+                    id = "",
+                    displayName = "Nina",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        iconUrl = "https://tekkendocs.com/t8/avatars/nina-brand-512.png",
+                    ),
+                    queryName = "",
+                ),
+                Character(
+                    id = "lidia",
+                    displayName = "Lidia",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    queryName = "",
+                ),
+                Character(
+                    id = "",
+                    displayName = "Armor King",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        iconUrl = "https://tekkendocs.com/t8/avatars/armor-king-brand-512.png"
+                    ),
+                    queryName = "",
+                ),
+                Character(
+                    id = "",
+                    displayName = "Panda",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    queryName = "",
+                ),
+                Character(
+                    id = "",
+                    displayName = "Shaheen",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        iconUrl = "https://tekkendocs.com/t8/avatars/shaheen-brand-512.png"
+                    ),
+                    queryName = "",
+                ),
+                Character(
+                    id = "",
+                    displayName = "Steve",
+                    wikiUrl = "Steve",
+                    aliasList = listOf(),
+                    queryName = "",
+                ),
+                Character(
+                    id = "",
+                    displayName = "Raven",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        iconUrl = "https://tekkendocs.com/t8/avatars/raven-brand-512.png"
+                    ),
+                    queryName = "",
+                ),
+                Character(
+                    id = "",
+                    displayName = "Yoshimitsu",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    queryName = "",
+                ),
+                Character(
+                    id = "",
+                    displayName = "Paul",
+                    wikiUrl = "",
+                    aliasList = listOf(),
+                    images = Character.Images(
+                        iconUrl = "https://tekkendocs.com/t8/avatars/paul-brand-512.png"
+                    ),
+                    queryName = "",
+                ),
+            )
+        )
+    }
+}
