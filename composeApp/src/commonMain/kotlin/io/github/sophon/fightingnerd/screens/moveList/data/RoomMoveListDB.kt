@@ -24,13 +24,14 @@ class RoomMoveListDB(
         return try {
             val moveEntities = dao.fetchMoveListFor(charName)
             if (moveEntities.isEmpty()) {
-                Result.Error(WikiError.UNKNOWN_CHARACTER)
+                Result.Error(WikiError.UnknownCharacter(charName))
             } else {
                 Result.Success(moveEntities.map { it.toDomain() })
             }
         } catch (e: Exception) {
-            Napier.e(tag = TAG) { e.toString() }
-            Result.Error(WikiError.DATABASE_ERROR)
+            val error = e.toString()
+            Napier.e(tag = TAG) { error }
+            Result.Error(WikiError.DatabaseError(error))
         }
     }
 
@@ -41,13 +42,14 @@ class RoomMoveListDB(
         return try {
             val moveEntity = dao.fetchMoveDataFor(charName, moveQuery)
             if (moveEntity == null) {
-                Result.Error(WikiError.UNKNOWN_MOVE)
+                Result.Error(WikiError.UnknownMove(charName, moveQuery))
             } else {
                 Result.Success(moveEntity.toDomain())
             }
         } catch (e: Exception) {
-            Napier.e(tag = TAG) { e.toString() }
-            Result.Error(WikiError.DATABASE_ERROR)
+            val error = e.toString()
+            Napier.e(tag = TAG) { error }
+            Result.Error(WikiError.DatabaseError(error))
         }
     }
 
@@ -60,8 +62,9 @@ class RoomMoveListDB(
             dataStore.edit { it[KEY_LAST_INSERT] = Clock.System.now().toString() }
             Result.Success(Unit)
         } catch (e: Exception) {
-            Napier.e(tag = TAG) { e.toString() }
-            Result.Error(WikiError.DATABASE_ERROR)
+            val error = e.toString()
+            Napier.e(tag = TAG) { error }
+            Result.Error(WikiError.DatabaseError(error))
         }
     }
 
@@ -71,8 +74,9 @@ class RoomMoveListDB(
             dataStore.edit { it.remove(KEY_LAST_INSERT) }
             Result.Success(Unit)
         } catch (e: Exception) {
-            Napier.e(tag = TAG) { e.toString() }
-            Result.Error(WikiError.DATABASE_ERROR)
+            val error = e.toString()
+            Napier.e(tag = TAG) { error }
+            Result.Error(WikiError.DatabaseError(error))
         }
     }
 
@@ -82,8 +86,9 @@ class RoomMoveListDB(
             val instant = timestampString?.let { Instant.parse(it) }
             Result.Success(instant)
         } catch (e: Exception) {
-            Napier.e(tag = TAG) { e.toString() }
-            Result.Error(WikiError.DATABASE_ERROR)
+            val error = e.toString()
+            Napier.e(tag = TAG) { error }
+            Result.Error(WikiError.DatabaseError(error))
         }
     }
 

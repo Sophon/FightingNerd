@@ -15,9 +15,9 @@ enum class MoveListError: Error {
 
 internal fun WikiError.toDomainError(): MoveListError {
     return when(this) {
-        WikiError.UNKNOWN_CHARACTER -> MoveListError.UNKNOWN_CHARACTER
-        WikiError.UNKNOWN_MOVE -> MoveListError.UNKNOWN_MOVE
-        WikiError.DATABASE_ERROR -> MoveListError.DATABASE_ERROR
-        WikiError.DOWNLOAD_ERROR -> MoveListError.DOWNLOAD_ERROR
+        is WikiError.UnknownCharacter -> MoveListError.UNKNOWN_CHARACTER
+        is WikiError.UnknownMove -> MoveListError.UNKNOWN_MOVE
+        is WikiError.DatabaseError -> MoveListError.DATABASE_ERROR
+        is WikiError.DownloadError -> MoveListError.DOWNLOAD_ERROR
     }
 }

@@ -18,7 +18,7 @@ class RoomCharacterListDB(
             Result.Success(Unit)
         } catch (e: Exception) {
             Napier.e(tag = TAG) { e.toString() }
-            Result.Error(WikiError.DATABASE_ERROR)
+            Result.Error(WikiError.DatabaseError(e.toString()))
         }
     }
 
@@ -28,7 +28,7 @@ class RoomCharacterListDB(
             Result.Success(characterEntities.map { it.toDomain() })
         } catch (e: Exception) {
             Napier.e(tag = TAG) { e.toString() }
-            Result.Error(WikiError.DATABASE_ERROR)
+            Result.Error(WikiError.DatabaseError(e.toString()))
         }
     }
 
@@ -38,7 +38,7 @@ class RoomCharacterListDB(
             Result.Success(Unit)
         } catch (e: Exception) {
             Napier.e(tag = TAG) { e.toString() }
-            Result.Error(WikiError.DATABASE_ERROR)
+            Result.Error(WikiError.DatabaseError(e.toString()))
         }
     }
 
@@ -48,13 +48,13 @@ class RoomCharacterListDB(
         return try {
             val charEntity = dao.fetchCharacterData(charName)
             if (charEntity == null) {
-                Result.Error(WikiError.UNKNOWN_MOVE)
+                Result.Error(WikiError.UnknownCharacter(charName))
             } else {
                 Result.Success(charEntity.toDomain())
             }
         } catch (e: Exception) {
             Napier.e(tag = TAG) { e.toString() }
-            Result.Error(WikiError.DATABASE_ERROR)
+            Result.Error(WikiError.DatabaseError(e.toString()))
         }
     }
 
