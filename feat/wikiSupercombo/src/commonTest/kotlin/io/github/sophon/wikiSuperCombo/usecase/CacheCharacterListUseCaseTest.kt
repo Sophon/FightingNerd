@@ -62,7 +62,7 @@ class CacheCharacterListUseCaseTest {
                 wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken"
             )
         )
-        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
         val useCase = CacheCharacterListUseCase(fakeDb)
 
         // when
@@ -70,14 +70,14 @@ class CacheCharacterListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
     }
     //endregion
 
     //region Test Doubles
     private class FakeCharacterListDB(
         private val shouldSucceed: Boolean,
-        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+        private val errorToReturn: WikiError = WikiError.DatabaseError("")
     ) : CharacterListDB {
         var lastInsertedList: List<Character>? = null
 

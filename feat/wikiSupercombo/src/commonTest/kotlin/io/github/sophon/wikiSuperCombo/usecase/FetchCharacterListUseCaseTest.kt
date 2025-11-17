@@ -54,13 +54,13 @@ class FetchCharacterListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
     }
 
     @Test
     fun `invoke returns database error when database query fails`() {
         // given
-        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
         val useCase = FetchCharacterListUseCase(fakeDb)
 
         // when
@@ -68,13 +68,13 @@ class FetchCharacterListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
     }
 
     @Test
     fun `invoke returns download error when database fetch fails with download error`() {
         // given
-        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DOWNLOAD_ERROR)
+        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DownloadError(""))
         val useCase = FetchCharacterListUseCase(fakeDb)
 
         // when
@@ -82,7 +82,7 @@ class FetchCharacterListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DOWNLOAD_ERROR, result.error)
+        assertTrue(result.error is WikiError.DownloadError)
     }
     //endregion
 
@@ -90,7 +90,7 @@ class FetchCharacterListUseCaseTest {
     private class FakeCharacterListDB(
         private val shouldSucceed: Boolean,
         private val characterListToReturn: List<Character> = emptyList(),
-        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+        private val errorToReturn: WikiError = WikiError.DatabaseError("")
     ) : CharacterListDB {
         override suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
             throw NotImplementedError()

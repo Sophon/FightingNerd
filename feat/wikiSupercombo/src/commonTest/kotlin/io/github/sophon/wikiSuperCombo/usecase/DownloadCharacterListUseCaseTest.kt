@@ -229,7 +229,7 @@ class DownloadCharacterListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DOWNLOAD_ERROR, result.error)
+        assertTrue(result.error is WikiError.DownloadError)
     }
 
     @Test
@@ -245,7 +245,7 @@ class DownloadCharacterListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DOWNLOAD_ERROR, result.error)
+        assertTrue(result.error is WikiError.DownloadError)
     }
 
     @Test
@@ -261,7 +261,7 @@ class DownloadCharacterListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DOWNLOAD_ERROR, result.error)
+        assertTrue(result.error is WikiError.DownloadError)
     }
 
     @Test
@@ -277,7 +277,7 @@ class DownloadCharacterListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DOWNLOAD_ERROR, result.error)
+        assertTrue(result.error is WikiError.DownloadError)
     }
     //endregion
 
