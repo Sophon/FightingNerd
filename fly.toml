@@ -16,6 +16,3 @@ primary_region = 'fra'
   cpu_kind = 'shared'
   cpus = 1
 
-[mounts]
-  source = "bot_config"
-  destination = "/app/res"

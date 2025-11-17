@@ -29,7 +29,8 @@ WORKDIR /app
 COPY --from=builder /app/bot/discord/build/libs/discord-bot-all.jar /app/discord-bot.jar
 
 # Create /res directory for config volume
-RUN mkdir -p /res
+RUN mkdir -p /app/res
+COPY res/config.json /app/res/config.json
 
 # Run the bot
 CMD ["java", "-jar", "discord-bot.jar"]
