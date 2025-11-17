@@ -16,7 +16,7 @@ interface DiscordRegisteredFeature {
     suspend fun execute(
         command: Command,
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError>
+    ): Result<BotOutput, BotError>
 }
 
 data class SupportedCommand(
@@ -30,3 +30,8 @@ data class SupportedCommand(
         val isRequired: Boolean = true,
     )
 }
+
+data class BotOutput(
+    val embedBuilder: (EmbedBuilder.() -> Unit)? = null,
+    val plainText: String? = null,
+)

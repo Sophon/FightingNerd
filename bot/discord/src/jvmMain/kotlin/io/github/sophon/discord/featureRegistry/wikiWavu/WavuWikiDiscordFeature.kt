@@ -11,6 +11,7 @@ import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
+import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
@@ -116,7 +117,7 @@ internal class WavuWikiDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return when (command) {
             Command.FD,
             Command.FDT8,
@@ -136,43 +137,49 @@ internal class WavuWikiDiscordFeature(
 
     private suspend fun searchMove(
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return searchFrameDataUseCase.invoke(query)
-            .map { createMoveEmbed(move = it) }
+            .map { BotOutput(embedBuilder = createMoveEmbed(move = it)) }
     }
 
     private suspend fun searchPowerCrushMoves(
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError>{
+    ): Result<BotOutput, BotError> {
         return getPowerCrushMovesUseCase.invoke(charName = query)
             .map { moveList ->
-                createMoveListEmbed(
-                    category = "Power Crush",
-                    moves = moveList
+                BotOutput(
+                    embedBuilder = createMoveListEmbed(
+                        category = "Power Crush",
+                        moves = moveList
+                    )
                 )
             }
     }
 
     private suspend fun searchHeatMoves(
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return getHeatMovesUseCase.invoke(charName = query)
             .map { moveList ->
-                createMoveListEmbed(
-                    category = "Heat",
-                    moves = moveList
+                BotOutput(
+                    embedBuilder = createMoveListEmbed(
+                        category = "Heat",
+                        moves = moveList
+                    )
                 )
             }
     }
 
     private suspend fun searchHomingMoves(
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return getHomingMovesUseCase.invoke(charName = query)
             .map { moveList ->
-                createMoveListEmbed(
-                    category = "Homing",
-                    moves = moveList
+                BotOutput(
+                    embedBuilder = createMoveListEmbed(
+                        category = "Homing",
+                        moves = moveList
+                    )
                 )
             }
     }

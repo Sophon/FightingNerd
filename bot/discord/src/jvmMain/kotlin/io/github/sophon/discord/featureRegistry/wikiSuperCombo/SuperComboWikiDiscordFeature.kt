@@ -13,6 +13,7 @@ import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
+import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
@@ -92,7 +93,7 @@ internal class SuperComboWikiDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return when (command) {
             Command.FD,
             Command.FDSF6,
@@ -109,18 +110,18 @@ internal class SuperComboWikiDiscordFeature(
 
     private suspend fun searchCharacter(
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return searchCharacterDataUseCase.invoke(charName = query)
             .map { (character, fastestMoveList) ->
-                createCharacterEmbed(character, fastestMoveList)
+                BotOutput(embedBuilder = createCharacterEmbed(character, fastestMoveList))
             }
     }
 
     private suspend fun searchMove(
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(query)
-            .map { createMoveEmbed(it) }
+            .map { BotOutput(embedBuilder = createMoveEmbed(it)) }
     }
 
     private fun createCharacterEmbed(

@@ -6,12 +6,11 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.URL_IMG_DISCORD
-import io.github.sophon.discord.URL_IMG_GITHUB
 import io.github.sophon.discord.URL_IMG_KOFI
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
+import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
@@ -52,72 +51,58 @@ internal class CoreDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-    ): Result<EmbedBuilder.() -> Unit, BotError> {
+    ): Result<BotOutput, BotError> {
         return when (command) {
             Command.TIP,
             Command.DONATE,
-                -> Result.Success(createTipEmbed())
+                -> createTipEmbed()
 
-            Command.REPO -> Result.Success(createRepoEmbed())
-            Command.INVITE -> Result.Success(createInviteEmbed())
+            Command.REPO -> createRepoEmbed()
+            Command.INVITE -> createInviteEmbed()
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 
 
-    private fun createTipEmbed(): EmbedBuilder.() -> Unit = {
-        title = "Dono arigato!"
-        url = URL_KOFI //TODO: load from config
-        color = Color(PINK)
+    private fun createTipEmbed(): Result<BotOutput, BotError> {
+        val embedBuilder: EmbedBuilder.() -> Unit = {
+            title = "Dono arigato!"
+            url = URL_KOFI //TODO: load from config
+            color = Color(PINK)
 
-        mandatoryField(
-            name = "💸💸💸",
-            value = "I don't drink coffee but feel free to support the server costs!\n" +
-                    URL_KOFI
-        )
+            mandatoryField(
+                name = "💸💸💸",
+                value = "I don't drink coffee but feel free to support the server costs!\n" +
+                        URL_KOFI
+            )
 
-        footer {
-            text = "Ko-Fi"
-            icon = URL_IMG_KOFI
+            footer {
+                text = "Ko-Fi"
+                icon = URL_IMG_KOFI
+            }
         }
+
+        return Result.Success(BotOutput(embedBuilder))
     }
 
-    private fun createRepoEmbed(): EmbedBuilder.() -> Unit = {
-        title = "GitHub repo"
-        url = URL_REPO
-        color = Color(BLACK)
-
-        mandatoryField(
-            name = "Project repository",
-            value = URL_REPO
+    private fun createRepoEmbed(): Result<BotOutput, BotError> {
+        return Result.Success(
+            BotOutput(
+                plainText = "Contribute to FightingNerd: $URL_REPO"
+            )
         )
-
-        footer {
-            text = "GitHub"
-            icon = URL_IMG_GITHUB
-        }
     }
 
-    private fun createInviteEmbed(): EmbedBuilder.() -> Unit = {
-        title = "Fighting Nerd bot"
-        url = URL_REPO
-        color = Color(BLURPLE)
-
-        mandatoryField(
-            name = "Bot invite",
-            value = URL_INVITE,
+    private fun createInviteEmbed(): Result<BotOutput, BotError> {
+        return Result.Success(
+            BotOutput(
+                plainText = "FightingNerd bot invite: $URL_INVITE"
+            )
         )
-
-        footer {
-            text = "Discord"
-            icon = URL_IMG_DISCORD
-        }
     }
 
     private companion object {
         const val TAG = "CoreDiscordFeature"
-        const val BLACK = 0x000D1117
-        const val BLURPLE = 0x005865F2
         const val PINK = 0x00FF10F0
     }
 }
