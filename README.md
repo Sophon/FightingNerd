@@ -10,10 +10,10 @@ A set of tools for the Fighting Game Community:
      - 📊 frame data
      - 📋 move categories
 - 🌐 multiplatform:
-  - 🖥️ desktop
   - 🤖 Android
   - 🍏 iOS
   - 💬 Discord
+  - 🖥️ desktop
 
 I don't drink coffee but feel free to support the server costs!
 
@@ -24,12 +24,14 @@ I don't drink coffee but feel free to support the server costs!
 - [Discord bot](./bot/discord/src/jvmMain/kotlin/io/github/sophon/discord/DiscordBot.kt)
 - [fighting-game glossary](./feat/glossaryInfil/src/commonMain/kotlin/io/github/sophon/glossaryinfil/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
 - global frame data sourced from all feature modules
-- [Tekken 8 frame data](./feat/wikiWavu/src/commonMain/kotlin/io/github/sophon/wikiwavu/WavuWikiClient.kt) from [Wavu Wiki](https://wavu.wiki/)
-  - frame data
-  - power crush, heat or homing move-lists
-- [Street Fighter 6 frame data](./feat/wikiSupercombo/src/commonMain/kotlin/io/github/sophon/wikiSuperCombo/SuperComboWikiClient.kt) from [SuperCombo](https://wiki.supercombo.gg/w/Main_Page)
-  - frame data
-  - character data
+- [Wavu Wiki](https://wavu.wiki/)
+  - [Tekken 8](./feat/wikiWavu/src/commonMain/kotlin/io/github/sophon/wikiwavu/WavuWikiClient.kt) 
+    - frame data
+    - power crush, heat or homing move-lists
+- [SuperCombo](https://wiki.supercombo.gg/w/Main_Page)
+  - [Street Fighter 6](./feat/wikiSupercombo/src/commonMain/kotlin/io/github/sophon/wikiSuperCombo/SuperComboWikiClient.kt) 
+    - frame data
+    - character data
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
 
@@ -38,8 +40,17 @@ I don't drink coffee but feel free to support the server costs!
 - Docker, pipelines, updates
 - other feature modules
   - [2XKO wiki](https://wiki.play2xko.com/en-us/) feature
-  - [DustLoop wiki](https://www.dustloop.com/wiki/) feature for GGST
-  - [DreamCancel wiki](https://dreamcancel.com/wiki/Main_Page) feature for COTW
+  - [DustLoop wiki](https://www.dustloop.com/wiki/) feature for
+    - GGST
+    - DBFZ
+    - GBVSR
+  - [DreamCancel wiki](https://dreamcancel.com/wiki/Main_Page)
+    - COTW
+    - KOF15
+  - [SuperCombo](https://wiki.supercombo.gg/w/Main_Page)
+    - MK1
+    - SoulCalibur 6
+  - [Wavu Wiki](https://wavu.wiki/)
 
 
 ### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
