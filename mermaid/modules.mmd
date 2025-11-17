@@ -1,7 +1,6 @@
 graph LR
     subgraph Bots
         discordBot[Discord Bot]
-        yourBot[Your Bot]
     end
 
     subgraph "Mobile Clients"
@@ -9,26 +8,51 @@ graph LR
         iOS[iOS]
     end
 
-    subgraph Sources
+    subgraph Features
         glossaryInfil[Glossary Infil]
-        wikiWavu[Wiki Wavu]
-        yourWiki[Your Wiki]
+        communityWiki[Community Wiki]
+    end
+
+    subgraph Community Wiki
+        wikiWavu[Wavu]
+        supercombo[SuperCombo]
+        2xko[2XKO]
+        dustloop[Dustloop]
+        dreamcancel[DreamCancel]
     end
 
     discordBot -->|uses| glossaryInfil
-    discordBot -->|uses| wikiWavu
-    discordBot -.->|uses| yourWiki
+    discordBot -->|uses| communityWiki
 
-    yourBot -.->|uses| yourWiki
+    android -->|uses| communityWiki
+    iOS -->|uses| communityWiki
 
-    android -->|uses| wikiWavu
+    communityWiki --> wikiWavu
+    communityWiki --> supercombo
+    communityWiki --> 2xko
+    communityWiki --> dreamcancel
 
-    iOS -->|uses| wikiWavu
+    wikiWavu --> t8[Tekken 8]
+    supercombo --> sf6[Street Fighter 6]
+    supercombo --> mk1[Mortal Kombat 1]
+    supercombo --> sc6[SoulCalibur VI]
+    dustloop --> ggst[Guilty Gear: Strive]
+    dustloop --> dbfz[Dragon Ball FighterZ]
+    dustloop --> gbvsr[Granblue Fantasy Versus: Rising]
+    2xko --> xko[2XKO]
+    dreamcancel --> kof15[King of Fighters XV]
+    dreamcancel --> kof13[King of Fighters XIII]
+
 
     style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
-    style yourBot fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
     style android fill:#10B981,stroke:#059669,color:#fff
-    style iOS fill:#A78BFA,stroke:#7C3AED,color:#fff,stroke-dasharray: 5 5
-    style glossaryInfil fill:#10B981,stroke:#059669,color:#fff
-    style wikiWavu fill:#10B981,stroke:#059669,color:#fff
-    style yourWiki fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
+    style iOS fill:#10B981,stroke:#059669,color:#fff
+    style glossaryInfil fill:#8B6F47,color:#fff
+    style communityWiki fill:#3366CC,color:#fff
+    style wikiWavu fill:#059669,color:#fff
+    style supercombo fill:#F8F9FA,color:#000000
+    style 2xko fill:#F8F9FA,color:#000000
+    style dustloop fill:#F8F9FA,color:#000000
+    style dreamcancel fill:#F8F9FA,color:#000000
+    style t8 fill:#059669, color:#fff
+    style sf6 fill:#059669, color:#fff
