@@ -188,7 +188,7 @@ class FetchFastestNormalsUseCaseTest {
     @Test
     fun `given database error when invoked then returns error`() = runTest {
         // Given
-        val error = WikiError.DOWNLOAD_ERROR
+        val error = WikiError.DownloadError("")
         fakeDb.resultToReturn = Result.Error(error)
 
         // When

@@ -46,7 +46,7 @@ class FetchMoveUseCaseTest {
         // given
         val charName = "unknown"
         val moveQuery = "5lp"
-        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.UNKNOWN_CHARACTER)
+        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.UnknownCharacter(charName))
         val useCase = FetchMoveUseCase(fakeDb)
 
         // when
@@ -54,7 +54,7 @@ class FetchMoveUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.UNKNOWN_CHARACTER, result.error)
+        assertTrue(result.error is WikiError.UnknownCharacter)
     }
 
     @Test
@@ -62,7 +62,7 @@ class FetchMoveUseCaseTest {
         // given
         val charName = "ken"
         val moveQuery = "invalid"
-        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.UNKNOWN_MOVE)
+        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.UnknownMove(charName, moveQuery))
         val useCase = FetchMoveUseCase(fakeDb)
 
         // when
@@ -70,7 +70,7 @@ class FetchMoveUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.UNKNOWN_MOVE, result.error)
+        assertTrue(result.error is WikiError.UnknownMove)
     }
 
     @Test
@@ -78,7 +78,7 @@ class FetchMoveUseCaseTest {
         // given
         val charName = "chun-li"
         val moveQuery = "236p"
-        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
         val useCase = FetchMoveUseCase(fakeDb)
 
         // when
@@ -86,7 +86,7 @@ class FetchMoveUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
     }
     //endregion
 
@@ -94,7 +94,7 @@ class FetchMoveUseCaseTest {
     private class FakeMoveListDB(
         private val shouldSucceed: Boolean,
         private val moveToReturn: Move? = null,
-        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+        private val errorToReturn: WikiError = WikiError.DatabaseError("")
     ) : MoveListDB {
         var lastQueriedCharName: String? = null
         var lastQueriedMoveQuery: String? = null
@@ -108,7 +108,7 @@ class FetchMoveUseCaseTest {
             lastQueriedMoveQuery = moveQuery
             return if (shouldSucceed) {
                 moveToReturn?.let { Result.Success(it) }
-                    ?: Result.Error(WikiError.UNKNOWN_MOVE)
+                    ?: Result.Error(WikiError.UnknownMove(charName, moveQuery))
             } else {
                 Result.Error(errorToReturn)
             }

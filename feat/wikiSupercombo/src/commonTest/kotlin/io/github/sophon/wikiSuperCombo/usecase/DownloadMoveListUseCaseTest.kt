@@ -2,7 +2,7 @@ package io.github.sophon.wikiSuperCombo.usecase
 
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.wiki.data.WikiError.*
+import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.wikiSuperCombo.data.CharacterListResponseDto
 import io.github.sophon.wikiSuperCombo.data.MoveDto
 import io.github.sophon.wikiSuperCombo.data.MoveListResponseDto
@@ -186,7 +186,7 @@ class DownloadMoveListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(DOWNLOAD_ERROR, result.error)
+        assertTrue(result.error is WikiError.DownloadError)
     }
 
     @Test
@@ -203,7 +203,7 @@ class DownloadMoveListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(DOWNLOAD_ERROR, result.error)
+        assertTrue(result.error is WikiError.DownloadError)
     }
 
     @Test
@@ -220,7 +220,7 @@ class DownloadMoveListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(DOWNLOAD_ERROR, result.error)
+        assertTrue(result.error is WikiError.DownloadError)
     }
 
     @Test
@@ -237,7 +237,7 @@ class DownloadMoveListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(DOWNLOAD_ERROR, result.error)
+        assertTrue(result.error is WikiError.DownloadError)
     }
     //endregion
 

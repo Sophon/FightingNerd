@@ -16,12 +16,12 @@ internal class SearchGlossaryUseCase(
                 result.data
                     .firstOrNull()
                     ?.let { Result.Success(it) }
-                    ?: Result.Error(BotError.GLOSSARY_TERM_NOT_FOUND)
+                    ?: Result.Error(BotError.GlossaryTermNotFound(query))
             }
             is Result.Error -> {
                 Napier.e(tag = TAG) { result.error.toString() }
                 startGlossaryUseCase.invoke()
-                Result.Error(BotError.EMPTY_GLOSSARY)
+                Result.Error(BotError.EmptyDatabase())
             }
         }
     }

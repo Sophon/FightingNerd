@@ -13,9 +13,9 @@ internal enum class HomeError: Error {
 
 internal fun WikiError.toDomainError(): HomeError {
     return when (this) {
-        WikiError.UNKNOWN_CHARACTER -> HomeError.UNKNOWN_CHARACTER
-        WikiError.DOWNLOAD_ERROR-> HomeError.DOWNLOAD_ERROR
-        WikiError.UNKNOWN_MOVE,
-        WikiError.DATABASE_ERROR -> HomeError.UNKNOWN
+        is WikiError.UnknownCharacter -> HomeError.UNKNOWN_CHARACTER
+        is WikiError.DownloadError-> HomeError.DOWNLOAD_ERROR
+        is WikiError.UnknownMove,
+        is WikiError.DatabaseError -> HomeError.UNKNOWN
     }
 }

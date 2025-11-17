@@ -113,7 +113,7 @@ class CacheMoveListUseCaseTest {
                 damage = "4"
             )
         )
-        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
         val useCase = CacheMoveListUseCase(fakeDb)
 
         // when
@@ -121,7 +121,7 @@ class CacheMoveListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
     }
 
     @Test
@@ -144,7 +144,7 @@ class CacheMoveListUseCaseTest {
         )
         val fakeDb = FakeMoveListDB(
             shouldSucceed = false,
-            errorToReturn = WikiError.DATABASE_ERROR,
+            errorToReturn = WikiError.DatabaseError(""),
             failAfterInsertCount = 1
         )
         val useCase = CacheMoveListUseCase(fakeDb)
@@ -154,7 +154,7 @@ class CacheMoveListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
         assertEquals(listOf("guile"), fakeDb.insertedCharNames)
     }
     //endregion
@@ -162,7 +162,7 @@ class CacheMoveListUseCaseTest {
     //region Test Doubles
     private class FakeMoveListDB(
         private val shouldSucceed: Boolean,
-        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR,
+        private val errorToReturn: WikiError = WikiError.DatabaseError(""),
         private val failAfterInsertCount: Int = 0
     ) : MoveListDB {
         val insertedCharNames = mutableListOf<String>()

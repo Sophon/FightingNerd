@@ -366,14 +366,14 @@ class CacheMoveListUseCaseTest {
             return database[charName]
                 ?.values?.toList()
                 ?.let { Result.Success(it) }
-                ?: Result.Error(WikiError.UNKNOWN_CHARACTER)
+                ?: Result.Error(WikiError.UnknownCharacter(charName))
         }
 
         override suspend fun fetchMoveDataFor(charName: String, moveQuery: String): Result<Move, WikiError> {
             val moveList = database[charName]
-                ?: return Result.Error(WikiError.UNKNOWN_CHARACTER)
+                ?: return Result.Error(WikiError.UnknownCharacter(charName))
             val moveData = moveList[moveQuery]
-                ?: return Result.Error(WikiError.UNKNOWN_MOVE)
+                ?: return Result.Error(WikiError.UnknownMove(charName, moveQuery))
 
             return Result.Success(moveData)
         }
@@ -391,7 +391,7 @@ class CacheMoveListUseCaseTest {
                 database[charName] = indexedMoves
                 Result.Success(Unit)
             } catch (e: Exception) {
-                Result.Error(WikiError.DATABASE_ERROR)
+                Result.Error(WikiError.DatabaseError(""))
             }
         }
 
@@ -400,7 +400,7 @@ class CacheMoveListUseCaseTest {
                 database.clear()
                 Result.Success(Unit)
             } catch (e: Exception) {
-                Result.Error(WikiError.DATABASE_ERROR)
+                Result.Error(WikiError.DatabaseError(""))
             }
         }
 

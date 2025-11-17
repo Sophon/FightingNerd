@@ -60,7 +60,7 @@ internal class CoreDiscordFeature(
 
             Command.REPO -> Result.Success(createRepoEmbed())
             Command.INVITE -> Result.Success(createInviteEmbed())
-            else -> Result.Error(BotError.BOT_LOGIC_ERROR)
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 

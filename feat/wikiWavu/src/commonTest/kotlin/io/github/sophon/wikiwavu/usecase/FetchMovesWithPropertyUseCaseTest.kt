@@ -318,7 +318,7 @@ class FetchMovesWithPropertyUseCaseTest {
     fun `invoke returns error when database returns error`() = runTest {
         // Given
         val charName = "Jin"
-        mockDb.mockResponse = Result.Error(WikiError.UNKNOWN_CHARACTER)
+        mockDb.mockResponse = Result.Error(WikiError.UnknownCharacter(charName))
 
         // When
         val result = useCase.invoke(charName) { it.t8Properties?.isHeat == true }
@@ -326,35 +326,35 @@ class FetchMovesWithPropertyUseCaseTest {
         // Then
         assertThat(result).isNotNull()
         result as Result.Error
-        assertThat(result.error).isEqualTo(WikiError.UNKNOWN_CHARACTER)
+        assertTrue(result.error is WikiError.UnknownCharacter)
     }
 
     @Test
     fun `invoke returns error when character not found`() = runTest {
         // Given
         val charName = "NonExistentCharacter"
-        mockDb.mockResponse = Result.Error(WikiError.UNKNOWN_CHARACTER)
+        mockDb.mockResponse = Result.Error(WikiError.UnknownCharacter(charName))
 
         // When
         val result = useCase.invoke(charName) { it.t8Properties?.isPowerCrush == true }
 
         // Then
         result as Result.Error
-        assertThat(result.error).isEqualTo(WikiError.UNKNOWN_CHARACTER)
+        assertTrue(result.error is WikiError.UnknownCharacter)
     }
 
     @Test
     fun `invoke returns error when database operation fails`() = runTest {
         // Given
         val charName = "Jin"
-        mockDb.mockResponse = Result.Error(WikiError.DOWNLOAD_ERROR)
+        mockDb.mockResponse = Result.Error(WikiError.DownloadError(""))
 
         // When
         val result = useCase.invoke(charName) { it.t8Properties?.isHoming == true }
 
         // Then
         result as Result.Error
-        assertThat(result.error).isEqualTo(WikiError.DOWNLOAD_ERROR)
+        assertTrue(result.error is WikiError.DownloadError)
     }
     //endregion
 
@@ -493,7 +493,7 @@ class FetchMovesWithPropertyUseCaseTest {
         var mockResponse: Result<List<Move>, WikiError>? = null
 
         override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
-            return mockResponse ?: Result.Error(WikiError.UNKNOWN_CHARACTER)
+            return mockResponse ?: Result.Error(WikiError.UnknownCharacter(charName))
         }
 
         override suspend fun fetchMoveDataFor(
@@ -501,7 +501,7 @@ class FetchMovesWithPropertyUseCaseTest {
             moveQuery: String
         ): Result<Move, WikiError> {
             // Not used in FetchMovesWithPropertyUseCase
-            return Result.Error(WikiError.UNKNOWN_MOVE)
+            return Result.Error(WikiError.UnknownMove(charName, moveQuery))
         }
 
         override suspend fun insertMoveList(

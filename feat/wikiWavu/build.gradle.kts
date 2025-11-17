@@ -48,14 +48,6 @@ kotlin {
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.test.turbine)
-        }
-
-        jvmTest.dependencies {
-            implementation(libs.junit)
-            implementation(libs.kotlin.testJunit)
-        }
-
-        androidUnitTest.dependencies {
             implementation(libs.junit)
             implementation(libs.kotlin.testJunit)
         }

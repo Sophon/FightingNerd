@@ -12,7 +12,7 @@ internal class SearchFrameDataUseCase(
 ) {
     suspend fun invoke(query: String): Result<Move, BotError> {
         val parsedQuery = query.parseQuery()
-        if (parsedQuery == null) return Result.Error(BotError.INVALID_QUERY)
+        if (parsedQuery == null) return Result.Error(BotError.UnknownMove(query))
 
         return when (
             val result = wavuWikiClient.frameDataFor(charName = parsedQuery.charName, moveQuery = parsedQuery.move)

@@ -125,7 +125,7 @@ internal class WavuWikiDiscordFeature(
             Command.PC -> searchPowerCrushMoves(query)
             Command.HEAT -> searchHeatMoves(query)
             Command.HOMING -> searchHomingMoves(query)
-            else -> Result.Error(BotError.BOT_LOGIC_ERROR)
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 

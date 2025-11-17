@@ -36,7 +36,7 @@ class ClearCacheUseCaseTest {
     @Test
     fun `invoke returns error when character database wipe fails`() {
         // given
-        val fakeCharListDB = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeCharListDB = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
         val fakeMoveListDB = FakeMoveListDB(shouldSucceed = true)
         val useCase = ClearCacheUseCase(fakeCharListDB, fakeMoveListDB)
 
@@ -45,7 +45,7 @@ class ClearCacheUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
         assertTrue(fakeCharListDB.wipeWasCalled)
         assertTrue(fakeMoveListDB.wipeWasCalled)
     }
@@ -54,7 +54,7 @@ class ClearCacheUseCaseTest {
     fun `invoke returns error when move database wipe fails`() {
         // given
         val fakeCharListDB = FakeCharacterListDB(shouldSucceed = true)
-        val fakeMoveListDB = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeMoveListDB = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
         val useCase = ClearCacheUseCase(fakeCharListDB, fakeMoveListDB)
 
         // when
@@ -62,7 +62,7 @@ class ClearCacheUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
         assertTrue(fakeCharListDB.wipeWasCalled)
         assertTrue(fakeMoveListDB.wipeWasCalled)
     }
@@ -70,8 +70,8 @@ class ClearCacheUseCaseTest {
     @Test
     fun `invoke returns character database error when both wipes fail`() {
         // given
-        val fakeCharListDB = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
-        val fakeMoveListDB = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DOWNLOAD_ERROR)
+        val fakeCharListDB = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
+        val fakeMoveListDB = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DownloadError(""))
         val useCase = ClearCacheUseCase(fakeCharListDB, fakeMoveListDB)
 
         // when
@@ -79,7 +79,7 @@ class ClearCacheUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
         assertTrue(fakeCharListDB.wipeWasCalled)
         assertTrue(fakeMoveListDB.wipeWasCalled)
     }
@@ -88,7 +88,7 @@ class ClearCacheUseCaseTest {
     //region Test Doubles
     private class FakeCharacterListDB(
         private val shouldSucceed: Boolean,
-        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+        private val errorToReturn: WikiError = WikiError.DatabaseError("")
     ) : CharacterListDB {
         var wipeWasCalled = false
 
@@ -116,7 +116,7 @@ class ClearCacheUseCaseTest {
 
     private class FakeMoveListDB(
         private val shouldSucceed: Boolean,
-        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+        private val errorToReturn: WikiError = WikiError.DatabaseError("")
     ) : MoveListDB {
         var wipeWasCalled = false
 

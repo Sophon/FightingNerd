@@ -2,15 +2,16 @@ package io.github.sophon.discord
 
 import io.github.sophon.core.domain.Error
 
-enum class BotError: Error {
-    INVALID_QUERY,
-    UNKNOWN_CHARACTER,
-    UNKNOWN_MOVE,
-    EMPTY_GLOSSARY,
-    GLOSSARY_TERM_NOT_FOUND,
-    DOWNLOAD_ERROR,
+sealed class BotError(private vararg val inputs: String) : Error {
+    class InvalidQuery(input: String) : BotError(input)
+    class UnknownCharacter(input: String) : BotError(input)
+    class UnknownMove(vararg inputs: String) : BotError(*inputs)
+    class GlossaryTermNotFound(input: String) : BotError(input)
+    class DownloadError(input: String) : BotError(input)
+    class BotLogicError(vararg inputs: String) : BotError(*inputs)
+    class Unknown(input: String = "") : BotError(input)
+    class EmptyDatabase : BotError()
 
-    BOT_LOGIC_ERROR,
-
-    UNKNOWN,
+    override fun toString(): String =
+        "${this::class.simpleName}(${inputs.joinToString()})"
 }

@@ -60,14 +60,14 @@ class FetchMoveListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
     }
 
     @Test
     fun `invoke returns database error when database query fails`() {
         // given
         val charName = "paul"
-        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
         val useCase = FetchMoveListUseCase(fakeDb)
 
         // when
@@ -75,14 +75,14 @@ class FetchMoveListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
     }
 
     @Test
     fun `invoke returns unknown character error when character not found`() {
         // given
         val charName = "unknown"
-        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.UNKNOWN_CHARACTER)
+        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.UnknownCharacter(charName))
         val useCase = FetchMoveListUseCase(fakeDb)
 
         // when
@@ -90,7 +90,7 @@ class FetchMoveListUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.UNKNOWN_CHARACTER, result.error)
+        assertTrue(result.error is WikiError.UnknownCharacter)
     }
     //endregion
 
@@ -98,7 +98,7 @@ class FetchMoveListUseCaseTest {
     private class FakeMoveListDB(
         private val shouldSucceed: Boolean,
         private val moveListToReturn: List<Move> = emptyList(),
-        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+        private val errorToReturn: WikiError = WikiError.DatabaseError("")
     ) : MoveListDB {
         var lastQueriedCharName: String? = null
 

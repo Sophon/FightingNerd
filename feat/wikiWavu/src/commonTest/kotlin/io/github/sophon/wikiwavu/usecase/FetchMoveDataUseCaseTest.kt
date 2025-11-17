@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class FetchMoveDataUseCaseTest {
     private lateinit var mockDb: MockMoveListDB
@@ -276,7 +277,7 @@ class FetchMoveDataUseCaseTest {
         // Given
         val charName = "Yoshimitsu"
         val moveQuery = "999"
-        mockDb.mockResponse = Result.Error(WikiError.UNKNOWN_MOVE)
+        mockDb.mockResponse = Result.Error(WikiError.UnknownMove(charName, moveQuery))
 
         // When
         val result = useCase.invoke(charName, moveQuery)
@@ -284,7 +285,7 @@ class FetchMoveDataUseCaseTest {
         // Then
         assertThat(result).isNotNull()
         result as Result.Error
-        assertThat(result.error).isEqualTo(WikiError.UNKNOWN_MOVE)
+        assertTrue(result.error is WikiError.UnknownMove)
     }
 
     @Test
@@ -292,14 +293,14 @@ class FetchMoveDataUseCaseTest {
         // Given
         val charName = "NonExistentCharacter"
         val moveQuery = "1"
-        mockDb.mockResponse = Result.Error(WikiError.UNKNOWN_CHARACTER)
+        mockDb.mockResponse = Result.Error(WikiError.UnknownCharacter(charName))
 
         // When
         val result = useCase.invoke(charName, moveQuery)
 
         // Then
         result as Result.Error
-        assertThat(result.error).isEqualTo(WikiError.UNKNOWN_CHARACTER)
+        assertTrue(result.error is WikiError.UnknownCharacter)
     }
 
     @Test
@@ -307,14 +308,14 @@ class FetchMoveDataUseCaseTest {
         // Given
         val charName = "Jin"
         val moveQuery = "df2"
-        mockDb.mockResponse = Result.Error(WikiError.DOWNLOAD_ERROR)
+        mockDb.mockResponse = Result.Error(WikiError.DownloadError(""))
 
         // When
         val result = useCase.invoke(charName, moveQuery)
 
         // Then
         result as Result.Error
-        assertThat(result.error).isEqualTo(WikiError.DOWNLOAD_ERROR)
+        assertTrue(result.error is WikiError.DownloadError)
     }
 
     @Test
@@ -342,7 +343,7 @@ class FetchMoveDataUseCaseTest {
         // Given
         val charName = "Jin"
         val moveQuery = "   " // Should become ""
-        mockDb.mockResponse = Result.Error(WikiError.UNKNOWN_MOVE)
+        mockDb.mockResponse = Result.Error(WikiError.UnknownMove(charName, moveQuery))
 
         // When
         useCase.invoke(charName, moveQuery)
@@ -356,7 +357,7 @@ class FetchMoveDataUseCaseTest {
         // Given
         val charName = "Jin"
         val moveQuery = ", , /" // Should become ""
-        mockDb.mockResponse = Result.Error(WikiError.UNKNOWN_MOVE)
+        mockDb.mockResponse = Result.Error(WikiError.UnknownMove(charName, moveQuery))
 
         // When
         useCase.invoke(charName, moveQuery)
@@ -427,7 +428,7 @@ class FetchMoveDataUseCaseTest {
 
         override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
             // Not used in FetchMoveDataUseCase
-            return Result.Error(WikiError.UNKNOWN_CHARACTER)
+            return Result.Error(WikiError.UnknownCharacter(charName))
         }
 
         override suspend fun fetchMoveDataFor(
@@ -436,7 +437,7 @@ class FetchMoveDataUseCaseTest {
         ): Result<Move, WikiError> {
             lastCharName = charName
             lastMoveQuery = moveQuery
-            return mockResponse ?: Result.Error(WikiError.UNKNOWN_MOVE)
+            return mockResponse ?: Result.Error(WikiError.UnknownMove(charName, moveQuery))
         }
 
         override suspend fun insertMoveList(

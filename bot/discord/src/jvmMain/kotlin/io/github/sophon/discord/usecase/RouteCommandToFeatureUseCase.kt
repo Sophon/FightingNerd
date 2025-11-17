@@ -16,7 +16,7 @@ internal class RouteCommandToFeatureUseCase(
             .removeTag()
             .lowercase()
             .takeIf { it.isNotBlank() }
-            ?: return Result.Error(BotError.INVALID_QUERY)
+            ?: return Result.Error(BotError.InvalidQuery(message))
 
         val firstWord = extractFirstWord(fullQuery)
 
@@ -79,7 +79,7 @@ internal class RouteCommandToFeatureUseCase(
         commandString: String,
         query: String,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
-        var result: Result<EmbedBuilder.() -> Unit, BotError> = Result.Error(BotError.INVALID_QUERY)
+        var result: Result<EmbedBuilder.() -> Unit, BotError> = Result.Error(BotError.InvalidQuery(query))
 
         for (feature in featureList) {
             val explicitCommand = feature.otherCommands
@@ -123,6 +123,6 @@ internal class RouteCommandToFeatureUseCase(
             }
         }
 
-        return Result.Error(BotError.INVALID_QUERY)
+        return Result.Error(BotError.InvalidQuery(fullQuery))
     }
 }

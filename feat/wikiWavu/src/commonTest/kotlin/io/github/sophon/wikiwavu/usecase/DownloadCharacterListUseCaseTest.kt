@@ -12,6 +12,7 @@ import io.github.sophon.wikiwavu.data.CharacterListResponseDto
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 class DownloadCharacterListUseCaseTest {
     //region Test Doubles
@@ -220,7 +221,7 @@ class DownloadCharacterListUseCaseTest {
         // Then
         assertThat(result).isInstanceOf(Result.Error::class)
         val error = (result as Result.Error).error
-        assertThat(error).isEqualTo(WikiError.DOWNLOAD_ERROR)
+        assertTrue(result.error is WikiError.DownloadError)
     }
 
     @Test
@@ -237,7 +238,7 @@ class DownloadCharacterListUseCaseTest {
         // Then
         assertThat(result).isInstanceOf(Result.Error::class)
         val error = (result as Result.Error).error
-        assertThat(error).isEqualTo(WikiError.DOWNLOAD_ERROR)
+        assertTrue(result.error is WikiError.DownloadError)
     }
     //endregion
 }

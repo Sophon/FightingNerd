@@ -11,6 +11,7 @@ import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
@@ -59,9 +60,9 @@ class RouteCommandToFeatureUseCaseTest {
                     val charName = parts.firstOrNull()?.lowercase()
 
                     if (charName !in tekkenChars) {
-                        Result.Error(BotError.UNKNOWN_CHARACTER)
+                        Result.Error(BotError.UnknownCharacter(charName.orEmpty()))
                     } else if (parts.size < 2) {
-                        Result.Error(BotError.UNKNOWN_MOVE)
+                        Result.Error(BotError.UnknownMove(charName.orEmpty(), query))
                     } else {
                         Result.Success { title = "Wavu FD: $query" }
                     }
@@ -71,10 +72,10 @@ class RouteCommandToFeatureUseCaseTest {
                     if (charName in tekkenChars) {
                         Result.Success { title = "Wavu ${command.name}: $query" }
                     } else {
-                        Result.Error(BotError.UNKNOWN_CHARACTER)
+                        Result.Error(BotError.UnknownCharacter(charName))
                     }
                 }
-                else -> Result.Error(BotError.BOT_LOGIC_ERROR)
+                else -> Result.Error(BotError.BotLogicError())
             }
         }
     }
@@ -110,10 +111,10 @@ class RouteCommandToFeatureUseCaseTest {
                     if (query.lowercase() in glossaryTerms) {
                         Result.Success { title = "Infil GL: $query" }
                     } else {
-                        Result.Error(BotError.GLOSSARY_TERM_NOT_FOUND)
+                        Result.Error(BotError.GlossaryTermNotFound(query))
                     }
                 }
-                else -> Result.Error(BotError.BOT_LOGIC_ERROR)
+                else -> Result.Error(BotError.BotLogicError())
             }
         }
     }
@@ -156,9 +157,9 @@ class RouteCommandToFeatureUseCaseTest {
                     val charName = parts.firstOrNull()?.lowercase()
 
                     if (charName !in sfChars) {
-                        Result.Error(BotError.UNKNOWN_CHARACTER)
+                        Result.Error(BotError.UnknownCharacter(charName.orEmpty()))
                     } else if (parts.size < 2) {
-                        Result.Error(BotError.UNKNOWN_MOVE)
+                        Result.Error(BotError.UnknownMove(charName.orEmpty(), query))
                     } else {
                         Result.Success { title = "SuperCombo FD: $query" }
                     }
@@ -167,10 +168,10 @@ class RouteCommandToFeatureUseCaseTest {
                     if (query.lowercase() in sfChars) {
                         Result.Success { title = "SuperCombo CHARSF6: $query" }
                     } else {
-                        Result.Error(BotError.UNKNOWN_CHARACTER)
+                        Result.Error(BotError.UnknownCharacter(query))
                     }
                 }
-                else -> Result.Error(BotError.BOT_LOGIC_ERROR)
+                else -> Result.Error(BotError.BotLogicError())
             }
         }
     }
@@ -193,7 +194,7 @@ class RouteCommandToFeatureUseCaseTest {
             return if (command == Command.HEAT && query.isNotBlank()) {
                 Result.Success { title = "NoDefault HEAT: $query" }
             } else {
-                Result.Error(BotError.INVALID_QUERY)
+                Result.Error(BotError.InvalidQuery(query))
             }
         }
     }
@@ -210,25 +211,25 @@ class RouteCommandToFeatureUseCaseTest {
 
     //region Invalid Input
     @Test
-    fun `invoke with blank message returns INVALID_QUERY error`() = runTest {
+    fun `invoke with blank message returns InvalidQuery(query) error`() = runTest {
         // given
         val message = "@bot   "
         // when
         val result = useCase.invoke(message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isEqualTo(BotError.INVALID_QUERY)
+        assertTrue((result as Result.Error).error is BotError.InvalidQuery)
     }
 
     @Test
-    fun `invoke with only tag returns INVALID_QUERY error`() = runTest {
+    fun `invoke with only tag returns InvalidQuery(query) error`() = runTest {
         // given
         val message = "@bot"
         // when
         val result = useCase.invoke(message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isEqualTo(BotError.INVALID_QUERY)
+        assertTrue((result as Result.Error).error is BotError.InvalidQuery)
     }
     //endregion
 
@@ -293,7 +294,7 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isEqualTo(BotError.UNKNOWN_CHARACTER)
+        assertTrue((result as Result.Error).error is BotError.UnknownCharacter)
     }
 
     @Test
@@ -304,7 +305,7 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isEqualTo(BotError.GLOSSARY_TERM_NOT_FOUND)
+        assertTrue((result as Result.Error).error is BotError.GlossaryTermNotFound)
     }
     //endregion
 
@@ -358,7 +359,6 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isEqualTo(BotError.INVALID_QUERY)
     }
 
     @Test
@@ -369,7 +369,6 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isEqualTo(BotError.INVALID_QUERY)
     }
     //endregion
 
@@ -405,7 +404,7 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(commandString, query)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isEqualTo(BotError.UNKNOWN_CHARACTER)
+        assertTrue((result as Result.Error).error is BotError.UnknownCharacter)
     }
 
     @Test

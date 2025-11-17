@@ -40,7 +40,7 @@ class FetchCharacterUseCaseTest {
     fun `invoke returns unknown character error when character not found`() {
         // given
         val charName = "unknown"
-        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.UNKNOWN_CHARACTER)
+        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.UnknownCharacter(""))
         val useCase = FetchCharacterUseCase(fakeDb)
 
         // when
@@ -48,14 +48,14 @@ class FetchCharacterUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.UNKNOWN_CHARACTER, result.error)
+        assertTrue(result.error is WikiError.UnknownCharacter)
     }
 
     @Test
     fun `invoke returns database error when database query fails`() {
         // given
         val charName = "ken"
-        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeDb = FakeCharacterListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
         val useCase = FetchCharacterUseCase(fakeDb)
 
         // when
@@ -63,7 +63,7 @@ class FetchCharacterUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
     }
     //endregion
 
@@ -71,7 +71,7 @@ class FetchCharacterUseCaseTest {
     private class FakeCharacterListDB(
         private val shouldSucceed: Boolean,
         private val characterToReturn: Character? = null,
-        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+        private val errorToReturn: WikiError = WikiError.DatabaseError("")
     ) : CharacterListDB {
         var lastQueriedCharName: String? = null
 
@@ -91,7 +91,7 @@ class FetchCharacterUseCaseTest {
             lastQueriedCharName = charName
             return if (shouldSucceed) {
                 characterToReturn?.let { Result.Success(it) }
-                    ?: Result.Error(WikiError.UNKNOWN_CHARACTER)
+                    ?: Result.Error(WikiError.UnknownCharacter(charName))
             } else {
                 Result.Error(errorToReturn)
             }

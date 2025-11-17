@@ -52,7 +52,7 @@ internal class InfilGlossaryDiscordFeature(
     ): Result<EmbedBuilder.() -> Unit, BotError> {
         return when (command) {
             Command.GL -> searchTerm(query)
-            else -> Result.Error(BotError.BOT_LOGIC_ERROR)
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 

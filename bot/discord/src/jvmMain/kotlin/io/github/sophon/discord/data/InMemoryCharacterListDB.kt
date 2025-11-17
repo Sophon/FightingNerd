@@ -30,7 +30,7 @@ class InMemoryCharacterListDB: CharacterListDB {
 
     override suspend fun fetchCharacterDataFor(charName: String): Result<Character, WikiError> {
         val character: Character = database[charName]
-            ?: return Result.Error(WikiError.UNKNOWN_CHARACTER)
+            ?: return Result.Error(WikiError.UnknownCharacter(charName))
         return Result.Success(character)
     }
 }
