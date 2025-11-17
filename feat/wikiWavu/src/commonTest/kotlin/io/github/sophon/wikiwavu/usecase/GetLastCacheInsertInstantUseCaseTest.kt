@@ -48,7 +48,7 @@ class GetLastCacheInsertInstantUseCaseTest {
     @Test
     fun `invoke returns database error when database query fails`() {
         // given
-        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DATABASE_ERROR)
+        val fakeDb = FakeMoveListDB(shouldSucceed = false, errorToReturn = WikiError.DatabaseError(""))
         val useCase = GetLastCacheInsertInstantUseCase(fakeDb)
 
         // when
@@ -56,7 +56,7 @@ class GetLastCacheInsertInstantUseCaseTest {
 
         // then
         assertTrue(result is Result.Error)
-        assertEquals(WikiError.DATABASE_ERROR, result.error)
+        assertTrue(result.error is WikiError.DatabaseError)
     }
     //endregion
 
@@ -64,7 +64,7 @@ class GetLastCacheInsertInstantUseCaseTest {
     private class FakeMoveListDB(
         private val shouldSucceed: Boolean,
         private val timestampToReturn: Instant? = null,
-        private val errorToReturn: WikiError = WikiError.DATABASE_ERROR
+        private val errorToReturn: WikiError = WikiError.DatabaseError("")
     ) : MoveListDB {
         override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
             throw NotImplementedError()
