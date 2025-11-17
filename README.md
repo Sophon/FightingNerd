@@ -35,50 +35,64 @@ I don't drink coffee but feel free to support the server costs!
 ### ARCHITECTURE
 
 ```mermaid
-graph TD
-    subgraph Bots
-        discordBot[Discord Bot]
-    end
+graph LR
+  subgraph Bots
+    discordBot[Discord Bot]
+  end
 
-    subgraph "Mobile Clients"
-        android[Android]
-        iOS[iOS]
-    end
+  subgraph "Mobile Clients"
+    android[Android]
+    iOS[iOS]
+  end
 
-    subgraph Features
-        glossaryInfil[Glossary Infil]
-        communityWiki[Community Wiki]
-    end
+  subgraph Features
+    glossaryInfil[Glossary Infil]
+    communityWiki[Community Wiki]
+  end
 
-    subgraph Community Wiki
-        wikiWavu[Wavu]
-        supercombo[SuperCombo]
-        2xko[2XKO]
-        dustloop[Dustloop]
-        dreamcancel[DreamCancel]
-    end
+  subgraph Community Wiki
+    wikiWavu[Wavu]
+    supercombo[SuperCombo]
+    2xko[2XKO]
+    dustloop[Dustloop]
+    dreamcancel[DreamCancel]
+  end
 
-    communityWiki --> wikiWavu
-    communityWiki --> supercombo
-    communityWiki --> 2xko
-    communityWiki --> dreamcancel
+  discordBot -->|uses| glossaryInfil
+  discordBot -->|uses| communityWiki
 
-    discordBot -->|uses| glossaryInfil
-    discordBot -->|uses| communityWiki
+  android -->|uses| communityWiki
+  iOS -->|uses| communityWiki
 
-    android -->|uses| communityWiki
-    iOS -->|uses| communityWiki
+  communityWiki --> wikiWavu
+  communityWiki --> supercombo
+  communityWiki --> 2xko
+  communityWiki --> dreamcancel
 
-    style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
-    style android fill:#10B981,stroke:#059669,color:#fff
-    style iOS fill:#10B981,stroke:#059669,color:#fff
-    style glossaryInfil fill:#8B6F47,color:#fff
-    style communityWiki fill:#3366CC,color:#fff
-    style wikiWavu fill:#F8F9FA,color:#000000
-    style supercombo fill:#F8F9FA,color:#000000
-    style 2xko fill:#F8F9FA,color:#000000
-    style dustloop fill:#F8F9FA,color:#000000
-    style dreamcancel fill:#F8F9FA,color:#000000
+  wikiWavu --> t8[Tekken 8]
+  supercombo --> sf6[Street Fighter 6]
+  supercombo --> mk1[Mortal Kombat 1]
+  supercombo --> sc6[SoulCalibur VI]
+  dustloop --> ggst[Guilty Gear: Strive]
+  dustloop --> dbfz[Dragon Ball FighterZ]
+  dustloop --> gbvsr[Granblue Fantasy Versus: Rising]
+  2xko --> xko[2XKO]
+  dreamcancel --> kof15[King of Fighters XV]
+  dreamcancel --> kof13[King of Fighters XIII]
+
+
+  style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
+  style android fill:#10B981,stroke:#059669,color:#fff
+  style iOS fill:#10B981,stroke:#059669,color:#fff
+  style glossaryInfil fill:#8B6F47,color:#fff
+  style communityWiki fill:#3366CC,color:#fff
+  style wikiWavu fill:#059669,color:#fff
+  style supercombo fill:#F8F9FA,color:#000000
+  style 2xko fill:#F8F9FA,color:#000000
+  style dustloop fill:#F8F9FA,color:#000000
+  style dreamcancel fill:#F8F9FA,color:#000000
+  style t8 fill:#059669, color:#fff
+  style sf6 fill:#059669, color:#fff
 ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
