@@ -7,5 +7,5 @@ fun DataError.Remote.toDomainError(
     tag: String,
 ): WikiError {
     Napier.e(tag = tag) { toString() }
-    return WikiError.DOWNLOAD_ERROR
+    return WikiError.DownloadError("TODO: toDomainError()")
 }
