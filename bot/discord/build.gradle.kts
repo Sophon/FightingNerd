@@ -41,7 +41,31 @@ kotlin {
     }
 }
 
-// Use matching instead of named
+
+val fatJar = tasks.register<Jar>("fatJar") {
+    group = "build"
+    description = "Creates a fat JAR with all dependencies for JVM"
+
+    archiveBaseName.set("discord-bot")
+    archiveClassifier.set("all")
+
+    val jvmTarget = kotlin.targets.getByName("jvm")
+    from(jvmTarget.compilations.getByName("main").output)
+
+    val runtimeClasspath = configurations.getByName("jvmRuntimeClasspath")
+    dependsOn(runtimeClasspath)
+
+    from({
+        runtimeClasspath.map { if (it.isDirectory) it else zipTree(it) }
+    })
+
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes["Main-Class"] = "io.github.sophon.discord.MainKt"
+    }
+}
+
 tasks.matching { it.name == "jvmRun" }.configureEach {
     (this as JavaExec).workingDir = rootProject.projectDir
 }
