@@ -17,6 +17,7 @@ import io.github.sophon.wikiSuperCombo.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
 import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -25,7 +26,7 @@ fun superComboModule() = module {
     singleOf(::SuperComboWikiClient).bind<WikiClient>()
     single { SuperComboFeatureInfo }
 
-    factory<WikiClient> { params ->
+    factory<WikiClient>(named("supercombo")) { params ->
         val gameId: String = params.get()
         val characterListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
