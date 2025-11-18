@@ -7,7 +7,7 @@ import io.github.sophon.wikiwavu.FEATURE_NAME
 import io.github.sophon.wikiwavu.FEATURE_URL
 import io.github.sophon.wikiwavu.data.WavuTables
 
-internal object WavuFeatureInfo {
+object WavuFeatureInfo {
     val featureInfo = FeatureInfo(
         name = FEATURE_NAME,
         url = FEATURE_URL,
