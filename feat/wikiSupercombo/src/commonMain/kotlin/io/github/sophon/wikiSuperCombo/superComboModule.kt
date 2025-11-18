@@ -1,5 +1,6 @@
 package io.github.sophon.wikiSuperCombo
 
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSourceImpl
 import io.github.sophon.wikiSuperCombo.usecase.CacheCharacterListUseCase
@@ -20,7 +21,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 fun superComboModule(dbQualifier: Qualifier? = null) = module {
-    singleOf(::SuperComboWikiClientImpl).bind<SuperComboWikiClient>()
+    singleOf(::SuperComboWikiClient).bind<WikiClient>()
     singleOf(::SuperComboDataSourceImpl).bind<SuperComboDataSource>()
 
     singleOf(::DownloadCharacterListUseCase)
@@ -35,6 +36,5 @@ fun superComboModule(dbQualifier: Qualifier? = null) = module {
     }
     factory { FetchMoveUseCase(get(dbQualifier)) }
     factory { FetchMoveListUseCase(get(dbQualifier)) }
-    factory { FetchFastestNormalsUseCase(get(dbQualifier)) }
     singleOf(::GetFeatureInfoUseCase)
 }
