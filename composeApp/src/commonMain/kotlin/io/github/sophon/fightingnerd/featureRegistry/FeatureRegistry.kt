@@ -9,19 +9,23 @@ internal class FeatureRegistry(
     private val featureMap = mutableMapOf<String, ComposeRegisteredFeature>()
 
     suspend fun initialize() {
-        val enabledFeatureNames = featureListLoader.loadFeatureList().featureList
+        val config = featureListLoader.loadFeatureList()
+
+        val enabledFeatureConfigs = config.featureList
             .filter { it.isEnabled }
-            .map { it.name }
-        val enabledFeatures = fullFeatureList.filter {
-            it.featureInfo.name in enabledFeatureNames
+
+        fullFeatureList.forEach { feature ->
+            val featureConfig = enabledFeatureConfigs
+                .find { it.name == feature.featureInfo.name }
+
+            if (featureConfig != null) {
+                feature.registerGames(featureConfig.supportedGames)
+                featureMap[feature.featureInfo.name] = feature
+            }
         }
-
-        featureMap.putAll(enabledFeatures.associateBy { it.featureInfo.name })
     }
 
-    fun getFeatures(): List<ComposeRegisteredFeature> {
-        return featureMap.values.toList()
-    }
+    fun getFeatures(): List<ComposeRegisteredFeature> = featureMap.values.toList()
 
     fun getFeature(featureInfo: FeatureInfo): ComposeRegisteredFeature? {
         return featureMap[featureInfo.name]

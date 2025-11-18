@@ -20,8 +20,8 @@ fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
         platformModule,
 
         coreModule,
-        wavuModule(named(QUALIFIER_WAVU)),
-        superComboModule(named(QUALIFIER_SC)),
+        wavuModule(),
+        superComboModule(),
 
         screensModule,
 

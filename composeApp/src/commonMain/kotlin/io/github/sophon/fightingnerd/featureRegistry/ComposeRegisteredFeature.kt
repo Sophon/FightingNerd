@@ -3,10 +3,15 @@ package io.github.sophon.fightingnerd.featureRegistry
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.wiki.domain.WikiClient
 import kotlinx.coroutines.flow.Flow
 
 interface ComposeRegisteredFeature {
     val featureInfo: FeatureInfo
+
+    fun registerGames(enabledGames: List<String>)
+
+    fun getWikiClient(gameId: String): WikiClient?
 
     @Composable
     fun HomeScreenContent(navHostController: NavHostController)
