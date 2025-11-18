@@ -5,21 +5,21 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikiSuperCombo.data.CharacterListResponseDto
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
-import io.github.sophon.wikiSuperCombo.data.SuperComboTables
 import io.github.sophon.wikiSuperCombo.data.toDomain
 
 internal class DownloadCharacterListUseCase(
     private val source: SuperComboDataSource,
 ) {
     suspend fun invoke(
-        tables: SuperComboTables.Tables
+        queryTable: QueryTable,
     ): Result<List<Character>, WikiError> {
-        return source.downloadCharacterList(tables.character)
+        return source.downloadCharacterList(queryTable.character)
             .flatMap { dto -> resolveImageUrls(dto) }
             .mapError { it.toDomainError(TAG) }
     }

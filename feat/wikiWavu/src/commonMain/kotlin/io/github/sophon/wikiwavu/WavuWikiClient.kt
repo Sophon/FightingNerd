@@ -6,39 +6,48 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.wikiwavu.data.WavuTables
+import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
 import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
 import io.github.sophon.wikiwavu.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
-import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
+import io.github.sophon.wikiwavu.usecase.FetchCharacterUseCase
+import io.github.sophon.wikiwavu.usecase.FetchMoveUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
-import io.github.sophon.wikiwavu.usecase.GetFeatureInfoUseCase
 import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
 internal class WavuWikiClient(
-    private val getFeatureInfoUseCase: GetFeatureInfoUseCase,
+    gameId: String,
+
+    private val wavuFeatureInfo: WavuFeatureInfo,
 
     private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
+    private val fetchCharacterUseCase: FetchCharacterUseCase,
 
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
-    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
-    private val fetchMoveDataUseCase: FetchMoveDataUseCase,
+    private val fetchMoveUseCase: FetchMoveUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
 
+    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
 ): WikiClient {
+    private val queryTable: QueryTable = WavuTables.getTable(gameId)
+        ?: error("$gameId not supported. Supported: ${WavuTables.supportedGames()}")
+
     override fun getFeatureInfo(): FeatureInfo {
-        return getFeatureInfoUseCase.invoke()
+        return wavuFeatureInfo.featureInfo
     }
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
@@ -57,14 +66,17 @@ internal class WavuWikiClient(
             .onError { Napier.e(tag = TAG) { "fetchCharacterList: $it" } }
     }
 
-    override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
-        TODO("Not yet implemented")
+    override suspend fun fetchCharacter(
+        charName: String
+    ): Result<Character, WikiError> {
+        return fetchCharacterUseCase.invoke(charName)
+            .onError { Napier.e(tag = TAG) { "fetchCharacter(${charName}): $it" } }
     }
 
     override suspend fun downloadMoveList(
         charName: String
     ): Result<List<Move>, WikiError> {
-        return downloadMoveListUseCase.invoke(charName)
+        return downloadMoveListUseCase.invoke(queryTable, charName)
             .onSuccess {
                 Napier.d(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
             }
@@ -92,7 +104,7 @@ internal class WavuWikiClient(
         charName: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        return fetchMoveDataUseCase.invoke(charName, moveQuery)
+        return fetchMoveUseCase.invoke(charName, moveQuery)
             .onError {
                 Napier.e(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
             }

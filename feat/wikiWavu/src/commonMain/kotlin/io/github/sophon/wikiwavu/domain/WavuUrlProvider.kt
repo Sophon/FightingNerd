@@ -5,7 +5,7 @@ import io.github.sophon.core.util.urlEncode
 import io.github.sophon.wikiwavu.MOVE_URL
 import io.github.sophon.wikiwavu.VIDEO_URL
 
-class WavuUrlProvider {
+internal object WavuUrlProvider {
     fun charUrl(charName: String): String {
         return MOVE_URL + charName.replace(" ", "_")
     }

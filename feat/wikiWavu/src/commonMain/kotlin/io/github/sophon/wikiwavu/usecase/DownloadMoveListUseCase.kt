@@ -3,6 +3,7 @@ package io.github.sophon.wikiwavu.usecase
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
+import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.model.Move
@@ -12,8 +13,11 @@ import io.github.sophon.wikiwavu.data.toDomain
 internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,
 ) {
-    suspend fun invoke(charName: String): Result<List<Move>, WikiError> {
-        return source.downloadMoveList(charName)
+    suspend fun invoke(
+        queryTable: QueryTable,
+        charName: String
+    ): Result<List<Move>, WikiError> {
+        return source.downloadMoveList(queryTable.moves, charName)
             .map { dto -> dto.toDomain(charName) }
             .mapError { it.toDomainError(TAG) }
     }
