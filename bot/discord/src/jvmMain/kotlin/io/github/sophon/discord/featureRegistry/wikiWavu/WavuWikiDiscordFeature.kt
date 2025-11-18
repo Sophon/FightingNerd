@@ -17,32 +17,33 @@ import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
+import io.github.sophon.discord.featureRegistry.Scheduler
 import io.github.sophon.discord.featureRegistry.SupportedCommand
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetWavuFeatureInfoUseCase
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetMovesUseCase
+import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.orClickable
+import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours
-import org.koin.core.component.get
 
 internal class WavuWikiDiscordFeature(
-    getWavuFeatureInfoUseCase: GetWavuFeatureInfoUseCase,
+    wavuFeatureInfo: WavuFeatureInfo,
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val getMovesUseCase: GetMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
-    override val featureInfo = getWavuFeatureInfoUseCase.invoke()
+    override val featureInfo = wavuFeatureInfo.featureInfo
     override val defaultCommand = SupportedCommand(
         command = Command.FD,
         description = "Global frame data",

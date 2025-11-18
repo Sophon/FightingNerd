@@ -1,4 +1,4 @@
-package io.github.sophon.discord.featureRegistry.wikiWavu.usecase
+package io.github.sophon.discord.usecase
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map

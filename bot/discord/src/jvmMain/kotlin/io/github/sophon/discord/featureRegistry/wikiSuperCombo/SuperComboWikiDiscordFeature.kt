@@ -21,12 +21,12 @@ import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.GetSuperComboFeatureInfoUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
+import io.github.sophon.discord.featureRegistry.Scheduler
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -36,14 +36,14 @@ import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours
 
 internal class SuperComboWikiDiscordFeature(
-    getSuperComboFeatureInfoUseCase: GetSuperComboFeatureInfoUseCase,
+    superComboFeatureInfo: SuperComboFeatureInfo,
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
-    override val featureInfo = getSuperComboFeatureInfoUseCase.invoke()
+    override val featureInfo = superComboFeatureInfo.featureInfo
     override val defaultCommand = SupportedCommand(
         command = Command.FD,
         description = "Global frame data",

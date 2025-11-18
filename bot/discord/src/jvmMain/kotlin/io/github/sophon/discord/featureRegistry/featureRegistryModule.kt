@@ -8,14 +8,11 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFe
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
-import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.GetSuperComboFeatureInfoUseCase
-import io.github.sophon.discord.usecase.GetCharacterUseCase
-import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
-import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetWavuFeatureInfoUseCase
+import io.github.sophon.discord.usecase.GetCharacterUseCase
+import io.github.sophon.discord.usecase.GetMoveUseCase
+import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.wikiwavu.infrastructure.FileReader
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -30,12 +27,12 @@ internal val featureRegistryModule = module {
     singleOf(::SyncWikiDataUseCase)
     singleOf(::GetMoveUseCase)
     singleOf(::GetCharacterUseCase)
+    singleOf(::GetMoveUseCase)
+
+    singleOf(::Scheduler)
     //endregion
 
     //region Wavu Wiki
-    singleOf(::GetWavuFeatureInfoUseCase)
-
-    singleOf(::Scheduler)
     singleOf(::FileReaderJVM).bind<FileReader>()
     //endregion
 
@@ -46,8 +43,6 @@ internal val featureRegistryModule = module {
     //endregion
 
     //region SuperCombo Wiki
-    singleOf(::GetSuperComboFeatureInfoUseCase)
-    singleOf(::GetMoveUseCase)
     //endregion
 
     //region FEATURES SETUP
