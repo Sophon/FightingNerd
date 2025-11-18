@@ -12,6 +12,7 @@ import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
+import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.wikiwavu.infrastructure.FileReader
 import org.koin.core.module.dsl.singleOf
@@ -28,6 +29,7 @@ internal val featureRegistryModule = module {
     singleOf(::GetMoveUseCase)
     singleOf(::GetCharacterUseCase)
     singleOf(::GetMoveUseCase)
+    singleOf(::GetMovesUseCase)
 
     singleOf(::Scheduler)
     //endregion
