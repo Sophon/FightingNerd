@@ -1,6 +1,8 @@
 package io.github.sophon.wikiwavu
 
 import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.wikiwavu.data.WavuWikiDataSource
+import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
 import io.github.sophon.wikiwavu.domain.WavuUrlProvider
 import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
@@ -19,6 +21,7 @@ import org.koin.dsl.module
 
 fun wavuModule(dbQualifier: Qualifier? = null) = module {
     singleOf(::WavuWikiClient).bind<WikiClient>()
+    singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
 
     singleOf(::DownloadCharacterListUseCase)
     factory { CacheCharacterListUseCase(get(dbQualifier)) }

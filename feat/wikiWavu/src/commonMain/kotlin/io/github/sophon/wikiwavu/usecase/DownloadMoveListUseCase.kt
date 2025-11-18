@@ -13,7 +13,7 @@ internal class DownloadMoveListUseCase(
     private val source: WavuWikiDataSource,
 ) {
     suspend fun invoke(charName: String): Result<List<Move>, WikiError> {
-        return source.downloadMoveListFor(charName)
+        return source.downloadMoveList(charName)
             .map { dto -> dto.toDomain(charName) }
             .mapError { it.toDomainError(TAG) }
     }

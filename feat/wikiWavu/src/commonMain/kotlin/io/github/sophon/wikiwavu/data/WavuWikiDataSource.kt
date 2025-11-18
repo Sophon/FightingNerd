@@ -16,7 +16,7 @@ import io.ktor.client.request.parameter
  */
 internal interface WavuWikiDataSource {
     suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote>
-    suspend fun downloadMoveListFor(charName: String): Result<MoveListResponseDto, DataError.Remote>
+    suspend fun downloadMoveList(charName: String): Result<MoveListResponseDto, DataError.Remote>
 }
 
 
@@ -27,7 +27,7 @@ internal class WavuWikiDataSourceImpl(
         return safeCall { httpClient.get(CHAR_LIST_URL) }
     }
 
-    override suspend fun downloadMoveListFor(
+    override suspend fun downloadMoveList(
         charName: String
     ): Result<MoveListResponseDto, DataError.Remote> {
         return safeCall {
