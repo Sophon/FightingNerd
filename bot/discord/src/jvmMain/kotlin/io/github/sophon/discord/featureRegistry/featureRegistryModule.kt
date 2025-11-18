@@ -76,7 +76,18 @@ internal val featureRegistryModule = module {
         val enabledFeatures = config.featureList
             .filter { it.isEnabled }
             .map { it.name }
-        registry.getFeatures(enabledFeatures)
+        val features = registry.getFeatures(enabledFeatures)
+
+        features.forEach { feature ->
+            val featureConfig = config.featureList
+                .find { it.name == feature.featureInfo.name }
+
+            if (featureConfig != null) {
+                feature.registerGames(featureConfig.supportedGames)
+            }
+        }
+
+        features
     }
     //endregion
 }

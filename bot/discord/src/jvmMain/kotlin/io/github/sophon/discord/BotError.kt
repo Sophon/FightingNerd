@@ -9,8 +9,9 @@ sealed class BotError(private vararg val inputs: String) : Error {
     class GlossaryTermNotFound(input: String) : BotError(input)
     class DownloadError(input: String) : BotError(input)
     class BotLogicError(vararg inputs: String) : BotError(*inputs)
-    class Unknown(input: String = "") : BotError(input)
     class EmptyDatabase : BotError()
+    class UnsupportedGame(vararg inputs: String): BotError(*inputs)
+    class Unknown(input: String = "") : BotError(input)
 
     override fun toString(): String =
         "${this::class.simpleName}(${inputs.joinToString()})"
