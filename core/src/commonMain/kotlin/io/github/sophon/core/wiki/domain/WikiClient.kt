@@ -19,7 +19,6 @@ interface WikiClient {
     suspend fun downloadMoveList(charName: String): Result<List<Move>, WikiError>
     suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError>
     suspend fun fetchMoveList(charName: String): Result<List<Move>, WikiError>
-    suspend fun fetchMoveList(charName: String, predicate: (Move) -> Boolean): Result<List<Move>, WikiError>
     suspend fun fetchMove(charName: String, moveQuery: String): Result<Move, WikiError>
 
     suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
