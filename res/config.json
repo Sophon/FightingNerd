@@ -2,7 +2,8 @@
   "featureList": [
     {
       "name": "Infil Glossary",
-      "isEnabled": true
+      "isEnabled": true,
+      "supportedGames": []
     },
     {
       "name": "Wavu Wiki",
