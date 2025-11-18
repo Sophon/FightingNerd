@@ -25,5 +25,5 @@ internal object SuperComboTables {
     fun supportedGames(): Set<String> = gameToTables.keys
 }
 
-private const val TABLE_SF6_CHARACTERS = "SF6_Characters"
+private const val TABLE_SF6_CHARACTERS = "SF6_CharacterData"
 private const val TABLE_SF6_MOVE_LIST = "SF6_FrameData"
