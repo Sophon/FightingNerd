@@ -1,8 +1,10 @@
 package io.github.sophon.wikiSuperCombo.data
 
+import io.github.sophon.core.wiki.data.QueryTable
+
 internal object SuperComboTables {
     private val gameToTables = mapOf(
-        "Street_Fighter_6" to Tables(
+        "Street_Fighter_6" to QueryTable(
             character = TABLE_SF6_CHARACTERS,
             moves = TABLE_SF6_MOVE_LIST
         ),
@@ -16,12 +18,7 @@ internal object SuperComboTables {
 //        )
     )
 
-    internal data class Tables(
-        val character: String,
-        val moves: String
-    )
-
-    fun getTable(gameId: String): Tables? {
+    fun getTable(gameId: String): QueryTable? {
         return gameToTables[gameId]
     }
 

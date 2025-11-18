@@ -6,6 +6,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
@@ -42,7 +43,7 @@ internal class SuperComboWikiClient(
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val fetchMoveUseCase: FetchMoveUseCase,
 ): WikiClient {
-    private val gameTables: SuperComboTables.Tables = SuperComboTables.getTable(gameId)
+    private val gameTables: QueryTable = SuperComboTables.getTable(gameId)
         ?: error("$gameId not supported. Supported: ${SuperComboTables.supportedGames()}")
 
     override fun getFeatureInfo(): FeatureInfo {
