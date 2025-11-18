@@ -7,26 +7,26 @@ import io.github.sophon.core.network.safeCall
 import io.github.sophon.wikiSuperCombo.BASE_URL
 import io.github.sophon.wikiSuperCombo.LIMIT_CHARACTERS
 import io.github.sophon.wikiSuperCombo.LIMIT_MOVES
-import io.github.sophon.wikiSuperCombo.TABLE_SF6_CHARACTERS
-import io.github.sophon.wikiSuperCombo.TABLE_SF6_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 internal interface SuperComboDataSource {
-    suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote>
-    suspend fun downloadMoveListFor(charName: String): Result<MoveListResponseDto, DataError.Remote>
+    suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
+    suspend fun downloadMoveListFor(table: String, charName: String): Result<MoveListResponseDto, DataError.Remote>
     suspend fun getImageUrl(fileName: String): Result<String, DataError.Remote>
 }
 
 internal class SuperComboDataSourceImpl(
     private val httpClient: HttpClient,
 ): SuperComboDataSource {
-    override suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
+    override suspend fun downloadCharacterList(
+        table: String,
+    ): Result<CharacterListResponseDto, DataError.Remote> {
         return safeCall {
             httpClient.get(BASE_URL) {
                 parameter("action", "cargoquery")
-                parameter("tables", TABLE_SF6_CHARACTERS)
+                parameter("tables", table)
                 parameter("limit", LIMIT_CHARACTERS)
                 parameter("format", "json")
                 parameter("fields", "_pageName=${getCharacterFields()}")
@@ -35,12 +35,13 @@ internal class SuperComboDataSourceImpl(
     }
 
     override suspend fun downloadMoveListFor(
+        table: String,
         charName: String
     ): Result<MoveListResponseDto, DataError.Remote> {
         return safeCall {
             httpClient.get(BASE_URL) {
                 parameter("action", "cargoquery")
-                parameter("tables", TABLE_SF6_MOVES)
+                parameter("tables", table)
                 parameter("limit", LIMIT_MOVES)
                 parameter("format", "json")
                 parameter("fields", getMoveFields())

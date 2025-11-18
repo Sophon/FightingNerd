@@ -10,6 +10,8 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.wikiSuperCombo.data.SuperComboTables
+import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
 import io.github.sophon.wikiSuperCombo.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.ClearCacheUseCase
@@ -19,12 +21,13 @@ import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
-import io.github.sophon.wikiSuperCombo.usecase.GetFeatureInfoUseCase
 import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
 internal class SuperComboWikiClient(
-    private val getFeatureInfoUseCase: GetFeatureInfoUseCase,
+    gameId: String,
+
+    private val superComboFeatureInfo: SuperComboFeatureInfo,
 
     private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
@@ -39,12 +42,15 @@ internal class SuperComboWikiClient(
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val fetchMoveUseCase: FetchMoveUseCase,
 ): WikiClient {
+    private val gameTables: SuperComboTables.Tables = SuperComboTables.getTable(gameId)
+        ?: error("$gameId not supported. Supported: ${SuperComboTables.supportedGames()}")
+
     override fun getFeatureInfo(): FeatureInfo {
-        return getFeatureInfoUseCase.invoke()
+        return superComboFeatureInfo.featureInfo
     }
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
-        return downloadCharacterListUseCase.invoke()
+        return downloadCharacterListUseCase.invoke(gameTables)
             .onSuccess { characterList ->
                 Napier.d(tag = TAG) { "${characterList.size} characters loaded" }
             }
@@ -75,7 +81,7 @@ internal class SuperComboWikiClient(
     override suspend fun downloadMoveList(
         charName: String
     ): Result<List<Move>, WikiError> {
-        return downloadMoveListUseCase.invoke(charName)
+        return downloadMoveListUseCase.invoke(gameTables, charName)
             .onSuccess { moveList ->
                 Napier.d(tag = TAG) {
                     "${charName}: ${moveList.size} moves downloaded"

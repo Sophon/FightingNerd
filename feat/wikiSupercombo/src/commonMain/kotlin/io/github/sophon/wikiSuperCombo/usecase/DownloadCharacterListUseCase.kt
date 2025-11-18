@@ -10,16 +10,17 @@ import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikiSuperCombo.data.CharacterListResponseDto
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
+import io.github.sophon.wikiSuperCombo.data.SuperComboTables
 import io.github.sophon.wikiSuperCombo.data.toDomain
 
 internal class DownloadCharacterListUseCase(
-    private val source: SuperComboDataSource
+    private val source: SuperComboDataSource,
 ) {
-    suspend fun invoke(): Result<List<Character>, WikiError> {
-        return source.downloadCharacterList()
-            .flatMap { dto ->
-                resolveImageUrls(dto)
-            }
+    suspend fun invoke(
+        tables: SuperComboTables.Tables
+    ): Result<List<Character>, WikiError> {
+        return source.downloadCharacterList(tables.character)
+            .flatMap { dto -> resolveImageUrls(dto) }
             .mapError { it.toDomainError(TAG) }
     }
 

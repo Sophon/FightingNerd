@@ -7,13 +7,17 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
+import io.github.sophon.wikiSuperCombo.data.SuperComboTables
 import io.github.sophon.wikiSuperCombo.data.toDomain
 
 internal class DownloadMoveListUseCase(
     private val source: SuperComboDataSource,
 ) {
-    suspend fun invoke(charName: String): Result<List<Move>, WikiError> {
-        return source.downloadMoveListFor(charName)
+    suspend fun invoke(
+        tables: SuperComboTables.Tables,
+        charName: String
+    ): Result<List<Move>, WikiError> {
+        return source.downloadMoveListFor(tables.moves, charName)
             .map { it.toDomain() }
             .mapError { it.toDomainError(TAG) }
     }
