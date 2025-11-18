@@ -9,10 +9,13 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
+import io.github.sophon.discord.data.InMemoryCharacterListDB
+import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
@@ -27,6 +30,9 @@ import io.github.sophon.discord.util.optionalField
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.get
+import org.koin.core.parameter.parametersOf
 import kotlin.time.Duration.Companion.hours
 
 internal class SuperComboWikiDiscordFeature(
@@ -36,7 +42,7 @@ internal class SuperComboWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
-): DiscordRegisteredFeature {
+): DiscordRegisteredFeature, KoinComponent {
     override val featureInfo = getSuperComboFeatureInfoUseCase.invoke()
     override val defaultCommand = SupportedCommand(
         command = Command.FD,
@@ -78,6 +84,25 @@ internal class SuperComboWikiDiscordFeature(
             )
         )
     )
+    private val wikis = mutableMapOf<String, WikiClient>()
+
+    override fun registerGames(
+        enabledGames: List<String>
+    ) {
+        val supportedGames = enabledGames.filter {
+            it in featureInfo.supportedGames
+        }
+
+        supportedGames.forEach { gameId ->
+            wikis[gameId] = get {
+                parametersOf(
+                    gameId,
+                    InMemoryCharacterListDB(),
+                    InMemoryMoveListDB(),
+                )
+            }
+        }
+    }
 
     override suspend fun start() {
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
@@ -94,12 +119,25 @@ internal class SuperComboWikiDiscordFeature(
         command: Command,
         query: String,
     ): Result<BotOutput, BotError> {
+        val gameId = when (command) {
+            Command.FD,
+            Command.CHARSF6,
+            Command.FDSF6,
+                -> "Street_Fighter_6"
+//            Command.FDMK1 -> "Mortal_Kombat_1"
+            else -> return Result.Error(BotError.BotLogicError(command.name, query))
+
+        }
+
+        val wiki = wikis[gameId]
+            ?: return Result.Error(BotError.UnsupportedGame(query))
+
         return when (command) {
             Command.FD,
             Command.FDSF6,
-                -> searchMove(query)
+                -> searchMove(wiki, query)
 
-            Command.CHARSF6 -> searchCharacter(query)
+            Command.CHARSF6 -> searchCharacter(wiki, query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -109,18 +147,20 @@ internal class SuperComboWikiDiscordFeature(
     }
 
     private suspend fun searchCharacter(
+        wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return searchCharacterDataUseCase.invoke(charName = query)
+        return searchCharacterDataUseCase.invoke(wiki, charName = query)
             .map { (character, fastestMoveList) ->
                 BotOutput(embedBuilder = createCharacterEmbed(character, fastestMoveList))
             }
     }
 
     private suspend fun searchMove(
+        wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMoveUseCase.invoke(query)
+        return getMoveUseCase.invoke(wiki, query)
             .map { BotOutput(embedBuilder = createMoveEmbed(it)) }
     }
 
