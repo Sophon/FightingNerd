@@ -35,7 +35,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Success(dto)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke("", charName)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
