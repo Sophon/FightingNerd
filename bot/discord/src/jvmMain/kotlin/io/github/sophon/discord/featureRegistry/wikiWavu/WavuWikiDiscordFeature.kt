@@ -33,6 +33,7 @@ import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
 import kotlin.time.Duration.Companion.hours
 
 internal class WavuWikiDiscordFeature(
@@ -112,7 +113,7 @@ internal class WavuWikiDiscordFeature(
         }
 
         supportedGames.forEach { gameId ->
-            wikis[gameId] = get {
+            wikis[gameId] = get(named("wavu")) {
                 parametersOf(
                     gameId,
                     InMemoryCharacterListDB(),
