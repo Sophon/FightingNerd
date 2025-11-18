@@ -20,19 +20,6 @@ I don't drink coffee but feel free to support the server costs!
 
 
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
-- [Discord bot](./bot/discord/src/jvmMain/kotlin/io/github/sophon/discord/DiscordBot.kt)
-- [fighting-game glossary](./feat/glossaryInfil/src/commonMain/kotlin/io/github/sophon/glossaryinfil/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
-- global frame data sourced from all feature modules
-- [Wavu Wiki](https://wavu.wiki/)
-  - [Tekken 8](./feat/wikiWavu/src/commonMain/kotlin/io/github/sophon/wikiwavu/WavuWikiClient.kt) 
-    - frame data
-    - power crush, heat or homing move-lists
-- [SuperCombo](https://wiki.supercombo.gg/w/Main_Page)
-  - [Street Fighter 6](./feat/wikiSupercombo/src/commonMain/kotlin/io/github/sophon/wikiSuperCombo/SuperComboWikiClient.kt) 
-    - frame data
-    - character data
-
-### ARCHITECTURE
 
 ```mermaid
 graph LR
@@ -48,6 +35,7 @@ graph LR
   subgraph Features
     glossaryInfil[Glossary Infil]
     communityWiki[Community Wiki]
+    elo[Ranked stats]
   end
 
   subgraph Community Wiki
@@ -58,16 +46,24 @@ graph LR
     dreamcancel[DreamCancel]
   end
 
-  discordBot -->|uses| glossaryInfil
-  discordBot -->|uses| communityWiki
+  subgraph Ranked service
+    ewgf[EWGF]
+  end
 
   android -->|uses| communityWiki
   iOS -->|uses| communityWiki
+
+  discordBot -->|uses| glossaryInfil
+  discordBot -->|uses| communityWiki
+  discordBot -->|uses| elo
 
   communityWiki --> wikiWavu
   communityWiki --> supercombo
   communityWiki --> 2xko
   communityWiki --> dreamcancel
+  communityWiki --> dustloop
+
+  elo --> ewgf
 
   wikiWavu --> t8[Tekken 8]
   supercombo --> sf6[Street Fighter 6]
@@ -88,31 +84,11 @@ graph LR
   style communityWiki fill:#3366CC,color:#fff
   style wikiWavu fill:#059669,color:#fff
   style supercombo fill:#F8F9FA,color:#000000
-  style 2xko fill:#F8F9FA,color:#000000
-  style dustloop fill:#F8F9FA,color:#000000
-  style dreamcancel fill:#F8F9FA,color:#000000
   style t8 fill:#059669, color:#fff
   style sf6 fill:#059669, color:#fff
 ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
-
-
-### [TODO's](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-module-improvements)
-- other feature modules
-  - [2XKO wiki](https://wiki.play2xko.com/en-us/) feature
-  - [DustLoop wiki](https://www.dustloop.com/wiki/) feature for
-    - GGST
-    - DBFZ
-    - GBVSR
-  - [DreamCancel wiki](https://dreamcancel.com/wiki/Main_Page)
-    - COTW
-    - KOF15
-  - [SuperCombo](https://wiki.supercombo.gg/w/Main_Page)
-    - MK1
-    - SoulCalibur 6
-  - [Wavu Wiki](https://wavu.wiki/)
-
 
 ### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
 - Twitch bot

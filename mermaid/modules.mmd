@@ -11,6 +11,7 @@ graph LR
     subgraph Features
         glossaryInfil[Glossary Infil]
         communityWiki[Community Wiki]
+        elo[Ranked stats]
     end
 
     subgraph Community Wiki
@@ -21,16 +22,24 @@ graph LR
         dreamcancel[DreamCancel]
     end
 
-    discordBot -->|uses| glossaryInfil
-    discordBot -->|uses| communityWiki
+    subgraph Ranked service
+        ewgf[EWGF]
+    end
 
     android -->|uses| communityWiki
     iOS -->|uses| communityWiki
+
+    discordBot -->|uses| glossaryInfil
+    discordBot -->|uses| communityWiki
+    discordBot -->|uses| elo
 
     communityWiki --> wikiWavu
     communityWiki --> supercombo
     communityWiki --> 2xko
     communityWiki --> dreamcancel
+    communityWiki --> dustloop
+
+    elo --> ewgf
 
     wikiWavu --> t8[Tekken 8]
     supercombo --> sf6[Street Fighter 6]
@@ -51,8 +60,5 @@ graph LR
     style communityWiki fill:#3366CC,color:#fff
     style wikiWavu fill:#059669,color:#fff
     style supercombo fill:#F8F9FA,color:#000000
-    style 2xko fill:#F8F9FA,color:#000000
-    style dustloop fill:#F8F9FA,color:#000000
-    style dreamcancel fill:#F8F9FA,color:#000000
     style t8 fill:#059669, color:#fff
     style sf6 fill:#059669, color:#fff
