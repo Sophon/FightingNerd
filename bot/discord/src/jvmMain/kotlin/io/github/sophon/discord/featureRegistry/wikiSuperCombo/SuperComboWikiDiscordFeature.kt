@@ -20,10 +20,10 @@ import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.SupportedCommand
-import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.GetMoveUseCase
+import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.GetSuperComboFeatureInfoUseCase
-import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SearchCharacterDataUseCase
-import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SyncSuperComboDataUseCase
+import io.github.sophon.discord.usecase.GetCharacterUseCase
+import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
@@ -37,8 +37,8 @@ import kotlin.time.Duration.Companion.hours
 
 internal class SuperComboWikiDiscordFeature(
     getSuperComboFeatureInfoUseCase: GetSuperComboFeatureInfoUseCase,
-    private val syncDataUseCase: SyncSuperComboDataUseCase,
-    private val searchCharacterDataUseCase: SearchCharacterDataUseCase,
+    private val syncWikiDataUseCase: SyncWikiDataUseCase,
+    private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
@@ -125,7 +125,10 @@ internal class SuperComboWikiDiscordFeature(
             Command.FDSF6,
                 -> "Street_Fighter_6"
 //            Command.FDMK1 -> "Mortal_Kombat_1"
-            else -> return Result.Error(BotError.BotLogicError(command.name, query))
+            else -> {
+                val error = BotError.BotLogicError(command.name, query)
+                return Result.Error(error)
+            }
 
         }
 
@@ -143,14 +146,14 @@ internal class SuperComboWikiDiscordFeature(
     }
 
     private suspend fun syncData(): EmptyResult<BotError> {
-        return syncDataUseCase.invoke()
+        return syncWikiDataUseCase.invoke(wikiList = wikis.values)
     }
 
     private suspend fun searchCharacter(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return searchCharacterDataUseCase.invoke(wiki, charName = query)
+        return getCharacterUseCase.invoke(wiki, charName = query)
             .map { (character, fastestMoveList) ->
                 BotOutput(embedBuilder = createCharacterEmbed(character, fastestMoveList))
             }

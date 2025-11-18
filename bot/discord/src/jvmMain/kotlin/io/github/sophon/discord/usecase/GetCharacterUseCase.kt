@@ -1,4 +1,4 @@
-package io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase
+package io.github.sophon.discord.usecase
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
@@ -10,7 +10,7 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
 
-internal class SearchCharacterDataUseCase {
+internal class GetCharacterUseCase {
     suspend fun invoke(
         wiki: WikiClient,
         charName: String

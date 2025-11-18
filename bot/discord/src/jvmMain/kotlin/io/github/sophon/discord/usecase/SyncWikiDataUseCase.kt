@@ -1,15 +1,15 @@
-package io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase
+package io.github.sophon.discord.usecase
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
-import io.github.sophon.wikiSuperCombo.SuperComboWikiClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -17,31 +17,46 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SyncSuperComboDataUseCase(
-    private val wiki: SuperComboWikiClient,
-) {
-    suspend fun invoke(): EmptyResult<BotError> {
-        wiki.clearCache()
+internal class SyncWikiDataUseCase {
+    suspend fun invoke(wikiList: Collection<WikiClient>): EmptyResult<BotError> {
+        val errors = mutableListOf<BotError>()
 
-        return downloadCharacterList()
-            .flatMap { characterList ->
-                cacheCharacterList(characterList)
-                    .map { characterList }
+        wikiList.forEach { wiki ->
+            wiki.clearCache()
+
+            val result = downloadCharacterList(wiki)
+                .flatMap { characterList ->
+                    cacheCharacterList(wiki, characterList)
+                        .map { characterList }
+                }
+                .flatMap { characterList ->
+                    downloadMoveLists(wiki, characterList)
+                }
+                .flatMap { characterMoveListPairList ->
+                    cacheMoveList(wiki, characterMoveListPairList)
+                }
+
+            if (result is Result.Error) {
+                errors.add(result.error)
             }
-            .flatMap { characterList ->
-                downloadMoveLists(characterList)
-            }
-            .flatMap { characterMoveListPairList ->
-                cacheMoveList(characterMoveListPairList)
-            }
+        }
+
+        return if (errors.isEmpty()) {
+            Result.Success(Unit)
+        } else {
+            Result.Error(BotError.Unknown("TODO: syncing"))
+        }
     }
 
-    private suspend fun downloadCharacterList(): Result<List<Character>, BotError> {
+    private suspend fun downloadCharacterList(
+        wiki: WikiClient,
+    ): Result<List<Character>, BotError> {
         return wiki.downloadCharacterList()
             .mapError { it.toDomainError() }
     }
 
     private suspend fun cacheCharacterList(
+        wiki: WikiClient,
         characterList: List<Character>
     ): EmptyResult<BotError> {
         return wiki.cacheCharacterList(characterList)
@@ -49,6 +64,7 @@ class SyncSuperComboDataUseCase(
     }
 
     private suspend fun downloadMoveLists(
+        wiki: WikiClient,
         characterList: List<Character>,
     ): Result<List<Pair<Character, List<Move>>>, BotError> {
         val successfulDownloads = mutableListOf<Pair<Character, List<Move>>>()
@@ -57,7 +73,7 @@ class SyncSuperComboDataUseCase(
         characterList.asFlow()
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { character ->
                 flow {
-                    val result = wiki.downloadMoveListFor(character.queryName.orEmpty())
+                    val result = wiki.downloadMoveList(character.queryName.orEmpty())
                         .map { moveList -> character to moveList }
                         .mapError { it.toDomainError() }
                     emit(result)
@@ -74,6 +90,7 @@ class SyncSuperComboDataUseCase(
     }
 
     private suspend fun cacheMoveList(
+        wiki: WikiClient,
         characterMoveListPairList: List<Pair<Character, List<Move>>>
     ): EmptyResult<BotError> {
         return characterMoveListPairList.asFlow()

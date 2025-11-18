@@ -8,19 +8,14 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFe
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
-import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.GetMoveUseCase
+import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.GetSuperComboFeatureInfoUseCase
-import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SearchCharacterDataUseCase
-import io.github.sophon.discord.featureRegistry.wikiSuperCombo.usecase.SyncSuperComboDataUseCase
+import io.github.sophon.discord.usecase.GetCharacterUseCase
+import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.Scheduler
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHeatMovesUseCase
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetHomingMovesUseCase
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetPowerCrushMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetWavuFeatureInfoUseCase
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchFrameDataUseCase
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SyncDataUseCase
 import io.github.sophon.wikiwavu.infrastructure.FileReader
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -31,13 +26,14 @@ internal val featureRegistryModule = module {
     singleOf(::GetBotFeatureInfoUseCase)
     //endregion
 
+    //region Generic
+    singleOf(::SyncWikiDataUseCase)
+    singleOf(::GetMoveUseCase)
+    singleOf(::GetCharacterUseCase)
+    //endregion
+
     //region Wavu Wiki
     singleOf(::GetWavuFeatureInfoUseCase)
-    singleOf(::SyncDataUseCase)
-    singleOf(::SearchFrameDataUseCase)
-    singleOf(::GetPowerCrushMovesUseCase)
-    singleOf(::GetHeatMovesUseCase)
-    singleOf(::GetHomingMovesUseCase)
 
     singleOf(::Scheduler)
     singleOf(::FileReaderJVM).bind<FileReader>()
@@ -51,8 +47,6 @@ internal val featureRegistryModule = module {
 
     //region SuperCombo Wiki
     singleOf(::GetSuperComboFeatureInfoUseCase)
-    singleOf(::SyncSuperComboDataUseCase)
-    singleOf(::SearchCharacterDataUseCase)
     singleOf(::GetMoveUseCase)
     //endregion
 
