@@ -3,7 +3,6 @@ package io.github.sophon.core.wiki.data
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.model.Character
-import kotlinx.datetime.Instant
 
 interface CharacterListDB {
     suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<WikiError>
