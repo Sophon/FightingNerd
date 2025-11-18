@@ -18,6 +18,7 @@ import io.github.sophon.wikiwavu.usecase.FetchMoveUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -27,7 +28,7 @@ fun wavuModule() = module {
     single { WavuFeatureInfo }
     single { WavuUrlProvider }
 
-    factory<WikiClient> { params ->
+    factory<WikiClient>(named("wavu")) { params ->
         val gameId: String = params.get()
         val characterListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
