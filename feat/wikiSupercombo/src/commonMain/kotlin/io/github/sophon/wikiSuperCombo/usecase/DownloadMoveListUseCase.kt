@@ -3,21 +3,21 @@ package io.github.sophon.wikiSuperCombo.usecase
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
+import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
-import io.github.sophon.wikiSuperCombo.data.SuperComboTables
 import io.github.sophon.wikiSuperCombo.data.toDomain
 
 internal class DownloadMoveListUseCase(
     private val source: SuperComboDataSource,
 ) {
     suspend fun invoke(
-        tables: SuperComboTables.Tables,
+        queryTable: QueryTable,
         charName: String
     ): Result<List<Move>, WikiError> {
-        return source.downloadMoveListFor(tables.moves, charName)
+        return source.downloadMoveListFor(queryTable.moves, charName)
             .map { it.toDomain() }
             .mapError { it.toDomainError(TAG) }
     }

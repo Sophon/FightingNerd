@@ -7,7 +7,7 @@ import io.github.sophon.wikiSuperCombo.FEATURE_NAME
 import io.github.sophon.wikiSuperCombo.FEATURE_URL
 import io.github.sophon.wikiSuperCombo.data.SuperComboTables
 
-internal object SuperComboFeatureInfo {
+object SuperComboFeatureInfo {
     val featureInfo = FeatureInfo(
         name = FEATURE_NAME,
         url = FEATURE_URL,
