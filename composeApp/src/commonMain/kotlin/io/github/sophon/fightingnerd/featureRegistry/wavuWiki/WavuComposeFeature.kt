@@ -7,7 +7,6 @@ import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.Destination
-import io.github.sophon.fightingnerd.QUALIFIER_WAVU
 import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.ui.WavuHomeScreenView
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo

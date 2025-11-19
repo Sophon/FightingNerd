@@ -9,7 +9,7 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-internal fun wavuComposeModule() = module {
+internal val wavuComposeModule = module {
     viewModelOf(::WavuHomeScreenVM)
 
     singleOf(::SyncDataIfOldUseCase)

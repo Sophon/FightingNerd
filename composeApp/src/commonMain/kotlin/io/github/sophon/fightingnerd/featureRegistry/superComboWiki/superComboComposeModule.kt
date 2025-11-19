@@ -4,6 +4,6 @@ import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.ui.SuperComb
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
-internal val superComboFeatureModule = module {
+internal val superComboComposeModule = module {
     viewModelOf(::SuperComboHomeVM)
 }

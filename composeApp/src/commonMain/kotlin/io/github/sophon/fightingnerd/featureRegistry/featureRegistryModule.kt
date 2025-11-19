@@ -1,7 +1,9 @@
 package io.github.sophon.fightingnerd.featureRegistry
 
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.SuperComboComposeFeature
+import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.superComboComposeModule
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.WavuComposeFeature
+import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.wavuComposeModule
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.core.module.dsl.singleOf
@@ -9,6 +11,11 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal val featureRegistryModule = module {
+    includes(
+        wavuComposeModule,
+        superComboComposeModule,
+    )
+
     singleOf(::WavuComposeFeature).bind<ComposeRegisteredFeature>()
     singleOf(::SuperComboComposeFeature).bind<ComposeRegisteredFeature>()
 
