@@ -10,7 +10,6 @@ import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.wikiwavu.domain.model.CharacterMoveList
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
@@ -131,7 +130,6 @@ class CacheMoveListUseCaseTest {
             wikiUrl = "",
             aliasList = listOf("Marshall")
         )
-        val characterMoveList = CharacterMoveList(character, emptyList())
 
         // When
         val result = useCase.invoke(character, listOf())
@@ -213,7 +211,6 @@ class CacheMoveListUseCaseTest {
             aliasList = emptyList()
         )
         val moves1 = listOf(Move(charName = "Jin", id = "1", input = "1"))
-        val moveList1 = CharacterMoveList(character1, moves1)
 
         val character2 = Character(
             id = "kazuya",
@@ -223,7 +220,6 @@ class CacheMoveListUseCaseTest {
             aliasList = emptyList()
         )
         val moves2 = listOf(Move(charName = "Kazuya", id = "Kazuya-df2", input = "df2"))
-        val moveList2 = CharacterMoveList(character2, moves2)
 
         // When
         useCase.invoke(character1, moves1)

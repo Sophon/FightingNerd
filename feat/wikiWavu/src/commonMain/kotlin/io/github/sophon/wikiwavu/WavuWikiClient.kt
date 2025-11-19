@@ -6,147 +6,122 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.wikiwavu.data.WavuTables
+import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
 import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
 import io.github.sophon.wikiwavu.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
-import io.github.sophon.wikiwavu.usecase.FetchMoveDataUseCase
+import io.github.sophon.wikiwavu.usecase.FetchCharacterUseCase
+import io.github.sophon.wikiwavu.usecase.FetchMoveUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
-import io.github.sophon.wikiwavu.usecase.FetchMovesWithPropertyUseCase
-import io.github.sophon.wikiwavu.usecase.GetFeatureInfoUseCase
 import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
-interface WavuWikiClient {
-    fun getFeatureInfo(): FeatureInfo
+internal class WavuWikiClient(
+    gameId: String,
 
-    suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
-    suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError>
-    suspend fun getCharacterList(): Result<List<Character>, WikiError>
-
-    suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError>
-    suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError>
-    suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
-
-    suspend fun frameDataFor(charName: String, moveQuery: String): Result<Move, WikiError>
-    suspend fun getPowerCrushMoves(charName: String): Result<List<Move>, WikiError>
-    suspend fun getHeatMoves(charName: String): Result<List<Move>, WikiError>
-    suspend fun getHomingMoves(charName: String): Result<List<Move>, WikiError>
-    suspend fun getMoveListFor(charName: String): Result<List<Move>, WikiError>
-
-    suspend fun clearCache(): EmptyResult<WikiError>
-}
-
-internal class WavuWikiClientImpl(
-    private val getFeatureInfoUseCase: GetFeatureInfoUseCase,
+    private val wavuFeatureInfo: WavuFeatureInfo,
 
     private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
+    private val fetchCharacterUseCase: FetchCharacterUseCase,
 
     private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
-    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
-    private val fetchMoveDataUseCase: FetchMoveDataUseCase,
-    private val fetchMovesWithPropertyUseCase: FetchMovesWithPropertyUseCase,
+    private val fetchMoveUseCase: FetchMoveUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
 
+    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
-): WavuWikiClient {
+): WikiClient {
+    private val queryTable: QueryTable = WavuTables.getTable(gameId)
+        ?: error("$gameId not supported. Supported: ${WavuTables.supportedGames()}")
+
     override fun getFeatureInfo(): FeatureInfo {
-        return getFeatureInfoUseCase.invoke()
+        return wavuFeatureInfo.featureInfo
     }
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadCharacterListUseCase.invoke()
             .onSuccess { Napier.d(tag = TAG) { "${it.size} characters loaded" } }
-            .onError { Napier.e(tag = TAG) { it.toString() } }
-    }
-
-    override suspend fun getCharacterList(): Result<List<Character>, WikiError> {
-        return fetchCharacterListUseCase.invoke()
-            .onError { Napier.e(tag = TAG) { it.toString() } }
+            .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
 
     override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
         return cacheCharacterListUseCase.invoke(characterList)
-            .onError { Napier.e(tag = TAG) { it.toString() } }
+            .onError { Napier.e(tag = TAG) { "cacheCharacterList: $it" } }
     }
 
-    override suspend fun downloadMoveListFor(charName: String): Result<List<Move>, WikiError> {
-        return when (val result = downloadMoveListUseCase.invoke(charName)) {
-            is Result.Success -> {
-                Napier.d(tag = TAG) {
-                    "${charName}: ${result.data.size} moves downloaded"
-                }
-                Result.Success(result.data)
+    override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> {
+        return fetchCharacterListUseCase.invoke()
+            .onError { Napier.e(tag = TAG) { "fetchCharacterList: $it" } }
+    }
+
+    override suspend fun fetchCharacter(
+        charName: String
+    ): Result<Character, WikiError> {
+        return fetchCharacterUseCase.invoke(charName)
+            .onError { Napier.e(tag = TAG) { "fetchCharacter(${charName}): $it" } }
+    }
+
+    override suspend fun downloadMoveList(
+        charName: String
+    ): Result<List<Move>, WikiError> {
+        return downloadMoveListUseCase.invoke(queryTable, charName)
+            .onSuccess {
+                Napier.d(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
             }
-            is Result.Error -> {
-                Napier.e(tag = TAG) { "$charName: ${result.error}" }
-                Result.Error(result.error)
-            }
-        }
-    }
-
-    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
-        return getLastCacheInsertInstantUseCase.invoke()
-    }
-
-    override suspend fun clearCache(): EmptyResult<WikiError> {
-        return clearCacheUseCase.invoke()
-    }
-
-    override suspend fun frameDataFor(
-        charName: String,
-        moveQuery: String
-    ): Result<Move, WikiError> {
-        return fetchMoveDataUseCase.invoke(charName, moveQuery)
-            .onError { Napier.e(tag = TAG) { it.toString() } }
-    }
-
-    override suspend fun getPowerCrushMoves(
-        charName: String
-    ): Result<List<Move>, WikiError> {
-        return fetchMovesWithPropertyUseCase.invoke(charName) { it.t8Properties?.isPowerCrush == true }
-    }
-
-    override suspend fun getHeatMoves(
-        charName: String
-    ): Result<List<Move>, WikiError> {
-        return fetchMovesWithPropertyUseCase.invoke(charName) { it.t8Properties?.isHeat == true }
-    }
-
-    override suspend fun getHomingMoves(
-        charName: String
-    ): Result<List<Move>, WikiError> {
-        return fetchMovesWithPropertyUseCase.invoke(charName) { it.t8Properties?.isHoming == true }
-    }
-
-    override suspend fun getMoveListFor(
-        charName: String,
-    ): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName)
+            .onError { Napier.e(tag = TAG) { "downloadMoveList(${charName}): $it" } }
     }
 
     override suspend fun cacheMoveList(
         character: Character,
         moveList: List<Move>
     ): EmptyResult<WikiError> {
-        val result = cacheMoveListUseCase.invoke(character, moveList)
+        return cacheMoveListUseCase.invoke(character, moveList)
+            .onError {
+                Napier.e(tag = TAG) { "cacheMoveList(${character.id}, ${moveList.size}): $it" }
+            }
+    }
 
-        when (result) {
-            is Result.Error -> Napier.d(tag = TAG) { "${character.id}: ${result.error}" }
-            else -> {}
-        }
+    override suspend fun fetchMoveList(
+        charName: String,
+    ): Result<List<Move>, WikiError> {
+        return fetchMoveListUseCase.invoke(charName)
+            .onError { Napier.e(tag = TAG) { "fetchMoveList($charName): $it" } }
+    }
 
-        return result
+    override suspend fun fetchMove(
+        charName: String,
+        moveQuery: String
+    ): Result<Move, WikiError> {
+        return fetchMoveUseCase.invoke(charName, moveQuery)
+            .onError {
+                Napier.e(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+            }
+    }
+
+    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
+        return getLastCacheInsertInstantUseCase.invoke()
+            .onError { Napier.e(tag = TAG) { "getLastUpdateTimeStamp: $it" } }
+    }
+
+    override suspend fun clearCache(): EmptyResult<WikiError> {
+        return clearCacheUseCase.invoke()
+            .onError { Napier.e(tag = TAG) { "clearCache: $it" } }
+    }
+
+
+    private companion object {
+        const val TAG = "WavuWikiClient"
     }
 }
-
-
-private const val TAG = "WavuWikiClient"

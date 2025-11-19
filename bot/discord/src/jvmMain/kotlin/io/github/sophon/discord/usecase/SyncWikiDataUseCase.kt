@@ -1,15 +1,15 @@
-package io.github.sophon.discord.featureRegistry.wikiWavu.usecase
+package io.github.sophon.discord.usecase
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
-import io.github.sophon.wikiwavu.WavuWikiClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -17,31 +17,46 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class SyncDataUseCase(
-    private val wiki: WavuWikiClient,
-) {
-    suspend fun invoke(): EmptyResult<BotError> {
-        wiki.clearCache()
+internal class SyncWikiDataUseCase {
+    suspend fun invoke(wikiList: Collection<WikiClient>): EmptyResult<BotError> {
+        val errors = mutableListOf<BotError>()
 
-        return downloadCharacterList()
-            .flatMap { characterList ->
-                cacheCharacterList(characterList)
-                    .map { characterList }
+        wikiList.forEach { wiki ->
+            wiki.clearCache()
+
+            val result = downloadCharacterList(wiki)
+                .flatMap { characterList ->
+                    cacheCharacterList(wiki, characterList)
+                        .map { characterList }
+                }
+                .flatMap { characterList ->
+                    downloadMoveLists(wiki, characterList)
+                }
+                .flatMap { characterMoveListPairList ->
+                    cacheMoveList(wiki, characterMoveListPairList)
+                }
+
+            if (result is Result.Error) {
+                errors.add(result.error)
             }
-            .flatMap { characterList ->
-                downloadMoveLists(characterList)
-            }
-            .flatMap { characterMoveListPairList ->
-                cacheMoveLists(characterMoveListPairList)
-            }
+        }
+
+        return if (errors.isEmpty()) {
+            Result.Success(Unit)
+        } else {
+            Result.Error(BotError.Unknown("TODO: syncing"))
+        }
     }
 
-    private suspend fun downloadCharacterList(): Result<List<Character>, BotError> {
+    private suspend fun downloadCharacterList(
+        wiki: WikiClient,
+    ): Result<List<Character>, BotError> {
         return wiki.downloadCharacterList()
             .mapError { it.toDomainError() }
     }
 
     private suspend fun cacheCharacterList(
+        wiki: WikiClient,
         characterList: List<Character>
     ): EmptyResult<BotError> {
         return wiki.cacheCharacterList(characterList)
@@ -49,18 +64,18 @@ class SyncDataUseCase(
     }
 
     private suspend fun downloadMoveLists(
-        characterList: List<Character>
+        wiki: WikiClient,
+        characterList: List<Character>,
     ): Result<List<Pair<Character, List<Move>>>, BotError> {
         val successfulDownloads = mutableListOf<Pair<Character, List<Move>>>()
         var firstError: Result.Error<BotError>? = null
 
-        characterList
-            .asFlow()
+        characterList.asFlow()
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { character ->
                 flow {
-                    val result = wiki.downloadMoveListFor(character.displayName)
-                        .mapError { it.toDomainError() }
+                    val result = wiki.downloadMoveList(character.queryName.orEmpty())
                         .map { moveList -> character to moveList }
+                        .mapError { it.toDomainError() }
                     emit(result)
                 }
             }
@@ -74,11 +89,11 @@ class SyncDataUseCase(
         return firstError ?: Result.Success(successfulDownloads)
     }
 
-    private suspend fun cacheMoveLists(
+    private suspend fun cacheMoveList(
+        wiki: WikiClient,
         characterMoveListPairList: List<Pair<Character, List<Move>>>
     ): EmptyResult<BotError> {
-        return characterMoveListPairList
-            .asFlow()
+        return characterMoveListPairList.asFlow()
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { (character, moveList) ->
                 flow {
                     val result = wiki.cacheMoveList(character, moveList)
@@ -91,7 +106,7 @@ class SyncDataUseCase(
     }
 
 
-    companion object Companion {
+    private companion object Companion {
         const val NUMBER_OF_CONCURRENT_REQUEST = 5
     }
 }

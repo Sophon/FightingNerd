@@ -10,8 +10,8 @@ sealed class Destination {
 
     @Serializable
     data class MoveList(
+        val gameId: String,
         val charName: String,
-        val wikiQualifier: String,
     )
 
     @Serializable

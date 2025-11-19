@@ -16,12 +16,12 @@ import kotlin.test.assertTrue
 
 class FetchMoveDataUseCaseTest {
     private lateinit var mockDb: MockMoveListDB
-    private lateinit var useCase: FetchMoveDataUseCase
+    private lateinit var useCase: FetchMoveUseCase
 
     @BeforeTest
     fun setup() {
         mockDb = MockMoveListDB()
-        useCase = FetchMoveDataUseCase(mockDb)
+        useCase = FetchMoveUseCase(mockDb)
     }
 
     //region Success Cases

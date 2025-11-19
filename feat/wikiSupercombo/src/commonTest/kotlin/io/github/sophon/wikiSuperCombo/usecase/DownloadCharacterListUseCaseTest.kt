@@ -2,6 +2,7 @@ package io.github.sophon.wikiSuperCombo.usecase
 
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.wikiSuperCombo.data.CargoQueryItem
 import io.github.sophon.wikiSuperCombo.data.CharacterDto
@@ -58,7 +59,7 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(fakeSource)
 
         // when
-        val result = runBlocking { useCase.invoke() }
+        val result = runBlocking { useCase.invoke(QueryTable("", ""), ) }
 
         // then
         assertTrue(result is Result.Success)
@@ -112,7 +113,7 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(fakeSource)
 
         // when
-        val result = runBlocking { useCase.invoke() }
+        val result = runBlocking { useCase.invoke(QueryTable("", ""), ) }
 
         // then
         assertTrue(result is Result.Success)
@@ -133,7 +134,7 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(fakeSource)
 
         // when
-        val result = runBlocking { useCase.invoke() }
+        val result = runBlocking { useCase.invoke(QueryTable("", ""), ) }
 
         // then
         assertTrue(result is Result.Success)
@@ -207,7 +208,7 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(fakeSource)
 
         // when
-        val result = runBlocking { useCase.invoke() }
+        val result = runBlocking { useCase.invoke(QueryTable("", ""), ) }
 
         // then
         assertTrue(result is Result.Success)
@@ -225,7 +226,7 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(fakeSource)
 
         // when
-        val result = runBlocking { useCase.invoke() }
+        val result = runBlocking { useCase.invoke(QueryTable("", ""), ) }
 
         // then
         assertTrue(result is Result.Error)
@@ -241,7 +242,7 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(fakeSource)
 
         // when
-        val result = runBlocking { useCase.invoke() }
+        val result = runBlocking { useCase.invoke(QueryTable("", ""), ) }
 
         // then
         assertTrue(result is Result.Error)
@@ -257,7 +258,7 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(fakeSource)
 
         // when
-        val result = runBlocking { useCase.invoke() }
+        val result = runBlocking { useCase.invoke(QueryTable("", "")) }
 
         // then
         assertTrue(result is Result.Error)
@@ -273,7 +274,7 @@ class DownloadCharacterListUseCaseTest {
         val useCase = DownloadCharacterListUseCase(fakeSource)
 
         // when
-        val result = runBlocking { useCase.invoke() }
+        val result = runBlocking { useCase.invoke(QueryTable("", ""), ) }
 
         // then
         assertTrue(result is Result.Error)
@@ -288,11 +289,14 @@ class DownloadCharacterListUseCaseTest {
     ) : SuperComboDataSource {
         var imageUrlRequestCount = 0
 
-        override suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote> {
+        override suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote> {
             return characterListResult
         }
 
-        override suspend fun downloadMoveListFor(charName: String): Result<MoveListResponseDto, DataError.Remote> {
+        override suspend fun downloadMoveListFor(
+            table: String,
+            charName: String
+        ): Result<MoveListResponseDto, DataError.Remote> {
             throw NotImplementedError()
         }
 
