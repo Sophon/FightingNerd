@@ -4,6 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.onError
+import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
 import io.github.sophon.fightingnerd.screens.moveList.domain.MoveCategory
 import io.github.sophon.fightingnerd.screens.moveList.domain.usecase.FetchMoveListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +17,9 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 internal class MoveListVM(
+    private val gameId: String,
     private val charName: String,
+    private val featureRegistry: FeatureRegistry,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListViewState())
@@ -26,6 +32,10 @@ internal class MoveListVM(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = MoveListViewState()
         )
+    private val wiki: WikiClient? by lazy {
+        featureRegistry.getFeatures()
+            .firstNotNullOfOrNull { it.getWikiClient(gameId) }
+    }
 
 
     fun onExpandNotesFor(moveId: String) {
@@ -85,7 +95,24 @@ internal class MoveListVM(
 
 
     private suspend fun fetchMoves() {
-        when (val result = fetchMoveListUseCase.invoke(charName)) {
+        val client = wiki
+        if (client == null) {
+            _state.update {
+                it.copy(isLoading = false, error = "$gameId: Wiki not found")
+            }
+            return
+        }
+
+        fetchMoveListUseCase.invoke(client, charName)
+            .onSuccess { moveCategories ->
+                _state.update { it.copy(allMoves = moveCategories, filteredMoves = moveCategories) }
+            }
+            .onError { error ->
+                Napier.e(tag = TAG) { "fetchMoves: $error" }
+                _state.update { it.copy(error = "fetchMoves: $error") }
+            }
+
+        when (val result = fetchMoveListUseCase.invoke(client, charName)) {
             is Result.Success -> {
                 _state.update { it.copy(allMoves = result.data, filteredMoves = result.data) }
             }
