@@ -3,12 +3,10 @@
 
 # FightingNerd
 
-A set of tools for the Fighting Game Community:
+Frame data targeting Discord bot and mobile apps:
 - 🧩 highly extensible
   - 📘 glossary
-  - 📚 [any community wiki](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules):
-     - 📊 frame data
-     - 📋 move categories
+  - 📚 [any community Wikis](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
 - 🌐 multiplatform:
   - 🤖 Android
   - 🍏 iOS
@@ -92,6 +90,7 @@ graph LR
 
 ### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
 - Twitch bot
+- ELO rank services
 
 ___
 # [License](https://github.com/Sophon/FightingNerd/blob/feat/sorry/license/LICENSE.txt)
