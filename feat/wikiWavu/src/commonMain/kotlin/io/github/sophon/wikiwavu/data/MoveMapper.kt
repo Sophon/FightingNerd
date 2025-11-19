@@ -29,7 +29,7 @@ internal fun MoveDto.mapToDomain(
         charName = charName,
         id = id.cleanMoveInput(),
         input = fullInput,
-        name = name,
+        name = name?.cleanHtml(),
         damage = formCompleteDataFromParent(movesById) { it.damage },
         startup = getRootStartup(movesById),
         recovery = recv,
