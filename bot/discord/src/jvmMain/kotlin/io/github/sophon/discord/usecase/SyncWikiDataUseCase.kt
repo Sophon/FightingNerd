@@ -22,15 +22,17 @@ internal class SyncWikiDataUseCase {
         val errors = mutableListOf<BotError>()
 
         wikiList.forEach { wiki ->
-            wiki.clearCache()
-
             val result = downloadCharacterList(wiki)
                 .flatMap { characterList ->
-                    cacheCharacterList(wiki, characterList)
-                        .map { characterList }
-                }
-                .flatMap { characterList ->
                     downloadMoveLists(wiki, characterList)
+                }
+                .flatMap { characterMoveListPairList ->
+                    wiki.clearCache()
+                        .mapError { it.toDomainError() }
+                        .flatMap {
+                            cacheCharacterList(wiki, characterMoveListPairList.map { it.first })
+                                .map { characterMoveListPairList }
+                        }
                 }
                 .flatMap { characterMoveListPairList ->
                     cacheMoveList(wiki, characterMoveListPairList)
