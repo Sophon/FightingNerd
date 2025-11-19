@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.featureRegistry.wavuWiki.usecase
+package io.github.sophon.fightingnerd.featureRegistry.usecase
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
@@ -6,11 +6,11 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.fightingnerd.screens.home.HomeError
 import io.github.sophon.fightingnerd.screens.home.toDomainError
-import io.github.sophon.wikiwavu.WavuWikiClient
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.firstOrNull
@@ -21,22 +21,20 @@ import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.hours
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class SyncDataIfOldUseCase(
-    private val wiki: WavuWikiClient,
-) {
-    suspend fun invoke(): EmptyResult<HomeError> {
+internal class SyncDataIfOldUseCase {
+    suspend fun invoke(wiki: WikiClient): EmptyResult<HomeError> {
         return when (val timestampResult = wiki.getLastUpdateTimeStamp()) {
             is Result.Success -> {
                 val timestamp = timestampResult.data
                 when {
                     timestamp == null -> {
                         Napier.d(tag = TAG) { "DB empty, syncing" }
-                        syncData()
+                        syncData(wiki)
                     }
                     timestamp.isOld() -> {
                         Napier.d(tag = TAG) { "DB outdated, syncing" }
                         wiki.clearCache()
-                        syncData()
+                        syncData(wiki)
                     }
                     else -> {
                         Napier.d(tag = TAG) { "DB up to date" }
@@ -51,26 +49,27 @@ internal class SyncDataIfOldUseCase(
         }
     }
 
-    private suspend fun syncData(): EmptyResult<HomeError> {
-        return downloadCharacterList()
+    private suspend fun syncData(wiki: WikiClient): EmptyResult<HomeError> {
+        return downloadCharacterList(wiki)
             .flatMap { characterList ->
-                cacheCharacterList(characterList)
+                cacheCharacterList(wiki, characterList)
                     .map { characterList }
             }
             .flatMap { characterList ->
-                downloadMoveLists(characterList)
+                downloadMoveLists(wiki, characterList)
             }
             .flatMap { characterMoveListPairList ->
-                cacheMoveLists(characterMoveListPairList)
+                cacheMoveLists(wiki, characterMoveListPairList)
             }
     }
 
-    private suspend fun downloadCharacterList(): Result<List<Character>, HomeError> {
+    private suspend fun downloadCharacterList(wiki: WikiClient): Result<List<Character>, HomeError> {
         return wiki.downloadCharacterList()
             .mapError { it.toDomainError() }
     }
 
     private suspend fun cacheCharacterList(
+        wiki: WikiClient,
         characterList: List<Character>,
     ): EmptyResult<HomeError> {
         return wiki.cacheCharacterList(characterList)
@@ -78,6 +77,7 @@ internal class SyncDataIfOldUseCase(
     }
 
     private suspend fun downloadMoveLists(
+        wiki: WikiClient,
         characterList: List<Character>,
     ): Result<List<Pair<Character, List<Move>>>, HomeError> {
         val successfulDownloads = mutableListOf<Pair<Character, List<Move>>>()
@@ -87,7 +87,7 @@ internal class SyncDataIfOldUseCase(
             .asFlow()
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { character ->
                 flow {
-                    val result = wiki.downloadMoveListFor(character.displayName)
+                    val result = wiki.downloadMoveList(character.displayName)
                         .mapError { it.toDomainError() }
                         .map { moveList -> character to moveList }
                     emit(result)
@@ -104,6 +104,7 @@ internal class SyncDataIfOldUseCase(
     }
 
     private suspend fun cacheMoveLists(
+        wiki: WikiClient,
         characterMoveListPairList: List<Pair<Character, List<Move>>>
     ): EmptyResult<HomeError> {
         return characterMoveListPairList

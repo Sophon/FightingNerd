@@ -44,13 +44,15 @@ internal class WavuComposeFeature(
     override fun HomeScreenContent(
         navHostController: NavHostController,
     ) {
+        val gameId = wikis.keys.firstOrNull() ?: return
+
         WavuHomeScreenView(
             featureInfo = featureInfo,
             onCharacterClick = { charName ->
                 navHostController.navigate(
                     Destination.MoveList(
+                        gameId = gameId,
                         charName = charName,
-                        wikiQualifier = QUALIFIER_WAVU,
                     )
                 )
             },

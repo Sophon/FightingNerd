@@ -3,10 +3,13 @@ package io.github.sophon.fightingnerd.featureRegistry.wavuWiki.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.onError
+import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.usecase.SyncDataIfOldUseCase
-import io.github.sophon.fightingnerd.screens.moveList.domain.usecase.FetchCharacterListUseCase
+import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
+import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
+import io.github.sophon.fightingnerd.featureRegistry.usecase.FetchCharacterListUseCase
+import io.github.sophon.fightingnerd.featureRegistry.usecase.SyncDataIfOldUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -14,9 +17,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 internal class WavuHomeScreenVM(
+    private val featureRegistry: FeatureRegistry,
     private val syncDataIfOldUseCase: SyncDataIfOldUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
+    private val wavuFeature: ComposeRegisteredFeature? by lazy {
+        featureRegistry.getFeatures()
+            .find { it.featureInfo.name == "Wavu Wiki" }
+    }
     private val _state = MutableStateFlow(WavuHomeScreenViewState())
     val state = _state
         .onStart {
@@ -37,26 +45,40 @@ internal class WavuHomeScreenVM(
 
     private suspend fun startWavuSession() {
         _state.update { it.copy(isLoading = true) }
-        syncDataIfOldUseCase.invoke()
+
+        wavuFeature?.let { feature ->
+            feature.featureInfo.supportedGames.forEach { gameId ->
+                feature.getWikiClient(gameId)?.let { wiki ->
+                    syncDataIfOldUseCase.invoke(wiki)
+                }
+            }
+        }
         _state.update { it.copy(isLoading = false) }
     }
 
     private suspend fun fetchCharacterList() {
-        when (val result = fetchCharacterListUseCase.invoke()) {
-            is Result.Success -> {
-                cacheCharacterList(characterList = result.data)
-            }
-            is Result.Error -> {
-                Napier.e(tag = TAG) { result.error.toString() }
-                _state.update { it.copy(error = result.error.toString()) }
+        val allCharacters = mutableListOf<Character>()
+
+        wavuFeature?.let { feature ->
+            feature.featureInfo.supportedGames.forEach { gameId ->
+                feature.getWikiClient(gameId)?.let { wiki ->
+                    fetchCharacterListUseCase.invoke(wiki)
+                        .onSuccess { characterList ->
+                            allCharacters.addAll(characterList)
+                        }
+                        .onError { error ->
+                            Napier.e(tag = TAG) { "fetchCharacterList: $error" }
+                            _state.update { it.copy(error = error.toString()) }
+                        }
+                }
             }
         }
+
+        _state.update { it.copy(characterList = allCharacters) } //TODO: split per game eventually
     }
 
-    private fun cacheCharacterList(characterList: List<Character>) {
-        _state.update { it.copy(characterList = characterList) }
+
+    private companion object {
+        const val TAG = "WavuHomeScreenVM"
     }
 }
-
-
-private const val TAG = "WavuHomeScreenVM"
