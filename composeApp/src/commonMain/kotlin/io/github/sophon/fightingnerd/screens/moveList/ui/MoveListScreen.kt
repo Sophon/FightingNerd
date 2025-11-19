@@ -48,11 +48,11 @@ import org.koin.core.parameter.parametersOf
 @Composable
 fun MoveListScreen(
     charName: String,
-    wikiQualifier: String,
+    gameId: String,
     modifier: Modifier = Modifier
 ) {
     val vm = koinViewModel<MoveListVM>(
-        parameters = { parametersOf(charName, wikiQualifier) }
+        parameters = { parametersOf(charName, gameId) }
     )
     val state by vm.state.collectAsStateWithLifecycle()
 
