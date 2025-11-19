@@ -7,7 +7,6 @@ import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.Destination
-import io.github.sophon.fightingnerd.QUALIFIER_SC
 import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.ui.SuperComboHomeScreenView
 import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
@@ -44,13 +43,15 @@ internal class SuperComboComposeFeature(
     override fun HomeScreenContent(
         navHostController: NavHostController
     ) {
+        val gameId = wikis.keys.firstOrNull() ?: return
+
         SuperComboHomeScreenView(
             featureInfo = featureInfo,
             onCharacterClick = { charName ->
                 navHostController.navigate(
                     Destination.MoveList(
+                        gameId = gameId, //TODO: we should pass all games
                         charName = charName,
-                        wikiQualifier = QUALIFIER_SC
                     )
                 )
             }
