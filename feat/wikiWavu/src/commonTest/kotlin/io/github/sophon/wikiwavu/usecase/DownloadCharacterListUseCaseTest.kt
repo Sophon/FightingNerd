@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.wikiwavu.data.CharacterDto
 import io.github.sophon.wikiwavu.data.CharacterListResponseDto
+import io.github.sophon.wikiwavu.data.MoveListResponseDto
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -23,7 +24,7 @@ class DownloadCharacterListUseCaseTest {
             return characterListResult ?: error("Result not set")
         }
 
-        override suspend fun downloadMoveListFor(charName: String) = error("Not implemented")
+        override suspend fun downloadMoveList(table: String, charName: String) = error("Not implemented")
     }
     //endregion
 

@@ -3,17 +3,14 @@
 
 # FightingNerd
 
-A set of tools for the Fighting Game Community:
+Frame data targeting Discord bot and mobile apps:
 - 🧩 highly extensible
   - 📘 glossary
-  - 📚 [any community wiki](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules):
-     - 📊 frame data
-     - 📋 move categories
+  - 📚 [any community Wikis](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
 - 🌐 multiplatform:
   - 🤖 Android
   - 🍏 iOS
   - 💬 Discord
-  - 🖥️ desktop
 
 I don't drink coffee but feel free to support the server costs!
 
@@ -21,40 +18,79 @@ I don't drink coffee but feel free to support the server costs!
 
 
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
-- [Discord bot](./bot/discord/src/jvmMain/kotlin/io/github/sophon/discord/DiscordBot.kt)
-- [fighting-game glossary](./feat/glossaryInfil/src/commonMain/kotlin/io/github/sophon/glossaryinfil/InfilGlossary.kt) from [Infil](https://glossary.infil.net/)
-- global frame data sourced from all feature modules
-- [Wavu Wiki](https://wavu.wiki/)
-  - [Tekken 8](./feat/wikiWavu/src/commonMain/kotlin/io/github/sophon/wikiwavu/WavuWikiClient.kt) 
-    - frame data
-    - power crush, heat or homing move-lists
-- [SuperCombo](https://wiki.supercombo.gg/w/Main_Page)
-  - [Street Fighter 6](./feat/wikiSupercombo/src/commonMain/kotlin/io/github/sophon/wikiSuperCombo/SuperComboWikiClient.kt) 
-    - frame data
-    - character data
+
+```mermaid
+graph LR
+  subgraph Bots
+    discordBot[Discord Bot]
+  end
+
+  subgraph "Mobile Clients"
+    android[Android]
+    iOS[iOS]
+  end
+
+  subgraph Features
+    glossaryInfil[Glossary Infil]
+    communityWiki[Community Wiki]
+    elo[Ranked stats]
+  end
+
+  subgraph Community Wiki
+    wikiWavu[Wavu]
+    supercombo[SuperCombo]
+    2xko[2XKO]
+    dustloop[Dustloop]
+    dreamcancel[DreamCancel]
+  end
+
+  subgraph Ranked service
+    ewgf[EWGF]
+  end
+
+  android -->|uses| communityWiki
+  iOS -->|uses| communityWiki
+
+  discordBot -->|uses| glossaryInfil
+  discordBot -->|uses| communityWiki
+  discordBot -->|uses| elo
+
+  communityWiki --> wikiWavu
+  communityWiki --> supercombo
+  communityWiki --> 2xko
+  communityWiki --> dreamcancel
+  communityWiki --> dustloop
+
+  elo --> ewgf
+
+  wikiWavu --> t8[Tekken 8]
+  supercombo --> sf6[Street Fighter 6]
+  supercombo --> mk1[Mortal Kombat 1]
+  supercombo --> sc6[SoulCalibur VI]
+  dustloop --> ggst[Guilty Gear: Strive]
+  dustloop --> dbfz[Dragon Ball FighterZ]
+  dustloop --> gbvsr[Granblue Fantasy Versus: Rising]
+  2xko --> xko[2XKO]
+  dreamcancel --> kof15[King of Fighters XV]
+  dreamcancel --> kof13[King of Fighters XIII]
+
+
+  style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
+  style android fill:#10B981,stroke:#059669,color:#fff
+  style iOS fill:#10B981,stroke:#059669,color:#fff
+  style glossaryInfil fill:#8B6F47,color:#fff
+  style communityWiki fill:#3366CC,color:#fff
+  style wikiWavu fill:#059669,color:#fff
+  style supercombo fill:#F8F9FA,color:#000000
+  style t8 fill:#059669, color:#fff
+  style sf6 fill:#059669, color:#fff
+```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
 
-
-### [TODO's](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-module-improvements)
-- Docker, pipelines, updates
-- other feature modules
-  - [2XKO wiki](https://wiki.play2xko.com/en-us/) feature
-  - [DustLoop wiki](https://www.dustloop.com/wiki/) feature for
-    - GGST
-    - DBFZ
-    - GBVSR
-  - [DreamCancel wiki](https://dreamcancel.com/wiki/Main_Page)
-    - COTW
-    - KOF15
-  - [SuperCombo](https://wiki.supercombo.gg/w/Main_Page)
-    - MK1
-    - SoulCalibur 6
-  - [Wavu Wiki](https://wavu.wiki/)
-
-
 ### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
 - Twitch bot
+- ELO rank services
 
 ___
 # [License](https://github.com/Sophon/FightingNerd/blob/feat/sorry/license/LICENSE.txt)

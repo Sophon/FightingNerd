@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.wikiwavu.data.CharacterListResponseDto
 import io.github.sophon.wikiwavu.data.MoveDto
@@ -35,7 +36,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Success(dto)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke(QueryTable("", ""), (charName))
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -61,7 +62,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Success(createEmptyMoveListResponseDto())
 
         // When
-        useCase.invoke(charName)
+        useCase.invoke(QueryTable("", ""), charName)
 
         // Then
         assertThat(fakeDataSource.lastCharNameQueried).isEqualTo(charName)
@@ -75,7 +76,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Success(dto)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke(QueryTable("", ""), charName)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -99,7 +100,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Success(dto)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke(QueryTable("", ""), charName)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -116,7 +117,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Success(dto)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke(QueryTable("", ""), charName)
 
         // Then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -134,7 +135,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Error(DataError.Remote.REQUEST_TIMEOUT)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke(QueryTable("", ""), charName)
 
         // Then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -149,7 +150,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Error(DataError.Remote.SERVER_ERROR)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke(QueryTable("", ""), charName)
 
         // Then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -164,7 +165,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Error(DataError.Remote.NO_INTERNET)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke(QueryTable("", ""), charName)
 
         // Then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -179,7 +180,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Error(DataError.Remote.SERVER_ERROR)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke(QueryTable("", ""), charName)
 
         // Then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -194,7 +195,7 @@ class DownloadMoveListUseCaseTest {
         fakeDataSource.moveListResult = Result.Error(DataError.Remote.UNKNOWN)
 
         // When
-        val result = useCase.invoke(charName)
+        val result = useCase.invoke(QueryTable("", ""), charName)
 
         // Then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -392,7 +393,8 @@ class DownloadMoveListUseCaseTest {
             throw NotImplementedError("Not needed for these tests")
         }
 
-        override suspend fun downloadMoveListFor(
+        override suspend fun downloadMoveList(
+            table: String,
             charName: String
         ): Result<MoveListResponseDto, DataError.Remote> {
             lastCharNameQueried = charName

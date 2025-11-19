@@ -7,11 +7,7 @@ import io.github.sophon.wikiSuperCombo.superComboModule
 import io.github.sophon.wikiwavu.wavuModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
-import org.koin.core.qualifier.named
 import org.koin.dsl.KoinAppDeclaration
-
-internal const val QUALIFIER_WAVU = "wavu"
-internal const val QUALIFIER_SC = "superCombo"
 
 fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
     config?.invoke(this)
@@ -20,8 +16,8 @@ fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
         platformModule,
 
         coreModule,
-        wavuModule(named(QUALIFIER_WAVU)),
-        superComboModule(named(QUALIFIER_SC)),
+        wavuModule(),
+        superComboModule(),
 
         screensModule,
 

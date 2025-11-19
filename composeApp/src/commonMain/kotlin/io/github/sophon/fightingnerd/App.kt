@@ -48,9 +48,10 @@ fun App() {
                 }
 
                 composable<Destination.MoveList> { navBackstackEntry ->
+                    val route = navBackstackEntry.toRoute<Destination.MoveList>()
                     MoveListScreen(
-                        charName = navBackstackEntry.toRoute<Destination.MoveList>().charName,
-                        wikiQualifier = navBackstackEntry.toRoute<Destination.MoveList>().wikiQualifier,
+                        gameId = route.gameId,
+                        charName = route.charName,
                     )
                 }
 

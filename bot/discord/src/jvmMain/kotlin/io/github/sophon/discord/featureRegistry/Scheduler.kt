@@ -1,4 +1,4 @@
-package io.github.sophon.discord.featureRegistry.wikiWavu
+package io.github.sophon.discord.featureRegistry
 
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow

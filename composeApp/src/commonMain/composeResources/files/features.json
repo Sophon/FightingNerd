@@ -2,15 +2,17 @@
   "featureList": [
     {
       "name": "Wavu Wiki",
-      "isEnabled": true
-    },
-    {
-      "name": "Infil Glossary",
-      "isEnabled": true
+      "isEnabled": true,
+      "supportedGames": [
+        "Tekken_8"
+      ]
     },
     {
       "name": "SuperCombo Wiki",
-      "isEnabled": true
+      "isEnabled": true,
+      "supportedGames": [
+        "Street_Fighter_6"
+      ]
     }
   ]
 }

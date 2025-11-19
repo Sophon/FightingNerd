@@ -6,8 +6,10 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.usecase.FetchCharacterListUseCase
-import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.usecase.SyncDataIfOldUseCase
+import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
+import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
+import io.github.sophon.fightingnerd.featureRegistry.usecase.FetchCharacterListUseCase
+import io.github.sophon.fightingnerd.featureRegistry.usecase.SyncDataIfOldUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -15,9 +17,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 internal class SuperComboHomeVM(
+    private val featureRegistry: FeatureRegistry,
     private val syncDataIfOldUseCase: SyncDataIfOldUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
+    private val superComboFeature: ComposeRegisteredFeature? by lazy {
+        featureRegistry.getFeatures()
+            .find { it.featureInfo.name == "SuperCombo Wiki" }
+    }
     private val _state = MutableStateFlow(SuperComboHomeScreenViewState())
     val state = _state
         .onStart {
@@ -38,23 +45,37 @@ internal class SuperComboHomeVM(
 
     private suspend fun startSuperComboSession() {
         _state.update { it.copy(isLoading = true) }
-        syncDataIfOldUseCase.invoke()
+
+        superComboFeature?.let { feature ->
+            feature.featureInfo.supportedGames.forEach { gameId ->
+                feature.getWikiClient(gameId)?.let { wiki ->
+                    syncDataIfOldUseCase.invoke(wiki)
+                }
+            }
+        }
+
         _state.update { it.copy(isLoading = false) }
     }
 
     private suspend fun fetchCharacterList() {
-        fetchCharacterListUseCase.invoke()
-            .onSuccess { characterList ->
-                cacheCharacterList(characterList)
-            }
-            .onError { error ->
-                Napier.e(tag = TAG) { error.toString() }
-                _state.update { it.copy(error = error.toString()) }
-            }
-    }
+        val allCharacters = mutableListOf<Character>()
 
-    private fun cacheCharacterList(characterList: List<Character>) {
-        _state.update { it.copy(characterList = characterList) }
+        superComboFeature?.let { feature ->
+            feature.featureInfo.supportedGames.forEach { gameId ->
+                feature.getWikiClient(gameId)?.let { wiki ->
+                    fetchCharacterListUseCase.invoke(wiki)
+                        .onSuccess { characterList ->
+                            allCharacters.addAll(characterList)
+                        }
+                        .onError { error ->
+                            Napier.e(tag = TAG) { "fetchCharacterList: $error" }
+                            _state.update { it.copy(error = error.toString()) }
+                        }
+                }
+            }
+        }
+
+        _state.update { it.copy(characterList = allCharacters) }
     }
 
 

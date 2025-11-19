@@ -5,11 +5,15 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
 
-interface DiscordRegisteredFeature {
+internal interface DiscordRegisteredFeature {
     val featureInfo: FeatureInfo
 
     val defaultCommand: SupportedCommand?
     val otherCommands: List<SupportedCommand>
+
+    fun registerGames(enabledGames: List<String>) {
+        //default: for when feature doesn't support games
+    }
 
     suspend fun start()
 

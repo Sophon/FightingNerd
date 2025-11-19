@@ -1,23 +1,48 @@
 package io.github.sophon.fightingnerd.featureRegistry
 
-import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.SupercomboWikiComposeFeature
-import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.superComboFeatureModule
-import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.WavuWikiComposeFeature
-import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.wavuWikiFeatureModule
+import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.SuperComboComposeFeature
+import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.superComboComposeModule
+import io.github.sophon.fightingnerd.featureRegistry.usecase.FetchCharacterListUseCase
+import io.github.sophon.fightingnerd.featureRegistry.usecase.SyncDataIfOldUseCase
+import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.WavuComposeFeature
+import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.wavuComposeModule
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal val featureRegistryModule = module {
     includes(
-        wavuWikiFeatureModule,
-        superComboFeatureModule,
+        wavuComposeModule,
+        superComboComposeModule,
     )
-    singleOf(::WavuWikiComposeFeature).bind<ComposeRegisteredFeature>()
-    singleOf(::SupercomboWikiComposeFeature).bind<ComposeRegisteredFeature>()
 
-    single<List<ComposeRegisteredFeature>>{ getAll() }
+    singleOf(::SyncDataIfOldUseCase)
+    singleOf(::FetchCharacterListUseCase)
 
-    singleOf(::FeatureRegistry)
+    // 1. Register individual features
+    singleOf(::WavuComposeFeature).bind<ComposeRegisteredFeature>()
+    singleOf(::SuperComboComposeFeature).bind<ComposeRegisteredFeature>()
+
+    // 2. Collect features into a list
+    single<List<ComposeRegisteredFeature>> {
+        getAll()
+    }
+
+    // 3. Create loader
     singleOf(::FeatureListLoaderImpl).bind<FeatureListLoader>()
+
+    // 4. Create registry with the list
+    single {
+        FeatureRegistry(
+            featureListLoader = get(),
+            fullFeatureList = get()  // Explicit dependency
+        ).apply {
+            // 5. Initialize after creation
+            GlobalScope.launch {
+                initialize()
+            }
+        }
+    }
 }

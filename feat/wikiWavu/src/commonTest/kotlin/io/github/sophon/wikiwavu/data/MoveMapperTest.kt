@@ -884,5 +884,24 @@ class MoveMapperTest {
         assertThat(result.videoId).isEqualTo("abc123")
         assertThat(result.t8Properties?.level).isEqualTo("m")
     }
+
+    @Test
+    fun `mapToDomain cleans html from move name`() {
+        // Given
+        val moveDto = MoveDto(
+            id = "Anna-ff32",
+            input = "ff32",
+            parent = null,
+            target = "mM",
+            name = "Gancanagh&#039;s Pipe",
+        )
+        val movesById = mapOf(moveDto.id to moveDto)
+
+        // When
+        val result = moveDto.mapToDomain("Anna", movesById)
+
+        // Then
+        assertThat(result.name).isEqualTo("Gancanagh's Pipe")
+    }
     // endregion
 }

@@ -10,5 +10,6 @@ data class FeatureConfig(
     data class Feature(
         val name: String,
         val isEnabled: Boolean,
+        val supportedGames: List<String>,
     )
 }

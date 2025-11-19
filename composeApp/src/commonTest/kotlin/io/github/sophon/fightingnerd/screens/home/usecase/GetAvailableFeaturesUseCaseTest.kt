@@ -13,6 +13,7 @@ import assertk.assertions.isTrue
 import io.github.sophon.core.feature.FeatureConfig
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.fightingnerd.featureRegistry.FeatureListLoader
 import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
@@ -31,8 +32,8 @@ class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `given features with no preferences when invoke then emits all features enabled by default`() = runTest {
         // Given
-        val featureInfo1 = FeatureInfo("Feature1", "url1", "icon1", version = "1.0.0")
-        val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", version = "1.0.0")
+        val featureInfo1 = FeatureInfo("Feature1", "url1", "icon1", setOf(), "1.0.0")
+        val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", setOf(), "1.0.0")
 
         val features = listOf(
             FakeComposeRegisteredFeature(featureInfo1),
@@ -57,8 +58,8 @@ class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `given features with existing preferences when invoke then emits only enabled features`() = runTest {
         // Given
-        val featureInfo1 = FeatureInfo("Feature1", "url1", "icon1", version = "1.0.0")
-        val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", version = "1.0.0")
+        val featureInfo1 = FeatureInfo("Feature1", "url1", "icon1", setOf(), "1.0.0")
+        val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", setOf(), "1.0.0")
 
         val features = listOf(
             FakeComposeRegisteredFeature(featureInfo1),
@@ -104,8 +105,8 @@ class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `given all features disabled when invoke then emits empty list`() = runTest {
         // Given
-        val featureInfo1 = FeatureInfo("Feature1", "url1", "icon1", version = "1.0.0")
-        val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", version = "1.0.0")
+        val featureInfo1 = FeatureInfo("Feature1", "url1", "icon1", setOf(), "1.0.0")
+        val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", setOf(), "1.0.0")
 
         val features = listOf(
             FakeComposeRegisteredFeature(featureInfo1),
@@ -135,8 +136,8 @@ class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `given preferences change when collecting flow then emits updated feature list`() = runTest {
         // Given
-        val featureInfo1 = FeatureInfo("Feature1", "url1", "icon1", version = "1.0.0")
-        val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", version = "1.0.0")
+        val featureInfo1 = FeatureInfo("Feature1", "url1", "icon1", setOf(), "1.0.0")
+        val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", setOf(), "1.0.0")
 
         val features = listOf(
             FakeComposeRegisteredFeature(featureInfo1),
@@ -184,7 +185,7 @@ class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `given datastore throws IOException when invoke then emits IO_ERROR`() = runTest {
         // Given
-        val features = listOf(FakeComposeRegisteredFeature(FeatureInfo("Feature", "url", "icon", version = "1.0.0")))
+        val features = listOf(FakeComposeRegisteredFeature(FeatureInfo("Feature", "url", "icon", setOf(), "1.0.0")))
         val mockRegistry = createRegistry(features)
         val mockStore = FakeDataStore(shouldThrowIOException = true)
         val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
@@ -202,7 +203,7 @@ class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `given datastore throws generic exception when invoke then emits UNKNOWN error`() = runTest {
         // Given
-        val features = listOf(FakeComposeRegisteredFeature(FeatureInfo("Feature", "url", "icon", version = "1.0.0")))
+        val features = listOf(FakeComposeRegisteredFeature(FeatureInfo("Feature", "url", "icon", setOf(), "1.0.0")))
         val mockRegistry = createRegistry(features)
         val mockStore = FakeDataStore(shouldThrowGenericException = true)
         val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
@@ -234,7 +235,7 @@ class GetAvailableFeaturesUseCaseTest {
     ) : FeatureListLoader {
         override suspend fun loadFeatureList(): FeatureConfig {
             val features = enabledFeatureNames.map { name ->
-                FeatureConfig.Feature(name = name, isEnabled = true)
+                FeatureConfig.Feature(name = name, isEnabled = true, listOf())
             }
             return FeatureConfig(features)
         }
@@ -243,6 +244,10 @@ class GetAvailableFeaturesUseCaseTest {
     private class FakeComposeRegisteredFeature(
         override val featureInfo: FeatureInfo
     ) : ComposeRegisteredFeature {
+        override fun registerGames(enabledGames: List<String>) {}
+        override fun getWikiClient(gameId: String): WikiClient? {
+            return null
+        }
         @Composable
         override fun HomeScreenContent(navHostController: NavHostController) {}
         override suspend fun onInit() {}
