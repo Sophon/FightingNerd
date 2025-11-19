@@ -2,6 +2,8 @@ package io.github.sophon.fightingnerd.featureRegistry
 
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.SuperComboComposeFeature
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.superComboComposeModule
+import io.github.sophon.fightingnerd.featureRegistry.usecase.FetchCharacterListUseCase
+import io.github.sophon.fightingnerd.featureRegistry.usecase.SyncDataIfOldUseCase
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.WavuComposeFeature
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.wavuComposeModule
 import kotlinx.coroutines.GlobalScope
@@ -16,19 +18,28 @@ internal val featureRegistryModule = module {
         superComboComposeModule,
     )
 
+    singleOf(::SyncDataIfOldUseCase)
+    singleOf(::FetchCharacterListUseCase)
+
+    // 1. Register individual features
     singleOf(::WavuComposeFeature).bind<ComposeRegisteredFeature>()
     singleOf(::SuperComboComposeFeature).bind<ComposeRegisteredFeature>()
 
-    single<List<ComposeRegisteredFeature>> { getAll() }
+    // 2. Collect features into a list
+    single<List<ComposeRegisteredFeature>> {
+        getAll()
+    }
 
-    singleOf(::FeatureRegistry)
+    // 3. Create loader
     singleOf(::FeatureListLoaderImpl).bind<FeatureListLoader>()
 
-    // Initialize features after registry is created
+    // 4. Create registry with the list
     single {
-        val registry = get<FeatureRegistry>()
-        registry.apply {
-            // Trigger initialization that calls registerGames
+        FeatureRegistry(
+            featureListLoader = get(),
+            fullFeatureList = get()  // Explicit dependency
+        ).apply {
+            // 5. Initialize after creation
             GlobalScope.launch {
                 initialize()
             }

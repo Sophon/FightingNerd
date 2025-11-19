@@ -18,8 +18,7 @@ import org.koin.core.qualifier.named
 
 internal class WavuComposeFeature(
     wavuFeatureInfo: WavuFeatureInfo,
-    private val characterDBFactory: (String) -> CharacterListDB,
-    private val moveDBFactory: (String) -> MoveListDB,
+    private val dbFactory: (String) -> Pair<CharacterListDB, MoveListDB>,
 ): ComposeRegisteredFeature, KoinComponent {
     override val featureInfo: FeatureInfo = wavuFeatureInfo.featureInfo
     private val wikis = mutableMapOf<String, WikiClient>()
@@ -27,11 +26,12 @@ internal class WavuComposeFeature(
     override fun registerGames(enabledGames: List<String>) {
         enabledGames.filter { it in featureInfo.supportedGames }
             .forEach { gameId ->
+                val (characterDB, moveDB) = dbFactory(gameId)
                 wikis[gameId] = get(named("wavu")) {
                     parametersOf(
                         gameId,
-                        characterDBFactory(gameId),
-                        moveDBFactory(gameId),
+                        characterDB,
+                        moveDB,
                     )
                 }
             }
