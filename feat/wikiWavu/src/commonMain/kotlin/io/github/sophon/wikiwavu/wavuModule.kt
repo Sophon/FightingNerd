@@ -30,7 +30,7 @@ fun wavuModule() = module {
 
     factory<WikiClient>(named("wavu")) { params ->
         val gameId: String = params.get()
-        val characterListDB: CharacterListDB = params.get()
+        val charListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
 
         WavuWikiClient(
@@ -39,9 +39,9 @@ fun wavuModule() = module {
             wavuFeatureInfo = get(),
 
             downloadCharacterListUseCase = DownloadCharacterListUseCase(get()),
-            cacheCharacterListUseCase = CacheCharacterListUseCase(characterListDB),
-            fetchCharacterListUseCase = FetchCharacterListUseCase(characterListDB),
-            fetchCharacterUseCase = FetchCharacterUseCase(characterListDB),
+            cacheCharacterListUseCase = CacheCharacterListUseCase(charListDB),
+            fetchCharacterListUseCase = FetchCharacterListUseCase(charListDB),
+            fetchCharacterUseCase = FetchCharacterUseCase(charListDB),
 
             downloadMoveListUseCase = DownloadMoveListUseCase(get()),
             cacheMoveListUseCase = CacheMoveListUseCase(moveListDB),
@@ -49,7 +49,7 @@ fun wavuModule() = module {
             fetchMoveUseCase = FetchMoveUseCase(moveListDB),
 
             getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase(moveListDB),
-            clearCacheUseCase = ClearCacheUseCase(get(), get())
+            clearCacheUseCase = ClearCacheUseCase(charListDB, moveListDB)
         )
     }
 }
