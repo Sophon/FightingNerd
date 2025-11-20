@@ -39,7 +39,7 @@ graph LR
   end
 
   subgraph Community Wiki
-    wikiWavu[Wavu]
+    wikiWavu[Wavu + Tekken Docs]
     supercombo[SuperCombo]
     2xko[2XKO]
     dustloop[Dustloop]
