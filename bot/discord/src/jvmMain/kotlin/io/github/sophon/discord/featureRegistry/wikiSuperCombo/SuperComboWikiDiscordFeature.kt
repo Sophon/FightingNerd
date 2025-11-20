@@ -228,6 +228,10 @@ internal class SuperComboWikiDiscordFeature(
         description = "**${move.charName}**: ${move.name}"
         color = Color(ORANGE)
 
+        move.hitboxImageUrl?.let { hurtboxUrl ->
+            thumbnail { url = hurtboxUrl }
+        }
+
         mandatoryField(name = "SU", value = move.startup)
         mandatoryField(name = "OH", value = move.onHit)
         mandatoryField(name = "OB", value = move.onBlock)

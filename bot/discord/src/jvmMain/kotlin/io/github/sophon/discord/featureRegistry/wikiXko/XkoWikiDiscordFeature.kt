@@ -135,6 +135,10 @@ internal class XkoWikiDiscordFeature(
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = "${move.charName}: ${move.input}"
 
+        move.hitboxImageUrl?.let { hurtboxUrl ->
+            thumbnail { url = hurtboxUrl }
+        }
+
         color = Color(GREEN)
 
         mandatoryField(name = "SU", value = move.startup)
