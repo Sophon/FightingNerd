@@ -18,7 +18,7 @@ internal class GetCharacterUseCase {
         return wiki.fetchCharacter(charName)
             .mapError { it.toDomainError() }
             .flatMap { character ->
-                wiki.fetchMoveList(character.queryName)
+                wiki.fetchMoveList(character.id)
                     .mapError { it.toDomainError() }
                     .map { moveList ->
                         val normals = moveList.filter { move ->
