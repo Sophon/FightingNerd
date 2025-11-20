@@ -11,13 +11,13 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.data.WavuTables
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
 import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
-import io.github.sophon.wikiwavu.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchCharacterUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
@@ -51,7 +51,7 @@ internal class WavuWikiClient(
     }
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
-        return downloadCharacterListUseCase.invoke()
+        return downloadCharacterListUseCase.invoke(queryTable)
             .onSuccess { Napier.d(tag = TAG) { "${it.size} characters loaded" } }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }

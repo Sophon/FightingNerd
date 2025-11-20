@@ -4,6 +4,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
@@ -13,11 +14,10 @@ import io.github.sophon.wikiwavu.domain.WavuUrlProvider
 import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
-import io.github.sophon.wikiwavu.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiwavu.usecase.FetchCharacterUseCase
-import io.github.sophon.wikiwavu.usecase.FetchMoveUseCase
 import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
+import io.github.sophon.wikiwavu.usecase.FetchMoveUseCase
 import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
@@ -40,6 +40,13 @@ fun wavuModule() = module {
         val moveListDB: MoveListDB = params.get()
         val source: WavuWikiDataSource = get()
 
+        val downloadCharacterListUseCase = DownloadCharacterListUseCase(
+            downloadAndMap = { queryTable ->
+                source.downloadCharacterList()
+                    .map { dto -> dto.toDomain() }
+            }
+        )
+
         val downloadMoveListUseCase = DownloadMoveListUseCase(
             downloadAndMap = { queryTable, charName ->
                 source.downloadMoveList(queryTable.moves, charName)
@@ -52,7 +59,7 @@ fun wavuModule() = module {
 
             wavuFeatureInfo = get(),
 
-            downloadCharacterListUseCase = DownloadCharacterListUseCase(get()),
+            downloadCharacterListUseCase = downloadCharacterListUseCase,
             cacheCharacterListUseCase = CacheCharacterListUseCase(charListDB),
             fetchCharacterListUseCase = FetchCharacterListUseCase(charListDB),
             fetchCharacterUseCase = FetchCharacterUseCase(charListDB),
