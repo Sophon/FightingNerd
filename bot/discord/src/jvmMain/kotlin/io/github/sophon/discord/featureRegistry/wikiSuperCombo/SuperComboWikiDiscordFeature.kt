@@ -233,14 +233,14 @@ internal class SuperComboWikiDiscordFeature(
         color = Color(ORANGE)
 
         move.hitboxImageUrl?.let { hurtboxUrl ->
-            thumbnail { url = hurtboxUrl }
+            image = hurtboxUrl
         }
 
         mandatoryField(name = "SU", value = move.startup)
         mandatoryField(name = "OH", value = move.onHit)
         mandatoryField(name = "OB", value = move.onBlock)
         mandatoryField(name = "Act", value = move.sf6Properties?.active)
-        mandatoryField(name = "LVL", value = move.sf6Properties?.guard)
+        mandatoryField(name = "Guard", value = move.sf6Properties?.guard)
         mandatoryField(name = "Rec", value = move.recovery)
 
         optionalField(name = "DMG", value = move.damage)
