@@ -10,19 +10,19 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import io.github.sophon.wikiwavu.data.toDomain
 
-internal class DownloadMoveListUseCase(
-    private val source: WavuWikiDataSource,
-) {
-    suspend fun invoke(
-        queryTable: QueryTable,
-        charName: String
-    ): Result<List<Move>, WikiError> {
-        return source.downloadMoveList(queryTable.moves, charName)
-            .map { dto -> dto.toDomain(charName) }
-            .mapError { it.toDomainError(TAG) }
-    }
-
-    private companion object {
-        const val TAG = "DownloadMoveListUseCase"
-    }
-}
+//internal class DownloadMoveListUseCase(
+//    private val source: WavuWikiDataSource,
+//) {
+//    suspend fun invoke(
+//        queryTable: QueryTable,
+//        charName: String
+//    ): Result<List<Move>, WikiError> {
+//        return source.downloadMoveList(queryTable.moves, charName)
+//            .map { dto -> dto.toDomain(charName) }
+//            .mapError { it.toDomainError(TAG) }
+//    }
+//
+//    private companion object {
+//        const val TAG = "DownloadMoveListUseCase"
+//    }
+//}
