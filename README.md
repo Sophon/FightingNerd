@@ -72,7 +72,7 @@ graph LR
   dustloop --> gbvsr[Granblue Fantasy Versus: Rising]
   2xko --> xko[2XKO]
   dreamcancel --> kof15[King of Fighters XV]
-  dreamcancel --> kof13[King of Fighters XIII]
+  dreamcancel --> cotw[Fatal Fury: City of the Wolves]
 
 
   style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
