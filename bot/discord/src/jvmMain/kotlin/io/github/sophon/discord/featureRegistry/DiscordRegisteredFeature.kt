@@ -38,4 +38,5 @@ data class SupportedCommand(
 data class BotOutput(
     val embedBuilder: (EmbedBuilder.() -> Unit)? = null,
     val plainText: String? = null,
+    val errorEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
 )
