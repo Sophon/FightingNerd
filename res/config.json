@@ -18,6 +18,13 @@
       "supportedGames": [
         "Street_Fighter_6"
       ]
+    },
+    {
+      "name": "2XKO Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "2XKO"
+      ]
     }
   ]
 }

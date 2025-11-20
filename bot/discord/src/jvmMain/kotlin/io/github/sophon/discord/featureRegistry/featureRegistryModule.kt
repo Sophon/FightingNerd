@@ -10,6 +10,7 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGloss
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
@@ -44,9 +45,6 @@ internal val featureRegistryModule = module {
     singleOf(::SearchGlossaryUseCase)
     //endregion
 
-    //region SuperCombo Wiki
-    //endregion
-
     //region FEATURES SETUP
     single {
         FeatureRegistry(
@@ -59,6 +57,7 @@ internal val featureRegistryModule = module {
     singleOf(::InfilGlossaryDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::WavuWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::SuperComboWikiDiscordFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::XkoWikiDiscordFeature).bind<DiscordRegisteredFeature>()
 
     singleOf(::ConfigLoader)
     single<List<DiscordRegisteredFeature>> {

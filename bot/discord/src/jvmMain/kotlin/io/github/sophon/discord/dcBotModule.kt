@@ -9,6 +9,7 @@ import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.wikiSuperCombo.superComboModule
 import io.github.sophon.wikiwavu.wavuModule
+import io.github.sophon.xko.xkoModule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -31,6 +32,7 @@ fun initKoin(
         infilModule,
         wavuModule(),
         superComboModule(),
+        xkoModule(),
 
         featureRegistryModule,
     )

@@ -1,0 +1,40 @@
+package io.github.sophon.xko.data
+
+import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.wiki.domain.model.Move
+
+internal fun MoveListResponseDto.toDomain(): Map<Character, List<Move>> {
+    return bucket
+        .groupBy { it.pageName.toCharacter() }
+        .mapValues { (_, moveList) ->
+            moveList.map { it.toMoveList() }
+        }
+}
+
+internal fun MoveDto.toMoveList(): Move {
+    return Move(
+        charName = pageName,
+        id = "${input.lowercase()}_$input",
+        input = input,
+        damage = damage?.ifEmpty { null },
+        startup = startup,
+        onBlock = onBlock?.ifEmpty { null },
+        recovery = recovery,
+
+        xkoProperties = Move.XkoProperties(
+            active = active?.ifEmpty { null },
+            cancel = cancel?.ifEmpty { null },
+            guard = guard?.ifEmpty { null },
+            invulnerability = invuln?.ifEmpty { null }
+        )
+    )
+}
+
+internal fun String.toCharacter(): Character {
+    return Character(
+        id = this,
+        displayName = this,
+        queryName = this,
+        wikiUrl = "https://wiki.play2xko.com/en-us/$this"
+    )
+}

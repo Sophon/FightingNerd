@@ -23,6 +23,7 @@ kotlin {
             implementation(project(":feat:glossaryInfil"))
             implementation(project(":feat:wikiWavu"))
             implementation(project(":feat:wikiSupercombo"))
+            implementation(project(":feat:xko"))
 
             implementation(libs.napier)
             implementation(libs.kord)

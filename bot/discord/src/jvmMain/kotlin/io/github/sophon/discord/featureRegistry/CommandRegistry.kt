@@ -20,6 +20,9 @@ enum class Command {
     FDSF6,
     CHARSF6,
 
+    //2xko wiki
+    FDXKO,
+
     //core
     TIP, DONATE,
     REPO,
