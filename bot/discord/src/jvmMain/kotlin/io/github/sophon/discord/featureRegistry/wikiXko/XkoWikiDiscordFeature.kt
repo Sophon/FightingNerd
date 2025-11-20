@@ -143,7 +143,7 @@ internal class XkoWikiDiscordFeature(
 
         mandatoryField(name = "SU", value = move.startup)
         mandatoryField(name = "OB", value = move.onBlock)
-        mandatoryField(name = "LVL", value = move.xkoProperties?.guard)
+        mandatoryField(name = "Guard", value = move.xkoProperties?.guard)
 
         optionalField(name = "Rec", value = move.recovery)
         optionalField(name = "DMG", value = move.damage)

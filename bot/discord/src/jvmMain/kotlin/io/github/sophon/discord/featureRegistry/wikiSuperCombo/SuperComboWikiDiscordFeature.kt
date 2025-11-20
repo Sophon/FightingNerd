@@ -240,7 +240,7 @@ internal class SuperComboWikiDiscordFeature(
         mandatoryField(name = "OH", value = move.onHit)
         mandatoryField(name = "OB", value = move.onBlock)
         mandatoryField(name = "Act", value = move.sf6Properties?.active)
-        mandatoryField(name = "LVL", value = move.sf6Properties?.guard)
+        mandatoryField(name = "Guard", value = move.sf6Properties?.guard)
         mandatoryField(name = "Rec", value = move.recovery)
 
         optionalField(name = "DMG", value = move.damage)
