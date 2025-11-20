@@ -236,19 +236,19 @@ internal class SuperComboWikiDiscordFeature(
             image = hurtboxUrl
         }
 
-        mandatoryField(name = "SU", value = move.startup)
-        mandatoryField(name = "OH", value = move.onHit)
-        mandatoryField(name = "OB", value = move.onBlock)
-        mandatoryField(name = "Act", value = move.sf6Properties?.active)
+        mandatoryField(name = "Startup", value = move.startup)
+        mandatoryField(name = "Hit", value = move.onHit)
+        mandatoryField(name = "Block", value = move.onBlock)
+        mandatoryField(name = "Active", value = move.sf6Properties?.active)
         mandatoryField(name = "Guard", value = move.sf6Properties?.guard)
-        mandatoryField(name = "Rec", value = move.recovery)
+        mandatoryField(name = "Recovery", value = move.recovery)
 
-        optionalField(name = "DMG", value = move.damage)
+        optionalField(name = "Damage", value = move.damage)
         optionalField(name = "Invul", value = move.sf6Properties?.invulnerability)
 
-        optionalField(name = "JUGst", value = move.sf6Properties?.jugStart)
-        optionalField(name = "JUGlim", value = move.sf6Properties?.jugLimit)
-        optionalField(name = "JUG++", value = move.sf6Properties?.jugIncrease)
+        optionalField(name = "JUG start", value = move.sf6Properties?.jugStart)
+        optionalField(name = "JUG limit", value = move.sf6Properties?.jugLimit)
+        optionalField(name = "JUG inc", value = move.sf6Properties?.jugIncrease)
 
         createDetails(move)
 
