@@ -11,18 +11,18 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
+import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikiSuperCombo.data.SuperComboTables
 import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
-import io.github.sophon.wikiSuperCombo.usecase.CacheCharacterListUseCase
-import io.github.sophon.wikiSuperCombo.usecase.CacheMoveListUseCase
-import io.github.sophon.wikiSuperCombo.usecase.ClearCacheUseCase
-import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterListUseCase
-import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
-import io.github.sophon.wikiSuperCombo.usecase.FetchMoveListUseCase
-import io.github.sophon.wikiSuperCombo.usecase.FetchMoveUseCase
-import io.github.sophon.wikiSuperCombo.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
 internal class SuperComboWikiClient(
