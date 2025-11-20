@@ -233,7 +233,7 @@ internal class SuperComboWikiDiscordFeature(
         color = Color(ORANGE)
 
         move.hitboxImageUrl?.let { hurtboxUrl ->
-            thumbnail { url = hurtboxUrl }
+            image = hurtboxUrl
         }
 
         mandatoryField(name = "SU", value = move.startup)

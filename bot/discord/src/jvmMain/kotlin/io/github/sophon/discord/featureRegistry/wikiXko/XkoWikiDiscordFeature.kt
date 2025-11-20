@@ -136,7 +136,7 @@ internal class XkoWikiDiscordFeature(
         title = "${move.charName}: ${move.input}"
 
         move.hitboxImageUrl?.let { hurtboxUrl ->
-            thumbnail { url = hurtboxUrl }
+            image = hurtboxUrl
         }
 
         color = Color(GREEN)
