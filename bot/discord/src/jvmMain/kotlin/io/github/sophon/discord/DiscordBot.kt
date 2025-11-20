@@ -2,22 +2,24 @@ package io.github.sophon.discord
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
-import dev.kord.core.behavior.channel.createMessage
-import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
-import dev.kord.rest.builder.message.allowedMentions
-import dev.kord.rest.builder.message.embed
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.util.createEmbedMessage
+import io.github.sophon.discord.util.createEmbedResponse
 import io.github.sophon.discord.util.createErrorEmbed
+import io.github.sophon.discord.util.createPlainMessage
+import io.github.sophon.discord.util.createPlainResponse
+import io.github.sophon.discord.util.deleteInteraction
+import io.github.sophon.discord.util.delete
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -88,23 +90,19 @@ internal class DiscordBotImpl(
 
         val botOutput = when(result) {
             is Result.Success -> result.data
-            is Result.Error -> BotOutput(embedBuilder = createErrorEmbed(result.error))
+            is Result.Error -> BotOutput(errorEmbedBuilder = createErrorEmbed(result.error))
         }
 
         when {
             botOutput.embedBuilder != null -> {
-                message.channel.createMessage {
-                    messageReference = message.id
-                    allowedMentions { repliedUser = false }
-                    embed(botOutput.embedBuilder)
-                }
+                createEmbedMessage(botOutput.embedBuilder)
             }
             botOutput.plainText != null -> {
-                message.channel.createMessage {
-                    messageReference = message.id
-                    allowedMentions { repliedUser = false }
-                    content = botOutput.plainText
-                }
+                createPlainMessage(botOutput.plainText)
+            }
+            botOutput.errorEmbedBuilder != null -> {
+                createEmbedMessage(botOutput.errorEmbedBuilder)
+                    .delete(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
             }
         }
     }
@@ -117,12 +115,20 @@ internal class DiscordBotImpl(
 
         val botOutput = when (result) {
             is Result.Success -> result.data
-            is Result.Error -> BotOutput(embedBuilder = createErrorEmbed(result.error))
+            is Result.Error -> BotOutput(errorEmbedBuilder = createErrorEmbed(result.error))
         }
 
-        interaction.respondPublic {
-            botOutput.embedBuilder?.let { embed(it) }
-            botOutput.plainText?.let { content = it }
+        when {
+            botOutput.embedBuilder != null -> {
+                createEmbedResponse(botOutput.embedBuilder)
+            }
+            botOutput.plainText != null -> {
+                createPlainResponse(botOutput.plainText)
+            }
+            botOutput.errorEmbedBuilder != null -> {
+                createEmbedResponse(botOutput.errorEmbedBuilder)
+                deleteInteraction(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
+            }
         }
     }
 
