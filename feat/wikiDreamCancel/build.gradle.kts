@@ -27,7 +27,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "xko"
+            baseName = "DreamCancel"
             isStatic = true
         }
     }
@@ -48,6 +48,9 @@ kotlin {
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.test.turbine)
+        }
+
+        jvmTest.dependencies {
             implementation(libs.junit)
             implementation(libs.kotlin.testJunit)
         }
@@ -55,7 +58,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.sophon.xko"
+    namespace = "io.github.sophon.wikidreamcancel"
     compileSdk = 36
 
     defaultConfig {
@@ -68,9 +71,9 @@ android {
     }
 }
 
-val featureVersion = "1.0.0"
+val featureVersion = "1.0.1"
 buildkonfig {
-    packageName = "io.github.sophon.xko"
+    packageName = "io.github.sophon.wikiDreamCancel"
 
     defaultConfigs {
         buildConfigField(STRING, "VERSION", featureVersion)
