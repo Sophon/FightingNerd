@@ -5,6 +5,7 @@ import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.xko.data.XkoWikiDataSource
 import io.github.sophon.xko.data.XkoWikiDataSourceImpl
+import io.github.sophon.xko.domain.XkoFeatureInfo
 import io.github.sophon.xko.usecase.CacheCharacterListUseCase
 import io.github.sophon.xko.usecase.CacheMoveListUseCase
 import io.github.sophon.xko.usecase.ClearCacheUseCase
@@ -22,6 +23,7 @@ import org.koin.dsl.module
 fun xkoModule() = module {
     singleOf(::XkoWikiDataSourceImpl).bind<XkoWikiDataSource>()
     singleOf(::XkoWikiClient).bind<WikiClient>()
+    single { XkoFeatureInfo }
 
     singleOf(::DownloadOrFetchUseCase)
 

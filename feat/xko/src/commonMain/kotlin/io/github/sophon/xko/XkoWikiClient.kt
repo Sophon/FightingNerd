@@ -11,6 +11,7 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.xko.domain.XkoFeatureInfo
 import io.github.sophon.xko.usecase.CacheCharacterListUseCase
 import io.github.sophon.xko.usecase.CacheMoveListUseCase
 import io.github.sophon.xko.usecase.ClearCacheUseCase
@@ -23,7 +24,7 @@ import io.github.sophon.xko.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
 internal class XkoWikiClient(
-    gameId: String,
+    gameId: String, //not needed
 
     private val downloadOrFetchUseCase: DownloadOrFetchUseCase,
 
@@ -39,7 +40,7 @@ internal class XkoWikiClient(
     private val clearCacheUseCase: ClearCacheUseCase,
 ): WikiClient {
     override fun getFeatureInfo(): FeatureInfo {
-        TODO("Not yet implemented")
+        return XkoFeatureInfo.featureInfo
     }
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
