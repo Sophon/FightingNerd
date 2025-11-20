@@ -176,6 +176,10 @@ internal class SuperComboWikiDiscordFeature(
         url = character.wikiUrl
         color = Color(ORANGE)
 
+        character.images?.iconUrl?.let { iconUrl ->
+            thumbnail { url = iconUrl }
+        }
+
         character.sf6Properties?.let { properties ->
             val moves = fastestMoveList.joinToString(", ") { move ->
                 move.input
