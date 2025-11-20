@@ -3,7 +3,7 @@ package io.github.sophon.wikiSuperCombo.data
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.wiki.domain.model.Move
 
-internal fun MoveListResponseDto.toDomain(): List<Move> {
+internal fun MoveListResponseDto.toDomain(imageUrlMap: Map<String, String>): List<Move> {
     return cargoQuery.map { wrapper ->
         val dto = wrapper.title
 
@@ -20,7 +20,10 @@ internal fun MoveListResponseDto.toDomain(): List<Move> {
             recovery = dto.recovery.takeIfNotTemplate()?.cleanHtml(),
             notes = dto.notes.takeIfNotTemplate()?.cleanHtml()
                 .extractNotes(),
-            t8Properties = null,
+            hitboxImageUrl = dto.hitboxes?.let {
+                imageUrlMap[it]
+            },
+
             sf6Properties = Move.SF6Properties(
                 type = dto.moveType,
                 active = dto.active.takeIfNotTemplate()?.cleanHtml(),

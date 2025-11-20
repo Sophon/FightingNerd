@@ -63,7 +63,7 @@ internal class SuperComboDataSourceImpl(
             response.query.pages.values.firstOrNull()
                 ?.imageinfo?.firstOrNull()
                 ?.url
-                ?: throw Exception("Image URL not found for $fileName")
+                ?: ""
         }
     }
 
