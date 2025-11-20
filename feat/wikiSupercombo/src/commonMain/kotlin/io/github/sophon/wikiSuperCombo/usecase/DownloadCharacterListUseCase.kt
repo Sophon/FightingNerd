@@ -3,6 +3,7 @@ package io.github.sophon.wikiSuperCombo.usecase
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
+import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.wiki.data.QueryTable
@@ -32,15 +33,9 @@ internal class DownloadCharacterListUseCase(
             listOfNotNull(it.title.icon, it.title.portrait)
         }.distinct()
 
-        // Fetch all image URLs
-        val imageUrlMap = mutableMapOf<String, String>()
-        imageFileNames.forEach { fileName ->
-            source.getImageUrl(fileName)
-                .onSuccess { url -> imageUrlMap[fileName] = url }
-        }
-
-        // Map to domain with resolved image URLs
-        return Result.Success(dto.toDomain(imageUrlMap))
+        // Fetch all image URLs and map to domain
+        return source.getImageUrl(imageFileNames)
+            .map { imageUrlMap -> dto.toDomain(imageUrlMap) }
     }
 
     private companion object {
