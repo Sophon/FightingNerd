@@ -295,7 +295,7 @@ class DownloadCharacterListUseCaseTest {
             return characterListResult
         }
 
-        override suspend fun downloadMoveListFor(
+        override suspend fun downloadMoveList(
             table: String,
             charName: String
         ): Result<MoveListResponseDto, DataError.Remote> {

@@ -14,7 +14,7 @@ import io.ktor.client.request.parameter
 
 internal interface SuperComboDataSource {
     suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
-    suspend fun downloadMoveListFor(table: String, charName: String): Result<MoveListResponseDto, DataError.Remote>
+    suspend fun downloadMoveList(table: String, charName: String): Result<MoveListResponseDto, DataError.Remote>
     suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
 }
 
@@ -35,7 +35,7 @@ internal class SuperComboDataSourceImpl(
         }
     }
 
-    override suspend fun downloadMoveListFor(
+    override suspend fun downloadMoveList(
         table: String,
         charName: String
     ): Result<MoveListResponseDto, DataError.Remote> {
