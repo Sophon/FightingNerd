@@ -11,16 +11,16 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
+import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
+import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.xko.domain.XkoFeatureInfo
-import io.github.sophon.xko.usecase.CacheCharacterListUseCase
-import io.github.sophon.xko.usecase.CacheMoveListUseCase
-import io.github.sophon.xko.usecase.ClearCacheUseCase
 import io.github.sophon.xko.usecase.DownloadOrFetchUseCase
-import io.github.sophon.xko.usecase.FetchCharacterListUseCase
-import io.github.sophon.xko.usecase.FetchCharacterUseCase
-import io.github.sophon.xko.usecase.FetchMoveListUseCase
-import io.github.sophon.xko.usecase.FetchMoveUseCase
-import io.github.sophon.xko.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
 internal class XkoWikiClient(
@@ -85,7 +85,7 @@ internal class XkoWikiClient(
         moveList: List<Move>,
     ): EmptyResult<WikiError> {
         return cacheMoveListUseCase.invoke(
-            charName = character.queryName,
+            character = character,
             moveList = moveList,
         )
             .onError { Napier.e(tag = TAG) { "cacheMoveList: $it" } }

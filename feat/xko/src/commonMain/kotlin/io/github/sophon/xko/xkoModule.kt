@@ -1,20 +1,21 @@
 package io.github.sophon.xko
 
+import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
+import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
+import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.xko.data.XkoWikiDataSource
 import io.github.sophon.xko.data.XkoWikiDataSourceImpl
 import io.github.sophon.xko.domain.XkoFeatureInfo
-import io.github.sophon.xko.usecase.CacheCharacterListUseCase
-import io.github.sophon.xko.usecase.CacheMoveListUseCase
-import io.github.sophon.xko.usecase.ClearCacheUseCase
 import io.github.sophon.xko.usecase.DownloadOrFetchUseCase
-import io.github.sophon.xko.usecase.FetchCharacterListUseCase
-import io.github.sophon.xko.usecase.FetchCharacterUseCase
-import io.github.sophon.xko.usecase.FetchMoveListUseCase
-import io.github.sophon.xko.usecase.FetchMoveUseCase
-import io.github.sophon.xko.usecase.GetLastCacheInsertInstantUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -37,16 +38,39 @@ fun xkoModule() = module {
 
             downloadOrFetchUseCase = DownloadOrFetchUseCase(get()),
 
-            cacheCharacterListUseCase = CacheCharacterListUseCase(charListDB),
-            fetchCharacterListUseCase = FetchCharacterListUseCase(charListDB),
-            fetchCharacterUseCase = FetchCharacterUseCase(charListDB),
+            cacheCharacterListUseCase = CacheCharacterListUseCase { characterList ->
+                charListDB.insertCharacterList(characterList)
+            },
+            fetchCharacterListUseCase = FetchCharacterListUseCase {
+                charListDB.fetchCharacterList()
+            },
+            fetchCharacterUseCase = FetchCharacterUseCase { charName ->
+                charListDB.fetchCharacterDataFor(charName)
+            },
 
-            cacheMoveListUseCase = CacheMoveListUseCase(moveListDB),
-            fetchMoveListUseCase = FetchMoveListUseCase(moveListDB),
-            fetchMoveUseCase = FetchMoveUseCase(moveListDB),
+            cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
+                moveListDB.insertMoveList(character.queryName, moveList)
+            },
+            fetchMoveListUseCase = FetchMoveListUseCase { charName ->
+                moveListDB.fetchMoveListFor(charName)
+            },
+            fetchMoveUseCase = FetchMoveUseCase { charName, moveQuery ->
+                moveListDB.fetchMoveDataFor(charName, moveQuery)
+            },
 
-            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase(moveListDB),
-            clearCacheUseCase = ClearCacheUseCase(moveListDB),
+            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase {
+                moveListDB.getLastInsertTimeStamp()
+            },
+            clearCacheUseCase = ClearCacheUseCase {
+                val charResult = charListDB.wipe()
+                val moveResult = moveListDB.wipe()
+
+                when {
+                    charResult is Result.Error -> charResult
+                    moveResult is Result.Error -> moveResult
+                    else -> Result.Success(Unit)
+                }
+            },
         )
     }
 }
