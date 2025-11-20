@@ -17,6 +17,7 @@ data class Move(
     val notes: List<String> = listOf(),
     val aliases: List <String> = listOf(),
     val videoId: String? = null,
+    val hitboxImageUrl: String? = null,
 
     val t8Properties: T8Properties? = null,
     val sf6Properties: SF6Properties? = null,
