@@ -235,15 +235,15 @@ internal class WavuWikiDiscordFeature(
         description = "**${move.charName}**: ${move.name}"
         color = Color(GREEN)
 
-        mandatoryField(name = "SU", value = move.startup)
-        mandatoryField(name = "OH", value = move.onHit.orClickable())
-        mandatoryField(name = "OB", value = move.onBlock)
+        mandatoryField(name = "Startup", value = move.startup)
+        mandatoryField(name = "Hit", value = move.onHit.orClickable())
+        mandatoryField(name = "Block", value = move.onBlock)
         mandatoryField(name = "CH", value = (move.onCH ?: move.onHit).orClickable())
-        mandatoryField(name = "LVL", value = move.t8Properties?.level)
+        mandatoryField(name = "Level", value = move.t8Properties?.level)
 
 
-        optionalField(name = "Rec", value = move.recovery)
-        optionalField(name = "DMG", value = move.damage)
+        optionalField(name = "Recovery", value = move.recovery)
+        optionalField(name = "Damage", value = move.damage)
 
         createNotes(move)
 

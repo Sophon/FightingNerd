@@ -141,12 +141,12 @@ internal class XkoWikiDiscordFeature(
 
         color = Color(GREEN)
 
-        mandatoryField(name = "SU", value = move.startup)
-        mandatoryField(name = "OB", value = move.onBlock)
+        mandatoryField(name = "Startup", value = move.startup)
+        mandatoryField(name = "Block", value = move.onBlock)
         mandatoryField(name = "Guard", value = move.xkoProperties?.guard)
 
-        optionalField(name = "Rec", value = move.recovery)
-        optionalField(name = "DMG", value = move.damage)
+        optionalField(name = "Recovery", value = move.recovery)
+        optionalField(name = "Damage", value = move.damage)
 
         footer {
             text = featureInfo.name
