@@ -12,6 +12,11 @@ Frame data targeting Discord bot and mobile apps:
   - 🍏 iOS
   - 💬 Discord
 
+### ADD THE BOT TO YOUR DISCORD SERVER HERE
+<a href="https://discord.com/oauth2/authorize?client_id=1438716136790429776&permissions=346112&integration_type=0&scope=applications.commands+bot">
+  <img src="https://i.imgur.com/HtuRwva.png" alt="discord" width="200">
+</a>
+
 I don't drink coffee but feel free to support the server costs!
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V01OEMXE)
