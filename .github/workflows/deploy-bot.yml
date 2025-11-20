@@ -64,3 +64,22 @@ jobs:
         run: flyctl deploy --remote-only --app fightingnerd
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+      # ========== CHANGELOG & RELEASE ==========
+      - name: Extract changelog
+        uses: mindsers/changelog-reader-action@v2
+        id: changelog
+        with:
+          path: ./CHANGELOG.md
+          version: ${{ steps.version.outputs.version }}
+        continue-on-error: true  # Don't fail if version not found in changelog
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          release_name: Bot ${{ steps.version.outputs.version }}
+          body: ${{ steps.changelog.outputs.changes || 'No changelog entry found' }}
+          draft: false
