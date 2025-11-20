@@ -20,6 +20,7 @@ data class Move(
 
     val t8Properties: T8Properties? = null,
     val sf6Properties: SF6Properties? = null,
+    val xkoProperties: XkoProperties? = null,
 ) {
 
     @Serializable
@@ -67,5 +68,13 @@ data class Move(
         val jugLimit: String? = null,
         val projectileSpeed: String? = null,
         val attackRange: String? = null,
+    )
+
+    @Serializable
+    data class XkoProperties(
+        val active: String? = null,
+        val cancel: String? = null,
+        val guard: String? = null,
+        val invulnerability: String? = null,
     )
 }

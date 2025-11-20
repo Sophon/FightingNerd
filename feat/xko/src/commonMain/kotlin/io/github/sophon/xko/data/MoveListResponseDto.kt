@@ -6,20 +6,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class MoveListResponseDto(
     val bucketQuery: String,
-    val bucket: List<MoveDto>
+    val bucket: List<MoveDto> = listOf()
 )
 
 @Serializable
 data class MoveDto(
-    @SerialName("page_name")
-    val pageName: String,
+    @SerialName("page_name") val pageName: String,
     val input: String,
-    val damage: String,
-    val guard: String,
+    val damage: String? = null,
+    val guard: String? = null,
     val startup: String,
-    val active: String,
+    val active: String? = null,
     val recovery: String,
-    val onBlock: String,
-    val cancel: String,
+    @SerialName("onblock") val onBlock: String? = null,
+    val cancel: String? = null,
     val invuln: String? = null
 )
