@@ -11,18 +11,18 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
+import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikiwavu.data.WavuTables
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
-import io.github.sophon.wikiwavu.usecase.CacheCharacterListUseCase
-import io.github.sophon.wikiwavu.usecase.CacheMoveListUseCase
-import io.github.sophon.wikiwavu.usecase.ClearCacheUseCase
-import io.github.sophon.wikiwavu.usecase.FetchCharacterListUseCase
-import io.github.sophon.wikiwavu.usecase.FetchCharacterUseCase
-import io.github.sophon.wikiwavu.usecase.FetchMoveListUseCase
-import io.github.sophon.wikiwavu.usecase.FetchMoveUseCase
-import io.github.sophon.wikiwavu.usecase.GetLastCacheInsertInstantUseCase
 import kotlinx.datetime.Instant
 
 internal class WavuWikiClient(
