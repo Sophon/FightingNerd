@@ -23,6 +23,7 @@ kotlin {
             implementation(project(":feat:glossaryInfil"))
             implementation(project(":feat:wikiWavu"))
             implementation(project(":feat:wikiSupercombo"))
+            implementation(project(":feat:xko"))
 
             implementation(libs.napier)
             implementation(libs.kord)
@@ -70,7 +71,7 @@ tasks.matching { it.name == "jvmRun" }.configureEach {
     (this as JavaExec).workingDir = rootProject.projectDir
 }
 
-val featureVersion = "1.0.0"
+val featureVersion = "1.0.1"
 buildkonfig {
     packageName = "io.github.sophon.discord"
 

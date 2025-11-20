@@ -176,6 +176,10 @@ internal class SuperComboWikiDiscordFeature(
         url = character.wikiUrl
         color = Color(ORANGE)
 
+        character.images?.iconUrl?.let { iconUrl ->
+            thumbnail { url = iconUrl }
+        }
+
         character.sf6Properties?.let { properties ->
             val moves = fastestMoveList.joinToString(", ") { move ->
                 move.input
@@ -227,6 +231,10 @@ internal class SuperComboWikiDiscordFeature(
         title = move.input
         description = "**${move.charName}**: ${move.name}"
         color = Color(ORANGE)
+
+        move.hitboxImageUrl?.let { hurtboxUrl ->
+            thumbnail { url = hurtboxUrl }
+        }
 
         mandatoryField(name = "SU", value = move.startup)
         mandatoryField(name = "OH", value = move.onHit)

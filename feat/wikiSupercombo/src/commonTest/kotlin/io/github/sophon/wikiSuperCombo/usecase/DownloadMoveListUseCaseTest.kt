@@ -260,8 +260,10 @@ class DownloadMoveListUseCaseTest {
             return moveListResult
         }
 
-        override suspend fun getImageUrl(fileName: String): Result<String, DataError.Remote> {
-            throw NotImplementedError()
+        override suspend fun getImageUrl(
+            fileNames: List<String>
+        ): Result<Map<String, String>, DataError.Remote> {
+            return Result.Success(emptyMap())
         }
     }
     //endregion

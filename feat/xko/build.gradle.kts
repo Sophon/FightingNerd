@@ -27,7 +27,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "SuperCombo"
+            baseName = "xko"
             isStatic = true
         }
     }
@@ -48,9 +48,6 @@ kotlin {
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.test.turbine)
-        }
-
-        jvmTest.dependencies {
             implementation(libs.junit)
             implementation(libs.kotlin.testJunit)
         }
@@ -58,7 +55,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.sophon.wikisupercombo"
+    namespace = "io.github.sophon.xko"
     compileSdk = 36
 
     defaultConfig {
@@ -73,7 +70,7 @@ android {
 
 val featureVersion = "1.0.1"
 buildkonfig {
-    packageName = "io.github.sophon.wikiSuperCombo"
+    packageName = "io.github.sophon.xko"
 
     defaultConfigs {
         buildConfigField(STRING, "VERSION", featureVersion)
