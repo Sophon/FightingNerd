@@ -212,7 +212,8 @@ class DownloadCharacterListUseCaseTest {
 
         // then
         assertTrue(result is Result.Success)
-        assertEquals(2, fakeSource.imageUrlRequestCount)
+        assertEquals(1, fakeSource.imageUrlRequestCount)
+        assertEquals(2, fakeSource.lastRequestedFileNames?.size)
     }
     //endregion
 
@@ -288,6 +289,7 @@ class DownloadCharacterListUseCaseTest {
         private val imageUrlResults: Map<String, String> = emptyMap()
     ) : SuperComboDataSource {
         var imageUrlRequestCount = 0
+        var lastRequestedFileNames: List<String>? = null
 
         override suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote> {
             return characterListResult
@@ -300,10 +302,19 @@ class DownloadCharacterListUseCaseTest {
             throw NotImplementedError()
         }
 
-        override suspend fun getImageUrl(fileName: String): Result<String, DataError.Remote> {
+        override suspend fun getImageUrl(
+            fileNames: List<String>
+        ): Result<Map<String, String>, DataError.Remote> {
             imageUrlRequestCount++
-            return imageUrlResults[fileName]?.let { Result.Success(it) }
-                ?: Result.Error(DataError.Remote.UNKNOWN)
+            lastRequestedFileNames = fileNames
+
+            if (fileNames.isEmpty()) return Result.Success(emptyMap())
+
+            val results = fileNames.mapNotNull { fileName ->
+                imageUrlResults[fileName]?.let { fileName to it }
+            }.toMap()
+
+            return Result.Success(results)  // Return empty map if no matches found
         }
     }
     //endregion

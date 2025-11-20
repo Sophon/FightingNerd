@@ -51,7 +51,9 @@ internal class SuperComboDataSourceImpl(
         }
     }
 
-    override suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote> {
+    override suspend fun getImageUrl(
+        fileNames: List<String>
+    ): Result<Map<String, String>, DataError.Remote> {
         if (fileNames.isEmpty()) return Result.Success(emptyMap())
 
         val allResults = mutableMapOf<String, String>()
