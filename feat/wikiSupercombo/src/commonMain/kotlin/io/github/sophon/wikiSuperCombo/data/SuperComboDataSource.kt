@@ -1,5 +1,6 @@
 package io.github.sophon.wikiSuperCombo.data
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
@@ -14,7 +15,7 @@ import io.ktor.client.request.parameter
 internal interface SuperComboDataSource {
     suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
     suspend fun downloadMoveListFor(table: String, charName: String): Result<MoveListResponseDto, DataError.Remote>
-    suspend fun getImageUrl(fileName: String): Result<String, DataError.Remote>
+    suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
 }
 
 internal class SuperComboDataSourceImpl(
@@ -50,21 +51,47 @@ internal class SuperComboDataSourceImpl(
         }
     }
 
-    override suspend fun getImageUrl(fileName: String): Result<String, DataError.Remote> {
-        return safeCall<ImageUrlResponseDto> {
-            httpClient.get(BASE_URL) {
-                parameter("action", "query")
-                parameter("titles", "File:$fileName")
-                parameter("prop", "imageinfo")
-                parameter("iiprop", "url")
-                parameter("format", "json")
+    override suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote> {
+        if (fileNames.isEmpty()) return Result.Success(emptyMap())
+
+        val allResults = mutableMapOf<String, String>()
+
+        // Process in chunks of 50
+        fileNames.chunked(50).forEach { chunk ->
+            val result = safeCall<ImageUrlResponseDto> {
+                httpClient.get(BASE_URL) {
+                    parameter("action", "query")
+                    parameter("titles", chunk.joinToString("|") { "File:$it" })
+                    parameter("prop", "imageinfo")
+                    parameter("iiprop", "url")
+                    parameter("format", "json")
+                }
+            }.map { response ->
+                if (response.query == null) {
+                    Napier.w(tag = "ImageUrl") { "API error: ${response.error?.info}" }
+                    return@map emptyMap()
+                }
+
+                // Build map from normalized titles back to original filenames
+                val normalizedMap = response.query.normalized?.associate {
+                    it.to to it.from.removePrefix("File:")
+                } ?: emptyMap()
+
+                response.query.pages.values.mapNotNull { page ->
+                    if (page.missing != null) return@mapNotNull null
+                    val url = page.imageinfo?.firstOrNull()?.url ?: return@mapNotNull null
+                    val originalFileName = normalizedMap[page.title] ?: page.title.removePrefix("File:")
+                    originalFileName to url
+                }.toMap()
             }
-        }.map { response ->
-            response.query.pages.values.firstOrNull()
-                ?.imageinfo?.firstOrNull()
-                ?.url
-                ?: ""
+
+            when (result) {
+                is Result.Success -> allResults.putAll(result.data)
+                is Result.Error -> return result
+            }
         }
+
+        return Result.Success(allResults)
     }
 
     private fun getCharacterFields(): String {

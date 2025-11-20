@@ -10,7 +10,6 @@ import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.wikiSuperCombo.data.MoveDto
 import io.github.sophon.wikiSuperCombo.data.MoveListResponseDto
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
 import io.github.sophon.wikiSuperCombo.data.toDomain
@@ -34,13 +33,8 @@ internal class DownloadMoveListUseCase(
             listOfNotNull(it.title.hitboxes)
         }.distinct()
 
-        val imageUrlMap = mutableMapOf<String, String>()
-        imageFileNames.forEach { fileName ->
-            source.getImageUrl(fileName)
-                .onSuccess { url -> imageUrlMap[fileName] = url }
-        }
-
-        return Result.Success(dto.toDomain(imageUrlMap))
+        return source.getImageUrl(imageFileNames)
+            .map { imageUrlMap -> dto.toDomain(imageUrlMap) }
     }
 
     private companion object {
