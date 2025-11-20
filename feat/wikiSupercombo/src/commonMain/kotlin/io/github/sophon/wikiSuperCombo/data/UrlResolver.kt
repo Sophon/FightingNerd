@@ -6,6 +6,16 @@ import io.github.sophon.core.domain.Result
 internal class UrlResolver(
     private val source: SuperComboDataSource
 ) {
+    suspend fun resolveImageUrls(
+        dto: CharacterListResponseDto
+    ): Result<Map<String, String>, DataError.Remote> {
+        val imageFileNames = dto.cargoquery.flatMap {
+            listOfNotNull(it.title.icon, it.title.portrait)
+        }.distinct()
+
+        return source.getImageUrl(imageFileNames)
+    }
+
     suspend fun resolveHitboxUrl(
         dto: MoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {

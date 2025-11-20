@@ -5,6 +5,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSourceImpl
@@ -14,7 +15,6 @@ import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
 import io.github.sophon.wikiSuperCombo.usecase.CacheCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.CacheMoveListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.ClearCacheUseCase
-import io.github.sophon.wikiSuperCombo.usecase.DownloadCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterListUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchCharacterUseCase
 import io.github.sophon.wikiSuperCombo.usecase.FetchMoveListUseCase
@@ -39,6 +39,16 @@ fun superComboModule() = module {
         val source: SuperComboDataSource = get()
         val urlResolver: UrlResolver = get()
 
+        val downloadCharacterListUseCase = DownloadCharacterListUseCase(
+            downloadAndMap = { queryTable ->
+                source.downloadCharacterList(queryTable.character)
+                    .flatMap { dto ->
+                        urlResolver.resolveImageUrls(dto)
+                            .map { dto.toDomain(it) }
+                    }
+            }
+        )
+
         val downloadMoveListUseCase = DownloadMoveListUseCase(
             downloadAndMap = { queryTable, charName ->
                 source.downloadMoveList(queryTable.moves, charName)
@@ -54,7 +64,7 @@ fun superComboModule() = module {
 
             superComboFeatureInfo = get(),
 
-            downloadCharacterListUseCase = DownloadCharacterListUseCase(get()),
+            downloadCharacterListUseCase = downloadCharacterListUseCase,
             cacheCharacterListUseCase = CacheCharacterListUseCase(characterListDB),
             fetchCharacterUseCase = FetchCharacterUseCase(characterListDB),
             fetchCharacterListUseCase = FetchCharacterListUseCase(characterListDB),
