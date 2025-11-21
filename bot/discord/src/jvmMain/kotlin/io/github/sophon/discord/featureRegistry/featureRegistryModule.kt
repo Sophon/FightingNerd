@@ -3,6 +3,7 @@ package io.github.sophon.discord.featureRegistry
 import io.github.sophon.discord.config.ConfigLoader
 import io.github.sophon.discord.featureRegistry.core.CoreDiscordFeature
 import io.github.sophon.discord.featureRegistry.core.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
@@ -58,6 +59,7 @@ internal val featureRegistryModule = module {
     singleOf(::WavuWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::SuperComboWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::XkoWikiDiscordFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::DreamCancelWikiDiscordFeature).bind<DiscordRegisteredFeature>()
 
     singleOf(::ConfigLoader)
     single<List<DiscordRegisteredFeature>> {

@@ -4,6 +4,13 @@ package io.github.sophon.discord.featureRegistry
  * Add registered service commands HERE
  */
 enum class Command {
+    //core
+    TIP, DONATE,
+    REPO,
+    INVITE,
+    BAN,
+    UNBAN,
+
     //general
     FD,
 
@@ -23,10 +30,6 @@ enum class Command {
     //2xko wiki
     FDXKO,
 
-    //core
-    TIP, DONATE,
-    REPO,
-    INVITE,
-    BAN,
-    UNBAN,
+    //dreamcancel wiki
+    FDKOF15,
 }

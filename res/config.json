@@ -25,6 +25,13 @@
       "supportedGames": [
         "2XKO"
       ]
+    },
+    {
+      "name": "DreamCancel Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "King_of_Fighters_XV"
+      ]
     }
   ]
 }
