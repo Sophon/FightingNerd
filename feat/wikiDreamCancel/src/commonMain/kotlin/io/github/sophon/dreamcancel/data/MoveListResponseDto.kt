@@ -21,7 +21,7 @@ data class MoveDto(
     val name: String? = null,
     val idle: String? = null,
     val rank: String? = null,
-    val input: String,
+    val input: String? = null,
     val images: String? = null,
     val hitboxes: String? = null,
     val damage: String? = null,

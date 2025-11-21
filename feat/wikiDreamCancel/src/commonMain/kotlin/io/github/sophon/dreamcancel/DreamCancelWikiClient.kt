@@ -115,6 +115,7 @@ internal class DreamCancelWikiClient(
     }
 
     override suspend fun clearCache(): EmptyResult<WikiError> {
+        downloadOrFetchUseCase.clearCache()
         return clearCacheUseCase.invoke()
             .onError { Napier.e(tag = TAG) { "clearCache: $it" } }
     }

@@ -1,5 +1,6 @@
 package io.github.sophon.dreamcancel.data
 
+import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.dreamcancel.URL_KOF_15
@@ -24,7 +25,7 @@ internal fun MoveDto.toDomain(
     return Move(
         charName = chara.toId(),
         id = moveId,
-        input = input,
+        input = input.orDash(),
         damage = damage,
         startup = startup,
         onBlock = blockAdv,
