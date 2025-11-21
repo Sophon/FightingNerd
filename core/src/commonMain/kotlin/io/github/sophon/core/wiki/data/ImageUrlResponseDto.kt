@@ -1,4 +1,4 @@
-package io.github.sophon.wikiSuperCombo.data
+package io.github.sophon.core.wiki.data
 
 import kotlinx.serialization.Serializable
 
