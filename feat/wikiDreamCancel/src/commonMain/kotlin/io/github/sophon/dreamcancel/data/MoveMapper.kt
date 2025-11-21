@@ -1,29 +1,40 @@
 package io.github.sophon.dreamcancel.data
 
+import io.github.aakira.napier.Napier
+import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.removeAccents
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.dreamcancel.URL_KOF_15
+import io.github.sophon.dreamcancel.FEATURE_URL
 
 internal fun MoveListResponseDto.toDomain(
     imageUrlMap: Map<String, String>,
     gameId: String,
 ): Map<Character, List<Move>> {
     return cargoQuery
-        .groupBy { it.title.chara.toDomain(gameId) }
-        .mapValues { (_, moveDtoList) ->
-            moveDtoList.map {
-                it.title.toDomain(imageUrlMap, gameId)
-            }
+        .groupBy { it.title.chara }
+        .apply {
+            Napier.d(tag = "Sorry") { "keys: ${this.keys}" }
         }
+        .map { (charName, moveDtoList) ->
+            val character = charName.toDomain(gameId)
+            val moveList = moveDtoList.map {
+                it.title.toDomain(gameId, character, imageUrlMap)
+            }
+
+            character to moveList
+        }
+        .toMap()
 }
 
 internal fun MoveDto.toDomain(
-    imageUrlMap: Map<String, String>,
     gameId: String,
+    character: Character,
+    imageUrlMap: Map<String, String>,
 ): Move {
     return Move(
-        charName = chara.toId(),
+        charName = character.displayName,
         id = moveId,
         input = input.orDash(),
         damage = damage,
@@ -33,35 +44,57 @@ internal fun MoveDto.toDomain(
         name = name,
         recovery = recovery,
         active = active,
-        hitboxImageUrl = hitboxes?.let {
-            val first = it.split(", ").first()
-            imageUrlMap[first]
-        }
+        urls = Move.Urls(
+            hitboxImage = hitboxes?.let {
+                val first = it.split(", ").first()
+                imageUrlMap[first]
+            },
+            characterWiki = character.wikiUrl,
+        ),
     )
 }
 
 internal fun String.toDomain(
     gameId: String,
 ): Character {
-    val queryName = this.toQuery()
-
-    return Character(
-        id = this.toId(),
-        displayName = this,
-        queryName = queryName,
-        wikiUrl = "$URL_KOF_15/$gameId/$queryName",
-    )
-}
-
-internal fun String.toId(): String {
-    return this
+    val idName = this
+        .cleanHtml()
+        .removeAccents()
         .split(' ')
         .joinToString("_") { it.lowercase() }
-}
-
-internal fun String.toQuery(): String {
-    return this
+    val displayName = this
+        .cleanHtml()
+    val queryName = this
+        .cleanHtml()
+        .removeAccents()
         .split(' ')
         .joinToString("_")
+
+    val char = Character(
+        id = idName,
+        displayName = displayName,
+        aliasList = displayName.createAliases(),
+        queryName = queryName,
+        wikiUrl = "$FEATURE_URL/$gameId/$queryName",
+    )
+
+    return char
+}
+
+private fun String.createAliases(): List<String> {
+    val words = split(' ')
+
+    return if (words.size >= 2) {
+        buildList {
+            var initials = ""
+            words.forEach { word ->
+                takeIf { word.length >= 2 }?.let { add(word.lowercase()) }
+                initials += word.first()
+            }
+            initials.takeIf { it.isNotBlank() }?.let { add(initials) }
+        }
+    } else {
+        emptyList()
+    }
 }
 
