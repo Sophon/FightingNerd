@@ -1,12 +1,14 @@
 package io.github.sophon.xko
 
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.map
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
+import io.github.sophon.core.wiki.usecase.DownloadOrFetchUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
 import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
@@ -14,8 +16,8 @@ import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
 import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.xko.data.XkoWikiDataSource
 import io.github.sophon.xko.data.XkoWikiDataSourceImpl
+import io.github.sophon.xko.data.toDomain
 import io.github.sophon.xko.domain.XkoFeatureInfo
-import io.github.sophon.xko.usecase.DownloadOrFetchUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -26,17 +28,19 @@ fun xkoModule() = module {
     singleOf(::XkoWikiClient).bind<WikiClient>()
     single { XkoFeatureInfo }
 
-    singleOf(::DownloadOrFetchUseCase)
-
     factory<WikiClient>(named("xko")) { params ->
         val gameId: String = params.get()
         val charListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
+        val source: XkoWikiDataSource = get()
 
         XkoWikiClient(
             gameId = gameId,
 
-            downloadOrFetchUseCase = DownloadOrFetchUseCase(get()),
+            downloadOrFetchUseCase = DownloadOrFetchUseCase { table ->
+                source.downloadMoveList()
+                    .map { it.toDomain() }
+            },
 
             cacheCharacterListUseCase = CacheCharacterListUseCase { characterList ->
                 charListDB.insertCharacterList(characterList)
