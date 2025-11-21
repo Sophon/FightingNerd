@@ -28,23 +28,27 @@ internal fun MoveDto.mapToDomain(
     val move = Move(
         charName = charName,
         id = id.cleanMoveInput(),
-        input = fullInput,
         name = name?.cleanHtml(),
+
+        input = fullInput,
         damage = formCompleteDataFromParent(movesById) { it.damage },
         startup = getRootStartup(movesById),
         recovery = recv,
         onBlock = block,
         onHit = hit,
         onCH = ch,
+        guard = formCompleteDataFromParent(movesById) { it.target },
+
         notes = splitNotes() + cleanedCrushes,
         aliases = parseAliases(),
+
         urls = Move.Urls(
             videoId = video,
         ),
+
         t8Properties = formProperties(
             notes = unifiedNotes,
             crushes = cleanedCrushes,
-            level = formCompleteDataFromParent(movesById) { it.target },
             input = fullInput,
         )
     )
@@ -122,13 +126,11 @@ private fun MoveDto.splitNotes(): List<String> {
 }
 
 private fun formProperties(
-    level: String?,
     notes: List<String>,
     crushes: List<String>,
     input: String,
 ): Move.T8Properties {
     return Move.T8Properties(
-        level = level,
         isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) },
         isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) },
         isHoming = notes.any { it.contains("Homing", ignoreCase = true) },
