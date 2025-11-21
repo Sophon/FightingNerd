@@ -19,23 +19,21 @@ internal fun MoveDto.toMoveList(
     return Move(
         charName = pageName,
         id = "${input.lowercase()}_$input",
+
         input = input,
         damage = damage?.ifEmpty { null },
         startup = startup,
         onBlock = onBlock?.ifEmpty { null },
         recovery = recovery,
         active = active?.ifEmpty { null },
+        cancel = cancel?.ifEmpty { null },
+        guard = guard?.ifEmpty { null },
+        invulnerability = invuln?.ifEmpty { null },
 
         urls = Move.Urls(
             hitboxImage = "$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX",
             characterWiki = charWikiUrl,
         ),
-
-        xkoProperties = Move.XkoProperties(
-            cancel = cancel?.ifEmpty { null },
-            guard = guard?.ifEmpty { null },
-            invulnerability = invuln?.ifEmpty { null }
-        )
     )
 }
 
