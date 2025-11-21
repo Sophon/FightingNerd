@@ -87,7 +87,7 @@ private fun Move.toUi(): UiMove {
             add(UiMove.Field("OH", onHit))
             add(UiMove.Field("OB", onBlock))
             onCH?.let { add(UiMove.Field("CH", it)) }
-            sf6Properties?.active?.let { add(UiMove.Field("Active", it)) }
+            active?.let { add(UiMove.Field("Active", it)) }
             add(UiMove.Field("Level", t8Properties?.level ?: sf6Properties?.guard))
         },
         optionalFields = buildList {

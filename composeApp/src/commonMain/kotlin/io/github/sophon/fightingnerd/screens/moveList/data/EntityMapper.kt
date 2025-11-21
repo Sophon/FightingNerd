@@ -13,6 +13,7 @@ internal fun Move.toEntity(): MoveEntity {
         recovery = recovery,
         onBlock = onBlock,
         onHit = onHit,
+        active = active,
         onCH = onCH,
         notes = notes.joinToString(";"),
         aliases = aliases.joinToString(";"),
@@ -27,7 +28,6 @@ internal fun Move.toEntity(): MoveEntity {
         t8isHighCrush = t8Properties?.isHighCrush,
 
         sf6Type = sf6Properties?.type,
-        sf6Active = sf6Properties?.active,
         sf6Guard = sf6Properties?.guard,
         sf6Images = sf6Properties?.images?.joinToString(","),
         sf6Hitboxes = sf6Properties?.hitboxes?.joinToString(","),
@@ -73,6 +73,7 @@ internal fun MoveEntity.toDomain(): Move {
         onBlock = onBlock,
         onHit = onHit,
         onCH = onCH,
+        active = active,
         notes = notes?.split(";")?.filter { it.isNotBlank() }.orEmpty(),
         aliases = aliases?.split(";")?.filter { it.isNotBlank() }.orEmpty(),
         videoId = videoId,
@@ -90,7 +91,6 @@ internal fun MoveEntity.toDomain(): Move {
         sf6Properties = if (sf6Type != null) {
             Move.SF6Properties(
                 type = sf6Type,
-                active = sf6Active,
                 guard = sf6Guard,
                 images = sf6Images?.split(",")?.map { it.trim() },
                 hitboxes = sf6Hitboxes?.split(",")?.map { it.trim() },

@@ -21,6 +21,7 @@ data class MoveEntity(
     val onBlock: String?,
     val onHit: String?,
     val onCH: String?,
+    val active: String?,
     val notes: String?,
     val recovery: String?,
     val aliases: String?,
@@ -35,7 +36,6 @@ data class MoveEntity(
     val t8isLowCrush: Boolean? = null,
 
     val sf6Type: String? = null,
-    val sf6Active: String? = null,
     val sf6Guard: String? = null,
     val sf6Images: String? = null,
     val sf6Hitboxes: String? = null,
