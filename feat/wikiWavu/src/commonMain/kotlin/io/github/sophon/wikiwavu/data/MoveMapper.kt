@@ -38,7 +38,9 @@ internal fun MoveDto.mapToDomain(
         onCH = ch,
         notes = splitNotes() + cleanedCrushes,
         aliases = parseAliases(),
-        videoId = video,
+        urls = Move.Urls(
+            videoId = video,
+        ),
         t8Properties = formProperties(
             notes = unifiedNotes,
             crushes = cleanedCrushes,
