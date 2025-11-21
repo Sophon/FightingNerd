@@ -23,9 +23,9 @@ internal fun MoveDto.toMoveList(): Move {
         onBlock = onBlock?.ifEmpty { null },
         recovery = recovery,
         hitboxImageUrl = "$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX",
+        active = active?.ifEmpty { null },
 
         xkoProperties = Move.XkoProperties(
-            active = active?.ifEmpty { null },
             cancel = cancel?.ifEmpty { null },
             guard = guard?.ifEmpty { null },
             invulnerability = invuln?.ifEmpty { null }

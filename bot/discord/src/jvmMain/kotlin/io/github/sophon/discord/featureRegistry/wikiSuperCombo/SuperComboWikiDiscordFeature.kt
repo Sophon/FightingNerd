@@ -239,7 +239,7 @@ internal class SuperComboWikiDiscordFeature(
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)
         mandatoryField(name = "Block", value = move.onBlock)
-        mandatoryField(name = "Active", value = move.sf6Properties?.active)
+        mandatoryField(name = "Active", value = move.active)
         mandatoryField(name = "Guard", value = move.sf6Properties?.guard)
         mandatoryField(name = "Recovery", value = move.recovery)
 
