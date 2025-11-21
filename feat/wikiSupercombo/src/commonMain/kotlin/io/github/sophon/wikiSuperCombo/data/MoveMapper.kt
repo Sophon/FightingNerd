@@ -23,10 +23,10 @@ internal fun MoveListResponseDto.toDomain(imageUrlMap: Map<String, String>): Lis
             hitboxImageUrl = dto.hitboxes?.let {
                 imageUrlMap[it]
             },
+            active = dto.active.takeIfNotTemplate()?.cleanHtml(),
 
             sf6Properties = Move.SF6Properties(
                 type = dto.moveType,
-                active = dto.active.takeIfNotTemplate()?.cleanHtml(),
                 guard = dto.guard.takeIfNotTemplate(),
                 images = dto.images.takeIfNotTemplate()
                     ?.split(",")
