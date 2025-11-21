@@ -149,11 +149,11 @@ internal class DreamCancelWikiDiscordFeature(
         mandatoryField(name = "Hit", value = move.onHit)
         mandatoryField(name = "Block", value = move.onBlock)
         mandatoryField(name = "Active", value = move.active)
-        mandatoryField(name = "Guard", value = move.sf6Properties?.guard)
+        mandatoryField(name = "Guard", value = move.guard)
         mandatoryField(name = "Recovery", value = move.recovery)
 
         optionalField(name = "Damage", value = move.damage)
-        optionalField(name = "Invul", value = move.sf6Properties?.invulnerability)
+        optionalField(name = "Invul", value = move.invulnerability)
 
         footer {
             text = featureInfo.name
