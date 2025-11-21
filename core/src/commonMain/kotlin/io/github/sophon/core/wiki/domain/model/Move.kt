@@ -12,6 +12,7 @@ data class Move(
     val onBlock: String? = null,
     val onHit: String? = null,
     val onCH: String? = null,
+    val active: String? = null,
     val name: String? = null,
     val recovery: String? = null,
     val notes: List<String> = listOf(),
@@ -38,7 +39,6 @@ data class Move(
     @Serializable
     data class SF6Properties(
         val type: String? = null,
-        val active: String? = null,
         val guard: String? = null,
         val images: List<String>? = null,
         val hitboxes: List<String>? = null,
@@ -73,7 +73,6 @@ data class Move(
 
     @Serializable
     data class XkoProperties(
-        val active: String? = null,
         val cancel: String? = null,
         val guard: String? = null,
         val invulnerability: String? = null,
