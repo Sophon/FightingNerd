@@ -82,21 +82,8 @@ fun superComboModule() = module {
                     }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
-                moveListDB.insertMoveList(
-                    charName = character.id.lowercase(),
-                    moveList = moveList,
-                )
+                moveListDB.insertMoveList(character, moveList)
                     .asEmptyDataResult()
-                    .flatMap {
-                        character.aliasList.fold(Result.Success(Unit) as EmptyResult<WikiError>) { acc, alias ->
-                            acc.flatMap {
-                                moveListDB.insertMoveList(
-                                    charName = alias,
-                                    moveList = moveList,
-                                ).asEmptyDataResult()
-                            }
-                        }
-                    }
             },
             fetchMoveUseCase = FetchMoveUseCase { charName, moveQuery ->
                 moveListDB.fetchMoveDataFor(charName, moveQuery)
