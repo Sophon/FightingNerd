@@ -106,7 +106,7 @@ internal class DreamCancelWikiDiscordFeature(
         val gameId = when (command) {
             Command.FD,
             Command.FDKOF15,
-                -> "King_of_Fighters_XV"
+                -> "The_King_of_Fighters_XV"
 
             else -> {
                 val error = BotError.BotLogicError(command.name, query)
