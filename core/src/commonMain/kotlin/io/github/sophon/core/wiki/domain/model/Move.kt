@@ -17,13 +17,19 @@ data class Move(
     val recovery: String? = null,
     val notes: List<String> = listOf(),
     val aliases: List <String> = listOf(),
-    val videoId: String? = null,
-    val hitboxImageUrl: String? = null,
+
+    val urls: Urls,
 
     val t8Properties: T8Properties? = null,
     val sf6Properties: SF6Properties? = null,
     val xkoProperties: XkoProperties? = null,
 ) {
+    @Serializable
+    data class Urls(
+        val characterWiki: String? = null,
+        val videoId: String? = null, //TODO: change to videoUrl
+        val hitboxImage: String? = null,
+    )
 
     @Serializable
     data class T8Properties(
