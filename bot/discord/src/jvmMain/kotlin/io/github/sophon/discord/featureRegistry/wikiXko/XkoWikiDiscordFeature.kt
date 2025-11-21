@@ -136,7 +136,7 @@ internal class XkoWikiDiscordFeature(
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = "${move.charName}: ${move.input}"
 
-        move.hitboxImageUrl?.let { hurtboxUrl ->
+        move.urls.hitboxImage?.let { hurtboxUrl ->
             image = hurtboxUrl
         }
 

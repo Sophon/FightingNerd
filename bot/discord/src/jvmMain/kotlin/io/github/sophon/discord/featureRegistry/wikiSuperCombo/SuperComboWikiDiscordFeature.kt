@@ -232,7 +232,7 @@ internal class SuperComboWikiDiscordFeature(
         description = "**${move.charName}**: ${move.name}"
         color = Color(ORANGE)
 
-        move.hitboxImageUrl?.let { hurtboxUrl ->
+        move.urls.hitboxImage?.let { hurtboxUrl ->
             image = hurtboxUrl
         }
 
