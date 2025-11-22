@@ -30,7 +30,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
-import kotlin.time.Duration.Companion.hours
 
 internal class DreamCancelWikiDiscordFeature(
     dreamCancelFeatureInfo: DreamCancelFeatureInfo,
@@ -116,26 +115,28 @@ internal class DreamCancelWikiDiscordFeature(
         command: Command,
         query: String,
     ): Result<BotOutput, BotError> {
-        val gameId = when (command) {
-            Command.FD,
-            Command.FDKOF15,
-                -> "The_King_of_Fighters_XV"
-            Command.FDCOTW -> "Fatal_Fury:_City_of_the_Wolves"
-
-            else -> {
-                val error = BotError.BotLogicError(command.name, query)
-                return Result.Error(error)
-            }
-        }
-
-        val wiki = wikis[gameId]
-            ?: return Result.Error(BotError.UnsupportedGame(query))
-
+        //TODO: this should definitely be a usecase
         return when (command) {
-            Command.FD,
-            Command.FDKOF15,
-            Command.FDCOTW
-                -> searchMove(wiki, query)
+            Command.FD -> {
+                var lastError: BotError? = null
+                for (wiki in wikis.values) {
+                    when (val result = searchMove(wiki, query)) {
+                        is Result.Success -> return result
+                        is Result.Error -> lastError = result.error
+                    }
+                }
+                Result.Error(lastError ?: BotError.UnknownMove(query))
+            }
+            Command.FDKOF15 -> {
+                val wiki = wikis["The_King_of_Fighters_XV"]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
+            }
+            Command.FDCOTW -> {
+                val wiki = wikis["Fatal_Fury:_City_of_the_Wolves"]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
+            }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
