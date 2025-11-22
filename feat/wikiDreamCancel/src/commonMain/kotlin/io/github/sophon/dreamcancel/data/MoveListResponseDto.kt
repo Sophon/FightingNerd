@@ -34,5 +34,6 @@ data class MoveDto(
     @SerialName("blockadv") val blockAdv: String? = null,
     val invul: String? = null,
     val stun: String? = null,
+    @SerialName("revdamage") val revDamage: String? = null,
     val guardDamage: String? = null,
 )
