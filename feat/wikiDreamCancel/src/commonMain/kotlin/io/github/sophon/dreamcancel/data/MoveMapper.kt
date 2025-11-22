@@ -1,11 +1,8 @@
 package io.github.sophon.dreamcancel.data
 
-import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.util.removeAccents
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.dreamcancel.FEATURE_URL
 
 internal fun MoveListResponseDto.toDomain(
     imageUrlMap: Map<String, String>,
@@ -32,7 +29,7 @@ internal fun MoveDto.toDomain(
     return Move(
         charName = character.displayName,
         id = moveId,
-        input = input.orDash(),
+        input = input.orDash().lowercase(),
         damage = damage,
         startup = startup,
         onBlock = blockAdv,
