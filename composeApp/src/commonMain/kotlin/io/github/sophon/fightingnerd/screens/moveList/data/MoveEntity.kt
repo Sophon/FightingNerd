@@ -14,20 +14,27 @@ import androidx.room.PrimaryKey
 data class MoveEntity(
     val charName: String,
     @PrimaryKey val id: String,
-    val input: String,
     val name: String?,
+
+    val input: String,
     val damage: String?,
     val startup: String?,
     val onBlock: String?,
     val onHit: String?,
     val onCH: String?,
     val active: String?,
-    val notes: String?,
+    val cancel: String?,
     val recovery: String?,
-    val aliases: String?,
-    val videoId: String?,
+    val guard: String?,
+    val invulnerability: String?,
 
-    val t8level: String?,
+    val notes: String?,
+    val aliases: String?,
+
+    val urlsChracterWiki: String?,
+    val urlsVideoId: String?,
+    val urlsHitboxImage: String?,
+
     val t8isHeat: Boolean? = null,
     val t8isPowerCrush: Boolean? = null,
     val t8isHoming: Boolean? = null,
@@ -36,7 +43,6 @@ data class MoveEntity(
     val t8isLowCrush: Boolean? = null,
 
     val sf6Type: String? = null,
-    val sf6Guard: String? = null,
     val sf6Images: String? = null,
     val sf6Hitboxes: String? = null,
     val sf6Chip: String? = null,
@@ -66,4 +72,6 @@ data class MoveEntity(
     val sf6JugLimit: String? = null,
     val sf6ProjectileSpeed: String? = null,
     val sf6AttackRange: String? = null,
+
+
 )
