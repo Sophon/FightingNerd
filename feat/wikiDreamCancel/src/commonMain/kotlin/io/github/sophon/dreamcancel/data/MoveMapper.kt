@@ -1,6 +1,5 @@
 package io.github.sophon.dreamcancel.data
 
-import io.github.aakira.napier.Napier
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.removeAccents
@@ -14,9 +13,6 @@ internal fun MoveListResponseDto.toDomain(
 ): Map<Character, List<Move>> {
     return cargoQuery
         .groupBy { it.title.chara }
-        .apply {
-            Napier.d(tag = "Sorry") { "keys: ${this.keys}" }
-        }
         .map { (charName, moveDtoList) ->
             val character = charName.toDomain(gameId)
             val moveList = moveDtoList.map {
