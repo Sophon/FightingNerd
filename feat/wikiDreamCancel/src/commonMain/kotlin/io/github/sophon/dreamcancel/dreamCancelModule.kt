@@ -44,13 +44,10 @@ fun dreamCancelModule() = module {
             
             downloadOrFetchUseCase = DownloadOrFetchUseCase { table ->
                 source.downloadData(table?.moves.orEmpty())
-                    .map { it.toDomain(imageUrlMap = emptyMap(), gameId = gameId) }
-
-                //TODO: right now it takes way too lonng, architect better solution
-//                    .flatMap { dto ->
-//                        wikiImageUrlResolver.resolveHitboxUrl(dto)
-//                            .map { dto.toDomain(imageUrlMap = it, gameId = gameId) }
-//                    }
+                    .flatMap { dto ->
+                        wikiImageUrlResolver.resolveHitboxUrl(dto)
+                            .map { dto.toDomain(imageUrlMap = it, gameId = gameId) }
+                    }
             },
 
             cacheCharacterListUseCase = CacheCharacterListUseCase { characterList ->
