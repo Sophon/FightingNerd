@@ -2,6 +2,7 @@ package io.github.sophon.core.wiki.usecase
 
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
@@ -24,6 +25,10 @@ class DownloadOrFetchUseCase(
     ): Result<Map<Character, List<Move>>, WikiError> {
         return cachedData?.let { Result.Success(it) }
             ?: downloadAndMap.invoke(queryTable)
+                .map {
+                    cachedData = it
+                    it
+                }
                 .mapError { it.toDomainError(TAG) }
     }
 
