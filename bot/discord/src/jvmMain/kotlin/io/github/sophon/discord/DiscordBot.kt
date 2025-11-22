@@ -86,7 +86,7 @@ internal class DiscordBotImpl(
     private suspend fun MessageCreateEvent.handleMessage() {
         if (kord.selfId !in message.mentionedUserIds) return
 
-        val result = routeCommandToFeatureUseCase.invoke(message.content)
+        val result = routeCommandToFeatureUseCase.invoke(message.content.lowercase())
 
         val botOutput = when(result) {
             is Result.Success -> result.data
@@ -109,7 +109,10 @@ internal class DiscordBotImpl(
 
     private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
         val commandString = interaction.command.rootName
-        val query = interaction.command.strings.values.joinToString(" ")
+            .lowercase()
+        val query = interaction.command.strings.values
+            .joinToString(" ")
+            .lowercase()
 
         val result = routeCommandToFeatureUseCase.invoke(commandString, query)
 

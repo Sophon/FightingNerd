@@ -14,7 +14,6 @@ internal class RouteCommandToFeatureUseCase(
     ): Result<BotOutput, BotError> {
         val fullQuery = message
             .removeTag()
-            .lowercase()
             .takeIf { it.isNotBlank() }
             ?: return Result.Error(BotError.InvalidQuery(message))
 
@@ -33,8 +32,8 @@ internal class RouteCommandToFeatureUseCase(
         query: String,
     ): Result<BotOutput, BotError> {
         return useExplicitCommands(
-            commandString = commandString.lowercase(),
-            query = query
+            commandString = commandString,
+            query = query,
         )
     }
 
