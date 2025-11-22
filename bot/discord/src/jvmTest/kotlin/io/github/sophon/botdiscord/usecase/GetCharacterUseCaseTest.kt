@@ -170,7 +170,8 @@ class GetCharacterUseCaseTest {
             charName = "TestChar",
             id = input,
             input = input,
-            startup = startup
+            startup = startup,
+            urls = Move.Urls(),
         )
     }
     //endregion

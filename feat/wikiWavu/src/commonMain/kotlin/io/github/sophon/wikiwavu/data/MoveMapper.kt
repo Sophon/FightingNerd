@@ -27,7 +27,7 @@ internal fun MoveDto.mapToDomain(
 
     val move = Move(
         charName = charName,
-        id = id.cleanMoveInput(),
+        id = id.formId(),
         name = name?.cleanHtml(),
 
         input = fullInput,
@@ -54,6 +54,13 @@ internal fun MoveDto.mapToDomain(
     )
 
     return move
+}
+
+private fun String.formId(): String {
+    return this
+        .split(' ')
+        .joinToString("_") { it.lowercase() }
+        .cleanMoveInput()
 }
 
 /**

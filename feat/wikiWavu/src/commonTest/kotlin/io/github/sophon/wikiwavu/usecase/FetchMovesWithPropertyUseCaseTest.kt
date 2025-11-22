@@ -10,6 +10,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.model.Character
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
@@ -480,9 +481,8 @@ class FetchMovesWithPropertyUseCaseTest {
         onCH = null,
         notes = notes,
         aliases = listOf(),
-        videoId = null,
+        urls = Move.Urls(),
         t8Properties = Move.T8Properties(
-            level = null,
             isHeat = isHeat,
             isPowerCrush = isPowerCrush,
             isHoming = isHoming,
@@ -505,7 +505,8 @@ class FetchMovesWithPropertyUseCaseTest {
         }
 
         override suspend fun insertMoveList(
-            charName: String, moveList: List<Move>
+            character: Character,
+            moveList: List<Move>,
         ): EmptyResult<WikiError> {
             // Not used in FetchMoveDataUseCase
             return Result.Success(Unit)
