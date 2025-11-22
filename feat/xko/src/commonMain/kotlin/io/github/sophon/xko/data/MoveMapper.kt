@@ -13,7 +13,7 @@ internal fun MoveListResponseDto.toDomain(): Map<Character, List<Move>> {
         }
 }
 
-internal fun MoveDto.toMoveList(
+private fun MoveDto.toMoveList(
     charWikiUrl: String,
 ): Move {
     return Move(
@@ -34,14 +34,5 @@ internal fun MoveDto.toMoveList(
             hitboxImage = "$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX",
             characterWiki = charWikiUrl,
         ),
-    )
-}
-
-internal fun String.toCharacter(): Character {
-    return Character(
-        id = this,
-        displayName = this,
-        queryName = this,
-        wikiUrl = "https://wiki.play2xko.com/en-us/$this"
     )
 }
