@@ -51,8 +51,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository }}/bot:${{ steps.version.outputs.version }}
-            ghcr.io/${{ github.repository }}/bot:latest
+            ghcr.io/sophon/fightingnerd/bot:${{ steps.version.outputs.version }}
+            ghcr.io/sophon/fightingnerd/bot:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
