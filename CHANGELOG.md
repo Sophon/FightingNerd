@@ -1,8 +1,8 @@
 # Changelog
 
-## Bot
+## [v1.0.4] - 2025-11-22
 
-### [v1.0.4] - 2025-11-22
+### Bot
 - DreamCancel:
   - KoF 15 support
 - expand field titles
