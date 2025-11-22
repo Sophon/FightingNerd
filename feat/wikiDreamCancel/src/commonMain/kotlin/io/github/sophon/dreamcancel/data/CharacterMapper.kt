@@ -12,8 +12,8 @@ internal fun String.toDomain(
         .cleanHtml()
         .removeAccents()
         .replace("'", "")
-        .split(' ')
-        .joinToString("_") { it.lowercase() }
+        .replace(Regex("[\\s.']+"), "_")
+        .lowercase()
     val displayName = this
         .cleanHtml()
     val queryName = this
@@ -34,7 +34,12 @@ internal fun String.toDomain(
 }
 
 private fun String.createAliases(): List<String> {
-    val words = split(' ', '.')
+    val words = this
+        .replace(" ", "_")
+        .replace(".", "_")
+        .replace("-", "_")
+        .split('_')
+        .filter { it.isNotEmpty() }
 
     return if (words.size >= 2) {
         buildList {

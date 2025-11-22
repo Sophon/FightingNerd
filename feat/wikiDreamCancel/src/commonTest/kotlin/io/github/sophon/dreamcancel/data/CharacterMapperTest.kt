@@ -6,6 +6,24 @@ import io.github.sophon.core.wiki.domain.model.Character
 import kotlin.test.Test
 
 class CharacterMapperTest {
+    @Test
+    fun `toDomain handles names with spaces`() {
+        val characterName = "B. Jenet"
+        val expectedCharacter = Character(
+            id = "b_jenet",
+            displayName = "B. Jenet",
+            queryName = "B._Jenet",
+            wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves/B._Jenet",
+            aliasList = listOf("jenet", "bj")
+        )
+
+        // when
+        val result = characterName.toDomain(TAG_COTW)
+
+        // then
+        assertThat(result).isEqualTo(expectedCharacter)
+    }
+
     //region Alias Generation Tests
     @Test
     fun `toDomain should create empty aliases for single word name`() {
@@ -126,7 +144,7 @@ class CharacterMapperTest {
         // given
         val characterName = "B.Jenet"
         val expectedCharacter = Character(
-            id = "b.jenet",
+            id = "b_jenet",
             displayName = "B.Jenet",
             queryName = "B.Jenet",
             wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV/B.Jenet",
@@ -143,5 +161,6 @@ class CharacterMapperTest {
 
     private companion object {
         const val TAG_KOF = "The_King_of_Fighters_XV"
+        const val TAG_COTW = "Fatal_Fury:_City_of_the_Wolves"
     }
 }
