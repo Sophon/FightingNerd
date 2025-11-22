@@ -171,7 +171,7 @@ class MoveMapperTest {
         onCH = null,
         notes = notes,
         aliases = listOf(),
-        videoId = null,
+        urls = Move.Urls(),
         t8Properties = properties,
     )
 }

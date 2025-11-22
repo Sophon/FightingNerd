@@ -12,12 +12,7 @@ Frame data targeting Discord bot and mobile apps:
   - 🍏 iOS
   - 💬 Discord
 
-### ADD THE BOT TO YOUR DISCORD SERVER HERE
-<a href="https://discord.com/oauth2/authorize?client_id=1438716136790429776&permissions=346112&integration_type=0&scope=applications.commands+bot">
-  <img src="https://i.imgur.com/HtuRwva.png" alt="discord" width="200">
-</a>
-
-I don't drink coffee but feel free to support the server costs!
+[![Add Bot](https://img.shields.io/badge/Add_to_Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/oauth2/authorize?client_id=1438716136790429776&permissions=346112&integration_type=0&scope=applications.commands+bot)
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V01OEMXE)
 
@@ -42,7 +37,7 @@ graph LR
   end
 
   subgraph Community Wiki
-    wikiWavu[Wavu]
+    wikiWavu[Wavu + Tekken Docs]
     supercombo[SuperCombo]
     2xko[2XKO]
     dustloop[Dustloop]
@@ -51,6 +46,7 @@ graph LR
 
   subgraph Ranked service
     ewgf[EWGF]
+    cfn[CFN]
   end
 
   android -->|uses| communityWiki
@@ -67,6 +63,7 @@ graph LR
   communityWiki --> dustloop
 
   elo --> ewgf
+  elo --> cfn
 
   wikiWavu --> t8[Tekken 8]
   supercombo --> sf6[Street Fighter 6]
@@ -87,10 +84,12 @@ graph LR
   style communityWiki fill:#3366CC,color:#fff
   style wikiWavu fill:#059669,color:#fff
   style supercombo fill:#F8F9FA,color:#000000
+  style dreamcancel fill:#F8F9FA,color:#000000
   style 2xko fill:#059669,color:#fff
   style t8 fill:#059669, color:#fff
   style sf6 fill:#059669, color:#fff
   style xko fill:#059669, color:#fff
+  style kof15 fill:#059669,color:#fff
 ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)

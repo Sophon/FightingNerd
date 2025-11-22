@@ -8,36 +8,31 @@ import io.github.sophon.xko.URL_HITBOX_SUFIX
 internal fun MoveListResponseDto.toDomain(): Map<Character, List<Move>> {
     return bucket
         .groupBy { it.pageName.toCharacter() }
-        .mapValues { (_, moveList) ->
-            moveList.map { it.toMoveList() }
+        .mapValues { (character, moveList) ->
+            moveList.map { it.toMoveList(charWikiUrl = character.wikiUrl) }
         }
 }
 
-internal fun MoveDto.toMoveList(): Move {
+private fun MoveDto.toMoveList(
+    charWikiUrl: String,
+): Move {
     return Move(
         charName = pageName,
         id = "${input.lowercase()}_$input",
+
         input = input,
         damage = damage?.ifEmpty { null },
         startup = startup,
         onBlock = onBlock?.ifEmpty { null },
         recovery = recovery,
-        hitboxImageUrl = "$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX",
+        active = active?.ifEmpty { null },
+        cancel = cancel?.ifEmpty { null },
+        guard = guard?.ifEmpty { null },
+        invulnerability = invuln?.ifEmpty { null },
 
-        xkoProperties = Move.XkoProperties(
-            active = active?.ifEmpty { null },
-            cancel = cancel?.ifEmpty { null },
-            guard = guard?.ifEmpty { null },
-            invulnerability = invuln?.ifEmpty { null }
-        )
-    )
-}
-
-internal fun String.toCharacter(): Character {
-    return Character(
-        id = this,
-        displayName = this,
-        queryName = this,
-        wikiUrl = "https://wiki.play2xko.com/en-us/$this"
+        urls = Move.Urls(
+            hitboxImage = "$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX",
+            characterWiki = charWikiUrl,
+        ),
     )
 }

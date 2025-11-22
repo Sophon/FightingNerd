@@ -514,3 +514,4 @@ lint/tmp/
 /.kotlin/sessions/*
 *.xcuserstate
 **/xcuserdata/
+.DS_Store

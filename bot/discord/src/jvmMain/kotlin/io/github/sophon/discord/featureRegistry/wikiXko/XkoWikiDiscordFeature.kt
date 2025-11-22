@@ -7,6 +7,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
+import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
@@ -91,7 +92,6 @@ internal class XkoWikiDiscordFeature(
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
 
         scheduler.start(
-            period = 1.hours,
             task = ::syncData,
         ).onEach { result ->
             result.onError { Napier.e(tag = TAG) { it.toString() } }
@@ -135,18 +135,19 @@ internal class XkoWikiDiscordFeature(
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = "${move.charName}: ${move.input}"
 
-        move.hitboxImageUrl?.let { hurtboxUrl ->
+        move.urls.hitboxImage?.let { hurtboxUrl ->
             image = hurtboxUrl
         }
 
         color = Color(GREEN)
 
-        mandatoryField(name = "SU", value = move.startup)
-        mandatoryField(name = "OB", value = move.onBlock)
-        mandatoryField(name = "Guard", value = move.xkoProperties?.guard)
+        mandatoryField(name = "Startup", value = move.startup)
+        mandatoryField(name = "Block", value = move.onBlock)
+        mandatoryField(name = "Guard", value = move.guard)
+        mandatoryField(name = "Active", value = move.active.orDash())
 
-        optionalField(name = "Rec", value = move.recovery)
-        optionalField(name = "DMG", value = move.damage)
+        optionalField(name = "Recovery", value = move.recovery)
+        optionalField(name = "Damage", value = move.damage)
 
         footer {
             text = featureInfo.name

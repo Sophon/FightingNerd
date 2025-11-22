@@ -87,15 +87,15 @@ private fun Move.toUi(): UiMove {
             add(UiMove.Field("OH", onHit))
             add(UiMove.Field("OB", onBlock))
             onCH?.let { add(UiMove.Field("CH", it)) }
-            sf6Properties?.active?.let { add(UiMove.Field("Active", it)) }
-            add(UiMove.Field("Level", t8Properties?.level ?: sf6Properties?.guard))
+            active?.let { add(UiMove.Field("Active", it)) }
+            add(UiMove.Field("Guard", guard))
         },
         optionalFields = buildList {
             add(UiMove.Field("Damage", damage))
             add(UiMove.Field("Whiff", recovery))
-            add(UiMove.Field("Invul", sf6Properties?.invulnerability))
+            add(UiMove.Field("Invul", invulnerability))
 
-            add(UiMove.Field("Cancel", sf6Properties?.cancel))
+            add(UiMove.Field("Cancel", cancel))
             add(UiMove.Field("Range", sf6Properties?.attackRange))
             add(UiMove.Field("Proj spd", sf6Properties?.projectileSpeed))
         },
@@ -110,7 +110,7 @@ private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
     if (t8Properties?.isPowerCrush == true) add(UiMove.Property.PC)
     if (t8Properties?.isHoming == true) add(UiMove.Property.HOMING)
 
-    if (sf6Properties?.invulnerability != null) add(UiMove.Property.INVULNERABLE)
+    if (invulnerability != null) add(UiMove.Property.INVULNERABLE)
     if (sf6Properties?.armor != null) add(UiMove.Property.ARMOR)
     if (sf6Properties?.projectileSpeed != null) add(UiMove.Property.PROJECTILE)
 

@@ -770,5 +770,17 @@ class StringExtensionsTest {
         assertThat(result.contains("Can't Heat Dash")).isTrue()
         assertThat(result.contains("Won't track")).isTrue()
     }
+
+    @Test
+    fun `removeAccents handles Spanish characters`() {
+        // Given
+        val input = "ramón"
+
+        // When
+        val result = input.removeAccents()
+
+        // Then
+        assertThat(result).isEqualTo("ramon")
+    }
 //endregion
 }

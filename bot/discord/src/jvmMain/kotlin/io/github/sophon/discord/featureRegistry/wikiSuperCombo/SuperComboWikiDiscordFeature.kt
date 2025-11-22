@@ -19,11 +19,11 @@ import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.SupportedCommand
-import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.usecase.GetCharacterUseCase
-import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.featureRegistry.Scheduler
+import io.github.sophon.discord.featureRegistry.SupportedCommand
+import io.github.sophon.discord.usecase.GetCharacterUseCase
+import io.github.sophon.discord.usecase.GetMoveUseCase
+import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
@@ -34,7 +34,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
-import kotlin.time.Duration.Companion.hours
 
 internal class SuperComboWikiDiscordFeature(
     superComboFeatureInfo: SuperComboFeatureInfo,
@@ -109,7 +108,6 @@ internal class SuperComboWikiDiscordFeature(
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
 
         scheduler.start(
-            period = 1.hours,
             task = ::syncData,
         ).onEach { result ->
             result.onError { Napier.e(tag = TAG) { it.toString() } }
@@ -232,27 +230,27 @@ internal class SuperComboWikiDiscordFeature(
         description = "**${move.charName}**: ${move.name}"
         color = Color(ORANGE)
 
-        move.hitboxImageUrl?.let { hurtboxUrl ->
+        move.urls.hitboxImage?.let { hurtboxUrl ->
             image = hurtboxUrl
         }
 
-        mandatoryField(name = "SU", value = move.startup)
-        mandatoryField(name = "OH", value = move.onHit)
-        mandatoryField(name = "OB", value = move.onBlock)
-        mandatoryField(name = "Act", value = move.sf6Properties?.active)
-        mandatoryField(name = "Guard", value = move.sf6Properties?.guard)
-        mandatoryField(name = "Rec", value = move.recovery)
+        mandatoryField(name = "Startup", value = move.startup)
+        mandatoryField(name = "Hit", value = move.onHit)
+        mandatoryField(name = "Block", value = move.onBlock)
+        mandatoryField(name = "Active", value = move.active)
+        mandatoryField(name = "Guard", value = move.guard)
+        mandatoryField(name = "Recovery", value = move.recovery)
 
-        optionalField(name = "DMG", value = move.damage)
-        optionalField(name = "Invul", value = move.sf6Properties?.invulnerability)
+        optionalField(name = "Damage", value = move.damage)
+        optionalField(name = "Invul", value = move.invulnerability)
 
-        optionalField(name = "JUGst", value = move.sf6Properties?.jugStart)
-        optionalField(name = "JUGlim", value = move.sf6Properties?.jugLimit)
-        optionalField(name = "JUG++", value = move.sf6Properties?.jugIncrease)
+        optionalField(name = "JUG start", value = move.sf6Properties?.jugStart)
+        optionalField(name = "JUG limit", value = move.sf6Properties?.jugLimit)
+        optionalField(name = "JUG inc", value = move.sf6Properties?.jugIncrease)
 
         createDetails(move)
 
-        optionalField(name = "Cancel", move.sf6Properties?.cancel)
+        optionalField(name = "Cancel", move.cancel)
         optionalField(name = "Range", move.sf6Properties?.attackRange)
         optionalField(name = "Proj spd", move.sf6Properties?.projectileSpeed)
 

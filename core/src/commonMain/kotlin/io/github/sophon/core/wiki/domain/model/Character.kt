@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Character(
-    val id: String,
+    val id: String, //used for local queries
     val displayName: String,
-    val queryName: String,
+    val queryName: String, //used for remote queries
     val wikiUrl: String,
     val aliasList: List<String> = listOf(),
     val images: Images? = null,

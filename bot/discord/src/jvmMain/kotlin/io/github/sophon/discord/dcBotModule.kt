@@ -5,6 +5,7 @@ import io.github.sophon.core.coreModule
 import io.github.sophon.discord.data.InMemoryGlossaryDB
 import io.github.sophon.discord.featureRegistry.featureRegistryModule
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.dreamcancel.dreamCancelModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.wikiSuperCombo.superComboModule
@@ -33,6 +34,7 @@ fun initKoin(
         wavuModule(),
         superComboModule(),
         xkoModule(),
+        dreamCancelModule(),
 
         featureRegistryModule,
     )

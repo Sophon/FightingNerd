@@ -1,9 +1,9 @@
 graph LR
     DEV[dev] -->|squash and commit; push| RELEASE[release_bot]
     RELEASE -->|triggers| WORKFLOW[deploy_bot.yml]
-    WORKFLOW -->|builds| DOCKER[Docker image]
-    WORKFLOW -->|push| CLOUD[fly.io]
-    DOCKER --> CLOUD
+    WORKFLOW -->|generates| DOCKER[Docker image]
+    DOCKER -->|uploads to| CLOUD[fly.io]
+    DOCKER --> |posts| GITHUB
 
 
 style DEV fill:#30363d,stroke:#8b949e,color:#e6edf3

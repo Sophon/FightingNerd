@@ -1,0 +1,323 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 6,
+    "identityHash": "2caf988426be63998288e37416863e65",
+    "entities": [
+      {
+        "tableName": "moves",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`charName` TEXT NOT NULL, `id` TEXT NOT NULL, `name` TEXT, `input` TEXT NOT NULL, `damage` TEXT, `startup` TEXT, `onBlock` TEXT, `onHit` TEXT, `onCH` TEXT, `active` TEXT, `cancel` TEXT, `recovery` TEXT, `guard` TEXT, `invulnerability` TEXT, `notes` TEXT, `aliases` TEXT, `urlsChracterWiki` TEXT, `urlsVideoId` TEXT, `urlsHitboxImage` TEXT, `t8isHeat` INTEGER, `t8isPowerCrush` INTEGER, `t8isHoming` INTEGER, `t8stance` TEXT, `t8isHighCrush` INTEGER, `t8isLowCrush` INTEGER, `sf6Type` TEXT, `sf6Images` TEXT, `sf6Hitboxes` TEXT, `sf6Chip` TEXT, `sf6DmgScaling` TEXT, `sf6Total` TEXT, `sf6Cancel` TEXT, `sf6HitConfirm` TEXT, `sf6PunishAdv` TEXT, `sf6PerfParryAdv` TEXT, `sf6DRcOH` TEXT, `sf6DRcOB` TEXT, `sf6DROH` TEXT, `sf6DROB` TEXT, `sf6HitStun` TEXT, `sf6BlockStun` TEXT, `sf6HitStop` TEXT, `sf6DriveDmgOnBlock` TEXT, `sf6DriveDmgOnHit` TEXT, `sf6DriveGain` TEXT, `sf6SuperGainOnHit` TEXT, `sf6SuperGainOnBlock` TEXT, `sf6Invulnerability` TEXT, `sf6Armor` TEXT, `sf6Airborne` TEXT, `sf6JugStart` TEXT, `sf6JugIncrease` TEXT, `sf6JugLimit` TEXT, `sf6ProjectileSpeed` TEXT, `sf6AttackRange` TEXT, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "charName",
+            "columnName": "charName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "input",
+            "columnName": "input",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "damage",
+            "columnName": "damage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "startup",
+            "columnName": "startup",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "onBlock",
+            "columnName": "onBlock",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "onHit",
+            "columnName": "onHit",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "onCH",
+            "columnName": "onCH",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "active",
+            "columnName": "active",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "cancel",
+            "columnName": "cancel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "recovery",
+            "columnName": "recovery",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "guard",
+            "columnName": "guard",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "invulnerability",
+            "columnName": "invulnerability",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "notes",
+            "columnName": "notes",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "aliases",
+            "columnName": "aliases",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "urlsChracterWiki",
+            "columnName": "urlsChracterWiki",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "urlsVideoId",
+            "columnName": "urlsVideoId",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "urlsHitboxImage",
+            "columnName": "urlsHitboxImage",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "t8isHeat",
+            "columnName": "t8isHeat",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "t8isPowerCrush",
+            "columnName": "t8isPowerCrush",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "t8isHoming",
+            "columnName": "t8isHoming",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "t8stance",
+            "columnName": "t8stance",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "t8isHighCrush",
+            "columnName": "t8isHighCrush",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "t8isLowCrush",
+            "columnName": "t8isLowCrush",
+            "affinity": "INTEGER"
+          },
+          {
+            "fieldPath": "sf6Type",
+            "columnName": "sf6Type",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6Images",
+            "columnName": "sf6Images",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6Hitboxes",
+            "columnName": "sf6Hitboxes",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6Chip",
+            "columnName": "sf6Chip",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6DmgScaling",
+            "columnName": "sf6DmgScaling",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6Total",
+            "columnName": "sf6Total",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6Cancel",
+            "columnName": "sf6Cancel",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6HitConfirm",
+            "columnName": "sf6HitConfirm",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6PunishAdv",
+            "columnName": "sf6PunishAdv",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6PerfParryAdv",
+            "columnName": "sf6PerfParryAdv",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6DRcOH",
+            "columnName": "sf6DRcOH",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6DRcOB",
+            "columnName": "sf6DRcOB",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6DROH",
+            "columnName": "sf6DROH",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6DROB",
+            "columnName": "sf6DROB",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6HitStun",
+            "columnName": "sf6HitStun",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6BlockStun",
+            "columnName": "sf6BlockStun",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6HitStop",
+            "columnName": "sf6HitStop",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6DriveDmgOnBlock",
+            "columnName": "sf6DriveDmgOnBlock",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6DriveDmgOnHit",
+            "columnName": "sf6DriveDmgOnHit",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6DriveGain",
+            "columnName": "sf6DriveGain",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6SuperGainOnHit",
+            "columnName": "sf6SuperGainOnHit",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6SuperGainOnBlock",
+            "columnName": "sf6SuperGainOnBlock",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6Invulnerability",
+            "columnName": "sf6Invulnerability",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6Armor",
+            "columnName": "sf6Armor",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6Airborne",
+            "columnName": "sf6Airborne",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6JugStart",
+            "columnName": "sf6JugStart",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6JugIncrease",
+            "columnName": "sf6JugIncrease",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6JugLimit",
+            "columnName": "sf6JugLimit",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6ProjectileSpeed",
+            "columnName": "sf6ProjectileSpeed",
+            "affinity": "TEXT"
+          },
+          {
+            "fieldPath": "sf6AttackRange",
+            "columnName": "sf6AttackRange",
+            "affinity": "TEXT"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_moves_input",
+            "unique": false,
+            "columnNames": [
+              "input"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_moves_input` ON `${TABLE_NAME}` (`input`)"
+          },
+          {
+            "name": "index_moves_charName",
+            "unique": false,
+            "columnNames": [
+              "charName"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_moves_charName` ON `${TABLE_NAME}` (`charName`)"
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '2caf988426be63998288e37416863e65')"
+    ]
+  }
+}
