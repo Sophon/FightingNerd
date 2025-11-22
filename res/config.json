@@ -30,7 +30,8 @@
       "name": "DreamCancel Wiki",
       "isEnabled": true,
       "supportedGames": [
-        "The_King_of_Fighters_XV"
+        "The_King_of_Fighters_XV",
+        "Fatal_Fury:_City_of_the_Wolves"
       ]
     }
   ]

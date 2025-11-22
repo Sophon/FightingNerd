@@ -32,4 +32,5 @@ enum class Command {
 
     //dreamcancel wiki
     FDKOF15,
+    FDCOTW,
 }

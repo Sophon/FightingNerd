@@ -8,6 +8,10 @@ internal object DreamCancelTables {
             character = TABLE_KOF15_CHARACTERS,
             moves = TABLE_KOF15_MOVES,
         ),
+        "Fatal_Fury:_City_of_the_Wolves" to QueryTable(
+            character = TABLE_COTW_CHARACTERS,
+            moves = TABLE_COTW_MOVES,
+        )
     )
 
     fun getTable(gameId: String): QueryTable? {
@@ -15,7 +19,9 @@ internal object DreamCancelTables {
     }
 
     fun supportedGames(): Set<String> = gameToTables.keys
-}
 
-private const val TABLE_KOF15_CHARACTERS = "NOT USED"
-private const val TABLE_KOF15_MOVES = "MoveData_KOFXV"
+    internal const val TABLE_KOF15_CHARACTERS = "NOT USED"
+    internal const val TABLE_KOF15_MOVES = "MoveData_KOFXV"
+    internal const val TABLE_COTW_CHARACTERS = "NOT USED"
+    internal const val TABLE_COTW_MOVES = "MoveData_COTW"
+}
