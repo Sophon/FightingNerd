@@ -9,8 +9,10 @@ internal class WikiImageUrlResolver (
     suspend fun resolveHitboxUrl(
         dto: MoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
-        val imageFileNames = dto.cargoQuery.flatMap {
-            listOfNotNull(it.title.hitboxes)
+        val imageFileNames = dto.cargoQuery.mapNotNull {
+            it.title.hitboxes
+                ?.split(", ")
+                ?.firstOrNull()
         }.distinct()
 
         return source.getImageUrl(imageFileNames)
