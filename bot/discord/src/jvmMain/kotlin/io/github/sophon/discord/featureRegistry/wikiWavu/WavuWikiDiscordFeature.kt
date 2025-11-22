@@ -127,7 +127,6 @@ internal class WavuWikiDiscordFeature(
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
 
         scheduler.start(
-            period = 1.hours,
             task = ::syncData,
         ).onEach { result ->
             result.onError { Napier.e(tag = TAG) { it.toString() } }
