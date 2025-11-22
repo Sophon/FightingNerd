@@ -68,21 +68,8 @@ fun wavuModule() = module {
                     .map { dto ->  dto.toDomain(charName) }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
-                moveListDB.insertMoveList(
-                    charName = character.id.lowercase(),
-                    moveList = moveList,
-                )
+                moveListDB.insertMoveList(character, moveList)
                     .asEmptyDataResult()
-                    .flatMap {
-                        character.aliasList.fold(Result.Success(Unit) as EmptyResult<WikiError>) { acc, alias ->
-                            acc.flatMap {
-                                moveListDB.insertMoveList(
-                                    charName = alias,
-                                    moveList = moveList,
-                                ).asEmptyDataResult()
-                            }
-                        }
-                    }
             },
             fetchMoveListUseCase = FetchMoveListUseCase { charName ->
                 when (val result = moveListDB.fetchMoveListFor(charName)) {

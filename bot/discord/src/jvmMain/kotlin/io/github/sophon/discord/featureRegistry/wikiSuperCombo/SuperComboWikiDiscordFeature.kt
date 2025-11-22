@@ -232,7 +232,7 @@ internal class SuperComboWikiDiscordFeature(
         description = "**${move.charName}**: ${move.name}"
         color = Color(ORANGE)
 
-        move.hitboxImageUrl?.let { hurtboxUrl ->
+        move.urls.hitboxImage?.let { hurtboxUrl ->
             image = hurtboxUrl
         }
 
@@ -240,11 +240,11 @@ internal class SuperComboWikiDiscordFeature(
         mandatoryField(name = "Hit", value = move.onHit)
         mandatoryField(name = "Block", value = move.onBlock)
         mandatoryField(name = "Active", value = move.active)
-        mandatoryField(name = "Guard", value = move.sf6Properties?.guard)
+        mandatoryField(name = "Guard", value = move.guard)
         mandatoryField(name = "Recovery", value = move.recovery)
 
         optionalField(name = "Damage", value = move.damage)
-        optionalField(name = "Invul", value = move.sf6Properties?.invulnerability)
+        optionalField(name = "Invul", value = move.invulnerability)
 
         optionalField(name = "JUG start", value = move.sf6Properties?.jugStart)
         optionalField(name = "JUG limit", value = move.sf6Properties?.jugLimit)
@@ -252,7 +252,7 @@ internal class SuperComboWikiDiscordFeature(
 
         createDetails(move)
 
-        optionalField(name = "Cancel", move.sf6Properties?.cancel)
+        optionalField(name = "Cancel", move.cancel)
         optionalField(name = "Range", move.sf6Properties?.attackRange)
         optionalField(name = "Proj spd", move.sf6Properties?.projectileSpeed)
 

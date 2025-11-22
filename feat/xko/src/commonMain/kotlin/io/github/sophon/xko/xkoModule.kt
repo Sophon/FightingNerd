@@ -53,7 +53,7 @@ fun xkoModule() = module {
             },
 
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
-                moveListDB.insertMoveList(character.queryName, moveList)
+                moveListDB.insertMoveList(character, moveList)
             },
             fetchMoveListUseCase = FetchMoveListUseCase { charName ->
                 moveListDB.fetchMoveListFor(charName)

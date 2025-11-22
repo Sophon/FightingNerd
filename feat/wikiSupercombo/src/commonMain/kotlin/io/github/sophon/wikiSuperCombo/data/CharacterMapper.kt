@@ -1,7 +1,6 @@
 package io.github.sophon.wikiSuperCombo.data
 
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.wikiSuperCombo.URL_ICON_BASE
 import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
 
 internal fun CharacterListResponseDto.toDomain(imageUrlMap: Map<String, String>): List<Character> {
@@ -79,7 +78,3 @@ private fun String.createAliases(): List<String> {
     }
 }
 
-private fun String.toImageUrl(): String {
-    val url = URL_ICON_BASE + replace(" ", "_")
-    return url
-}

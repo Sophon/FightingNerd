@@ -8,7 +8,7 @@ internal fun Character.toEntity(): CharacterEntity {
         displayName = displayName,
         queryName = queryName,
         wikiUrl = wikiUrl,
-        aliases = aliasList.joinToString(";"),
+        aliasList = aliasList.joinToString(";"),
         imageIconUrl = images?.iconUrl,
         imageBannerUrl = images?.bannerUrl,
 
@@ -37,7 +37,7 @@ internal fun CharacterEntity.toDomain(): Character {
         displayName = displayName,
         queryName = queryName,
         wikiUrl = wikiUrl,
-        aliasList = aliases.orEmpty().split(";").filter { it.isNotBlank() },
+        aliasList = aliasList.orEmpty().split(";").filter { it.isNotBlank() },
         images = Character.Images(
             iconUrl = imageIconUrl,
             bannerUrl = imageBannerUrl,

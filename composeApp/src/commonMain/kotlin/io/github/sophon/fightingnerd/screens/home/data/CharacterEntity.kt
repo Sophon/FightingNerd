@@ -15,7 +15,7 @@ data class CharacterEntity(
     val displayName: String,
     val queryName: String,
     val wikiUrl: String,
-    val aliases: String? = null,
+    val aliasList: String? = null,
 
     val imageIconUrl: String? = null,
     val imageBannerUrl: String? = null,

@@ -239,7 +239,7 @@ internal class WavuWikiDiscordFeature(
         mandatoryField(name = "Hit", value = move.onHit.orClickable())
         mandatoryField(name = "Block", value = move.onBlock)
         mandatoryField(name = "CH", value = (move.onCH ?: move.onHit).orClickable())
-        mandatoryField(name = "Level", value = move.t8Properties?.level)
+        mandatoryField(name = "Level", value = move.guard)
 
 
         optionalField(name = "Recovery", value = move.recovery)

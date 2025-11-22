@@ -6,20 +6,27 @@ internal fun Move.toEntity(): MoveEntity {
     return MoveEntity(
         charName = charName,
         id = id,
-        input = input,
         name = name,
+
+        input = input,
         damage = damage,
         startup = startup,
-        recovery = recovery,
         onBlock = onBlock,
         onHit = onHit,
-        active = active,
         onCH = onCH,
+        active = active,
+        cancel = cancel,
+        recovery = recovery,
+        guard = guard,
+        invulnerability = invulnerability,
+
         notes = notes.joinToString(";"),
         aliases = aliases.joinToString(";"),
-        videoId = videoId,
 
-        t8level = t8Properties?.level,
+        urlsChracterWiki = urls.characterWiki,
+        urlsVideoId = urls.videoId,
+        urlsHitboxImage = urls.hitboxImage,
+
         t8isHeat = t8Properties?.isHeat,
         t8isPowerCrush = t8Properties?.isPowerCrush,
         t8isHoming = t8Properties?.isHoming,
@@ -28,13 +35,10 @@ internal fun Move.toEntity(): MoveEntity {
         t8isHighCrush = t8Properties?.isHighCrush,
 
         sf6Type = sf6Properties?.type,
-        sf6Guard = sf6Properties?.guard,
         sf6Images = sf6Properties?.images?.joinToString(","),
-        sf6Hitboxes = sf6Properties?.hitboxes?.joinToString(","),
         sf6Chip = sf6Properties?.chip,
         sf6DmgScaling = sf6Properties?.dmgScaling,
         sf6Total = sf6Properties?.total,
-        sf6Cancel = sf6Properties?.cancel,
         sf6HitConfirm = sf6Properties?.hitConfirm,
         sf6PunishAdv = sf6Properties?.punishAdv,
         sf6PerfParryAdv = sf6Properties?.perfParryAdv,
@@ -50,7 +54,6 @@ internal fun Move.toEntity(): MoveEntity {
         sf6DriveGain = sf6Properties?.driveGain,
         sf6SuperGainOnHit = sf6Properties?.superGainOnHit,
         sf6SuperGainOnBlock = sf6Properties?.superGainOnBlock,
-        sf6Invulnerability = sf6Properties?.invulnerability,
         sf6Armor = sf6Properties?.armor,
         sf6Airborne = sf6Properties?.airborne,
         sf6JugStart = sf6Properties?.jugStart,
@@ -65,21 +68,31 @@ internal fun MoveEntity.toDomain(): Move {
     return Move(
         charName = charName,
         id = id,
-        input = input,
         name = name,
+
+        input = input,
         damage = damage,
         startup = startup,
-        recovery = recovery,
         onBlock = onBlock,
         onHit = onHit,
         onCH = onCH,
         active = active,
+        cancel = cancel,
+        recovery = recovery,
+        guard = guard,
+        invulnerability = invulnerability,
+
         notes = notes?.split(";")?.filter { it.isNotBlank() }.orEmpty(),
         aliases = aliases?.split(";")?.filter { it.isNotBlank() }.orEmpty(),
-        videoId = videoId,
+
+        urls = Move.Urls(
+            characterWiki = urlsChracterWiki,
+            videoId = urlsVideoId,
+            hitboxImage = urlsHitboxImage,
+        ),
+
         t8Properties = if (t8isHeat != null) {
             Move.T8Properties(
-                level = t8level,
                 isHeat = t8isHeat,
                 isPowerCrush = t8isPowerCrush == true,
                 isHoming = t8isHoming == true,
@@ -91,13 +104,10 @@ internal fun MoveEntity.toDomain(): Move {
         sf6Properties = if (sf6Type != null) {
             Move.SF6Properties(
                 type = sf6Type,
-                guard = sf6Guard,
                 images = sf6Images?.split(",")?.map { it.trim() },
-                hitboxes = sf6Hitboxes?.split(",")?.map { it.trim() },
                 chip = sf6Chip,
                 dmgScaling = sf6DmgScaling,
                 total = sf6Total,
-                cancel = sf6Cancel,
                 hitConfirm = sf6HitConfirm,
                 punishAdv = sf6PunishAdv,
                 perfParryAdv = sf6PerfParryAdv,
@@ -113,7 +123,6 @@ internal fun MoveEntity.toDomain(): Move {
                 driveGain = sf6DriveGain,
                 superGainOnHit = sf6SuperGainOnHit,
                 superGainOnBlock = sf6SuperGainOnBlock,
-                invulnerability = sf6Invulnerability,
                 armor = sf6Armor,
                 airborne = sf6Airborne,
                 jugStart = sf6JugStart,

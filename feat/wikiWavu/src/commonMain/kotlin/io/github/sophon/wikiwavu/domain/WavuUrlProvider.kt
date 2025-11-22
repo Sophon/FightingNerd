@@ -11,7 +11,7 @@ object WavuUrlProvider {
     }
 
     fun videoUrl(move: Move): String? {
-        return move.videoId?.let { VIDEO_URL + it.urlEncode() }
+        return move.urls.videoId?.let { VIDEO_URL + it.urlEncode() }
     }
 
     fun followUpUrl(query: String): String? {

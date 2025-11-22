@@ -51,6 +51,7 @@ class SyncWikiDataUseCaseTest {
         input = input,
         damage = "10",
         startup = "i10",
+        guard = "h",
         onBlock = "-1",
         onHit = "+5",
         onCH = null,
@@ -58,9 +59,8 @@ class SyncWikiDataUseCaseTest {
         recovery = null,
         notes = emptyList(),
         aliases = emptyList(),
-        videoId = null,
+        urls = Move.Urls(),
         t8Properties = Move.T8Properties(
-            level = "h",
             isHeat = false,
             isHoming = false,
             stance = null,

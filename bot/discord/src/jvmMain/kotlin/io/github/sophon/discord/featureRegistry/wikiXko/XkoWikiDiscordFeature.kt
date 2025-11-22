@@ -136,7 +136,7 @@ internal class XkoWikiDiscordFeature(
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = "${move.charName}: ${move.input}"
 
-        move.hitboxImageUrl?.let { hurtboxUrl ->
+        move.urls.hitboxImage?.let { hurtboxUrl ->
             image = hurtboxUrl
         }
 
@@ -144,7 +144,7 @@ internal class XkoWikiDiscordFeature(
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Block", value = move.onBlock)
-        mandatoryField(name = "Guard", value = move.xkoProperties?.guard)
+        mandatoryField(name = "Guard", value = move.guard)
         mandatoryField(name = "Active", value = move.active.orDash())
 
         optionalField(name = "Recovery", value = move.recovery)

@@ -28,9 +28,9 @@
     },
     {
       "name": "DreamCancel Wiki",
-      "isEnabled": true,
+      "isEnabled": false,
       "supportedGames": [
-        "King_of_Fighters_XV"
+        "The_King_of_Fighters_XV"
       ]
     }
   ]

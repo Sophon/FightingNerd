@@ -106,7 +106,7 @@ internal class DreamCancelWikiDiscordFeature(
         val gameId = when (command) {
             Command.FD,
             Command.FDKOF15,
-                -> "King_of_Fighters_XV"
+                -> "The_King_of_Fighters_XV"
 
             else -> {
                 val error = BotError.BotLogicError(command.name, query)
@@ -143,17 +143,17 @@ internal class DreamCancelWikiDiscordFeature(
         description = "**${move.charName}**: ${move.name}"
         color = Color(BLUE)
 
-        move.hitboxImageUrl?.let { image = it }
+        move.urls.hitboxImage?.let { image = it }
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)
         mandatoryField(name = "Block", value = move.onBlock)
         mandatoryField(name = "Active", value = move.active)
-        mandatoryField(name = "Guard", value = move.sf6Properties?.guard)
+        mandatoryField(name = "Guard", value = move.guard)
         mandatoryField(name = "Recovery", value = move.recovery)
 
         optionalField(name = "Damage", value = move.damage)
-        optionalField(name = "Invul", value = move.sf6Properties?.invulnerability)
+        optionalField(name = "Invul", value = move.invulnerability)
 
         footer {
             text = featureInfo.name
