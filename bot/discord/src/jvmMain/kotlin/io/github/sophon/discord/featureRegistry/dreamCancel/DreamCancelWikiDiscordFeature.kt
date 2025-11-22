@@ -69,6 +69,20 @@ internal class DreamCancelWikiDiscordFeature(
                 )
             )
         ),
+        SupportedCommand(
+            command = Command.FDCOTW,
+            description = "COTW frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
+                )
+            )
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -106,6 +120,7 @@ internal class DreamCancelWikiDiscordFeature(
             Command.FD,
             Command.FDKOF15,
                 -> "The_King_of_Fighters_XV"
+            Command.FDCOTW -> "Fatal_Fury:_City_of_the_Wolves"
 
             else -> {
                 val error = BotError.BotLogicError(command.name, query)
@@ -119,6 +134,7 @@ internal class DreamCancelWikiDiscordFeature(
         return when (command) {
             Command.FD,
             Command.FDKOF15,
+            Command.FDCOTW
                 -> searchMove(wiki, query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -155,6 +171,8 @@ internal class DreamCancelWikiDiscordFeature(
 
         optionalField(name = "Damage", value = move.damage)
         optionalField(name = "Invul", value = move.invulnerability)
+        optionalField(name = "Stun", value = move.koF15Properties?.stun)
+        optionalField(name = "Rev dmg", value = move.cotwProperties?.revDamage)
 
         footer {
             text = featureInfo.name
