@@ -11,6 +11,7 @@ internal fun String.toDomain(
     val idName = this
         .cleanHtml()
         .removeAccents()
+        .replace("'", "")
         .split(' ')
         .joinToString("_") { it.lowercase() }
     val displayName = this
@@ -33,19 +34,19 @@ internal fun String.toDomain(
 }
 
 private fun String.createAliases(): List<String> {
-    val words = split(' ')
+    val words = split(' ', '.')
 
     return if (words.size >= 2) {
         buildList {
             if (words.size > 2) {
-                add(words.first())
-                add(words.last())
+                add(words.first().lowercase())
+                add(words.last().lowercase())
             }
 
             var initials = ""
             words.forEach { word ->
                 word.takeIf { it.length >= 2 }?.let { add(it.lowercase()) }
-                initials += word.first()
+                initials += word.first().lowercase()
             }
             initials.takeIf { it.isNotBlank() }?.let { add(initials) }
         }.distinct()
