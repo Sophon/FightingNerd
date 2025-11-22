@@ -48,6 +48,7 @@ graph LR
 
   subgraph Ranked service
     ewgf[EWGF]
+    cfn[CFN]
   end
 
   android -->|uses| communityWiki
@@ -64,6 +65,7 @@ graph LR
   communityWiki --> dustloop
 
   elo --> ewgf
+  elo --> cfn
 
   wikiWavu --> t8[Tekken 8]
   supercombo --> sf6[Street Fighter 6]
@@ -84,10 +86,12 @@ graph LR
   style communityWiki fill:#3366CC,color:#fff
   style wikiWavu fill:#059669,color:#fff
   style supercombo fill:#F8F9FA,color:#000000
+  style dreamcancel fill:#F8F9FA,color:#000000
   style 2xko fill:#059669,color:#fff
   style t8 fill:#059669, color:#fff
   style sf6 fill:#059669, color:#fff
   style xko fill:#059669, color:#fff
+  style kof15 fill:#059669,color:#fff
 ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
