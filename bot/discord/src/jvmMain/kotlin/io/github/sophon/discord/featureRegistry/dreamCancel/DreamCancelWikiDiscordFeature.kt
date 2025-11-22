@@ -142,7 +142,9 @@ internal class DreamCancelWikiDiscordFeature(
         description = "**${move.charName}**: ${move.name}"
         color = Color(BLUE)
 
-        move.urls.hitboxImage?.let { image = it }
+        move.urls.hitboxImage?.let {
+            image = it
+        }
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)

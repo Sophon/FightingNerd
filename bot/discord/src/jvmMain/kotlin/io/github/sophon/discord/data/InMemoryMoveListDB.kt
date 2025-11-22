@@ -21,8 +21,14 @@ class InMemoryMoveListDB: MoveListDB {
     override suspend fun fetchMoveListFor(
         charName: String
     ): Result<List<Move>, WikiError> {
-        val characterId = aliasMap[charName]
-            ?: return Result.Error(WikiError.UnknownCharacter(charName))
+        val characterId = if (database.containsKey(charName)) {
+            charName
+        } else {
+            aliasMap[charName]
+        }
+        if (characterId == null)
+            return Result.Error(WikiError.UnknownCharacter(charName))
+
         return database[characterId]
             ?.let { Result.Success(it.values.toList()) }
             ?: Result.Error(WikiError.UnknownCharacter(charName))
@@ -32,7 +38,14 @@ class InMemoryMoveListDB: MoveListDB {
         charName: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        val characterId = aliasMap[charName]
+        val characterId = if (database.containsKey(charName)) {
+            charName
+        } else {
+            aliasMap[charName]
+        }
+        if (characterId == null)
+            return Result.Error(WikiError.UnknownCharacter(charName))
+
         val moveList = database[characterId]
             ?: return Result.Error(WikiError.UnknownCharacter(charName))
         val moveData = moveList[moveQuery]
@@ -55,7 +68,9 @@ class InMemoryMoveListDB: MoveListDB {
 
         aliasMap[character.id] = character.id
         character.aliasList.forEach { alias ->
-            aliasMap[alias] = character.id
+            if (database.containsKey(alias).not()) {
+                aliasMap[alias] = character.id
+            }
         }
 
         return Result.Success(Unit)
