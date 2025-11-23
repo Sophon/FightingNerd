@@ -61,7 +61,7 @@ jobs:
         uses: superfly/flyctl-actions/setup-flyctl@master
 
       - name: Deploy to Fly.io
-        run: flyctl deploy --remote-only --app fightingnerd
+        run: flyctl deploy --remote-only --no-cache --app fightingnerd
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
 
@@ -75,11 +75,11 @@ jobs:
         continue-on-error: true  # Don't fail if version not found in changelog
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v1
         with:
           tag_name: ${{ steps.version.outputs.tag }}
-          release_name: Bot ${{ steps.version.outputs.version }}
+          name: Bot ${{ steps.version.outputs.version }}
           body: ${{ steps.changelog.outputs.changes || 'No changelog entry found' }}
           draft: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

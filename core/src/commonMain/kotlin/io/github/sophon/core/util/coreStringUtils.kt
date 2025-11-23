@@ -30,6 +30,16 @@ fun String.truncate(maxLength: Int): String {
 
 fun String.urlEncode(): String = encodeURLParameter()
 
+fun String.urlDecode(): String {
+    return this
+        .replace("&gt;", ">")
+        .replace("&lt;", "<")
+        .replace("&amp;", "&")
+        .replace("&quot;", "\"")
+        .replace("&#39;", "'")
+        .replace("&nbsp;", " ")
+}
+
 fun String?.orDash(): String = this?.takeUnless { it.isBlank() } ?: "-"
 
 fun String.cleanHtml(): String {

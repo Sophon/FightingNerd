@@ -37,7 +37,7 @@ internal class DreamCancelWikiDataSourceImpl(
                         httpClient.get(BASE_URL) {
                             parameter("action", "cargoquery")
                             parameter("tables", table)
-                            parameter("fields", getDataFields())
+                            parameter("fields", getDataFields(table))
                             parameter("format", "json")
                             parameter("limit", NO_MAX_MOVES)
                             parameter("offset", offset)
@@ -86,8 +86,8 @@ internal class DreamCancelWikiDataSourceImpl(
 }
 
 
-private fun getDataFields(): String {
-    val allFields = listOf(
+private fun getDataFields(table: String): String {
+    val allFields = mutableListOf(
         "chara",
         "moveId",
         "name",
@@ -105,8 +105,13 @@ private fun getDataFields(): String {
         "hitadv",
         "blockadv",
         "invul",
-        "stun",
-        "guardDamage"
+        "guardDamage",
     )
+
+    when(table) {
+        DreamCancelTables.TABLE_COTW_MOVES -> allFields.add("revdamage")
+        DreamCancelTables.TABLE_KOF15_MOVES -> allFields.add("stun")
+    }
+
     return allFields.joinToString(",")
 }

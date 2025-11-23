@@ -16,11 +16,14 @@ internal fun MoveListResponseDto.toDomain(): Map<Character, List<Move>> {
 private fun MoveDto.toMoveList(
     charWikiUrl: String,
 ): Move {
-    return Move(
-        charName = pageName,
-        id = "${input.lowercase()}_$input",
+    val charName = pageName
+        .replace(" ", "_")
 
-        input = input,
+    return Move(
+        charName = charName,
+        id = "${charName.lowercase()}_${input.lowercase()}",
+
+        input = input.lowercase(),
         damage = damage?.ifEmpty { null },
         startup = startup,
         onBlock = onBlock?.ifEmpty { null },

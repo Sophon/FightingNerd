@@ -12,15 +12,10 @@ internal fun String.toDomain(
         .cleanHtml()
         .removeAccents()
         .replace("'", "")
-        .split(' ')
-        .joinToString("_") { it.lowercase() }
-    val displayName = this
-        .cleanHtml()
-    val queryName = this
-        .cleanHtml()
-        .removeAccents()
-        .split(' ')
-        .joinToString("_")
+        .replace(Regex("[\\s.']+"), "_")
+        .lowercase()
+    val displayName = this.cleanHtml()
+    val queryName = this.createQueryName()
 
     val char = Character(
         id = idName,
@@ -33,24 +28,52 @@ internal fun String.toDomain(
     return char
 }
 
-private fun String.createAliases(): List<String> {
-    val words = split(' ', '.')
+internal fun String.createAliases(): List<String> {
+    val words = this
+        .lowercase()
+        .replace(" ", "_")
+        .replace(".", "_")
+        .replace("-", "_")
+        .split('_')
+        .filter { it.isNotEmpty() }
 
     return if (words.size >= 2) {
         buildList {
-            if (words.size > 2) {
-                add(words.first().lowercase())
-                add(words.last().lowercase())
-            }
+            words.first().takeIf { it.length >= 2 }?.let { add(it) }
+            words.last().takeIf { it.length >= 2 }?.let { add(it) }
 
             var initials = ""
-            words.forEach { word ->
-                word.takeIf { it.length >= 2 }?.let { add(it.lowercase()) }
-                initials += word.first().lowercase()
-            }
+            words.forEach { word -> initials += word.first() }
             initials.takeIf { it.isNotBlank() }?.let { add(initials) }
         }.distinct()
     } else {
         emptyList()
     }
+}
+
+internal fun String.createQueryName(): String {
+    return this
+        .cleanHtml()
+        .removeAccents()
+        .split(' ')
+        .joinToString("_")
+}
+
+internal fun String.createThumbnailUrl(gameId: String): String? {
+    val prefix: String
+    val suffix: String
+
+    when (gameId) {
+        DreamCancelTables.TABLE_COTW_MOVES -> {
+            prefix = "FF_COTW"
+            suffix = "Icon.png"
+        }
+        DreamCancelTables.TABLE_KOF15_MOVES -> {
+            prefix = "KOFXV"
+            suffix = "Portrait.png"
+        }
+        else -> return null
+    }
+
+    return "${prefix}_${this}_${suffix}"
 }

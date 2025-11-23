@@ -1,8 +1,17 @@
-# Changelog
+# BOT CHANGELOG
+
+## [v1.0.6] - 2025-11-23
+- hotfix for 2XKO
+
+## [v1.0.5] - 2025-11-23
+- DreamCancel:
+  - COTW support
+- bug fixes
+  - multi input defaults to forward
+    - `4/6ac > d` becomes `6ac >d`
+  - input html decoding
 
 ## [v1.0.4] - 2025-11-22
-
-### Bot
 - DreamCancel:
   - KoF 15 support
 - expand field titles

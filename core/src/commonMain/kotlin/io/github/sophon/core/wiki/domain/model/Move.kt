@@ -27,6 +27,8 @@ data class Move(
 
     val t8Properties: T8Properties? = null,
     val sf6Properties: SF6Properties? = null,
+    val koF15Properties: KOF15Properties? = null,
+    val cotwProperties: COTWProperties? = null,
 ) {
     @Serializable
     data class Urls(
@@ -74,5 +76,15 @@ data class Move(
         val jugLimit: String? = null,
         val projectileSpeed: String? = null,
         val attackRange: String? = null,
+    )
+
+    @Serializable
+    data class KOF15Properties(
+        val stun: String? = null,
+    )
+
+    @Serializable
+    data class COTWProperties(
+        val revDamage: String? = null,
     )
 }
