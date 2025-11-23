@@ -58,3 +58,22 @@ internal fun String.createQueryName(): String {
         .split(' ')
         .joinToString("_")
 }
+
+internal fun String.createThumbnailUrl(gameId: String): String? {
+    val prefix: String
+    val suffix: String
+
+    when (gameId) {
+        DreamCancelTables.TABLE_COTW_MOVES -> {
+            prefix = "FF_COTW"
+            suffix = "Icon.png"
+        }
+        DreamCancelTables.TABLE_KOF15_MOVES -> {
+            prefix = "KOFXV"
+            suffix = "Portrait.png"
+        }
+        else -> return null
+    }
+
+    return "${prefix}_${this}_${suffix}"
+}

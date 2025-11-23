@@ -38,13 +38,13 @@ internal fun MoveDto.toDomain(
         recovery = recovery,
         active = active,
         urls = Move.Urls(
-            hitboxImage = hitboxes?.let {
-                val first = it.split(", ").first()
-                imageUrlMap[first]
-            },
             characterWiki = character.wikiUrl,
+            hitboxImage = hitboxes?.let {
+                val files = it.split(", ")
+                files.getOrNull(files.size / 2)?.let { key ->
+                    imageUrlMap[key]
+                }
+            }
         ),
     )
 }
-
-
