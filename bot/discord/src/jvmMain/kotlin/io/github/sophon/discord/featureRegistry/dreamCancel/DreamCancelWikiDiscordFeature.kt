@@ -165,7 +165,7 @@ internal class DreamCancelWikiDiscordFeature(
         move: Move
     ): EmbedBuilder.() -> Unit = {
         title = move.input
-        description = "**${move.charName}**: ${move.name}"
+        description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(BLUE)
 
         gameId.getGame()?.iconUrl?.let {

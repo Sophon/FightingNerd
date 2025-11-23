@@ -231,7 +231,7 @@ internal class WavuWikiDiscordFeature(
         title = move.input
         url = WavuUrlProvider.charUrl(move.charName)
 
-        description = "**${move.charName}**: ${move.name}"
+        description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(GREEN)
 
         mandatoryField(name = "Startup", value = move.startup)
