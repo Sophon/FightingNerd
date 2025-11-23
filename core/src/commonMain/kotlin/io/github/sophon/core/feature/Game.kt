@@ -16,7 +16,7 @@ enum class Game(
         wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6",
     ),
     Xko(
-        id = "2XKO",
+        id = "XKO",
         iconUrl = "TODO",
         wikiUrl = "https://wiki.play2xko.com/en-us/",
     ),
