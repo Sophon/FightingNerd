@@ -2,7 +2,7 @@ package io.github.sophon.discord.config
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.feature.FeatureConfig
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.util.getGame
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
@@ -22,7 +22,7 @@ internal class ConfigLoader(
                     name = feature.name,
                     isEnabled = feature.isEnabled,
                     supportedGameList = feature.supportedGames.mapNotNull { gameId ->
-                        Game.entries.find { it.id == gameId }
+                        gameId.getGame()
                     }
                 )
             }

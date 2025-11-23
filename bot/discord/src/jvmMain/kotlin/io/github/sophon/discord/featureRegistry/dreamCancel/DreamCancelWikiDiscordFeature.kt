@@ -10,6 +10,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
+import io.github.sophon.core.util.getGame
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
@@ -121,8 +122,8 @@ internal class DreamCancelWikiDiscordFeature(
         return when (command) {
             Command.FD -> {
                 var lastError: BotError? = null
-                for (wiki in wikis.values) {
-                    when (val result = searchMove(wiki, query)) {
+                for ((gameId, wiki) in wikis) {
+                    when (val result = searchMove(gameId, wiki, query)) {
                         is Result.Success -> return result
                         is Result.Error -> lastError = result.error
                     }
@@ -130,14 +131,16 @@ internal class DreamCancelWikiDiscordFeature(
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
             Command.FDKOF15 -> {
-                val wiki = wikis[Game.KoFXV.id]
+                val gameId = Game.KoFXV.id
+                val wiki = wikis[gameId]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+                searchMove(gameId, wiki, query)
             }
             Command.FDCOTW -> {
-                val wiki = wikis[Game.COTW.id]
+                val gameId = Game.COTW.id
+                val wiki = wikis[gameId]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+                searchMove(gameId, wiki, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -149,17 +152,25 @@ internal class DreamCancelWikiDiscordFeature(
     }
 
     private suspend fun searchMove(
+        gameId: String,
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { BotOutput(embedBuilder = createMoveEmbed(it)) }
+            .map { BotOutput(embedBuilder = createMoveEmbed(gameId, it)) }
     }
 
-    private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
+    private fun createMoveEmbed(
+        gameId: String,
+        move: Move
+    ): EmbedBuilder.() -> Unit = {
         title = move.input
-        description = "**${move.charName}**: ${move.name}"
+        description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(BLUE)
+
+        gameId.getGame()?.iconUrl?.let {
+            thumbnail { url = it }
+        }
 
         move.urls.hitboxImage?.let {
             image = it

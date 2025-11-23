@@ -7,27 +7,27 @@ enum class Game(
 ) {
     Tekken8(
         id = "Tekken_8",
-        iconUrl = "TODO",
+        iconUrl = "https://i.imgur.com/Yl6j809.png",
         wikiUrl = "https://wavu.wiki/t/Main_Page",
     ),
     StreetFighter6(
         id = "Street_Fighter_6",
-        iconUrl = "TODO",
+        iconUrl = "https://i.imgur.com/N9wYA5K.png",
         wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6",
     ),
     Xko(
         id = "XKO",
-        iconUrl = "TODO",
+        iconUrl = "https://i.imgur.com/XtHOd6T.png",
         wikiUrl = "https://wiki.play2xko.com/en-us/",
     ),
     KoFXV(
         id = "The_King_of_Fighters_XV",
-        iconUrl = "TODO",
+        iconUrl = "https://i.imgur.com/Zlin7xi.png",
         wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV",
     ),
     COTW(
         id = "Fatal_Fury:_City_of_the_Wolves",
-        iconUrl = "TODO",
+        iconUrl = "https://i.imgur.com/ucbtSgx.png",
         wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves",
     ),
 }

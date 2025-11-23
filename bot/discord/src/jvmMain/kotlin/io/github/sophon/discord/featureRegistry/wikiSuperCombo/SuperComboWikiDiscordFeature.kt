@@ -230,7 +230,7 @@ internal class SuperComboWikiDiscordFeature(
         move: Move,
     ): EmbedBuilder.() -> Unit = {
         title = move.input
-        description = "**${move.charName}**: ${move.name}"
+        description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(ORANGE)
 
         move.urls.hitboxImage?.let { hurtboxUrl ->
