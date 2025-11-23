@@ -1,14 +1,15 @@
 package io.github.sophon.dreamcancel.data
 
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.data.QueryTable
 
 internal object DreamCancelTables {
     private val gameToTables = mapOf(
-        "The_King_of_Fighters_XV" to QueryTable(
+        Game.KoFXV.id to QueryTable(
             character = TABLE_KOF15_CHARACTERS,
             moves = TABLE_KOF15_MOVES,
         ),
-        "Fatal_Fury:_City_of_the_Wolves" to QueryTable(
+        Game.COTW.id to QueryTable(
             character = TABLE_COTW_CHARACTERS,
             moves = TABLE_COTW_MOVES,
         )
@@ -17,8 +18,6 @@ internal object DreamCancelTables {
     fun getTable(gameId: String): QueryTable? {
         return gameToTables[gameId]
     }
-
-    fun supportedGames(): Set<String> = gameToTables.keys
 
     internal const val TABLE_KOF15_CHARACTERS = "NOT USED"
     internal const val TABLE_KOF15_MOVES = "MoveData_KOFXV"

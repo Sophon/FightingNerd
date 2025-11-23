@@ -42,7 +42,7 @@ internal class DreamCancelWikiClient(
     private val fetchMoveUseCase: FetchMoveUseCase,
 ): WikiClient {
     private val gameTables: QueryTable = DreamCancelTables.getTable(gameId)
-        ?: error("$gameId not supported. Supported: ${DreamCancelTables.supportedGames()}")
+        ?: error("$gameId not supported. Supported: ${DreamCancelFeatureInfo.featureInfo.supportedGameSet}")
 
     override fun getFeatureInfo(): FeatureInfo {
         return DreamCancelFeatureInfo.featureInfo
