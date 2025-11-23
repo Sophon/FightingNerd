@@ -2,6 +2,8 @@ package io.github.sophon.discord.config
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.feature.FeatureConfig
+import io.github.sophon.core.feature.Game
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.io.File
 
@@ -10,14 +12,37 @@ internal class ConfigLoader(
 ) {
     fun loadConfig(): FeatureConfig {
         val configText = File(CONFIG_PATH).readText()
-        return json.decodeFromString<FeatureConfig>(configText).apply {
+        val jsonConfig = json.decodeFromString<JsonConfig>(configText).apply {
             Napier.d(tag = TAG) { this.toString() }
         }
+
+        return FeatureConfig(
+            featureList = jsonConfig.featureList.map { feature ->
+                FeatureConfig.Feature(
+                    name = feature.name,
+                    isEnabled = feature.isEnabled,
+                    supportedGameList = feature.supportedGames.mapNotNull { gameId ->
+                        Game.entries.find { it.id == gameId }
+                    }
+                )
+            }
+        )
     }
 
 
     private companion object {
         const val CONFIG_PATH = "res/config.json"
         const val TAG = "ConfigLoader"
+    }
+
+    private data class JsonConfig(
+        val featureList: List<Feature>,
+    ) {
+        @Serializable
+        data class Feature(
+            val name: String,
+            val isEnabled: Boolean,
+            val supportedGames: List<String>,
+        )
     }
 }
