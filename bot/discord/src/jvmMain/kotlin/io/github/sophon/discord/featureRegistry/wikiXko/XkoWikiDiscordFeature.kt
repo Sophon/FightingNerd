@@ -103,9 +103,7 @@ internal class XkoWikiDiscordFeature(
         command: Command,
         query: String,
     ): Result<BotOutput, BotError> {
-        val gameId = "2XKO" //currently only supporting 2XKO
-
-        val wiki = wikis[gameId]
+        val wiki = wikis[Game.Xko.id]
             ?: return Result.Error(BotError.UnsupportedGame(query))
 
         return when (command) {
