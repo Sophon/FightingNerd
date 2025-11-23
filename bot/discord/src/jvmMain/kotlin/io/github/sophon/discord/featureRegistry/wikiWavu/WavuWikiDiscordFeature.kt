@@ -7,6 +7,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
@@ -107,15 +108,15 @@ internal class WavuWikiDiscordFeature(
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
-    override fun registerGames(enabledGames: List<String>) {
+    override fun registerGames(enabledGames: List<Game>) {
         val supportedGames = enabledGames.filter {
-            it in featureInfo.supportedGames
+            it in featureInfo.supportedGameSet
         }
 
-        supportedGames.forEach { gameId ->
-            wikis[gameId] = get(named("wavu")) {
+        supportedGames.forEach { game ->
+            wikis[game.id] = get(named("wavu")) {
                 parametersOf(
-                    gameId,
+                    game.id,
                     InMemoryCharacterListDB(),
                     InMemoryMoveListDB(),
                 )
@@ -137,9 +138,7 @@ internal class WavuWikiDiscordFeature(
         command: Command,
         query: String,
     ): Result<BotOutput, BotError> {
-        val gameId = "Tekken_8" //currently only supporting T8
-
-        val wiki = wikis[gameId]
+        val wiki = wikis[Game.Tekken8.id]
             ?: return Result.Error(BotError.UnsupportedGame(query))
 
         return when (command) {

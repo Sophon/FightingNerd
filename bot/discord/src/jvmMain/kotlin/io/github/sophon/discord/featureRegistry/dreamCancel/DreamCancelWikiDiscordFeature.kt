@@ -130,12 +130,12 @@ internal class DreamCancelWikiDiscordFeature(
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
             Command.FDKOF15 -> {
-                val wiki = wikis["The_King_of_Fighters_XV"]
+                val wiki = wikis[Game.KoFXV.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
             Command.FDCOTW -> {
-                val wiki = wikis["Fatal_Fury:_City_of_the_Wolves"]
+                val wiki = wikis[Game.COTW.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
