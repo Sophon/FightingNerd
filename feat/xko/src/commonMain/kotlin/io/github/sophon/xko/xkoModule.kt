@@ -2,6 +2,7 @@ package io.github.sophon.xko
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
@@ -28,7 +29,7 @@ fun xkoModule() = module {
     singleOf(::XkoWikiClient).bind<WikiClient>()
     single { XkoFeatureInfo }
 
-    factory<WikiClient>(named("xko")) { params ->
+    factory<WikiClient>(named(WikiClientFeature.Xko.id)) { params ->
         val gameId: String = params.get()
         val charListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
