@@ -1,6 +1,7 @@
 package io.github.sophon.dreamcancel.data
 
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.urlDecode
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 
@@ -29,7 +30,11 @@ internal fun MoveDto.toDomain(
     return Move(
         charName = character.displayName,
         id = moveId,
-        input = input.orDash().lowercase(),
+        input = input
+            .orDash()
+            .urlDecode()
+            .useForwardVariantOnly()
+            .lowercase(),
         damage = damage,
         startup = startup,
         onBlock = blockAdv,
@@ -38,13 +43,28 @@ internal fun MoveDto.toDomain(
         recovery = recovery,
         active = active,
         urls = Move.Urls(
-            hitboxImage = hitboxes?.let {
-                val first = it.split(", ").first()
-                imageUrlMap[first]
-            },
             characterWiki = character.wikiUrl,
+            hitboxImage = hitboxes?.let {
+                val files = it.split(", ")
+                files.getOrNull(files.size / 2)?.let { key ->
+                    imageUrlMap[key]
+                }
+            }
         ),
     )
 }
 
+internal fun String.useForwardVariantOnly(): String {
+    val parts = split("/")
+    if (parts.size < 2) return this
 
+    val middle = parts[1]
+
+    // If there's a third part, append non-digit suffix
+    return if (parts.size > 2) {
+        val suffix = parts[2].dropWhile { it.isDigit() }
+        middle + suffix
+    } else {
+        middle
+    }
+}

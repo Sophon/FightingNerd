@@ -111,11 +111,11 @@ internal class DreamCancelWikiDiscordFeature(
         }.launchIn(scope)
     }
 
+    //TODO: this should definitely be a usecase
     override suspend fun execute(
         command: Command,
         query: String,
     ): Result<BotOutput, BotError> {
-        //TODO: this should definitely be a usecase
         return when (command) {
             Command.FD -> {
                 var lastError: BotError? = null
