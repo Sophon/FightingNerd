@@ -13,6 +13,7 @@ import assertk.assertions.isTrue
 import io.github.sophon.core.feature.FeatureConfig
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.fightingnerd.featureRegistry.FeatureListLoader
@@ -244,7 +245,7 @@ class GetAvailableFeaturesUseCaseTest {
     private class FakeComposeRegisteredFeature(
         override val featureInfo: FeatureInfo
     ) : ComposeRegisteredFeature {
-        override fun registerGames(enabledGames: List<String>) {}
+        override fun registerGames(enabledGameList: List<Game>) {}
         override fun getWikiClient(gameId: String): WikiClient? {
             return null
         }
