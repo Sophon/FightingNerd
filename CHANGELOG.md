@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v1.0.6] - 2025-11-23
+- hotfix for 2XKO
+
 ## [v1.0.5] - 2025-11-23
 - DreamCancel:
   - COTW support
