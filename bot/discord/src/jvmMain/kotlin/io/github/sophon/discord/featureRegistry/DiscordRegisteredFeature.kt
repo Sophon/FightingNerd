@@ -3,6 +3,7 @@ package io.github.sophon.discord.featureRegistry
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.feature.Game
 import io.github.sophon.discord.BotError
 
 internal interface DiscordRegisteredFeature {
@@ -11,7 +12,7 @@ internal interface DiscordRegisteredFeature {
     val defaultCommand: SupportedCommand?
     val otherCommands: List<SupportedCommand>
 
-    fun registerGames(enabledGames: List<String>) {
+    fun registerGames(enabledGames: List<Game>) {
         //default: for when feature doesn't support games
     }
 

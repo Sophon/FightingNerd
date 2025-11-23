@@ -47,8 +47,8 @@ internal class WavuHomeScreenVM(
         _state.update { it.copy(isLoading = true) }
 
         wavuFeature?.let { feature ->
-            feature.featureInfo.supportedGames.forEach { gameId ->
-                feature.getWikiClient(gameId)?.let { wiki ->
+            feature.featureInfo.supportedGameSet.forEach { game ->
+                feature.getWikiClient(game.id)?.let { wiki ->
                     syncDataIfOldUseCase.invoke(wiki)
                 }
             }
@@ -60,8 +60,8 @@ internal class WavuHomeScreenVM(
         val allCharacters = mutableListOf<Character>()
 
         wavuFeature?.let { feature ->
-            feature.featureInfo.supportedGames.forEach { gameId ->
-                feature.getWikiClient(gameId)?.let { wiki ->
+            feature.featureInfo.supportedGameSet.forEach { game ->
+                feature.getWikiClient(game.id)?.let { wiki ->
                     fetchCharacterListUseCase.invoke(wiki)
                         .onSuccess { characterList ->
                             allCharacters.addAll(characterList)

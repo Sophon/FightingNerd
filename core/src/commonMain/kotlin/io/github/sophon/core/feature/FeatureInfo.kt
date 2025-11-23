@@ -4,6 +4,6 @@ data class FeatureInfo(
     val name: String,
     val url: String,
     val version: String,
-    val supportedGames: Set<String> = setOf(),
+    val supportedGameSet: Set<Game> = setOf(),
     val iconUrl: String? = null,
 )

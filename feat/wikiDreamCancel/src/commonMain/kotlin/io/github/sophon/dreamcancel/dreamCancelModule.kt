@@ -3,6 +3,7 @@ package io.github.sophon.dreamcancel
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
@@ -32,7 +33,7 @@ fun dreamCancelModule() = module {
     single { DreamCancelFeatureInfo }
     factoryOf(::WikiImageUrlResolver)
     
-    factory<WikiClient>(named("dreamcancel")) { params ->
+    factory<WikiClient>(named(WikiClientFeature.DreamCancel.id)) { params ->
         val gameId: String = params.get()
         val characterListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()

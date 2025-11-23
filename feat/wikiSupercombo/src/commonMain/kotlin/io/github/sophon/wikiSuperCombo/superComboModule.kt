@@ -5,6 +5,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.asEmptyDataResult
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
@@ -36,7 +37,7 @@ fun superComboModule() = module {
     single { SuperComboFeatureInfo }
     factoryOf(::UrlResolver)
 
-    factory<WikiClient>(named("supercombo")) { params ->
+    factory<WikiClient>(named(WikiClientFeature.SuperCombo.id)) { params ->
         val gameId: String = params.get()
         val characterListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()

@@ -19,7 +19,7 @@ internal class FeatureRegistry(
                 .find { it.name == feature.featureInfo.name }
 
             if (featureConfig != null) {
-                feature.registerGames(featureConfig.supportedGames)
+                feature.registerGames(featureConfig.supportedGameList)
                 featureMap[feature.featureInfo.name] = feature
             }
         }

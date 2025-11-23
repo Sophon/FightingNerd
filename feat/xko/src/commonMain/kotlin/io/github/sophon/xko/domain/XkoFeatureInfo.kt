@@ -1,6 +1,7 @@
 package io.github.sophon.xko.domain
 
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.feature.Game
 import io.github.sophon.xko.BuildKonfig
 import io.github.sophon.xko.FEATURE_IMG_URL
 import io.github.sophon.xko.FEATURE_NAME
@@ -11,7 +12,9 @@ object XkoFeatureInfo {
         name = FEATURE_NAME,
         url = FEATURE_URL,
         iconUrl = FEATURE_IMG_URL,
-        supportedGames = setOf("2XKO"),
+        supportedGameSet = setOf(
+            Game.Xko,
+        ),
         version = BuildKonfig.VERSION,
     )
 }

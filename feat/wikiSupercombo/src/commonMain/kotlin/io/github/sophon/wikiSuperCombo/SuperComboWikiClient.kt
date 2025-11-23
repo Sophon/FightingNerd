@@ -44,7 +44,7 @@ internal class SuperComboWikiClient(
     private val fetchMoveUseCase: FetchMoveUseCase,
 ): WikiClient {
     private val gameTables: QueryTable = SuperComboTables.getTable(gameId)
-        ?: error("$gameId not supported. Supported: ${SuperComboTables.supportedGames()}")
+        ?: error("$gameId not supported. Supported: ${SuperComboFeatureInfo.featureInfo.supportedGameSet}")
 
     override fun getFeatureInfo(): FeatureInfo {
         return superComboFeatureInfo.featureInfo

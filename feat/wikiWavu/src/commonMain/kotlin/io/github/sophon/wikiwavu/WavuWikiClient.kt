@@ -44,7 +44,7 @@ internal class WavuWikiClient(
     private val clearCacheUseCase: ClearCacheUseCase,
 ): WikiClient {
     private val queryTable: QueryTable = WavuTables.getTable(gameId)
-        ?: error("$gameId not supported. Supported: ${WavuTables.supportedGames()}")
+        ?: error("$gameId not supported. Supported: ${WavuFeatureInfo.featureInfo.supportedGameSet}")
 
     override fun getFeatureInfo(): FeatureInfo {
         return wavuFeatureInfo.featureInfo

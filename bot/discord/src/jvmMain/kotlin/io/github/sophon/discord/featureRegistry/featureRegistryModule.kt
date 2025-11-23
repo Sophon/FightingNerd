@@ -75,7 +75,7 @@ internal val featureRegistryModule = module {
                 .find { it.name == feature.featureInfo.name }
 
             if (featureConfig != null) {
-                feature.registerGames(featureConfig.supportedGames)
+                feature.registerGames(featureConfig.supportedGameList)
             }
         }
 

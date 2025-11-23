@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.featureRegistry.wavuWiki
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
@@ -23,13 +24,13 @@ internal class WavuComposeFeature(
     override val featureInfo: FeatureInfo = wavuFeatureInfo.featureInfo
     private val wikis = mutableMapOf<String, WikiClient>()
 
-    override fun registerGames(enabledGames: List<String>) {
-        enabledGames.filter { it in featureInfo.supportedGames }
-            .forEach { gameId ->
-                val (characterDB, moveDB) = dbFactory(gameId)
-                wikis[gameId] = get(named("wavu")) {
+    override fun registerGames(enabledGames: List<Game>) {
+        enabledGames.filter { it in featureInfo.supportedGameSet }
+            .forEach { game ->
+                val (characterDB, moveDB) = dbFactory(game.id)
+                wikis[game.id] = get(named("wavu")) {
                     parametersOf(
-                        gameId,
+                        game.id,
                         characterDB,
                         moveDB,
                     )
