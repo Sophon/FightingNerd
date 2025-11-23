@@ -33,6 +33,7 @@ internal fun MoveDto.toDomain(
         input = input
             .orDash()
             .urlDecode()
+            .useForwardVariantOnly()
             .lowercase(),
         damage = damage,
         startup = startup,
@@ -51,4 +52,19 @@ internal fun MoveDto.toDomain(
             }
         ),
     )
+}
+
+internal fun String.useForwardVariantOnly(): String {
+    val parts = split("/")
+    if (parts.size < 2) return this
+
+    val middle = parts[1]
+
+    // If there's a third part, append non-digit suffix
+    return if (parts.size > 2) {
+        val suffix = parts[2].dropWhile { it.isDigit() }
+        middle + suffix
+    } else {
+        middle
+    }
 }
