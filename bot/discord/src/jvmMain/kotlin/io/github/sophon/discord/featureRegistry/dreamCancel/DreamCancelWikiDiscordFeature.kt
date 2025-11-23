@@ -8,6 +8,8 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.feature.Game
+import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
@@ -85,15 +87,15 @@ internal class DreamCancelWikiDiscordFeature(
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
-    override fun registerGames(enabledGames: List<String>) {
+    override fun registerGames(enabledGames: List<Game>) {
         val supportedGames = enabledGames.filter {
-            it in featureInfo.supportedGames
+            it in featureInfo.supportedGameSet
         }
 
-        supportedGames.forEach { gameId ->
-            wikis[gameId] = get(named("dreamcancel")) {
+        supportedGames.forEach { game ->
+            wikis[game.id] = get(named(WikiClientFeature.DreamCancel.id)) {
                 parametersOf(
-                    gameId,
+                    game.id,
                     InMemoryCharacterListDB(),
                     InMemoryMoveListDB(),
                 )
