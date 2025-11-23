@@ -8,6 +8,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
@@ -95,7 +96,7 @@ internal class SuperComboWikiDiscordFeature(
         }
 
         supportedGames.forEach { game ->
-            wikis[game.id] = get(named("supercombo")) {
+            wikis[game.id] = get(named(WikiClientFeature.SuperCombo.id)) {
                 parametersOf(
                     game.id,
                     InMemoryCharacterListDB(),

@@ -8,6 +8,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
@@ -114,7 +115,7 @@ internal class WavuWikiDiscordFeature(
         }
 
         supportedGames.forEach { game ->
-            wikis[game.id] = get(named("wavu")) {
+            wikis[game.id] = get(named(WikiClientFeature.Wavu.id)) {
                 parametersOf(
                     game.id,
                     InMemoryCharacterListDB(),

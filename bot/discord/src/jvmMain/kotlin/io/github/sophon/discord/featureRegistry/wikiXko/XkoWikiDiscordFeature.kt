@@ -8,6 +8,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
@@ -31,7 +32,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
-import kotlin.time.Duration.Companion.hours
 
 internal class XkoWikiDiscordFeature(
     xkoFeatureInfo: XkoFeatureInfo,
@@ -79,7 +79,7 @@ internal class XkoWikiDiscordFeature(
         }
 
         supportedGames.forEach { game ->
-            wikis[game.id] = get(named(Game.Xko.id)) {
+            wikis[game.id] = get(named(WikiClientFeature.Xko.id)) {
                 parametersOf(
                     game.id,
                     InMemoryCharacterListDB(),
