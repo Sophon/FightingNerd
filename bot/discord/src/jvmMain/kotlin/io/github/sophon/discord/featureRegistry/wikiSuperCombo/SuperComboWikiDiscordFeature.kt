@@ -7,6 +7,8 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
+import io.github.sophon.core.feature.Game
+import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
@@ -87,16 +89,16 @@ internal class SuperComboWikiDiscordFeature(
     private val wikis = mutableMapOf<String, WikiClient>()
 
     override fun registerGames(
-        enabledGames: List<String>
+        enabledGames: List<Game>
     ) {
         val supportedGames = enabledGames.filter {
-            it in featureInfo.supportedGames
+            it in featureInfo.supportedGameSet
         }
 
-        supportedGames.forEach { gameId ->
-            wikis[gameId] = get(named("supercombo")) {
+        supportedGames.forEach { game ->
+            wikis[game.id] = get(named(WikiClientFeature.SuperCombo.id)) {
                 parametersOf(
-                    gameId,
+                    game.id,
                     InMemoryCharacterListDB(),
                     InMemoryMoveListDB(),
                 )
@@ -114,32 +116,33 @@ internal class SuperComboWikiDiscordFeature(
         }.launchIn(scope)
     }
 
+    //TODO: this should definitely be a usecase
     override suspend fun execute(
         command: Command,
         query: String,
     ): Result<BotOutput, BotError> {
-        val gameId = when (command) {
-            Command.FD,
-            Command.CHARSF6,
-            Command.FDSF6,
-                -> "Street_Fighter_6"
-//            Command.FDMK1 -> "Mortal_Kombat_1"
-            else -> {
-                val error = BotError.BotLogicError(command.name, query)
-                return Result.Error(error)
-            }
-
-        }
-
-        val wiki = wikis[gameId]
-            ?: return Result.Error(BotError.UnsupportedGame(query))
-
         return when (command) {
-            Command.FD,
-            Command.FDSF6,
-                -> searchMove(wiki, query)
+            Command.FD -> {
+                var lastError: BotError? = null
+                wikis.values.forEach { wiki ->
+                    when (val result = searchMove(wiki, query)) {
+                        is Result.Success -> return result
+                        is Result.Error -> lastError = result.error
+                    }
+                }
 
-            Command.CHARSF6 -> searchCharacter(wiki, query)
+                Result.Error(lastError ?: BotError.UnknownMove(query))
+            }
+            Command.CHARSF6 -> {
+                val wiki = wikis[Game.StreetFighter6.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchCharacter(wiki, query)
+            }
+            Command.FDSF6 -> {
+                val wiki = wikis[Game.StreetFighter6.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
+            }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -227,7 +230,7 @@ internal class SuperComboWikiDiscordFeature(
         move: Move,
     ): EmbedBuilder.() -> Unit = {
         title = move.input
-        description = "**${move.charName}**: ${move.name}"
+        description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(ORANGE)
 
         move.urls.hitboxImage?.let { hurtboxUrl ->

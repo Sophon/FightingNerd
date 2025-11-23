@@ -1,0 +1,33 @@
+package io.github.sophon.core.feature
+
+enum class Game(
+    val id: String,
+    val iconUrl: String,
+    val wikiUrl: String,
+) {
+    Tekken8(
+        id = "Tekken_8",
+        iconUrl = "https://i.imgur.com/Yl6j809.png",
+        wikiUrl = "https://wavu.wiki/t/Main_Page",
+    ),
+    StreetFighter6(
+        id = "Street_Fighter_6",
+        iconUrl = "https://i.imgur.com/N9wYA5K.png",
+        wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6",
+    ),
+    Xko(
+        id = "XKO",
+        iconUrl = "https://i.imgur.com/XtHOd6T.png",
+        wikiUrl = "https://wiki.play2xko.com/en-us/",
+    ),
+    KoFXV(
+        id = "The_King_of_Fighters_XV",
+        iconUrl = "https://i.imgur.com/Zlin7xi.png",
+        wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV",
+    ),
+    COTW(
+        id = "Fatal_Fury:_City_of_the_Wolves",
+        iconUrl = "https://i.imgur.com/ucbtSgx.png",
+        wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves",
+    ),
+}

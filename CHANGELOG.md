@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v1.0.7] - 2025-11-23
+- display game in the thumbnails for DreamCancel wiki
+- bugfixes
+  - don't display move name if null
+
 ## [v1.0.6] - 2025-11-23
 - hotfix for 2XKO
 

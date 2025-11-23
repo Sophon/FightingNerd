@@ -16,6 +16,7 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.Game
 import io.github.sophon.discord.BotError
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
@@ -76,7 +77,7 @@ class SyncWikiDataUseCaseTest {
             name = "wavu",
             url = "",
             version = "",
-            supportedGames = setOf(),
+            supportedGameSet = setOf(),
             iconUrl = "",
         )
     ) : WikiClient {

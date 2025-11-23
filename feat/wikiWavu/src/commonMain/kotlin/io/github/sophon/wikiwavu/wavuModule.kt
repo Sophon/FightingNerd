@@ -5,6 +5,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.asEmptyDataResult
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
@@ -39,7 +40,7 @@ fun wavuModule() = module {
 
     }
 
-    factory<WikiClient>(named("wavu")) { params ->
+    factory<WikiClient>(named(WikiClientFeature.Wavu.id)) { params ->
         val gameId: String = params.get()
         val charListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
