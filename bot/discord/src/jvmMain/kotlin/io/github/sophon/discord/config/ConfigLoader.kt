@@ -35,6 +35,7 @@ internal class ConfigLoader(
         const val TAG = "ConfigLoader"
     }
 
+    @Serializable
     private data class JsonConfig(
         val featureList: List<Feature>,
     ) {
