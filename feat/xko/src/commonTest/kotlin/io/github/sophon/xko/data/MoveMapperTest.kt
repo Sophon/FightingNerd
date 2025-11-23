@@ -41,8 +41,8 @@ class MoveMapperTest {
         )
         val expectedJinxMove = Move(
             charName = "Jinx",
-            id = "5m_5M",
-            input = "5M",
+            id = "jinx_5m",
+            input = "5m",
             damage = "55",
             startup = "11",
             onBlock = "-6",
@@ -58,8 +58,8 @@ class MoveMapperTest {
         )
         val expectedDariusMove = Move(
             charName = "Darius",
-            id = "5m_5M",
-            input = "5M",
+            id = "darius_5m",
+            input = "5m",
             damage = "65",
             startup = "12",
             onBlock = "-3",
@@ -112,8 +112,8 @@ class MoveMapperTest {
         )
         val expectedMove = Move(
             charName = "Jinx",
-            id = "5m_5M",
-            input = "5M",
+            id = "jinx_5m",
+            input = "5m",
             damage = null,
             startup = "11",
             onBlock = "-6",
