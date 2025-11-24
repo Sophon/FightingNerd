@@ -201,7 +201,7 @@ internal class WavuWikiDiscordFeature(
             .map { moveList ->
                 BotOutput(
                     embedBuilder = createMoveListEmbed(
-                        category = "Power Crush",
+                        category = "Heat",
                         moves = moveList
                     )
                 )
