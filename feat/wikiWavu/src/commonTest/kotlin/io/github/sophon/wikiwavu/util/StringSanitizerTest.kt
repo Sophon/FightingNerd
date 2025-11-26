@@ -2,10 +2,9 @@ package io.github.sophon.wikiwavu.util
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.wikiwavu.util.cleanMoveInput
 import kotlin.test.Test
 
-class StringExtensionsTest {
+class StringSanitizerTest {
     //region cleanMoveInput - Basic Cleaning
     @Test
     fun `cleanMoveInput trims whitespace`() {
@@ -260,19 +259,33 @@ class StringExtensionsTest {
         val result = input.cleanMoveInput()
 
         // Then
-        assertThat(result).isEqualTo("ind.u1+2")
+        assertThat(result).isEqualTo("indu1+2")
     }
 
     @Test
-    fun `cleanMoveInput preserves dot in KIN stance`() {
-        // Given
-        val input = "KIN.1+2"
+    fun `cleanMoveInput keeps dot for heat`() {
+        //given
+        val input = "h.d/f+1"
+        val expected = "h.df1"
 
-        // When
+        //when
         val result = input.cleanMoveInput()
 
-        // Then
-        assertThat(result).isEqualTo("kin.1+2")
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `cleanMoveInput handles stance dot`() {
+        //given
+        val input = "BAD.1+2"
+        val expected = "bad1+2"
+
+        //when
+        val result = input.cleanMoveInput()
+
+        //then
+        assertThat(result).isEqualTo(expected)
     }
     //endregion
 
@@ -373,18 +386,6 @@ class StringExtensionsTest {
 
         // Then
         assertThat(result).isEqualTo("cd2")
-    }
-
-    @Test
-    fun `cleanMoveInput handles stance notation with preserved dot`() {
-        // Given
-        val input = "KIN.1+2"
-
-        // When
-        val result = input.cleanMoveInput()
-
-        // Then
-        assertThat(result).isEqualTo("kin.1+2")
     }
 
     @Test
@@ -578,9 +579,7 @@ class StringExtensionsTest {
         val result = input.cleanMoveInput()
 
         // Then
-        assertThat(result).isEqualTo("ind.u1+2")
+        assertThat(result).isEqualTo("indu1+2")
     }
     //endregion
-
-
 }
