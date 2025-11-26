@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v1.0.8] -
+- Tekken - stances don't require dots anymore
+
 ## [v1.0.7] - 2025-11-23
 - display game in the thumbnails for DreamCancel wiki
 - bugfixes
