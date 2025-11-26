@@ -6,7 +6,6 @@ import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.domain.model.Move
 import kotlin.test.Test
 
-//region toDomain Tests
 class MoveMapperTest {
     @Test
     fun `toDomain should map simple move`() {
@@ -190,7 +189,7 @@ class MoveMapperTest {
             charName = "Armor King",
             id = "armor_king-bad.db1+2",
             name = "Shadow Press",
-            input = "bad.db1+2",
+            input = "baddb1+2",
             damage = "18,15",
             startup = "i14~17",
             recovery = "r43? FDFA",
@@ -290,4 +289,3 @@ class MoveMapperTest {
         assertThat(result[0]).isEqualTo(expectedMove)
     }
 }
-//endregion
