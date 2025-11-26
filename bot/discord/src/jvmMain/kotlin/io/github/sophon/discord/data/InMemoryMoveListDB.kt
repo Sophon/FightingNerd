@@ -61,6 +61,9 @@ class InMemoryMoveListDB: MoveListDB {
         val moveMap = buildMap {
             moveList.forEach { move ->
                 put(move.input, move)
+                move.aliases.forEach { alias ->
+                    put(alias, move)
+                }
             }
         }
         database[character.id] = moveMap

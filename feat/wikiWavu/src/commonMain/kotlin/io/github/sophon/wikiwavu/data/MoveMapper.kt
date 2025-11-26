@@ -162,7 +162,7 @@ private fun MoveDto.parseAliases(): List<String> {
             it
                 .removePrefix("* ")
                 .trim()
-                .cleanMoveInput()
+                .cleanMoveInput(keepSpaces = true)
         }
         .filter { it.isNotEmpty() }
 }
