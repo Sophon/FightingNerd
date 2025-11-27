@@ -282,7 +282,7 @@ class MoveMapperTest {
                 "js14~34"
             ),
             aliases = emptyList(),
-            urls = Move.Urls(videoId = "File:t8-p2-armor_king-bad.db+1+2.mp4"),
+            urls = Move.Urls(videoId = "https://wavu.wiki/t/Special:Redirect/file/File%3At8-p2-armor_king-bad.db%2B1%2B2.mp4"),
             t8Properties = Move.T8Properties(
                 isHeat = false,
                 isPowerCrush = false,
