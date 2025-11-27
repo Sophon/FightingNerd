@@ -1,7 +1,9 @@
 package io.github.sophon.wikiwavu.data
 
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.wikiwavu.VIDEO_URL
 import io.github.sophon.wikiwavu.util.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(charName: String): List<Move> {
@@ -43,7 +45,7 @@ internal fun MoveDto.mapToDomain(
         aliases = alias.parseAliases(),
 
         urls = Move.Urls(
-            videoId = video,
+            videoId = video.formVideoUrl(),
         ),
 
         t8Properties = formProperties(
@@ -166,4 +168,8 @@ internal fun String?.parseAliases(): List<String> {
                 .cleanMoveInput(keepSpaces = true)
         }
         .filter { it.isNotEmpty() }
+}
+
+internal fun String?.formVideoUrl(): String? {
+    return this?.let { VIDEO_URL + it.urlEncode() }
 }
