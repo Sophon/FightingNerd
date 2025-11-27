@@ -6,6 +6,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.BuildKonfig
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.URL_IMG_KOFI
 import io.github.sophon.discord.URL_INVITE
@@ -118,7 +119,7 @@ internal class CoreDiscordFeature(
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
             mandatoryField(
-                name = "AVAILABLE COMMANDS",
+                name = "🛠️ AVAILABLE COMMANDS",
                 value = buildString {
                     val commands = Command.entries.sortedBy { it.name }
                     val (fdCommands, otherCommands) = commands.partition {
@@ -142,7 +143,7 @@ internal class CoreDiscordFeature(
             )
 
             mandatoryField(
-                name = "FEATURE MODULES",
+                name = "🧩 FEATURE MODULES",
                 value = features.joinToString("\n") { feature ->
                     val info = feature.featureInfo
                     val name = "- **[${info.name}](${info.url})** (${info.version})"
@@ -158,11 +159,8 @@ internal class CoreDiscordFeature(
                 inline = false,
             )
 
-            //TODO: dono
-            //TODO: repo
-
             footer {
-                text = "Fighting Nerd"
+                text = "Fighting Nerd (${BuildKonfig.VERSION})"
                 icon = URL_IMG_FIGHTING_NERD
             }
         }
