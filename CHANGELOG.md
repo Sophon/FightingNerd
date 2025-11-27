@@ -1,8 +1,8 @@
 # BOT CHANGELOG
 
 ## [v1.0.8] - 2025-11-27
-- don't display clickable video unless valid link
 - `help` command
+- don't display clickable video unless valid link
 - Wavu v1.0.1
   - Tekken 
     - stances don't require dots anymore
