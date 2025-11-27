@@ -7,6 +7,84 @@ import io.github.sophon.core.wiki.domain.model.Move
 import kotlin.test.Test
 
 class MoveMapperTest {
+    //region formId
+    @Test
+    fun `formId handles multi word names`() {
+        //given
+        val name = "Armor King"
+        val expected = "armor_king"
+
+        //when
+        val result = name.formId()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `formId handles mixed case with special characters`() {
+        //given
+        val name = "Jack-8"
+        val expected = "jack-8"
+
+        //when
+        val result = name.formId()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region parseAlias
+    @Test
+    fun `parseAlias handles null`() {
+        //given
+        val alias: String? = null
+        val expected: List<String> = emptyList()
+
+        //when
+        val result = alias.parseAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `parseAlias handles multi-word alias`() {
+        //given
+        val alias = "Shining Wizard"
+        val expected = listOf("shining wizard")
+
+        //when
+        val result = alias.parseAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `parseAlias handles http with multiple aliases`() {
+        //given
+        val alias = "&lt;div class=&quot;dotlist&quot;&gt;\n" +
+                "\n" +
+                "* Can Cans\n" +
+                "* Cancan\n" +
+                "\n" +
+                "&lt;/div&gt;"
+        val expected = listOf(
+            "can cans",
+            "cancan",
+        )
+
+        //when
+        val result = alias.parseAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region toDomain
     @Test
     fun `toDomain should map simple move`() {
         // given
@@ -271,7 +349,7 @@ class MoveMapperTest {
                 "becomes Homing in heat",
                 "Partially restores remaining Heat Time"
             ),
-            aliases = listOf("shiningwizard"),
+            aliases = listOf("shining wizard"),
             urls = Move.Urls(videoId = null),
             t8Properties = Move.T8Properties(
                 isHeat = false,
@@ -288,4 +366,5 @@ class MoveMapperTest {
         assertThat(result).hasSize(1)
         assertThat(result[0]).isEqualTo(expectedMove)
     }
+    //endregion
 }
