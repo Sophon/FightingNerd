@@ -40,7 +40,7 @@ internal fun MoveDto.mapToDomain(
         guard = formCompleteDataFromParent(movesById) { it.target },
 
         notes = splitNotes() + cleanedCrushes,
-        aliases = parseAliases(),
+        aliases = alias.parseAliases(),
 
         urls = Move.Urls(
             videoId = video,
@@ -56,7 +56,7 @@ internal fun MoveDto.mapToDomain(
     return move
 }
 
-private fun String.formId(): String {
+internal fun String.formId(): String {
     return this
         .split(' ')
         .joinToString("_") { it.lowercase() }
@@ -154,8 +154,9 @@ private fun String.isStance(): String {
     } ?: ""
 }
 
-private fun MoveDto.parseAliases(): List<String> {
-    return alias.orEmpty()
+internal fun String?.parseAliases(): List<String> {
+    return this
+        .orEmpty()
         .cleanHtml()
         .lines()
         .map {
