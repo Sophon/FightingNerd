@@ -25,12 +25,12 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
         "bt." to "bt",
     )
 
-    for ((old, new) in motionInputs) {
-        result = result.replace(old, new)
-    }
-
     if (keepSpaces.not()) {
         result = result.replace(" ", "")
+    }
+
+    for ((old, new) in motionInputs) {
+        result = result.replace(old, new)
     }
 
 

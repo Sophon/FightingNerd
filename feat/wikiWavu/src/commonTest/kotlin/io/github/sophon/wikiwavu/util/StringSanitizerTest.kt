@@ -428,12 +428,13 @@ class StringSanitizerTest {
     fun `cleanMoveInput handles running input`() {
         // Given
         val input = "f, f, f+3"
+        val expected = "wr3"
 
         // When
         val result = input.cleanMoveInput()
 
         // Then
-        assertThat(result).isEqualTo("wr3")
+        assertThat(result).isEqualTo(expected)
     }
 
     @Test
