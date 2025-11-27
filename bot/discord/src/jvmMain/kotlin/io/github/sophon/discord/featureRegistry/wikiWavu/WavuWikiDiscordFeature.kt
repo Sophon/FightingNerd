@@ -201,7 +201,7 @@ internal class WavuWikiDiscordFeature(
             .map { moveList ->
                 BotOutput(
                     embedBuilder = createMoveListEmbed(
-                        category = "Power Crush",
+                        category = "Heat",
                         moves = moveList
                     )
                 )
@@ -246,7 +246,9 @@ internal class WavuWikiDiscordFeature(
 
         createNotes(move)
 
-        optionalField(name = "Video", value = "[Link](${url})")
+        move.urls.videoId?.let { url ->
+            optionalField(name = "Video", value = "[Link](${url})")
+        }
 
         footer {
             text = featureInfo.name

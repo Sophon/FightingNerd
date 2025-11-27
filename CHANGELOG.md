@@ -1,5 +1,13 @@
 # BOT CHANGELOG
 
+## [v1.0.8] - 2025-11-27
+- `help` command
+- don't display clickable video unless valid link
+- Wavu v1.0.1
+  - Tekken 
+    - stances don't require dots anymore
+    - search moves via alias like JFSR
+
 ## [v1.0.7] - 2025-11-23
 - display game in the thumbnails for DreamCancel wiki
 - bugfixes

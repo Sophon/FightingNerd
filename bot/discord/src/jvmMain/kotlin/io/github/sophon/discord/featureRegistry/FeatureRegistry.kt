@@ -11,6 +11,10 @@ internal class FeatureRegistry(
         return configuredFeatures + coreFeature
     }
 
+    fun getRegisteredFeatures(): List<DiscordRegisteredFeature> {
+        return featureMap.values.toList()
+    }
+
     private fun getFeature(name: String): DiscordRegisteredFeature? {
         return featureMap[name]
     }

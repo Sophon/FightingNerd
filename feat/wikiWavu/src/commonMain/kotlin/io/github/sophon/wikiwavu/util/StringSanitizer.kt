@@ -1,10 +1,9 @@
 package io.github.sophon.wikiwavu.util
 
-fun String.cleanMoveInput(): String {
+internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
     var result = this.trim().lowercase()
 
     val motionInputs = listOf(
-        " " to "",
         "," to "",
         "/" to "",
         "d+" to "d",
@@ -26,6 +25,10 @@ fun String.cleanMoveInput(): String {
         "bt." to "bt",
     )
 
+    if (keepSpaces.not()) {
+        result = result.replace(" ", "")
+    }
+
     for ((old, new) in motionInputs) {
         result = result.replace(old, new)
     }
@@ -38,6 +41,15 @@ fun String.cleanMoveInput(): String {
     result = result
         .replace("rage.", "r.")
         .replace("heat.", "h.")
+
+    //BAD.1+2 -> bad1+2
+    result = result.split(".").let {
+        if (it.first().length == 3) {
+            result.replace(".", "")
+        } else {
+            result
+        }
+    }
 
     return result
 }
