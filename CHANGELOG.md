@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v1.0.9] - 
+- better formatting for `help`
+
 ## [v1.0.8] - 2025-11-27
 - `help` command
 - don't display clickable video unless valid link
