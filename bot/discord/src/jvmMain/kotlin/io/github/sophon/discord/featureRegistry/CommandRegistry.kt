@@ -8,8 +8,7 @@ enum class Command {
     TIP, DONATE,
     REPO,
     INVITE,
-    BAN,
-    UNBAN,
+    HELP,
 
     //general
     FD,
