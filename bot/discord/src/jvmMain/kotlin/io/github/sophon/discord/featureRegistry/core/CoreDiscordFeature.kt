@@ -165,6 +165,15 @@ internal class CoreDiscordFeature(
                 inline = false,
             )
 
+            mandatoryField(
+                name = "🫶 OTHER LINKS",
+                value = buildString {
+                    appendLine("- **[Invite]($URL_INVITE)**")
+                    appendLine("- **[Repo]($URL_REPO)**")
+                    appendLine("- **[Donate]($URL_KOFI)**")
+                }
+            )
+
             footer {
                 text = "Fighting Nerd (${BuildKonfig.VERSION})"
                 icon = URL_IMG_FIGHTING_NERD
