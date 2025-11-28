@@ -19,10 +19,11 @@ internal fun String?.orClickable(): String? {
     val section = substringAfter("[[")
         .substringBefore("|")
         .replace(" ", "_")
+    val trailingText = if (contains("]]")) substringAfter("]]") else ""
 
     val url = BASE_URL + section
 
-    return "$precedingText[$text]($url)"
+    return "$precedingText[$text]($url)$trailingText"
 }
 
 private const val BASE_URL = "https://wavu.wiki/t/"

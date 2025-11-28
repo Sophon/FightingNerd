@@ -116,30 +116,36 @@ internal class CoreDiscordFeature(
 
     private fun createHelpEmbed(): Result<BotOutput, BotError> {
         val features = featureRegistry.getRegisteredFeatures()
+        val commands = Command.entries.sortedBy { it.name }
+        val (fdCommands, otherCommands) = commands
+            .filter { it.name != Command.FD.name }
+            .partition {
+                it.name.startsWith(Command.FD.name)
+            }
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
             mandatoryField(
-                name = "🛠️ AVAILABLE COMMANDS",
+                name = "📊 FRAME DATA",
                 value = buildString {
-                    val commands = Command.entries.sortedBy { it.name }
-                    val (fdCommands, otherCommands) = commands.partition {
-                        it.name.startsWith("FD") && it.name != "FD"
-                    }
-
-                    otherCommands.forEach { command ->
-                        append("- `${command.name}`")
-
-                        if (command.name == "FD") {
-                            fdCommands
-                                .sortedBy { it.name }
-                                .forEach { fdCommand ->
-                                    append("\n  - `${fdCommand.name}`")
-                                }
+                    append("- `${Command.FD.name}` (global)")
+                    fdCommands
+                        .sortedBy { it.name }
+                        .forEach { fdCommand ->
+                            append("\n  - `${fdCommand.name}`")
                         }
-                        append("\n")
+                    append("\n")
+                }.trimEnd(),
+                inline = true,
+            )
+
+            mandatoryField(
+                name = "🛠️ OTHER COMMANDS",
+                value = buildString {
+                    otherCommands.forEach { command ->
+                        append("- `${command.name}`\n")
                     }
                 }.trimEnd(),
-                inline = false,
+                inline = true,
             )
 
             mandatoryField(
@@ -157,6 +163,15 @@ internal class CoreDiscordFeature(
                     }
                 },
                 inline = false,
+            )
+
+            mandatoryField(
+                name = "🫶 OTHER LINKS",
+                value = buildString {
+                    appendLine("- **[Invite]($URL_INVITE)**")
+                    appendLine("- **[Repo]($URL_REPO)**")
+                    appendLine("- **[Donate]($URL_KOFI)**")
+                }
             )
 
             footer {

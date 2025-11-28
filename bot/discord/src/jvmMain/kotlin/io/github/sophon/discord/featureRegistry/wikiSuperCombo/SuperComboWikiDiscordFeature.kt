@@ -251,11 +251,11 @@ internal class SuperComboWikiDiscordFeature(
         optionalField(name = "JUG limit", value = move.sf6Properties?.jugLimit)
         optionalField(name = "JUG inc", value = move.sf6Properties?.jugIncrease)
 
-        createDetails(move)
-
         optionalField(name = "Cancel", move.cancel)
         optionalField(name = "Range", move.sf6Properties?.attackRange)
         optionalField(name = "Proj spd", move.sf6Properties?.projectileSpeed)
+
+        createDetails(move)
 
         createNotes(move)
 

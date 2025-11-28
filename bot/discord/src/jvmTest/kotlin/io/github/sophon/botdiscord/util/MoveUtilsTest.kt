@@ -6,8 +6,7 @@ import assertk.assertions.isNull
 import io.github.sophon.discord.util.orClickable
 import org.junit.Test
 
-class MoveTest {
-
+class MoveUtilsTest {
     @Test
     fun `orClickable returns null when input is null`() {
         val input: String? = null
@@ -95,6 +94,19 @@ class MoveTest {
         val input = "[[Kazuya_combos#Staples|]]"
         val expected = "[](https://wavu.wiki/t/Kazuya_combos#Staples)"
         val result = input.orClickable()
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `orClickable has trailing text included`() {
+        //given
+        val note = "Transition to r15 [[Paul_movelist#SWA_(Sway)|SWA]] +3 +9 from 2~14f, 16f with b"
+        val expected = "Transition to r15 [SWA](https://wavu.wiki/t/Paul_movelist#SWA_(Sway)) +3 +9 from 2~14f, 16f with b"
+
+        //when
+        val result = note.orClickable()
+
+        //then
         assertThat(result).isEqualTo(expected)
     }
 }
