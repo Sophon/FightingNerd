@@ -2,6 +2,8 @@
 
 ## [v1.0.9] - 
 - better formatting for `help`
+- Tekken 8
+  - notes with URLs don't truncate the rest of the note
 
 ## [v1.0.8] - 2025-11-27
 - `help` command
