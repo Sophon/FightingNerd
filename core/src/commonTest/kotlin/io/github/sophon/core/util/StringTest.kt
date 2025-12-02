@@ -782,5 +782,72 @@ class StringExtensionsTest {
         // Then
         assertThat(result).isEqualTo("ramon")
     }
-//endregion
+    //endregion
+
+    //region maskSecret
+    @Test
+    fun `maskSecret handles strings with four chars`() {
+        //given
+        val string = "abcd"
+        val expected = "a**d"
+
+        //when
+        val result = string.maskSecret()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `maskSecret handles strings with eight chars`() {
+        //given
+        val string = "abcdabcx"
+        val expected = "a******x"
+
+        //when
+        val result = string.maskSecret()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `maskSecret handles long strings`() {
+        //given
+        val string = "AM5/AM4/LGA1700/LGA18151"
+        val expected = "AM5/****************8151"
+
+        //when
+        val result = string.maskSecret()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `maskSecret handles empty string`() {
+        //given
+        val string = ""
+        val expected = ""
+
+        //when
+        val result = string.maskSecret()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `maskSecret handles single character`() {
+        //given
+        val string = "a"
+        val expected = "*"
+
+        //when
+        val result = string.maskSecret()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
 }

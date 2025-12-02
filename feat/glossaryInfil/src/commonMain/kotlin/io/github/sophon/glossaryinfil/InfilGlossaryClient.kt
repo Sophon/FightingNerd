@@ -1,14 +1,13 @@
 package io.github.sophon.glossaryinfil
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
 import io.github.sophon.glossaryinfil.usecase.CacheGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.FetchDataForTermUseCase
-import io.github.aakira.napier.Napier
-import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.glossaryinfil.usecase.GetFeatureInfoUseCase
 
 interface InfilGlossaryClient {
@@ -32,7 +31,7 @@ internal class InfilGlossaryClientImpl(
         return when (val result = downloadGlossaryUseCase.invoke()) {
             is Result.Success -> {
                 cacheGlossaryUseCase.invoke(result.data)
-                Napier.d(tag = TAG) { "Successfully retrieved glossary; ${result.data.size} keys" }
+                Napier.i(tag = TAG) { "Successfully retrieved glossary; ${result.data.size} keys" }
                 Result.Success(Unit)
             }
             is Result.Error -> {
