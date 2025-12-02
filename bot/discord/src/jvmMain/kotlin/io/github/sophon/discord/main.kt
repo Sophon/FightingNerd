@@ -50,7 +50,7 @@ private fun initLogging() {
 private fun getApiKey(): String {
     // env var first (for production/Docker)
     System.getenv("discordBotApiKey")?.let { apiKey ->
-        Napier.d(tag = TAG) { "API from env: ${apiKey.maskSecret()}" }
+        Napier.i(tag = TAG) { "API from env: ${apiKey.maskSecret()}" }
         return apiKey
     }
 
