@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v1.1.0] - TODO
+- core v1.0.6
+  - better logging on Kord disconnects
+
 ## [v1.0.10] - 2025-12-02
 - core v1.0.5
   - better logging
