@@ -71,7 +71,7 @@ internal class WavuWikiClient(
         charName: String
     ): Result<Character, WikiError> {
         return fetchCharacterUseCase.invoke(charName)
-            .onError { Napier.e(tag = TAG) { "fetchCharacter(${charName}): $it" } }
+            .onError { Napier.w(tag = TAG) { "fetchCharacter(${charName}): $it" } }
     }
 
     override suspend fun downloadMoveList(
@@ -107,7 +107,7 @@ internal class WavuWikiClient(
     ): Result<Move, WikiError> {
         return fetchMoveUseCase.invoke(charName, moveQuery.cleanMoveInput())
             .onError {
-                Napier.e(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
             }
     }
 
