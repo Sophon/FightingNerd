@@ -75,7 +75,7 @@ internal class SuperComboWikiClient(
     ): Result<Character, WikiError> {
         return fetchCharacterUseCase.invoke(charName)
             .onError {
-                Napier.e(tag = TAG) { "fetchCharacter($charName): $it" }
+                Napier.w(tag = TAG) { "fetchCharacter($charName): $it" }
             }
     }
 
@@ -119,7 +119,7 @@ internal class SuperComboWikiClient(
     ): Result<Move, WikiError> {
         return fetchMoveUseCase.invoke(charName, moveQuery)
             .onError {
-                Napier.e(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
             }
     }
 
