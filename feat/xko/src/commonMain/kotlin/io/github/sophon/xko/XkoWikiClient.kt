@@ -46,6 +46,9 @@ internal class XkoWikiClient(
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadOrFetchUseCase.invoke()
             .map { it.keys.toList() }
+            .onSuccess { characterList ->
+                Napier.i(tag = TAG) { "${characterList.size} characters downloaded" }
+            }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
 
@@ -75,7 +78,7 @@ internal class XkoWikiClient(
                     .flatten()
             }
             .onSuccess {
-                Napier.d(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
+                Napier.i(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
     }
