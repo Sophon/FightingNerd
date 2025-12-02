@@ -71,7 +71,7 @@ internal class DreamCancelWikiClient(
 
     override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
         return fetchCharacterUseCase.invoke(charName)
-            .onError { Napier.e(tag = TAG) { "fetchCharacter: $it" } }
+            .onError { Napier.w(tag = TAG) { "fetchCharacter: $it" } }
     }
 
     override suspend fun downloadMoveList(charName: String): Result<List<Move>, WikiError> {
@@ -106,7 +106,7 @@ internal class DreamCancelWikiClient(
         moveQuery: String,
     ): Result<Move, WikiError> {
         return fetchMoveUseCase.invoke(charName, moveQuery)
-            .onError { Napier.e(tag = TAG) { "fetchMoveList: $it" } }
+            .onError { Napier.w(tag = TAG) { "fetchMoveList: $it" } }
     }
 
     override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
