@@ -53,7 +53,7 @@ internal class WavuWikiClient(
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadCharacterListUseCase.invoke(queryTable)
-            .onSuccess { Napier.d(tag = TAG) { "${it.size} characters loaded" } }
+            .onSuccess { Napier.i(tag = TAG) { "${it.size} characters loaded" } }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
 
@@ -71,7 +71,7 @@ internal class WavuWikiClient(
         charName: String
     ): Result<Character, WikiError> {
         return fetchCharacterUseCase.invoke(charName)
-            .onError { Napier.e(tag = TAG) { "fetchCharacter(${charName}): $it" } }
+            .onError { Napier.w(tag = TAG) { "fetchCharacter(${charName}): $it" } }
     }
 
     override suspend fun downloadMoveList(
@@ -79,7 +79,7 @@ internal class WavuWikiClient(
     ): Result<List<Move>, WikiError> {
         return downloadMoveListUseCase.invoke(queryTable, charName)
             .onSuccess {
-                Napier.d(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
+                Napier.i(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadMoveList(${charName}): $it" } }
     }
@@ -107,7 +107,7 @@ internal class WavuWikiClient(
     ): Result<Move, WikiError> {
         return fetchMoveUseCase.invoke(charName, moveQuery.cleanMoveInput())
             .onError {
-                Napier.e(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
             }
     }
 

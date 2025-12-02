@@ -18,8 +18,8 @@ import io.github.sophon.discord.util.createEmbedResponse
 import io.github.sophon.discord.util.createErrorEmbed
 import io.github.sophon.discord.util.createPlainMessage
 import io.github.sophon.discord.util.createPlainResponse
-import io.github.sophon.discord.util.deleteInteraction
 import io.github.sophon.discord.util.delete
+import io.github.sophon.discord.util.deleteInteraction
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -90,7 +90,10 @@ internal class DiscordBotImpl(
 
         val botOutput = when(result) {
             is Result.Success -> result.data
-            is Result.Error -> BotOutput(errorEmbedBuilder = createErrorEmbed(result.error))
+            is Result.Error -> {
+                Napier.e(tag = TAG) { result.error.toString() }
+                BotOutput(errorEmbedBuilder = createErrorEmbed(result.error))
+            }
         }
 
         when {
@@ -118,7 +121,10 @@ internal class DiscordBotImpl(
 
         val botOutput = when (result) {
             is Result.Success -> result.data
-            is Result.Error -> BotOutput(errorEmbedBuilder = createErrorEmbed(result.error))
+            is Result.Error -> {
+                Napier.e(tag = TAG) { result.error.toString() }
+                BotOutput(errorEmbedBuilder = createErrorEmbed(result.error))
+            }
         }
 
         when {

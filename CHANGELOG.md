@@ -1,7 +1,9 @@
 # BOT CHANGELOG
 
-## [v1.1.0] - [TODO]
-- Wavu
+## [v1.0.10] - 2025-12-02
+- core v1.0.5
+  - better logging
+- Wavu v1.0.2
   - formats the move query - allows queries like `rei df1,1`
 
 ## [v1.0.9] - 2025-11-28

@@ -53,7 +53,7 @@ internal class SuperComboWikiClient(
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadCharacterListUseCase.invoke(gameTables)
             .onSuccess { characterList ->
-                Napier.d(tag = TAG) { "${characterList.size} characters loaded" }
+                Napier.i(tag = TAG) { "${characterList.size} characters loaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
@@ -75,7 +75,7 @@ internal class SuperComboWikiClient(
     ): Result<Character, WikiError> {
         return fetchCharacterUseCase.invoke(charName)
             .onError {
-                Napier.e(tag = TAG) { "fetchCharacter($charName): $it" }
+                Napier.w(tag = TAG) { "fetchCharacter($charName): $it" }
             }
     }
 
@@ -84,7 +84,7 @@ internal class SuperComboWikiClient(
     ): Result<List<Move>, WikiError> {
         return downloadMoveListUseCase.invoke(gameTables, charName)
             .onSuccess { moveList ->
-                Napier.d(tag = TAG) {
+                Napier.i(tag = TAG) {
                     "${charName}: ${moveList.size} moves downloaded"
                 }
             }
@@ -119,7 +119,7 @@ internal class SuperComboWikiClient(
     ): Result<Move, WikiError> {
         return fetchMoveUseCase.invoke(charName, moveQuery)
             .onError {
-                Napier.e(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
             }
     }
 

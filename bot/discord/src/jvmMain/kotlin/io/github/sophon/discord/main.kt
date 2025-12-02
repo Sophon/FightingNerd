@@ -1,8 +1,11 @@
 package io.github.sophon.discord
 
 import dev.kord.core.Kord
+import io.github.aakira.napier.Antilog
 import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.LogLevel
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.util.maskSecret
 import io.github.sophon.discord.config.DiscordConfig
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -11,7 +14,7 @@ import org.koin.java.KoinJavaComponent.getKoin
 import java.io.File
 
 suspend fun main() = coroutineScope {
-    Napier.base(DebugAntilog())
+    initLogging()
     val kord = Kord(token = getApiKey())
     initKoin(kord)
 
@@ -22,10 +25,32 @@ suspend fun main() = coroutineScope {
     }.join()
 }
 
+private fun initLogging() {
+    if (isDebugBuild()) {
+        Napier.base(DebugAntilog())
+    } else {
+        Napier.base(
+            object : Antilog() {
+                override fun performLog(
+                    priority: LogLevel,
+                    tag: String?,
+                    throwable: Throwable?,
+                    message: String?,
+                ) {
+                    if (priority == LogLevel.INFO || priority == LogLevel.ERROR) {
+                        println("${priority.name.uppercase()}: ${tag ?: "null"} - $message")
+                        throwable?.printStackTrace()
+                    }
+                }
+            }
+        )
+    }
+}
+
 private fun getApiKey(): String {
     // env var first (for production/Docker)
     System.getenv("discordBotApiKey")?.let { apiKey ->
-        Napier.d(tag = TAG) { "API from env: $apiKey" }
+        Napier.i(tag = TAG) { "API from env: ${apiKey.maskSecret()}" }
         return apiKey
     }
 
@@ -43,6 +68,10 @@ private fun getApiKey(): String {
     return discordConfig.discordBotApiKey.also { apiKey ->
         Napier.d(tag = TAG) { "API from file: $apiKey" }
     }
+}
+
+private fun isDebugBuild(): Boolean {
+    return System.getenv(BUILD_KEY_ENV) != BUILD_VAL_PROD
 }
 
 private const val TAG = "DiscordBot"

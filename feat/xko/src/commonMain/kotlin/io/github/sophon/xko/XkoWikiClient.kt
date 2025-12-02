@@ -46,6 +46,9 @@ internal class XkoWikiClient(
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadOrFetchUseCase.invoke()
             .map { it.keys.toList() }
+            .onSuccess { characterList ->
+                Napier.i(tag = TAG) { "${characterList.size} characters downloaded" }
+            }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
 
@@ -63,7 +66,7 @@ internal class XkoWikiClient(
 
     override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
         return fetchCharacterUseCase.invoke(charName)
-            .onError { Napier.e(tag = TAG) { "fetchCharacter: $it" } }
+            .onError { Napier.w(tag = TAG) { "fetchCharacter: $it" } }
     }
 
     override suspend fun downloadMoveList(charName: String): Result<List<Move>, WikiError> {
@@ -75,7 +78,7 @@ internal class XkoWikiClient(
                     .flatten()
             }
             .onSuccess {
-                Napier.d(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
+                Napier.i(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
     }
@@ -101,7 +104,7 @@ internal class XkoWikiClient(
         moveQuery: String,
     ): Result<Move, WikiError> {
         return fetchMoveUseCase.invoke(charName, moveQuery)
-            .onError { Napier.e(tag = TAG) { "fetchMove: $it" } }
+            .onError { Napier.w(tag = TAG) { "fetchMove: $it" } }
     }
 
     override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
