@@ -5,6 +5,7 @@ import io.github.aakira.napier.Antilog
 import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.LogLevel
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.util.maskSecret
 import io.github.sophon.discord.config.DiscordConfig
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -49,7 +50,7 @@ private fun initLogging() {
 private fun getApiKey(): String {
     // env var first (for production/Docker)
     System.getenv("discordBotApiKey")?.let { apiKey ->
-        Napier.d(tag = TAG) { "API from env: $apiKey" }
+        Napier.d(tag = TAG) { "API from env: ${apiKey.maskSecret()}" }
         return apiKey
     }
 
