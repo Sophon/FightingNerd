@@ -52,7 +52,7 @@ internal class DreamCancelWikiClient(
         return downloadOrFetchUseCase.invoke(gameTables)
             .map { it.keys.toList() }
             .onSuccess { characterList ->
-                Napier.d(tag = TAG) { "${characterList.size} characters downloaded" }
+                Napier.i(tag = TAG) { "${characterList.size} characters downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
@@ -83,7 +83,7 @@ internal class DreamCancelWikiClient(
                     .flatten()
             }
             .onSuccess { moveList ->
-                Napier.d(tag = TAG) { "${charName}: ${moveList.size} moves downloaded" }
+                Napier.i(tag = TAG) { "${charName}: ${moveList.size} moves downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
     }
