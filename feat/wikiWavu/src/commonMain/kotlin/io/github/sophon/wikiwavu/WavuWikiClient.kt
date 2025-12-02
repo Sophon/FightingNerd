@@ -53,7 +53,7 @@ internal class WavuWikiClient(
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadCharacterListUseCase.invoke(queryTable)
-            .onSuccess { Napier.d(tag = TAG) { "${it.size} characters loaded" } }
+            .onSuccess { Napier.i(tag = TAG) { "${it.size} characters loaded" } }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
 
@@ -79,7 +79,7 @@ internal class WavuWikiClient(
     ): Result<List<Move>, WikiError> {
         return downloadMoveListUseCase.invoke(queryTable, charName)
             .onSuccess {
-                Napier.d(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
+                Napier.i(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadMoveList(${charName}): $it" } }
     }
