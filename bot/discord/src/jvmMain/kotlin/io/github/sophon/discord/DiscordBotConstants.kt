@@ -18,3 +18,6 @@ internal const val URL_IMG_DISCORD = "https://i.imgur.com/HtuRwva.png"
 
 internal const val TIME_UPDATE_INTERVAL_H = 3
 internal const val TIME_DELETE_ERROR_EMBED = 5_000L
+
+internal const val BUILD_KEY_ENV = "ENV"
+internal const val BUILD_VAL_PROD = "production"

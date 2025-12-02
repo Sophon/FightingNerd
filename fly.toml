@@ -10,6 +10,7 @@ primary_region = 'fra'
 
 [env]
 # Add any non-secret env vars here if needed
+  ENV = "production"
 
 [[vm]]
   memory = '512mb'
