@@ -2,6 +2,7 @@ package io.github.sophon.discord
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
@@ -56,6 +57,8 @@ internal class DiscordBotImpl(
         cleanOldGuildCommands(kord)
         createGlobalCommands()
 //        createCommandsForTestServer()
+
+        monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             handleCommand()
@@ -180,6 +183,18 @@ internal class DiscordBotImpl(
                     }
                 }
         }.collect()
+    }
+
+    private fun monitorGatewayHealth() {
+        kord.on<DisconnectEvent.RetryLimitReachedEvent> {
+            Napier.e(tag = TAG) { "Gateway failed to recover on shard $shard - retry limit reached" }
+        }
+
+        kord.on<DisconnectEvent.DiscordCloseEvent> {
+            if (recoverable.not()) {
+                Napier.e(tag = TAG) { "Gateway closed non-recoverably on shard $shard; code = $closeCode" }
+            }
+        }
     }
 
 
