@@ -29,6 +29,7 @@ data class Move(
     val sf6Properties: SF6Properties? = null,
     val koF15Properties: KOF15Properties? = null,
     val cotwProperties: COTWProperties? = null,
+    val airDashProperties: AirDashProperties? = null,
 ) {
     @Serializable
     data class Urls(
@@ -86,5 +87,27 @@ data class Move(
     @Serializable
     data class COTWProperties(
         val revDamage: String? = null,
+    )
+
+    @Serializable
+    data class AirDashProperties(
+        val chara: String? = null,
+        val name: String? = null,
+        val input: String? = null,
+        val damage: String? = null,
+        val level: String? = null,
+        val images: List<String>? = null,
+        val hitboxes: List<String>? = null,
+        val notes: List<String>? = null,
+        val type: String? = null,
+        val riscGain: String? = null,
+        val riscLoss: String? = null,
+        val wallDamage: String? = null,
+        val inputTension: String? = null,
+        val chipRatio: String? = null,
+        val otgType: String? = null,
+        val prorate: String? = null,
+        val invuln: String? = null,
+        val cancel: String? = null,
     )
 }
