@@ -12,9 +12,15 @@ import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
+import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikidustloop.data.DustLoopTables
 import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
 import kotlinx.datetime.Instant
@@ -28,6 +34,14 @@ class DustLoopWikiClient(
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
     private val fetchCharacterUseCase: FetchCharacterUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
+
+    private val downloadMoveListUseCase: DownloadMoveListUseCase,
+    private val cacheMoveListUseCase: CacheMoveListUseCase,
+    private val clearCacheUseCase: ClearCacheUseCase,
+    private val fetchMoveListUseCase: FetchMoveListUseCase,
+
+    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
+    private val fetchMoveUseCase: FetchMoveUseCase,
 ): WikiClient {
     private val gameTables: QueryTable = DustLoopTables.getTable(gameId)
         ?: error("$gameId not supported. Supported: ${DustLoopFeatureInfo.featureInfo.supportedGameSet}")
@@ -63,36 +77,58 @@ class DustLoopWikiClient(
             .onError { Napier.e(tag = TAG) { "fetchCharacter: $it" } }
     }
 
-    override suspend fun downloadMoveList(charName: String): Result<List<Move>, WikiError> {
-        TODO("Not yet implemented")
+    override suspend fun downloadMoveList(
+        charName: String
+    ): Result<List<Move>, WikiError> {
+        return downloadMoveListUseCase.invoke(gameTables, charName)
+            .onSuccess { moveList ->
+                Napier.i(tag = TAG) {
+                    "${charName}: ${moveList.size} moves downloaded"
+                }
+            }
+            .onError {
+                Napier.e(tag = TAG) { "downloadMoveList($charName): $charName" }
+            }
     }
 
     override suspend fun cacheMoveList(
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<WikiError> {
-        TODO("Not yet implemented")
+        return cacheMoveListUseCase.invoke(character, moveList)
+            .onError {
+                Napier.e(tag = TAG) { "cacheMoveList(${character.id}, ${moveList.size}): $it" }
+            }
+
     }
 
     override suspend fun fetchMoveList(
         charName: String
     ): Result<List<Move>, WikiError> {
-        TODO("Not yet implemented")
+        return fetchMoveListUseCase.invoke(charName)
+            .onError {
+                Napier.e(tag = TAG) { "fetchMoveList($charName): $it" }
+            }
     }
 
     override suspend fun fetchMove(
         charName: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
-        TODO("Not yet implemented")
+        return fetchMoveUseCase.invoke(charName, moveQuery)
+            .onError {
+                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+            }
     }
 
     override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
-        TODO("Not yet implemented")
+        return getLastCacheInsertInstantUseCase.invoke()
+            .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
     override suspend fun clearCache(): EmptyResult<WikiError> {
-        TODO("Not yet implemented")
+        return clearCacheUseCase.invoke()
+            .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
 

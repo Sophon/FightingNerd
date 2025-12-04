@@ -6,13 +6,14 @@ import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wikidustloop.BASE_URL
 import io.github.sophon.wikidustloop.LIMIT_CHARACTERS
+import io.github.sophon.wikidustloop.LIMIT_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 internal interface DustLoopDataSource {
     suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
-//    suspend fun downloadMoveList(table: String, charName: String): Result<, DataError.Remote>
+    suspend fun downloadMoveList(table: String, charName: String): Result<MoveListResponseDto, DataError.Remote>
     suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
 }
 
@@ -27,6 +28,22 @@ internal class DustLoopDataSourceImpl(
                 parameter("limit", LIMIT_CHARACTERS)
                 parameter("format", "json")
                 parameter("fields", getCharacterFields())
+            }
+        }
+    }
+
+    override suspend fun downloadMoveList(
+        table: String,
+        charName: String
+    ): Result<MoveListResponseDto, DataError.Remote> {
+        return safeCall {
+            httpClient.get(BASE_URL) {
+                parameter("action", "cargoquery")
+                parameter("tables", table)
+                parameter("limit", LIMIT_MOVES)
+                parameter("format", "json")
+                parameter("fields", getMoveFields())
+                parameter("where", "chara='$charName'")
             }
         }
     }
@@ -83,5 +100,37 @@ internal class DustLoopDataSourceImpl(
         )
 
         return allFields.joinToString(",")
+    }
+
+    private fun getMoveFields(): String {
+        return listOf(
+            "chara",
+            "name",
+            "input",
+            "damage",
+            "guard",
+            "startup",
+            "active",
+            "recovery",
+            "onBlock",
+            "onHit",
+            "level",
+            "counter",
+            "images",
+            "hitboxes",
+            "notes",
+            "type",
+            "riscGain",
+            "riscLoss",
+            "wallDamage",
+            "inputTension",
+            "chipRatio",
+            "OTGType",
+            "prorate",
+            "invuln",
+            "cancel",
+            "caption",
+            "hitboxCaption"
+        ).joinToString(",")
     }
 }

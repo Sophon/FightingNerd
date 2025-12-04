@@ -2,6 +2,7 @@ package io.github.sophon.wikidustloop
 
 internal const val BASE_URL = "https://www.dustloop.com/wiki/api.php"
 internal const val LIMIT_CHARACTERS = 50
+internal const val LIMIT_MOVES = 500
 
 internal const val WIKI_BASE_URL = "https://www.dustloop.com/w"
 

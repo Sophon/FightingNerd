@@ -16,13 +16,13 @@ internal class ImageUrlResolver(
         return source.getImageUrl(imageFileNames)
     }
 
-//    suspend fun resolveHitboxUrl(
-//        dto: MoveListResponseDto,
-//    ): Result<Map<String, String>, DataError.Remote> {
-//        val imageFileNames = dto.cargoQuery.flatMap {
-//            listOfNotNull(it.title.hitboxes)
-//        }.distinct()
-//
-//        return source.getImageUrl(imageFileNames)
-//    }
+    suspend fun resolveHitboxUrl(
+        dto: MoveListResponseDto,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val imageFileNames = dto.cargoQuery.flatMap {
+            listOfNotNull(it.title.hitboxes)
+        }.distinct()
+
+        return source.getImageUrl(imageFileNames)
+    }
 }

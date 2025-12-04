@@ -1,16 +1,24 @@
 package io.github.sophon.wikidustloop
 
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.asEmptyDataResult
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
+import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
+import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikidustloop.data.DustLoopDataSource
 import io.github.sophon.wikidustloop.data.DustLoopDataSourceImpl
 import io.github.sophon.wikidustloop.data.ImageUrlResolver
@@ -31,6 +39,7 @@ fun dustLoopModule() = module {
     factory<WikiClient>(named(WikiClientFeature.DustLoop.id)) { params ->
         val gameId: String = params.get()
         val characterListDB: CharacterListDB = params.get()
+        val moveListDB: MoveListDB = params.get()
         val source: DustLoopDataSource = get()
         val imageUrlResolver: ImageUrlResolver = get()
 
@@ -63,7 +72,38 @@ fun dustLoopModule() = module {
             },
             fetchCharacterUseCase = FetchCharacterUseCase { charName ->
                 characterListDB.fetchCharacterDataFor(charName)
-            }
+            },
+
+            downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, charName ->
+                source.downloadMoveList(queryTable.moves, charName)
+                    .flatMap { dto ->
+                        imageUrlResolver.resolveHitboxUrl(dto)
+                            .map { dto.toDomain(it) }
+                    }
+            },
+            cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
+                moveListDB.insertMoveList(character, moveList)
+                    .asEmptyDataResult()
+            },
+            fetchMoveUseCase = FetchMoveUseCase { charName, moveQuery ->
+                moveListDB.fetchMoveDataFor(charName, moveQuery)
+            },
+            fetchMoveListUseCase = FetchMoveListUseCase { charName ->
+                moveListDB.fetchMoveListFor(charName)
+            },
+
+            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase {
+                moveListDB.getLastInsertTimeStamp()
+            },
+            clearCacheUseCase = ClearCacheUseCase {
+                val charResult = characterListDB.wipe()
+                val moveResult = moveListDB.wipe()
+                when {
+                    charResult is Result.Error -> charResult
+                    moveResult is Result.Error -> moveResult
+                    else -> Result.Success(Unit)
+                }
+            },
         )
     }
 }
