@@ -9,6 +9,7 @@ import io.github.sophon.dreamcancel.dreamCancelModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.wikiSuperCombo.superComboModule
+import io.github.sophon.wikidustloop.dustLoopModule
 import io.github.sophon.wikiwavu.wavuModule
 import io.github.sophon.xko.xkoModule
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +36,7 @@ fun initKoin(
         superComboModule(),
         xkoModule(),
         dreamCancelModule(),
+        dustLoopModule(),
 
         featureRegistryModule,
     )
