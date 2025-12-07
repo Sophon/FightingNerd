@@ -3,6 +3,7 @@
 ## [v1.1.0] - TODO
 - core v1.0.6
   - better logging on Kord disconnects
+  - remove duplicates when fetching moves with properties
 - Dustloop v1.0.0
   - Guilty Gear Strive support
 - Infil glossary v1.0.1
