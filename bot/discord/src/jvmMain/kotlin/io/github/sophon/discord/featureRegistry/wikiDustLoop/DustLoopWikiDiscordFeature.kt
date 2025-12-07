@@ -10,6 +10,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
+import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
@@ -143,12 +144,66 @@ internal class DustLoopWikiDiscordFeature(
         character: Character,
     ): EmbedBuilder.() -> Unit = {
         title = character.displayName
-        url = character.wikiUrl //TODO: should link to the char page
+        url = character.wikiUrl
         color = Color(RED)
 
         character.images?.iconUrl?.let { iconUrl ->
             thumbnail { url = iconUrl }
         }
+
+        val properties = character.airDashProperties
+
+        mandatoryField(
+            name = "⭐️ CORE",
+            value = buildList {
+                add("* **Defense →** ${properties?.defense}")
+                add("* **Guts →** ${properties?.guts}")
+                add("* **Guard balance →** ${properties?.guardBalance}")
+                add("* **Boost ATT | DEF** → ${properties?.boostAttack} | ${properties?.boostDefense}")
+            }.joinToString("\n"),
+            inline = false,
+        )
+
+        mandatoryField(
+            name = "👟 MOVEMENT",
+            value = buildList {
+                properties?.umo?.let { add("* **Unique movement →** $it") }
+                add("* **Backdash →** ${properties?.bwdDash}")
+                add("   * **Distance →** ${properties?.bwdDashDist}")
+                add("   * **Duration →** ${properties?.bwdDashDuration}")
+                add("   * **Invulnerability →** ${properties?.bwdDashInvulnerability}")
+                properties?.fwdDash?.let { add("* **Forward dash →** $it") }
+                add("* **Initial speed →** ${properties?.dashInitialSpd}")
+                properties?.dashAcceleration?.let { add("* **Acceleration →** $it") }
+                properties?.movementTension?.let { add("* **Tension →** $it") }
+                properties?.dashFriction?.let { add("* **Friction →** $it") }
+                add("* **Walk →** ← ${properties?.walkSpd} | ${properties?.bwdWalkSpd} →")
+            }.joinToString("\n"),
+            inline = false,
+        )
+
+        mandatoryField(
+            name = "🦘 JUMP",
+            value = buildList {
+                add("* **Prejump →** ${properties?.prejump}")
+                add("* **Height (high) →** ${properties?.jumpHeight} (${properties?.highJumpHeight})")
+                add("* **Duration (high) →** ${properties?.jumpDuration} (${properties?.highJumpDuration})")
+                add("* **Gravity (high) →** ${properties?.jumpGravity} (${properties?.highJumpGravity})")
+                properties?.jumpTension?.let { add("* **Tension →** $it") }
+            }.joinToString("\n"),
+            inline = false,
+        )
+
+        mandatoryField(
+            name = "💨 AIRDASH",
+            value = buildList {
+                add("* **IAD →** ${properties?.earliestIAD}")
+                add("* **Distance | Duration →**: ${properties?.adDist} | ${properties?.adDuration}")
+                add("* **B Distance | Duration →** ${properties?.abdDist} | ${properties?.abdDuration}")
+                properties?.airDashTension?.let { add("* **Tension →** $it") }
+            }.joinToString("\n"),
+            inline = false,
+        )
 
         footer {
             text = featureInfo.name
