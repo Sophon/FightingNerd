@@ -1,0 +1,45 @@
+package io.github.sophon.wikidustloop.data
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+internal data class MoveListResponseDto(
+    @SerialName("cargoquery") val cargoQuery: List<MoveQueryItem>,
+)
+
+@Serializable
+internal data class MoveQueryItem(
+    val title: MoveDto,
+)
+
+@Serializable
+internal data class MoveDto(
+    val chara: String? = null,
+    val name: String? = null,
+    val input: String? = null,
+    val damage: String? = null,
+    val guard: String? = null,
+    val startup: String? = null,
+    val active: String? = null,
+    val recovery: String? = null,
+    val onBlock: String? = null,
+    val onHit: String? = null,
+    val level: String? = null,
+    val counter: String? = null,
+    val images: String? = null,
+    val hitboxes: String? = null,
+    val notes: String? = null,
+    val type: String? = null,
+    val riscGain: String? = null,
+    val riscLoss: String? = null,
+    val wallDamage: String? = null,
+    val inputTension: String? = null,
+    val chipRatio: String? = null,
+    val OTGType: String? = null,
+    val prorate: String? = null,
+    val invuln: String? = null,
+    val cancel: String? = null,
+    val caption: String? = null,
+    val hitboxCaption: String? = null
+)

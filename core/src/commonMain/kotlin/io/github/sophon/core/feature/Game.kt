@@ -30,4 +30,9 @@ enum class Game(
         iconUrl = "https://i.imgur.com/ucbtSgx.png",
         wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves",
     ),
+    GGST(
+        id = "GGST",
+        iconUrl = "https://i.imgur.com/07yTLtj.png",
+        wikiUrl = "https://www.dustloop.com/w/GGST",
+    ),
 }

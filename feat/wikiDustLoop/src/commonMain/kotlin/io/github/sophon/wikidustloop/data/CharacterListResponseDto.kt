@@ -1,0 +1,78 @@
+package io.github.sophon.wikidustloop.data
+
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+internal data class CharacterListResponseDto(
+    @SerialName("cargoquery") val cargoQuery: List<CargoQueryItem>,
+)
+
+@Serializable
+internal data class CargoQueryItem(
+    val title: CharacterDto,
+)
+
+@Serializable
+internal data class CharacterDto(
+    val name: String? = null,
+    val portrait: String? = null,
+    val icon: String? = null,
+    @SerialName("nav image")
+    val navImage: String? = null,
+
+    val defense: String? = null,
+    val guts: String? = null,
+    val guardBalance: String? = null,
+    val prejump: String? = null,
+    val backdash: String? = null,
+    val backdashDuration: String? = null,
+    val backdashInvuln: String? = null,
+    val backdashAirborne: String? = null,
+    val backdashDistance: String? = null,
+    @SerialName("forwarddash")
+    val forwardDash: String? = null,
+    val umo: String? = null,
+    @SerialName("jump duration")
+    val jumpDuration: String? = null,
+    @SerialName("high jump duration")
+    val highJumpDuration: String? = null,
+    @SerialName("jump height")
+    val jumpHeight: String? = null,
+    @SerialName("high jump height")
+    val highJumpHeight: String? = null,
+    @SerialName("earliest iad")
+    val earliestIad: String? = null,
+    @SerialName("ad duration")
+    val adDuration: String? = null,
+    @SerialName("abd duration")
+    val abdDuration: String? = null,
+    @SerialName("ad distance")
+    val adDistance: String? = null,
+    @SerialName("abd distance")
+    val abdDistance: String? = null,
+    @SerialName("movement tension")
+    val movementTension: String? = null,
+    @SerialName("jump tension")
+    val jumpTension: String? = null,
+    @SerialName("airdash tension")
+    val airDashTension: String? = null,
+    @SerialName("walk speed")
+    val walkSpeed: String? = null,
+    @SerialName("back walk speed")
+    val backWalkSpeed: String? = null,
+    @SerialName("dash initial speed")
+    val dashInitialSpeed: String? = null,
+    @SerialName("dash acceleration")
+    val dashAcceleration: String? = null,
+    @SerialName("dash friction")
+    val dashFriction: String? = null,
+    @SerialName("jump gravity")
+    val jumpGravity: String? = null,
+    @SerialName("high jump gravity")
+    val highJumpGravity: String? = null,
+    @SerialName("boost attack")
+    val boostAttack: String? = null,
+    @SerialName("boost defense")
+    val boostDefense: String? = null,
+)

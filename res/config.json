@@ -33,6 +33,13 @@
         "The_King_of_Fighters_XV",
         "Fatal_Fury:_City_of_the_Wolves"
       ]
+    },
+    {
+      "name": "DustLoop Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "GGST"
+      ]
     }
   ]
 }

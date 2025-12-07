@@ -12,6 +12,7 @@ data class Character(
     val images: Images? = null,
 
     val sf6Properties: SF6Properties? = null,
+    val airDashProperties: AirDashProperties? = null,
 ) {
     @Serializable
     data class Images(
@@ -39,5 +40,41 @@ data class Character(
         val jumpApex: String,
         val fwdJumpDist: String,
         val bwdJumpDist: String,
+    )
+
+    @Serializable
+    data class AirDashProperties(
+        val defense: String?,
+        val guts: String?,
+        val guardBalance: String?,
+        val prejump: String?,
+        val bwdDash: String?,
+        val bwdDashDuration: String?,
+        val bwdDashInvulnerability: String?,
+        val bwdDashAirborne: String?,
+        val bwdDashDist: String?,
+        val fwdDash: String?,
+        val umo: String?,
+        val jumpDuration: String?,
+        val highJumpDuration: String?,
+        val jumpHeight: String?,
+        val highJumpHeight: String?,
+        val earliestIAD: String?,
+        val adDuration: String?,
+        val abdDuration: String?,
+        val adDist: String?,
+        val abdDist: String?,
+        val movementTension: String?,
+        val jumpTension: String?,
+        val airDashTension: String?,
+        val walkSpd: String?,
+        val bwdWalkSpd: String?,
+        val dashInitialSpd: String?,
+        val dashAcceleration: String?,
+        val dashFriction: String?,
+        val jumpGravity: String?,
+        val highJumpGravity: String?,
+        val boostAttack: String?,
+        val boostDefense: String?,
     )
 }
