@@ -1,5 +1,14 @@
 # BOT CHANGELOG
 
+## [v1.1.0] - 2025-12-08
+- core v1.0.6
+  - better logging on Kord disconnects
+  - remove duplicates when fetching moves with properties
+- Dustloop v1.0.0
+  - Guilty Gear Strive support
+- Infil glossary v1.0.1
+  - fixed misformatted links
+
 ## [v1.0.10] - 2025-12-02
 - core v1.0.5
   - better logging

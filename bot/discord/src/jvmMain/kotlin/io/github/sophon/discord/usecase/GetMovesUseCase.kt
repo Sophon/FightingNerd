@@ -17,7 +17,9 @@ internal class GetMovesUseCase {
         return wiki.fetchMoveList(charName)
             .mapError { it.toDomainError() }
             .map { moveList ->
-                moveList.filter(predicate)
+                moveList
+                    .filter(predicate)
+                    .distinctBy { it.input }
             }
     }
 }

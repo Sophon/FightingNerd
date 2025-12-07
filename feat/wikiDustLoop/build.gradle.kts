@@ -27,7 +27,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "GlossaryInfil"
+            baseName = "dustloop"
             isStatic = true
         }
     }
@@ -38,6 +38,7 @@ kotlin {
 
             implementation(libs.bundles.ktor)
             implementation(libs.napier)
+            implementation(libs.kotlin.date.time)
 
             api(libs.koin.core)
         }
@@ -47,14 +48,6 @@ kotlin {
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.test.turbine)
-        }
-
-        jvmTest.dependencies {
-            implementation(libs.junit)
-            implementation(libs.kotlin.testJunit)
-        }
-
-        androidUnitTest.dependencies {
             implementation(libs.junit)
             implementation(libs.kotlin.testJunit)
         }
@@ -62,7 +55,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.sophon.glossaryinfil"
+    namespace = "io.github.sophon.dustloop"
     compileSdk = 36
 
     defaultConfig {
@@ -75,10 +68,9 @@ android {
     }
 }
 
-val featureVersion = "1.0.1"
-
+val featureVersion = "1.0.0"
 buildkonfig {
-    packageName = "io.github.sophon.glossaryinfil"
+    packageName = "io.github.sophon.dustloop"
 
     defaultConfigs {
         buildConfigField(STRING, "VERSION", featureVersion)

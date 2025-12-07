@@ -25,6 +25,7 @@ kotlin {
             implementation(project(":feat:wikiSupercombo"))
             implementation(project(":feat:xko"))
             implementation(project(":feat:wikiDreamCancel"))
+            implementation(project(":feat:wikiDustLoop"))
 
             implementation(libs.napier)
             implementation(libs.kord)
@@ -72,7 +73,7 @@ tasks.matching { it.name == "jvmRun" }.configureEach {
     (this as JavaExec).workingDir = rootProject.projectDir
 }
 
-val featureVersion = "1.0.5"
+val featureVersion = "1.0.6"
 buildkonfig {
     packageName = "io.github.sophon.discord"
 

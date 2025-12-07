@@ -29,9 +29,10 @@ class InMemoryMoveListDB: MoveListDB {
         if (characterId == null)
             return Result.Error(WikiError.UnknownCharacter(charName))
 
-        return database[characterId]
-            ?.let { Result.Success(it.values.toList()) }
-            ?: Result.Error(WikiError.UnknownCharacter(charName))
+        val moveList = database[characterId]
+            ?: return Result.Error(WikiError.UnknownCharacter(charName))
+
+        return Result.Success(moveList.values.toList())
     }
 
     override suspend fun fetchMoveDataFor(

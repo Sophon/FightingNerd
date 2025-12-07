@@ -3,7 +3,7 @@ package io.github.sophon.glossaryinfil.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GlossaryItemDto(
+internal data class GlossaryItemDto(
     val term: String,
     val def: String,
     val altterm: List<String>? = null,

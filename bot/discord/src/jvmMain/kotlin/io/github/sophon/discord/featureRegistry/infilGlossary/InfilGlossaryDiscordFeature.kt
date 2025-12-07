@@ -17,8 +17,6 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlos
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
-import io.github.sophon.discord.util.replaceItalic
-import io.github.sophon.discord.util.replaceUnderline
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
 import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 
@@ -68,20 +66,18 @@ internal class InfilGlossaryDiscordFeature(
     private fun createEmbed(
         item: GlossaryItem
     ): EmbedBuilder.() -> Unit = {
-        val formattedItem = item.format()
-        title = formattedItem.term
+        title = item.term
         url = urlProvider.termUrl(item)
         color = Color(BROWN)
 
         mandatoryField(
             name = "",
-            value = formattedItem.definition
-                .replaceUnderline()
+            value = item.definition
                 .truncate(MAX_LENGTH_EMBED),
             inline = false
         )
 
-        val japaneseValueString = formattedItem.jpTranslation
+        val japaneseValueString = item.jpTranslation
             .joinToString(separator = "") { "* $it\n" }
         mandatoryField(name = "🇯🇵", value = japaneseValueString, inline = false)
 
@@ -91,13 +87,6 @@ internal class InfilGlossaryDiscordFeature(
             text = featureInfo.name
             icon = featureInfo.iconUrl
         }
-    }
-
-    private fun GlossaryItem.format(): GlossaryItem {
-        return this.copy(
-            definition = this.definition.replaceUnderline(),
-            jpTranslation = this.jpTranslation.map { it.replaceItalic() }
-        )
     }
 
 

@@ -7,4 +7,5 @@ enum class WikiClientFeature(
     SuperCombo(id = "supercombo"),
     Wavu(id = "wavu"),
     Xko(id = "xko"),
+    DustLoop("dustloop"),
 }
