@@ -75,7 +75,7 @@ android {
     }
 }
 
-val featureVersion = "1.0.0"
+val featureVersion = "1.0.1"
 
 buildkonfig {
     packageName = "io.github.sophon.glossaryinfil"
