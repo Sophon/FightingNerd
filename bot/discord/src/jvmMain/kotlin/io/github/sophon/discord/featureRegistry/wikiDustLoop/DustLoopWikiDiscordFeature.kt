@@ -10,10 +10,12 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
+import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.featureRegistry.BotOutput
@@ -24,6 +26,8 @@ import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.optionalField
 import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
@@ -171,11 +175,40 @@ internal class DustLoopWikiDiscordFeature(
             image = it
         }
 
+        mandatoryField(name = "Startup", value = move.startup)
+        mandatoryField(name = "Hit", value = move.onHit)
+        mandatoryField(name = "Block", value = move.onBlock)
+        mandatoryField(name = "Active", value = move.active)
+        mandatoryField(name = "Guard", value = move.guard)
+        mandatoryField(name = "Recovery", value = move.recovery)
+
+        optionalField(name = "Damage", value = move.damage)
+        optionalField(name = "Invulnerability", value = move.invulnerability)
+        optionalField(name = "Counter", value = move.onCH)
+
+        optionalField(name = "Level", value = move.airDashProperties?.level)
+        optionalField(name = "Risc gain", value = move.airDashProperties?.riscGain)
+        optionalField(name = "Risc loss", value = move.airDashProperties?.riscLoss)
+        optionalField(name = "Cancel", value = move.airDashProperties?.cancel)
+        optionalField(name = "Prorate", value = move.airDashProperties?.prorate)
+        optionalField(name = "Input tension", value = move.airDashProperties?.inputTension)
+        optionalField(name = "Chip", value = move.airDashProperties?.chipRatio)
+
+        createNotes(move)
+
         footer {
             text = featureInfo.name
             icon = featureInfo.iconUrl
         }
     }
+
+    private fun EmbedBuilder.createNotes(move: Move) = optionalField(
+        name = "📝 NOTES",
+        value = move.notes
+            .joinToString(separator = "") { note -> "* $note\n" }
+            .truncate(MAX_LENGTH_EMBED),
+        inline = false,
+    )
 
 
     private companion object {
