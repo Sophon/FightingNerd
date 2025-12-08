@@ -76,6 +76,10 @@ internal class DiscordBotImpl(
             // we need to specify this to receive the content of messages
             @OptIn(PrivilegedIntent::class)
             intents += Intent.MessageContent
+
+            presence {
+                playing("/FD | /HELP | /DONATE")
+            }
         }
     }
 
