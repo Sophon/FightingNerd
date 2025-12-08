@@ -261,4 +261,68 @@ class CharacterMapperTest {
         assertThat(result).isEqualTo(expected)
     }
     //endregion
+
+    //region toClickable
+    @Test
+    fun `toClickable handles no link`() {
+        //given
+        val string = "Step-Dash (15F)"
+        val expected = listOf("Step-Dash (15F)")
+
+        //when
+        val result = string.toClickable()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toClickable handles link`() {
+        //given
+        val string = "[[GGST/Baiken#Kabari|[H] Kabari follow-up]]"
+        val expected = listOf(
+            "[[H] Kabari follow-up](https://www.dustloop.com/w/GGST/Baiken#Kabari)",
+        )
+
+        //when
+        val result = string.toClickable()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toClickable handles multiple links`() {
+        //given
+        val string = "Step-Dash (15F), [[GGST/Johnny#Mist Finer Stance|Mist Finer Dash]], [[GGST/Johnny#Vault|Vault]]"
+        val expected = listOf(
+            "Step-Dash (15F)",
+            "[Mist Finer Dash](https://www.dustloop.com/w/GGST/Johnny#Mist_Finer_Stance)",
+            "[Vault](https://www.dustloop.com/w/GGST/Johnny#Vault)",
+        )
+
+        //when
+        val result = string.toClickable()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toClickable ignores blank or null`() {
+        //given
+        val string1: String? = null
+        val string2 = ""
+        val expected1 = listOf<String>()
+        val expected2 = listOf<String>()
+
+        //when
+        val result1 = string1.toClickable()
+        val result2 = string2.toClickable()
+
+        //then
+        assertThat(result1).isEqualTo(expected1)
+        assertThat(result2).isEqualTo(expected2)
+    }
+    //endregion
 }

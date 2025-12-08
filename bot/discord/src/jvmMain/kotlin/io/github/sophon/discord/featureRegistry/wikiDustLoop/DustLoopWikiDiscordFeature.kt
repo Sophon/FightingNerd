@@ -171,7 +171,14 @@ internal class DustLoopWikiDiscordFeature(
         mandatoryField(
             name = "👟 MOVEMENT",
             value = buildList {
-                properties?.umo?.let { add("* **Unique movement →** $it") }
+                properties?.umo?.takeIf { it.isNotEmpty() }?.let { umo ->
+                    if (umo.size == 1) {
+                        add("* **Unique movement →** ${umo.first()}")
+                    } else {
+                        add("* **Unique movement →** ")
+                        umo.forEach { add("   * $it") }
+                    }
+                }
                 add("* **Backdash →** ${properties?.bwdDash}")
                 add("   * **Distance →** ${properties?.bwdDashDist}")
                 add("   * **Duration →** ${properties?.bwdDashDuration}")
