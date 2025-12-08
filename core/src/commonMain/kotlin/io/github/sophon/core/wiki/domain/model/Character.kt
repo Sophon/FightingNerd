@@ -54,7 +54,7 @@ data class Character(
         val bwdDashAirborne: String?,
         val bwdDashDist: String?,
         val fwdDash: String?,
-        val umo: String?,
+        val umo: List<String> = listOf(),
         val jumpDuration: String?,
         val highJumpDuration: String?,
         val jumpHeight: String?,
