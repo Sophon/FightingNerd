@@ -135,13 +135,14 @@ internal class DustLoopWikiDiscordFeature(
         query: String
     ): Result<BotOutput, BotError> {
         return getCharacterUseCase.invoke(wiki = wiki, charName = query)
-            .map { (character, _) ->
-                BotOutput(embedBuilder = createCharacterEmbed(character))
+            .map { (character, fastestMoveList) ->
+                BotOutput(embedBuilder = createCharacterEmbed(character, fastestMoveList))
             }
     }
 
     private fun createCharacterEmbed(
         character: Character,
+        fastestMoveList: List<Move>,
     ): EmbedBuilder.() -> Unit = {
         title = character.displayName
         url = character.wikiUrl
@@ -152,10 +153,13 @@ internal class DustLoopWikiDiscordFeature(
         }
 
         val properties = character.airDashProperties
+        val moves = fastestMoveList.joinToString(", ") { it.input }
+        val startup = fastestMoveList.first().startup.orDash()
 
         mandatoryField(
             name = "⭐️ CORE",
             value = buildList {
+                add("* **Fastest normal →** $moves ($startup)")
                 add("* **Defense →** ${properties?.defense}")
                 add("* **Guts →** ${properties?.guts}")
                 add("* **Guard balance →** ${properties?.guardBalance}")

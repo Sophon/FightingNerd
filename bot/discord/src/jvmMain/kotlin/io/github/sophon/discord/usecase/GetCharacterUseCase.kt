@@ -35,6 +35,6 @@ internal class GetCharacterUseCase {
 
     private fun Move.isNormal(): Boolean {
         return input.first() in setOf('5', '2')
-                && input.getOrNull(1)?.isDigit() == true
+                && input.getOrNull(1)?.isDigit() == false
     }
 }
