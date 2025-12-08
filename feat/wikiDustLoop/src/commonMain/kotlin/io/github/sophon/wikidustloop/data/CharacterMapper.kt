@@ -43,7 +43,7 @@ internal fun CharacterListResponseDto.toDomain(
                     bwdDashAirborne = dto.backdashAirborne,
                     bwdDashDist = dto.backdashDistance,
                     fwdDash = dto.forwardDash,
-                    umo = dto.umo,
+                    umo = dto.umo.toClickable(),
                     jumpDuration = dto.jumpDuration,
                     highJumpDuration = dto.highJumpDuration,
                     jumpHeight = dto.jumpHeight,
@@ -104,7 +104,7 @@ internal fun String?.formWikiUrl(gameId: String): String {
     return "$WIKI_BASE_URL/$gameId/$formatted"
 }
 
-fun String?.createAliases(): List<String> {
+internal fun String?.createAliases(): List<String> {
     return buildList {
         val original = this@createAliases.orEmpty()
         if (original.contains(Regex("-\\d+"))) {
@@ -129,5 +129,33 @@ fun String?.createAliases(): List<String> {
                     }
                 }
             }
+    }
+}
+
+/**
+ * [[GGST/Baiken#Kabari|[H] Kabari follow-up]] -> [[H] Kabari follow-up](https://www.dustloop.com/w/GGST/Baiken#Kabari)
+ * Step-Dash (15F), [[GGST/Johnny#Mist Finer Stance|Mist Finer Dash]], [[GGST/Johnny#Vault|Vault]] ->
+ *  * Step-Dash (15F)
+ *  * [Mist Finer Dash](https://www.dustloop.com/w/GGST/Johnny#Mist_Finer_Stance)
+ *  * [Vault](https://www.dustloop.com/w/GGST/Johnny#Vault)
+ */
+internal fun String?.toClickable(): List<String> {
+    if (isNullOrBlank()) return listOf()
+
+    return orEmpty().split(",").map {
+        val option = it.trim()
+        if (option.startsWith("[[") && option.endsWith("]]") && option.contains("|")) {
+            val fields = option
+                .substringAfter("[[")
+                .substringBefore("]]")
+                .split("|")
+            val title = fields.lastOrNull()?.trim() ?: ""
+            val partialUrl = (fields.firstOrNull() ?: "")
+                .replace(" ", "_")
+                .trim()
+            "[$title](${WIKI_BASE_URL}/$partialUrl)"
+        } else {
+            option
+        }
     }
 }
