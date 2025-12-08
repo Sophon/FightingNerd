@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v1.1.1] - TODO
+- `charggst` also displays fastest normal
+
 ## [v1.1.0] - 2025-12-08
 - core v1.0.6
   - better logging on Kord disconnects
