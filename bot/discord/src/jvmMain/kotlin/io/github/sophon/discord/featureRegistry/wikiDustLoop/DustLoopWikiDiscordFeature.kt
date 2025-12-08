@@ -198,7 +198,7 @@ internal class DustLoopWikiDiscordFeature(
             name = "💨 AIRDASH",
             value = buildList {
                 add("* **IAD →** ${properties?.earliestIAD}")
-                add("* **Distance | Duration →**: ${properties?.adDist} | ${properties?.adDuration}")
+                add("* **Distance | Duration →** ${properties?.adDist} | ${properties?.adDuration}")
                 add("* **B Distance | Duration →** ${properties?.abdDist} | ${properties?.abdDuration}")
                 properties?.airDashTension?.let { add("* **Tension →** $it") }
             }.joinToString("\n"),
