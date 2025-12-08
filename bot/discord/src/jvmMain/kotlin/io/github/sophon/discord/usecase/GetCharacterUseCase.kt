@@ -21,9 +21,7 @@ internal class GetCharacterUseCase {
                 wiki.fetchMoveList(character.id)
                     .mapError { it.toDomainError() }
                     .map { moveList ->
-                        val normals = moveList.filter { move ->
-                            move.input.length == 3 && move.input.first() in setOf('5', '2')
-                        }
+                        val normals = moveList.filter { it.isNormal() }
                         val fastest = normals
                             .groupBy { it.startup?.toIntOrNull() }
                             .minByOrNull { it.key ?: Int.MAX_VALUE }
@@ -33,5 +31,10 @@ internal class GetCharacterUseCase {
                         character to fastest
                     }
             }
+    }
+
+    private fun Move.isNormal(): Boolean {
+        return input.first() in setOf('5', '2')
+                && input.getOrNull(1)?.isDigit() == true
     }
 }
