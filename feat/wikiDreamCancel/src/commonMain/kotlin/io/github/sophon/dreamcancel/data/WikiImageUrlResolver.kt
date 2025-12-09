@@ -9,11 +9,11 @@ internal class WikiImageUrlResolver (
     suspend fun resolveHitboxUrl(
         dto: MoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
-        val imageFileNames = dto.cargoQuery.mapNotNull {
-            val files = it.title.hitboxes
-                ?.split(", ")
-                .orEmpty()
-            files.getOrNull(files.size / 2)
+        val imageFileNames = dto.cargoQuery.flatMap { moveDto ->
+            moveDto.title.hitboxes
+                ?.split(",")
+                ?.map { it.trim() }
+                ?: emptyList()
         }.distinct()
 
         return source.getImageUrl(imageFileNames)
