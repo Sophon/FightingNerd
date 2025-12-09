@@ -26,6 +26,7 @@ internal fun Move.toEntity(): MoveEntity {
         urlsChracterWiki = urls.characterWiki,
         urlsVideoId = urls.videoId,
         urlsHitboxImage = urls.hitboxImageList.joinToString(";"),
+        urlsWikiUrl = urls.wikiUrl,
 
         t8isHeat = t8Properties?.isHeat,
         t8isPowerCrush = t8Properties?.isPowerCrush,
@@ -89,6 +90,7 @@ internal fun MoveEntity.toDomain(): Move {
             characterWiki = urlsChracterWiki,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImage?.split(";")?.filter { it.isNotBlank() }.orEmpty(),
+            wikiUrl = urlsWikiUrl,
         ),
 
         t8Properties = if (t8isHeat != null) {

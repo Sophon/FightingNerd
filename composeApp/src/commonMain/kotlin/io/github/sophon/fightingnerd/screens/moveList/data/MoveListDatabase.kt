@@ -12,7 +12,7 @@ import kotlinx.coroutines.IO
     entities = [
         MoveEntity::class,
     ],
-    version = 6,
+    version = 7,
     exportSchema = true,
 )
 @ConstructedBy(MoveListDatabaseFactory::class)
