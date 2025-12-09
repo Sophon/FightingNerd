@@ -55,7 +55,7 @@ fun String.cleanHtml(): String {
 // <br> & <br/>
 internal fun String.removeHtmlTags(): String {
     return this
-        .replace(Regex("<br\\s*/?>"), "")
+        .replace(Regex("<br\\s*/?>"), "\n")
         .replace(Regex("<[^>]*>"), "")
 }
 
