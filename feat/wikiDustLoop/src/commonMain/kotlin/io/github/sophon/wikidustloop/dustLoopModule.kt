@@ -78,7 +78,7 @@ fun dustLoopModule() = module {
                 source.downloadMoveList(queryTable.moves, charName)
                     .flatMap { dto ->
                         imageUrlResolver.resolveHitboxUrl(dto)
-                            .map { dto.toDomain(it) }
+                            .map { dto.toDomain(gameId, it) }
                     }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
