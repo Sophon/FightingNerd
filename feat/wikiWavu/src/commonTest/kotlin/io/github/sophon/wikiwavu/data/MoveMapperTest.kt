@@ -129,7 +129,7 @@ class MoveMapperTest {
                 "Recovers 2f faster on hit or block (t27 r17)"
             ),
             aliases = emptyList(),
-            urls = Move.Urls(videoId = null),
+            urls = Move.Urls(videoId = null, wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-1"),
             t8Properties = Move.T8Properties(
                 isHeat = false,
                 isPowerCrush = false,
@@ -218,7 +218,7 @@ class MoveMapperTest {
                 "Opponent recovers in FDFA"
             ),
             aliases = emptyList(),
-            urls = Move.Urls(videoId = null),
+            urls = Move.Urls(videoId = null, wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f+2,1"),
             t8Properties = Move.T8Properties(
                 isHeat = true,
                 isPowerCrush = false,
@@ -282,7 +282,10 @@ class MoveMapperTest {
                 "js14~34"
             ),
             aliases = emptyList(),
-            urls = Move.Urls(videoId = "https://wavu.wiki/t/Special:Redirect/file/File%3At8-p2-armor_king-bad.db%2B1%2B2.mp4"),
+            urls = Move.Urls(
+                videoId = "https://wavu.wiki/t/Special:Redirect/file/File%3At8-p2-armor_king-bad.db%2B1%2B2.mp4",
+                wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-BAD.db+1+2",
+            ),
             t8Properties = Move.T8Properties(
                 isHeat = false,
                 isPowerCrush = false,
@@ -350,7 +353,10 @@ class MoveMapperTest {
                 "Partially restores remaining Heat Time"
             ),
             aliases = listOf("shining wizard"),
-            urls = Move.Urls(videoId = null),
+            urls = Move.Urls(
+                videoId = null,
+                wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f,f,F+2+4"
+            ),
             t8Properties = Move.T8Properties(
                 isHeat = false,
                 isPowerCrush = false,
@@ -365,6 +371,22 @@ class MoveMapperTest {
         // then
         assertThat(result).hasSize(1)
         assertThat(result[0]).isEqualTo(expectedMove)
+    }
+    //endregion
+
+    //region formUrl
+    @Test
+    fun `formUrl handles basic url`() {
+        //given
+        val charName = "Asuka"
+        val id = "Asuka-3,1"
+        val expected = "https://wavu.wiki/t/Asuka_movelist#Asuka-3,1"
+
+        //when
+        val result = formMoveWikiUrl(charName, id)
+
+        //then
+        assertThat(result).isEqualTo(expected)
     }
     //endregion
 }
