@@ -9,17 +9,27 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
+import io.github.sophon.discord.featureRegistry.BotOutput
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 internal suspend fun MessageCreateEvent.createEmbedMessage(
-    embedBuilder: EmbedBuilder.() -> Unit
+    embedBuilder: EmbedBuilder.() -> Unit,
+    imageList: BotOutput.Images?,
 ): Message {
     return message.channel.createMessage {
         messageReference = message.id
         allowedMentions { repliedUser = false }
         embed(embedBuilder)
+
+        imageList?.urls?.forEach { url ->
+            embed {
+                title = imageList.title
+                this.url = imageList.titleUrl
+                image = url
+            }
+        }
     }
 }
 
