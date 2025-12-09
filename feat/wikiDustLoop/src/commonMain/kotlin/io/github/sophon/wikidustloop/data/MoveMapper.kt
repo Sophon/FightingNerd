@@ -20,15 +20,15 @@ internal fun MoveListResponseDto.toDomain(
             input = dto.input
                 .orDash()
                 .lowercase(),
-            damage = dto.damage?.decodeHtmlEntities(),
-            startup = dto.startup?.decodeHtmlEntities(),
-            onBlock = dto.onBlock?.decodeHtmlEntities(),
-            onHit = dto.onHit?.decodeHtmlEntities(),
-            onCH = dto.counter?.decodeHtmlEntities(),
-            active = dto.active?.decodeHtmlEntities(),
-            cancel = dto.cancel?.decodeHtmlEntities(),
-            recovery = dto.recovery?.decodeHtmlEntities(),
-            guard = dto.level?.decodeHtmlEntities(),
+            damage = dto.damage?.cleanHtml(),
+            startup = dto.startup?.cleanHtml(),
+            onBlock = dto.onBlock?.cleanHtml(),
+            onHit = dto.onHit?.cleanHtml(),
+            onCH = dto.counter?.cleanHtml(),
+            active = dto.active?.cleanHtml(),
+            cancel = dto.cancel?.cleanHtml(),
+            recovery = dto.recovery?.cleanHtml(),
+            guard = dto.level?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
 
             notes = dto.notes.formNotes(),
@@ -75,7 +75,7 @@ internal fun String?.formMoveId(charName: String?): String {
 
 internal fun String?.formNotes(): List<String> {
     return this
-        ?.decodeHtmlEntities()
+        ?.cleanHtml()
         ?.split(";")
         ?.map { it.trim() }
         ?.filter { it.isNotBlank() }
