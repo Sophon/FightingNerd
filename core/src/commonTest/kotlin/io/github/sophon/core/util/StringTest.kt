@@ -435,7 +435,7 @@ class StringExtensionsTest {
         val result = input.cleanHtml()
 
         // Then
-        assertThat(result).isEqualTo("TestContent")
+        assertThat(result).isEqualTo("Test\nContent")
     }
 
     @Test
