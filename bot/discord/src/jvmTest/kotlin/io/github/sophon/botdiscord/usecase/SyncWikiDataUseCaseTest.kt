@@ -60,7 +60,7 @@ class SyncWikiDataUseCaseTest {
         recovery = null,
         notes = emptyList(),
         aliases = emptyList(),
-        urls = Move.Urls(),
+        urls = Move.Urls(wikiUrl = "TODO"),
         t8Properties = Move.T8Properties(
             isHeat = false,
             isHoming = false,

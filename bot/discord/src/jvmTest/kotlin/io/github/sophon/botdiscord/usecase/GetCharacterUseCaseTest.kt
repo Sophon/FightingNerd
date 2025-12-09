@@ -171,7 +171,9 @@ class GetCharacterUseCaseTest {
             id = input,
             input = input,
             startup = startup,
-            urls = Move.Urls(),
+            urls = Move.Urls(
+                wikiUrl = "TODO"
+            ),
         )
     }
     //endregion
