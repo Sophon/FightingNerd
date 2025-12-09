@@ -5,10 +5,12 @@
 - core v1.1.1
   - sync with bot version
   - bot status
-- dustLoop v1.0.1
+- DustLoop v1.0.1
   - clickable Unique Movement Options
   - fixed note formatting
-- wavu v1.0.3
+- SuperCombo v1.0.2
+  - clickable moves
+- Wavu v1.0.3
   - clickable moves
 
 ## [v1.1.0] - 2025-12-08
