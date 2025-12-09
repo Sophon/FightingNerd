@@ -25,7 +25,7 @@ internal fun Move.toEntity(): MoveEntity {
 
         urlsChracterWiki = urls.characterWiki,
         urlsVideoId = urls.videoId,
-        urlsHitboxImage = urls.hitboxImage,
+        urlsHitboxImage = urls.hitboxImageList.joinToString(";"),
 
         t8isHeat = t8Properties?.isHeat,
         t8isPowerCrush = t8Properties?.isPowerCrush,
@@ -35,7 +35,7 @@ internal fun Move.toEntity(): MoveEntity {
         t8isHighCrush = t8Properties?.isHighCrush,
 
         sf6Type = sf6Properties?.type,
-        sf6Images = sf6Properties?.images?.joinToString(","),
+        sf6Images = sf6Properties?.images?.joinToString(";"),
         sf6Chip = sf6Properties?.chip,
         sf6DmgScaling = sf6Properties?.dmgScaling,
         sf6Total = sf6Properties?.total,
@@ -88,7 +88,7 @@ internal fun MoveEntity.toDomain(): Move {
         urls = Move.Urls(
             characterWiki = urlsChracterWiki,
             videoId = urlsVideoId,
-            hitboxImage = urlsHitboxImage,
+            hitboxImageList = urlsHitboxImage?.split(";")?.filter { it.isNotBlank() }.orEmpty(),
         ),
 
         t8Properties = if (t8isHeat != null) {

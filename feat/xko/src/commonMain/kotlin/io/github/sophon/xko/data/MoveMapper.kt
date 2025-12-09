@@ -34,7 +34,7 @@ private fun MoveDto.toMoveList(
         invulnerability = invuln?.ifEmpty { null },
 
         urls = Move.Urls(
-            hitboxImage = "$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX",
+            hitboxImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX"),
             characterWiki = charWikiUrl,
         ),
     )

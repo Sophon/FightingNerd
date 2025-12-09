@@ -32,11 +32,10 @@ internal fun MoveListResponseDto.toDomain(
             notes = dto.notes.formNotes(),
 
             urls = Move.Urls(
-                hitboxImage = dto.hitboxes
-                    ?.split(",")
+                hitboxImageList = dto.hitboxes
                     .orEmpty()
-                    .firstOrNull()
-                    ?.let { imageUrlMap[it] }
+                    .split(";")
+                    .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
             ),
 
             airDashProperties = Move.AirDashProperties(

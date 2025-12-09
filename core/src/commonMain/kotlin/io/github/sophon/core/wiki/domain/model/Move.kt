@@ -35,7 +35,7 @@ data class Move(
     data class Urls(
         val characterWiki: String? = null,
         val videoId: String? = null, //TODO: change to videoUrl
-        val hitboxImage: String? = null,
+        val hitboxImageList: List<String> = listOf(),
     )
 
     @Serializable

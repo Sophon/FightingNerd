@@ -29,12 +29,10 @@ internal fun MoveListResponseDto.toDomain(
             invulnerability = dto.invuln.takeIfNotTemplate()?.cleanHtml(),
 
             urls = Move.Urls(
-                hitboxImage = dto.hitboxes
-                    ?.takeIfNotTemplate()
-                    ?.split(",")
+                hitboxImageList = dto.hitboxes
                     .orEmpty()
-                    .firstOrNull()
-                    ?.let { imageUrlMap[it] },
+                    .split(",")
+                    .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
             ),
 
             sf6Properties = Move.SF6Properties(

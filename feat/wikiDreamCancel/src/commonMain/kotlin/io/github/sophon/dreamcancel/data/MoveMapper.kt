@@ -44,12 +44,10 @@ internal fun MoveDto.toDomain(
         active = active,
         urls = Move.Urls(
             characterWiki = character.wikiUrl,
-            hitboxImage = hitboxes?.let {
-                val files = it.split(", ")
-                files.getOrNull(files.size / 2)?.let { key ->
-                    imageUrlMap[key]
-                }
-            }
+            hitboxImageList = hitboxes
+                .orEmpty()
+                .split(",")
+                .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
         ),
     )
 }
