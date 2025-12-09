@@ -230,11 +230,15 @@ internal class DustLoopWikiDiscordFeature(
             .map { move ->
                 BotOutput(
                     embedBuilder = createMoveEmbed(move),
-                    images = BotOutput.Images(
-                        title = move.input,
-                        titleUrl = move.urls.wikiUrl,
-                        urls = move.urls.hitboxImageList,
-                    )
+                    images = if (move.urls.hitboxImageList.size < 2) {
+                        null
+                    } else {
+                        BotOutput.Images(
+                            title = move.input,
+                            titleUrl = move.urls.wikiUrl,
+                            urls = move.urls.hitboxImageList,
+                        )
+                    }
                 )
             }
     }
@@ -246,6 +250,10 @@ internal class DustLoopWikiDiscordFeature(
         url = move.urls.wikiUrl
         description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(RED)
+
+        if (move.urls.hitboxImageList.size == 1) {
+            image = move.urls.hitboxImageList.first()
+        }
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)
