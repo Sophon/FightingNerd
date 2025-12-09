@@ -1,6 +1,10 @@
 # BOT CHANGELOG
 
-## [v1.1.1] - TODO
+## [v1.1.2] - TODO
+- DustLoop v1.0.2
+  - fixed formatting issues
+
+## [v1.1.1] - 2025-12-09
 - `charggst` also displays fastest normal
 - core v1.1.1
   - sync with bot version
