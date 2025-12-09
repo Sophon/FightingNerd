@@ -2,8 +2,10 @@ package io.github.sophon.wikiSuperCombo.data
 
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
 
 internal fun MoveListResponseDto.toDomain(
+    gameId: String,
     imageUrlMap: Map<String, String>
 ): List<Move> {
     return cargoQuery.map { wrapper ->
@@ -29,12 +31,16 @@ internal fun MoveListResponseDto.toDomain(
             invulnerability = dto.invuln.takeIfNotTemplate()?.cleanHtml(),
 
             urls = Move.Urls(
-                hitboxImage = dto.hitboxes
-                    ?.takeIfNotTemplate()
-                    ?.split(",")
+                hitboxImageList = dto.hitboxes
                     .orEmpty()
-                    .firstOrNull()
-                    ?.let { imageUrlMap[it] },
+                    .split(",")
+                    .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
+                wikiUrl = formMoveWikiUrl(
+                    gameId = gameId,
+                    charName = dto.chara,
+                    input = dto.input,
+                    name = dto.name,
+                )
             ),
 
             sf6Properties = Move.SF6Properties(
@@ -80,4 +86,20 @@ private fun String?.extractNotes(): List<String> {
         ?.split(";")
         ?.map { it.trim() }
         ?: emptyList()
+}
+
+//https://wiki.supercombo.gg/w/Street_Fighter_6/Blanka#Electric_Thunder_(214P)
+internal fun formMoveWikiUrl(
+    gameId: String,
+    charName: String,
+    input: String,
+    name: String?,
+): String {
+    val moveId = if (name.isNullOrBlank().not()) {
+        "${name.replace(" ", "_")}_($input)"
+    } else {
+        input
+    }
+
+    return "${WIKI_BASE_URL}/$gameId/$charName#$moveId"
 }

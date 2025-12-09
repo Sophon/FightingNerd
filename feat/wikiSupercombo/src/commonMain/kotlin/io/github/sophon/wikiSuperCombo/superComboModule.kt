@@ -53,7 +53,7 @@ fun superComboModule() = module {
                 source.downloadCharacterList(queryTable.character)
                     .flatMap { dto ->
                         urlResolver.resolveImageUrls(dto)
-                            .map { dto.toDomain(it) }
+                            .map { dto.toDomain(gameId, it) }
                     }
             },
             cacheCharacterListUseCase = CacheCharacterListUseCase { characterList ->
@@ -79,7 +79,7 @@ fun superComboModule() = module {
                 source.downloadMoveList(queryTable.moves, charName)
                     .flatMap { dto ->
                         urlResolver.resolveHitboxUrl(dto)
-                            .map { dto.toDomain(it) }
+                            .map { dto.toDomain(gameId, it) }
                     }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->

@@ -19,8 +19,11 @@ internal class ImageUrlResolver(
     suspend fun resolveHitboxUrl(
         dto: MoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
-        val imageFileNames = dto.cargoQuery.flatMap {
-            listOfNotNull(it.title.hitboxes)
+        val imageFileNames = dto.cargoQuery.flatMap { moveDto ->
+            moveDto.title.hitboxes
+                ?.split(";")
+                ?.map { it.trim() }
+                ?: emptyList()
         }.distinct()
 
         return source.getImageUrl(imageFileNames)

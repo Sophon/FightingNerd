@@ -157,7 +157,20 @@ internal class DreamCancelWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { BotOutput(embedBuilder = createMoveEmbed(gameId, it)) }
+            .map { move ->
+                BotOutput(
+                    embedBuilder = createMoveEmbed(gameId, move),
+                    images = if (move.urls.hitboxImageList.size < 2) {
+                        null
+                    } else {
+                        BotOutput.Images(
+                            title = move.input,
+                            titleUrl = move.urls.wikiUrl,
+                            urls = move.urls.hitboxImageList,
+                        )
+                    }
+                )
+            }
     }
 
     private fun createMoveEmbed(
@@ -165,15 +178,16 @@ internal class DreamCancelWikiDiscordFeature(
         move: Move
     ): EmbedBuilder.() -> Unit = {
         title = move.input
+        url = move.urls.wikiUrl
         description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(BLUE)
 
+        move.urls.hitboxImageList
+            .takeIf { it.size == 1 }
+            ?.let { url = it.first() }
+
         gameId.getGame()?.iconUrl?.let {
             thumbnail { url = it }
-        }
-
-        move.urls.hitboxImage?.let {
-            image = it
         }
 
         mandatoryField(name = "Startup", value = move.startup)

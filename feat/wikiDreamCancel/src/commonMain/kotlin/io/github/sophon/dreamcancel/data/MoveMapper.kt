@@ -4,10 +4,11 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.urlDecode
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.dreamcancel.FEATURE_URL
 
 internal fun MoveListResponseDto.toDomain(
-    imageUrlMap: Map<String, String>,
     gameId: String,
+    imageUrlMap: Map<String, String>,
 ): Map<Character, List<Move>> {
     return cargoQuery
         .groupBy { it.title.chara }
@@ -27,7 +28,7 @@ internal fun MoveDto.toDomain(
     character: Character,
     imageUrlMap: Map<String, String>,
 ): Move {
-    return Move(
+    val move = Move(
         charName = character.displayName,
         id = moveId,
         input = input
@@ -44,14 +45,14 @@ internal fun MoveDto.toDomain(
         active = active,
         urls = Move.Urls(
             characterWiki = character.wikiUrl,
-            hitboxImage = hitboxes?.let {
-                val files = it.split(", ")
-                files.getOrNull(files.size / 2)?.let { key ->
-                    imageUrlMap[key]
-                }
-            }
+            hitboxImageList = hitboxes
+                .orEmpty()
+                .split(",")
+                .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
+            wikiUrl = formMoveWikiUrl(gameId, chara, name),
         ),
     )
+    return move
 }
 
 internal fun String.useForwardVariantOnly(): String {
@@ -67,4 +68,9 @@ internal fun String.useForwardVariantOnly(): String {
     } else {
         middle
     }
+}
+
+//https://dreamcancel.com/wiki/The_King_of_Fighters_XV/B.Jenet/Data#close_C
+internal fun formMoveWikiUrl(gameId: String, charName: String, name: String?): String {
+    return "${FEATURE_URL}/$gameId/${charName.createQueryName()}/Data#${name.orEmpty().replace(" ", "_")}"
 }

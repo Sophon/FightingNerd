@@ -7,6 +7,8 @@ import kotlin.test.Test
 
 //region toDomain Tests
 class CharacterMapperTest {
+    val gameId = "Street_Fighter_6"
+
     @Test
     fun `toDomain should return properly formatted character`() {
         // given
@@ -64,7 +66,7 @@ class CharacterMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(emptyMap())
+        val result = responseDto.toDomain("Street_Fighter_6", emptyMap())
 
         // then
         assertThat(result).hasSize(1)
@@ -230,7 +232,7 @@ class CharacterMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(emptyMap())
+        val result = responseDto.toDomain(gameId, emptyMap())
 
         // then
         assertThat(result).hasSize(3)
@@ -303,7 +305,7 @@ class CharacterMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(imageUrlMap)
+        val result = responseDto.toDomain(gameId, imageUrlMap)
 
         // then
         assertThat(result).hasSize(1)

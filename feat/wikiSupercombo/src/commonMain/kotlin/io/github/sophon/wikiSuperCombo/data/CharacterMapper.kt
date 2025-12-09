@@ -3,14 +3,17 @@ package io.github.sophon.wikiSuperCombo.data
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
 
-internal fun CharacterListResponseDto.toDomain(imageUrlMap: Map<String, String>): List<Character> {
+internal fun CharacterListResponseDto.toDomain(
+    gameId: String,
+    imageUrlMap: Map<String, String>,
+): List<Character> {
     return cargoquery.map { dto ->
         val charDto = dto.title
         Character(
             id = charDto.character.createId(),
             displayName = charDto.name,
             queryName = charDto.chara,
-            wikiUrl = createWikiUrlFrom(name = charDto.chara),
+            wikiUrl = createWikiUrlFrom(gameId, charDto.chara),
             aliasList = charDto.chara.createAliases(),
             images = Character.Images(
                 iconUrl = charDto.icon.let { imageUrlMap[it] },
@@ -53,8 +56,8 @@ private fun String.createId(): String {
     return charId
 }
 
-private fun createWikiUrlFrom(name: String): String {
-    return "$WIKI_BASE_URL/$name"
+private fun createWikiUrlFrom(gameId: String, name: String): String {
+    return "$WIKI_BASE_URL/$gameId/$name"
 }
 
 private fun String.createAliases(): List<String> {

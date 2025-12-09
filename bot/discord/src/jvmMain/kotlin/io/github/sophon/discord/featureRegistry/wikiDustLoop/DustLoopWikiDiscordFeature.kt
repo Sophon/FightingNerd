@@ -227,18 +227,32 @@ internal class DustLoopWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { BotOutput(embedBuilder = createMoveEmbed(it)) }
+            .map { move ->
+                BotOutput(
+                    embedBuilder = createMoveEmbed(move),
+                    images = if (move.urls.hitboxImageList.size < 2) {
+                        null
+                    } else {
+                        BotOutput.Images(
+                            title = move.input,
+                            titleUrl = move.urls.wikiUrl,
+                            urls = move.urls.hitboxImageList,
+                        )
+                    }
+                )
+            }
     }
 
     private fun createMoveEmbed(
         move: Move,
     ): EmbedBuilder.() -> Unit = {
         title = move.input
+        url = move.urls.wikiUrl
         description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(RED)
 
-        move.urls.hitboxImage?.let {
-            image = it
+        if (move.urls.hitboxImageList.size == 1) {
+            image = move.urls.hitboxImageList.first()
         }
 
         mandatoryField(name = "Startup", value = move.startup)

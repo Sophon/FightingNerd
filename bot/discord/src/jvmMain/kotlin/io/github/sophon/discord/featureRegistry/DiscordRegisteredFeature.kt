@@ -40,4 +40,11 @@ data class BotOutput(
     val embedBuilder: (EmbedBuilder.() -> Unit)? = null,
     val plainText: String? = null,
     val errorEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
-)
+    val images: Images? = null,
+) {
+    data class Images(
+        val title: String,
+        val titleUrl: String,
+        val urls: List<String>,
+    )
+}

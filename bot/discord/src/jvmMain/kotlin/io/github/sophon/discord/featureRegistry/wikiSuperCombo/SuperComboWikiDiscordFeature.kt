@@ -166,7 +166,20 @@ internal class SuperComboWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { BotOutput(embedBuilder = createMoveEmbed(it)) }
+            .map { move ->
+                BotOutput(
+                    embedBuilder = createMoveEmbed(move),
+                    images = if (move.urls.hitboxImageList.size < 2) {
+                        null
+                    } else {
+                        BotOutput.Images(
+                            title = move.input,
+                            titleUrl = move.urls.wikiUrl,
+                            urls = move.urls.hitboxImageList,
+                        )
+                    }
+                )
+            }
     }
 
     private fun createCharacterEmbed(
@@ -230,12 +243,13 @@ internal class SuperComboWikiDiscordFeature(
         move: Move,
     ): EmbedBuilder.() -> Unit = {
         title = move.input
+        url = move.urls.wikiUrl
         description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(ORANGE)
 
-        move.urls.hitboxImage?.let { hurtboxUrl ->
-            image = hurtboxUrl
-        }
+        move.urls.hitboxImageList
+            .takeIf { it.size == 1 }
+            ?.let { url = it.first() }
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)
