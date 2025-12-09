@@ -76,6 +76,10 @@ internal class DiscordBotImpl(
             // we need to specify this to receive the content of messages
             @OptIn(PrivilegedIntent::class)
             intents += Intent.MessageContent
+
+            presence {
+                playing("/FD | /HELP | /DONATE")
+            }
         }
     }
 
@@ -101,13 +105,13 @@ internal class DiscordBotImpl(
 
         when {
             botOutput.embedBuilder != null -> {
-                createEmbedMessage(botOutput.embedBuilder)
+                createEmbedMessage(botOutput.embedBuilder, botOutput.images)
             }
             botOutput.plainText != null -> {
                 createPlainMessage(botOutput.plainText)
             }
             botOutput.errorEmbedBuilder != null -> {
-                createEmbedMessage(botOutput.errorEmbedBuilder)
+                createEmbedMessage(botOutput.errorEmbedBuilder, )
                     .delete(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
             }
         }
@@ -132,7 +136,7 @@ internal class DiscordBotImpl(
 
         when {
             botOutput.embedBuilder != null -> {
-                createEmbedResponse(botOutput.embedBuilder)
+                createEmbedResponse(botOutput.embedBuilder, botOutput.images)
             }
             botOutput.plainText != null -> {
                 createPlainResponse(botOutput.plainText)

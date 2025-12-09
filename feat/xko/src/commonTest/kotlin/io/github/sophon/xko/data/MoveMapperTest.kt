@@ -4,7 +4,6 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import kotlin.test.Test
 
@@ -52,8 +51,9 @@ class MoveMapperTest {
             cancel = "N,SP,SU",
             invulnerability = null,
             urls = Move.Urls(
-                hitboxImage = "https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png",
-                characterWiki = "https://wiki.play2xko.com/en-us/Jinx"
+                hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png"),
+                characterWiki = "https://wiki.play2xko.com/en-us/Jinx",
+                wikiUrl = "https://wiki.play2xko.com/en-us/Jinx#5M"
             )
         )
         val expectedDariusMove = Move(
@@ -69,8 +69,9 @@ class MoveMapperTest {
             cancel = "N,SP,SU",
             invulnerability = null,
             urls = Move.Urls(
-                hitboxImage = "https://wiki.play2xko.com/en-us/images/Darius_5M_Hitbox.png",
-                characterWiki = "https://wiki.play2xko.com/en-us/Darius"
+                hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Darius_5M_Hitbox.png"),
+                characterWiki = "https://wiki.play2xko.com/en-us/Darius",
+                wikiUrl = "https://wiki.play2xko.com/en-us/Darius#5M"
             )
         )
 
@@ -123,8 +124,9 @@ class MoveMapperTest {
             cancel = null,
             invulnerability = null,
             urls = Move.Urls(
-                hitboxImage = "https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png",
-                characterWiki = "https://wiki.play2xko.com/en-us/Jinx"
+                hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png"),
+                characterWiki = "https://wiki.play2xko.com/en-us/Jinx",
+                wikiUrl = "https://wiki.play2xko.com/en-us/Jinx#5M"
             )
         )
 

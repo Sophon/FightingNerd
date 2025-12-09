@@ -3,6 +3,7 @@ package io.github.sophon.wikiwavu.data
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.wikiwavu.MOVE_URL
 import io.github.sophon.wikiwavu.VIDEO_URL
 import io.github.sophon.wikiwavu.util.cleanMoveInput
 
@@ -46,6 +47,7 @@ internal fun MoveDto.mapToDomain(
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
+            wikiUrl = formMoveWikiUrl(charName, id),
         ),
 
         t8Properties = formProperties(
@@ -172,4 +174,9 @@ internal fun String?.parseAliases(): List<String> {
 
 internal fun String?.formVideoUrl(): String? {
     return this?.let { VIDEO_URL + it.urlEncode() }
+}
+
+//https://wavu.wiki/t/Armor_King_movelist#Armor_King-1+2
+internal fun formMoveWikiUrl(charName: String, id: String): String {
+    return "${MOVE_URL}/${charName.replace(" ", "_")}_movelist#${id.replace(" ", "_")}"
 }

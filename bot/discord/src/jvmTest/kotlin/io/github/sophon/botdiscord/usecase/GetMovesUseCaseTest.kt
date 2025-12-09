@@ -103,7 +103,7 @@ class GetMovesUseCaseTest {
             id = input,
             startup = "",
             input = input,
-            urls = Move.Urls(),
+            urls = Move.Urls(wikiUrl = "TODO"),
             t8Properties = properties,
         )
     }

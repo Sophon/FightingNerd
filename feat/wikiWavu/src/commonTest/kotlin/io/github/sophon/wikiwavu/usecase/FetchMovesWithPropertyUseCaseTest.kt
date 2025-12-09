@@ -481,7 +481,7 @@ class FetchMovesWithPropertyUseCaseTest {
         onCH = null,
         notes = notes,
         aliases = listOf(),
-        urls = Move.Urls(),
+        urls = Move.Urls(wikiUrl = ""),
         t8Properties = Move.T8Properties(
             isHeat = isHeat,
             isPowerCrush = isPowerCrush,

@@ -2,6 +2,7 @@ package io.github.sophon.xko.data
 
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.xko.FEATURE_URL
 import io.github.sophon.xko.URL_HITBOX_PREFIX
 import io.github.sophon.xko.URL_HITBOX_SUFIX
 
@@ -19,7 +20,7 @@ private fun MoveDto.toMoveList(
     val charName = pageName
         .replace(" ", "_")
 
-    return Move(
+    val move = Move(
         charName = charName,
         id = "${charName.lowercase()}_${input.lowercase()}",
 
@@ -34,8 +35,11 @@ private fun MoveDto.toMoveList(
         invulnerability = invuln?.ifEmpty { null },
 
         urls = Move.Urls(
-            hitboxImage = "$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX",
+            hitboxImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX"),
             characterWiki = charWikiUrl,
+            wikiUrl = "$FEATURE_URL/${pageName}#${input}"
         ),
     )
+
+    return move
 }

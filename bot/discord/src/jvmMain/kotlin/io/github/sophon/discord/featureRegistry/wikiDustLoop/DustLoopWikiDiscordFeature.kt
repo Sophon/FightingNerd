@@ -135,13 +135,14 @@ internal class DustLoopWikiDiscordFeature(
         query: String
     ): Result<BotOutput, BotError> {
         return getCharacterUseCase.invoke(wiki = wiki, charName = query)
-            .map { (character, _) ->
-                BotOutput(embedBuilder = createCharacterEmbed(character))
+            .map { (character, fastestMoveList) ->
+                BotOutput(embedBuilder = createCharacterEmbed(character, fastestMoveList))
             }
     }
 
     private fun createCharacterEmbed(
         character: Character,
+        fastestMoveList: List<Move>,
     ): EmbedBuilder.() -> Unit = {
         title = character.displayName
         url = character.wikiUrl
@@ -152,10 +153,13 @@ internal class DustLoopWikiDiscordFeature(
         }
 
         val properties = character.airDashProperties
+        val moves = fastestMoveList.joinToString(", ") { it.input }
+        val startup = fastestMoveList.first().startup.orDash()
 
         mandatoryField(
             name = "⭐️ CORE",
             value = buildList {
+                add("* **Fastest normal →** $moves ($startup)")
                 add("* **Defense →** ${properties?.defense}")
                 add("* **Guts →** ${properties?.guts}")
                 add("* **Guard balance →** ${properties?.guardBalance}")
@@ -167,7 +171,14 @@ internal class DustLoopWikiDiscordFeature(
         mandatoryField(
             name = "👟 MOVEMENT",
             value = buildList {
-                properties?.umo?.let { add("* **Unique movement →** $it") }
+                properties?.umo?.takeIf { it.isNotEmpty() }?.let { umo ->
+                    if (umo.size == 1) {
+                        add("* **Unique movement →** ${umo.first()}")
+                    } else {
+                        add("* **Unique movement →** ")
+                        umo.forEach { add("   * $it") }
+                    }
+                }
                 add("* **Backdash →** ${properties?.bwdDash}")
                 add("   * **Distance →** ${properties?.bwdDashDist}")
                 add("   * **Duration →** ${properties?.bwdDashDuration}")
@@ -198,7 +209,7 @@ internal class DustLoopWikiDiscordFeature(
             name = "💨 AIRDASH",
             value = buildList {
                 add("* **IAD →** ${properties?.earliestIAD}")
-                add("* **Distance | Duration →**: ${properties?.adDist} | ${properties?.adDuration}")
+                add("* **Distance | Duration →** ${properties?.adDist} | ${properties?.adDuration}")
                 add("* **B Distance | Duration →** ${properties?.abdDist} | ${properties?.abdDuration}")
                 properties?.airDashTension?.let { add("* **Tension →** $it") }
             }.joinToString("\n"),
@@ -216,18 +227,32 @@ internal class DustLoopWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { BotOutput(embedBuilder = createMoveEmbed(it)) }
+            .map { move ->
+                BotOutput(
+                    embedBuilder = createMoveEmbed(move),
+                    images = if (move.urls.hitboxImageList.size < 2) {
+                        null
+                    } else {
+                        BotOutput.Images(
+                            title = move.input,
+                            titleUrl = move.urls.wikiUrl,
+                            urls = move.urls.hitboxImageList,
+                        )
+                    }
+                )
+            }
     }
 
     private fun createMoveEmbed(
         move: Move,
     ): EmbedBuilder.() -> Unit = {
         title = move.input
+        url = move.urls.wikiUrl
         description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(RED)
 
-        move.urls.hitboxImage?.let {
-            image = it
+        if (move.urls.hitboxImageList.size == 1) {
+            image = move.urls.hitboxImageList.first()
         }
 
         mandatoryField(name = "Startup", value = move.startup)

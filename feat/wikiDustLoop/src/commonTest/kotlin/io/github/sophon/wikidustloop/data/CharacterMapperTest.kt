@@ -261,4 +261,101 @@ class CharacterMapperTest {
         assertThat(result).isEqualTo(expected)
     }
     //endregion
+
+    //region toClickable
+    @Test
+    fun `toClickable handles no link`() {
+        //given
+        val string = "Step-Dash (15F)"
+        val expected = listOf("Step-Dash (15F)")
+
+        //when
+        val result = string.toClickable()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toClickable handles link`() {
+        //given
+        val string = "[[GGST/Baiken#Kabari|[H] Kabari follow-up]]"
+        val expected = listOf(
+            "[[H] Kabari follow-up](https://www.dustloop.com/w/GGST/Baiken#Kabari)",
+        )
+
+        //when
+        val result = string.toClickable()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toClickable handles multiple links`() {
+        //given
+        val string = "Step-Dash (15F), [[GGST/Johnny#Mist Finer Stance|Mist Finer Dash]], [[GGST/Johnny#Vault|Vault]]"
+        val expected = listOf(
+            "Step-Dash (15F)",
+            "[Mist Finer Dash](https://www.dustloop.com/w/GGST/Johnny#Mist_Finer_Stance)",
+            "[Vault](https://www.dustloop.com/w/GGST/Johnny#Vault)",
+        )
+
+        //when
+        val result = string.toClickable()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toClickable ignores blank or null`() {
+        //given
+        val string1: String? = null
+        val string2 = ""
+        val expected1 = listOf<String>()
+        val expected2 = listOf<String>()
+
+        //when
+        val result1 = string1.toClickable()
+        val result2 = string2.toClickable()
+
+        //then
+        assertThat(result1).isEqualTo(expected1)
+        assertThat(result2).isEqualTo(expected2)
+    }
+    //endregion
+
+    //region formNotes
+    @Test
+    fun `formNotes handles html`() {
+        //given
+        val string = "Retracts lower hurtbox 1-2F, slightly retracts further 3-18F;\nStaggers on grounded counter hit.; " +
+                "Although the counterhit slowdown and stagger recovery overlap, the slowdown ends before the opponent can begin blocking," +
+                " so the 25F stagger can be treated as if it were 31F.; Total stagger duration: 31F (1-23F hitstun, 24-31F can block only);" +
+                " Hitstun duration is increased by 4F for red (normal) recovery, and 8F for blue (slow) and no recovery. (27F and 31F respectively);" +
+                " Total duration is increased by 5F  for red (normal) recovery, and 10F for blue (slow) and no recovery. (36F and 41F respectively);" +
+                " Opponents can be thrown while staggered, allowing comboing into throws. During the &#039;can only block&#039; stage at the end" +
+                " of stagger, the opponent cannot jump to escape throws, meaning there is more time to combo into throws than strikes.; " +
+                "Stagger does not gain 1 additional hitstun on crouching hit, unlike other attacks.;"
+        val expected = listOf(
+            "Retracts lower hurtbox 1-2F, slightly retracts further 3-18F",
+            "Staggers on grounded counter hit.",
+            "Although the counterhit slowdown and stagger recovery overlap, the slowdown ends before the opponent can begin blocking," +
+                    " so the 25F stagger can be treated as if it were 31F.",
+            "Total stagger duration: 31F (1-23F hitstun, 24-31F can block only)",
+            "Hitstun duration is increased by 4F for red (normal) recovery, and 8F for blue (slow) and no recovery. (27F and 31F respectively)",
+            "Total duration is increased by 5F  for red (normal) recovery, and 10F for blue (slow) and no recovery. (36F and 41F respectively)",
+            "Opponents can be thrown while staggered, allowing comboing into throws. During the 'can only block' stage at the " +
+                    "end of stagger, the opponent cannot jump to escape throws, meaning there is more time to combo into throws than strikes.",
+            "Stagger does not gain 1 additional hitstun on crouching hit, unlike other attacks.",
+        )
+
+        //when
+        val result = string.formNotes()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
 }

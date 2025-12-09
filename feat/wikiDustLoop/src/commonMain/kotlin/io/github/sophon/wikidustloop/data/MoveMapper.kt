@@ -1,9 +1,11 @@
 package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.urlDecode
 import io.github.sophon.core.wiki.domain.model.Move
 
 internal fun MoveListResponseDto.toDomain(
+    gameId: String,
     imageUrlMap: Map<String, String>,
 ): List<Move> {
     return cargoQuery.map { wrapper ->
@@ -31,11 +33,11 @@ internal fun MoveListResponseDto.toDomain(
             notes = dto.notes.formNotes(),
 
             urls = Move.Urls(
-                hitboxImage = dto.hitboxes
-                    ?.split(",")
+                hitboxImageList = dto.hitboxes
                     .orEmpty()
-                    .firstOrNull()
-                    ?.let { imageUrlMap[it] }
+                    .split(";")
+                    .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
+                wikiUrl = formMoveWikiUrl(gameId, dto),
             ),
 
             airDashProperties = Move.AirDashProperties(
@@ -72,7 +74,13 @@ internal fun String?.formMoveId(charName: String?): String {
 
 internal fun String?.formNotes(): List<String> {
     return this
+        ?.urlDecode()
         ?.split(";")
         ?.map { it.trim() }
+        ?.filter { it.isNotBlank() }
         ?: emptyList()
+}
+
+internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
+    return "${dto.chara.formWikiUrl(gameId)}#${dto.input}"
 }

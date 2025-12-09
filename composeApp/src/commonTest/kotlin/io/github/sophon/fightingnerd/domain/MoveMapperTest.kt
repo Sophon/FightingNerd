@@ -171,7 +171,7 @@ class MoveMapperTest {
         onCH = null,
         notes = notes,
         aliases = listOf(),
-        urls = Move.Urls(),
+        urls = Move.Urls(wikiUrl = "TODO"),
         t8Properties = properties,
     )
 }

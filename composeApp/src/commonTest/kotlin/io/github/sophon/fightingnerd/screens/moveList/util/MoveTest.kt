@@ -99,6 +99,6 @@ class MoveTest {
         input = "1",
         onHit = onHit,
         onCH = onCH,
-        urls = Move.Urls(),
+        urls = Move.Urls(wikiUrl = "TODO"),
     )
 }

@@ -128,15 +128,30 @@ internal class XkoWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { move -> BotOutput(embedBuilder = createMoveEmbed(move)) }
+            .map { move ->
+                BotOutput(
+                    embedBuilder = createMoveEmbed(move),
+                    images = if (move.urls.hitboxImageList.size < 2) {
+                        null
+                    } else {
+                        BotOutput.Images(
+                            title = move.input,
+                            titleUrl = move.urls.wikiUrl,
+                            urls = move.urls.hitboxImageList,
+                        )
+                    }
+                )
+            }
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = "${move.charName}: ${move.input}"
 
-        move.urls.hitboxImage?.let { hurtboxUrl ->
-            image = hurtboxUrl
-        }
+        move.urls.hitboxImageList
+            .takeIf { it.size == 1 }
+            ?.let { 
+                url = it.first()
+            }
 
         color = Color(GREEN)
 
