@@ -7,6 +7,7 @@
   - bot status
 - dustLoop v1.0.1
   - clickable Unique Movement Options
+  - fixed note formatting
 
 ## [v1.1.0] - 2025-12-08
 - core v1.0.6
