@@ -8,6 +8,8 @@
 - dustLoop v1.0.1
   - clickable Unique Movement Options
   - fixed note formatting
+- wavu v1.0.3
+  - clickable moves
 
 ## [v1.1.0] - 2025-12-08
 - core v1.0.6
