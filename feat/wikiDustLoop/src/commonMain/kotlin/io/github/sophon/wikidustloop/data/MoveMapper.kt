@@ -1,6 +1,7 @@
 package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.urlDecode
 import io.github.sophon.core.wiki.domain.model.Move
 
 internal fun MoveListResponseDto.toDomain(
@@ -72,7 +73,9 @@ internal fun String?.formMoveId(charName: String?): String {
 
 internal fun String?.formNotes(): List<String> {
     return this
+        ?.urlDecode()
         ?.split(";")
         ?.map { it.trim() }
+        ?.filter { it.isNotBlank() }
         ?: emptyList()
 }
