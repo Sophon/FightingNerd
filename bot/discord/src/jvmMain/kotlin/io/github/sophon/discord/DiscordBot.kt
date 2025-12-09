@@ -111,7 +111,7 @@ internal class DiscordBotImpl(
                 createPlainMessage(botOutput.plainText)
             }
             botOutput.errorEmbedBuilder != null -> {
-                createEmbedMessage(botOutput.errorEmbedBuilder, botOutput.images)
+                createEmbedMessage(botOutput.errorEmbedBuilder, )
                     .delete(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
             }
         }
@@ -136,7 +136,7 @@ internal class DiscordBotImpl(
 
         when {
             botOutput.embedBuilder != null -> {
-                createEmbedResponse(botOutput.embedBuilder)
+                createEmbedResponse(botOutput.embedBuilder, botOutput.images)
             }
             botOutput.plainText != null -> {
                 createPlainResponse(botOutput.plainText)
