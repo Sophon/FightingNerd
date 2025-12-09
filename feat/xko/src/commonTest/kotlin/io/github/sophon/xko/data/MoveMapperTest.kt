@@ -52,7 +52,8 @@ class MoveMapperTest {
             invulnerability = null,
             urls = Move.Urls(
                 hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png"),
-                wikiUrl = "https://wiki.play2xko.com/en-us/Jinx"
+                characterWiki = "https://wiki.play2xko.com/en-us/Jinx",
+                wikiUrl = "https://wiki.play2xko.com/en-us/Jinx#5M"
             )
         )
         val expectedDariusMove = Move(
@@ -69,7 +70,8 @@ class MoveMapperTest {
             invulnerability = null,
             urls = Move.Urls(
                 hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Darius_5M_Hitbox.png"),
-                wikiUrl = "https://wiki.play2xko.com/en-us/Darius"
+                characterWiki = "https://wiki.play2xko.com/en-us/Darius",
+                wikiUrl = "https://wiki.play2xko.com/en-us/Darius#5M"
             )
         )
 
@@ -123,7 +125,8 @@ class MoveMapperTest {
             invulnerability = null,
             urls = Move.Urls(
                 hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png"),
-                wikiUrl = "https://wiki.play2xko.com/en-us/Jinx"
+                characterWiki = "https://wiki.play2xko.com/en-us/Jinx",
+                wikiUrl = "https://wiki.play2xko.com/en-us/Jinx#5M"
             )
         )
 
