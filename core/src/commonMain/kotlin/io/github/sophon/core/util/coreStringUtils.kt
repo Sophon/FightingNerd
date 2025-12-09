@@ -36,30 +36,20 @@ fun String.urlDecode(): String {
         .replace("&lt;", "<")
         .replace("&amp;", "&")
         .replace("&quot;", "\"")
-        .replace("&#39;", "'")
+        .replace("&#039;", "'")
         .replace("&nbsp;", " ")
+        .replace("&apos;", "'")
 }
 
 fun String?.orDash(): String = this?.takeUnless { it.isBlank() } ?: "-"
 
 fun String.cleanHtml(): String {
     return this
-        .decodeHtmlEntities()
+        .urlDecode()
         .removeHtmlTags()
         .replace("'''", "") //wiki bolt
         .replace(Regex("\\*\\s*\\n"), "* ")
         .trim()
-}
-
-private fun String.decodeHtmlEntities(): String {
-    return this
-        .replace("&lt;", "<")
-        .replace("&gt;", ">")
-        .replace("&quot;", "\"")
-        .replace("&amp;", "&")
-        .replace("&nbsp;", " ")
-        .replace("&#039;", "'")
-        .replace("&apos;", "'")
 }
 
 // <br> & <br/>
