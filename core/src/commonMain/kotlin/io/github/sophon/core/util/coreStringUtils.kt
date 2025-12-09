@@ -30,7 +30,7 @@ fun String.truncate(maxLength: Int): String {
 
 fun String.urlEncode(): String = encodeURLParameter()
 
-fun String.urlDecode(): String {
+fun String.decodeHtmlEntities(): String {
     return this
         .replace("&gt;", ">")
         .replace("&lt;", "<")
@@ -45,7 +45,7 @@ fun String?.orDash(): String = this?.takeUnless { it.isBlank() } ?: "-"
 
 fun String.cleanHtml(): String {
     return this
-        .urlDecode()
+        .decodeHtmlEntities()
         .removeHtmlTags()
         .replace("'''", "") //wiki bolt
         .replace(Regex("\\*\\s*\\n"), "* ")
@@ -55,7 +55,7 @@ fun String.cleanHtml(): String {
 // <br> & <br/>
 internal fun String.removeHtmlTags(): String {
     return this
-        .replace(Regex("<br\\s*/?>"), "")
+        .replace(Regex("<br\\s*/?>"), "\n")
         .replace(Regex("<[^>]*>"), "")
 }
 

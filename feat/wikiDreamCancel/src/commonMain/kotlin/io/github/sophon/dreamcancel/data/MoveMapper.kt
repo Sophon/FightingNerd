@@ -1,7 +1,7 @@
 package io.github.sophon.dreamcancel.data
 
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.util.urlDecode
+import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.dreamcancel.FEATURE_URL
@@ -33,7 +33,7 @@ internal fun MoveDto.toDomain(
         id = moveId,
         input = input
             .orDash()
-            .urlDecode()
+            .decodeHtmlEntities()
             .useForwardVariantOnly()
             .lowercase(),
         damage = damage,
