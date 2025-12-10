@@ -229,6 +229,7 @@ internal class WavuWikiDiscordFeature(
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = move.input
         url = move.urls.wikiUrl
+        move.urls.characterImage?.let { thumbnail { url = it } }
 
         description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(GREEN)
