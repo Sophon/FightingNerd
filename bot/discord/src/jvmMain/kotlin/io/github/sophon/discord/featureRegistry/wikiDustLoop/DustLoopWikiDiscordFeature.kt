@@ -250,6 +250,7 @@ internal class DustLoopWikiDiscordFeature(
         url = move.urls.wikiUrl
         description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(RED)
+        move.urls.characterImage?.let { thumbnail { url = it } }
 
         if (move.urls.hitboxImageList.size == 1) {
             image = move.urls.hitboxImageList.first()
