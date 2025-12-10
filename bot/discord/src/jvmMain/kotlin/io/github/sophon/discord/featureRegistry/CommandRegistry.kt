@@ -25,6 +25,8 @@ enum class Command {
     //supercombo wiki
     FDSF6,
     CHARSF6,
+    FDMK1,
+    CHARMK1,
 
     //2xko wiki
     FDXKO,
