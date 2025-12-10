@@ -283,7 +283,7 @@ internal class SuperComboWikiDiscordFeature(
 
         move.urls.hitboxImageList
             .takeIf { it.size == 1 }
-            ?.let { url = it.first() }
+            ?.let { image = it.first() }
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)
