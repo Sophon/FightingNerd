@@ -18,9 +18,9 @@ internal object SuperComboTables {
     fun getTable(gameId: String): QueryTable? {
         return gameToTables[gameId]
     }
-}
 
-private const val TABLE_SF6_CHARACTERS = "SF6_CharacterData"
-private const val TABLE_SF6_MOVE_LIST = "SF6_FrameData"
-private const val TABLE_MK1_CHARACTERS = "MK1_CharacterData"
-private const val TABLE_MK1_MOVE_LIST = "MK1_FrameData"
+    internal const val TABLE_SF6_CHARACTERS = "SF6_CharacterData"
+    internal const val TABLE_SF6_MOVE_LIST = "SF6_FrameData"
+    internal const val TABLE_MK1_CHARACTERS = "MK1_CharacterData"
+    internal const val TABLE_MK1_MOVE_LIST = "MK1_FrameData"
+}

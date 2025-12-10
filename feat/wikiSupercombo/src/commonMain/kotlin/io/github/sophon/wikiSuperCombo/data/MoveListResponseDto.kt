@@ -19,7 +19,7 @@ data class MoveDto(
     val moveType: String,
     val chara: String,
     val input: String,
-    val name: String,
+    val name: String? = null,
     val images: String? = null,
     val hitboxes: String? = null,
     val damage: String? = null,
@@ -56,5 +56,11 @@ data class MoveDto(
     val jugLimit: String? = null,
     val projSpeed: String? = null,
     val atkRange: String? = null,
-    val notes: String? = null
+    val notes: String? = null,
+
+    val cost: String? = null,
+    val flawlessBlockAdv: String? = null,
+    val hitCancelAdv: String? = null,
+    val blockCancelAdv: String? = null,
+    val punish: String? = null,
 )

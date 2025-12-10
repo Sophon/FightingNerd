@@ -1,6 +1,5 @@
 package io.github.sophon.wikiSuperCombo.data
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -15,25 +14,28 @@ data class CargoQueryItem(
 
 @Serializable
 data class CharacterDto(
-    @SerialName("Character") val character: String,
+    val Character: String? = null,
     val chara: String,
     val name: String,
-    val portrait: String,
-    val icon: String,
-    val hp: String,
-    val throwRange: String,
-    val throwHurtbox: String,
-    val fwdWalkSpd: String,
-    val bwdWalkSpd: String,
-    val fwdDashSpd: String,
-    val bwdDashSpd: String,
-    val fwdDashDist: String,
-    val bwdDashDist: String,
-    val jumpSpd: String,
-    val jumpApex: String,
-    val fwdJumpDist: String,
-    val bwdJumpDist: String,
-    val dRushMin: String,
-    val dRushBlock: String,
-    val dRushMax: String,
+    val portrait: String? = null,
+    val icon: String? = null,
+    val hp: String? = null,
+    val throwRange: String? = null,
+    val throwHurtbox: String? = null,
+    val fwdWalkSpd: String? = null,
+    val bwdWalkSpd: String? = null,
+    val fwdDashSpd: String? = null,
+    val bwdDashSpd: String? = null,
+    val fwdDashDist: String? = null,
+    val bwdDashDist: String? = null,
+    val jumpSpd: String? = null,
+    val jumpApex: String? = null,
+    val fwdJumpDist: String? = null,
+    val bwdJumpDist: String? = null,
+    val dRushMin: String? = null,
+    val dRushBlock: String? = null,
+    val dRushMax: String? = null,
+
+    val hpmod: String? = null,
+    val throwdmg: String? = null
 )

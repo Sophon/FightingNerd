@@ -57,7 +57,7 @@ internal fun MoveListResponseDto.toDomain(
                 DRcOH = dto.DRcancelHit.takeIfNotTemplate()?.cleanHtml(),  
                 DRcOB = dto.DRcancelBlk.takeIfNotTemplate()?.cleanHtml(),  
                 DROH = dto.afterDRHit.takeIfNotTemplate()?.cleanHtml(),  
-                DROB = dto.afterDRBlk.takeIfNotTemplate()?.cleanHtml(),  
+                DROB = dto.afterDRBlk.takeIfNotTemplate()?.cleanHtml(),
                 hitStun = dto.hitstun.takeIfNotTemplate()?.cleanHtml(),  
                 blockStun = dto.blockstun.takeIfNotTemplate()?.cleanHtml(),  
                 hitStop = dto.hitstop.takeIfNotTemplate()?.cleanHtml(),  
@@ -72,6 +72,12 @@ internal fun MoveListResponseDto.toDomain(
                 jugLimit = dto.jugLimit.takeIfNotTemplate(),
                 projectileSpeed = dto.projSpeed.takeIfNotTemplate(),
                 attackRange = dto.atkRange.takeIfNotTemplate(),
+            ),
+            mkProperties = Move.MKProperties(
+                moveType = dto.moveType.takeIfNotTemplate(),
+                cost = dto.moveType
+                    .split(",")
+                    .filterNot { it.takeIfNotTemplate() == null }
             )
         )
     }

@@ -7,45 +7,56 @@ internal fun CharacterListResponseDto.toDomain(
     gameId: String,
     imageUrlMap: Map<String, String>,
 ): List<Character> {
-    return cargoquery.map { dto ->
-        val charDto = dto.title
-        Character(
-            id = charDto.character.createId(),
-            displayName = charDto.name,
-            queryName = charDto.chara,
-            wikiUrl = createWikiUrlFrom(gameId, charDto.chara),
-            aliasList = charDto.chara.createAliases(),
-            images = Character.Images(
-                iconUrl = charDto.icon.let { imageUrlMap[it] },
-                bannerUrl = charDto.portrait.let { imageUrlMap[it] },
-            ),
-            sf6Properties = Character.SF6Properties(
-                fwdWalkSpd = charDto.fwdWalkSpd,
-                bwdWalkSpd = charDto.bwdWalkSpd,
-                fwdDashSpd = charDto.fwdDashSpd,
-                bwdDashSpd = charDto.bwdDashSpd,
-                fwdDashDist = charDto.fwdDashDist,
-                bwdDashDist = charDto.bwdDashDist,
-                dRushMin = charDto.dRushMin,
-                dRushBlock = charDto.dRushBlock,
-                dRushMax = charDto.dRushMax,
-                throwRange = charDto.throwRange,
-                throwHurtbox = charDto.throwHurtbox,
-                jumpSpd = charDto.jumpSpd,
-                jumpApex = charDto.jumpApex,
-                fwdJumpDist = charDto.fwdJumpDist,
-                bwdJumpDist = charDto.bwdJumpDist,
-                hp = charDto.hp,
+    val characterList = cargoquery
+        .map { dto ->
+            val charDto = dto.title
+            Character(
+                id = charDto.Character.createId(),
+                displayName = charDto.name,
+                queryName = charDto.chara,
+                wikiUrl = createWikiUrlFrom(gameId, charDto.chara),
+                aliasList = charDto.chara.createAliases(),
+                images = Character.Images(
+                    iconUrl = charDto.icon.let { imageUrlMap[it] },
+                    bannerUrl = charDto.portrait.let { imageUrlMap[it] },
+                ),
+                sf6Properties = Character.SF6Properties(
+                    fwdWalkSpd = charDto.fwdWalkSpd,
+                    bwdWalkSpd = charDto.bwdWalkSpd,
+                    fwdDashSpd = charDto.fwdDashSpd,
+                    bwdDashSpd = charDto.bwdDashSpd,
+                    fwdDashDist = charDto.fwdDashDist,
+                    bwdDashDist = charDto.bwdDashDist,
+                    dRushMin = charDto.dRushMin,
+                    dRushBlock = charDto.dRushBlock,
+                    dRushMax = charDto.dRushMax,
+                    throwRange = charDto.throwRange,
+                    throwHurtbox = charDto.throwHurtbox,
+                    jumpSpd = charDto.jumpSpd,
+                    jumpApex = charDto.jumpApex,
+                    fwdJumpDist = charDto.fwdJumpDist,
+                    bwdJumpDist = charDto.bwdJumpDist,
+                    hp = charDto.hp,
+                ),
+                mkProperties = Character.MortalKombatProperties(
+                    hp = charDto.hp,
+                    hpMod = charDto.hpmod,
+                    throwDmg = charDto.throwdmg,
+                )
             )
-        )
-    }
+        }
+        .filterOutKameos()
+
+    return characterList
 }
 
 /**
  * Result:
  * sf6-chun_li, sf6-m_bison, sf6-dee_jay etc
  */
-private fun String.createId(): String {
+private fun String?.createId(): String {
+    if (this == null) return "NULL"
+
     val parts = split("/").dropLast(1)
     val charId = parts.last()
         .replace(".", "")
@@ -79,5 +90,9 @@ private fun String.createAliases(): List<String> {
                 }
             }
     }
+}
+
+internal fun List<Character>.filterOutKameos(): List<Character> {
+    return filterNot { it.displayName.contains("(Kameo)") }
 }
 
