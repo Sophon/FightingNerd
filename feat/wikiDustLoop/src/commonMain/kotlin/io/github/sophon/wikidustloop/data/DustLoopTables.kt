@@ -8,13 +8,19 @@ internal object DustLoopTables {
         Game.GGST.id to QueryTable(
             character = TABLE_GGST_CHARACTERS,
             moves = TABLE_GGST_MOVE_LIST,
-        )
+        ),
+        Game.DBFZ.id to QueryTable(
+            character = TABLE_DBFZ_CHARACTERS,
+            moves = TABLE_DBFZ_MOVE_LIST,
+        ),
     )
 
     fun getTable(gameId: String): QueryTable? {
         return gameToTables[gameId]
     }
-}
 
-private const val TABLE_GGST_CHARACTERS = "ggstCharacters"
-private const val TABLE_GGST_MOVE_LIST = "MoveData_GGST"
+    internal const val TABLE_GGST_CHARACTERS = "ggstCharacters"
+    internal const val TABLE_GGST_MOVE_LIST = "MoveData_GGST"
+    internal const val TABLE_DBFZ_CHARACTERS = "dbfzCharacters"
+    internal const val TABLE_DBFZ_MOVE_LIST = "MoveData_DBFZ"
+}
