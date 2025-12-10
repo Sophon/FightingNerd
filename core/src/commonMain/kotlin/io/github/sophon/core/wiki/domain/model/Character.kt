@@ -13,6 +13,7 @@ data class Character(
 
     val sf6Properties: SF6Properties? = null,
     val airDashProperties: AirDashProperties? = null,
+    val mkProperties: MortalKombatProperties? = null,
 ) {
     @Serializable
     data class Images(
@@ -22,24 +23,24 @@ data class Character(
 
     @Serializable
     data class SF6Properties(
-        val fwdWalkSpd: String,
-        val bwdWalkSpd: String,
-        val fwdDashSpd: String,
-        val bwdDashSpd: String,
-        val fwdDashDist: String,
-        val bwdDashDist: String,
+        val fwdWalkSpd: String?,
+        val bwdWalkSpd: String?,
+        val fwdDashSpd: String?,
+        val bwdDashSpd: String?,
+        val fwdDashDist: String?,
+        val bwdDashDist: String?,
 
-        val dRushMin: String,
-        val dRushBlock: String,
-        val dRushMax: String,
+        val dRushMin: String?,
+        val dRushBlock: String?,
+        val dRushMax: String?,
 
-        val hp: String,
-        val throwRange: String,
-        val throwHurtbox: String,
-        val jumpSpd: String,
-        val jumpApex: String,
-        val fwdJumpDist: String,
-        val bwdJumpDist: String,
+        val hp: String?,
+        val throwRange: String?,
+        val throwHurtbox: String?,
+        val jumpSpd: String?,
+        val jumpApex: String?,
+        val fwdJumpDist: String?,
+        val bwdJumpDist: String?,
     )
 
     @Serializable
@@ -76,5 +77,12 @@ data class Character(
         val highJumpGravity: String?,
         val boostAttack: String?,
         val boostDefense: String?,
+    )
+
+    @Serializable
+    data class MortalKombatProperties(
+        val hp: String? = null,
+        val hpMod: String? = null,
+        val throwDmg: String? = null,
     )
 }

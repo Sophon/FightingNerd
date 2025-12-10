@@ -30,6 +30,7 @@ data class Move(
     val koF15Properties: KOF15Properties? = null,
     val cotwProperties: COTWProperties? = null,
     val airDashProperties: AirDashProperties? = null,
+    val mkProperties: MKProperties? = null,
 ) {
     @Serializable
     data class Urls(
@@ -110,5 +111,16 @@ data class Move(
         val prorate: String? = null,
         val invuln: String? = null,
         val cancel: String? = null,
+    )
+
+    @Serializable
+    data class MKProperties(
+        val moveType: String? = null,
+        val cost: List<String> = listOf(),
+        val chip: String? = null,
+        val flawlessBlockAdv: String? = null,
+        val hitCancelAdv: String? = null,
+        val blockCancelAdv: String? = null,
+        val punish: String? = null,
     )
 }
