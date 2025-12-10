@@ -8,6 +8,7 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -75,7 +76,11 @@ internal class SyncWikiDataUseCase {
         characterList.asFlow()
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { character ->
                 flow {
-                    val result = wiki.downloadMoveList(character.queryName.orEmpty())
+                    val data = DownloadMoveListUseCase.CharacterData(
+                        name = character.queryName,
+                        imageUrl = character.images?.iconUrl
+                    )
+                    val result = wiki.downloadMoveList(data)
                         .map { moveList -> character to moveList }
                         .mapError { it.toDomainError() }
                     emit(result)

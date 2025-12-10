@@ -74,11 +74,11 @@ fun dustLoopModule() = module {
                 characterListDB.fetchCharacterDataFor(charName)
             },
 
-            downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, charName ->
-                source.downloadMoveList(queryTable.moves, charName)
+            downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, characterData ->
+                source.downloadMoveList(queryTable.moves, characterData)
                     .flatMap { dto ->
                         imageUrlResolver.resolveHitboxUrl(dto)
-                            .map { dto.toDomain(gameId, it) }
+                            .map { dto.toDomain(gameId, characterData, it) }
                     }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->

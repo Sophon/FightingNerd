@@ -75,11 +75,11 @@ fun superComboModule() = module {
                 }
             },
 
-            downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, charName ->
-                source.downloadMoveList(queryTable.moves, charName)
+            downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, characterData ->
+                source.downloadMoveList(queryTable.moves, characterData)
                     .flatMap { dto ->
                         urlResolver.resolveHitboxUrl(dto)
-                            .map { dto.toDomain(gameId, it) }
+                            .map { dto.toDomain(gameId, characterData, it) }
                     }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->

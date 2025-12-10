@@ -2,11 +2,12 @@ package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
+    characterData: DownloadMoveListUseCase.CharacterData,
     imageUrlMap: Map<String, String>,
 ): List<Move> {
     return cargoQuery.map { wrapper ->
@@ -34,6 +35,7 @@ internal fun MoveListResponseDto.toDomain(
             notes = dto.notes.formNotes(),
 
             urls = Move.Urls(
+                characterImage = characterData.imageUrl,
                 hitboxImageList = dto.hitboxes
                     .orEmpty()
                     .split(";")

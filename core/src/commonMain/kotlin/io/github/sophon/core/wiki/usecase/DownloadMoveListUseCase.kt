@@ -7,22 +7,29 @@ import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.model.Move
+import kotlinx.serialization.Serializable
 
 class DownloadMoveListUseCase(
     private val downloadAndMap: suspend (
         queryTable: QueryTable,
-        charName: String
+        characterData: CharacterData,
     ) -> Result<List<Move>, DataError.Remote>,
 ) {
     suspend fun invoke(
         queryTable: QueryTable,
-        charName: String,
+        characterData: CharacterData,
     ): Result<List<Move>, WikiError> {
-        return downloadAndMap(queryTable, charName)
+        return downloadAndMap(queryTable, characterData)
             .mapError { it.toDomainError(TAG) }
     }
 
     private companion object {
         const val TAG = "DownloadMoveListUseCase"
     }
+
+    @Serializable
+    data class CharacterData(
+        val name: String,
+        val imageUrl: String?,
+    )
 }

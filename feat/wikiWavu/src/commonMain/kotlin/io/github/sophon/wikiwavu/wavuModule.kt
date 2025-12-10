@@ -64,9 +64,9 @@ fun wavuModule() = module {
                 charListDB.fetchCharacterDataFor(it)
             },
 
-            downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, charName ->
-                source.downloadMoveList(queryTable.moves, charName)
-                    .map { dto ->  dto.toDomain(charName) }
+            downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, characterData ->
+                source.downloadMoveList(queryTable.moves, characterData)
+                    .map { dto ->  dto.toDomain(characterData) }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
                 moveListDB.insertMoveList(character, moveList)
