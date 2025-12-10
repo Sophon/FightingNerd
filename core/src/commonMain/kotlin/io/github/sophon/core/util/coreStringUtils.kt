@@ -108,3 +108,27 @@ fun String.maskSecret(): String {
         }
     }
 }
+
+fun String.createAliases(): List<String> {
+    return buildList {
+        split(
+            " ",
+            "-",
+            "_",
+            ".",
+        )
+            .filter { it.isNotBlank() }
+            .takeIf { it.size > 1 }
+            ?.apply {
+                add(joinToString("") { it.first().lowercase() })
+            }
+            ?.let { words ->
+                if (words.first().length >= 2) {
+                    add(words.first().lowercase())
+                }
+                if (words.size >= 2 && words.last().length >= 2) {
+                    add(words.last().lowercase())
+                }
+            }
+    }.distinct()
+}

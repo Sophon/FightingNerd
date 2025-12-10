@@ -4,6 +4,7 @@ import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
+import io.github.sophon.wikiSuperCombo.util.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
@@ -17,7 +18,7 @@ internal fun MoveListResponseDto.toDomain(
             id = dto.moveId,
             name = dto.name,
 
-            input = dto.input.lowercase(),
+            input = dto.input.cleanMoveInput(),
             damage = dto.damage.takeIfNotTemplate()?.cleanHtml(),
             startup = dto.startup.takeIfNotTemplate(),
             onBlock = dto.blockAdv.takeIfNotTemplate()?.cleanHtml(),

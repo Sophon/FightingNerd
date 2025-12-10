@@ -182,7 +182,7 @@ class CharacterMapperTest {
             displayName = "Chun-Li",
             queryName = "Chun-Li",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Chun-Li",
-            aliasList = listOf("cl", "li"),
+            aliasList = listOf("cl", "chun", "li"),
             images = Character.Images(iconUrl = null, bannerUrl = null),
             sf6Properties = Character.SF6Properties(
                 fwdWalkSpd = "0.050",
@@ -208,7 +208,7 @@ class CharacterMapperTest {
             displayName = "Dee Jay",
             queryName = "Dee_Jay",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Dee_Jay",
-            aliasList = listOf("dj", "jay"),
+            aliasList = listOf("dj", "dee", "jay"),
             images = Character.Images(iconUrl = null, bannerUrl = null),
             sf6Properties = Character.SF6Properties(
                 fwdWalkSpd = "0.043",
