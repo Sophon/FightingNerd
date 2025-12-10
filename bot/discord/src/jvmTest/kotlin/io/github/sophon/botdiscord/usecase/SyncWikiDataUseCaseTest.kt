@@ -262,8 +262,7 @@ class SyncWikiDataUseCaseTest {
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
-        assertThat(wiki.cacheMoveListCalls).hasSize(1)
-        assertThat(wiki.cacheMoveListCalls.first().second).isEmpty()
+        assertThat(wiki.cacheMoveListCalls).isEmpty()
     }
     //endregion
 
