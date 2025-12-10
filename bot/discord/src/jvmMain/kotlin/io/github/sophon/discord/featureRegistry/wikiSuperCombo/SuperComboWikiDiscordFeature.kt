@@ -280,6 +280,7 @@ internal class SuperComboWikiDiscordFeature(
         url = move.urls.wikiUrl
         description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(ORANGE)
+        move.urls.characterImage?.let { thumbnail { url = it } }
 
         move.urls.hitboxImageList
             .takeIf { it.size == 1 }
