@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.fightingnerd.screens.home.HomeError
 import io.github.sophon.fightingnerd.screens.home.toDomainError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -87,7 +88,11 @@ internal class SyncDataIfOldUseCase {
             .asFlow()
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { character ->
                 flow {
-                    val result = wiki.downloadMoveList(character.displayName)
+                    val data = DownloadMoveListUseCase.CharacterData(
+                        name = character.displayName,
+                        imageUrl = character.images?.iconUrl,
+                    )
+                    val result = wiki.downloadMoveList(data)
                         .mapError { it.toDomainError() }
                         .map { moveList -> character to moveList }
                     emit(result)
