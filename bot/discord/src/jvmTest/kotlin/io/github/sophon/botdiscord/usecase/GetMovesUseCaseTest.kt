@@ -11,6 +11,7 @@ import io.github.sophon.core.wiki.domain.model.Move
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -135,7 +136,7 @@ class GetMovesUseCaseTest {
         override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> = error("Not yet implemented")
         override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> = error("Not yet implemented")
         override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = error("Not yet implemented")
-        override suspend fun downloadMoveList(charName: String): Result<List<Move>, WikiError> = error("Not yet implemented")
+        override suspend fun downloadMoveList(characterData: DownloadMoveListUseCase.CharacterData): Result<List<Move>, WikiError> = error("Not yet implemented")
         override suspend fun cacheMoveList(character: Character, moveList: List<Move>, ): EmptyResult<WikiError> = error("Not yet implemented")
         @OptIn(ExperimentalTime::class)
         override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = error("Not yet implemented")

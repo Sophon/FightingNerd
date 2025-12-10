@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 
 class GetCharacterUseCaseTest {
     //region Successful Character and Move Fetch
@@ -200,7 +201,7 @@ private class FakeWikiClient(
     override suspend fun downloadCharacterList() = error("Not implemented")
     override suspend fun cacheCharacterList(characterList: List<Character>) = error("Not implemented")
     override suspend fun fetchCharacterList() = error("Not implemented")
-    override suspend fun downloadMoveList(charName: String) = error("Not implemented")
+    override suspend fun downloadMoveList(characterData: DownloadMoveListUseCase.CharacterData) = error("Not implemented")
     override suspend fun cacheMoveList(character: Character, moveList: List<Move>) = error("Not implemented")
     override suspend fun fetchMove(charName: String, moveQuery: String) = error("Not implemented")
     override suspend fun getLastUpdateTimeStamp() = error("Not implemented")
