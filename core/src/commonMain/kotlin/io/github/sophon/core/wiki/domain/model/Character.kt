@@ -14,6 +14,7 @@ data class Character(
     val sf6Properties: SF6Properties? = null,
     val ggstProperties: GGSTProperties? = null,
     val mkProperties: MK1Properties? = null,
+    val dbfzProperties: DBFZProperties? = null,
 ) {
     @Serializable
     data class Images(
@@ -77,6 +78,12 @@ data class Character(
         val highJumpGravity: String?,
         val boostAttack: String?,
         val boostDefense: String?,
+    )
+
+    @Serializable
+    data class DBFZProperties(
+        val kiMod: String?,
+        val umo: String?,
     )
 
     @Serializable

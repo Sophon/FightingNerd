@@ -30,6 +30,7 @@ data class Move(
     val koF15Properties: KOF15Properties? = null,
     val cotwProperties: COTWProperties? = null,
     val ggstProperties: GGSTProperties? = null,
+    val dbfzProperties: DBFZProperties? = null,
     val mkProperties: MKProperties? = null,
 ) {
     @Serializable
@@ -108,6 +109,18 @@ data class Move(
         val otgType: String? = null,
         val prorate: String? = null,
         val cancel: String? = null,
+    )
+
+    @Serializable
+    data class DBFZProperties(
+        val attribute: String? = null,
+        val smash: String? = null,
+        val kiGain: String? = null,
+        val prorate: String? = null,
+        val blockStun: String? = null,
+        val groundHit: String? = null,
+        val airHit: String? = null,
+        val type: String? = null,
     )
 
     @Serializable
