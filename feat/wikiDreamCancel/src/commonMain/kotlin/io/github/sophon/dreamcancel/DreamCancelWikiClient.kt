@@ -15,6 +15,7 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadOrFetchUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
@@ -74,16 +75,18 @@ internal class DreamCancelWikiClient(
             .onError { Napier.w(tag = TAG) { "fetchCharacter: $it" } }
     }
 
-    override suspend fun downloadMoveList(charName: String): Result<List<Move>, WikiError> {
+    override suspend fun downloadMoveList(
+        characterData: DownloadMoveListUseCase.CharacterData,
+    ): Result<List<Move>, WikiError> {
         return downloadOrFetchUseCase.invoke(gameTables)
             .map { map ->
                 map
-                    .filterKeys { it.queryName.equals(charName, ignoreCase = true) }
+                    .filterKeys { it.queryName.equals(characterData.name, ignoreCase = true) }
                     .values
                     .flatten()
             }
             .onSuccess { moveList ->
-                Napier.i(tag = TAG) { "${charName}: ${moveList.size} moves downloaded" }
+                Napier.i(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
     }
