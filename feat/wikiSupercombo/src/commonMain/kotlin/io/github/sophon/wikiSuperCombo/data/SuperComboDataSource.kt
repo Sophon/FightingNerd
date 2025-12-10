@@ -29,7 +29,7 @@ internal class SuperComboDataSourceImpl(
                 parameter("tables", table)
                 parameter("limit", LIMIT_CHARACTERS)
                 parameter("format", "json")
-                parameter("fields", "_pageName=${getCharacterFields()}")
+                parameter("fields", "_pageName=${getCharacterFields(table)}")
             }
         }
     }
@@ -44,7 +44,7 @@ internal class SuperComboDataSourceImpl(
                 parameter("tables", table)
                 parameter("limit", LIMIT_MOVES)
                 parameter("format", "json")
-                parameter("fields", getMoveFields())
+                parameter("fields", getMoveFields(table))
                 parameter("where", "chara='$charName'")
             }
         }
@@ -60,79 +60,128 @@ internal class SuperComboDataSourceImpl(
         )
     }
 
-    private fun getCharacterFields(): String {
-        val allFields = listOf(
-            "Character",
-            "chara",
-            "name",
-            "portrait",
-            "icon",
-            "hp",
-            "throwRange",
-            "throwHurtbox",
-            "fwdWalkSpd",
-            "bwdWalkSpd",
-            "fwdDashSpd",
-            "bwdDashSpd",
-            "fwdDashDist",
-            "bwdDashDist",
-            "jumpSpd",
-            "jumpApex",
-            "fwdJumpDist",
-            "bwdJumpDist",
-            "dRushMin",
-            "dRushBlock",
-            "dRushMax"
-        )
+    private fun getCharacterFields(table: String): String {
+        val allFields = when (table) {
+            SuperComboTables.TABLE_MK1_CHARACTERS -> {
+                listOf(
+                    "Character",
+                    "chara",
+                    "name",
+                    "portrait",
+                    "icon",
+                    "hp",
+                    "hpmod",
+                    "throwdmg"
+                )
+            }
+            SuperComboTables.TABLE_SF6_CHARACTERS -> {
+                listOf(
+                    "Character",
+                    "chara",
+                    "name",
+                    "portrait",
+                    "icon",
+                    "hp",
+                    "throwRange",
+                    "throwHurtbox",
+                    "fwdWalkSpd",
+                    "bwdWalkSpd",
+                    "fwdDashSpd",
+                    "bwdDashSpd",
+                    "fwdDashDist",
+                    "bwdDashDist",
+                    "jumpSpd",
+                    "jumpApex",
+                    "fwdJumpDist",
+                    "bwdJumpDist",
+                    "dRushMin",
+                    "dRushBlock",
+                    "dRushMax"
+                )
+            }
+            else -> emptyList()
+        }
 
         return allFields.joinToString(",")
     }
 
-    private fun getMoveFields(): String {
-        val allFields = listOf(
-            "moveId",
-            "moveType",
-            "chara",
-            "input",
-            "name",
-            "images",
-            "hitboxes",
-            "damage",
-            "chip",
-            "dmgScaling",
-            "startup",
-            "active",
-            "recovery",
-            "total",
-            "guard",
-            "cancel",
-            "hitconfirm",
-            "hitAdv",
-            "blockAdv",
-            "punishAdv",
-            "perfParryAdv",
-            "DRcancelHit",
-            "DRcancelBlk",
-            "afterDRHit",
-            "afterDRBlk",
-            "hitstun",
-            "blockstun",
-            "hitstop",
-            "driveDmgBlk",
-            "driveDmgHit",
-            "driveGain",
-            "superGainHit",
-            "superGainBlk",
-            "invuln",
-            "armor",
-            "airborne",
-            "jugStart",
-            "jugIncrease",
-            "jugLimit",
-            "projSpeed",
-            "atkRange",
-            "notes"
-        )
+    private fun getMoveFields(table: String): String {
+        val allFields = when (table) {
+            SuperComboTables.TABLE_MK1_MOVE_LIST -> {
+                listOf(
+                    "moveId",
+                    "moveType",
+                    "chara",
+                    "input",
+                    "name",
+                    "images",
+                    "hitboxes",
+                    "cost",
+                    "damage",
+                    "chip",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "invuln",
+                    "hitAdv",
+                    "blockAdv",
+                    "flawlessBlockAdv",
+                    "hitCancelAdv",
+                    "blockCancelAdv",
+                    "guard",
+                    "cancel",
+                    "punish",
+                    "notes"
+                )
+            }
+            SuperComboTables.TABLE_SF6_MOVE_LIST -> {
+                listOf(
+                    "moveId",
+                    "moveType",
+                    "chara",
+                    "input",
+                    "name",
+                    "images",
+                    "hitboxes",
+                    "damage",
+                    "chip",
+                    "dmgScaling",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "total",
+                    "guard",
+                    "cancel",
+                    "hitconfirm",
+                    "hitAdv",
+                    "blockAdv",
+                    "punishAdv",
+                    "perfParryAdv",
+                    "DRcancelHit",
+                    "DRcancelBlk",
+                    "afterDRHit",
+                    "afterDRBlk",
+                    "hitstun",
+                    "blockstun",
+                    "hitstop",
+                    "driveDmgBlk",
+                    "driveDmgHit",
+                    "driveGain",
+                    "superGainHit",
+                    "superGainBlk",
+                    "invuln",
+                    "armor",
+                    "airborne",
+                    "jugStart",
+                    "jugIncrease",
+                    "jugLimit",
+                    "projSpeed",
+                    "atkRange",
+                    "notes"
+                )
+            }
+            else -> listOf()
+        }
 
         return allFields.joinToString(",")
     }

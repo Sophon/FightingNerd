@@ -14,6 +14,7 @@ object SuperComboFeatureInfo {
         iconUrl = FEATURE_IMG_URL,
         supportedGameSet = setOf(
             Game.StreetFighter6,
+            Game.MK1,
         ),
         version = BuildKonfig.VERSION,
     )

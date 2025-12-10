@@ -1,8 +1,11 @@
 # BOT CHANGELOG
 
 ## [v1.1.2] - TODO
+- fixed SuperCombo games not showing hitbox
 - DustLoop v1.0.2
   - fixed formatting issues
+- Supercombo v1.0.3
+  - MK1 support
 
 ## [v1.1.1] - 2025-12-09
 - `charggst` also displays fastest normal

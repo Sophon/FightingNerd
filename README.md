@@ -106,6 +106,7 @@ graph LR
   style kof15 fill:#059669,color:#fff
   style cotw fill:#059669,color:#fff
   style ggst fill:#059669,color:#fff
+  style mk1 fill:#059669,color:#fff
 ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)

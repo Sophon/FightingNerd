@@ -84,7 +84,31 @@ internal class SuperComboWikiDiscordFeature(
                     description = "Character name",
                 )
             )
-        )
+        ),
+        SupportedCommand(
+            command = Command.CHARMK1,
+            description = "MK1 character data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
+        SupportedCommand(
+            command = Command.FDMK1,
+            description = "MK1 frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
+                )
+            )
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -140,6 +164,16 @@ internal class SuperComboWikiDiscordFeature(
             }
             Command.FDSF6 -> {
                 val wiki = wikis[Game.StreetFighter6.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
+            }
+            Command.CHARMK1 -> {
+                val wiki = wikis[Game.MK1.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchCharacter(wiki, query)
+            }
+            Command.FDMK1 -> {
+                val wiki = wikis[Game.MK1.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
@@ -249,7 +283,7 @@ internal class SuperComboWikiDiscordFeature(
 
         move.urls.hitboxImageList
             .takeIf { it.size == 1 }
-            ?.let { url = it.first() }
+            ?.let { image = it.first() }
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)
@@ -261,6 +295,19 @@ internal class SuperComboWikiDiscordFeature(
         optionalField(name = "Damage", value = move.damage)
         optionalField(name = "Invul", value = move.invulnerability)
 
+        sf6Fields(move)
+        mk1Fields(move)
+
+        createDetails(move)
+        createNotes(move)
+
+        footer {
+            text = featureInfo.name
+            icon = featureInfo.iconUrl
+        }
+    }
+
+    private fun EmbedBuilder.sf6Fields(move: Move) {
         optionalField(name = "JUG start", value = move.sf6Properties?.jugStart)
         optionalField(name = "JUG limit", value = move.sf6Properties?.jugLimit)
         optionalField(name = "JUG inc", value = move.sf6Properties?.jugIncrease)
@@ -268,15 +315,32 @@ internal class SuperComboWikiDiscordFeature(
         optionalField(name = "Cancel", move.cancel)
         optionalField(name = "Range", move.sf6Properties?.attackRange)
         optionalField(name = "Proj spd", move.sf6Properties?.projectileSpeed)
+    }
 
-        createDetails(move)
+    private fun EmbedBuilder.mk1Fields(move: Move) {
+        optionalField(
+            name = "Cost",
+            value = move.mkProperties?.cost?.joinToString("; ")
+        )
+        optionalField(
+            name = "Chip",
+            value = move.mkProperties?.chip,
+        )
+        optionalField(
+            name = "Flawless block",
+            value = move.mkProperties?.flawlessBlockAdv,
+        )
 
-        createNotes(move)
-
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
+        if (move.mkProperties?.hitCancelAdv != null || move.mkProperties?.blockCancelAdv != null) {
+            optionalField(
+                name = "Cancel hit | block",
+                value = "${move.mkProperties?.hitCancelAdv} | ${move.mkProperties?.blockCancelAdv}",
+            )
         }
+        optionalField(
+            name = "Punish",
+            value = move.mkProperties?.punish,
+        )
     }
 
     private fun EmbedBuilder.createNotes(move: Move) {

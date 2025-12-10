@@ -35,4 +35,9 @@ enum class Game(
         iconUrl = "https://i.imgur.com/07yTLtj.png",
         wikiUrl = "https://www.dustloop.com/w/GGST",
     ),
+    MK1(
+        id = "Mortal_Kombat_1",
+        iconUrl = "https://i.imgur.com/4OcVxqP.png",
+        wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1"
+    )
 }

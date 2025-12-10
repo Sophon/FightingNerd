@@ -16,7 +16,8 @@
       "name": "SuperCombo Wiki",
       "isEnabled": true,
       "supportedGames": [
-        "Street_Fighter_6"
+        "Street_Fighter_6",
+        "Mortal_Kombat_1"
       ]
     },
     {

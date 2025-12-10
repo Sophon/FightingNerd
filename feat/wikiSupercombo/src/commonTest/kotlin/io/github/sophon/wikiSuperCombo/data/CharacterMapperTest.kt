@@ -5,7 +5,6 @@ import assertk.assertions.*
 import io.github.sophon.core.wiki.domain.model.Character
 import kotlin.test.Test
 
-//region toDomain Tests
 class CharacterMapperTest {
     val gameId = "Street_Fighter_6"
 
@@ -13,7 +12,7 @@ class CharacterMapperTest {
     fun `toDomain should return properly formatted character`() {
         // given
         val characterDto = CharacterDto(
-            character = "Street Fighter 6/Ken/Data",
+            Character = "Street Fighter 6/Ken/Data",
             chara = "Ken",
             name = "Ken",
             portrait = "SF6 Ken Portrait.png",
@@ -77,7 +76,7 @@ class CharacterMapperTest {
     fun `toDomain should map multi word character names with aliases`() {
         // given
         val cViperDto = CharacterDto(
-            character = "Street Fighter 6/C.Viper/Data",
+            Character = "Street Fighter 6/C.Viper/Data",
             chara = "C.Viper",
             name = "C. Viper",
             portrait = "SF6 Cviper Portrait.png",
@@ -100,7 +99,7 @@ class CharacterMapperTest {
             dRushMax = "3.355"
         )
         val chunLiDto = CharacterDto(
-            character = "Street Fighter 6/Chun-Li/Data",
+            Character = "Street Fighter 6/Chun-Li/Data",
             chara = "Chun-Li",
             name = "Chun-Li",
             portrait = "SF6 Chun-Li Portrait.png",
@@ -123,7 +122,7 @@ class CharacterMapperTest {
             dRushMax = "3.163"
         )
         val deeJayDto = CharacterDto(
-            character = "Street Fighter 6/Dee Jay/Data",
+            Character = "Street Fighter 6/Dee Jay/Data",
             chara = "Dee_Jay",
             name = "Dee Jay",
             portrait = "SF6 Dee_Jay Portrait.png",
@@ -245,7 +244,7 @@ class CharacterMapperTest {
     fun `toDomain should map character with image URLs from map`() {
         // given
         val characterDto = CharacterDto(
-            character = "Street Fighter 6/Ken/Data",
+            Character = "Street Fighter 6/Ken/Data",
             chara = "Ken",
             name = "Ken",
             portrait = "SF6 Ken Portrait.png",
@@ -312,4 +311,3 @@ class CharacterMapperTest {
         assertThat(result[0]).isEqualTo(expectedCharacter)
     }
 }
-//endregion
