@@ -1,11 +1,13 @@
 package io.github.sophon.wikidustloop.data
 
+import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.util.urlDecode
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
+    characterData: DownloadMoveListUseCase.CharacterData,
     imageUrlMap: Map<String, String>,
 ): List<Move> {
     return cargoQuery.map { wrapper ->
@@ -19,20 +21,21 @@ internal fun MoveListResponseDto.toDomain(
             input = dto.input
                 .orDash()
                 .lowercase(),
-            damage = dto.damage,
-            startup = dto.startup,
-            onBlock = dto.onBlock,
-            onHit = dto.onHit,
-            onCH = dto.counter,
-            active = dto.active,
-            cancel = dto.cancel,
-            recovery = dto.recovery,
-            guard = dto.level,
-            invulnerability = dto.invuln,
+            damage = dto.damage?.cleanHtml(),
+            startup = dto.startup?.cleanHtml(),
+            onBlock = dto.onBlock?.cleanHtml(),
+            onHit = dto.onHit?.cleanHtml(),
+            onCH = dto.counter?.cleanHtml(),
+            active = dto.active?.cleanHtml(),
+            cancel = dto.cancel?.cleanHtml(),
+            recovery = dto.recovery?.cleanHtml(),
+            guard = dto.level?.cleanHtml(),
+            invulnerability = dto.invuln?.cleanHtml(),
 
             notes = dto.notes.formNotes(),
 
             urls = Move.Urls(
+                characterImage = characterData.imageUrl,
                 hitboxImageList = dto.hitboxes
                     .orEmpty()
                     .split(";")
@@ -74,7 +77,7 @@ internal fun String?.formMoveId(charName: String?): String {
 
 internal fun String?.formNotes(): List<String> {
     return this
-        ?.urlDecode()
+        ?.cleanHtml()
         ?.split(";")
         ?.map { it.trim() }
         ?.filter { it.isNotBlank() }

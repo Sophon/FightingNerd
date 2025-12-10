@@ -1,11 +1,15 @@
 package io.github.sophon.wikiSuperCombo.data
 
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
+import io.github.sophon.wikiSuperCombo.util.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
+    characterData: DownloadMoveListUseCase.CharacterData,
     imageUrlMap: Map<String, String>
 ): List<Move> {
     return cargoQuery.map { wrapper ->
@@ -16,7 +20,7 @@ internal fun MoveListResponseDto.toDomain(
             id = dto.moveId,
             name = dto.name,
 
-            input = dto.input.lowercase(),
+            input = dto.input.cleanMoveInput(),
             damage = dto.damage.takeIfNotTemplate()?.cleanHtml(),
             startup = dto.startup.takeIfNotTemplate(),
             onBlock = dto.blockAdv.takeIfNotTemplate()?.cleanHtml(),
@@ -31,6 +35,7 @@ internal fun MoveListResponseDto.toDomain(
             invulnerability = dto.invuln.takeIfNotTemplate()?.cleanHtml(),
 
             urls = Move.Urls(
+                characterImage = characterData.imageUrl,
                 hitboxImageList = dto.hitboxes
                     .orEmpty()
                     .split(",")
@@ -57,7 +62,7 @@ internal fun MoveListResponseDto.toDomain(
                 DRcOH = dto.DRcancelHit.takeIfNotTemplate()?.cleanHtml(),  
                 DRcOB = dto.DRcancelBlk.takeIfNotTemplate()?.cleanHtml(),  
                 DROH = dto.afterDRHit.takeIfNotTemplate()?.cleanHtml(),  
-                DROB = dto.afterDRBlk.takeIfNotTemplate()?.cleanHtml(),  
+                DROB = dto.afterDRBlk.takeIfNotTemplate()?.cleanHtml(),
                 hitStun = dto.hitstun.takeIfNotTemplate()?.cleanHtml(),  
                 blockStun = dto.blockstun.takeIfNotTemplate()?.cleanHtml(),  
                 hitStop = dto.hitstop.takeIfNotTemplate()?.cleanHtml(),  
@@ -72,6 +77,12 @@ internal fun MoveListResponseDto.toDomain(
                 jugLimit = dto.jugLimit.takeIfNotTemplate(),
                 projectileSpeed = dto.projSpeed.takeIfNotTemplate(),
                 attackRange = dto.atkRange.takeIfNotTemplate(),
+            ),
+            mkProperties = Move.MKProperties(
+                moveType = dto.moveType.takeIfNotTemplate(),
+                cost = dto.moveType
+                    .split(",")
+                    .filterNot { it.takeIfNotTemplate() == null }
             )
         )
     }
@@ -100,6 +111,15 @@ internal fun formMoveWikiUrl(
     } else {
         input
     }
+    val charQueryName = charName.replace(" ", "_")
 
-    return "${WIKI_BASE_URL}/$gameId/$charName#$moveId"
+    return when (gameId) {
+        Game.StreetFighter6.id -> {
+            "${WIKI_BASE_URL}/$gameId/$charQueryName#$moveId"
+        }
+        Game.MK1.id -> {
+            "${WIKI_BASE_URL}/$gameId/$charQueryName/Data#$input"
+        }
+        else -> WIKI_BASE_URL
+    }
 }

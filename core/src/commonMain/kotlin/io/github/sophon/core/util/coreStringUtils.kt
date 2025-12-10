@@ -30,7 +30,7 @@ fun String.truncate(maxLength: Int): String {
 
 fun String.urlEncode(): String = encodeURLParameter()
 
-fun String.urlDecode(): String {
+fun String.decodeHtmlEntities(): String {
     return this
         .replace("&gt;", ">")
         .replace("&lt;", "<")
@@ -45,7 +45,7 @@ fun String?.orDash(): String = this?.takeUnless { it.isBlank() } ?: "-"
 
 fun String.cleanHtml(): String {
     return this
-        .urlDecode()
+        .decodeHtmlEntities()
         .removeHtmlTags()
         .replace("'''", "") //wiki bolt
         .replace(Regex("\\*\\s*\\n"), "* ")
@@ -55,7 +55,7 @@ fun String.cleanHtml(): String {
 // <br> & <br/>
 internal fun String.removeHtmlTags(): String {
     return this
-        .replace(Regex("<br\\s*/?>"), "")
+        .replace(Regex("<br\\s*/?>"), "\n")
         .replace(Regex("<[^>]*>"), "")
 }
 
@@ -107,4 +107,28 @@ fun String.maskSecret(): String {
             "${take(4)}${"*".repeat(length - 8)}${takeLast(4)}"
         }
     }
+}
+
+fun String.createAliases(): List<String> {
+    return buildList {
+        split(
+            " ",
+            "-",
+            "_",
+            ".",
+        )
+            .filter { it.isNotBlank() }
+            .takeIf { it.size > 1 }
+            ?.apply {
+                add(joinToString("") { it.first().lowercase() })
+            }
+            ?.let { words ->
+                if (words.first().length >= 2) {
+                    add(words.first().lowercase())
+                }
+                if (words.size >= 2 && words.last().length >= 2) {
+                    add(words.last().lowercase())
+                }
+            }
+    }.distinct()
 }

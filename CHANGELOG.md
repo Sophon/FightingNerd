@@ -1,6 +1,14 @@
 # BOT CHANGELOG
 
-## [v1.1.1] - TODO
+## [v1.1.2] - 2025-12-10
+- fixed SuperCombo games not showing hitbox
+- Wavu embed displays character image
+- DustLoop v1.0.2
+  - fixed formatting issues
+- SuperCombo v1.0.3
+  - MK1 support
+
+## [v1.1.1] - 2025-12-09
 - `charggst` also displays fastest normal
 - core v1.1.1
   - sync with bot version

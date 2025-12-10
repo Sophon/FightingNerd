@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import kotlin.test.Test
 
 class MoveMapperTest {
@@ -139,7 +140,12 @@ class MoveMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain("Armor King")
+        val result = responseDto.toDomain(
+            DownloadMoveListUseCase.CharacterData(
+                name = "Armor King",
+                imageUrl = null
+            )
+        )
 
         // then
         assertThat(result).hasSize(1)
@@ -228,7 +234,12 @@ class MoveMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain("Armor King")
+        val result = responseDto.toDomain(
+            DownloadMoveListUseCase.CharacterData(
+                name = "Armor King",
+                imageUrl = null
+            )
+        )
 
         // then
         assertThat(result).hasSize(2)
@@ -295,7 +306,12 @@ class MoveMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain("Armor King")
+        val result = responseDto.toDomain(
+            DownloadMoveListUseCase.CharacterData(
+                name = "Armor King",
+                imageUrl = null
+            )
+        )
 
         // then
         assertThat(result).hasSize(1)
@@ -366,7 +382,12 @@ class MoveMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain("Armor King")
+        val result = responseDto.toDomain(
+            DownloadMoveListUseCase.CharacterData(
+                name = "Armor King",
+                imageUrl = null
+            )
+        )
 
         // then
         assertThat(result).hasSize(1)

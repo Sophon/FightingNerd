@@ -75,13 +75,13 @@ internal class WavuWikiClient(
     }
 
     override suspend fun downloadMoveList(
-        charName: String
+        characterData: DownloadMoveListUseCase.CharacterData,
     ): Result<List<Move>, WikiError> {
-        return downloadMoveListUseCase.invoke(queryTable, charName)
+        return downloadMoveListUseCase.invoke(queryTable, characterData)
             .onSuccess {
-                Napier.i(tag = TAG) { "${charName}: ${it.size} moves downloaded" }
+                Napier.i(tag = TAG) { "${characterData.name}: ${it.size} moves downloaded" }
             }
-            .onError { Napier.e(tag = TAG) { "downloadMoveList(${charName}): $it" } }
+            .onError { Napier.e(tag = TAG) { "downloadMoveList(${characterData.name}): $it" } }
     }
 
     override suspend fun cacheMoveList(

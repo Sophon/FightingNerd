@@ -23,6 +23,7 @@ internal fun Move.toEntity(): MoveEntity {
         notes = notes.joinToString(";"),
         aliases = aliases.joinToString(";"),
 
+        urlsCharacterImage = urls.characterImage,
         urlsChracterWiki = urls.characterWiki,
         urlsVideoId = urls.videoId,
         urlsHitboxImage = urls.hitboxImageList.joinToString(";"),
@@ -87,6 +88,7 @@ internal fun MoveEntity.toDomain(): Move {
         aliases = aliases?.split(";")?.filter { it.isNotBlank() }.orEmpty(),
 
         urls = Move.Urls(
+            characterImage = urlsCharacterImage,
             characterWiki = urlsChracterWiki,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImage?.split(";")?.filter { it.isNotBlank() }.orEmpty(),

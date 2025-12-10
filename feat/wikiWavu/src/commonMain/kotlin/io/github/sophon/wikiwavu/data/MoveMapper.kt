@@ -3,14 +3,17 @@ package io.github.sophon.wikiwavu.data
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.MOVE_URL
 import io.github.sophon.wikiwavu.VIDEO_URL
 import io.github.sophon.wikiwavu.util.cleanMoveInput
 
-internal fun MoveListResponseDto.toDomain(charName: String): List<Move> {
+internal fun MoveListResponseDto.toDomain(
+    characterData: DownloadMoveListUseCase.CharacterData
+): List<Move> {
     val downloadedMoves = extractMoveDto()
     val movesById = downloadedMoves.associateBy { it.id }
-    val moveList = downloadedMoves.map { it.mapToDomain(charName, movesById) }
+    val moveList = downloadedMoves.map { it.mapToDomain(characterData, movesById) }
     return moveList
 }
 
@@ -19,7 +22,7 @@ internal fun MoveListResponseDto.extractMoveDto(): List<MoveDto> {
 }
 
 internal fun MoveDto.mapToDomain(
-    charName: String,
+    characterData: DownloadMoveListUseCase.CharacterData,
     movesById: Map<String, MoveDto>,
 ): Move {
     val cleanedCrushes = splitCrush()
@@ -29,7 +32,7 @@ internal fun MoveDto.mapToDomain(
         .cleanMoveInput()
 
     val move = Move(
-        charName = charName,
+        charName = characterData.name,
         id = id.formId(),
         name = name?.cleanHtml(),
 
@@ -47,7 +50,8 @@ internal fun MoveDto.mapToDomain(
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
-            wikiUrl = formMoveWikiUrl(charName, id),
+            wikiUrl = formMoveWikiUrl(characterData.name, id),
+            characterImage = characterData.imageUrl,
         ),
 
         t8Properties = formProperties(

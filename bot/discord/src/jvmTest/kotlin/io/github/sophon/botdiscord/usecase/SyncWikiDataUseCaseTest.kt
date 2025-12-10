@@ -17,6 +17,7 @@ import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.discord.BotError
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
@@ -121,9 +122,11 @@ class SyncWikiDataUseCaseTest {
             throw NotImplementedError("Not used in this use case")
         }
 
-        override suspend fun downloadMoveList(charName: String): Result<List<Move>, WikiError> {
-            _downloadMoveListCalls.add(charName)
-            return downloadMoveListResults[charName]
+        override suspend fun downloadMoveList(
+            characterData: DownloadMoveListUseCase.CharacterData,
+        ): Result<List<Move>, WikiError> {
+            _downloadMoveListCalls.add(characterData.name)
+            return downloadMoveListResults[characterData.name]
                 ?: Result.Success(emptyList())
         }
 
