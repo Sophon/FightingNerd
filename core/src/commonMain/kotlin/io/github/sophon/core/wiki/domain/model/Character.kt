@@ -12,7 +12,7 @@ data class Character(
     val images: Images? = null,
 
     val sf6Properties: SF6Properties? = null,
-    val airDashProperties: AirDashProperties? = null,
+    val ggstProperties: GGSTProperties? = null,
     val mkProperties: MK1Properties? = null,
 ) {
     @Serializable
@@ -44,7 +44,7 @@ data class Character(
     )
 
     @Serializable
-    data class AirDashProperties(
+    data class GGSTProperties(
         val defense: String?,
         val guts: String?,
         val guardBalance: String?,

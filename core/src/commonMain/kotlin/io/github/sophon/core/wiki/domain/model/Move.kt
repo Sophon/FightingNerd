@@ -17,7 +17,7 @@ data class Move(
     val active: String? = null,
     val cancel: String? = null,
     val recovery: String? = null,
-    val guard: String? = null,
+    val guard: String? = null, //also called level in some games
     val invulnerability: String? = null,
 
     val notes: List<String> = listOf(),
@@ -29,7 +29,7 @@ data class Move(
     val sf6Properties: SF6Properties? = null,
     val koF15Properties: KOF15Properties? = null,
     val cotwProperties: COTWProperties? = null,
-    val airDashProperties: AirDashProperties? = null,
+    val ggstProperties: GGSTProperties? = null,
     val mkProperties: MKProperties? = null,
 ) {
     @Serializable
@@ -93,14 +93,11 @@ data class Move(
     )
 
     @Serializable
-    data class AirDashProperties(
+    data class GGSTProperties(
         val chara: String? = null,
         val name: String? = null,
         val input: String? = null,
         val damage: String? = null,
-        val level: String? = null,
-        val images: List<String>? = null,
-        val hitboxes: List<String>? = null,
         val notes: List<String>? = null,
         val type: String? = null,
         val riscGain: String? = null,
@@ -110,7 +107,6 @@ data class Move(
         val chipRatio: String? = null,
         val otgType: String? = null,
         val prorate: String? = null,
-        val invuln: String? = null,
         val cancel: String? = null,
     )
 

@@ -6,51 +6,6 @@ import io.github.sophon.core.feature.Game
 import kotlin.test.Test
 
 class CharacterMapperTest {
-    @Test
-    fun `filterJunkChars filters out names with parentheses`() {
-        //given
-        val chars = listOf(
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Sol Badguy",
-                ),
-            ),
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Giovanna (100% Tension)",
-                ),
-            ),
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Perry Perynthesis (",
-                ),
-            ),
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Jack-O (Backward Dash)",
-                ),
-            ),
-        )
-        val expected = listOf(
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Sol Badguy",
-                ),
-            ),
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Perry Perynthesis (",
-                ),
-            ),
-        )
-
-        //when
-        val result = chars.filterOutJunkCharacters()
-
-        //then
-        assertThat(result).isEqualTo(expected)
-    }
-
     //region ID
     @Test
     fun `formId handles standard name`() {

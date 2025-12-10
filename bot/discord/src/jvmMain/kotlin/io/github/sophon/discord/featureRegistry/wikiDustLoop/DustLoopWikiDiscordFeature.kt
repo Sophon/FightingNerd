@@ -152,7 +152,7 @@ internal class DustLoopWikiDiscordFeature(
             thumbnail { url = iconUrl }
         }
 
-        val properties = character.airDashProperties
+        val properties = character.ggstProperties
         val moves = fastestMoveList.joinToString(", ") { it.input }
         val startup = fastestMoveList.first().startup.orDash()
 
@@ -267,13 +267,12 @@ internal class DustLoopWikiDiscordFeature(
         optionalField(name = "Invulnerability", value = move.invulnerability)
         optionalField(name = "Counter", value = move.onCH)
 
-        optionalField(name = "Level", value = move.airDashProperties?.level)
-        optionalField(name = "Risc gain", value = move.airDashProperties?.riscGain)
-        optionalField(name = "Risc loss", value = move.airDashProperties?.riscLoss)
-        optionalField(name = "Cancel", value = move.airDashProperties?.cancel)
-        optionalField(name = "Prorate", value = move.airDashProperties?.prorate)
-        optionalField(name = "Input tension", value = move.airDashProperties?.inputTension)
-        optionalField(name = "Chip", value = move.airDashProperties?.chipRatio)
+        optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
+        optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
+        optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
+        optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
+        optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
+        optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
 
         createNotes(move)
 

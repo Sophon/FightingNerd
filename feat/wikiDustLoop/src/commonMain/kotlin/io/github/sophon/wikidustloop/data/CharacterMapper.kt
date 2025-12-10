@@ -17,7 +17,7 @@ internal fun CharacterListResponseDto.toDomain(
     gameId: String,
 ): List<Character> {
     return cargoQuery
-        .filterOutJunkCharacters()
+//        .filterOutJunkCharacters()
         .map { query ->
             val dto = query.title
             val queryName = dto.name.formCharacterQueryName()
@@ -32,7 +32,7 @@ internal fun CharacterListResponseDto.toDomain(
                     iconUrl = dto.icon.let { imageUrlMap[it] },
                     bannerUrl = dto.portrait.let { imageUrlMap[it] },
                 ),
-                airDashProperties = Character.AirDashProperties(
+                ggstProperties = Character.GGSTProperties(
                     defense = dto.defense,
                     guts = dto.guts,
                     guardBalance = dto.guardBalance,
@@ -68,13 +68,6 @@ internal fun CharacterListResponseDto.toDomain(
                 ),
             )
         }
-}
-
-internal fun List<CargoQueryItem>.filterOutJunkCharacters(): List<CargoQueryItem> {
-    return filterNot {
-        val name = it.title.name.orEmpty()
-        name.contains("(") && name.contains(")")
-    }
 }
 
 internal fun String?.formCharacterId(): String {
