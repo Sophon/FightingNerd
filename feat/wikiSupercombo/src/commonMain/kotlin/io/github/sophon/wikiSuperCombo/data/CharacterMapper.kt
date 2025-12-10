@@ -1,6 +1,7 @@
 package io.github.sophon.wikiSuperCombo.data
 
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
 
@@ -88,30 +89,6 @@ private fun String?.createId(): String {
 
 private fun createWikiUrlFrom(gameId: String, name: String): String {
     return "$WIKI_BASE_URL/$gameId/$name"
-}
-
-private fun String.createAliases(): List<String> {
-    return buildList {
-        split(
-            " ",
-            "-",
-            "_",
-            ".",
-        )
-            .filter { it.isNotBlank() }
-            .takeIf { it.size > 1 }
-            ?.apply {
-                add(joinToString("") { it.first().lowercase() })
-            }
-            ?.let { words ->
-                if (words.first().length > 2) {
-                    add(words.first().lowercase())
-                }
-                if (words.size == 2) {
-                    add(words.last().lowercase())
-                }
-            }
-    }
 }
 
 internal fun List<Character>.filterOutKameos(): List<Character> {
