@@ -3,6 +3,7 @@ package io.github.sophon.wikidustloop.data
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wikidustloop.BASE_URL
 import io.github.sophon.wikidustloop.LIMIT_CHARACTERS
@@ -13,7 +14,10 @@ import io.ktor.client.request.parameter
 
 internal interface DustLoopDataSource {
     suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
-    suspend fun downloadMoveList(table: String, charName: String): Result<MoveListResponseDto, DataError.Remote>
+    suspend fun downloadMoveList(
+        table: String,
+        characterData: DownloadMoveListUseCase.CharacterData,
+    ): Result<MoveListResponseDto, DataError.Remote>
     suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
 }
 
@@ -34,7 +38,7 @@ internal class DustLoopDataSourceImpl(
 
     override suspend fun downloadMoveList(
         table: String,
-        charName: String
+        characterData: DownloadMoveListUseCase.CharacterData,
     ): Result<MoveListResponseDto, DataError.Remote> {
         return safeCall {
             httpClient.get(BASE_URL) {
@@ -43,7 +47,7 @@ internal class DustLoopDataSourceImpl(
                 parameter("limit", LIMIT_MOVES)
                 parameter("format", "json")
                 parameter("fields", getMoveFields())
-                parameter("where", "chara='$charName'")
+                parameter("where", "chara='${characterData.name}'")
             }
         }
     }

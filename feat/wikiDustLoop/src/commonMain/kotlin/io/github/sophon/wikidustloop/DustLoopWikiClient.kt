@@ -78,16 +78,16 @@ class DustLoopWikiClient(
     }
 
     override suspend fun downloadMoveList(
-        charName: String
+        characterData: DownloadMoveListUseCase.CharacterData,
     ): Result<List<Move>, WikiError> {
-        return downloadMoveListUseCase.invoke(gameTables, charName)
+        return downloadMoveListUseCase.invoke(gameTables, characterData)
             .onSuccess { moveList ->
                 Napier.i(tag = TAG) {
-                    "${charName}: ${moveList.size} moves downloaded"
+                    "${characterData.name}: ${moveList.size} moves downloaded"
                 }
             }
             .onError {
-                Napier.e(tag = TAG) { "downloadMoveList($charName): $charName" }
+                Napier.e(tag = TAG) { "downloadMoveList(${characterData.name}): $it" }
             }
     }
 
