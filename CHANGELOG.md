@@ -2,6 +2,7 @@
 
 ## [v1.1.2] - TODO
 - fixed SuperCombo games not showing hitbox
+- Wavu embed displays character image
 - DustLoop v1.0.2
   - fixed formatting issues
 - Supercombo v1.0.3
