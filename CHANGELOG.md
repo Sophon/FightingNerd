@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v1.2.0] - 2025-12-11
+- SuperCombo and DustLoop embeds display character image
+
 ## [v1.1.2] - 2025-12-10
 - fixed SuperCombo games not showing hitbox
 - Wavu embed displays character image
