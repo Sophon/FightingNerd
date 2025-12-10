@@ -31,6 +31,7 @@ data class MoveEntity(
     val notes: String?,
     val aliases: String?,
 
+    val urlsCharacterImage: String?,
     val urlsChracterWiki: String?,
     val urlsVideoId: String?,
     val urlsHitboxImage: String?,
