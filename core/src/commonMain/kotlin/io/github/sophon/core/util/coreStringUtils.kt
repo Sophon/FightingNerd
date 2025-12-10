@@ -123,12 +123,12 @@ fun String.createAliases(): List<String> {
                 add(joinToString("") { it.first().lowercase() })
             }
             ?.let { words ->
-                if (words.first().length > 2) {
+                if (words.first().length >= 2) {
                     add(words.first().lowercase())
                 }
-                if (words.size == 2) {
+                if (words.size >= 2 && words.last().length >= 2) {
                     add(words.last().lowercase())
                 }
             }
-    }
+    }.distinct()
 }
