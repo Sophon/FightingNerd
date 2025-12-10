@@ -215,6 +215,67 @@ class CharacterMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `createAliases handles numbers`() {
+        //given
+        val char = "Android 16"
+        val expected = listOf(
+            "a16",
+        )
+
+        //when
+        val result = char.createAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `createAliases handles parenthesis`() {
+        //given
+        val char = "Gogeta (SSGSS)"
+        val expected = listOf(
+            "gogetassgss",
+        )
+
+        //when
+        val result = char.createAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `createAliases handles parenthesis with words`() {
+        //given
+        val char = "Goku (Super Saiyan)"
+        val expected = listOf(
+            "gokuss",
+        )
+
+        //when
+        val result = char.createAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `createAliases handles numbers and parenthesis`() {
+        //given
+        val char = "Android 21 (Lab Coat)"
+        val expected = listOf(
+            "a21",
+            "a21lc",
+        )
+
+        //when
+        val result = char.createAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region toClickable
