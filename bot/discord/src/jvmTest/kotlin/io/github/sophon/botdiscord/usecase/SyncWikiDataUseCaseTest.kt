@@ -9,16 +9,15 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.Test
@@ -155,6 +154,7 @@ class SyncWikiDataUseCaseTest {
         }
     }
     //endregion
+
     //region Success Scenarios
     @Test
     fun `invoke - single wiki with single character and moves succeeds`() = runTest {
@@ -266,6 +266,7 @@ class SyncWikiDataUseCaseTest {
         assertThat(wiki.cacheMoveListCalls.first().second).isEmpty()
     }
     //endregion
+
     //region Download Character List Failures
     @Test
     fun `invoke - downloadCharacterList fails does not clear cache`() = runTest {
@@ -284,6 +285,7 @@ class SyncWikiDataUseCaseTest {
         assertThat(wiki.cacheCharacterListCalls).isEmpty()
     }
     //endregion
+
     //region Download Move List Failures
     @Test
     fun `invoke - downloadMoveList fails for one character returns first error`() = runTest {
@@ -352,6 +354,7 @@ class SyncWikiDataUseCaseTest {
         assertThat(wiki.downloadMoveListCalls).hasSize(3)
     }
     //endregion
+
     //region Clear Cache Failures
     @Test
     fun `invoke - clearCache fails stops execution and returns error`() = runTest {
@@ -374,6 +377,7 @@ class SyncWikiDataUseCaseTest {
         assertThat(wiki.cacheMoveListCalls).isEmpty()
     }
     //endregion
+
     //region Cache Character List Failures
     @Test
     fun `invoke - cacheCharacterList fails after clearCache returns error`() = runTest {
@@ -396,6 +400,7 @@ class SyncWikiDataUseCaseTest {
         assertThat(wiki.cacheMoveListCalls).isEmpty()
     }
     //endregion
+
     //region Cache Move List Failures
     @Test
     fun `invoke - cacheMoveList fails for one character returns error`() = runTest {
@@ -447,6 +452,7 @@ class SyncWikiDataUseCaseTest {
         assertThat(wiki.clearCacheCalls).isEqualTo(1)
     }
     //endregion
+
     //region Multiple Wiki Scenarios
     @Test
     fun `invoke - first wiki succeeds second wiki fails returns error`() = runTest {
@@ -504,6 +510,7 @@ class SyncWikiDataUseCaseTest {
         assertThat(result).isInstanceOf(Result.Success::class)
     }
     //endregion
+
     //region Edge Cases
     @Test
     fun `invoke - character with empty queryName uses empty string for download`() = runTest {

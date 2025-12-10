@@ -31,8 +31,11 @@ internal class SyncWikiDataUseCase {
                     wiki.clearCache()
                         .mapError { it.toDomainError() }
                         .flatMap {
-                            cacheCharacterList(wiki, characterMoveListPairList.map { it.first })
-                                .map { characterMoveListPairList }
+                            val filteredPairList = characterMoveListPairList.filterOutCharsWithNoMoves()
+                            cacheCharacterList(
+                                wiki = wiki,
+                                characterList = filteredPairList.map { it.first }
+                            ).map { filteredPairList }
                         }
                 }
                 .flatMap { characterMoveListPairList ->
@@ -110,6 +113,10 @@ internal class SyncWikiDataUseCase {
             }
             .firstOrNull { it is Result.Error }
             ?: Result.Success(Unit)
+    }
+
+    private fun List<Pair<Character, List<Move>>>.filterOutCharsWithNoMoves(): List<Pair<Character, List<Move>>> {
+        return filter { it.second.isNotEmpty() }
     }
 
 
