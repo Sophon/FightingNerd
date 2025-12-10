@@ -13,7 +13,7 @@ data class Character(
 
     val sf6Properties: SF6Properties? = null,
     val airDashProperties: AirDashProperties? = null,
-    val mkProperties: MortalKombatProperties? = null,
+    val mkProperties: MK1Properties? = null,
 ) {
     @Serializable
     data class Images(
@@ -80,7 +80,7 @@ data class Character(
     )
 
     @Serializable
-    data class MortalKombatProperties(
+    data class MK1Properties(
         val hp: String? = null,
         val hpMod: String? = null,
         val throwDmg: String? = null,

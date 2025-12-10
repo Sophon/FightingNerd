@@ -12,11 +12,11 @@ internal fun CharacterListResponseDto.toDomain(
         .map { dto ->
             val charDto = dto.title
             val sf6Properties: Character.SF6Properties?
-            val mkProperties: Character.MortalKombatProperties?
+            val mkProperties: Character.MK1Properties?
 
             when (gameId) {
                 Game.MK1.id -> {
-                    mkProperties = Character.MortalKombatProperties(
+                    mkProperties = Character.MK1Properties(
                         hp = charDto.hp,
                         hpMod = charDto.hpmod,
                         throwDmg = charDto.throwdmg,
