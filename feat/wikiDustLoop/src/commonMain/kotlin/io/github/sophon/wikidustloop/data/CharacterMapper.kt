@@ -32,7 +32,7 @@ internal fun CharacterListResponseDto.toDomain(
                     iconUrl = dto.icon.let { imageUrlMap[it] },
                     bannerUrl = dto.portrait.let { imageUrlMap[it] },
                 ),
-                airDashProperties = Character.AirDashProperties(
+                ggstProperties = Character.GGSTProperties(
                     defense = dto.defense,
                     guts = dto.guts,
                     guardBalance = dto.guardBalance,

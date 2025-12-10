@@ -43,12 +43,11 @@ internal fun MoveListResponseDto.toDomain(
                 wikiUrl = formMoveWikiUrl(gameId, dto),
             ),
 
-            airDashProperties = Move.AirDashProperties(
+            ggstProperties = Move.GGSTProperties(
                 chara = dto.chara,
                 name = dto.name,
                 input = dto.input,
                 damage = dto.damage,
-                level = dto.level,
                 type = dto.type,
                 riscGain = dto.riscGain,
                 riscLoss = dto.riscLoss,
@@ -57,7 +56,6 @@ internal fun MoveListResponseDto.toDomain(
                 chipRatio = dto.chipRatio,
                 otgType = dto.OTGType,
                 prorate = dto.prorate,
-                invuln = dto.invuln,
                 cancel = dto.cancel,
             )
         )
