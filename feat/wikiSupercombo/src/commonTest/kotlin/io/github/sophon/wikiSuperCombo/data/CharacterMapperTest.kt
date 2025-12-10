@@ -5,7 +5,6 @@ import assertk.assertions.*
 import io.github.sophon.core.wiki.domain.model.Character
 import kotlin.test.Test
 
-//region toDomain Tests
 class CharacterMapperTest {
     val gameId = "Street_Fighter_6"
 
@@ -312,4 +311,3 @@ class CharacterMapperTest {
         assertThat(result[0]).isEqualTo(expectedCharacter)
     }
 }
-//endregion

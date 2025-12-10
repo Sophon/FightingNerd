@@ -1,5 +1,6 @@
 package io.github.sophon.wikiSuperCombo.data
 
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
 
@@ -10,6 +11,45 @@ internal fun CharacterListResponseDto.toDomain(
     val characterList = cargoquery
         .map { dto ->
             val charDto = dto.title
+            val sf6Properties: Character.SF6Properties?
+            val mkProperties: Character.MortalKombatProperties?
+
+            when (gameId) {
+                Game.MK1.id -> {
+                    mkProperties = Character.MortalKombatProperties(
+                        hp = charDto.hp,
+                        hpMod = charDto.hpmod,
+                        throwDmg = charDto.throwdmg,
+                    )
+                    sf6Properties = null
+                }
+                Game.StreetFighter6.id -> {
+                    sf6Properties = Character.SF6Properties(
+                        fwdWalkSpd = charDto.fwdWalkSpd,
+                        bwdWalkSpd = charDto.bwdWalkSpd,
+                        fwdDashSpd = charDto.fwdDashSpd,
+                        bwdDashSpd = charDto.bwdDashSpd,
+                        fwdDashDist = charDto.fwdDashDist,
+                        bwdDashDist = charDto.bwdDashDist,
+                        dRushMin = charDto.dRushMin,
+                        dRushBlock = charDto.dRushBlock,
+                        dRushMax = charDto.dRushMax,
+                        throwRange = charDto.throwRange,
+                        throwHurtbox = charDto.throwHurtbox,
+                        jumpSpd = charDto.jumpSpd,
+                        jumpApex = charDto.jumpApex,
+                        fwdJumpDist = charDto.fwdJumpDist,
+                        bwdJumpDist = charDto.bwdJumpDist,
+                        hp = charDto.hp,
+                    )
+                    mkProperties = null
+                }
+                else -> {
+                    mkProperties = null
+                    sf6Properties = null
+                }
+            }
+
             Character(
                 id = charDto.Character.createId(),
                 displayName = charDto.name,
@@ -20,29 +60,8 @@ internal fun CharacterListResponseDto.toDomain(
                     iconUrl = charDto.icon.let { imageUrlMap[it] },
                     bannerUrl = charDto.portrait.let { imageUrlMap[it] },
                 ),
-                sf6Properties = Character.SF6Properties(
-                    fwdWalkSpd = charDto.fwdWalkSpd,
-                    bwdWalkSpd = charDto.bwdWalkSpd,
-                    fwdDashSpd = charDto.fwdDashSpd,
-                    bwdDashSpd = charDto.bwdDashSpd,
-                    fwdDashDist = charDto.fwdDashDist,
-                    bwdDashDist = charDto.bwdDashDist,
-                    dRushMin = charDto.dRushMin,
-                    dRushBlock = charDto.dRushBlock,
-                    dRushMax = charDto.dRushMax,
-                    throwRange = charDto.throwRange,
-                    throwHurtbox = charDto.throwHurtbox,
-                    jumpSpd = charDto.jumpSpd,
-                    jumpApex = charDto.jumpApex,
-                    fwdJumpDist = charDto.fwdJumpDist,
-                    bwdJumpDist = charDto.bwdJumpDist,
-                    hp = charDto.hp,
-                ),
-                mkProperties = Character.MortalKombatProperties(
-                    hp = charDto.hp,
-                    hpMod = charDto.hpmod,
-                    throwDmg = charDto.throwdmg,
-                )
+                sf6Properties = sf6Properties,
+                mkProperties = mkProperties,
             )
         }
         .filterOutKameos()
