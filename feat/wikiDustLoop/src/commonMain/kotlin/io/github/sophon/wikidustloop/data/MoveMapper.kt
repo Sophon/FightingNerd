@@ -57,6 +57,16 @@ internal fun MoveListResponseDto.toDomain(
                 otgType = dto.OTGType,
                 prorate = dto.prorate,
                 cancel = dto.cancel,
+            ),
+            dbfzProperties = Move.DBFZProperties(
+                attribute = dto.attribute,
+                smash = dto.smash,
+                kiGain = dto.kigain,
+                prorate = dto.prorate,
+                blockStun = dto.blockstun,
+                groundHit = dto.groundHit,
+                airHit = dto.airHit,
+                type = dto.type,
             )
         )
     }

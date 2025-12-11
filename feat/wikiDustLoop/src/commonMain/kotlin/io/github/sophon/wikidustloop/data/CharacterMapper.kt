@@ -66,6 +66,10 @@ internal fun CharacterListResponseDto.toDomain(
                     boostAttack = dto.boostAttack,
                     boostDefense = dto.boostDefense,
                 ),
+                dbfzProperties = Character.DBFZProperties(
+                    kiMod = dto.kimod,
+                    umo = dto.umo,
+                )
             )
         }
 }
@@ -100,12 +104,92 @@ internal fun String?.formWikiUrl(gameId: String): String {
 internal fun String?.createAliases(): List<String> {
     return buildList {
         val original = this@createAliases.orEmpty()
+        if (original.isBlank()) return@buildList
+
+        // Handle hyphen-number pattern (e.g., "Zato-1")
+        if (original.contains(Regex("-\\d+"))) {
+            val baseName = original.substringBeforeLast("-")
+            add(baseName.lowercase())
+            return@buildList
+        }
+
+        // Check for parenthesis
+        val hasParenthesis = original.contains("(") && original.contains(")")
+
+        if (hasParenthesis) {
+            val mainPart = original.substringBefore("(").trim()
+            val variantPart = original.substringAfter("(").substringBefore(")").trim()
+
+            val cleanedMain = mainPart.replace("-", "").replace(".", "")
+            val mainWords = cleanedMain.split(" ").filter { it.isNotBlank() }
+
+            val cleanedVariant = variantPart.replace("-", "").replace(".", "")
+            val variantWords = cleanedVariant.split(" ").filter { it.isNotBlank() }
+
+            // Extract number from main part
+            val numberWord = mainWords.firstOrNull { it.any { char -> char.isDigit() } }
+            val number = numberWord?.filter { it.isDigit() }
+
+            if (number != null) {
+                // "Android 21 (Lab Coat)" → ["a21", "a21lc"]
+                val firstWordInitial = mainWords.first().first().lowercase()
+                add(firstWordInitial + number)
+
+                if (variantWords.isNotEmpty()) {
+                    val variantInitials = variantWords.joinToString("") { it.first().lowercase() }
+                    add(firstWordInitial + number + variantInitials)
+                }
+            } else if (mainWords.size == 1) {
+                if (variantWords.size == 1) {
+                    // "Gogeta (SSGSS)" → "gogetassgss"
+                    add(mainWords.first().lowercase() + variantWords.first().lowercase())
+                } else if (variantWords.size > 1) {
+                    // "Goku (Super Saiyan)" → "gokuss"
+                    val variantInitials = variantWords.joinToString("") { it.first().lowercase() }
+                    add(mainWords.first().lowercase() + variantInitials)
+                }
+            }
+            return@buildList
+        }
+
+        // No parenthesis - check for numbers first
+        val cleaned = original.replace("-", "").replace(".", "")
+        val words = cleaned.split(" ").filter { it.isNotBlank() }
+
+        if (words.size <= 1) return@buildList
+
+        // Check if any word contains a number
+        val numberWord = words.firstOrNull { it.any { char -> char.isDigit() } }
+        if (numberWord != null) {
+            // "Android 16" → "a16"
+            val number = numberWord.filter { it.isDigit() }
+            val firstWordInitial = words.first().first().lowercase()
+            add(firstWordInitial + number)
+            return@buildList
+        }
+
+        // Regular processing for multi-word names without numbers
+        // Create initials from all words
+        add(words.joinToString("") { it.first().lowercase() })
+
+        // Add individual words with length > 1
+        words.forEach { word ->
+            if (word.length > 1) {
+                add(word.lowercase())
+            }
+        }
+    }
+}
+
+internal fun String?.createAliases2(): List<String> {
+    return buildList {
+        val original = this@createAliases2.orEmpty()
         if (original.contains(Regex("-\\d+"))) {
             val baseName = original.substringBeforeLast("-")
             add(baseName.lowercase())
         }
 
-        this@createAliases
+        this@createAliases2
             .orEmpty()
             .replace("-", "")
             .replace(".", "")
