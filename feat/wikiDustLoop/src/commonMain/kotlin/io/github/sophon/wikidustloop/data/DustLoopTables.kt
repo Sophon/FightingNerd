@@ -13,6 +13,10 @@ internal object DustLoopTables {
             character = TABLE_DBFZ_CHARACTERS,
             moves = TABLE_DBFZ_MOVE_LIST,
         ),
+        Game.GBVSR.id to QueryTable(
+            character = TABLE_GBVSR_CHARACTERS,
+            moves = TABLE_GBVSR_MOVE_LIST,
+        )
     )
 
     fun getTable(gameId: String): QueryTable? {

@@ -15,6 +15,7 @@ object DustLoopFeatureInfo {
         supportedGameSet = setOf(
             Game.GGST,
             Game.DBFZ,
+            Game.GBVSR,
         ),
         version = BuildKonfig.VERSION,
     )
