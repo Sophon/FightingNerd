@@ -38,7 +38,7 @@ internal fun MoveListResponseDto.toDomain(
                 characterImage = characterData.imageUrl,
                 hitboxImageList = dto.hitboxes
                     .orEmpty()
-                    .split(";")
+                    .split(";", "\\")
                     .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
                 wikiUrl = formMoveWikiUrl(gameId, dto),
             ),
