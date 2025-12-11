@@ -31,6 +31,7 @@ internal fun MoveListResponseDto.toDomain(
             recovery = dto.recovery?.cleanHtml(),
             guard = dto.guard?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
+            aliases = dto.input.formAliases(),
 
             notes = dto.notes.formNotes(),
 
@@ -103,4 +104,14 @@ internal fun String?.formNotes(): List<String> {
 
 internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
     return "${dto.chara.formWikiUrl(gameId)}#${dto.input}"
+}
+
+internal fun String?.formAliases(): List<String> {
+    if (this == null) return emptyList()
+
+    val regex = """^(.+)\[([^]]+)]$""".toRegex()
+    val match = regex.find(this) ?: return emptyList()
+
+    val (base, suffix) = match.destructured
+    return listOf("${suffix.lowercase()}.${base.lowercase()}")
 }
