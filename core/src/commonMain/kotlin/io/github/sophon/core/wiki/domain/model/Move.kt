@@ -17,7 +17,7 @@ data class Move(
     val active: String? = null,
     val cancel: String? = null,
     val recovery: String? = null,
-    val guard: String? = null, //also called level in some games
+    val guard: String? = null,
     val invulnerability: String? = null,
 
     val notes: List<String> = listOf(),
@@ -109,6 +109,7 @@ data class Move(
         val otgType: String? = null,
         val prorate: String? = null,
         val cancel: String? = null,
+        val level: String? = null,
     )
 
     @Serializable
@@ -121,6 +122,7 @@ data class Move(
         val groundHit: String? = null,
         val airHit: String? = null,
         val type: String? = null,
+        val level: String? = null,
     )
 
     @Serializable

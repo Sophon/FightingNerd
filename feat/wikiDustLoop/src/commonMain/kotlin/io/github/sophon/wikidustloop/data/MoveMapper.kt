@@ -29,7 +29,7 @@ internal fun MoveListResponseDto.toDomain(
             active = dto.active?.cleanHtml(),
             cancel = dto.cancel?.cleanHtml(),
             recovery = dto.recovery?.cleanHtml(),
-            guard = dto.level?.cleanHtml(),
+            guard = dto.guard?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
 
             notes = dto.notes.formNotes(),
@@ -57,6 +57,7 @@ internal fun MoveListResponseDto.toDomain(
                 otgType = dto.OTGType,
                 prorate = dto.prorate,
                 cancel = dto.cancel,
+                level = dto.level,
             ),
             dbfzProperties = Move.DBFZProperties(
                 attribute = dto.attribute,
@@ -67,6 +68,7 @@ internal fun MoveListResponseDto.toDomain(
                 groundHit = dto.groundHit,
                 airHit = dto.airHit,
                 type = dto.type,
+                level = dto.level,
             )
         )
     }

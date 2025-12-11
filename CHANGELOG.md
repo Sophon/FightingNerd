@@ -4,6 +4,7 @@
 - SuperCombo and DustLoop embeds display character image
 - DustLoop v1.0.3
   - DBFZ is implemented but disabled due to aliases
+  - Level property
 
 ## [v1.1.2] - 2025-12-10
 - fixed SuperCombo games not showing hitbox

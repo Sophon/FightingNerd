@@ -15,6 +15,7 @@ import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.util.getLevel
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.data.InMemoryCharacterListDB
@@ -320,6 +321,7 @@ internal class DustLoopWikiDiscordFeature(
         optionalField(name = "Invulnerability", value = move.invulnerability)
         optionalField(name = "Counter", value = move.onCH)
 
+        optionalField(name = "Level", value = move.getLevel())
         optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
         optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
         optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
