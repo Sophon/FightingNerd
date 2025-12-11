@@ -1,6 +1,7 @@
 # BOT CHANGELOG
 
 ## [v1.2.0] - 2025-12-11
+- can search moves via its alias (ie `ak giant swing`)
 - SuperCombo and DustLoop embeds display character image
 - DustLoop v1.0.3
   - GBVSR support
