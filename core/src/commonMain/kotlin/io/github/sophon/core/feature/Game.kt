@@ -10,16 +10,24 @@ enum class Game(
         iconUrl = "https://i.imgur.com/Yl6j809.png",
         wikiUrl = "https://wavu.wiki/t/Main_Page",
     ),
+
     StreetFighter6(
         id = "Street_Fighter_6",
         iconUrl = "https://i.imgur.com/N9wYA5K.png",
         wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6",
     ),
+    MK1(
+        id = "Mortal_Kombat_1",
+        iconUrl = "https://i.imgur.com/4OcVxqP.png",
+        wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1"
+    ),
+
     Xko(
         id = "XKO",
         iconUrl = "https://i.imgur.com/XtHOd6T.png",
         wikiUrl = "https://wiki.play2xko.com/en-us/",
     ),
+
     KoFXV(
         id = "The_King_of_Fighters_XV",
         iconUrl = "https://i.imgur.com/Zlin7xi.png",
@@ -30,14 +38,15 @@ enum class Game(
         iconUrl = "https://i.imgur.com/ucbtSgx.png",
         wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves",
     ),
+
     GGST(
         id = "GGST",
         iconUrl = "https://i.imgur.com/07yTLtj.png",
         wikiUrl = "https://www.dustloop.com/w/GGST",
     ),
-    MK1(
-        id = "Mortal_Kombat_1",
-        iconUrl = "https://i.imgur.com/4OcVxqP.png",
-        wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1"
-    )
+    DBFZ(
+        id = "DBFZ",
+        iconUrl = "https://i.imgur.com/UuX6ZYv.png",
+        wikiUrl = "https://www.dustloop.com/w/DBFZ",
+    ),
 }

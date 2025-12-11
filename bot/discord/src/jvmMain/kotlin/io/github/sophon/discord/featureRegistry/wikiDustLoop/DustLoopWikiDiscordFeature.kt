@@ -71,6 +71,44 @@ internal class DustLoopWikiDiscordFeature(
                     description = "Character name",
                 )
             )
+        ),
+        SupportedCommand(
+            command = Command.FDGGST,
+            description = "GGST frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
+                )
+            )
+        ),
+        SupportedCommand(
+            command = Command.CHARDBFZ,
+            description = "DBFZ character data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
+        SupportedCommand(
+            command = Command.FDDBFZ,
+            description = "DBFZ frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
+                )
+            ),
         )
     )
     private val wikis = mutableMapOf<String, WikiClient>()
@@ -108,7 +146,7 @@ internal class DustLoopWikiDiscordFeature(
         return when (command) {
             Command.FD -> {
                 var lastError: BotError? = null
-                for ((gameId, wiki) in wikis) {
+                for ((_, wiki) in wikis) {
                     when (val result = searchMove(wiki, query)) {
                         is Result.Success -> return result
                         is Result.Error -> lastError = result.error
@@ -120,6 +158,21 @@ internal class DustLoopWikiDiscordFeature(
                 val wiki = wikis[Game.GGST.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
+            }
+            Command.FDGGST -> {
+                val wiki = wikis[Game.GGST.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
+            }
+            Command.CHARDBFZ -> {
+                val wiki = wikis[Game.DBFZ.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchCharacter(wiki, query)
+            }
+            Command.FDDBFZ -> {
+                val wiki = wikis[Game.DBFZ.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }

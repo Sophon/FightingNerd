@@ -38,4 +38,6 @@ enum class Command {
     //dustloop wiki
     FDGGST,
     CHARGGST,
+    CHARDBFZ,
+    FDDBFZ,
 }

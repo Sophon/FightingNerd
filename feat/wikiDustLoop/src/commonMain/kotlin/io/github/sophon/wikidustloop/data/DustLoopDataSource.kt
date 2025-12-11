@@ -31,7 +31,7 @@ internal class DustLoopDataSourceImpl(
                 parameter("tables", table)
                 parameter("limit", LIMIT_CHARACTERS)
                 parameter("format", "json")
-                parameter("fields", getCharacterFields())
+                parameter("fields", getCharacterFields(table))
             }
         }
     }
@@ -46,7 +46,7 @@ internal class DustLoopDataSourceImpl(
                 parameter("tables", table)
                 parameter("limit", LIMIT_MOVES)
                 parameter("format", "json")
-                parameter("fields", getMoveFields())
+                parameter("fields", getMoveFields(table))
                 parameter("where", "chara='${characterData.name}'")
             }
         }
@@ -63,78 +63,127 @@ internal class DustLoopDataSourceImpl(
     }
 
 
-    private fun getCharacterFields(): String {
-        val allFields = listOf(
-            "name",
-            "defense",
-            "guts",
-            "guardBalance",
-            "prejump",
-            "backdash",
-            "backdashDuration",
-            "backdashInvuln",
-            "backdashAirborne",
-            "backdashDistance",
-            "forwarddash",
-            "umo",
-            "jump_duration",
-            "high_jump_duration",
-            "jump_height",
-            "high_jump_height",
-            "earliest_iad",
-            "ad_duration",
-            "abd_duration",
-            "ad_distance",
-            "abd_distance",
-            "movement_tension",
-            "jump_tension",
-            "airdash_tension",
-            "walk_speed",
-            "back_walk_speed",
-            "dash_initial_speed",
-            "dash_acceleration",
-            "dash_friction",
-            "jump_gravity",
-            "high_jump_gravity",
-            "boost_attack",
-            "boost_defense",
-            "portrait",
-            "icon",
-            "nav_image"
-        )
+    private fun getCharacterFields(table: String): String {
+        val allFields = when (table) {
+            DustLoopTables.TABLE_DBFZ_CHARACTERS -> {
+                listOf(
+                    "name",
+                    "portrait",
+                    "icon",
+                    "kimod",
+                    "umo"
+                )
+            }
+            DustLoopTables.TABLE_GGST_CHARACTERS -> {
+                listOf(
+                    "name",
+                    "defense",
+                    "guts",
+                    "guardBalance",
+                    "prejump",
+                    "backdash",
+                    "backdashDuration",
+                    "backdashInvuln",
+                    "backdashAirborne",
+                    "backdashDistance",
+                    "forwarddash",
+                    "umo",
+                    "jump_duration",
+                    "high_jump_duration",
+                    "jump_height",
+                    "high_jump_height",
+                    "earliest_iad",
+                    "ad_duration",
+                    "abd_duration",
+                    "ad_distance",
+                    "abd_distance",
+                    "movement_tension",
+                    "jump_tension",
+                    "airdash_tension",
+                    "walk_speed",
+                    "back_walk_speed",
+                    "dash_initial_speed",
+                    "dash_acceleration",
+                    "dash_friction",
+                    "jump_gravity",
+                    "high_jump_gravity",
+                    "boost_attack",
+                    "boost_defense",
+                    "portrait",
+                    "icon",
+                    "nav_image"
+                )
+            }
+            else -> emptyList()
+        }
 
         return allFields.joinToString(",")
     }
 
-    private fun getMoveFields(): String {
-        return listOf(
-            "chara",
-            "name",
-            "input",
-            "damage",
-            "guard",
-            "startup",
-            "active",
-            "recovery",
-            "onBlock",
-            "onHit",
-            "level",
-            "counter",
-            "images",
-            "hitboxes",
-            "notes",
-            "type",
-            "riscGain",
-            "riscLoss",
-            "wallDamage",
-            "inputTension",
-            "chipRatio",
-            "OTGType",
-            "prorate",
-            "invuln",
-            "cancel",
-            "caption",
-            "hitboxCaption"
-        ).joinToString(",")
+    private fun getMoveFields(table: String): String {
+        val allFields = when (table) {
+            DustLoopTables.TABLE_DBFZ_MOVE_LIST -> {
+                listOf(
+                    "chara",
+                    "name",
+                    "input",
+                    "damage",
+                    "guard",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "onBlock",
+                    "attribute",
+                    "smash",
+                    "kigain",
+                    "invuln",
+                    "prorate",
+                    "level",
+                    "blockstun",
+                    "groundHit",
+                    "airHit",
+                    "images",
+                    "hitboxes",
+                    "type",
+                    "notes",
+                    "caption",
+                    "hitboxCaption"
+                )
+            }
+            DustLoopTables.TABLE_GGST_MOVE_LIST -> {
+                listOf(
+                    "chara",
+                    "name",
+                    "input",
+                    "damage",
+                    "guard",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "onBlock",
+                    "onHit",
+                    "level",
+                    "counter",
+                    "images",
+                    "hitboxes",
+                    "notes",
+                    "type",
+                    "riscGain",
+                    "riscLoss",
+                    "wallDamage",
+                    "inputTension",
+                    "chipRatio",
+                    "OTGType",
+                    "prorate",
+                    "invuln",
+                    "cancel",
+                    "caption",
+                    "hitboxCaption"
+                )
+            }
+            else -> emptyList()
+        }
+
+        return allFields.joinToString(",")
     }
 }
