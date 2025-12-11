@@ -29,8 +29,9 @@ internal fun MoveListResponseDto.toDomain(
             active = dto.active?.cleanHtml(),
             cancel = dto.cancel?.cleanHtml(),
             recovery = dto.recovery?.cleanHtml(),
-            guard = dto.level?.cleanHtml(),
+            guard = dto.guard?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
+            aliases = dto.input.formAliases(),
 
             notes = dto.notes.formNotes(),
 
@@ -38,17 +39,16 @@ internal fun MoveListResponseDto.toDomain(
                 characterImage = characterData.imageUrl,
                 hitboxImageList = dto.hitboxes
                     .orEmpty()
-                    .split(";")
+                    .split(";", "\\")
                     .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
                 wikiUrl = formMoveWikiUrl(gameId, dto),
             ),
 
-            airDashProperties = Move.AirDashProperties(
+            ggstProperties = Move.GGSTProperties(
                 chara = dto.chara,
                 name = dto.name,
                 input = dto.input,
                 damage = dto.damage,
-                level = dto.level,
                 type = dto.type,
                 riscGain = dto.riscGain,
                 riscLoss = dto.riscLoss,
@@ -57,9 +57,27 @@ internal fun MoveListResponseDto.toDomain(
                 chipRatio = dto.chipRatio,
                 otgType = dto.OTGType,
                 prorate = dto.prorate,
-                invuln = dto.invuln,
                 cancel = dto.cancel,
-            )
+                level = dto.level,
+            ),
+            dbfzProperties = Move.DBFZProperties(
+                attribute = dto.attribute,
+                smash = dto.smash,
+                kiGain = dto.kigain,
+                prorate = dto.prorate,
+                blockStun = dto.blockstun,
+                groundHit = dto.groundHit,
+                airHit = dto.airHit,
+                type = dto.type,
+                level = dto.level,
+            ),
+            gbvsrProperties = Move.GBVSRProperties(
+                meter = dto.meter,
+                level = dto.level,
+                cooldown = dto.cooldown,
+                cls = dto.cls,
+                type = dto.type,
+            ),
         )
     }
 }
@@ -86,4 +104,14 @@ internal fun String?.formNotes(): List<String> {
 
 internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
     return "${dto.chara.formWikiUrl(gameId)}#${dto.input}"
+}
+
+internal fun String?.formAliases(): List<String> {
+    if (this == null) return emptyList()
+
+    val regex = """^(.+)\[([^]]+)]$""".toRegex()
+    val match = regex.find(this) ?: return emptyList()
+
+    val (base, suffix) = match.destructured
+    return listOf("${suffix.lowercase()}.${base.lowercase()}")
 }

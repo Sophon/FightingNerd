@@ -20,6 +20,7 @@ internal data class CharacterDto(
     val icon: String? = null,
     @SerialName("nav image")
     val navImage: String? = null,
+    val umo: String? = null,
 
     val defense: String? = null,
     val guts: String? = null,
@@ -32,7 +33,6 @@ internal data class CharacterDto(
     val backdashDistance: String? = null,
     @SerialName("forwarddash")
     val forwardDash: String? = null,
-    val umo: String? = null,
     @SerialName("jump duration")
     val jumpDuration: String? = null,
     @SerialName("high jump duration")
@@ -75,4 +75,15 @@ internal data class CharacterDto(
     val boostAttack: String? = null,
     @SerialName("boost defense")
     val boostDefense: String? = null,
+
+    val kimod: String? = null,
+
+    val walk_speed: Float? = null,
+    val backwalk_speed: Float? = null,
+    val dash_initial_speed: Float? = null,
+    val dash_acceleration: String? = null,
+    val relative_walk_speed: Float? = null,
+    val relative_backwalk_speed: Float? = null,
+    val relative_dash_initial_speed: Float? = null,
+    val relative_dash_acceleration: Float? = null,
 )

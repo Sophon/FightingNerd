@@ -1,5 +1,13 @@
 # BOT CHANGELOG
 
+## [v1.2.0] - 2025-12-11
+- can search moves via its alias (ie `ak giant swing`)
+- SuperCombo and DustLoop embeds display character image
+- DustLoop v1.0.3
+  - GBVSR support
+  - DBFZ is implemented but disabled due to aliases
+  - Level property
+
 ## [v1.1.2] - 2025-12-10
 - fixed SuperCombo games not showing hitbox
 - Wavu embed displays character image

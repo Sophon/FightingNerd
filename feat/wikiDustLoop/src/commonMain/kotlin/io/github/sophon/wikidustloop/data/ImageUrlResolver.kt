@@ -21,7 +21,7 @@ internal class ImageUrlResolver(
     ): Result<Map<String, String>, DataError.Remote> {
         val imageFileNames = dto.cargoQuery.flatMap { moveDto ->
             moveDto.title.hitboxes
-                ?.split(";")
+                ?.split(";", "\\")
                 ?.map { it.trim() }
                 ?: emptyList()
         }.distinct()

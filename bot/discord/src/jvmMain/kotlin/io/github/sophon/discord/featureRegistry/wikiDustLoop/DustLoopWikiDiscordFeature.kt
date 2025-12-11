@@ -15,6 +15,7 @@ import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.util.getLevel
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.data.InMemoryCharacterListDB
@@ -71,6 +72,44 @@ internal class DustLoopWikiDiscordFeature(
                     description = "Character name",
                 )
             )
+        ),
+        SupportedCommand(
+            command = Command.FDGGST,
+            description = "GGST frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
+                )
+            )
+        ),
+        SupportedCommand(
+            command = Command.CHARDBFZ,
+            description = "DBFZ character data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
+        SupportedCommand(
+            command = Command.FDDBFZ,
+            description = "DBFZ frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
+                )
+            ),
         )
     )
     private val wikis = mutableMapOf<String, WikiClient>()
@@ -108,7 +147,7 @@ internal class DustLoopWikiDiscordFeature(
         return when (command) {
             Command.FD -> {
                 var lastError: BotError? = null
-                for ((gameId, wiki) in wikis) {
+                for ((_, wiki) in wikis) {
                     when (val result = searchMove(wiki, query)) {
                         is Result.Success -> return result
                         is Result.Error -> lastError = result.error
@@ -120,6 +159,31 @@ internal class DustLoopWikiDiscordFeature(
                 val wiki = wikis[Game.GGST.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
+            }
+            Command.FDGGST -> {
+                val wiki = wikis[Game.GGST.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
+            }
+            Command.CHARDBFZ -> {
+                val wiki = wikis[Game.DBFZ.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchCharacter(wiki, query)
+            }
+            Command.FDDBFZ -> {
+                val wiki = wikis[Game.DBFZ.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
+            }
+            Command.CHARGBVSR -> {
+                val wiki = wikis[Game.GBVSR.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchCharacter(wiki, query)
+            }
+            Command.FDGBVSR -> {
+                val wiki = wikis[Game.GBVSR.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -152,7 +216,7 @@ internal class DustLoopWikiDiscordFeature(
             thumbnail { url = iconUrl }
         }
 
-        val properties = character.airDashProperties
+        val properties = character.ggstProperties
         val moves = fastestMoveList.joinToString(", ") { it.input }
         val startup = fastestMoveList.first().startup.orDash()
 
@@ -250,6 +314,7 @@ internal class DustLoopWikiDiscordFeature(
         url = move.urls.wikiUrl
         description = "**${move.charName}**: ${move.name.orEmpty()}"
         color = Color(RED)
+        move.urls.characterImage?.let { thumbnail { url = it } }
 
         if (move.urls.hitboxImageList.size == 1) {
             image = move.urls.hitboxImageList.first()
@@ -266,13 +331,13 @@ internal class DustLoopWikiDiscordFeature(
         optionalField(name = "Invulnerability", value = move.invulnerability)
         optionalField(name = "Counter", value = move.onCH)
 
-        optionalField(name = "Level", value = move.airDashProperties?.level)
-        optionalField(name = "Risc gain", value = move.airDashProperties?.riscGain)
-        optionalField(name = "Risc loss", value = move.airDashProperties?.riscLoss)
-        optionalField(name = "Cancel", value = move.airDashProperties?.cancel)
-        optionalField(name = "Prorate", value = move.airDashProperties?.prorate)
-        optionalField(name = "Input tension", value = move.airDashProperties?.inputTension)
-        optionalField(name = "Chip", value = move.airDashProperties?.chipRatio)
+        optionalField(name = "Level", value = move.getLevel())
+        optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
+        optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
+        optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
+        optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
+        optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
+        optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
 
         createNotes(move)
 

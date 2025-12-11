@@ -36,6 +36,10 @@ enum class Command {
     FDCOTW,
 
     //dustloop wiki
-    FDGGST,
     CHARGGST,
+    CHARDBFZ,
+    CHARGBVSR,
+    FDGGST,
+    FDDBFZ,
+    FDGBVSR,
 }

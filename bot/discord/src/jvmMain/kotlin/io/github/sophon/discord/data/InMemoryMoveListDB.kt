@@ -16,7 +16,8 @@ import kotlin.time.ExperimentalTime
 class InMemoryMoveListDB: MoveListDB {
     private val database: MutableMap<String, Map<String, Move>> = mutableMapOf()
     private var insertTimeInstant: Instant? = null
-    private val aliasMap: MutableMap<String, String> = mutableMapOf()
+    private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
+    private val moveAliasMap: MutableMap<String, String> = mutableMapOf()
 
     override suspend fun fetchMoveListFor(
         charName: String
@@ -24,7 +25,7 @@ class InMemoryMoveListDB: MoveListDB {
         val characterId = if (database.containsKey(charName)) {
             charName
         } else {
-            aliasMap[charName]
+            charNameAliasMap[charName]
         }
         if (characterId == null)
             return Result.Error(WikiError.UnknownCharacter(charName))
@@ -42,14 +43,20 @@ class InMemoryMoveListDB: MoveListDB {
         val characterId = if (database.containsKey(charName)) {
             charName
         } else {
-            aliasMap[charName]
+            charNameAliasMap[charName]
         }
-        if (characterId == null)
-            return Result.Error(WikiError.UnknownCharacter(charName))
+        if (characterId == null) return Result.Error(WikiError.UnknownCharacter(charName))
 
         val moveList = database[characterId]
             ?: return Result.Error(WikiError.UnknownCharacter(charName))
-        val moveData = moveList[moveQuery]
+
+        val moveId = if(moveList.containsKey(moveQuery)) {
+            moveQuery
+        } else {
+            moveAliasMap[moveQuery]
+        }
+
+        val moveData = moveList[moveId]
             ?: return Result.Error(WikiError.UnknownMove(charName, moveQuery))
 
         return Result.Success(moveData)
@@ -62,18 +69,19 @@ class InMemoryMoveListDB: MoveListDB {
         val moveMap = buildMap {
             moveList.forEach { move ->
                 put(move.input, move)
+                moveAliasMap[move.input] = move.input
                 move.aliases.forEach { alias ->
-                    put(alias, move)
+                    moveAliasMap[alias.replace(" ", "")] = move.input
                 }
             }
         }
         database[character.id] = moveMap
         insertTimeInstant = Clock.System.now()
 
-        aliasMap[character.id] = character.id
+        charNameAliasMap[character.id] = character.id
         character.aliasList.forEach { alias ->
-            if (database.containsKey(alias).not()) {
-                aliasMap[alias] = character.id
+            if (charNameAliasMap.containsKey(alias).not()) {
+                charNameAliasMap[alias] = character.id
             }
         }
 

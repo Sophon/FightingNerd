@@ -29,7 +29,9 @@ data class Move(
     val sf6Properties: SF6Properties? = null,
     val koF15Properties: KOF15Properties? = null,
     val cotwProperties: COTWProperties? = null,
-    val airDashProperties: AirDashProperties? = null,
+    val ggstProperties: GGSTProperties? = null,
+    val dbfzProperties: DBFZProperties? = null,
+    val gbvsrProperties: GBVSRProperties? = null,
     val mkProperties: MKProperties? = null,
 ) {
     @Serializable
@@ -93,14 +95,11 @@ data class Move(
     )
 
     @Serializable
-    data class AirDashProperties(
+    data class GGSTProperties(
         val chara: String? = null,
         val name: String? = null,
         val input: String? = null,
         val damage: String? = null,
-        val level: String? = null,
-        val images: List<String>? = null,
-        val hitboxes: List<String>? = null,
         val notes: List<String>? = null,
         val type: String? = null,
         val riscGain: String? = null,
@@ -110,8 +109,30 @@ data class Move(
         val chipRatio: String? = null,
         val otgType: String? = null,
         val prorate: String? = null,
-        val invuln: String? = null,
         val cancel: String? = null,
+        val level: String? = null,
+    )
+
+    @Serializable
+    data class DBFZProperties(
+        val attribute: String? = null,
+        val smash: String? = null,
+        val kiGain: String? = null,
+        val prorate: String? = null,
+        val blockStun: String? = null,
+        val groundHit: String? = null,
+        val airHit: String? = null,
+        val type: String? = null,
+        val level: String? = null,
+    )
+
+    @Serializable
+    data class GBVSRProperties(
+        val meter: String? = null,
+        val level: String? = null,
+        val cooldown: String? = null,
+        val cls: String? = null,
+        val type: String? = null,
     )
 
     @Serializable

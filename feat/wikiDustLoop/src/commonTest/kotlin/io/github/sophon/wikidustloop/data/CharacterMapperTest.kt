@@ -6,51 +6,6 @@ import io.github.sophon.core.feature.Game
 import kotlin.test.Test
 
 class CharacterMapperTest {
-    @Test
-    fun `filterJunkChars filters out names with parentheses`() {
-        //given
-        val chars = listOf(
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Sol Badguy",
-                ),
-            ),
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Giovanna (100% Tension)",
-                ),
-            ),
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Perry Perynthesis (",
-                ),
-            ),
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Jack-O (Backward Dash)",
-                ),
-            ),
-        )
-        val expected = listOf(
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Sol Badguy",
-                ),
-            ),
-            CargoQueryItem(
-                title = CharacterDto(
-                    name = "Perry Perynthesis (",
-                ),
-            ),
-        )
-
-        //when
-        val result = chars.filterOutJunkCharacters()
-
-        //then
-        assertThat(result).isEqualTo(expected)
-    }
-
     //region ID
     @Test
     fun `formId handles standard name`() {
@@ -252,6 +207,67 @@ class CharacterMapperTest {
         val char = "Zato-1"
         val expected = listOf(
             "zato",
+        )
+
+        //when
+        val result = char.createAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `createAliases handles numbers`() {
+        //given
+        val char = "Android 16"
+        val expected = listOf(
+            "a16",
+        )
+
+        //when
+        val result = char.createAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `createAliases handles parenthesis`() {
+        //given
+        val char = "Gogeta (SSGSS)"
+        val expected = listOf(
+            "gogetassgss",
+        )
+
+        //when
+        val result = char.createAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `createAliases handles parenthesis with words`() {
+        //given
+        val char = "Goku (Super Saiyan)"
+        val expected = listOf(
+            "gokuss",
+        )
+
+        //when
+        val result = char.createAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `createAliases handles numbers and parenthesis`() {
+        //given
+        val char = "Android 21 (Lab Coat)"
+        val expected = listOf(
+            "a21",
+            "a21lc",
         )
 
         //when

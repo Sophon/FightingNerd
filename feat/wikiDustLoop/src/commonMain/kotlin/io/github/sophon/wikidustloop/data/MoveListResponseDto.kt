@@ -31,15 +31,28 @@ internal data class MoveDto(
     val hitboxes: String? = null,
     val notes: String? = null,
     val type: String? = null,
+    val prorate: String? = null,
+    val invuln: String? = null,
+    val cancel: String? = null,
+    val caption: String? = null,
+    val hitboxCaption: String? = null,
+
     val riscGain: String? = null,
     val riscLoss: String? = null,
     val wallDamage: String? = null,
     val inputTension: String? = null,
     val chipRatio: String? = null,
     val OTGType: String? = null,
-    val prorate: String? = null,
-    val invuln: String? = null,
-    val cancel: String? = null,
-    val caption: String? = null,
-    val hitboxCaption: String? = null
+
+    val attribute: String? = null,
+    val smash: String? = null,
+    val kigain: String? = null,
+    val blockstun: String? = null,
+    val groundHit: String? = null,
+    val airHit: String? = null,
+
+    val onCH: String? = null,
+    val meter: String? = null,
+    val cooldown: String? = null,
+    val cls: String? = null,
 )

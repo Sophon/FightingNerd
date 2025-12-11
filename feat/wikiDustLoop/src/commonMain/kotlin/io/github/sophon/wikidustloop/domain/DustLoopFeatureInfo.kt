@@ -14,6 +14,8 @@ object DustLoopFeatureInfo {
         iconUrl = FEATURE_IMG_URL,
         supportedGameSet = setOf(
             Game.GGST,
+            Game.DBFZ,
+            Game.GBVSR,
         ),
         version = BuildKonfig.VERSION,
     )
