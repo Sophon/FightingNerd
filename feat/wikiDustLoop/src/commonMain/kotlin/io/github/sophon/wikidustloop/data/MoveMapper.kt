@@ -69,7 +69,14 @@ internal fun MoveListResponseDto.toDomain(
                 airHit = dto.airHit,
                 type = dto.type,
                 level = dto.level,
-            )
+            ),
+            gbvsrProperties = Move.GBVSRProperties(
+                meter = dto.meter,
+                level = dto.level,
+                cooldown = dto.cooldown,
+                cls = dto.cls,
+                type = dto.type,
+            ),
         )
     }
 }

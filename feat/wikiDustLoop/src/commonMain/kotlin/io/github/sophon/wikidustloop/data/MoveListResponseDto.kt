@@ -50,4 +50,9 @@ internal data class MoveDto(
     val blockstun: String? = null,
     val groundHit: String? = null,
     val airHit: String? = null,
+
+    val onCH: String? = null,
+    val meter: String? = null,
+    val cooldown: String? = null,
+    val cls: String? = null,
 )
