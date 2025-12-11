@@ -21,94 +21,95 @@ Frame data targeting Discord bot and mobile apps:
 
 ```mermaid
 graph LR
-  subgraph Bots
-    discordBot[Discord Bot]
-  end
+    subgraph Bots
+        discordBot[Discord Bot]
+    end
 
-  subgraph "Mobile Clients"
-    android[Android]
-    iOS[iOS]
-  end
+    subgraph "Mobile Clients"
+        android[Android]
+        iOS[iOS]
+    end
 
-  subgraph Features
-    glossaryInfil[Glossary Infil]
-    communityWiki[Community Wiki]
-    elo[Ranked stats]
-  end
+    subgraph Features
+        glossaryInfil[Glossary Infil]
+        communityWiki[Community Wiki]
+        elo[Ranked stats]
+    end
 
-  subgraph Community Wiki
-    wikiWavu[Wavu + Tekken Docs]
-    supercombo[SuperCombo]
-    2xko[2XKO]
-    dustloop[Dustloop]
-    dreamcancel[DreamCancel]
-  end
+    subgraph Community Wiki
+        wikiWavu[Wavu + Tekken Docs]
+        supercombo[SuperCombo]
+        2xko[2XKO]
+        dustloop[Dustloop]
+        dreamcancel[DreamCancel]
+    end
 
-  subgraph Games
-    t8[Tekken 8]
-    sf6[Street Fighter 6]
-    mk1[Mortal Kombat 1]
-    sc6[SoulCalibur VI]
-    ggst[Guilty Gear: Strive]
-    dbfz[Dragon Ball FighterZ - disabled]
-    gbvsr[Granblue Fantasy Versus: Rising]
-    kof15[King of Fighters XV]
-    cotw[Fatal Fury: City of the Wolves]
-    xko[2XKO]
-  end
+    subgraph Games
+        t8[Tekken 8]
+        sf6[Street Fighter 6]
+        mk1[Mortal Kombat 1]
+        sc6[SoulCalibur VI]
+        ggst[Guilty Gear: Strive]
+        dbfz[Dragon Ball FighterZ - disabled]
+        gbvsr[Granblue Fantasy Versus: Rising]
+        kof15[King of Fighters XV]
+        cotw[Fatal Fury: City of the Wolves]
+        xko[2XKO]
+    end
 
-  subgraph Ranked service
-    ewgf[EWGF]
-    cfn[CFN]
-  end
+    subgraph Ranked service
+        ewgf[EWGF]
+        cfn[CFN]
+    end
 
-  android -->|uses| communityWiki
-  iOS -->|uses| communityWiki
+    android -->|uses| communityWiki
+    iOS -->|uses| communityWiki
 
-  discordBot -->|uses| glossaryInfil
-  discordBot -->|uses| communityWiki
-  discordBot -->|uses| elo
+    discordBot -->|uses| glossaryInfil
+    discordBot -->|uses| communityWiki
+    discordBot -->|uses| elo
 
-  communityWiki --> wikiWavu
-  communityWiki --> supercombo
-  communityWiki --> 2xko
-  communityWiki --> dreamcancel
-  communityWiki --> dustloop
+    communityWiki --> wikiWavu
+    communityWiki --> supercombo
+    communityWiki --> 2xko
+    communityWiki --> dreamcancel
+    communityWiki --> dustloop
 
-  elo --> ewgf
-  elo --> cfn
+    elo --> ewgf
+    elo --> cfn
 
-  wikiWavu --> t8
-  supercombo --> sf6
-  supercombo --> mk1
-  supercombo --> sc6
-  dustloop --> ggst
-  dustloop --> dbfz
-  dustloop --> gbvsr
-  2xko --> xko
-  dreamcancel --> kof15
-  dreamcancel --> cotw
+    wikiWavu --> t8
+    supercombo --> sf6
+    supercombo --> mk1
+    supercombo --> sc6
+    dustloop --> ggst
+    dustloop --> dbfz
+    dustloop --> gbvsr
+    2xko --> xko
+    dreamcancel --> kof15
+    dreamcancel --> cotw
 
 
-  style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
-  style android fill:#10B981,stroke:#059669,color:#fff
-  style iOS fill:#10B981,stroke:#059669,color:#fff
-  style glossaryInfil fill:#059669,color:#fff
-  style communityWiki fill:#3366CC,color:#fff
-  style wikiWavu fill:#059669,color:#fff
-  style supercombo fill:#F8F9FA,color:#000000
-  style dreamcancel fill:#059669, color:#fff
-  style dustloop fill:#F8F9FA,color:#000000
-  style 2xko fill:#059669,color:#fff
-  style t8 fill:#059669, color:#fff
-  style sf6 fill:#059669, color:#fff
-  style xko fill:#059669, color:#fff
-  style kof15 fill:#059669,color:#fff
-  style cotw fill:#059669,color:#fff
-  style ggst fill:#059669,color:#fff
-  style mk1 fill:#059669,color:#fff
-  style dbfz fill:#6EE7B7,color:#fff,stroke:#6B7280,stroke-width:2,stroke-dasharray:5 5
-```
+    style discordBot fill:#3B82F6,stroke:#2563EB,color:#fff
+    style android fill:#10B981,stroke:#059669,color:#fff
+    style iOS fill:#10B981,stroke:#059669,color:#fff
+    style glossaryInfil fill:#059669,color:#fff
+    style communityWiki fill:#3366CC,color:#fff
+    style wikiWavu fill:#059669,color:#fff
+    style supercombo fill:#F8F9FA,color:#000000
+    style dreamcancel fill:#059669, color:#fff
+    style dustloop fill:#059669,color:#fff
+    style 2xko fill:#059669,color:#fff
+    style t8 fill:#059669, color:#fff
+    style sf6 fill:#059669, color:#fff
+    style xko fill:#059669, color:#fff
+    style kof15 fill:#059669,color:#fff
+    style cotw fill:#059669,color:#fff
+    style ggst fill:#059669,color:#fff
+    style mk1 fill:#059669,color:#fff
+    style dbfz fill:#6EE7B7,color:#000000,stroke:#6B7280,stroke-width:2,stroke-dasharray:5 5
+    style gbvsr fill:#059669,color:#fff
+  ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
 
