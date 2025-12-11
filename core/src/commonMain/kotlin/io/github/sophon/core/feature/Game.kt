@@ -49,4 +49,9 @@ enum class Game(
         iconUrl = "https://i.imgur.com/UuX6ZYv.png",
         wikiUrl = "https://www.dustloop.com/w/DBFZ",
     ),
+    GBVSR(
+        id = "GBVSR",
+        iconUrl = "https://i.imgur.com/N6eeM4q.png",
+        wikiUrl = "https://www.dustloop.com/w/GBVSR",
+    ),
 }

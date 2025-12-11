@@ -31,6 +31,7 @@ data class Move(
     val cotwProperties: COTWProperties? = null,
     val ggstProperties: GGSTProperties? = null,
     val dbfzProperties: DBFZProperties? = null,
+    val gbvsrProperties: GBVSRProperties? = null,
     val mkProperties: MKProperties? = null,
 ) {
     @Serializable
@@ -123,6 +124,15 @@ data class Move(
         val airHit: String? = null,
         val type: String? = null,
         val level: String? = null,
+    )
+
+    @Serializable
+    data class GBVSRProperties(
+        val meter: String? = null,
+        val level: String? = null,
+        val cooldown: String? = null,
+        val cls: String? = null,
+        val type: String? = null,
     )
 
     @Serializable
