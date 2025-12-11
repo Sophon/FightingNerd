@@ -114,6 +114,26 @@ internal class DustLoopDataSourceImpl(
                     "nav_image"
                 )
             }
+
+            DustLoopTables.TABLE_GBVSR_CHARACTERS -> {
+                listOf(
+                    "name",
+                    "health",
+                    "prejump",
+                    "backdash",
+                    "umo",
+                    "portrait",
+                    "icon",
+                    "walk_speed",
+                    "backwalk_speed",
+                    "dash_initial_speed",
+                    "dash_acceleration",
+                    "relative_walk_speed",
+                    "relative_backwalk_speed",
+                    "relative_dash_initial_speed",
+                    "relative_dash_acceleration"
+                )
+            }
             else -> emptyList()
         }
 
@@ -179,6 +199,32 @@ internal class DustLoopDataSourceImpl(
                     "cancel",
                     "caption",
                     "hitboxCaption"
+                )
+            }
+            DustLoopTables.TABLE_GBVSR_MOVE_LIST -> {
+                listOf(
+                    "chara",
+                    "name",
+                    "input",
+                    "damage",
+                    "guard",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "onBlock",
+                    "onHit",
+                    "onCH",
+                    "meter",
+                    "level",
+                    "invuln",
+                    "cooldown",
+                    "cls",
+                    "images",
+                    "caption",
+                    "hitboxes",
+                    "hitboxCaption",
+                    "type",
+                    "notes"
                 )
             }
             else -> emptyList()

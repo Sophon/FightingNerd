@@ -55,6 +55,10 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(moveData)
     }
 
+    /**
+     * TODO: we shouldn't store aliases into the database
+     * we should have a moveAliasMap similar to charNameAliasMap
+     */
     override suspend fun insertMoveList(
         character: Character,
         moveList: List<Move>,

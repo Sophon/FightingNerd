@@ -13,6 +13,10 @@ internal object DustLoopTables {
             character = TABLE_DBFZ_CHARACTERS,
             moves = TABLE_DBFZ_MOVE_LIST,
         ),
+        Game.GBVSR.id to QueryTable(
+            character = TABLE_GBVSR_CHARACTERS,
+            moves = TABLE_GBVSR_MOVE_LIST,
+        )
     )
 
     fun getTable(gameId: String): QueryTable? {
@@ -23,4 +27,6 @@ internal object DustLoopTables {
     internal const val TABLE_GGST_MOVE_LIST = "MoveData_GGST"
     internal const val TABLE_DBFZ_CHARACTERS = "dbfzCharacters"
     internal const val TABLE_DBFZ_MOVE_LIST = "MoveData_DBFZ"
+    internal const val TABLE_GBVSR_CHARACTERS = "gbvsrCharacters"
+    internal const val TABLE_GBVSR_MOVE_LIST = "MoveData_GBVSR"
 }

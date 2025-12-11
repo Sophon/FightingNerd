@@ -39,7 +39,8 @@
       "name": "DustLoop Wiki",
       "isEnabled": true,
       "supportedGames": [
-        "GGST"
+        "GGST",
+        "GBVSR"
       ]
     }
   ]

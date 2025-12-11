@@ -69,6 +69,19 @@ internal fun CharacterListResponseDto.toDomain(
                 dbfzProperties = Character.DBFZProperties(
                     kiMod = dto.kimod,
                     umo = dto.umo,
+                ),
+                gbvsrProperties = Character.GBVSRProperties(
+                    prejump = dto.prejump,
+                    backdash = dto.backdash,
+                    umo = dto.umo,
+                    walkSpeed = dto.walkSpeed,
+                    walkSpeedRelative = dto.relative_walk_speed.toString(),
+                    walkSpeedBack = dto.backwalk_speed.toString(),
+                    walkSpeedBackRelative = dto.relative_backwalk_speed.toString(),
+                    dashInitial = dto.dash_initial_speed.toString(),
+                    dashInitialRelative = dto.relative_dash_initial_speed.toString(),
+                    dashAcceleration = dto.dash_acceleration,
+                    dashAccelerationRelative = dto.relative_dash_acceleration.toString(),
                 )
             )
         }

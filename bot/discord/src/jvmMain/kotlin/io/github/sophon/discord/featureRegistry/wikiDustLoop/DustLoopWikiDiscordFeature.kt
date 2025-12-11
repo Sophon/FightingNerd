@@ -175,6 +175,16 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
+            Command.CHARGBVSR -> {
+                val wiki = wikis[Game.GBVSR.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchCharacter(wiki, query)
+            }
+            Command.FDGBVSR -> {
+                val wiki = wikis[Game.GBVSR.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
+            }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }

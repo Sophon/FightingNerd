@@ -15,6 +15,7 @@ data class Character(
     val ggstProperties: GGSTProperties? = null,
     val mkProperties: MK1Properties? = null,
     val dbfzProperties: DBFZProperties? = null,
+    val gbvsrProperties: GBVSRProperties? = null,
 ) {
     @Serializable
     data class Images(
@@ -84,6 +85,21 @@ data class Character(
     data class DBFZProperties(
         val kiMod: String?,
         val umo: String?,
+    )
+
+    @Serializable
+    data class GBVSRProperties(
+        val prejump: String?,
+        val backdash: String?,
+        val umo: String?,
+        val walkSpeed: String?,
+        val walkSpeedRelative: String?,
+        val walkSpeedBack: String?,
+        val walkSpeedBackRelative: String?,
+        val dashInitial: String?,
+        val dashInitialRelative: String?,
+        val dashAcceleration: String?,
+        val dashAccelerationRelative: String?,
     )
 
     @Serializable

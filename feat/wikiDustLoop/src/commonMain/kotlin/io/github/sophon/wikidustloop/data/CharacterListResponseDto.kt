@@ -77,4 +77,13 @@ internal data class CharacterDto(
     val boostDefense: String? = null,
 
     val kimod: String? = null,
+
+    val walk_speed: Float? = null,
+    val backwalk_speed: Float? = null,
+    val dash_initial_speed: Float? = null,
+    val dash_acceleration: String? = null,
+    val relative_walk_speed: Float? = null,
+    val relative_backwalk_speed: Float? = null,
+    val relative_dash_initial_speed: Float? = null,
+    val relative_dash_acceleration: Float? = null,
 )
