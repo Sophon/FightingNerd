@@ -36,35 +36,35 @@ class MoveMapperTest {
     }
     //endregion
 
-    //region parseAlias
+    //region formAliases
     @Test
-    fun `parseAlias handles null`() {
+    fun `formAliases handles null`() {
         //given
         val alias: String? = null
         val expected: List<String> = emptyList()
 
         //when
-        val result = alias.parseAliases()
+        val result = alias.formAliases()
 
         //then
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun `parseAlias handles multi-word alias`() {
+    fun `formAliases handles multi-word alias`() {
         //given
         val alias = "Shining Wizard"
         val expected = listOf("shining wizard")
 
         //when
-        val result = alias.parseAliases()
+        val result = alias.formAliases()
 
         //then
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun `parseAlias handles http with multiple aliases`() {
+    fun `formAliases handles http with multiple aliases`() {
         //given
         val alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* Can Cans\n* Cancan\n\n&lt;/div&gt;"
         val expected = listOf(
@@ -73,14 +73,14 @@ class MoveMapperTest {
         )
 
         //when
-        val result = alias.parseAliases()
+        val result = alias.formAliases()
 
         //then
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun `parseAlias handles or format aliases`() {
+    fun `formAliases handles or format aliases`() {
         //given
         val string = "H.1+4 or H.WS1+4"
         val expected = listOf(
@@ -89,7 +89,7 @@ class MoveMapperTest {
         )
 
         //when
-        val result = string.parseAliases()
+        val result = string.formAliases()
 
         //then
         assertThat(result).isEqualTo(expected)
