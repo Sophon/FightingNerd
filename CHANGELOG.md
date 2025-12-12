@@ -1,6 +1,7 @@
 # BOT CHANGELOG
 
 ## [v1.2.2] - 2025-12-12
+- can search moves via its name
 - Wavu v1.0.5
   - fixed some alias formats not forming
 
