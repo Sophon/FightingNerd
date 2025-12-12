@@ -36,7 +36,7 @@ private fun MoveDto.toMoveList(
 
         urls = Move.Urls(
             hitboxImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX"),
-            moveImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}"),
+            moveImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}.png"),
             characterWiki = charWikiUrl,
             wikiUrl = "$FEATURE_URL/${pageName}#${input}"
         ),
