@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v1.2.1] - TODO
+## [v1.2.1] - 2025-12-12
 - display move images if hitbox images not available
 - Wavu v1.0.4
   - supports `qcf`
