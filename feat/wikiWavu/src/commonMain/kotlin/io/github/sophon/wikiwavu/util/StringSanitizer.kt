@@ -23,6 +23,7 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
         "ws." to "ws",
         "fc." to "fc",
         "bt." to "bt",
+        "ddff" to "qcf",
     )
 
     if (keepSpaces.not()) {

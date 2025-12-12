@@ -583,4 +583,19 @@ class StringSanitizerTest {
         assertThat(result).isEqualTo("indu1+2")
     }
     //endregion
+
+    //region motion
+    @Test
+    fun `cleanMoveInput translates to qcf`() {
+        //given
+        val string = "d,df,f+2"
+        val expected = "qcf2"
+
+        //when
+        val result = string.cleanMoveInput()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
 }
