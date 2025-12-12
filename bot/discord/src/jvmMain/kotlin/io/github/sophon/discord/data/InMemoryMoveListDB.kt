@@ -62,6 +62,7 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(moveData)
     }
 
+    //TODO: pass an alias list instead of handling the formatting here
     override suspend fun insertMoveList(
         character: Character,
         moveList: List<Move>,
@@ -73,6 +74,10 @@ class InMemoryMoveListDB: MoveListDB {
                 move.aliases.forEach { alias ->
                     moveAliasMap[alias.replace(" ", "")] = move.input
                 }
+                move.name
+                    ?.lowercase()
+                    ?.replace(" ", "")
+                    ?.let { moveAliasMap[it] = move.input }
             }
         }
         database[character.id] = moveMap
