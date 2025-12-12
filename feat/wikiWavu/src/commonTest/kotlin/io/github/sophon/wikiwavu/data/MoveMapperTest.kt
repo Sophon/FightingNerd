@@ -66,12 +66,7 @@ class MoveMapperTest {
     @Test
     fun `parseAlias handles http with multiple aliases`() {
         //given
-        val alias = "&lt;div class=&quot;dotlist&quot;&gt;\n" +
-                "\n" +
-                "* Can Cans\n" +
-                "* Cancan\n" +
-                "\n" +
-                "&lt;/div&gt;"
+        val alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* Can Cans\n* Cancan\n\n&lt;/div&gt;"
         val expected = listOf(
             "can cans",
             "cancan",
@@ -79,6 +74,22 @@ class MoveMapperTest {
 
         //when
         val result = alias.parseAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `parseAlias handles or format aliases`() {
+        //given
+        val string = "H.1+4 or H.WS1+4"
+        val expected = listOf(
+            "h.1+4",
+            "h.ws1+4",
+        )
+
+        //when
+        val result = string.parseAliases()
 
         //then
         assertThat(result).isEqualTo(expected)
