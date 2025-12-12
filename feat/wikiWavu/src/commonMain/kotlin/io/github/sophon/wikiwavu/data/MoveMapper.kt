@@ -46,7 +46,7 @@ internal fun MoveDto.mapToDomain(
         guard = formCompleteDataFromParent(movesById) { it.target },
 
         notes = splitNotes() + cleanedCrushes,
-        aliases = alias.parseAliases(),
+        aliases = alias.formAliases(),
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
@@ -162,14 +162,13 @@ private fun String.isStance(): String {
     } ?: ""
 }
 
-internal fun String?.parseAliases(): List<String> {
+internal fun String?.formAliases(): List<String> {
     return this
         .orEmpty()
         .cleanHtml()
-        .lines()
+        .split("* ", "or")
         .map {
             it
-                .removePrefix("* ")
                 .trim()
                 .cleanMoveInput(keepSpaces = true)
         }
