@@ -166,10 +166,9 @@ internal fun String?.formAliases(): List<String> {
     return this
         .orEmpty()
         .cleanHtml()
-        .lines()
+        .split("* ", "or")
         .map {
             it
-                .removePrefix("* ")
                 .trim()
                 .cleanMoveInput(keepSpaces = true)
         }
