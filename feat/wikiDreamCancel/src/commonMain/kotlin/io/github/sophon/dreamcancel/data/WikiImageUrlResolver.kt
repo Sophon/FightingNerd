@@ -10,7 +10,9 @@ internal class WikiImageUrlResolver (
         dto: MoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
         val imageFileNames = dto.cargoQuery.flatMap { moveDto ->
-            moveDto.title.hitboxes
+            listOfNotNull(moveDto.title.hitboxes, moveDto.title.images)
+                .takeIf { it.isNotEmpty() }
+                ?.joinToString(",")
                 ?.split(",")
                 ?.map { it.trim() }
                 ?: emptyList()

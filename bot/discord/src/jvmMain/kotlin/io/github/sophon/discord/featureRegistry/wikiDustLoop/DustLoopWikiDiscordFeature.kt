@@ -292,15 +292,19 @@ internal class DustLoopWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
+                val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
+                    ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
+                    ?: emptyList()
+
                 BotOutput(
                     embedBuilder = createMoveEmbed(move),
-                    images = if (move.urls.hitboxImageList.size < 2) {
+                    images = if (images.size < 2) {
                         null
                     } else {
                         BotOutput.Images(
                             title = move.input,
                             titleUrl = move.urls.wikiUrl,
-                            urls = move.urls.hitboxImageList,
+                            urls = images,
                         )
                     }
                 )
@@ -316,9 +320,13 @@ internal class DustLoopWikiDiscordFeature(
         color = Color(RED)
         move.urls.characterImage?.let { thumbnail { url = it } }
 
-        if (move.urls.hitboxImageList.size == 1) {
-            image = move.urls.hitboxImageList.first()
-        }
+        val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
+            ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
+            ?: emptyList()
+
+        images
+            .takeIf { it.size == 1 }
+            ?.let { image = it.first() }
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)

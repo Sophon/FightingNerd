@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v1.2.1] - TODO
+- display move images if hitbox images not available
+
 ## [v1.2.0] - 2025-12-11
 - can search moves via its alias (ie `ak giant swing`)
 - SuperCombo and DustLoop embeds display character image
