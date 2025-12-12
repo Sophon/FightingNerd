@@ -1,6 +1,5 @@
 package io.github.sophon.wikiSuperCombo
 
-import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.asEmptyDataResult
 import io.github.sophon.core.domain.flatMap
@@ -22,7 +21,7 @@ import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
 import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSourceImpl
-import io.github.sophon.wikiSuperCombo.data.UrlResolver
+import io.github.sophon.wikiSuperCombo.data.WikiImageUrlResolver
 import io.github.sophon.wikiSuperCombo.data.toDomain
 import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
 import org.koin.core.module.dsl.factoryOf
@@ -35,14 +34,14 @@ fun superComboModule() = module {
     singleOf(::SuperComboDataSourceImpl).bind<SuperComboDataSource>()
     singleOf(::SuperComboWikiClient).bind<WikiClient>()
     single { SuperComboFeatureInfo }
-    factoryOf(::UrlResolver)
+    factoryOf(::WikiImageUrlResolver)
 
     factory<WikiClient>(named(WikiClientFeature.SuperCombo.id)) { params ->
         val gameId: String = params.get()
         val characterListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
         val source: SuperComboDataSource = get()
-        val urlResolver: UrlResolver = get()
+        val wikiImageUrlResolver: WikiImageUrlResolver = get()
 
         SuperComboWikiClient(
             gameId = gameId,
@@ -52,7 +51,7 @@ fun superComboModule() = module {
             downloadCharacterListUseCase = DownloadCharacterListUseCase { queryTable ->
                 source.downloadCharacterList(queryTable.character)
                     .flatMap { dto ->
-                        urlResolver.resolveImageUrls(dto)
+                        wikiImageUrlResolver.resolveCharImageUrls(dto)
                             .map { dto.toDomain(gameId, it) }
                     }
             },
@@ -78,7 +77,7 @@ fun superComboModule() = module {
             downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, characterData ->
                 source.downloadMoveList(queryTable.moves, characterData)
                     .flatMap { dto ->
-                        urlResolver.resolveHitboxUrl(dto)
+                        wikiImageUrlResolver.resolveMoveUrl(dto)
                             .map { dto.toDomain(gameId, characterData, it) }
                     }
             },
