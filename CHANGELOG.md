@@ -2,6 +2,8 @@
 
 ## [v1.2.1] - TODO
 - display move images if hitbox images not available
+- Wavu v1.0.4
+  - supports `qcf`
 
 ## [v1.2.0] - 2025-12-11
 - can search moves via its alias (ie `ak giant swing`)
