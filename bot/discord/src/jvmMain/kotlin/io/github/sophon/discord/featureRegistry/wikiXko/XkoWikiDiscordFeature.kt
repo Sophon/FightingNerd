@@ -147,11 +147,12 @@ internal class XkoWikiDiscordFeature(
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = "${move.charName}: ${move.input}"
 
-        move.urls.hitboxImageList
+        val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
+            ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
+            ?: emptyList()
+        images
             .takeIf { it.size == 1 }
-            ?.let { 
-                url = it.first()
-            }
+            ?.let { image = it.first() }
 
         color = Color(GREEN)
 

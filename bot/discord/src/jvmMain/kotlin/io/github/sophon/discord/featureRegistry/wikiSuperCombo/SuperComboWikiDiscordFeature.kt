@@ -201,15 +201,19 @@ internal class SuperComboWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
+                val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
+                    ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
+                    ?: emptyList()
+
                 BotOutput(
                     embedBuilder = createMoveEmbed(move),
-                    images = if (move.urls.hitboxImageList.size < 2) {
+                    images = if (images.size < 2) {
                         null
                     } else {
                         BotOutput.Images(
                             title = move.input,
                             titleUrl = move.urls.wikiUrl,
-                            urls = move.urls.hitboxImageList,
+                            urls = images,
                         )
                     }
                 )
@@ -282,7 +286,11 @@ internal class SuperComboWikiDiscordFeature(
         color = Color(ORANGE)
         move.urls.characterImage?.let { thumbnail { url = it } }
 
-        move.urls.hitboxImageList
+        val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
+            ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
+            ?: emptyList()
+
+        images
             .takeIf { it.size == 1 }
             ?.let { image = it.first() }
 
