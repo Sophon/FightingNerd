@@ -50,11 +50,7 @@ class InMemoryMoveListDB: MoveListDB {
         val moveList = database[characterId]
             ?: return Result.Error(WikiError.UnknownCharacter(charName))
 
-        val moveId = if(moveList.containsKey(moveQuery)) {
-            moveQuery
-        } else {
-            moveAliasMap[moveQuery]
-        }
+        val moveId = moveAliasMap[moveQuery]
 
         val moveData = moveList[moveId]
             ?: return Result.Error(WikiError.UnknownMove(charName, moveQuery))
@@ -72,11 +68,10 @@ class InMemoryMoveListDB: MoveListDB {
                 put(move.input, move)
                 moveAliasMap[move.input] = move.input
                 move.aliases.forEach { alias ->
-                    moveAliasMap[alias.replace(" ", "")] = move.input
+                    moveAliasMap[alias] = move.input
                 }
                 move.name
                     ?.lowercase()
-                    ?.replace(" ", "")
                     ?.let { moveAliasMap[it] = move.input }
             }
         }
