@@ -3,10 +3,10 @@ package io.github.sophon.wikiSuperCombo.data
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 
-internal class UrlResolver(
+internal class WikiImageUrlResolver(
     private val source: SuperComboDataSource
 ) {
-    suspend fun resolveImageUrls(
+    suspend fun resolveCharImageUrls(
         dto: CharacterListResponseDto
     ): Result<Map<String, String>, DataError.Remote> {
         val imageFileNames = dto.cargoquery.flatMap {
@@ -16,11 +16,16 @@ internal class UrlResolver(
         return source.getImageUrl(imageFileNames)
     }
 
-    suspend fun resolveHitboxUrl(
+    suspend fun resolveMoveUrl(
         dto: MoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
-        val imageFileNames = dto.cargoQuery.flatMap {
-            listOfNotNull(it.title.hitboxes)
+        val imageFileNames = dto.cargoQuery.flatMap { moveDto ->
+            listOfNotNull(moveDto.title.hitboxes, moveDto.title.images)
+                .takeIf { it.isNotEmpty() }
+                ?.joinToString(",")
+                ?.split(",")
+                ?.map { it.trim() }
+                ?: emptyList()
         }.distinct()
 
         return source.getImageUrl(imageFileNames)

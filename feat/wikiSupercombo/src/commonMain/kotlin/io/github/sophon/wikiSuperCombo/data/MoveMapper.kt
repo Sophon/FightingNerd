@@ -15,7 +15,7 @@ internal fun MoveListResponseDto.toDomain(
     return cargoQuery.map { wrapper ->
         val dto = wrapper.title
 
-        Move(
+        val move = Move(
             charName = dto.chara,
             id = dto.moveId,
             name = dto.name,
@@ -36,9 +36,15 @@ internal fun MoveListResponseDto.toDomain(
 
             urls = Move.Urls(
                 characterImage = characterData.imageUrl,
+                moveImageList = dto.images
+                    .orEmpty()
+                    .split(",")
+                    .map { it.trim() }
+                    .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
                 hitboxImageList = dto.hitboxes
                     .orEmpty()
                     .split(",")
+                    .map { it.trim() }
                     .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
                 wikiUrl = formMoveWikiUrl(
                     gameId = gameId,
@@ -85,6 +91,8 @@ internal fun MoveListResponseDto.toDomain(
                     .filterNot { it.takeIfNotTemplate() == null }
             )
         )
+
+        move
     }
 }
 

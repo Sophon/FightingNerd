@@ -1,5 +1,6 @@
 package io.github.sophon.dreamcancel.data
 
+import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.wiki.domain.model.Character
@@ -36,16 +37,20 @@ internal fun MoveDto.toDomain(
             .decodeHtmlEntities()
             .useForwardVariantOnly()
             .lowercase(),
-        damage = damage,
-        startup = startup,
-        onBlock = blockAdv,
-        onHit = hitAdv,
-        name = name,
-        recovery = recovery,
-        active = active,
+        damage = damage?.cleanHtml(),
+        startup = startup?.cleanHtml(),
+        onBlock = blockAdv?.cleanHtml(),
+        onHit = hitAdv?.cleanHtml(),
+        name = name?.cleanHtml(),
+        recovery = recovery?.cleanHtml(),
+        active = active?.cleanHtml(),
         urls = Move.Urls(
             characterWiki = character.wikiUrl,
             hitboxImageList = hitboxes
+                .orEmpty()
+                .split(",")
+                .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
+            moveImageList = images
                 .orEmpty()
                 .split(",")
                 .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },

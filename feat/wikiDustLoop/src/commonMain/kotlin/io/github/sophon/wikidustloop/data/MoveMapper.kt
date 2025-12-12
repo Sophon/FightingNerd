@@ -41,6 +41,10 @@ internal fun MoveListResponseDto.toDomain(
                     .orEmpty()
                     .split(";", "\\")
                     .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
+                moveImageList = dto.images
+                    .orEmpty()
+                    .split(";", "\\")
+                    .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
                 wikiUrl = formMoveWikiUrl(gameId, dto),
             ),
 

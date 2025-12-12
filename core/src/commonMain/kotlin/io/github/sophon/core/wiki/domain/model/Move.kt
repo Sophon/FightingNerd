@@ -40,6 +40,7 @@ data class Move(
         val characterImage: String? = null,
         val videoId: String? = null, //TODO: change to videoUrl
         val hitboxImageList: List<String> = listOf(),
+        val moveImageList: List<String> = listOf(),
         val wikiUrl: String,
     )
 
