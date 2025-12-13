@@ -46,7 +46,7 @@ internal fun MoveDto.mapToDomain(
         guard = formCompleteDataFromParent(movesById) { it.target },
 
         notes = splitNotes() + cleanedCrushes,
-        aliases = alias.formAliases(),
+        aliases = alias.formAliases(input = fullInput),
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
@@ -149,21 +149,19 @@ private fun formProperties(
         isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) },
         isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) },
         isHoming = notes.any { it.contains("Homing", ignoreCase = true) },
-        stance = input.isStance(),
+        stance = input.getStance(),
     )
 }
 
-private fun String.isStance(): String {
-    return take(3).takeIf {
-        length >= 4
-                && it.all { char -> char.isLetter() }
-                && !startsWith("wr") && !startsWith("ff") && !startsWith("qcb") && !startsWith("qcf") && !startsWith("fc")
-                && drop(3).any { char -> char.isDigit() }
-    } ?: ""
+internal fun String.getStance(): String? {
+    val stance = take(3).takeIf {
+        length >= 4 && it.all { char -> char.isLetter() } && get(3) == '.' && it != "otg"
+    }
+    return stance
 }
 
-internal fun String?.formAliases(): List<String> {
-    return this
+internal fun String?.formAliases(input: String): List<String> {
+    val aliases: MutableList<String> = this
         .orEmpty()
         .cleanHtml()
         .split("* ", "or")
@@ -173,6 +171,16 @@ internal fun String?.formAliases(): List<String> {
                 .cleanMoveInput(keepSpaces = true)
         }
         .filter { it.isNotEmpty() }
+        .toMutableList()
+
+    if (
+        input.contains(".")
+        && input.split(".").first().length == 3
+    ) {
+        aliases.add(input.replace(".", ""))
+    }
+
+    return aliases
 }
 
 internal fun String?.formVideoUrl(): String? {

@@ -259,7 +259,7 @@ class StringSanitizerTest {
         val result = input.cleanMoveInput()
 
         // Then
-        assertThat(result).isEqualTo("indu1+2")
+        assertThat(result).isEqualTo("ind.u1+2")
     }
 
     @Test
@@ -267,19 +267,6 @@ class StringSanitizerTest {
         //given
         val input = "h.d/f+1"
         val expected = "h.df1"
-
-        //when
-        val result = input.cleanMoveInput()
-
-        //then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `cleanMoveInput handles stance dot`() {
-        //given
-        val input = "BAD.1+2"
-        val expected = "bad1+2"
 
         //when
         val result = input.cleanMoveInput()
@@ -580,7 +567,7 @@ class StringSanitizerTest {
         val result = input.cleanMoveInput()
 
         // Then
-        assertThat(result).isEqualTo("indu1+2")
+        assertThat(result).isEqualTo("ind.u1+2")
     }
     //endregion
 
