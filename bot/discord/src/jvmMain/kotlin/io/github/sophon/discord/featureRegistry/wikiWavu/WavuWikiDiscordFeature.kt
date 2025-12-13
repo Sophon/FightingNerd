@@ -23,12 +23,12 @@ import io.github.sophon.discord.featureRegistry.Scheduler
 import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
+import io.github.sophon.discord.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.orClickable
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
-import io.github.sophon.wikiwavu.domain.WavuUrlProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -42,6 +42,7 @@ internal class WavuWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val getMovesUseCase: GetMovesUseCase,
+    private val getStancesUseCase: GetStancesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -105,6 +106,20 @@ internal class WavuWikiDiscordFeature(
                 ),
             )
         ),
+        SupportedCommand(
+            command = Command.STANCE,
+            description = "Tekken 8 stance moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_STANCE,
+                    description = "Stance",
+                ),
+            )
+        )
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -149,6 +164,7 @@ internal class WavuWikiDiscordFeature(
             Command.PC -> searchPowerCrushMoves(wiki, query)
             Command.HEAT -> searchHeatMoves(wiki, query)
             Command.HOMING -> searchHomingMoves(wiki, query)
+            Command.STANCE -> searchStanceMoves(wiki, query)
             else -> {
                 val error = BotError.BotLogicError(command.name, query)
                 Result.Error(error)
@@ -180,10 +196,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(
-                        category = "Power Crush",
-                        moves = moveList
-                    )
+                    embedBuilder = createMoveListEmbed("Power Crush", moveList)
                 )
             }
     }
@@ -199,10 +212,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(
-                        category = "Heat",
-                        moves = moveList
-                    )
+                    embedBuilder = createMoveListEmbed(category = "Heat", moveList)
                 )
             }
     }
@@ -218,12 +228,47 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(
-                        category = "Homing",
-                        moves = moveList
-                    )
+                    embedBuilder = createMoveListEmbed(category = "Homing", moveList)
                 )
             }
+    }
+
+    private suspend fun searchStanceMoves(
+        wiki: WikiClient,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        val charName: String
+        val stance: String
+        query.split(" ").let { queries ->
+            charName = queries.firstOrNull() ?: ""
+            stance = queries.drop(1).joinToString(" ").uppercase()
+        }
+
+        return if (stance.isBlank()) {
+            getStancesUseCase.invoke(wiki, charName)
+                .map { stanceList ->
+                    BotOutput(
+                        embedBuilder = {
+                            mandatoryField(
+                                name = stance,
+                                value = stanceList
+                                    .joinToString(separator = "") { "* $it\n" }
+                                    .truncate(MAX_LENGTH_EMBED),
+                            )
+                        }
+                    )
+                }
+        } else {
+            getMovesUseCase.invoke(
+                wiki = wiki,
+                charName = charName,
+                predicate = { it.input.startsWith(stance, ignoreCase = true) }
+            ).map { moveList ->
+                BotOutput(
+                    embedBuilder = createMoveListEmbed(category = stance, moveList)
+                )
+            }
+        }
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
@@ -278,11 +323,11 @@ internal class WavuWikiDiscordFeature(
 
     private fun createMoveListEmbed(
         category: String,
-        moves: List<Move>
+        moveList: List<Move>
     ): EmbedBuilder.() -> Unit = {
         mandatoryField(
             name = "$category moves".uppercase(),
-            value = moves
+            value = moveList
                 .joinToString(separator = "") { move -> "* ${move.input}\n" }
                 .truncate(MAX_LENGTH_EMBED),
             inline = false,
@@ -315,6 +360,7 @@ internal class WavuWikiDiscordFeature(
         private const val TAG = "WavuWikiDiscordFeature"
         private const val KEY_CHAR_NAME = "character"
         private const val KEY_MOVE = "move"
+        private const val KEY_STANCE = "stance"
         private const val GREEN = 0x00FF00
     }
 }
