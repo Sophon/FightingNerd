@@ -153,11 +153,19 @@ private fun formProperties(
     )
 }
 
-private fun String.isStance(): String {
-    return take(3).takeIf {
+//TODO: write unit tests
+internal fun String.isStance(): String {
+    val first3 = take(3)
+    val isNotation = (startsWith("wr", ignoreCase = true) && getOrNull(2)?.isDigit() == true) ||
+            (startsWith("ff", ignoreCase = true) && getOrNull(2)?.isDigit() == true) ||
+            (startsWith("fc", ignoreCase = true) && getOrNull(2)?.isDigit() == true) ||
+            startsWith("qcb", ignoreCase = true) ||
+            startsWith("qcf", ignoreCase = true)
+
+    return first3.takeIf {
         length >= 4
                 && it.all { char -> char.isLetter() }
-                && !startsWith("wr") && !startsWith("ff") && !startsWith("qcb") && !startsWith("qcf") && !startsWith("fc")
+                && !isNotation
                 && drop(3).any { char -> char.isDigit() }
     } ?: ""
 }
