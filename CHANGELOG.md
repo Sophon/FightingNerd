@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v1.2.4] - 2025-12-13
+- fix stance's second argument being mandatory
+
 ## [v1.2.3] - 2025-12-13
 - fix bugs related to searching via move's name
 - Wavu v1.0.6
