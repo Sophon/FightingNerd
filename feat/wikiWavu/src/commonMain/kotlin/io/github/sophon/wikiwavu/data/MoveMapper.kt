@@ -174,10 +174,11 @@ internal fun String?.formAliases(input: String): List<String> {
         .filter { it.isNotEmpty() }
         .toMutableList()
 
-    input.split(".").let {
-        if (it.first().length == 3) {
-            aliases.add(input.replace(".", ""))
-        }
+    if (
+        input.contains(".")
+        && input.split(".").first().length == 3
+    ) {
+        aliases.add(input.replace(".", ""))
     }
 
     return aliases
