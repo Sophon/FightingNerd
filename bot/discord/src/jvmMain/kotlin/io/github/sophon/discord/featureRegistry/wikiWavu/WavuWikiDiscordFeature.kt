@@ -262,7 +262,9 @@ internal class WavuWikiDiscordFeature(
             getMovesUseCase.invoke(
                 wiki = wiki,
                 charName = charName,
-                predicate = { it.input.startsWith(stance, ignoreCase = true) }
+                predicate = { move ->
+                    move.t8Properties?.stance.equals(stance, ignoreCase = true)
+                }
             ).map { moveList ->
                 BotOutput(
                     embedBuilder = createMoveListEmbed(category = stance, moveList)

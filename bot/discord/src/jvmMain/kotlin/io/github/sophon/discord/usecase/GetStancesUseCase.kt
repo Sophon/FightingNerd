@@ -4,11 +4,10 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
-import kotlin.collections.map
 
+//TODO: write unit tests
 internal class GetStancesUseCase {
     suspend fun invoke(
         wiki: WikiClient,
@@ -18,8 +17,8 @@ internal class GetStancesUseCase {
             .mapError { it.toDomainError() }
             .map { moveList ->
                 moveList
-                    .filter { move -> move.input.take(3).all { it.isLetter() } }
-                    .map { it.input.take(3) }
+                    .filter { it.t8Properties?.stance?.isNotBlank() == true }
+                    .map { it.t8Properties!!.stance!! }
                     .distinct()
             }
     }
