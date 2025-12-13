@@ -117,6 +117,7 @@ internal class WavuWikiDiscordFeature(
                 SupportedCommand.Argument(
                     name = KEY_STANCE,
                     description = "Stance",
+                    isRequired = false,
                 ),
             )
         )
