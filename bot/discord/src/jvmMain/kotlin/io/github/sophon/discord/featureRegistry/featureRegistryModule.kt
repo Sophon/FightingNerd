@@ -16,6 +16,7 @@ import io.github.sophon.discord.featureRegistry.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
+import io.github.sophon.discord.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.wikiwavu.infrastructure.FileReader
 import org.koin.core.module.dsl.singleOf
@@ -33,6 +34,7 @@ internal val featureRegistryModule = module {
     singleOf(::GetCharacterUseCase)
     singleOf(::GetMoveUseCase)
     singleOf(::GetMovesUseCase)
+    singleOf(::GetStancesUseCase)
 
     singleOf(::Scheduler)
     //endregion

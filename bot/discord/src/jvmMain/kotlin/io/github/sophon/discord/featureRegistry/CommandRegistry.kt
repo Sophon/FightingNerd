@@ -21,6 +21,7 @@ enum class Command {
     PC,
     HEAT,
     HOMING,
+    STANCE,
 
     //supercombo wiki
     FDSF6,
