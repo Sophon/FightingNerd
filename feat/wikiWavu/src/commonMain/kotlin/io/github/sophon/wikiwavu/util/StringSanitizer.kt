@@ -43,14 +43,5 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
         .replace("rage.", "r.")
         .replace("heat.", "h.")
 
-    //BAD.1+2 -> bad1+2
-    result = result.split(".").let {
-        if (it.first().length == 3) {
-            result.replace(".", "")
-        } else {
-            result
-        }
-    }
-
     return result
 }
