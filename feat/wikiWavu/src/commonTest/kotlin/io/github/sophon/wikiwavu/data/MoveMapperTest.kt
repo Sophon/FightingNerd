@@ -44,7 +44,7 @@ class MoveMapperTest {
         val expected: List<String> = emptyList()
 
         //when
-        val result = alias.formAliases()
+        val result = alias.formAliases("")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -57,7 +57,7 @@ class MoveMapperTest {
         val expected = listOf("shining wizard")
 
         //when
-        val result = alias.formAliases()
+        val result = alias.formAliases("")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -73,7 +73,7 @@ class MoveMapperTest {
         )
 
         //when
-        val result = alias.formAliases()
+        val result = alias.formAliases("")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -89,7 +89,48 @@ class MoveMapperTest {
         )
 
         //when
-        val result = string.formAliases()
+        val result = string.formAliases("")
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region isStance
+    @Test
+    fun `getStance handles basic stance`() {
+        //given
+        val string = "BAD.1+2"
+        val expected = "BAD"
+
+        //when
+        val result = string.getStance()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `getStance ignores non stance`() {
+        //given
+        val string = "FCdf4"
+        val expected = null
+
+        //when
+        val result = string.getStance()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `getStance ignores OTG`() {
+        //given
+        val string = "otg3"
+        val expected = null
+
+        //when
+        val result = string.getStance()
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -146,7 +187,7 @@ class MoveMapperTest {
                 isHeat = false,
                 isPowerCrush = false,
                 isHoming = false,
-                stance = ""
+                stance = null,
             )
         )
 
@@ -240,7 +281,7 @@ class MoveMapperTest {
                 isHeat = true,
                 isPowerCrush = false,
                 isHoming = false,
-                stance = ""
+                stance = null
             )
         )
 
@@ -289,7 +330,7 @@ class MoveMapperTest {
             charName = "Armor King",
             id = "armor_king-bad.db1+2",
             name = "Shadow Press",
-            input = "baddb1+2",
+            input = "bad.db1+2",
             damage = "18,15",
             startup = "i14~17",
             recovery = "r43? FDFA",
@@ -303,7 +344,7 @@ class MoveMapperTest {
                 "Opponent is left FUFT on hit",
                 "js14~34"
             ),
-            aliases = emptyList(),
+            aliases = listOf("baddb1+2"),
             urls = Move.Urls(
                 videoId = "https://wavu.wiki/t/Special:Redirect/file/File%3At8-p2-armor_king-bad.db%2B1%2B2.mp4",
                 wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-BAD.db+1+2",
@@ -388,7 +429,7 @@ class MoveMapperTest {
                 isHeat = false,
                 isPowerCrush = false,
                 isHoming = true,
-                stance = ""
+                stance = null
             )
         )
 
