@@ -105,7 +105,7 @@ internal class WavuWikiClient(
         charName: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(charName, moveQuery.cleanMoveInput())
+        return fetchMoveUseCase.invoke(charName, moveQuery.cleanMoveInput(keepSpaces = true))
             .onError {
                 Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
             }
