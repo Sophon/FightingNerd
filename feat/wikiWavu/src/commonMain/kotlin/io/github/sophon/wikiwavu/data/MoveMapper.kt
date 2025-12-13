@@ -149,12 +149,11 @@ private fun formProperties(
         isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) },
         isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) },
         isHoming = notes.any { it.contains("Homing", ignoreCase = true) },
-        stance = input.isStance(),
+        stance = input.getStance(),
     )
 }
 
-//TODO: write unit tests
-internal fun String.isStance(): String? {
+internal fun String.getStance(): String? {
     val stance = take(3).takeIf {
         length >= 4 && it.all { char -> char.isLetter() } && get(3) == '.' && it != "otg"
     }
