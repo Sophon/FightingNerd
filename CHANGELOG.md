@@ -2,7 +2,7 @@
 
 ## [v1.2.3] - 2025-12-13
 - fix bugs related to searching via move's name
-- Wavu
+- Wavu v1.0.6
   - can search for a character's stances
   - can search for a stance's moves
 

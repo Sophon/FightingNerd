@@ -68,7 +68,7 @@ android {
     }
 }
 
-val featureVersion = "1.0.7"
+val featureVersion = "1.0.6"
 buildkonfig {
     packageName = "io.github.sophon.wikiwavu"
 
