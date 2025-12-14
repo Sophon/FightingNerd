@@ -135,6 +135,19 @@ class MoveMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `getStances handles backturn`() {
+        //given
+        val string = "BTws3"
+        val expected = "BT"
+
+        //when
+        val result = string.getStance()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region toDomain

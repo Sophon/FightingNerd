@@ -154,8 +154,13 @@ private fun formProperties(
 }
 
 internal fun String.getStance(): String? {
+    when {
+        startsWith("BT", ignoreCase = true) -> return "BT"
+        startsWith("CD", ignoreCase = true) -> return "CD"
+    }
+
     val stance = take(3).takeIf {
-        length >= 4 && it.all { char -> char.isLetter() } && get(3) == '.' && it != "otg"
+        (length >= 4 && it.all { char -> char.isLetter() } && get(3) == '.' && it != "otg")
     }
     return stance
 }
