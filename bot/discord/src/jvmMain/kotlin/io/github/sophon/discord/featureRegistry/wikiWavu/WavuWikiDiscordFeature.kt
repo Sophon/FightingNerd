@@ -251,9 +251,9 @@ internal class WavuWikiDiscordFeature(
                     BotOutput(
                         embedBuilder = {
                             mandatoryField(
-                                name = stance,
+                                name = charName.replaceFirstChar { it.uppercase() },
                                 value = stanceList
-                                    .joinToString(separator = "") { "* $it\n" }
+                                    .joinToString(separator = "") { "* ${it.uppercase()}\n" }
                                     .truncate(MAX_LENGTH_EMBED),
                             )
                         }
