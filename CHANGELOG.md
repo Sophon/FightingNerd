@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v1.2.5] - 2025-12-14
+- stances display the character name
+- stances include BT
+
 ## [v1.2.4] - 2025-12-13
 - fix stance's second argument being mandatory
 
