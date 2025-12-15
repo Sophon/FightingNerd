@@ -36,6 +36,7 @@ internal fun String.toMarkdown(): String {
     var result = this
         .replace("<em>", "*")
         .replace("</em>", "*")
+        .replace("<br>", "\n")
 
     // Process !<'...'> patterns
     while (true) {
