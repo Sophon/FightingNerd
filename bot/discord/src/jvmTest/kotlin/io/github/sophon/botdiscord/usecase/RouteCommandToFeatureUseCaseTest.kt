@@ -269,7 +269,7 @@ class RouteCommandToFeatureUseCaseTest {
     @Test
     fun `invoke with CHARSF6 explicit command and valid SF character returns success`() = runTest {
         // given
-        val message = "@bot charsf6 ken"
+        val message = "@bot charsf ken"
         // when
         val result = useCase.invoke(message)
         // then
