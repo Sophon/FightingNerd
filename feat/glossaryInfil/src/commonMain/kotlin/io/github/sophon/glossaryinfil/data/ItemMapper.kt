@@ -1,7 +1,6 @@
 package io.github.sophon.glossaryinfil.data
 
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
-import kotlin.collections.orEmpty
 
 internal fun GlossaryItemDto.toDomain(): GlossaryItem {
     return GlossaryItem(
