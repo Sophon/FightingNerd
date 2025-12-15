@@ -64,7 +64,7 @@ internal class DustLoopWikiDiscordFeature(
     )
     override val otherCommands = listOf(
         SupportedCommand(
-            command = Command.CHARGGST,
+            command = Command.CHARGG,
             description = "GGST character data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -74,7 +74,7 @@ internal class DustLoopWikiDiscordFeature(
             )
         ),
         SupportedCommand(
-            command = Command.FDGGST,
+            command = Command.FDGG,
             description = "GGST frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -88,7 +88,7 @@ internal class DustLoopWikiDiscordFeature(
             )
         ),
         SupportedCommand(
-            command = Command.CHARDBFZ,
+            command = Command.CHARDB,
             description = "DBFZ character data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -98,7 +98,7 @@ internal class DustLoopWikiDiscordFeature(
             ),
         ),
         SupportedCommand(
-            command = Command.FDDBFZ,
+            command = Command.FDDB,
             description = "DBFZ frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -155,32 +155,32 @@ internal class DustLoopWikiDiscordFeature(
                 }
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
-            Command.CHARGGST -> {
+            Command.CHARGG -> {
                 val wiki = wikis[Game.GGST.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
-            Command.FDGGST -> {
+            Command.FDGG -> {
                 val wiki = wikis[Game.GGST.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
-            Command.CHARDBFZ -> {
+            Command.CHARDB -> {
                 val wiki = wikis[Game.DBFZ.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
-            Command.FDDBFZ -> {
+            Command.FDDB -> {
                 val wiki = wikis[Game.DBFZ.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
-            Command.CHARGBVSR -> {
+            Command.CHARGB -> {
                 val wiki = wikis[Game.GBVSR.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
-            Command.FDGBVSR -> {
+            Command.FDGB -> {
                 val wiki = wikis[Game.GBVSR.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)

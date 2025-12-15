@@ -63,7 +63,7 @@ internal class WavuWikiDiscordFeature(
     )
     override val otherCommands: List<SupportedCommand> = listOf(
         SupportedCommand(
-            command = Command.FDT8,
+            command = Command.FDTK,
             description = "Tekken 8 frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -159,7 +159,7 @@ internal class WavuWikiDiscordFeature(
 
         return when (command) {
             Command.FD,
-            Command.FDT8,
+            Command.FDTK,
                 -> searchMove(wiki, query)
 
             Command.PC -> searchPowerCrushMoves(wiki, query)
