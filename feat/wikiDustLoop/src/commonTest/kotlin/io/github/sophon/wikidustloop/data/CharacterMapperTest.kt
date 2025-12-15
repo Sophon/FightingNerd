@@ -276,6 +276,22 @@ class CharacterMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `createAliases handles aliases from DTO`() {
+        //given
+        val char = "Goku (GT)"
+        val expected = listOf(
+            "ratku",
+            "gokugt",
+        )
+
+        //when
+        val result = char.createAliases("Ratku")
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region toClickable

@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v1.3.0] - TODO
+DustLoop v1.0.5
+  - enable DBFZ
+
 ## [v1.2.5] - 2025-12-14
 - stances display the character name
 - stances include BT and CD

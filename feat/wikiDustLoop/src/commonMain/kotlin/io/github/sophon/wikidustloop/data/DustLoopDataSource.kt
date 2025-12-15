@@ -71,7 +71,8 @@ internal class DustLoopDataSourceImpl(
                     "portrait",
                     "icon",
                     "kimod",
-                    "umo"
+                    "umo",
+                    "aliases",
                 )
             }
             DustLoopTables.TABLE_GGST_CHARACTERS -> {

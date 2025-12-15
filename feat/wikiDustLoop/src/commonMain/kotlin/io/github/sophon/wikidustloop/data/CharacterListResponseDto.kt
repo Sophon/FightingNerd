@@ -21,6 +21,7 @@ internal data class CharacterDto(
     @SerialName("nav image")
     val navImage: String? = null,
     val umo: String? = null,
+    val aliases: String? = null,
 
     val defense: String? = null,
     val guts: String? = null,
