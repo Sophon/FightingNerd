@@ -58,7 +58,7 @@ internal class DreamCancelWikiDiscordFeature(
     )
     override val otherCommands = listOf(
         SupportedCommand(
-            command = Command.FDKOF15,
+            command = Command.FDKOF,
             description = "SF6 frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -130,7 +130,7 @@ internal class DreamCancelWikiDiscordFeature(
                 }
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
-            Command.FDKOF15 -> {
+            Command.FDKOF -> {
                 val gameId = Game.KoFXV.id
                 val wiki = wikis[gameId]
                     ?: return Result.Error(BotError.UnsupportedGame(query))

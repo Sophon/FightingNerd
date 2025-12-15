@@ -134,7 +134,7 @@ class RouteCommandToFeatureUseCaseTest {
         )
         override val otherCommands = listOf(
             SupportedCommand(
-                Command.CHARSF6,
+                Command.CHARSF,
                 description = "",
                 arguments = emptyList(),
             ),
@@ -166,7 +166,7 @@ class RouteCommandToFeatureUseCaseTest {
                         Result.Success(BotOutput(embedBuilder = { title = "SuperCombo FD: $query" }))
                     }
                 }
-                Command.CHARSF6 -> {
+                Command.CHARSF -> {
                     if (query.lowercase() in sfChars) {
                         Result.Success(BotOutput(embedBuilder = { title = "SuperCombo CHARSF6: $query" }))
                     } else {
