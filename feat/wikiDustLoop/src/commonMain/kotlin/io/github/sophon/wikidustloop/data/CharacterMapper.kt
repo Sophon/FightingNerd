@@ -114,7 +114,7 @@ internal fun String?.formWikiUrl(gameId: String): String {
     return "$WIKI_BASE_URL/$gameId/$formatted"
 }
 
-internal fun String?.createAliases(dtoAliases: String?): List<String> {
+internal fun String?.createAliases(dtoAliases: String? = null): List<String> {
     return buildList {
         dtoAliases?.let { aliases ->
             aliases.split(";").forEach { add(it.lowercase()) }
