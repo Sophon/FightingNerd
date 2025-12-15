@@ -27,7 +27,7 @@ internal fun CharacterListResponseDto.toDomain(
                 displayName = dto.name.orEmpty(),
                 queryName = queryName,
                 wikiUrl = queryName.formWikiUrl(gameId),
-                aliasList = dto.name.createAliases(),
+                aliasList = dto.name.createAliases(dto.aliases),
                 images = Character.Images(
                     iconUrl = dto.icon.let { imageUrlMap[it] },
                     bannerUrl = dto.portrait.let { imageUrlMap[it] },
@@ -114,8 +114,12 @@ internal fun String?.formWikiUrl(gameId: String): String {
     return "$WIKI_BASE_URL/$gameId/$formatted"
 }
 
-internal fun String?.createAliases(): List<String> {
+internal fun String?.createAliases(dtoAliases: String?): List<String> {
     return buildList {
+        dtoAliases?.let { aliases ->
+            aliases.split(";").forEach { add(it.lowercase()) }
+        }
+
         val original = this@createAliases.orEmpty()
         if (original.isBlank()) return@buildList
 
