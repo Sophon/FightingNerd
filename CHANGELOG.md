@@ -4,6 +4,8 @@
 - remove game-version from commands
 - DustLoop v1.0.5
   - enable DBFZ
+- Glossary v1.0.2
+  - fixed formatting for `\n`/`<br>`
 
 ## [v1.2.5] - 2025-12-14
 - stances display the character name

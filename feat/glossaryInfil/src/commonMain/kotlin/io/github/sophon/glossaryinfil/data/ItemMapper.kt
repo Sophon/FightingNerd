@@ -1,7 +1,6 @@
 package io.github.sophon.glossaryinfil.data
 
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
-import kotlin.collections.orEmpty
 
 internal fun GlossaryItemDto.toDomain(): GlossaryItem {
     return GlossaryItem(
@@ -36,6 +35,7 @@ internal fun String.toMarkdown(): String {
     var result = this
         .replace("<em>", "*")
         .replace("</em>", "*")
+        .replace("<br>", "\n")
 
     // Process !<'...'> patterns
     while (true) {

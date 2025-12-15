@@ -58,8 +58,9 @@ class ItemMapperTest {
                 " **__active__**, and **__recovery__** frames of each move, what the " +
                 "**__frame advantage__** is when the move hits or is blocked, how much " +
                 "damage each move does, and any other special properties the move might have, " +
-                "like hitting **__overhead__** or **__low__**.<br><br>Frame data can " +
-                "intimidate people, because it's a [**giant spreadsheet**](https://docs.google.com/spreadsheets/d/1EBONXi2TCD1gTS2GbcB4z6ZYEoq3NNYp99kSxstKACE/edit#gid=0) " +
+                "like hitting **__overhead__** or **__low__**.\n\n" +
+                "Frame data can intimidate people, because it's a " +
+                "[**giant spreadsheet**](https://docs.google.com/spreadsheets/d/1EBONXi2TCD1gTS2GbcB4z6ZYEoq3NNYp99kSxstKACE/edit#gid=0) " +
                 "that looks pretty overwhelming. But, really, frame data is not intended to be memorized " +
                 "like a list of formulas for your high school math class. The two most important numbers " +
                 "are the **__startup__** of a move (\"how fast is it?\") and how **__safe__** or " +
