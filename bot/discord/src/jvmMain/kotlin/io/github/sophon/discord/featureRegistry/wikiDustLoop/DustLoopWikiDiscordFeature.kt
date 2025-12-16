@@ -352,7 +352,12 @@ internal class DustLoopWikiDiscordFeature(
         optionalField(name = "Ki gain", value = move.dbfzProperties?.kiGain)
         optionalField(name = "Prorate", value = move.dbfzProperties?.prorate)
         optionalField(name = "BlockStun", value = move.dbfzProperties?.blockStun)
-        optionalField(name = "Hit (ground | air)", value = "${move.dbfzProperties?.groundHit} | ${move.dbfzProperties?.airHit}")
+        if (move.dbfzProperties?.groundHit != null || move.dbfzProperties?.airHit != null) {
+            optionalField(
+                name = "Hit (ground | air)",
+                value = "${move.dbfzProperties?.groundHit} | ${move.dbfzProperties?.airHit}"
+            )
+        }
         optionalField(name = "Type", value = move.dbfzProperties?.type)
         optionalField(name = "Level", value = move.dbfzProperties?.level)
 
