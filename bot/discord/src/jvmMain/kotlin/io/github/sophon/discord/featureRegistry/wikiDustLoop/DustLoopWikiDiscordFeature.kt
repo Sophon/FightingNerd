@@ -347,6 +347,15 @@ internal class DustLoopWikiDiscordFeature(
         optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
         optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
 
+        optionalField(name = "Attribute", value = move.dbfzProperties?.attribute)
+        optionalField(name = "Smash", value = move.dbfzProperties?.smash)
+        optionalField(name = "Ki gain", value = move.dbfzProperties?.kiGain)
+        optionalField(name = "Prorate", value = move.dbfzProperties?.prorate)
+        optionalField(name = "BlockStun", value = move.dbfzProperties?.blockStun)
+        optionalField(name = "Hit (ground | air)", value = "${move.dbfzProperties?.groundHit} | ${move.dbfzProperties?.airHit}")
+        optionalField(name = "Type", value = move.dbfzProperties?.type)
+        optionalField(name = "Level", value = move.dbfzProperties?.level)
+
         createNotes(move)
 
         footer {
