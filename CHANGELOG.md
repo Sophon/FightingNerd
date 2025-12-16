@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## ## [v1.2.7] - 2025-12-16
+- Wavu
+  - fixed some clickable links not formatting properly
+
 ## [v1.2.6] - 2025-12-16
 - remove game-version from commands
 - `help` has character-data commands split into a separate column

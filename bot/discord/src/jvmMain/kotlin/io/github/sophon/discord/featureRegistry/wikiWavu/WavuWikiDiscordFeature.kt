@@ -27,7 +27,6 @@ import io.github.sophon.discord.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
-import io.github.sophon.discord.util.orClickable
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
@@ -283,9 +282,9 @@ internal class WavuWikiDiscordFeature(
         color = Color(GREEN)
 
         mandatoryField(name = "Startup", value = move.startup)
-        mandatoryField(name = "Hit", value = move.onHit.orClickable())
+        mandatoryField(name = "Hit", value = move.onHit)
         mandatoryField(name = "Block", value = move.onBlock)
-        mandatoryField(name = "CH", value = (move.onCH ?: move.onHit).orClickable())
+        mandatoryField(name = "CH", value = (move.onCH ?: move.onHit))
         mandatoryField(name = "Level", value = move.guard)
 
 
@@ -310,7 +309,7 @@ internal class WavuWikiDiscordFeature(
         } else null
 
         val allNotes = buildList {
-            addAll(move.notes.mapNotNull { it.orClickable() })
+            addAll(move.notes.map { it })
             aliasNote?.let { add(it) }
         }
 

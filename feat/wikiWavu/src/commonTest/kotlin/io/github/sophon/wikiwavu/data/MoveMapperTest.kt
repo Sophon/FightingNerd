@@ -475,4 +475,31 @@ class MoveMapperTest {
         assertThat(result).isEqualTo(expected)
     }
     //endregion
+
+    //region formNotes
+    @Test
+    fun `formNotes handles links`() {
+        //given
+        val string = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em;" +
+                " padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-blue homing&quot;" +
+                "\n&gt;Homing&lt;/div&gt;" +
+                "\n* Deals chip damage on block" +
+                "\n* Transition to SEN (+0/[[Reina_combos#Mini-combos|+13]]/[[Reina_combos#Mini-combos|+18c]]) with input F" +
+                "\n* Transition to UNS (+0/+12/+18c) with u_d" +
+                "\n* Cannot block up to i14 on empty transition on block\n&lt;/div&gt;"
+        val expected = listOf(
+            "Homing",
+            "Deals chip damage on block",
+            "Transition to SEN (+0/[+13](https://wavu.wiki/t/Reina_combos#Mini-combos)/[+18c](https://wavu.wiki/t/Reina_combos#Mini-combos)) with input F",
+            "Transition to UNS (+0/+12/+18c) with u_d",
+            "Cannot block up to i14 on empty transition on block"
+        )
+
+        //when
+        val result = string.formNotes()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
 }

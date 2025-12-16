@@ -26,7 +26,7 @@ internal fun MoveDto.mapToDomain(
     movesById: Map<String, MoveDto>,
 ): Move {
     val cleanedCrushes = splitCrush()
-    val unifiedNotes = splitNotes() + cleanedCrushes
+    val unifiedNotes = notes.formNotes() + cleanedCrushes
     val fullInput = formCompleteDataFromParent(movesById) { it.input }
         .orEmpty()
         .cleanMoveInput()
@@ -41,11 +41,11 @@ internal fun MoveDto.mapToDomain(
         startup = getRootStartup(movesById),
         recovery = recv,
         onBlock = block,
-        onHit = hit,
-        onCH = ch,
+        onHit = hit.formatClickable(),
+        onCH = ch.formatClickable(),
         guard = formCompleteDataFromParent(movesById) { it.target },
 
-        notes = splitNotes() + cleanedCrushes,
+        notes = notes.formNotes() + cleanedCrushes,
         aliases = alias.formAliases(input = fullInput),
 
         urls = Move.Urls(
@@ -70,6 +70,63 @@ internal fun String.formId(): String {
         .joinToString("_") { it.lowercase() }
         .cleanMoveInput()
 }
+
+internal fun String?.formNotes(): List<String> {
+    val finalNotes = this.orEmpty()
+        .trimIndent()
+        .cleanHtml()
+        .replace("\n\n", "\n")
+        .lines()
+        .filter { it.isNotEmpty() }
+        .map { it.removePrefix("* ").trim() }
+        .mapNotNull { it.formatClickable() }
+
+    return finalNotes
+}
+
+internal fun String.getStance(): String? {
+    when {
+        startsWith("BT", ignoreCase = true) -> return "BT"
+        startsWith("CD", ignoreCase = true) -> return "CD"
+    }
+
+    val stance = take(3).takeIf {
+        (length >= 4 && it.all { char -> char.isLetter() } && get(3) == '.' && it != "otg")
+    }
+    return stance
+}
+
+internal fun String?.formAliases(input: String): List<String> {
+    val aliases: MutableList<String> = this
+        .orEmpty()
+        .cleanHtml()
+        .split("* ", "or")
+        .map {
+            it
+                .trim()
+                .cleanMoveInput(keepSpaces = true)
+        }
+        .filter { it.isNotEmpty() }
+        .toMutableList()
+
+    if (
+        input.contains(".")
+        && input.split(".").first().length == 3
+    ) {
+        aliases.add(input.replace(".", ""))
+    }
+
+    return aliases
+}
+
+internal fun String?.formVideoUrl(): String? {
+    return this?.let { VIDEO_URL + it.urlEncode() }
+}
+
+internal fun formMoveWikiUrl(charName: String, id: String): String {
+    return "${MOVE_URL}/${charName.replace(" ", "_")}_movelist#${id.replace(" ", "_")}"
+}
+
 
 /**
  * Kazuya's 112 is actually:
@@ -116,7 +173,6 @@ private fun MoveDto.getRootStartup(
     return root.startup
 }
 
-//input: <div class="plainlist">\n* is1~20\n* js25~39\n* fs40~42</div>
 private fun MoveDto.splitCrush(): List<String> {
     val finalCrushes = crush.orEmpty()
         .trimIndent()
@@ -128,16 +184,14 @@ private fun MoveDto.splitCrush(): List<String> {
     return finalCrushes
 }
 
-private fun MoveDto.splitNotes(): List<String> {
-    val finalNotes = notes.orEmpty()
-        .trimIndent()
-        .cleanHtml()
-        .replace("\n\n", "\n")
-        .lines()
-        .filter { it.isNotEmpty() }
-        .map { it.removePrefix("* ").trim() }
+private fun String?.formatClickable(): String? {
+    if (this == null) return null
 
-    return finalNotes
+    return replace(Regex("""\[\[([^|]+)\|([^\]]+)\]\]""")) { matchResult ->
+        val description = matchResult.groupValues[2]
+        val destination = matchResult.groupValues[1].replace(" ", "_")
+        "[$description]($MOVE_URL/$destination)"
+    }
 }
 
 private fun formProperties(
@@ -151,48 +205,4 @@ private fun formProperties(
         isHoming = notes.any { it.contains("Homing", ignoreCase = true) },
         stance = input.getStance(),
     )
-}
-
-internal fun String.getStance(): String? {
-    when {
-        startsWith("BT", ignoreCase = true) -> return "BT"
-        startsWith("CD", ignoreCase = true) -> return "CD"
-    }
-
-    val stance = take(3).takeIf {
-        (length >= 4 && it.all { char -> char.isLetter() } && get(3) == '.' && it != "otg")
-    }
-    return stance
-}
-
-internal fun String?.formAliases(input: String): List<String> {
-    val aliases: MutableList<String> = this
-        .orEmpty()
-        .cleanHtml()
-        .split("* ", "or")
-        .map {
-            it
-                .trim()
-                .cleanMoveInput(keepSpaces = true)
-        }
-        .filter { it.isNotEmpty() }
-        .toMutableList()
-
-    if (
-        input.contains(".")
-        && input.split(".").first().length == 3
-    ) {
-        aliases.add(input.replace(".", ""))
-    }
-
-    return aliases
-}
-
-internal fun String?.formVideoUrl(): String? {
-    return this?.let { VIDEO_URL + it.urlEncode() }
-}
-
-//https://wavu.wiki/t/Armor_King_movelist#Armor_King-1+2
-internal fun formMoveWikiUrl(charName: String, id: String): String {
-    return "${MOVE_URL}/${charName.replace(" ", "_")}_movelist#${id.replace(" ", "_")}"
 }
