@@ -117,11 +117,9 @@ internal class CoreDiscordFeature(
     private fun createHelpEmbed(): Result<BotOutput, BotError> {
         val features = featureRegistry.getRegisteredFeatures()
         val commands = Command.entries.sortedBy { it.name }
-        val (fdCommands, otherCommands) = commands
-            .filter { it.name != Command.FD.name }
-            .partition {
-                it.name.startsWith(Command.FD.name)
-            }
+        val fdCommands = commands.filter { it.name.startsWith("FD") && it.name != "FD" }
+        val charCommands = commands.filter { it.name.startsWith("CHAR") }
+        val otherCommands = commands - fdCommands - charCommands - Command.FD
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
             mandatoryField(
@@ -134,6 +132,18 @@ internal class CoreDiscordFeature(
                             append("\n  - `${fdCommand.name}`")
                         }
                     append("\n")
+                }.trimEnd(),
+                inline = true,
+            )
+
+            mandatoryField(
+                name = "🎭 CHARACTER DATA",
+                value = buildString {
+                    charCommands
+                        .sortedBy { it.name }
+                        .forEach { charCommand ->
+                            append("- `${charCommand.name}`\n")
+                        }
                 }.trimEnd(),
                 inline = true,
             )

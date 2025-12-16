@@ -62,7 +62,7 @@ internal class SuperComboWikiDiscordFeature(
     )
     override val otherCommands = listOf(
         SupportedCommand(
-            command = Command.FDSF6,
+            command = Command.FDSF,
             description = "SF6 frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -76,7 +76,7 @@ internal class SuperComboWikiDiscordFeature(
             )
         ),
         SupportedCommand(
-            command = Command.CHARSF6,
+            command = Command.CHARSF,
             description = "SF6 character data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -86,7 +86,7 @@ internal class SuperComboWikiDiscordFeature(
             )
         ),
         SupportedCommand(
-            command = Command.CHARMK1,
+            command = Command.CHARMK,
             description = "MK1 character data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -96,7 +96,7 @@ internal class SuperComboWikiDiscordFeature(
             ),
         ),
         SupportedCommand(
-            command = Command.FDMK1,
+            command = Command.FDMK,
             description = "MK1 frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -157,22 +157,22 @@ internal class SuperComboWikiDiscordFeature(
 
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
-            Command.CHARSF6 -> {
+            Command.CHARSF -> {
                 val wiki = wikis[Game.StreetFighter6.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
-            Command.FDSF6 -> {
+            Command.FDSF -> {
                 val wiki = wikis[Game.StreetFighter6.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
-            Command.CHARMK1 -> {
+            Command.CHARMK -> {
                 val wiki = wikis[Game.MK1.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
-            Command.FDMK1 -> {
+            Command.FDMK -> {
                 val wiki = wikis[Game.MK1.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)

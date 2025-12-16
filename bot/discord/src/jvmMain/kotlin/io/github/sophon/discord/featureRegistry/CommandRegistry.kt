@@ -5,7 +5,8 @@ package io.github.sophon.discord.featureRegistry
  */
 enum class Command {
     //core
-    TIP, DONATE,
+    TIP,
+    DONATE,
     REPO,
     INVITE,
     HELP,
@@ -17,30 +18,31 @@ enum class Command {
     GL,
 
     //wavu wiki
-    FDT8,
+    FDTK,
     PC,
     HEAT,
     HOMING,
     STANCE,
 
     //supercombo wiki
-    FDSF6,
-    CHARSF6,
-    FDMK1,
-    CHARMK1,
+    FDSF,
+    CHARSF,
+    FDMK,
+    CHARMK,
 
     //2xko wiki
     FDXKO,
 
     //dreamcancel wiki
-    FDKOF15,
+    FDKOF,
     FDCOTW,
 
     //dustloop wiki
-    CHARGGST,
-    CHARDBFZ,
-    CHARGBVSR,
-    FDGGST,
-    FDDBFZ,
-    FDGBVSR,
+    CHARGG,
+    CHARDB,
+    CHARGB,
+    FDGG,
+    FDDB,
+    FDGB,
+    ALIAS,
 }
