@@ -5,6 +5,7 @@
 - `help` has character-data commands split into a separate column
 - DustLoop v1.0.5
   - enable DBFZ
+  - `alias` command to see character querryable aliases
 - Glossary v1.0.2
   - fixed formatting for `\n`/`<br>`
 
