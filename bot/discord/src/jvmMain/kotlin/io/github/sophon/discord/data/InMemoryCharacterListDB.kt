@@ -8,12 +8,13 @@ import io.github.sophon.core.wiki.domain.model.Character
 
 class InMemoryCharacterListDB: CharacterListDB {
     private var database: MutableMap<String, Character> = mutableMapOf()
+    private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
 
     override suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
         characterList.forEach { character ->
             database.put(key = character.id, value = character)
             character.aliasList.forEach { alias ->
-                database.put(key = alias, value = character)
+                charNameAliasMap.put(key = alias, value = character.id)
             }
         }
         return Result.Success(Unit)
@@ -29,8 +30,15 @@ class InMemoryCharacterListDB: CharacterListDB {
     }
 
     override suspend fun fetchCharacterDataFor(charName: String): Result<Character, WikiError> {
-        val character: Character = database[charName]
+        val characterId = if (database.containsKey(charName)) {
+            charName
+        } else {
+            charNameAliasMap[charName]
+        }
+
+        val character: Character = database[characterId]
             ?: return Result.Error(WikiError.UnknownCharacter(charName))
+
         return Result.Success(character)
     }
 }

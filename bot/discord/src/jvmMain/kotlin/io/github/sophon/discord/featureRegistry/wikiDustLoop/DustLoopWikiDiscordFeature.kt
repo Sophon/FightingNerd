@@ -26,6 +26,7 @@ import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.Scheduler
 import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.usecase.GetCharacterUseCase
+import io.github.sophon.discord.usecase.GetCharactersUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
@@ -44,6 +45,7 @@ internal class DustLoopWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
+    private val getCharactersUseCase: GetCharactersUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -110,7 +112,11 @@ internal class DustLoopWikiDiscordFeature(
                     description = "Move input"
                 )
             ),
-        )
+        ),
+        SupportedCommand(
+            command = Command.ALIAS,
+            description = "Character aliases",
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -185,6 +191,11 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
+            Command.ALIAS -> {
+                val wiki = wikis[Game.DBFZ.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                createAliases(wiki)
+            }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -201,6 +212,40 @@ internal class DustLoopWikiDiscordFeature(
         return getCharacterUseCase.invoke(wiki = wiki, charName = query)
             .map { (character, fastestMoveList) ->
                 BotOutput(embedBuilder = createCharacterEmbed(character, fastestMoveList))
+            }
+    }
+
+    private suspend fun searchMove(
+        wiki: WikiClient,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getMoveUseCase.invoke(wiki, query)
+            .map { move ->
+                val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
+                    ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
+                    ?: emptyList()
+
+                BotOutput(
+                    embedBuilder = createMoveEmbed(move),
+                    images = if (images.size < 2) {
+                        null
+                    } else {
+                        BotOutput.Images(
+                            title = move.input,
+                            titleUrl = move.urls.wikiUrl,
+                            urls = images,
+                        )
+                    }
+                )
+            }
+    }
+
+    private suspend fun createAliases(wiki: WikiClient): Result<BotOutput, BotError> {
+        return getCharactersUseCase.invoke(wiki)
+            .map { characterList ->
+                BotOutput(
+                    embedBuilder = createAliasesEmbed(characterList)
+                )
             }
     }
 
@@ -286,31 +331,6 @@ internal class DustLoopWikiDiscordFeature(
         }
     }
 
-    private suspend fun searchMove(
-        wiki: WikiClient,
-        query: String,
-    ): Result<BotOutput, BotError> {
-        return getMoveUseCase.invoke(wiki, query)
-            .map { move ->
-                val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-                    ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
-                    ?: emptyList()
-
-                BotOutput(
-                    embedBuilder = createMoveEmbed(move),
-                    images = if (images.size < 2) {
-                        null
-                    } else {
-                        BotOutput.Images(
-                            title = move.input,
-                            titleUrl = move.urls.wikiUrl,
-                            urls = images,
-                        )
-                    }
-                )
-            }
-    }
-
     private fun createMoveEmbed(
         move: Move,
     ): EmbedBuilder.() -> Unit = {
@@ -347,6 +367,20 @@ internal class DustLoopWikiDiscordFeature(
         optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
         optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
 
+        optionalField(name = "Attribute", value = move.dbfzProperties?.attribute)
+        optionalField(name = "Smash", value = move.dbfzProperties?.smash)
+        optionalField(name = "Ki gain", value = move.dbfzProperties?.kiGain)
+        optionalField(name = "Prorate", value = move.dbfzProperties?.prorate)
+        optionalField(name = "BlockStun", value = move.dbfzProperties?.blockStun)
+        if (move.dbfzProperties?.groundHit != null || move.dbfzProperties?.airHit != null) {
+            optionalField(
+                name = "Hit (ground | air)",
+                value = "${move.dbfzProperties?.groundHit} | ${move.dbfzProperties?.airHit}"
+            )
+        }
+        optionalField(name = "Type", value = move.dbfzProperties?.type)
+        optionalField(name = "Level", value = move.dbfzProperties?.level)
+
         createNotes(move)
 
         footer {
@@ -362,6 +396,24 @@ internal class DustLoopWikiDiscordFeature(
             .truncate(MAX_LENGTH_EMBED),
         inline = false,
     )
+
+    private fun createAliasesEmbed(
+        characterList: List<Character>,
+    ): EmbedBuilder.() -> Unit = {
+        val string = buildString {
+            characterList
+                .filter { it.aliasList.isNotEmpty() }
+                .forEach { character ->
+                    val aliases = character.aliasList.joinToString(", ")
+                    append("- **${character.displayName}** → $aliases\n")
+                }
+        }.truncate(MAX_LENGTH_EMBED)
+
+        mandatoryField(
+            name = "🥸 CHARACTER ALIASES",
+            value = string,
+        )
+    }
 
 
     private companion object {

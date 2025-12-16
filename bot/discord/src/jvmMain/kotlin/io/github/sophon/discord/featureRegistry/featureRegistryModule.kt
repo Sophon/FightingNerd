@@ -14,6 +14,7 @@ import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.discord.usecase.GetCharacterUseCase
+import io.github.sophon.discord.usecase.GetCharactersUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.GetStancesUseCase
@@ -35,6 +36,7 @@ internal val featureRegistryModule = module {
     singleOf(::GetMoveUseCase)
     singleOf(::GetMovesUseCase)
     singleOf(::GetStancesUseCase)
+    singleOf(::GetCharactersUseCase)
 
     singleOf(::Scheduler)
     //endregion
