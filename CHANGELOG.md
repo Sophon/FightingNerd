@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v1.3.0] - TODO
+## [v1.2.6] - 2025-12-16
 - remove game-version from commands
 - `help` has character-data commands split into a separate column
 - DustLoop v1.0.5
