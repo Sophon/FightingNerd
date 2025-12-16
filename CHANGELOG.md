@@ -2,6 +2,7 @@
 
 ## [v1.3.0] - TODO
 - remove game-version from commands
+- `help` has character-data commands split into a separate column
 - DustLoop v1.0.5
   - enable DBFZ
 - Glossary v1.0.2
