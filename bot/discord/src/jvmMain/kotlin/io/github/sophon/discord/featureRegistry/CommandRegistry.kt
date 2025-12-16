@@ -44,4 +44,5 @@ enum class Command {
     FDGG,
     FDDB,
     FDGB,
+    ALIAS,
 }
