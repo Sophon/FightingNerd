@@ -4,7 +4,7 @@
 
 ## Overview
 
-Fighting Nerd is a Discord bot that provides fighting game frame data and information. This privacy policy explains what data we collect and how we handle it.
+Fighting Nerd is a Discord bot and set of mobile apps that provide fighting game frame data and information. This privacy policy explains what data we collect and how we handle it.
 
 ## Data We Collect
 
