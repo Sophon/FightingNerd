@@ -1,7 +1,9 @@
 # BOT CHANGELOG
 
 ## [v2.0.0] - TODO
-- `feedback`
+- feedback
+  - allows giving feedback with `/feedback`
+  - admin(s) can then reply with `/reply` and the feedback author will be tagged with an answer
 
 ## [v1.2.7] - 2025-12-16
 - Wavu
