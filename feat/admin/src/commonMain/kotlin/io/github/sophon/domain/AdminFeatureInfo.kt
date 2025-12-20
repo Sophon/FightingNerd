@@ -1,4 +1,4 @@
-package domain
+package io.github.sophon.domain
 
 import io.github.sophon.admin.BuildKonfig
 import io.github.sophon.core.feature.FeatureInfo

@@ -51,8 +51,6 @@ kotlin {
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.test.turbine)
-            implementation(libs.junit)
-            implementation(libs.kotlin.testJunit)
         }
 
         androidMain.dependencies {
@@ -65,6 +63,11 @@ kotlin {
 
         jvmMain.dependencies {
             implementation(libs.sqldelight.driver.sqlite)
+        }
+
+        jvmTest.dependencies {
+            implementation(libs.junit)
+            implementation(libs.kotlin.testJunit)
         }
     }
 }
@@ -89,5 +92,13 @@ buildkonfig {
 
     defaultConfigs {
         buildConfigField(STRING, "VERSION", featureVersion)
+    }
+}
+
+sqldelight {
+    databases {
+        create("AdminDatabase") {
+            packageName.set("io.github.sophon.admin.data")
+        }
     }
 }

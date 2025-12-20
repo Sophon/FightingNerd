@@ -1,4 +1,4 @@
-package domain
+package io.github.sophon.domain
 
 import io.github.sophon.core.domain.Error
 

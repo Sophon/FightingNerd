@@ -1,4 +1,4 @@
-package domain
+package io.github.sophon.domain
 
 data class AdminResult(
     val userId: String,

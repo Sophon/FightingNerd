@@ -1,7 +1,9 @@
-import domain.AdminConfig
-import domain.AdminError
-import domain.AdminFeatureInfo
-import domain.AdminResult
+package io.github.sophon
+
+import io.github.sophon.domain.AdminConfig
+import io.github.sophon.domain.AdminError
+import io.github.sophon.domain.AdminFeatureInfo
+import io.github.sophon.domain.AdminResult
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
@@ -11,9 +13,11 @@ import kotlin.time.toDuration
 
 interface AdminTool {
     fun getFeatureInfo(): FeatureInfo
+
     fun init(adminConfig: AdminConfig): EmptyResult<AdminError>
 
     fun processFeedback(userId: String, feedback: String): Result<AdminResult, AdminError>
+
     fun replyToFeedback(reply: String): Result<AdminResult, AdminError>
 
     fun banUser(
@@ -21,7 +25,9 @@ interface AdminTool {
         duration: Duration = 30.toDuration(DurationUnit.DAYS),
         preventBotUsage: Boolean = false,
     ): Result<AdminResult, AdminError>
+
     fun unbanUser(userId: String): Result<AdminResult, AdminError>
+
     fun updateUserPenalty(
         userId: String,
         duration: Duration,
