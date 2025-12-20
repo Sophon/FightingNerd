@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.buildkonfig)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -36,9 +37,11 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":core"))
 
-            implementation(libs.bundles.ktor)
             implementation(libs.napier)
             implementation(libs.kotlin.date.time)
+
+            implementation(libs.sqldelight.coroutines)
+            implementation(libs.sqldelight.primitive.adapters)
 
             api(libs.koin.core)
         }
@@ -50,6 +53,18 @@ kotlin {
             implementation(libs.test.turbine)
             implementation(libs.junit)
             implementation(libs.kotlin.testJunit)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.sqldelight.driver.android)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.sqldelight.driver.native)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.sqldelight.driver.sqlite)
         }
     }
 }
