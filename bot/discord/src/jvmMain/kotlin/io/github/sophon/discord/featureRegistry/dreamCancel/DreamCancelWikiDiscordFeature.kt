@@ -118,6 +118,7 @@ internal class DreamCancelWikiDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
+        authorId: String,
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.FD -> {

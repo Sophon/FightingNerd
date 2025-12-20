@@ -10,6 +10,7 @@ internal class RouteCommandToFeatureUseCase(
     private val featureList: List<DiscordRegisteredFeature>,
 ) {
     suspend fun invoke(
+        authorId: String,
         message: String
     ): Result<BotOutput, BotError> {
         val fullQuery = message
@@ -21,19 +22,21 @@ internal class RouteCommandToFeatureUseCase(
 
         return if (firstWord.isCommand()) {
             val (commandString, query) = formatQuery(fullQuery)
-            useExplicitCommands(commandString, query)
+            useExplicitCommands(authorId, commandString, query)
         } else {
-            useDefaultCommands(fullQuery)
+            useDefaultCommands(authorId, fullQuery)
         }
     }
 
     suspend fun invoke(
         commandString: String,
+        authorId: String,
         query: String,
     ): Result<BotOutput, BotError> {
         return useExplicitCommands(
-            commandString = commandString,
-            query = query,
+            authorId,
+            commandString,
+            query,
         )
     }
 
@@ -75,6 +78,7 @@ internal class RouteCommandToFeatureUseCase(
     }
 
     private suspend fun useExplicitCommands(
+        authorId: String,
         commandString: String,
         query: String,
     ): Result<BotOutput, BotError> {
@@ -96,7 +100,7 @@ internal class RouteCommandToFeatureUseCase(
                 }
             }
 
-            result = feature.execute(commandToUse, query)
+            result = feature.execute(commandToUse, query, authorId)
             if (result is Result.Success) {
                 return result
             }
@@ -107,12 +111,14 @@ internal class RouteCommandToFeatureUseCase(
     }
 
     private suspend fun useDefaultCommands(
+        authorId: String,
         fullQuery: String
     ): Result<BotOutput, BotError> {
         for (feature in featureList) {
             val defaultCommand = feature.defaultCommand ?: continue
 
             val result = feature.execute(
+                authorId = authorId,
                 command = defaultCommand.command,
                 query = fullQuery,
             )

@@ -21,6 +21,7 @@ internal interface DiscordRegisteredFeature {
     suspend fun execute(
         command: Command,
         query: String,
+        authorId: String,
     ): Result<BotOutput, BotError>
 }
 
