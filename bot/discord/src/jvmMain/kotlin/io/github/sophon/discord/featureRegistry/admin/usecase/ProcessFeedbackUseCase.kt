@@ -6,14 +6,14 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.domain.AdminResult
-import io.github.sophon.domain.Author
+import io.github.sophon.domain.Source
 
 internal class ProcessFeedbackUseCase(
     private val adminTool: AdminTool,
 ) {
-    fun invoke(author: Author, message: String): Result<AdminResult, BotError> {
+    fun invoke(source: Source, message: String): Result<AdminResult, BotError> {
         return adminTool.processFeedback(
-            author = author,
+            source = source,
             feedback = message,
         ).mapError { it.toDomainError() }
     }

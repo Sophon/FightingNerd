@@ -27,7 +27,7 @@ import io.github.sophon.discord.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
-import io.github.sophon.domain.Author
+import io.github.sophon.domain.Source
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
@@ -153,7 +153,7 @@ internal class WavuWikiDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-        author: Author,
+        source: Source,
     ): Result<BotOutput, BotError> {
         val wiki = wikis[Game.Tekken8.id]
             ?: return Result.Error(BotError.UnsupportedGame(query))

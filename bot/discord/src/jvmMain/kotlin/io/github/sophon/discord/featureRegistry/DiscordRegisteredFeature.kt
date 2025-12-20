@@ -5,7 +5,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.discord.BotError
-import io.github.sophon.domain.Author
+import io.github.sophon.domain.Source
 
 internal interface DiscordRegisteredFeature {
     val featureInfo: FeatureInfo
@@ -22,7 +22,7 @@ internal interface DiscordRegisteredFeature {
     suspend fun execute(
         command: Command,
         query: String,
-        author: Author,
+        source: Source,
     ): Result<BotOutput, BotError>
 }
 
@@ -53,7 +53,7 @@ data class BotOutput(
 
     data class Feedback(
         val embedBuilder: (EmbedBuilder.() -> Unit),
-        val author: Author,
+        val source: Source,
         val feedbackChannelList: List<String>,
     )
 }

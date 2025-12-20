@@ -21,7 +21,7 @@ import io.github.sophon.discord.util.createPlainMessage
 import io.github.sophon.discord.util.createPlainResponse
 import io.github.sophon.discord.util.delete
 import io.github.sophon.discord.util.deleteInteraction
-import io.github.sophon.domain.Author
+import io.github.sophon.domain.Source
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -94,14 +94,14 @@ internal class DiscordBotImpl(
     private suspend fun MessageCreateEvent.handleMessage() {
         if (kord.selfId !in message.mentionedUserIds) return
 
-        val author = Author(
+        val source = Source(
             username = message.author?.username.orEmpty(),
             id = message.author?.id.toString(),
-            serverId = message.getGuildOrNull()?.id.toString(),
+            channelId = message.channelId.toString(),
         )
 
         val result = routeCommandToFeatureUseCase.invoke(
-            author,
+            source,
             message.content.lowercase(),
         )
 
@@ -136,14 +136,14 @@ internal class DiscordBotImpl(
         val query = interaction.command.strings.values
             .joinToString(" ")
             .lowercase()
-        val author = Author(
+        val source = Source(
             username = interaction.user.username,
             id = interaction.user.data.id.toString(),
-            serverId = interaction.guildId.toString(),
+            channelId = interaction.channelId.toString(),
         )
 
         val result = routeCommandToFeatureUseCase.invoke(
-            author = author,
+            source = source,
             commandString = commandString,
             query = query
         )

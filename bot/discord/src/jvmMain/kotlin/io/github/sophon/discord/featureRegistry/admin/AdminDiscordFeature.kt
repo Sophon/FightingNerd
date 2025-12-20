@@ -62,11 +62,11 @@ internal class AdminDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-        author: Author,
+        source: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.FEEDBACK -> {
-                feedback(author, query)
+                feedback(source, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -78,10 +78,10 @@ internal class AdminDiscordFeature(
     }
 
     private fun feedback(
-        author: Author,
+        source: Source,
         message: String,
     ): Result<BotOutput, BotError> {
-        return processFeedbackUseCase.invoke(author, message)
+        return processFeedbackUseCase.invoke(source, message)
             .map { adminResult ->
                 BotOutput(
                     feedback = BotOutput.Feedback(
@@ -95,7 +95,7 @@ internal class AdminDiscordFeature(
 
     private fun createFeedbackEmbed(adminResult: AdminResult): EmbedBuilder.() -> Unit = {
         adminResult.apply {
-            title = "${author.username}-${author.id}-${author.serverId}"
+            title = "${source.username}-${source.id}-${source.channelId}"
             color = Color(TURQUOISE)
 
             mandatoryField(
