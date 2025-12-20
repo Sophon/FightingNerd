@@ -2,28 +2,27 @@ package io.github.sophon.fightingnerd.featureRegistry
 
 import fightingnerd.composeapp.generated.resources.Res
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.feature.FeatureConfig
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.feature.Config
 import io.github.sophon.core.util.getGame
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
 interface FeatureListLoader {
-    suspend fun loadFeatureList(): FeatureConfig
+    suspend fun loadFeatureList(): Config
 }
 
 internal class FeatureListLoaderImpl(
     private val json: Json,
 ): FeatureListLoader {
-    override suspend fun loadFeatureList(): FeatureConfig {
+    override suspend fun loadFeatureList(): Config {
         val featureListString = Res.readBytes(CONFIG_PATH).decodeToString()
         val jsonConfig = json.decodeFromString<JsonConfig>(featureListString).apply {
             Napier.d(tag = TAG) { this.toString() }
         }
 
-        return FeatureConfig(
+        return Config(
             featureList = jsonConfig.featureList.map { feature ->
-                FeatureConfig.Feature(
+                Config.Feature(
                     name = feature.name,
                     isEnabled = feature.isEnabled,
                     supportedGameList = feature.supportedGames.mapNotNull { gameId ->

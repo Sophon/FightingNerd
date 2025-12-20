@@ -25,6 +25,7 @@ import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.domain.Source
 import io.github.sophon.dreamcancel.domain.DreamCancelFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
@@ -118,6 +119,7 @@ internal class DreamCancelWikiDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
+        source: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.FD -> {

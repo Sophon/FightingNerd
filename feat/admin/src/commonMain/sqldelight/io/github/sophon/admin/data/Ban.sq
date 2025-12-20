@@ -1,0 +1,36 @@
+CREATE TABLE ban (
+    userId TEXT NOT NULL PRIMARY KEY,
+    bannedAt INTEGER NOT NULL,
+    expiresAt INTEGER NOT NULL,
+    preventBotUsage INTEGER NOT NULL DEFAULT 0
+);
+
+isBanned:
+SELECT COUNT(*) > 0
+FROM ban
+WHERE userId = ? AND expiresAt > ?;
+
+getBan:
+SELECT *
+FROM ban
+WHERE userId = ?;
+
+getActiveBans:
+SELECT *
+FROM ban
+WHERE expiresAt > ?;
+
+upsertBan:
+INSERT OR REPLACE INTO ban(userId, bannedAt, expiresAt, preventBotUsage)
+VALUES (?, ?, ?, ?);
+
+removeBan:
+DELETE FROM ban WHERE userId = ?;
+
+updatePenalty:
+UPDATE ban
+SET expiresAt = ?, preventBotUsage = ?
+WHERE userId = ?;
+
+cleanExpiredBans:
+DELETE FROM ban WHERE expiresAt <= ?;

@@ -21,6 +21,7 @@ import io.github.sophon.discord.util.createPlainMessage
 import io.github.sophon.discord.util.createPlainResponse
 import io.github.sophon.discord.util.delete
 import io.github.sophon.discord.util.deleteInteraction
+import io.github.sophon.domain.Source
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
@@ -56,7 +57,7 @@ internal class DiscordBotImpl(
     private suspend fun startKord() {
         cleanOldGuildCommands(kord)
         createGlobalCommands()
-//        createCommandsForTestServer()
+        createCommandsForTestServer()
 
         monitorGatewayHealth()
 
@@ -93,7 +94,16 @@ internal class DiscordBotImpl(
     private suspend fun MessageCreateEvent.handleMessage() {
         if (kord.selfId !in message.mentionedUserIds) return
 
-        val result = routeCommandToFeatureUseCase.invoke(message.content.lowercase())
+        val source = Source(
+            username = message.author?.username.orEmpty(),
+            id = message.author?.id.toString(),
+            channelId = message.channelId.toString(),
+        )
+
+        val result = routeCommandToFeatureUseCase.invoke(
+            source,
+            message.content.lowercase(),
+        )
 
         val botOutput = when(result) {
             is Result.Success -> result.data
@@ -111,8 +121,14 @@ internal class DiscordBotImpl(
                 createPlainMessage(botOutput.plainText)
             }
             botOutput.errorEmbedBuilder != null -> {
-                createEmbedMessage(botOutput.errorEmbedBuilder, )
+                createEmbedMessage(botOutput.errorEmbedBuilder)
                     .delete(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
+            }
+            botOutput.feedback != null -> {
+                createEmbedMessage(botOutput.feedback)
+            }
+            botOutput.reply != null -> {
+                createEmbedMessage(botOutput.reply)
             }
         }
     }
@@ -123,8 +139,17 @@ internal class DiscordBotImpl(
         val query = interaction.command.strings.values
             .joinToString(" ")
             .lowercase()
+        val source = Source(
+            username = interaction.user.username,
+            id = interaction.user.data.id.toString(),
+            channelId = interaction.channelId.toString(),
+        )
 
-        val result = routeCommandToFeatureUseCase.invoke(commandString, query)
+        val result = routeCommandToFeatureUseCase.invoke(
+            source = source,
+            commandString = commandString,
+            query = query
+        )
 
         val botOutput = when (result) {
             is Result.Success -> result.data
@@ -144,6 +169,12 @@ internal class DiscordBotImpl(
             botOutput.errorEmbedBuilder != null -> {
                 createEmbedResponse(botOutput.errorEmbedBuilder)
                 deleteInteraction(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
+            }
+            botOutput.feedback != null -> {
+                createEmbedResponse(botOutput.feedback)
+            }
+            botOutput.reply != null -> {
+                createEmbedResponse(botOutput.reply)
             }
         }
     }
