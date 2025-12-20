@@ -3,6 +3,7 @@ package io.github.sophon.discord.featureRegistry
 import io.github.sophon.discord.config.ConfigLoader
 import io.github.sophon.discord.featureRegistry.admin.AdminDiscordFeature
 import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.featureRegistry.core.CoreDiscordFeature
 import io.github.sophon.discord.featureRegistry.core.GetBotFeatureInfoUseCase
@@ -31,6 +32,7 @@ internal val featureRegistryModule = module {
     //region ADMIN
     singleOf(::StartAdminToolsUseCase)
     singleOf(::ProcessFeedbackUseCase)
+    singleOf(::ReplyToFeedbackUseCase)
     //endregion
 
     //region CORE
@@ -75,6 +77,7 @@ internal val featureRegistryModule = module {
             adminConfig = adminConfig!!,
             startAdminToolsUseCase = get(),
             processFeedbackUseCase = get(),
+            replyToFeedbackUseCase = get(),
             scheduler = get(),
             scope = get(),
         )

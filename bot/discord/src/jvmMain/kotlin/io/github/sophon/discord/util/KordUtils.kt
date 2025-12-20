@@ -5,6 +5,7 @@ import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.PublicInteractionResponseBehavior
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
@@ -78,6 +79,17 @@ internal suspend fun MessageCreateEvent.createEmbedMessage(
     }
 }
 
+internal suspend fun MessageCreateEvent.createEmbedMessage(
+    reply: BotOutput.Reply,
+): Message {
+    val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.recipient.channelId))
+
+    return channel!!.createMessage {
+        content = "<@${reply.recipient.id}>"
+        embed(reply.embedBuilder)
+    }
+}
+
 internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResponse(
     feedback: BotOutput.Feedback,
 ): PublicInteractionResponseBehavior {
@@ -91,6 +103,17 @@ internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResp
 
     return interaction.respondPublic {
         content = "Feedback sent successfully!"
+    }
+}
+
+internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResponse(
+    reply: BotOutput.Reply,
+): Message {
+    val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.recipient.channelId))
+
+    return channel!!.createMessage {
+        content = "<@${reply.recipient.id}>"
+        embed(reply.embedBuilder)
     }
 }
 

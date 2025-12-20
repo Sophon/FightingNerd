@@ -13,6 +13,7 @@ enum class Command {
 
     //admin
     FEEDBACK,
+    REPLY,
 
     //general
     FD,

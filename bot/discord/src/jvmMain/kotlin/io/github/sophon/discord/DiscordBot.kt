@@ -127,6 +127,9 @@ internal class DiscordBotImpl(
             botOutput.feedback != null -> {
                 createEmbedMessage(botOutput.feedback)
             }
+            botOutput.reply != null -> {
+                createEmbedMessage(botOutput.reply)
+            }
         }
     }
 
@@ -169,6 +172,9 @@ internal class DiscordBotImpl(
             }
             botOutput.feedback != null -> {
                 createEmbedResponse(botOutput.feedback)
+            }
+            botOutput.reply != null -> {
+                createEmbedResponse(botOutput.reply)
             }
         }
     }

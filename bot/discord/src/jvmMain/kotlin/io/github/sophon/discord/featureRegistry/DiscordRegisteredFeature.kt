@@ -44,6 +44,7 @@ data class BotOutput(
     val errorEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
     val images: Images? = null,
     val feedback: Feedback? = null,
+    val reply: Reply? = null,
 ) {
     data class Images(
         val title: String,
@@ -55,5 +56,10 @@ data class BotOutput(
         val embedBuilder: (EmbedBuilder.() -> Unit),
         val source: Source,
         val feedbackChannelList: List<String>,
+    )
+
+    data class Reply(
+        val embedBuilder: (EmbedBuilder.() -> Unit),
+        val recipient: Source,
     )
 }
