@@ -4,9 +4,9 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.data.BanRepo
-import io.github.sophon.domain.AdminConfig
 import io.github.sophon.domain.AdminError
 import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
@@ -18,7 +18,7 @@ import kotlin.time.toDuration
 interface AdminTool {
     fun getFeatureInfo(): FeatureInfo
 
-    fun init(adminConfig: AdminConfig): EmptyResult<AdminError>
+    fun init(adminConfig: Config.AdminConfig): EmptyResult<AdminError>
 
     fun processFeedback(userId: String, feedback: String): Result<AdminResult, AdminError>
 
@@ -47,13 +47,13 @@ internal class AdminToolImpl(
     private val adminFeatureInfo: AdminFeatureInfo,
     private val repo: BanRepo,
 ): AdminTool {
-    private lateinit var adminConfig: AdminConfig
+    private lateinit var adminConfig: Config.AdminConfig
 
     override fun getFeatureInfo(): FeatureInfo {
         return adminFeatureInfo.featureInfo
     }
 
-    override fun init(adminConfig: AdminConfig): EmptyResult<AdminError> {
+    override fun init(adminConfig: Config.AdminConfig): EmptyResult<AdminError> {
         this.adminConfig = adminConfig
         return Result.Success(Unit)
     }
@@ -74,7 +74,6 @@ internal class AdminToolImpl(
         return Result.Success(result)
     }
 
-    //TODO: missing author ID to check if author is admin or not
     override suspend  fun banUser(
         authorId: String,
         userId: String,
