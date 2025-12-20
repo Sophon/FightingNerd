@@ -22,6 +22,10 @@ internal class CreateReplyUseCase {
             username = get(0)
             id = get(1)
             channelId = get(2)
+
+            if (username.isBlank() || id.isBlank() || channelId.isBlank()) {
+                return Result.Error(AdminError.WrongReplyFormat(query))
+            }
         }
         val source = Source(username, id, channelId)
 
