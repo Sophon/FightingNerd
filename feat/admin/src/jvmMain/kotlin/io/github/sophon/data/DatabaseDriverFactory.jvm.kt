@@ -6,8 +6,15 @@ import io.github.sophon.admin.data.AdminDatabase
 
 actual class DatabaseDriverFactory(private val databasePath: String) {
     actual fun createDriver(): SqlDriver {
+        val databaseFile = java.io.File(databasePath)
+        val databaseExists = databaseFile.exists()
+
         val driver = JdbcSqliteDriver("jdbc:sqlite:$databasePath")
-        AdminDatabase.Schema.create(driver)
+
+        if (databaseExists.not()) {
+            AdminDatabase.Schema.create(driver)
+        }
+
         return driver
     }
 }
