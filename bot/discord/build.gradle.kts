@@ -20,6 +20,7 @@ kotlin {
     sourceSets {
         jvmMain.dependencies {
             implementation(project(":core"))
+            implementation(project(":feat:admin"))
             implementation(project(":feat:glossaryInfil"))
             implementation(project(":feat:wikiWavu"))
             implementation(project(":feat:wikiSupercombo"))
