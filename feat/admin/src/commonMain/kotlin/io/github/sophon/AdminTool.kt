@@ -7,6 +7,7 @@ import io.github.sophon.domain.AdminResult
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.data.BanRepo
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -18,7 +19,7 @@ interface AdminTool {
 
     fun processFeedback(userId: String, feedback: String): Result<AdminResult, AdminError>
 
-    fun replyToFeedback(reply: String): Result<AdminResult, AdminError>
+    fun replyToFeedback(userId: String, reply: String): Result<AdminResult, AdminError>
 
     fun banUser(
         userId: String,
@@ -33,11 +34,12 @@ interface AdminTool {
         duration: Duration,
         preventBotUsage: Boolean,
     ): Result<AdminResult, AdminError>
+
+    fun cleanExpiredBans(): EmptyResult<AdminError>
 }
 
 internal class AdminToolImpl(
     private val adminFeatureInfo: AdminFeatureInfo,
-    //usecases
 ): AdminTool {
     private lateinit var adminConfig: AdminConfig
 
@@ -52,13 +54,18 @@ internal class AdminToolImpl(
 
     override fun processFeedback(
         userId: String,
-        feedback: String
+        feedback: String,
     ): Result<AdminResult, AdminError> {
-        TODO("Not yet implemented")
+        val result = AdminResult(userId = userId, message = feedback)
+        return Result.Success(result)
     }
 
-    override fun replyToFeedback(reply: String): Result<AdminResult, AdminError> {
-        TODO("Not yet implemented")
+    override fun replyToFeedback(
+        userId: String,
+        reply: String
+    ): Result<AdminResult, AdminError> {
+        val result = AdminResult(userId = userId, message = reply)
+        return Result.Success(result)
     }
 
     override fun banUser(
@@ -78,6 +85,10 @@ internal class AdminToolImpl(
         duration: Duration,
         preventBotUsage: Boolean,
     ): Result<AdminResult, AdminError> {
+        TODO("Not yet implemented")
+    }
+
+    override fun cleanExpiredBans(): EmptyResult<AdminError> {
         TODO("Not yet implemented")
     }
 }
