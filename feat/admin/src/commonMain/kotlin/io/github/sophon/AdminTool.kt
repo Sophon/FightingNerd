@@ -10,6 +10,7 @@ import io.github.sophon.data.BanRepo
 import io.github.sophon.domain.AdminError
 import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
+import io.github.sophon.domain.Author
 import io.github.sophon.domain.model.Ban
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -20,22 +21,28 @@ interface AdminTool {
 
     fun init(adminConfig: Config.AdminConfig): EmptyResult<AdminError>
 
-    fun processFeedback(userId: String, feedback: String): Result<AdminResult, AdminError>
+    fun processFeedback(
+        author: Author,
+        feedback: String,
+    ): Result<AdminResult, AdminError>
 
-    fun replyToFeedback(userId: String, reply: String): Result<AdminResult, AdminError>
+    fun replyToFeedback(
+        author: Author,
+        feedback: String,
+    ): Result<AdminResult, AdminError>
 
     suspend fun banUser(
-        authorId: String,
-        userId: String,
+        author: Author,
+        offenderId: String,
         duration: Duration = 30.toDuration(DurationUnit.DAYS),
         preventBotUsage: Boolean = false,
     ): Result<Ban, AdminError>
 
-    suspend fun unbanUser(authorId: String, userId: String): EmptyResult<AdminError>
+    suspend fun unbanUser(author: Author, offenderId: String): EmptyResult<AdminError>
 
     suspend fun updateUserPenalty(
-        authorId: String,
-        userId: String,
+        author: Author,
+        offenderId: String,
         duration: Duration,
         preventBotUsage: Boolean,
     ): Result<Ban, AdminError>
@@ -59,58 +66,58 @@ internal class AdminToolImpl(
     }
 
     override fun processFeedback(
-        userId: String,
+        author: Author,
         feedback: String,
     ): Result<AdminResult, AdminError> {
-        val result = AdminResult(userId = userId, message = feedback)
+        val result = AdminResult(author = author, message = feedback)
         return Result.Success(result)
     }
 
     override fun replyToFeedback(
-        userId: String,
-        reply: String
+        author: Author,
+        feedback: String,
     ): Result<AdminResult, AdminError> {
-        val result = AdminResult(userId = userId, message = reply)
+        val result = AdminResult(author = author, message = feedback)
         return Result.Success(result)
     }
 
     override suspend  fun banUser(
-        authorId: String,
-        userId: String,
+        author: Author,
+        offenderId: String,
         duration: Duration,
         preventBotUsage: Boolean
     ): Result<Ban, AdminError> {
-        if (adminConfig.administratorIdList.contains(authorId).not()) {
+        if (adminConfig.administratorIdList.contains(author.id).not()) {
             return Result.Error(AdminError.PermissionDenied())
         }
 
-        return repo.ban(userId, duration, preventBotUsage)
+        return repo.ban(offenderId, duration, preventBotUsage)
             .onSuccess { Napier.i(tag = TAG) { "banUser: $it" } }
     }
 
     override suspend fun unbanUser(
-        authorId: String,
-        userId: String
+        author: Author,
+        offenderId: String,
     ): EmptyResult<AdminError> {
-        if (adminConfig.administratorIdList.contains(authorId).not()) {
+        if (adminConfig.administratorIdList.contains(author.id).not()) {
             return Result.Error(AdminError.PermissionDenied())
         }
 
-        return repo.unbanUser(userId)
+        return repo.unbanUser(offenderId)
             .onSuccess { Napier.i(tag = TAG) { "unbanUser: $it" } }
     }
 
     override suspend fun updateUserPenalty(
-        authorId: String,
-        userId: String,
+        author: Author,
+        offenderId: String,
         duration: Duration,
         preventBotUsage: Boolean,
     ): Result<Ban, AdminError> {
-        if (adminConfig.administratorIdList.contains(authorId).not()) {
+        if (adminConfig.administratorIdList.contains(author.id).not()) {
             return Result.Error(AdminError.PermissionDenied())
         }
 
-        return repo.updatePenalty(userId, duration, preventBotUsage)
+        return repo.updatePenalty(offenderId, duration, preventBotUsage)
             .onSuccess { Napier.i(tag = TAG) { "banUser: $it" } }
     }
 
