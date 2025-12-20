@@ -56,7 +56,7 @@ internal class DiscordBotImpl(
     private suspend fun startKord() {
         cleanOldGuildCommands(kord)
         createGlobalCommands()
-//        createCommandsForTestServer()
+        createCommandsForTestServer()
 
         monitorGatewayHealth()
 
@@ -115,8 +115,11 @@ internal class DiscordBotImpl(
                 createPlainMessage(botOutput.plainText)
             }
             botOutput.errorEmbedBuilder != null -> {
-                createEmbedMessage(botOutput.errorEmbedBuilder, )
+                createEmbedMessage(botOutput.errorEmbedBuilder)
                     .delete(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
+            }
+            botOutput.feedback != null -> {
+                createEmbedMessage(botOutput.feedback)
             }
         }
     }

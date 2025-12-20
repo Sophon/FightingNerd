@@ -1,9 +1,11 @@
 package io.github.sophon.discord.util
 
+import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.PublicInteractionResponseBehavior
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -30,6 +32,22 @@ internal suspend fun MessageCreateEvent.createEmbedMessage(
                 image = url
             }
         }
+    }
+}
+
+internal suspend fun MessageCreateEvent.createEmbedMessage(
+    feedback: BotOutput.Feedback,
+): Message {
+    feedback.feedbackChannelList.forEach { channelId ->
+        val channel = kord.getChannelOf<TextChannel>(Snowflake(channelId))
+
+        channel?.createMessage {
+            embed(feedback.embedBuilder)
+        }
+    }
+
+    return message.channel.createMessage {
+        content = "Feedback sent successfully!"
     }
 }
 

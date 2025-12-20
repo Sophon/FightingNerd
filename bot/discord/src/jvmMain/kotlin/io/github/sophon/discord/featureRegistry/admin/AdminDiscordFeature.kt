@@ -82,7 +82,11 @@ internal class AdminDiscordFeature(
         return processFeedbackUseCase.invoke(authorId, message)
             .map { adminResult ->
                 BotOutput(
-                    feedbackEmbed = createFeedbackEmbed(adminResult)
+                    feedback = BotOutput.Feedback(
+                        embedBuilder = createFeedbackEmbed(adminResult),
+                        authorId = authorId,
+                        feedbackChannelList = adminConfig.feedbackChannelIdList
+                    )
                 )
             }
     }
@@ -99,7 +103,7 @@ internal class AdminDiscordFeature(
 
     private companion object {
         const val TAG = "AdminDiscordFeature"
-        const val KEY_FEEDBACK = ""
+        const val KEY_FEEDBACK = "feedback"
         const val PINK = 0x00FF10F0
     }
 }

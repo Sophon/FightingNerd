@@ -105,8 +105,9 @@ internal val featureRegistryModule = module {
                 feature.registerGames(featureConfig.supportedGameList)
             }
         }
+        val adminFeature: AdminDiscordFeature = get()
 
-        features
+        features + adminFeature
     }
     //endregion
 }
