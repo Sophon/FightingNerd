@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v2.0.0] - TODO
+- `feedback`
+
 ## [v1.2.7] - 2025-12-16
 - Wavu
   - fixed some clickable links not formatting properly
