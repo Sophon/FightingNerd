@@ -3,7 +3,7 @@ package io.github.sophon.domain.usecase
 import io.github.sophon.core.domain.Result
 import io.github.sophon.domain.AdminError
 import io.github.sophon.domain.AdminResult
-import io.github.sophon.domain.Author
+import io.github.sophon.domain.Source
 
 internal class CreateReplyUseCase {
     fun invoke(query: String): Result<AdminResult, AdminError> {
@@ -23,8 +23,8 @@ internal class CreateReplyUseCase {
             id = get(1)
             channelId = get(2)
         }
-        val author = Author(username, id, channelId)
+        val source = Source(username, id, channelId)
 
-        return Result.Success(AdminResult(author, message))
+        return Result.Success(AdminResult(source, message))
     }
 }

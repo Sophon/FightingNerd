@@ -10,7 +10,7 @@ import io.github.sophon.data.BanRepo
 import io.github.sophon.domain.AdminError
 import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
-import io.github.sophon.domain.Author
+import io.github.sophon.domain.Source
 import io.github.sophon.domain.model.Ban
 import io.github.sophon.domain.usecase.CreateReplyUseCase
 import kotlin.time.Duration
@@ -23,26 +23,26 @@ interface AdminTool {
     fun init(adminConfig: Config.AdminConfig): EmptyResult<AdminError>
 
     fun processFeedback(
-        author: Author,
+        source: Source,
         feedback: String,
     ): Result<AdminResult, AdminError>
 
     fun replyToFeedback(
-        author: Author,
+        source: Source,
         reply: String,
     ): Result<AdminResult, AdminError>
 
     suspend fun banUser(
-        author: Author,
+        source: Source,
         offenderId: String,
         duration: Duration = 30.toDuration(DurationUnit.DAYS),
         preventBotUsage: Boolean = false,
     ): Result<Ban, AdminError>
 
-    suspend fun unbanUser(author: Author, offenderId: String): EmptyResult<AdminError>
+    suspend fun unbanUser(source: Source, offenderId: String): EmptyResult<AdminError>
 
     suspend fun updateUserPenalty(
-        author: Author,
+        source: Source,
         offenderId: String,
         duration: Duration,
         preventBotUsage: Boolean,
@@ -68,27 +68,27 @@ internal class AdminToolImpl(
     }
 
     override fun processFeedback(
-        author: Author,
+        source: Source,
         feedback: String,
     ): Result<AdminResult, AdminError> {
-        val result = AdminResult(author = author, message = feedback)
+        val result = AdminResult(source = source, message = feedback)
         return Result.Success(result)
     }
 
     override fun replyToFeedback(
-        author: Author,
+        source: Source,
         reply: String,
     ): Result<AdminResult, AdminError> {
         return createReplyUseCase.invoke(query = reply)
     }
 
     override suspend  fun banUser(
-        author: Author,
+        source: Source,
         offenderId: String,
         duration: Duration,
         preventBotUsage: Boolean
     ): Result<Ban, AdminError> {
-        if (adminConfig.administratorIdList.contains(author.id).not()) {
+        if (adminConfig.administratorIdList.contains(source.id).not()) {
             return Result.Error(AdminError.PermissionDenied())
         }
 
@@ -97,10 +97,10 @@ internal class AdminToolImpl(
     }
 
     override suspend fun unbanUser(
-        author: Author,
+        source: Source,
         offenderId: String,
     ): EmptyResult<AdminError> {
-        if (adminConfig.administratorIdList.contains(author.id).not()) {
+        if (adminConfig.administratorIdList.contains(source.id).not()) {
             return Result.Error(AdminError.PermissionDenied())
         }
 
@@ -109,12 +109,12 @@ internal class AdminToolImpl(
     }
 
     override suspend fun updateUserPenalty(
-        author: Author,
+        source: Source,
         offenderId: String,
         duration: Duration,
         preventBotUsage: Boolean,
     ): Result<Ban, AdminError> {
-        if (adminConfig.administratorIdList.contains(author.id).not()) {
+        if (adminConfig.administratorIdList.contains(source.id).not()) {
             return Result.Error(AdminError.PermissionDenied())
         }
 

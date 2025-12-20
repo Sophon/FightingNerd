@@ -1,6 +1,6 @@
 package io.github.sophon.domain
 
 data class AdminResult(
-    val author: Author,
+    val source: Source,
     val message: String? = null,
 )
