@@ -94,14 +94,16 @@ internal class AdminDiscordFeature(
     }
 
     private fun createFeedbackEmbed(adminResult: AdminResult): EmbedBuilder.() -> Unit = {
-        title = "from: ${adminResult.author.username} (${adminResult.author.id})"
-        color = Color(TURQUOISE)
+        adminResult.apply {
+            title = "${author.username}-${author.id}-${author.serverId}"
+            color = Color(TURQUOISE)
 
-        mandatoryField(
-            name = "",
-            value = adminResult.message,
-            inline = false,
-        )
+            mandatoryField(
+                name = "",
+                value = message,
+                inline = false,
+            )
+        }
     }
 
 
