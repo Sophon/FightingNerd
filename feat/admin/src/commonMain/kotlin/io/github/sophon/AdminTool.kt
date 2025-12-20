@@ -25,14 +25,16 @@ interface AdminTool {
     fun replyToFeedback(userId: String, reply: String): Result<AdminResult, AdminError>
 
     suspend fun banUser(
+        authorId: String,
         userId: String,
         duration: Duration = 30.toDuration(DurationUnit.DAYS),
         preventBotUsage: Boolean = false,
     ): Result<Ban, AdminError>
 
-    suspend fun unbanUser(userId: String): EmptyResult<AdminError>
+    suspend fun unbanUser(authorId: String, userId: String): EmptyResult<AdminError>
 
     suspend fun updateUserPenalty(
+        authorId: String,
         userId: String,
         duration: Duration,
         preventBotUsage: Boolean,
@@ -72,25 +74,43 @@ internal class AdminToolImpl(
         return Result.Success(result)
     }
 
+    //TODO: missing author ID to check if author is admin or not
     override suspend  fun banUser(
+        authorId: String,
         userId: String,
         duration: Duration,
         preventBotUsage: Boolean
     ): Result<Ban, AdminError> {
+        if (adminConfig.administratorIdList.contains(authorId).not()) {
+            return Result.Error(AdminError.PermissionDenied())
+        }
+
         return repo.ban(userId, duration, preventBotUsage)
             .onSuccess { Napier.i(tag = TAG) { "banUser: $it" } }
     }
 
-    override suspend fun unbanUser(userId: String): EmptyResult<AdminError> {
+    override suspend fun unbanUser(
+        authorId: String,
+        userId: String
+    ): EmptyResult<AdminError> {
+        if (adminConfig.administratorIdList.contains(authorId).not()) {
+            return Result.Error(AdminError.PermissionDenied())
+        }
+
         return repo.unbanUser(userId)
             .onSuccess { Napier.i(tag = TAG) { "unbanUser: $it" } }
     }
 
     override suspend fun updateUserPenalty(
+        authorId: String,
         userId: String,
         duration: Duration,
         preventBotUsage: Boolean,
     ): Result<Ban, AdminError> {
+        if (adminConfig.administratorIdList.contains(authorId).not()) {
+            return Result.Error(AdminError.PermissionDenied())
+        }
+
         return repo.updatePenalty(userId, duration, preventBotUsage)
             .onSuccess { Napier.i(tag = TAG) { "banUser: $it" } }
     }

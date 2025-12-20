@@ -4,6 +4,7 @@ import io.github.sophon.core.domain.Error
 
 sealed class AdminError(vararg val errors: String): Error {
     class DatabaseError(error: String): AdminError(error)
+    class PermissionDenied(): AdminError("Permission denied")
 
     override fun toString(): String =
         "${this::class.simpleName}(${errors.joinToString()})"
