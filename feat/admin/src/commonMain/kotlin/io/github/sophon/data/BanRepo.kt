@@ -25,7 +25,7 @@ internal interface BanRepo {
         userId: String,
         duration: Duration,
         preventBotUsage: Boolean,
-    ): EmptyResult<AdminError.DatabaseError>
+    ): Result<Ban, AdminError.DatabaseError>
 
     suspend fun cleanExpiredBans(): EmptyResult<AdminError.DatabaseError>
 }

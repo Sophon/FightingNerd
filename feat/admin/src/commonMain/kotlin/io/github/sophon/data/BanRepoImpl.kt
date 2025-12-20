@@ -99,17 +99,24 @@ internal class BanRepoImpl(
         userId: String,
         duration: Duration,
         preventBotUsage: Boolean,
-    ): EmptyResult<AdminError.DatabaseError> {
+    ): Result<Ban, AdminError.DatabaseError> {
         return withContext(Dispatchers.IO) {
             try {
                 val now = Clock.System.now()
-                val expiration = now.plus(duration).toEpochMilliseconds()
+                val expiration = now.plus(duration)
                 queries.updatePenalty(
                     userId = userId,
-                    expiresAt = expiration,
+                    expiresAt = expiration.toEpochMilliseconds(),
                     preventBotUsage = preventBotUsage.toLong(),
                 )
-                Result.Success(Unit)
+                Result.Success(
+                    Ban(
+                        userId = userId,
+                        bannedAt = now,
+                        expiresAt = expiration,
+                        preventBotUsage = preventBotUsage,
+                    )
+                )
             } catch (e: Exception) {
                 Result.Error(AdminError.DatabaseError(e.toString()))
             }
