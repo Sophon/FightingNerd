@@ -93,3 +93,8 @@ lint/tmp/
 *.xcuserstate
 **/xcuserdata/
 .DS_Store
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
