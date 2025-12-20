@@ -84,9 +84,13 @@ internal suspend fun MessageCreateEvent.createEmbedMessage(
 ): Message {
     val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.recipient.channelId))
 
-    return channel!!.createMessage {
+    channel?.createMessage {
         content = "<@${reply.recipient.id}>"
         embed(reply.embedBuilder)
+    }
+
+    return message.channel.createMessage {
+        content = if (channel == null) "Failed to send" else "Reply sent successfully!"
     }
 }
 
@@ -108,12 +112,16 @@ internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResp
 
 internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResponse(
     reply: BotOutput.Reply,
-): Message {
+): PublicInteractionResponseBehavior {
     val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.recipient.channelId))
 
-    return channel!!.createMessage {
+    channel?.createMessage {
         content = "<@${reply.recipient.id}>"
         embed(reply.embedBuilder)
+    }
+
+    return interaction.respondPublic {
+        content = if (channel == null) "Failed to send" else "Reply sent successfully!"
     }
 }
 
