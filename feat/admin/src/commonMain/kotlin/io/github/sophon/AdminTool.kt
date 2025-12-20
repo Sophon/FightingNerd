@@ -1,13 +1,12 @@
 package io.github.sophon
 
+import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.domain.AdminConfig
 import io.github.sophon.domain.AdminError
 import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.data.BanRepo
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
