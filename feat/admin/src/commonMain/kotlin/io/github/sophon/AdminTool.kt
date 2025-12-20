@@ -12,6 +12,7 @@ import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
 import io.github.sophon.domain.Author
 import io.github.sophon.domain.model.Ban
+import io.github.sophon.domain.usecase.CreateReplyUseCase
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -28,7 +29,7 @@ interface AdminTool {
 
     fun replyToFeedback(
         author: Author,
-        feedback: String,
+        reply: String,
     ): Result<AdminResult, AdminError>
 
     suspend fun banUser(
@@ -53,6 +54,7 @@ interface AdminTool {
 internal class AdminToolImpl(
     private val adminFeatureInfo: AdminFeatureInfo,
     private val repo: BanRepo,
+    private val createReplyUseCase: CreateReplyUseCase,
 ): AdminTool {
     private lateinit var adminConfig: Config.AdminConfig
 
@@ -75,10 +77,9 @@ internal class AdminToolImpl(
 
     override fun replyToFeedback(
         author: Author,
-        feedback: String,
+        reply: String,
     ): Result<AdminResult, AdminError> {
-        val result = AdminResult(author = author, message = feedback)
-        return Result.Success(result)
+        return createReplyUseCase.invoke(query = reply)
     }
 
     override suspend  fun banUser(
