@@ -130,7 +130,7 @@ internal class DiscordBotImpl(
         val query = interaction.command.strings.values
             .joinToString(" ")
             .lowercase()
-        val authorId = interaction.user.toString()
+        val authorId = interaction.user.data.id.toString()
 
         val result = routeCommandToFeatureUseCase.invoke(
             authorId = authorId,
@@ -156,6 +156,9 @@ internal class DiscordBotImpl(
             botOutput.errorEmbedBuilder != null -> {
                 createEmbedResponse(botOutput.errorEmbedBuilder)
                 deleteInteraction(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
+            }
+            botOutput.feedback != null -> {
+                createEmbedResponse(botOutput.feedback)
             }
         }
     }

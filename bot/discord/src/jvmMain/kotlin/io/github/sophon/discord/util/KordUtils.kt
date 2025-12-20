@@ -35,22 +35,6 @@ internal suspend fun MessageCreateEvent.createEmbedMessage(
     }
 }
 
-internal suspend fun MessageCreateEvent.createEmbedMessage(
-    feedback: BotOutput.Feedback,
-): Message {
-    feedback.feedbackChannelList.forEach { channelId ->
-        val channel = kord.getChannelOf<TextChannel>(Snowflake(channelId))
-
-        channel?.createMessage {
-            embed(feedback.embedBuilder)
-        }
-    }
-
-    return message.channel.createMessage {
-        content = "Feedback sent successfully!"
-    }
-}
-
 internal suspend fun MessageCreateEvent.createPlainMessage(
     text: String,
 ): Message {
@@ -75,6 +59,38 @@ internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResp
                 image = url
             }
         }
+    }
+}
+
+internal suspend fun MessageCreateEvent.createEmbedMessage(
+    feedback: BotOutput.Feedback,
+): Message {
+    feedback.feedbackChannelList.forEach { channelId ->
+        val channel = kord.getChannelOf<TextChannel>(Snowflake(channelId))
+
+        channel?.createMessage {
+            embed(feedback.embedBuilder)
+        }
+    }
+
+    return message.channel.createMessage {
+        content = "Feedback sent successfully!"
+    }
+}
+
+internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResponse(
+    feedback: BotOutput.Feedback,
+): PublicInteractionResponseBehavior {
+    feedback.feedbackChannelList.forEach { channelId ->
+        val channel = kord.getChannelOf<TextChannel>(Snowflake(channelId))
+
+        channel?.createMessage {
+            embed(feedback.embedBuilder)
+        }
+    }
+
+    return interaction.respondPublic {
+        content = "Feedback sent successfully!"
     }
 }
 
