@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Config(
     val featureList: List<Feature>,
-    val adminConfig: AdminConfig,
+    val adminConfig: AdminConfig? = null,
 ) {
     @Serializable
     data class Feature(
