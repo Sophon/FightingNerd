@@ -42,6 +42,7 @@ data class BotOutput(
     val plainText: String? = null,
     val errorEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
     val images: Images? = null,
+    val feedbackEmbed: (EmbedBuilder.() -> Unit)? = null,
 ) {
     data class Images(
         val title: String,

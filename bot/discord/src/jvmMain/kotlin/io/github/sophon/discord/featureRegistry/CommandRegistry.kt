@@ -11,6 +11,9 @@ enum class Command {
     INVITE,
     HELP,
 
+    //admin
+    FEEDBACK,
+
     //general
     FD,
 
