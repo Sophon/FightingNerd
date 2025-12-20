@@ -44,5 +44,13 @@
         "DBFZ"
       ]
     }
-  ]
+  ],
+  "adminConfig": {
+    "administratorIdList": [
+      "phd_cunnilingus"
+    ],
+    "feedbackChannelIdList": [
+      "1118576752042713148"
+    ]
+  }
 }
