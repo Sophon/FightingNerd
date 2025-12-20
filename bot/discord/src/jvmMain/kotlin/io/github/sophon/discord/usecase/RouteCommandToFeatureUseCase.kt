@@ -5,12 +5,13 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
+import io.github.sophon.domain.Author
 
 internal class RouteCommandToFeatureUseCase(
     private val featureList: List<DiscordRegisteredFeature>,
 ) {
     suspend fun invoke(
-        authorId: String,
+        author: Author,
         message: String
     ): Result<BotOutput, BotError> {
         val fullQuery = message
@@ -22,19 +23,19 @@ internal class RouteCommandToFeatureUseCase(
 
         return if (firstWord.isCommand()) {
             val (commandString, query) = formatQuery(fullQuery)
-            useExplicitCommands(authorId, commandString, query)
+            useExplicitCommands(author, commandString, query)
         } else {
-            useDefaultCommands(authorId, fullQuery)
+            useDefaultCommands(author, fullQuery)
         }
     }
 
     suspend fun invoke(
         commandString: String,
-        authorId: String,
+        author: Author,
         query: String,
     ): Result<BotOutput, BotError> {
         return useExplicitCommands(
-            authorId,
+            author,
             commandString,
             query,
         )
@@ -78,7 +79,7 @@ internal class RouteCommandToFeatureUseCase(
     }
 
     private suspend fun useExplicitCommands(
-        authorId: String,
+        author: Author,
         commandString: String,
         query: String,
     ): Result<BotOutput, BotError> {
@@ -100,7 +101,11 @@ internal class RouteCommandToFeatureUseCase(
                 }
             }
 
-            result = feature.execute(commandToUse, query, authorId)
+            result = feature.execute(
+                command = commandToUse,
+                query = query,
+                author = author,
+            )
             if (result is Result.Success) {
                 return result
             }
@@ -111,14 +116,14 @@ internal class RouteCommandToFeatureUseCase(
     }
 
     private suspend fun useDefaultCommands(
-        authorId: String,
+        author: Author,
         fullQuery: String
     ): Result<BotOutput, BotError> {
         for (feature in featureList) {
             val defaultCommand = feature.defaultCommand ?: continue
 
             val result = feature.execute(
-                authorId = authorId,
+                author = author,
                 command = defaultCommand.command,
                 query = fullQuery,
             )

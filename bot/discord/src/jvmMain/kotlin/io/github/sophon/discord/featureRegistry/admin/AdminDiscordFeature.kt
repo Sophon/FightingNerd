@@ -1,5 +1,6 @@
 package io.github.sophon.discord.featureRegistry.admin
 
+import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
@@ -19,6 +20,7 @@ import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUse
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
+import io.github.sophon.domain.Author
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -60,11 +62,11 @@ internal class AdminDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-        authorId: String,
+        author: Author,
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.FEEDBACK -> {
-                feedback(authorId, query)
+                feedback(author, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -75,16 +77,16 @@ internal class AdminDiscordFeature(
         return startAdminToolsUseCase.invoke(adminConfig)
     }
 
-    private suspend fun feedback(
-        authorId: String,
+    private fun feedback(
+        author: Author,
         message: String,
     ): Result<BotOutput, BotError> {
-        return processFeedbackUseCase.invoke(authorId, message)
+        return processFeedbackUseCase.invoke(author, message)
             .map { adminResult ->
                 BotOutput(
                     feedback = BotOutput.Feedback(
                         embedBuilder = createFeedbackEmbed(adminResult),
-                        authorId = authorId,
+                        author = author,
                         feedbackChannelList = adminConfig.feedbackChannelIdList
                     )
                 )
@@ -92,7 +94,9 @@ internal class AdminDiscordFeature(
     }
 
     private fun createFeedbackEmbed(adminResult: AdminResult): EmbedBuilder.() -> Unit = {
-        title = "from: ${adminResult.userId}"
+        title = "from: ${adminResult.author.username} (${adminResult.author.id})"
+        color = Color(TURQUOISE)
+
         mandatoryField(
             name = "",
             value = adminResult.message,
@@ -104,6 +108,6 @@ internal class AdminDiscordFeature(
     private companion object {
         const val TAG = "AdminDiscordFeature"
         const val KEY_FEEDBACK = "feedback"
-        const val PINK = 0x00FF10F0
+        const val TURQUOISE = 0x0000CED1
     }
 }
