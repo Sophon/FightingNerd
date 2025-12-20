@@ -1,12 +1,16 @@
 package io.github.sophon
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.data.BanRepo
 import io.github.sophon.domain.AdminConfig
 import io.github.sophon.domain.AdminError
 import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
+import io.github.sophon.domain.model.Ban
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -20,25 +24,26 @@ interface AdminTool {
 
     fun replyToFeedback(userId: String, reply: String): Result<AdminResult, AdminError>
 
-    fun banUser(
+    suspend fun banUser(
         userId: String,
         duration: Duration = 30.toDuration(DurationUnit.DAYS),
         preventBotUsage: Boolean = false,
-    ): Result<AdminResult, AdminError>
+    ): Result<Ban, AdminError>
 
-    fun unbanUser(userId: String): Result<AdminResult, AdminError>
+    suspend fun unbanUser(userId: String): EmptyResult<AdminError>
 
-    fun updateUserPenalty(
+    suspend fun updateUserPenalty(
         userId: String,
         duration: Duration,
         preventBotUsage: Boolean,
-    ): Result<AdminResult, AdminError>
+    ): Result<Ban, AdminError>
 
-    fun cleanExpiredBans(): EmptyResult<AdminError>
+    suspend fun cleanExpiredBans(): EmptyResult<AdminError>
 }
 
 internal class AdminToolImpl(
     private val adminFeatureInfo: AdminFeatureInfo,
+    private val repo: BanRepo,
 ): AdminTool {
     private lateinit var adminConfig: AdminConfig
 
@@ -67,27 +72,35 @@ internal class AdminToolImpl(
         return Result.Success(result)
     }
 
-    override fun banUser(
+    override suspend  fun banUser(
         userId: String,
         duration: Duration,
         preventBotUsage: Boolean
-    ): Result<AdminResult, AdminError> {
-        TODO("Not yet implemented")
+    ): Result<Ban, AdminError> {
+        return repo.ban(userId, duration, preventBotUsage)
+            .onSuccess { Napier.i(tag = TAG) { "banUser: $it" } }
     }
 
-    override fun unbanUser(userId: String): Result<AdminResult, AdminError> {
-        TODO("Not yet implemented")
+    override suspend fun unbanUser(userId: String): EmptyResult<AdminError> {
+        return repo.unbanUser(userId)
+            .onSuccess { Napier.i(tag = TAG) { "unbanUser: $it" } }
     }
 
-    override fun updateUserPenalty(
+    override suspend fun updateUserPenalty(
         userId: String,
         duration: Duration,
         preventBotUsage: Boolean,
-    ): Result<AdminResult, AdminError> {
-        TODO("Not yet implemented")
+    ): Result<Ban, AdminError> {
+        return repo.updatePenalty(userId, duration, preventBotUsage)
+            .onSuccess { Napier.i(tag = TAG) { "banUser: $it" } }
     }
 
-    override fun cleanExpiredBans(): EmptyResult<AdminError> {
-        TODO("Not yet implemented")
+    override suspend fun cleanExpiredBans(): EmptyResult<AdminError> {
+        return repo.cleanExpiredBans()
+    }
+
+
+    private companion object {
+        const val TAG = "AdminTool"
     }
 }
