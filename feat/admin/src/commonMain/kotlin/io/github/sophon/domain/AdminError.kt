@@ -2,8 +2,9 @@ package io.github.sophon.domain
 
 import io.github.sophon.core.domain.Error
 
-enum class AdminError: Error {
-    DATABASE_ERROR,
+sealed class AdminError(vararg val errors: String): Error {
+    class DatabaseError(error: String): AdminError(error)
 
-    USER_ALREADY_BANNED,
+    override fun toString(): String =
+        "${this::class.simpleName}(${errors.joinToString()})"
 }
