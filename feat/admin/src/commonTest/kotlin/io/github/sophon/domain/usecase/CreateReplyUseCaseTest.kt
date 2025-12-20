@@ -44,9 +44,9 @@ class CreateReplyUseCaseTest {
         val error = (result as Result.Error).error
 
         //then
-        assertThat(result).isInstanceOf(Result.Error::class.java)
+        assertThat(result).isInstanceOf(Result.Error::class)
 
-        assertThat(error).isInstanceOf(AdminError.WrongReplyFormat::class.java)
+        assertThat(error).isInstanceOf(AdminError.WrongReplyFormat::class)
         val wrongFormat = error as AdminError.WrongReplyFormat
 
         assertThat(wrongFormat.query).isEqualTo(string)
@@ -67,9 +67,9 @@ class CreateReplyUseCaseTest {
         val error = (result as Result.Error).error
 
         //then
-        assertThat(result).isInstanceOf(Result.Error::class.java)
+        assertThat(result).isInstanceOf(Result.Error::class)
 
-        assertThat(error).isInstanceOf(AdminError.WrongReplyFormat::class.java)
+        assertThat(error).isInstanceOf(AdminError.WrongReplyFormat::class)
         val wrongFormat = error as AdminError.WrongReplyFormat
 
         assertThat(wrongFormat.query).isEqualTo(string)
