@@ -9,7 +9,9 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.featureRegistry.BotOutput
 import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
@@ -133,7 +135,7 @@ internal class AdminDiscordFeature(
 
             mandatoryField(
                 name = "",
-                value = message,
+                value = message?.truncate(MAX_LENGTH_EMBED),
                 inline = false,
             )
         }
@@ -146,7 +148,7 @@ internal class AdminDiscordFeature(
 
             mandatoryField(
                 name = "",
-                value = message,
+                value = message?.truncate(MAX_LENGTH_EMBED),
                 inline = false,
             )
         }
