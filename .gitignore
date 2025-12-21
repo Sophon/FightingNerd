@@ -98,3 +98,4 @@ lint/tmp/
 *.db
 *.db-shm
 *.db-wal
+*.db.version
