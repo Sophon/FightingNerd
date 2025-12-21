@@ -54,12 +54,12 @@ data class BotOutput(
 
     data class Feedback(
         val embedBuilder: (EmbedBuilder.() -> Unit),
-        val source: Source,
+        val origin: Source,
         val feedbackChannelList: List<String>,
     )
 
     data class Reply(
         val embedBuilder: (EmbedBuilder.() -> Unit),
-        val recipient: Source,
+        val target: Source,
     )
 }

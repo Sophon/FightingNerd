@@ -11,9 +11,9 @@ import io.github.sophon.domain.Source
 internal class ProcessFeedbackUseCase(
     private val adminTool: AdminTool,
 ) {
-    fun invoke(source: Source, message: String): Result<AdminResult, BotError> {
+    fun invoke(origin: Source, message: String): Result<AdminResult, BotError> {
         return adminTool.processFeedback(
-            source = source,
+            origin = origin,
             feedback = message,
         ).mapError { it.toDomainError() }
     }

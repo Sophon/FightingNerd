@@ -2,6 +2,7 @@ package io.github.sophon.discord.featureRegistry
 
 import io.github.sophon.discord.config.ConfigLoader
 import io.github.sophon.discord.featureRegistry.admin.AdminDiscordFeature
+import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
@@ -33,6 +34,7 @@ internal val featureRegistryModule = module {
     singleOf(::StartAdminToolsUseCase)
     singleOf(::ProcessFeedbackUseCase)
     singleOf(::ReplyToFeedbackUseCase)
+    singleOf(::BanUseCase)
     //endregion
 
     //region CORE
@@ -78,6 +80,7 @@ internal val featureRegistryModule = module {
             startAdminToolsUseCase = get(),
             processFeedbackUseCase = get(),
             replyToFeedbackUseCase = get(),
+            banUseCase = get(),
             scheduler = get(),
             scope = get(),
         )

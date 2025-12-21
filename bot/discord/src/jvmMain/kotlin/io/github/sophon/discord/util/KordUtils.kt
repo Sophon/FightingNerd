@@ -82,10 +82,10 @@ internal suspend fun MessageCreateEvent.createEmbedMessage(
 internal suspend fun MessageCreateEvent.createEmbedMessage(
     reply: BotOutput.Reply,
 ): Message {
-    val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.recipient.channelId))
+    val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
 
     channel?.createMessage {
-        content = "<@${reply.recipient.id}>"
+        content = "<@${reply.target.id}>"
         embed(reply.embedBuilder)
     }
 
@@ -113,10 +113,10 @@ internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResp
 internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResponse(
     reply: BotOutput.Reply,
 ): PublicInteractionResponseBehavior {
-    val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.recipient.channelId))
+    val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
 
     channel?.createMessage {
-        content = "<@${reply.recipient.id}>"
+        content = "<@${reply.target.id}>"
         embed(reply.embedBuilder)
     }
 
