@@ -4,6 +4,9 @@
 - feedback
   - allows giving feedback with `/feedback`
   - admin(s) can then reply with `/reply` and the feedback author will be tagged with an answer
+- admin tools
+  - `reply` to a feedback
+  - `ban` and `unban` users from `feedback`
 
 ## [v1.2.7] - 2025-12-16
 - Wavu
