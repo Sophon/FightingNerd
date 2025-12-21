@@ -50,10 +50,10 @@ internal class BanRepoImpl(
         }
     }
 
-    override suspend fun getBan(userId: String): Result<Ban?, AdminError.DatabaseError> {
+    override suspend fun getBanStatus(offenderId: String): Result<Ban?, AdminError.DatabaseError> {
         return withContext(Dispatchers.IO) {
             try {
-                val ban = queries.getBan(userId)
+                val ban = queries.getBan(offenderId)
                     .executeAsOneOrNull()
                     .toDomain()
                 Result.Success(ban)

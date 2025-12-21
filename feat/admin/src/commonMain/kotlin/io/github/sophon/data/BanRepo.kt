@@ -14,7 +14,7 @@ internal interface BanRepo {
         preventBotUsage: Boolean,
     ): Result<Ban, AdminError.DatabaseError>
 
-    suspend fun getBan(userId: String): Result<Ban?, AdminError.DatabaseError>
+    suspend fun getBanStatus(offenderId: String): Result<Ban?, AdminError.DatabaseError>
 
     suspend fun getBanList(): Result<List<Ban>, AdminError.DatabaseError>
 

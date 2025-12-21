@@ -3,6 +3,7 @@ package io.github.sophon
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
@@ -12,6 +13,7 @@ import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
 import io.github.sophon.domain.Source
 import io.github.sophon.domain.model.Ban
+import io.github.sophon.usecase.ProcessFeedbackUseCase
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -21,7 +23,7 @@ interface AdminTool {
 
     fun init(adminConfig: Config.AdminConfig): EmptyResult<AdminError>
 
-    fun processFeedback(
+    suspend fun processFeedback(
         origin: Source,
         feedback: String,
     ): Result<AdminResult, AdminError>
@@ -53,6 +55,7 @@ interface AdminTool {
 internal class AdminToolImpl(
     private val adminFeatureInfo: AdminFeatureInfo,
     private val repo: BanRepo,
+    private val processFeedbackUseCase: ProcessFeedbackUseCase,
 ): AdminTool {
     private lateinit var adminConfig: Config.AdminConfig
 
@@ -65,13 +68,18 @@ internal class AdminToolImpl(
         return Result.Success(Unit)
     }
 
-    override fun processFeedback(
+    override suspend fun processFeedback(
         origin: Source,
         feedback: String,
     ): Result<AdminResult, AdminError> {
-        //TODO: check for ban
-        val result = AdminResult(source = origin, message = feedback)
-        return Result.Success(result)
+        return processFeedbackUseCase.invoke(origin, feedback, adminConfig)
+            .onError { error ->
+                if (error is AdminError.UserBanned) {
+                    Napier.w(tag = TAG) { "Banned: $origin" }
+                } else {
+                    Napier.e(tag = TAG) { "processFeedback: $error" }
+                }
+            }
     }
 
     override fun replyToFeedback(
