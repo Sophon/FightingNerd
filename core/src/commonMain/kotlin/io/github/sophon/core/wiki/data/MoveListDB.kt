@@ -5,7 +5,9 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 interface MoveListDB {
     suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError>
     suspend fun fetchMoveDataFor(charName: String, moveQuery: String): Result<Move, WikiError>

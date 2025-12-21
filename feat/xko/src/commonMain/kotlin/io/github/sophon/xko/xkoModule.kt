@@ -23,7 +23,9 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 fun xkoModule() = module {
     singleOf(::XkoWikiDataSourceImpl).bind<XkoWikiDataSource>()
     singleOf(::XkoWikiClient).bind<WikiClient>()

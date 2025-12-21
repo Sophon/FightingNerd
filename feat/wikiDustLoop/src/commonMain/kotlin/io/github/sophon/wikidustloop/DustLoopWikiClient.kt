@@ -24,7 +24,9 @@ import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikidustloop.data.DustLoopTables
 import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
 import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class DustLoopWikiClient(
     gameId: String,
 
