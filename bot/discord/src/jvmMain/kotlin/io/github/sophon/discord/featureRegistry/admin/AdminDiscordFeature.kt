@@ -110,9 +110,9 @@ internal class AdminDiscordFeature(
         source: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.FEEDBACK -> feedback(source, query)
+            Command.FEEDBACK -> feedback(origin = source, message = query)
             Command.REPLY -> reply(query)
-            Command.BAN -> ban(source, query)
+            Command.BAN -> ban(origin = source, query = query)
             Command.UNBAN -> unban(source)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -153,19 +153,18 @@ internal class AdminDiscordFeature(
 
     private suspend fun ban(
         origin: Source,
-        target: String
+        query: String
     ): Result<BotOutput, BotError> {
-//        return banUseCase.invoke(origin, target)
-//            .map { ban ->
-//                BotOutput(
-//                    reply = BotOutput.Reply(
-//                        embedBuilder = createBanStatusEmbed(ban),
-//                        target = ban.offenderId,
-//                    )
-//                )
-//            }
-
-        TODO()
+        return banUseCase.invoke(origin, query)
+            .map { pair ->
+                val (ban, target) = pair
+                BotOutput(
+                    reply = BotOutput.Reply(
+                        embedBuilder = createBanStatusEmbed(ban),
+                        target = target,
+                    )
+                )
+            }
     }
 
     private fun unban(source: Source): Result<BotOutput, BotError> {
