@@ -7,13 +7,13 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.domain.Source
-import io.github.sophon.util.toSourceAndMessage
+import io.github.sophon.util.toSource
 
 internal class UnbanUseCase(
     private val adminTool: AdminTool,
 ) {
     suspend fun invoke(origin: Source, query: String): Result<Source, BotError> {
-        val (target, _) = query.toSourceAndMessage()
+        val target = query.toSource()
             ?: return Result.Error(BotError.InvalidQuery(query))
 
         return adminTool.unbanUser(origin = origin, offenderId = target.id)

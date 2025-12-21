@@ -21,3 +21,17 @@ fun String.toSourceAndMessage(): Pair<Source, String>? {
 
     return Pair(Source(userName, id, channelId), message)
 }
+
+fun String.toSource(): Source? {
+    val recipientParts = split("-").apply {
+        if (size != 3) return null
+    }
+
+    val (userName, id, channelId) = recipientParts
+
+    if (userName.isBlank() || id.isBlank() || channelId.isBlank()) {
+        return null
+    }
+
+    return Source(userName, id, channelId)
+}

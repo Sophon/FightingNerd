@@ -21,6 +21,7 @@ import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
@@ -37,6 +38,7 @@ internal class AdminDiscordFeature(
     private val processFeedbackUseCase: ProcessFeedbackUseCase,
     private val replyToFeedbackUseCase: ReplyToFeedbackUseCase,
     private val banUseCase: BanUseCase,
+    private val unbanUseCase: UnbanUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature {
@@ -113,7 +115,7 @@ internal class AdminDiscordFeature(
             Command.FEEDBACK -> feedback(origin = source, message = query)
             Command.REPLY -> reply(query)
             Command.BAN -> ban(origin = source, query = query)
-            Command.UNBAN -> unban(source)
+            Command.UNBAN -> unban(origin = source, query = query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -123,7 +125,7 @@ internal class AdminDiscordFeature(
         return startAdminToolsUseCase.invoke(adminConfig)
     }
 
-    private fun feedback(
+    private suspend fun feedback(
         origin: Source,
         message: String,
     ): Result<BotOutput, BotError> {
@@ -167,8 +169,19 @@ internal class AdminDiscordFeature(
             }
     }
 
-    private fun unban(source: Source): Result<BotOutput, BotError> {
-        TODO()
+    private suspend fun unban(
+        origin: Source,
+        query: String
+    ): Result<BotOutput, BotError> {
+        return unbanUseCase.invoke(origin, query)
+            .map { target ->
+                BotOutput(
+                    reply = BotOutput.Reply(
+                        embedBuilder = createBanStatusEmbed(),
+                        target = target,
+                    )
+                )
+            }
     }
 
     private fun banList(source: Source): Result<BotOutput, BotError> {
@@ -201,8 +214,22 @@ internal class AdminDiscordFeature(
         }
     }
 
-    private fun createBanStatusEmbed(ban: Ban): EmbedBuilder.() -> Unit = {
-        TODO()
+    private fun createBanStatusEmbed(ban: Ban? = null): EmbedBuilder.() -> Unit = {
+        if (ban == null) {
+            title = "Freed! 🕊🕊🕊"
+            mandatoryField(
+                name = "",
+                value = "User got unbanned.",
+                inline = false,
+            )
+        } else {
+            title = "Chat shit, get banged! 🔥🔥🔥"
+            mandatoryField(
+                name = "",
+                value = "🔨 BAN  🔨 → start: ${ban.bannedAt}; end: ${ban.expiresAt}",
+                inline = false,
+            )
+        }
     }
 
 

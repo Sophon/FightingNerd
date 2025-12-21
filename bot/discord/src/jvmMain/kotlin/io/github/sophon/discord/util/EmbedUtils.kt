@@ -5,6 +5,8 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.orDash
 import io.github.sophon.discord.BotError
 
+
+//TODO: we should truncate max length here
 internal fun EmbedBuilder.mandatoryField(
     name: String,
     value: String?,

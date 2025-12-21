@@ -8,13 +8,13 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.domain.Source
 import io.github.sophon.domain.model.Ban
-import io.github.sophon.util.toSourceAndMessage
+import io.github.sophon.util.toSource
 
 internal class BanUseCase(
     private val adminTool: AdminTool,
 ) {
     suspend fun invoke(origin: Source, query: String): Result<Pair<Ban, Source>, BotError> {
-        val (target, _) = query.toSourceAndMessage()
+        val target = query.toSource()
             ?: return Result.Error(BotError.InvalidQuery(query))
 
         return adminTool.banUser(origin = origin, offenderId = target.id)

@@ -11,7 +11,7 @@ import io.github.sophon.domain.Source
 internal class ProcessFeedbackUseCase(
     private val adminTool: AdminTool,
 ) {
-    fun invoke(origin: Source, message: String): Result<AdminResult, BotError> {
+    suspend fun invoke(origin: Source, message: String): Result<AdminResult, BotError> {
         return adminTool.processFeedback(
             origin = origin,
             feedback = message,

@@ -83,6 +83,7 @@ internal val featureRegistryModule = module {
             processFeedbackUseCase = get(),
             replyToFeedbackUseCase = get(),
             banUseCase = get(),
+            unbanUseCase = get(),
             scheduler = get(),
             scope = get(),
         )
