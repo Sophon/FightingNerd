@@ -1,4 +1,4 @@
-package io.github.sophon.domain.usecase
+package io.github.sophon.usecase
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

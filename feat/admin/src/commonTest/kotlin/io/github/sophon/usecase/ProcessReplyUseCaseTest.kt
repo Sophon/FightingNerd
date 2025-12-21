@@ -1,4 +1,4 @@
-package io.github.sophon.domain.usecase
+package io.github.sophon.usecase
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -8,7 +8,6 @@ import io.github.sophon.core.feature.Config
 import io.github.sophon.domain.AdminError
 import io.github.sophon.domain.AdminResult
 import io.github.sophon.domain.Source
-import io.github.sophon.usecase.ProcessReplyUseCase
 import kotlin.test.Test
 
 internal class ProcessReplyUseCaseTest {
