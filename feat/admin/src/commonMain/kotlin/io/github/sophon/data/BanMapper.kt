@@ -7,10 +7,10 @@ internal fun Ban?.toDomain(): io.github.sophon.domain.model.Ban? {
     if (this == null) return null
 
     return io.github.sophon.domain.model.Ban(
-        userId = userId,
+        offenderId = offenderId,
         bannedAt = Instant.fromEpochMilliseconds(bannedAt),
         expiresAt = Instant.fromEpochMilliseconds(expiresAt),
-        bannedBy = bannedBy,
+        authorId = authorId,
         preventBotUsage = preventBotUsage == 1L,
     )
 }

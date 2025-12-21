@@ -104,7 +104,7 @@ internal class AdminToolImpl(
             return Result.Error(AdminError.PermissionDenied())
         }
 
-        return repo.unbanUser(offenderId)
+        return repo.unban(offenderId)
             .onSuccess { Napier.i(tag = TAG) { "unbanUser: $it" } }
     }
 
