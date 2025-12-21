@@ -92,7 +92,12 @@ internal class AdminToolImpl(
             return Result.Error(AdminError.PermissionDenied())
         }
 
-        return repo.ban(offenderId, duration, preventBotUsage)
+        return repo.ban(
+            offenderId = offenderId,
+            duration = duration,
+            authorId = source.id,
+            preventBotUsage = preventBotUsage
+        )
             .onSuccess { Napier.i(tag = TAG) { "banUser: $it" } }
     }
 
@@ -118,7 +123,12 @@ internal class AdminToolImpl(
             return Result.Error(AdminError.PermissionDenied())
         }
 
-        return repo.updatePenalty(offenderId, duration, preventBotUsage)
+        return repo.updatePenalty(
+            offenderId = offenderId,
+            duration = duration,
+            authorId = source.id,
+            preventBotUsage = preventBotUsage,
+        )
             .onSuccess { Napier.i(tag = TAG) { "banUser: $it" } }
     }
 
