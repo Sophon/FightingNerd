@@ -14,6 +14,7 @@ import io.github.sophon.domain.AdminResult
 import io.github.sophon.domain.Source
 import io.github.sophon.domain.model.Ban
 import io.github.sophon.usecase.ProcessFeedbackUseCase
+import io.github.sophon.usecase.ProcessReplyUseCase
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -29,6 +30,7 @@ interface AdminTool {
     ): Result<AdminResult, AdminError>
 
     fun replyToFeedback(
+        origin: Source,
         target: Source,
         reply: String,
     ): Result<AdminResult, AdminError>
@@ -56,6 +58,7 @@ internal class AdminToolImpl(
     private val adminFeatureInfo: AdminFeatureInfo,
     private val repo: BanRepo,
     private val processFeedbackUseCase: ProcessFeedbackUseCase,
+    private val processReplyUseCase: ProcessReplyUseCase,
 ): AdminTool {
     private lateinit var adminConfig: Config.AdminConfig
 
@@ -83,10 +86,12 @@ internal class AdminToolImpl(
     }
 
     override fun replyToFeedback(
+        origin: Source,
         target: Source,
         reply: String,
     ): Result<AdminResult, AdminError> {
-        return Result.Success(AdminResult(source = target, message = reply))
+        return processReplyUseCase.invoke(origin, target, reply, adminConfig)
+            .onError { Napier.w(tag = TAG) { "replyToFeedback: $it" } }
     }
 
     override suspend  fun banUser(

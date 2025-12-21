@@ -4,6 +4,7 @@ import io.github.sophon.data.BanRepo
 import io.github.sophon.data.BanRepoImpl
 import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.usecase.ProcessFeedbackUseCase
+import io.github.sophon.usecase.ProcessReplyUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
@@ -18,6 +19,7 @@ fun adminModule() = module {
     singleOf(::BanRepoImpl).bind<BanRepo>()
 
     singleOf(::ProcessFeedbackUseCase)
+    singleOf(::ProcessReplyUseCase)
 }
 
 expect val platformModule: Module
