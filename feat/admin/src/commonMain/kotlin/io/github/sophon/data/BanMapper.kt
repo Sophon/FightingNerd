@@ -2,7 +2,9 @@ package io.github.sophon.data
 
 import io.github.sophon.admin.data.Ban
 import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal fun Ban?.toDomain(): io.github.sophon.domain.model.Ban? {
     if (this == null) return null
 
