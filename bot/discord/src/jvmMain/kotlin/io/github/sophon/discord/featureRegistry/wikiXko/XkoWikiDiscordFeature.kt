@@ -103,7 +103,7 @@ internal class XkoWikiDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-        source: Source,
+        origin: Source,
     ): Result<BotOutput, BotError> {
         val wiki = wikis[Game.Xko.id]
             ?: return Result.Error(BotError.UnsupportedGame(query))

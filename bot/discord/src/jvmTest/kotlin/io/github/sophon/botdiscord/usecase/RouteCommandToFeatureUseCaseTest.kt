@@ -54,7 +54,7 @@ class RouteCommandToFeatureUseCaseTest {
         override suspend fun execute(
             command: Command,
             query: String,
-            source: Source,
+            origin: Source,
         ): Result<BotOutput, BotError> {
             val tekkenChars = setOf("lily", "ak", "jin", "kazuya")
 
@@ -102,7 +102,7 @@ class RouteCommandToFeatureUseCaseTest {
         override suspend fun execute(
             command: Command,
             query: String,
-            source: Source,
+            origin: Source,
         ): Result<BotOutput, BotError> {
             val glossaryTerms = setOf(
                 "frame",
@@ -148,7 +148,7 @@ class RouteCommandToFeatureUseCaseTest {
         override suspend fun execute(
             command: Command,
             query: String,
-            source: Source,
+            origin: Source,
         ): Result<BotOutput, BotError> {
             val sfChars = setOf(
                 "lily",
@@ -196,7 +196,7 @@ class RouteCommandToFeatureUseCaseTest {
         override suspend fun execute(
             command: Command,
             query: String,
-            source: Source,
+            origin: Source,
         ): Result<BotOutput, BotError> {
             return if (command == Command.HEAT && query.isNotBlank()) {
                 Result.Success(BotOutput(embedBuilder = { title = "NoDefault HEAT: $query" }))

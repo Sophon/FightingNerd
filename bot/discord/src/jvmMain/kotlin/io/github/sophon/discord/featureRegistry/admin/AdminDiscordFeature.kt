@@ -109,13 +109,13 @@ internal class AdminDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-        source: Source,
+        origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.FEEDBACK -> feedback(origin = source, message = query)
-            Command.REPLY -> reply(query)
-            Command.BAN -> ban(origin = source, query = query)
-            Command.UNBAN -> unban(origin = source, query = query)
+            Command.FEEDBACK -> feedback(origin, message = query)
+            Command.REPLY -> reply(origin, query)
+            Command.BAN -> ban(origin, query = query)
+            Command.UNBAN -> unban(origin, query = query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -141,8 +141,8 @@ internal class AdminDiscordFeature(
             }
     }
 
-    private fun reply(query: String): Result<BotOutput, BotError> {
-        return replyToFeedbackUseCase.invoke(query)
+    private fun reply(origin: Source, query: String): Result<BotOutput, BotError> {
+        return replyToFeedbackUseCase.invoke(origin, query)
             .map { adminResult ->
                 BotOutput(
                     reply = BotOutput.Reply(

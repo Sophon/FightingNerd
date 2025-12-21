@@ -153,7 +153,7 @@ internal class WavuWikiDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-        source: Source,
+        origin: Source,
     ): Result<BotOutput, BotError> {
         val wiki = wikis[Game.Tekken8.id]
             ?: return Result.Error(BotError.UnsupportedGame(query))

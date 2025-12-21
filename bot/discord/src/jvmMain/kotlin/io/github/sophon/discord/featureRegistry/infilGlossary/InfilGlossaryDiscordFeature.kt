@@ -49,7 +49,7 @@ internal class InfilGlossaryDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-        source: Source,
+        origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.GL -> searchTerm(query)
