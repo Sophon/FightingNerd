@@ -17,11 +17,11 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
 internal class SyncDataIfOldUseCase {
     suspend fun invoke(wiki: WikiClient): EmptyResult<HomeError> {
         return when (val timestampResult = wiki.getLastUpdateTimeStamp()) {
@@ -127,7 +127,7 @@ internal class SyncDataIfOldUseCase {
 
 
     private fun Instant.isOld(): Boolean {
-        val now = Clock.System.now()
+        val now = kotlin.time.Clock.System.now()
         val age = now - this
         return age >= UPDATING_PERIOD_HOURS.hours
     }

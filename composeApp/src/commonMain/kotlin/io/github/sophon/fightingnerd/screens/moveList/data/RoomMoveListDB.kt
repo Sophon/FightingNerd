@@ -12,9 +12,10 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import kotlinx.coroutines.flow.first
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class RoomMoveListDB(
     private val dao: MoveListDao,
     private val dataStore: DataStore<Preferences>
@@ -60,7 +61,7 @@ class RoomMoveListDB(
     ): EmptyResult<WikiError> {
         return try {
             dao.insertMoveList(moveList.map { it.toEntity() })
-            dataStore.edit { it[KEY_LAST_INSERT] = Clock.System.now().toString() }
+            dataStore.edit { it[KEY_LAST_INSERT] = kotlin.time.Clock.System.now().toString() }
             Result.Success(Unit)
         } catch (e: Exception) {
             val error = e.toString()
