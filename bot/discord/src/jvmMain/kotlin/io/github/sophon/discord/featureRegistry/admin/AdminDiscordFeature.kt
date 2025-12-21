@@ -111,7 +111,7 @@ internal class AdminDiscordFeature(
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.FEEDBACK -> feedback(source, query)
-            Command.REPLY -> reply(source, query)
+            Command.REPLY -> reply(query)
             Command.BAN -> ban(source, query)
             Command.UNBAN -> unban(source)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
@@ -139,11 +139,8 @@ internal class AdminDiscordFeature(
             }
     }
 
-    private fun reply(
-        target: Source,
-        message: String,
-    ): Result<BotOutput, BotError> {
-        return replyToFeedbackUseCase.invoke(target, message)
+    private fun reply(query: String): Result<BotOutput, BotError> {
+        return replyToFeedbackUseCase.invoke(query)
             .map { adminResult ->
                 BotOutput(
                     reply = BotOutput.Reply(
@@ -154,16 +151,16 @@ internal class AdminDiscordFeature(
             }
     }
 
-    private fun ban(
-        source: Source,
-        message: String
+    private suspend fun ban(
+        origin: Source,
+        target: String
     ): Result<BotOutput, BotError> {
-//        return banUseCase.invoke(source, offenderId = message)
+//        return banUseCase.invoke(origin, target)
 //            .map { ban ->
 //                BotOutput(
 //                    reply = BotOutput.Reply(
 //                        embedBuilder = createBanStatusEmbed(ban),
-//                        recipient = ban.offenderId,
+//                        target = ban.offenderId,
 //                    )
 //                )
 //            }
@@ -181,7 +178,7 @@ internal class AdminDiscordFeature(
 
     private fun createFeedbackEmbed(adminResult: AdminResult): EmbedBuilder.() -> Unit = {
         adminResult.apply {
-            title = "Origin source: ${source.username}-${source.id}-${source.channelId}"
+            title = "${source.username}-${source.id}-${source.channelId}"
             color = Color(TURQUOISE)
 
             mandatoryField(
