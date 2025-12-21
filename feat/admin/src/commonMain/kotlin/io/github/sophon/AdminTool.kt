@@ -12,7 +12,6 @@ import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
 import io.github.sophon.domain.Source
 import io.github.sophon.domain.model.Ban
-import io.github.sophon.domain.usecase.CreateReplyUseCase
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -33,7 +32,7 @@ interface AdminTool {
     ): Result<AdminResult, AdminError>
 
     suspend fun banUser(
-        source: Source,
+        origin: Source,
         offenderId: String,
         duration: Duration = 30.toDuration(DurationUnit.DAYS),
         preventBotUsage: Boolean = false,
@@ -54,7 +53,6 @@ interface AdminTool {
 internal class AdminToolImpl(
     private val adminFeatureInfo: AdminFeatureInfo,
     private val repo: BanRepo,
-    private val createReplyUseCase: CreateReplyUseCase,
 ): AdminTool {
     private lateinit var adminConfig: Config.AdminConfig
 
@@ -79,23 +77,23 @@ internal class AdminToolImpl(
         target: Source,
         reply: String,
     ): Result<AdminResult, AdminError> {
-        return createReplyUseCase.invoke(query = reply)
+        return Result.Success(AdminResult(source = target, message = reply))
     }
 
     override suspend  fun banUser(
-        source: Source,
+        origin: Source,
         offenderId: String,
         duration: Duration,
         preventBotUsage: Boolean
     ): Result<Ban, AdminError> {
-        if (adminConfig.administratorIdList.contains(source.id).not()) {
+        if (adminConfig.administratorIdList.contains(origin.id).not()) {
             return Result.Error(AdminError.PermissionDenied())
         }
 
         return repo.ban(
             offenderId = offenderId,
             duration = duration,
-            authorId = source.id,
+            authorId = origin.id,
             preventBotUsage = preventBotUsage
         )
             .onSuccess { Napier.i(tag = TAG) { "banUser: $it" } }
