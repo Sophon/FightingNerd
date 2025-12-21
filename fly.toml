@@ -9,11 +9,14 @@ primary_region = 'fra'
 [build]
 
 [env]
-# Add any non-secret env vars here if needed
   ENV = "production"
+  DATABASE_PATH = "/data/banlist.db"
 
 [[vm]]
   memory = '512mb'
   cpu_kind = 'shared'
   cpus = 1
 
+[mounts]
+source = "admin_data"
+destination = "/data"
