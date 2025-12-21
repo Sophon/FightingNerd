@@ -64,7 +64,7 @@ internal class CoreDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
-        source: Source,
+        origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.TIP,

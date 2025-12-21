@@ -17,6 +17,7 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.time.ExperimentalTime
 
 class FetchMovesWithPropertyUseCaseTest {
     private lateinit var mockDb: MockMoveListDB
@@ -489,6 +490,7 @@ class FetchMovesWithPropertyUseCaseTest {
         ),
     )
 
+    @OptIn(ExperimentalTime::class)
     private class MockMoveListDB : MoveListDB {
         var mockResponse: Result<List<Move>, WikiError>? = null
 

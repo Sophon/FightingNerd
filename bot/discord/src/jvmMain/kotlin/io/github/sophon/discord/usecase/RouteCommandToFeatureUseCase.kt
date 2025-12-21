@@ -104,7 +104,7 @@ internal class RouteCommandToFeatureUseCase(
             result = feature.execute(
                 command = commandToUse,
                 query = query,
-                source = source,
+                origin = source,
             )
             if (result is Result.Success) {
                 return result
@@ -123,7 +123,7 @@ internal class RouteCommandToFeatureUseCase(
             val defaultCommand = feature.defaultCommand ?: continue
 
             val result = feature.execute(
-                source = source,
+                origin = source,
                 command = defaultCommand.command,
                 query = fullQuery,
             )

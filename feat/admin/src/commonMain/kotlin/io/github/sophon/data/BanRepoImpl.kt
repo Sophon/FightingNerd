@@ -9,9 +9,11 @@ import io.github.sophon.util.toLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
-import kotlinx.datetime.Clock
 import kotlin.time.Duration
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal class BanRepoImpl(
     driver: DatabaseDriverFactory,
 ): BanRepo {
@@ -19,50 +21,42 @@ internal class BanRepoImpl(
     private val queries = db.banQueries
 
     override suspend fun ban(
-        userId: String,
+        offenderId: String,
         duration: Duration,
+        authorId: String,
         preventBotUsage: Boolean,
     ): Result<Ban, AdminError.DatabaseError> {
         return withContext(Dispatchers.IO) {
             try {
                 val now = Clock.System.now()
                 val expiresAt = now.plus(duration)
+                val ban = Ban(
+                    offenderId = offenderId,
+                    bannedAt = now,
+                    expiresAt = expiresAt,
+                    authorId = authorId,
+                    preventBotUsage = preventBotUsage,
+                )
+
                 queries.upsertBan(
-                    userId = userId,
-                    bannedAt = now.toEpochMilliseconds(),
-                    expiresAt = expiresAt.toEpochMilliseconds(),
-                    preventBotUsage = preventBotUsage.toLong(),
+                    offenderId = ban.offenderId,
+                    bannedAt = ban.bannedAt.toEpochMilliseconds(),
+                    expiresAt = ban.expiresAt.toEpochMilliseconds(),
+                    authorId = ban.authorId,
+                    preventBotUsage = ban.preventBotUsage.toLong(),
                 )
-                Result.Success(
-                    Ban(
-                        userId = userId,
-                        bannedAt = now,
-                        expiresAt = expiresAt,
-                        preventBotUsage = preventBotUsage,
-                    )
-                )
+                Result.Success(ban)
             } catch (e: Exception) {
                 Result.Error(AdminError.DatabaseError(e.toString()))
             }
         }
     }
 
-    override suspend fun isBanned(userId: String): Result<Boolean, AdminError.DatabaseError> {
+    override suspend fun getBanStatus(offenderId: String): Result<Ban?, AdminError.DatabaseError> {
         return withContext(Dispatchers.IO) {
             try {
-                val now = Clock.System.now().toEpochMilliseconds()
-                val isBanned = queries.isBanned(userId = userId, expiresAt = now).executeAsOne()
-                Result.Success(isBanned)
-            } catch (e: Exception) {
-                Result.Error(AdminError.DatabaseError(e.toString()))
-            }
-        }
-    }
-
-    override suspend fun getBan(userId: String): Result<Ban?, AdminError.DatabaseError> {
-        return withContext(Dispatchers.IO) {
-            try {
-                val ban = queries.getBan(userId).executeAsOneOrNull()
+                val ban = queries.getBan(offenderId)
+                    .executeAsOneOrNull()
                     .toDomain()
                 Result.Success(ban)
             } catch (e: Exception) {
@@ -85,10 +79,11 @@ internal class BanRepoImpl(
         }
     }
 
-    override suspend fun unbanUser(userId: String): EmptyResult<AdminError.DatabaseError> {
+    override suspend fun unban(offenderId: String): EmptyResult<AdminError.DatabaseError> {
         return withContext(Dispatchers.IO) {
             try {
-                Result.Success(queries.removeBan(userId))
+                queries.unban(offenderId)
+                Result.Success(Unit)
             } catch (e: Exception) {
                 Result.Error(AdminError.DatabaseError(e.toString()))
             }
@@ -96,27 +91,29 @@ internal class BanRepoImpl(
     }
 
     override suspend fun updatePenalty(
-        userId: String,
+        offenderId: String,
         duration: Duration,
+        authorId: String,
         preventBotUsage: Boolean,
     ): Result<Ban, AdminError.DatabaseError> {
         return withContext(Dispatchers.IO) {
             try {
                 val now = Clock.System.now()
                 val expiration = now.plus(duration)
+                val ban = Ban(
+                    offenderId = offenderId,
+                    bannedAt = now,
+                    expiresAt = expiration,
+                    authorId = authorId,
+                    preventBotUsage = preventBotUsage,
+                )
+
                 queries.updatePenalty(
-                    userId = userId,
-                    expiresAt = expiration.toEpochMilliseconds(),
-                    preventBotUsage = preventBotUsage.toLong(),
+                    offenderId = ban.offenderId,
+                    expiresAt = ban.expiresAt.toEpochMilliseconds(),
+                    preventBotUsage = ban.preventBotUsage.toLong(),
                 )
-                Result.Success(
-                    Ban(
-                        userId = userId,
-                        bannedAt = now,
-                        expiresAt = expiration,
-                        preventBotUsage = preventBotUsage,
-                    )
-                )
+                Result.Success(ban)
             } catch (e: Exception) {
                 Result.Error(AdminError.DatabaseError(e.toString()))
             }

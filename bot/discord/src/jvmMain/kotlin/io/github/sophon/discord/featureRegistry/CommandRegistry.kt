@@ -14,6 +14,9 @@ enum class Command {
     //admin
     FEEDBACK,
     REPLY,
+    BAN,
+    UNBAN,
+    BANLIST,
 
     //general
     FD,

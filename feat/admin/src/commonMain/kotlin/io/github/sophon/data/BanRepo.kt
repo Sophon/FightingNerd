@@ -8,22 +8,22 @@ import kotlin.time.Duration
 
 internal interface BanRepo {
     suspend fun ban(
-        userId: String,
+        offenderId: String,
         duration: Duration,
+        authorId: String,
         preventBotUsage: Boolean,
     ): Result<Ban, AdminError.DatabaseError>
 
-    suspend fun isBanned(userId: String): Result<Boolean, AdminError.DatabaseError>
-
-    suspend fun getBan(userId: String): Result<Ban?, AdminError.DatabaseError>
+    suspend fun getBanStatus(offenderId: String): Result<Ban?, AdminError.DatabaseError>
 
     suspend fun getBanList(): Result<List<Ban>, AdminError.DatabaseError>
 
-    suspend fun unbanUser(userId: String): EmptyResult<AdminError.DatabaseError>
+    suspend fun unban(offenderId: String): EmptyResult<AdminError.DatabaseError>
 
     suspend fun updatePenalty(
-        userId: String,
+        offenderId: String,
         duration: Duration,
+        authorId: String,
         preventBotUsage: Boolean,
     ): Result<Ban, AdminError.DatabaseError>
 

@@ -2,21 +2,23 @@ package io.github.sophon.discord.featureRegistry.admin.usecase
 
 import io.github.sophon.AdminTool
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.toDomainError
-import io.github.sophon.domain.AdminResult
 import io.github.sophon.domain.Source
-import io.github.sophon.util.toSourceAndMessage
+import io.github.sophon.domain.model.Ban
+import io.github.sophon.util.toSource
 
-internal class ReplyToFeedbackUseCase(
+internal class BanUseCase(
     private val adminTool: AdminTool,
 ) {
-    fun invoke(origin: Source, query: String): Result<AdminResult, BotError> {
-        val (target, reply) = query.toSourceAndMessage()
+    suspend fun invoke(origin: Source, query: String): Result<Pair<Ban, Source>, BotError> {
+        val target = query.toSource()
             ?: return Result.Error(BotError.InvalidQuery(query))
 
-        return adminTool.replyToFeedback(origin, target, reply)
+        return adminTool.banUser(origin = origin, offenderId = target.id)
+            .map { ban -> Pair(ban, target) }
             .mapError { it.toDomainError() }
     }
 }
