@@ -23,12 +23,12 @@ interface AdminTool {
     fun init(adminConfig: Config.AdminConfig): EmptyResult<AdminError>
 
     fun processFeedback(
-        source: Source,
+        origin: Source,
         feedback: String,
     ): Result<AdminResult, AdminError>
 
     fun replyToFeedback(
-        source: Source,
+        target: Source,
         reply: String,
     ): Result<AdminResult, AdminError>
 
@@ -68,15 +68,15 @@ internal class AdminToolImpl(
     }
 
     override fun processFeedback(
-        source: Source,
+        origin: Source,
         feedback: String,
     ): Result<AdminResult, AdminError> {
-        val result = AdminResult(source = source, message = feedback)
+        val result = AdminResult(source = origin, message = feedback)
         return Result.Success(result)
     }
 
     override fun replyToFeedback(
-        source: Source,
+        target: Source,
         reply: String,
     ): Result<AdminResult, AdminError> {
         return createReplyUseCase.invoke(query = reply)
