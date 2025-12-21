@@ -13,7 +13,7 @@ kotlin {
         }
         @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
         mainRun {
-            mainClass.set("io.github.sophon.botdiscord.MainKt")
+            mainClass.set("io.github.sophon.discord.MainKt")
         }
     }
 
