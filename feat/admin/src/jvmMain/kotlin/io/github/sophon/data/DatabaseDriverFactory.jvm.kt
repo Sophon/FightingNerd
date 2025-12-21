@@ -10,7 +10,7 @@ actual class DatabaseDriverFactory(private val databasePath: String) {
         val databaseFile = File(databasePath)
         val versionFile = File("$databasePath.version")
 
-        val currentSchemaVersion = 2 // Increment this when you change the schema
+        val currentSchemaVersion = 2 // Increment when schema changes
         val savedVersion = versionFile.takeIf { it.exists() }?.readText()?.toIntOrNull() ?: 0
 
         val driver = JdbcSqliteDriver("jdbc:sqlite:$databasePath")
@@ -27,5 +27,13 @@ actual class DatabaseDriverFactory(private val databasePath: String) {
         }
 
         return driver
+    }
+
+    companion object {
+        fun getDatabasePath(): String {
+            // Fly.io: /data/banlist.db
+            // Local: banlist.db (in working directory)
+            return System.getenv("DATABASE_PATH") ?: "banlist.db"
+        }
     }
 }
