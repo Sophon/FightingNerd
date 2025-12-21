@@ -17,13 +17,13 @@ internal class ProcessFeedbackUseCase(
     ): Result<AdminResult, AdminError> {
         val authorId = origin.id
 
-        val isBanned = when (val result = repo.getBanStatus(offenderId = authorId)) {
-            is Result.Success -> (result.data != null)
-            is Result.Error -> false
+        val ban = when (val result = repo.getBanStatus(offenderId = authorId)) {
+            is Result.Success -> result.data
+            is Result.Error -> null
         }
 
-        if (isBanned && adminConfig.administratorIdList.contains(authorId).not()) {
-            return Result.Error(AdminError.UserBanned(authorId))
+        if (ban != null && adminConfig.administratorIdList.contains(authorId).not()) {
+            return Result.Error(AdminError.UserBanned("$authorId: $ban"))
         }
 
         val result = AdminResult(
