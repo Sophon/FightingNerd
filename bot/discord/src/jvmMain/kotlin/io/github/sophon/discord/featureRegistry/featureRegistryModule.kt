@@ -6,6 +6,7 @@ import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.featureRegistry.core.CoreDiscordFeature
 import io.github.sophon.discord.featureRegistry.core.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
@@ -35,6 +36,7 @@ internal val featureRegistryModule = module {
     singleOf(::ProcessFeedbackUseCase)
     singleOf(::ReplyToFeedbackUseCase)
     singleOf(::BanUseCase)
+    singleOf(::UnbanUseCase)
     //endregion
 
     //region CORE

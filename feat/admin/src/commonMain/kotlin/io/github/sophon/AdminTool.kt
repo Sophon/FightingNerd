@@ -38,7 +38,7 @@ interface AdminTool {
         preventBotUsage: Boolean = false,
     ): Result<Ban, AdminError>
 
-    suspend fun unbanUser(source: Source, offenderId: String): EmptyResult<AdminError>
+    suspend fun unbanUser(origin: Source, offenderId: String): EmptyResult<AdminError>
 
     suspend fun updateUserPenalty(
         source: Source,
@@ -69,6 +69,7 @@ internal class AdminToolImpl(
         origin: Source,
         feedback: String,
     ): Result<AdminResult, AdminError> {
+        //TODO: check for ban
         val result = AdminResult(source = origin, message = feedback)
         return Result.Success(result)
     }
@@ -100,10 +101,10 @@ internal class AdminToolImpl(
     }
 
     override suspend fun unbanUser(
-        source: Source,
+        origin: Source,
         offenderId: String,
     ): EmptyResult<AdminError> {
-        if (adminConfig.administratorIdList.contains(source.id).not()) {
+        if (adminConfig.administratorIdList.contains(origin.id).not()) {
             return Result.Error(AdminError.PermissionDenied())
         }
 
