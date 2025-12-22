@@ -7,6 +7,8 @@
 - admin tools
   - `reply` to a feedback
   - `ban` and `unban` users from `feedback`
+- bugfixes
+  - Wavu - html bugs
 
 ## [v1.2.7] - 2025-12-16
 - Wavu

@@ -29,6 +29,7 @@ internal fun MoveDto.mapToDomain(
     val unifiedNotes = notes.formNotes() + cleanedCrushes
     val fullInput = formCompleteDataFromParent(movesById) { it.input }
         .orEmpty()
+        .cleanHtml()
         .cleanMoveInput()
 
     val move = Move(
