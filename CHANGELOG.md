@@ -2,6 +2,7 @@
 
 ## [v2.0.1] - TODO
 - `help` - don't show admin commands
+- add missing footer to move-list based commands
 
 ## [v2.0.0] - 2025-12-22
 - admin tools
