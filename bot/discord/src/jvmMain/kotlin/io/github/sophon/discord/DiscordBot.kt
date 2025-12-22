@@ -11,8 +11,8 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
-import io.github.sophon.discord.featureRegistry.BotOutput
-import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.createEmbedMessage
 import io.github.sophon.discord.util.createEmbedResponse

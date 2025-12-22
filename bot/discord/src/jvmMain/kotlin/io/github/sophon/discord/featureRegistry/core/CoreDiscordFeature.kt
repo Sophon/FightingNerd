@@ -12,11 +12,11 @@ import io.github.sophon.discord.URL_IMG_KOFI
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
-import io.github.sophon.discord.featureRegistry.BotOutput
-import io.github.sophon.discord.featureRegistry.Command
-import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.FeatureRegistry
-import io.github.sophon.discord.featureRegistry.SupportedCommand
+import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.Command
+import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.FeatureRegistry
+import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.util.ADMIN_COMMANDS
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
