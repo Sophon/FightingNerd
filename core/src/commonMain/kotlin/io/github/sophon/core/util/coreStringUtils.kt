@@ -32,9 +32,18 @@ fun String.urlEncode(): String = encodeURLParameter()
 
 fun String.decodeHtmlEntities(): String {
     return this
+        // Decode &amp; FIRST so double-encoded entities work
+        .replace("&amp;", "&")
+        // NOW handle numeric entities
+        .replace(Regex("&#(\\d+);")) { matchResult ->
+            matchResult.groupValues[1].toInt().toChar().toString()
+        }
+        .replace(Regex("&#x([0-9A-Fa-f]+);")) { matchResult ->
+            matchResult.groupValues[1].toInt(16).toChar().toString()
+        }
+        // Then other named entities
         .replace("&gt;", ">")
         .replace("&lt;", "<")
-        .replace("&amp;", "&")
         .replace("&quot;", "\"")
         .replace("&#039;", "'")
         .replace("&nbsp;", " ")
