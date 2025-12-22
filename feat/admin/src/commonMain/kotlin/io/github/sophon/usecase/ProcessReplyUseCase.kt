@@ -1,0 +1,28 @@
+package io.github.sophon.usecase
+
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.Config
+import io.github.sophon.domain.AdminError
+import io.github.sophon.domain.AdminResult
+import io.github.sophon.domain.Source
+
+internal class ProcessReplyUseCase {
+    fun invoke(
+        origin: Source,
+        target: Source,
+        reply: String,
+        adminConfig: Config.AdminConfig
+    ): Result<AdminResult, AdminError> {
+        val authorId = origin.id
+
+        if (adminConfig.administratorIdList.contains(authorId).not()) {
+            return Result.Error(AdminError.PermissionDenied())
+        }
+
+        val result = AdminResult(
+            source = target,
+            message = reply,
+        )
+        return Result.Success(result)
+    }
+}

@@ -18,6 +18,7 @@ import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.featureRegistry.SupportedCommand
 import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.domain.Source
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -63,6 +64,7 @@ internal class CoreDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
+        origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.TIP,

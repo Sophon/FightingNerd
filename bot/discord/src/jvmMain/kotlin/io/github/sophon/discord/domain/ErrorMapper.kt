@@ -2,6 +2,7 @@ package io.github.sophon.discord.domain
 
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.discord.BotError
+import io.github.sophon.domain.AdminError
 
 internal fun WikiError.toDomainError(): BotError {
     return when (this) {
@@ -10,4 +11,9 @@ internal fun WikiError.toDomainError(): BotError {
         is WikiError.DownloadError -> BotError.DownloadError(inputs[0])
         is WikiError.DatabaseError -> BotError.Unknown(inputs.getOrNull(0) ?: "")
     }
+}
+
+internal fun AdminError.toDomainError(): BotError {
+    //TODO: proper mapping
+    return BotError.Unknown(this.toString())
 }

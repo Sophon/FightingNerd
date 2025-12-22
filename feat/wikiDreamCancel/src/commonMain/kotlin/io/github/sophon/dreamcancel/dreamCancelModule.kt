@@ -26,8 +26,10 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import kotlin.time.ExperimentalTime
 
-fun dreamCancelModule() = module { 
+@OptIn(ExperimentalTime::class)
+fun dreamCancelModule() = module {
     singleOf(::DreamCancelWikiDataSourceImpl).bind<DreamCancelWikiDataSource>()
     singleOf(::DreamCancelWikiClient).bind<WikiClient>()
     single { DreamCancelFeatureInfo }

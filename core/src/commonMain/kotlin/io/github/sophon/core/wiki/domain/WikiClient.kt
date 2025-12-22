@@ -8,7 +8,9 @@ import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 interface WikiClient {
     fun getFeatureInfo(): FeatureInfo
 

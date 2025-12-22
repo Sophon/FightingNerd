@@ -25,7 +25,9 @@ import io.github.sophon.wikiwavu.data.WavuTables
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
 import io.github.sophon.wikiwavu.util.cleanMoveInput
 import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal class WavuWikiClient(
     gameId: String,
 

@@ -22,7 +22,8 @@ Frame data targeting Discord bot and mobile apps:
 ```mermaid
 graph LR
     subgraph Bots
-        discordBot[Discord Bot]
+        discordBot[Discord bot]
+        twitchBot[Twitch bot]
     end
 
     subgraph "Mobile Clients"
@@ -70,6 +71,7 @@ graph LR
     discordBot -->|uses| glossaryInfil
     discordBot -->|uses| communityWiki
     discordBot -->|uses| elo
+    twitchBot -->|uses| communityWiki
 
     communityWiki --> wikiWavu
     communityWiki --> supercombo

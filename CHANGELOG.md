@@ -1,6 +1,15 @@
 # BOT CHANGELOG
 
-## ## [v1.2.7] - 2025-12-16
+## [v2.0.0] - 2025-12-22
+- admin tools
+  - allows giving feedback with `/feedback`
+  - admins can `reply` to a feedback
+  - `ban` and `unban` users from using `feedback`
+  - admin tools and feedback channel configurable via `config.json`
+- bugfixes
+  - Wavu - html bugs
+
+## [v1.2.7] - 2025-12-16
 - Wavu
   - fixed some clickable links not formatting properly
 

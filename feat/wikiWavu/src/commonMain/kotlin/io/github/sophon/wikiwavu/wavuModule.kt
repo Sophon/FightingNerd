@@ -29,7 +29,9 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 fun wavuModule() = module {
     singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
     singleOf(::WavuWikiClient).bind<WikiClient>()

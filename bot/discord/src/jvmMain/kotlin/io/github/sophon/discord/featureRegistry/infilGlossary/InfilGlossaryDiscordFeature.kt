@@ -17,6 +17,7 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlos
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.domain.Source
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
 import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 
@@ -48,6 +49,7 @@ internal class InfilGlossaryDiscordFeature(
     override suspend fun execute(
         command: Command,
         query: String,
+        origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.GL -> searchTerm(query)

@@ -26,7 +26,7 @@ junit = "4.13.2"
 koin = "4.0.0"
 kord = "0.17.0"
 kotlin = "2.2.20"
-kotlin-date-time = "0.6.2"
+kotlin-date-time = "0.7.1"
 kotlinStdlib = "2.2.20"
 kotlinx-coroutines = "1.10.2"
 kotlinx-coroutines-test = "1.9.0"
@@ -38,6 +38,7 @@ room = "2.8.3"
 runner = "1.7.0"
 slf = "2.0.9"
 sqlite = "2.6.1"
+sqldelight = "2.0.2"
 turbine = "0.7.0"
 
 [libraries]
@@ -48,6 +49,17 @@ kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serializa
 
 #Compose
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "composeMultiplatform" }
+
+# Database
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+sqldelight-driver-sqlite = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqldelight" }
+sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-driver-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
+sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
+sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
+
 
 # Mobile
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -70,11 +82,6 @@ ktor-ios = { module = "io.ktor:ktor-client-ios", version.ref = "ktor" }
 ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor"}
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor"}
 ktor-slf = { module = "org.slf4j:slf4j-simple", version.ref = "slf"}
-
-# Room
-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
 # Koin
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
@@ -127,6 +134,7 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 
 
 [bundles]

@@ -1,6 +1,12 @@
 package io.github.sophon.discord.featureRegistry
 
 import io.github.sophon.discord.config.ConfigLoader
+import io.github.sophon.discord.featureRegistry.admin.AdminDiscordFeature
+import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.featureRegistry.core.CoreDiscordFeature
 import io.github.sophon.discord.featureRegistry.core.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
@@ -25,6 +31,14 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal val featureRegistryModule = module {
+    //region ADMIN
+    singleOf(::StartAdminToolsUseCase)
+    singleOf(::ProcessFeedbackUseCase)
+    singleOf(::ReplyToFeedbackUseCase)
+    singleOf(::BanUseCase)
+    singleOf(::UnbanUseCase)
+    //endregion
+
     //region CORE
     singleOf(::GetBotFeatureInfoUseCase)
     //endregion
@@ -59,6 +73,22 @@ internal val featureRegistryModule = module {
         )
     }
 
+    single {
+        val adminConfig = get<ConfigLoader>().loadConfig().adminConfig
+
+        AdminDiscordFeature(
+            adminFeatureInfo = get(),
+            adminConfig = adminConfig!!,
+            startAdminToolsUseCase = get(),
+            processFeedbackUseCase = get(),
+            replyToFeedbackUseCase = get(),
+            banUseCase = get(),
+            unbanUseCase = get(),
+            scheduler = get(),
+            scope = get(),
+        )
+    }
+
     singleOf(::CoreDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::InfilGlossaryDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::WavuWikiDiscordFeature).bind<DiscordRegisteredFeature>()
@@ -84,8 +114,9 @@ internal val featureRegistryModule = module {
                 feature.registerGames(featureConfig.supportedGameList)
             }
         }
+        val adminFeature: AdminDiscordFeature = get()
 
-        features
+        features + adminFeature
     }
     //endregion
 }

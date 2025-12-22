@@ -10,7 +10,7 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import io.github.sophon.core.feature.FeatureConfig
+import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Game
@@ -234,11 +234,11 @@ class GetAvailableFeaturesUseCaseTest {
     private class FakeFeatureListLoader(
         private val enabledFeatureNames: List<String> = emptyList()
     ) : FeatureListLoader {
-        override suspend fun loadFeatureList(): FeatureConfig {
+        override suspend fun loadFeatureList(): Config {
             val features = enabledFeatureNames.map { name ->
-                FeatureConfig.Feature(name = name, isEnabled = true, listOf())
+                Config.Feature(name = name, isEnabled = true, listOf())
             }
-            return FeatureConfig(features)
+            return Config(features)
         }
     }
 

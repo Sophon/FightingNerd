@@ -25,7 +25,9 @@ import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.dreamcancel.data.DreamCancelTables
 import io.github.sophon.dreamcancel.domain.DreamCancelFeatureInfo
 import kotlinx.datetime.Instant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal class DreamCancelWikiClient(
     gameId: String,
 
