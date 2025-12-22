@@ -155,7 +155,7 @@ internal class AdminDiscordFeature(
             color = Color(TURQUOISE)
 
             mandatoryField(
-                name = "",
+                name = "${source.username} from ${source.serverName}",
                 value = message?.truncate(MAX_LENGTH_EMBED),
                 inline = false,
             )
