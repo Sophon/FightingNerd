@@ -16,11 +16,11 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
-import io.github.sophon.discord.featureRegistry.BotOutput
-import io.github.sophon.discord.featureRegistry.Command
-import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.Scheduler
-import io.github.sophon.discord.featureRegistry.SupportedCommand
+import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.Command
+import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.Scheduler
+import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.GetStancesUseCase
@@ -198,7 +198,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed("Power Crush", moveList)
+                    embedBuilder = createMoveListEmbed("$query power crush", moveList)
                 )
             }
     }
@@ -214,7 +214,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "Heat", moveList)
+                    embedBuilder = createMoveListEmbed(category = "$query heat", moveList)
                 )
             }
     }
@@ -230,7 +230,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "Homing", moveList)
+                    embedBuilder = createMoveListEmbed(category = "$query homing", moveList)
                 )
             }
     }
@@ -257,6 +257,10 @@ internal class WavuWikiDiscordFeature(
                                     .joinToString(separator = "") { "* ${it.uppercase()}\n" }
                                     .truncate(MAX_LENGTH_EMBED),
                             )
+                            footer {
+                                text = featureInfo.name
+                                icon = featureInfo.iconUrl
+                            }
                         }
                     )
                 }
@@ -336,6 +340,11 @@ internal class WavuWikiDiscordFeature(
                 .truncate(MAX_LENGTH_EMBED),
             inline = false,
         )
+
+        footer {
+            text = featureInfo.name
+            icon = featureInfo.iconUrl
+        }
     }
 
     private fun List<String>.emojify(): List<String> {

@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v2.0.1] - 2025-12-22
+- admin commands now hidden from `help` and the menu
+- added missing footer to move-list based commands
+
 ## [v2.0.0] - 2025-12-22
 - admin tools
   - allows giving feedback with `/feedback`

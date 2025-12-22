@@ -1,4 +1,4 @@
-package io.github.sophon.discord.featureRegistry
+package io.github.sophon.discord.domain
 
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result

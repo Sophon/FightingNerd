@@ -12,11 +12,12 @@ import io.github.sophon.discord.URL_IMG_KOFI
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
-import io.github.sophon.discord.featureRegistry.BotOutput
-import io.github.sophon.discord.featureRegistry.Command
-import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.FeatureRegistry
-import io.github.sophon.discord.featureRegistry.SupportedCommand
+import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.Command
+import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.FeatureRegistry
+import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import org.koin.core.component.KoinComponent
@@ -121,7 +122,7 @@ internal class CoreDiscordFeature(
         val commands = Command.entries.sortedBy { it.name }
         val fdCommands = commands.filter { it.name.startsWith("FD") && it.name != "FD" }
         val charCommands = commands.filter { it.name.startsWith("CHAR") }
-        val otherCommands = commands - fdCommands - charCommands - Command.FD
+        val otherCommands = commands - fdCommands.toSet() - charCommands.toSet() - Command.FD - adminCommands.map { it.command }.toSet()
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
             mandatoryField(

@@ -29,6 +29,7 @@ internal class ConfigLoader(
             adminConfig = Config.AdminConfig(
                 administratorIdList = jsonConfig.adminConfig.administratorIdList,
                 feedbackChannelIdList = jsonConfig.adminConfig.feedbackChannelIdList,
+                adminServerId = jsonConfig.adminConfig.adminServerId,
             )
         )
     }
@@ -55,6 +56,7 @@ internal class ConfigLoader(
         data class AdminConfig(
             val administratorIdList: List<String>,
             val feedbackChannelIdList: List<String>,
+            val adminServerId: String,
         )
     }
 }

@@ -1,5 +1,7 @@
 package io.github.sophon.discord
 
+import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.event.gateway.DisconnectEvent
@@ -11,8 +13,10 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
-import io.github.sophon.discord.featureRegistry.BotOutput
-import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
+import io.github.sophon.core.feature.Config
+import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.createEmbedMessage
 import io.github.sophon.discord.util.createEmbedResponse
@@ -33,6 +37,7 @@ interface DiscordBot {
 internal class DiscordBotImpl(
     private val kord: Kord,
     private val featureList: List<DiscordRegisteredFeature>,
+    private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
@@ -57,6 +62,7 @@ internal class DiscordBotImpl(
     private suspend fun startKord() {
         cleanOldGuildCommands(kord)
         createGlobalCommands()
+        createAdminCommands()
 //        createCommandsForTestServer()
 
         monitorGatewayHealth()
@@ -85,7 +91,7 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun cleanOldGuildCommands(kord: Kord) {
-        val testGuildSnowFlake = Snowflake(TEST_SERVER_ID)
+        val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
         kord.getGuildApplicationCommands(testGuildSnowFlake).collect { command ->
             command.delete()
         }
@@ -180,7 +186,7 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun createCommandsForTestServer() {
-        val testGuildSnowFlake = Snowflake(TEST_SERVER_ID)
+        val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
             featureList
                 .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
@@ -190,6 +196,10 @@ internal class DiscordBotImpl(
                         name = supportedCommand.command.name.lowercase(),
                         description = supportedCommand.description
                     ) {
+                        if (adminCommands.contains(supportedCommand)) {
+                            defaultMemberPermissions = Permissions(Permission.Administrator)
+                        }
+
                         supportedCommand.arguments.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
@@ -205,6 +215,9 @@ internal class DiscordBotImpl(
             featureList
                 .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
                 .distinctBy { it.command.name.lowercase() }
+                .filter { supportedCommand ->
+                    adminCommands.contains(supportedCommand).not()
+                }
                 .forEach { supportedCommand ->
                     input(
                         name = supportedCommand.command.name.lowercase(),
@@ -217,6 +230,26 @@ internal class DiscordBotImpl(
                         }
                     }
                 }
+        }.collect()
+    }
+
+    private suspend fun createAdminCommands() {
+        val adminGuildSnowFlake = Snowflake(adminConfig.adminServerId)
+        kord.createGuildApplicationCommands(adminGuildSnowFlake) {
+            adminCommands.forEach { command ->
+                input(
+                    name = command.command.name.lowercase(),
+                    description = command.description
+                ) {
+                    defaultMemberPermissions = Permissions(Permission.Administrator)
+
+                    command.arguments.forEach { argument ->
+                        string(name = argument.name, description = argument.description) {
+                            required = argument.isRequired
+                        }
+                    }
+                }
+            }
         }.collect()
     }
 
