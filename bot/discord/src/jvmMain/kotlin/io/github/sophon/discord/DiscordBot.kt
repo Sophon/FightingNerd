@@ -196,6 +196,10 @@ internal class DiscordBotImpl(
                         name = supportedCommand.command.name.lowercase(),
                         description = supportedCommand.description
                     ) {
+                        if (adminCommands.contains(supportedCommand)) {
+                            defaultMemberPermissions = Permissions(Permission.Administrator)
+                        }
+
                         supportedCommand.arguments.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
