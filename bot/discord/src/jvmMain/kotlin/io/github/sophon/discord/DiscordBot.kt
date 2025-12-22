@@ -1,5 +1,7 @@
 package io.github.sophon.discord
 
+import dev.kord.common.entity.Permission
+import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.event.gateway.DisconnectEvent
@@ -237,6 +239,8 @@ internal class DiscordBotImpl(
                     name = command.command.name.lowercase(),
                     description = command.description
                 ) {
+                    defaultMemberPermissions = Permissions(Permission.Administrator)
+
                     command.arguments.forEach { argument ->
                         string(name = argument.name, description = argument.description) {
                             required = argument.isRequired
