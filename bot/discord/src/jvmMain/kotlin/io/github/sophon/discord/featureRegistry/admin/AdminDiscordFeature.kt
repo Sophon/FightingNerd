@@ -177,17 +177,17 @@ internal class AdminDiscordFeature(
 
     private fun createBanStatusEmbed(ban: Ban? = null): EmbedBuilder.() -> Unit = {
         if (ban == null) {
-            title = "Freed! 🕊🕊🕊"
+            title = "Free like a bird! 🕊🕊🕊"
             mandatoryField(
-                name = "",
+                name = "Ban status",
                 value = "User got unbanned.",
                 inline = false,
             )
         } else {
             title = "Chat shit, get banged! 🔥🔥🔥"
             mandatoryField(
-                name = "",
-                value = "🔨 BAN  🔨 → start: ${ban.bannedAt}; end: ${ban.expiresAt}",
+                name = "Ban status",
+                value = "BANED 🔨 → start: ${ban.bannedAt}; end: ${ban.expiresAt}",
                 inline = false,
             )
         }
