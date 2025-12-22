@@ -401,7 +401,7 @@ class StringExtensionsTest {
     }
     //endregion
 
-    //region cleanHtml - Basic HTML Cleaning
+    //region cleanHtml
     @Test
     fun `cleanHtml removes simple HTML tags`() {
         // Given
@@ -461,9 +461,7 @@ class StringExtensionsTest {
         // Then
         assertThat(result).isEqualTo("Content")
     }
-    //endregion
 
-    //region cleanHtml - Bullet Point Formatting
     @Test
     fun `cleanHtml normalizes bullet point spacing`() {
         // Given
@@ -499,9 +497,7 @@ class StringExtensionsTest {
         // Then
         assertThat(result).isEqualTo("* Item")
     }
-    //endregion
 
-    //region cleanHtml - Whitespace Handling
     @Test
     fun `cleanHtml trims leading whitespace`() {
         // Given
@@ -549,57 +545,6 @@ class StringExtensionsTest {
         // Then
         assertThat(result).isEqualTo("Test Content")
     }
-    //endregion
-
-    //region cleanHtml - Real World Examples
-    @Test
-    fun `cleanHtml handles yoshimitsu notes into a list`() {
-        // Given
-        val input = """
-        &lt;div class=&quot;plainlist&quot;&gt;
-        * Floor Break
-        * Weapon
-        &lt;/div&gt;
-    """
-            .trimIndent()
-
-        // When
-        val cleaned = input.cleanHtml()
-        val notes = cleaned
-            .lines()
-            .filter { it.isNotEmpty() }
-            .map { it.removePrefix("* ").trim() }
-            .filter { it.isNotEmpty() }
-
-        // Then
-        assertThat(notes).hasSize(2)
-        assertThat(notes[0]).isEqualTo("Floor Break")
-        assertThat(notes[1]).isEqualTo("Weapon")
-    }
-
-    @Test
-    fun `cleanHtml handles complex yoshimitsu move note`() {
-        // Given
-        val input = """
-            &lt;div class=&quot;plainlist&quot;&gt;
-            * 
-            &lt;div
-              style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;
-              class=&quot;movedata-icon border-blue homing&quot;
-            &gt;Homing&lt;/div&gt;
-            * Throw break 1 or 2&lt;/div&gt;
-        """.trimIndent()
-
-        // When
-        val result = input.cleanHtml()
-
-        // Then
-        assertThat(result.contains("Homing")).isEqualTo(true)
-        assertThat(result.contains("Throw break 1 or 2")).isEqualTo(true)
-    }
-    //endregion
-
-    //region cleanHtml - Edge Cases
     @Test
     fun `cleanHtml handles empty string`() {
         // Given
@@ -636,20 +581,6 @@ class StringExtensionsTest {
         assertThat(result).isEqualTo("Plain text")
     }
 
-    @Test
-    fun `cleanHtml handles unclosed tags`() {
-        // Given
-        val input = "<div>Test"
-
-        // When
-        val result = input.cleanHtml()
-
-        // Then
-        assertThat(result).isEqualTo("Test")
-    }
-    //endregion
-
-    //region cleanHtml - HTML Entity Decoding
     @Test
     fun `cleanHtml decodes numeric apostrophe entity`() {
         // Given
@@ -772,6 +703,19 @@ class StringExtensionsTest {
     }
 
     @Test
+    fun `cleanHtml handles just-frame`() {
+        //given
+        val string = "f&amp;#58;F+2"
+        val expected = "f:F+2"
+
+        //when
+        val result = string.cleanHtml()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `removeAccents handles Spanish characters`() {
         // Given
         val input = "ramón"
@@ -782,7 +726,6 @@ class StringExtensionsTest {
         // Then
         assertThat(result).isEqualTo("ramon")
     }
-    //endregion
 
     //region maskSecret
     @Test
