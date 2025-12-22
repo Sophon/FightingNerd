@@ -55,46 +55,7 @@ internal class AdminDiscordFeature(
                 )
             )
         ),
-        SupportedCommand(
-            command = Command.REPLY,
-            description = "Answer feedback",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_REPLY_RECIPIENT,
-                    description = "username-id-serverId",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_REPLY_MESSAGE,
-                    description = "Reply",
-                )
-            )
-        ),
-        SupportedCommand(
-            command = Command.BAN,
-            description = "Ban user",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_REPLY_BAN,
-                    description = "User ID",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.UNBAN,
-            description = "Unban user",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_REPLY_UNBAN,
-                    description = "User ID",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.BANLIST,
-            description = "List of banned users",
-            arguments = listOf(),
-        )
-    )
+    ) + adminCommands
 
     override suspend fun start() {
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
@@ -236,10 +197,6 @@ internal class AdminDiscordFeature(
     private companion object {
         const val TAG = "AdminDiscordFeature"
         const val KEY_FEEDBACK = "feedback"
-        const val KEY_REPLY_RECIPIENT = "recipient"
-        const val KEY_REPLY_MESSAGE = "message"
-        const val KEY_REPLY_BAN = "ban"
-        const val KEY_REPLY_UNBAN = "unban"
         const val TURQUOISE = 0x0000CED1
     }
 }
