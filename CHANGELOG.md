@@ -1,12 +1,11 @@
 # BOT CHANGELOG
 
-## [v2.0.0] - TODO
-- feedback
-  - allows giving feedback with `/feedback`
-  - admin(s) can then reply with `/reply` and the feedback author will be tagged with an answer
+## [v2.0.0] - 2025-12-22
 - admin tools
-  - `reply` to a feedback
-  - `ban` and `unban` users from `feedback`
+  - allows giving feedback with `/feedback`
+  - admins can `reply` to a feedback
+  - `ban` and `unban` users from using `feedback`
+  - admin tools and feedback channel configurable via `config.json`
 - bugfixes
   - Wavu - html bugs
 
