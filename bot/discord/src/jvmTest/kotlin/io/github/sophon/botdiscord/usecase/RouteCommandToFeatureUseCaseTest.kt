@@ -8,10 +8,10 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.featureRegistry.BotOutput
-import io.github.sophon.discord.featureRegistry.Command
-import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.SupportedCommand
+import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.Command
+import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.domain.Source
 import junit.framework.TestCase.assertTrue

@@ -12,11 +12,11 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
-import io.github.sophon.discord.featureRegistry.BotOutput
-import io.github.sophon.discord.featureRegistry.Command
-import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.Scheduler
-import io.github.sophon.discord.featureRegistry.SupportedCommand
+import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.Command
+import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.Scheduler
+import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase

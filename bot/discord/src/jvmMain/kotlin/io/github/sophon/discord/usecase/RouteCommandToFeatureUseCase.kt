@@ -2,8 +2,8 @@ package io.github.sophon.discord.usecase
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.featureRegistry.BotOutput
-import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
 import io.github.sophon.domain.Source
 

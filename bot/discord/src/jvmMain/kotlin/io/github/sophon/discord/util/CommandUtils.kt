@@ -1,6 +1,6 @@
 package io.github.sophon.discord.util
 
-import io.github.sophon.discord.featureRegistry.Command
+import io.github.sophon.discord.domain.Command
 
 internal val ADMIN_COMMANDS = listOf(
     Command.BAN,

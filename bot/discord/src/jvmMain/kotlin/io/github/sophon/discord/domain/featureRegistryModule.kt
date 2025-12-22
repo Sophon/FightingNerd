@@ -1,4 +1,4 @@
-package io.github.sophon.discord.featureRegistry
+package io.github.sophon.discord.domain
 
 import io.github.sophon.discord.config.ConfigLoader
 import io.github.sophon.discord.featureRegistry.admin.AdminDiscordFeature

@@ -1,4 +1,4 @@
-package io.github.sophon.discord.featureRegistry
+package io.github.sophon.discord.domain
 
 import io.github.sophon.discord.TIME_UPDATE_INTERVAL_H
 import kotlinx.coroutines.delay
