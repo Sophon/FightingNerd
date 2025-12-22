@@ -104,6 +104,7 @@ internal class DiscordBotImpl(
             username = message.author?.username.orEmpty(),
             id = message.author?.id.toString(),
             channelId = message.channelId.toString(),
+            serverName = message.getGuildOrNull()?.name.orEmpty(),
         )
 
         val result = routeCommandToFeatureUseCase.invoke(
@@ -149,6 +150,7 @@ internal class DiscordBotImpl(
             username = interaction.user.username,
             id = interaction.user.data.id.toString(),
             channelId = interaction.channelId.toString(),
+            serverName = interaction.getGuildOrNull()?.name.orEmpty(),
         )
 
         val result = routeCommandToFeatureUseCase.invoke(

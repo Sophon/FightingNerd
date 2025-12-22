@@ -1,7 +1,8 @@
 package io.github.sophon.domain.model
 
-import kotlinx.datetime.Instant
+import io.github.sophon.core.util.toFormattedString
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 data class Ban(
@@ -10,4 +11,8 @@ data class Ban(
     val expiresAt: Instant,
     val authorId: String,
     val preventBotUsage: Boolean
-)
+) {
+    override fun toString(): String {
+        return "BANNED: ${bannedAt.toFormattedString()} → ${expiresAt.toFormattedString()}"
+    }
+}

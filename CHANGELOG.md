@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v2.1.0] - TODO
+- admin - improved formatting
+
 ## [v2.0.1] - 2025-12-22
 - admin commands now hidden from `help` and the menu
 - added missing footer to move-list based commands
