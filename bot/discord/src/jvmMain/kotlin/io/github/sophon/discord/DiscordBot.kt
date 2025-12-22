@@ -11,10 +11,11 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.Config
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
-import io.github.sophon.discord.util.ADMIN_COMMANDS
 import io.github.sophon.discord.util.createEmbedMessage
 import io.github.sophon.discord.util.createEmbedResponse
 import io.github.sophon.discord.util.createErrorEmbed
@@ -22,7 +23,6 @@ import io.github.sophon.discord.util.createPlainMessage
 import io.github.sophon.discord.util.createPlainResponse
 import io.github.sophon.discord.util.delete
 import io.github.sophon.discord.util.deleteInteraction
-import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -35,6 +35,7 @@ interface DiscordBot {
 internal class DiscordBotImpl(
     private val kord: Kord,
     private val featureList: List<DiscordRegisteredFeature>,
+    private val adminConfig: Config.AdminConfig?,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
@@ -59,6 +60,7 @@ internal class DiscordBotImpl(
     private suspend fun startKord() {
         cleanOldGuildCommands(kord)
         createGlobalCommands()
+        createAdminCommands()
 //        createCommandsForTestServer()
 
         monitorGatewayHealth()
@@ -208,7 +210,7 @@ internal class DiscordBotImpl(
                 .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
                 .distinctBy { it.command.name.lowercase() }
                 .filter { supportedCommand ->
-                    ADMIN_COMMANDS.contains(supportedCommand.command).not()
+                    adminCommands.contains(supportedCommand).not()
                 }
                 .forEach { supportedCommand ->
                     input(
@@ -222,6 +224,26 @@ internal class DiscordBotImpl(
                         }
                     }
                 }
+        }.collect()
+    }
+
+    private suspend fun createAdminCommands() {
+        if (adminConfig == null) return
+
+        val adminGuildSnowFlake = Snowflake(TEST_SERVER_ID)
+        kord.createGuildApplicationCommands(adminGuildSnowFlake) {
+            adminCommands.forEach { command ->
+                input(
+                    name = command.command.name.lowercase(),
+                    description = command.description
+                ) {
+                    command.arguments.forEach { argument ->
+                        string(name = argument.name, description = argument.description) {
+                            required = argument.isRequired
+                        }
+                    }
+                }
+            }
         }.collect()
     }
 

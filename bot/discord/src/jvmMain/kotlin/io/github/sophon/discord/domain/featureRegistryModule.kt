@@ -1,5 +1,6 @@
 package io.github.sophon.discord.domain
 
+import io.github.sophon.core.feature.Config
 import io.github.sophon.discord.config.ConfigLoader
 import io.github.sophon.discord.featureRegistry.admin.AdminDiscordFeature
 import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
@@ -87,6 +88,9 @@ internal val featureRegistryModule = module {
             scheduler = get(),
             scope = get(),
         )
+    }
+    single<Config.AdminConfig?> {
+        get<ConfigLoader>().loadConfig().adminConfig
     }
 
     singleOf(::CoreDiscordFeature).bind<DiscordRegisteredFeature>()
