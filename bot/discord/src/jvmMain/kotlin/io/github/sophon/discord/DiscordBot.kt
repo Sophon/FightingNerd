@@ -14,6 +14,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.util.ADMIN_COMMANDS
 import io.github.sophon.discord.util.createEmbedMessage
 import io.github.sophon.discord.util.createEmbedResponse
 import io.github.sophon.discord.util.createErrorEmbed
@@ -21,6 +22,7 @@ import io.github.sophon.discord.util.createPlainMessage
 import io.github.sophon.discord.util.createPlainResponse
 import io.github.sophon.discord.util.delete
 import io.github.sophon.discord.util.deleteInteraction
+import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -205,6 +207,9 @@ internal class DiscordBotImpl(
             featureList
                 .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
                 .distinctBy { it.command.name.lowercase() }
+                .filter { supportedCommand ->
+                    ADMIN_COMMANDS.contains(supportedCommand.command).not()
+                }
                 .forEach { supportedCommand ->
                     input(
                         name = supportedCommand.command.name.lowercase(),
