@@ -79,7 +79,7 @@ internal val featureRegistryModule = module {
 
         AdminDiscordFeature(
             adminFeatureInfo = get(),
-            adminConfig = adminConfig!!,
+            adminConfig = adminConfig,
             startAdminToolsUseCase = get(),
             processFeedbackUseCase = get(),
             replyToFeedbackUseCase = get(),
@@ -89,7 +89,7 @@ internal val featureRegistryModule = module {
             scope = get(),
         )
     }
-    single<Config.AdminConfig?> {
+    single<Config.AdminConfig> {
         get<ConfigLoader>().loadConfig().adminConfig
     }
 

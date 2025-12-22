@@ -37,7 +37,7 @@ interface DiscordBot {
 internal class DiscordBotImpl(
     private val kord: Kord,
     private val featureList: List<DiscordRegisteredFeature>,
-    private val adminConfig: Config.AdminConfig?,
+    private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
