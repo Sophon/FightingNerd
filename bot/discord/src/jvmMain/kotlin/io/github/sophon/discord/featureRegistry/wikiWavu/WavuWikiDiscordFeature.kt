@@ -198,7 +198,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed("Power Crush", moveList)
+                    embedBuilder = createMoveListEmbed("$query power crush", moveList)
                 )
             }
     }
@@ -214,7 +214,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "Heat", moveList)
+                    embedBuilder = createMoveListEmbed(category = "$query heat", moveList)
                 )
             }
     }
@@ -230,7 +230,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "Homing", moveList)
+                    embedBuilder = createMoveListEmbed(category = "$query homing", moveList)
                 )
             }
     }
@@ -257,6 +257,10 @@ internal class WavuWikiDiscordFeature(
                                     .joinToString(separator = "") { "* ${it.uppercase()}\n" }
                                     .truncate(MAX_LENGTH_EMBED),
                             )
+                            footer {
+                                text = featureInfo.name
+                                icon = featureInfo.iconUrl
+                            }
                         }
                     )
                 }
@@ -336,6 +340,11 @@ internal class WavuWikiDiscordFeature(
                 .truncate(MAX_LENGTH_EMBED),
             inline = false,
         )
+
+        footer {
+            text = featureInfo.name
+            icon = featureInfo.iconUrl
+        }
     }
 
     private fun List<String>.emojify(): List<String> {
