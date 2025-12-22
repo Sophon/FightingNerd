@@ -91,7 +91,7 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun cleanOldGuildCommands(kord: Kord) {
-        val testGuildSnowFlake = Snowflake(TEST_SERVER_ID)
+        val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
         kord.getGuildApplicationCommands(testGuildSnowFlake).collect { command ->
             command.delete()
         }
@@ -186,7 +186,7 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun createCommandsForTestServer() {
-        val testGuildSnowFlake = Snowflake(TEST_SERVER_ID)
+        val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
             featureList
                 .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
@@ -230,9 +230,7 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun createAdminCommands() {
-        if (adminConfig == null) return
-
-        val adminGuildSnowFlake = Snowflake(TEST_SERVER_ID)
+        val adminGuildSnowFlake = Snowflake(adminConfig.adminServerId)
         kord.createGuildApplicationCommands(adminGuildSnowFlake) {
             adminCommands.forEach { command ->
                 input(

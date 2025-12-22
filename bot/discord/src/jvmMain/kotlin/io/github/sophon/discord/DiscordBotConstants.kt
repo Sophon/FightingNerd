@@ -3,7 +3,6 @@ package io.github.sophon.discord
 internal const val BOT_NAME = "FightingNerd"
 
 internal const val CONFIG_FILE_NAME = "config.json"
-@Deprecated("TODO: config") internal const val TEST_SERVER_ID = "717398042562658344"
 internal const val MAX_LENGTH_EMBED = 1_024
 
 internal const val URL_REPO = "https://github.com/Sophon/FightingNerd"
