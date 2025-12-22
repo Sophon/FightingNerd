@@ -23,5 +23,6 @@ data class Config(
     data class AdminConfig(
         val administratorIdList: List<String>,
         val feedbackChannelIdList: List<String>,
+        val adminServerId: String,
     )
 }

@@ -15,6 +15,7 @@ internal class ProcessReplyUseCaseTest {
     val adminConfig = Config.AdminConfig(
         administratorIdList = listOf("111"),
         feedbackChannelIdList = listOf(""),
+        adminServerId = "",
     )
     val admin = Source(
         username = "admin",
