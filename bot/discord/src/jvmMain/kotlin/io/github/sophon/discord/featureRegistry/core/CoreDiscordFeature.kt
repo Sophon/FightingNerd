@@ -17,6 +17,7 @@ import io.github.sophon.discord.featureRegistry.Command
 import io.github.sophon.discord.featureRegistry.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.featureRegistry.SupportedCommand
+import io.github.sophon.discord.util.ADMIN_COMMANDS
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import org.koin.core.component.KoinComponent
@@ -121,7 +122,7 @@ internal class CoreDiscordFeature(
         val commands = Command.entries.sortedBy { it.name }
         val fdCommands = commands.filter { it.name.startsWith("FD") && it.name != "FD" }
         val charCommands = commands.filter { it.name.startsWith("CHAR") }
-        val otherCommands = commands - fdCommands - charCommands - Command.FD
+        val otherCommands = commands - fdCommands.toSet() - charCommands.toSet() - Command.FD - ADMIN_COMMANDS.toSet()
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
             mandatoryField(
