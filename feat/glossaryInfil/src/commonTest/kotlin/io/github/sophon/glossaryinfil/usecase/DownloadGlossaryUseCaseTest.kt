@@ -5,6 +5,7 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import assertk.assertions.isNull
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.glossaryinfil.GlossaryError
@@ -51,7 +52,7 @@ class DownloadGlossaryUseCaseTest {
         assertThat(item.term).isEqualTo("Fireball")
         assertThat(item.definition).isEqualTo("A projectile that travels horizontally")
         assertThat(item.altTerm).isEqualTo(listOf("Hadouken", "Projectile"))
-        assertThat(item.video).isEqualTo(listOf("video1", "video2"))
+        assertThat(item.url.video).isEqualTo("https://glossary.infil.net/videos/Fireball.mp4")
         assertThat(item.games).isEqualTo(listOf("SF", "COM"))
         assertThat(item.jpTranslation).isEqualTo(listOf("波動拳 (hadouken)", "Lit. wave motion fist"))
     }
@@ -81,7 +82,7 @@ class DownloadGlossaryUseCaseTest {
         assertThat(item.term).isEqualTo("Combo")
         assertThat(item.definition).isEqualTo("A sequence of attacks")
         assertThat(item.altTerm).isEmpty()
-        assertThat(item.video).isEmpty()
+        assertThat(item.url.video).isNull()
         assertThat(item.games).isEmpty()
         assertThat(item.jpTranslation).isEmpty()
     }
@@ -110,7 +111,7 @@ class DownloadGlossaryUseCaseTest {
         val item = data[0]
         assertThat(item.term).isEqualTo("Block")
         assertThat(item.altTerm).isEmpty()
-        assertThat(item.video).isEmpty()
+        assertThat(item.url.video).isNull()
         assertThat(item.games).isEmpty()
         assertThat(item.jpTranslation).isEqualTo(listOf(""))
     }

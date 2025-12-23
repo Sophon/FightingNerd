@@ -29,9 +29,21 @@ class FetchDataForTermUseCaseTest {
         // Given
         val query = "Fireball"
         val items = listOf(
-            GlossaryItem(term = "Fireball Motion", definition = "A quarter circle forward motion"),
-            GlossaryItem(term = "fireball", definition = "A projectile that travels horizontally"), // Exact match
-            GlossaryItem(term = "Fireball Character", definition = "A character with strong fireballs")
+            GlossaryItem(
+                term = "Fireball Motion",
+                definition = "A quarter circle forward motion",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Fireball"),
+            ),
+            GlossaryItem(
+                term = "fireball",
+                definition = "A projectile that travels horizontally",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Fireball"),
+            ),
+            GlossaryItem(
+                term = "Fireball Character",
+                definition = "A character with strong fireballs",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Fireball"),
+            )
         )
         db.setResult(Result.Success(items))
 
@@ -49,9 +61,21 @@ class FetchDataForTermUseCaseTest {
         // Given
         val query = "sonic boom"
         val items = listOf(
-            GlossaryItem(term = "Sonic Boom Character", definition = "Characters with charge moves"),
-            GlossaryItem(term = "sonicboom", definition = "A charge projectile"), // Exact without whitespace
-            GlossaryItem(term = "Sonic", definition = "Fast character")
+            GlossaryItem(
+                term = "Sonic Boom Character",
+                definition = "Characters with charge moves",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Sonic%20Boom"),
+            ),
+            GlossaryItem(
+                term = "sonicboom",
+                definition = "A charge projectile",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Sonic%20Boom"),
+            ),
+            GlossaryItem(
+                term = "Sonic",
+                definition = "Fast character",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Sonic%20Boom"),
+            )
         )
         db.setResult(Result.Success(items))
 
@@ -69,10 +93,26 @@ class FetchDataForTermUseCaseTest {
         // Given
         val query = "dragon"
         val items = listOf(
-            GlossaryItem(term = "Dragon Punch Motion", definition = "Forward, down, down-forward motion"),
-            GlossaryItem(term = "Dragon", definition = "A type of move"),
-            GlossaryItem(term = "Dragon Punch", definition = "An invincible anti-air"),
-            GlossaryItem(term = "Dragon Ball FighterZ Mechanic", definition = "Game specific mechanic")
+            GlossaryItem(
+                term = "Dragon Punch Motion",
+                definition = "Forward, down, down-forward motion",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Dragon",
+                definition = "A type of move",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Dragon Punch",
+                definition = "An invincible anti-air",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Dragon Ball FighterZ Mechanic",
+                definition = "Game specific mechanic",
+                url = GlossaryItem.Url(""),
+            )
         )
         db.setResult(Result.Success(items))
 
@@ -93,12 +133,36 @@ class FetchDataForTermUseCaseTest {
         // Given
         val query = "Block"
         val items = listOf(
-            GlossaryItem(term = "Block String", definition = "A sequence of blocked attacks"),
-            GlossaryItem(term = "Blocking", definition = "The act of defending"),
-            GlossaryItem(term = "block", definition = "Defending against attacks"), // 1st: Exact match
-            GlossaryItem(term = "B L O C K", definition = "Spaced out term"), // 2nd: Exact without whitespace
-            GlossaryItem(term = "Block Stun", definition = "Period after blocking"), // 3rd: Partial, shorter
-            GlossaryItem(term = "Cross-up Block Direction", definition = "Which way to block") // 4th: Partial, longer
+            GlossaryItem(
+                term = "Block String",
+                definition = "A sequence of blocked attacks",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Blocking",
+                definition = "The act of defending",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "block",
+                definition = "Defending against attacks",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "B L O C K",
+                definition = "Spaced out term",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Block Stun",
+                definition = "Period after blocking",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Cross-up Block Direction",
+                definition = "Which way to block",
+                url = GlossaryItem.Url(""),
+            )
         )
         db.setResult(Result.Success(items))
 
@@ -122,9 +186,21 @@ class FetchDataForTermUseCaseTest {
         // Given
         val query = "throw"
         val items = listOf(
-            GlossaryItem(term = "Throw", definition = "A close-range unblockable attack"),
-            GlossaryItem(term = "Throw", definition = "Different definition for same term"),
-            GlossaryItem(term = "Throw Tech", definition = "Defending against throws")
+            GlossaryItem(
+                term = "Throw",
+                definition = "A close-range unblockable attack",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Throw",
+                definition = "Different definition for same term",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Throw Tech",
+                definition = "Defending against throws",
+                url = GlossaryItem.Url(""),
+            )
         )
         db.setResult(Result.Success(items))
 
@@ -144,8 +220,16 @@ class FetchDataForTermUseCaseTest {
         // Given
         val query = "frame data"
         val items = listOf(
-            GlossaryItem(term = "framedata", definition = "Numerical properties of moves"),
-            GlossaryItem(term = "Frame Data", definition = "Information about move timing")
+            GlossaryItem(
+                term = "framedata",
+                definition = "Numerical properties of moves",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Frame Data",
+                definition = "Information about move timing",
+                url = GlossaryItem.Url(""),
+            )
         )
         db.setResult(Result.Success(items))
 
@@ -195,10 +279,26 @@ class FetchDataForTermUseCaseTest {
         // Given
         val query = "SUPER"
         val items = listOf(
-            GlossaryItem(term = "super", definition = "A powerful special move"),
-            GlossaryItem(term = "Super", definition = "Same as above"),
-            GlossaryItem(term = "SUPER", definition = "All caps version"),
-            GlossaryItem(term = "SuPeR", definition = "Mixed case version")
+            GlossaryItem(
+                term = "super",
+                definition = "A powerful special move",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Super",
+                definition = "Same as above",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "SUPER",
+                definition = "All caps version",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "SuPeR",
+                definition = "Mixed case version",
+                url = GlossaryItem.Url(""),
+            )
         )
         db.setResult(Result.Success(items))
 
@@ -217,10 +317,26 @@ class FetchDataForTermUseCaseTest {
         // Given
         val query = "combo"
         val items = listOf(
-            GlossaryItem(term = "Combo Breaker", definition = "Breaking out of combos"),
-            GlossaryItem(term = "Combo", definition = "A sequence of attacks"), // Exact match
-            GlossaryItem(term = "Air Combo", definition = "Combos performed in the air"),
-            GlossaryItem(term = "Infinite Combo", definition = "A combo that loops forever")
+            GlossaryItem(
+                term = "Combo Breaker",
+                definition = "Breaking out of combos",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Combo",
+                definition = "A sequence of attacks",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Air Combo",
+                definition = "Combos performed in the air",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Infinite Combo",
+                definition = "A combo that loops forever",
+                url = GlossaryItem.Url(""),
+            )
         )
         db.setResult(Result.Success(items))
 
@@ -241,9 +357,21 @@ class FetchDataForTermUseCaseTest {
         // Given
         val query = "hit confirm"
         val items = listOf(
-            GlossaryItem(term = "Hit Confirm Window", definition = "Time to confirm hits"),
-            GlossaryItem(term = "Hit Confirm", definition = "Confirming an attack hit"), // Exact match
-            GlossaryItem(term = "Confirm", definition = "General confirmation")
+            GlossaryItem(
+                term = "Hit Confirm Window",
+                definition = "Time to confirm hits",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Hit Confirm",
+                definition = "Confirming an attack hit",
+                url = GlossaryItem.Url(""),
+            ),
+            GlossaryItem(
+                term = "Confirm",
+                definition = "General confirmation",
+                url = GlossaryItem.Url(""),
+            )
         )
         db.setResult(Result.Success(items))
 
