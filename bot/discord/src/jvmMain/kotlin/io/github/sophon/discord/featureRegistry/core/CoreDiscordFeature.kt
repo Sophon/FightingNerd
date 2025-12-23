@@ -72,8 +72,8 @@ internal class CoreDiscordFeature(
             Command.DONATE,
                 -> createTipEmbed()
 
-            Command.REPO -> createRepoEmbed()
-            Command.INVITE -> createInviteEmbed()
+            Command.REPO -> createRepoText()
+            Command.INVITE -> createInviteText()
             Command.HELP -> createHelpEmbed()
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -83,8 +83,8 @@ internal class CoreDiscordFeature(
     private fun createTipEmbed(): Result<BotOutput, BotError> {
         val embedBuilder: EmbedBuilder.() -> Unit = {
             title = "Dono arigato!"
-            url = URL_KOFI //TODO: load from config
-            color = Color(PINK)
+            url = URL_KOFI
+            color = Color(PURPLE)
 
             mandatoryField(
                 name = "💸💸💸",
@@ -101,7 +101,7 @@ internal class CoreDiscordFeature(
         return Result.Success(BotOutput(embedBuilder))
     }
 
-    private fun createRepoEmbed(): Result<BotOutput, BotError> {
+    private fun createRepoText(): Result<BotOutput, BotError> {
         return Result.Success(
             BotOutput(
                 plainText = "Contribute to FightingNerd: $URL_REPO"
@@ -109,7 +109,7 @@ internal class CoreDiscordFeature(
         )
     }
 
-    private fun createInviteEmbed(): Result<BotOutput, BotError> {
+    private fun createInviteText(): Result<BotOutput, BotError> {
         return Result.Success(
             BotOutput(
                 plainText = "FightingNerd bot invite: $URL_INVITE"
@@ -198,6 +198,6 @@ internal class CoreDiscordFeature(
 
     private companion object {
         const val TAG = "CoreDiscordFeature"
-        const val PINK = 0x00FF10F0
+        const val PURPLE = 0x00A020F0
     }
 }
