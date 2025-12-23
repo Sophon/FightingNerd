@@ -65,7 +65,7 @@ internal class WavuWikiDiscordFeature(
     override val otherCommands: List<SupportedCommand> = listOf(
         SupportedCommand(
             command = Command.FDTK,
-            description = "Tekken 8 frame data",
+            description = "Tekken frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -79,7 +79,7 @@ internal class WavuWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.PC,
-            description = "Tekken 8 Power Crush moves",
+            description = "Tekken POWER CRUSH moves",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -89,7 +89,7 @@ internal class WavuWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.HEAT,
-            description = "Tekken 8 Power Crush moves",
+            description = "Tekken HEAT moves",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -99,7 +99,7 @@ internal class WavuWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.HOMING,
-            description = "Tekken 8 homing moves",
+            description = "Tekken HOMING moves",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -109,7 +109,7 @@ internal class WavuWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.STANCE,
-            description = "Tekken 8 stance moves",
+            description = "Tekken STANCE moves",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
