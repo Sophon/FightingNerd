@@ -338,7 +338,11 @@ internal class DustLoopWikiDiscordFeature(
     ): EmbedBuilder.() -> Unit = {
         title = move.input
         url = move.urls.wikiUrl
-        description = "**${move.charName}**: ${move.name.orEmpty()}"
+        description = if (move.name.isNullOrBlank()) {
+            "**${move.charName}**"
+        } else {
+            "**${move.charName}**: ${move.name.orEmpty()}"
+        }
         color = Color(RED)
         move.urls.characterImage?.let { thumbnail { url = it } }
 

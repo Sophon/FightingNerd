@@ -284,7 +284,11 @@ internal class SuperComboWikiDiscordFeature(
     ): EmbedBuilder.() -> Unit = {
         title = move.input
         url = move.urls.wikiUrl
-        description = "**${move.charName}**: ${move.name.orEmpty()}"
+        description = if (move.name.isNullOrBlank()) {
+            "**${move.charName}**"
+        } else {
+            "**${move.charName}**: ${move.name.orEmpty()}"
+        }
         color = Color(ORANGE)
         move.urls.characterImage?.let { thumbnail { url = it } }
 

@@ -280,10 +280,14 @@ internal class WavuWikiDiscordFeature(
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = move.input
         url = move.urls.wikiUrl
-        move.urls.characterImage?.let { thumbnail { url = it } }
-
-        description = "**${move.charName}**: ${move.name.orEmpty()}"
+        description = if (move.name.isNullOrBlank()) {
+            "**${move.charName}**"
+        } else {
+            "**${move.charName}**: ${move.name.orEmpty()}"
+        }
         color = Color(GREEN)
+
+        move.urls.characterImage?.let { thumbnail { url = it } }
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)
