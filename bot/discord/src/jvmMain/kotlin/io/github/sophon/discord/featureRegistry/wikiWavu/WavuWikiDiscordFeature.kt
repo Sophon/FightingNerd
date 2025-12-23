@@ -253,9 +253,7 @@ internal class WavuWikiDiscordFeature(
                         embedBuilder = {
                             mandatoryField(
                                 name = charName.replaceFirstChar { it.uppercase() },
-                                value = stanceList
-                                    .joinToString(separator = "") { "* ${it.uppercase()}\n" }
-                                    .truncate(MAX_LENGTH_EMBED),
+                                value = stanceList.joinToString(separator = "") { "* ${it.uppercase()}\n" },
                             )
                             footer {
                                 text = featureInfo.name
@@ -323,8 +321,7 @@ internal class WavuWikiDiscordFeature(
             name = "📝 NOTES",
             value = allNotes
                 .emojify()
-                .joinToString(separator = "") { note -> "* $note\n" }
-                .truncate(MAX_LENGTH_EMBED),
+                .joinToString(separator = "") { note -> "* $note\n" },
             inline = false,
         )
     }
@@ -336,8 +333,7 @@ internal class WavuWikiDiscordFeature(
         mandatoryField(
             name = "$category moves".uppercase(),
             value = moveList
-                .joinToString(separator = "") { move -> "* ${move.input}\n" }
-                .truncate(MAX_LENGTH_EMBED),
+                .joinToString(separator = "") { move -> "* ${move.input}\n" },
             inline = false,
         )
 

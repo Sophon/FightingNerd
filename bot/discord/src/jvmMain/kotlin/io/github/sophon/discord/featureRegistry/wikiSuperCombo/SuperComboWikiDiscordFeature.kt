@@ -359,8 +359,7 @@ internal class SuperComboWikiDiscordFeature(
             name = "📝 NOTES",
             value = move.notes
                 .emojify()
-                .joinToString(separator = "") { note -> "* $note\n" }
-                .truncate(MAX_LENGTH_EMBED),
+                .joinToString(separator = "") { note -> "* $note\n" },
             inline = false,
         )
     }
@@ -400,9 +399,7 @@ internal class SuperComboWikiDiscordFeature(
                 if (properties.superGainOnHit != null || properties.superGainOnBlock != null) {
                     append("* **SUP gain (OH | OB)**: ${properties.superGainOnHit.orDash()} | ${properties.superGainOnBlock.orDash()}")
                 }
-            }
-                .trim()
-                .truncate(MAX_LENGTH_EMBED),
+            }.trim(),
             inline = false,
         )
     }

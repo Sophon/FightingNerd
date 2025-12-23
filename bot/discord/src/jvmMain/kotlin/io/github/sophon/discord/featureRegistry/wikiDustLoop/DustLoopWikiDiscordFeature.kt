@@ -394,8 +394,7 @@ internal class DustLoopWikiDiscordFeature(
     private fun EmbedBuilder.createNotes(move: Move) = optionalField(
         name = "📝 NOTES",
         value = move.notes
-            .joinToString(separator = "") { note -> "* $note\n" }
-            .truncate(MAX_LENGTH_EMBED),
+            .joinToString(separator = "") { note -> "* $note\n" },
         inline = false,
     )
 
@@ -409,7 +408,7 @@ internal class DustLoopWikiDiscordFeature(
                     val aliases = character.aliasList.joinToString(", ")
                     append("- **${character.displayName}** → $aliases\n")
                 }
-        }.truncate(MAX_LENGTH_EMBED)
+        }
 
         mandatoryField(
             name = "🥸 CHARACTER ALIASES",

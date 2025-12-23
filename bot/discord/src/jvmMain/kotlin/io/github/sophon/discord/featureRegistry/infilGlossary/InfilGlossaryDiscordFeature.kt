@@ -84,8 +84,7 @@ internal class InfilGlossaryDiscordFeature(
 
         mandatoryField(
             name = "",
-            value = item.definition
-                .truncate(MAX_LENGTH_EMBED),
+            value = item.definition,
             inline = false
         )
 
