@@ -31,9 +31,7 @@ internal fun String.replaceItalic(): String {
 /**
  * Replaces HTML tags with Markdown.
  *
- * Examples:
- * - `!<'block'>` → `__block__`
- * - `!<'whiff punish','whiff'>` → `__whiff__`
+ * Also reduces: `!<'whiff punish','whiff'>` → `__whiff__`
  *
  * Takes the last comma-separated value if multiple are present.
  */
@@ -41,6 +39,8 @@ internal fun String.toMarkdown(): String {
     var result = this
         .replace("<em>", "*")
         .replace("</em>", "*")
+        .replace("<strong>", "**")
+        .replace("</strong>", "**")
         .replace("<br>", "\n")
 
     // Process !<'...'> patterns
