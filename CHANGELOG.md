@@ -6,6 +6,8 @@
   - displays gifs and images
 - admin - improved formatting
 - made SF embed more compact
+- Wavu
+  - more emojified notes
 
 ## [v2.0.1] - 2025-12-22
 - admin commands now hidden from `help` and the menu

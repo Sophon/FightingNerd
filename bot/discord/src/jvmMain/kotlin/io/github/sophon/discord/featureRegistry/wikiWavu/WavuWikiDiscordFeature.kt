@@ -361,6 +361,9 @@ internal class WavuWikiDiscordFeature(
                     if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
                     if (note.contains("Throw", ignoreCase = true)) append("️🤝 ")
                     if (note.contains("pc", ignoreCase = true)) append("🛡️ ")
+                    if (note.contains("weapon", ignoreCase = true)) append("⚔️ ")
+                    if (note.contains("jail", ignoreCase = true)) append("⛓️ ")
+                    if (note.contains("delay", ignoreCase = true)) append("⏳ ")
                     append(note)
                 }
                 add(emojified)
