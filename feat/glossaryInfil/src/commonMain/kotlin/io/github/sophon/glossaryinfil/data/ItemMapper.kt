@@ -1,5 +1,7 @@
 package io.github.sophon.glossaryinfil.data
 
+import io.github.sophon.core.util.urlEncode
+import io.github.sophon.glossaryinfil.FEATURE_URL
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
 
 internal fun GlossaryItemDto.toDomain(): GlossaryItem {
@@ -8,6 +10,7 @@ internal fun GlossaryItemDto.toDomain(): GlossaryItem {
         definition = def.toMarkdown(),
         altTerm = altterm.orEmpty(),
         video = video ?: listOf(),
+        imageUrl = image.toUrl(term),
         games = games ?: listOf(),
         jpTranslation = jp
             ?.split("<br>")
@@ -76,4 +79,13 @@ internal fun String.toMarkdown(): String {
     }
 
     return result
+}
+
+internal fun List<String>?.toUrl(term: String): String? {
+    if (this == null || size < 2) return null
+
+    val extension = first()
+    val fileName = term.urlEncode()
+
+    return "$FEATURE_URL/images/terms/$fileName.${extension}"
 }
