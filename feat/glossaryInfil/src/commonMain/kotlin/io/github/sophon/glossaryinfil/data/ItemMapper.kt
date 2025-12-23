@@ -9,7 +9,7 @@ internal fun GlossaryItemDto.toDomain(): GlossaryItem {
         term = term,
         definition = def.toMarkdown(),
         altTerm = altterm.orEmpty(),
-        video = video ?: listOf(),
+        videoUrl = video.toVideoUrl(term),
         imageUrl = image.toUrl(term),
         games = games ?: listOf(),
         jpTranslation = jp
@@ -79,6 +79,14 @@ internal fun String.toMarkdown(): String {
     }
 
     return result
+}
+
+internal fun List<String>?.toVideoUrl(term: String): String? {
+    if (this == null || size < 2) return null
+
+    val fileName = term.urlEncode()
+
+    return "$FEATURE_URL/videos/$fileName.mp4"
 }
 
 internal fun List<String>?.toUrl(term: String): String? {

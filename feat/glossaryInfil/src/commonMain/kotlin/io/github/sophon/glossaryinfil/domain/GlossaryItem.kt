@@ -7,7 +7,7 @@ data class GlossaryItem(
     val term: String,
     val definition: String,
     val altTerm: List<String> = listOf(),
-    val video: List<String> = listOf(),
+    val videoUrl: String? = null,
     val imageUrl: String? = null,
     val games: List<String> = listOf(),
     val jpTranslation: List<String> = listOf(),
