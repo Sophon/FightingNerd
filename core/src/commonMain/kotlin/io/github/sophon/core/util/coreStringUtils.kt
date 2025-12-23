@@ -141,3 +141,5 @@ fun String.createAliases(): List<String> {
             }
     }.distinct()
 }
+
+fun String.capitalize(): String = replaceFirstChar { it.uppercase() }

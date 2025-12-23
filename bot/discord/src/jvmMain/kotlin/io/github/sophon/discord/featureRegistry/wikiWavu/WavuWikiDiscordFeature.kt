@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
+import io.github.sophon.core.util.capitalize
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
@@ -198,7 +199,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed("$query power crush", moveList)
+                    embedBuilder = createMoveListEmbed("${query.uppercase()} Power Crush", moveList)
                 )
             }
     }
@@ -214,7 +215,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "$query heat", moveList)
+                    embedBuilder = createMoveListEmbed(category = "${query.uppercase()} Heat", moveList)
                 )
             }
     }
@@ -230,7 +231,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "$query homing", moveList)
+                    embedBuilder = createMoveListEmbed(category = "${query.uppercase()} Homing", moveList)
                 )
             }
     }
@@ -253,7 +254,7 @@ internal class WavuWikiDiscordFeature(
                         embedBuilder = {
                             color = Color(BLUE)
                             mandatoryField(
-                                name = charName.replaceFirstChar { it.uppercase() },
+                                name = "${charName.uppercase()} stances",
                                 value = stanceList.joinToString(separator = "") { "* ${it.uppercase()}\n" },
                             )
                             footer {
@@ -272,7 +273,7 @@ internal class WavuWikiDiscordFeature(
                 }
             ).map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = stance, moveList)
+                    embedBuilder = createMoveListEmbed(category = stance.uppercase(), moveList)
                 )
             }
         }
@@ -338,7 +339,7 @@ internal class WavuWikiDiscordFeature(
         color = Color(BLUE)
 
         mandatoryField(
-            name = "$category moves".uppercase(),
+            name = "$category moves",
             value = moveList
                 .joinToString(separator = "") { move -> "* ${move.input}\n" },
             inline = false,
