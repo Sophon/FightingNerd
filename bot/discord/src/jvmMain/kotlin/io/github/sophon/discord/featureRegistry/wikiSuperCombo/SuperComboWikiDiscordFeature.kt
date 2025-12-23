@@ -141,7 +141,6 @@ internal class SuperComboWikiDiscordFeature(
         }.launchIn(scope)
     }
 
-    //TODO: this should definitely be a usecase
     override suspend fun execute(
         command: Command,
         query: String,
