@@ -1,5 +1,7 @@
 package io.github.sophon.glossaryinfil.data
 
+import io.github.sophon.core.util.urlEncode
+import io.github.sophon.glossaryinfil.FEATURE_URL
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
 
 internal fun GlossaryItemDto.toDomain(): GlossaryItem {
@@ -7,12 +9,16 @@ internal fun GlossaryItemDto.toDomain(): GlossaryItem {
         term = term,
         definition = def.toMarkdown(),
         altTerm = altterm.orEmpty(),
-        video = video ?: listOf(),
         games = games ?: listOf(),
         jpTranslation = jp
             ?.split("<br>")
             ?.map { it.replaceItalic().toMarkdown() }
-            ?: listOf()
+            ?: listOf(),
+        url = GlossaryItem.Url(
+            term = term.toUrl(),
+            video = video.toVideoUrl(term),
+            image = image.toImageUrl(term),
+        )
     )
 }
 
@@ -25,9 +31,7 @@ internal fun String.replaceItalic(): String {
 /**
  * Replaces HTML tags with Markdown.
  *
- * Examples:
- * - `!<'block'>` → `__block__`
- * - `!<'whiff punish','whiff'>` → `__whiff__`
+ * Also reduces: `!<'whiff punish','whiff'>` → `__whiff__`
  *
  * Takes the last comma-separated value if multiple are present.
  */
@@ -35,6 +39,8 @@ internal fun String.toMarkdown(): String {
     var result = this
         .replace("<em>", "*")
         .replace("</em>", "*")
+        .replace("<strong>", "**")
+        .replace("</strong>", "**")
         .replace("<br>", "\n")
 
     // Process !<'...'> patterns
@@ -76,4 +82,26 @@ internal fun String.toMarkdown(): String {
     }
 
     return result
+}
+
+internal fun String.toUrl(): String {
+    val formattedTerm = this.urlEncode()
+    return "https://glossary.infil.net/?t=$formattedTerm"
+}
+
+internal fun List<String>?.toVideoUrl(term: String): String? {
+    if (this == null || size < 2) return null
+
+    val fileName = term.urlEncode()
+
+    return "$FEATURE_URL/videos/$fileName.mp4"
+}
+
+internal fun List<String>?.toImageUrl(term: String): String? {
+    if (this == null || size < 2) return null
+
+    val extension = first()
+    val fileName = term.urlEncode()
+
+    return "$FEATURE_URL/images/terms/$fileName.${extension}"
 }

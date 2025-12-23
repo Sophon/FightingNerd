@@ -2,9 +2,11 @@ package io.github.sophon.glossaryinfil.data
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.github.sophon.glossaryinfil.domain.GlossaryItem
 import kotlin.test.Test
 
 class ItemMapperTest {
+    //region toMarkdown
     @Test
     fun `toMarkdown handles html`() {
         //given
@@ -72,6 +74,62 @@ class ItemMapperTest {
 
         //when
         val result = string.toMarkdown()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region URL
+    @Test
+    fun `toUrl handles basic term url`() {
+        // given
+        val string = "Fireball"
+        val expected = "https://glossary.infil.net/?t=Fireball"
+
+        // when
+        val result = string.toUrl()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toUrl handles spaces`() {
+        // given
+        val string = "White Girl Sweep"
+        val expected = "https://glossary.infil.net/?t=White%20Girl%20Sweep"
+
+        // when
+        val result = string.toUrl()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    @Test
+    fun `toDomain handles image`() {
+        // given
+        val term = GlossaryItemDto(
+            term = "White Girl Sweep",
+            def = "",
+            image = listOf(
+                "jpg",
+                "descriptionWhite Girl Sweeps from Karin (Street Fighter V), Lili (Tekken 8), Wagner (Under Night In-Birth II), and Powered Ciel (Melty Blood: Type Lumina)."
+            ),
+        )
+        val expected = GlossaryItem(
+            term = "White Girl Sweep",
+            definition = "",
+            url = GlossaryItem.Url(
+                term = "https://glossary.infil.net/?t=White%20Girl%20Sweep",
+                image = "https://glossary.infil.net/images/terms/White%20Girl%20Sweep.jpg"
+            )
+        )
+
+        // when
+        val result = term.toDomain()
 
         //then
         assertThat(result).isEqualTo(expected)

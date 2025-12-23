@@ -1,18 +1,17 @@
 package io.github.sophon.glossaryinfil.usecase
 
-import io.github.sophon.core.domain.Result
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.domain.Result
 import io.github.sophon.glossaryinfil.GlossaryError
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
-import io.github.sophon.glossaryinfil.usecase.CacheGlossaryUseCase
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlinx.coroutines.test.runTest
 
 class CacheGlossaryUseCaseTest {
 
@@ -32,7 +31,8 @@ class CacheGlossaryUseCaseTest {
             GlossaryItem(
                 term = "Fireball",
                 definition = "A projectile attack",
-                altTerm = emptyList()
+                altTerm = emptyList(),
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Fireball")
             )
         )
 
@@ -49,9 +49,21 @@ class CacheGlossaryUseCaseTest {
     fun `successfully caches multiple items without alt terms`() = runTest {
         // Given
         val items = listOf(
-            GlossaryItem(term = "Fireball", definition = "A projectile"),
-            GlossaryItem(term = "Dragon Punch", definition = "An anti-air"),
-            GlossaryItem(term = "Combo", definition = "A sequence of attacks")
+            GlossaryItem(
+                term = "Fireball",
+                definition = "A projectile",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Fireball")
+            ),
+            GlossaryItem(
+                term = "Dragon Punch",
+                definition = "An anti-air",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Dragon%20Punch"),
+            ),
+            GlossaryItem(
+                term = "Combo",
+                definition = "A sequence of attacks",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Combo")
+            )
         )
 
         // When
@@ -71,7 +83,8 @@ class CacheGlossaryUseCaseTest {
         val item = GlossaryItem(
             term = "Throw",
             definition = "An unblockable close-range attack",
-            altTerm = listOf("Grab")
+            altTerm = listOf("Grab"),
+            url = GlossaryItem.Url("https://glossary.infil.net/?t=Throw")
         )
 
         // When
@@ -90,7 +103,8 @@ class CacheGlossaryUseCaseTest {
         val item = GlossaryItem(
             term = "Super",
             definition = "A powerful special move",
-            altTerm = listOf("Super Move", "Super Combo", "Ultimate")
+            altTerm = listOf("Super Move", "Super Combo", "Ultimate"),
+            url = GlossaryItem.Url("https://glossary.infil.net/?t=Super")
         )
 
         // When
@@ -112,12 +126,14 @@ class CacheGlossaryUseCaseTest {
             GlossaryItem(
                 term = "Throw",
                 definition = "Unblockable attack",
-                altTerm = listOf("Grab")
+                altTerm = listOf("Grab"),
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Throw"),
             ),
             GlossaryItem(
                 term = "Block",
                 definition = "Defending",
-                altTerm = listOf("Guard", "Blocking")
+                altTerm = listOf("Guard", "Blocking"),
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Block"),
             )
         )
 
@@ -151,7 +167,11 @@ class CacheGlossaryUseCaseTest {
     fun `propagates error from database on main term insertion`() = runTest {
         // Given
         val items = listOf(
-            GlossaryItem(term = "Fireball", definition = "A projectile")
+            GlossaryItem(
+                term = "Fireball",
+                definition = "A projectile",
+                url = GlossaryItem.Url("https://glossary.infil.net/?t=Fireball"),
+            )
         )
         db.shouldFailOnInsert = true
         db.errorToReturn = GlossaryError.ERROR_DOWNLOADING_DATA
@@ -170,7 +190,8 @@ class CacheGlossaryUseCaseTest {
         val item = GlossaryItem(
             term = "Throw",
             definition = "Unblockable attack",
-            altTerm = listOf("Grab")
+            altTerm = listOf("Grab"),
+            url = GlossaryItem.Url("https://glossary.infil.net/?t=Throw"),
         )
         db.shouldFailOnInsert = true
         db.errorToReturn = GlossaryError.ERROR_DOWNLOADING_DATA
@@ -189,7 +210,8 @@ class CacheGlossaryUseCaseTest {
         val item = GlossaryItem(
             term = "Anti-Air",
             definition = "Hitting jumping opponents",
-            altTerm = listOf("AA", "Anti Air")
+            altTerm = listOf("AA", "Anti Air"),
+            url = GlossaryItem.Url("https://glossary.infil.net/?t=Anti-Air"),
         )
 
         // When
