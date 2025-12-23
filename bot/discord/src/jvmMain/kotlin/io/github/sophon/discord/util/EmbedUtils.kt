@@ -3,7 +3,9 @@ package io.github.sophon.discord.util
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.MAX_LENGTH_EMBED
 
 
 //TODO: we should truncate max length here
@@ -14,7 +16,9 @@ internal fun EmbedBuilder.mandatoryField(
 ) {
     field {
         this.name = name
-        this.value = value.orDash()
+        this.value = value
+            .orDash()
+            .truncate(MAX_LENGTH_EMBED)
         this.inline = inline
     }
 }
@@ -27,7 +31,7 @@ internal fun EmbedBuilder.optionalField(
     if (value.isNullOrBlank().not()) {
         field {
             this.name = name
-            this.value = value
+            this.value = value.truncate(MAX_LENGTH_EMBED)
             this.inline = inline
         }
     }
@@ -48,14 +52,14 @@ internal fun EmbedBuilder.optionalField(
 
     field {
         this.name = name
-        this.value = joinedValues
+        this.value = joinedValues.truncate(MAX_LENGTH_EMBED)
         this.inline = inline
     }
 }
 
 internal fun createErrorEmbed(error: BotError): EmbedBuilder.() -> Unit = {
     title = "Error"
-    description = error.toString()
+    description = error.toString().truncate(MAX_LENGTH_EMBED)
     color = Color(RED)
 }
 

@@ -159,7 +159,7 @@ internal class AdminDiscordFeature(
 
             mandatoryField(
                 name = "${source.username} from ${source.serverName}",
-                value = message?.truncate(MAX_LENGTH_EMBED),
+                value = message,
                 inline = false,
             )
         }
@@ -172,7 +172,7 @@ internal class AdminDiscordFeature(
 
             mandatoryField(
                 name = "",
-                value = message?.truncate(MAX_LENGTH_EMBED),
+                value = message,
                 inline = false,
             )
         }
