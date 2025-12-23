@@ -1,13 +1,14 @@
 # BOT CHANGELOG
 
-## [v2.0.2] - 2025-12-22
+## [v2.1.0] - TODO
 - Infil v1.0.2
   - fixed more formatting bugs
   - displays gifs and images
 - admin - improved formatting
-- made SF embed more compact
+- SuperCombo - made embed more compact
 - Wavu
   - more emojified notes
+  - improved formatting for move-list based embeds
 
 ## [v2.0.1] - 2025-12-22
 - admin commands now hidden from `help` and the menu
