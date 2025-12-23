@@ -10,9 +10,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.toFormattedString
-import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
