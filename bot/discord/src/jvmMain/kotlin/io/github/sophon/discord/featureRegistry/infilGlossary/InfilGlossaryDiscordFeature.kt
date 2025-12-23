@@ -16,16 +16,13 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFe
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
-import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 
 internal class InfilGlossaryDiscordFeature(
     getInfilFeatureInfoUseCase: GetInfilFeatureInfoUseCase,
     private val startGlossaryUseCase: StartGlossaryUseCase,
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
-    private val urlProvider: InfilUrlProvider,
 ): DiscordRegisteredFeature {
     override val featureInfo = getInfilFeatureInfoUseCase.invoke()
     override val defaultCommand = SupportedCommand(
@@ -63,10 +60,10 @@ internal class InfilGlossaryDiscordFeature(
     ): Result<BotOutput, BotError> {
         return searchGlossaryUseCase.invoke(query)
             .map { item ->
-                val image = item.imageUrl?.let { url ->
+                val image = item.url.image?.let { url ->
                     BotOutput.Images(
                         title = item.term,
-                        titleUrl = urlProvider.termUrl(item),
+                        titleUrl = item.url.term,
                         urls = listOf(url)
                     )
                 }
@@ -82,7 +79,7 @@ internal class InfilGlossaryDiscordFeature(
         item: GlossaryItem
     ): EmbedBuilder.() -> Unit = {
         title = item.term
-        url = urlProvider.termUrl(item)
+        url = item.url.term
         color = Color(BROWN)
 
         mandatoryField(
@@ -96,7 +93,9 @@ internal class InfilGlossaryDiscordFeature(
             .joinToString(separator = "") { "* $it\n" }
         mandatoryField(name = "🇯🇵", value = japaneseValueString, inline = false)
 
-        optionalField(name = "Video", value = "[Link](${url})")
+        item.url.video?.let { url ->
+            mandatoryField(name = "Video", value = "[Link]($url)")
+        }
 
         footer {
             text = featureInfo.name
