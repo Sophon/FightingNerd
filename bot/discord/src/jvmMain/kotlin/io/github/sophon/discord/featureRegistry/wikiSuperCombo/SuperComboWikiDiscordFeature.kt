@@ -309,6 +309,8 @@ internal class SuperComboWikiDiscordFeature(
         sf6Fields(move)
         mk1Fields(move)
 
+        mandatoryField(name = "", value = "", inline = false)
+
         createDetails(move)
         createNotes(move)
 
@@ -360,7 +362,6 @@ internal class SuperComboWikiDiscordFeature(
             value = move.notes
                 .emojify()
                 .joinToString(separator = "") { note -> "* $note\n" },
-            inline = false,
         )
     }
 
@@ -400,7 +401,7 @@ internal class SuperComboWikiDiscordFeature(
                     append("* **SUP gain (OH | OB)**: ${properties.superGainOnHit.orDash()} | ${properties.superGainOnBlock.orDash()}")
                 }
             }.trim(),
-            inline = false,
+            inline = true,
         )
     }
 
