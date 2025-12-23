@@ -62,7 +62,20 @@ internal class InfilGlossaryDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return searchGlossaryUseCase.invoke(query)
-            .map { BotOutput(embedBuilder = createEmbed(it)) }
+            .map { item ->
+                val image = item.imageUrl?.let { url ->
+                    BotOutput.Images(
+                        title = item.term,
+                        titleUrl = urlProvider.termUrl(item),
+                        urls = listOf(url)
+                    )
+                }
+
+                BotOutput(
+                    embedBuilder = createEmbed(item),
+                    images = image,
+                )
+            }
     }
 
     private fun createEmbed(
