@@ -251,6 +251,7 @@ internal class WavuWikiDiscordFeature(
                 .map { stanceList ->
                     BotOutput(
                         embedBuilder = {
+                            color = Color(BLUE)
                             mandatoryField(
                                 name = charName.replaceFirstChar { it.uppercase() },
                                 value = stanceList.joinToString(separator = "") { "* ${it.uppercase()}\n" },
@@ -285,7 +286,7 @@ internal class WavuWikiDiscordFeature(
         } else {
             "**${move.charName}**: ${move.name.orEmpty()}"
         }
-        color = Color(GREEN)
+        color = Color(BLUE)
 
         move.urls.characterImage?.let { thumbnail { url = it } }
 
@@ -334,6 +335,8 @@ internal class WavuWikiDiscordFeature(
         category: String,
         moveList: List<Move>
     ): EmbedBuilder.() -> Unit = {
+        color = Color(BLUE)
+
         mandatoryField(
             name = "$category moves".uppercase(),
             value = moveList
@@ -377,6 +380,6 @@ internal class WavuWikiDiscordFeature(
         private const val KEY_CHAR_NAME = "character"
         private const val KEY_MOVE = "move"
         private const val KEY_STANCE = "stance"
-        private const val GREEN = 0x00FF00
+        private const val BLUE = 0x00095FB
     }
 }
