@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v2.1.0] - TODO
+## [v2.0.2] - 2025-12-24
 - Infil v1.0.2
   - fixed more formatting bugs
   - displays gifs and images
