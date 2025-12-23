@@ -144,7 +144,6 @@ internal class DustLoopWikiDiscordFeature(
         }.launchIn(scope)
     }
 
-    //TODO: extract to usecase
     override suspend fun execute(
         command: Command,
         query: String,
