@@ -57,20 +57,7 @@ internal class InfilGlossaryDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return searchGlossaryUseCase.invoke(query)
-            .map { item ->
-                val image = item.url.image?.let { url ->
-                    BotOutput.Images(
-                        title = item.term,
-                        titleUrl = item.url.term,
-                        urls = listOf(url)
-                    )
-                }
-
-                BotOutput(
-                    embedBuilder = createEmbed(item),
-                    images = image,
-                )
-            }
+            .map { BotOutput(embedBuilder = createEmbed(it)) }
     }
 
     private fun createEmbed(
@@ -79,6 +66,8 @@ internal class InfilGlossaryDiscordFeature(
         title = item.term
         url = item.url.term
         color = Color(BROWN)
+
+        item.url.image?.let { image = it }
 
         mandatoryField(
             name = "",
