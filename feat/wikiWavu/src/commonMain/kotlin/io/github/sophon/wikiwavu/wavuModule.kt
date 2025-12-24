@@ -1,9 +1,7 @@
 package io.github.sophon.wikiwavu
 
-import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.asEmptyDataResult
-import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
@@ -24,7 +22,6 @@ import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
 import io.github.sophon.wikiwavu.data.toDomain
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
-import io.github.sophon.wikiwavu.domain.WavuUrlProvider
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -36,7 +33,6 @@ fun wavuModule() = module {
     singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
     singleOf(::WavuWikiClient).bind<WikiClient>()
     single { WavuFeatureInfo }
-    single { WavuUrlProvider }
 
     factory {
 
