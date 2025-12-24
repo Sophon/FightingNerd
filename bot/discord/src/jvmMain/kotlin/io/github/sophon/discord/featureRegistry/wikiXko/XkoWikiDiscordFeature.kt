@@ -148,6 +148,11 @@ internal class XkoWikiDiscordFeature(
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = "${move.charName}: ${move.input}"
+        description = if (move.name.isNullOrBlank()) {
+            "**${move.charName}**"
+        } else {
+            "**${move.charName}**: ${move.name.orEmpty()}"
+        }
 
         val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
             ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }

@@ -9,11 +9,9 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
-import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.domain.BotOutput
@@ -64,7 +62,7 @@ internal class WavuWikiDiscordFeature(
     override val otherCommands: List<SupportedCommand> = listOf(
         SupportedCommand(
             command = Command.FDTK,
-            description = "Tekken 8 frame data",
+            description = "Tekken frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -78,7 +76,7 @@ internal class WavuWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.PC,
-            description = "Tekken 8 Power Crush moves",
+            description = "Tekken POWER CRUSH moves",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -88,7 +86,7 @@ internal class WavuWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.HEAT,
-            description = "Tekken 8 Power Crush moves",
+            description = "Tekken HEAT moves",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -98,7 +96,7 @@ internal class WavuWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.HOMING,
-            description = "Tekken 8 homing moves",
+            description = "Tekken HOMING moves",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -108,7 +106,7 @@ internal class WavuWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.STANCE,
-            description = "Tekken 8 stance moves",
+            description = "Tekken STANCE moves",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -198,7 +196,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed("$query power crush", moveList)
+                    embedBuilder = createMoveListEmbed("${query.uppercase()} Power Crush", moveList)
                 )
             }
     }
@@ -214,7 +212,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "$query heat", moveList)
+                    embedBuilder = createMoveListEmbed(category = "${query.uppercase()} Heat", moveList)
                 )
             }
     }
@@ -230,7 +228,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "$query homing", moveList)
+                    embedBuilder = createMoveListEmbed(category = "${query.uppercase()} Homing", moveList)
                 )
             }
     }
@@ -251,8 +249,9 @@ internal class WavuWikiDiscordFeature(
                 .map { stanceList ->
                     BotOutput(
                         embedBuilder = {
+                            color = Color(BLUE)
                             mandatoryField(
-                                name = charName.replaceFirstChar { it.uppercase() },
+                                name = "${charName.uppercase()} stances",
                                 value = stanceList.joinToString(separator = "") { "* ${it.uppercase()}\n" },
                             )
                             footer {
@@ -271,7 +270,7 @@ internal class WavuWikiDiscordFeature(
                 }
             ).map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = stance, moveList)
+                    embedBuilder = createMoveListEmbed(category = stance.uppercase(), moveList)
                 )
             }
         }
@@ -280,10 +279,14 @@ internal class WavuWikiDiscordFeature(
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = move.input
         url = move.urls.wikiUrl
-        move.urls.characterImage?.let { thumbnail { url = it } }
+        description = if (move.name.isNullOrBlank()) {
+            "**${move.charName}**"
+        } else {
+            "**${move.charName}**: ${move.name.orEmpty()}"
+        }
+        color = Color(BLUE)
 
-        description = "**${move.charName}**: ${move.name.orEmpty()}"
-        color = Color(GREEN)
+        move.urls.characterImage?.let { thumbnail { url = it } }
 
         mandatoryField(name = "Startup", value = move.startup)
         mandatoryField(name = "Hit", value = move.onHit)
@@ -330,8 +333,10 @@ internal class WavuWikiDiscordFeature(
         category: String,
         moveList: List<Move>
     ): EmbedBuilder.() -> Unit = {
+        color = Color(BLUE)
+
         mandatoryField(
-            name = "$category moves".uppercase(),
+            name = "$category moves",
             value = moveList
                 .joinToString(separator = "") { move -> "* ${move.input}\n" },
             inline = false,
@@ -357,6 +362,9 @@ internal class WavuWikiDiscordFeature(
                     if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
                     if (note.contains("Throw", ignoreCase = true)) append("️🤝 ")
                     if (note.contains("pc", ignoreCase = true)) append("🛡️ ")
+                    if (note.contains("weapon", ignoreCase = true)) append("⚔️ ")
+                    if (note.contains("jail", ignoreCase = true)) append("⛓️ ")
+                    if (note.contains("delay", ignoreCase = true)) append("⏳ ")
                     append(note)
                 }
                 add(emojified)
@@ -370,6 +378,6 @@ internal class WavuWikiDiscordFeature(
         private const val KEY_CHAR_NAME = "character"
         private const val KEY_MOVE = "move"
         private const val KEY_STANCE = "stance"
-        private const val GREEN = 0x00FF00
+        private const val BLUE = 0x00095FB
     }
 }

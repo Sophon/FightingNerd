@@ -7,8 +7,6 @@ import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
 
-
-//TODO: we should truncate max length here
 internal fun EmbedBuilder.mandatoryField(
     name: String,
     value: String?,
@@ -58,7 +56,7 @@ internal fun EmbedBuilder.optionalField(
 }
 
 internal fun createErrorEmbed(error: BotError): EmbedBuilder.() -> Unit = {
-    title = "Error"
+    title = "ERROR"
     description = error.toString().truncate(MAX_LENGTH_EMBED)
     color = Color(RED)
 }
@@ -71,4 +69,4 @@ internal fun EmbedBuilder.separator() {
     }
 }
 
-private const val RED = 0xEE4B2B
+private const val RED = 0x00FF0000

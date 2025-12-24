@@ -11,13 +11,11 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.util.getLevel
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.domain.BotOutput
@@ -146,7 +144,6 @@ internal class DustLoopWikiDiscordFeature(
         }.launchIn(scope)
     }
 
-    //TODO: extract to usecase
     override suspend fun execute(
         command: Command,
         query: String,
@@ -338,7 +335,11 @@ internal class DustLoopWikiDiscordFeature(
     ): EmbedBuilder.() -> Unit = {
         title = move.input
         url = move.urls.wikiUrl
-        description = "**${move.charName}**: ${move.name.orEmpty()}"
+        description = if (move.name.isNullOrBlank()) {
+            "**${move.charName}**"
+        } else {
+            "**${move.charName}**: ${move.name.orEmpty()}"
+        }
         color = Color(RED)
         move.urls.characterImage?.let { thumbnail { url = it } }
 
