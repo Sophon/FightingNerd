@@ -10,12 +10,10 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.domain.BotOutput
@@ -141,7 +139,6 @@ internal class SuperComboWikiDiscordFeature(
         }.launchIn(scope)
     }
 
-    //TODO: this should definitely be a usecase
     override suspend fun execute(
         command: Command,
         query: String,
@@ -228,7 +225,7 @@ internal class SuperComboWikiDiscordFeature(
     ): EmbedBuilder.() -> Unit = {
         title = character.displayName
         url = character.wikiUrl
-        color = Color(ORANGE)
+        color = Color(WHITE)
 
         character.images?.iconUrl?.let { iconUrl ->
             thumbnail { url = iconUrl }
@@ -284,8 +281,12 @@ internal class SuperComboWikiDiscordFeature(
     ): EmbedBuilder.() -> Unit = {
         title = move.input
         url = move.urls.wikiUrl
-        description = "**${move.charName}**: ${move.name.orEmpty()}"
-        color = Color(ORANGE)
+        description = if (move.name.isNullOrBlank()) {
+            "**${move.charName}**"
+        } else {
+            "**${move.charName}**: ${move.name.orEmpty()}"
+        }
+        color = Color(WHITE)
         move.urls.characterImage?.let { thumbnail { url = it } }
 
         val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
@@ -308,6 +309,8 @@ internal class SuperComboWikiDiscordFeature(
 
         sf6Fields(move)
         mk1Fields(move)
+
+        mandatoryField(name = "", value = "", inline = false)
 
         createDetails(move)
         createNotes(move)
@@ -359,9 +362,7 @@ internal class SuperComboWikiDiscordFeature(
             name = "📝 NOTES",
             value = move.notes
                 .emojify()
-                .joinToString(separator = "") { note -> "* $note\n" }
-                .truncate(MAX_LENGTH_EMBED),
-            inline = false,
+                .joinToString(separator = "") { note -> "* $note\n" },
         )
     }
 
@@ -400,10 +401,8 @@ internal class SuperComboWikiDiscordFeature(
                 if (properties.superGainOnHit != null || properties.superGainOnBlock != null) {
                     append("* **SUP gain (OH | OB)**: ${properties.superGainOnHit.orDash()} | ${properties.superGainOnBlock.orDash()}")
                 }
-            }
-                .trim()
-                .truncate(MAX_LENGTH_EMBED),
-            inline = false,
+            }.trim(),
+            inline = true,
         )
     }
 
@@ -429,6 +428,6 @@ internal class SuperComboWikiDiscordFeature(
         const val TAG = "SuperComboWikiDiscordFeature"
         const val KEY_CHAR_NAME = "character"
         const val KEY_MOVE = "move"
-        const val ORANGE = 0x00FF6A01
+        const val WHITE = 0x00FFFFFF
     }
 }

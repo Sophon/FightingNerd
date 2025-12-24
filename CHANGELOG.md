@@ -1,5 +1,17 @@
 # BOT CHANGELOG
 
+## [v2.0.2] - 2025-12-24
+- Infil v1.0.2
+  - fixed more formatting bugs
+  - displays gifs and images
+- admin - improved formatting
+- SuperCombo - made embed more compact
+- Wavu
+  - more emojified notes
+  - improved formatting for move-list based embeds
+  - fixed command descriptions
+- all queries have embeds with colors corresponding to their Wiki
+
 ## [v2.0.1] - 2025-12-22
 - admin commands now hidden from `help` and the menu
 - added missing footer to move-list based commands

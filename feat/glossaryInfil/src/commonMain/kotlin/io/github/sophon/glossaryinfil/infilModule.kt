@@ -3,7 +3,6 @@ package io.github.sophon.glossaryinfil
 import io.github.sophon.core.coreModule
 import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSource
 import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSourceImpl
-import io.github.sophon.glossaryinfil.domain.InfilUrlProvider
 import io.github.sophon.glossaryinfil.usecase.CacheGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.FetchDataForTermUseCase
@@ -32,6 +31,4 @@ val infilModule = module {
     singleOf(::CacheGlossaryUseCase)
     singleOf(::FetchDataForTermUseCase)
     singleOf(::GetFeatureInfoUseCase)
-
-    singleOf(::InfilUrlProvider)
 }

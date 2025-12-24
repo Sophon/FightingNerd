@@ -9,9 +9,8 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.util.truncate
+import io.github.sophon.core.util.toFormattedString
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
@@ -30,7 +29,9 @@ import io.github.sophon.domain.model.Ban
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 internal class AdminDiscordFeature(
     adminFeatureInfo: AdminFeatureInfo,
     private val adminConfig: Config.AdminConfig,
@@ -155,8 +156,8 @@ internal class AdminDiscordFeature(
             color = Color(TURQUOISE)
 
             mandatoryField(
-                name = "",
-                value = message?.truncate(MAX_LENGTH_EMBED),
+                name = "${source.username} from ${source.serverName}",
+                value = message,
                 inline = false,
             )
         }
@@ -169,7 +170,7 @@ internal class AdminDiscordFeature(
 
             mandatoryField(
                 name = "",
-                value = message?.truncate(MAX_LENGTH_EMBED),
+                value = message,
                 inline = false,
             )
         }
@@ -177,17 +178,17 @@ internal class AdminDiscordFeature(
 
     private fun createBanStatusEmbed(ban: Ban? = null): EmbedBuilder.() -> Unit = {
         if (ban == null) {
-            title = "Freed! 🕊🕊🕊"
+            title = "Free like a bird! 🕊🕊🕊"
             mandatoryField(
-                name = "",
-                value = "User got unbanned.",
+                name = "Ban status",
+                value = "UNBANNED",
                 inline = false,
             )
         } else {
             title = "Chat shit, get banged! 🔥🔥🔥"
             mandatoryField(
-                name = "",
-                value = "🔨 BAN  🔨 → start: ${ban.bannedAt}; end: ${ban.expiresAt}",
+                name = "Ban status",
+                value = "BANNED 🔨: ${ban.bannedAt.toFormattedString()} → ${ban.expiresAt.toFormattedString()}",
                 inline = false,
             )
         }
