@@ -113,7 +113,7 @@ internal class DustLoopWikiDiscordFeature(
             ),
         ),
         SupportedCommand(
-            command = Command.ALIAS,
+            command = Command.ALIASDB,
             description = "Character aliases",
         ),
     )
@@ -190,10 +190,10 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
-            Command.ALIAS -> {
+            Command.ALIASDB -> {
                 val wiki = wikis[Game.DBFZ.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                createAliases(wiki)
+                getCharacterAliases(wiki)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -239,7 +239,7 @@ internal class DustLoopWikiDiscordFeature(
             }
     }
 
-    private suspend fun createAliases(wiki: WikiClient): Result<BotOutput, BotError> {
+    private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
         return getCharactersUseCase.invoke(wiki)
             .map { characterList ->
                 BotOutput(
