@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v2.1.1] - 2025-12-31
+- Wavu v1.0.8 - added TekkenDocs mention
+
 ## [v2.1.0] - 2025-12-31
 - `aliasdb` and `aliastk` commands
 - Discord bot - updated the status
