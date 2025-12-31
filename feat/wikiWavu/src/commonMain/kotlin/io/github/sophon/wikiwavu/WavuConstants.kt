@@ -6,6 +6,6 @@ internal const val VIDEO_URL = "https://wavu.wiki/t/Special:Redirect/file/"
 internal const val MOVE_URL = "https://wavu.wiki/t"
 internal const val CHAR_LIST_URL = "https://tekkendocs.com/api/t8/characters"
 
-internal const val FEATURE_NAME = "Wavu Wiki"
+internal const val FEATURE_NAME = "Wavu Wiki + TekkenDocs"
 internal const val FEATURE_URL = "https://wavu.wiki/"
 internal const val FEATURE_IMG_URL = "https://i.imgur.com/0cnTzNk.png"
