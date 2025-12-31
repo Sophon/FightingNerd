@@ -19,6 +19,7 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.GetStancesUseCase
@@ -41,6 +42,7 @@ internal class WavuWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val getMovesUseCase: GetMovesUseCase,
     private val getStancesUseCase: GetStancesUseCase,
+    private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -118,7 +120,11 @@ internal class WavuWikiDiscordFeature(
                     isRequired = false,
                 ),
             )
-        )
+        ),
+        SupportedCommand(
+            command = Command.ALIASTK,
+            description = "Tekken character aliases",
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -165,6 +171,7 @@ internal class WavuWikiDiscordFeature(
             Command.HEAT -> searchHeatMoves(wiki, query)
             Command.HOMING -> searchHomingMoves(wiki, query)
             Command.STANCE -> searchStanceMoves(wiki, query)
+            Command.ALIASTK -> getCharacterAliases(wiki)
             else -> {
                 val error = BotError.BotLogicError(command.name, query)
                 Result.Error(error)
@@ -274,6 +281,13 @@ internal class WavuWikiDiscordFeature(
                 )
             }
         }
+    }
+
+    private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
+        return createCharacterAliasesEmbedUseCase.invoke(wiki)
+            .map { embedBuilder ->
+                BotOutput(embedBuilder = embedBuilder)
+            }
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {

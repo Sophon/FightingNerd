@@ -23,6 +23,7 @@ import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDis
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiXko.XkoWikiDiscordFeature
+import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetCharactersUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
@@ -55,6 +56,7 @@ internal val featureRegistryModule = module {
     singleOf(::GetMovesUseCase)
     singleOf(::GetStancesUseCase)
     singleOf(::GetCharactersUseCase)
+    singleOf(::CreateCharacterAliasesEmbedUseCase)
 
     singleOf(::Scheduler)
     //endregion

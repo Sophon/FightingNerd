@@ -85,7 +85,7 @@ internal class DiscordBotImpl(
             intents += Intent.MessageContent
 
             presence {
-                playing("/FD | /HELP | /DONATE")
+                playing("/FD | /HELP | /FEEDBACK")
             }
         }
     }

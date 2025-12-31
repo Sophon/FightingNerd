@@ -12,10 +12,12 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
+import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 internal suspend fun MessageCreateEvent.createEmbedMessage(
     embedBuilder: EmbedBuilder.() -> Unit,
@@ -75,7 +77,7 @@ internal suspend fun MessageCreateEvent.createEmbedMessage(
     }
 
     return message.channel.createMessage {
-        content = "Feedback sent successfully!"
+        content = createResponseMessage()
     }
 }
 
@@ -106,7 +108,7 @@ internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResp
     }
 
     return interaction.respondPublic {
-        content = "Feedback sent successfully!"
+        content = createResponseMessage()
     }
 }
 
@@ -148,4 +150,15 @@ internal suspend fun GuildChatInputCommandInteractionCreateEvent.deleteInteracti
     scope: CoroutineScope
 ) {
     interaction.getOriginalInteractionResponse().delete(delay, scope)
+}
+
+private fun createResponseMessage(donoChancePct: Int = 20): String {
+    require(donoChancePct in 0..100) { "Percentage must be between 0 and 100" }
+
+    return if (Random.nextInt(until = 100) < donoChancePct) {
+        "Feedback sent successfully!\n" +
+                "Consider donating (`/donate` or `/tip`): **<$URL_KOFI>**"
+    } else {
+        "Feedback sent successfully!"
+    }
 }
