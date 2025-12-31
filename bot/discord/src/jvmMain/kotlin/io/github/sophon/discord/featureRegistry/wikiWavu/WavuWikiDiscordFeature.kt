@@ -10,6 +10,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.data.InMemoryCharacterListDB
@@ -19,6 +20,7 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.usecase.GetCharactersUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.GetStancesUseCase
@@ -41,6 +43,7 @@ internal class WavuWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val getMovesUseCase: GetMovesUseCase,
     private val getStancesUseCase: GetStancesUseCase,
+    private val getCharactersUseCase: GetCharactersUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -118,7 +121,11 @@ internal class WavuWikiDiscordFeature(
                     isRequired = false,
                 ),
             )
-        )
+        ),
+        SupportedCommand(
+            command = Command.ALIASTK,
+            description = "Tekken character aliases",
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -165,6 +172,7 @@ internal class WavuWikiDiscordFeature(
             Command.HEAT -> searchHeatMoves(wiki, query)
             Command.HOMING -> searchHomingMoves(wiki, query)
             Command.STANCE -> searchStanceMoves(wiki, query)
+            Command.ALIASTK -> getCharacterAliases(wiki)
             else -> {
                 val error = BotError.BotLogicError(command.name, query)
                 Result.Error(error)
@@ -276,6 +284,15 @@ internal class WavuWikiDiscordFeature(
         }
     }
 
+    private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
+        return getCharactersUseCase.invoke(wiki)
+            .map { characterList ->
+                BotOutput(
+                    embedBuilder = createAliasesEmbed(characterList)
+                )
+            }
+    }
+
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
         title = move.input
         url = move.urls.wikiUrl
@@ -346,6 +363,24 @@ internal class WavuWikiDiscordFeature(
             text = featureInfo.name
             icon = featureInfo.iconUrl
         }
+    }
+
+    private fun createAliasesEmbed(
+        characterList: List<Character>,
+    ): EmbedBuilder.() -> Unit = {
+        val string = buildString {
+            characterList
+                .filter { it.aliasList.isNotEmpty() }
+                .forEach { character ->
+                    val aliases = character.aliasList.joinToString(", ")
+                    append("- **${character.displayName}** → $aliases\n")
+                }
+        }
+
+        mandatoryField(
+            name = "🥸 CHARACTER ALIASES",
+            value = string,
+        )
     }
 
     private fun List<String>.emojify(): List<String> {
