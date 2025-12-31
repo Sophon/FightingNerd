@@ -30,6 +30,7 @@ enum class Command {
     HEAT,
     HOMING,
     STANCE,
+    ALIASTK,
 
     //supercombo wiki
     FDSF,
@@ -51,5 +52,5 @@ enum class Command {
     FDGG,
     FDDB,
     FDGB,
-    ALIAS,
+    ALIASDB,
 }

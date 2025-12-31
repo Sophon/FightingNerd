@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v2.1.0] - 2025-12-31
+- `aliasdb` and `aliastk` commands
+
 ## [v2.0.3] - 2025-12-24
 - fixed infil glossary image layout
 

@@ -23,8 +23,8 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
-import io.github.sophon.discord.usecase.GetCharactersUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
@@ -44,7 +44,7 @@ internal class DustLoopWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-    private val getCharactersUseCase: GetCharactersUseCase,
+    private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -113,7 +113,7 @@ internal class DustLoopWikiDiscordFeature(
             ),
         ),
         SupportedCommand(
-            command = Command.ALIAS,
+            command = Command.ALIASDB,
             description = "Character aliases",
         ),
     )
@@ -190,10 +190,10 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
-            Command.ALIAS -> {
+            Command.ALIASDB -> {
                 val wiki = wikis[Game.DBFZ.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                createAliases(wiki)
+                getCharacterAliases(wiki)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -239,12 +239,10 @@ internal class DustLoopWikiDiscordFeature(
             }
     }
 
-    private suspend fun createAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return getCharactersUseCase.invoke(wiki)
-            .map { characterList ->
-                BotOutput(
-                    embedBuilder = createAliasesEmbed(characterList)
-                )
+    private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
+        return createCharacterAliasesEmbedUseCase.invoke(wiki)
+            .map { embedBuilder ->
+                BotOutput(embedBuilder = embedBuilder)
             }
     }
 
@@ -398,24 +396,6 @@ internal class DustLoopWikiDiscordFeature(
             .joinToString(separator = "") { note -> "* $note\n" },
         inline = false,
     )
-
-    private fun createAliasesEmbed(
-        characterList: List<Character>,
-    ): EmbedBuilder.() -> Unit = {
-        val string = buildString {
-            characterList
-                .filter { it.aliasList.isNotEmpty() }
-                .forEach { character ->
-                    val aliases = character.aliasList.joinToString(", ")
-                    append("- **${character.displayName}** → $aliases\n")
-                }
-        }
-
-        mandatoryField(
-            name = "🥸 CHARACTER ALIASES",
-            value = string,
-        )
-    }
 
 
     private companion object {
