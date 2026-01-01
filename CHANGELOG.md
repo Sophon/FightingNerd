@@ -1,8 +1,9 @@
 # BOT CHANGELOG
 
-## [v3.0.0] - TODO
+## [v3.0.0] - 2025-01-02
 - added footers to all wiki Discord embeds
 - invalid queries include syntax embeds
+- `alias` variants for KOF and COTW
 
 ## [v2.1.1] - 2025-12-31
 - Wavu v1.0.8 - added TekkenDocs mention
