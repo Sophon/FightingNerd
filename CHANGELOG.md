@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v2.2.0] - TODO
+- added footers to all wiki Discord embeds
+
 ## [v2.1.1] - 2025-12-31
 - Wavu v1.0.8 - added TekkenDocs mention
 
