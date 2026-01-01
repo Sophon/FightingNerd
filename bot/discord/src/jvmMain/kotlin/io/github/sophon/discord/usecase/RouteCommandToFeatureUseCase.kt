@@ -106,8 +106,13 @@ internal class RouteCommandToFeatureUseCase(
                 query = query,
                 origin = source,
             )
-            if (result is Result.Success) {
-                return result
+
+            return when (result) {
+                is Result.Success -> result
+                is Result.Error -> {
+                    if (result.error is BotError.UnknownMove) result
+                    else continue
+                }
             }
         }
 
@@ -128,8 +133,12 @@ internal class RouteCommandToFeatureUseCase(
                 query = fullQuery,
             )
 
-            if (result is Result.Success) {
-                return result
+            return when (result) {
+                is Result.Success -> result
+                is Result.Error -> {
+                    if (result.error is BotError.UnknownMove) result
+                    else continue
+                }
             }
         }
 

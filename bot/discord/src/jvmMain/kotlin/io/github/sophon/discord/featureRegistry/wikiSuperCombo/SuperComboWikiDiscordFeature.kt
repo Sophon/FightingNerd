@@ -24,6 +24,7 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
@@ -270,10 +271,7 @@ internal class SuperComboWikiDiscordFeature(
             )
         }
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
     private fun createMoveEmbed(
@@ -315,10 +313,7 @@ internal class SuperComboWikiDiscordFeature(
         createDetails(move)
         createNotes(move)
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
     private fun EmbedBuilder.sf6Fields(move: Move) {

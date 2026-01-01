@@ -6,18 +6,16 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.BuildKonfig
-import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
-import io.github.sophon.discord.URL_IMG_KOFI
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
-import io.github.sophon.discord.domain.FeatureRegistry
+import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import org.koin.core.component.KoinComponent
@@ -92,29 +90,10 @@ internal class CoreDiscordFeature(
                         URL_KOFI
             )
 
-            footer {
-                text = "Ko-Fi"
-                icon = URL_IMG_KOFI
-            }
+            featureFooter(featureInfo)
         }
 
         return Result.Success(BotOutput(embedBuilder))
-    }
-
-    private fun createRepoText(): Result<BotOutput, BotError> {
-        return Result.Success(
-            BotOutput(
-                plainText = "Contribute to FightingNerd: $URL_REPO"
-            )
-        )
-    }
-
-    private fun createInviteText(): Result<BotOutput, BotError> {
-        return Result.Success(
-            BotOutput(
-                plainText = "FightingNerd bot invite: $URL_INVITE"
-            )
-        )
     }
 
     private fun createHelpEmbed(): Result<BotOutput, BotError> {
@@ -187,13 +166,26 @@ internal class CoreDiscordFeature(
                 }
             )
 
-            footer {
-                text = "Fighting Nerd (${BuildKonfig.VERSION})"
-                icon = URL_IMG_FIGHTING_NERD
-            }
+            featureFooter(featureInfo)
         }
 
         return Result.Success(BotOutput(embedBuilder))
+    }
+
+    private fun createRepoText(): Result<BotOutput, BotError> {
+        return Result.Success(
+            BotOutput(
+                plainText = "Contribute to FightingNerd: $URL_REPO"
+            )
+        )
+    }
+
+    private fun createInviteText(): Result<BotOutput, BotError> {
+        return Result.Success(
+            BotOutput(
+                plainText = "FightingNerd bot invite: $URL_INVITE"
+            )
+        )
     }
 
     private companion object {

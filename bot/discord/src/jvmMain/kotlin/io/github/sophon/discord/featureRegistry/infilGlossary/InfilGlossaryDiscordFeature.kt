@@ -13,6 +13,7 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import io.github.sophon.glossaryinfil.domain.GlossaryItem
@@ -83,10 +84,7 @@ internal class InfilGlossaryDiscordFeature(
             mandatoryField(name = "Video", value = "[Link]($url)")
         }
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
 

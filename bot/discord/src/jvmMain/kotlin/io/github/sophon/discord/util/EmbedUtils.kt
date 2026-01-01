@@ -2,6 +2,7 @@ package io.github.sophon.discord.util
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
@@ -55,12 +56,6 @@ internal fun EmbedBuilder.optionalField(
     }
 }
 
-internal fun createErrorEmbed(error: BotError): EmbedBuilder.() -> Unit = {
-    title = "ERROR"
-    description = error.toString().truncate(MAX_LENGTH_EMBED)
-    color = Color(RED)
-}
-
 internal fun EmbedBuilder.separator() {
     field {
         name = "\u200B"
@@ -69,4 +64,9 @@ internal fun EmbedBuilder.separator() {
     }
 }
 
-private const val RED = 0x00FF0000
+internal fun EmbedBuilder.featureFooter(featureInfo: FeatureInfo) {
+    footer {
+        text = featureInfo.name
+        icon = featureInfo.iconUrl
+    }
+}

@@ -135,22 +135,6 @@ internal suspend fun GuildChatInputCommandInteractionCreateEvent.createPlainResp
     }
 }
 
-internal fun Message.delete(
-    delay: Long,
-    scope: CoroutineScope,
-) {
-    scope.launch {
-        delay(delay)
-        delete()
-    }
-}
-
-internal suspend fun GuildChatInputCommandInteractionCreateEvent.deleteInteraction(
-    delay: Long,
-    scope: CoroutineScope
-) {
-    interaction.getOriginalInteractionResponse().delete(delay, scope)
-}
 
 private fun createResponseMessage(donoChancePct: Int = 20): String {
     require(donoChancePct in 0..100) { "Percentage must be between 0 and 100" }

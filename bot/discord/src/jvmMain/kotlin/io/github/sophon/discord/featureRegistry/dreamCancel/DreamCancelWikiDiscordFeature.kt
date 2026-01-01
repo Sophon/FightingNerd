@@ -21,10 +21,12 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.domain.Source
 import io.github.sophon.dreamcancel.domain.DreamCancelFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -39,6 +41,7 @@ internal class DreamCancelWikiDiscordFeature(
     dreamCancelFeatureInfo: DreamCancelFeatureInfo,
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getMoveUseCase: GetMoveUseCase,
+    private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -85,6 +88,14 @@ internal class DreamCancelWikiDiscordFeature(
                     description = "Move input"
                 )
             )
+        ),
+        SupportedCommand(
+            command = Command.ALIASCOTW,
+            description = "COTW character aliases",
+        ),
+        SupportedCommand(
+            command = Command.ALIASKOF,
+            description = "KOF character aliases",
         ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
@@ -137,11 +148,23 @@ internal class DreamCancelWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(gameId, wiki, query)
             }
+            Command.ALIASKOF -> {
+                val gameId = Game.KoFXV.id
+                val wiki = wikis[gameId]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                getCharacterAliases(wiki)
+            }
             Command.FDCOTW -> {
                 val gameId = Game.COTW.id
                 val wiki = wikis[gameId]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(gameId, wiki, query)
+            }
+            Command.ALIASCOTW -> {
+                val gameId = Game.COTW.id
+                val wiki = wikis[gameId]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                getCharacterAliases(wiki)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -176,6 +199,11 @@ internal class DreamCancelWikiDiscordFeature(
                     }
                 )
             }
+    }
+
+    private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
+        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo)
+            .map { BotOutput(embedBuilder = it) }
     }
 
     private fun createMoveEmbed(
@@ -215,10 +243,7 @@ internal class DreamCancelWikiDiscordFeature(
         optionalField(name = "Stun", value = move.koF15Properties?.stun)
         optionalField(name = "Rev dmg", value = move.cotwProperties?.revDamage)
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
 
