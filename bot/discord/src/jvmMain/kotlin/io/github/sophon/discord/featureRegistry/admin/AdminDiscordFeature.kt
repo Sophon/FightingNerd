@@ -21,6 +21,7 @@ import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUse
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.UnbanUseCase
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.AdminFeatureInfo
 import io.github.sophon.domain.AdminResult
@@ -160,6 +161,8 @@ internal class AdminDiscordFeature(
                 value = message,
                 inline = false,
             )
+
+            featureFooter(featureInfo)
         }
     }
 
@@ -173,6 +176,8 @@ internal class AdminDiscordFeature(
                 value = message,
                 inline = false,
             )
+
+            featureFooter(featureInfo)
         }
     }
 
@@ -184,6 +189,7 @@ internal class AdminDiscordFeature(
                 value = "UNBANNED",
                 inline = false,
             )
+            featureFooter(featureInfo)
         } else {
             title = "Chat shit, get banged! 🔥🔥🔥"
             mandatoryField(
@@ -191,6 +197,7 @@ internal class AdminDiscordFeature(
                 value = "BANNED 🔨: ${ban.bannedAt.toFormattedString()} → ${ban.expiresAt.toFormattedString()}",
                 inline = false,
             )
+            featureFooter(featureInfo)
         }
     }
 

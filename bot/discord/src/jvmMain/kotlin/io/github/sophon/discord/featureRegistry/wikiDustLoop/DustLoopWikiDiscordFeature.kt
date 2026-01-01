@@ -27,6 +27,7 @@ import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
@@ -240,7 +241,7 @@ internal class DustLoopWikiDiscordFeature(
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(wiki)
+        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo)
             .map { embedBuilder ->
                 BotOutput(embedBuilder = embedBuilder)
             }
@@ -322,10 +323,7 @@ internal class DustLoopWikiDiscordFeature(
             inline = false,
         )
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
     private fun createMoveEmbed(
@@ -384,10 +382,7 @@ internal class DustLoopWikiDiscordFeature(
 
         createNotes(move)
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
     private fun EmbedBuilder.createNotes(move: Move) = optionalField(

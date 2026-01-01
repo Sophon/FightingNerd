@@ -2,6 +2,7 @@ package io.github.sophon.discord.util
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
@@ -68,5 +69,13 @@ internal fun EmbedBuilder.separator() {
         inline = false
     }
 }
+
+internal fun EmbedBuilder.featureFooter(featureInfo: FeatureInfo) {
+    footer {
+        text = featureInfo.name
+        icon = featureInfo.iconUrl
+    }
+}
+
 
 private const val RED = 0x00FF0000
