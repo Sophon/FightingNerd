@@ -6,16 +6,13 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.BuildKonfig
-import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
-import io.github.sophon.discord.URL_IMG_KOFI
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
-import io.github.sophon.discord.domain.FeatureRegistry
+import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.util.featureFooter
