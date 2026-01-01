@@ -17,14 +17,12 @@ import io.github.sophon.core.feature.Config
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
+import io.github.sophon.discord.usecase.CreateErrorEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.createEmbedMessage
 import io.github.sophon.discord.util.createEmbedResponse
-import io.github.sophon.discord.util.createErrorEmbed
 import io.github.sophon.discord.util.createPlainMessage
 import io.github.sophon.discord.util.createPlainResponse
-import io.github.sophon.discord.util.delete
-import io.github.sophon.discord.util.deleteInteraction
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -39,6 +37,7 @@ internal class DiscordBotImpl(
     private val featureList: List<DiscordRegisteredFeature>,
     private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
+    private val createErrorEmbedUseCase: CreateErrorEmbedUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
         startFeatures()
@@ -116,7 +115,7 @@ internal class DiscordBotImpl(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { result.error.toString() }
-                BotOutput(errorEmbedBuilder = createErrorEmbed(result.error))
+                BotOutput(errorEmbedBuilder = createErrorEmbedUseCase.invoke(result.error))
             }
         }
 
@@ -162,7 +161,7 @@ internal class DiscordBotImpl(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { result.error.toString() }
-                BotOutput(errorEmbedBuilder = createErrorEmbed(result.error))
+                BotOutput(errorEmbedBuilder = createErrorEmbedUseCase.invoke(result.error))
             }
         }
 

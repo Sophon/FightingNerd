@@ -56,12 +56,6 @@ internal fun EmbedBuilder.optionalField(
     }
 }
 
-internal fun createErrorEmbed(error: BotError): EmbedBuilder.() -> Unit = {
-    title = "ERROR"
-    description = error.toString().truncate(MAX_LENGTH_EMBED)
-    color = Color(RED)
-}
-
 internal fun EmbedBuilder.separator() {
     field {
         name = "\u200B"
@@ -76,6 +70,3 @@ internal fun EmbedBuilder.featureFooter(featureInfo: FeatureInfo) {
         icon = featureInfo.iconUrl
     }
 }
-
-
-private const val RED = 0x00FF0000
