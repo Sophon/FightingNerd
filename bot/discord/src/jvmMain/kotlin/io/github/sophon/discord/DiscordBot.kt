@@ -129,7 +129,6 @@ internal class DiscordBotImpl(
             }
             botOutput.errorEmbedBuilder != null -> {
                 createEmbedMessage(botOutput.errorEmbedBuilder)
-                    .delete(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
             }
             botOutput.feedback != null -> {
                 createEmbedMessage(botOutput.feedback)
@@ -176,7 +175,6 @@ internal class DiscordBotImpl(
             }
             botOutput.errorEmbedBuilder != null -> {
                 createEmbedResponse(botOutput.errorEmbedBuilder)
-                deleteInteraction(delay = TIME_DELETE_ERROR_EMBED, scope = kord)
             }
             botOutput.feedback != null -> {
                 createEmbedResponse(botOutput.feedback)
