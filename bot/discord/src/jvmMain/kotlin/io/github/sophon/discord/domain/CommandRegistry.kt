@@ -44,6 +44,8 @@ enum class Command {
     //dreamcancel wiki
     FDKOF,
     FDCOTW,
+    ALIASKOF,
+    ALIASCOTW,
 
     //dustloop wiki
     CHARGG,
