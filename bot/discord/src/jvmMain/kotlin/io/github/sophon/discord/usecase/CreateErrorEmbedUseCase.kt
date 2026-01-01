@@ -11,12 +11,16 @@ import io.github.sophon.discord.util.mandatoryField
 internal class CreateErrorEmbedUseCase {
     fun invoke(error: BotError): EmbedBuilder.() -> Unit {
         return when (error) {
-            is BotError.UnknownCharacter -> {
+            is BotError.UnknownCharacter,
+            is BotError.UnknownMove,
+                -> {
                 createSyntaxErrorEmbed(error)
             }
+
             is BotError.InvalidQuery -> {
                 createCommandSyntaxErrorEmbed(error)
             }
+
             else -> {
                 createGenericError(error)
             }
@@ -30,7 +34,7 @@ internal class CreateErrorEmbedUseCase {
     }
 
     private fun createSyntaxErrorEmbed(
-        unknownCharacterError: BotError.UnknownCharacter
+        unknownCharacterError: BotError,
     ): EmbedBuilder.() -> Unit = {
         title = "ERROR"
         color = Color(RED)
