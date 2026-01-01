@@ -22,6 +22,7 @@ import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
@@ -171,10 +172,7 @@ internal class XkoWikiDiscordFeature(
         optionalField(name = "Recovery", value = move.recovery)
         optionalField(name = "Damage", value = move.damage)
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
 

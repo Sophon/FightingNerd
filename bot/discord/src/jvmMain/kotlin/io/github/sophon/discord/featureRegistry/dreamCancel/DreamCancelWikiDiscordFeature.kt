@@ -25,6 +25,7 @@ import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.domain.Source
 import io.github.sophon.dreamcancel.domain.DreamCancelFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -215,10 +216,7 @@ internal class DreamCancelWikiDiscordFeature(
         optionalField(name = "Stun", value = move.koF15Properties?.stun)
         optionalField(name = "Rev dmg", value = move.cotwProperties?.revDamage)
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
 

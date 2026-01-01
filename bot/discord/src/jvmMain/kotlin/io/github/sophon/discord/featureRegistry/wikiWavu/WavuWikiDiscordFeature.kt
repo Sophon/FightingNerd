@@ -24,6 +24,7 @@ import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
@@ -284,10 +285,8 @@ internal class WavuWikiDiscordFeature(
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(wiki)
-            .map { embedBuilder ->
-                BotOutput(embedBuilder = embedBuilder)
-            }
+        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo)
+            .map { BotOutput(embedBuilder = it) }
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
@@ -318,10 +317,7 @@ internal class WavuWikiDiscordFeature(
             optionalField(name = "Video", value = "[Link](${url})")
         }
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
     private fun EmbedBuilder.createNotes(move: Move) {
@@ -356,10 +352,7 @@ internal class WavuWikiDiscordFeature(
             inline = false,
         )
 
-        footer {
-            text = featureInfo.name
-            icon = featureInfo.iconUrl
-        }
+        featureFooter(featureInfo)
     }
 
     private fun List<String>.emojify(): List<String> {
