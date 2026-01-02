@@ -29,7 +29,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class DreamCancelWikiClient(
-    gameId: String,
+    private val gameId: String,
 
     private val downloadOrFetchUseCase: DownloadOrFetchUseCase,
 
@@ -55,7 +55,7 @@ internal class DreamCancelWikiClient(
         return downloadOrFetchUseCase.invoke(gameTables)
             .map { it.keys.toList() }
             .onSuccess { characterList ->
-                Napier.i(tag = TAG) { "${characterList.size} characters downloaded" }
+                Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
