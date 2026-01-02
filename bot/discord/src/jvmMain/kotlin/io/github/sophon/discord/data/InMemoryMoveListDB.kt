@@ -36,6 +36,7 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(moveList.values.toList())
     }
 
+    //TODO: investigate why `ak BAD.3H.2` doesn't work unless we ?:
     override suspend fun fetchMoveDataFor(
         charName: String,
         moveQuery: String
@@ -50,7 +51,7 @@ class InMemoryMoveListDB: MoveListDB {
         val moveList = database[characterId]
             ?: return Result.Error(WikiError.UnknownCharacter(charName))
 
-        val moveId = moveAliasMap[moveQuery]
+        val moveId = moveAliasMap[moveQuery] ?: moveQuery
 
         val moveData = moveList[moveId]
             ?: return Result.Error(WikiError.UnknownMove(charName, moveQuery))
@@ -58,7 +59,6 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(moveData)
     }
 
-    //TODO: pass an alias list instead of handling the formatting here
     override suspend fun insertMoveList(
         character: Character,
         moveList: List<Move>,
