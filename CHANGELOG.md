@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v3.0.1] - 2025-01-02
+- better logging
+
 ## [v3.0.0] - 2025-01-02
 - added footers to all wiki Discord embeds
 - invalid queries include syntax embeds
