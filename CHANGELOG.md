@@ -2,6 +2,8 @@
 
 ## [v3.0.2] - 2025-01-02
 - only log warnings and errors
+- improved syntax error reply message
+- fixed some input parsing
 
 ## [v3.0.1] - 2025-01-02
 - better logging

@@ -45,10 +45,12 @@ internal class CreateErrorEmbedUseCase {
 
         mandatoryField(
             name = "Frame Data 📊".uppercase(),
-            value = "- **`@bot`** → `@FightingNerdBot` `[character name]` `[move input]`\n" +
-                    "- **`/fd`** → `fd character: [character name] move: [move input]`\n" +
-                    "   - the character name must be without spaces\n" +
-                    "   - if the character name has spaces, use `/alias` to see the available aliases",
+            value = "1. **`@bot`** → `@FightingNerdBot` `[character name]` `[move input]`\n" +
+                    "2. **`/fd`** → `fd character: [character name] move: [move input]`\n" +
+                    "The **character** name and move **input** must have **NO SPACES**\n" +
+                    "- if the character name is multi-word, use `/alias` to see the available aliases\n" +
+                    "- stances or heat are followed by a dot: `nina h.b1+2` or `ak bad.3h.2`\n" +
+                    "- if stuck, check the wiki to see how it's written",
         )
 
         footer {
@@ -70,7 +72,7 @@ internal class CreateErrorEmbedUseCase {
         mandatoryField(
             name = "Command usage ⚙️".uppercase(),
             value = "- **tag** → `@FightingNerdBot` `[command]` `[query]`\n" +
-                    "   - frame data command is the default; `@FightingNerdBot jun df1` works\n" +
+                    "   - frame data (`fd`) is the default command@; `@FightingNerdBot jun df1` works\n" +
                     "- **slash** → `/command`\n" +
                     "- use `/help` to see available commands"
         )
