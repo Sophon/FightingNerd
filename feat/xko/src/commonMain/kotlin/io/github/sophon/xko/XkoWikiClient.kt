@@ -83,7 +83,7 @@ internal class XkoWikiClient(
                     .flatten()
             }
             .onSuccess {
-                Napier.i(tag = TAG) { "${characterData.name}: ${it.size} moves downloaded" }
+                Napier.d(tag = TAG) { "${characterData.name}: ${it.size} moves downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
     }
