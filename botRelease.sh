@@ -11,9 +11,9 @@ NC='\033[0m' # No Color
 
 # Check if version parameter is provided
 if [ -z "$1" ]; then
-    echo -e "${RED}Error: Version parameter is required${NC}"
-    echo "Usage: ./botRelease.sh <version>"
-    echo "Example: ./botRelease.sh 3.0.3"
+    echo -e "${RED}Error: Version parameter with v prefix is required${NC}"
+    echo "Usage: ./botRelease.sh v<version>"
+    echo "Example: ./botRelease.sh v3.0.3"
     exit 1
 fi
 

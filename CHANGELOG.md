@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v3.0.5] - 2026-01-02
+- syntax error embed mentions move name queries
+
 ## [v3.0.4] - 2025-01-02
 - included `gameId` for logs
 
