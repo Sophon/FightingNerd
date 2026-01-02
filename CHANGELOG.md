@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v3.0.4] - 2025-01-02
+- included `gameId` for logs
+
 ## [v3.0.3] - 2025-01-02
 - more logging tweaks
 - fixed duplicate config loading
