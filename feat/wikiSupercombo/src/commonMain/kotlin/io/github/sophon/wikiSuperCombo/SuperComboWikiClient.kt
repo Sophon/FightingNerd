@@ -86,7 +86,7 @@ internal class SuperComboWikiClient(
     ): Result<List<Move>, WikiError> {
         return downloadMoveListUseCase.invoke(gameTables, characterData)
             .onSuccess { moveList ->
-                Napier.i(tag = TAG) {
+                Napier.d(tag = TAG) {
                     "${characterData.name}: ${moveList.size} moves downloaded"
                 }
             }

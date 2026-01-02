@@ -35,7 +35,7 @@ internal class InfilGlossaryClientImpl(
                 Result.Success(Unit)
             }
             is Result.Error -> {
-                Napier.e(tag = TAG) { result.error.toString() }
+                Napier.e(tag = TAG) { "downloadGlossary: ${result.error}" }
                 Result.Error(result.error)
             }
         }

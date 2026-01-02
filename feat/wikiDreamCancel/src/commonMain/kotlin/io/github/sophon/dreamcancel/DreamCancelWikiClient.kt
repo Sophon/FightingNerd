@@ -88,7 +88,7 @@ internal class DreamCancelWikiClient(
                     .flatten()
             }
             .onSuccess { moveList ->
-                Napier.i(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
+                Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
     }
