@@ -71,7 +71,7 @@ android {
     }
 }
 
-val featureVersion = "1.0.3"
+val featureVersion = "1.0.4"
 buildkonfig {
     packageName = "io.github.sophon.wikiDreamCancel"
 
