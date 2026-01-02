@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v3.1.0] - 2026-
+- something
+
 ## [v3.0.4] - 2025-01-02
 - included `gameId` for logs
 
