@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v3.0.2] - 2025-01-02
+- only log warnings and errors
+
 ## [v3.0.1] - 2025-01-02
 - better logging
 
