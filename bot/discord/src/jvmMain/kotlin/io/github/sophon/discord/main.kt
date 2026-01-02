@@ -37,7 +37,7 @@ private fun initLogging() {
                     throwable: Throwable?,
                     message: String?,
                 ) {
-                    if (priority == LogLevel.INFO || priority == LogLevel.ERROR) {
+                    if (priority == LogLevel.WARNING || priority == LogLevel.ERROR) {
                         println("${priority.name.uppercase()}: ${tag ?: "null"} - $message")
                         throwable?.printStackTrace()
                     }
