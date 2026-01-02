@@ -28,7 +28,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class DustLoopWikiClient(
-    gameId: String,
+    private val gameId: String,
 
     private val dustLoopFeatureInfo: DustLoopFeatureInfo,
 
@@ -55,7 +55,7 @@ class DustLoopWikiClient(
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadCharacterListUseCase.invoke(gameTables)
             .onSuccess { characterList ->
-                Napier.i(tag = TAG) { "${characterList.size} characters loaded" }
+                Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters loaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }

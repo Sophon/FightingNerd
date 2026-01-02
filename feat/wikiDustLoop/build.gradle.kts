@@ -68,7 +68,7 @@ android {
     }
 }
 
-val featureVersion = "1.0.6"
+val featureVersion = "1.0.7"
 buildkonfig {
     packageName = "io.github.sophon.dustloop"
 

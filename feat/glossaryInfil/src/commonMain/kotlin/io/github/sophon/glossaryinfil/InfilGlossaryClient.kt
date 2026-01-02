@@ -31,7 +31,7 @@ internal class InfilGlossaryClientImpl(
         return when (val result = downloadGlossaryUseCase.invoke()) {
             is Result.Success -> {
                 cacheGlossaryUseCase.invoke(result.data)
-                Napier.i(tag = TAG) { "Successfully retrieved glossary; ${result.data.size} keys" }
+                Napier.i(tag = TAG) { "${result.data.size} glossary items retrieved" }
                 Result.Success(Unit)
             }
             is Result.Error -> {
@@ -45,7 +45,9 @@ internal class InfilGlossaryClientImpl(
         Napier.d(tag = TAG) { "Query: $query" }
         return fetchDataForTermUseCase.invoke(query)
     }
+
+
+    private companion object {
+        const val TAG = "InfilGlossary"
+    }
 }
-
-
-private const val TAG = "io.github.sophon.glossaryinfil.InfilGlossary"

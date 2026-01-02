@@ -29,7 +29,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class WavuWikiClient(
-    gameId: String,
+    private val gameId: String,
 
     private val wavuFeatureInfo: WavuFeatureInfo,
 
@@ -55,7 +55,7 @@ internal class WavuWikiClient(
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadCharacterListUseCase.invoke(queryTable)
-            .onSuccess { Napier.i(tag = TAG) { "${it.size} characters loaded" } }
+            .onSuccess { Napier.i(tag = TAG) { "$gameId - ${it.size} characters loaded" } }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
 
