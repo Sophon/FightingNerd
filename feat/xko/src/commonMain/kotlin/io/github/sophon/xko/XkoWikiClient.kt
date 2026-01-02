@@ -27,7 +27,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class XkoWikiClient(
-    gameId: String, //not needed
+    private val gameId: String,
 
     private val downloadOrFetchUseCase: DownloadOrFetchUseCase,
 
@@ -50,7 +50,7 @@ internal class XkoWikiClient(
         return downloadOrFetchUseCase.invoke()
             .map { it.keys.toList() }
             .onSuccess { characterList ->
-                Napier.i(tag = TAG) { "${characterList.size} characters downloaded" }
+                Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters downloaded" }
             }
             .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
     }
