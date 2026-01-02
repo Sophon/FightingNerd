@@ -70,6 +70,10 @@ internal val featureRegistryModule = module {
     singleOf(::SearchGlossaryUseCase)
     //endregion
 
+    singleOf(::ConfigLoader)
+    single { get<ConfigLoader>().loadConfig() }
+    single<Config.AdminConfig> { get<Config>().adminConfig!! }
+
     //region FEATURES SETUP
     single {
         FeatureRegistry(
@@ -79,11 +83,9 @@ internal val featureRegistryModule = module {
     }
 
     single {
-        val adminConfig = get<ConfigLoader>().loadConfig().adminConfig
-
         AdminDiscordFeature(
             adminFeatureInfo = get(),
-            adminConfig = adminConfig!!,
+            adminConfig = get<Config.AdminConfig>(),
             startAdminToolsUseCase = get(),
             processFeedbackUseCase = get(),
             replyToFeedbackUseCase = get(),
@@ -92,9 +94,6 @@ internal val featureRegistryModule = module {
             scheduler = get(),
             scope = get(),
         )
-    }
-    single<Config.AdminConfig> {
-        get<ConfigLoader>().loadConfig().adminConfig!!
     }
 
     singleOf(::CoreDiscordFeature).bind<DiscordRegisteredFeature>()
@@ -105,9 +104,8 @@ internal val featureRegistryModule = module {
     singleOf(::DreamCancelWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::DustLoopWikiDiscordFeature).bind<DiscordRegisteredFeature>()
 
-    singleOf(::ConfigLoader)
     single<List<DiscordRegisteredFeature>> {
-        val config = get<ConfigLoader>().loadConfig()
+        val config = get<Config>()
         val registry = get<FeatureRegistry>()
         val enabledFeatures = config.featureList
             .filter { it.isEnabled }
