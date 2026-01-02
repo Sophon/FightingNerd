@@ -114,7 +114,7 @@ internal class DiscordBotImpl(
         val botOutput = when(result) {
             is Result.Success -> result.data
             is Result.Error -> {
-                Napier.e(tag = TAG) { result.error.toString() }
+                Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
                 BotOutput(errorEmbedBuilder = createErrorEmbedUseCase.invoke(result.error))
             }
         }
@@ -160,7 +160,7 @@ internal class DiscordBotImpl(
         val botOutput = when (result) {
             is Result.Success -> result.data
             is Result.Error -> {
-                Napier.e(tag = TAG) { result.error.toString() }
+                Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
                 BotOutput(errorEmbedBuilder = createErrorEmbedUseCase.invoke(result.error))
             }
         }
