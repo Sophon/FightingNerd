@@ -40,8 +40,12 @@ internal class DiscordBotImpl(
     private val createErrorEmbedUseCase: CreateErrorEmbedUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
+        Napier.i(tag = TAG) { "🚀 Bot starting..." }
+
         startFeatures()
         startKord()
+
+        Napier.e(tag = TAG) { "❌ Bot session ended (this shouldn't happen)" }
     }
 
 
@@ -78,15 +82,22 @@ internal class DiscordBotImpl(
         }
 
         //‼️ THIS SUSPENDS UNTIL LOGGED OUT
-        kord.login {
-            // we need to specify this to receive the content of messages
-            @OptIn(PrivilegedIntent::class)
-            intents += Intent.MessageContent
+        try {
+            kord.login {
+                @OptIn(PrivilegedIntent::class)
+                intents += Intent.MessageContent
 
-            presence {
-                playing("/FD | /HELP | /FEEDBACK")
+                presence {
+                    playing("/FD | /HELP | /FEEDBACK")
+                }
             }
+        } catch (e: Exception) {
+            Napier.e(tag = TAG) { "💥 Login failed: ${e.message}" }
+            e.printStackTrace()
+            throw e
         }
+
+        Napier.e(tag = TAG) { "⚠️ Login ended (bot disconnected)" }
     }
 
     private suspend fun cleanOldGuildCommands(kord: Kord) {
@@ -259,8 +270,18 @@ internal class DiscordBotImpl(
 
         kord.on<DisconnectEvent.DiscordCloseEvent> {
             if (recoverable.not()) {
-                Napier.e(tag = TAG) { "Gateway closed non-recoverably on shard $shard; code = $closeCode" }
+                Napier.e(tag = TAG) {
+                    "Non-recoverable disconnect on shard $shard: code=${closeCode.code} ($closeCode)"
+                }
+            } else {
+                Napier.d(tag = TAG) {
+                    "Gateway disconnect on shard $shard: code=${closeCode.code}, will reconnect"
+                }
             }
+        }
+
+        kord.on<dev.kord.core.event.gateway.ResumedEvent> {
+            Napier.i(tag = TAG) { "Gateway resumed successfully" }
         }
     }
 
