@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v3.0.6] - 2026-01-03
+- better Kord logs for disconnects and reconnects
+
 ## [v3.0.5] - 2026-01-02
 - syntax error embed mentions move name queries
 
