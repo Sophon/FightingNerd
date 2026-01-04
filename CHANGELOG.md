@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v4.0.1] - 2026-01-04
+- added **1%** chance for embeds to trigger donation
+
 ## [v4.0.0] - 2026-01-04
 - Mizuumi wiki
   - support for MBTL with `alias` and `fd`

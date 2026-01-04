@@ -11,6 +11,8 @@ sealed class BotError(private vararg val inputs: String) : Error {
     class BotLogicError(vararg inputs: String) : BotError(*inputs)
     class EmptyDatabase : BotError()
     class UnsupportedGame(vararg inputs: String): BotError(*inputs)
+    class Kord(error: String): BotError(error)
+
     class Unknown(input: String = "") : BotError(input)
 
     override fun toString(): String =
