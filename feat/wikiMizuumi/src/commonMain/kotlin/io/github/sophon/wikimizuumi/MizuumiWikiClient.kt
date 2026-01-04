@@ -30,8 +30,6 @@ import kotlin.time.ExperimentalTime
 internal class MizuumiWikiClient(
     private val gameId: String,
 
-    private val mizuumiFeatureInfo: MizuumiFeatureInfo,
-
     private val downloadOrFetchUseCase: DownloadOrFetchUseCase,
 
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
@@ -48,7 +46,7 @@ internal class MizuumiWikiClient(
     private val gameTables: QueryTable = MizuumiTables.getTable(gameId)
         ?: error("$gameId not supported. Supported: ${MizuumiFeatureInfo.featureInfo.supportedGameSet}")
 
-    override fun getFeatureInfo(): FeatureInfo = mizuumiFeatureInfo.featureInfo
+    override fun getFeatureInfo(): FeatureInfo = MizuumiFeatureInfo.featureInfo
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         return downloadOrFetchUseCase.invoke(gameTables)
