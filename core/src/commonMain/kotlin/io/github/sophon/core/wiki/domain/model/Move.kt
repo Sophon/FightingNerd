@@ -33,6 +33,7 @@ data class Move(
     val dbfzProperties: DBFZProperties? = null,
     val gbvsrProperties: GBVSRProperties? = null,
     val mkProperties: MKProperties? = null,
+    val mbProperties: MBProperties? = null,
 ) {
     @Serializable
     data class Urls(
@@ -145,5 +146,17 @@ data class Move(
         val hitCancelAdv: String? = null,
         val blockCancelAdv: String? = null,
         val punish: String? = null,
+    )
+
+    @Serializable
+    data class MBProperties(
+        val inputInfo: String? = null,
+        val subtitle: String? = null,
+        val minDamage: String? = null,
+        val property: String? = null,
+        val cost: String? = null,
+        val attribute: String? = null,
+        val landing: String? = null,
+        val overall: String? = null,
     )
 }
