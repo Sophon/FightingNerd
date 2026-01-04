@@ -18,14 +18,13 @@ internal fun MoveListResponseDto.toDomain(
         .map { (charName, moveDtoList) ->
             val character = charName.toDomain(gameId)
             val moveList = moveDtoList.map {
-                it.title.toDomain(gameId, character, imageUrlMap)
+                it.title.toDomain(character, imageUrlMap)
             }
             character to moveList
         }.toMap()
 }
 
 internal fun MoveDto.toDomain(
-    gameId: String,
     character: Character,
     imageUrlMap: Map<String, String>,
 ): Move {
@@ -57,7 +56,6 @@ internal fun MoveDto.toDomain(
                 .orEmpty()
                 .split(",")
                 .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
-            wikiUrl = formMoveWikiUrl(gameId, chara, moveName),
         ),
         mbProperties = Move.MBProperties(
             inputInfo = inputInfo?.cleanHtml(),
@@ -75,21 +73,6 @@ internal fun MoveDto.toDomain(
 
 private fun String.formatCancel(): String {
     return this.replace("-", "")
-}
-
-private fun formMoveWikiUrl(
-    gameId: String,
-    chara: String,
-    moveName: String?,
-): String {
-    val subDomain = when (gameId) {
-        Game.MBTL.id -> "Melty_Blood"
-        else -> ""
-    }
-    val charQueryName = chara.replace(' ', '_')
-    val moveQueryName = moveName.orEmpty().replace(' ', '_')
-
-    return "${FEATURE_URL}/$subDomain/$gameId/$charQueryName#$moveQueryName"
 }
 
 internal fun String.formPropertiesUrl(): String {
