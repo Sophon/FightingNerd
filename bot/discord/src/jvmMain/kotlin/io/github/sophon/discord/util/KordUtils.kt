@@ -6,31 +6,10 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.PublicInteractionResponseBehavior
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.MessageChannel
-import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
-import dev.kord.rest.builder.message.EmbedBuilder
-import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
-import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
-import kotlin.random.Random
-
-internal suspend fun MessageCreateEvent.createEmbedMessage(
-    feedback: BotOutput.Feedback,
-): Message {
-    feedback.feedbackChannelList.forEach { channelId ->
-        val channel = kord.getChannelOf<TextChannel>(Snowflake(channelId))
-
-        channel?.createMessage {
-            embed(feedback.embedBuilder)
-        }
-    }
-
-    return message.channel.createMessage {
-        content = createResponseMessage()
-    }
-}
 
 internal suspend fun MessageCreateEvent.createEmbedMessage(
     reply: BotOutput.Reply,
@@ -44,22 +23,6 @@ internal suspend fun MessageCreateEvent.createEmbedMessage(
 
     return message.channel.createMessage {
         content = if (channel == null) "Failed to send" else "Reply sent successfully!"
-    }
-}
-
-internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResponse(
-    feedback: BotOutput.Feedback,
-): PublicInteractionResponseBehavior {
-    feedback.feedbackChannelList.forEach { channelId ->
-        val channel = kord.getChannelOf<TextChannel>(Snowflake(channelId))
-
-        channel?.createMessage {
-            embed(feedback.embedBuilder)
-        }
-    }
-
-    return interaction.respondPublic {
-        content = createResponseMessage()
     }
 }
 
@@ -78,14 +41,3 @@ internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResp
     }
 }
 
-
-private fun createResponseMessage(donoChancePct: Int = 20): String {
-    require(donoChancePct in 0..100) { "Percentage must be between 0 and 100" }
-
-    return if (Random.nextInt(until = 100) < donoChancePct) {
-        "Feedback sent successfully!\n" +
-                "Consider donating (`/donate` or `/tip`): **<$URL_KOFI>**"
-    } else {
-        "Feedback sent successfully!"
-    }
-}

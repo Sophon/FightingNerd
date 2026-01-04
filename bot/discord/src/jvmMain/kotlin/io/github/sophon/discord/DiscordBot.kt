@@ -20,6 +20,7 @@ import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.usecase.CreateEmbedUseCase
 import io.github.sophon.discord.usecase.CreateErrorEmbedUseCase
+import io.github.sophon.discord.usecase.CreateFeedbackEmbedUseCase
 import io.github.sophon.discord.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.createEmbedMessage
@@ -41,6 +42,7 @@ internal class DiscordBotImpl(
     private val createErrorEmbedUseCase: CreateErrorEmbedUseCase,
     private val createPlainMessageUseCase: CreatePlainMessageUseCase,
     private val createEmbedUseCase: CreateEmbedUseCase,
+    private val createFeedbackEmbedUseCase: CreateFeedbackEmbedUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
@@ -152,7 +154,9 @@ internal class DiscordBotImpl(
                 }
             }
             botOutput.feedback != null -> {
-                createEmbedMessage(botOutput.feedback)
+                with (createFeedbackEmbedUseCase) {
+                    invoke(botOutput.feedback)
+                }
             }
             botOutput.reply != null -> {
                 createEmbedMessage(botOutput.reply)
@@ -206,7 +210,9 @@ internal class DiscordBotImpl(
                 }
             }
             botOutput.feedback != null -> {
-                createEmbedResponse(botOutput.feedback)
+                with (createFeedbackEmbedUseCase) {
+                    invoke(botOutput.feedback)
+                }
             }
             botOutput.reply != null -> {
                 createEmbedResponse(botOutput.reply)
