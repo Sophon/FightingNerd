@@ -39,7 +39,7 @@ internal fun String.createAliases(): List<String> {
         "dead apostle noel" -> listOf("dead", "dan", "vnoel", "dn")
         "hisui" -> listOf("hi")
         "hisui & kohaku" -> listOf("maids", "hk")
-        "kohaku" -> listOf("ko")
+        "kohaku" -> listOf("ko", "koha")
         "kouma kishima" -> listOf("kouma", "kishima", "ki")
         "mario gallo bestino" -> listOf("mario", "bestino", "ma")
         "mash kyrielight" -> listOf("mash", "kyrielight", "mas")
@@ -50,7 +50,7 @@ internal fun String.createAliases(): List<String> {
         "powered ciel" -> listOf("powered", "pciel", "pc")
         "red arcueid" -> listOf("red", "warc", "ar", "re")
         "saber" -> listOf("sa")
-        "shiki tohno" -> listOf("shiki", "sh")
+        "shiki tohno" -> listOf("shiki", "sh", "tony")
         "monte cristo" -> {
             listOf("cristo", "count", "dantes", "edmond", "ed")
         }
