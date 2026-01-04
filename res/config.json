@@ -14,7 +14,7 @@
     },
     {
       "name": "SuperCombo Wiki",
-      "isEnabled": true,
+      "isEnabled": false,
       "supportedGames": [
         "Street_Fighter_6",
         "Mortal_Kombat_1"
@@ -22,14 +22,14 @@
     },
     {
       "name": "2XKO Wiki",
-      "isEnabled": true,
+      "isEnabled": false,
       "supportedGames": [
         "XKO"
       ]
     },
     {
       "name": "DreamCancel Wiki",
-      "isEnabled": true,
+      "isEnabled": false,
       "supportedGames": [
         "The_King_of_Fighters_XV",
         "Fatal_Fury:_City_of_the_Wolves"
@@ -37,11 +37,18 @@
     },
     {
       "name": "DustLoop Wiki",
-      "isEnabled": true,
+      "isEnabled": false,
       "supportedGames": [
         "GGST",
         "GBVSR",
         "DBFZ"
+      ]
+    },
+    {
+      "name": "Mizuumi Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "MBTL"
       ]
     }
   ],

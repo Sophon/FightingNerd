@@ -55,4 +55,8 @@ enum class Command {
     FDDB,
     FDGB,
     ALIASDB,
+
+    //mizuumi
+    ALIASMB,
+    FDMB,
 }

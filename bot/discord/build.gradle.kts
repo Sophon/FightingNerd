@@ -27,6 +27,7 @@ kotlin {
             implementation(project(":feat:xko"))
             implementation(project(":feat:wikiDreamCancel"))
             implementation(project(":feat:wikiDustLoop"))
+            implementation(project(":feat:wikiMizuumi"))
 
             implementation(libs.napier)
             implementation(libs.kord)
