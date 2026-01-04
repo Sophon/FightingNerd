@@ -7,6 +7,7 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.wikimizuumi.FEATURE_URL
+import io.github.sophon.wikimizuumi.WIKI_BASE_URL
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
@@ -62,7 +63,7 @@ internal fun MoveDto.toDomain(
             inputInfo = inputInfo?.cleanHtml(),
             subtitle = subtitle?.cleanHtml(),
             minDamage = minDamage?.cleanHtml(),
-            property = property?.cleanHtml(),
+            property = property?.cleanHtml()?.formPropertiesUrl(),
             cost = cost?.cleanHtml(),
             attribute = attribute?.cleanHtml(),
             landing = landing?.cleanHtml(),
@@ -72,7 +73,11 @@ internal fun MoveDto.toDomain(
     return move
 }
 
-private fun formMoveWikiUrl(gameId: String, chara: String, moveName: String?): String {
+private fun formMoveWikiUrl(
+    gameId: String,
+    chara: String,
+    moveName: String?,
+): String {
     val subDomain = when (gameId) {
         Game.MBTL.id -> "Melty_Blood"
         else -> ""
@@ -81,4 +86,15 @@ private fun formMoveWikiUrl(gameId: String, chara: String, moveName: String?): S
     val moveQueryName = moveName.orEmpty().replace(' ', '_')
 
     return "${FEATURE_URL}/$subDomain/$gameId/$charQueryName#$moveQueryName"
+}
+
+internal fun String.formPropertiesUrl(): String {
+    if (startsWith("[[").not() || endsWith("]]").not()) return this
+
+    val parts = this
+        .substring(2, this.length - 2)
+        .split("|")
+    val url = "$WIKI_BASE_URL/${parts.first().replace(" ", "_")}"
+
+    return "[${parts.last()}]($url)"
 }
