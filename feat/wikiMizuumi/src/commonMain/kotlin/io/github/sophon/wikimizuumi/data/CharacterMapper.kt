@@ -51,7 +51,7 @@ internal fun String.createAliases(): List<String> {
         "red arcueid" -> listOf("red", "warc", "ar", "re")
         "saber" -> listOf("sa")
         "shiki tohno" -> listOf("shiki", "sh")
-        "the count of monte cristo" -> {
+        "monte cristo" -> {
             listOf("cristo", "count", "dantes", "edmond", "ed")
         }
         "ushiwakamaru" -> listOf("ushi", "us")
