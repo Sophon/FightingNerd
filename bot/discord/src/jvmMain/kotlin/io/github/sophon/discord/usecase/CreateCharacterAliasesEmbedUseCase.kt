@@ -5,9 +5,11 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
@@ -31,6 +33,7 @@ internal class CreateCharacterAliasesEmbedUseCase {
         val string = buildString {
             characterList
                 .filter { it.aliasList.isNotEmpty() }
+                .sortedBy { it.displayName }
                 .forEach { character ->
                     val aliases = character.aliasList.joinToString(", ")
                     append("- **${character.displayName}** → $aliases\n")
@@ -39,7 +42,7 @@ internal class CreateCharacterAliasesEmbedUseCase {
 
         mandatoryField(
             name = "🥸 CHARACTER ALIASES",
-            value = string,
+            value = string.truncate(MAX_LENGTH_EMBED),
         )
 
         featureFooter(featureInfo)
