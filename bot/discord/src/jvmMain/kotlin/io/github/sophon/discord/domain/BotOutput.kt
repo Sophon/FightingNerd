@@ -13,7 +13,7 @@ data class BotOutput(
 ) {
     data class Images(
         val title: String,
-        val titleUrl: String,
+        val titleUrl: String?,
         val urls: List<String>,
     )
 

@@ -54,4 +54,10 @@ enum class Game(
         iconUrl = "https://i.imgur.com/N6eeM4q.png",
         wikiUrl = "https://www.dustloop.com/w/GBVSR",
     ),
+
+    MBTL(
+        id = "MBTL",
+        iconUrl = "https://i.imgur.com/E6O7DMi.png",
+        wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL"
+    )
 }

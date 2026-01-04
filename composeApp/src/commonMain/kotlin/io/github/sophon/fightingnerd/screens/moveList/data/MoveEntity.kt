@@ -35,7 +35,7 @@ data class MoveEntity(
     val urlsChracterWiki: String?,
     val urlsVideoId: String?,
     val urlsHitboxImage: String?,
-    val urlsWikiUrl: String,
+    val urlsWikiUrl: String?,
 
     val t8isHeat: Boolean? = null,
     val t8isPowerCrush: Boolean? = null,

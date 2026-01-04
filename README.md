@@ -21,6 +21,9 @@ Frame data targeting Discord bot and mobile apps:
 
 ```mermaid
 graph LR
+    classDef green fill:green,color:#000
+    classDef grey fill:lightgrey,color:#000
+
     subgraph Bots
         discordBot[Discord bot]
         twitchBot[Twitch bot]
@@ -57,7 +60,6 @@ graph LR
         cotw[Fatal Fury: City of the Wolves]
         xko[2XKO]
         melty[Melty Blood: Type Lumina]
-        sg[Skullgirls]
     end
 
     subgraph Ranked service
@@ -93,28 +95,29 @@ graph LR
     dreamcancel --> kof15
     dreamcancel --> cotw
     mizuumi --> melty
-    mizuumi --> sg
 
 
-    style discordBot fill:#3B82F6,stroke:#2563EB, color:#fff
-    style android fill:#10B981,stroke:#059669, color:#fff
-    style iOS fill:#10B981,stroke:#059669, color:#fff
-    style glossaryInfil fill:#059669, color:#fff
-    style communityWiki fill:#3366CC, color:#fff
-    style wikiWavu fill:#059669, color:#fff
-    style supercombo fill:#059669, color:#fff
-    style dreamcancel fill:#059669, color:#fff
-    style dustloop fill:#059669, color:#fff
-    style 2xko fill:#059669, color:#fff
-    style t8 fill:#059669, color:#fff
-    style sf6 fill:#059669, color:#fff
-    style xko fill:#059669, color:#fff
-    style kof15 fill:#059669, color:#fff
-    style cotw fill:#059669, color:#fff
-    style ggst fill:#059669, color:#fff
-    style mk1 fill:#059669, color:#fff
-    style dbfz fill:#059669, color:#fff
-    style gbvsr fill:#059669, color:#fff
+    style discordBot fill:green,stroke:#2563EB, color:#fff
+    style android fill:green,stroke:green, color:#fff
+    style iOS fill:green,stroke:green, color:#fff
+    style glossaryInfil fill:green, color:#fff
+    style communityWiki fill:green, color:#fff
+    style wikiWavu fill:green, color:#fff
+    style supercombo fill:green, color:#fff
+    style dreamcancel fill:green, color:#fff
+    style dustloop fill:green, color:#fff
+    style mizuumi fill:green, color:#fff
+    style 2xko fill:green, color:#fff
+    style t8 fill:green, color:#fff
+    style sf6 fill:green, color:#fff
+    style xko fill:green, color:#fff
+    style kof15 fill:green, color:#fff
+    style cotw fill:green, color:#fff
+    style ggst fill:green, color:#fff
+    style mk1 fill:green, color:#fff
+    style dbfz fill:green, color:#fff
+    style gbvsr fill:green, color:#fff
+    style melty fill:green, color:#fff
   ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
