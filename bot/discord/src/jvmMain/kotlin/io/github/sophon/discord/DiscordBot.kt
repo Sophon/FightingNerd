@@ -22,9 +22,8 @@ import io.github.sophon.discord.usecase.CreateEmbedUseCase
 import io.github.sophon.discord.usecase.CreateErrorEmbedUseCase
 import io.github.sophon.discord.usecase.CreateFeedbackEmbedUseCase
 import io.github.sophon.discord.usecase.CreatePlainMessageUseCase
+import io.github.sophon.discord.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
-import io.github.sophon.discord.util.createEmbedMessage
-import io.github.sophon.discord.util.createEmbedResponse
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -43,6 +42,7 @@ internal class DiscordBotImpl(
     private val createPlainMessageUseCase: CreatePlainMessageUseCase,
     private val createEmbedUseCase: CreateEmbedUseCase,
     private val createFeedbackEmbedUseCase: CreateFeedbackEmbedUseCase,
+    private val createReplyEmbedUseCase: CreateReplyEmbedUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
@@ -159,7 +159,9 @@ internal class DiscordBotImpl(
                 }
             }
             botOutput.reply != null -> {
-                createEmbedMessage(botOutput.reply)
+                with (createReplyEmbedUseCase) {
+                    invoke(botOutput.reply)
+                }
             }
         }
     }
@@ -215,7 +217,9 @@ internal class DiscordBotImpl(
                 }
             }
             botOutput.reply != null -> {
-                createEmbedResponse(botOutput.reply)
+                with (createReplyEmbedUseCase) {
+                    invoke(botOutput.reply)
+                }
             }
         }
     }
