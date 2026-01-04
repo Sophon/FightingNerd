@@ -11,10 +11,10 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
-import kotlin.random.Random
 
 internal class CreateFeedbackEmbedUseCase {
 
@@ -61,10 +61,8 @@ internal class CreateFeedbackEmbedUseCase {
     }
 
 
-    private fun createResponseMessage(donoChancePct: Int = 20): String {
-        require(donoChancePct in 0..100) { "Percentage must be between 0 and 100" }
-
-        return if (Random.nextInt(until = 100) < donoChancePct) {
+    private fun createResponseMessage(): String {
+        return if (rollChance(successPercentage = 20)) {
             "Feedback sent successfully!\n" +
                     "Consider donating (`/donate` or `/tip`): **<$URL_KOFI>**"
         } else {
