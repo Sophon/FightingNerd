@@ -43,6 +43,9 @@ internal fun MoveDto.toDomain(
         name = moveName,
         recovery = recovery?.cleanHtml(),
         active = active?.cleanHtml(),
+        cancel = cancel?.cleanHtml(),
+        guard = guard?.cleanHtml(),
+        invulnerability = invul?.cleanHtml(),
         urls = Move.Urls(
             characterWiki = character.wikiUrl,
             hitboxImageList = hitboxes
@@ -54,6 +57,16 @@ internal fun MoveDto.toDomain(
                 .split(",")
                 .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
             wikiUrl = formMoveWikiUrl(gameId, chara, moveName),
+        ),
+        mbProperties = Move.MBProperties(
+            inputInfo = inputInfo?.cleanHtml(),
+            subtitle = subtitle?.cleanHtml(),
+            minDamage = minDamage?.cleanHtml(),
+            property = property?.cleanHtml(),
+            cost = cost?.cleanHtml(),
+            attribute = attribute?.cleanHtml(),
+            landing = landing?.cleanHtml(),
+            overall = overall?.cleanHtml(),
         ),
     )
     return move
