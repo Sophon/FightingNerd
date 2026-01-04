@@ -310,8 +310,8 @@ internal class SuperComboWikiDiscordFeature(
 
         mandatoryField(name = "", value = "", inline = false)
 
-        createDetails(move)
         createNotes(move)
+        createDetails(move)
 
         featureFooter(featureInfo)
     }
@@ -354,7 +354,7 @@ internal class SuperComboWikiDiscordFeature(
 
     private fun EmbedBuilder.createNotes(move: Move) {
         return optionalField(
-            name = "📝 NOTES",
+            name = "",
             value = move.notes
                 .emojify()
                 .joinToString(separator = "") { note -> "* $note\n" },
@@ -375,7 +375,7 @@ internal class SuperComboWikiDiscordFeature(
         ) return
 
         mandatoryField(
-            name = "⭐️ DRIVE & SUPER",
+            name = "",
             value = buildString {
                 if (properties.DROH != null || properties.DROB != null) {
                     appendLine("* **DR (OH | OB)**: ${properties.DROH.orDash()} | ${properties.DROB.orDash()}")

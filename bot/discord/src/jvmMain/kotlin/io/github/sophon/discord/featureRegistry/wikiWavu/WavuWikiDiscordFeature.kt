@@ -331,7 +331,7 @@ internal class WavuWikiDiscordFeature(
         }
 
         return optionalField(
-            name = "📝 NOTES",
+            name = "",
             value = allNotes
                 .emojify()
                 .joinToString(separator = "") { note -> "* $note\n" },
