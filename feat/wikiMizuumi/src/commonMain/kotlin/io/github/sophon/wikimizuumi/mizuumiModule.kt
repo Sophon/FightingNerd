@@ -20,6 +20,7 @@ import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSource
 import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSourceImpl
 import io.github.sophon.wikimizuumi.data.WikiImageUrlResolver
 import io.github.sophon.wikimizuumi.data.toDomain
+import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -31,6 +32,7 @@ fun mizuumiModule() = module {
     singleOf(::MizuumiWikiDataSourceImpl).bind<MizuumiWikiDataSource>()
     singleOf(::MizuumiWikiClient).bind<WikiClient>()
     single { MizuumiFeatureInfo }
+    factoryOf(::WikiImageUrlResolver)
 
     factory<WikiClient>(named(WikiClientFeature.Mizuumi.id)) { params ->
         val gameId: String = params.get()
