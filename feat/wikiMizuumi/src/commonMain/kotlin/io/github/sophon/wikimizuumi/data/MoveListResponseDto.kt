@@ -4,11 +4,11 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MoveListResponseDto(
-    val cargoquery: List<MoveQueryDto>
+    val cargoquery: List<Title>
 )
 
 @Serializable
-data class MoveQueryDto(
+data class Title(
     val title: MoveDto
 )
 
