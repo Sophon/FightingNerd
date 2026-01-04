@@ -44,7 +44,7 @@ internal fun MoveDto.toDomain(
         name = moveName,
         recovery = recovery?.cleanHtml(),
         active = active?.cleanHtml(),
-        cancel = cancel?.cleanHtml(),
+        cancel = cancel?.cleanHtml()?.formatCancel(),
         guard = guard?.cleanHtml(),
         invulnerability = invul?.cleanHtml(),
         urls = Move.Urls(
@@ -71,6 +71,10 @@ internal fun MoveDto.toDomain(
         ),
     )
     return move
+}
+
+private fun String.formatCancel(): String {
+    return this.replace("-", "")
 }
 
 private fun formMoveWikiUrl(
