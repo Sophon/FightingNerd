@@ -13,16 +13,16 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Config
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.usecase.CreateErrorEmbedUseCase
+import io.github.sophon.discord.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.createEmbedMessage
 import io.github.sophon.discord.util.createEmbedResponse
-import io.github.sophon.discord.util.createPlainMessage
-import io.github.sophon.discord.util.createPlainResponse
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -38,6 +38,7 @@ internal class DiscordBotImpl(
     private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
     private val createErrorEmbedUseCase: CreateErrorEmbedUseCase,
+    private val createPlainMessageUseCase: CreatePlainMessageUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
@@ -135,7 +136,11 @@ internal class DiscordBotImpl(
                 createEmbedMessage(botOutput.embedBuilder, botOutput.images)
             }
             botOutput.plainText != null -> {
-                createPlainMessage(botOutput.plainText)
+                with(createPlainMessageUseCase) {
+                    invoke(botOutput.plainText).onError {
+                        Napier.e(tag = TAG) { "handleMessage: $it" }
+                    }
+                }
             }
             botOutput.errorEmbedBuilder != null -> {
                 createEmbedMessage(botOutput.errorEmbedBuilder)
@@ -181,7 +186,11 @@ internal class DiscordBotImpl(
                 createEmbedResponse(botOutput.embedBuilder, botOutput.images)
             }
             botOutput.plainText != null -> {
-                createPlainResponse(botOutput.plainText)
+                with (createPlainMessageUseCase) {
+                    invoke(botOutput.plainText).onError {
+                        Napier.e(tag = TAG) { "handleCommand: $it" }
+                    }
+                }
             }
             botOutput.errorEmbedBuilder != null -> {
                 createEmbedResponse(botOutput.errorEmbedBuilder)

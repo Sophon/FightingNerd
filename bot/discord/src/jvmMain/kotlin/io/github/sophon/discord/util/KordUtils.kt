@@ -14,9 +14,6 @@ import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 internal suspend fun MessageCreateEvent.createEmbedMessage(
@@ -38,15 +35,6 @@ internal suspend fun MessageCreateEvent.createEmbedMessage(
     }
 }
 
-internal suspend fun MessageCreateEvent.createPlainMessage(
-    text: String,
-): Message {
-    return message.channel.createMessage {
-        messageReference = message.id
-        allowedMentions { repliedUser = false }
-        content = text
-    }
-}
 
 internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResponse(
     embedBuilder: EmbedBuilder.() -> Unit,
@@ -124,14 +112,6 @@ internal suspend fun GuildChatInputCommandInteractionCreateEvent.createEmbedResp
 
     return interaction.respondPublic {
         content = if (channel == null) "Failed to send" else "Reply sent successfully!"
-    }
-}
-
-internal suspend fun GuildChatInputCommandInteractionCreateEvent.createPlainResponse(
-    text: String
-): PublicInteractionResponseBehavior {
-    return interaction.respondPublic {
-        content = text
     }
 }
 
