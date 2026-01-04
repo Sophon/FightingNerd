@@ -18,6 +18,7 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFe
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.DustLoopWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiMizuumi.MizuumiWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
@@ -103,6 +104,7 @@ internal val featureRegistryModule = module {
     singleOf(::XkoWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::DreamCancelWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::DustLoopWikiDiscordFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::MizuumiWikiDiscordFeature).bind<DiscordRegisteredFeature>()
 
     single<List<DiscordRegisteredFeature>> {
         val config = get<Config>()

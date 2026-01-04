@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v4.0.0] - 2026-01-04
+- Mizuumi wiki
+  - support for MBTL with `alias` and `fd`
+- removed titles from Notes and Details
+
 ## [v3.0.6] - 2026-01-03
 - better Kord logs for disconnects and reconnects
 

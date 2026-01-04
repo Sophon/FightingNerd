@@ -8,4 +8,5 @@ enum class WikiClientFeature(
     Wavu(id = "wavu"),
     Xko(id = "xko"),
     DustLoop("dustloop"),
+    Mizuumi("mizuumi"),
 }

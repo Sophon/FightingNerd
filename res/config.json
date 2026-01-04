@@ -43,6 +43,13 @@
         "GBVSR",
         "DBFZ"
       ]
+    },
+    {
+      "name": "Mizuumi Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "MBTL"
+      ]
     }
   ],
   "adminConfig": {
