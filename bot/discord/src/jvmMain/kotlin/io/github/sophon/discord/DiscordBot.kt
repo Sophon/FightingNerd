@@ -138,7 +138,11 @@ internal class DiscordBotImpl(
         when {
             botOutput.embedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.embedBuilder, imageList = botOutput.images)
+                    invoke(
+                        embedBuilder = botOutput.embedBuilder,
+                        imageList = botOutput.images,
+                        buttons = botOutput.buttons,
+                    )
                 }
             }
             botOutput.plainText != null -> {
@@ -150,7 +154,7 @@ internal class DiscordBotImpl(
             }
             botOutput.errorEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.errorEmbedBuilder)
+                    invoke(embedBuilder = botOutput.errorEmbedBuilder, buttons = botOutput.buttons)
                 }
             }
             botOutput.feedback != null -> {
@@ -196,7 +200,11 @@ internal class DiscordBotImpl(
         when {
             botOutput.embedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.embedBuilder, imageList = botOutput.images)
+                    invoke(
+                        embedBuilder = botOutput.embedBuilder,
+                        imageList = botOutput.images,
+                        buttons = botOutput.buttons,
+                    )
                 }
             }
             botOutput.plainText != null -> {
@@ -208,7 +216,7 @@ internal class DiscordBotImpl(
             }
             botOutput.errorEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.errorEmbedBuilder)
+                    invoke(embedBuilder = botOutput.errorEmbedBuilder, buttons = botOutput.buttons)
                 }
             }
             botOutput.feedback != null -> {
