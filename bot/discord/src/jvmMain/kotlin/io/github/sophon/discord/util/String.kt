@@ -1,8 +1,10 @@
 package io.github.sophon.discord.util
 
 internal fun String.removeTag(): String {
-    return this
-        .substringAfter("@")
-        .substringAfter(" ")
+    return if (contains("@")) {
+        this
+            .substringAfter("@")
+            .substringAfter(" ")
+    } else this
 }
 
