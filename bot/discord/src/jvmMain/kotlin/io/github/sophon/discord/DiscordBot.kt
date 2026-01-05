@@ -99,7 +99,7 @@ internal class DiscordBotImpl(
         try {
             kord.login {
                 @OptIn(PrivilegedIntent::class)
-                intents += Intent.MessageContent
+//                intents += Intent.MessageContent //TODO: enable once verified
 
                 presence {
                     playing("/FD | /HELP | /FEEDBACK")
