@@ -12,8 +12,8 @@ import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField

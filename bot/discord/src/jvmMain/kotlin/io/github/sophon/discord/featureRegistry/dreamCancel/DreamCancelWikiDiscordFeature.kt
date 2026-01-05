@@ -24,9 +24,9 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
-import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.domain.Source
 import io.github.sophon.dreamcancel.domain.DreamCancelFeatureInfo
 import kotlinx.coroutines.CoroutineScope

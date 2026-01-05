@@ -10,6 +10,7 @@ data class BotOutput(
     val images: Images? = null,
     val feedback: Feedback? = null,
     val reply: Reply? = null,
+    val buttons: List<EmbedButton> = listOf(),
 ) {
     data class Images(
         val title: String,
@@ -26,5 +27,10 @@ data class BotOutput(
     data class Reply(
         val embedBuilder: (EmbedBuilder.() -> Unit),
         val target: Source,
+    )
+
+    data class EmbedButton(
+        val label: String,
+        val query: String,
     )
 }
