@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v5.0.1] - 2026-01-05
+- disabled `@bot command query` syntax until verification
+
 ## [v5.0.0] - 2026-01-05
 - Wavu
   - `stance`, `pc`, `homing` and `heat` output embeds have button selectors
