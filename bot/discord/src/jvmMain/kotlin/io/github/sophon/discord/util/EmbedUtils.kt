@@ -1,11 +1,9 @@
 package io.github.sophon.discord.util
 
-import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
-import io.github.sophon.discord.BotError
 import io.github.sophon.discord.MAX_LENGTH_EMBED
 
 internal fun EmbedBuilder.mandatoryField(
