@@ -1,19 +1,24 @@
 package io.github.sophon.discord
 
+import dev.kord.common.Color
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.event.gateway.DisconnectEvent
+import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.Intent
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
+import dev.kord.rest.builder.message.embed
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
+import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.Config
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
@@ -80,10 +85,14 @@ internal class DiscordBotImpl(
         }
 
         kord.on<MessageCreateEvent> {
-            // ignoring other bots, even ourselves. We only serve humans here!
+            // ignoring other bots, even ourselves
             if (message.author?.isBot != false) return@on
 
             handleMessage()
+        }
+
+        kord.on<ButtonInteractionCreateEvent> {
+            handleButton()
         }
 
         //‼️ THIS SUSPENDS UNTIL LOGGED OUT
@@ -123,8 +132,8 @@ internal class DiscordBotImpl(
         )
 
         val result = routeCommandToFeatureUseCase.invoke(
-            source,
-            message.content.lowercase(),
+            source = source,
+            message = message.content.lowercase(),
         )
 
         val botOutput = when(result) {
@@ -138,7 +147,11 @@ internal class DiscordBotImpl(
         when {
             botOutput.embedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.embedBuilder, imageList = botOutput.images)
+                    invoke(
+                        embedBuilder = botOutput.embedBuilder,
+                        imageList = botOutput.images,
+                        buttons = botOutput.buttons,
+                    )
                 }
             }
             botOutput.plainText != null -> {
@@ -150,7 +163,7 @@ internal class DiscordBotImpl(
             }
             botOutput.errorEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.errorEmbedBuilder)
+                    invoke(embedBuilder = botOutput.errorEmbedBuilder, buttons = botOutput.buttons)
                 }
             }
             botOutput.feedback != null -> {
@@ -196,7 +209,11 @@ internal class DiscordBotImpl(
         when {
             botOutput.embedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.embedBuilder, imageList = botOutput.images)
+                    invoke(
+                        embedBuilder = botOutput.embedBuilder,
+                        imageList = botOutput.images,
+                        buttons = botOutput.buttons,
+                    )
                 }
             }
             botOutput.plainText != null -> {
@@ -208,7 +225,7 @@ internal class DiscordBotImpl(
             }
             botOutput.errorEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.errorEmbedBuilder)
+                    invoke(embedBuilder = botOutput.errorEmbedBuilder, buttons = botOutput.buttons)
                 }
             }
             botOutput.feedback != null -> {
@@ -222,6 +239,32 @@ internal class DiscordBotImpl(
                 }
             }
         }
+    }
+
+    private suspend fun ButtonInteractionCreateEvent.handleButton() {
+        val source = Source(
+            username = interaction.user.username,
+            id = interaction.user.data.id.toString(),
+            channelId = interaction.channelId.toString(),
+        )
+        val query = interaction.componentId
+        val response = interaction.deferPublicResponse()
+
+        routeCommandToFeatureUseCase.invoke(source = source, message = query)
+            .onSuccess { botOutput ->
+                response.respond {
+                    botOutput.embedBuilder?.let { embed(it) }
+                }
+            }
+            .onError { error ->
+                response.respond {
+                    embed {
+                        title = "Interaction Failed"
+                        description = error.toString()
+                        color = Color(0x00FF0000)
+                    }
+                }
+            }
     }
 
     private suspend fun createCommandsForTestServer() {

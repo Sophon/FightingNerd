@@ -42,10 +42,9 @@ internal class RouteCommandToFeatureUseCase(
     }
 
     private fun extractFirstWord(query: String): String {
-        val firstIndexOfSpace = query.indexOf(' ')
-        return when (firstIndexOfSpace) {
+        return when (val firstIndexOfSpace = query.indexOf(' ')) {
             -1 -> query.trim()
-            else -> query.substring(0, firstIndexOfSpace).trim()
+            else -> query.take(firstIndexOfSpace).trim()
         }
     }
 
@@ -70,7 +69,7 @@ internal class RouteCommandToFeatureUseCase(
                 query = ""
             }
             else -> {
-                command = fullQuery.substring(0, firstIndexOfSpace).trim()
+                command = fullQuery.take(firstIndexOfSpace).trim()
                 query = fullQuery.substring(firstIndexOfSpace + 1).trim()
             }
         }

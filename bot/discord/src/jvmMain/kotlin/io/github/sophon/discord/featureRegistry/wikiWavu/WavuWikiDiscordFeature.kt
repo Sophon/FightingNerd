@@ -204,7 +204,11 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed("${query.uppercase()} Power Crush", moveList)
+                    embedBuilder = createMoveListEmbed(
+                        category = "${query.uppercase()} Power Crush",
+                        moveList = moveList,
+                    ),
+                    buttons = moveList.toButtons(charName = query),
                 )
             }
     }
@@ -220,7 +224,11 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "${query.uppercase()} Heat", moveList)
+                    embedBuilder = createMoveListEmbed(
+                        category = "${query.uppercase()} Heat",
+                        moveList = moveList,
+                    ),
+                    buttons = moveList.toButtons(charName = query),
                 )
             }
     }
@@ -233,12 +241,15 @@ internal class WavuWikiDiscordFeature(
             wiki = wiki,
             charName = query,
             predicate = { it.t8Properties?.isHoming == true },
-        )
-            .map { moveList ->
-                BotOutput(
-                    embedBuilder = createMoveListEmbed(category = "${query.uppercase()} Homing", moveList)
-                )
-            }
+        ).map { moveList ->
+            BotOutput(
+                embedBuilder = createMoveListEmbed(
+                    category = "${query.uppercase()} Homing",
+                    moveList = moveList,
+                ),
+                buttons = moveList.toButtons(charName = query),
+            )
+        }
     }
 
     private suspend fun searchStanceMoves(
@@ -255,18 +266,26 @@ internal class WavuWikiDiscordFeature(
         return if (stance.isBlank()) {
             getStancesUseCase.invoke(wiki, charName)
                 .map { stanceList ->
+                    val buttons = mutableListOf<BotOutput.EmbedButton>()
+                    var text = ""
+
+                    stanceList.forEachIndexed { index, stance ->
+                        val order = (index + 1).toString()
+                        val query = "stance $charName $stance"
+                        buttons.add(BotOutput.EmbedButton(label = order, query = query))
+                        text += "$order. **${stance.uppercase()}**\n"
+                    }
+
                     BotOutput(
                         embedBuilder = {
                             color = Color(BLUE)
                             mandatoryField(
                                 name = "${charName.uppercase()} stances",
-                                value = stanceList.joinToString(separator = "") { "* ${it.uppercase()}\n" },
+                                value = text,
                             )
-                            footer {
-                                text = featureInfo.name
-                                icon = featureInfo.iconUrl
-                            }
-                        }
+                            featureFooter(featureInfo)
+                        },
+                        buttons = buttons,
                     )
                 }
         } else {
@@ -345,10 +364,15 @@ internal class WavuWikiDiscordFeature(
     ): EmbedBuilder.() -> Unit = {
         color = Color(BLUE)
 
+        val text = moveList
+            .mapIndexed { index, move ->
+                "${index + 1}. **${move.input}**"
+            }
+            .joinToString("\n")
+
         mandatoryField(
             name = "$category moves",
-            value = moveList
-                .joinToString(separator = "") { move -> "* ${move.input}\n" },
+            value = text,
             inline = false,
         )
 
@@ -376,6 +400,13 @@ internal class WavuWikiDiscordFeature(
                 }
                 add(emojified)
             }
+        }
+    }
+
+    private fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton> {
+        return mapIndexed { index, move ->
+            val query = "$charName ${move.input}"
+            BotOutput.EmbedButton(label = (index + 1).toString(), query = query)
         }
     }
 
