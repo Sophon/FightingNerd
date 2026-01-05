@@ -260,7 +260,8 @@ internal class WavuWikiDiscordFeature(
 
                     stanceList.forEachIndexed { index, stance ->
                         val order = (index + 1).toString()
-                        queryList.add(BotOutput.EmbedButton(label = order, query = stance))
+                        val query = "stance $charName $stance"
+                        queryList.add(BotOutput.EmbedButton(label = order, query = query))
                         text += "$order. **${stance.uppercase()}**\n"
                     }
 

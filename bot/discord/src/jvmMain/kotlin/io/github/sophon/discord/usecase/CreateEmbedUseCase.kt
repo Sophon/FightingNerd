@@ -101,7 +101,7 @@ internal class CreateEmbedUseCase {
                 rowButtons.forEach { button ->
                     interactionButton(
                         style = ButtonStyle.Secondary,
-                        customId = button.label,
+                        customId = button.query,
                     ) {
                         label = button.label
                         disabled = false
