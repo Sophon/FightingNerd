@@ -250,8 +250,6 @@ internal class DiscordBotImpl(
         val query = interaction.componentId
         val response = interaction.deferPublicResponse()
 
-        Napier.d(tag = TAG) { "query = $query" }
-
         routeCommandToFeatureUseCase.invoke(source = source, message = query)
             .onSuccess { botOutput ->
                 response.respond {
