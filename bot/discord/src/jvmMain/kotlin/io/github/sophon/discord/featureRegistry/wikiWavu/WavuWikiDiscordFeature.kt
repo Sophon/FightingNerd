@@ -255,18 +255,25 @@ internal class WavuWikiDiscordFeature(
         return if (stance.isBlank()) {
             getStancesUseCase.invoke(wiki, charName)
                 .map { stanceList ->
+                    val queryList = mutableListOf<BotOutput.EmbedButton>()
+                    var text = ""
+
+                    stanceList.forEachIndexed { index, stance ->
+                        val order = (index + 1).toString()
+                        queryList.add(BotOutput.EmbedButton(label = order, query = stance))
+                        text += "$order. **${stance.uppercase()}**\n"
+                    }
+
                     BotOutput(
                         embedBuilder = {
                             color = Color(BLUE)
                             mandatoryField(
                                 name = "${charName.uppercase()} stances",
-                                value = stanceList.joinToString(separator = "") { "* ${it.uppercase()}\n" },
+                                value = text,
                             )
-                            footer {
-                                text = featureInfo.name
-                                icon = featureInfo.iconUrl
-                            }
-                        }
+                            featureFooter(featureInfo)
+                        },
+                        buttons = queryList,
                     )
                 }
         } else {
