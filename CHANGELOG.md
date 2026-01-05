@@ -1,7 +1,8 @@
 # BOT CHANGELOG
 
-## [v5.0.0] - TODO
-- `stance` output embed has a button-selector
+## [v5.0.0] - 2026-01-05
+- Wavu
+  - `stance`, `pc`, `homing` and `heat` output embeds have button selectors
 
 ## [v4.0.1] - 2026-01-04
 - added **1%** chance for embeds to trigger donation
