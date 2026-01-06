@@ -304,7 +304,7 @@ internal class WavuWikiDiscordFeature(
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo)
+        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, BLUE)
             .map { BotOutput(embedBuilder = it) }
     }
 
