@@ -17,7 +17,7 @@ class InMemoryMoveListDB: MoveListDB {
     private val database: MutableMap<String, Map<String, Move>> = mutableMapOf()
     private var insertTimeInstant: Instant? = null
     private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
-    private val moveAliasMap: MutableMap<String, String> = mutableMapOf()
+    private val moveAliasMap: MutableMap<String, MutableMap<String, String>> = mutableMapOf()
 
     override suspend fun fetchMoveListFor(
         charName: String
@@ -36,22 +36,16 @@ class InMemoryMoveListDB: MoveListDB {
         return Result.Success(moveList.values.toList())
     }
 
-    //TODO: investigate why `ak BAD.3H.2` doesn't work unless we ?:
     override suspend fun fetchMoveDataFor(
         charName: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        val characterId = if (database.containsKey(charName)) {
-            charName
-        } else {
-            charNameAliasMap[charName]
-        }
-        if (characterId == null) return Result.Error(WikiError.UnknownCharacter(charName))
+        val characterId = charNameAliasMap[charName] ?: charName
 
         val moveList = database[characterId]
             ?: return Result.Error(WikiError.UnknownCharacter(charName))
 
-        val moveId = moveAliasMap[moveQuery] ?: moveQuery
+        val moveId = moveAliasMap[characterId]?.get(moveQuery) ?: moveQuery
 
         val moveData = moveList[moveId]
             ?: return Result.Error(WikiError.UnknownMove(charName, moveQuery))
@@ -63,26 +57,31 @@ class InMemoryMoveListDB: MoveListDB {
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<WikiError> {
-        val moveMap = buildMap {
-            moveList.forEach { move ->
-                put(move.input, move)
-                moveAliasMap[move.input] = move.input
-                move.aliases.forEach { alias ->
-                    moveAliasMap[alias] = move.input
-                }
-                move.name
-                    ?.lowercase()
-                    ?.let { moveAliasMap[it] = move.input }
+        val moveMap = moveList.associateBy { it.input }
+        database[character.id] = moveMap
+
+        val aliasMap = mutableMapOf<String, String>()
+
+        moveList.forEach { move ->
+            val moveId = move.input
+            aliasMap[moveId] = moveId
+
+            move.aliases.forEach { alias ->
+                aliasMap[alias] = moveId
+            }
+
+            move.name?.lowercase()?.let { name ->
+                aliasMap[name] = moveId
             }
         }
-        database[character.id] = moveMap
+
+        moveAliasMap[character.id] = aliasMap
+
         insertTimeInstant = Clock.System.now()
 
         charNameAliasMap[character.id] = character.id
         character.aliasList.forEach { alias ->
-            if (charNameAliasMap.containsKey(alias).not()) {
-                charNameAliasMap[alias] = character.id
-            }
+            charNameAliasMap.putIfAbsent(alias, character.id)
         }
 
         return Result.Success(Unit)
