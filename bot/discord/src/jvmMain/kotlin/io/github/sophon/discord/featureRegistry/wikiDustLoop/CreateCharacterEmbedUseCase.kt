@@ -38,7 +38,7 @@ internal class CreateCharacterEmbedUseCase {
 
         val properties = character.ggstProperties
 
-        generalProperties(character, fastestMoveList, properties?.umo)
+        generalProperties(character, fastestMoveList, null)
 
         mandatoryField(
             name = "⭐️ CORE",
@@ -54,7 +54,7 @@ internal class CreateCharacterEmbedUseCase {
         mandatoryField(
             name = "👟 MOVEMENT",
             value = buildList {
-                properties?.umo?.takeIf { it.isNotEmpty() }?.let { umo ->
+                character.umo.takeIf { it.isNotEmpty() }?.let { umo ->
                     if (umo.size == 1) {
                         add("* **Unique movement →** ${umo.first()}")
                     } else {
@@ -111,7 +111,7 @@ internal class CreateCharacterEmbedUseCase {
         generalProperties(
             character,
             fastestMoveList,
-            character.dbfzProperties?.umo?.let { listOf(it) },
+            character.umo,
         )
 
         featureFooter(featureInfo)
@@ -126,7 +126,7 @@ internal class CreateCharacterEmbedUseCase {
         generalProperties(
             character,
             fastestMoveList,
-            character.gbvsrProperties?.umo?.let { listOf(it) },
+            character.umo,
         )
 
         character.gbvsrProperties?.apply {
@@ -150,7 +150,7 @@ internal class CreateCharacterEmbedUseCase {
         generalProperties(
             character,
             fastestMoveList,
-            character.bbProperties?.umo?.let { listOf(it) },
+            character.umo,
         )
 
         character.bbProperties?.apply {

@@ -11,6 +11,8 @@ data class Character(
     val aliasList: List<String> = listOf(),
     val images: Images? = null,
 
+    val umo: List<String> = listOf(),
+
     val sf6Properties: SF6Properties? = null,
     val ggstProperties: GGSTProperties? = null,
     val mkProperties: MK1Properties? = null,
@@ -58,7 +60,6 @@ data class Character(
         val bwdDashAirborne: String?,
         val bwdDashDist: String?,
         val fwdDash: String?,
-        val umo: List<String> = listOf(),
         val jumpDuration: String?,
         val highJumpDuration: String?,
         val jumpHeight: String?,
@@ -85,14 +86,12 @@ data class Character(
     @Serializable
     data class DBFZProperties(
         val kiMod: String?,
-        val umo: String?,
     )
 
     @Serializable
     data class GBVSRProperties(
         val prejump: String?,
         val backdash: String?,
-        val umo: String?,
         val walkSpeed: String?,
         val walkSpeedRelative: String?,
         val walkSpeedBack: String?,
@@ -116,6 +115,5 @@ data class Character(
         val preJump: String? = null,
         val backDash: String? = null,
         val forwardDash: String? = null,
-        val umo: String? = null,
     )
 }
