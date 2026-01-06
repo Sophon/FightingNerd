@@ -1,8 +1,9 @@
 # BOT CHANGELOG
 
-## [v5.0.4] - TODO
-- fixed `alias` commands not having color
+## [v5.1.0] - 2026-01-06
 - changed buttons to the Primary style
+- fixed `alias` commands not having color
+- fixed spaces (leading, trailing, middle) for queries
 - Mizuumi - fixed aliases
 - DustLoop - removed spaces from `aliasdb`
 
