@@ -169,7 +169,7 @@ internal class MizuumiWikiDiscordFeature(
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo)
+        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, TEAL)
             .map { BotOutput(embedBuilder = it) }
     }
 

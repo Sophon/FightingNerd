@@ -241,7 +241,7 @@ internal class DustLoopWikiDiscordFeature(
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo)
+        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, RED)
             .map { embedBuilder ->
                 BotOutput(embedBuilder = embedBuilder)
             }
