@@ -6,7 +6,7 @@ import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikimizuumi.FEATURE_URL
 
 internal fun String.toDomain(gameId: String): Character {
-    val idName = this.cleanHtml()
+    val idName = this.cleanHtml().lowercase()
     val displayName = this.cleanHtml()
     val queryName = this.createQueryName()
 
@@ -14,7 +14,7 @@ internal fun String.toDomain(gameId: String): Character {
         id = idName,
         displayName = displayName,
         queryName = queryName,
-        aliasList = displayName.createAliases(),
+        aliasList = idName.createAliases(),
         wikiUrl = "$FEATURE_URL/$gameId/$queryName",
     )
 
@@ -41,7 +41,7 @@ internal fun String.createAliases(): List<String> {
         "hisui & kohaku" -> listOf("maids", "hk")
         "kohaku" -> listOf("ko", "koha")
         "kouma kishima" -> listOf("kouma", "kishima", "ki")
-        "mario gallo bestino" -> listOf("mario", "bestino", "ma")
+        "mario" -> listOf("mario", "bestino", "ma")
         "mash kyrielight" -> listOf("mash", "kyrielight", "mas")
         "michael roa valdamjong" -> listOf("michael", "valdamjong", "roa", "ro")
         "miyako arima" -> listOf("miyako", "arima", "mi")
