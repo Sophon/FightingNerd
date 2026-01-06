@@ -46,6 +46,7 @@ internal class DustLoopWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
+    private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -181,10 +182,15 @@ internal class DustLoopWikiDiscordFeature(
         return when (command) {
             Command.FD -> {
                 var lastError: BotError? = null
-                for ((_, wiki) in wikis) {
-                    when (val result = searchMove(wiki, query)) {
-                        is Result.Success -> return result
-                        is Result.Error -> lastError = result.error
+                for ((gameId, wiki) in wikis) {
+                    val game = Game.fromId(gameId)
+                    if (game == null) {
+                        Result.Error(lastError ?: BotError.UnknownMove(query))
+                    } else {
+                        when (val result = searchMove(wiki, query, game)) {
+                            is Result.Success -> return result
+                            is Result.Error -> lastError = result.error
+                        }
                     }
                 }
                 Result.Error(lastError ?: BotError.UnknownMove(query))
@@ -195,9 +201,10 @@ internal class DustLoopWikiDiscordFeature(
                 searchCharacter(wiki, query)
             }
             Command.FDGG -> {
-                val wiki = wikis[Game.GGST.id]
+                val game = Game.GGST
+                val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+                searchMove(wiki, query, game)
             }
             Command.CHARDB -> {
                 val wiki = wikis[Game.DBFZ.id]
@@ -205,9 +212,10 @@ internal class DustLoopWikiDiscordFeature(
                 searchCharacter(wiki, query)
             }
             Command.FDDB -> {
-                val wiki = wikis[Game.DBFZ.id]
+                val game = Game.DBFZ
+                val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+                searchMove(wiki, query, game)
             }
             Command.ALIASDB -> {
                 val wiki = wikis[Game.DBFZ.id]
@@ -215,14 +223,16 @@ internal class DustLoopWikiDiscordFeature(
                 getCharacterAliases(wiki)
             }
             Command.CHARGB -> {
-                val wiki = wikis[Game.GBVSR.id]
+                val game = Game.GBVSR
+                val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
             Command.FDGB -> {
-                val wiki = wikis[Game.GBVSR.id]
+                val game = Game.GBVSR
+                val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+                searchMove(wiki, query, game)
             }
             Command.CHARBB -> {
                 val wiki = wikis[Game.BBCF.id]
@@ -230,9 +240,10 @@ internal class DustLoopWikiDiscordFeature(
                 searchCharacter(wiki, query)
             }
             Command.FDBB -> {
-                val wiki = wikis[Game.BBCF.id]
+                val game = Game.BBCF
+                val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+                searchMove(wiki, query, game)
             }
             Command.ALIASBB -> {
                 val wiki = wikis[Game.BBCF.id]
@@ -261,6 +272,7 @@ internal class DustLoopWikiDiscordFeature(
     private suspend fun searchMove(
         wiki: WikiClient,
         query: String,
+        game: Game,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
@@ -269,7 +281,7 @@ internal class DustLoopWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    embedBuilder = createMoveEmbed(move),
+                    embedBuilder = createMoveEmbedUseCase.invoke(move, game, featureInfo),
                     images = if (images.size < 2) {
                         null
                     } else {
@@ -368,108 +380,6 @@ internal class DustLoopWikiDiscordFeature(
 
         featureFooter(featureInfo)
     }
-
-    private fun createMoveEmbed(
-        move: Move,
-    ): EmbedBuilder.() -> Unit = {
-        title = move.input
-        url = move.urls.wikiUrl
-        description = if (move.name.isNullOrBlank()) {
-            "**${move.charName}**"
-        } else {
-            "**${move.charName}**: ${move.name.orEmpty()}"
-        }
-        color = Color(RED)
-        move.urls.characterImage?.let { thumbnail { url = it } }
-
-        val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-            ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
-            ?: emptyList()
-
-        images
-            .takeIf { it.size == 1 }
-            ?.let { image = it.first() }
-
-        mandatoryField(name = "Startup", value = move.startup)
-        mandatoryField(name = "Hit", value = move.onHit)
-        mandatoryField(name = "Block", value = move.onBlock)
-        mandatoryField(name = "Active", value = move.active)
-        mandatoryField(name = "Guard", value = move.guard)
-        mandatoryField(name = "Recovery", value = move.recovery)
-
-        optionalField(name = "Damage", value = move.damage)
-        optionalField(name = "Invulnerability", value = move.invulnerability)
-        optionalField(name = "Counter", value = move.onCH)
-
-        optionalField(name = "Level", value = move.getLevel())
-        optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
-        optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
-        optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
-        optionalField(
-            name = "Prorate",
-            value = when {
-                move.ggstProperties?.prorate != null -> move.ggstProperties?.prorate
-                move.bbProperties?.p1 != null || move.bbProperties?.p2 != null -> {
-                    "P1 → ${move.bbProperties?.p1} | P2 → ${move.bbProperties?.p2}"
-                }
-                else -> null
-            }
-        )
-        optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
-        optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
-        optionalField(name = "OD", value = move.bbProperties?.onODR)
-        optionalField(
-            name = "Hit properties",
-            value = move.bbProperties?.run {
-                "ground → $groundHit | air → $airHit | stop → $hitstop"
-            }
-        )
-        optionalField(
-            name = "CH properties",
-            value = move.bbProperties?.run {
-                "ground → $groundCH | air → $airCH | stop → $chStop"
-            }
-        )
-
-        optionalField(
-            name = "Attribute",
-            value = when {
-                move.dbfzProperties?.attribute != null -> move.dbfzProperties?.attribute
-                move.bbProperties?.attribute != null -> move.bbProperties?.attribute
-                else -> null
-            }
-        )
-        optionalField(name = "Smash", value = move.dbfzProperties?.smash)
-        optionalField(name = "Ki gain", value = move.dbfzProperties?.kiGain)
-        optionalField(name = "Prorate", value = move.dbfzProperties?.prorate)
-        optionalField(
-            name = "BlockStun",
-            value = when {
-                move.dbfzProperties?.blockStun != null -> move.dbfzProperties?.blockStun
-                move.bbProperties?.blockstun != null -> move.bbProperties?.blockstun
-                else -> null
-            }
-        )
-        if (move.dbfzProperties?.groundHit != null || move.dbfzProperties?.airHit != null) {
-            optionalField(
-                name = "Hit (ground | air)",
-                value = "${move.dbfzProperties?.groundHit} | ${move.dbfzProperties?.airHit}"
-            )
-        }
-        optionalField(name = "Type", value = move.dbfzProperties?.type)
-        optionalField(name = "Level", value = move.dbfzProperties?.level)
-
-        createNotes(move)
-
-        featureFooter(featureInfo)
-    }
-
-    private fun EmbedBuilder.createNotes(move: Move) = optionalField(
-        name = "📝 NOTES",
-        value = move.notes
-            .joinToString(separator = "") { note -> "* $note\n" },
-        inline = false,
-    )
 
 
     private companion object {
