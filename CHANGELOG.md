@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v5.0.2] - 2026-01-06
+- fixed a bug with wrong move aliases
+
 ## [v5.0.1] - 2026-01-05
 - disabled `@bot command query` syntax until verification
 
