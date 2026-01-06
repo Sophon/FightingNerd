@@ -16,6 +16,7 @@ data class Character(
     val mkProperties: MK1Properties? = null,
     val dbfzProperties: DBFZProperties? = null,
     val gbvsrProperties: GBVSRProperties? = null,
+    val bbProperties: BBProperties? = null,
 ) {
     @Serializable
     data class Images(
@@ -107,5 +108,14 @@ data class Character(
         val hp: String? = null,
         val hpMod: String? = null,
         val throwDmg: String? = null,
+    )
+
+    @Serializable
+    data class BBProperties(
+        val hp: String? = null,
+        val preJump: String? = null,
+        val backDash: String? = null,
+        val forwardDash: String? = null,
+        val umo: String? = null,
     )
 }

@@ -83,7 +83,14 @@ internal fun CharacterListResponseDto.toDomain(
                     dashInitialRelative = dto.relative_dash_initial_speed.toString(),
                     dashAcceleration = dto.dash_acceleration,
                     dashAccelerationRelative = dto.relative_dash_acceleration.toString(),
-                )
+                ),
+                bbProperties = Character.BBProperties(
+                    hp = dto.health,
+                    preJump = dto.prejump,
+                    backDash = dto.backdash,
+                    forwardDash = dto.forwardDash,
+                    umo = dto.umo,
+                ),
             )
         }
 }
