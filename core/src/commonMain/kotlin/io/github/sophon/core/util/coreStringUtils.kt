@@ -6,6 +6,11 @@ fun String.removeWhiteSpace(): String {
     return this.replace("\\s".toRegex(), "")
 }
 
+// squashes multiple whitespaces into one
+fun String.normalizeWhiteSpace(): String {
+    return this.replace(Regex("\\s+"), " ")
+}
+
 fun String.dropFirstAndJoin(delimiter: Char): String {
     return this
         .split(delimiter)

@@ -2,6 +2,7 @@ package io.github.sophon.discord.usecase
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.extractFirstWord
+import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
@@ -18,6 +19,7 @@ internal class RouteCommandToFeatureUseCase(
         val fullQuery = message
             .removeTag()
             .trim()
+            .normalizeWhiteSpace()
             .takeIf { it.isNotBlank() }
             ?: return Result.Error(BotError.InvalidQuery(message))
 
