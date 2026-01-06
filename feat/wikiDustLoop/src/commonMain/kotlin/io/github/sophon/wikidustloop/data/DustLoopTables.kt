@@ -17,7 +17,7 @@ internal object DustLoopTables {
             character = TABLE_GBVSR_CHARACTERS,
             moves = TABLE_GBVSR_MOVE_LIST,
         ),
-        Game.BBCF to QueryTable(
+        Game.BBCF.id to QueryTable(
             character = TABLE_BBCF_CHARACTERS,
             moves = TABLE_BBCF_MOVE_LIST,
         )
