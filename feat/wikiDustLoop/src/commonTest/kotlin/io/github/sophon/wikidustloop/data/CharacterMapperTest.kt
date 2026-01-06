@@ -247,7 +247,10 @@ class CharacterMapperTest {
     fun `create aliases for BB handles dots`() {
         // given
         val char = "Celica A. Mercury"
-        val expected = listOf("celica")
+        val expected = listOf(
+            "celica",
+            "ce",
+        )
 
         // when
         val result = char.createAliases(bb)
@@ -260,7 +263,10 @@ class CharacterMapperTest {
     fun `create aliases for BB handles hyphens`() {
         // given
         val char = "Lambda-11"
-        val expected = listOf("lambda")
+        val expected = listOf(
+            "lambda",
+            "rm",
+        )
 
         // when
         val result = char.createAliases(bb)
