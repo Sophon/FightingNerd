@@ -126,6 +126,32 @@ class CharacterMapperTest {
     }
 
     @Test
+    fun `formWikiUrl handles apostrophe`() {
+        // given
+        val char = "Susano&#039;o"
+        val expected = "https://www.dustloop.com/w/BBCF/Susano%27o"
+
+        // when
+        val result = char.formWikiUrl(Game.BBCF.id)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `formWikiUrl handles dots`() {
+        // given
+        val char = "Valkenhayn R. Hellsing"
+        val expected = "https://www.dustloop.com/w/BBCF/Valkenhayn_R._Hellsing"
+
+        // when
+        val result = char.formWikiUrl(Game.BBCF.id)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `formWikiUrl handles special symbols`() {
         //given
         val char = "A.B.A"
