@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v5.0.3] - 2026-01-06
+- Mizuumi
+  - fixed a bug with character names/aliases
+  - fixed hitbox image issues not merging
+
 ## [v5.0.2] - 2026-01-06
 - fixed a bug with wrong move aliases
 
