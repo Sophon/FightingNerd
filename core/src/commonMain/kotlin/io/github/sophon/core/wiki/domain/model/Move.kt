@@ -34,6 +34,7 @@ data class Move(
     val gbvsrProperties: GBVSRProperties? = null,
     val mkProperties: MKProperties? = null,
     val mbProperties: MBProperties? = null,
+    val bbProperties: BBProperties? = null,
 ) {
     @Serializable
     data class Urls(
@@ -158,5 +159,25 @@ data class Move(
         val attribute: String? = null,
         val landing: String? = null,
         val overall: String? = null,
+    )
+
+    @Serializable
+    data class BBProperties(
+        val onODR: String? = null,
+        val attribute: String? = null,
+        val p1: String? = null,
+        val p2: String? = null,
+        val starter: String? = null,
+        val level: String? = null,
+        val blockstun: String? = null,
+        val groundHit: String? = null,
+        val airHit: String? = null,
+        val groundCH: String? = null,
+        val airCH: String? = null,
+        val blockstop: String? = null,
+        val hitstop: String? = null,
+        val chStop: String? = null,
+        val cancelTiming: String? = null,
+        val type: String? = null
     )
 }

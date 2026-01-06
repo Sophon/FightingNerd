@@ -115,7 +115,6 @@ internal class DustLoopDataSourceImpl(
                     "nav_image"
                 )
             }
-
             DustLoopTables.TABLE_GBVSR_CHARACTERS -> {
                 listOf(
                     "name",
@@ -133,6 +132,18 @@ internal class DustLoopDataSourceImpl(
                     "relative_backwalk_speed",
                     "relative_dash_initial_speed",
                     "relative_dash_acceleration"
+                )
+            }
+            DustLoopTables.TABLE_BBCF_CHARACTERS -> {
+                listOf(
+                    "name",
+                    "health",
+                    "prejump",
+                    "backdash",
+                    "forwarddash",
+                    "umo",
+                    "portrait",
+                    "icon"
                 )
             }
             else -> emptyList()
@@ -220,6 +231,42 @@ internal class DustLoopDataSourceImpl(
                     "invuln",
                     "cooldown",
                     "cls",
+                    "images",
+                    "caption",
+                    "hitboxes",
+                    "hitboxCaption",
+                    "type",
+                    "notes"
+                )
+            }
+            DustLoopTables.TABLE_BBCF_MOVE_LIST -> {
+                listOf(
+                    "chara",
+                    "name",
+                    "input",
+                    "damage",
+                    "guard",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "onBlock",
+                    "onODR",
+                    "attribute",
+                    "invuln",
+                    "cancel",
+                    "p1",
+                    "p2",
+                    "starter",
+                    "level",
+                    "blockstun",
+                    "groundHit",
+                    "airHit",
+                    "groundCH",
+                    "airCH",
+                    "blockstop",
+                    "hitstop",
+                    "CHstop",
+                    "cancelTiming",
                     "images",
                     "caption",
                     "hitboxes",

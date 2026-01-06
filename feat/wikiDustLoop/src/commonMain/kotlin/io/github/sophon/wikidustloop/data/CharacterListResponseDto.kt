@@ -23,6 +23,7 @@ internal data class CharacterDto(
     val umo: String? = null,
     val aliases: String? = null,
 
+    //gg
     val defense: String? = null,
     val guts: String? = null,
     val guardBalance: String? = null,
@@ -32,6 +33,8 @@ internal data class CharacterDto(
     val backdashInvuln: String? = null,
     val backdashAirborne: String? = null,
     val backdashDistance: String? = null,
+
+    //db
     @SerialName("forwarddash")
     val forwardDash: String? = null,
     @SerialName("jump duration")
@@ -76,9 +79,9 @@ internal data class CharacterDto(
     val boostAttack: String? = null,
     @SerialName("boost defense")
     val boostDefense: String? = null,
-
     val kimod: String? = null,
 
+    //gbvs
     val walk_speed: Float? = null,
     val backwalk_speed: Float? = null,
     val dash_initial_speed: Float? = null,
@@ -87,4 +90,7 @@ internal data class CharacterDto(
     val relative_backwalk_speed: Float? = null,
     val relative_dash_initial_speed: Float? = null,
     val relative_dash_acceleration: Float? = null,
+
+    //bb
+    val health: String? = null,
 )

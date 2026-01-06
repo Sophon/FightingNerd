@@ -82,6 +82,24 @@ internal fun MoveListResponseDto.toDomain(
                 cls = dto.cls,
                 type = dto.type,
             ),
+            bbProperties = Move.BBProperties(
+                onODR = dto.onODR,
+                attribute = dto.attribute,
+                p1 = dto.p1,
+                p2 = dto.p2,
+                starter = dto.starter,
+                level = dto.level,
+                blockstun = dto.blockstun,
+                groundHit = dto.groundHit,
+                airHit = dto.airHit,
+                groundCH = dto.groundCH,
+                airCH = dto.airCH,
+                blockstop = dto.blockstop,
+                hitstop = dto.hitstop,
+                chStop = dto.CHstop,
+                cancelTiming = dto.cancelTiming,
+                type = dto.type,
+            )
         )
     }
 }
