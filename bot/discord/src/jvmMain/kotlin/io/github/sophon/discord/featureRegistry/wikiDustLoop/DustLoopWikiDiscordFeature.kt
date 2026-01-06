@@ -118,7 +118,7 @@ internal class DustLoopWikiDiscordFeature(
             description = "Character aliases",
         ),
         SupportedCommand(
-            command = Command.CHARDB,
+            command = Command.CHARBB,
             description = "BBCF character data",
             arguments = listOf(
                 SupportedCommand.Argument(
