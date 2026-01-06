@@ -1,6 +1,7 @@
 package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikidustloop.WIKI_BASE_URL
 
@@ -21,7 +22,9 @@ internal fun CharacterListResponseDto.toDomain(
 //        .filterOutJunkCharacters()
         .map { query ->
             val dto = query.title
-            val queryName = dto.name.formCharacterQueryName()
+            val queryName = dto.name
+                ?.cleanHtml()
+                .formCharacterQueryName()
 
             Character(
                 id = dto.name.formCharacterId(),
