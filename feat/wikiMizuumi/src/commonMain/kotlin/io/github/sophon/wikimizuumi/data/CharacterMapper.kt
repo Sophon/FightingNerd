@@ -15,7 +15,7 @@ internal fun String.toDomain(gameId: String): Character {
         displayName = displayName,
         queryName = queryName,
         aliasList = idName.createAliases(),
-        wikiUrl = "$FEATURE_URL/$gameId/$queryName",
+        wikiUrl = FEATURE_URL,
     )
 
     return char
