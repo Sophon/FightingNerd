@@ -55,6 +55,7 @@ enum class Command {
     FDDB,
     FDGB,
     ALIASDB,
+    ALIASBB,
     CHARBB,
     FDBB,
 

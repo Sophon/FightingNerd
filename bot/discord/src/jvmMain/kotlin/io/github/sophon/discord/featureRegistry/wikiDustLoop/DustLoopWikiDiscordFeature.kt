@@ -67,7 +67,7 @@ internal class DustLoopWikiDiscordFeature(
     override val otherCommands = listOf(
         SupportedCommand(
             command = Command.CHARGG,
-            description = "GGST character data",
+            description = "GG character data",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -77,7 +77,7 @@ internal class DustLoopWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.FDGG,
-            description = "GGST frame data",
+            description = "GG frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -91,7 +91,7 @@ internal class DustLoopWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.CHARDB,
-            description = "DBFZ character data",
+            description = "DB character data",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -101,7 +101,7 @@ internal class DustLoopWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.FDDB,
-            description = "DBFZ frame data",
+            description = "DB frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -115,11 +115,11 @@ internal class DustLoopWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.ALIASDB,
-            description = "Character aliases",
+            description = "DB character aliases",
         ),
         SupportedCommand(
             command = Command.CHARBB,
-            description = "BBCF character data",
+            description = "BB character data",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -129,7 +129,7 @@ internal class DustLoopWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.FDBB,
-            description = "BBCF frame data",
+            description = "BB frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -140,6 +140,10 @@ internal class DustLoopWikiDiscordFeature(
                     description = "Move input"
                 )
             ),
+        ),
+        SupportedCommand(
+            command = Command.ALIASBB,
+            description = "BB character aliases",
         ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
@@ -205,6 +209,11 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
+            Command.ALIASDB -> {
+                val wiki = wikis[Game.DBFZ.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                getCharacterAliases(wiki)
+            }
             Command.CHARGB -> {
                 val wiki = wikis[Game.GBVSR.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
@@ -225,8 +234,8 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
-            Command.ALIASDB -> {
-                val wiki = wikis[Game.DBFZ.id]
+            Command.ALIASBB -> {
+                val wiki = wikis[Game.BBCF.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
             }
