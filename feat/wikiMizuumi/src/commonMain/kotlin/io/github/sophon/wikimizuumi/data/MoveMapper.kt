@@ -1,12 +1,10 @@
 package io.github.sophon.wikimizuumi.data
 
-import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.wikimizuumi.FEATURE_URL
 import io.github.sophon.wikimizuumi.WIKI_BASE_URL
 
 internal fun MoveListResponseDto.toDomain(
@@ -15,6 +13,7 @@ internal fun MoveListResponseDto.toDomain(
 ): Map<Character, List<Move>> {
     return cargoquery
         .groupBy { it.title.chara }
+        .filter { it.value.size >= 10 }
         .map { (charName, moveDtoList) ->
             val character = charName.toDomain(gameId)
             val moveList = moveDtoList.map {
@@ -47,7 +46,7 @@ internal fun MoveDto.toDomain(
         guard = guard?.cleanHtml(),
         invulnerability = invul?.cleanHtml(),
         urls = Move.Urls(
-            characterWiki = character.wikiUrl,
+            wikiUrl = character.wikiUrl,
             hitboxImageList = hitboxes
                 .orEmpty()
                 .split(",")
