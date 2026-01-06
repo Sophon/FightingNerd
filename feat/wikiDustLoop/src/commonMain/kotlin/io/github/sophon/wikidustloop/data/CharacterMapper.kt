@@ -121,7 +121,9 @@ internal fun String?.createAliases(
 ): List<String> {
     return buildList {
         dtoAliases?.let { aliases ->
-            aliases.split(";").forEach { add(it.lowercase()) }
+            aliases.split(";", ",").forEach {
+                add(it.replace(" ", "").lowercase())
+            }
         }
 
         if (gameId != Game.DBFZ.id) {

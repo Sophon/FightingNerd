@@ -3,6 +3,8 @@
 ## [v5.0.4] - TODO
 - fixed `alias` commands not having color
 - changed buttons to the Primary style
+- Mizuumi - fixed aliases
+- DustLoop - removed spaces from `aliasdb`
 
 ## [v5.0.3] - 2026-01-06
 - Mizuumi

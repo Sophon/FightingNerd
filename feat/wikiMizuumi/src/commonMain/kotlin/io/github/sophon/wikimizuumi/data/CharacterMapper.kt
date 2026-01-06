@@ -45,10 +45,10 @@ internal fun String.createAliases(): List<String> {
         "mash kyrielight" -> listOf("mash", "kyrielight", "mas")
         "michael roa valdamjong" -> listOf("michael", "valdamjong", "roa", "ro")
         "miyako arima" -> listOf("miyako", "arima", "mi")
-        "neco-arc" -> listOf("neco", "arc", "ne")
+        "neco-arc" -> listOf("neco", "narc", "ne")
         "noel" -> listOf("no")
         "powered ciel" -> listOf("powered", "pciel", "pc")
-        "red arcueid" -> listOf("red", "warc", "ar", "re")
+        "red arcueid" -> listOf("red", "warc", "re")
         "saber" -> listOf("sa")
         "shiki tohno" -> listOf("shiki", "sh", "tony")
         "monte cristo" -> {
