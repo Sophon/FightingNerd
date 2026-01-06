@@ -47,6 +47,7 @@ internal class DustLoopWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
+    private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -196,9 +197,10 @@ internal class DustLoopWikiDiscordFeature(
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
             Command.CHARGG -> {
-                val wiki = wikis[Game.GGST.id]
+                val game = Game.GGST
+                val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query)
+                searchCharacter(wiki, query, game)
             }
             Command.FDGG -> {
                 val game = Game.GGST
@@ -207,9 +209,10 @@ internal class DustLoopWikiDiscordFeature(
                 searchMove(wiki, query, game)
             }
             Command.CHARDB -> {
-                val wiki = wikis[Game.DBFZ.id]
+                val game = Game.DBFZ
+                val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query)
+                searchCharacter(wiki, query, game)
             }
             Command.FDDB -> {
                 val game = Game.DBFZ
@@ -226,7 +229,7 @@ internal class DustLoopWikiDiscordFeature(
                 val game = Game.GBVSR
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query)
+                searchCharacter(wiki, query, game)
             }
             Command.FDGB -> {
                 val game = Game.GBVSR
@@ -235,9 +238,10 @@ internal class DustLoopWikiDiscordFeature(
                 searchMove(wiki, query, game)
             }
             Command.CHARBB -> {
-                val wiki = wikis[Game.BBCF.id]
+                val game = Game.BBCF
+                val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query)
+                searchCharacter(wiki, query, game)
             }
             Command.FDBB -> {
                 val game = Game.BBCF
@@ -261,11 +265,19 @@ internal class DustLoopWikiDiscordFeature(
 
     private suspend fun searchCharacter(
         wiki: WikiClient,
-        query: String
+        query: String,
+        game: Game,
     ): Result<BotOutput, BotError> {
         return getCharacterUseCase.invoke(wiki = wiki, charName = query)
             .map { (character, fastestMoveList) ->
-                BotOutput(embedBuilder = createCharacterEmbed(character, fastestMoveList))
+                BotOutput(
+                    embedBuilder = createCharacterEmbedUseCase.invoke(
+                        character,
+                        fastestMoveList,
+                        game,
+                        featureInfo,
+                    )
+                )
             }
     }
 
@@ -300,85 +312,6 @@ internal class DustLoopWikiDiscordFeature(
             .map { embedBuilder ->
                 BotOutput(embedBuilder = embedBuilder)
             }
-    }
-
-    private fun createCharacterEmbed(
-        character: Character,
-        fastestMoveList: List<Move>,
-    ): EmbedBuilder.() -> Unit = {
-        title = character.displayName
-        url = character.wikiUrl
-        color = Color(RED)
-
-        character.images?.iconUrl?.let { iconUrl ->
-            thumbnail { url = iconUrl }
-        }
-
-        val properties = character.ggstProperties
-        val moves = fastestMoveList.joinToString(", ") { it.input }
-        val startup = fastestMoveList.first().startup.orDash()
-
-        mandatoryField(
-            name = "⭐️ CORE",
-            value = buildList {
-                add("* **Fastest normal →** $moves ($startup)")
-                add("* **Defense →** ${properties?.defense}")
-                add("* **Guts →** ${properties?.guts}")
-                add("* **Guard balance →** ${properties?.guardBalance}")
-                add("* **Boost ATT | DEF** → ${properties?.boostAttack} | ${properties?.boostDefense}")
-            }.joinToString("\n"),
-            inline = false,
-        )
-
-        mandatoryField(
-            name = "👟 MOVEMENT",
-            value = buildList {
-                properties?.umo?.takeIf { it.isNotEmpty() }?.let { umo ->
-                    if (umo.size == 1) {
-                        add("* **Unique movement →** ${umo.first()}")
-                    } else {
-                        add("* **Unique movement →** ")
-                        umo.forEach { add("   * $it") }
-                    }
-                }
-                add("* **Backdash →** ${properties?.bwdDash}")
-                add("   * **Distance →** ${properties?.bwdDashDist}")
-                add("   * **Duration →** ${properties?.bwdDashDuration}")
-                add("   * **Invulnerability →** ${properties?.bwdDashInvulnerability}")
-                properties?.fwdDash?.let { add("* **Forward dash →** $it") }
-                add("* **Initial speed →** ${properties?.dashInitialSpd}")
-                properties?.dashAcceleration?.let { add("* **Acceleration →** $it") }
-                properties?.movementTension?.let { add("* **Tension →** $it") }
-                properties?.dashFriction?.let { add("* **Friction →** $it") }
-                add("* **Walk →** ← ${properties?.walkSpd} | ${properties?.bwdWalkSpd} →")
-            }.joinToString("\n"),
-            inline = false,
-        )
-
-        mandatoryField(
-            name = "🦘 JUMP",
-            value = buildList {
-                add("* **Prejump →** ${properties?.prejump}")
-                add("* **Height (high) →** ${properties?.jumpHeight} (${properties?.highJumpHeight})")
-                add("* **Duration (high) →** ${properties?.jumpDuration} (${properties?.highJumpDuration})")
-                add("* **Gravity (high) →** ${properties?.jumpGravity} (${properties?.highJumpGravity})")
-                properties?.jumpTension?.let { add("* **Tension →** $it") }
-            }.joinToString("\n"),
-            inline = false,
-        )
-
-        mandatoryField(
-            name = "💨 AIRDASH",
-            value = buildList {
-                add("* **IAD →** ${properties?.earliestIAD}")
-                add("* **Distance | Duration →** ${properties?.adDist} | ${properties?.adDuration}")
-                add("* **B Distance | Duration →** ${properties?.abdDist} | ${properties?.abdDuration}")
-                properties?.airDashTension?.let { add("* **Tension →** $it") }
-            }.joinToString("\n"),
-            inline = false,
-        )
-
-        featureFooter(featureInfo)
     }
 
 
