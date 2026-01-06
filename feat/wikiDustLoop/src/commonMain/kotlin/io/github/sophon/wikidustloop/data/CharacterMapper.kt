@@ -151,13 +151,7 @@ internal fun String?.createAliases(
     return when (game) {
         Game.GGST -> this.createGGAliases()
         Game.GBVSR -> listOf(this.substringBefore(" ").lowercase())
-        Game.BBCF -> {
-            val alias = this
-                .split(' ', '-')
-                .first()
-                .lowercase()
-            listOf(alias)
-        }
+        Game.BBCF -> this.createBBAliases()
         else -> listOf()
     }
 }
@@ -193,6 +187,65 @@ private fun String?.createGGAliases(): List<String> {
             }
         }
     }
+}
+
+fun String?.createBBAliases(): List<String> {
+    if (this.isNullOrBlank()) return emptyList()
+
+    val bbCodeMap = mapOf(
+        "ragna" to "rg",
+        "jin" to "jn",
+        "noel" to "no",
+        "rachel" to "rc",
+        "taokaka" to "tk",
+        "tager" to "tg",
+        "litchi" to "lc",
+        "arakune" to "ar",
+        "bang" to "bn",
+        "carl" to "ca",
+        "hakumen" to "ha",
+        "nu" to "ny",
+        "tsubaki" to "tb",
+        "hazama" to "hz",
+        "mu" to "mu",
+        "makoto" to "mk",
+        "valkenhayn" to "vh",
+        "platinum" to "pt",
+        "relius" to "rl",
+        "izayoi" to "iz",
+        "amane" to "am",
+        "bullet" to "bl",
+        "azrael" to "az",
+        "kagura" to "kg",
+        "kokonoe" to "kk",
+        "terumi" to "tm",
+        "yuuki" to "tm",
+        "celica" to "ce",
+        "lambda" to "rm",
+        "hibiki" to "hb",
+        "nine" to "ph",
+        "naoto" to "nt",
+        "izanami" to "mi",
+        "susano" to "su",
+        "susanoo" to "su",
+        "es" to "es",
+        "mai" to "ma",
+        "jubei" to "jb",
+        "iron" to "tg",
+    )
+
+    val firstName = this
+        .decodeHtmlEntities()
+        .split(' ', '-')
+        .first()
+        .lowercase()
+
+    val code = bbCodeMap[firstName]
+
+    return buildList {
+        add(firstName)
+        code?.let { add(it) }
+    }.distinct()
 }
 
 internal fun String?.toClickable(): List<String> {
