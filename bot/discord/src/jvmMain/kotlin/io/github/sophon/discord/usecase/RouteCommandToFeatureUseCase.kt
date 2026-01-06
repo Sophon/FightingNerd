@@ -19,7 +19,7 @@ internal class RouteCommandToFeatureUseCase(
             .takeIf { it.isNotBlank() }
             ?: return Result.Error(BotError.InvalidQuery(message))
 
-        val firstWord = extractFirstWord(fullQuery)
+        val firstWord = fullQuery.extractFirstWord()
 
         return if (firstWord.isCommand()) {
             val (commandString, query) = formatQuery(fullQuery)
@@ -39,13 +39,6 @@ internal class RouteCommandToFeatureUseCase(
             commandString,
             query,
         )
-    }
-
-    private fun extractFirstWord(query: String): String {
-        return when (val firstIndexOfSpace = query.indexOf(' ')) {
-            -1 -> query.trim()
-            else -> query.take(firstIndexOfSpace).trim()
-        }
     }
 
     private fun String.isCommand(): Boolean {

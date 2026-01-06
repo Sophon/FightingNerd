@@ -1,13 +1,12 @@
 package io.github.sophon.core.util
 
 import assertk.assertThat
-import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isFalse
 import assertk.assertions.isTrue
 import kotlin.test.Test
 
-class StringExtensionsTest {
+class CoreStringUtilsTest {
     //region Whitespace
     @Test
     fun `removeWhiteSpace removes all spaces`() {
@@ -714,6 +713,7 @@ class StringExtensionsTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+    //endregion
 
     @Test
     fun `removeAccents handles Spanish characters`() {
@@ -887,6 +887,34 @@ class StringExtensionsTest {
 
         //when
         val result = characterName.createAliases()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region extract first word
+    @Test
+    fun `extract first word handles only word`() {
+        // given
+        val string = "query"
+        val expected = "query"
+
+        // when
+        val result = string.extractFirstWord()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `extract first word handles trailing spaces`() {
+        // given
+        val string = "    ak f21"
+        val expected = "ak"
+
+        // when
+        val result = string.extractFirstWord()
 
         //then
         assertThat(result).isEqualTo(expected)

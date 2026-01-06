@@ -143,3 +143,9 @@ fun String.createAliases(): List<String> {
 }
 
 fun String.capitalize(): String = replaceFirstChar { it.uppercase() }
+
+fun String.extractFirstWord(): String {
+    return this
+        .trim()
+        .substringBefore(' ')
+}
