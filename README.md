@@ -60,6 +60,7 @@ graph LR
         cotw[Fatal Fury: City of the Wolves]
         xko[2XKO]
         melty[Melty Blood: Type Lumina]
+        bbcf[BlazBlue: Central Fiction]
     end
 
     subgraph Ranked service
@@ -91,6 +92,7 @@ graph LR
     dustloop --> ggst
     dustloop --> dbfz
     dustloop --> gbvsr
+    dustloop --> bbcf
     2xko --> xko
     dreamcancel --> kof15
     dreamcancel --> cotw
@@ -118,6 +120,7 @@ graph LR
     style dbfz fill:green, color:#fff
     style gbvsr fill:green, color:#fff
     style melty fill:green, color:#fff
+    style bbcf fill:green, color:#fff
   ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
