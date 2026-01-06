@@ -6,7 +6,8 @@ import io.github.sophon.core.feature.Game
 import kotlin.test.Test
 
 class CharacterMapperTest {
-    val gameId = Game.GGST.id
+    val gg = Game.GGST.id
+    val bb = Game.BBCF.id
     
     //region ID
     @Test
@@ -173,7 +174,7 @@ class CharacterMapperTest {
         val expected = listOf<String>()
         
         //when
-        val result = char.createAliases(gameId)
+        val result = char.createAliases(gg)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -190,7 +191,7 @@ class CharacterMapperTest {
         )
 
         //when
-        val result = char.createAliases(gameId)
+        val result = char.createAliases(gg)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -205,8 +206,8 @@ class CharacterMapperTest {
         val expected2 = listOf<String>()
         
         //when
-        val result1 = char1.createAliases(gameId)
-        val result2 = char2.createAliases(gameId)
+        val result1 = char1.createAliases(gg)
+        val result2 = char2.createAliases(gg)
 
         //then
         assertThat(result1).isEqualTo(expected1)
@@ -223,7 +224,7 @@ class CharacterMapperTest {
         )
 
         //when
-        val result = char.createAliases(gameId)
+        val result = char.createAliases(gg)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -233,13 +234,37 @@ class CharacterMapperTest {
     fun `createAliases removes numbers`() {
         //given
         val char = "Zato-1"
-        val expected = listOf(
-            "zato",
-        )
+        val expected = listOf("zato")
 
         //when
-        val result = char.createAliases(gameId)
+        val result = char.createAliases(gg)
 
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `create aliases for BB handles dots`() {
+        // given
+        val char = "Celica A. Mercury"
+        val expected = listOf("celica")
+
+        // when
+        val result = char.createAliases(bb)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `create aliases for BB handles hyphens`() {
+        // given
+        val char = "Lambda-11"
+        val expected = listOf("lambda")
+
+        // when
+        val result = char.createAliases(bb)
+        
         //then
         assertThat(result).isEqualTo(expected)
     }
