@@ -117,6 +117,30 @@ internal class DustLoopWikiDiscordFeature(
             command = Command.ALIASDB,
             description = "Character aliases",
         ),
+        SupportedCommand(
+            command = Command.CHARDB,
+            description = "BBCF character data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
+        SupportedCommand(
+            command = Command.FDBB,
+            description = "BBCF frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
+                )
+            ),
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -188,6 +212,16 @@ internal class DustLoopWikiDiscordFeature(
             }
             Command.FDGB -> {
                 val wiki = wikis[Game.GBVSR.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query)
+            }
+            Command.CHARBB -> {
+                val wiki = wikis[Game.BBCF.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchCharacter(wiki, query)
+            }
+            Command.FDBB -> {
+                val wiki = wikis[Game.BBCF.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
@@ -362,15 +396,51 @@ internal class DustLoopWikiDiscordFeature(
         optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
         optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
         optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
-        optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
+        optionalField(
+            name = "Prorate",
+            value = when {
+                move.ggstProperties?.prorate != null -> move.ggstProperties?.prorate
+                move.bbProperties?.p1 != null || move.bbProperties?.p2 != null -> {
+                    "P1 → ${move.bbProperties?.p1} | P2 → ${move.bbProperties?.p2}"
+                }
+                else -> null
+            }
+        )
         optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
         optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
+        optionalField(name = "OD", value = move.bbProperties?.onODR)
+        optionalField(
+            name = "Hit properties",
+            value = move.bbProperties?.run {
+                "ground → $groundHit | air → $airHit | stop → $hitstop"
+            }
+        )
+        optionalField(
+            name = "CH properties",
+            value = move.bbProperties?.run {
+                "ground → $groundCH | air → $airCH | stop → $chStop"
+            }
+        )
 
-        optionalField(name = "Attribute", value = move.dbfzProperties?.attribute)
+        optionalField(
+            name = "Attribute",
+            value = when {
+                move.dbfzProperties?.attribute != null -> move.dbfzProperties?.attribute
+                move.bbProperties?.attribute != null -> move.bbProperties?.attribute
+                else -> null
+            }
+        )
         optionalField(name = "Smash", value = move.dbfzProperties?.smash)
         optionalField(name = "Ki gain", value = move.dbfzProperties?.kiGain)
         optionalField(name = "Prorate", value = move.dbfzProperties?.prorate)
-        optionalField(name = "BlockStun", value = move.dbfzProperties?.blockStun)
+        optionalField(
+            name = "BlockStun",
+            value = when {
+                move.dbfzProperties?.blockStun != null -> move.dbfzProperties?.blockStun
+                move.bbProperties?.blockstun != null -> move.bbProperties?.blockstun
+                else -> null
+            }
+        )
         if (move.dbfzProperties?.groundHit != null || move.dbfzProperties?.airHit != null) {
             optionalField(
                 name = "Hit (ground | air)",
