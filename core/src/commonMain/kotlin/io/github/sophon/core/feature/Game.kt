@@ -64,5 +64,11 @@ enum class Game(
         id = "MBTL",
         iconUrl = "https://i.imgur.com/E6O7DMi.png",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL"
-    )
+    );
+
+    companion object {
+        fun fromId(id: String): Game? {
+            return entries.find { it.id == id }
+        }
+    }
 }
