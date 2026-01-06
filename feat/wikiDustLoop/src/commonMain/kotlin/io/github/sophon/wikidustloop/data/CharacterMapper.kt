@@ -2,7 +2,10 @@ package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.decodeHtmlEntities
+import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.wikidustloop.BASE_URL
 import io.github.sophon.wikidustloop.WIKI_BASE_URL
 
 /**
@@ -121,8 +124,14 @@ internal fun String?.formCharacterQueryName(): String {
 }
 
 internal fun String?.formWikiUrl(gameId: String): String {
-    val formatted = this.orEmpty().replace(" ", "_")
-    return "$WIKI_BASE_URL/$gameId/$formatted"
+    val formatted = this.orEmpty()
+        .replace(" ", "_")
+        .decodeHtmlEntities()
+        .urlEncode()
+    val game = Game.fromId(gameId)
+    val url = "${game?.wikiUrl ?: BASE_URL}/$formatted"
+
+    return url
 }
 
 internal fun String?.createAliases(
@@ -216,13 +225,6 @@ internal fun String?.createAliases(
     }
 }
 
-/**
- * [[GGST/Baiken#Kabari|[H] Kabari follow-up]] -> [[H] Kabari follow-up](https://www.dustloop.com/w/GGST/Baiken#Kabari)
- * Step-Dash (15F), [[GGST/Johnny#Mist Finer Stance|Mist Finer Dash]], [[GGST/Johnny#Vault|Vault]] ->
- *  * Step-Dash (15F)
- *  * [Mist Finer Dash](https://www.dustloop.com/w/GGST/Johnny#Mist_Finer_Stance)
- *  * [Vault](https://www.dustloop.com/w/GGST/Johnny#Vault)
- */
 internal fun String?.toClickable(): List<String> {
     if (isNullOrBlank()) return listOf()
 
