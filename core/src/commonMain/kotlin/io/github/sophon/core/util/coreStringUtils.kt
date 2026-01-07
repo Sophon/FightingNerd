@@ -177,3 +177,16 @@ fun String.chunkByNewLines(delimiter: String, maxLength: Int): List<String> {
 
     return chunks
 }
+
+fun String.createAliasesFromSlash(): List<String> {
+    val parts = split("/")
+    if (parts.size < 2) return listOf()
+
+    val motion = parts.first().dropLast(1)
+
+    val aliases = parts.map { button ->
+        "$motion${button.last()}"
+    }
+
+    return aliases
+}

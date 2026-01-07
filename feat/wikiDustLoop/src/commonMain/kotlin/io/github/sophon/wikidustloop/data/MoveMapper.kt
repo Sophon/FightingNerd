@@ -2,6 +2,7 @@ package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.createAliasesFromSlash
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -139,7 +140,7 @@ internal fun String?.formAliases(gameId: String): List<String> {
 
     return when (Game.fromId(gameId)) {
         Game.GBVSR -> createNarmayaStanceAliases()
-        else -> createSlashAliases()
+        else -> createAliasesFromSlash()
     }
 }
 
@@ -149,17 +150,4 @@ private fun String.createNarmayaStanceAliases(): List<String> {
     val (base, suffix) = match.destructured
 
     return listOf("${suffix.lowercase()}.${base.lowercase()}")
-}
-
-private fun String.createSlashAliases(): List<String> {
-    val parts = split("/")
-    if (parts.size < 2) return listOf()
-
-    val motion = parts.first().dropLast(1)
-
-    val aliases = parts.map { button ->
-        "$motion${button.last()}"
-    }
-
-    return aliases
 }
