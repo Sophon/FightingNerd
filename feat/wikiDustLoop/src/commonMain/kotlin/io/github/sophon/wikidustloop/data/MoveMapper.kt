@@ -20,6 +20,7 @@ internal fun MoveListResponseDto.toDomain(
 
             input = dto.input
                 .orDash()
+                .replace(" ", "")
                 .lowercase(),
             damage = dto.damage?.cleanHtml(),
             startup = dto.startup?.cleanHtml(),
@@ -111,8 +112,12 @@ internal fun String?.formMoveId(charName: String?): String {
         .replace("?", "")
         .split(" ")
         .joinToString("_") { it.lowercase() }
+    val moveId = this
+        .orEmpty()
+        .lowercase()
+        .replace(" ", "")
 
-    return "${charNameId}_${this.orEmpty().lowercase()}"
+    return "${charNameId}_$moveId"
 }
 
 internal fun String?.formNotes(): List<String> {
