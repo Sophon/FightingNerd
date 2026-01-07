@@ -1,5 +1,7 @@
 package io.github.sophon.xko.data
 
+import io.github.sophon.core.util.createAliasesFromSlash
+import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.xko.FEATURE_URL
@@ -19,12 +21,14 @@ private fun MoveDto.toMoveList(
 ): Move {
     val charName = pageName
         .replace(" ", "_")
+    val formattedInput = input.orDash().lowercase()
+    val aliases = formattedInput.createAliasesFromSlash()
 
     val move = Move(
         charName = charName,
-        id = "${charName.lowercase()}_${input.lowercase()}",
+        id = "${charName.lowercase()}_$formattedInput",
 
-        input = input.lowercase(),
+        input = formattedInput,
         damage = damage?.ifEmpty { null },
         startup = startup,
         onBlock = onBlock?.ifEmpty { null },
@@ -33,6 +37,7 @@ private fun MoveDto.toMoveList(
         cancel = cancel?.ifEmpty { null },
         guard = guard?.ifEmpty { null },
         invulnerability = invuln?.ifEmpty { null },
+        aliases = aliases,
 
         urls = Move.Urls(
             hitboxImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX"),
