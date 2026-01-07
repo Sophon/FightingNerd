@@ -81,7 +81,7 @@ internal fun String.formPropertiesUrl(): String {
         val fullLink = matchResult.groupValues[1]
         val displayText = matchResult.groupValues[2]
         val url = "$WIKI_BASE_URL/${fullLink.replace(" ", "_")}"
-        "[**$displayText**]($url)"
+        "[$displayText]($url)"
     }
 
     return final
