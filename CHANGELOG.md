@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v5.1.1] - 2026-01-07
+- DustLoop - Invulnerable and Smash fields
+
 ## [v5.1.0] - 2026-01-07
 - DustLoop 
   - BBCF support
