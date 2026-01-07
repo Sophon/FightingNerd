@@ -75,7 +75,7 @@ class CharacterMapperTest {
         val expected = "Sol Badguy"
 
         //when
-        val result = char.formCharacterQueryName()
+        val result = char.formCharacterQueryName(gg)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -90,8 +90,8 @@ class CharacterMapperTest {
         val expected2 = "Bedman"
 
         //when
-        val result1 = char1.formCharacterQueryName()
-        val result2 = char2.formCharacterQueryName()
+        val result1 = char1.formCharacterQueryName(gg)
+        val result2 = char2.formCharacterQueryName(gg)
 
         //then
         assertThat(result1).isEqualTo(expected1)
