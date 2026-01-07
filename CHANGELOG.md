@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v5.1.2] - 2026-01-07
+- Mizuumi - fixed clickable properties
+
 ## [v5.1.1] - 2026-01-07
 - DustLoop 
   - Invulnerable and Smash fields
