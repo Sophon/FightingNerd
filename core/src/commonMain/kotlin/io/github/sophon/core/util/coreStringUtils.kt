@@ -185,7 +185,7 @@ fun String.createAliasesFromSlash(): List<String> {
     val motion = parts.first().dropLast(1)
 
     val aliases = parts.map { button ->
-        "$motion${button.last()}"
+        "$motion${button.last().lowercase()}"
     }
 
     return aliases

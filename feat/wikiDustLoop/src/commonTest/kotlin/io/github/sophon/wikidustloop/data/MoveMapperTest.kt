@@ -56,7 +56,7 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles slash inputs`() {
         // given
-        val string = "236s/h/d"
+        val string = "236S/H/D"
         val expected = listOf("236s", "236h", "236d")
 
         // when
