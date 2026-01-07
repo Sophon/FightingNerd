@@ -75,12 +75,14 @@ private fun String.formatCancel(): String {
 }
 
 internal fun String.formPropertiesUrl(): String {
-    if (startsWith("[[").not() || endsWith("]]").not()) return this
+    val wikiLinkPattern = Regex("""\[\[([^|\]]+)\|([^\]]+)\]\]""")
 
-    val parts = this
-        .substring(2, this.length - 2)
-        .split("|")
-    val url = "$WIKI_BASE_URL/${parts.first().replace(" ", "_")}"
+    val final = wikiLinkPattern.replace(this) { matchResult ->
+        val fullLink = matchResult.groupValues[1]
+        val displayText = matchResult.groupValues[2]
+        val url = "$WIKI_BASE_URL/${fullLink.replace(" ", "_")}"
+        "[**$displayText**]($url)"
+    }
 
-    return "[${parts.last()}]($url)"
+    return final
 }
