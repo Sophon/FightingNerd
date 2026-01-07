@@ -5,7 +5,9 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.MAX_LENGTH_EMBED
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
@@ -70,11 +72,14 @@ internal class InfilGlossaryDiscordFeature(
 
         item.url.image?.let { image = it }
 
-        mandatoryField(
-            name = "",
-            value = item.definition,
-            inline = false
-        )
+        val embedData = item.definition.chunkByNewLines(delimiter = ".", maxLength = MAX_LENGTH_EMBED)
+        embedData.forEach { data ->
+            mandatoryField(
+                name = "",
+                value = data,
+                inline = false
+            )
+        }
 
         val japaneseValueString = item.jpTranslation
             .joinToString(separator = "") { "* $it\n" }
