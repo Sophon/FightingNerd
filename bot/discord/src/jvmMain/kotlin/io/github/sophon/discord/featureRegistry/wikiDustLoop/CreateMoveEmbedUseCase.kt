@@ -51,6 +51,9 @@ internal class CreateMoveEmbedUseCase {
         mandatoryField(name = "OB", value = move.onBlock)
         mandatoryField(name = "Guard", value = move.guard)
 
+        mandatoryField(name = "Invul", value = move.invulnerability)
+        mandatoryField(name = "Smash", value = move.dbfzProperties?.smash)
+
         createNotes(move)
 
         featureFooter(featureInfo)

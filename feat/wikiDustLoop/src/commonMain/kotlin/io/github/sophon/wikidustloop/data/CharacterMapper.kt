@@ -27,7 +27,7 @@ internal fun CharacterListResponseDto.toDomain(
             val dto = query.title
             val queryName = dto.name
                 ?.cleanHtml()
-                .formCharacterQueryName()
+                .formCharacterQueryName(gameId)
 
             Character(
                 id = dto.name.formCharacterId(),
@@ -111,11 +111,13 @@ internal fun String?.formCharacterId(): String {
     return charId
 }
 
-internal fun String?.formCharacterQueryName(): String {
+internal fun String?.formCharacterQueryName(gameId: String): String {
+    val game = Game.fromId(gameId)
+
     val query = this
         .orEmpty()
         .replace("?", "")
-        .replace("'", "")
+        .let { if (game != Game.BBCF) it.replace("'", "") else it }
 
     return query
 }
@@ -233,6 +235,7 @@ fun String?.createBBAliases(): List<String> {
 
     val firstName = this
         .decodeHtmlEntities()
+        .replace("'", "")
         .split(' ', '-')
         .first()
         .lowercase()
