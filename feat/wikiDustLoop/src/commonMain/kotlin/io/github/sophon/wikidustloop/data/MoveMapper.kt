@@ -1,6 +1,8 @@
 package io.github.sophon.wikidustloop.data
 
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.createAliasesFromSlash
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -20,6 +22,7 @@ internal fun MoveListResponseDto.toDomain(
 
             input = dto.input
                 .orDash()
+                .replace(" ", "")
                 .lowercase(),
             damage = dto.damage?.cleanHtml(),
             startup = dto.startup?.cleanHtml(),
@@ -31,7 +34,7 @@ internal fun MoveListResponseDto.toDomain(
             recovery = dto.recovery?.cleanHtml(),
             guard = dto.guard?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
-            aliases = dto.input.formAliases(),
+            aliases = dto.input.formAliases(gameId),
 
             notes = dto.notes.formNotes(),
 
@@ -111,8 +114,12 @@ internal fun String?.formMoveId(charName: String?): String {
         .replace("?", "")
         .split(" ")
         .joinToString("_") { it.lowercase() }
+    val moveId = this
+        .orEmpty()
+        .lowercase()
+        .replace(" ", "")
 
-    return "${charNameId}_${this.orEmpty().lowercase()}"
+    return "${charNameId}_$moveId"
 }
 
 internal fun String?.formNotes(): List<String> {
@@ -128,12 +135,19 @@ internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
     return "${dto.chara.formWikiUrl(gameId)}#${dto.input}"
 }
 
-internal fun String?.formAliases(): List<String> {
+internal fun String?.formAliases(gameId: String): List<String> {
     if (this == null) return emptyList()
 
+    return when (Game.fromId(gameId)) {
+        Game.GBVSR -> createNarmayaStanceAliases()
+        else -> createAliasesFromSlash()
+    }
+}
+
+private fun String.createNarmayaStanceAliases(): List<String> {
     val regex = """^(.+)\[([^]]+)]$""".toRegex()
     val match = regex.find(this) ?: return emptyList()
-
     val (base, suffix) = match.destructured
+
     return listOf("${suffix.lowercase()}.${base.lowercase()}")
 }
