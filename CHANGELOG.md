@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v5.1.3] - TODO
+## [v5.1.3] - 2026-01-07
 - DustLoop
   - fixed ABA JR queries
   - slash variant support: `236s/h` creates aliases `236s` and `236h`
