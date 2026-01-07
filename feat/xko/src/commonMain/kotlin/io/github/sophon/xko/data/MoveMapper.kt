@@ -11,6 +11,7 @@ import io.github.sophon.xko.URL_HITBOX_SUFIX
 internal fun MoveListResponseDto.toDomain(): Map<Character, List<Move>> {
     return bucket
         .groupBy { it.pageName.toCharacter() }
+        .filterOutTemplates()
         .mapValues { (character, moveList) ->
             moveList.map { it.toMoveList(charWikiUrl = character.wikiUrl) }
         }
@@ -56,4 +57,8 @@ private fun MoveDto.toMoveList(
     )
 
     return move
+}
+
+private fun Map<Character, List<MoveDto>>.filterOutTemplates(): Map<Character, List<MoveDto>> {
+    return filter { it.key.id.contains(":").not() }
 }
