@@ -68,7 +68,7 @@ android {
     }
 }
 
-val featureVersion = "1.0.2"
+val featureVersion = "1.0.3"
 buildkonfig {
     packageName = "io.github.sophon.mizuumi"
 
