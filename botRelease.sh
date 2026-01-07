@@ -55,3 +55,5 @@ echo -e "${YELLOW}Step 5: Pushing to trigger deployment...${NC}"
 git push origin release_bot
 
 echo -e "${GREEN}✓ Bot release ${VERSION} completed successfully!${NC}"
+
+git checkout dev

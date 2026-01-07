@@ -25,13 +25,15 @@ internal fun CharacterListResponseDto.toDomain(
 //        .filterOutJunkCharacters()
         .map { query ->
             val dto = query.title
+            val id = dto.name.formCharacterId()
+            val displayName = dto.name?.cleanHtml().orEmpty()
             val queryName = dto.name
                 ?.cleanHtml()
                 .formCharacterQueryName(gameId)
 
             Character(
-                id = dto.name.formCharacterId(),
-                displayName = dto.name.orEmpty(),
+                id = id,
+                displayName = displayName,
                 queryName = queryName,
                 wikiUrl = queryName.formWikiUrl(gameId),
                 aliasList = dto.name.createAliases(gameId, dto.aliases),

@@ -154,3 +154,26 @@ fun String.extractFirstWord(): String {
         .trim()
         .substringBefore(' ')
 }
+
+fun String.chunkByNewLines(delimiter: String, maxLength: Int): List<String> {
+    val lines = split(delimiter)
+    val chunks = mutableListOf<String>()
+    val currentChunk = StringBuilder()
+
+    for (line in lines) {
+        val lineWithNewline = "$line$delimiter"
+
+        if (currentChunk.isNotEmpty() && (currentChunk.length + lineWithNewline.length > maxLength)) {
+            chunks.add(currentChunk.toString())
+            currentChunk.clear()
+        }
+
+        currentChunk.append(lineWithNewline)
+    }
+
+    if (currentChunk.isNotEmpty()) {
+        chunks.add(currentChunk.toString())
+    }
+
+    return chunks
+}
