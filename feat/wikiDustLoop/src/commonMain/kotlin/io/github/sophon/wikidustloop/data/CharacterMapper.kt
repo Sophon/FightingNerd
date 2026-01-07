@@ -1,7 +1,11 @@
 package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.decodeHtmlEntities
+import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.wikidustloop.BASE_URL
 import io.github.sophon.wikidustloop.WIKI_BASE_URL
 
 /**
@@ -21,7 +25,9 @@ internal fun CharacterListResponseDto.toDomain(
 //        .filterOutJunkCharacters()
         .map { query ->
             val dto = query.title
-            val queryName = dto.name.formCharacterQueryName()
+            val queryName = dto.name
+                ?.cleanHtml()
+                .formCharacterQueryName()
 
             Character(
                 id = dto.name.formCharacterId(),
@@ -33,6 +39,7 @@ internal fun CharacterListResponseDto.toDomain(
                     iconUrl = dto.icon.let { imageUrlMap[it] },
                     bannerUrl = dto.portrait.let { imageUrlMap[it] },
                 ),
+                umo = dto.umo?.cleanHtml().toClickable(),
                 ggstProperties = Character.GGSTProperties(
                     defense = dto.defense,
                     guts = dto.guts,
@@ -44,7 +51,6 @@ internal fun CharacterListResponseDto.toDomain(
                     bwdDashAirborne = dto.backdashAirborne,
                     bwdDashDist = dto.backdashDistance,
                     fwdDash = dto.forwardDash,
-                    umo = dto.umo.toClickable(),
                     jumpDuration = dto.jumpDuration,
                     highJumpDuration = dto.highJumpDuration,
                     jumpHeight = dto.jumpHeight,
@@ -68,22 +74,26 @@ internal fun CharacterListResponseDto.toDomain(
                     boostDefense = dto.boostDefense,
                 ),
                 dbfzProperties = Character.DBFZProperties(
-                    kiMod = dto.kimod,
-                    umo = dto.umo,
+                    kiMod = dto.kimod?.cleanHtml(),
                 ),
                 gbvsrProperties = Character.GBVSRProperties(
-                    prejump = dto.prejump,
-                    backdash = dto.backdash,
-                    umo = dto.umo,
-                    walkSpeed = dto.walkSpeed,
+                    prejump = dto.prejump?.cleanHtml(),
+                    backdash = dto.backdash?.cleanHtml(),
+                    walkSpeed = dto.walkSpeed?.cleanHtml(),
                     walkSpeedRelative = dto.relative_walk_speed.toString(),
                     walkSpeedBack = dto.backwalk_speed.toString(),
                     walkSpeedBackRelative = dto.relative_backwalk_speed.toString(),
                     dashInitial = dto.dash_initial_speed.toString(),
                     dashInitialRelative = dto.relative_dash_initial_speed.toString(),
-                    dashAcceleration = dto.dash_acceleration,
+                    dashAcceleration = dto.dash_acceleration?.cleanHtml(),
                     dashAccelerationRelative = dto.relative_dash_acceleration.toString(),
-                )
+                ),
+                bbProperties = Character.BBProperties(
+                    hp = dto.health?.cleanHtml(),
+                    preJump = dto.prejump?.cleanHtml(),
+                    backDash = dto.backdash?.cleanHtml(),
+                    forwardDash = dto.forwardDash?.cleanHtml(),
+                ),
             )
         }
 }
@@ -111,106 +121,130 @@ internal fun String?.formCharacterQueryName(): String {
 }
 
 internal fun String?.formWikiUrl(gameId: String): String {
-    val formatted = this.orEmpty().replace(" ", "_")
-    return "$WIKI_BASE_URL/$gameId/$formatted"
+    val formatted = this.orEmpty()
+        .replace(" ", "_")
+        .decodeHtmlEntities()
+        .urlEncode()
+    val game = Game.fromId(gameId)
+    val url = "${game?.wikiUrl ?: BASE_URL}/$formatted"
+
+    return url
 }
 
 internal fun String?.createAliases(
     gameId: String,
     dtoAliases: String? = null
 ): List<String> {
+    if (this == null) return listOf()
+
+    dtoAliases?.let { aliases ->
+        return aliases
+            .split(";", ",")
+            .map { it.replace(" ", "").lowercase() }
+    }
+
+    val game = Game.fromId(gameId)
+
+    return when (game) {
+        Game.GGST -> this.createGGAliases()
+        Game.GBVSR -> listOf(this.substringBefore(" ").lowercase())
+        Game.BBCF -> this.createBBAliases()
+        else -> listOf()
+    }
+}
+
+private fun String?.createGGAliases(): List<String> {
     return buildList {
-        dtoAliases?.let { aliases ->
-            aliases.split(";").forEach { add(it.lowercase()) }
+        val original = this@createGGAliases.orEmpty()
+        if (original.isBlank()) return@buildList
+
+        // Handle hyphen-number pattern (e.g., "Zato-1")
+        if (original.contains(Regex("-\\d+"))) {
+            val baseName = original.substringBeforeLast("-")
+            add(baseName.lowercase())
+            return@buildList
         }
 
-        if (gameId != Game.DBFZ.id) {
-            val original = this@createAliases.orEmpty()
-            if (original.isBlank()) return@buildList
+        val cleaned = original
+            .replace("-", "")
+            .replace(".", "")
+        val words = cleaned
+            .split(" ")
+            .filter { it.isNotBlank() }
 
-            // Handle hyphen-number pattern (e.g., "Zato-1")
-            if (original.contains(Regex("-\\d+"))) {
-                val baseName = original.substringBeforeLast("-")
-                add(baseName.lowercase())
-                return@buildList
-            }
+        if (words.size <= 1) return@buildList
 
-            // Check for parenthesis
-            val hasParenthesis = original.contains("(") && original.contains(")")
+        // Create initials from all words
+        add(words.joinToString("") { it.first().lowercase() })
 
-            if (hasParenthesis) {
-                val mainPart = original.substringBefore("(").trim()
-                val variantPart = original.substringAfter("(").substringBefore(")").trim()
-
-                val cleanedMain = mainPart.replace("-", "").replace(".", "")
-                val mainWords = cleanedMain.split(" ").filter { it.isNotBlank() }
-
-                val cleanedVariant = variantPart.replace("-", "").replace(".", "")
-                val variantWords = cleanedVariant.split(" ").filter { it.isNotBlank() }
-
-                // Extract number from main part
-                val numberWord = mainWords.firstOrNull { it.any { char -> char.isDigit() } }
-                val number = numberWord?.filter { it.isDigit() }
-
-                if (number != null) {
-                    // "Android 21 (Lab Coat)" → ["a21", "a21lc"]
-                    val firstWordInitial = mainWords.first().first().lowercase()
-                    add(firstWordInitial + number)
-
-                    if (variantWords.isNotEmpty()) {
-                        val variantInitials = variantWords.joinToString("") { it.first().lowercase() }
-                        add(firstWordInitial + number + variantInitials)
-                    }
-                } else if (mainWords.size == 1) {
-                    if (variantWords.size == 1) {
-                        // "Gogeta (SSGSS)" → "gogetassgss"
-                        add(mainWords.first().lowercase() + variantWords.first().lowercase())
-                    } else if (variantWords.size > 1) {
-                        // "Goku (Super Saiyan)" → "gokuss"
-                        val variantInitials = variantWords.joinToString("") { it.first().lowercase() }
-                        add(mainWords.first().lowercase() + variantInitials)
-                    }
-                }
-                return@buildList
-            }
-
-            // No parenthesis - check for numbers first
-            val cleaned = original.replace("-", "").replace(".", "")
-            val words = cleaned.split(" ").filter { it.isNotBlank() }
-
-            if (words.size <= 1) return@buildList
-
-            // Check if any word contains a number
-            val numberWord = words.firstOrNull { it.any { char -> char.isDigit() } }
-            if (numberWord != null) {
-                // "Android 16" → "a16"
-                val number = numberWord.filter { it.isDigit() }
-                val firstWordInitial = words.first().first().lowercase()
-                add(firstWordInitial + number)
-                return@buildList
-            }
-
-            // Regular processing for multi-word names without numbers
-            // Create initials from all words
-            add(words.joinToString("") { it.first().lowercase() })
-
-            // Add individual words with length > 1
-            words.forEach { word ->
-                if (word.length > 1) {
-                    add(word.lowercase())
-                }
+        // Add individual words with length > 1
+        words.forEach { word ->
+            if (word.length > 1) {
+                add(word.lowercase())
             }
         }
     }
 }
 
-/**
- * [[GGST/Baiken#Kabari|[H] Kabari follow-up]] -> [[H] Kabari follow-up](https://www.dustloop.com/w/GGST/Baiken#Kabari)
- * Step-Dash (15F), [[GGST/Johnny#Mist Finer Stance|Mist Finer Dash]], [[GGST/Johnny#Vault|Vault]] ->
- *  * Step-Dash (15F)
- *  * [Mist Finer Dash](https://www.dustloop.com/w/GGST/Johnny#Mist_Finer_Stance)
- *  * [Vault](https://www.dustloop.com/w/GGST/Johnny#Vault)
- */
+fun String?.createBBAliases(): List<String> {
+    if (this.isNullOrBlank()) return emptyList()
+
+    val bbCodeMap = mapOf(
+        "ragna" to "rg",
+        "jin" to "jn",
+        "noel" to "no",
+        "rachel" to "rc",
+        "taokaka" to "tk",
+        "tager" to "tg",
+        "litchi" to "lc",
+        "arakune" to "ar",
+        "bang" to "bn",
+        "carl" to "ca",
+        "hakumen" to "ha",
+        "nu" to "ny",
+        "tsubaki" to "tb",
+        "hazama" to "hz",
+        "mu" to "mu",
+        "makoto" to "mk",
+        "valkenhayn" to "vh",
+        "platinum" to "pt",
+        "relius" to "rl",
+        "izayoi" to "iz",
+        "amane" to "am",
+        "bullet" to "bl",
+        "azrael" to "az",
+        "kagura" to "kg",
+        "kokonoe" to "kk",
+        "terumi" to "tm",
+        "yuuki" to "tm",
+        "celica" to "ce",
+        "lambda" to "rm",
+        "hibiki" to "hb",
+        "nine" to "ph",
+        "naoto" to "nt",
+        "izanami" to "mi",
+        "susano" to "su",
+        "susanoo" to "su",
+        "es" to "es",
+        "mai" to "ma",
+        "jubei" to "jb",
+        "iron" to "tg",
+    )
+
+    val firstName = this
+        .decodeHtmlEntities()
+        .split(' ', '-')
+        .first()
+        .lowercase()
+
+    val code = bbCodeMap[firstName]
+
+    return buildList {
+        add(firstName)
+        code?.let { add(it) }
+    }.distinct()
+}
+
 internal fun String?.toClickable(): List<String> {
     if (isNullOrBlank()) return listOf()
 

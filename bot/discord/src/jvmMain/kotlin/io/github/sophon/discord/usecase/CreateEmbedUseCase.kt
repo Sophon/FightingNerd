@@ -100,7 +100,7 @@ internal class CreateEmbedUseCase {
             actionRow {
                 rowButtons.forEach { button ->
                     interactionButton(
-                        style = ButtonStyle.Secondary,
+                        style = ButtonStyle.Primary,
                         customId = button.query,
                     ) {
                         label = button.label

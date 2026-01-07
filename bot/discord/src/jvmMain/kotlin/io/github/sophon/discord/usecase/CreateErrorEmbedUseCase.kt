@@ -44,13 +44,14 @@ internal class CreateErrorEmbedUseCase {
             .truncate(MAX_LENGTH_EMBED)
 
         mandatoryField(
-            name = "Frame Data 📊".uppercase(),
-            value = "1. **`@bot`** → `@FightingNerdBot` `[character name]` `[move]`\n" +
-                    "2. **`/fd`** → `fd character: [character name] move: [move]`\n" +
-                    "The **character** name and move **input** must have **NO SPACES**. Move **name** can be multi-word but must match exactly.\n" +
-                    "- if the character name is multi-word, use `/alias` to see the available aliases\n" +
+            name = "",
+            value = "THE **CHARACTER** NAME AND MOVE **INPUT** MUST HAVE **NO SPACES**. MOVE **NAME** CAN BE MULTI-WORD BUT MUST MATCH EXACTLY.\n\n" +
+                    "1. **`@bot`** → `@FightingNerdBot` `[character name]` `[move]`\n" +
+                    "2. **`/fd`** → `fd character: [character name] move: [move]`\n\n" +
+                    "- multi-word character name →`/alias` to see the available aliases\n" +
                     "- stances or heat are followed by a dot: `nina h.b1+2` or `ak bad.3h.2`\n" +
-                    "- if stuck, check the wiki to see how it's written",
+                    "- check `/heat`, `/homing`, `/stance`, `/pc` etc\n" +
+                    "- if stuck, check the wiki to see how it's written"
         )
 
         footer {

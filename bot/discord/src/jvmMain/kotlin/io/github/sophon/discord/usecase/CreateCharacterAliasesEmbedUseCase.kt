@@ -1,5 +1,6 @@
 package io.github.sophon.discord.usecase
 
+import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
@@ -18,18 +19,22 @@ internal class CreateCharacterAliasesEmbedUseCase {
     suspend fun invoke(
         wiki: WikiClient,
         featureInfo: FeatureInfo,
+        colorCode: Int,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
         return wiki.fetchCharacterList()
             .mapError { it.toDomainError() }
             .map { characterList ->
-                createAliasesEmbed(characterList, featureInfo)
+                createAliasesEmbed(characterList, featureInfo, colorCode)
             }
     }
 
     private fun createAliasesEmbed(
         characterList: List<Character>,
         featureInfo: FeatureInfo,
+        colorCode: Int,
     ): EmbedBuilder.() -> Unit = {
+        color = Color(colorCode)
+
         val string = buildString {
             characterList
                 .filter { it.aliasList.isNotEmpty() }

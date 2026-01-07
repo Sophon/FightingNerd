@@ -1,6 +1,8 @@
 package io.github.sophon.discord.usecase
 
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.util.extractFirstWord
+import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
@@ -16,10 +18,12 @@ internal class RouteCommandToFeatureUseCase(
     ): Result<BotOutput, BotError> {
         val fullQuery = message
             .removeTag()
+            .trim()
+            .normalizeWhiteSpace()
             .takeIf { it.isNotBlank() }
             ?: return Result.Error(BotError.InvalidQuery(message))
 
-        val firstWord = extractFirstWord(fullQuery)
+        val firstWord = fullQuery.extractFirstWord()
 
         return if (firstWord.isCommand()) {
             val (commandString, query) = formatQuery(fullQuery)
@@ -39,13 +43,6 @@ internal class RouteCommandToFeatureUseCase(
             commandString,
             query,
         )
-    }
-
-    private fun extractFirstWord(query: String): String {
-        return when (val firstIndexOfSpace = query.indexOf(' ')) {
-            -1 -> query.trim()
-            else -> query.take(firstIndexOfSpace).trim()
-        }
     }
 
     private fun String.isCommand(): Boolean {

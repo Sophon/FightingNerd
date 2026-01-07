@@ -1,5 +1,15 @@
 # BOT CHANGELOG
 
+## [v5.1.0] - 2026-01-07
+- DustLoop 
+  - BBCF support
+  - removed spaces from `aliasdb`
+- improved syntax-error embed
+- Mizuumi - fixed aliases
+- changed buttons to the Primary style
+- fixed `alias` commands not having color
+- fixed spaces (leading, trailing, middle) for queries
+
 ## [v5.0.3] - 2026-01-06
 - Mizuumi
   - fixed a bug with character names/aliases

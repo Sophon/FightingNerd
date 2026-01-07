@@ -54,10 +54,21 @@ enum class Game(
         iconUrl = "https://i.imgur.com/N6eeM4q.png",
         wikiUrl = "https://www.dustloop.com/w/GBVSR",
     ),
+    BBCF(
+        id = "BBCF",
+        iconUrl = "https://i.imgur.com/RYWkC7x.png",
+        wikiUrl = "https://www.dustloop.com/w/BBCF",
+    ),
 
     MBTL(
         id = "MBTL",
         iconUrl = "https://i.imgur.com/E6O7DMi.png",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL"
-    )
+    );
+
+    companion object {
+        fun fromId(id: String): Game? {
+            return entries.find { it.id == id }
+        }
+    }
 }
