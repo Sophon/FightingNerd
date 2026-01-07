@@ -1,5 +1,14 @@
 # BOT CHANGELOG
 
+## [v5.1.3] - 2026-01-07
+- DustLoop
+  - fixed ABA JR queries
+  - slash variant support: `236s/h` creates aliases `236s` and `236h`
+- log Discord embed errors
+- Xko 
+  - fixed some properties being nullable
+  - supports slash variants
+
 ## [v5.1.2] - 2026-01-07
 - Mizuumi - fixed clickable properties
 - fixed embeds with truncated text
