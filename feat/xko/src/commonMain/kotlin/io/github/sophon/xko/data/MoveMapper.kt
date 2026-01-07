@@ -1,5 +1,6 @@
 package io.github.sophon.xko.data
 
+import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.xko.FEATURE_URL
@@ -22,9 +23,9 @@ private fun MoveDto.toMoveList(
 
     val move = Move(
         charName = charName,
-        id = "${charName.lowercase()}_${input.lowercase()}",
+        id = "${charName.lowercase()}_${input.orDash().lowercase()}",
 
-        input = input.lowercase(),
+        input = input.orDash().lowercase(),
         damage = damage?.ifEmpty { null },
         startup = startup,
         onBlock = onBlock?.ifEmpty { null },

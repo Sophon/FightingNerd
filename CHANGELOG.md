@@ -5,6 +5,7 @@
   - fixed ABA JR queries
   - slash inputs like `236s/h` now create aliases `236s` and `236h`
 - log Discord embed errors
+- Xko - fixed some properties being nullable
 
 ## [v5.1.2] - 2026-01-07
 - Mizuumi - fixed clickable properties

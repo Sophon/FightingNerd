@@ -12,7 +12,7 @@ data class MoveListResponseDto(
 @Serializable
 data class MoveDto(
     @SerialName("page_name") val pageName: String,
-    val input: String,
+    val input: String? = null,
     val damage: String? = null,
     val guard: String? = null,
     val startup: String,
