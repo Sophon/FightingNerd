@@ -235,6 +235,7 @@ fun String?.createBBAliases(): List<String> {
 
     val firstName = this
         .decodeHtmlEntities()
+        .replace("'", "")
         .split(' ', '-')
         .first()
         .lowercase()

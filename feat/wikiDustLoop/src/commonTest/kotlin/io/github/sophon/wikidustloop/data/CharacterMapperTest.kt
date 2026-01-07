@@ -274,6 +274,19 @@ class CharacterMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `create aliases for BB handles apostrophe`() {
+        // given
+        val string = "Susano&#039;o"
+        val expected = listOf("susanoo", "su")
+
+        // when
+        val result = string.createAliases(bb)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region toClickable
