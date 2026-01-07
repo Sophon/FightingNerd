@@ -148,7 +148,7 @@ internal class XkoWikiDiscordFeature(
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
-        title = "${move.charName}: ${move.input}"
+        title = "${move.charName}: ${move.input.uppercase()}"
         description = if (move.name.isNullOrBlank()) {
             "**${move.charName}**"
         } else {
