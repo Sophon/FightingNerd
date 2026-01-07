@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v5.1.3] - TODO
+- DustLoop
+  - fixed ABA JR queries
+- log Discord embed errors
+
 ## [v5.1.2] - 2026-01-07
 - Mizuumi - fixed clickable properties
 - fixed embeds with truncated text
