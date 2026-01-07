@@ -47,7 +47,7 @@ internal class DustLoopDataSourceImpl(
                 parameter("limit", LIMIT_MOVES)
                 parameter("format", "json")
                 parameter("fields", getMoveFields(table))
-                parameter("where", "chara='${characterData.name}'")
+                parameter("where", "chara=\"${characterData.name}\"")
             }
         }
     }
