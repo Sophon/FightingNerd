@@ -1,5 +1,6 @@
 package io.github.sophon.wikidustloop.data
 
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
@@ -32,7 +33,7 @@ internal fun MoveListResponseDto.toDomain(
             recovery = dto.recovery?.cleanHtml(),
             guard = dto.guard?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
-            aliases = dto.input.formAliases(),
+            aliases = dto.input.formAliases(gameId),
 
             notes = dto.notes.formNotes(),
 
@@ -133,14 +134,32 @@ internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
     return "${dto.chara.formWikiUrl(gameId)}#${dto.input}"
 }
 
-internal fun String?.formAliases(): List<String> {
+internal fun String?.formAliases(gameId: String): List<String> {
     if (this == null) return emptyList()
 
+    return when (Game.fromId(gameId)) {
+        Game.GBVSR -> createNarmayaStanceAliases()
+        else -> createSlashAliases()
+    }
+}
+
+private fun String.createNarmayaStanceAliases(): List<String> {
     val regex = """^(.+)\[([^]]+)]$""".toRegex()
     val match = regex.find(this) ?: return emptyList()
-
     val (base, suffix) = match.destructured
-    val aliases = mutableListOf("${suffix.lowercase()}.${base.lowercase()}")
+
+    return listOf("${suffix.lowercase()}.${base.lowercase()}")
+}
+
+private fun String.createSlashAliases(): List<String> {
+    val parts = split("/")
+    if (parts.size < 2) return listOf()
+
+    val motion = parts.first().dropLast(1)
+
+    val aliases = parts.map { button ->
+        "$motion${button.last()}"
+    }
 
     return aliases
 }
