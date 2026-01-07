@@ -6,6 +6,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
@@ -44,11 +45,14 @@ internal class CreateCharacterAliasesEmbedUseCase {
                     append("- **${character.displayName}** → $aliases\n")
                 }
         }
+        val embedData = string.chunkByNewLines(maxLength = MAX_LENGTH_EMBED)
 
-        mandatoryField(
-            name = "🥸 CHARACTER ALIASES",
-            value = string.truncate(MAX_LENGTH_EMBED),
-        )
+        embedData.forEachIndexed { index, data ->
+            mandatoryField(
+                name = if (index == 0) "🥸 CHARACTER ALIASES" else "\n",
+                value = data,
+            )
+        }
 
         featureFooter(featureInfo)
     }
