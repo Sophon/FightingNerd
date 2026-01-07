@@ -22,7 +22,15 @@ private fun MoveDto.toMoveList(
     val charName = pageName
         .replace(" ", "_")
     val formattedInput = input.orDash().lowercase()
-    val aliases = formattedInput.createAliasesFromSlash()
+    val aliases = formattedInput
+        .createAliasesFromSlash()
+        .let { aliases ->
+            if (formattedInput.contains("~")) {
+                aliases + formattedInput.replace("~", "")
+            } else {
+                aliases
+            }
+        }
 
     val move = Move(
         charName = charName,
