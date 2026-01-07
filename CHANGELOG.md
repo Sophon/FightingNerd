@@ -3,6 +3,7 @@
 ## [v5.1.3] - TODO
 - DustLoop
   - fixed ABA JR queries
+  - slash inputs like `236s/h` now create aliases `236s` and `236h`
 - log Discord embed errors
 
 ## [v5.1.2] - 2026-01-07
