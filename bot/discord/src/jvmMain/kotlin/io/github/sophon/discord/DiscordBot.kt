@@ -151,7 +151,7 @@ internal class DiscordBotImpl(
                         embedBuilder = botOutput.embedBuilder,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
-                    )
+                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
             botOutput.plainText != null -> {
@@ -164,6 +164,7 @@ internal class DiscordBotImpl(
             botOutput.errorEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
                     invoke(embedBuilder = botOutput.errorEmbedBuilder, buttons = botOutput.buttons)
+                        .onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
             botOutput.feedback != null -> {
@@ -213,7 +214,7 @@ internal class DiscordBotImpl(
                         embedBuilder = botOutput.embedBuilder,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
-                    )
+                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
             botOutput.plainText != null -> {

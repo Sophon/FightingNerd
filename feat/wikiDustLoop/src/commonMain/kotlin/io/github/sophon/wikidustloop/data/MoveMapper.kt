@@ -140,5 +140,7 @@ internal fun String?.formAliases(): List<String> {
     val match = regex.find(this) ?: return emptyList()
 
     val (base, suffix) = match.destructured
-    return listOf("${suffix.lowercase()}.${base.lowercase()}")
+    val aliases = mutableListOf("${suffix.lowercase()}.${base.lowercase()}")
+
+    return aliases
 }
