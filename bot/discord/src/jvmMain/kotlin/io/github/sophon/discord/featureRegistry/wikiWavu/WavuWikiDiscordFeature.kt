@@ -333,7 +333,7 @@ internal class WavuWikiDiscordFeature(
         createNotes(move)
 
         move.urls.videoId?.let { url ->
-            optionalField(name = "Video", value = "[Link](${url})")
+            optionalField(name = "Video", value = "[Link](${url})", inline = false)
         }
 
         featureFooter(featureInfo)
