@@ -25,13 +25,13 @@ internal fun CharacterListResponseDto.toDomain(
 //        .filterOutJunkCharacters()
         .map { query ->
             val dto = query.title
-            val id = dto.name.formCharacterId()
+            val id = dto.name?.cleanHtml().formCharacterId()
             val displayName = dto.name?.cleanHtml().orEmpty()
             val queryName = dto.name
                 ?.cleanHtml()
                 .formCharacterQueryName(gameId)
 
-            Character(
+            val character = Character(
                 id = id,
                 displayName = displayName,
                 queryName = queryName,
@@ -97,6 +97,8 @@ internal fun CharacterListResponseDto.toDomain(
                     forwardDash = dto.forwardDash?.cleanHtml(),
                 ),
             )
+
+            character
         }
 }
 
@@ -235,17 +237,18 @@ fun String?.createBBAliases(): List<String> {
         "iron" to "tg",
     )
 
-    val firstName = this
+    val fullName = this
         .decodeHtmlEntities()
         .replace("'", "")
         .split(' ', '-')
+    val firstName = fullName
         .first()
         .lowercase()
 
     val code = bbCodeMap[firstName]
 
     return buildList {
-        add(firstName)
+        if (fullName.size > 1) add(firstName)
         code?.let { add(it) }
     }.distinct()
 }
