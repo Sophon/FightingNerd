@@ -25,13 +25,13 @@ internal fun CharacterListResponseDto.toDomain(
 //        .filterOutJunkCharacters()
         .map { query ->
             val dto = query.title
-            val id = dto.name.formCharacterId()
+            val id = dto.name?.cleanHtml().formCharacterId()
             val displayName = dto.name?.cleanHtml().orEmpty()
             val queryName = dto.name
                 ?.cleanHtml()
                 .formCharacterQueryName(gameId)
 
-            Character(
+            val character = Character(
                 id = id,
                 displayName = displayName,
                 queryName = queryName,
@@ -97,6 +97,8 @@ internal fun CharacterListResponseDto.toDomain(
                     forwardDash = dto.forwardDash?.cleanHtml(),
                 ),
             )
+
+            character
         }
 }
 

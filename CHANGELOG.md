@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v5.2.0] - TODO
+- DustLoop
+  - fixed Susano'o name formatting
+
 ## [v5.2.0] - 2026-01-08
 - Xko
   - supports non tilde variants ie `5L~L` and `5LL`
