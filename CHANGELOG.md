@@ -4,6 +4,7 @@
 - DustLoop
   - fixed Susano'o name formatting
   - removed redundant nicknames for BB
+- fixed Markdown bug with asterisks in fields
 
 ## [v5.2.0] - 2026-01-08
 - Xko
