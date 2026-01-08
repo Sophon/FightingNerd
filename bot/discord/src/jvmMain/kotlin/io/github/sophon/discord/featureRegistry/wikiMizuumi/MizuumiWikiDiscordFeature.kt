@@ -153,7 +153,7 @@ internal class MizuumiWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    embedBuilder = createMoveEmbed(move),
+                    primaryEmbedBuilder = createMoveEmbed(move),
                     images = if (images.size < 2) {
                         null
                     } else {
@@ -169,7 +169,7 @@ internal class MizuumiWikiDiscordFeature(
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
         return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, TEAL)
-            .map { BotOutput(embedBuilder = it) }
+            .map { BotOutput(primaryEmbedBuilder = it) }
     }
 
     private fun createMoveEmbed(

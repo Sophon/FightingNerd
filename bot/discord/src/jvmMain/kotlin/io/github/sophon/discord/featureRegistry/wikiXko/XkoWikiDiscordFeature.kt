@@ -133,7 +133,7 @@ internal class XkoWikiDiscordFeature(
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
                 BotOutput(
-                    embedBuilder = createMoveEmbed(move),
+                    primaryEmbedBuilder = createMoveEmbed(move),
                     images = if (move.urls.hitboxImageList.size < 2) {
                         null
                     } else {

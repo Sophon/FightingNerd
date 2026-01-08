@@ -190,7 +190,7 @@ internal class WavuWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { BotOutput(embedBuilder = createMoveEmbed(move = it)) }
+            .map { BotOutput(primaryEmbedBuilder = createMoveEmbed(move = it)) }
     }
 
     private suspend fun searchPowerCrushMoves(
@@ -204,7 +204,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(
+                    primaryEmbedBuilder = createMoveListEmbed(
                         category = "${query.uppercase()} Power Crush",
                         moveList = moveList,
                     ),
@@ -224,7 +224,7 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(
+                    primaryEmbedBuilder = createMoveListEmbed(
                         category = "${query.uppercase()} Heat",
                         moveList = moveList,
                     ),
@@ -243,7 +243,7 @@ internal class WavuWikiDiscordFeature(
             predicate = { it.t8Properties?.isHoming == true },
         ).map { moveList ->
             BotOutput(
-                embedBuilder = createMoveListEmbed(
+                primaryEmbedBuilder = createMoveListEmbed(
                     category = "${query.uppercase()} Homing",
                     moveList = moveList,
                 ),
@@ -272,12 +272,17 @@ internal class WavuWikiDiscordFeature(
                     stanceList.forEachIndexed { index, stance ->
                         val order = (index + 1).toString()
                         val query = "stance $charName $stance"
-                        buttons.add(BotOutput.EmbedButton(label = order, query = query))
+                        buttons.add(
+                            BotOutput.EmbedButton(
+                                label = order,
+                                action = BotOutput.EmbedButton.Action.Query(query),
+                            )
+                        )
                         text += "$order. **${stance.uppercase()}**\n"
                     }
 
                     BotOutput(
-                        embedBuilder = {
+                        primaryEmbedBuilder = {
                             color = Color(BLUE)
                             mandatoryField(
                                 name = "${charName.uppercase()} stances",
@@ -297,7 +302,7 @@ internal class WavuWikiDiscordFeature(
                 }
             ).map { moveList ->
                 BotOutput(
-                    embedBuilder = createMoveListEmbed(category = stance.uppercase(), moveList)
+                    primaryEmbedBuilder = createMoveListEmbed(category = stance.uppercase(), moveList)
                 )
             }
         }
@@ -305,7 +310,7 @@ internal class WavuWikiDiscordFeature(
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
         return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, BLUE)
-            .map { BotOutput(embedBuilder = it) }
+            .map { BotOutput(primaryEmbedBuilder = it) }
     }
 
     private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
@@ -406,7 +411,10 @@ internal class WavuWikiDiscordFeature(
     private fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton> {
         return mapIndexed { index, move ->
             val query = "$charName ${move.input}"
-            BotOutput.EmbedButton(label = (index + 1).toString(), query = query)
+            BotOutput.EmbedButton(
+                label = (index + 1).toString(),
+                action = BotOutput.EmbedButton.Action.Query(query),
+            )
         }
     }
 
