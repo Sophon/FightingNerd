@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v5.3.0] - TODO
+## [v5.3.0] - 2026-01-08
 - only hitbox images - remove all other images from move embeds
 
 ## [v5.2.3] - 2026-01-08
