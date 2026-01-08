@@ -186,7 +186,6 @@ internal class MizuumiWikiDiscordFeature(
         color = Color(TEAL)
 
         val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-            ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
             ?: emptyList()
 
         images

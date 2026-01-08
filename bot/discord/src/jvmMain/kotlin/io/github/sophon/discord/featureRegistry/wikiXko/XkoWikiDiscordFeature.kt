@@ -156,7 +156,6 @@ internal class XkoWikiDiscordFeature(
         }
 
         val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-            ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
             ?: emptyList()
         images
             .takeIf { it.size == 1 }
