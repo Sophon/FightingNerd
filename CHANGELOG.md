@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v5.2.2] - 2026-01-08
+- fixed Markdown formatting
+
 ## [v5.2.1] - 2026-01-08
 - DustLoop
   - fixed Susano'o name formatting

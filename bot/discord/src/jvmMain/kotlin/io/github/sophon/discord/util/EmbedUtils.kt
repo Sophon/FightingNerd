@@ -10,13 +10,19 @@ internal fun EmbedBuilder.mandatoryField(
     name: String,
     value: String?,
     inline: Boolean = true,
+    escapeAsterisks: Boolean = false,
 ) {
+    val formatted = value
+        .orDash()
+        .let { value ->
+            if (escapeAsterisks) value.replace("*", "\\*")
+            else value
+        }
+        .truncate(MAX_LENGTH_EMBED)
+
     field {
         this.name = name
-        this.value = value
-            .orDash()
-            .replace("*", "\\*")
-            .truncate(MAX_LENGTH_EMBED)
+        this.value = formatted
         this.inline = inline
     }
 }
@@ -24,14 +30,21 @@ internal fun EmbedBuilder.mandatoryField(
 internal fun EmbedBuilder.optionalField(
     name: String,
     value: String?,
-    inline: Boolean = true
+    inline: Boolean = true,
+    escapeAsterisks: Boolean = false,
 ) {
+    val formatted = value
+        .orDash()
+        .let { value ->
+            if (escapeAsterisks) value.replace("*", "\\*")
+            else value
+        }
+        .truncate(MAX_LENGTH_EMBED)
+
     if (value.isNullOrBlank().not()) {
         field {
             this.name = name
-            this.value = value
-                .replace("*", "\\*")
-                .truncate(MAX_LENGTH_EMBED)
+            this.value = formatted
             this.inline = inline
         }
     }

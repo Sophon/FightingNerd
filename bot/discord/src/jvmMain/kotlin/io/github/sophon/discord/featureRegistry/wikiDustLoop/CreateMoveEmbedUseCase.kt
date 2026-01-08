@@ -119,7 +119,7 @@ internal class CreateMoveEmbedUseCase {
         mandatoryField(name = "Guard", value = move.guard)
         mandatoryField(name = "Recovery", value = move.recovery)
 
-        optionalField(name = "Damage", value = move.damage)
+        optionalField(name = "Damage", value = move.damage, escapeAsterisks = true)
         optionalField(name = "Invulnerability", value = move.invulnerability)
         optionalField(name = "Counter", value = move.onCH)
 
