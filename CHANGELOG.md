@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v5.2.2] - TODO
+## [v5.2.3] - 2026-01-08
 - Wavu - fixed Video field being inlined
 - DustLoop - fixed move names having HTML mess
 
