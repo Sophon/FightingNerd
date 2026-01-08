@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v5.2.0] - TODO
+## [v5.2.1] - TODO
 - DustLoop
   - fixed Susano'o name formatting
   - removed redundant nicknames for BB
