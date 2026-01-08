@@ -288,7 +288,6 @@ internal class SuperComboWikiDiscordFeature(
         move.urls.characterImage?.let { thumbnail { url = it } }
 
         val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-            ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
             ?: emptyList()
 
         images

@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v5.3.0] - TODO
+- only hitbox images - remove all other images from move embeds
+
 ## [v5.2.3] - 2026-01-08
 - Wavu - fixed Video field being inlined
 - DustLoop - fixed move names having HTML mess
