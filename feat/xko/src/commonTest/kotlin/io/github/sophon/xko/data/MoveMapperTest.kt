@@ -144,4 +144,17 @@ class MoveMapperTest {
         assertThat(result[jinxCharacter]!!).hasSize(1)
         assertThat(result[jinxCharacter]!![0]).isEqualTo(expectedMove)
     }
+
+    @Test
+    fun `addExtraAliases removes parentheses`() {
+        // given
+        val string = listOf("j.(M+H)")
+        val expected = listOf("j.(M+H)", "j.M+H")
+
+        // when
+        val result = string.addExtraAliases("j.(M+H)")
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
 }
