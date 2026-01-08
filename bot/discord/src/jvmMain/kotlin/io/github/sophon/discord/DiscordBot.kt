@@ -292,6 +292,7 @@ internal class DiscordBotImpl(
                         edit {
                             embeds?.clear()
                             embed(embedBuilder)
+                            components = mutableListOf() //removes buttons
                         }
                     }
                 }
