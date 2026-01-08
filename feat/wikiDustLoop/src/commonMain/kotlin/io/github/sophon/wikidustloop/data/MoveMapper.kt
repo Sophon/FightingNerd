@@ -18,7 +18,7 @@ internal fun MoveListResponseDto.toDomain(
         Move(
             charName = dto.chara.orEmpty().cleanHtml(),
             id = dto.input.formMoveId(dto.chara),
-            name = dto.name,
+            name = dto.name?.cleanHtml(),
 
             input = dto.input
                 .orDash()
