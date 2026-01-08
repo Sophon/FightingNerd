@@ -237,17 +237,18 @@ fun String?.createBBAliases(): List<String> {
         "iron" to "tg",
     )
 
-    val firstName = this
+    val fullName = this
         .decodeHtmlEntities()
         .replace("'", "")
         .split(' ', '-')
+    val firstName = fullName
         .first()
         .lowercase()
 
     val code = bbCodeMap[firstName]
 
     return buildList {
-        add(firstName)
+        if (fullName.size > 1) add(firstName)
         code?.let { add(it) }
     }.distinct()
 }

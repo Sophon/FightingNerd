@@ -3,6 +3,7 @@
 ## [v5.2.0] - TODO
 - DustLoop
   - fixed Susano'o name formatting
+  - removed redundant nicknames for BB
 
 ## [v5.2.0] - 2026-01-08
 - Xko
