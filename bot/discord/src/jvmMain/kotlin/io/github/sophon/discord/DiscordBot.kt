@@ -50,7 +50,7 @@ internal class DiscordBotImpl(
     private val createFeedbackEmbedUseCase: CreateFeedbackEmbedUseCase,
     private val createReplyEmbedUseCase: CreateReplyEmbedUseCase,
 ): DiscordBot {
-    private val editableEmbedMap = mutableMapOf<Snowflake, EmbedBuilder.() -> Unit>()
+    private val editableEmbedMap = mutableMapOf<String, EmbedBuilder.() -> Unit>()
 
     override suspend fun startSession() {
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
@@ -155,8 +155,8 @@ internal class DiscordBotImpl(
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
                     )
-                        .onSuccess { message ->
-                            botOutput.fullEmbedBuilder?.let { editableEmbedMap[message.id] = it }
+                        .onSuccess { uuid ->
+                            botOutput.fullEmbedBuilder?.let { editableEmbedMap[uuid] = it }
                         }
                         .onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
@@ -223,7 +223,11 @@ internal class DiscordBotImpl(
                         primaryEmbed = botOutput.primaryEmbedBuilder,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
-                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
+                    )
+                        .onSuccess { uuid ->
+                            botOutput.fullEmbedBuilder?.let { editableEmbedMap[uuid] = it }
+                        }
+                        .onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
             botOutput.plainText != null -> {
@@ -287,8 +291,9 @@ internal class DiscordBotImpl(
             }
             (CreateEmbedUseCase.KEY_EDIT in action) -> {
                 interaction.deferPublicMessageUpdate()
+                val uuid = action.substringAfter(CreateEmbedUseCase.KEY_EDIT)
                 message?.apply {
-                    editableEmbedMap[id]?.let { embedBuilder ->
+                    editableEmbedMap[uuid]?.let { embedBuilder ->
                         edit {
                             embeds?.clear()
                             embed(embedBuilder)
