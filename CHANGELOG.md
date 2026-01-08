@@ -1,5 +1,11 @@
 # BOT CHANGELOG
 
+## [v5.2.0] - TODO
+- Xko
+  - supports non tilde variants ie `5L~L` and `5LL`
+  - supports inputs without parentheses ie `j.M+H` is valid for `j.(M+H)`
+  - uppercase input in the embed
+
 ## [v5.1.3] - 2026-01-07
 - DustLoop
   - fixed ABA JR queries
