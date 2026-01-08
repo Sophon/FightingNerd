@@ -289,7 +289,6 @@ internal class DustLoopWikiDiscordFeature(
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
                 val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-                    ?: move.urls.moveImageList.takeIf { it.isNotEmpty() }
                     ?: emptyList()
 
                 BotOutput(
