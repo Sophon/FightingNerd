@@ -2,6 +2,7 @@
 
 ## [v5.2.2] - TODO
 - Wavu - fixed Video field being inlined
+- DustLoop - fixed move names having HTML mess
 
 ## [v5.2.2] - 2026-01-08
 - fixed Markdown formatting
