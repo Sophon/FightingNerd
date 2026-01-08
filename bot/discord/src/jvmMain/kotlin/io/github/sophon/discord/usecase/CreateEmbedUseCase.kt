@@ -3,8 +3,6 @@ package io.github.sophon.discord.usecase
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.behavior.interaction.response.PublicInteractionResponseBehavior
-import dev.kord.core.entity.Message
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -18,25 +16,31 @@ import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 /**
  * USED FOR: general and error embeds
  */
+@OptIn(ExperimentalUuidApi::class)
 internal class CreateEmbedUseCase {
 
     suspend fun MessageCreateEvent.invoke(
-        embedBuilder: EmbedBuilder.() -> Unit,
+        primaryEmbed: EmbedBuilder.() -> Unit,
+        fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
         buttons: List<BotOutput.EmbedButton> = listOf(),
-    ): Result<Message, BotError> {
+    ): Result<String, BotError> {
         return try {
+            val uuid = Uuid.random()
             val message = message.channel.createMessage {
                 messageReference = message.id
                 allowedMentions { repliedUser = false }
-                embed(embedBuilder)
+
+                embed(fullEmbed ?: primaryEmbed)
 
                 if (buttons.isNotEmpty()) {
-                    createButtons(buttons)
+                    createButtons(uuid, buttons)
                 }
 
                 imageList?.urls?.forEach { url ->
@@ -54,23 +58,26 @@ internal class CreateEmbedUseCase {
                 }
             }
 
-            Result.Success(message)
+            Result.Success(uuid.toString())
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
         }
     }
 
     suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
-        embedBuilder: EmbedBuilder.() -> Unit,
+        primaryEmbed: EmbedBuilder.() -> Unit,
+        fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
         buttons: List<BotOutput.EmbedButton> = listOf(),
-    ): Result<PublicInteractionResponseBehavior, BotError> {
+    ): Result<String, BotError> {
         return try {
-            val behavior = interaction.respondPublic {
-                embed(embedBuilder)
+            val uuid = Uuid.random()
+
+            interaction.respondPublic {
+                embed(fullEmbed ?: primaryEmbed)
 
                 if (buttons.isNotEmpty()) {
-                    createButtons(buttons)
+                    createButtons(uuid, buttons)
                 }
 
                 imageList?.urls?.forEach { url ->
@@ -88,20 +95,30 @@ internal class CreateEmbedUseCase {
                 }
             }
 
-            Result.Success(behavior)
+            Result.Success(uuid.toString())
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
         }
     }
 
 
-    private fun MessageBuilder.createButtons(buttons: List<BotOutput.EmbedButton>) {
+    private fun MessageBuilder.createButtons(
+        uuid: Uuid,
+        buttons: List<BotOutput.EmbedButton>
+    ) {
         buttons.chunked(5).forEach { rowButtons ->
             actionRow {
                 rowButtons.forEach { button ->
+                    val action = when(button.action) {
+                         is BotOutput.EmbedButton.Action.Query-> {
+                             "$KEY_QUERY${button.action.query}"
+                         }
+                        is BotOutput.EmbedButton.Action.Edit -> "$KEY_EDIT$uuid"
+                    }
+
                     interactionButton(
                         style = ButtonStyle.Primary,
-                        customId = button.query,
+                        customId = action,
                     ) {
                         label = button.label
                         disabled = false
@@ -109,5 +126,10 @@ internal class CreateEmbedUseCase {
                 }
             }
         }
+    }
+
+    internal companion object {
+        const val KEY_QUERY = "query: "
+        const val KEY_EDIT = "edit: "
     }
 }

@@ -5,6 +5,7 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
@@ -13,6 +14,7 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
+import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.embed
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
@@ -48,6 +50,8 @@ internal class DiscordBotImpl(
     private val createFeedbackEmbedUseCase: CreateFeedbackEmbedUseCase,
     private val createReplyEmbedUseCase: CreateReplyEmbedUseCase,
 ): DiscordBot {
+    private val editableEmbedMap = mutableMapOf<String, EmbedBuilder.() -> Unit>()
+
     override suspend fun startSession() {
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
 
@@ -144,13 +148,17 @@ internal class DiscordBotImpl(
         }
 
         when {
-            botOutput.embedBuilder != null -> {
+            botOutput.primaryEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
                     invoke(
-                        embedBuilder = botOutput.embedBuilder,
+                        primaryEmbed = botOutput.primaryEmbedBuilder,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
-                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
+                    )
+                        .onSuccess { uuid ->
+                            botOutput.fullEmbedBuilder?.let { editableEmbedMap[uuid] = it }
+                        }
+                        .onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
             botOutput.plainText != null -> {
@@ -162,8 +170,10 @@ internal class DiscordBotImpl(
             }
             botOutput.errorEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.errorEmbedBuilder, buttons = botOutput.buttons)
-                        .onError { Napier.e(tag = TAG) { "embed: $it" } }
+                    invoke(
+                        primaryEmbed = botOutput.errorEmbedBuilder,
+                        buttons = botOutput.buttons,
+                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
             botOutput.feedback != null -> {
@@ -207,13 +217,17 @@ internal class DiscordBotImpl(
         }
 
         when {
-            botOutput.embedBuilder != null -> {
+            botOutput.primaryEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
                     invoke(
-                        embedBuilder = botOutput.embedBuilder,
+                        primaryEmbed = botOutput.primaryEmbedBuilder,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
-                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
+                    )
+                        .onSuccess { uuid ->
+                            botOutput.fullEmbedBuilder?.let { editableEmbedMap[uuid] = it }
+                        }
+                        .onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
             botOutput.plainText != null -> {
@@ -225,7 +239,10 @@ internal class DiscordBotImpl(
             }
             botOutput.errorEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
-                    invoke(embedBuilder = botOutput.errorEmbedBuilder, buttons = botOutput.buttons)
+                    invoke(
+                        primaryEmbed = botOutput.errorEmbedBuilder,
+                        buttons = botOutput.buttons,
+                    )
                 }
             }
             botOutput.feedback != null -> {
@@ -247,24 +264,48 @@ internal class DiscordBotImpl(
             id = interaction.user.data.id.toString(),
             channelId = interaction.channelId.toString(),
         )
-        val query = interaction.componentId
-        val response = interaction.deferPublicResponse()
+        val action = interaction.componentId
+        val message = interaction.data.message.value?.let {
+            interaction.message
+        }
 
-        routeCommandToFeatureUseCase.invoke(source = source, message = query)
-            .onSuccess { botOutput ->
-                response.respond {
-                    botOutput.embedBuilder?.let { embed(it) }
-                }
+        when {
+            (CreateEmbedUseCase.KEY_QUERY in action) -> {
+                val response = interaction.deferPublicResponse()
+                val message = action.substringAfter(CreateEmbedUseCase.KEY_QUERY)
+                routeCommandToFeatureUseCase.invoke(source, message)
+                    .onSuccess { botOutput ->
+                        response.respond {
+                            botOutput.primaryEmbedBuilder?.let { embed(it) }
+                        }
+                    }
+                    .onError { error ->
+                        response.respond {
+                            embed {
+                                title = "Interaction Failed"
+                                description = error.toString()
+                                color = Color(0x00FF0000)
+                            }
+                        }
+                    }
             }
-            .onError { error ->
-                response.respond {
-                    embed {
-                        title = "Interaction Failed"
-                        description = error.toString()
-                        color = Color(0x00FF0000)
+            (CreateEmbedUseCase.KEY_EDIT in action) -> {
+                interaction.deferPublicMessageUpdate()
+                val uuid = action.substringAfter(CreateEmbedUseCase.KEY_EDIT)
+                message?.apply {
+                    editableEmbedMap[uuid]?.let { embedBuilder ->
+                        edit {
+                            embeds?.clear()
+                            embed(embedBuilder)
+                            components = mutableListOf() //removes buttons
+                        }
                     }
                 }
             }
+            else -> {
+                Napier.e(tag = TAG) { "Invalid button action" }
+            }
+        }
     }
 
     private suspend fun createCommandsForTestServer() {

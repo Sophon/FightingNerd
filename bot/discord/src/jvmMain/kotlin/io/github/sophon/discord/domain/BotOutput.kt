@@ -4,9 +4,10 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.domain.Source
 
 data class BotOutput(
-    val embedBuilder: (EmbedBuilder.() -> Unit)? = null,
-    val plainText: String? = null,
+    val primaryEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
+    val fullEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
     val errorEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
+    val plainText: String? = null,
     val images: Images? = null,
     val feedback: Feedback? = null,
     val reply: Reply? = null,
@@ -31,6 +32,11 @@ data class BotOutput(
 
     data class EmbedButton(
         val label: String,
-        val query: String,
-    )
+        val action: Action,
+    ) {
+        sealed class Action {
+            class Query(val query: String): Action()
+            class Edit(): Action()
+        }
+    }
 }

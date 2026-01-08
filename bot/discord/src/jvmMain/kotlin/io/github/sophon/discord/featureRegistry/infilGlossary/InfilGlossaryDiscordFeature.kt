@@ -60,7 +60,7 @@ internal class InfilGlossaryDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return searchGlossaryUseCase.invoke(query)
-            .map { BotOutput(embedBuilder = createEmbed(it)) }
+            .map { BotOutput(primaryEmbedBuilder = createEmbed(it)) }
     }
 
     private fun createEmbed(

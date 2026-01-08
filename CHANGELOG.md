@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v6.0.0] - 2026-01-08
+- SuperCombo - SF6 outputs have a button to display details
+
 ## [v5.3.0] - 2026-01-08
 - only hitbox images - remove all other images from move embeds
 

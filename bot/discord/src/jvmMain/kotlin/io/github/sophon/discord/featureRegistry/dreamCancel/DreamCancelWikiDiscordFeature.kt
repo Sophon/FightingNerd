@@ -186,7 +186,7 @@ internal class DreamCancelWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    embedBuilder = createMoveEmbed(gameId, move),
+                    primaryEmbedBuilder = createMoveEmbed(gameId, move),
                     images = if (images.size < 2) {
                         null
                     } else {
@@ -202,7 +202,7 @@ internal class DreamCancelWikiDiscordFeature(
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
         return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, BLUE)
-            .map { BotOutput(embedBuilder = it) }
+            .map { BotOutput(primaryEmbedBuilder = it) }
     }
 
     private fun createMoveEmbed(

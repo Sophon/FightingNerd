@@ -1,7 +1,5 @@
 package io.github.sophon.discord.featureRegistry.wikiDustLoop
 
-import dev.kord.common.Color
-import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -10,11 +8,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
-import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.core.wiki.util.getLevel
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
@@ -27,9 +21,6 @@ import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
 import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -271,7 +262,7 @@ internal class DustLoopWikiDiscordFeature(
         return getCharacterUseCase.invoke(wiki = wiki, charName = query)
             .map { (character, fastestMoveList) ->
                 BotOutput(
-                    embedBuilder = createCharacterEmbedUseCase.invoke(
+                    primaryEmbedBuilder = createCharacterEmbedUseCase.invoke(
                         character,
                         fastestMoveList,
                         game,
@@ -292,7 +283,7 @@ internal class DustLoopWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    embedBuilder = createMoveEmbedUseCase.invoke(move, game, featureInfo),
+                    primaryEmbedBuilder = createMoveEmbedUseCase.invoke(move, game, featureInfo),
                     images = if (images.size < 2) {
                         null
                     } else {
@@ -309,7 +300,7 @@ internal class DustLoopWikiDiscordFeature(
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
         return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, RED)
             .map { embedBuilder ->
-                BotOutput(embedBuilder = embedBuilder)
+                BotOutput(primaryEmbedBuilder = embedBuilder)
             }
     }
 
