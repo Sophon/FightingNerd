@@ -279,7 +279,21 @@ class CharacterMapperTest {
     fun `create aliases for BB handles apostrophe`() {
         // given
         val string = "Susano&#039;o"
-        val expected = listOf("susanoo", "su")
+        val expected = listOf("su")
+
+        // when
+        val result = string.createAliases(bb)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    //Taokaka → tk
+    @Test
+    fun `createAliases for BB doesn't create an alias for single name`() {
+        // given
+        val string = "Taokaka"
+        val expected = listOf("tk")
 
         // when
         val result = string.createAliases(bb)

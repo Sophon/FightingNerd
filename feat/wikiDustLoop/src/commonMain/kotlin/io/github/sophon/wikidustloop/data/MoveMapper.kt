@@ -16,7 +16,7 @@ internal fun MoveListResponseDto.toDomain(
         val dto = wrapper.title
 
         Move(
-            charName = dto.chara.orEmpty(),
+            charName = dto.chara.orEmpty().cleanHtml(),
             id = dto.input.formMoveId(dto.chara),
             name = dto.name,
 

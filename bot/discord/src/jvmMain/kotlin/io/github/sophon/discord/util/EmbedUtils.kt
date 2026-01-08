@@ -15,6 +15,7 @@ internal fun EmbedBuilder.mandatoryField(
         this.name = name
         this.value = value
             .orDash()
+            .replace("*", "\\*")
             .truncate(MAX_LENGTH_EMBED)
         this.inline = inline
     }
@@ -28,7 +29,9 @@ internal fun EmbedBuilder.optionalField(
     if (value.isNullOrBlank().not()) {
         field {
             this.name = name
-            this.value = value.truncate(MAX_LENGTH_EMBED)
+            this.value = value
+                .replace("*", "\\*")
+                .truncate(MAX_LENGTH_EMBED)
             this.inline = inline
         }
     }
