@@ -25,7 +25,8 @@ import io.github.sophon.discord.domain.BotOutput
 internal class CreateEmbedUseCase {
 
     suspend fun MessageCreateEvent.invoke(
-        embedBuilder: EmbedBuilder.() -> Unit,
+        primaryEmbed: EmbedBuilder.() -> Unit,
+        fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
         buttons: List<BotOutput.EmbedButton> = listOf(),
     ): Result<Message, BotError> {
@@ -33,7 +34,8 @@ internal class CreateEmbedUseCase {
             val message = message.channel.createMessage {
                 messageReference = message.id
                 allowedMentions { repliedUser = false }
-                embed(embedBuilder)
+
+                embed(fullEmbed ?: primaryEmbed)
 
                 if (buttons.isNotEmpty()) {
                     createButtons(buttons)
@@ -61,13 +63,14 @@ internal class CreateEmbedUseCase {
     }
 
     suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
-        embedBuilder: EmbedBuilder.() -> Unit,
+        primaryEmbed: EmbedBuilder.() -> Unit,
+        fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
         buttons: List<BotOutput.EmbedButton> = listOf(),
     ): Result<PublicInteractionResponseBehavior, BotError> {
         return try {
             val behavior = interaction.respondPublic {
-                embed(embedBuilder)
+                embed(fullEmbed ?: primaryEmbed)
 
                 if (buttons.isNotEmpty()) {
                     createButtons(buttons)
@@ -99,9 +102,16 @@ internal class CreateEmbedUseCase {
         buttons.chunked(5).forEach { rowButtons ->
             actionRow {
                 rowButtons.forEach { button ->
+                    val action = when(button.action) {
+                         is BotOutput.EmbedButton.Action.Query-> {
+                             "$KEY_QUERY${button.action.query}"
+                         }
+                        is BotOutput.EmbedButton.Action.Edit -> KEY_EDIT
+                    }
+
                     interactionButton(
                         style = ButtonStyle.Primary,
-                        customId = button.query,
+                        customId = action,
                     ) {
                         label = button.label
                         disabled = false
@@ -109,5 +119,10 @@ internal class CreateEmbedUseCase {
                 }
             }
         }
+    }
+
+    internal companion object {
+        const val KEY_QUERY = "query: "
+        const val KEY_EDIT = "edit: "
     }
 }

@@ -68,13 +68,13 @@ class RouteCommandToFeatureUseCaseTest {
                     } else if (parts.size < 2) {
                         Result.Error(BotError.UnknownMove(charName.orEmpty(), query))
                     } else {
-                        Result.Success(BotOutput(embedBuilder = { title = "Wavu FD: $query" }))
+                        Result.Success(BotOutput(primaryEmbedBuilder = { title = "Wavu FD: $query" }))
                     }
                 }
                 Command.PC, Command.HEAT, Command.HOMING -> {
                     val charName = query.lowercase()
                     if (charName in tekkenChars) {
-                        Result.Success(BotOutput(embedBuilder = { title = "Wavu ${command.name}: $query" }))
+                        Result.Success(BotOutput(primaryEmbedBuilder = { title = "Wavu ${command.name}: $query" }))
                     } else {
                         Result.Error(BotError.UnknownCharacter(charName))
                     }
@@ -114,7 +114,7 @@ class RouteCommandToFeatureUseCaseTest {
             return when (command) {
                 Command.GL -> {
                     if (query.lowercase() in glossaryTerms) {
-                        Result.Success(BotOutput(embedBuilder = { title = "Infil GL: $query" }))
+                        Result.Success(BotOutput(primaryEmbedBuilder = { title = "Infil GL: $query" }))
                     } else {
                         Result.Error(BotError.GlossaryTermNotFound(query))
                     }
@@ -167,12 +167,12 @@ class RouteCommandToFeatureUseCaseTest {
                     } else if (parts.size < 2) {
                         Result.Error(BotError.UnknownMove(charName.orEmpty(), query))
                     } else {
-                        Result.Success(BotOutput(embedBuilder = { title = "SuperCombo FD: $query" }))
+                        Result.Success(BotOutput(primaryEmbedBuilder = { title = "SuperCombo FD: $query" }))
                     }
                 }
                 Command.CHARSF -> {
                     if (query.lowercase() in sfChars) {
-                        Result.Success(BotOutput(embedBuilder = { title = "SuperCombo CHARSF6: $query" }))
+                        Result.Success(BotOutput(primaryEmbedBuilder = { title = "SuperCombo CHARSF6: $query" }))
                     } else {
                         Result.Error(BotError.UnknownCharacter(query))
                     }
@@ -199,7 +199,7 @@ class RouteCommandToFeatureUseCaseTest {
             origin: Source,
         ): Result<BotOutput, BotError> {
             return if (command == Command.HEAT && query.isNotBlank()) {
-                Result.Success(BotOutput(embedBuilder = { title = "NoDefault HEAT: $query" }))
+                Result.Success(BotOutput(primaryEmbedBuilder = { title = "NoDefault HEAT: $query" }))
             } else {
                 Result.Error(BotError.InvalidQuery(query))
             }
@@ -328,7 +328,7 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(Source("", "", ""),message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
-        val embedBuilder = (result as Result.Success).data.embedBuilder
+        val embedBuilder = (result as Result.Success).data.primaryEmbedBuilder
         assertThat(embedBuilder).isNotNull()
         val title = EmbedBuilder().apply(embedBuilder!!).title
         assertThat(title).isEqualTo("Wavu FD: lily 5lk")
@@ -342,7 +342,7 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(Source("", "", ""),message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
-        val embedBuilder = (result as Result.Success).data.embedBuilder
+        val embedBuilder = (result as Result.Success).data.primaryEmbedBuilder
         assertThat(embedBuilder).isNotNull()
         val title = EmbedBuilder().apply(embedBuilder!!).title
         assertThat(title).isEqualTo("Wavu FD: ak f21")
@@ -356,7 +356,7 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(Source("", "", ""),message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
-        val embedBuilder = (result as Result.Success).data.embedBuilder
+        val embedBuilder = (result as Result.Success).data.primaryEmbedBuilder
         assertThat(embedBuilder).isNotNull()
         val title = EmbedBuilder().apply(embedBuilder!!).title
         assertThat(title).isEqualTo("SuperCombo FD: ken dp")

@@ -191,7 +191,7 @@ internal class SuperComboWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getCharacterUseCase.invoke(wiki, charName = query)
             .map { (character, fastestMoveList) ->
-                BotOutput(embedBuilder = createCharacterEmbed(character, fastestMoveList))
+                BotOutput(primaryEmbedBuilder = createCharacterEmbed(character, fastestMoveList))
             }
     }
 
@@ -205,7 +205,11 @@ internal class SuperComboWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    embedBuilder = createMoveEmbed(move),
+                    primaryEmbedBuilder = createPrimaryEmbedBuilder(move),
+                    fullEmbedBuilder = createFullEmbedBuilder(move),
+                    buttons = listOf(
+                        BotOutput.EmbedButton(label = "Details", action = BotOutput.EmbedButton.Action.Edit())
+                    ),
                     images = if (images.size < 2) {
                         null
                     } else {
@@ -273,7 +277,7 @@ internal class SuperComboWikiDiscordFeature(
         featureFooter(featureInfo)
     }
 
-    private fun createMoveEmbed(
+    private fun createPrimaryEmbedBuilder(
         move: Move,
     ): EmbedBuilder.() -> Unit = {
         title = move.input
@@ -303,6 +307,14 @@ internal class SuperComboWikiDiscordFeature(
         optionalField(name = "Damage", value = move.damage)
         optionalField(name = "Invul", value = move.invulnerability)
 
+        featureFooter(featureInfo)
+    }
+
+    private fun createFullEmbedBuilder(
+        move: Move,
+    ): EmbedBuilder.() -> Unit = {
+        createPrimaryEmbedBuilder(move).invoke(this)
+
         sf6Fields(move)
         mk1Fields(move)
 
@@ -310,8 +322,6 @@ internal class SuperComboWikiDiscordFeature(
 
         createNotes(move)
         createDetails(move)
-
-        featureFooter(featureInfo)
     }
 
     private fun EmbedBuilder.sf6Fields(move: Move) {
