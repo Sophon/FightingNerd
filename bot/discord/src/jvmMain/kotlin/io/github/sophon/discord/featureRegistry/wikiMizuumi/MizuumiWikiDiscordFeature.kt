@@ -206,7 +206,7 @@ internal class MizuumiWikiDiscordFeature(
 
         optionalField(name = "Attribute", value = move.mbProperties?.attribute)
         optionalField(name = "Property", value = move.mbProperties?.property)
-        optionalField(name = "Damage", value = move.damage)
+        optionalField(name = "Damage", value = move.damage, escapeAsterisks = true)
         optionalField(name = "Invul", value = move.invulnerability)
         optionalField(name = "Cost", value = move.mbProperties?.cost)
 
