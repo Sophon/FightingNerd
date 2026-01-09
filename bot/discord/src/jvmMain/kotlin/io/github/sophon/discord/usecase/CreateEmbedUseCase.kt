@@ -2,6 +2,7 @@ package io.github.sophon.discord.usecase
 
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.channel.createMessage
+import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
@@ -16,6 +17,10 @@ import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -27,6 +32,7 @@ internal class CreateEmbedUseCase {
 
     suspend fun MessageCreateEvent.invoke(
         primaryEmbed: EmbedBuilder.() -> Unit,
+        coroutineScope: CoroutineScope,
         fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
         buttons: List<BotOutput.EmbedButton> = listOf(),
@@ -52,6 +58,15 @@ internal class CreateEmbedUseCase {
                 }
             }
 
+            if (buttons.isNotEmpty()) {
+                coroutineScope.launch {
+                    delay(10.seconds)
+                    message.edit {
+                        components = mutableListOf()
+                    }
+                }
+            }
+
             if (rollChance(successPercentage = 1)) {
                 message.channel.createMessage {
                     content = "Consider donating (`/donate` or `/tip`): **<$URL_KOFI>**"
@@ -66,6 +81,7 @@ internal class CreateEmbedUseCase {
 
     suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
         primaryEmbed: EmbedBuilder.() -> Unit,
+        coroutineScope: CoroutineScope,
         fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
         buttons: List<BotOutput.EmbedButton> = listOf(),
@@ -78,6 +94,13 @@ internal class CreateEmbedUseCase {
 
                 if (buttons.isNotEmpty()) {
                     createButtons(uuid, buttons)
+
+                    coroutineScope.launch {
+                        delay(10.seconds)
+                        interaction.getOriginalInteractionResponse().edit {
+                            components = mutableListOf()
+                        }
+                    }
                 }
 
                 imageList?.urls?.forEach { url ->
