@@ -61,6 +61,8 @@ graph LR
         xko[2XKO]
         melty[Melty Blood: Type Lumina]
         bbcf[BlazBlue: Central Fiction]
+        uni2[Under Night In-Birth II Sys:Celes]
+        vsav[Vampire Savior]
     end
 
     subgraph Ranked service
@@ -97,6 +99,8 @@ graph LR
     dreamcancel --> kof15
     dreamcancel --> cotw
     mizuumi --> melty
+    mizuumi --> uni2
+    mizuumi --> vsav
 
 
     style discordBot fill:green,stroke:#2563EB, color:#fff
@@ -121,6 +125,7 @@ graph LR
     style gbvsr fill:green, color:#fff
     style melty fill:green, color:#fff
     style bbcf fill:green, color:#fff
+    style uni2 fill:green, color:#fff
   ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
