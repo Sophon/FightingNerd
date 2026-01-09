@@ -54,7 +54,7 @@ internal class DiscordBotImpl(
     private val createReplyEmbedUseCase: CreateReplyEmbedUseCase,
     private val coroutineScope: CoroutineScope,
 ): DiscordBot {
-    private val editableEmbedMap = mutableMapOf<String, EmbedBuilder.() -> Unit>()
+    private val editableEmbedMap = mutableMapOf<String, BotOutput>()
 
     override suspend fun startSession() {
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
@@ -162,7 +162,7 @@ internal class DiscordBotImpl(
                     )
                         .onSuccess { uuid ->
                             botOutput.fullEmbedBuilder?.let {
-                                editableEmbedMap[uuid] = it
+                                editableEmbedMap[uuid] = botOutput
 
                                 coroutineScope.launch {
                                     delay(10.seconds)
@@ -240,7 +240,7 @@ internal class DiscordBotImpl(
                     )
                         .onSuccess { uuid ->
                             botOutput.fullEmbedBuilder?.let {
-                                editableEmbedMap[uuid] = it
+                                editableEmbedMap[uuid] = botOutput
 
                                 coroutineScope.launch {
                                     delay(10.seconds)
@@ -315,12 +315,20 @@ internal class DiscordBotImpl(
                 interaction.deferPublicMessageUpdate()
                 val uuid = action.substringAfter(CreateEmbedUseCase.KEY_EDIT)
                 message?.apply {
-                    editableEmbedMap[uuid]?.let { embedBuilder ->
+                    val botOutput = editableEmbedMap[uuid]
+                    botOutput?.fullEmbedBuilder?.let { builder ->
                         edit {
                             embeds?.clear()
-                            embed(embedBuilder)
+                            embed(builder)
                             editableEmbedMap.remove(uuid)
                             components = mutableListOf() //removes buttons
+                            botOutput.images?.urls?.forEach { url ->
+                                embed {
+                                    title = botOutput.images.title
+                                    this.url = botOutput.images.titleUrl
+                                    image = url
+                                }
+                            }
                         }
                     }
                 }
