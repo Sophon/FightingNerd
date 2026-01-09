@@ -1,4 +1,6 @@
 # BOT CHANGELOG
+## [v6.0.1] - 2026-01-09
+- time-limit the SF detail button to 10s
 
 ## [v6.0.0] - 2026-01-08
 - SuperCombo - SF6 outputs have a button to display details
