@@ -1,6 +1,6 @@
 package io.github.sophon.wikimizuumi.data
 
-import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
@@ -39,7 +39,7 @@ internal fun MoveDto.toDomain(
     character: Character,
     imageUrlMap: Map<String, String>,
 ): Move {
-    val moveName = name?.cleanHtml()
+    val moveName = name?.cleanHtmlOrNull()
 
     val move = Move(
         charName = character.displayName,
@@ -48,16 +48,16 @@ internal fun MoveDto.toDomain(
             .orDash()
             .decodeHtmlEntities()
             .lowercase(),
-        damage = damage?.cleanHtml(),
-        startup = startup?.cleanHtml(),
-        onHit = onHit?.cleanHtml(),
-        onBlock = frameAdv?.cleanHtml(),
+        damage = damage?.cleanHtmlOrNull(),
+        startup = startup?.cleanHtmlOrNull(),
+        onHit = onHit?.cleanHtmlOrNull(),
+        onBlock = frameAdv?.cleanHtmlOrNull(),
         name = moveName,
-        recovery = recovery?.cleanHtml(),
-        active = active?.cleanHtml(),
-        cancel = cancel?.cleanHtml()?.formatCancel(),
-        guard = guard?.cleanHtml(),
-        invulnerability = invul?.cleanHtml(),
+        recovery = recovery?.cleanHtmlOrNull(),
+        active = active?.cleanHtmlOrNull(),
+        cancel = cancel?.cleanHtmlOrNull()?.formatCancel(),
+        guard = guard?.cleanHtmlOrNull(),
+        invulnerability = invul?.cleanHtmlOrNull(),
         urls = Move.Urls(
             wikiUrl = WIKI_BASE_URL,
             hitboxImageList = hitboxes
@@ -70,37 +70,37 @@ internal fun MoveDto.toDomain(
                 .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
         ),
         mbProperties = Move.MBProperties(
-            inputInfo = inputInfo?.cleanHtml(),
-            subtitle = subtitle?.cleanHtml(),
-            minDamage = minDamage?.cleanHtml(),
-            property = property?.cleanHtml()?.formPropertiesUrl(),
-            cost = cost?.cleanHtml(),
-            attribute = attribute?.cleanHtml(),
-            landing = landing?.cleanHtml(),
-            overall = overall?.cleanHtml(),
+            inputInfo = inputInfo?.cleanHtmlOrNull(),
+            subtitle = subtitle?.cleanHtmlOrNull(),
+            minDamage = minDamage?.cleanHtmlOrNull(),
+            property = property?.cleanHtmlOrNull()?.formPropertiesUrl(),
+            cost = cost?.cleanHtmlOrNull(),
+            attribute = attribute?.cleanHtmlOrNull(),
+            landing = landing?.cleanHtmlOrNull(),
+            overall = overall?.cleanHtmlOrNull(),
         ),
         uni2Properties = Move.Uni2Properties(
-            inputInfo = inputInfo?.cleanHtml(),
-            subtitle = subtitle?.cleanHtml(),
-            minDamage = minDamage?.cleanHtml(),
-            type = type?.cleanHtml(),
-            cancelWindow = cancelWindow?.cleanHtml(),
-            property = property?.cleanHtml(),
-            cost = cost?.cleanHtml(),
-            attribute = attribute?.cleanHtml(),
-            landing = landing?.cleanHtml(),
-            overall = overall?.cleanHtml(),
-            assaultAdv = assaultAdv?.cleanHtml(),
-            blockstun = blockstun?.cleanHtml(),
-            groundHit = groundHit?.cleanHtml(),
-            airHit = airHit?.cleanHtml(),
-            groundCH = groundCH?.cleanHtml(),
-            airCH = airCH?.cleanHtml(),
-            hitstop = hitstop?.cleanHtml(),
-            CHstop = CHstop?.cleanHtml(),
-            proration = proration?.cleanHtml(),
-            comboP1 = comboP1?.cleanHtml(),
-            comboP2 = comboP2?.cleanHtml(),
+            inputInfo = inputInfo?.cleanHtmlOrNull(),
+            subtitle = subtitle?.cleanHtmlOrNull(),
+            minDamage = minDamage?.cleanHtmlOrNull(),
+            type = type?.cleanHtmlOrNull(),
+            cancelWindow = cancelWindow?.cleanHtmlOrNull(),
+            property = property?.cleanHtmlOrNull()?.formPropertiesUrl(),
+            cost = cost?.cleanHtmlOrNull(),
+            attribute = attribute?.cleanHtmlOrNull(),
+            landing = landing?.cleanHtmlOrNull(),
+            overall = overall?.cleanHtmlOrNull(),
+            assaultAdv = assaultAdv?.cleanHtmlOrNull(),
+            blockstun = blockstun?.cleanHtmlOrNull(),
+            groundHit = groundHit?.cleanHtmlOrNull(),
+            airHit = airHit?.cleanHtmlOrNull(),
+            groundCH = groundCH?.cleanHtmlOrNull(),
+            airCH = airCH?.cleanHtmlOrNull(),
+            hitstop = hitstop?.cleanHtmlOrNull(),
+            CHstop = CHstop?.cleanHtmlOrNull(),
+            proration = proration?.cleanHtmlOrNull(),
+            comboP1 = comboP1?.cleanHtmlOrNull(),
+            comboP2 = comboP2?.cleanHtmlOrNull(),
         )
     )
     return move
@@ -127,7 +127,7 @@ internal fun MoveDto.toDomain(
     characterData: DownloadMoveListUseCase.CharacterData,
     imageUrlMap: Map<String, String>,
 ): Move {
-    val moveName = name?.cleanHtml()
+    val moveName = name?.cleanHtmlOrNull()
 
     val move = Move(
         charName = this.chara,
@@ -136,17 +136,18 @@ internal fun MoveDto.toDomain(
             .orDash()
             .decodeHtmlEntities()
             .lowercase(),
-        damage = damage?.cleanHtml(),
-        startup = startup?.cleanHtml(),
-        onHit = onHit?.cleanHtml(),
-        onBlock = frameAdv?.cleanHtml(),
+        damage = damage?.cleanHtmlOrNull(),
+        startup = startup?.cleanHtmlOrNull(),
+        onHit = onHit?.cleanHtmlOrNull(),
+        onBlock = frameAdv?.cleanHtmlOrNull(),
         name = moveName,
-        recovery = recovery?.cleanHtml(),
-        active = active?.cleanHtml(),
-        cancel = cancel?.cleanHtml()?.formatCancel(),
-        guard = guard?.cleanHtml(),
-        invulnerability = invul?.cleanHtml(),
+        recovery = recovery?.cleanHtmlOrNull(),
+        active = active?.cleanHtmlOrNull(),
+        cancel = cancel?.cleanHtmlOrNull()?.formatCancel(),
+        guard = guard?.cleanHtmlOrNull(),
+        invulnerability = invul?.cleanHtmlOrNull(),
         urls = Move.Urls(
+            wikiUrl = WIKI_BASE_URL,
             characterImage = characterData.imageUrl,
             hitboxImageList = hitboxes
                 .orEmpty()
@@ -158,27 +159,27 @@ internal fun MoveDto.toDomain(
                 .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
         ),
         uni2Properties = Move.Uni2Properties(
-            inputInfo = inputInfo?.cleanHtml(),
-            subtitle = subtitle?.cleanHtml(),
-            minDamage = minDamage?.cleanHtml(),
-            type = type?.cleanHtml(),
-            cancelWindow = cancelWindow?.cleanHtml(),
-            property = property?.cleanHtml(),
-            cost = cost?.cleanHtml(),
-            attribute = attribute?.cleanHtml(),
-            landing = landing?.cleanHtml(),
-            overall = overall?.cleanHtml(),
-            assaultAdv = assaultAdv?.cleanHtml(),
-            blockstun = blockstun?.cleanHtml(),
-            groundHit = groundHit?.cleanHtml(),
-            airHit = airHit?.cleanHtml(),
-            groundCH = groundCH?.cleanHtml(),
-            airCH = airCH?.cleanHtml(),
-            hitstop = hitstop?.cleanHtml(),
-            CHstop = CHstop?.cleanHtml(),
-            proration = proration?.cleanHtml(),
-            comboP1 = comboP1?.cleanHtml(),
-            comboP2 = comboP2?.cleanHtml(),
+            inputInfo = inputInfo?.cleanHtmlOrNull(),
+            subtitle = subtitle?.cleanHtmlOrNull(),
+            minDamage = minDamage?.cleanHtmlOrNull(),
+            type = type?.cleanHtmlOrNull(),
+            cancelWindow = cancelWindow?.cleanHtmlOrNull(),
+            property = property?.cleanHtmlOrNull()?.formPropertiesUrl(),
+            cost = cost?.cleanHtmlOrNull(),
+            attribute = attribute?.cleanHtmlOrNull(),
+            landing = landing?.cleanHtmlOrNull(),
+            overall = overall?.cleanHtmlOrNull(),
+            assaultAdv = assaultAdv?.cleanHtmlOrNull(),
+            blockstun = blockstun?.cleanHtmlOrNull(),
+            groundHit = groundHit?.cleanHtmlOrNull(),
+            airHit = airHit?.cleanHtmlOrNull(),
+            groundCH = groundCH?.cleanHtmlOrNull(),
+            airCH = airCH?.cleanHtmlOrNull(),
+            hitstop = hitstop?.cleanHtmlOrNull(),
+            CHstop = CHstop?.cleanHtmlOrNull(),
+            proration = proration?.cleanHtmlOrNull(),
+            comboP1 = comboP1?.cleanHtmlOrNull(),
+            comboP2 = comboP2?.cleanHtmlOrNull(),
         )
     )
     return move
