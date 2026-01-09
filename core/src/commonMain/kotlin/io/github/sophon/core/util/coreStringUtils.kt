@@ -66,6 +66,8 @@ fun String.cleanHtml(): String {
         .trim()
 }
 
+fun String?.cleanHtmlOrNull() = this?.cleanHtml()?.takeIf { it.isNotBlank() }
+
 // <br> & <br/>
 internal fun String.removeHtmlTags(): String {
     return this

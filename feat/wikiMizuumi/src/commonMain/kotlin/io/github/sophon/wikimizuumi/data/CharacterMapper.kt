@@ -1,5 +1,6 @@
 package io.github.sophon.wikimizuumi.data
 
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.removeAccents
 import io.github.sophon.core.wiki.domain.model.Character
@@ -19,6 +20,57 @@ internal fun String.toDomain(gameId: String): Character {
     )
 
     return char
+}
+
+internal fun CharacterListResponseDto.toDomain(
+//    imageUrlMap: Map<String, String>,
+    gameId: String,
+): List<Character> {
+    return cargoquery.map {
+        val dto = it.title
+
+        Character(
+            id = dto.chara.lowercase(),
+            displayName = dto.chara,
+            queryName = dto.chara,
+            wikiUrl = dto.chara.formWikiUrl(gameId),
+            aliasList = listOf(),
+//            images = Character.Images(
+//                iconUrl = dto.icon.let { imageUrlMap[it] },
+//                bannerUrl = dto.portrait.let { imageUrlMap[it] },
+//            ),
+            uni2Properties = Character.Uni2Properties(
+                smartSteer = dto.smartSteer,
+                hp = dto.health,
+                fWalkSpeed = dto.fWalkSpeed,
+                fWalkSpeedNote = dto.fWalkSpeedNote,
+                bWalkSpeed = dto.bWalkSpeed,
+                bWalkSpeedNote = dto.bWalkSpeedNote,
+                jumpStartup = dto.jumpStartup,
+                jumpDuration = dto.jumpDuration,
+                jumpDurationNote = dto.jumpDurationNote,
+                dashStartup = dto.dashStartup,
+                iDashSpeed = dto.iDashSpeed,
+                iDashSpeedNote = dto.iDashSpeedNote,
+                dashAccel = dto.dashAccel,
+                dashAccelNote = dto.dashAccelNote,
+                maxDashSpeed = dto.maxDashSpeed,
+                bDashStartup = dto.bDashStartup,
+                bDashDuration = dto.bDashDuration,
+                bDashDurationNote = dto.bDashDurationNote,
+                bDashDistance = dto.bDashDistance,
+                bDashDistanceNote = dto.bDashDistanceNote,
+                bDashFullInvulStart = dto.bDashFullInvulStart,
+                bDashFullInvulEnd = dto.bDashFullInvulEnd,
+                bDashThrowInvulStart = dto.bDashThrowInvulStart,
+                bDashThrowInvulEnd = dto.bDashThrowInvulEnd,
+                throwWidth = dto.throwWidth,
+                throwRange = dto.throwRange,
+                trait = dto.trait,
+                vorpalTrait = dto.vorpalTrait,
+            ),
+        )
+    }
 }
 
 //TODO: this might be a core util
@@ -60,4 +112,8 @@ internal fun String.createAliases(): List<String> {
     }
 
     return aliases
+}
+
+internal fun String.formWikiUrl(gameId: String): String {
+    return Game.fromId(gameId)?.let { "${it.wikiUrl}/$this" } ?: ""
 }

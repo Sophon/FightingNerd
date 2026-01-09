@@ -20,6 +20,7 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGloss
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.CreateMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.DustLoopWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiMizuumi.CreateMizuumiMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.MizuumiWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
@@ -70,6 +71,10 @@ internal val featureRegistryModule = module {
 
     //region Wavu
     singleOf(::FileReaderJVM).bind<FileReader>()
+    //endregion
+
+    //region Mizuumi
+    singleOf(::CreateMizuumiMoveEmbedUseCase)
     //endregion
 
     //region Infil glossary

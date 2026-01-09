@@ -35,5 +35,20 @@ data class MoveDto(
     val landing: String? = null,
     val overall: String? = null,
     val frameAdv: String? = null,
-    val invul: String? = null
+    val invul: String? = null,
+
+    val type: String? = null,
+    val cancelWindow: String? = null,
+    val onHit: String? = null,
+    val assaultAdv: String? = null,
+    val blockstun: String? = null,
+    val groundHit: String? = null,
+    val airHit: String? = null,
+    val groundCH: String? = null,
+    val airCH: String? = null,
+    val hitstop: String? = null,
+    val CHstop: String? = null,
+    val proration: String? = null,
+    val comboP1: String? = null,
+    val comboP2: String? = null,
 )

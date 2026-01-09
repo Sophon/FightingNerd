@@ -35,6 +35,7 @@ data class Move(
     val mkProperties: MKProperties? = null,
     val mbProperties: MBProperties? = null,
     val bbProperties: BBProperties? = null,
+    val uni2Properties: Uni2Properties? = null,
 ) {
     @Serializable
     data class Urls(
@@ -179,5 +180,30 @@ data class Move(
         val chStop: String? = null,
         val cancelTiming: String? = null,
         val type: String? = null
+    )
+
+    @Serializable
+    data class Uni2Properties(
+        val inputInfo: String? = null,
+        val subtitle: String? = null,
+        val minDamage: String? = null,
+        val type: String? = null,
+        val cancelWindow: String? = null,
+        val property: String? = null,
+        val cost: String? = null,
+        val attribute: String? = null,
+        val landing: String? = null,
+        val overall: String? = null,
+        val assaultAdv: String? = null,
+        val blockstun: String? = null,
+        val groundHit: String? = null,
+        val airHit: String? = null,
+        val groundCH: String? = null,
+        val airCH: String? = null,
+        val hitstop: String? = null,
+        val CHstop: String? = null,
+        val proration: String? = null,
+        val comboP1: String? = null,
+        val comboP2: String? = null,
     )
 }

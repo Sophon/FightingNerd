@@ -1,4 +1,10 @@
 # BOT CHANGELOG
+
+## [v6.1.0] - 2026-01-09
+- Mizuumi
+  - Uni2 support
+- fixed Full sometimes not showing hitbox images
+
 ## [v6.0.1] - 2026-01-09
 - time-limit the SF detail button to 10s
 

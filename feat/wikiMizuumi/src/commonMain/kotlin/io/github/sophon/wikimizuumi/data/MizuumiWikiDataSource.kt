@@ -3,8 +3,11 @@ package io.github.sophon.wikimizuumi.data
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wikimizuumi.BASE_URL
+import io.github.sophon.wikimizuumi.LIMIT_CHARACTERS
+import io.github.sophon.wikimizuumi.LIMIT_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -15,6 +18,11 @@ import kotlinx.coroutines.flow.toList
 
 interface MizuumiWikiDataSource {
     suspend fun downloadData(table: String): Result<MoveListResponseDto, DataError.Remote>
+    suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
+    suspend fun downloadMoveList(
+        table: String,
+        characterData: DownloadMoveListUseCase.CharacterData,
+    ): Result<MoveListResponseDto, DataError.Remote>
     suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
 }
 
@@ -37,7 +45,7 @@ internal class MizuumiWikiDataSourceImpl(
                         httpClient.get(BASE_URL) {
                             parameter("action", "cargoquery")
                             parameter("tables", table)
-                            parameter("fields", getDataFields(table))
+                            parameter("fields", getMoveFields(table))
                             parameter("format", "json")
                             parameter("limit", NO_MAX_MOVES)
                             parameter("offset", offset)
@@ -67,6 +75,36 @@ internal class MizuumiWikiDataSourceImpl(
         return Result.Success(MoveListResponseDto(cargoquery = allCargoQueries))
     }
 
+    override suspend fun downloadCharacterList(
+        table: String
+    ): Result<CharacterListResponseDto, DataError.Remote> {
+        return safeCall {
+            httpClient.get(urlString = BASE_URL) {
+                parameter("action", "cargoquery")
+                parameter("tables", table)
+                parameter("limit", LIMIT_CHARACTERS)
+                parameter("format", "json")
+                parameter("fields", getCharacterFields(table))
+            }
+        }
+    }
+
+    override suspend fun downloadMoveList(
+        table: String,
+        characterData: DownloadMoveListUseCase.CharacterData,
+    ): Result<MoveListResponseDto, DataError.Remote> {
+        return safeCall {
+            httpClient.get(urlString = BASE_URL) {
+                parameter("action", "cargoquery")
+                parameter("tables", table)
+                parameter("limit", LIMIT_MOVES)
+                parameter("format", "json")
+                parameter("fields", getMoveFields(table))
+                parameter("where", "chara=\"${characterData.name}\"")
+            }
+        }
+    }
+
     override suspend fun getImageUrl(
         fileNames: List<String>
     ): Result<Map<String, String>, DataError.Remote> {
@@ -78,32 +116,114 @@ internal class MizuumiWikiDataSourceImpl(
     }
 
 
-    private fun getDataFields(table: String): String {
+    private fun getCharacterFields(table: String): String {
         val allFields = listOf(
-            "moveId",
             "chara",
-            "input",
-            "inputInfo",
-            "name",
-            "subtitle",
-            "images",
-            "hitboxes",
-            "damage",
-            "minDamage",
-            "guard",
-            "cancel",
-            "property",
-            "cost",
-            "attribute",
-            "startup",
-            "active",
-            "recovery",
-            "landing",
-            "overall",
-            "frameAdv",
-            "invul"
+            "smartSteer",
+            "health",
+            "fWalkSpeed",
+            "fWalkSpeedNote",
+            "bWalkSpeed",
+            "bWalkSpeedNote",
+            "jumpStartup",
+            "jumpDuration",
+            "jumpDurationNote",
+            "dashStartup",
+            "iDashSpeed",
+            "iDashSpeedNote",
+            "dashAccel",
+            "dashAccelNote",
+            "maxDashSpeed",
+            "bDashStartup",
+            "bDashDuration",
+            "bDashDurationNote",
+            "bDashDistance",
+            "bDashDistanceNote",
+            "bDashFullInvulStart",
+            "bDashFullInvulEnd",
+            "bDashThrowInvulStart",
+            "bDashThrowInvulEnd",
+            "throwWidth",
+            "throwRange",
+            "trait",
+            "vorpalTrait"
         )
-        
+
+        return allFields.joinToString(",")
+    }
+
+    private fun getMoveFields(table: String): String {
+        val allFields = when (table) {
+            MizuumiTables.TABLE_MBTL_MOVES -> {
+                listOf(
+                    "moveId",
+                    "chara",
+                    "input",
+                    "inputInfo",
+                    "name",
+                    "subtitle",
+                    "images",
+                    "hitboxes",
+                    "damage",
+                    "minDamage",
+                    "guard",
+                    "cancel",
+                    "property",
+                    "cost",
+                    "attribute",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "landing",
+                    "overall",
+                    "frameAdv",
+                    "invul"
+                )
+            }
+
+            MizuumiTables.TABLE_UNI2_MOVES -> {
+                listOf(
+                    "moveId",
+                    "chara",
+                    "input",
+                    "inputInfo",
+                    "name",
+                    "subtitle",
+                    "images",
+                    "hitboxes",
+                    "damage",
+                    "minDamage",
+                    "type",
+                    "guard",
+                    "cancel",
+                    "cancelWindow",
+                    "property",
+                    "cost",
+                    "attribute",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "landing",
+                    "overall",
+                    "frameAdv",
+                    "onHit",
+                    "assaultAdv",
+                    "blockstun",
+                    "groundHit",
+                    "airHit",
+                    "groundCH",
+                    "airCH",
+                    "hitstop",
+                    "CHstop",
+                    "invul",
+                    "proration",
+                    "comboP1",
+                    "comboP2"
+                )
+            }
+            else -> listOf()
+        }
+
         return allFields.joinToString(",")
     }
 
