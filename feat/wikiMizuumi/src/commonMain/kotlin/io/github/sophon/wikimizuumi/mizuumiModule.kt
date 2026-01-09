@@ -11,6 +11,7 @@ import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadOrFetchUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
@@ -20,6 +21,7 @@ import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSource
 import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSourceImpl
 import io.github.sophon.wikimizuumi.data.WikiImageUrlResolver
+import io.github.sophon.wikimizuumi.data.toDomainAll
 import io.github.sophon.wikimizuumi.data.toDomain
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -49,7 +51,7 @@ fun mizuumiModule() = module {
                 source.downloadData(table?.moves.orEmpty())
                     .flatMap { dto ->
                         wikiImageUrlResolver.resolveHitboxUrl(dto)
-                            .map { dto.toDomain(imageUrlMap = it, gameId = gameId) }
+                            .map { dto.toDomainAll(imageUrlMap = it, gameId = gameId) }
                     }
             },
 
@@ -70,6 +72,13 @@ fun mizuumiModule() = module {
                 characterListDB.fetchCharacterDataFor(charName)
             },
 
+            downloadMoveListUseCase = DownloadMoveListUseCase { table, characterData ->
+                source.downloadMoveList(table.moves, characterData)
+                    .flatMap { dto ->
+                        wikiImageUrlResolver.resolveHitboxUrl(dto)
+                            .map { dto.toDomain(characterData, imageUrlMap = it) }
+                    }
+            },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
                 moveListDB.insertMoveList(character, moveList)
             },

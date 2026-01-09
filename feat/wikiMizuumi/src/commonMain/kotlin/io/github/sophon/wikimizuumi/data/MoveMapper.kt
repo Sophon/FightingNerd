@@ -5,9 +5,10 @@ import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikimizuumi.WIKI_BASE_URL
 
-internal fun MoveListResponseDto.toDomain(
+internal fun MoveListResponseDto.toDomainAll(
     gameId: String,
     imageUrlMap: Map<String, String>,
 ): Map<Character, List<Move>> {
@@ -21,6 +22,17 @@ internal fun MoveListResponseDto.toDomain(
             }
             character to moveList
         }.toMap()
+}
+
+internal fun MoveListResponseDto.toDomain(
+    characterData: DownloadMoveListUseCase.CharacterData,
+    imageUrlMap: Map<String, String>,
+): List<Move> {
+    return cargoquery
+        .map {
+            val dto = it.title
+            dto.toDomain(characterData, imageUrlMap)
+        }
 }
 
 internal fun MoveDto.toDomain(
@@ -108,4 +120,65 @@ internal fun String.formPropertiesUrl(): String {
     }
 
     return final
+}
+
+internal fun MoveDto.toDomain(
+    characterData: DownloadMoveListUseCase.CharacterData,
+    imageUrlMap: Map<String, String>,
+): Move {
+    val moveName = name?.cleanHtml()
+
+    val move = Move(
+        charName = this.chara,
+        id = moveId,
+        input = input
+            .orDash()
+            .decodeHtmlEntities()
+            .lowercase(),
+        damage = damage?.cleanHtml(),
+        startup = startup?.cleanHtml(),
+        onHit = onHit?.cleanHtml(),
+        onBlock = frameAdv?.cleanHtml(),
+        name = moveName,
+        recovery = recovery?.cleanHtml(),
+        active = active?.cleanHtml(),
+        cancel = cancel?.cleanHtml()?.formatCancel(),
+        guard = guard?.cleanHtml(),
+        invulnerability = invul?.cleanHtml(),
+        urls = Move.Urls(
+            characterImage = characterData.imageUrl,
+            hitboxImageList = hitboxes
+                .orEmpty()
+                .split(",")
+                .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
+            moveImageList = images
+                .orEmpty()
+                .split(",")
+                .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
+        ),
+        uni2Properties = Move.Uni2Properties(
+            inputInfo = inputInfo?.cleanHtml(),
+            subtitle = subtitle?.cleanHtml(),
+            minDamage = minDamage?.cleanHtml(),
+            type = type?.cleanHtml(),
+            cancelWindow = cancelWindow?.cleanHtml(),
+            property = property?.cleanHtml(),
+            cost = cost?.cleanHtml(),
+            attribute = attribute?.cleanHtml(),
+            landing = landing?.cleanHtml(),
+            overall = overall?.cleanHtml(),
+            assaultAdv = assaultAdv?.cleanHtml(),
+            blockstun = blockstun?.cleanHtml(),
+            groundHit = groundHit?.cleanHtml(),
+            airHit = airHit?.cleanHtml(),
+            groundCH = groundCH?.cleanHtml(),
+            airCH = airCH?.cleanHtml(),
+            hitstop = hitstop?.cleanHtml(),
+            CHstop = CHstop?.cleanHtml(),
+            proration = proration?.cleanHtml(),
+            comboP1 = comboP1?.cleanHtml(),
+            comboP2 = comboP2?.cleanHtml(),
+        )
+    )
+    return move
 }

@@ -39,6 +39,7 @@ internal class MizuumiWikiClient(
     private val fetchCharacterUseCase: FetchCharacterUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 
+    private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
@@ -110,7 +111,7 @@ internal class MizuumiWikiClient(
                     .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
             }
             else -> {
-                downloadMoveList(characterData)
+                downloadMoveListUseCase.invoke(gameTables, characterData)
                     .onSuccess { moveList ->
                         Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
                     }
