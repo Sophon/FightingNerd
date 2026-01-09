@@ -59,6 +59,7 @@ internal fun MoveDto.toDomain(
         guard = guard?.cleanHtml(),
         invulnerability = invul?.cleanHtml(),
         urls = Move.Urls(
+            wikiUrl = WIKI_BASE_URL,
             hitboxImageList = hitboxes
                 .orEmpty()
                 .split(",")
