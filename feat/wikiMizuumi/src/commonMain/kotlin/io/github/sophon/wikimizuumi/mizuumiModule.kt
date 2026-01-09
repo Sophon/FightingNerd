@@ -10,6 +10,7 @@ import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
+import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadOrFetchUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
@@ -49,6 +50,13 @@ fun mizuumiModule() = module {
                     .flatMap { dto ->
                         wikiImageUrlResolver.resolveHitboxUrl(dto)
                             .map { dto.toDomain(imageUrlMap = it, gameId = gameId) }
+                    }
+            },
+
+            downloadCharacterListUseCase = DownloadCharacterListUseCase { table ->
+                source.downloadCharacterList(table.character)
+                    .map { dto ->
+                        dto.toDomain(gameId = gameId)
                     }
             },
 

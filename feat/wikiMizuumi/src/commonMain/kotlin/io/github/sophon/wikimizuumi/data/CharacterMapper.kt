@@ -23,7 +23,7 @@ internal fun String.toDomain(gameId: String): Character {
 }
 
 internal fun CharacterListResponseDto.toDomain(
-    imageUrlMap: Map<String, String>,
+//    imageUrlMap: Map<String, String>,
     gameId: String,
 ): List<Character> {
     return cargoquery.map {
