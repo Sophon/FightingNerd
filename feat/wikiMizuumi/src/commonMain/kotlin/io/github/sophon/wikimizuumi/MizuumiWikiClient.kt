@@ -7,6 +7,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
@@ -15,6 +16,7 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
+import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadOrFetchUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
@@ -32,10 +34,12 @@ internal class MizuumiWikiClient(
 
     private val downloadOrFetchUseCase: DownloadOrFetchUseCase,
 
+    private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
     private val cacheCharacterListUseCase: CacheCharacterListUseCase,
     private val fetchCharacterUseCase: FetchCharacterUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 
+    private val downloadMoveListUseCase: DownloadMoveListUseCase,
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
@@ -49,12 +53,25 @@ internal class MizuumiWikiClient(
     override fun getFeatureInfo(): FeatureInfo = MizuumiFeatureInfo.featureInfo
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
-        return downloadOrFetchUseCase.invoke(gameTables)
-            .map { it.keys.toList() }
-            .onSuccess { characterList ->
-                Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters downloaded" }
+        val game = Game.fromId(gameId)
+
+        return when (game) {
+            Game.MBTL -> {
+                downloadOrFetchUseCase.invoke(gameTables)
+                    .map { it.keys.toList() }
+                    .onSuccess { characterList ->
+                        Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters downloaded" }
+                    }
+                    .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
             }
-            .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
+            else -> {
+                downloadCharacterListUseCase.invoke(gameTables)
+                    .onSuccess { characterList ->
+                        Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters downloaded" }
+                    }
+                    .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
+            }
+        }
     }
 
     override suspend fun cacheCharacterList(
@@ -77,17 +94,30 @@ internal class MizuumiWikiClient(
     override suspend fun downloadMoveList(
         characterData: DownloadMoveListUseCase.CharacterData,
     ): Result<List<Move>, WikiError> {
-        return downloadOrFetchUseCase.invoke(gameTables)
-            .map { map ->
-                map
-                    .filterKeys { it.queryName.equals(characterData.name, ignoreCase = true) }
-                    .values
-                    .flatten()
+        val game = Game.fromId(gameId)
+
+        return when (game) {
+            Game.MBTL -> {
+                downloadOrFetchUseCase.invoke(gameTables)
+                    .map { map ->
+                        map
+                            .filterKeys { it.queryName.equals(characterData.name, ignoreCase = true) }
+                            .values
+                            .flatten()
+                    }
+                    .onSuccess { moveList ->
+                        Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
+                    }
+                    .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
             }
-            .onSuccess { moveList ->
-                Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
+            else -> {
+                downloadMoveListUseCase.invoke(gameTables, characterData)
+                    .onSuccess { moveList ->
+                        Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
+                    }
+                    .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
             }
-            .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
+        }
     }
 
     override suspend fun cacheMoveList(

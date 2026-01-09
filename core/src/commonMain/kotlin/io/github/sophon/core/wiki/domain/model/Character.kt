@@ -19,6 +19,7 @@ data class Character(
     val dbfzProperties: DBFZProperties? = null,
     val gbvsrProperties: GBVSRProperties? = null,
     val bbProperties: BBProperties? = null,
+    val uni2Properties: Uni2Properties? = null,
 ) {
     @Serializable
     data class Images(
@@ -115,5 +116,37 @@ data class Character(
         val preJump: String? = null,
         val backDash: String? = null,
         val forwardDash: String? = null,
+    )
+
+    @Serializable
+    data class Uni2Properties(
+        val smartSteer: String? = null,
+        val hp: String? = null, //TODO: make HP common
+        val fWalkSpeed: String? = null,
+        val fWalkSpeedNote: String? = null,
+        val bWalkSpeed: String? = null,
+        val bWalkSpeedNote: String? = null,
+        val jumpStartup: String? = null,
+        val jumpDuration: String? = null,
+        val jumpDurationNote: String? = null,
+        val dashStartup: String? = null,
+        val iDashSpeed: String? = null,
+        val iDashSpeedNote: String? = null,
+        val dashAccel: String? = null,
+        val dashAccelNote: String? = null,
+        val maxDashSpeed: String? = null,
+        val bDashStartup: String? = null,
+        val bDashDuration: String? = null,
+        val bDashDurationNote: String? = null,
+        val bDashDistance: String? = null,
+        val bDashDistanceNote: String? = null,
+        val bDashFullInvulStart: String? = null,
+        val bDashFullInvulEnd: String? = null,
+        val bDashThrowInvulStart: String? = null,
+        val bDashThrowInvulEnd: String? = null,
+        val throwWidth: String? = null,
+        val throwRange: String? = null,
+        val trait: String? = null,
+        val vorpalTrait: String? = null,
     )
 }
