@@ -31,9 +31,12 @@ import io.github.sophon.discord.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.domain.Source
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import kotlin.time.Duration.Companion.seconds
 
 interface DiscordBot {
     suspend fun startSession()
@@ -49,6 +52,7 @@ internal class DiscordBotImpl(
     private val createEmbedUseCase: CreateEmbedUseCase,
     private val createFeedbackEmbedUseCase: CreateFeedbackEmbedUseCase,
     private val createReplyEmbedUseCase: CreateReplyEmbedUseCase,
+    private val coroutineScope: CoroutineScope,
 ): DiscordBot {
     private val editableEmbedMap = mutableMapOf<String, EmbedBuilder.() -> Unit>()
 
@@ -152,11 +156,19 @@ internal class DiscordBotImpl(
                 with (createEmbedUseCase) {
                     invoke(
                         primaryEmbed = botOutput.primaryEmbedBuilder,
+                        coroutineScope = coroutineScope,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
                     )
                         .onSuccess { uuid ->
-                            botOutput.fullEmbedBuilder?.let { editableEmbedMap[uuid] = it }
+                            botOutput.fullEmbedBuilder?.let {
+                                editableEmbedMap[uuid] = it
+
+                                coroutineScope.launch {
+                                    delay(10.seconds)
+                                    editableEmbedMap.remove(uuid)
+                                }
+                            }
                         }
                         .onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
@@ -172,6 +184,7 @@ internal class DiscordBotImpl(
                 with (createEmbedUseCase) {
                     invoke(
                         primaryEmbed = botOutput.errorEmbedBuilder,
+                        coroutineScope = coroutineScope,
                         buttons = botOutput.buttons,
                     ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
@@ -221,11 +234,19 @@ internal class DiscordBotImpl(
                 with (createEmbedUseCase) {
                     invoke(
                         primaryEmbed = botOutput.primaryEmbedBuilder,
+                        coroutineScope = coroutineScope,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
                     )
                         .onSuccess { uuid ->
-                            botOutput.fullEmbedBuilder?.let { editableEmbedMap[uuid] = it }
+                            botOutput.fullEmbedBuilder?.let {
+                                editableEmbedMap[uuid] = it
+
+                                coroutineScope.launch {
+                                    delay(10.seconds)
+                                    editableEmbedMap.remove(uuid)
+                                }
+                            }
                         }
                         .onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
@@ -241,6 +262,7 @@ internal class DiscordBotImpl(
                 with (createEmbedUseCase) {
                     invoke(
                         primaryEmbed = botOutput.errorEmbedBuilder,
+                        coroutineScope = coroutineScope,
                         buttons = botOutput.buttons,
                     )
                 }
@@ -297,6 +319,7 @@ internal class DiscordBotImpl(
                         edit {
                             embeds?.clear()
                             embed(embedBuilder)
+                            editableEmbedMap.remove(uuid)
                             components = mutableListOf() //removes buttons
                         }
                     }
