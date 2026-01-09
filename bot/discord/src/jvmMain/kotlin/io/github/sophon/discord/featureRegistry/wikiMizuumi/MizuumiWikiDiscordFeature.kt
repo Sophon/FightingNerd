@@ -72,6 +72,20 @@ internal class MizuumiWikiDiscordFeature(
             command = Command.ALIASMB,
             description = "MBTL character aliases",
         ),
+        SupportedCommand(
+            command = Command.FDUNI,
+            description = "Uni2 frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
+                )
+            ),
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -133,6 +147,12 @@ internal class MizuumiWikiDiscordFeature(
                 val wiki = wikis[gameId]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
+            }
+            Command.FDUNI -> {
+                val game = Game.Uni2
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query, game)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
