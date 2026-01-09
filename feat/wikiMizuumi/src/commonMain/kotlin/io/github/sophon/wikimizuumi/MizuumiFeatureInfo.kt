@@ -11,6 +11,7 @@ object MizuumiFeatureInfo {
         iconUrl = FEATURE_IMG_URL,
         supportedGameSet = setOf(
             Game.MBTL,
+            Game.Uni2,
         ),
         version = BuildKonfig.VERSION,
     )

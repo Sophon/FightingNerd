@@ -9,9 +9,15 @@ internal object MizuumiTables {
             character = "NOT USED",
             moves = TABLE_MBTL_MOVES,
         ),
+        Game.Uni2.id to QueryTable(
+            character = TABLE_UNI2_CHARS,
+            moves = TABLE_UNI2_MOVES,
+        ),
     )
 
     fun getTable(gameId: String): QueryTable? = gameToTables[gameId]
 
     internal const val TABLE_MBTL_MOVES = "MBTL_MoveData"
+    internal const val TABLE_UNI2_CHARS = "UNI2_CharStats"
+    internal const val TABLE_UNI2_MOVES = "UNI2_MoveData"
 }

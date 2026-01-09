@@ -38,6 +38,7 @@ internal fun MoveDto.toDomain(
             .lowercase(),
         damage = damage?.cleanHtml(),
         startup = startup?.cleanHtml(),
+        onHit = onHit?.cleanHtml(),
         onBlock = frameAdv?.cleanHtml(),
         name = moveName,
         recovery = recovery?.cleanHtml(),
@@ -46,7 +47,6 @@ internal fun MoveDto.toDomain(
         guard = guard?.cleanHtml(),
         invulnerability = invul?.cleanHtml(),
         urls = Move.Urls(
-            wikiUrl = character.wikiUrl,
             hitboxImageList = hitboxes
                 .orEmpty()
                 .split(",")
@@ -66,6 +66,29 @@ internal fun MoveDto.toDomain(
             landing = landing?.cleanHtml(),
             overall = overall?.cleanHtml(),
         ),
+        uni2Properties = Move.Uni2Properties(
+            inputInfo = inputInfo?.cleanHtml(),
+            subtitle = subtitle?.cleanHtml(),
+            minDamage = minDamage?.cleanHtml(),
+            type = type?.cleanHtml(),
+            cancelWindow = cancelWindow?.cleanHtml(),
+            property = property?.cleanHtml(),
+            cost = cost?.cleanHtml(),
+            attribute = attribute?.cleanHtml(),
+            landing = landing?.cleanHtml(),
+            overall = overall?.cleanHtml(),
+            assaultAdv = assaultAdv?.cleanHtml(),
+            blockstun = blockstun?.cleanHtml(),
+            groundHit = groundHit?.cleanHtml(),
+            airHit = airHit?.cleanHtml(),
+            groundCH = groundCH?.cleanHtml(),
+            airCH = airCH?.cleanHtml(),
+            hitstop = hitstop?.cleanHtml(),
+            CHstop = CHstop?.cleanHtml(),
+            proration = proration?.cleanHtml(),
+            comboP1 = comboP1?.cleanHtml(),
+            comboP2 = comboP2?.cleanHtml(),
+        )
     )
     return move
 }
