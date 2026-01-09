@@ -156,6 +156,7 @@ internal class DiscordBotImpl(
                 with (createEmbedUseCase) {
                     invoke(
                         primaryEmbed = botOutput.primaryEmbedBuilder,
+                        coroutineScope = coroutineScope,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
                     )
@@ -183,6 +184,7 @@ internal class DiscordBotImpl(
                 with (createEmbedUseCase) {
                     invoke(
                         primaryEmbed = botOutput.errorEmbedBuilder,
+                        coroutineScope = coroutineScope,
                         buttons = botOutput.buttons,
                     ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
@@ -232,6 +234,7 @@ internal class DiscordBotImpl(
                 with (createEmbedUseCase) {
                     invoke(
                         primaryEmbed = botOutput.primaryEmbedBuilder,
+                        coroutineScope = coroutineScope,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
                     )
@@ -259,6 +262,7 @@ internal class DiscordBotImpl(
                 with (createEmbedUseCase) {
                     invoke(
                         primaryEmbed = botOutput.errorEmbedBuilder,
+                        coroutineScope = coroutineScope,
                         buttons = botOutput.buttons,
                     )
                 }
