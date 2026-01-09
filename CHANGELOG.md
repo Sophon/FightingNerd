@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v6.1.0] - TODO
+## [v6.1.0] - 2026-01-09
 - Mizuumi
   - Uni2 support
 - fixed Full sometimes not showing hitbox images
