@@ -64,6 +64,11 @@ enum class Game(
         id = "MBTL",
         iconUrl = "https://i.imgur.com/E6O7DMi.png",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL"
+    ),
+    Uni2(
+        id = "UNI2",
+        iconUrl = "https://i.imgur.com/G5RoTij.png",
+        wikiUrl = "https://mizuumi.wiki/w/Under_Night_In-Birth/UNI2"
     );
 
     companion object {
