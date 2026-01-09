@@ -23,8 +23,7 @@ class CreateMizuumiMoveEmbedUseCase {
             }
             Game.Uni2 -> {
                 val primary = createPrimaryEmbedBuilder(move, featureInfo)
-                val full = createFullBBEmbedBuilder(move, featureInfo)
-                primary to full
+                primary to null
             }
             else -> {
                 val empty: EmbedBuilder.() -> Unit = {}
@@ -60,11 +59,13 @@ class CreateMizuumiMoveEmbedUseCase {
             optionalField(name = "Attribute", value = attribute)
             optionalField(name = "Property", value = property)
             optionalField(name = "Cost", value = move.mbProperties?.cost)
+            optionalField(name = "Ass advantage", value = assaultAdv)
         }
 
         featureFooter(featureInfo)
     }
 
+    @Deprecated("most data isn't filled anyway")
     private fun createFullBBEmbedBuilder(
         move: Move,
         featureInfo: FeatureInfo,
@@ -80,7 +81,6 @@ class CreateMizuumiMoveEmbedUseCase {
             }
             optionalField(name = "Cancel window", value = cancelWindow)
             optionalField(name = "Landing", value = landing)
-            optionalField(name = "Ass advantage", value = assaultAdv)
             optionalField(name = "Proration", value = proration)
             if (comboP1 != null || comboP2 != null) {
                 optionalField(name = "Combo P1-P2", value = "$comboP1 - $comboP2")
