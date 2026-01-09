@@ -1,5 +1,7 @@
 package io.github.sophon.discord
 
+import kotlin.time.Duration.Companion.seconds
+
 internal const val BOT_NAME = "FightingNerd"
 
 internal const val CONFIG_FILE_NAME = "config.json"
