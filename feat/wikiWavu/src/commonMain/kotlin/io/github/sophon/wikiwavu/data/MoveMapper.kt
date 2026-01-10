@@ -1,6 +1,7 @@
 package io.github.sophon.wikiwavu.data
 
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -47,7 +48,7 @@ internal fun MoveDto.mapToDomain(
         guard = formCompleteDataFromParent(movesById) { it.target },
 
         notes = notes.formNotes() + cleanedCrushes,
-        aliases = alias.formAliases(input = fullInput),
+        aliases = fullInput.formAliases(alias, alt),
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
@@ -97,27 +98,50 @@ internal fun String.getStance(): String? {
     return stance
 }
 
-internal fun String?.formAliases(input: String): List<String> {
-    val aliases: MutableList<String> = this
-        .orEmpty()
-        .cleanHtml()
-        .split("* ", "or")
+internal fun String.formAliases(alias: String?, alt: String?): List<String> {
+    val cleanedAliases = alias
+        .cleanHtmlOrNull()
+        ?.replace("\n", "")
+        ?.replace("\\n", "")
+        ?.lowercase()
+    val cleanedAlts = alt
+        .cleanHtmlOrNull()
+        ?.replace("\n", "")
+        ?.replace("\\n", "")
+        ?.lowercase()
+
+    val aliases: MutableList<String> = listOfNotNull(cleanedAliases, cleanedAlts)
+        .flatMap { it.split("* ", "or") }
         .map {
             it
                 .trim()
                 .cleanMoveInput(keepSpaces = true)
         }
         .filter { it.isNotEmpty() }
+        .flatMap { alias ->
+            if (alias.startsWith("cd.")) {
+                listOf(alias, alias.replace(".", ""))
+            } else {
+                listOf(alias)
+            }
+        }
         .toMutableList()
 
     when {
-        input.startsWith("cd.df") -> {
-            aliases.add(input.replace("cd.df", "cd"))
+        this.startsWith("cd.df#") -> {
+            aliases.add(this.replaceFirst("cd.df#", "cd#"))
         }
-        (input.contains(".")
-                && input.split(".").first().length == 3) -> {
-            aliases.add(input.replace(".", ""))
+        this.startsWith("cd.df") -> {
+            aliases.add(this.replaceFirst("cd.df", "cd"))
+            aliases.add(this.replaceFirst("cd.df", "cd."))
         }
+    }
+
+    if (
+        this.contains(".")
+        && this.split(".").first().length == 3
+    ) {
+        aliases.add(this.replace(".", ""))
     }
 
     return aliases
