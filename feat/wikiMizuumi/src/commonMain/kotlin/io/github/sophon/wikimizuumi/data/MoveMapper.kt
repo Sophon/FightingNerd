@@ -1,5 +1,6 @@
 package io.github.sophon.wikimizuumi.data
 
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.orDash
@@ -27,11 +28,12 @@ internal fun MoveListResponseDto.toDomainAll(
 internal fun MoveListResponseDto.toDomain(
     characterData: DownloadMoveListUseCase.CharacterData,
     imageUrlMap: Map<String, String>,
+    gameId: String,
 ): List<Move> {
     return cargoquery
         .map {
             val dto = it.title
-            dto.toDomain(characterData, imageUrlMap)
+            dto.toDomain(characterData, imageUrlMap, gameId)
         }
 }
 
@@ -59,7 +61,7 @@ internal fun MoveDto.toDomain(
         guard = guard?.cleanHtmlOrNull(),
         invulnerability = invul?.cleanHtmlOrNull(),
         urls = Move.Urls(
-            wikiUrl = WIKI_BASE_URL,
+            wikiUrl = character.wikiUrl,
             hitboxImageList = hitboxes
                 .orEmpty()
                 .split(",")
@@ -126,7 +128,9 @@ internal fun String.formPropertiesUrl(): String {
 internal fun MoveDto.toDomain(
     characterData: DownloadMoveListUseCase.CharacterData,
     imageUrlMap: Map<String, String>,
+    gameId: String,
 ): Move {
+    val game = Game.fromId(gameId)
     val moveName = name?.cleanHtmlOrNull()
 
     val move = Move(
@@ -147,7 +151,7 @@ internal fun MoveDto.toDomain(
         guard = guard?.cleanHtmlOrNull(),
         invulnerability = invul?.cleanHtmlOrNull(),
         urls = Move.Urls(
-            wikiUrl = WIKI_BASE_URL,
+            wikiUrl = game?.wikiUrl ?: WIKI_BASE_URL,
             characterImage = characterData.imageUrl,
             hitboxImageList = hitboxes
                 .orEmpty()

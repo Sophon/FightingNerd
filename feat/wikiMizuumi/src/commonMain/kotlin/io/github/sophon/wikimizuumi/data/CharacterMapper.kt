@@ -11,13 +11,14 @@ internal fun String.toDomain(gameId: String): Character {
     val idName = this.cleanHtml().lowercase()
     val displayName = this.cleanHtml()
     val queryName = this.createQueryName()
+    val game = Game.fromId(gameId)
 
     val char = Character(
         id = idName,
         displayName = displayName,
         queryName = queryName,
         aliasList = idName.createAliases(),
-        wikiUrl = FEATURE_URL,
+        wikiUrl = game?.wikiUrl ?: FEATURE_URL,
     )
 
     return char
@@ -30,7 +31,7 @@ internal fun CharacterListResponseDto.toDomain(
     return cargoquery.map {
         val dto = it.title
 
-        Character(
+        val character = Character(
             id = dto.chara.lowercase(),
             displayName = dto.chara,
             queryName = dto.chara,
@@ -70,6 +71,8 @@ internal fun CharacterListResponseDto.toDomain(
                 vorpalTrait = dto.vorpalTrait?.cleanHtmlOrNull().formatBulletPoints(),
             ),
         )
+
+        character
     }
 }
 

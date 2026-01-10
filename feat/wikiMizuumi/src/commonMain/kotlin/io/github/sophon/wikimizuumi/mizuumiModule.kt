@@ -77,7 +77,9 @@ fun mizuumiModule() = module {
                 source.downloadMoveList(table.moves, characterData)
                     .flatMap { dto ->
                         wikiImageUrlResolver.resolveHitboxUrl(dto)
-                            .map { dto.toDomain(characterData, imageUrlMap = it) }
+                            .map {
+                                dto.toDomain(characterData, imageUrlMap = it, gameId = gameId)
+                            }
                     }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
