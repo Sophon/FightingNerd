@@ -228,10 +228,13 @@ private fun formProperties(
     crushes: List<String>,
     input: String,
 ): Move.T8Properties {
-    return Move.T8Properties(
-        isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) },
-        isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) },
-        isHoming = notes.any { it.contains("Homing", ignoreCase = true) },
-        stance = input.getStance(),
-    )
+    val isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) }
+            || notes.any { it.contains("Heat Smash", ignoreCase = true) }
+            || input.contains("H.", ignoreCase = true)
+
+    val isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) }
+    val isHoming = notes.any { it.contains("Homing", ignoreCase = true) }
+    val stance = input.getStance()
+
+    return Move.T8Properties(isHeat, isHoming, stance, isPowerCrush)
 }
