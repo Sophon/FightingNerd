@@ -62,6 +62,6 @@ enum class Command {
     //mizuumi
     ALIASMB,
     FDMB,
-//    CHARUNI,
+    CHARUNI,
     FDUNI,
 }
