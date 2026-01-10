@@ -164,8 +164,8 @@ internal class MizuumiWikiDiscordFeature(
                 searchMove(wiki, query, game)
             }
             Command.ALIASMB -> {
-                val gameId = Game.MBTL.id
-                val wiki = wikis[gameId]
+                val game = Game.MBTL
+                val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
             }
