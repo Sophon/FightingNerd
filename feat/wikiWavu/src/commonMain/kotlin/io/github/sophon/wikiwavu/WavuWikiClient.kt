@@ -23,7 +23,7 @@ import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
 import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikiwavu.data.WavuTables
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
-import io.github.sophon.wikiwavu.util.cleanMoveInput
+import io.github.sophon.wikiwavu.domain.cleanMoveInput
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 
