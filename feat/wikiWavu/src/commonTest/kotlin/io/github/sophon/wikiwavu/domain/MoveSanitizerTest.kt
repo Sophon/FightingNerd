@@ -1,10 +1,10 @@
-package io.github.sophon.wikiwavu.util
+package io.github.sophon.wikiwavu.domain
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
-class StringSanitizerTest {
+class MoveSanitizerTest {
     //region cleanMoveInput - Basic Cleaning
     @Test
     fun `cleanMoveInput trims whitespace`() {
@@ -579,6 +579,19 @@ class StringSanitizerTest {
         val expected = "qcf2"
 
         //when
+        val result = string.cleanMoveInput()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `cleanMoveInput translates cd`() {
+        // given
+        val string = "cd.df#2"
+        val expected = "cd#2"
+
+        // when
         val result = string.cleanMoveInput()
 
         //then

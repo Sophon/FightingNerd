@@ -1,4 +1,4 @@
-package io.github.sophon.wikiwavu.util
+package io.github.sophon.wikiwavu.domain
 
 internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
     var result = this.trim().lowercase()
@@ -24,6 +24,7 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
         "fc." to "fc",
         "bt." to "bt",
         "ddff" to "qcf",
+        "cd.df" to "cd",
     )
 
     if (keepSpaces.not()) {

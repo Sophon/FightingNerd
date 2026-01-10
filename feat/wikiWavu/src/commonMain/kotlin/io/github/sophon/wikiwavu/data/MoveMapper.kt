@@ -6,7 +6,7 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.MOVE_URL
 import io.github.sophon.wikiwavu.VIDEO_URL
-import io.github.sophon.wikiwavu.util.cleanMoveInput
+import io.github.sophon.wikiwavu.domain.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(
     characterData: DownloadMoveListUseCase.CharacterData
