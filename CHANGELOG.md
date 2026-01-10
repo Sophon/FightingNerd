@@ -1,5 +1,11 @@
 # BOT CHANGELOG
 
+## [v7.0.0] - TODO
+- Mizuumi
+  - fixed URL pointing to the wiki instead of game subsection
+  - `charuni` command
+  - UNI2 move embeds feature the char image
+
 ## [v6.1.0] - 2026-01-09
 - Mizuumi
   - Uni2 support
