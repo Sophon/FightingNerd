@@ -24,7 +24,7 @@ internal fun String.toDomain(gameId: String): Character {
 }
 
 internal fun CharacterListResponseDto.toDomain(
-//    imageUrlMap: Map<String, String>,
+    imageUrlMap: Map<String, String>,
     gameId: String,
 ): List<Character> {
     return cargoquery.map {
@@ -36,10 +36,9 @@ internal fun CharacterListResponseDto.toDomain(
             queryName = dto.chara,
             wikiUrl = dto.chara.formWikiUrl(gameId),
             aliasList = listOf(),
-//            images = Character.Images(
-//                iconUrl = dto.icon.let { imageUrlMap[it] },
-//                bannerUrl = dto.portrait.let { imageUrlMap[it] },
-//            ),
+            images = Character.Images(
+                iconUrl = imageUrlMap[it.title.chara],
+            ),
             uni2Properties = Character.Uni2Properties(
                 smartSteer = dto.smartSteer,
                 hp = dto.health,

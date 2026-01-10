@@ -57,8 +57,9 @@ fun mizuumiModule() = module {
 
             downloadCharacterListUseCase = DownloadCharacterListUseCase { table ->
                 source.downloadCharacterList(table.character)
-                    .map { dto ->
-                        dto.toDomain(gameId = gameId)
+                    .flatMap { dto ->
+                        wikiImageUrlResolver.resolveImageUrls(dto)
+                            .map { dto.toDomain(gameId = gameId, imageUrlMap = it) }
                     }
             },
 
