@@ -135,6 +135,7 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
             aliases.add(this.replaceFirst("cd.df", "cd"))
             aliases.add(this.replaceFirst("cd.df", "cd."))
         }
+        this.startsWith("cd.") -> aliases.add(this.replace("cd.", "cd"))
     }
 
     if (
@@ -144,7 +145,7 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         aliases.add(this.replace(".", ""))
     }
 
-    return aliases
+    return aliases.distinct()
 }
 
 internal fun String?.formVideoUrl(): String? {
