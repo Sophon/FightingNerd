@@ -179,7 +179,7 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.Uni2
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query, game)
+                searchCharacter(wiki, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -229,7 +229,6 @@ internal class MizuumiWikiDiscordFeature(
     private suspend fun searchCharacter(
         wiki: WikiClient,
         query: String,
-        game: Game,
     ): Result<BotOutput, BotError> {
         return getCharacterUseCase.invoke(wiki, query)
             .map { (character, fastestMoveList) ->
@@ -259,7 +258,7 @@ internal class MizuumiWikiDiscordFeature(
         val startup = fastestMoveList.first().startup.orDash()
         mandatoryField(
             name = "Fastest normal",
-            value = "$startup: $moves"
+            value = "${startup}f: $moves"
         )
         mandatoryField(name = "HP", character.uni2Properties?.hp)
         mandatoryField(
@@ -274,13 +273,13 @@ internal class MizuumiWikiDiscordFeature(
         )
 
         character.uni2Properties?.apply {
+            optionalField(name = "Jump", value = "**$jumpStartup** ($jumpDuration)")
+
             val walkValue = buildString {
                 bWalkSpeed?.let { append("← **$it**") }
                 fWalkSpeed?.let { append(" → **$it** ") }
             }
             optionalField(name = "Walk", value = walkValue)
-
-            optionalField(name = "Jump", value = "**$jumpStartup** ($jumpDuration)")
 
             val bDashValue = buildString {
                 bDashStartup?.let { append("**${it}f**") }

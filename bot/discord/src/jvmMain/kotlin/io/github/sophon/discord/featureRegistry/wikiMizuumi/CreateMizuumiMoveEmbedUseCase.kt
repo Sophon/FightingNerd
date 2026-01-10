@@ -97,6 +97,7 @@ class CreateMizuumiMoveEmbedUseCase {
             else -> "**${move.charName}**: ${move.name}"
         }
         color = Color(TEAL)
+        move.urls.characterImage?.let { thumbnail { url = it } }
 
         val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
             ?: emptyList()
