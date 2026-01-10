@@ -5,6 +5,8 @@
   - fixed URL pointing to the wiki instead of game subsection
   - `charuni` command
   - UNI2 move embeds feature the char image
+- Wavu
+  - accepts all forms of `cd` type inputs, aliases and alts I could think of
 
 ## [v6.1.0] - 2026-01-09
 - Mizuumi
