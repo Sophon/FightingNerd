@@ -310,7 +310,7 @@ class MoveSanitizerTest {
         val result = input.cleanMoveInput()
 
         // Then
-        assertThat(result).isEqualTo("cd2")
+        assertThat(result).isEqualTo("cd.2")
     }
 
     @Test
@@ -372,7 +372,7 @@ class MoveSanitizerTest {
         val result = input.cleanMoveInput()
 
         // Then
-        assertThat(result).isEqualTo("cd2")
+        assertThat(result).isEqualTo("cd.2")
     }
 
     @Test

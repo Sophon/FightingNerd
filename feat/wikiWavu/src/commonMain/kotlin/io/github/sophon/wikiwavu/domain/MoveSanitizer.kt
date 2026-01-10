@@ -24,7 +24,8 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
         "fc." to "fc",
         "bt." to "bt",
         "ddff" to "qcf",
-        "cd.df" to "cd",
+        "cd.df#" to "cd#",
+        "cd.df" to "cd.",
     )
 
     if (keepSpaces.not()) {
@@ -37,7 +38,7 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
 
 
     if (result.startsWith("fnddf")) {
-        result = result.replaceFirst("fnddf", "cd")
+        result = result.replaceFirst("fnddf", "cd.")
     }
 
     result = result
