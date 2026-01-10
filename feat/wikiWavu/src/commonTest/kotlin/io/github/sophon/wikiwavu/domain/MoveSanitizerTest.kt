@@ -584,18 +584,5 @@ class MoveSanitizerTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
-
-    @Test
-    fun `cleanMoveInput translates cd`() {
-        // given
-        val string = "cd.df#2"
-        val expected = "cd#2"
-
-        // when
-        val result = string.cleanMoveInput()
-
-        //then
-        assertThat(result).isEqualTo(expected)
-    }
     //endregion
 }

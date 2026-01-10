@@ -94,6 +94,19 @@ class MoveMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `cleanMoveInput translates cd`() {
+        // given
+        val string = "cd.df#2"
+        val expected = listOf("cd#2")
+
+        // when
+        val result = "".formAliases(string)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region isStance

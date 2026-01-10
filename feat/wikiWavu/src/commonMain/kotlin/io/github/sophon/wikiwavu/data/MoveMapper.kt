@@ -110,11 +110,14 @@ internal fun String?.formAliases(input: String): List<String> {
         .filter { it.isNotEmpty() }
         .toMutableList()
 
-    if (
-        input.contains(".")
-        && input.split(".").first().length == 3
-    ) {
-        aliases.add(input.replace(".", ""))
+    when {
+        input.startsWith("cd.df") -> {
+            aliases.add(input.replace("cd.df", "cd"))
+        }
+        (input.contains(".")
+                && input.split(".").first().length == 3) -> {
+            aliases.add(input.replace(".", ""))
+        }
     }
 
     return aliases
