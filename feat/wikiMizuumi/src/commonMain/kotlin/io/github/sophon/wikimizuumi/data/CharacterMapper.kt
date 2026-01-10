@@ -2,6 +2,7 @@ package io.github.sophon.wikimizuumi.data
 
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.removeAccents
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikimizuumi.FEATURE_URL
@@ -42,32 +43,32 @@ internal fun CharacterListResponseDto.toDomain(
             uni2Properties = Character.Uni2Properties(
                 smartSteer = dto.smartSteer,
                 hp = dto.health,
-                fWalkSpeed = dto.fWalkSpeed,
-                fWalkSpeedNote = dto.fWalkSpeedNote,
-                bWalkSpeed = dto.bWalkSpeed,
-                bWalkSpeedNote = dto.bWalkSpeedNote,
-                jumpStartup = dto.jumpStartup,
-                jumpDuration = dto.jumpDuration,
-                jumpDurationNote = dto.jumpDurationNote,
-                dashStartup = dto.dashStartup,
-                iDashSpeed = dto.iDashSpeed,
-                iDashSpeedNote = dto.iDashSpeedNote,
-                dashAccel = dto.dashAccel,
-                dashAccelNote = dto.dashAccelNote,
-                maxDashSpeed = dto.maxDashSpeed,
-                bDashStartup = dto.bDashStartup,
-                bDashDuration = dto.bDashDuration,
-                bDashDurationNote = dto.bDashDurationNote,
-                bDashDistance = dto.bDashDistance,
-                bDashDistanceNote = dto.bDashDistanceNote,
-                bDashFullInvulStart = dto.bDashFullInvulStart,
-                bDashFullInvulEnd = dto.bDashFullInvulEnd,
-                bDashThrowInvulStart = dto.bDashThrowInvulStart,
-                bDashThrowInvulEnd = dto.bDashThrowInvulEnd,
-                throwWidth = dto.throwWidth,
-                throwRange = dto.throwRange,
-                trait = dto.trait,
-                vorpalTrait = dto.vorpalTrait,
+                fWalkSpeed = dto.fWalkSpeed?.cleanHtmlOrNull(),
+                fWalkSpeedNote = dto.fWalkSpeedNote?.cleanHtmlOrNull(),
+                bWalkSpeed = dto.bWalkSpeed?.cleanHtmlOrNull(),
+                bWalkSpeedNote = dto.bWalkSpeedNote?.cleanHtmlOrNull(),
+                jumpStartup = dto.jumpStartup?.cleanHtmlOrNull(),
+                jumpDuration = dto.jumpDuration?.cleanHtmlOrNull(),
+                jumpDurationNote = dto.jumpDurationNote?.cleanHtmlOrNull(),
+                dashStartup = dto.dashStartup?.cleanHtmlOrNull(),
+                iDashSpeed = dto.iDashSpeed?.cleanHtmlOrNull(),
+                iDashSpeedNote = dto.iDashSpeedNote?.cleanHtmlOrNull(),
+                dashAccel = dto.dashAccel?.cleanHtmlOrNull(),
+                dashAccelNote = dto.dashAccelNote?.cleanHtmlOrNull(),
+                maxDashSpeed = dto.maxDashSpeed?.cleanHtmlOrNull(),
+                bDashStartup = dto.bDashStartup?.cleanHtmlOrNull(),
+                bDashDuration = dto.bDashDuration?.cleanHtmlOrNull(),
+                bDashDurationNote = dto.bDashDurationNote?.cleanHtmlOrNull(),
+                bDashDistance = dto.bDashDistance?.cleanHtmlOrNull(),
+                bDashDistanceNote = dto.bDashDistanceNote?.cleanHtmlOrNull(),
+                bDashFullInvulStart = dto.bDashFullInvulStart?.cleanHtmlOrNull(),
+                bDashFullInvulEnd = dto.bDashFullInvulEnd?.cleanHtmlOrNull(),
+                bDashThrowInvulStart = dto.bDashThrowInvulStart?.cleanHtmlOrNull(),
+                bDashThrowInvulEnd = dto.bDashThrowInvulEnd?.cleanHtmlOrNull(),
+                throwWidth = dto.throwWidth?.cleanHtmlOrNull(),
+                throwRange = dto.throwRange?.cleanHtmlOrNull(),
+                trait = dto.trait?.cleanHtmlOrNull().formatBulletPoints(),
+                vorpalTrait = dto.vorpalTrait?.cleanHtmlOrNull().formatBulletPoints(),
             ),
         )
     }
@@ -116,4 +117,8 @@ internal fun String.createAliases(): List<String> {
 
 internal fun String.formWikiUrl(gameId: String): String {
     return Game.fromId(gameId)?.let { "${it.wikiUrl}/$this" } ?: ""
+}
+
+internal fun String?.formatBulletPoints(): String? {
+    return this?.replace("*", "- ")
 }
