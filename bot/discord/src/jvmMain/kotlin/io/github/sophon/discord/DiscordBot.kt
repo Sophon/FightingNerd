@@ -173,7 +173,7 @@ internal class DiscordBotImpl(
                                 editableEmbedMap[uuid] = botOutput
 
                                 coroutineScope.launch {
-                                    delay(10.seconds)
+                                    delay(EMBED_BUTTON_DURATION_S.seconds)
                                     editableEmbedMap.remove(uuid)
                                 }
                             }
@@ -251,7 +251,7 @@ internal class DiscordBotImpl(
                                 editableEmbedMap[uuid] = botOutput
 
                                 coroutineScope.launch {
-                                    delay(10.seconds)
+                                    delay(EMBED_BUTTON_DURATION_S.seconds)
                                     editableEmbedMap.remove(uuid)
                                 }
                             }

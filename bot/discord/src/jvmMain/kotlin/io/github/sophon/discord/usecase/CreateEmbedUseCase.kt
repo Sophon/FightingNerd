@@ -15,6 +15,7 @@ import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_S
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
 import kotlinx.coroutines.CoroutineScope
@@ -60,7 +61,7 @@ internal class CreateEmbedUseCase {
 
             if (buttons.isNotEmpty()) {
                 coroutineScope.launch {
-                    delay(10.seconds)
+                    delay(EMBED_BUTTON_DURATION_S.seconds)
                     message.edit {
                         components = mutableListOf()
                     }
@@ -96,7 +97,7 @@ internal class CreateEmbedUseCase {
                     createButtons(uuid, buttons)
 
                     coroutineScope.launch {
-                        delay(10.seconds)
+                        delay(EMBED_BUTTON_DURATION_S.seconds)
                         interaction.getOriginalInteractionResponse().edit {
                             components = mutableListOf()
                         }
