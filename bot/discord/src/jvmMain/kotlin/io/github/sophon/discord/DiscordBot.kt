@@ -95,6 +95,14 @@ internal class DiscordBotImpl(
             // ignoring other bots, even ourselves
             if (message.author?.isBot != false) return@on
 
+            // ignoring if someone replies with tag
+            val botId = kord.selfId
+            val botMention = "<@$botId>"
+            val botNicknameMention = "<@!$botId>"
+            if (botMention !in message.content && botNicknameMention !in message.content) {
+                return@on
+            }
+
             handleMessage()
         }
 
