@@ -4,7 +4,7 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.MAX_LENGTH_EMBED
+import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.util.mandatoryField
 
@@ -30,7 +30,7 @@ internal class CreateErrorEmbedUseCase {
     private fun createGenericError(error: BotError): EmbedBuilder.() -> Unit = {
         title = "ERROR"
         color = Color(RED)
-        description = error.toString().truncate(MAX_LENGTH_EMBED)
+        description = error.toString().truncate(EMBED_MAX_LENGTH)
     }
 
     private fun createSyntaxErrorEmbed(
@@ -41,7 +41,7 @@ internal class CreateErrorEmbedUseCase {
 
         description = unknownCharacterError
             .toString()
-            .truncate(MAX_LENGTH_EMBED)
+            .truncate(EMBED_MAX_LENGTH)
 
         mandatoryField(
             name = "",
@@ -68,7 +68,7 @@ internal class CreateErrorEmbedUseCase {
 
         description = invalidQueryError
             .toString()
-            .truncate(MAX_LENGTH_EMBED)
+            .truncate(EMBED_MAX_LENGTH)
 
         mandatoryField(
             name = "Command usage ⚙️".uppercase(),

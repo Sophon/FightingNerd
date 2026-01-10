@@ -1,11 +1,9 @@
 package io.github.sophon.discord
 
-import kotlin.time.Duration.Companion.seconds
-
 internal const val BOT_NAME = "FightingNerd"
 
 internal const val CONFIG_FILE_NAME = "config.json"
-internal const val MAX_LENGTH_EMBED = 1_000
+internal const val EMBED_MAX_LENGTH = 1_000
 
 internal const val URL_REPO = "https://github.com/Sophon/FightingNerd"
 internal const val URL_IMG_GITHUB = "https://i.imgur.com/PdgcKV2.png"
