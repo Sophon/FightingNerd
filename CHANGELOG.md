@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v7.0.1] - 2026-01-11
+- fixed `fdvs` command
+
 ## [v7.0.0] - 2026-01-11
 - Mizuumi
   - VSAV support
