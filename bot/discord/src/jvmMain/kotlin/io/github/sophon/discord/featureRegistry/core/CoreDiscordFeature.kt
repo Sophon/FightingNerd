@@ -107,15 +107,15 @@ internal class CoreDiscordFeature(
     private fun createHelpEmbed(): Result<BotOutput, BotError> {
         val features = featureRegistry.getRegisteredFeatures()
 
-
         val embedBuilder: EmbedBuilder.() -> Unit = {
+            title = "FightingNerd bot by @phd_cunnilingus"
+
             mandatoryField(
                 name = "⚙️ Commands".uppercase(),
                 value = "1. **tag** → `@FightingNerdBot` `[command]` `[query]`\n" +
                         "   - frame data (`fd`) is the default command; `@FightingNerdBot jun df1` works\n" +
                         "2. **slash** → `/command`\n\n" +
-                        "Use **`/commands`** to see available commands\n\n" +
-                        "**AUTHOR**: @phd_cunnilingus (Discord)"
+                        "Use **`/commands`** to see available commands\n\n"
             )
 
             mandatoryField(
@@ -171,6 +171,8 @@ internal class CoreDiscordFeature(
         val otherCommands = commands - fdCommands.toSet() - charCommands.toSet() - aliasCommands.toSet() - Command.FD - adminCommands.map { it.command }.toSet()
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
+            title = "⚙️ COMMANDS"
+
             mandatoryField(
                 name = "📊 FRAME DATA",
                 value = buildString {
