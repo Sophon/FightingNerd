@@ -50,12 +50,9 @@ internal fun MoveDto.toDomain(
         guard = guard?.cleanHtmlOrNull(),
         invulnerability = invul?.cleanHtmlOrNull(),
         urls = Move.Urls(
+            characterImage = character.images?.iconUrl,
             wikiUrl = character.wikiUrl,
             hitboxImageList = hitboxes
-                .orEmpty()
-                .split(",")
-                .mapNotNull { hitboxUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
-            moveImageList = images
                 .orEmpty()
                 .split(",")
                 .mapNotNull { hitboxUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
