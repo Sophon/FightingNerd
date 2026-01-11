@@ -48,7 +48,7 @@ internal fun MoveDto.toDomain(
         active = active?.cleanHtmlOrNull(),
         cancel = cancel?.cleanHtmlOrNull()?.formatCancel(),
         guard = guard?.cleanHtmlOrNull(),
-        invulnerability = invul?.cleanHtmlOrNull(),
+        invulnerability = invul?.cleanHtmlOrNull()?.formPropertiesUrl()?.formPropertiesUrl(),
         urls = Move.Urls(
             characterImage = character.images?.iconUrl,
             wikiUrl = character.wikiUrl,
@@ -116,7 +116,7 @@ internal fun MoveDto.toDomain(
         active = active?.cleanHtmlOrNull(),
         cancel = cancel?.cleanHtmlOrNull()?.formatCancel(),
         guard = guard?.cleanHtmlOrNull(),
-        invulnerability = invul?.cleanHtmlOrNull(),
+        invulnerability = invul?.cleanHtmlOrNull()?.formPropertiesUrl(),
         urls = Move.Urls(
             wikiUrl = game?.wikiUrl ?: WIKI_BASE_URL,
             characterImage = characterData.imageUrl,
@@ -153,6 +153,10 @@ internal fun MoveDto.toDomain(
             comboP2 = comboP2?.cleanHtmlOrNull(),
         )
     )
+
+    if (characterData.name == "Wagner") {
+        val a = 3
+    }
     return move
 }
 
