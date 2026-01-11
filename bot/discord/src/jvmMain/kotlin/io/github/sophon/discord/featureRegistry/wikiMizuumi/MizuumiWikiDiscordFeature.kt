@@ -108,11 +108,15 @@ internal class MizuumiWikiDiscordFeature(
         ),
         SupportedCommand(
             command = Command.FDVS,
-            description = "VSAV character data",
+            description = "VSAV frame data",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
                     description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
                 )
             ),
         ),
