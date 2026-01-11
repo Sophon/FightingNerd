@@ -2,6 +2,7 @@
 
 ## [v7.0.0] - TODO
 - Mizuumi
+  - VSAV support
   - fixed URL pointing to the wiki instead of game subsection
   - `charuni` command
   - UNI2 move embeds feature the char image
