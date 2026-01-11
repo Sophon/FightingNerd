@@ -71,8 +71,8 @@ class CreateMizuumiMoveEmbedUseCase {
             mandatoryField(name = "W-Dmg", value = whiteDmg)
             mandatoryField(name = "Renda", value = renda)
             mandatoryField(name = "Meter", value = meter)
-            mandatoryField(name = "Curse", value = curseTime)
             mandatoryField(name = "Reaction", value = reaction)
+            optionalField(name = "Curse", value = curseTime)
         }
 
         featureFooter(featureInfo)
