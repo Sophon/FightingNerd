@@ -205,7 +205,7 @@ internal class MizuumiWikiDiscordFeature(
                     emptyList()
                 } else {
                     listOf(
-                        BotOutput.EmbedButton(label = "Full", action = BotOutput.EmbedButton.Action.Edit())
+                        BotOutput.EmbedButton(label = "Details", action = BotOutput.EmbedButton.Action.Edit())
                     )
                 }
 
