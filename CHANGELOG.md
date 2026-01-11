@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v7.0.0] - TODO
+## [v7.0.0] - 2026-01-11
 - Mizuumi
   - VSAV support
   - fixed URL pointing to the wiki instead of game subsection
