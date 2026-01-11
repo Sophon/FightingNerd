@@ -205,14 +205,14 @@ internal class MizuumiWikiDiscordFeature(
                     emptyList()
                 } else {
                     listOf(
-                        BotOutput.EmbedButton(label = "Full", action = BotOutput.EmbedButton.Action.Edit())
+                        BotOutput.EmbedButton(label = "Details", action = BotOutput.EmbedButton.Action.Edit())
                     )
                 }
 
                 BotOutput(
                     primaryEmbedBuilder = primary,
                     fullEmbedBuilder = full,
-                    buttons = buttons,
+                    buttons = BotOutput.ButtonSet(buttonList = buttons),
                     images = if (images.size < 2) {
                         null
                     } else {

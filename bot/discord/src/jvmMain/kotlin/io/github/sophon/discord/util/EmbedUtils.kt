@@ -4,7 +4,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
-import io.github.sophon.discord.MAX_LENGTH_EMBED
+import io.github.sophon.discord.EMBED_MAX_LENGTH
 
 internal fun EmbedBuilder.mandatoryField(
     name: String,
@@ -18,7 +18,7 @@ internal fun EmbedBuilder.mandatoryField(
             if (escapeAsterisks) value.replace("*", "\\*")
             else value
         }
-        .truncate(MAX_LENGTH_EMBED)
+        .truncate(EMBED_MAX_LENGTH)
 
     field {
         this.name = name
@@ -39,7 +39,7 @@ internal fun EmbedBuilder.optionalField(
             if (escapeAsterisks) value.replace("*", "\\*")
             else value
         }
-        .truncate(MAX_LENGTH_EMBED)
+        .truncate(EMBED_MAX_LENGTH)
 
     if (value.isNullOrBlank().not()) {
         field {
@@ -65,7 +65,7 @@ internal fun EmbedBuilder.optionalField(
 
     field {
         this.name = name
-        this.value = joinedValues.truncate(MAX_LENGTH_EMBED)
+        this.value = joinedValues.truncate(EMBED_MAX_LENGTH)
         this.inline = inline
     }
 }

@@ -7,7 +7,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.MAX_LENGTH_EMBED
+import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
@@ -72,7 +72,7 @@ internal class InfilGlossaryDiscordFeature(
 
         item.url.image?.let { image = it }
 
-        val embedData = item.definition.chunkByNewLines(delimiter = ".", maxLength = MAX_LENGTH_EMBED)
+        val embedData = item.definition.chunkByNewLines(delimiter = ".", maxLength = EMBED_MAX_LENGTH)
         embedData.forEach { data ->
             mandatoryField(
                 name = "",

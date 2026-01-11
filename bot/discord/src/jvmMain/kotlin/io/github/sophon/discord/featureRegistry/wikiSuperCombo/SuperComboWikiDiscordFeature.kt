@@ -207,8 +207,12 @@ internal class SuperComboWikiDiscordFeature(
                 BotOutput(
                     primaryEmbedBuilder = createPrimaryEmbedBuilder(move),
                     fullEmbedBuilder = createFullEmbedBuilder(move),
-                    buttons = listOf(
-                        BotOutput.EmbedButton(label = "Details", action = BotOutput.EmbedButton.Action.Edit())
+                    buttons = BotOutput.ButtonSet(
+                        buttonList = listOf(
+                            BotOutput.EmbedButton(
+                                label = "Details", action = BotOutput.EmbedButton.Action.Edit()
+                            ),
+                        )
                     ),
                     images = if (images.size < 2) {
                         null

@@ -10,7 +10,7 @@ import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.MAX_LENGTH_EMBED
+import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
@@ -44,7 +44,7 @@ internal class CreateCharacterAliasesEmbedUseCase {
                     append("- **${character.displayName}** → $aliases\n")
                 }
         }
-        val embedData = string.chunkByNewLines(delimiter = "\n", maxLength = MAX_LENGTH_EMBED)
+        val embedData = string.chunkByNewLines(delimiter = "\n", maxLength = EMBED_MAX_LENGTH)
 
         embedData.forEachIndexed { index, data ->
             mandatoryField(
