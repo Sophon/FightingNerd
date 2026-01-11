@@ -39,7 +39,7 @@ internal fun MoveDto.toDomain(
             .orDash()
             .decodeHtmlEntities()
             .lowercase(),
-        damage = damage?.cleanHtmlOrNull(),
+        damage = damage?.cleanHtmlOrNull() ?: totaldmg,
         startup = startup?.cleanHtmlOrNull(),
         onHit = onHit?.cleanHtmlOrNull() ?: advHit?.cleanHtmlOrNull(),
         onBlock = frameAdv?.cleanHtmlOrNull() ?: advBlock?.cleanHtmlOrNull(),
