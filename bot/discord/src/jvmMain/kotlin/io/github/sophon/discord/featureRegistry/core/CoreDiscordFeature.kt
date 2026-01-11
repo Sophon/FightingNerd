@@ -135,16 +135,28 @@ internal class CoreDiscordFeature(
             mandatoryField(
                 name = "🫶 OTHER LINKS",
                 value = buildString {
-                    appendLine("- **[Invite]($URL_INVITE)**")
+                    appendLine("- **[DONATE]($URL_KOFI)**")
+                    appendLine("- **[INVITE]($URL_INVITE)**")
                     appendLine("- **[Repo]($URL_REPO)**")
-                    appendLine("- **[Donate]($URL_KOFI)**")
                 }
             )
 
             featureFooter(featureInfo)
         }
 
-        return Result.Success(BotOutput(primaryEmbedBuilder = embedBuilder))
+        val result = BotOutput(
+            primaryEmbedBuilder = embedBuilder,
+            buttons = BotOutput.ButtonSet(
+                buttonList = listOf(
+                    BotOutput.EmbedButton(
+                        label = "Commands",
+                        action = BotOutput.EmbedButton.Action.Query(Command.COMMANDS.name),
+                    )
+                )
+            ),
+        )
+
+        return Result.Success(result)
     }
 
     private fun createCommandsEmbed(): Result<BotOutput, BotError> {
