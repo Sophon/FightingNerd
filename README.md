@@ -126,6 +126,7 @@ graph LR
     style melty fill:green, color:#fff
     style bbcf fill:green, color:#fff
     style uni2 fill:green, color:#fff
+    style vsav fill:green, color:#fff
   ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
