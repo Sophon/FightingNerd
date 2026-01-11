@@ -10,6 +10,7 @@ enum class Command {
     REPO,
     INVITE,
     HELP,
+    COMMANDS,
 
     //admin
     FEEDBACK,
@@ -62,4 +63,7 @@ enum class Command {
     //mizuumi
     ALIASMB,
     FDMB,
+    CHARUNI,
+    FDUNI,
+    FDVS,
 }

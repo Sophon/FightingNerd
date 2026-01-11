@@ -51,14 +51,24 @@ fun mizuumiModule() = module {
                 source.downloadData(table?.moves.orEmpty())
                     .flatMap { dto ->
                         wikiImageUrlResolver.resolveHitboxUrl(dto)
-                            .map { dto.toDomainAll(imageUrlMap = it, gameId = gameId) }
+                            .flatMap { hitboxUrlMap ->
+                                wikiImageUrlResolver.resolveImageUrls(gameId, dto)
+                                    .map { imageUrlMap ->
+                                        dto.toDomainAll(
+                                            gameId = gameId,
+                                            imageUrlMap = imageUrlMap,
+                                            hitboxUrlMap = hitboxUrlMap
+                                        )
+                                    }
+                            }
                     }
             },
 
             downloadCharacterListUseCase = DownloadCharacterListUseCase { table ->
                 source.downloadCharacterList(table.character)
-                    .map { dto ->
-                        dto.toDomain(gameId = gameId)
+                    .flatMap { dto ->
+                        wikiImageUrlResolver.resolveImageUrls(dto)
+                            .map { dto.toDomain(gameId = gameId, imageUrlMap = it) }
                     }
             },
 
@@ -76,7 +86,9 @@ fun mizuumiModule() = module {
                 source.downloadMoveList(table.moves, characterData)
                     .flatMap { dto ->
                         wikiImageUrlResolver.resolveHitboxUrl(dto)
-                            .map { dto.toDomain(characterData, imageUrlMap = it) }
+                            .map {
+                                dto.toDomain(characterData, imageUrlMap = it, gameId = gameId)
+                            }
                     }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->

@@ -1,7 +1,10 @@
 package io.github.sophon.discord.domain
 
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_DEFAULT_S
 import io.github.sophon.domain.Source
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 data class BotOutput(
     val primaryEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
@@ -11,7 +14,7 @@ data class BotOutput(
     val images: Images? = null,
     val feedback: Feedback? = null,
     val reply: Reply? = null,
-    val buttons: List<EmbedButton> = listOf(),
+    val buttons: ButtonSet? = null,
 ) {
     data class Images(
         val title: String,
@@ -28,6 +31,11 @@ data class BotOutput(
     data class Reply(
         val embedBuilder: (EmbedBuilder.() -> Unit),
         val target: Source,
+    )
+
+    data class ButtonSet(
+        val buttonList: List<EmbedButton> = listOf(),
+        val duration: Duration = EMBED_BUTTON_DURATION_DEFAULT_S.seconds,
     )
 
     data class EmbedButton(

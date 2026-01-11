@@ -221,6 +221,34 @@ internal class MizuumiWikiDataSourceImpl(
                     "comboP2"
                 )
             }
+
+            MizuumiTables.TABLE_VSAV_MOVES -> {
+                listOf(
+                    "moveId",
+                    "chara",
+                    "input",
+                    "inputInfo",
+                    "name",
+                    "subtitle",
+                    "images",
+                    "hitboxes",
+                    "totaldmg",
+                    "whitedmg",
+                    "guard",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "advHit",
+                    "advBlock",
+                    "invul",
+                    "cancel",
+                    "renda",
+                    "meter",
+                    "reaction",
+                    "cursetime"
+                )
+            }
+
             else -> listOf()
         }
 

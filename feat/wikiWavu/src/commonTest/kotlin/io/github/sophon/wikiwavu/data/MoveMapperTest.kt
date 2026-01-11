@@ -5,6 +5,7 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.wikiwavu.domain.cleanMoveInput
 import kotlin.test.Test
 
 class MoveMapperTest {
@@ -44,7 +45,7 @@ class MoveMapperTest {
         val expected: List<String> = emptyList()
 
         //when
-        val result = alias.formAliases("")
+        val result = "".formAliases(alias = alias, alt = null)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -57,7 +58,7 @@ class MoveMapperTest {
         val expected = listOf("shining wizard")
 
         //when
-        val result = alias.formAliases("")
+        val result = "".formAliases(alias, null)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -73,23 +74,66 @@ class MoveMapperTest {
         )
 
         //when
-        val result = alias.formAliases("")
+        val result = "".formAliases(alias, null)
 
         //then
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun `formAliases handles or format aliases`() {
-        //given
-        val string = "H.1+4 or H.WS1+4"
+    fun `formAliases handles cd`() {
+        // given
+        val string = "cd.df2"
+        val expected = listOf("cd2", "cd.2")
+
+        // when
+        val result = string.formAliases(null, null)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `formAliases handles just-frame cd with df`() {
+        // given
+        val string = "cd.df#2"
+        val expected = listOf("cd#2")
+
+        // when
+        val result = string.formAliases(null, null)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `formAliases handles alt and alias`() {
+        // given
+        val input = "WGS.df+3".cleanMoveInput()
+        val alt = "&lt;div class=&quot;dotlist&quot;&gt;\\n\\n* f,n,d,DF+3\\n* f,n,DF+3\\n* df+3,df+3\\n&lt;/div&gt;"
         val expected = listOf(
-            "h.1+4",
-            "h.ws1+4",
+            "cd.3",
+            "cd3",
+            "fndf3",
+            "df3df3",
+            "wgsdf3",
         )
 
-        //when
-        val result = string.formAliases("")
+        // when
+        val result = input.formAliases(null, alt)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `formAliases handles cd in input`() {
+        // given
+        val input = "f,n,d,DF+4,4".cleanMoveInput()
+        val expected = listOf("cd44")
+
+        // when
+        val result = input.formAliases(null, null)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -433,7 +477,7 @@ class MoveMapperTest {
                 "becomes Homing in heat",
                 "Partially restores remaining Heat Time"
             ),
-            aliases = listOf("shining wizard"),
+            aliases = listOf("shining wizard", "wr2+4"),
             urls = Move.Urls(
                 videoId = null,
                 wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f,f,F+2+4"

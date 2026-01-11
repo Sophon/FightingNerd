@@ -25,6 +25,10 @@ class CreateMizuumiMoveEmbedUseCase {
                 val primary = createPrimaryEmbedBuilder(move, featureInfo)
                 primary to null
             }
+            Game.VSAV -> {
+                val primary = createPrimaryEmbedBuilder(move, featureInfo)
+                primary to null
+            }
             else -> {
                 val empty: EmbedBuilder.() -> Unit = {}
                 empty to null
@@ -40,9 +44,10 @@ class CreateMizuumiMoveEmbedUseCase {
         generalInfo(move).invoke(this)
 
         mandatoryField(name = "Startup", value = move.startup)
-        mandatoryField(name = "Cancel", value = move.cancel)
-        mandatoryField(name = "Block", value = move.onBlock)
         mandatoryField(name = "Active", value = move.active)
+        optionalField(name = "OH", value = move.onHit)
+        mandatoryField(name = "Block", value = move.onBlock)
+        mandatoryField(name = "Cancel", value = move.cancel)
         mandatoryField(name = "Guard", value = move.guard)
         mandatoryField(name = "Recovery", value = move.recovery)
 
@@ -60,6 +65,14 @@ class CreateMizuumiMoveEmbedUseCase {
             optionalField(name = "Property", value = property)
             optionalField(name = "Cost", value = move.mbProperties?.cost)
             optionalField(name = "Ass advantage", value = assaultAdv)
+        }
+
+        move.vsavProperties?.apply {
+            mandatoryField(name = "W-Dmg", value = whiteDmg)
+            mandatoryField(name = "Renda", value = renda)
+            mandatoryField(name = "Meter", value = meter)
+            mandatoryField(name = "Reaction", value = reaction)
+            optionalField(name = "Curse", value = curseTime)
         }
 
         featureFooter(featureInfo)
@@ -97,6 +110,7 @@ class CreateMizuumiMoveEmbedUseCase {
             else -> "**${move.charName}**: ${move.name}"
         }
         color = Color(TEAL)
+        move.urls.characterImage?.let { thumbnail { url = it } }
 
         val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
             ?: emptyList()

@@ -1,4 +1,4 @@
-package io.github.sophon.wikiwavu.util
+package io.github.sophon.wikiwavu.domain
 
 internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
     var result = this.trim().lowercase()
@@ -35,8 +35,9 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
     }
 
 
-    if (result.startsWith("fnddf")) {
-        result = result.replaceFirst("fnddf", "cd")
+    when {
+        result.startsWith("fnddf#") -> result = result.replace("fnddf#", "cd#")
+        result.startsWith("fnddf") -> result = result.replace("fnddf", "cd.")
     }
 
     result = result

@@ -1,5 +1,19 @@
 # BOT CHANGELOG
 
+## [v7.0.0] - 2026-01-11
+- Mizuumi
+  - VSAV support
+  - fixed URL pointing to the wiki instead of game subsection
+  - `charuni` command
+  - UNI2 move embeds feature the char image
+- Wavu
+  - accepts all forms of `cd` type inputs, aliases and alts I could think of
+  - fixed missing moves with the Heat property
+- bot now ignores replies to its messages
+- Details button lasts 15s, move-list buttons last 30s
+- split `help` into `help` and `commands`
+  - `help` also has a button that summons `commands`
+
 ## [v6.1.0] - 2026-01-09
 - Mizuumi
   - Uni2 support

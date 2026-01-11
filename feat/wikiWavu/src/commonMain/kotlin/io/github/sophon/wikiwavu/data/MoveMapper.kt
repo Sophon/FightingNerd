@@ -1,12 +1,13 @@
 package io.github.sophon.wikiwavu.data
 
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.MOVE_URL
 import io.github.sophon.wikiwavu.VIDEO_URL
-import io.github.sophon.wikiwavu.util.cleanMoveInput
+import io.github.sophon.wikiwavu.domain.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(
     characterData: DownloadMoveListUseCase.CharacterData
@@ -47,7 +48,7 @@ internal fun MoveDto.mapToDomain(
         guard = formCompleteDataFromParent(movesById) { it.target },
 
         notes = notes.formNotes() + cleanedCrushes,
-        aliases = alias.formAliases(input = fullInput),
+        aliases = fullInput.formAliases(alias, alt),
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
@@ -97,27 +98,54 @@ internal fun String.getStance(): String? {
     return stance
 }
 
-internal fun String?.formAliases(input: String): List<String> {
-    val aliases: MutableList<String> = this
-        .orEmpty()
-        .cleanHtml()
-        .split("* ", "or")
+internal fun String.formAliases(alias: String?, alt: String?): List<String> {
+    val cleanedAliases = alias
+        .cleanHtmlOrNull()
+        ?.replace("\n", "")
+        ?.replace("\\n", "")
+        ?.lowercase()
+    val cleanedAlts = alt
+        .cleanHtmlOrNull()
+        ?.replace("\n", "")
+        ?.replace("\\n", "")
+        ?.lowercase()
+
+    val aliases: MutableList<String> = listOfNotNull(cleanedAliases, cleanedAlts)
+        .flatMap { it.split("* ", "or") }
         .map {
             it
                 .trim()
                 .cleanMoveInput(keepSpaces = true)
         }
         .filter { it.isNotEmpty() }
+        .flatMap { alias ->
+            if (alias.startsWith("cd.")) {
+                listOf(alias, alias.replace(".", ""))
+            } else {
+                listOf(alias)
+            }
+        }
         .toMutableList()
 
-    if (
-        input.contains(".")
-        && input.split(".").first().length == 3
-    ) {
-        aliases.add(input.replace(".", ""))
+    when {
+        this.startsWith("cd.df#") -> {
+            aliases.add(this.replaceFirst("cd.df#", "cd#"))
+        }
+        this.startsWith("cd.df") -> {
+            aliases.add(this.replaceFirst("cd.df", "cd"))
+            aliases.add(this.replaceFirst("cd.df", "cd."))
+        }
+        this.startsWith("cd.") -> aliases.add(this.replace("cd.", "cd"))
     }
 
-    return aliases
+    if (
+        this.contains(".")
+        && this.split(".").first().length == 3
+    ) {
+        aliases.add(this.replace(".", ""))
+    }
+
+    return aliases.distinct()
 }
 
 internal fun String?.formVideoUrl(): String? {
@@ -200,10 +228,13 @@ private fun formProperties(
     crushes: List<String>,
     input: String,
 ): Move.T8Properties {
-    return Move.T8Properties(
-        isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) },
-        isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) },
-        isHoming = notes.any { it.contains("Homing", ignoreCase = true) },
-        stance = input.getStance(),
-    )
+    val isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) }
+            || notes.any { it.contains("Heat Smash", ignoreCase = true) }
+            || input.contains("H.", ignoreCase = true)
+
+    val isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) }
+    val isHoming = notes.any { it.contains("Homing", ignoreCase = true) }
+    val stance = input.getStance()
+
+    return Move.T8Properties(isHeat, isHoming, stance, isPowerCrush)
 }
