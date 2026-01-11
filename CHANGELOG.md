@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v7.1.0] - TODO
+- `inv` invincible commands for 
+  - MB, Uni, VSAV
+
 ## [v7.0.1] - 2026-01-11
 - fixed `fdvs` command
 
