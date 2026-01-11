@@ -66,4 +66,5 @@ enum class Command {
     CHARUNI,
     FDUNI,
     FDVS,
+    INVVS,
 }

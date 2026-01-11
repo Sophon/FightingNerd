@@ -4,7 +4,9 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
+import io.github.sophon.discord.domain.BotOutput
 
 internal fun EmbedBuilder.mandatoryField(
     name: String,
@@ -82,5 +84,15 @@ internal fun EmbedBuilder.featureFooter(featureInfo: FeatureInfo) {
     footer {
         text = featureInfo.name
         icon = featureInfo.iconUrl
+    }
+}
+
+internal fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton> {
+    return mapIndexed { index, move ->
+        val query = "$charName ${move.input}"
+        BotOutput.EmbedButton(
+            label = (index + 1).toString(),
+            action = BotOutput.EmbedButton.Action.Query(query),
+        )
     }
 }

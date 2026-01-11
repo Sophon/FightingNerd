@@ -14,6 +14,7 @@ import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.domain.BotOutput
@@ -24,10 +25,12 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
+import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
 import io.github.sophon.wikimizuumi.MizuumiFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +40,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import kotlin.time.Duration.Companion.seconds
 
 internal class MizuumiWikiDiscordFeature(
     mizuumiFeatureInfo: MizuumiFeatureInfo,
@@ -45,6 +49,7 @@ internal class MizuumiWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMizuumiMoveEmbedUseCase: CreateMizuumiMoveEmbedUseCase,
+    private val getMovesUseCase: GetMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -117,6 +122,16 @@ internal class MizuumiWikiDiscordFeature(
                 SupportedCommand.Argument(
                     name = KEY_MOVE,
                     description = "Move input"
+                )
+            ),
+        ),
+        SupportedCommand(
+          command = Command.INVVS,
+            description = "VSAV Invincible moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
                 )
             ),
         ),
@@ -199,6 +214,13 @@ internal class MizuumiWikiDiscordFeature(
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query, game)
+            }
+            //TODO: extract `?: return Result.Error(BotError.UnsupportedGame(query))` into util
+            Command.INVVS -> {
+                val game = Game.VSAV
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchInvincible(wiki, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -315,6 +337,50 @@ internal class MizuumiWikiDiscordFeature(
         optionalField(
             name = "Trait",
             value = character.uni2Properties?.trait,
+            inline = false,
+        )
+
+        featureFooter(featureInfo)
+    }
+
+    private suspend fun searchInvincible(
+        wiki: WikiClient,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getMovesUseCase.invoke(
+            wiki = wiki,
+            charName = query,
+            predicate = { it.invulnerability != null }
+        ).map { moveList ->
+            BotOutput(
+                primaryEmbedBuilder = createMoveListEmbed(
+                    category = "${query.uppercase()} Invincible",
+                    moveList = moveList,
+                ),
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveList.toButtons(charName = query),
+                    duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                ),
+            )
+        }
+    }
+
+    //TODO: should be a usecase, prob
+    private fun createMoveListEmbed(
+        category: String,
+        moveList: List<Move>,
+    ): EmbedBuilder.() -> Unit = {
+        color = Color(TEAL)
+
+        val text = moveList
+            .mapIndexed { index, move ->
+                "${index + 1}. **${move.input}** (${move.invulnerability})"
+            }
+            .joinToString("\n")
+
+        mandatoryField(
+            name = "$category moves",
+            value = text,
             inline = false,
         )
 
