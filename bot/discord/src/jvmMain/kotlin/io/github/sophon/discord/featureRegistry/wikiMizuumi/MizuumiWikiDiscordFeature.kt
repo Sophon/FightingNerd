@@ -212,7 +212,7 @@ internal class MizuumiWikiDiscordFeature(
                 BotOutput(
                     primaryEmbedBuilder = primary,
                     fullEmbedBuilder = full,
-                    buttons = buttons,
+                    buttons = BotOutput.ButtonSet(buttonList = buttons),
                     images = if (images.size < 2) {
                         null
                     } else {

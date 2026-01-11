@@ -15,13 +15,12 @@ import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.EMBED_BUTTON_DURATION_S
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.BotOutput.ButtonSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -36,7 +35,7 @@ internal class CreateEmbedUseCase {
         coroutineScope: CoroutineScope,
         fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
-        buttons: List<BotOutput.EmbedButton> = listOf(),
+        buttons: ButtonSet? = null,
     ): Result<String, BotError> {
         return try {
             val uuid = Uuid.random()
@@ -46,8 +45,8 @@ internal class CreateEmbedUseCase {
 
                 embed(fullEmbed ?: primaryEmbed)
 
-                if (buttons.isNotEmpty()) {
-                    createButtons(uuid, buttons)
+                if (buttons?.buttonList.isNullOrEmpty().not()) {
+                    createButtons(uuid, buttons.buttonList)
                 }
 
                 imageList?.urls?.forEach { url ->
@@ -59,9 +58,9 @@ internal class CreateEmbedUseCase {
                 }
             }
 
-            if (buttons.isNotEmpty()) {
+            buttons?.apply {
                 coroutineScope.launch {
-                    delay(EMBED_BUTTON_DURATION_S.seconds)
+                    delay(duration)
                     message.edit {
                         components = mutableListOf()
                     }
@@ -85,7 +84,7 @@ internal class CreateEmbedUseCase {
         coroutineScope: CoroutineScope,
         fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
-        buttons: List<BotOutput.EmbedButton> = listOf(),
+        buttons: ButtonSet? = null,
     ): Result<String, BotError> {
         return try {
             val uuid = Uuid.random()
@@ -93,11 +92,11 @@ internal class CreateEmbedUseCase {
             interaction.respondPublic {
                 embed(fullEmbed ?: primaryEmbed)
 
-                if (buttons.isNotEmpty()) {
-                    createButtons(uuid, buttons)
+                if (buttons?.buttonList.isNullOrEmpty().not()) {
+                    createButtons(uuid, buttons.buttonList)
 
                     coroutineScope.launch {
-                        delay(EMBED_BUTTON_DURATION_S.seconds)
+                        delay(buttons.duration)
                         interaction.getOriginalInteractionResponse().edit {
                             components = mutableListOf()
                         }

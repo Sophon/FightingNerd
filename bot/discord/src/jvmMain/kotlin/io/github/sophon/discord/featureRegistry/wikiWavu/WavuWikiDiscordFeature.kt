@@ -12,6 +12,7 @@ import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.domain.BotOutput
@@ -36,6 +37,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import kotlin.time.Duration.Companion.seconds
 
 internal class WavuWikiDiscordFeature(
     wavuFeatureInfo: WavuFeatureInfo,
@@ -208,7 +210,10 @@ internal class WavuWikiDiscordFeature(
                         category = "${query.uppercase()} Power Crush",
                         moveList = moveList,
                     ),
-                    buttons = moveList.toButtons(charName = query),
+                    buttons = BotOutput.ButtonSet(
+                        buttonList = moveList.toButtons(charName = query),
+                        duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                    ),
                 )
             }
     }
@@ -228,7 +233,10 @@ internal class WavuWikiDiscordFeature(
                         category = "${query.uppercase()} Heat",
                         moveList = moveList,
                     ),
-                    buttons = moveList.toButtons(charName = query),
+                    buttons = BotOutput.ButtonSet(
+                        buttonList = moveList.toButtons(charName = query),
+                        duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                    ),
                 )
             }
     }
@@ -247,7 +255,10 @@ internal class WavuWikiDiscordFeature(
                     category = "${query.uppercase()} Homing",
                     moveList = moveList,
                 ),
-                buttons = moveList.toButtons(charName = query),
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveList.toButtons(charName = query),
+                    duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                ),
             )
         }
     }
@@ -290,7 +301,10 @@ internal class WavuWikiDiscordFeature(
                             )
                             featureFooter(featureInfo)
                         },
-                        buttons = buttons,
+                        buttons = BotOutput.ButtonSet(
+                            buttonList = buttons,
+                            duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                        ),
                     )
                 }
         } else {

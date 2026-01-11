@@ -14,7 +14,6 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.core.on
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
-import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.embed
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
@@ -36,7 +35,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
-import kotlin.time.Duration.Companion.seconds
 
 interface DiscordBot {
     suspend fun startSession()
@@ -172,9 +170,11 @@ internal class DiscordBotImpl(
                             botOutput.fullEmbedBuilder?.let {
                                 editableEmbedMap[uuid] = botOutput
 
-                                coroutineScope.launch {
-                                    delay(EMBED_BUTTON_DURATION_S.seconds)
-                                    editableEmbedMap.remove(uuid)
+                                botOutput.buttons?.duration?.let { duration ->
+                                    coroutineScope.launch {
+                                        delay(duration)
+                                        editableEmbedMap.remove(uuid)
+                                    }
                                 }
                             }
                         }
@@ -250,9 +250,11 @@ internal class DiscordBotImpl(
                             botOutput.fullEmbedBuilder?.let {
                                 editableEmbedMap[uuid] = botOutput
 
-                                coroutineScope.launch {
-                                    delay(EMBED_BUTTON_DURATION_S.seconds)
-                                    editableEmbedMap.remove(uuid)
+                                botOutput.buttons?.duration?.let { duration ->
+                                    coroutineScope.launch {
+                                        delay(duration)
+                                        editableEmbedMap.remove(uuid)
+                                    }
                                 }
                             }
                         }
