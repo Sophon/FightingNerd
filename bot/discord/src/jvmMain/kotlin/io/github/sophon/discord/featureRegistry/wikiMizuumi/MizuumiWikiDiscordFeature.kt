@@ -106,6 +106,16 @@ internal class MizuumiWikiDiscordFeature(
                 )
             ),
         ),
+        SupportedCommand(
+            command = Command.FDVS,
+            description = "VSAV character data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -179,6 +189,12 @@ internal class MizuumiWikiDiscordFeature(
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
+            }
+            Command.FDVS -> {
+                val game = Game.VSAV
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query, game)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
