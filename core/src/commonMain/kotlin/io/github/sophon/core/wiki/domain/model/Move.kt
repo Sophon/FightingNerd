@@ -36,6 +36,7 @@ data class Move(
     val mbProperties: MBProperties? = null,
     val bbProperties: BBProperties? = null,
     val uni2Properties: Uni2Properties? = null,
+    val vsavProperties: VSAVProperties? = null,
 ) {
     @Serializable
     data class Urls(
@@ -205,5 +206,16 @@ data class Move(
         val proration: String? = null,
         val comboP1: String? = null,
         val comboP2: String? = null,
+    )
+
+    @Serializable
+    data class VSAVProperties(
+        val inputInfo: String? = null,
+        val subtitle: String? = null,
+        val whiteDmg: String? = null,
+        val renda: String? = null,
+        val meter: String? = null,
+        val reaction: String? = null,
+        val curseTime: String? = null,
     )
 }

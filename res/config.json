@@ -50,7 +50,8 @@
       "isEnabled": true,
       "supportedGames": [
         "MBTL",
-        "UNI2"
+        "UNI2",
+        "VSAV"
       ]
     }
   ],

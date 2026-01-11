@@ -7,7 +7,10 @@ import io.github.sophon.core.util.removeAccents
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikimizuumi.FEATURE_URL
 
-internal fun String.toDomain(gameId: String): Character {
+internal fun String.toDomain(
+    gameId: String,
+    imageUrlMap: Map<String, String>,
+): Character {
     val idName = this.cleanHtml().lowercase()
     val displayName = this.cleanHtml()
     val queryName = this.createQueryName()
@@ -19,6 +22,9 @@ internal fun String.toDomain(gameId: String): Character {
         queryName = queryName,
         aliasList = idName.createAliases(),
         wikiUrl = game?.wikiUrl ?: FEATURE_URL,
+        images = Character.Images(
+            iconUrl = imageUrlMap[idName]
+        )
     )
 
     return char
@@ -86,7 +92,7 @@ internal fun String.createQueryName(): String {
 }
 
 internal fun String.createAliases(): List<String> {
-    val aliases = when (this.lowercase()) {
+    val meltyAliases = when (this.lowercase()) {
         "akiha tohno" -> listOf("akiha", "ak")
         "aoko aozaki" -> listOf("aoko", "aozaki", "ao")
         "arcueid brunestud" -> listOf("arcueid", "brunestud", "arc", "ar")
@@ -111,10 +117,21 @@ internal fun String.createAliases(): List<String> {
         }
         "ushiwakamaru" -> listOf("ushi", "us")
         "vlov arkhangel" -> listOf("vlov", "arkhangel", "vl")
-        else -> listOf()
+
+        else -> null
     }
 
-    return aliases
+    val aliases = this
+        .split("-")
+        .takeIf { it.size > 1 }
+        ?.let { parts ->
+            listOf(
+                parts.last().lowercase(),
+                parts.joinToString("") { it.first().lowercase() }
+            )
+        }
+
+    return meltyAliases ?: aliases ?: listOf()
 }
 
 internal fun String.formWikiUrl(gameId: String): String {

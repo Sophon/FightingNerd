@@ -69,6 +69,11 @@ enum class Game(
         id = "UNI2",
         iconUrl = "https://i.imgur.com/G5RoTij.png",
         wikiUrl = "https://mizuumi.wiki/w/Under_Night_In-Birth/UNI2"
+    ),
+    VSAV(
+        id = "VSAV",
+        iconUrl = "https://i.imgur.com/e3xYkHf.png",
+        wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior",
     );
 
     companion object {

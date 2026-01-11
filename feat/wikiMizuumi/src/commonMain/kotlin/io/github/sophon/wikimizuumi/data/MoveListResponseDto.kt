@@ -4,12 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MoveListResponseDto(
-    val cargoquery: List<Title>
+    val cargoquery: List<Title>,
 )
 
 @Serializable
 data class Title(
-    val title: MoveDto
+    val title: MoveDto,
 )
 
 @Serializable
@@ -51,4 +51,13 @@ data class MoveDto(
     val proration: String? = null,
     val comboP1: String? = null,
     val comboP2: String? = null,
+
+    val totaldmg: String? = null,
+    val whitedmg: String? = null,
+    val advHit: String? = null,
+    val advBlock: String? = null,
+    val renda: String? = null,
+    val meter: String? = null,
+    val reaction: String? = null,
+    val cursetime: String? = null,
 )

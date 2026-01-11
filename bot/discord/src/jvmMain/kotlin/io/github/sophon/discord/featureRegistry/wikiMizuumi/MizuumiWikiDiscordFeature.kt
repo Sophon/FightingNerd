@@ -21,7 +21,6 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
-import io.github.sophon.discord.featureRegistry.wikiDustLoop.DustLoopWikiDiscordFeature
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
@@ -107,6 +106,16 @@ internal class MizuumiWikiDiscordFeature(
                 )
             ),
         ),
+        SupportedCommand(
+            command = Command.FDVS,
+            description = "VSAV character data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -181,6 +190,12 @@ internal class MizuumiWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
+            Command.FDVS -> {
+                val game = Game.VSAV
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchMove(wiki, query, game)
+            }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -202,7 +217,7 @@ internal class MizuumiWikiDiscordFeature(
                 val (primary, full) = createMizuumiMoveEmbedUseCase
                     .invoke(move, game, featureInfo)
                 val buttons = if (full == null) {
-                    emptyList()
+                    null
                 } else {
                     listOf(
                         BotOutput.EmbedButton(label = "Details", action = BotOutput.EmbedButton.Action.Edit())
@@ -212,7 +227,7 @@ internal class MizuumiWikiDiscordFeature(
                 BotOutput(
                     primaryEmbedBuilder = primary,
                     fullEmbedBuilder = full,
-                    buttons = BotOutput.ButtonSet(buttonList = buttons),
+                    buttons = buttons?.let { BotOutput.ButtonSet(buttonList = it) },
                     images = if (images.size < 2) {
                         null
                     } else {
