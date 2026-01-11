@@ -9,12 +9,14 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
+import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
+import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.domain.BotOutput
@@ -88,6 +90,16 @@ internal class MizuumiWikiDiscordFeature(
             description = "MBTL character aliases",
         ),
         SupportedCommand(
+            command = Command.INVMB,
+            description = "MBTL Invincible moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
+        SupportedCommand(
             command = Command.FDUNI,
             description = "Uni2 frame data",
             arguments = listOf(
@@ -104,6 +116,16 @@ internal class MizuumiWikiDiscordFeature(
         SupportedCommand(
             command = Command.CHARUNI,
             description = "Uni2 character data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
+        SupportedCommand(
+            command = Command.INVUNI,
+            description = "UNI2 Invincible moves",
             arguments = listOf(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
@@ -185,6 +207,7 @@ internal class MizuumiWikiDiscordFeature(
                 }
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
+
             Command.FDMB -> {
                 val game = Game.MBTL
                 val wiki = wikis[game.id]
@@ -197,6 +220,13 @@ internal class MizuumiWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
             }
+            Command.INVMB -> {
+                val game = Game.MBTL
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchInvincible(wiki, query)
+            }
+
             Command.FDUNI -> {
                 val game = Game.Uni2
                 val wiki = wikis[game.id]
@@ -209,6 +239,13 @@ internal class MizuumiWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
+            Command.INVUNI -> {
+                val game = Game.Uni2
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchInvincible(wiki, query)
+            }
+
             Command.FDVS -> {
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
@@ -350,11 +387,17 @@ internal class MizuumiWikiDiscordFeature(
         return getMovesUseCase.invoke(
             wiki = wiki,
             charName = query,
-            predicate = { it.invulnerability != null }
+            predicate = {
+                val isReversal = it.invulnerability?.contains("Strike") == true
+                        && it.invulnerability?.contains("1-") == true
+                val isFully = it.invulnerability?.contains("Full") == true
+
+                isReversal || isFully
+            }
         ).map { moveList ->
             BotOutput(
                 primaryEmbedBuilder = createMoveListEmbed(
-                    category = "${query.uppercase()} Invincible",
+                    category = "${query.uppercase()} Inv & Rev moves",
                     moveList = moveList,
                 ),
                 buttons = BotOutput.ButtonSet(
@@ -378,11 +421,14 @@ internal class MizuumiWikiDiscordFeature(
             }
             .joinToString("\n")
 
-        mandatoryField(
-            name = "$category moves",
-            value = text,
-            inline = false,
-        )
+        text
+            .chunkByNewLines(delimiter = "\n", maxLength = EMBED_MAX_LENGTH)
+            .forEachIndexed { index, data ->
+                mandatoryField(
+                    name = if (index == 0) "$category moves" else "",
+                    value = data,
+                )
+            }
 
         featureFooter(featureInfo)
     }
