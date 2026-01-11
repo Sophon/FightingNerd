@@ -86,7 +86,7 @@ internal fun String.createQueryName(): String {
 }
 
 internal fun String.createAliases(): List<String> {
-    val aliases = when (this.lowercase()) {
+    val meltyAliases = when (this.lowercase()) {
         "akiha tohno" -> listOf("akiha", "ak")
         "aoko aozaki" -> listOf("aoko", "aozaki", "ao")
         "arcueid brunestud" -> listOf("arcueid", "brunestud", "arc", "ar")
@@ -111,10 +111,17 @@ internal fun String.createAliases(): List<String> {
         }
         "ushiwakamaru" -> listOf("ushi", "us")
         "vlov arkhangel" -> listOf("vlov", "arkhangel", "vl")
-        else -> listOf()
+
+        else -> null
     }
 
-    return aliases
+    val aliases = this
+        .split("-")
+        .takeIf { it.size > 1 }
+        ?.last()
+        ?.let { listOf(it) }
+
+    return meltyAliases ?: aliases ?: listOf()
 }
 
 internal fun String.formWikiUrl(gameId: String): String {

@@ -12,6 +12,7 @@ object MizuumiFeatureInfo {
         supportedGameSet = setOf(
             Game.MBTL,
             Game.Uni2,
+            Game.VSAV,
         ),
         version = BuildKonfig.VERSION,
     )

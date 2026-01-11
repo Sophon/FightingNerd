@@ -25,18 +25,6 @@ internal fun MoveListResponseDto.toDomainAll(
         }.toMap()
 }
 
-internal fun MoveListResponseDto.toDomain(
-    characterData: DownloadMoveListUseCase.CharacterData,
-    imageUrlMap: Map<String, String>,
-    gameId: String,
-): List<Move> {
-    return cargoquery
-        .map {
-            val dto = it.title
-            dto.toDomain(characterData, imageUrlMap, gameId)
-        }
-}
-
 internal fun MoveDto.toDomain(
     character: Character,
     imageUrlMap: Map<String, String>,
@@ -52,8 +40,8 @@ internal fun MoveDto.toDomain(
             .lowercase(),
         damage = damage?.cleanHtmlOrNull(),
         startup = startup?.cleanHtmlOrNull(),
-        onHit = onHit?.cleanHtmlOrNull(),
-        onBlock = frameAdv?.cleanHtmlOrNull(),
+        onHit = onHit?.cleanHtmlOrNull() ?: advHit?.cleanHtmlOrNull(),
+        onBlock = frameAdv?.cleanHtmlOrNull() ?: advBlock?.cleanHtmlOrNull(),
         name = moveName,
         recovery = recovery?.cleanHtmlOrNull(),
         active = active?.cleanHtmlOrNull(),
@@ -81,48 +69,29 @@ internal fun MoveDto.toDomain(
             landing = landing?.cleanHtmlOrNull(),
             overall = overall?.cleanHtmlOrNull(),
         ),
-        uni2Properties = Move.Uni2Properties(
+        vsavProperties = Move.VSAVProperties(
             inputInfo = inputInfo?.cleanHtmlOrNull(),
             subtitle = subtitle?.cleanHtmlOrNull(),
-            minDamage = minDamage?.cleanHtmlOrNull(),
-            type = type?.cleanHtmlOrNull(),
-            cancelWindow = cancelWindow?.cleanHtmlOrNull(),
-            property = property?.cleanHtmlOrNull()?.formPropertiesUrl(),
-            cost = cost?.cleanHtmlOrNull(),
-            attribute = attribute?.cleanHtmlOrNull(),
-            landing = landing?.cleanHtmlOrNull(),
-            overall = overall?.cleanHtmlOrNull(),
-            assaultAdv = assaultAdv?.cleanHtmlOrNull(),
-            blockstun = blockstun?.cleanHtmlOrNull(),
-            groundHit = groundHit?.cleanHtmlOrNull(),
-            airHit = airHit?.cleanHtmlOrNull(),
-            groundCH = groundCH?.cleanHtmlOrNull(),
-            airCH = airCH?.cleanHtmlOrNull(),
-            hitstop = hitstop?.cleanHtmlOrNull(),
-            CHstop = CHstop?.cleanHtmlOrNull(),
-            proration = proration?.cleanHtmlOrNull(),
-            comboP1 = comboP1?.cleanHtmlOrNull(),
-            comboP2 = comboP2?.cleanHtmlOrNull(),
-        )
+            whiteDmg = whitedmg?.cleanHtmlOrNull(),
+            renda = renda?.cleanHtmlOrNull(),
+            meter = meter?.cleanHtmlOrNull(),
+            reaction = reaction?.cleanHtmlOrNull(),
+            curseTime = cursetime?.cleanHtmlOrNull(),
+        ),
     )
     return move
 }
 
-private fun String.formatCancel(): String {
-    return this.replace("-", "")
-}
-
-internal fun String.formPropertiesUrl(): String {
-    val wikiLinkPattern = Regex("""\[\[([^|\]]+)\|([^\]]+)\]\]""")
-
-    val final = wikiLinkPattern.replace(this) { matchResult ->
-        val fullLink = matchResult.groupValues[1]
-        val displayText = matchResult.groupValues[2]
-        val url = "$WIKI_BASE_URL/${fullLink.replace(" ", "_")}"
-        "[$displayText]($url)"
-    }
-
-    return final
+internal fun MoveListResponseDto.toDomain(
+    characterData: DownloadMoveListUseCase.CharacterData,
+    imageUrlMap: Map<String, String>,
+    gameId: String,
+): List<Move> {
+    return cargoquery
+        .map {
+            val dto = it.title
+            dto.toDomain(characterData, imageUrlMap, gameId)
+        }
 }
 
 internal fun MoveDto.toDomain(
@@ -187,4 +156,21 @@ internal fun MoveDto.toDomain(
         )
     )
     return move
+}
+
+internal fun String.formPropertiesUrl(): String {
+    val wikiLinkPattern = Regex("""\[\[([^|\]]+)\|([^\]]+)\]\]""")
+
+    val final = wikiLinkPattern.replace(this) { matchResult ->
+        val fullLink = matchResult.groupValues[1]
+        val displayText = matchResult.groupValues[2]
+        val url = "$WIKI_BASE_URL/${fullLink.replace(" ", "_")}"
+        "[$displayText]($url)"
+    }
+
+    return final
+}
+
+private fun String.formatCancel(): String {
+    return this.replace("-", "")
 }

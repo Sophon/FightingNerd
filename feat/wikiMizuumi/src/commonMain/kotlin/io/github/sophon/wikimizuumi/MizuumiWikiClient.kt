@@ -56,16 +56,16 @@ internal class MizuumiWikiClient(
         val game = Game.fromId(gameId)
 
         return when (game) {
-            Game.MBTL -> {
-                downloadOrFetchUseCase.invoke(gameTables)
-                    .map { it.keys.toList() }
+            Game.BBCF -> {
+                downloadCharacterListUseCase.invoke(gameTables)
                     .onSuccess { characterList ->
                         Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters downloaded" }
                     }
                     .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
             }
             else -> {
-                downloadCharacterListUseCase.invoke(gameTables)
+                downloadOrFetchUseCase.invoke(gameTables)
+                    .map { it.keys.toList() }
                     .onSuccess { characterList ->
                         Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters downloaded" }
                     }
