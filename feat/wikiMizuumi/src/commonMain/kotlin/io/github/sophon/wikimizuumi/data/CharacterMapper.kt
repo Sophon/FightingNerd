@@ -7,7 +7,10 @@ import io.github.sophon.core.util.removeAccents
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikimizuumi.FEATURE_URL
 
-internal fun String.toDomain(gameId: String): Character {
+internal fun String.toDomain(
+    gameId: String,
+    imageUrlMap: Map<String, String>,
+): Character {
     val idName = this.cleanHtml().lowercase()
     val displayName = this.cleanHtml()
     val queryName = this.createQueryName()
@@ -19,6 +22,9 @@ internal fun String.toDomain(gameId: String): Character {
         queryName = queryName,
         aliasList = idName.createAliases(),
         wikiUrl = game?.wikiUrl ?: FEATURE_URL,
+        images = Character.Images(
+            iconUrl = imageUrlMap[queryName]
+        )
     )
 
     return char
@@ -118,8 +124,12 @@ internal fun String.createAliases(): List<String> {
     val aliases = this
         .split("-")
         .takeIf { it.size > 1 }
-        ?.last()
-        ?.let { listOf(it) }
+        ?.let { parts ->
+            listOf(
+                parts.last().lowercase(),
+                parts.joinToString("") { it.first().lowercase() }
+            )
+        }
 
     return meltyAliases ?: aliases ?: listOf()
 }

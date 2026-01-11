@@ -3,6 +3,7 @@ package io.github.sophon.wikimizuumi.data
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.feature.Game
 
 internal class WikiImageUrlResolver(
     private val source: MizuumiWikiDataSource,
@@ -22,23 +23,52 @@ internal class WikiImageUrlResolver(
         return source.getImageUrl(imageFileNames)
     }
 
-    /**
-     * MBTL has impossible to decipher names
-     * so for now, only Uni has char images
-     */
     suspend fun resolveImageUrls(
         dto: CharacterListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
+        val prefix = "UNI2_"
+        val suffix = "_CSel.png"
+
         val imageFileNames = dto.cargoquery.flatMap {
-            listOfNotNull("UNI2_${it.title.chara}_CSel.png")
+            listOfNotNull(prefix + it.title.chara + suffix)
         }.distinct()
 
         val result = source.getImageUrl(imageFileNames)
             .map { urlMap ->
                 urlMap.mapKeys { (filename, _) ->
                     filename
-                        .removePrefix("UNI2_")
-                        .removeSuffix("_CSel.png")
+                        .removePrefix(prefix)
+                        .removeSuffix(suffix)
+                }
+            }
+
+        return result
+    }
+
+    suspend fun resolveImageUrls(
+        gameId: String,
+        dto: MoveListResponseDto,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val game = Game.fromId(gameId)
+
+        //MBTL has impossible to decipher filenames, ignore
+        if (game == Game.MBTL) return Result.Success(emptyMap())
+
+        val prefix = "Vsav-nav-portrait-"
+        val suffix = ".gif"
+
+        val imageFileNames = dto.cargoquery.flatMap {
+            listOfNotNull(prefix + it.title.chara.lowercase() + suffix)
+        }.distinct()
+
+        val test = prefix + dto.cargoquery.first().title.chara.lowercase() + suffix
+
+        val result = source.getImageUrl(imageFileNames)
+            .map { urlMap ->
+                urlMap.mapKeys { (filename, _) ->
+                    filename
+                        .removePrefix(prefix)
+                        .removeSuffix(suffix)
                 }
             }
 

@@ -51,7 +51,16 @@ fun mizuumiModule() = module {
                 source.downloadData(table?.moves.orEmpty())
                     .flatMap { dto ->
                         wikiImageUrlResolver.resolveHitboxUrl(dto)
-                            .map { dto.toDomainAll(imageUrlMap = it, gameId = gameId) }
+                            .flatMap { hitboxUrlMap ->
+                                wikiImageUrlResolver.resolveImageUrls(gameId, dto)
+                                    .map { imageUrlMap ->
+                                        dto.toDomainAll(
+                                            gameId = gameId,
+                                            imageUrlMap = imageUrlMap,
+                                            hitboxUrlMap = hitboxUrlMap
+                                        )
+                                    }
+                            }
                     }
             },
 

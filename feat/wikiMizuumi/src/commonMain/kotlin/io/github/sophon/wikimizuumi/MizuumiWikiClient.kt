@@ -56,7 +56,7 @@ internal class MizuumiWikiClient(
         val game = Game.fromId(gameId)
 
         return when (game) {
-            Game.BBCF -> {
+            Game.Uni2 -> {
                 downloadCharacterListUseCase.invoke(gameTables)
                     .onSuccess { characterList ->
                         Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters downloaded" }
@@ -97,7 +97,14 @@ internal class MizuumiWikiClient(
         val game = Game.fromId(gameId)
 
         return when (game) {
-            Game.MBTL -> {
+            Game.Uni2 -> {
+                downloadMoveListUseCase.invoke(gameTables, characterData)
+                    .onSuccess { moveList ->
+                        Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
+                    }
+                    .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
+            }
+            else -> {
                 downloadOrFetchUseCase.invoke(gameTables)
                     .map { map ->
                         map
@@ -105,13 +112,6 @@ internal class MizuumiWikiClient(
                             .values
                             .flatten()
                     }
-                    .onSuccess { moveList ->
-                        Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
-                    }
-                    .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
-            }
-            else -> {
-                downloadMoveListUseCase.invoke(gameTables, characterData)
                     .onSuccess { moveList ->
                         Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
                     }

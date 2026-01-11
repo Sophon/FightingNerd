@@ -12,14 +12,15 @@ import io.github.sophon.wikimizuumi.WIKI_BASE_URL
 internal fun MoveListResponseDto.toDomainAll(
     gameId: String,
     imageUrlMap: Map<String, String>,
+    hitboxUrlMap: Map<String, String>,
 ): Map<Character, List<Move>> {
     return cargoquery
         .groupBy { it.title.chara }
         .filter { it.value.size >= 10 }
         .map { (charName, moveDtoList) ->
-            val character = charName.toDomain(gameId)
+            val character = charName.toDomain(gameId, imageUrlMap)
             val moveList = moveDtoList.map {
-                it.title.toDomain(character, imageUrlMap)
+                it.title.toDomain(character, hitboxUrlMap)
             }
             character to moveList
         }.toMap()
@@ -27,7 +28,7 @@ internal fun MoveListResponseDto.toDomainAll(
 
 internal fun MoveDto.toDomain(
     character: Character,
-    imageUrlMap: Map<String, String>,
+    hitboxUrlMap: Map<String, String>,
 ): Move {
     val moveName = name?.cleanHtmlOrNull()
 
@@ -53,11 +54,11 @@ internal fun MoveDto.toDomain(
             hitboxImageList = hitboxes
                 .orEmpty()
                 .split(",")
-                .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
+                .mapNotNull { hitboxUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
             moveImageList = images
                 .orEmpty()
                 .split(",")
-                .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
+                .mapNotNull { hitboxUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
         ),
         mbProperties = Move.MBProperties(
             inputInfo = inputInfo?.cleanHtmlOrNull(),
