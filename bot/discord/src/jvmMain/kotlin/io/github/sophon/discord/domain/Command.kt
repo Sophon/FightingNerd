@@ -10,6 +10,7 @@ enum class Command {
     REPO,
     INVITE,
     HELP,
+    COMMANDS,
 
     //admin
     FEEDBACK,

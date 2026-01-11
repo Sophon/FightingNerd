@@ -6,6 +6,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
@@ -20,6 +21,7 @@ import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.time.Duration.Companion.seconds
 
 internal class CoreDiscordFeature(
     getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
@@ -53,7 +55,12 @@ internal class CoreDiscordFeature(
             command = Command.HELP,
             description = "RTFM",
             arguments = listOf(),
-        )
+        ),
+        SupportedCommand(
+            command = Command.COMMANDS,
+            description = "Available commands",
+            arguments = listOf(),
+        ),
     )
 
     override suspend fun start() {
@@ -73,6 +80,7 @@ internal class CoreDiscordFeature(
             Command.REPO -> createRepoText()
             Command.INVITE -> createInviteText()
             Command.HELP -> createHelpEmbed()
+            Command.COMMANDS -> createCommandsEmbed()
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -98,46 +106,16 @@ internal class CoreDiscordFeature(
 
     private fun createHelpEmbed(): Result<BotOutput, BotError> {
         val features = featureRegistry.getRegisteredFeatures()
-        val commands = Command.entries.sortedBy { it.name }
-        val fdCommands = commands.filter { it.name.startsWith("FD") && it.name != "FD" }
-        val charCommands = commands.filter { it.name.startsWith("CHAR") }
-        val otherCommands = commands - fdCommands.toSet() - charCommands.toSet() - Command.FD - adminCommands.map { it.command }.toSet()
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
-            mandatoryField(
-                name = "📊 FRAME DATA",
-                value = buildString {
-                    append("- `${Command.FD.name}` (global)")
-                    fdCommands
-                        .sortedBy { it.name }
-                        .forEach { fdCommand ->
-                            append("\n  - `${fdCommand.name}`")
-                        }
-                    append("\n")
-                }.trimEnd(),
-                inline = true,
-            )
+            title = "FightingNerd bot by @phd_cunnilingus"
 
             mandatoryField(
-                name = "🎭 CHARACTER DATA",
-                value = buildString {
-                    charCommands
-                        .sortedBy { it.name }
-                        .forEach { charCommand ->
-                            append("- `${charCommand.name}`\n")
-                        }
-                }.trimEnd(),
-                inline = true,
-            )
-
-            mandatoryField(
-                name = "🛠️ OTHER COMMANDS",
-                value = buildString {
-                    otherCommands.forEach { command ->
-                        append("- `${command.name}`\n")
-                    }
-                }.trimEnd(),
-                inline = true,
+                name = "⚙️ Commands".uppercase(),
+                value = "1. **tag** → `@FightingNerdBot` `[command]` `[query]`\n" +
+                        "   - frame data (`fd`) is the default command; `@FightingNerdBot jun df1` works\n" +
+                        "2. **slash** → `/command`\n\n" +
+                        "Use **`/commands`** to see available commands\n\n"
             )
 
             mandatoryField(
@@ -160,16 +138,89 @@ internal class CoreDiscordFeature(
             mandatoryField(
                 name = "🫶 OTHER LINKS",
                 value = buildString {
-                    appendLine("- **[Invite]($URL_INVITE)**")
+                    appendLine("- **[DONATE]($URL_KOFI)**")
+                    appendLine("- **[INVITE]($URL_INVITE)**")
                     appendLine("- **[Repo]($URL_REPO)**")
-                    appendLine("- **[Donate]($URL_KOFI)**")
                 }
             )
 
             featureFooter(featureInfo)
         }
 
-        return Result.Success(BotOutput(embedBuilder))
+        val result = BotOutput(
+            primaryEmbedBuilder = embedBuilder,
+            buttons = BotOutput.ButtonSet(
+                buttonList = listOf(
+                    BotOutput.EmbedButton(
+                        label = "Commands",
+                        action = BotOutput.EmbedButton.Action.Query(Command.COMMANDS.name),
+                    ),
+                ),
+                duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+            ),
+        )
+
+        return Result.Success(result)
+    }
+
+    private fun createCommandsEmbed(): Result<BotOutput, BotError> {
+        val commands = Command.entries.sortedBy { it.name }
+        val fdCommands = commands.filter { it.name.startsWith("FD") && it.name != "FD" }
+        val charCommands = commands.filter { it.name.startsWith("CHAR") }
+        val aliasCommands = commands.filter { it.name.startsWith("ALIAS") }
+        val otherCommands = commands - fdCommands.toSet() - charCommands.toSet() - aliasCommands.toSet() - Command.FD - adminCommands.map { it.command }.toSet()
+
+        val embedBuilder: EmbedBuilder.() -> Unit = {
+            title = "⚙️ COMMANDS"
+
+            mandatoryField(
+                name = "📊 FRAME DATA",
+                value = buildString {
+                    append("- `${Command.FD.name}` (global)")
+                    fdCommands
+                        .sortedBy { it.name }
+                        .forEach { fdCommand ->
+                            append("\n  - `${fdCommand.name}`")
+                        }
+                    append("\n")
+                }.trimEnd(),
+            )
+
+            mandatoryField(
+                name = "🎭 CHARACTER DATA",
+                value = buildString {
+                    charCommands
+                        .sortedBy { it.name }
+                        .forEach { charCommand ->
+                            append("- `${charCommand.name}`\n")
+                        }
+                }.trimEnd(),
+            )
+
+            mandatoryField(
+                name = "🥸 CHARACTER ALIASES",
+                value = buildString {
+                    aliasCommands
+                        .sortedBy { it.name }
+                        .forEach { aliasCommand ->
+                            append("- `${aliasCommand.name}`\n")
+                        }
+                }
+            )
+
+            mandatoryField(
+                name = "🛠️ OTHER COMMANDS",
+                value = buildString {
+                    otherCommands.forEach { command ->
+                        append("- `${command.name}`\n")
+                    }
+                }.trimEnd(),
+            )
+
+            featureFooter(featureInfo)
+        }
+
+        return Result.Success(BotOutput(primaryEmbedBuilder = embedBuilder))
     }
 
     private fun createRepoText(): Result<BotOutput, BotError> {
