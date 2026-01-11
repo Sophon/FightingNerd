@@ -6,6 +6,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
@@ -20,6 +21,7 @@ import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.time.Duration.Companion.seconds
 
 internal class CoreDiscordFeature(
     getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
@@ -110,9 +112,10 @@ internal class CoreDiscordFeature(
             mandatoryField(
                 name = "⚙️ Commands".uppercase(),
                 value = "1. **tag** → `@FightingNerdBot` `[command]` `[query]`\n" +
-                        "   - frame data (`fd`) is the default command@; `@FightingNerdBot jun df1` works\n" +
+                        "   - frame data (`fd`) is the default command; `@FightingNerdBot jun df1` works\n" +
                         "2. **slash** → `/command`\n\n" +
-                        "Use `/commands` to see available commands"
+                        "Use **`/commands`** to see available commands\n\n" +
+                        "**AUTHOR**: @phd_cunnilingus (Discord)"
             )
 
             mandatoryField(
@@ -151,8 +154,9 @@ internal class CoreDiscordFeature(
                     BotOutput.EmbedButton(
                         label = "Commands",
                         action = BotOutput.EmbedButton.Action.Query(Command.COMMANDS.name),
-                    )
-                )
+                    ),
+                ),
+                duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
             ),
         )
 
