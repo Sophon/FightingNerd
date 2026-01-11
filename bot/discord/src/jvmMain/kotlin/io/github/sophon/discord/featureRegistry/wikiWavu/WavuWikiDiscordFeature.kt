@@ -28,6 +28,7 @@ import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -419,16 +420,6 @@ internal class WavuWikiDiscordFeature(
                 }
                 add(emojified)
             }
-        }
-    }
-
-    private fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton> {
-        return mapIndexed { index, move ->
-            val query = "$charName ${move.input}"
-            BotOutput.EmbedButton(
-                label = (index + 1).toString(),
-                action = BotOutput.EmbedButton.Action.Query(query),
-            )
         }
     }
 
