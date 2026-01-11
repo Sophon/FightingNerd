@@ -61,8 +61,6 @@ internal class WikiImageUrlResolver(
             listOfNotNull(prefix + it.title.chara.lowercase() + suffix)
         }.distinct()
 
-        val test = prefix + dto.cargoquery.first().title.chara.lowercase() + suffix
-
         val result = source.getImageUrl(imageFileNames)
             .map { urlMap ->
                 urlMap.mapKeys { (filename, _) ->

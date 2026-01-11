@@ -23,7 +23,7 @@ internal fun String.toDomain(
         aliasList = idName.createAliases(),
         wikiUrl = game?.wikiUrl ?: FEATURE_URL,
         images = Character.Images(
-            iconUrl = imageUrlMap[queryName]
+            iconUrl = imageUrlMap[idName]
         )
     )
 
