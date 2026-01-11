@@ -201,7 +201,7 @@ internal class MizuumiWikiDiscordFeature(
                 val (primary, full) = createMizuumiMoveEmbedUseCase
                     .invoke(move, game, featureInfo)
                 val buttons = if (full == null) {
-                    emptyList()
+                    null
                 } else {
                     listOf(
                         BotOutput.EmbedButton(label = "Details", action = BotOutput.EmbedButton.Action.Edit())
@@ -211,7 +211,7 @@ internal class MizuumiWikiDiscordFeature(
                 BotOutput(
                     primaryEmbedBuilder = primary,
                     fullEmbedBuilder = full,
-                    buttons = BotOutput.ButtonSet(buttonList = buttons),
+                    buttons = buttons?.let { BotOutput.ButtonSet(buttonList = it) },
                     images = if (images.size < 2) {
                         null
                     } else {
