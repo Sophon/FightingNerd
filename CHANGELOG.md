@@ -10,6 +10,7 @@
   - fixed missing moves with the Heat property
 - bot now ignores replies to its messages
 - Details button lasts 15s, move-list buttons last 30s
+- split `help` into `help` and `commands`
 
 ## [v6.1.0] - 2026-01-09
 - Mizuumi
