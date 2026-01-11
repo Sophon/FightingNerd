@@ -73,7 +73,7 @@ internal class CreateErrorEmbedUseCase {
         mandatoryField(
             name = "Command usage ⚙️".uppercase(),
             value = "- **tag** → `@FightingNerdBot` `[command]` `[query]`\n" +
-                    "   - frame data (`fd`) is the default command@; `@FightingNerdBot jun df1` works\n" +
+                    "   - frame data (`fd`) is the default command; `@FightingNerdBot jun df1` works\n" +
                     "- **slash** → `/command`\n" +
                     "- use `/help` to see available commands"
         )
