@@ -51,6 +51,7 @@ internal class MizuumiWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMizuumiMoveEmbedUseCase: CreateMizuumiMoveEmbedUseCase,
+    private val createMizuumiInvEmbedUseCase: CreateMizuumiInvEmbedUseCase,
     private val getMovesUseCase: GetMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
@@ -224,7 +225,7 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.MBTL
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchInvincible(wiki, query)
+                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
             }
 
             Command.FDUNI -> {
@@ -243,7 +244,7 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.Uni2
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchInvincible(wiki, query)
+                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
             }
 
             Command.FDVS -> {
@@ -257,7 +258,7 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchInvincible(wiki, query)
+                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -376,59 +377,6 @@ internal class MizuumiWikiDiscordFeature(
             value = character.uni2Properties?.trait,
             inline = false,
         )
-
-        featureFooter(featureInfo)
-    }
-
-    private suspend fun searchInvincible(
-        wiki: WikiClient,
-        query: String,
-    ): Result<BotOutput, BotError> {
-        return getMovesUseCase.invoke(
-            wiki = wiki,
-            charName = query,
-            predicate = {
-                val isReversal = it.invulnerability?.contains("Strike") == true
-                        && it.invulnerability?.contains("1-") == true
-                val isFully = it.invulnerability?.contains("Full") == true
-
-                isReversal || isFully
-            }
-        ).map { moveList ->
-            BotOutput(
-                primaryEmbedBuilder = createMoveListEmbed(
-                    category = "${query.uppercase()} Inv & Rev moves",
-                    moveList = moveList,
-                ),
-                buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = query),
-                    duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
-                ),
-            )
-        }
-    }
-
-    //TODO: should be a usecase, prob
-    private fun createMoveListEmbed(
-        category: String,
-        moveList: List<Move>,
-    ): EmbedBuilder.() -> Unit = {
-        color = Color(TEAL)
-
-        val text = moveList
-            .mapIndexed { index, move ->
-                "${index + 1}. **${move.input}** (${move.invulnerability})"
-            }
-            .joinToString("\n")
-
-        text
-            .chunkByNewLines(delimiter = "\n", maxLength = EMBED_MAX_LENGTH)
-            .forEachIndexed { index, data ->
-                mandatoryField(
-                    name = if (index == 0) "$category moves" else "",
-                    value = data,
-                )
-            }
 
         featureFooter(featureInfo)
     }

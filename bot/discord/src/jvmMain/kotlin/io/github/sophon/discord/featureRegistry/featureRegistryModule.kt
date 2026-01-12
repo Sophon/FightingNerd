@@ -20,6 +20,7 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGloss
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.CreateMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.DustLoopWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiMizuumi.CreateMizuumiInvEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.CreateMizuumiMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.MizuumiWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
@@ -75,6 +76,7 @@ internal val featureRegistryModule = module {
 
     //region Mizuumi
     singleOf(::CreateMizuumiMoveEmbedUseCase)
+    singleOf(::CreateMizuumiInvEmbedUseCase)
     //endregion
 
     //region Infil glossary
