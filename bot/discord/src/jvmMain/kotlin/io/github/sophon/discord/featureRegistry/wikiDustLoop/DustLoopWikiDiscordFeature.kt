@@ -20,6 +20,7 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
+import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.domain.Source
 import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
@@ -36,9 +37,11 @@ internal class DustLoopWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
+    private val getMovesUseCase: GetMovesUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
+    private val createDustLoopInvincibleMovesEmbedUseCase: CreateDustLoopInvincibleMovesEmbedUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -138,6 +141,10 @@ internal class DustLoopWikiDiscordFeature(
             command = Command.ALIASBB,
             description = "BB character aliases",
         ),
+        SupportedCommand(
+            command = Command.INVBB,
+            description = "BB invincible moves",
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -187,6 +194,7 @@ internal class DustLoopWikiDiscordFeature(
                 }
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
+
             Command.CHARGG -> {
                 val game = Game.GGST
                 val wiki = wikis[game.id]
@@ -199,6 +207,7 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query, game)
             }
+
             Command.CHARDB -> {
                 val game = Game.DBFZ
                 val wiki = wikis[game.id]
@@ -216,6 +225,7 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
             }
+
             Command.CHARGB -> {
                 val game = Game.GBVSR
                 val wiki = wikis[game.id]
@@ -228,6 +238,7 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query, game)
             }
+
             Command.CHARBB -> {
                 val game = Game.BBCF
                 val wiki = wikis[game.id]
@@ -244,6 +255,11 @@ internal class DustLoopWikiDiscordFeature(
                 val wiki = wikis[Game.BBCF.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
+            }
+            Command.INVBB -> {
+                val wiki = wikis[Game.BBCF.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchInvincible(wiki)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -299,6 +315,13 @@ internal class DustLoopWikiDiscordFeature(
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
         return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, RED)
+            .map { embedBuilder ->
+                BotOutput(primaryEmbedBuilder = embedBuilder)
+            }
+    }
+
+    private suspend fun searchInvincible(wiki: WikiClient): Result<BotOutput, BotError> {
+        return createDustLoopInvincibleMovesEmbedUseCase.invoke(wiki, featureInfo)
             .map { embedBuilder ->
                 BotOutput(primaryEmbedBuilder = embedBuilder)
             }

@@ -9,11 +9,14 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
+import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
+import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.domain.BotOutput
@@ -24,10 +27,12 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
+import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
 import io.github.sophon.wikimizuumi.MizuumiFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +42,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import kotlin.time.Duration.Companion.seconds
 
 internal class MizuumiWikiDiscordFeature(
     mizuumiFeatureInfo: MizuumiFeatureInfo,
@@ -45,6 +51,8 @@ internal class MizuumiWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMizuumiMoveEmbedUseCase: CreateMizuumiMoveEmbedUseCase,
+    private val createMizuumiInvEmbedUseCase: CreateMizuumiInvEmbedUseCase,
+    private val getMovesUseCase: GetMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -83,6 +91,16 @@ internal class MizuumiWikiDiscordFeature(
             description = "MBTL character aliases",
         ),
         SupportedCommand(
+            command = Command.INVMB,
+            description = "MBTL Invincible moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
+        SupportedCommand(
             command = Command.FDUNI,
             description = "Uni2 frame data",
             arguments = listOf(
@@ -107,6 +125,16 @@ internal class MizuumiWikiDiscordFeature(
             ),
         ),
         SupportedCommand(
+            command = Command.INVUNI,
+            description = "UNI2 Invincible moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
+        SupportedCommand(
             command = Command.FDVS,
             description = "VSAV frame data",
             arguments = listOf(
@@ -117,6 +145,16 @@ internal class MizuumiWikiDiscordFeature(
                 SupportedCommand.Argument(
                     name = KEY_MOVE,
                     description = "Move input"
+                )
+            ),
+        ),
+        SupportedCommand(
+          command = Command.INVVS,
+            description = "VSAV Invincible moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
                 )
             ),
         ),
@@ -170,6 +208,7 @@ internal class MizuumiWikiDiscordFeature(
                 }
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
+
             Command.FDMB -> {
                 val game = Game.MBTL
                 val wiki = wikis[game.id]
@@ -182,6 +221,13 @@ internal class MizuumiWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
             }
+            Command.INVMB -> {
+                val game = Game.MBTL
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+            }
+
             Command.FDUNI -> {
                 val game = Game.Uni2
                 val wiki = wikis[game.id]
@@ -194,11 +240,25 @@ internal class MizuumiWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
+            Command.INVUNI -> {
+                val game = Game.Uni2
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+            }
+
             Command.FDVS -> {
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query, game)
+            }
+            //TODO: extract `?: return Result.Error(BotError.UnsupportedGame(query))` into util
+            Command.INVVS -> {
+                val game = Game.VSAV
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
