@@ -72,7 +72,7 @@ class MoveMapperTest {
     fun `formWikiUrl handles spaces in inputs`() {
         // given
         val string = "5D Bat"
-        val expected = "https://www.dustloop.com/w/BBCF/Platinum_the_Trinity#5D_Bat"
+        val expected = "https://www.dustloop.com/w/BBCF/Platinum_the_Trinity#Magical_Bat"
         val dto = MoveDto(
             chara = "Platinum the Trinity",
             name = "Magical Bat",
