@@ -16,6 +16,9 @@ import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 
+/**
+ * TODO: should refactor for the Wiki to use Filter class
+ */
 internal class CreateDustLoopInvincibleMovesEmbedUseCase {
     suspend fun invoke(
         wiki: WikiClient,
@@ -53,11 +56,19 @@ internal class CreateDustLoopInvincibleMovesEmbedUseCase {
                             it.startsWith("1~") && it.endsWith("All", ignoreCase = true)
                         }
                     val isOverdrive = move.input.contains("a+b+c+d", ignoreCase = true)
+                            || move.input.endsWith("od", ignoreCase = true)
                     val isCounterAssault = move.input.contains("6a+b", ignoreCase = true)
                     val costsMeter = move.bbProperties?.type.orEmpty().contains("super", ignoreCase = true)
+                            || move.input.endsWith("od", ignoreCase = true)
                             || move.bbProperties?.type.orEmpty().contains("astral", ignoreCase = true)
+                            || move.input.endsWith("special", ignoreCase = true)
+                    val isJump = move.input.startsWith("j.") || move.input.startsWith("d.")
+                    val attack = move.input.endsWith("attack")
 
-                    isFullyFromFrameOne && isCounterAssault.not() && isOverdrive.not() && costsMeter.not()
+                    isFullyFromFrameOne
+                            && isCounterAssault.not() && isOverdrive.not()
+                            && costsMeter.not()
+                            && isJump.not() && attack.not()
                 }
                 filtered
             }
@@ -79,13 +90,13 @@ internal class CreateDustLoopInvincibleMovesEmbedUseCase {
         val text = meterless
             .map { (startup, moveList) ->
                 buildString {
-                    appendLine("${startup}f:")
+                    appendLine("**${startup}f**:")
                     moveList.groupBy { it.charName }
                         .forEach { (charName, moveList) ->
                             if (moveList.size == 1) {
-                                appendLine("- $charName → ${moveList.first().input}")
+                                appendLine("- **$charName** → ${moveList.first().input}")
                             } else {
-                                appendLine("- $charName:")
+                                appendLine("- **$charName**:")
                                 moveList.forEach { move ->
                                     appendLine("   - ${move.input}")
                                 }
