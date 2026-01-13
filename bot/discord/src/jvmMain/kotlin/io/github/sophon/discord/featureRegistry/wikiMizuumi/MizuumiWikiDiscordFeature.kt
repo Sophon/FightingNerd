@@ -158,6 +158,10 @@ internal class MizuumiWikiDiscordFeature(
                 )
             ),
         ),
+        SupportedCommand(
+            command = Command.ALIASVS,
+            description = "VSAV character aliases",
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -260,6 +264,13 @@ internal class MizuumiWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
             }
+            Command.ALIASVS -> {
+                val game = Game.VSAV
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                getCharacterAliases(wiki)
+            }
+
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }

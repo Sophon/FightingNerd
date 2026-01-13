@@ -5,6 +5,7 @@
   - MB, Uni, VSAV
 - DustLoop
   - fixed incorrect move URLs
+- Mizuumi - more VSAV aliases
 
 ## [v7.0.1] - 2026-01-11
 - fixed `fdvs` command

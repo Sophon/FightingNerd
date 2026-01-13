@@ -73,6 +73,7 @@ enum class Command {
     FDUNI,
     INVUNI,
 
+    ALIASVS,
     FDVS,
     INVVS,
 }
