@@ -8,6 +8,7 @@ import kotlin.test.Test
 class MoveMapperTest {
     val gb = Game.GBVSR.id
     val gg = Game.GGST.id
+    val bb = Game.BBCF.id
 
     //region Aliases
     @Test
@@ -66,4 +67,51 @@ class MoveMapperTest {
         assertThat(result).isEqualTo(expected)
     }
     //endregion
+
+    @Test
+    fun `formWikiUrl handles spaces in inputs`() {
+        // given
+        val string = "5D Bat"
+        val expected = "https://www.dustloop.com/w/BBCF/Platinum_the_Trinity#5D_Bat"
+        val dto = MoveDto(
+            chara = "Platinum the Trinity",
+            name = "Magical Bat",
+            input = "5D Bat",
+            damage = "900",
+            guard = "Mid",
+            startup = "11",
+            active = "4",
+            recovery = "26",
+            onBlock = "-16",
+            onODR = "-14",
+            attribute = "B",
+            invuln = "1~11 All",
+            cancel = "(S)R",
+            p1 = "60",
+            p2 = "75",
+            starter = "Very Short",
+            level = "2",
+            blockstun = "13",
+            groundHit = "Launch",
+            airHit = "30 + WStick 25",
+            groundCH = "Launch",
+            airCH = "42 + WBounce 40 + WStick 25",
+            blockstop = "22",
+            hitstop = "+0",
+            CHstop = "+1",
+            cancelTiming = null,
+            images = "BBCS_Platinum_homerun5D.png",
+            caption = "Also good in combos",
+            hitboxes = "BBCF Platinum homerun5D hitbox 1.png;BBCF Platinum homerun5D hitbox 2.png",
+            hitboxCaption = "Ground, frame 11\\Ground, frames 12-14",
+            type = "drive",
+            notes = "Counter Hit state for entire move; Reversal"
+        )
+
+        // when
+        val result = formMoveWikiUrl(bb, dto)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
 }
