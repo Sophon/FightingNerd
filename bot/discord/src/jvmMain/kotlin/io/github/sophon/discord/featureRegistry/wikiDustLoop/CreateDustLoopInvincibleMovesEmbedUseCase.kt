@@ -54,8 +54,10 @@ internal class CreateDustLoopInvincibleMovesEmbedUseCase {
                         }
                     val isOverdrive = move.input.contains("a+b+c+d", ignoreCase = true)
                     val isCounterAssault = move.input.contains("6a+b", ignoreCase = true)
+                    val costsMeter = move.bbProperties?.type.orEmpty().contains("super", ignoreCase = true)
+                            || move.bbProperties?.type.orEmpty().contains("astral", ignoreCase = true)
 
-                    isFullyFromFrameOne && isCounterAssault.not() && isOverdrive.not()
+                    isFullyFromFrameOne && isCounterAssault.not() && isOverdrive.not() && costsMeter.not()
                 }
                 filtered
             }

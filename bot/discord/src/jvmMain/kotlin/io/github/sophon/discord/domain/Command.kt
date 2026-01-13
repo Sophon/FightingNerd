@@ -62,7 +62,7 @@ enum class Command {
     ALIASBB,
     CHARBB,
     FDBB,
-//    INVBB,
+    INVBB,
 
     //mizuumi
     ALIASMB,

@@ -141,10 +141,10 @@ internal class DustLoopWikiDiscordFeature(
             command = Command.ALIASBB,
             description = "BB character aliases",
         ),
-//        SupportedCommand(
-//            command = Command.INVBB,
-//            description = "BB invincible moves",
-//        ),
+        SupportedCommand(
+            command = Command.INVBB,
+            description = "BB invincible moves",
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -256,11 +256,11 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
             }
-//            Command.INVBB -> {
-//                val wiki = wikis[Game.BBCF.id]
-//                    ?: return Result.Error(BotError.UnsupportedGame(query))
-//                searchInvincible(wiki)
-//            }
+            Command.INVBB -> {
+                val wiki = wikis[Game.BBCF.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchInvincible(wiki)
+            }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
