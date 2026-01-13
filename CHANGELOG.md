@@ -3,6 +3,8 @@
 ## [v7.1.0] - TODO
 - `inv` invincible commands for 
   - MB, Uni, VSAV
+- DustLoop
+  - fixed incorrect move URLs
 
 ## [v7.0.1] - 2026-01-11
 - fixed `fdvs` command
