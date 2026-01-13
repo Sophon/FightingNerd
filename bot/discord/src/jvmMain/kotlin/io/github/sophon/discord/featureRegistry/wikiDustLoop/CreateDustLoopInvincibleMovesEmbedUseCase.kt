@@ -80,9 +80,17 @@ internal class CreateDustLoopInvincibleMovesEmbedUseCase {
             .map { (startup, moveList) ->
                 buildString {
                     appendLine("${startup}f:")
-                    moveList.forEach { move ->
-                        append("- ${move.charName} → ${move.input}\n")
-                    }
+                    moveList.groupBy { it.charName }
+                        .forEach { (charName, moveList) ->
+                            if (moveList.size == 1) {
+                                appendLine("- $charName → ${moveList.first().input}")
+                            } else {
+                                appendLine("- $charName:")
+                                moveList.forEach { move ->
+                                    appendLine("   - ${move.input}")
+                                }
+                            }
+                        }
                 }
             }
             .joinToString("")
