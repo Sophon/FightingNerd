@@ -145,6 +145,14 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         aliases.add(this.replace(".", ""))
     }
 
+    if (
+        this.contains("h.", ignoreCase = true)
+        && this.startsWith("h.", ignoreCase = true).not()
+    ) {
+        val heatless = this.replace("h.", "")
+        aliases.add("h.$heatless")
+    }
+
     return aliases.distinct()
 }
 

@@ -6,7 +6,9 @@
 - DustLoop
   - fixed incorrect move URLs
 - Mizuumi - more VSAV aliases
-- Wavu - display the startup of the whole string
+- Wavu 
+  - display the startup of the whole string
+  - accepts starting heat for heat extensions ie `ak db2h.1` and `h.db21`
 - no longer clogs up the logs with reconnection exceptions
 
 ## [v7.0.1] - 2026-01-11
