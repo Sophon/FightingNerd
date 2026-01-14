@@ -13,6 +13,7 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 
 class GetCharacterUseCaseTest {
@@ -192,7 +193,7 @@ private class FakeWikiClient(
         ?: Result.Error(WikiError.UnknownCharacter("Character not found"))
     }
 
-    override suspend fun fetchMoveList(charName: String): Result<List<Move>, WikiError> {
+    override suspend fun fetchMoveList(charName: String, filter: Filter): Result<List<Move>, WikiError> {
         return moveListResult ?: Result.Success(moves)
     }
 

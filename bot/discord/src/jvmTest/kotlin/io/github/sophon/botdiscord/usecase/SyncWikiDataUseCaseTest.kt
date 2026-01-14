@@ -12,6 +12,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
@@ -135,7 +136,7 @@ class SyncWikiDataUseCaseTest {
                 ?: Result.Success(Unit)
         }
 
-        override suspend fun fetchMoveList(charName: String): Result<List<Move>, WikiError> {
+        override suspend fun fetchMoveList(charName: String, filter: Filter): Result<List<Move>, WikiError> {
             throw NotImplementedError("Not used in this use case")
         }
 
