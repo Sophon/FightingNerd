@@ -28,4 +28,10 @@ object DustLoopFilter {
                     && isJump.not() && attack.not()
         }
     }
+
+    object GGSTInvincible: Filter {
+        override val predicate: (Move) -> Boolean = { move ->
+            move.invulnerability?.isNotBlank() == true
+        }
+    }
 }
