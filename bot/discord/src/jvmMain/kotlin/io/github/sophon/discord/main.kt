@@ -11,6 +11,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import org.koin.java.KoinJavaComponent.getKoin
+import java.io.EOFException
 import java.io.File
 
 suspend fun main() = coroutineScope {
@@ -39,7 +40,10 @@ private fun initLogging() {
                 ) {
                     if (priority == LogLevel.INFO || priority == LogLevel.ERROR) {
                         println("${priority.name.uppercase()}: ${tag ?: "null"} - $message")
-                        throwable?.printStackTrace()
+
+                        if (throwable !is EOFException) {
+                            throwable?.printStackTrace()
+                        }
                     }
                 }
             }
