@@ -13,7 +13,7 @@ import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.domain.BotOutput
@@ -215,7 +215,7 @@ internal class WavuWikiDiscordFeature(
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
-                        duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                        duration = EMBED_BUTTON_DURATION_INF.seconds,
                     ),
                 )
             }
@@ -237,7 +237,7 @@ internal class WavuWikiDiscordFeature(
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
-                        duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                        duration = EMBED_BUTTON_DURATION_INF.seconds,
                     ),
                 )
             }
@@ -259,7 +259,7 @@ internal class WavuWikiDiscordFeature(
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = query),
-                    duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )
         }
@@ -305,7 +305,7 @@ internal class WavuWikiDiscordFeature(
                         },
                         buttons = BotOutput.ButtonSet(
                             buttonList = buttons,
-                            duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                            duration = EMBED_BUTTON_DURATION_INF.seconds,
                         ),
                     )
                 }

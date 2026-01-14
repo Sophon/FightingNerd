@@ -6,7 +6,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
@@ -156,7 +156,7 @@ internal class CoreDiscordFeature(
                         action = BotOutput.EmbedButton.Action.Query(Command.COMMANDS.name),
                     ),
                 ),
-                duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                duration = EMBED_BUTTON_DURATION_INF.seconds,
             ),
         )
 
