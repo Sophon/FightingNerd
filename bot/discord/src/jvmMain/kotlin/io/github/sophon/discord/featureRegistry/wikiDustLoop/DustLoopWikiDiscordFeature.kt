@@ -20,7 +20,6 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.domain.Source
 import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
@@ -81,6 +80,16 @@ internal class DustLoopWikiDiscordFeature(
                 SupportedCommand.Argument(
                     name = KEY_MOVE,
                     description = "Move input"
+                )
+            )
+        ),
+        SupportedCommand(
+            command = Command.INVGG,
+            description = "GG invincible moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
                 )
             )
         ),
@@ -206,6 +215,12 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query, game)
             }
+            Command.INVGG -> {
+                val game = Game.GGST
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchInvincible(game, wiki, query)
+            }
 
             Command.CHARDB -> {
                 val game = Game.DBFZ
@@ -323,8 +338,9 @@ internal class DustLoopWikiDiscordFeature(
     private suspend fun searchInvincible(
         game: Game,
         wiki: WikiClient,
+        charName: String? = null,
     ): Result<BotOutput, BotError> {
-        return createDustLoopInvincibleMovesEmbedUseCase.invoke(game, wiki, featureInfo)
+        return createDustLoopInvincibleMovesEmbedUseCase.invoke(game, wiki, featureInfo, charName)
             .map { embedBuilder ->
                 BotOutput(primaryEmbedBuilder = embedBuilder)
             }

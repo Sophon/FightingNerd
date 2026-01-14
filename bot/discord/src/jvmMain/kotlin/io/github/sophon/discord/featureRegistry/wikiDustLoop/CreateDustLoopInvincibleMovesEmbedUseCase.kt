@@ -3,8 +3,6 @@ package io.github.sophon.discord.featureRegistry.wikiDustLoop
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.chunkByNewLines
@@ -27,23 +25,32 @@ internal class CreateDustLoopInvincibleMovesEmbedUseCase {
         game: Game,
         wiki: WikiClient,
         featureInfo: FeatureInfo,
+        charName: String? = null,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
-        return wiki.fetchCharacterList()
-            .map { characterList ->
-                val moveList = mutableListOf<Move>()
-
-                characterList.forEach { character ->
-                    val charName = character.id
-                    getInvincibleMoves(game, charName, wiki)
-                        .map { moveList += it }
-                        .mapError {
-                            it.toDomainError()
-                        }
-                }
-
-                createInvincibleMovesEmbed(moveList, featureInfo)
+        val moveList: List<Move> = if (charName == null) {
+            val characterList = when (val result = wiki.fetchCharacterList()) {
+                is Result.Success -> result.data
+                is Result.Error -> return Result.Error(result.error.toDomainError())
             }
-            .mapError { it.toDomainError() }
+
+            val allMoves = mutableListOf<Move>()
+            for (character in characterList) {
+                val moves = when (val result = getInvincibleMoves(game, character.id, wiki)) {
+                    is Result.Success -> result.data
+                    is Result.Error -> return Result.Error(result.error.toDomainError())
+                }
+                allMoves.addAll(moves)
+            }
+
+            allMoves
+        } else {
+            when (val result = getInvincibleMoves(game, charName, wiki)) {
+                is Result.Success -> result.data
+                is Result.Error -> return Result.Error(result.error.toDomainError())
+            }
+        }
+
+        return Result.Success(createInvincibleMovesEmbed(moveList, featureInfo))
     }
 
 
@@ -54,6 +61,7 @@ internal class CreateDustLoopInvincibleMovesEmbedUseCase {
     ): Result<List<Move>, WikiError> {
         val filter = when (game) {
             Game.BBCF -> DustLoopFilter.BBInvincible
+            Game.GGST -> DustLoopFilter.GGSTInvincible
             else -> Filter.None
         }
 
@@ -100,6 +108,18 @@ internal class CreateDustLoopInvincibleMovesEmbedUseCase {
                     value = data,
                 )
             }
+
+        featureFooter(featureInfo)
+    }
+
+    private fun createInvincibleMovesEmbed(
+        charName: String,
+        moveList: List<Move>,
+        featureInfo: FeatureInfo,
+    ): EmbedBuilder.() -> Unit = {
+        color = Color(RED)
+
+        //TODO:
 
         featureFooter(featureInfo)
     }
