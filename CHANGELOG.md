@@ -7,6 +7,7 @@
   - fixed incorrect move URLs
 - Mizuumi - more VSAV aliases
 - Wavu - display the startup of the whole string
+- no longer clogs up the logs with reconnection exceptions
 
 ## [v7.0.1] - 2026-01-11
 - fixed `fdvs` command
