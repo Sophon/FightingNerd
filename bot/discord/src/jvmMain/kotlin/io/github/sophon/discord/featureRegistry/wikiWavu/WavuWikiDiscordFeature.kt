@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
+import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
@@ -31,6 +32,7 @@ import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
+import io.github.sophon.wikiwavu.domain.WavuFilter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -203,7 +205,7 @@ internal class WavuWikiDiscordFeature(
         return getMovesUseCase.invoke(
             wiki = wiki,
             charName = query,
-            predicate = { it.t8Properties?.isPowerCrush == true },
+            filter = WavuFilter.PowerCrush,
         )
             .map { moveList ->
                 BotOutput(
@@ -226,9 +228,8 @@ internal class WavuWikiDiscordFeature(
         return getMovesUseCase.invoke(
             wiki = wiki,
             charName = query,
-            predicate = { it.t8Properties?.isHeat == true },
-        )
-            .map { moveList ->
+            filter = WavuFilter.Heat,
+        ).map { moveList ->
                 BotOutput(
                     primaryEmbedBuilder = createMoveListEmbed(
                         category = "${query.uppercase()} Heat",
@@ -249,7 +250,7 @@ internal class WavuWikiDiscordFeature(
         return getMovesUseCase.invoke(
             wiki = wiki,
             charName = query,
-            predicate = { it.t8Properties?.isHoming == true },
+            filter = WavuFilter.Homing,
         ).map { moveList ->
             BotOutput(
                 primaryEmbedBuilder = createMoveListEmbed(
@@ -309,12 +310,16 @@ internal class WavuWikiDiscordFeature(
                     )
                 }
         } else {
+            val filter = object : Filter {
+                override val predicate: (Move) -> Boolean = { move ->
+                    move.t8Properties?.stance.equals(stance, ignoreCase = true)
+                }
+            }
+
             getMovesUseCase.invoke(
                 wiki = wiki,
                 charName = charName,
-                predicate = { move ->
-                    move.t8Properties?.stance.equals(stance, ignoreCase = true)
-                }
+                filter = filter,
             ).map { moveList ->
                 BotOutput(
                     primaryEmbedBuilder = createMoveListEmbed(category = stance.uppercase(), moveList)

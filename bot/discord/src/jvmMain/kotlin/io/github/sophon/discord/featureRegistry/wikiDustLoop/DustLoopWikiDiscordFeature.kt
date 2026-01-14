@@ -1,5 +1,7 @@
 package io.github.sophon.discord.featureRegistry.wikiDustLoop
 
+import dev.kord.common.Color
+import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -9,6 +11,7 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
@@ -20,8 +23,9 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.featureFooter
+import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -31,17 +35,19 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
+import kotlin.collections.component1
+import kotlin.collections.component2
+import kotlin.collections.map
 
 internal class DustLoopWikiDiscordFeature(
     dustLoopFeatureInfo: DustLoopFeatureInfo,
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-    private val getMovesUseCase: GetMovesUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
-    private val createDustLoopInvincibleMovesEmbedUseCase: CreateDustLoopInvincibleMovesEmbedUseCase,
+    private val fetchDustLoopInvincibleMovesUseCase: FetchDustLoopInvincibleMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -82,6 +88,16 @@ internal class DustLoopWikiDiscordFeature(
                 SupportedCommand.Argument(
                     name = KEY_MOVE,
                     description = "Move input"
+                )
+            )
+        ),
+        SupportedCommand(
+            command = Command.INVGG,
+            description = "GG invincible moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
                 )
             )
         ),
@@ -144,6 +160,12 @@ internal class DustLoopWikiDiscordFeature(
         SupportedCommand(
             command = Command.INVBB,
             description = "BB invincible moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
         ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
@@ -207,6 +229,12 @@ internal class DustLoopWikiDiscordFeature(
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query, game)
             }
+            Command.INVGG -> {
+                val game = Game.GGST
+                val wiki = wikis[game.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                searchInvincible(game, wiki, query)
+            }
 
             Command.CHARDB -> {
                 val game = Game.DBFZ
@@ -257,9 +285,10 @@ internal class DustLoopWikiDiscordFeature(
                 getCharacterAliases(wiki)
             }
             Command.INVBB -> {
+                val game = Game.BBCF
                 val wiki = wikis[Game.BBCF.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchInvincible(wiki)
+                searchInvincible(game, wiki, query)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -320,11 +349,56 @@ internal class DustLoopWikiDiscordFeature(
             }
     }
 
-    private suspend fun searchInvincible(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createDustLoopInvincibleMovesEmbedUseCase.invoke(wiki, featureInfo)
-            .map { embedBuilder ->
-                BotOutput(primaryEmbedBuilder = embedBuilder)
+    private suspend fun searchInvincible(
+        game: Game,
+        wiki: WikiClient,
+        charName: String,
+    ): Result<BotOutput, BotError> {
+        return fetchDustLoopInvincibleMovesUseCase.invoke(game, wiki, charName)
+            .map { moveList ->
+                BotOutput(
+                    primaryEmbedBuilder = createMoveListEmbed(
+                        charName = charName,
+                        category = "invincible",
+                        moveList = moveList
+                    ),
+                )
             }
+    }
+
+    private fun createMoveListEmbed(
+        charName: String,
+        category: String,
+        moveList: List<Move>,
+    ): EmbedBuilder.() -> Unit = {
+        color = Color(RED)
+
+        val text = moveList
+            .mapNotNull { move ->
+                val startup = move.startup
+                    ?.takeWhile { it.isDigit() }
+                    ?.toIntOrNull()
+                startup?.let { it to move }
+            }
+            .sortedBy { (startup, _) -> startup }
+            .groupBy(
+                keySelector = { (startup, _) -> startup },
+                valueTransform = { (_, move) -> move }
+            )
+            .map { (startup, moveList) ->
+                "- **${startup}f**: " + moveList.joinToString(", ") {
+                    it.input
+                }
+            }
+            .joinToString("\n")
+
+        mandatoryField(
+            name = "$charName $category moves",
+            value = text,
+            inline = false,
+        )
+
+        featureFooter(featureInfo)
     }
 
 

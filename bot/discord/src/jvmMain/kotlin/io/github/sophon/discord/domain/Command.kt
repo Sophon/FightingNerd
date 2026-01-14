@@ -51,6 +51,7 @@ enum class Command {
     //dustloop wiki
     CHARGG,
     FDGG,
+    INVGG,
 
     CHARDB,
     FDDB,
