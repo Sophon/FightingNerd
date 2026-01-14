@@ -18,7 +18,7 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFe
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.CreateCharacterEmbedUseCase
-import io.github.sophon.discord.featureRegistry.wikiDustLoop.CreateDustLoopInvincibleMovesEmbedUseCase
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.CreateMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.DustLoopWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.CreateMizuumiInvEmbedUseCase
@@ -69,7 +69,7 @@ internal val featureRegistryModule = module {
     //region DustLoop
     singleOf(::CreateMoveEmbedUseCase)
     singleOf(::CreateCharacterEmbedUseCase)
-    singleOf(::CreateDustLoopInvincibleMovesEmbedUseCase)
+    singleOf(::FetchDustLoopInvincibleMovesUseCase)
     //endregion
 
     //region Wavu
