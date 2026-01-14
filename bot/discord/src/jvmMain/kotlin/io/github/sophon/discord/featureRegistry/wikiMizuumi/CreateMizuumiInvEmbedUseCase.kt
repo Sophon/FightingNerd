@@ -12,7 +12,7 @@ import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.toDomainError
@@ -49,7 +49,7 @@ internal class CreateMizuumiInvEmbedUseCase {
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = charName),
-                        duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
+                        duration = EMBED_BUTTON_DURATION_INF.seconds,
                     ),
                 )
                 botOutput

@@ -6,7 +6,7 @@ internal const val CONFIG_FILE_NAME = "config.json"
 internal const val EMBED_MAX_LENGTH = 1_000
 internal const val EMBED_MAX_BUTTONS = 25
 internal const val EMBED_BUTTON_DURATION_DEFAULT_S = 15
-internal const val EMBED_BUTTON_DURATION_LONG_S = 30
+internal const val EMBED_BUTTON_DURATION_INF = 0
 
 internal const val URL_REPO = "https://github.com/Sophon/FightingNerd"
 internal const val URL_IMG_GITHUB = "https://i.imgur.com/PdgcKV2.png"
