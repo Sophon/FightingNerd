@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
@@ -101,8 +102,11 @@ internal class DreamCancelWikiClient(
             .onError { Napier.e(tag = TAG) { "cacheMoveList: $it" } }
     }
 
-    override suspend fun fetchMoveList(charName: String): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName)
+    override suspend fun fetchMoveList(
+        charName: String,
+        filter: Filter,
+    ): Result<List<Move>, WikiError> {
+        return fetchMoveListUseCase.invoke(charName, filter)
             .onError { Napier.e(tag = TAG) { "fetchMoveList: $it" } }
     }
 
