@@ -15,12 +15,15 @@ import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
+import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.BotOutput.ButtonSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -59,10 +62,12 @@ internal class CreateEmbedUseCase {
             }
 
             buttons?.apply {
-                coroutineScope.launch {
-                    delay(duration)
-                    message.edit {
-                        components = mutableListOf()
+                if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                    coroutineScope.launch {
+                        delay(duration)
+                        message.edit {
+                            components = mutableListOf()
+                        }
                     }
                 }
             }
@@ -95,10 +100,12 @@ internal class CreateEmbedUseCase {
                 if (buttons?.buttonList.isNullOrEmpty().not()) {
                     createButtons(uuid, buttons.buttonList)
 
-                    coroutineScope.launch {
-                        delay(buttons.duration)
-                        interaction.getOriginalInteractionResponse().edit {
-                            components = mutableListOf()
+                    if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                        coroutineScope.launch {
+                            delay(buttons.duration)
+                            interaction.getOriginalInteractionResponse().edit {
+                                components = mutableListOf()
+                            }
                         }
                     }
                 }
@@ -127,28 +134,32 @@ internal class CreateEmbedUseCase {
 
     private fun MessageBuilder.createButtons(
         uuid: Uuid,
-        buttons: List<BotOutput.EmbedButton>
+        buttons: List<BotOutput.EmbedButton>,
     ) {
-        buttons.chunked(5).forEach { rowButtons ->
-            actionRow {
-                rowButtons.forEach { button ->
-                    val action = when(button.action) {
-                         is BotOutput.EmbedButton.Action.Query-> {
-                             "$KEY_QUERY${button.action.query}"
-                         }
-                        is BotOutput.EmbedButton.Action.Edit -> "$KEY_EDIT$uuid"
-                    }
+        buttons
+            .take(EMBED_MAX_BUTTONS)
+            .chunked(5)
+            .forEach { rowButtons ->
+                actionRow {
+                    rowButtons.forEach { button ->
+                        val action = when (button.action) {
+                            is BotOutput.EmbedButton.Action.Query -> {
+                                "$KEY_QUERY${button.action.query}"
+                            }
 
-                    interactionButton(
-                        style = ButtonStyle.Primary,
-                        customId = action,
-                    ) {
-                        label = button.label
-                        disabled = false
+                            is BotOutput.EmbedButton.Action.Edit -> "$KEY_EDIT$uuid"
+                        }
+
+                        interactionButton(
+                            style = ButtonStyle.Primary,
+                            customId = action,
+                        ) {
+                            label = button.label
+                            disabled = false
+                        }
                     }
                 }
             }
-        }
     }
 
     internal companion object {

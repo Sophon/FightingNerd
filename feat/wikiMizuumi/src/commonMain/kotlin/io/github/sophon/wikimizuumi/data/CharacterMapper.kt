@@ -118,20 +118,35 @@ internal fun String.createAliases(): List<String> {
         "ushiwakamaru" -> listOf("ushi", "us")
         "vlov arkhangel" -> listOf("vlov", "arkhangel", "vl")
 
-        else -> null
+        else -> listOf()
     }
 
-    val aliases = this
-        .split("-")
-        .takeIf { it.size > 1 }
-        ?.let { parts ->
-            listOf(
-                parts.last().lowercase(),
-                parts.joinToString("") { it.first().lowercase() }
-            )
-        }
+    val vsavAliases = when (this.lowercase()) {
+        "anakaris" -> listOf("an")
+        "aulbath" -> listOf("au")
+        "bishamon" -> listOf("bi")
+        "bulleta" -> listOf("bu")
+        "demitri" -> listOf("de")
+        "felicia" -> listOf("fe")
+        "gallon" -> listOf("ga")
+        "jedah" -> listOf("je")
+        "lei lei" -> listOf("le")
+        "lilith" -> listOf("li")
+        "morrigan" -> listOf("mo")
+        "q-bee" -> listOf("qb")
+        "sasquatch" -> listOf("sa")
+        "victor" -> listOf("vi")
+        "zabel" -> listOf("za")
 
-    return meltyAliases ?: aliases ?: listOf()
+        else -> listOf()
+    }
+
+    val combined = buildList {
+        addAll(meltyAliases)
+        addAll(vsavAliases)
+    }.distinct()
+
+    return combined
 }
 
 internal fun String.formWikiUrl(gameId: String): String {

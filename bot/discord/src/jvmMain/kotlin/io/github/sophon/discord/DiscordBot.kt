@@ -35,6 +35,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import kotlin.time.Duration.Companion.seconds
 
 interface DiscordBot {
     suspend fun startSession()
@@ -168,12 +169,13 @@ internal class DiscordBotImpl(
                     )
                         .onSuccess { uuid ->
                             botOutput.fullEmbedBuilder?.let {
-                                editableEmbedMap[uuid] = botOutput
-
                                 botOutput.buttons?.duration?.let { duration ->
-                                    coroutineScope.launch {
-                                        delay(duration)
-                                        editableEmbedMap.remove(uuid)
+                                    if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                                        editableEmbedMap[uuid] = botOutput
+                                        coroutineScope.launch {
+                                            delay(duration)
+                                            editableEmbedMap.remove(uuid)
+                                        }
                                     }
                                 }
                             }
@@ -248,12 +250,13 @@ internal class DiscordBotImpl(
                     )
                         .onSuccess { uuid ->
                             botOutput.fullEmbedBuilder?.let {
-                                editableEmbedMap[uuid] = botOutput
-
                                 botOutput.buttons?.duration?.let { duration ->
-                                    coroutineScope.launch {
-                                        delay(duration)
-                                        editableEmbedMap.remove(uuid)
+                                    if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                                        editableEmbedMap[uuid] = botOutput
+                                        coroutineScope.launch {
+                                            delay(duration)
+                                            editableEmbedMap.remove(uuid)
+                                        }
                                     }
                                 }
                             }

@@ -3,6 +3,7 @@ package io.github.sophon.discord.usecase
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
+import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
@@ -12,14 +13,12 @@ internal class GetMovesUseCase {
     suspend fun invoke(
         wiki: WikiClient,
         charName: String,
-        predicate: (Move) -> Boolean,
+        filter: Filter,
     ): Result<List<Move>, BotError> {
-        return wiki.fetchMoveList(charName)
+        return wiki.fetchMoveList(charName, filter)
             .mapError { it.toDomainError() }
             .map { moveList ->
-                moveList
-                    .filter(predicate)
-                    .distinctBy { it.input }
+                moveList.distinctBy { it.input }
             }
     }
 }

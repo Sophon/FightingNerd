@@ -145,6 +145,14 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         aliases.add(this.replace(".", ""))
     }
 
+    if (
+        this.contains("h.", ignoreCase = true)
+        && this.startsWith("h.", ignoreCase = true).not()
+    ) {
+        val heatless = this.replace("h.", "")
+        aliases.add("h.$heatless")
+    }
+
     return aliases.distinct()
 }
 
@@ -187,19 +195,34 @@ private fun MoveDto.formCompleteDataFromParent(
 /**
  * Similar to the issue above, just with startup
  */
-private fun MoveDto.getRootStartup(
+internal fun MoveDto.getRootStartup(
     movesById: Map<String, MoveDto>
 ): String? {
+    val history = mutableListOf<String>()
     var current: MoveDto? = this
     var root: MoveDto = this
 
     // Traverse up to find the topmost parent
     while (current != null) {
         root = current
-        current = current.parent?.let { movesById[it] }
+        current = current.parent?.let {
+            val parent = movesById[it]
+            current.startup?.let { startup -> history.add(startup) }
+            parent
+        }
     }
 
-    return root.startup
+    val formattedHistory = history
+        .reversed()
+        .joinToString(", ") { it.replace(",", "") }
+
+    val result = when {
+        root.startup == null -> null
+        history.isEmpty() -> root.startup
+        else -> "${root.startup} ($formattedHistory)"
+    }
+
+    return result
 }
 
 private fun MoveDto.splitCrush(): List<String> {

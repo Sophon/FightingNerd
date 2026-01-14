@@ -1,5 +1,17 @@
 # BOT CHANGELOG
 
+## [v8.0.0] - 2026-01-14
+- `inv` invincible commands for 
+  - MB, Uni, VSAV
+- DustLoop
+  - fixed incorrect move URLs
+- Mizuumi - more VSAV aliases
+- Wavu 
+  - display the startup of the whole string
+  - accepts starting heat for heat extensions ie `ak db2h.1` and `h.db21`
+- no longer clogs up the logs with reconnection exceptions
+- some buttons now stay permanently
+
 ## [v7.0.1] - 2026-01-11
 - fixed `fdvs` command
 

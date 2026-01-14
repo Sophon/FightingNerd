@@ -316,7 +316,7 @@ class MoveMapperTest {
             name = "Dark Elbow Hook",
             input = "f21",
             damage = "12,25",
-            startup = "i15~16",
+            startup = "i15~16 (i18~19)",
             recovery = "r33",
             onBlock = "-9",
             onHit = "+16a",
@@ -541,6 +541,55 @@ class MoveMapperTest {
 
         //when
         val result = string.formNotes()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region Root startup
+    @Test
+    fun `root handles a single move`() {
+        // given
+        val move = MoveDto(
+            id = "1",
+            input = "1",
+            startup = "i10"
+        )
+        val map = mapOf(
+            move.id to move,
+        )
+        val expected = "i10"
+
+        // when
+        val result = move.getRootStartup(map)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `root handles string`() {
+        // given
+        val move1 = MoveDto(
+            id = "1",
+            input = "1",
+            startup = "i10",
+        )
+        val move2 = MoveDto(
+            id = "1,1",
+            input = ",1",
+            startup = "i11",
+            parent = "1",
+        )
+        val map = mapOf(
+            move1.id to move1,
+            move2.id to move2,
+        )
+        val expected = "i10 (i11)"
+
+        // when
+        val result = move2.getRootStartup(map)
 
         //then
         assertThat(result).isEqualTo(expected)

@@ -18,8 +18,10 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFe
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.CreateCharacterEmbedUseCase
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.CreateMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.DustLoopWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiMizuumi.CreateMizuumiInvEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.CreateMizuumiMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.MizuumiWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
@@ -67,6 +69,7 @@ internal val featureRegistryModule = module {
     //region DustLoop
     singleOf(::CreateMoveEmbedUseCase)
     singleOf(::CreateCharacterEmbedUseCase)
+    singleOf(::FetchDustLoopInvincibleMovesUseCase)
     //endregion
 
     //region Wavu
@@ -75,6 +78,7 @@ internal val featureRegistryModule = module {
 
     //region Mizuumi
     singleOf(::CreateMizuumiMoveEmbedUseCase)
+    singleOf(::CreateMizuumiInvEmbedUseCase)
     //endregion
 
     //region Infil glossary

@@ -50,20 +50,31 @@ enum class Command {
 
     //dustloop wiki
     CHARGG,
-    CHARDB,
-    CHARGB,
     FDGG,
+    INVGG,
+
+    CHARDB,
     FDDB,
+
+    CHARGB,
     FDGB,
     ALIASDB,
+
     ALIASBB,
     CHARBB,
     FDBB,
+    INVBB,
 
     //mizuumi
     ALIASMB,
     FDMB,
+    INVMB,
+
     CHARUNI,
     FDUNI,
+    INVUNI,
+
+    ALIASVS,
     FDVS,
+    INVVS,
 }

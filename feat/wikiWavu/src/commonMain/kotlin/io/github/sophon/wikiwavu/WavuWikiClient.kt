@@ -3,11 +3,13 @@ package io.github.sophon.wikiwavu
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
@@ -98,8 +100,9 @@ internal class WavuWikiClient(
 
     override suspend fun fetchMoveList(
         charName: String,
+        filter: Filter,
     ): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName)
+        return fetchMoveListUseCase.invoke(charName, filter)
             .onError { Napier.e(tag = TAG) { "fetchMoveList($charName): $it" } }
     }
 
