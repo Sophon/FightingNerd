@@ -168,9 +168,8 @@ internal class DiscordBotImpl(
                     )
                         .onSuccess { uuid ->
                             botOutput.fullEmbedBuilder?.let {
-                                editableEmbedMap[uuid] = botOutput
-
                                 botOutput.buttons?.duration?.let { duration ->
+                                    editableEmbedMap[uuid] = botOutput
                                     coroutineScope.launch {
                                         delay(duration)
                                         editableEmbedMap.remove(uuid)
@@ -248,9 +247,8 @@ internal class DiscordBotImpl(
                     )
                         .onSuccess { uuid ->
                             botOutput.fullEmbedBuilder?.let {
-                                editableEmbedMap[uuid] = botOutput
-
                                 botOutput.buttons?.duration?.let { duration ->
+                                    editableEmbedMap[uuid] = botOutput
                                     coroutineScope.launch {
                                         delay(duration)
                                         editableEmbedMap.remove(uuid)
