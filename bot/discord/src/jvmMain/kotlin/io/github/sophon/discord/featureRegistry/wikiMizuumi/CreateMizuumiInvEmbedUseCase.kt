@@ -8,6 +8,7 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.chunkByNewLines
+import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
@@ -18,6 +19,7 @@ import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.toButtons
+import io.github.sophon.wikimizuumi.domain.MizuumiFilter
 import kotlin.time.Duration.Companion.seconds
 
 /**
@@ -32,14 +34,12 @@ internal class CreateMizuumiInvEmbedUseCase {
         featureInfo: FeatureInfo,
         query: String,
     ): Result<BotOutput, BotError> {
-        return wiki.fetchMoveList(query)
+        val filter = game.getFilter()
+
+        return wiki.fetchMoveList(query, filter)
             .mapError { it.toDomainError() }
             .map { moveList ->
-                moveList
-                    .filter { move ->
-                        predicate(game, move)
-                    }
-                    .distinctBy { it.input }
+                moveList.distinctBy { it.input }
             }.map { moveList ->
                 val botOutput = BotOutput(
                     primaryEmbedBuilder = createMoveListEmbed(
@@ -56,24 +56,12 @@ internal class CreateMizuumiInvEmbedUseCase {
             }
     }
 
-    private fun predicate(game: Game, move: Move): Boolean {
-        return when (game) {
-            Game.MBTL -> {
-                move.invulnerability.orEmpty().run {
-                    isNotEmpty() && isReversal() && isFullyInv()
-                } && move.input.isLastArc().not() && move.input.isShieldCounter().not()
-            }
-            Game.Uni2 -> {
-                move.invulnerability.orEmpty().run {
-                    isNotEmpty()
-                }
-            }
-            Game.VSAV -> {
-                move.invulnerability.orEmpty().run {
-                    isNotEmpty() && isFullBodyInv()
-                }
-            }
-            else -> false
+    private fun Game.getFilter(): Filter {
+        return when (this) {
+            Game.MBTL -> MizuumiFilter.MBTLInvincible
+            Game.Uni2 -> MizuumiFilter.Uni2Invincible
+            Game.VSAV -> MizuumiFilter.VSAVInvincible
+            else -> Filter.None
         }
     }
 
@@ -101,19 +89,6 @@ internal class CreateMizuumiInvEmbedUseCase {
 
         featureFooter(featureInfo)
     }
-
-
-    //region MB
-    private fun String.isLastArc(): Boolean = this.contains("ABCD", ignoreCase = true)
-
-    private fun String.isShieldCounter(): Boolean = this.startsWith("D~", ignoreCase = true)
-
-    private fun String.isReversal(): Boolean = this.contains("1-")
-
-    private fun String.isFullyInv(): Boolean = this.contains("Full", ignoreCase = true)
-    //endregion
-
-    private fun String.isFullBodyInv(): Boolean = this.contains("whole body", ignoreCase = true)
 
 
     private companion object {
