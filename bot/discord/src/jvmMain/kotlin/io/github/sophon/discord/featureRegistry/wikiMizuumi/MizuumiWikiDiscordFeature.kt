@@ -9,14 +9,11 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
-import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.EMBED_BUTTON_DURATION_LONG_S
-import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
 import io.github.sophon.discord.domain.BotOutput
@@ -32,7 +29,6 @@ import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
-import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
 import io.github.sophon.wikimizuumi.MizuumiFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +38,6 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
-import kotlin.time.Duration.Companion.seconds
 
 internal class MizuumiWikiDiscordFeature(
     mizuumiFeatureInfo: MizuumiFeatureInfo,
@@ -52,7 +47,6 @@ internal class MizuumiWikiDiscordFeature(
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMizuumiMoveEmbedUseCase: CreateMizuumiMoveEmbedUseCase,
     private val createMizuumiInvEmbedUseCase: CreateMizuumiInvEmbedUseCase,
-    private val getMovesUseCase: GetMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {

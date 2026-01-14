@@ -32,11 +32,11 @@ internal class CreateMizuumiInvEmbedUseCase {
         game: Game,
         wiki: WikiClient,
         featureInfo: FeatureInfo,
-        query: String,
+        charName: String,
     ): Result<BotOutput, BotError> {
         val filter = game.getFilter()
 
-        return wiki.fetchMoveList(query, filter)
+        return wiki.fetchMoveList(charName, filter)
             .mapError { it.toDomainError() }
             .map { moveList ->
                 moveList.distinctBy { it.input }
@@ -44,11 +44,11 @@ internal class CreateMizuumiInvEmbedUseCase {
                 val botOutput = BotOutput(
                     primaryEmbedBuilder = createMoveListEmbed(
                         featureInfo = featureInfo,
-                        category = "${query.uppercase()} Inv",
+                        category = "${charName.uppercase()} Inv",
                         moveList = moveList,
                     ),
                     buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = query),
+                        buttonList = moveList.toButtons(charName = charName),
                         duration = EMBED_BUTTON_DURATION_LONG_S.seconds,
                     ),
                 )
