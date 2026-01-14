@@ -37,7 +37,6 @@ internal class DustLoopWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-    private val getMovesUseCase: GetMovesUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
@@ -257,9 +256,10 @@ internal class DustLoopWikiDiscordFeature(
                 getCharacterAliases(wiki)
             }
             Command.INVBB -> {
+                val game = Game.BBCF
                 val wiki = wikis[Game.BBCF.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchInvincible(wiki)
+                searchInvincible(game, wiki)
             }
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -320,8 +320,11 @@ internal class DustLoopWikiDiscordFeature(
             }
     }
 
-    private suspend fun searchInvincible(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createDustLoopInvincibleMovesEmbedUseCase.invoke(wiki, featureInfo)
+    private suspend fun searchInvincible(
+        game: Game,
+        wiki: WikiClient,
+    ): Result<BotOutput, BotError> {
+        return createDustLoopInvincibleMovesEmbedUseCase.invoke(game, wiki, featureInfo)
             .map { embedBuilder ->
                 BotOutput(primaryEmbedBuilder = embedBuilder)
             }

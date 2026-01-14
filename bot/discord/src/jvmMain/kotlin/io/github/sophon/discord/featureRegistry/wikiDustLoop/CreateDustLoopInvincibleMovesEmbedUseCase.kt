@@ -6,8 +6,10 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
@@ -15,12 +17,14 @@ import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.wikidustloop.domain.DustLoopFilter
 
 /**
  * TODO: should refactor for the Wiki to use Filter class
  */
 internal class CreateDustLoopInvincibleMovesEmbedUseCase {
     suspend fun invoke(
+        game: Game,
         wiki: WikiClient,
         featureInfo: FeatureInfo,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
@@ -30,7 +34,7 @@ internal class CreateDustLoopInvincibleMovesEmbedUseCase {
 
                 characterList.forEach { character ->
                     val charName = character.id
-                    getInvincibleMoves(charName, wiki)
+                    getInvincibleMoves(game, charName, wiki)
                         .map { moveList += it }
                         .mapError {
                             it.toDomainError()
@@ -44,34 +48,16 @@ internal class CreateDustLoopInvincibleMovesEmbedUseCase {
 
 
     private suspend fun getInvincibleMoves(
+        game: Game,
         charName: String,
-        wikiClient: WikiClient,
+        wiki: WikiClient,
     ): Result<List<Move>, WikiError> {
-        return wikiClient.fetchMoveList(charName)
-            .map { moveList ->
-                val filtered = moveList.filter { move ->
-                    val isFullyFromFrameOne = move.invulnerability.orEmpty()
-                        .split(",")
-                        .any {
-                            it.startsWith("1~") && it.endsWith("All", ignoreCase = true)
-                        }
-                    val isOverdrive = move.input.contains("a+b+c+d", ignoreCase = true)
-                            || move.input.endsWith("od", ignoreCase = true)
-                    val isCounterAssault = move.input.contains("6a+b", ignoreCase = true)
-                    val costsMeter = move.bbProperties?.type.orEmpty().contains("super", ignoreCase = true)
-                            || move.input.endsWith("od", ignoreCase = true)
-                            || move.bbProperties?.type.orEmpty().contains("astral", ignoreCase = true)
-                            || move.input.endsWith("special", ignoreCase = true)
-                    val isJump = move.input.startsWith("j.") || move.input.startsWith("d.")
-                    val attack = move.input.endsWith("attack")
+        val filter = when (game) {
+            Game.BBCF -> DustLoopFilter.BBInvincible
+            else -> Filter.None
+        }
 
-                    isFullyFromFrameOne
-                            && isCounterAssault.not() && isOverdrive.not()
-                            && costsMeter.not()
-                            && isJump.not() && attack.not()
-                }
-                filtered
-            }
+        return wiki.fetchMoveList(charName, filter)
     }
 
     private fun createInvincibleMovesEmbed(
