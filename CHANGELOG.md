@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v7.1.0] - TODO
+## [v8.0.0] - 2026-01-14
 - `inv` invincible commands for 
   - MB, Uni, VSAV
 - DustLoop
