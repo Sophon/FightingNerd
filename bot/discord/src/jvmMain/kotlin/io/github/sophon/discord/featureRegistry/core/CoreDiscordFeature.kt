@@ -168,7 +168,8 @@ internal class CoreDiscordFeature(
         val fdCommands = commands.filter { it.name.startsWith("FD") && it.name != "FD" }
         val charCommands = commands.filter { it.name.startsWith("CHAR") }
         val aliasCommands = commands.filter { it.name.startsWith("ALIAS") }
-        val otherCommands = commands - fdCommands.toSet() - charCommands.toSet() - aliasCommands.toSet() - Command.FD - adminCommands.map { it.command }.toSet()
+        val invCommands = commands.filter { it.name.startsWith("INV") && it.name != "INVITE" }
+        val otherCommands = commands - fdCommands.toSet() - charCommands.toSet() - aliasCommands.toSet() - Command.FD - adminCommands.map { it.command }.toSet() - invCommands.toSet()
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
             title = "⚙️ COMMANDS"
@@ -201,6 +202,17 @@ internal class CoreDiscordFeature(
                 name = "🥸 CHARACTER ALIASES",
                 value = buildString {
                     aliasCommands
+                        .sortedBy { it.name }
+                        .forEach { aliasCommand ->
+                            append("- `${aliasCommand.name}`\n")
+                        }
+                }
+            )
+
+            mandatoryField(
+                name = "🛡️ INVINCIBLE MOVES",
+                value = buildString {
+                    invCommands
                         .sortedBy { it.name }
                         .forEach { aliasCommand ->
                             append("- `${aliasCommand.name}`\n")
