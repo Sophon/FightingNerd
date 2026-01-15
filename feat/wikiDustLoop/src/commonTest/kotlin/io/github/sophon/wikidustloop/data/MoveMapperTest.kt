@@ -70,10 +70,10 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles Nago inputs`() {
         // given
-        val input1 = "2hlevelbr"
-        val input2 = "2slevel1"
-        val input3 = "2slevel3"
-        val expected = listOf("2hb", "2s", "2s3")
+        val input1 = "2h level br"
+        val input2 = "2H Level 1"
+        val input3 = "2s level 3"
+        val expected = listOf("2hb", "2h", "2s3")
 
         // when
         val result = listOf(input1, input2, input3).flatMap { it.formNagoriyukiAliases() }
