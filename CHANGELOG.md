@@ -1,7 +1,9 @@
 # BOT CHANGELOG
 
-## [v8.1.0] - TODO
-- DustLoop - `aliasgg` command
+## [v8.1.0] - 2026-01-15
+- DustLoop 
+  - `aliasgg` command
+  - fixed Nagoriyuki aliases - `2h` for *2h (level 1)*, `2h3` for *2h (level 3)* and `5hb` for *5h (Blood Rage)*
 
 ## [v8.0.0] - 2026-01-14
 - `inv` invincible commands for 
