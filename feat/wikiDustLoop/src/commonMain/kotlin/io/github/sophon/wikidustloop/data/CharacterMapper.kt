@@ -166,10 +166,10 @@ private fun String?.createGGAliases(): List<String> {
 
         // Twitter hashtag approach
         add(
-            if (original == "Jacko-O'") {
-                "jc"
-            } else {
-                original.take(2)
+            when {
+                original == "jack-o" -> "jc"
+                original.contains(".") -> original.replace(".", "").take(2)
+                else -> original.take(2)
             }
         )
 
@@ -186,7 +186,7 @@ private fun String?.createGGAliases(): List<String> {
             .split(" ")
             .filter { it.isNotBlank() }
 
-        if (words.first().length > 2) add(words.first())
+        if (words.first().length > 2 && words.first() != original) add(words.first())
 
         // Create initials from all words
         if (words.size <= 1) return@buildList
