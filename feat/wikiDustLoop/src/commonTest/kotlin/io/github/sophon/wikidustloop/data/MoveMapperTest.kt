@@ -66,6 +66,21 @@ class MoveMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `formAliases handles Nago inputs`() {
+        // given
+        val input1 = "2hlevelbr"
+        val input2 = "2slevel1"
+        val input3 = "2slevel3"
+        val expected = listOf("2hb", "2s", "2s3")
+
+        // when
+        val result = listOf(input1, input2, input3).flatMap { it.formNagoriyukiAliases() }
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     @Test
