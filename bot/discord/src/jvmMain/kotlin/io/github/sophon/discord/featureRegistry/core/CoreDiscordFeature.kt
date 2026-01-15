@@ -169,7 +169,17 @@ internal class CoreDiscordFeature(
         val charCommands = commands.filter { it.name.startsWith("CHAR") }
         val aliasCommands = commands.filter { it.name.startsWith("ALIAS") }
         val invCommands = commands.filter { it.name.startsWith("INV") && it.name != "INVITE" }
-        val otherCommands = commands - fdCommands.toSet() - charCommands.toSet() - aliasCommands.toSet() - Command.FD - adminCommands.map { it.command }.toSet() - invCommands.toSet()
+        val gameSpecificCommands = listOf(Command.HEAT, Command.HOMING, Command.PC, Command.STANCE)
+        val excludedFromOthers = buildSet {
+            addAll(fdCommands)
+            addAll(charCommands)
+            addAll(aliasCommands)
+            addAll(invCommands)
+            addAll(gameSpecificCommands)
+            add(Command.FD)
+            addAll(adminCommands.map { it.command })
+        }
+        val otherCommands = commands.filterNot { it in excludedFromOthers }
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
             title = "⚙️ COMMANDS"
@@ -214,8 +224,19 @@ internal class CoreDiscordFeature(
                 value = buildString {
                     invCommands
                         .sortedBy { it.name }
-                        .forEach { aliasCommand ->
-                            append("- `${aliasCommand.name}`\n")
+                        .forEach { command ->
+                            append("- `${command.name}`\n")
+                        }
+                }
+            )
+
+            mandatoryField(
+                name = "🎮 GAME SPECIFIC",
+                value = buildString {
+                    gameSpecificCommands
+                        .sortedBy { it.name }
+                        .forEach { command ->
+                            append("- `${command}`\n")
                         }
                 }
             )
