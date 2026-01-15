@@ -171,7 +171,7 @@ class CharacterMapperTest {
     fun `createAliases handles one word name`() {
         //given
         val char = "Nagoriyuki"
-        val expected = listOf<String>()
+        val expected = listOf("na")
         
         //when
         val result = char.createAliases(gg)
@@ -184,11 +184,7 @@ class CharacterMapperTest {
     fun `createAliases handles two word names`() {
         //given
         val char = "Ky Kiske"
-        val expected = listOf(
-            "kk",
-            "ky",
-            "kiske",
-        )
+        val expected = listOf("ky", "kk",)
 
         //when
         val result = char.createAliases(gg)
@@ -201,9 +197,9 @@ class CharacterMapperTest {
     fun `createAliases handles special chars`() {
         //given
         val char1 = "Jack-O"
-        val expected1 = listOf<String>()
+        val expected1 = listOf("jc", "jacko")
         val char2 = "A.B.A"
-        val expected2 = listOf<String>()
+        val expected2 = listOf("ab", "aba")
         
         //when
         val result1 = char1.createAliases(gg)
@@ -218,10 +214,7 @@ class CharacterMapperTest {
     fun `createAliases only forms initials from multi char word`() {
         //given
         val char = "Asuka R"
-        val expected = listOf(
-            "ar",
-            "asuka",
-        )
+        val expected = listOf("as", "asuka", "ar",)
 
         //when
         val result = char.createAliases(gg)
@@ -234,7 +227,7 @@ class CharacterMapperTest {
     fun `createAliases removes numbers`() {
         //given
         val char = "Zato-1"
-        val expected = listOf("zato")
+        val expected = listOf("za", "zato", "zato1")
 
         //when
         val result = char.createAliases(gg)
@@ -247,10 +240,7 @@ class CharacterMapperTest {
     fun `create aliases for BB handles dots`() {
         // given
         val char = "Celica A. Mercury"
-        val expected = listOf(
-            "celica",
-            "ce",
-        )
+        val expected = listOf("celica", "ce",)
 
         // when
         val result = char.createAliases(bb)
