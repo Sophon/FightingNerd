@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.2.0] - TODO
+- `examples` command
+
 ## [v8.1.1] - 2026-01-15
 - add missing GBVSR commands - `fdgb` and `chargb`
 
