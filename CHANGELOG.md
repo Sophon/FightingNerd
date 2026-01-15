@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.1.1] - 2026-01-15
+- add missing GBVSR commands - `fdgb` and `chargb`
+
 ## [v8.1.0] - 2026-01-15
 - DustLoop 
   - `aliasgg` command
