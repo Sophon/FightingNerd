@@ -294,29 +294,30 @@ internal class CoreDiscordFeature(
             color = Color(PURPLE)
 
             mandatoryField(
-                name = "Input methods",
-                value = "1. `@bot [command] [optional query] ...`\n" +
+                name = "INPUT METHODS",
+                value = "1. **TAGGING**: `@bot [command] [optional query] ...`\n" +
                         "   - **`fd`** is the default command, no need to type it. Only type the game specific **`fd`** like **`fdsf`** with crossover characters\n" +
-                        "   - ***`fd`** has the following syntax: [charName] [moveInput]" +
+                        "   - **`fd`** has the following syntax: `[charName] [moveInput]`\n" +
                         "   - Examples:\n" +
-                        "      - `@bot hisui 5b` (no command, defaults to **`fd`**\n" +
+                        "      - `@bot hisui 5b` (no command, defaults to **`fd`**)\n" +
                         "      - `@bot ak h.db21` (no command, defaults to **`fd`**)\n" +
                         "      - `@bot fdcotw mai f.a` (game specific **`fd`**)\n" +
                         "      - `@bot chargg baiken`\n\n" +
-                        "2. `/command [optional query] ...`\n" +
+                        "2. **SLASH**: `/command [optional query] ...`\n" +
                         "   - the amount of queries can vary from zero to many\n" +
                         "   - Examples:\n" +
                         "      - `/aliasmb`\n" +
                         "      - `/fd nina df12`\n" +
-                        "      -  `/stance leroy hrm`",
+                        "      -  `/stance leroy hrm`\n" +
+                        "      - past the command, the syntax is identical to tagging",
                 inline = false,
             )
 
             mandatoryField(
-                name = "Queries",
-                value = "- all queries must be a single word without spaces\n" +
+                name = "QUERIES",
+                value = "- each individual query must be a __**single word without spaces**__\n" +
                         "- all queries are separated by a single space\n" +
-                        "   - **wrong command?** Try **`help`** or **`commands`**" +
+                        "   - **wrong command?** Try **`help`** or **`commands`**\n" +
                         "   - **wrong name?** Try game specific **`alias`** → **`aliasgg`** or **`aliastk`**\n" +
                         "   - **wrong move?** western notation or numpad notation\n" +
                         "      - for Tekken, consider **`stance`** or **`pc`** or **`heat`**\n" +
