@@ -11,6 +11,7 @@ enum class Command {
     INVITE,
     HELP,
     COMMANDS,
+    EXAMPLES,
 
     //admin
     FEEDBACK,

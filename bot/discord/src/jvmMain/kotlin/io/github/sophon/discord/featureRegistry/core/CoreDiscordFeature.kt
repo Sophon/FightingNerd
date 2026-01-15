@@ -61,6 +61,11 @@ internal class CoreDiscordFeature(
             description = "Available commands",
             arguments = listOf(),
         ),
+        SupportedCommand(
+            command = Command.EXAMPLES,
+            description = "Command examples",
+            arguments = listOf(),
+        ),
     )
 
     override suspend fun start() {
@@ -81,6 +86,7 @@ internal class CoreDiscordFeature(
             Command.INVITE -> createInviteText()
             Command.HELP -> createHelpEmbed()
             Command.COMMANDS -> createCommandsEmbed()
+            Command.EXAMPLES -> createExamples()
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -109,14 +115,7 @@ internal class CoreDiscordFeature(
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
             title = "FightingNerd bot by @phd_cunnilingus"
-
-            mandatoryField(
-                name = "⚙️ Commands".uppercase(),
-                value = "1. **tag** → `@FightingNerdBot` `[command]` `[query]`\n" +
-                        "   - frame data (`fd`) is the default command; `@FightingNerdBot jun df1` works\n" +
-                        "2. **slash** → `/command`\n\n" +
-                        "Use **`/commands`** to see available commands\n\n"
-            )
+            color = Color(PURPLE)
 
             mandatoryField(
                 name = "🧩 FEATURE MODULES",
@@ -132,7 +131,6 @@ internal class CoreDiscordFeature(
                         "$name:\n$games"
                     }
                 },
-                inline = false,
             )
 
             mandatoryField(
@@ -155,6 +153,10 @@ internal class CoreDiscordFeature(
                         label = "Commands",
                         action = BotOutput.EmbedButton.Action.Query(Command.COMMANDS.name),
                     ),
+                    BotOutput.EmbedButton(
+                        label = "Examples",
+                        action = BotOutput.EmbedButton.Action.Query(Command.EXAMPLES.name)
+                    ),
                 ),
                 duration = EMBED_BUTTON_DURATION_INF.seconds,
             ),
@@ -168,10 +170,22 @@ internal class CoreDiscordFeature(
         val fdCommands = commands.filter { it.name.startsWith("FD") && it.name != "FD" }
         val charCommands = commands.filter { it.name.startsWith("CHAR") }
         val aliasCommands = commands.filter { it.name.startsWith("ALIAS") }
-        val otherCommands = commands - fdCommands.toSet() - charCommands.toSet() - aliasCommands.toSet() - Command.FD - adminCommands.map { it.command }.toSet()
+        val invCommands = commands.filter { it.name.startsWith("INV") && it.name != "INVITE" }
+        val gameSpecificCommands = listOf(Command.HEAT, Command.HOMING, Command.PC, Command.STANCE)
+        val excludedFromOthers = buildSet {
+            addAll(fdCommands)
+            addAll(charCommands)
+            addAll(aliasCommands)
+            addAll(invCommands)
+            addAll(gameSpecificCommands)
+            add(Command.FD)
+            addAll(adminCommands.map { it.command })
+        }
+        val otherCommands = commands.filterNot { it in excludedFromOthers }
 
         val embedBuilder: EmbedBuilder.() -> Unit = {
             title = "⚙️ COMMANDS"
+            color = Color(PURPLE)
 
             mandatoryField(
                 name = "📊 FRAME DATA",
@@ -209,6 +223,28 @@ internal class CoreDiscordFeature(
             )
 
             mandatoryField(
+                name = "🛡️ INVINCIBLE MOVES",
+                value = buildString {
+                    invCommands
+                        .sortedBy { it.name }
+                        .forEach { command ->
+                            append("- `${command.name}`\n")
+                        }
+                }
+            )
+
+            mandatoryField(
+                name = "🎮 GAME SPECIFIC",
+                value = buildString {
+                    gameSpecificCommands
+                        .sortedBy { it.name }
+                        .forEach { command ->
+                            append("- `${command}`\n")
+                        }
+                }
+            )
+
+            mandatoryField(
                 name = "🛠️ OTHER COMMANDS",
                 value = buildString {
                     otherCommands.forEach { command ->
@@ -220,7 +256,20 @@ internal class CoreDiscordFeature(
             featureFooter(featureInfo)
         }
 
-        return Result.Success(BotOutput(primaryEmbedBuilder = embedBuilder))
+        val result = BotOutput(
+            primaryEmbedBuilder = embedBuilder,
+            buttons = BotOutput.ButtonSet(
+                buttonList = listOf(
+                    BotOutput.EmbedButton(
+                        label = "Examples",
+                        action = BotOutput.EmbedButton.Action.Query(Command.EXAMPLES.name)
+                    ),
+                ),
+                duration = EMBED_BUTTON_DURATION_INF.seconds,
+            )
+        )
+
+        return Result.Success(result)
     }
 
     private fun createRepoText(): Result<BotOutput, BotError> {
@@ -237,6 +286,60 @@ internal class CoreDiscordFeature(
                 plainText = "FightingNerd bot invite: $URL_INVITE"
             )
         )
+    }
+
+    private fun createExamples(): Result<BotOutput, BotError> {
+        val embedBuilder: EmbedBuilder.() -> Unit = {
+            title = "EXAMPLES"
+            color = Color(PURPLE)
+
+            mandatoryField(
+                name = "INPUT METHODS",
+                value = "1. **TAGGING**: `@bot [command] [optional query] ...`\n" +
+                        "   - **`fd`** is the default command, no need to type it. Only type the game specific **`fd`** like **`fdsf`** with crossover characters\n" +
+                        "   - **`fd`** has the following syntax: `[charName] [moveInput]`\n" +
+                        "   - Examples:\n" +
+                        "      - `@bot hisui 5b` (no command, defaults to **`fd`**)\n" +
+                        "      - `@bot ak h.db21` (no command, defaults to **`fd`**)\n" +
+                        "      - `@bot fdcotw mai f.a` (game specific **`fd`**)\n" +
+                        "      - `@bot chargg baiken`\n\n" +
+                        "2. **SLASH**: `/command [optional query] ...`\n" +
+                        "   - the amount of queries can vary from zero to many\n" +
+                        "   - Examples:\n" +
+                        "      - `/aliasmb`\n" +
+                        "      - `/fd nina df12`\n" +
+                        "      -  `/stance leroy hrm`\n" +
+                        "      - past the command, the syntax is identical to tagging",
+                inline = false,
+            )
+
+            mandatoryField(
+                name = "QUERIES",
+                value = "- each individual query must be a __**single word without spaces**__\n" +
+                        "- all queries are separated by a single space\n" +
+                        "   - **wrong command?** Try **`help`** or **`commands`**\n" +
+                        "   - **wrong name?** Try game specific **`alias`** → **`aliasgg`** or **`aliastk`**\n" +
+                        "   - **wrong move?** western notation or numpad notation\n" +
+                        "      - for Tekken, consider **`stance`** or **`pc`** or **`heat`**\n" +
+                        "      - check the Wiki to see the proper notation\n" +
+                        "- some outputs have buttons, clicking those outputs the proper query"
+            )
+        }
+
+        val result = BotOutput(
+            primaryEmbedBuilder = embedBuilder,
+            buttons = BotOutput.ButtonSet(
+                buttonList = listOf(
+                    BotOutput.EmbedButton(
+                        label = "Commands",
+                        action = BotOutput.EmbedButton.Action.Query(Command.COMMANDS.name),
+                    )
+                ),
+                duration = EMBED_BUTTON_DURATION_INF.seconds,
+            )
+        )
+
+        return Result.Success(result)
     }
 
     private companion object {
