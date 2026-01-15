@@ -52,6 +52,7 @@ enum class Command {
     CHARGG,
     FDGG,
     INVGG,
+    ALIASGG,
 
     CHARDB,
     FDDB,

@@ -102,6 +102,10 @@ internal class DustLoopWikiDiscordFeature(
             )
         ),
         SupportedCommand(
+            command = Command.ALIASGG,
+            description = "GG character aliases",
+        ),
+        SupportedCommand(
             command = Command.CHARDB,
             description = "DB character data",
             arguments = listOf(
@@ -234,6 +238,11 @@ internal class DustLoopWikiDiscordFeature(
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchInvincible(game, wiki, query)
+            }
+            Command.ALIASGG -> {
+                val wiki = wikis[Game.GGST.id]
+                    ?: return Result.Error(BotError.UnsupportedGame(query))
+                getCharacterAliases(wiki)
             }
 
             Command.CHARDB -> {
