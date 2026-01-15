@@ -161,14 +161,22 @@ internal fun String?.createAliases(
 
 private fun String?.createGGAliases(): List<String> {
     return buildList {
-        val original = this@createGGAliases.orEmpty()
+        val original = this@createGGAliases.orEmpty().lowercase()
         if (original.isBlank()) return@buildList
+
+        // Twitter hashtag approach
+        add(
+            if (original == "Jacko-O'") {
+                "jc"
+            } else {
+                original.take(2)
+            }
+        )
 
         // Handle hyphen-number pattern (e.g., "Zato-1")
         if (original.contains(Regex("-\\d+"))) {
             val baseName = original.substringBeforeLast("-")
-            add(baseName.lowercase())
-            return@buildList
+            add(baseName)
         }
 
         val cleaned = original
@@ -178,18 +186,12 @@ private fun String?.createGGAliases(): List<String> {
             .split(" ")
             .filter { it.isNotBlank() }
 
-        if (words.size <= 1) return@buildList
+        if (words.first().length > 2) add(words.first())
 
         // Create initials from all words
-        add(words.joinToString("") { it.first().lowercase() })
-
-        // Add individual words with length > 1
-        words.forEach { word ->
-            if (word.length > 1) {
-                add(word.lowercase())
-            }
-        }
-    }
+        if (words.size <= 1) return@buildList
+        add(words.joinToString("") { it.first().toString() })
+    }.distinct()
 }
 
 fun String?.createBBAliases(): List<String> {
