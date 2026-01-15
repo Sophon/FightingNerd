@@ -105,6 +105,7 @@ internal class DustLoopWikiDiscordFeature(
             command = Command.ALIASGG,
             description = "GG character aliases",
         ),
+
         SupportedCommand(
             command = Command.CHARDB,
             description = "DB character data",
@@ -133,6 +134,7 @@ internal class DustLoopWikiDiscordFeature(
             command = Command.ALIASDB,
             description = "DB character aliases",
         ),
+
         SupportedCommand(
             command = Command.CHARBB,
             description = "BB character data",
@@ -168,6 +170,31 @@ internal class DustLoopWikiDiscordFeature(
                 SupportedCommand.Argument(
                     name = KEY_CHAR_NAME,
                     description = "Character name",
+                )
+            ),
+        ),
+
+        SupportedCommand(
+            command = Command.CHARGB,
+            description = "GB character data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                )
+            ),
+        ),
+        SupportedCommand(
+            command = Command.FDGB,
+            description = "GB frame data",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_MOVE,
+                    description = "Move input"
                 )
             ),
         ),
