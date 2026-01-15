@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.1.0] - TODO
+- DustLoop - `aliasgg` command
+
 ## [v8.0.0] - 2026-01-14
 - `inv` invincible commands for 
   - MB, Uni, VSAV
