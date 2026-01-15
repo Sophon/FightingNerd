@@ -34,7 +34,11 @@ internal fun MoveListResponseDto.toDomain(
             recovery = dto.recovery?.cleanHtml(),
             guard = dto.guard?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
-            aliases = dto.input.formAliases(gameId),
+            aliases = if (characterData.name == "Nagoriyuki") {
+                dto.input.formNagoriyukiAliases()
+            } else {
+                dto.input.formAliases(gameId)
+            },
 
             notes = dto.notes.formNotes(),
 
@@ -144,6 +148,16 @@ internal fun String?.formAliases(gameId: String): List<String> {
     }
 }
 
+fun String?.formNagoriyukiAliases(): List<String> {
+    return when {
+        this == null -> emptyList()
+        contains("level br", ignoreCase = true) -> listOf(replace(" level br", "b", ignoreCase = true).lowercase())
+        contains("level1", ignoreCase = true) -> listOf(replace(" level1 ", "", ignoreCase = true).lowercase())
+        contains("level", ignoreCase = true) -> listOf(replace(" level ", "", ignoreCase = true).lowercase())
+        else -> emptyList()
+    }
+}
+
 private fun String.createNarmayaStanceAliases(): List<String> {
     val regex = """^(.+)\[([^]]+)]$""".toRegex()
     val match = regex.find(this) ?: return emptyList()
@@ -151,3 +165,4 @@ private fun String.createNarmayaStanceAliases(): List<String> {
 
     return listOf("${suffix.lowercase()}.${base.lowercase()}")
 }
+
