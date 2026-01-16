@@ -24,7 +24,6 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
@@ -45,7 +44,6 @@ internal class MizuumiWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
-    private val createMizuumiMoveEmbedUseCase: CreateMizuumiMoveEmbedUseCase,
     private val createMizuumiInvEmbedUseCase: CreateMizuumiInvEmbedUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
@@ -198,7 +196,7 @@ internal class MizuumiWikiDiscordFeature(
                     if (game == null) {
                         Result.Error(lastError ?: BotError.UnknownMove(query))
                     } else {
-                        when (val result = searchMove(wiki, query, game)) {
+                        when (val result = searchMove(wiki, query)) {
                             is Result.Success -> return result
                             is Result.Error -> lastError = result.error
                         }
@@ -211,7 +209,7 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.MBTL
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
+                searchMove(wiki, query)
             }
             Command.ALIASMB -> {
                 val game = Game.MBTL
@@ -230,7 +228,7 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.Uni2
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
+                searchMove(wiki, query)
             }
             Command.CHARUNI -> {
                 val game = Game.Uni2
@@ -249,9 +247,8 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
+                searchMove(wiki, query)
             }
-            //TODO: extract `?: return Result.Error(BotError.UnsupportedGame(query))` into util
             Command.INVVS -> {
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
@@ -277,26 +274,14 @@ internal class MizuumiWikiDiscordFeature(
     private suspend fun searchMove(
         wiki: WikiClient,
         query: String,
-        game: Game,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
                 val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
                     ?: emptyList()
-                val (primary, full) = createMizuumiMoveEmbedUseCase
-                    .invoke(move, game, featureInfo)
-                val buttons = if (full == null) {
-                    null
-                } else {
-                    listOf(
-                        BotOutput.EmbedButton(label = "Details", action = BotOutput.EmbedButton.Action.Edit())
-                    )
-                }
 
                 BotOutput(
-                    primaryEmbedBuilder = primary,
-                    fullEmbedBuilder = full,
-                    buttons = buttons?.let { BotOutput.ButtonSet(buttonList = it) },
+                    primaryEmbedBuilder = mizuumiMoveEmbed(move, featureInfo),
                     images = if (images.size < 2) {
                         null
                     } else {

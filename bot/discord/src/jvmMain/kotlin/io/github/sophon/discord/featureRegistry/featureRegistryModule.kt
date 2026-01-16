@@ -22,7 +22,6 @@ import io.github.sophon.discord.featureRegistry.wikiDustLoop.FetchDustLoopInvinc
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.DustLoopWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.CreateMizuumiInvEmbedUseCase
-import io.github.sophon.discord.featureRegistry.wikiMizuumi.CreateMizuumiMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.MizuumiWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
@@ -77,7 +76,6 @@ internal val featureRegistryModule = module {
     //endregion
 
     //region Mizuumi
-    singleOf(::CreateMizuumiMoveEmbedUseCase)
     singleOf(::CreateMizuumiInvEmbedUseCase)
     //endregion
 
