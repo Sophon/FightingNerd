@@ -1,7 +1,5 @@
 package io.github.sophon.discord.featureRegistry.wikiDustLoop
 
-import dev.kord.common.Color
-import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -11,7 +9,6 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
@@ -20,12 +17,12 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -37,7 +34,6 @@ import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import kotlin.collections.component1
 import kotlin.collections.component2
-import kotlin.collections.map
 
 internal class DustLoopWikiDiscordFeature(
     dustLoopFeatureInfo: DustLoopFeatureInfo,
@@ -393,48 +389,14 @@ internal class DustLoopWikiDiscordFeature(
         return fetchDustLoopInvincibleMovesUseCase.invoke(game, wiki, charName)
             .map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = createMoveListEmbed(
+                    primaryEmbedBuilder = dustLoopMoveListEmbed(
                         charName = charName,
                         category = "invincible",
-                        moveList = moveList
+                        moveList = moveList,
+                        featureInfo = featureInfo,
                     ),
                 )
             }
-    }
-
-    private fun createMoveListEmbed(
-        charName: String,
-        category: String,
-        moveList: List<Move>,
-    ): EmbedBuilder.() -> Unit = {
-        color = Color(RED)
-
-        val text = moveList
-            .mapNotNull { move ->
-                val startup = move.startup
-                    ?.takeWhile { it.isDigit() }
-                    ?.toIntOrNull()
-                startup?.let { it to move }
-            }
-            .sortedBy { (startup, _) -> startup }
-            .groupBy(
-                keySelector = { (startup, _) -> startup },
-                valueTransform = { (_, move) -> move }
-            )
-            .map { (startup, moveList) ->
-                "- **${startup}f**: " + moveList.joinToString(", ") {
-                    it.input
-                }
-            }
-            .joinToString("\n")
-
-        mandatoryField(
-            name = "$charName $category moves",
-            value = text,
-            inline = false,
-        )
-
-        featureFooter(featureInfo)
     }
 
 

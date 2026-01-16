@@ -1,7 +1,6 @@
 package io.github.sophon.discord.featureRegistry.wikiWavu
 
 import dev.kord.common.Color
-import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -28,7 +27,6 @@ import io.github.sophon.discord.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
@@ -195,7 +193,9 @@ internal class WavuWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { BotOutput(primaryEmbedBuilder = createMoveEmbed(move = it)) }
+            .map { move ->
+                BotOutput(primaryEmbedBuilder = wavuMoveEmbed(move, featureInfo))
+            }
     }
 
     private suspend fun searchPowerCrushMoves(
@@ -209,9 +209,10 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = createMoveListEmbed(
+                    primaryEmbedBuilder = wavuMoveListEmbed(
                         category = "${query.uppercase()} Power Crush",
-                        moveList = moveList,
+                        dataList = moveList.map { it.input },
+                        featureInfo = featureInfo,
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -231,9 +232,10 @@ internal class WavuWikiDiscordFeature(
             filter = WavuFilter.Heat,
         ).map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = createMoveListEmbed(
+                    primaryEmbedBuilder = wavuMoveListEmbed(
                         category = "${query.uppercase()} Heat",
-                        moveList = moveList,
+                        dataList = moveList.map { it.input },
+                        featureInfo = featureInfo,
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -253,9 +255,10 @@ internal class WavuWikiDiscordFeature(
             filter = WavuFilter.Homing,
         ).map { moveList ->
             BotOutput(
-                primaryEmbedBuilder = createMoveListEmbed(
+                primaryEmbedBuilder = wavuMoveListEmbed(
                     category = "${query.uppercase()} Homing",
-                    moveList = moveList,
+                    dataList = moveList.map { it.input },
+                    featureInfo = featureInfo,
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = query),
@@ -295,14 +298,11 @@ internal class WavuWikiDiscordFeature(
                     }
 
                     BotOutput(
-                        primaryEmbedBuilder = {
-                            color = Color(BLUE)
-                            mandatoryField(
-                                name = "${charName.uppercase()} stances",
-                                value = text,
-                            )
-                            featureFooter(featureInfo)
-                        },
+                        primaryEmbedBuilder = wavuMoveListEmbed(
+                            category = "${charName.uppercase()} stances",
+                            dataList = stanceList,
+                            featureInfo = featureInfo,
+                        ),
                         buttons = BotOutput.ButtonSet(
                             buttonList = buttons,
                             duration = EMBED_BUTTON_DURATION_INF.seconds,
@@ -322,110 +322,23 @@ internal class WavuWikiDiscordFeature(
                 filter = filter,
             ).map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = createMoveListEmbed(category = stance.uppercase(), moveList)
+                    primaryEmbedBuilder = wavuMoveListEmbed(
+                        category = stance.uppercase(),
+                        dataList = moveList.map { it.input },
+                        featureInfo = featureInfo,
+                    )
                 )
             }
         }
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, BLUE)
+        return createCharacterAliasesEmbedUseCase.invoke(
+            wiki = wiki,
+            featureInfo = featureInfo,
+            colorCode = BLUE,
+        )
             .map { BotOutput(primaryEmbedBuilder = it) }
-    }
-
-    private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
-        title = move.input
-        url = move.urls.wikiUrl
-        description = if (move.name.isNullOrBlank()) {
-            "**${move.charName}**"
-        } else {
-            "**${move.charName}**: ${move.name.orEmpty()}"
-        }
-        color = Color(BLUE)
-
-        move.urls.characterImage?.let { thumbnail { url = it } }
-
-        mandatoryField(name = "Startup", value = move.startup)
-        mandatoryField(name = "Hit", value = move.onHit)
-        mandatoryField(name = "Block", value = move.onBlock)
-        mandatoryField(name = "CH", value = (move.onCH ?: move.onHit))
-        mandatoryField(name = "Level", value = move.guard)
-
-
-        optionalField(name = "Recovery", value = move.recovery)
-        optionalField(name = "Damage", value = move.damage)
-
-        createNotes(move)
-
-        move.urls.videoId?.let { url ->
-            optionalField(name = "Video", value = "[Link](${url})", inline = false)
-        }
-
-        featureFooter(featureInfo)
-    }
-
-    private fun EmbedBuilder.createNotes(move: Move) {
-        val aliasNote = if (move.aliases.isNotEmpty()) {
-            "Alt inputs: ${move.aliases.joinToString("; ")}"
-        } else null
-
-        val allNotes = buildList {
-            addAll(move.notes.map { it })
-            aliasNote?.let { add(it) }
-        }
-
-        return optionalField(
-            name = "",
-            value = allNotes
-                .emojify()
-                .joinToString(separator = "") { note -> "* $note\n" },
-            inline = false,
-        )
-    }
-
-    private fun createMoveListEmbed(
-        category: String,
-        moveList: List<Move>
-    ): EmbedBuilder.() -> Unit = {
-        color = Color(BLUE)
-
-        val text = moveList
-            .mapIndexed { index, move ->
-                "${index + 1}. **${move.input}**"
-            }
-            .joinToString("\n")
-
-        mandatoryField(
-            name = "$category moves",
-            value = text,
-            inline = false,
-        )
-
-        featureFooter(featureInfo)
-    }
-
-    private fun List<String>.emojify(): List<String> {
-        return buildList {
-            this@emojify.forEach { note ->
-                val emojified = buildString {
-                    if (note.contains("Heat", ignoreCase = true)) append("🔥 ")
-                    if (note.contains("Balcony Break", ignoreCase = true)) append("➡️ ")
-                    if (note.contains("Spike", ignoreCase = true)) append("⬇️ ")
-                    if (note.contains("Floor break", ignoreCase = true)) append("⬇️ ")
-                    if (note.contains("Tornado", ignoreCase = true)) append("🌪️ ")
-                    if (note.contains("Tailspin", ignoreCase = true)) append("️🌀 ")
-                    if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
-                    if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
-                    if (note.contains("Throw", ignoreCase = true)) append("️🤝 ")
-                    if (note.contains("pc", ignoreCase = true)) append("🛡️ ")
-                    if (note.contains("weapon", ignoreCase = true)) append("⚔️ ")
-                    if (note.contains("jail", ignoreCase = true)) append("⛓️ ")
-                    if (note.contains("delay", ignoreCase = true)) append("⏳ ")
-                    append(note)
-                }
-                add(emojified)
-            }
-        }
     }
 
 
