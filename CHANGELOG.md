@@ -3,6 +3,7 @@
 ## [v8.2.0] - TODO
 - `examples` command
 - added buttons to error embeds
+- DustLoop - fixed aliases for BB
 
 ## [v8.1.1] - 2026-01-15
 - add missing GBVSR commands - `fdgb` and `chargb`
