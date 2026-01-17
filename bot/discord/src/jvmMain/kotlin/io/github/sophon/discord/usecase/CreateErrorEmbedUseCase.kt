@@ -4,25 +4,28 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
+import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.util.mandatoryField
+import kotlin.time.Duration.Companion.seconds
 
 internal class CreateErrorEmbedUseCase {
-    fun invoke(error: BotError): EmbedBuilder.() -> Unit {
+    fun invoke(error: BotError): Pair<EmbedBuilder.() -> Unit, BotOutput.ButtonSet?> {
         return when (error) {
             is BotError.UnknownCharacter,
             is BotError.UnknownMove,
                 -> {
-                createSyntaxErrorEmbed(error)
+                syntaxErrorEmbed(error) to examplesButton()
             }
 
             is BotError.InvalidQuery -> {
-                createCommandSyntaxErrorEmbed(error)
+                createCommandSyntaxErrorEmbed(error) to commandsButton()
             }
 
             else -> {
-                createGenericError(error)
+                createGenericError(error) to null
             }
         }
     }
@@ -33,7 +36,7 @@ internal class CreateErrorEmbedUseCase {
         description = error.toString().truncate(EMBED_MAX_LENGTH)
     }
 
-    private fun createSyntaxErrorEmbed(
+    private fun syntaxErrorEmbed(
         unknownCharacterError: BotError,
     ): EmbedBuilder.() -> Unit = {
         title = "ERROR"
@@ -82,6 +85,42 @@ internal class CreateErrorEmbedUseCase {
             text = "Got something to say, nerd? Use `/feedback`"
             icon = URL_IMG_FIGHTING_NERD
         }
+    }
+
+    private fun examplesButton(): BotOutput.ButtonSet {
+        return BotOutput.ButtonSet(
+            buttonList = listOf(
+                BotOutput.EmbedButton(
+                    label = "EXAMPLES",
+                    action = BotOutput.EmbedButton.Action.Query("examples")
+                )
+            ),
+            duration = EMBED_BUTTON_DURATION_INF.seconds,
+        )
+    }
+
+    private fun commandsButton(): BotOutput.ButtonSet {
+        return BotOutput.ButtonSet(
+            buttonList = listOf(
+                BotOutput.EmbedButton(
+                    label = "COMMANDS",
+                    action = BotOutput.EmbedButton.Action.Query("commands")
+                )
+            ),
+            duration = EMBED_BUTTON_DURATION_INF.seconds,
+        )
+    }
+
+    private fun helpButton(): BotOutput.ButtonSet {
+        return BotOutput.ButtonSet(
+            buttonList = listOf(
+                BotOutput.EmbedButton(
+                    label = "HELP",
+                    action = BotOutput.EmbedButton.Action.Query("help")
+                )
+            ),
+            duration = EMBED_BUTTON_DURATION_INF.seconds,
+        )
     }
 }
 
