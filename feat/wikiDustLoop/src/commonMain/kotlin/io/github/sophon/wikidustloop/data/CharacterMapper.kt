@@ -199,7 +199,7 @@ fun String?.createBBAliases(): List<String> {
 
     val bbCodeMap = mapOf(
         "amane nishiki" to listOf("amane", "am"),
-        "arakune" to listOf("ar"),
+        "arakune" to listOf("ar", "kune"),
         "azrael" to listOf("az"),
         "bang shishigami" to listOf("bang", "bn"),
         "bullet" to listOf("bl"),
@@ -225,29 +225,28 @@ fun String?.createBBAliases(): List<String> {
         "nine the phantom" to listOf("nine", "ph"),
         "noel vermillion" to listOf("noel", "no"),
         "nu-13" to listOf("nu", "ny"),
-        "platinum the trinity" to listOf("platinum", "pt"),
+        "platinum the trinity" to listOf("plat", "platinum", "pt"),
         "rachel alucard" to listOf("rachel", "rc"),
         "ragna the bloodedge" to listOf("ragna", "rg"),
         "relius clover" to listOf("relius", "rl"),
         "susano'o" to listOf("susano", "susanoo", "su"),
-        "taokaka" to listOf("tk"),
+        "taokaka" to listOf("tao", "tk"),
         "tsubaki yayoi" to listOf("tsubaki", "tb"),
-        "valkenhayn r. hellsing" to listOf("valkenhayn", "vh"),
+        "valkenhayn r. hellsing" to listOf("valk", "valkenhayn", "vh"),
         "yuuki terumi" to listOf("terumi", "yuuki", "tm"),
     )
 
     val fullName = this
         .decodeHtmlEntities()
         .replace("'", "")
-        .split(' ', '-')
-    val firstName = fullName
-        .first()
         .lowercase()
+    val words = fullName.split(' ', '-')
+    val firstName = words.first()
 
-    val code = bbCodeMap[firstName]
+    val code = bbCodeMap[fullName]
 
     return buildList {
-        if (fullName.size > 1) add(firstName)
+        if (words.size > 1) add(firstName)
         code?.let { addAll(it) }
     }.distinct()
 }
