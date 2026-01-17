@@ -229,7 +229,7 @@ fun String?.createBBAliases(): List<String> {
         "rachel alucard" to listOf("rachel", "rc"),
         "ragna the bloodedge" to listOf("ragna", "rg"),
         "relius clover" to listOf("relius", "rl"),
-        "susano'o" to listOf("susano", "susanoo", "su"),
+        "susanoo" to listOf("susano", "susanoo", "su"),
         "taokaka" to listOf("tao", "tk"),
         "tsubaki yayoi" to listOf("tsubaki", "tb"),
         "valkenhayn r. hellsing" to listOf("valk", "valkenhayn", "vh"),
