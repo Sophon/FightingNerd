@@ -48,7 +48,7 @@ class InMemoryMoveListDB: MoveListDB {
         val moveId = moveAliasMap[characterId]?.get(moveQuery) ?: moveQuery
 
         val moveData = moveList[moveId]
-            ?: return Result.Error(WikiError.UnknownMove(charName, moveQuery))
+            ?: return Result.Error(WikiError.UnknownMove(characterId, moveQuery))
 
         return Result.Success(moveData)
     }
