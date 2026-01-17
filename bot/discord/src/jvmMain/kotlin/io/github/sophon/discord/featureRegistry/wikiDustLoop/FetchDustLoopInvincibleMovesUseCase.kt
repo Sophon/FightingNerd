@@ -13,19 +13,21 @@ import io.github.sophon.wikidustloop.domain.DustLoopFilter
 
 internal class FetchDustLoopInvincibleMovesUseCase {
     suspend fun invoke(
-        game: Game,
+        gameId: String,
         wiki: WikiClient,
         charName: String,
     ): Result<List<Move>, BotError> {
-        return getInvincibleMoves(game, charName, wiki)
+        return getInvincibleMoves(gameId, charName, wiki)
             .mapError { it.toDomainError() }
     }
 
     private suspend fun getInvincibleMoves(
-        game: Game,
+        gameId: String,
         charName: String,
         wiki: WikiClient,
     ): Result<List<Move>, WikiError> {
+        val game = Game.fromId(gameId) ?: Game.GGST
+
         val filter = when (game) {
             Game.BBCF -> DustLoopFilter.BBInvincible
             Game.GGST -> DustLoopFilter.GGSTInvincible

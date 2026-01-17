@@ -12,6 +12,9 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFe
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.domain.Source
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 internal class InfilGlossaryDiscordFeature(
     getInfilFeatureInfoUseCase: GetInfilFeatureInfoUseCase,

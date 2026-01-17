@@ -12,12 +12,12 @@ import io.github.sophon.discord.featureRegistry.wikiDustLoop.charEmbedGG
 
 internal class CreateCharacterEmbedUseCase {
     fun invoke(
+        gameId: String,
         character: Character,
         fastestMoveList: List<Move>,
-        game: Game,
         featureInfo: FeatureInfo,
     ): EmbedBuilder.() -> Unit = {
-        when (game) {
+        when (Game.fromId(gameId)) {
             Game.GGST -> charEmbedGG(character, fastestMoveList, featureInfo)
             Game.DBFZ -> charEmbedDB(character, fastestMoveList, featureInfo)
             Game.GBVSR -> charEmbedGB(character, fastestMoveList, featureInfo)

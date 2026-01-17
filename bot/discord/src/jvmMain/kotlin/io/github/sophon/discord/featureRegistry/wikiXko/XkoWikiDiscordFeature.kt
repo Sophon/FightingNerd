@@ -21,6 +21,9 @@ import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.domain.Source
 import io.github.sophon.xko.domain.XkoFeatureInfo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
@@ -104,13 +107,9 @@ internal class XkoWikiDiscordFeature(
 
         return when (command) {
             Command.FD,
-            Command.FDXKO,
-                -> searchMove(wiki, query)
+            Command.FDXKO -> searchMove(wiki, query)
 
-            else -> {
-                val error = BotError.BotLogicError(command.name, query)
-                Result.Error(error)
-            }
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 

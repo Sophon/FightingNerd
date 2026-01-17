@@ -16,12 +16,17 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.withWiki
 import io.github.sophon.domain.Source
 import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
@@ -34,6 +39,7 @@ internal class SuperComboWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
+    private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -138,37 +144,43 @@ internal class SuperComboWikiDiscordFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.FD -> {
-                var lastError: BotError? = null
-                wikis.values.forEach { wiki ->
-                    when (val result = searchMove(wiki, query)) {
-                        is Result.Success -> return result
-                        is Result.Error -> lastError = result.error
-                    }
-                }
+            Command.FD -> fetchMoveInWikisUseCase.invoke(
+                wikis = wikis,
+                query = query,
+            ) { _, wiki, query ->
+                searchMove(wiki, query)
+            }
 
-                Result.Error(lastError ?: BotError.UnknownMove(query))
-            }
-            Command.CHARSF -> {
-                val wiki = wikis[Game.StreetFighter6.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
+            Command.CHARSF -> withWiki(
+                wikis = wikis,
+                gameId = Game.StreetFighter6.id,
+                query = query,
+            ) { _, wiki, query ->
                 searchCharacter(wiki, query)
             }
-            Command.FDSF -> {
-                val wiki = wikis[Game.StreetFighter6.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
+            Command.FDSF -> withWiki(
+                wikis = wikis,
+                gameId = Game.StreetFighter6.id,
+                query = query,
+            ) { _, wiki, query ->
                 searchMove(wiki, query)
             }
-            Command.CHARMK -> {
-                val wiki = wikis[Game.MK1.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
+
+            Command.CHARMK -> withWiki(
+                wikis = wikis,
+                gameId = Game.MK1.id,
+                query = query,
+            ) { _, wiki, query ->
                 searchCharacter(wiki, query)
             }
-            Command.FDMK -> {
-                val wiki = wikis[Game.MK1.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
+            Command.FDMK -> withWiki(
+                wikis = wikis,
+                gameId = Game.MK1.id,
+                query = query,
+            ) { _, wiki, query ->
                 searchMove(wiki, query)
             }
+
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -231,6 +243,5 @@ internal class SuperComboWikiDiscordFeature(
         const val TAG = "SuperComboWikiDiscordFeature"
         const val KEY_CHAR_NAME = "character"
         const val KEY_MOVE = "move"
-        const val WHITE = 0x00FFFFFF
     }
 }

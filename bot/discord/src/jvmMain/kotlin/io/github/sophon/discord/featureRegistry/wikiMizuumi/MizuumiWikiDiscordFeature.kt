@@ -133,7 +133,7 @@ internal class MizuumiWikiDiscordFeature(
             ),
         ),
         SupportedCommand(
-          command = Command.INVVS,
+            command = Command.INVVS,
             description = "VSAV Invincible moves",
             arguments = listOf(
                 SupportedCommand.Argument(

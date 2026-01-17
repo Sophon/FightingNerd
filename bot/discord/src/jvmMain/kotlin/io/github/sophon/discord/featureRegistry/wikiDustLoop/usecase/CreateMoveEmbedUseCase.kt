@@ -11,11 +11,11 @@ import io.github.sophon.discord.featureRegistry.wikiDustLoop.moveEmbedGG
 
 internal class CreateMoveEmbedUseCase {
     fun invoke(
+        gameId: String,
         move: Move,
-        game: Game,
         featureInfo: FeatureInfo,
     ): EmbedBuilder.() -> Unit = {
-        when (game) {
+        when (Game.fromId(gameId)) {
             Game.GGST -> moveEmbedGG(move, featureInfo)
             Game.DBFZ -> moveEmbedDB(move, featureInfo)
             Game.GBVSR -> moveEmbedGB(move, featureInfo)

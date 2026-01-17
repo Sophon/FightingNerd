@@ -18,11 +18,16 @@ import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.withWiki
 import io.github.sophon.domain.Source
 import io.github.sophon.dreamcancel.domain.DreamCancelFeatureInfo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
@@ -35,6 +40,7 @@ internal class DreamCancelWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
+    private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -125,40 +131,38 @@ internal class DreamCancelWikiDiscordFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.FD -> {
-                var lastError: BotError? = null
-                for ((gameId, wiki) in wikis) {
-                    when (val result = searchMove(gameId, wiki, query)) {
-                        is Result.Success -> return result
-                        is Result.Error -> lastError = result.error
-                    }
-                }
-                Result.Error(lastError ?: BotError.UnknownMove(query))
-            }
-            Command.FDKOF -> {
-                val gameId = Game.KoFXV.id
-                val wiki = wikis[gameId]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(gameId, wiki, query)
-            }
-            Command.ALIASKOF -> {
-                val gameId = Game.KoFXV.id
-                val wiki = wikis[gameId]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
+            Command.FD -> fetchMoveInWikisUseCase.invoke(
+                wikis = wikis,
+                query = query,
+                searchFun = ::searchMove,
+            )
+            Command.FDKOF -> withWiki(
+                wikis = wikis,
+                gameId = Game.KoFXV.id,
+                query = query,
+                action = ::searchMove,
+            )
+            Command.ALIASKOF -> withWiki(
+                wikis = wikis,
+                gameId = Game.KoFXV.id,
+                query = query,
+            ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
-            Command.FDCOTW -> {
-                val gameId = Game.COTW.id
-                val wiki = wikis[gameId]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(gameId, wiki, query)
-            }
-            Command.ALIASCOTW -> {
-                val gameId = Game.COTW.id
-                val wiki = wikis[gameId]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
+            Command.FDCOTW -> withWiki(
+                wikis = wikis,
+                gameId = Game.COTW.id,
+                query = query,
+                action = ::searchMove,
+            )
+            Command.ALIASCOTW -> withWiki(
+                wikis = wikis,
+                gameId = Game.COTW.id,
+                query = query,
+            ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
+
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
