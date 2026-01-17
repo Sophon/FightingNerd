@@ -21,6 +21,9 @@ import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.domain.Source
 import io.github.sophon.xko.domain.XkoFeatureInfo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
@@ -66,6 +69,8 @@ internal class XkoWikiDiscordFeature(
             )
         ),
     )
+    private val _events = MutableSharedFlow<Result<BotOutput, BotError>>()
+    override val events: SharedFlow<Result<BotOutput, BotError>> = _events.asSharedFlow()
     private val wikis = mutableMapOf<String, WikiClient>()
 
     override fun registerGames(enabledGames: List<Game>) {
@@ -98,20 +103,23 @@ internal class XkoWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
-    ): Result<BotOutput, BotError> {
+    ) {
         val wiki = wikis[Game.Xko.id]
-            ?: return Result.Error(BotError.UnsupportedGame(query))
-
-        return when (command) {
-            Command.FD,
-            Command.FDXKO,
-                -> searchMove(wiki, query)
-
-            else -> {
-                val error = BotError.BotLogicError(command.name, query)
-                Result.Error(error)
-            }
+        if (wiki == null) {
+            _events.emit(
+                Result.Error(BotError.UnsupportedGame(query))
+            )
+            return
         }
+
+        val result = when (command) {
+            Command.FD,
+            Command.FDXKO -> searchMove(wiki, query)
+
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
+        }
+
+        _events.emit(result)
     }
 
 

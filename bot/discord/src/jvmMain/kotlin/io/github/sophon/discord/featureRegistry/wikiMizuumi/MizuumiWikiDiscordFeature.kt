@@ -17,12 +17,17 @@ import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.withWiki
 import io.github.sophon.domain.Source
 import io.github.sophon.wikimizuumi.MizuumiFeatureInfo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
@@ -37,6 +42,7 @@ internal class MizuumiWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMizuumiInvEmbedUseCase: CreateMizuumiInvEmbedUseCase,
+    private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -147,6 +153,8 @@ internal class MizuumiWikiDiscordFeature(
             description = "VSAV character aliases",
         ),
     )
+    private val _events = MutableSharedFlow<Result<BotOutput, BotError>>()
+    override val events: SharedFlow<Result<BotOutput, BotError>> = _events.asSharedFlow()
     private val wikis = mutableMapOf<String, WikiClient>()
 
     override fun registerGames(enabledGames: List<Game>) {
@@ -179,83 +187,115 @@ internal class MizuumiWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
-    ): Result<BotOutput, BotError> {
-        return when (command) {
-            Command.FD -> {
-                var lastError: BotError? = null
-                for ((gameId, wiki) in wikis) {
-                    val game = Game.fromId(gameId)
-                    if (game == null) {
-                        Result.Error(lastError ?: BotError.UnknownMove(query))
-                    } else {
-                        when (val result = searchMove(wiki, query)) {
-                            is Result.Success -> return result
-                            is Result.Error -> lastError = result.error
-                        }
-                    }
-                }
-                Result.Error(lastError ?: BotError.UnknownMove(query))
+    ) {
+        val result = when (command) {
+            Command.FD -> fetchMoveInWikisUseCase.invoke(
+                wikis = wikis,
+                query = query,
+            ) { _, wiki, query ->
+                searchMove(
+                    wiki = wiki,
+                    query = query,
+                )
             }
 
-            Command.FDMB -> {
-                val game = Game.MBTL
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+            Command.FDMB -> withWiki(
+                wikis = wikis,
+                gameId = Game.MBTL.id,
+                query = query,
+            ) { _, wiki, query ->
+                searchMove(
+                    wiki = wiki,
+                    query = query,
+                )
             }
-            Command.ALIASMB -> {
-                val game = Game.MBTL
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                getCharacterAliases(wiki)
+            Command.ALIASMB -> withWiki(
+                wikis = wikis,
+                gameId = Game.MBTL.id,
+                query = query,
+            ) { _, wiki, _ ->
+                getCharacterAliases(wiki = wiki)
             }
-            Command.INVMB -> {
-                val game = Game.MBTL
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
-            }
-
-            Command.FDUNI -> {
-                val game = Game.Uni2
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
-            }
-            Command.CHARUNI -> {
-                val game = Game.Uni2
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query)
-            }
-            Command.INVUNI -> {
-                val game = Game.Uni2
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+            Command.INVMB -> withWiki(
+                wikis = wikis,
+                gameId = Game.MBTL.id,
+                query = query,
+            ) { _, wiki, query ->
+                createMizuumiInvEmbedUseCase.invoke(
+                    game = Game.MBTL,
+                    wiki = wiki,
+                    featureInfo = featureInfo,
+                    charName = query,
+                )
             }
 
-            Command.FDVS -> {
-                val game = Game.VSAV
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+            Command.FDUNI -> withWiki(
+                wikis = wikis,
+                gameId = Game.Uni2.id,
+                query = query,
+            ) { _, wiki, query ->
+                searchMove(
+                    wiki = wiki,
+                    query = query,
+                )
             }
-            Command.INVVS -> {
-                val game = Game.VSAV
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+            Command.CHARUNI -> withWiki(
+                wikis = wikis,
+                gameId = Game.Uni2.id,
+                query = query,
+            ) { _, wiki, query ->
+                searchCharacter(
+                    wiki = wiki,
+                    query = query,
+                )
             }
-            Command.ALIASVS -> {
-                val game = Game.VSAV
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                getCharacterAliases(wiki)
+            Command.INVUNI -> withWiki(
+                wikis = wikis,
+                gameId = Game.Uni2.id,
+                query = query,
+            ) { _, wiki, query ->
+                createMizuumiInvEmbedUseCase.invoke(
+                    game = Game.Uni2,
+                    wiki = wiki,
+                    featureInfo = featureInfo,
+                    charName = query,
+                )
+            }
+
+            Command.FDVS -> withWiki(
+                wikis = wikis,
+                gameId = Game.VSAV.id,
+                query = query,
+            ) { _, wiki, query ->
+                searchMove(
+                    wiki = wiki,
+                    query = query,
+                )
+            }
+            Command.INVVS -> withWiki(
+                wikis = wikis,
+                gameId = Game.VSAV.id,
+                query = query,
+            ) { _, wiki, query ->
+                createMizuumiInvEmbedUseCase.invoke(
+                    game = Game.VSAV,
+                    wiki = wiki,
+                    featureInfo = featureInfo,
+                    charName = query,
+                )
+            }
+            Command.ALIASVS -> withWiki(
+                wikis = wikis,
+                gameId = Game.VSAV.id,
+                query = query,
+            ) { _, wiki, _ ->
+                getCharacterAliases(wiki = wiki)
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        _events.emit(value = result)
     }
 
 

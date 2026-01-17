@@ -1,6 +1,5 @@
 package io.github.sophon.discord.featureRegistry.wikiWavu
 
-import dev.kord.common.Color
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -21,17 +20,19 @@ import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
 import io.github.sophon.wikiwavu.domain.WavuFilter
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
@@ -47,6 +48,7 @@ internal class WavuWikiDiscordFeature(
     private val getMovesUseCase: GetMovesUseCase,
     private val getStancesUseCase: GetStancesUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
+    private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -130,6 +132,8 @@ internal class WavuWikiDiscordFeature(
             description = "Tekken character aliases",
         ),
     )
+    private val _events = MutableSharedFlow<Result<BotOutput, BotError>>()
+    override val events: SharedFlow<Result<BotOutput, BotError>> = _events.asSharedFlow()
     private val wikis = mutableMapOf<String, WikiClient>()
 
     override fun registerGames(enabledGames: List<Game>) {
@@ -162,25 +166,28 @@ internal class WavuWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
-    ): Result<BotOutput, BotError> {
+    ) {
         val wiki = wikis[Game.Tekken8.id]
-            ?: return Result.Error(BotError.UnsupportedGame(query))
+        if (wiki == null) {
+            _events.emit(
+                Result.Error(BotError.UnsupportedGame(query))
+            )
+            return
+        }
 
-        return when (command) {
+        val result = when (command) {
             Command.FD,
-            Command.FDTK,
-                -> searchMove(wiki, query)
+            Command.FDTK -> searchMove(wiki, query)
 
             Command.PC -> searchPowerCrushMoves(wiki, query)
             Command.HEAT -> searchHeatMoves(wiki, query)
             Command.HOMING -> searchHomingMoves(wiki, query)
             Command.STANCE -> searchStanceMoves(wiki, query)
             Command.ALIASTK -> getCharacterAliases(wiki)
-            else -> {
-                val error = BotError.BotLogicError(command.name, query)
-                Result.Error(error)
-            }
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        _events.emit(result)
     }
 
 

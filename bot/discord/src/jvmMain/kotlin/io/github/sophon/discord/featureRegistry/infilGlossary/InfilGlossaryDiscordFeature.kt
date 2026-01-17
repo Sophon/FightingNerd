@@ -12,6 +12,9 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFe
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.domain.Source
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 internal class InfilGlossaryDiscordFeature(
     getInfilFeatureInfoUseCase: GetInfilFeatureInfoUseCase,
@@ -30,6 +33,8 @@ internal class InfilGlossaryDiscordFeature(
         )
     )
     override val otherCommands = listOf<SupportedCommand>()
+    private val _events = MutableSharedFlow<Result<BotOutput, BotError>>()
+    override val events: SharedFlow<Result<BotOutput, BotError>> = _events.asSharedFlow()
 
     override suspend fun start() {
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
@@ -41,11 +46,13 @@ internal class InfilGlossaryDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
-    ): Result<BotOutput, BotError> {
-        return when (command) {
+    ) {
+        val result = when (command) {
             Command.GL -> searchTerm(query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        _events.emit(result)
     }
 
 

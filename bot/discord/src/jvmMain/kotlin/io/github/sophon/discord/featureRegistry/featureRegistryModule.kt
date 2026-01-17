@@ -17,10 +17,10 @@ import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDisco
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
-import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
-import io.github.sophon.discord.featureRegistry.wikiDustLoop.FetchDustLoopInvincibleMovesUseCase
-import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.DustLoopWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.FetchDustLoopInvincibleMovesUseCase
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.CreateMizuumiInvEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiMizuumi.MizuumiWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
@@ -28,6 +28,7 @@ import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetCharactersUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
@@ -61,6 +62,7 @@ internal val featureRegistryModule = module {
     singleOf(::GetStancesUseCase)
     singleOf(::GetCharactersUseCase)
     singleOf(::CreateCharacterAliasesEmbedUseCase)
+    singleOf(::FetchMoveInWikisUseCase)
 
     singleOf(::Scheduler)
     //endregion
