@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v8.2.0] - TODO
+## [v8.2.0] - 2026-01-17
 - `examples` command
 - added buttons to error embeds
 - DustLoop - fixed aliases for BB
