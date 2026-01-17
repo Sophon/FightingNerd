@@ -1,7 +1,5 @@
 package io.github.sophon.discord.featureRegistry.wikiDustLoop
 
-import dev.kord.common.Color
-import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -11,7 +9,6 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
@@ -20,24 +17,26 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.withWiki
 import io.github.sophon.domain.Source
 import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
-import kotlin.collections.component1
-import kotlin.collections.component2
-import kotlin.collections.map
 
 internal class DustLoopWikiDiscordFeature(
     dustLoopFeatureInfo: DustLoopFeatureInfo,
@@ -48,6 +47,7 @@ internal class DustLoopWikiDiscordFeature(
     private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
     private val fetchDustLoopInvincibleMovesUseCase: FetchDustLoopInvincibleMovesUseCase,
+    private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -233,99 +233,98 @@ internal class DustLoopWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.FD -> {
-                var lastError: BotError? = null
-                for ((gameId, wiki) in wikis) {
-                    val game = Game.fromId(gameId)
-                    if (game == null) {
-                        Result.Error(lastError ?: BotError.UnknownMove(query))
-                    } else {
-                        when (val result = searchMove(wiki, query, game)) {
-                            is Result.Success -> return result
-                            is Result.Error -> lastError = result.error
-                        }
-                    }
-                }
-                Result.Error(lastError ?: BotError.UnknownMove(query))
+                fetchMoveInWikisUseCase.invoke(
+                    wikis = wikis,
+                    query = query,
+                    searchFun = ::searchMove,
+                )
             }
 
-            Command.CHARGG -> {
-                val game = Game.GGST
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query, game)
-            }
-            Command.FDGG -> {
-                val game = Game.GGST
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
-            }
-            Command.INVGG -> {
-                val game = Game.GGST
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchInvincible(game, wiki, query)
-            }
-            Command.ALIASGG -> {
-                val wiki = wikis[Game.GGST.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
+            Command.CHARGG -> withWiki(
+                wikis = wikis,
+                gameId = Game.GGST.id,
+                query = query,
+                action = ::searchCharacter,
+            )
+            Command.FDGG -> withWiki(
+                wikis = wikis,
+                gameId = Game.GGST.id,
+                query = query,
+                action = ::searchMove,
+            )
+            Command.INVGG -> withWiki(
+                wikis = wikis,
+                gameId = Game.GGST.id,
+                query = query,
+                action = ::searchInvincible,
+            )
+            Command.ALIASGG -> withWiki(
+                wikis = wikis,
+                gameId = Game.GGST.id,
+                query = query,
+            ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
 
-            Command.CHARDB -> {
-                val game = Game.DBFZ
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query, game)
-            }
-            Command.FDDB -> {
-                val game = Game.DBFZ
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
-            }
-            Command.ALIASDB -> {
-                val wiki = wikis[Game.DBFZ.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
+            Command.CHARDB -> withWiki(
+                wikis = wikis,
+                gameId = Game.DBFZ.id,
+                query = query,
+                action = ::searchCharacter,
+            )
+            Command.FDDB -> withWiki(
+                wikis = wikis,
+                gameId = Game.DBFZ.id,
+                query = query,
+                action = ::searchMove,
+            )
+            Command.ALIASDB -> withWiki(
+                wikis = wikis,
+                gameId = Game.DBFZ.id,
+                query = query,
+            ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
 
-            Command.CHARGB -> {
-                val game = Game.GBVSR
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query, game)
-            }
-            Command.FDGB -> {
-                val game = Game.GBVSR
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
-            }
+            Command.CHARGB -> withWiki(
+                wikis = wikis,
+                gameId = Game.GBVSR.id,
+                query = query,
+                action = ::searchCharacter,
+            )
+            Command.FDGB -> withWiki(
+                wikis = wikis,
+                gameId = Game.GBVSR.id,
+                query = query,
+                action = ::searchMove,
+            )
 
-            Command.CHARBB -> {
-                val game = Game.BBCF
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query, game)
-            }
-            Command.FDBB -> {
-                val game = Game.BBCF
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
-            }
-            Command.ALIASBB -> {
-                val wiki = wikis[Game.BBCF.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
+            Command.CHARBB -> withWiki(
+                wikis = wikis,
+                gameId = Game.BBCF.id,
+                query = query,
+                action = ::searchCharacter,
+            )
+            Command.FDBB -> withWiki(
+                wikis = wikis,
+                gameId = Game.BBCF.id,
+                query = query,
+                action = ::searchMove,
+            )
+            Command.ALIASBB -> withWiki(
+                wikis = wikis,
+                gameId = Game.BBCF.id,
+                query = query,
+            ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
-            Command.INVBB -> {
-                val game = Game.BBCF
-                val wiki = wikis[Game.BBCF.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchInvincible(game, wiki, query)
-            }
+            Command.INVBB -> withWiki(
+                wikis = wikis,
+                gameId = Game.BBCF.id,
+                query = query,
+                action = ::searchInvincible,
+            )
+
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -336,27 +335,27 @@ internal class DustLoopWikiDiscordFeature(
     }
 
     private suspend fun searchCharacter(
+        gameId: String,
         wiki: WikiClient,
         query: String,
-        game: Game,
     ): Result<BotOutput, BotError> {
         return getCharacterUseCase.invoke(wiki = wiki, charName = query)
             .map { (character, fastestMoveList) ->
                 BotOutput(
                     primaryEmbedBuilder = createCharacterEmbedUseCase.invoke(
-                        character,
-                        fastestMoveList,
-                        game,
-                        featureInfo,
+                        gameId = gameId,
+                        character = character,
+                        fastestMoveList = fastestMoveList,
+                        featureInfo = featureInfo,
                     )
                 )
             }
     }
 
     private suspend fun searchMove(
+        gameId: String,
         wiki: WikiClient,
         query: String,
-        game: Game,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
@@ -364,7 +363,7 @@ internal class DustLoopWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    primaryEmbedBuilder = createMoveEmbedUseCase.invoke(move, game, featureInfo),
+                    primaryEmbedBuilder = createMoveEmbedUseCase.invoke(gameId, move, featureInfo),
                     images = if (images.size < 2) {
                         null
                     } else {
@@ -386,55 +385,21 @@ internal class DustLoopWikiDiscordFeature(
     }
 
     private suspend fun searchInvincible(
-        game: Game,
+        gameId: String,
         wiki: WikiClient,
         charName: String,
     ): Result<BotOutput, BotError> {
-        return fetchDustLoopInvincibleMovesUseCase.invoke(game, wiki, charName)
+        return fetchDustLoopInvincibleMovesUseCase.invoke(gameId, wiki, charName)
             .map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = createMoveListEmbed(
+                    primaryEmbedBuilder = dustLoopMoveListEmbed(
                         charName = charName,
                         category = "invincible",
-                        moveList = moveList
+                        moveList = moveList,
+                        featureInfo = featureInfo,
                     ),
                 )
             }
-    }
-
-    private fun createMoveListEmbed(
-        charName: String,
-        category: String,
-        moveList: List<Move>,
-    ): EmbedBuilder.() -> Unit = {
-        color = Color(RED)
-
-        val text = moveList
-            .mapNotNull { move ->
-                val startup = move.startup
-                    ?.takeWhile { it.isDigit() }
-                    ?.toIntOrNull()
-                startup?.let { it to move }
-            }
-            .sortedBy { (startup, _) -> startup }
-            .groupBy(
-                keySelector = { (startup, _) -> startup },
-                valueTransform = { (_, move) -> move }
-            )
-            .map { (startup, moveList) ->
-                "- **${startup}f**: " + moveList.joinToString(", ") {
-                    it.input
-                }
-            }
-            .joinToString("\n")
-
-        mandatoryField(
-            name = "$charName $category moves",
-            value = text,
-            inline = false,
-        )
-
-        featureFooter(featureInfo)
     }
 
 

@@ -1,7 +1,5 @@
 package io.github.sophon.discord.featureRegistry.wikiMizuumi
 
-import dev.kord.common.Color
-import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -9,10 +7,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
-import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
@@ -24,11 +19,7 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
 import io.github.sophon.wikimizuumi.MizuumiFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +36,6 @@ internal class MizuumiWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
-    private val createMizuumiMoveEmbedUseCase: CreateMizuumiMoveEmbedUseCase,
     private val createMizuumiInvEmbedUseCase: CreateMizuumiInvEmbedUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
@@ -143,7 +133,7 @@ internal class MizuumiWikiDiscordFeature(
             ),
         ),
         SupportedCommand(
-          command = Command.INVVS,
+            command = Command.INVVS,
             description = "VSAV Invincible moves",
             arguments = listOf(
                 SupportedCommand.Argument(
@@ -198,7 +188,7 @@ internal class MizuumiWikiDiscordFeature(
                     if (game == null) {
                         Result.Error(lastError ?: BotError.UnknownMove(query))
                     } else {
-                        when (val result = searchMove(wiki, query, game)) {
+                        when (val result = searchMove(wiki, query)) {
                             is Result.Success -> return result
                             is Result.Error -> lastError = result.error
                         }
@@ -211,7 +201,7 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.MBTL
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
+                searchMove(wiki, query)
             }
             Command.ALIASMB -> {
                 val game = Game.MBTL
@@ -230,7 +220,7 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.Uni2
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
+                searchMove(wiki, query)
             }
             Command.CHARUNI -> {
                 val game = Game.Uni2
@@ -249,9 +239,8 @@ internal class MizuumiWikiDiscordFeature(
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query, game)
+                searchMove(wiki, query)
             }
-            //TODO: extract `?: return Result.Error(BotError.UnsupportedGame(query))` into util
             Command.INVVS -> {
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
@@ -277,26 +266,14 @@ internal class MizuumiWikiDiscordFeature(
     private suspend fun searchMove(
         wiki: WikiClient,
         query: String,
-        game: Game,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
                 val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
                     ?: emptyList()
-                val (primary, full) = createMizuumiMoveEmbedUseCase
-                    .invoke(move, game, featureInfo)
-                val buttons = if (full == null) {
-                    null
-                } else {
-                    listOf(
-                        BotOutput.EmbedButton(label = "Details", action = BotOutput.EmbedButton.Action.Edit())
-                    )
-                }
 
                 BotOutput(
-                    primaryEmbedBuilder = primary,
-                    fullEmbedBuilder = full,
-                    buttons = buttons?.let { BotOutput.ButtonSet(buttonList = it) },
+                    primaryEmbedBuilder = mizuumiMoveEmbed(move, featureInfo),
                     images = if (images.size < 2) {
                         null
                     } else {
@@ -317,73 +294,23 @@ internal class MizuumiWikiDiscordFeature(
         return getCharacterUseCase.invoke(wiki, query)
             .map { (character, fastestMoveList) ->
                 BotOutput(
-                    primaryEmbedBuilder = getCharacterEmbedBuilder(character, fastestMoveList)
+                    primaryEmbedBuilder = mizuumiCharacterEmbed(
+                        character,
+                        fastestMoveList,
+                        featureInfo,
+                    )
                 )
             }
     }
 
-    private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, TEAL)
-            .map { BotOutput(primaryEmbedBuilder = it) }
-    }
-
-    private fun getCharacterEmbedBuilder(
-        character: Character,
-        fastestMoveList: List<Move>,
-    ): EmbedBuilder.() -> Unit = {
-        title = character.displayName
-        url = character.wikiUrl
-        color = Color(TEAL)
-        character.images?.iconUrl?.let { iconUrl ->
-            thumbnail { url = iconUrl }
-        }
-
-        val moves = fastestMoveList.joinToString(", ") { it.input }
-        val startup = fastestMoveList.first().startup.orDash()
-        mandatoryField(
-            name = "Fastest normal",
-            value = "${startup}f: $moves"
-        )
-        mandatoryField(name = "HP", character.uni2Properties?.hp)
-        mandatoryField(
-            name = "Umo",
-            value = if (character.umo.size == 1) {
-                character.umo.toString()
-            } else {
-                character.umo.joinToString {
-                    "- $it\n"
-                }
-            },
-        )
-
-        character.uni2Properties?.apply {
-            optionalField(name = "Jump", value = "**$jumpStartup** ($jumpDuration)")
-
-            val walkValue = buildString {
-                bWalkSpeed?.let { append("← **$it**") }
-                fWalkSpeed?.let { append(" → **$it** ") }
-            }
-            optionalField(name = "Walk", value = walkValue)
-
-            val bDashValue = buildString {
-                bDashStartup?.let { append("**${it}f**") }
-                bDashDuration?.let { append(" - dur: $it") }
-                bDashDistance?.let { append(" dist: $it\n") }
-                append("Inv: **$bDashFullInvulStart - $bDashFullInvulEnd**")
-                append(" Thr: **$bDashThrowInvulStart - $bDashThrowInvulEnd**")
-            }
-            optionalField(name = "bDash", value = bDashValue)
-
-            optionalField(name = "Vorpal", value = character.uni2Properties?.vorpalTrait)
-        }
-
-        optionalField(
-            name = "Trait",
-            value = character.uni2Properties?.trait,
-            inline = false,
-        )
-
-        featureFooter(featureInfo)
+    private suspend fun getCharacterAliases(
+        wiki: WikiClient,
+    ): Result<BotOutput, BotError> {
+        return createCharacterAliasesEmbedUseCase.invoke(
+            wiki = wiki,
+            featureInfo = featureInfo,
+            colorCode = TEAL,
+        ).map { BotOutput(primaryEmbedBuilder = it) }
     }
 
 

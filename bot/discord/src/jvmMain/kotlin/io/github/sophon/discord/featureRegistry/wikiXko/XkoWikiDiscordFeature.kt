@@ -1,7 +1,5 @@
 package io.github.sophon.discord.featureRegistry.wikiXko
 
-import dev.kord.common.Color
-import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -9,9 +7,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
-import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
@@ -22,12 +18,12 @@ import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
 import io.github.sophon.xko.domain.XkoFeatureInfo
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
@@ -111,13 +107,9 @@ internal class XkoWikiDiscordFeature(
 
         return when (command) {
             Command.FD,
-            Command.FDXKO,
-                -> searchMove(wiki, query)
+            Command.FDXKO -> searchMove(wiki, query)
 
-            else -> {
-                val error = BotError.BotLogicError(command.name, query)
-                Result.Error(error)
-            }
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 
@@ -133,7 +125,7 @@ internal class XkoWikiDiscordFeature(
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
                 BotOutput(
-                    primaryEmbedBuilder = createMoveEmbed(move),
+                    primaryEmbedBuilder = xkoMoveEmbed(move, featureInfo),
                     images = if (move.urls.hitboxImageList.size < 2) {
                         null
                     } else {
@@ -147,38 +139,10 @@ internal class XkoWikiDiscordFeature(
             }
     }
 
-    private fun createMoveEmbed(move: Move): EmbedBuilder.() -> Unit = {
-        title = "${move.charName}: ${move.input.uppercase()}"
-        description = if (move.name.isNullOrBlank()) {
-            "**${move.charName}**"
-        } else {
-            "**${move.charName}**: ${move.name.orEmpty()}"
-        }
-
-        val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-            ?: emptyList()
-        images
-            .takeIf { it.size == 1 }
-            ?.let { image = it.first() }
-
-        color = Color(GREEN)
-
-        mandatoryField(name = "Startup", value = move.startup)
-        mandatoryField(name = "Block", value = move.onBlock)
-        mandatoryField(name = "Guard", value = move.guard)
-        mandatoryField(name = "Active", value = move.active.orDash())
-
-        optionalField(name = "Recovery", value = move.recovery)
-        optionalField(name = "Damage", value = move.damage)
-
-        featureFooter(featureInfo)
-    }
-
 
     private companion object {
         private const val TAG = "XkoWikiDiscordFeature"
         private const val KEY_CHAR_NAME = "character"
         private const val KEY_MOVE = "move"
-        private const val GREEN = 0xCDF564
     }
 }

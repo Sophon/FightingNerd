@@ -125,7 +125,7 @@ fun String.maskSecret(): String {
     }
 }
 
-fun String.createAliases(): List<String> {
+fun String.createAliases(addInitials: Boolean = true): List<String> {
     return buildList {
         split(
             " ",
@@ -136,7 +136,9 @@ fun String.createAliases(): List<String> {
             .filter { it.isNotBlank() }
             .takeIf { it.size > 1 }
             ?.apply {
-                add(joinToString("") { it.first().lowercase() })
+                if (addInitials) {
+                    add(joinToString("") { it.first().lowercase() })
+                }
             }
             ?.let { words ->
                 if (words.first().length >= 2) {
