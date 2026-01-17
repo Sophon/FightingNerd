@@ -9,14 +9,16 @@ internal fun CharacterListResponseDto.toDomain(
     gameId: String,
     imageUrlMap: Map<String, String>,
 ): List<Character> {
+    val game = Game.fromId(gameId)
+
     val characterList = cargoquery
         .map { dto ->
             val charDto = dto.title
             val sf6Properties: Character.SF6Properties?
             val mkProperties: Character.MK1Properties?
 
-            when (gameId) {
-                Game.MK1.id -> {
+            when (game) {
+                Game.MK1 -> {
                     mkProperties = Character.MK1Properties(
                         hp = charDto.hp,
                         hpMod = charDto.hpmod,
@@ -24,7 +26,7 @@ internal fun CharacterListResponseDto.toDomain(
                     )
                     sf6Properties = null
                 }
-                Game.StreetFighter6.id -> {
+                Game.StreetFighter6 -> {
                     sf6Properties = Character.SF6Properties(
                         fwdWalkSpd = charDto.fwdWalkSpd,
                         bwdWalkSpd = charDto.bwdWalkSpd,
@@ -56,7 +58,7 @@ internal fun CharacterListResponseDto.toDomain(
                 displayName = charDto.name,
                 queryName = charDto.chara,
                 wikiUrl = createWikiUrlFrom(gameId, charDto.chara),
-                aliasList = charDto.chara.createAliases(),
+                aliasList = charDto.chara.createAliases(addInitials = (game != Game.MK1)),
                 images = Character.Images(
                     iconUrl = charDto.icon.let { imageUrlMap[it] },
                     bannerUrl = charDto.portrait.let { imageUrlMap[it] },
