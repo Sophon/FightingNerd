@@ -154,7 +154,8 @@ internal class DiscordBotImpl(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
-                BotOutput(errorEmbedBuilder = createErrorEmbedUseCase.invoke(result.error))
+                val (errorEmbed, buttons) = createErrorEmbedUseCase.invoke(result.error)
+                BotOutput(errorEmbedBuilder = errorEmbed, buttons = buttons)
             }
         }
 
@@ -235,7 +236,8 @@ internal class DiscordBotImpl(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
-                BotOutput(errorEmbedBuilder = createErrorEmbedUseCase.invoke(result.error))
+                val (errorEmbed, buttons) = createErrorEmbedUseCase.invoke(result.error)
+                BotOutput(errorEmbedBuilder = errorEmbed, buttons = buttons)
             }
         }
 
