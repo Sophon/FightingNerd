@@ -199,8 +199,6 @@ internal class DustLoopWikiDiscordFeature(
             ),
         ),
     )
-    private val _events = MutableSharedFlow<Result<BotOutput, BotError>>()
-    override val events: SharedFlow<Result<BotOutput, BotError>> = _events.asSharedFlow()
     private val wikis = mutableMapOf<String, WikiClient>()
 
     override fun registerGames(enabledGames: List<Game>) {
@@ -232,8 +230,8 @@ internal class DustLoopWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
-    ) {
-        val result = when (command) {
+    ): Result<BotOutput, BotError> {
+        return when (command) {
             Command.FD -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikis,
@@ -329,8 +327,6 @@ internal class DustLoopWikiDiscordFeature(
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
-
-        _events.emit(result)
     }
 
 

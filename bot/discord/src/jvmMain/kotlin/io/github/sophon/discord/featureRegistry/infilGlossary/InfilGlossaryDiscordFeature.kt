@@ -33,8 +33,6 @@ internal class InfilGlossaryDiscordFeature(
         )
     )
     override val otherCommands = listOf<SupportedCommand>()
-    private val _events = MutableSharedFlow<Result<BotOutput, BotError>>()
-    override val events: SharedFlow<Result<BotOutput, BotError>> = _events.asSharedFlow()
 
     override suspend fun start() {
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
@@ -46,13 +44,11 @@ internal class InfilGlossaryDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
-    ) {
-        val result = when (command) {
+    ): Result<BotOutput, BotError> {
+        return when (command) {
             Command.GL -> searchTerm(query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
-
-        _events.emit(result)
     }
 
 

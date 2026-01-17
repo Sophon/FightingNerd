@@ -97,8 +97,6 @@ internal class DreamCancelWikiDiscordFeature(
             description = "KOF character aliases",
         ),
     )
-    private val _events = MutableSharedFlow<Result<BotOutput, BotError>>()
-    override val events: SharedFlow<Result<BotOutput, BotError>> = _events.asSharedFlow()
     private val wikis = mutableMapOf<String, WikiClient>()
 
     override fun registerGames(enabledGames: List<Game>) {
@@ -131,8 +129,8 @@ internal class DreamCancelWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
-    ) {
-        val result = when (command) {
+    ): Result<BotOutput, BotError> {
+        return when (command) {
             Command.FD -> fetchMoveInWikisUseCase.invoke(
                 wikis = wikis,
                 query = query,
@@ -167,8 +165,6 @@ internal class DreamCancelWikiDiscordFeature(
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
-
-        _events.emit(result)
     }
 
 
