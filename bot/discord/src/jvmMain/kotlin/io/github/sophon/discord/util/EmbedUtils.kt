@@ -1,12 +1,20 @@
 package io.github.sophon.discord.util
 
+import dev.kord.common.entity.ButtonStyle
 import dev.kord.rest.builder.message.EmbedBuilder
+import dev.kord.rest.builder.message.MessageBuilder
+import dev.kord.rest.builder.message.actionRow
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_EDIT
+import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_QUERY
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 internal fun EmbedBuilder.mandatoryField(
     name: String,
@@ -95,4 +103,35 @@ internal fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton>
             action = BotOutput.EmbedButton.Action.Query(query),
         )
     }
+}
+
+@OptIn(ExperimentalUuidApi::class)
+internal fun MessageBuilder.createButtons(
+    uuid: Uuid,
+    buttons: List<BotOutput.EmbedButton>,
+) {
+    buttons
+        .take(EMBED_MAX_BUTTONS)
+        .chunked(5)
+        .forEach { rowButtons ->
+            actionRow {
+                rowButtons.forEach { button ->
+                    val action = when (button.action) {
+                        is BotOutput.EmbedButton.Action.Query -> {
+                            "$KEY_QUERY${button.action.query}"
+                        }
+
+                        is BotOutput.EmbedButton.Action.Edit -> "$KEY_EDIT$uuid"
+                    }
+
+                    interactionButton(
+                        style = ButtonStyle.Primary,
+                        customId = action,
+                    ) {
+                        label = button.label
+                        disabled = false
+                    }
+                }
+            }
+        }
 }
