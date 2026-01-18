@@ -3,6 +3,7 @@ package io.github.sophon.dreamcancel
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
@@ -37,6 +38,7 @@ fun dreamCancelModule() = module {
     
     factory<WikiClient>(named(WikiClientFeature.DreamCancel.id)) { params ->
         val gameId: String = params.get()
+        val game = Game.fromId(gameId)
         val characterListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
         val source: DreamCancelWikiDataSource = get()
@@ -64,7 +66,7 @@ fun dreamCancelModule() = module {
             },
 
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
-                moveListDB.insertMoveList(character, moveList)
+                moveListDB.insertMoveList(game, character, moveList)
             },
             fetchMoveListUseCase = FetchMoveListUseCase { charName ->
                 moveListDB.fetchMoveListFor(charName)
