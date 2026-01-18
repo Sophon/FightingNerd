@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v8.3.0] - TODO
+## [v8.3.0] - 2026-01-18
 - error embeds
   - shortened
   - added the game for UnknownMove
