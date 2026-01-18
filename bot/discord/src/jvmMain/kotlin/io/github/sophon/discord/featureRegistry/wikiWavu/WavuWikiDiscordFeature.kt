@@ -324,6 +324,10 @@ internal class WavuWikiDiscordFeature(
                         category = stance.uppercase(),
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                    ),
+                    buttons = BotOutput.ButtonSet(
+                        buttonList = moveList.toButtons(charName = charName),
+                        duration = EMBED_BUTTON_DURATION_INF.seconds,
                     )
                 )
             }
