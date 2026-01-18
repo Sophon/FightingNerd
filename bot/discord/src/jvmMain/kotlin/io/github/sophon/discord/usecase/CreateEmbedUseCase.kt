@@ -1,14 +1,11 @@
 package io.github.sophon.discord.usecase
 
-import dev.kord.common.entity.ButtonStyle
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
-import dev.kord.rest.builder.message.MessageBuilder
-import dev.kord.rest.builder.message.actionRow
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
@@ -16,10 +13,10 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
-import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.BotOutput.ButtonSet
+import io.github.sophon.discord.util.createButtons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -131,36 +128,6 @@ internal class CreateEmbedUseCase {
         }
     }
 
-
-    private fun MessageBuilder.createButtons(
-        uuid: Uuid,
-        buttons: List<BotOutput.EmbedButton>,
-    ) {
-        buttons
-            .take(EMBED_MAX_BUTTONS)
-            .chunked(5)
-            .forEach { rowButtons ->
-                actionRow {
-                    rowButtons.forEach { button ->
-                        val action = when (button.action) {
-                            is BotOutput.EmbedButton.Action.Query -> {
-                                "$KEY_QUERY${button.action.query}"
-                            }
-
-                            is BotOutput.EmbedButton.Action.Edit -> "$KEY_EDIT$uuid"
-                        }
-
-                        interactionButton(
-                            style = ButtonStyle.Primary,
-                            customId = action,
-                        ) {
-                            label = button.label
-                            disabled = false
-                        }
-                    }
-                }
-            }
-    }
 
     internal companion object {
         const val KEY_QUERY = "query: "
