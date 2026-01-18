@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v8.3.0] - TODO
+- error embeds
+  - shortened
+  - added the game for UnknownMove
+
 ## [v8.2.0] - 2026-01-17
 - `examples` command
 - added buttons to error embeds
