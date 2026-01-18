@@ -22,7 +22,6 @@ import io.github.sophon.core.feature.Config
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
-import io.github.sophon.discord.usecase.CreateEmbedUseCase
 import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_EDIT
 import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_QUERY
 import io.github.sophon.discord.usecase.ResultToEmbedUseCase
@@ -227,7 +226,7 @@ internal class DiscordBotImpl(
             }
             (KEY_EDIT in action) -> {
                 interaction.deferPublicMessageUpdate()
-                val uuid = action.substringAfter(CreateEmbedUseCase.KEY_EDIT)
+                val uuid = action.substringAfter(KEY_EDIT)
                 message?.apply {
                     val botOutput = editableEmbedMap[uuid]
                     botOutput?.fullEmbedBuilder?.let { builder ->
