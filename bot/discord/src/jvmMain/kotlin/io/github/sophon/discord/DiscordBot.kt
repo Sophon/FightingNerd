@@ -24,11 +24,14 @@ import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.usecase.CreateEmbedUseCase
+import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_EDIT
+import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_QUERY
 import io.github.sophon.discord.usecase.CreateErrorEmbedUseCase
 import io.github.sophon.discord.usecase.CreateFeedbackEmbedUseCase
 import io.github.sophon.discord.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.util.createButtons
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -36,11 +39,14 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlin.time.Duration.Companion.seconds
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 interface DiscordBot {
     suspend fun startSession()
 }
 
+@OptIn(ExperimentalUuidApi::class)
 internal class DiscordBotImpl(
     private val kord: Kord,
     private val featureList: List<DiscordRegisteredFeature>,
@@ -307,13 +313,30 @@ internal class DiscordBotImpl(
         }
 
         when {
-            (CreateEmbedUseCase.KEY_QUERY in action) -> {
+            (KEY_QUERY in action) -> {
                 val response = interaction.deferPublicResponse()
-                val message = action.substringAfter(CreateEmbedUseCase.KEY_QUERY)
+                val message = action.substringAfter(KEY_QUERY)
                 routeCommandToFeatureUseCase.invoke(source, message)
                     .onSuccess { botOutput ->
+                        val uuid = Uuid.random()
+
                         response.respond {
                             botOutput.primaryEmbedBuilder?.let { embed(it) }
+
+                            botOutput.buttons?.let { buttonSet ->
+                                if (buttonSet.buttonList.isEmpty().not()) {
+                                    createButtons(uuid, buttonSet.buttonList)
+
+                                    if (buttonSet.duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                                        coroutineScope.launch {
+                                            delay(buttonSet.duration)
+                                            interaction.getOriginalInteractionResponse().edit {
+                                                components = mutableListOf()
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                     .onError { error ->
@@ -326,7 +349,7 @@ internal class DiscordBotImpl(
                         }
                     }
             }
-            (CreateEmbedUseCase.KEY_EDIT in action) -> {
+            (KEY_EDIT in action) -> {
                 interaction.deferPublicMessageUpdate()
                 val uuid = action.substringAfter(CreateEmbedUseCase.KEY_EDIT)
                 message?.apply {
