@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
@@ -56,6 +57,7 @@ class RoomMoveListDB(
     }
 
     override suspend fun insertMoveList(
+        game: Game?,
         character: Character,
         moveList: List<Move>
     ): EmptyResult<WikiError> {

@@ -3,6 +3,7 @@ package io.github.sophon.wikiwavu
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.asEmptyDataResult
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
@@ -40,6 +41,7 @@ fun wavuModule() = module {
 
     factory<WikiClient>(named(WikiClientFeature.Wavu.id)) { params ->
         val gameId: String = params.get()
+        val game = Game.fromId(gameId)
         val charListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
         val source: WavuWikiDataSource = get()
@@ -67,7 +69,7 @@ fun wavuModule() = module {
                     .map { dto ->  dto.toDomain(characterData) }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
-                moveListDB.insertMoveList(character, moveList)
+                moveListDB.insertMoveList(game, character, moveList)
                     .asEmptyDataResult()
             },
             fetchMoveListUseCase = FetchMoveListUseCase { charName ->
