@@ -4,6 +4,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.asEmptyDataResult
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
@@ -40,6 +41,7 @@ fun superComboModule() = module {
 
     factory<WikiClient>(named(WikiClientFeature.SuperCombo.id)) { params ->
         val gameId: String = params.get()
+        val game = Game.fromId(gameId)
         val characterListDB: CharacterListDB = params.get()
         val moveListDB: MoveListDB = params.get()
         val source: SuperComboDataSource = get()
@@ -84,7 +86,7 @@ fun superComboModule() = module {
                     }
             },
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
-                moveListDB.insertMoveList(character, moveList)
+                moveListDB.insertMoveList(game, character, moveList)
                     .asEmptyDataResult()
             },
             fetchMoveUseCase = FetchMoveUseCase { charName, moveQuery ->
