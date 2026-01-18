@@ -4,6 +4,7 @@ package io.github.sophon.discord.data
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
@@ -14,6 +15,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class InMemoryMoveListDB: MoveListDB {
+    private lateinit var game: Game
     private val database: MutableMap<String, Map<String, Move>> = mutableMapOf()
     private var insertTimeInstant: Instant? = null
     private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
@@ -48,15 +50,19 @@ class InMemoryMoveListDB: MoveListDB {
         val moveId = moveAliasMap[characterId]?.get(moveQuery) ?: moveQuery
 
         val moveData = moveList[moveId]
-            ?: return Result.Error(WikiError.UnknownMove(characterId, moveQuery))
+            ?: return Result.Error(WikiError.UnknownMove(game.id, characterId, moveQuery))
 
         return Result.Success(moveData)
     }
 
     override suspend fun insertMoveList(
+        game: Game?,
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<WikiError> {
+        if (game == null) return Result.Error(WikiError.DatabaseError("null game"))
+
+        this.game = game
         val moveMap = moveList.associateBy { it.input }
         database[character.id] = moveMap
 
