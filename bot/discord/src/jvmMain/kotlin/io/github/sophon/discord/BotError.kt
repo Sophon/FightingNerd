@@ -12,6 +12,7 @@ sealed class BotError(private vararg val inputs: String) : Error {
     class EmptyDatabase : BotError()
     class UnsupportedGame(vararg inputs: String): BotError(*inputs)
     class Kord(error: String): BotError(error)
+    class InvalidSteamLobbyUrl(steamLobbyUrl: String): BotError(steamLobbyUrl)
 
     class Unknown(input: String = "") : BotError(input)
 
