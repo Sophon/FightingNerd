@@ -12,6 +12,7 @@ import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUse
 import io.github.sophon.discord.featureRegistry.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.featureRegistry.core.CoreDiscordFeature
 import io.github.sophon.discord.featureRegistry.core.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.featureRegistry.core.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
@@ -51,6 +52,7 @@ internal val featureRegistryModule = module {
 
     //region CORE
     singleOf(::GetBotFeatureInfoUseCase)
+    singleOf(::CreateJoinEmbedButtonUseCase)
     //endregion
 
     //region Generic
