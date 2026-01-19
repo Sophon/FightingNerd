@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.4.1] - 2026-01-19
+- HOTFIX Discord commands
+
 ## [v8.4.0] - 2026-01-19
 - `join` command
 

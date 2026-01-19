@@ -365,7 +365,7 @@ internal class CoreDiscordFeature(
     private companion object {
         const val TAG = "CoreDiscordFeature"
         const val PURPLE = 0x00A020F0
-        const val KEY_JOIN = "Steam lobby URL:"
-        const val KEY_PW = "Lobby password: "
+        const val KEY_JOIN = "url"
+        const val KEY_PW = "password"
     }
 }
