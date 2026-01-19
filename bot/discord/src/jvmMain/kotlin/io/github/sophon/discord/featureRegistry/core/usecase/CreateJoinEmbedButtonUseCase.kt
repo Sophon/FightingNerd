@@ -23,14 +23,14 @@ internal class CreateJoinEmbedButtonUseCase {
             return Result.Error(BotError.InvalidSteamLobbyUrl(steamLobbyUrl))
 
         val url = "$URL_SCRIPT_LOBBY?target=$steamLobbyUrl"
-        val userName = origin.serverName.ifBlank { origin.username }
+        val userName = origin.username
 
         val botOutput = BotOutput(
             primaryEmbedBuilder = {
                 title = "Join $userName's lobby!"
                 optionalField(
                     name = "Password",
-                    value = "```$password```",
+                    value = password?.let {  "```$password```" },
                 )
                 color = Color(PURPLE)
             },

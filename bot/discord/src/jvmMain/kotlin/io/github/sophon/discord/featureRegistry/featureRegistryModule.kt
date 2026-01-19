@@ -11,7 +11,7 @@ import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUse
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.featureRegistry.core.CoreDiscordFeature
-import io.github.sophon.discord.featureRegistry.core.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.featureRegistry.core.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.core.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
