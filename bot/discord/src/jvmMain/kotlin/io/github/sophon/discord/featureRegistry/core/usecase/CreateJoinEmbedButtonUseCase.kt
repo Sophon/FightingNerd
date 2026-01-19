@@ -6,6 +6,7 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_SCRIPT_LOBBY
 import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
 import kotlin.time.Duration.Companion.seconds
 
@@ -15,8 +16,12 @@ internal class CreateJoinEmbedButtonUseCase {
     //https://Sophon.github.io/lobby.html?target=steam://joinlobby/586140/109775241137042824/76561198443042808
     fun invoke(
         origin: Source,
-        steamLobbyUrl: String,
+        query: String,
     ): Result<BotOutput, BotError> {
+        val parts = query.split(" ")
+        val steamLobbyUrl = parts.first()
+        val password = if (parts.size > 1) parts.last() else null
+
         if (steamLobbyUrl.startsWith("steam://joinlobby/").not())
             return Result.Error(BotError.InvalidSteamLobbyUrl(steamLobbyUrl))
 
@@ -26,6 +31,10 @@ internal class CreateJoinEmbedButtonUseCase {
         val botOutput = BotOutput(
             primaryEmbedBuilder = {
                 title = "Join $userName's lobby!"
+                optionalField(
+                    name = "Password",
+                    value = "```$password```",
+                )
                 color = Color(PURPLE)
             },
             buttons = BotOutput.ButtonSet(

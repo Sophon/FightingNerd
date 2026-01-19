@@ -77,6 +77,11 @@ internal class CoreDiscordFeature(
                     description = "Steam lobby URL",
                     isRequired = true,
                 ),
+                SupportedCommand.Argument(
+                    name = KEY_PW,
+                    description = "Lobby password",
+                    isRequired = false,
+                )
             ),
         )
     )
@@ -100,10 +105,7 @@ internal class CoreDiscordFeature(
             Command.HELP -> createHelpEmbed()
             Command.COMMANDS -> createCommandsEmbed()
             Command.EXAMPLES -> createExamples()
-            Command.JOIN -> createJoinEmbedButtonUseCase.invoke(
-                origin = origin,
-                steamLobbyUrl = query,
-            )
+            Command.JOIN -> createJoinEmbedButtonUseCase.invoke(origin, query)
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -364,5 +366,6 @@ internal class CoreDiscordFeature(
         const val TAG = "CoreDiscordFeature"
         const val PURPLE = 0x00A020F0
         const val KEY_JOIN = "Steam lobby URL:"
+        const val KEY_PW = "Lobby password: "
     }
 }
