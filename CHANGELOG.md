@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.4.2] - TODO
+- `join` no longer displays the password field without password
+
 ## [v8.4.1] - 2026-01-19
 - HOTFIX Discord commands
 
