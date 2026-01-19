@@ -22,3 +22,5 @@ internal const val TIME_UPDATE_INTERVAL_H = 3
 
 internal const val BUILD_KEY_ENV = "ENV"
 internal const val BUILD_VAL_PROD = "production"
+
+internal const val URL_SCRIPT_LOBBY = "https://Sophon.github.io/lobby.html"

@@ -12,6 +12,7 @@ enum class Command {
     HELP,
     COMMANDS,
     EXAMPLES,
+    JOIN,
 
     //admin
     FEEDBACK,

@@ -16,6 +16,7 @@ import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
+import io.github.sophon.discord.featureRegistry.core.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
@@ -25,6 +26,7 @@ import kotlin.time.Duration.Companion.seconds
 
 internal class CoreDiscordFeature(
     getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
+    private val createJoinEmbedButtonUseCase: CreateJoinEmbedButtonUseCase,
 ): DiscordRegisteredFeature, KoinComponent {
     private val featureRegistry: FeatureRegistry by inject()
 
@@ -66,6 +68,22 @@ internal class CoreDiscordFeature(
             description = "Command examples",
             arguments = listOf(),
         ),
+        SupportedCommand(
+            command = Command.JOIN,
+            description = "Make clickable Steam lobby link",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_JOIN,
+                    description = "Steam lobby URL",
+                    isRequired = true,
+                ),
+                SupportedCommand.Argument(
+                    name = KEY_PW,
+                    description = "Lobby password",
+                    isRequired = false,
+                )
+            ),
+        )
     )
 
     override suspend fun start() {
@@ -87,6 +105,8 @@ internal class CoreDiscordFeature(
             Command.HELP -> createHelpEmbed()
             Command.COMMANDS -> createCommandsEmbed()
             Command.EXAMPLES -> createExamples()
+            Command.JOIN -> createJoinEmbedButtonUseCase.invoke(origin, query)
+
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -345,5 +365,7 @@ internal class CoreDiscordFeature(
     private companion object {
         const val TAG = "CoreDiscordFeature"
         const val PURPLE = 0x00A020F0
+        const val KEY_JOIN = "Steam lobby URL:"
+        const val KEY_PW = "Lobby password: "
     }
 }

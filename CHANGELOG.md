@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.4.0] - 2026-01-19
+- `join` command
+
 ## [v8.3.0] - 2026-01-18
 - error embeds
   - shortened
