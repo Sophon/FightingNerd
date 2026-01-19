@@ -30,7 +30,7 @@ internal class CreateJoinEmbedButtonUseCase {
                 title = "Join $userName's lobby!"
                 optionalField(
                     name = "Password",
-                    value = "```$password```",
+                    value = password?.let {  "```$password```" },
                 )
                 color = Color(PURPLE)
             },
