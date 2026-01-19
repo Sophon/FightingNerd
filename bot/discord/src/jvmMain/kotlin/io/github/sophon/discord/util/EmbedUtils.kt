@@ -116,20 +116,32 @@ internal fun MessageBuilder.createButtons(
         .forEach { rowButtons ->
             actionRow {
                 rowButtons.forEach { button ->
-                    val action = when (button.action) {
+                    when (button.action) {
                         is BotOutput.EmbedButton.Action.Query -> {
-                            "$KEY_QUERY${button.action.query}"
+                            interactionButton(
+                                style = ButtonStyle.Primary,
+                                customId = "$KEY_QUERY${button.action.query}",
+                            ) {
+                                label = button.label
+                                disabled = false
+                            }
                         }
 
-                        is BotOutput.EmbedButton.Action.Edit -> "$KEY_EDIT$uuid"
-                    }
-
-                    interactionButton(
-                        style = ButtonStyle.Primary,
-                        customId = action,
-                    ) {
-                        label = button.label
-                        disabled = false
+                        is BotOutput.EmbedButton.Action.Edit -> {
+                            interactionButton(
+                                style = ButtonStyle.Primary,
+                                customId = "$KEY_EDIT$uuid",
+                            ) {
+                                label = button.label
+                                disabled = false
+                            }
+                        }
+                        is BotOutput.EmbedButton.Action.Url -> {
+                            linkButton(url = button.action.url) {
+                                label = button.label
+                                disabled = false
+                            }
+                        }
                     }
                 }
             }
