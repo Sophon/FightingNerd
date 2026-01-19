@@ -17,6 +17,7 @@ import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.featureRegistry.core.usecase.CreateJoinEmbedButtonUseCase
+import io.github.sophon.discord.featureRegistry.core.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
