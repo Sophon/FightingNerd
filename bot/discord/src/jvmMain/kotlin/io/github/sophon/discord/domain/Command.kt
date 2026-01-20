@@ -34,6 +34,7 @@ enum class Command {
     HOMING,
     STANCE,
     ALIASTK,
+    THROWTK,
 
     //supercombo wiki
     FDSF,
