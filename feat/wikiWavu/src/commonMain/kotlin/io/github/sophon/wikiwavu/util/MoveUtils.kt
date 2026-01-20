@@ -2,7 +2,8 @@ package io.github.sophon.wikiwavu.util
 
 import io.github.sophon.core.wiki.domain.model.Move
 
-//TODO: this should be a property of Move
+//TODO: throw should be a property of Move
+//TODO: use this for the DTO
 internal fun Move.isThrow(): Boolean {
     val guard = this.guard.orEmpty().lowercase()
 
@@ -11,7 +12,8 @@ internal fun Move.isThrow(): Boolean {
             || notes.any { it.contains("throw break", ignoreCase = true) }
 }
 
-//TODO: this should be a property of Move
+//TODO: throw should be a property of Move
+//TODO: use this for the DTO
 internal fun List<String>.isHitThrow(): Boolean {
     return this.any {
         val note = it.lowercase()
