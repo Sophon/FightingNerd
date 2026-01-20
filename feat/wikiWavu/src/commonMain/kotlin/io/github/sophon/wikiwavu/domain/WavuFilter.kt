@@ -2,6 +2,8 @@ package io.github.sophon.wikiwavu.domain
 
 import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.wikiwavu.util.isHitThrow
+import io.github.sophon.wikiwavu.util.isThrow
 
 object WavuFilter {
     object PowerCrush: Filter {
@@ -24,8 +26,7 @@ object WavuFilter {
 
     object Throw: Filter {
         override val predicate: (Move) -> Boolean = { move ->
-            move.guard?.contains("t", ignoreCase = true) == true
-                    && move.notes.none { it.contains("attack throw", ignoreCase = true) }
+            move.isThrow() && move.notes.isHitThrow().not()
         }
     }
 }
