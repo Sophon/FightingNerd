@@ -130,7 +130,7 @@ internal fun String.createAliases(): List<String> {
         "felicia" -> listOf("fe")
         "gallon" -> listOf("ga")
         "jedah" -> listOf("je")
-        "lei lei" -> listOf("le")
+        "lei-lei" -> listOf("le")
         "lilith" -> listOf("li")
         "morrigan" -> listOf("mo")
         "q-bee" -> listOf("qb")
