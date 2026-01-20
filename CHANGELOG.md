@@ -1,7 +1,8 @@
 # BOT CHANGELOG
 
-## [v8.4.3] - TODO
+## [v8.5.0] - TODO
 - fixed `Lei-Lei` alias
+- `throwtk` command
 
 ## [v8.4.2] - 2026-01-20
 - `join` 
