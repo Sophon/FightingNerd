@@ -128,6 +128,16 @@ internal class WavuWikiDiscordFeature(
             command = Command.ALIASTK,
             description = "Tekken character aliases",
         ),
+        SupportedCommand(
+            command = Command.THROWTK,
+            description = "Tekken THROW moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+            )
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -174,6 +184,7 @@ internal class WavuWikiDiscordFeature(
             Command.HOMING -> searchHomingMoves(wiki, query)
             Command.STANCE -> searchStanceMoves(wiki, query)
             Command.ALIASTK -> getCharacterAliases(wiki)
+            Command.THROWTK -> searchThrowMoves(wiki, query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -328,6 +339,29 @@ internal class WavuWikiDiscordFeature(
                     )
                 )
             }
+        }
+    }
+
+    private suspend fun searchThrowMoves(
+        wiki: WikiClient,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getMovesUseCase.invoke(
+            wiki = wiki,
+            charName = query,
+            filter = WavuFilter.Throw,
+        ).map { moveList ->
+            BotOutput(
+                primaryEmbedBuilder = wavuMoveListEmbed(
+                    category = "${query.uppercase()} Throws",
+                    dataList = moveList.map { it.input },
+                    featureInfo = featureInfo,
+                ),
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveList.toButtons(charName = query),
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
+                ),
+            )
         }
     }
 
