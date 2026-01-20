@@ -4,7 +4,6 @@ import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.model.Move
 
 object WavuFilter {
-
     object PowerCrush: Filter {
         override val predicate: (Move) -> Boolean = {
             it.t8Properties?.isPowerCrush == true
@@ -20,6 +19,13 @@ object WavuFilter {
     object Homing: Filter {
         override val predicate: (Move) -> Boolean = {
             it.t8Properties?.isHoming == true
+        }
+    }
+
+    object Throw: Filter {
+        override val predicate: (Move) -> Boolean = { move ->
+            move.guard?.contains("t", ignoreCase = true) == true
+                    && move.notes.none { it.contains("attack throw", ignoreCase = true) }
         }
     }
 }
