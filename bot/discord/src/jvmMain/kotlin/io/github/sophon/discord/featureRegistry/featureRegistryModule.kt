@@ -10,9 +10,9 @@ import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUse
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.UnbanUseCase
-import io.github.sophon.discord.featureRegistry.core.CoreDiscordFeature
-import io.github.sophon.discord.featureRegistry.core.usecase.GetBotFeatureInfoUseCase
-import io.github.sophon.discord.featureRegistry.core.usecase.CreateJoinEmbedButtonUseCase
+import io.github.sophon.discord.featureRegistry.bot.BotFeature
+import io.github.sophon.discord.featureRegistry.bot.usecase.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.featureRegistry.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
@@ -97,7 +97,7 @@ internal val featureRegistryModule = module {
     single {
         FeatureRegistry(
             features = getAll(),
-            coreFeature = get<CoreDiscordFeature>(),
+            coreFeature = get<BotFeature>(),
         )
     }
 
@@ -115,7 +115,7 @@ internal val featureRegistryModule = module {
         )
     }
 
-    singleOf(::CoreDiscordFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::BotFeature).bind<DiscordRegisteredFeature>()
     singleOf(::InfilGlossaryDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::WavuWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::SuperComboWikiDiscordFeature).bind<DiscordRegisteredFeature>()
