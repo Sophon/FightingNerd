@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.4.3] - TODO
+- fixed `Lei-Lei` alias
+
 ## [v8.4.2] - 2026-01-20
 - `join` 
   - no longer displays the password field without password
