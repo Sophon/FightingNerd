@@ -353,7 +353,7 @@ internal class WavuWikiDiscordFeature(
         ).map { moveList ->
             BotOutput(
                 primaryEmbedBuilder = wavuMoveListEmbed(
-                    category = "${query.uppercase()} Throws",
+                    category = "${query.uppercase()} Throw",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                 ),
