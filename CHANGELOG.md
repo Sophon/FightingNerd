@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v8.6.0] - TODO
+## [v8.6.0] - 2026-01-22
 - fixed DustLoop move notes URL formatting
 - reworded the `fd` error syntax
 
