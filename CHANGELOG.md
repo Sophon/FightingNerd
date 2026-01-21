@@ -1,10 +1,13 @@
 # BOT CHANGELOG
 
+## [v8.6.0] - TODO
+- fixed DustLoop move notes URL formatting
+- reworded the `fd` error syntax
+
 ## [v8.5.0] - 2026-01-21
 - fixed `Lei-Lei` alias
 - `throwtk` command
 - chunked move-list embed
-- fixed DustLoop move notes URL formatting 
 
 ## [v8.4.2] - 2026-01-20
 - `join` 
