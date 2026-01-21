@@ -6,6 +6,7 @@ import io.github.sophon.core.util.createAliasesFromSlash
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.wikidustloop.util.toClickable
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
@@ -130,7 +131,7 @@ internal fun String?.formNotes(): List<String> {
     return this
         ?.cleanHtml()
         ?.split(";")
-        ?.map { it.trim() }
+        ?.mapNotNull { it.trim().toClickable() }
         ?.filter { it.isNotBlank() }
         ?: emptyList()
 }

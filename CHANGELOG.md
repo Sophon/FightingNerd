@@ -4,6 +4,7 @@
 - fixed `Lei-Lei` alias
 - `throwtk` command
 - chunked move-list embed
+- fixed DustLoop move notes URL formatting 
 
 ## [v8.4.2] - 2026-01-20
 - `join` 
