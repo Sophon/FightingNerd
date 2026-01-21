@@ -55,10 +55,14 @@ internal class CreateErrorEmbedUseCase {
 
         mandatoryField(
             name = "",
-            value = "The **character name** and move **input** must have __**NO SPACES**__.\n" +
-                    "**Move name** can be multi-word, but must match exactly.\n\n" +
-                    "1. **`@bot`** → `@FightingNerdBot` `[character name]` `[move]`\n" +
-                    "2. **`/fd`** → `fd character: [character name] move: [move]`\n"
+            value = "1. `[character name]` `[move input]`\n" +
+                    "   - `character name` →  __**NO SPACES**__\n" +
+                    "   - `move input` → __**NO SPACES**__\n" +
+                    "   - `lee df1`, `ak h.bad.32`, `ling bt.4`, `ken 236pp` etc.\n\n" +
+                    "2. `[character name]` `[move name]`\n" +
+                    "   - `move name` → can be multi-word, __**must match exactly**__\n" +
+                    "   - not all games have move names\n" +
+                    "   - `jin scourge`, `sol fafnir` etc."
         )
 
         footer {
