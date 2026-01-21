@@ -1,4 +1,4 @@
-package io.github.sophon.discord.featureRegistry.core.usecase
+package io.github.sophon.discord.featureRegistry.bot.usecase
 
 import dev.kord.common.Color
 import io.github.sophon.core.domain.Result

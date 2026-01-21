@@ -7,6 +7,7 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.util.getLevel
+import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
@@ -245,7 +246,7 @@ internal fun dustLoopMoveListEmbed(
 ): EmbedBuilder.() -> Unit = {
     color = Color(RED)
 
-    val text = moveList
+    val formatted = moveList
         .mapNotNull { move ->
             val startup = move.startup
                 ?.takeWhile { it.isDigit() }
@@ -262,13 +263,18 @@ internal fun dustLoopMoveListEmbed(
                 it.input
             }
         }
-        .joinToString("\n")
 
-    mandatoryField(
-        name = "$charName $category moves",
-        value = text,
-        inline = false,
-    )
+    formatted
+        .chunked(EMBED_LIST_PER_COLUMN)
+        .forEachIndexed { index, moveList ->
+            val text = moveList.joinToString("\n")
+            val name = if (index == 0 ) "$charName $category moves" else "_"
+            mandatoryField(
+                name = name,
+                value = text,
+                inline = false,
+            )
+        }
 
     featureFooter(featureInfo)
 }

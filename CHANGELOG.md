@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v8.5.0] - 2026-01-21
+- fixed `Lei-Lei` alias
+- `throwtk` command
+- chunked move-list embed
+
 ## [v8.4.2] - 2026-01-20
 - `join` 
   - no longer displays the password field without password

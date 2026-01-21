@@ -1,5 +1,6 @@
 package io.github.sophon.discord.featureRegistry.wikiWavu
 
+import dev.kord.common.Color
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -19,6 +20,7 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.featureRegistry.core.moveListEmbed
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
@@ -128,6 +130,16 @@ internal class WavuWikiDiscordFeature(
             command = Command.ALIASTK,
             description = "Tekken character aliases",
         ),
+        SupportedCommand(
+            command = Command.THROWTK,
+            description = "Tekken THROW moves",
+            arguments = listOf(
+                SupportedCommand.Argument(
+                    name = KEY_CHAR_NAME,
+                    description = "Character name",
+                ),
+            )
+        ),
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -174,6 +186,7 @@ internal class WavuWikiDiscordFeature(
             Command.HOMING -> searchHomingMoves(wiki, query)
             Command.STANCE -> searchStanceMoves(wiki, query)
             Command.ALIASTK -> getCharacterAliases(wiki)
+            Command.THROWTK -> searchThrowMoves(wiki, query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -204,10 +217,11 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = wavuMoveListEmbed(
+                    primaryEmbedBuilder = moveListEmbed(
                         category = "${query.uppercase()} Power Crush",
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                        color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -227,10 +241,11 @@ internal class WavuWikiDiscordFeature(
             filter = WavuFilter.Heat,
         ).map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = wavuMoveListEmbed(
+                    primaryEmbedBuilder = moveListEmbed(
                         category = "${query.uppercase()} Heat",
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                        color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -250,10 +265,11 @@ internal class WavuWikiDiscordFeature(
             filter = WavuFilter.Homing,
         ).map { moveList ->
             BotOutput(
-                primaryEmbedBuilder = wavuMoveListEmbed(
+                primaryEmbedBuilder = moveListEmbed(
                     category = "${query.uppercase()} Homing",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
+                    color = Color(BLUE),
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = query),
@@ -293,10 +309,11 @@ internal class WavuWikiDiscordFeature(
                     }
 
                     BotOutput(
-                        primaryEmbedBuilder = wavuMoveListEmbed(
+                        primaryEmbedBuilder = moveListEmbed(
                             category = "${charName.uppercase()} stances",
                             dataList = stanceList,
                             featureInfo = featureInfo,
+                            color = Color(BLUE),
                         ),
                         buttons = BotOutput.ButtonSet(
                             buttonList = buttons,
@@ -317,10 +334,11 @@ internal class WavuWikiDiscordFeature(
                 filter = filter,
             ).map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = wavuMoveListEmbed(
+                    primaryEmbedBuilder = moveListEmbed(
                         category = stance.uppercase(),
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                        color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = charName),
@@ -328,6 +346,30 @@ internal class WavuWikiDiscordFeature(
                     )
                 )
             }
+        }
+    }
+
+    private suspend fun searchThrowMoves(
+        wiki: WikiClient,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getMovesUseCase.invoke(
+            wiki = wiki,
+            charName = query,
+            filter = WavuFilter.Throw,
+        ).map { moveList ->
+            BotOutput(
+                primaryEmbedBuilder = moveListEmbed(
+                    category = "${query.uppercase()} Throw",
+                    dataList = moveList.map { it.input },
+                    featureInfo = featureInfo,
+                    color = Color(BLUE),
+                ),
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveList.toButtons(charName = query),
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
+                ),
+            )
         }
     }
 

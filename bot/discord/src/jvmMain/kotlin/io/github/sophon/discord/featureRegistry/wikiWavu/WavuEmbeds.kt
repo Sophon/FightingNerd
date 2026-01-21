@@ -42,28 +42,6 @@ internal fun wavuMoveEmbed(
     featureFooter(featureInfo)
 }
 
-internal fun wavuMoveListEmbed(
-    category: String,
-    dataList: List<String>,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    color = Color(BLUE)
-
-    val text = dataList
-        .mapIndexed { index, data ->
-            "${index + 1}. **${data}**"
-        }
-        .joinToString("\n")
-
-    mandatoryField(
-        name = "$category moves",
-        value = text,
-        inline = false,
-    )
-
-    featureFooter(featureInfo)
-}
-
 
 private fun EmbedBuilder.createNotes(move: Move) {
     val aliasNote = if (move.aliases.isNotEmpty()) {

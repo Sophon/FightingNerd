@@ -1,4 +1,4 @@
-package io.github.sophon.discord.featureRegistry.core
+package io.github.sophon.discord.featureRegistry.bot
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -16,8 +16,8 @@ import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
-import io.github.sophon.discord.featureRegistry.core.usecase.CreateJoinEmbedButtonUseCase
-import io.github.sophon.discord.featureRegistry.core.usecase.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.featureRegistry.bot.usecase.CreateJoinEmbedButtonUseCase
+import io.github.sophon.discord.featureRegistry.bot.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
@@ -25,7 +25,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds
 
-internal class CoreDiscordFeature(
+internal class BotFeature(
     getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
     private val createJoinEmbedButtonUseCase: CreateJoinEmbedButtonUseCase,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -363,7 +363,7 @@ internal class CoreDiscordFeature(
         return Result.Success(result)
     }
 
-    private companion object {
+    private companion object Companion {
         const val TAG = "CoreDiscordFeature"
         const val PURPLE = 0x00A020F0
         const val KEY_JOIN = "url"

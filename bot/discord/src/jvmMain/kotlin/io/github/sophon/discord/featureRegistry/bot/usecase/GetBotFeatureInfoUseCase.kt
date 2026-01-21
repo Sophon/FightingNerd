@@ -1,4 +1,4 @@
-package io.github.sophon.discord.featureRegistry.core.usecase
+package io.github.sophon.discord.featureRegistry.bot.usecase
 
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BOT_NAME
