@@ -217,10 +217,11 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = wavuMoveListEmbed(
+                    primaryEmbedBuilder = moveListEmbed(
                         category = "${query.uppercase()} Power Crush",
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                        color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -240,10 +241,11 @@ internal class WavuWikiDiscordFeature(
             filter = WavuFilter.Heat,
         ).map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = wavuMoveListEmbed(
+                    primaryEmbedBuilder = moveListEmbed(
                         category = "${query.uppercase()} Heat",
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                        color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -263,10 +265,11 @@ internal class WavuWikiDiscordFeature(
             filter = WavuFilter.Homing,
         ).map { moveList ->
             BotOutput(
-                primaryEmbedBuilder = wavuMoveListEmbed(
+                primaryEmbedBuilder = moveListEmbed(
                     category = "${query.uppercase()} Homing",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
+                    color = Color(BLUE),
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = query),
@@ -306,10 +309,11 @@ internal class WavuWikiDiscordFeature(
                     }
 
                     BotOutput(
-                        primaryEmbedBuilder = wavuMoveListEmbed(
+                        primaryEmbedBuilder = moveListEmbed(
                             category = "${charName.uppercase()} stances",
                             dataList = stanceList,
                             featureInfo = featureInfo,
+                            color = Color(BLUE),
                         ),
                         buttons = BotOutput.ButtonSet(
                             buttonList = buttons,
@@ -330,10 +334,11 @@ internal class WavuWikiDiscordFeature(
                 filter = filter,
             ).map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = wavuMoveListEmbed(
+                    primaryEmbedBuilder = moveListEmbed(
                         category = stance.uppercase(),
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                        color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = charName),
