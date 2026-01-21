@@ -48,9 +48,9 @@ internal class RouteCommandToFeatureUseCase(
     private fun String.isCommand(): Boolean {
         return featureList.any { feature ->
             val isOtherCommand = feature.otherCommands.any {
-                it.command.name.equals(this, ignoreCase = true)
+                it.name.equals(this, ignoreCase = true)
             }
-            val isDefaultCommand = feature.defaultCommand?.command?.name
+            val isDefaultCommand = feature.defaultCommand?.name
                 .equals(this, ignoreCase = true)
 
             isOtherCommand || isDefaultCommand
@@ -84,14 +84,13 @@ internal class RouteCommandToFeatureUseCase(
         for (feature in featureList) {
             val explicitCommand = feature.otherCommands
                 .firstOrNull {
-                    it.command.name.equals(commandString, ignoreCase = true)
+                    it.name.equals(commandString, ignoreCase = true)
                 }
-                ?.command
 
             val commandToUse = explicitCommand ?: run {
                 val defaultCommand = feature.defaultCommand ?: continue //feature has no default command, next
-                if (defaultCommand.command.name.equals(commandString, ignoreCase = true)) {
-                    defaultCommand.command
+                if (defaultCommand.name.equals(commandString, ignoreCase = true)) {
+                    defaultCommand
                 } else {
                     continue //feature doesn't have this command, next
                 }
@@ -125,7 +124,7 @@ internal class RouteCommandToFeatureUseCase(
 
             val result = feature.execute(
                 origin = source,
-                command = defaultCommand.command,
+                command = defaultCommand,
                 query = fullQuery,
             )
 

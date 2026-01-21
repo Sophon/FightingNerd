@@ -15,7 +15,6 @@ import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.domain.Source
@@ -36,35 +35,9 @@ internal class XkoWikiDiscordFeature(
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
     override val featureInfo = xkoFeatureInfo.featureInfo
-    override val defaultCommand = SupportedCommand(
-        command = Command.FD,
-        description = "Global frame data",
-        arguments = listOf(
-            SupportedCommand.Argument(
-                name = KEY_CHAR_NAME,
-                description = "Character name",
-            ),
-            SupportedCommand.Argument(
-                name = KEY_MOVE,
-                description = "Move",
-            )
-        )
-    )
+    override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        SupportedCommand(
-            command = Command.FDXKO,
-            description = "2XKO frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move",
-                )
-            )
-        ),
+        Command.FdXko,
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -103,8 +76,8 @@ internal class XkoWikiDiscordFeature(
             ?: return Result.Error(BotError.UnsupportedGame(query))
 
         return when (command) {
-            Command.FD,
-            Command.FDXKO -> searchMove(wiki, query)
+            Command.Fd,
+            Command.FdXko -> searchMove(wiki, query)
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
