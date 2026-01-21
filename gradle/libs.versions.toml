@@ -27,6 +27,7 @@ koin = "4.0.0"
 kord = "0.17.0"
 kotlin = "2.2.20"
 kotlin-date-time = "0.7.1"
+kotlin-reflect = "1.9.22"
 kotlinStdlib = "2.2.20"
 kotlinx-coroutines = "1.10.2"
 kotlinx-coroutines-test = "1.9.0"
@@ -43,6 +44,7 @@ turbine = "0.7.0"
 
 [libraries]
 #Common
+kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect", version.ref = "kotlin-reflect" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 kotlin-date-time = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlin-date-time" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
