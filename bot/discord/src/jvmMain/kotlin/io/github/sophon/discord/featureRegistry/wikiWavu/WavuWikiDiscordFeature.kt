@@ -1,5 +1,6 @@
 package io.github.sophon.discord.featureRegistry.wikiWavu
 
+import dev.kord.common.Color
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
@@ -19,6 +20,7 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.SupportedCommand
+import io.github.sophon.discord.featureRegistry.core.moveListEmbed
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
@@ -215,10 +217,11 @@ internal class WavuWikiDiscordFeature(
         )
             .map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = wavuMoveListEmbed(
+                    primaryEmbedBuilder = moveListEmbed(
                         category = "${query.uppercase()} Power Crush",
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                        color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -238,10 +241,11 @@ internal class WavuWikiDiscordFeature(
             filter = WavuFilter.Heat,
         ).map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = wavuMoveListEmbed(
+                    primaryEmbedBuilder = moveListEmbed(
                         category = "${query.uppercase()} Heat",
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                        color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -261,10 +265,11 @@ internal class WavuWikiDiscordFeature(
             filter = WavuFilter.Homing,
         ).map { moveList ->
             BotOutput(
-                primaryEmbedBuilder = wavuMoveListEmbed(
+                primaryEmbedBuilder = moveListEmbed(
                     category = "${query.uppercase()} Homing",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
+                    color = Color(BLUE),
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = query),
@@ -304,10 +309,11 @@ internal class WavuWikiDiscordFeature(
                     }
 
                     BotOutput(
-                        primaryEmbedBuilder = wavuMoveListEmbed(
+                        primaryEmbedBuilder = moveListEmbed(
                             category = "${charName.uppercase()} stances",
                             dataList = stanceList,
                             featureInfo = featureInfo,
+                            color = Color(BLUE),
                         ),
                         buttons = BotOutput.ButtonSet(
                             buttonList = buttons,
@@ -328,10 +334,11 @@ internal class WavuWikiDiscordFeature(
                 filter = filter,
             ).map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = wavuMoveListEmbed(
+                    primaryEmbedBuilder = moveListEmbed(
                         category = stance.uppercase(),
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
+                        color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = charName),
@@ -352,10 +359,11 @@ internal class WavuWikiDiscordFeature(
             filter = WavuFilter.Throw,
         ).map { moveList ->
             BotOutput(
-                primaryEmbedBuilder = wavuMoveListEmbed(
-                    category = "${query.uppercase()} Throws",
+                primaryEmbedBuilder = moveListEmbed(
+                    category = "${query.uppercase()} Throw",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
+                    color = Color(BLUE),
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = query),

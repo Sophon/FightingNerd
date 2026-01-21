@@ -3,6 +3,7 @@
 ## [v8.5.0] - TODO
 - fixed `Lei-Lei` alias
 - `throwtk` command
+- chunked move-list embed
 
 ## [v8.4.2] - 2026-01-20
 - `join` 
