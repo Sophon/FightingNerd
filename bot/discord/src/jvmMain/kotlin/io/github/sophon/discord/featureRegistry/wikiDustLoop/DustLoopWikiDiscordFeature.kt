@@ -59,7 +59,7 @@ internal class DustLoopWikiDiscordFeature(
         Command.FdDB,
         Command.AliasDB,
 
-        Command.CharDB,
+        Command.CharBB,
         Command.FdBB,
         Command.AliasBB,
         Command.InvBB,

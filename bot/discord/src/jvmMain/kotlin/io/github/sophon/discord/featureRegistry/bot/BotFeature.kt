@@ -236,7 +236,7 @@ internal class BotFeature(
                     gameSpecificCommands
                         .sortedBy { it.name }
                         .forEach { command ->
-                            append("- `${command}`\n")
+                            append("- `${command.name}`\n")
                         }
                 }
             )
