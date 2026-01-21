@@ -9,8 +9,8 @@ import io.github.sophon.domain.Source
 internal interface DiscordRegisteredFeature {
     val featureInfo: FeatureInfo
 
-    val defaultCommand: SupportedCommand?
-    val otherCommands: List<SupportedCommand>
+    val defaultCommand: Command?
+    val otherCommands: List<Command>
 
     fun registerGames(enabledGames: List<Game>) {
         //default: for when feature doesn't support games

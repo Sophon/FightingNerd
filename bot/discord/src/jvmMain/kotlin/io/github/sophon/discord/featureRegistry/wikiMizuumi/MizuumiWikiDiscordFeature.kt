@@ -15,7 +15,6 @@ import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
@@ -41,111 +40,17 @@ internal class MizuumiWikiDiscordFeature(
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
     override val featureInfo = mizuumiFeatureInfo.featureInfo
-    override val defaultCommand = SupportedCommand(
-        command = Command.FD,
-        description = "Global frame data",
-        arguments = listOf(
-            SupportedCommand.Argument(
-                name = KEY_CHAR_NAME,
-                description = "Character name",
-            ),
-            SupportedCommand.Argument(
-                name = KEY_MOVE,
-                description = "Move input"
-            )
-        )
-    )
+    override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        SupportedCommand(
-            command = Command.FDMB,
-            description = "MBTL frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.ALIASMB,
-            description = "MBTL character aliases",
-        ),
-        SupportedCommand(
-            command = Command.INVMB,
-            description = "MBTL Invincible moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.FDUNI,
-            description = "Uni2 frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.CHARUNI,
-            description = "Uni2 character data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.INVUNI,
-            description = "UNI2 Invincible moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.FDVS,
-            description = "VSAV frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.INVVS,
-            description = "VSAV Invincible moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.ALIASVS,
-            description = "VSAV character aliases",
-        ),
+        Command.FdMB,
+        Command.AliasMB,
+        Command.InvMB,
+        Command.FdUNI,
+        Command.CharUNI,
+        Command.InvUNI,
+        Command.FdVS,
+        Command.InvVS,
+        Command.AliasVS,
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -181,7 +86,7 @@ internal class MizuumiWikiDiscordFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.FD -> {
+            Command.Fd -> {
                 var lastError: BotError? = null
                 for ((gameId, wiki) in wikis) {
                     val game = Game.fromId(gameId)
@@ -197,64 +102,69 @@ internal class MizuumiWikiDiscordFeature(
                 Result.Error(lastError ?: BotError.UnknownMove(query))
             }
 
-            Command.FDMB -> {
+            Command.FdMB -> {
                 val game = Game.MBTL
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
-            Command.ALIASMB -> {
+            Command.AliasMB -> {
                 val game = Game.MBTL
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
             }
-            Command.INVMB -> {
+            Command.InvMB -> {
                 val game = Game.MBTL
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
             }
 
-            Command.FDUNI -> {
+            Command.FdUNI -> {
                 val game = Game.Uni2
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
-            Command.CHARUNI -> {
+            Command.CharUNI -> {
                 val game = Game.Uni2
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchCharacter(wiki, query)
             }
-            Command.INVUNI -> {
+            Command.InvUNI -> {
                 val game = Game.Uni2
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
             }
 
-            Command.FDVS -> {
+            Command.FdVS -> {
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 searchMove(wiki, query)
             }
-            Command.INVVS -> {
+            Command.InvVS -> {
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
             }
-            Command.ALIASVS -> {
+            Command.AliasVS -> {
                 val game = Game.VSAV
                 val wiki = wikis[game.id]
                     ?: return Result.Error(BotError.UnsupportedGame(query))
                 getCharacterAliases(wiki)
             }
 
-            else -> Result.Error(BotError.BotLogicError(command.name, query))
+            else -> Result.Error(
+                BotError.BotLogicError(
+                    command.name,
+                    query,
+                )
+            )
         }
     }
 
