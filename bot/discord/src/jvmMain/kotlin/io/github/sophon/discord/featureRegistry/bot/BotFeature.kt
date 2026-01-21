@@ -192,7 +192,13 @@ internal class BotFeature(
         val charCommands = commands.filter { it.name.startsWith("CHAR") }
         val aliasCommands = commands.filter { it.name.startsWith("ALIAS") }
         val invCommands = commands.filter { it.name.startsWith("INV") && it.name != "INVITE" }
-        val gameSpecificCommands = listOf(Command.HEAT, Command.HOMING, Command.PC, Command.STANCE)
+        val gameSpecificCommands = listOf(
+            Command.HEAT,
+            Command.HOMING,
+            Command.PC,
+            Command.STANCE,
+            Command.THROWTK,
+        )
         val excludedFromOthers = buildSet {
             addAll(fdCommands)
             addAll(charCommands)
