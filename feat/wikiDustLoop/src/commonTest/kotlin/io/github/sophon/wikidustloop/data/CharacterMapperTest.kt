@@ -3,6 +3,7 @@ package io.github.sophon.wikidustloop.data
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.feature.Game
+import io.github.sophon.wikidustloop.util.toClickable
 import kotlin.test.Test
 
 class CharacterMapperTest {
