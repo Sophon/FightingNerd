@@ -19,7 +19,6 @@ import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.core.moveListEmbed
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
@@ -52,94 +51,15 @@ internal class WavuWikiDiscordFeature(
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
     override val featureInfo = wavuFeatureInfo.featureInfo
-    override val defaultCommand = SupportedCommand(
-        command = Command.FD,
-        description = "Global frame data",
-        arguments = listOf(
-            SupportedCommand.Argument(
-                name = KEY_CHAR_NAME,
-                description = "Character name",
-            ),
-            SupportedCommand.Argument(
-                name = KEY_MOVE,
-                description = "Move",
-            )
-        )
-    )
-    override val otherCommands: List<SupportedCommand> = listOf(
-        SupportedCommand(
-            command = Command.FDTK,
-            description = "Tekken frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move",
-                )
-            )
-        ),
-        SupportedCommand(
-            command = Command.PC,
-            description = "Tekken POWER CRUSH moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-            )
-        ),
-        SupportedCommand(
-            command = Command.HEAT,
-            description = "Tekken HEAT moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-            )
-        ),
-        SupportedCommand(
-            command = Command.HOMING,
-            description = "Tekken HOMING moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-            )
-        ),
-        SupportedCommand(
-            command = Command.STANCE,
-            description = "Tekken STANCE moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_STANCE,
-                    description = "Stance",
-                    isRequired = false,
-                ),
-            )
-        ),
-        SupportedCommand(
-            command = Command.ALIASTK,
-            description = "Tekken character aliases",
-        ),
-        SupportedCommand(
-            command = Command.THROWTK,
-            description = "Tekken THROW moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-            )
-        ),
+    override val defaultCommand = Command.Fd
+    override val otherCommands = listOf(
+        Command.FdTK,
+        Command.Pc,
+        Command.Heat,
+        Command.Homing,
+        Command.Stance,
+        Command.AliasTK,
+        Command.ThrowTK,
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -178,15 +98,15 @@ internal class WavuWikiDiscordFeature(
             ?: return Result.Error(BotError.UnsupportedGame(query))
 
         return when (command) {
-            Command.FD,
-            Command.FDTK -> searchMove(wiki, query)
+            Command.Fd,
+            Command.FdTK -> searchMove(wiki, query)
 
-            Command.PC -> searchPowerCrushMoves(wiki, query)
-            Command.HEAT -> searchHeatMoves(wiki, query)
-            Command.HOMING -> searchHomingMoves(wiki, query)
-            Command.STANCE -> searchStanceMoves(wiki, query)
-            Command.ALIASTK -> getCharacterAliases(wiki)
-            Command.THROWTK -> searchThrowMoves(wiki, query)
+            Command.Pc -> searchPowerCrushMoves(wiki, query)
+            Command.Heat -> searchHeatMoves(wiki, query)
+            Command.Homing -> searchHomingMoves(wiki, query)
+            Command.Stance -> searchStanceMoves(wiki, query)
+            Command.AliasTK -> getCharacterAliases(wiki)
+            Command.ThrowTK -> searchThrowMoves(wiki, query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -385,9 +305,6 @@ internal class WavuWikiDiscordFeature(
 
     private companion object {
         private const val TAG = "WavuWikiDiscordFeature"
-        private const val KEY_CHAR_NAME = "character"
-        private const val KEY_MOVE = "move"
-        private const val KEY_STANCE = "stance"
         private const val BLUE = 0x00095FB
     }
 }

@@ -257,17 +257,17 @@ internal class DiscordBotImpl(
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
             featureList
                 .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
-                .distinctBy { it.command.name.lowercase() }
+                .distinctBy { it.name.lowercase() }
                 .forEach { supportedCommand ->
                     input(
-                        name = supportedCommand.command.name.lowercase(),
+                        name = supportedCommand.name.lowercase(),
                         description = supportedCommand.description
                     ) {
                         if (adminCommands.contains(supportedCommand)) {
                             defaultMemberPermissions = Permissions(Permission.Administrator)
                         }
 
-                        supportedCommand.arguments.forEach { argument ->
+                        supportedCommand.argumentList.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
                             }
@@ -281,16 +281,17 @@ internal class DiscordBotImpl(
         kord.createGlobalApplicationCommands {
             featureList
                 .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
-                .distinctBy { it.command.name.lowercase() }
+                .distinctBy {
+                    it.name.lowercase() }
                 .filter { supportedCommand ->
                     adminCommands.contains(supportedCommand).not()
                 }
                 .forEach { supportedCommand ->
                     input(
-                        name = supportedCommand.command.name.lowercase(),
+                        name = supportedCommand.name.lowercase(),
                         description = supportedCommand.description
                     ) {
-                        supportedCommand.arguments.forEach { argument ->
+                        supportedCommand.argumentList.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
                             }
@@ -305,12 +306,12 @@ internal class DiscordBotImpl(
         kord.createGuildApplicationCommands(adminGuildSnowFlake) {
             adminCommands.forEach { command ->
                 input(
-                    name = command.command.name.lowercase(),
+                    name = command.name.lowercase(),
                     description = command.description
                 ) {
                     defaultMemberPermissions = Permissions(Permission.Administrator)
 
-                    command.arguments.forEach { argument ->
+                    command.argumentList.forEach { argument ->
                         string(name = argument.name, description = argument.description) {
                             required = argument.isRequired
                         }

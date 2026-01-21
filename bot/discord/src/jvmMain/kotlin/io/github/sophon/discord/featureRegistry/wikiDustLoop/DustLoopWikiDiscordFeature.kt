@@ -16,7 +16,6 @@ import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
@@ -49,152 +48,24 @@ internal class DustLoopWikiDiscordFeature(
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
     override val featureInfo: FeatureInfo = dustLoopFeatureInfo.featureInfo
-    override val defaultCommand = SupportedCommand(
-        command = Command.FD,
-        description = "Global frame data",
-        arguments = listOf(
-            SupportedCommand.Argument(
-                name = KEY_CHAR_NAME,
-                description = "Character name",
-            ),
-            SupportedCommand.Argument(
-                name = KEY_MOVE,
-                description = "Move input"
-            )
-        )
-    )
+    override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        SupportedCommand(
-            command = Command.CHARGG,
-            description = "GG character data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            )
-        ),
-        SupportedCommand(
-            command = Command.FDGG,
-            description = "GG frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            )
-        ),
-        SupportedCommand(
-            command = Command.INVGG,
-            description = "GG invincible moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            )
-        ),
-        SupportedCommand(
-            command = Command.ALIASGG,
-            description = "GG character aliases",
-        ),
+        Command.CharGG,
+        Command.FdGG,
+        Command.InvGG,
+        Command.AliasGG,
 
-        SupportedCommand(
-            command = Command.CHARDB,
-            description = "DB character data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.FDDB,
-            description = "DB frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.ALIASDB,
-            description = "DB character aliases",
-        ),
+        Command.CharDB,
+        Command.FdDB,
+        Command.AliasDB,
 
-        SupportedCommand(
-            command = Command.CHARBB,
-            description = "BB character data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.FDBB,
-            description = "BB frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.ALIASBB,
-            description = "BB character aliases",
-        ),
-        SupportedCommand(
-            command = Command.INVBB,
-            description = "BB invincible moves",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            ),
-        ),
+        Command.CharBB,
+        Command.FdBB,
+        Command.AliasBB,
+        Command.InvBB,
 
-        SupportedCommand(
-            command = Command.CHARGB,
-            description = "GB character data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.FDGB,
-            description = "GB frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            ),
-        ),
+        Command.CharGB,
+        Command.FdGB,
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -229,7 +100,7 @@ internal class DustLoopWikiDiscordFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.FD -> {
+            Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikis,
                     query = query,
@@ -237,25 +108,25 @@ internal class DustLoopWikiDiscordFeature(
                 )
             }
 
-            Command.CHARGG -> withWiki(
+            Command.CharGG -> withWiki(
                 wikis = wikis,
                 gameId = Game.GGST.id,
                 query = query,
                 action = ::searchCharacter,
             )
-            Command.FDGG -> withWiki(
+            Command.FdGG -> withWiki(
                 wikis = wikis,
                 gameId = Game.GGST.id,
                 query = query,
                 action = ::searchMove,
             )
-            Command.INVGG -> withWiki(
+            Command.InvGG -> withWiki(
                 wikis = wikis,
                 gameId = Game.GGST.id,
                 query = query,
                 action = ::searchInvincible,
             )
-            Command.ALIASGG -> withWiki(
+            Command.AliasGG -> withWiki(
                 wikis = wikis,
                 gameId = Game.GGST.id,
                 query = query,
@@ -263,19 +134,19 @@ internal class DustLoopWikiDiscordFeature(
                 getCharacterAliases(wiki)
             }
 
-            Command.CHARDB -> withWiki(
+            Command.CharDB -> withWiki(
                 wikis = wikis,
                 gameId = Game.DBFZ.id,
                 query = query,
                 action = ::searchCharacter,
             )
-            Command.FDDB -> withWiki(
+            Command.FdDB -> withWiki(
                 wikis = wikis,
                 gameId = Game.DBFZ.id,
                 query = query,
                 action = ::searchMove,
             )
-            Command.ALIASDB -> withWiki(
+            Command.AliasDB -> withWiki(
                 wikis = wikis,
                 gameId = Game.DBFZ.id,
                 query = query,
@@ -283,46 +154,51 @@ internal class DustLoopWikiDiscordFeature(
                 getCharacterAliases(wiki)
             }
 
-            Command.CHARGB -> withWiki(
+            Command.CharGB -> withWiki(
                 wikis = wikis,
                 gameId = Game.GBVSR.id,
                 query = query,
                 action = ::searchCharacter,
             )
-            Command.FDGB -> withWiki(
+            Command.FdGB -> withWiki(
                 wikis = wikis,
                 gameId = Game.GBVSR.id,
                 query = query,
                 action = ::searchMove,
             )
 
-            Command.CHARBB -> withWiki(
+            Command.CharBB -> withWiki(
                 wikis = wikis,
                 gameId = Game.BBCF.id,
                 query = query,
                 action = ::searchCharacter,
             )
-            Command.FDBB -> withWiki(
+            Command.FdBB -> withWiki(
                 wikis = wikis,
                 gameId = Game.BBCF.id,
                 query = query,
                 action = ::searchMove,
             )
-            Command.ALIASBB -> withWiki(
+            Command.AliasBB -> withWiki(
                 wikis = wikis,
                 gameId = Game.BBCF.id,
                 query = query,
             ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
-            Command.INVBB -> withWiki(
+            Command.InvBB -> withWiki(
                 wikis = wikis,
                 gameId = Game.BBCF.id,
                 query = query,
                 action = ::searchInvincible,
             )
 
-            else -> Result.Error(BotError.BotLogicError(command.name, query))
+            else -> Result.Error(
+                BotError.BotLogicError(
+                    command.name,
+                    query,
+                )
+            )
         }
     }
 

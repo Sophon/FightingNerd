@@ -15,7 +15,6 @@ import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
@@ -41,69 +40,12 @@ internal class SuperComboWikiDiscordFeature(
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
     override val featureInfo = superComboFeatureInfo.featureInfo
-    override val defaultCommand = SupportedCommand(
-        command = Command.FD,
-        description = "Global frame data",
-        arguments = listOf(
-            SupportedCommand.Argument(
-                name = KEY_CHAR_NAME,
-                description = "Character name",
-            ),
-            SupportedCommand.Argument(
-                name = KEY_MOVE,
-                description = "Move input"
-            )
-        )
-    )
+    override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        SupportedCommand(
-            command = Command.FDSF,
-            description = "SF6 frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            )
-        ),
-        SupportedCommand(
-            command = Command.CHARSF,
-            description = "SF6 character data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            )
-        ),
-        SupportedCommand(
-            command = Command.CHARMK,
-            description = "MK1 character data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                )
-            ),
-        ),
-        SupportedCommand(
-            command = Command.FDMK,
-            description = "MK1 frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            )
-        ),
+        Command.FdSF,
+        Command.CharSF,
+        Command.FdMK,
+        Command.CharMK,
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -141,21 +83,21 @@ internal class SuperComboWikiDiscordFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.FD -> fetchMoveInWikisUseCase.invoke(
+            Command.Fd -> fetchMoveInWikisUseCase.invoke(
                 wikis = wikis,
                 query = query,
             ) { _, wiki, query ->
                 searchMove(wiki, query)
             }
 
-            Command.CHARSF -> withWiki(
+            Command.CharSF -> withWiki(
                 wikis = wikis,
                 gameId = Game.StreetFighter6.id,
                 query = query,
             ) { _, wiki, query ->
                 searchCharacter(wiki, query)
             }
-            Command.FDSF -> withWiki(
+            Command.FdSF -> withWiki(
                 wikis = wikis,
                 gameId = Game.StreetFighter6.id,
                 query = query,
@@ -163,14 +105,14 @@ internal class SuperComboWikiDiscordFeature(
                 searchMove(wiki, query)
             }
 
-            Command.CHARMK -> withWiki(
+            Command.CharMK -> withWiki(
                 wikis = wikis,
                 gameId = Game.MK1.id,
                 query = query,
             ) { _, wiki, query ->
                 searchCharacter(wiki, query)
             }
-            Command.FDMK -> withWiki(
+            Command.FdMK -> withWiki(
                 wikis = wikis,
                 gameId = Game.MK1.id,
                 query = query,

@@ -7,7 +7,6 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.StartGlossaryUseCase
@@ -19,17 +18,8 @@ internal class InfilGlossaryDiscordFeature(
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
 ): DiscordRegisteredFeature {
     override val featureInfo = getInfilFeatureInfoUseCase.invoke()
-    override val defaultCommand = SupportedCommand(
-        command = Command.GL,
-        description = "Fighting-game glossary",
-        arguments = listOf(
-            SupportedCommand.Argument(
-                name = KEY_TERM,
-                description = "Term"
-            )
-        )
-    )
-    override val otherCommands = listOf<SupportedCommand>()
+    override val defaultCommand = Command.Gl
+    override val otherCommands = listOf<Command>()
 
     override suspend fun start() {
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
@@ -43,8 +33,13 @@ internal class InfilGlossaryDiscordFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.GL -> searchTerm(query)
-            else -> Result.Error(BotError.BotLogicError(command.name, query))
+            Command.Gl -> searchTerm(query)
+            else -> Result.Error(
+                BotError.BotLogicError(
+                    command.name,
+                    query,
+                )
+            )
         }
     }
 
@@ -61,6 +56,5 @@ internal class InfilGlossaryDiscordFeature(
 
     private companion object {
         const val TAG = "InfilGlossaryDiscordFeature"
-        const val KEY_TERM = "term"
     }
 }

@@ -3,6 +3,7 @@ package io.github.sophon.wikidustloop.data
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.feature.Game
+import io.github.sophon.wikidustloop.util.toClickable
 import kotlin.test.Test
 
 class CharacterMapperTest {
@@ -298,7 +299,7 @@ class CharacterMapperTest {
     fun `toClickable handles no link`() {
         //given
         val string = "Step-Dash (15F)"
-        val expected = listOf("Step-Dash (15F)")
+        val expected = "Step-Dash (15F)"
 
         //when
         val result = string.toClickable()
@@ -311,9 +312,7 @@ class CharacterMapperTest {
     fun `toClickable handles link`() {
         //given
         val string = "[[GGST/Baiken#Kabari|[H] Kabari follow-up]]"
-        val expected = listOf(
-            "[[H] Kabari follow-up](https://www.dustloop.com/w/GGST/Baiken#Kabari)",
-        )
+        val expected = "[[H] Kabari follow-up](https://www.dustloop.com/w/GGST/Baiken#Kabari)"
 
         //when
         val result = string.toClickable()
@@ -326,11 +325,8 @@ class CharacterMapperTest {
     fun `toClickable handles multiple links`() {
         //given
         val string = "Step-Dash (15F), [[GGST/Johnny#Mist Finer Stance|Mist Finer Dash]], [[GGST/Johnny#Vault|Vault]]"
-        val expected = listOf(
-            "Step-Dash (15F)",
-            "[Mist Finer Dash](https://www.dustloop.com/w/GGST/Johnny#Mist_Finer_Stance)",
-            "[Vault](https://www.dustloop.com/w/GGST/Johnny#Vault)",
-        )
+        val expected = "Step-Dash (15F), [Mist Finer Dash](https://www.dustloop.com/w/GGST/Johnny#Mist_Finer_Stance), " +
+            "[Vault](https://www.dustloop.com/w/GGST/Johnny#Vault)"
 
         //when
         val result = string.toClickable()
@@ -344,8 +340,8 @@ class CharacterMapperTest {
         //given
         val string1: String? = null
         val string2 = ""
-        val expected1 = listOf<String>()
-        val expected2 = listOf<String>()
+        val expected1 = null
+        val expected2 = ""
 
         //when
         val result1 = string1.toClickable()

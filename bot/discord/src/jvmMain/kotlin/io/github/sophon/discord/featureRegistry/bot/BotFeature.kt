@@ -13,7 +13,6 @@ import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.FeatureRegistry
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.featureRegistry.bot.usecase.CreateJoinEmbedButtonUseCase
@@ -34,57 +33,14 @@ internal class BotFeature(
     override val featureInfo: FeatureInfo = getBotFeatureInfoUseCase.invoke()
     override val defaultCommand = null
     override val otherCommands = listOf(
-        SupportedCommand(
-            command = Command.TIP,
-            description = "Dono arigato!",
-            arguments = listOf(),
-        ),
-        SupportedCommand(
-            command = Command.REPO,
-            description = "Project repository",
-            arguments = listOf(),
-        ),
-        SupportedCommand(
-            command = Command.INVITE,
-            description = "Bot invite link",
-            arguments = listOf(),
-        ),
-        SupportedCommand(
-            command = Command.DONATE,
-            description = "Dono arigato!",
-            arguments = listOf(),
-        ),
-        SupportedCommand(
-            command = Command.HELP,
-            description = "RTFM",
-            arguments = listOf(),
-        ),
-        SupportedCommand(
-            command = Command.COMMANDS,
-            description = "Available commands",
-            arguments = listOf(),
-        ),
-        SupportedCommand(
-            command = Command.EXAMPLES,
-            description = "Command examples",
-            arguments = listOf(),
-        ),
-        SupportedCommand(
-            command = Command.JOIN,
-            description = "Make clickable Steam lobby link",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_JOIN,
-                    description = "Steam lobby URL",
-                    isRequired = true,
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_PW,
-                    description = "Lobby password",
-                    isRequired = false,
-                )
-            ),
-        )
+        Command.Tip,
+        Command.Repo,
+        Command.Invite,
+        Command.Donate,
+        Command.Help,
+        Command.Commands,
+        Command.Examples,
+        Command.Join,
     )
 
     override suspend fun start() {
@@ -97,16 +53,16 @@ internal class BotFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.TIP,
-            Command.DONATE,
+            Command.Tip,
+            Command.Donate,
                 -> createTipEmbed()
 
-            Command.REPO -> createRepoText()
-            Command.INVITE -> createInviteText()
-            Command.HELP -> createHelpEmbed()
-            Command.COMMANDS -> createCommandsEmbed()
-            Command.EXAMPLES -> createExamples()
-            Command.JOIN -> createJoinEmbedButtonUseCase.invoke(origin, query)
+            Command.Repo -> createRepoText()
+            Command.Invite -> createInviteText()
+            Command.Help -> createHelpEmbed()
+            Command.Commands -> createCommandsEmbed()
+            Command.Examples -> createExamples()
+            Command.Join -> createJoinEmbedButtonUseCase.invoke(origin, query)
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -172,11 +128,15 @@ internal class BotFeature(
                 buttonList = listOf(
                     BotOutput.EmbedButton(
                         label = "Commands",
-                        action = BotOutput.EmbedButton.Action.Query(Command.COMMANDS.name),
+                        action = BotOutput.EmbedButton.Action.Query(
+                            Command.Commands.name
+                        ),
                     ),
                     BotOutput.EmbedButton(
                         label = "Examples",
-                        action = BotOutput.EmbedButton.Action.Query(Command.EXAMPLES.name)
+                        action = BotOutput.EmbedButton.Action.Query(
+                            Command.Examples.name
+                        ),
                     ),
                 ),
                 duration = EMBED_BUTTON_DURATION_INF.seconds,
@@ -188,19 +148,35 @@ internal class BotFeature(
 
     private fun createCommandsEmbed(): Result<BotOutput, BotError> {
         val commands = Command.entries.sortedBy { it.name }
-        val fdCommands = commands.filter { it.name.startsWith("FD") && it.name != "FD" }
-        val charCommands = commands.filter { it.name.startsWith("CHAR") }
-        val aliasCommands = commands.filter { it.name.startsWith("ALIAS") }
-        val invCommands = commands.filter { it.name.startsWith("INV") && it.name != "INVITE" }
-        val gameSpecificCommands = listOf(Command.HEAT, Command.HOMING, Command.PC, Command.STANCE)
+        val fdCommands = commands.filter {
+            it.name.startsWith("Fd")
+                    && it.name != "Fd"
+        }
+        val charCommands = commands.filter {
+            it.name.startsWith("Char")
+        }
+        val aliasCommands = commands.filter {
+            it.name.startsWith("Alias")
+        }
+        val invCommands = commands.filter {
+            it.name.startsWith("Inv")
+                    && it.name != "Invite"
+        }
+        val gameSpecificCommands = listOf(
+            Command.Heat,
+            Command.Homing,
+            Command.Pc,
+            Command.Stance,
+            Command.ThrowTK,
+        )
         val excludedFromOthers = buildSet {
             addAll(fdCommands)
             addAll(charCommands)
             addAll(aliasCommands)
             addAll(invCommands)
             addAll(gameSpecificCommands)
-            add(Command.FD)
-            addAll(adminCommands.map { it.command })
+            add(Command.Fd)
+            addAll(adminCommands)
         }
         val otherCommands = commands.filterNot { it in excludedFromOthers }
 
@@ -211,7 +187,7 @@ internal class BotFeature(
             mandatoryField(
                 name = "📊 FRAME DATA",
                 value = buildString {
-                    append("- `${Command.FD.name}` (global)")
+                    append("- `${Command.Fd.name}` (global)")
                     fdCommands
                         .sortedBy { it.name }
                         .forEach { fdCommand ->
@@ -260,7 +236,7 @@ internal class BotFeature(
                     gameSpecificCommands
                         .sortedBy { it.name }
                         .forEach { command ->
-                            append("- `${command}`\n")
+                            append("- `${command.name}`\n")
                         }
                 }
             )
@@ -283,7 +259,9 @@ internal class BotFeature(
                 buttonList = listOf(
                     BotOutput.EmbedButton(
                         label = "Examples",
-                        action = BotOutput.EmbedButton.Action.Query(Command.EXAMPLES.name)
+                        action = BotOutput.EmbedButton.Action.Query(
+                            Command.Examples.name
+                        )
                     ),
                 ),
                 duration = EMBED_BUTTON_DURATION_INF.seconds,
@@ -353,7 +331,9 @@ internal class BotFeature(
                 buttonList = listOf(
                     BotOutput.EmbedButton(
                         label = "Commands",
-                        action = BotOutput.EmbedButton.Action.Query(Command.COMMANDS.name),
+                        action = BotOutput.EmbedButton.Action.Query(
+                            Command.Commands.name
+                        ),
                     )
                 ),
                 duration = EMBED_BUTTON_DURATION_INF.seconds,

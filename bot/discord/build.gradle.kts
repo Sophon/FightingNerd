@@ -32,6 +32,7 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.kord)
             implementation(libs.kotlin.date.time)
+            implementation(libs.kotlin.reflect)
 
             api(libs.koin.core)
         }
@@ -75,7 +76,7 @@ tasks.matching { it.name == "jvmRun" }.configureEach {
     (this as JavaExec).workingDir = rootProject.projectDir
 }
 
-val featureVersion = "8.5.0"
+val featureVersion = "8.6.0"
 buildkonfig {
     packageName = "io.github.sophon.discord"
 

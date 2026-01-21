@@ -16,7 +16,6 @@ import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
@@ -42,57 +41,12 @@ internal class DreamCancelWikiDiscordFeature(
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
     override val featureInfo: FeatureInfo = dreamCancelFeatureInfo.featureInfo
-    override val defaultCommand = SupportedCommand(
-        command = Command.FD,
-        description = "Global frame data",
-        arguments = listOf(
-            SupportedCommand.Argument(
-                name = KEY_CHAR_NAME,
-                description = "Character name",
-            ),
-            SupportedCommand.Argument(
-                name = KEY_MOVE,
-                description = "Move input"
-            )
-        )
-    )
+    override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        SupportedCommand(
-            command = Command.FDKOF,
-            description = "SF6 frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            )
-        ),
-        SupportedCommand(
-            command = Command.FDCOTW,
-            description = "COTW frame data",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_CHAR_NAME,
-                    description = "Character name",
-                ),
-                SupportedCommand.Argument(
-                    name = KEY_MOVE,
-                    description = "Move input"
-                )
-            )
-        ),
-        SupportedCommand(
-            command = Command.ALIASCOTW,
-            description = "COTW character aliases",
-        ),
-        SupportedCommand(
-            command = Command.ALIASKOF,
-            description = "KOF character aliases",
-        ),
+        Command.FdKOF,
+        Command.AliasKOF,
+        Command.FdCOTW,
+        Command.AliasCOTW,
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -128,31 +82,31 @@ internal class DreamCancelWikiDiscordFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.FD -> fetchMoveInWikisUseCase.invoke(
+            Command.Fd -> fetchMoveInWikisUseCase.invoke(
                 wikis = wikis,
                 query = query,
                 searchFun = ::searchMove,
             )
-            Command.FDKOF -> withWiki(
+            Command.FdKOF -> withWiki(
                 wikis = wikis,
                 gameId = Game.KoFXV.id,
                 query = query,
                 action = ::searchMove,
             )
-            Command.ALIASKOF -> withWiki(
+            Command.AliasKOF -> withWiki(
                 wikis = wikis,
                 gameId = Game.KoFXV.id,
                 query = query,
             ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
-            Command.FDCOTW -> withWiki(
+            Command.FdCOTW -> withWiki(
                 wikis = wikis,
                 gameId = Game.COTW.id,
                 query = query,
                 action = ::searchMove,
             )
-            Command.ALIASCOTW -> withWiki(
+            Command.AliasCOTW -> withWiki(
                 wikis = wikis,
                 gameId = Game.COTW.id,
                 query = query,
@@ -160,7 +114,12 @@ internal class DreamCancelWikiDiscordFeature(
                 getCharacterAliases(wiki)
             }
 
-            else -> Result.Error(BotError.BotLogicError(command.name, query))
+            else -> Result.Error(
+                BotError.BotLogicError(
+                    command.name,
+                    query,
+                )
+            )
         }
     }
 
@@ -205,8 +164,6 @@ internal class DreamCancelWikiDiscordFeature(
 
     private companion object {
         const val TAG = "DreamCancelWikiDiscordFeature"
-        const val KEY_CHAR_NAME = "character"
-        const val KEY_MOVE = "move"
         const val BLUE = 0x009AB3F6
     }
 }

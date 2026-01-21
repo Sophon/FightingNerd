@@ -15,7 +15,6 @@ import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
@@ -47,16 +46,7 @@ internal class AdminDiscordFeature(
     override val featureInfo: FeatureInfo = adminFeatureInfo.featureInfo
     override val defaultCommand = null
     override val otherCommands = listOf(
-        SupportedCommand(
-            command = Command.FEEDBACK,
-            description = "Provide feedback",
-            arguments = listOf(
-                SupportedCommand.Argument(
-                    name = KEY_FEEDBACK,
-                    description = "Feedback"
-                )
-            )
-        ),
+        Command.Feedback,
     ) + adminCommands
 
     override suspend fun start() {
@@ -75,10 +65,10 @@ internal class AdminDiscordFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.FEEDBACK -> feedback(origin, message = query)
-            Command.REPLY -> reply(origin, query)
-            Command.BAN -> ban(origin, query = query)
-            Command.UNBAN -> unban(origin, query = query)
+            Command.Feedback -> feedback(origin, message = query)
+            Command.Reply -> reply(origin, query)
+            Command.Ban -> ban(origin, query = query)
+            Command.Unban -> unban(origin, query = query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -204,7 +194,6 @@ internal class AdminDiscordFeature(
 
     private companion object {
         const val TAG = "AdminDiscordFeature"
-        const val KEY_FEEDBACK = "feedback"
         const val TURQUOISE = 0x0000CED1
     }
 }

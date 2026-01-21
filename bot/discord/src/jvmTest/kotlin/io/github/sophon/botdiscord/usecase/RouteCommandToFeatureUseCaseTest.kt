@@ -11,7 +11,6 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
-import io.github.sophon.discord.domain.SupportedCommand
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.domain.Source
 import junit.framework.TestCase.assertTrue
@@ -26,27 +25,11 @@ class RouteCommandToFeatureUseCaseTest {
             url = "",
             version = "1.0.0"
         )
-        override val defaultCommand = SupportedCommand(
-            Command.FD,
-            description = "",
-            arguments = emptyList(),
-        )
+        override val defaultCommand = Command.Fd
         override val otherCommands = listOf(
-            SupportedCommand(
-                Command.PC,
-                description = "",
-                arguments = emptyList()
-            ),
-            SupportedCommand(
-                Command.HEAT,
-                description = "",
-                arguments = emptyList()
-            ),
-            SupportedCommand(
-                Command.HOMING,
-                description = "",
-                arguments = emptyList()
-            )
+            Command.Pc,
+            Command.Heat,
+            Command.Homing,
         )
 
         override suspend fun start() {}
@@ -59,7 +42,7 @@ class RouteCommandToFeatureUseCaseTest {
             val tekkenChars = setOf("lily", "ak", "jin", "kazuya")
 
             return when (command) {
-                Command.FD -> {
+                Command.Fd -> {
                     val parts = query.split(" ")
                     val charName = parts.firstOrNull()?.lowercase()
 
@@ -71,7 +54,7 @@ class RouteCommandToFeatureUseCaseTest {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "Wavu FD: $query" }))
                     }
                 }
-                Command.PC, Command.HEAT, Command.HOMING -> {
+                Command.Pc, Command.Heat, Command.Homing -> {
                     val charName = query.lowercase()
                     if (charName in tekkenChars) {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "Wavu ${command.name}: $query" }))
@@ -90,12 +73,8 @@ class RouteCommandToFeatureUseCaseTest {
             url = "",
             version = "1.0.0"
         )
-        override val defaultCommand = SupportedCommand(
-            Command.GL,
-            description = "",
-            arguments = emptyList()
-        )
-        override val otherCommands = emptyList<SupportedCommand>()
+        override val defaultCommand = Command.Gl
+        override val otherCommands = emptyList<Command>()
 
         override suspend fun start() {}
 
@@ -112,7 +91,7 @@ class RouteCommandToFeatureUseCaseTest {
             )
 
             return when (command) {
-                Command.GL -> {
+                Command.Gl -> {
                     if (query.lowercase() in glossaryTerms) {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "Infil GL: $query" }))
                     } else {
@@ -130,18 +109,8 @@ class RouteCommandToFeatureUseCaseTest {
             url = "",
             version = "1.0.0"
         )
-        override val defaultCommand = SupportedCommand(
-            Command.FD,
-            description = "",
-            arguments = emptyList(),
-        )
-        override val otherCommands = listOf(
-            SupportedCommand(
-                Command.CHARSF,
-                description = "",
-                arguments = emptyList(),
-            ),
-        )
+        override val defaultCommand = Command.Fd
+        override val otherCommands = listOf(Command.CharSF)
 
         override suspend fun start() {}
 
@@ -158,7 +127,7 @@ class RouteCommandToFeatureUseCaseTest {
             )
 
             return when (command) {
-                Command.FD -> {
+                Command.Fd -> {
                     val parts = query.split(" ")
                     val charName = parts.firstOrNull()?.lowercase()
 
@@ -170,7 +139,7 @@ class RouteCommandToFeatureUseCaseTest {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "SuperCombo FD: $query" }))
                     }
                 }
-                Command.CHARSF -> {
+                Command.CharSF -> {
                     if (query.lowercase() in sfChars) {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "SuperCombo CHARSF6: $query" }))
                     } else {
@@ -189,16 +158,14 @@ class RouteCommandToFeatureUseCaseTest {
             version = "1.0.0"
         )
         override val defaultCommand = null
-        override val otherCommands = listOf(
-            SupportedCommand(Command.HEAT, description = "", arguments = emptyList())
-        )
+        override val otherCommands = listOf(Command.Heat)
         override suspend fun start() {}
         override suspend fun execute(
             command: Command,
             query: String,
             origin: Source,
         ): Result<BotOutput, BotError> {
-            return if (command == Command.HEAT && query.isNotBlank()) {
+            return if (command == Command.Heat && query.isNotBlank()) {
                 Result.Success(BotOutput(primaryEmbedBuilder = { title = "NoDefault HEAT: $query" }))
             } else {
                 Result.Error(BotError.InvalidQuery(query))

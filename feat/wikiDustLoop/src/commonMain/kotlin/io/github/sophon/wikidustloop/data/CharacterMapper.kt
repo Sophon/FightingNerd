@@ -6,7 +6,7 @@ import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.wikidustloop.BASE_URL
-import io.github.sophon.wikidustloop.WIKI_BASE_URL
+import io.github.sophon.wikidustloop.util.toClickable
 
 /**
  * TODO: don't filter out junk characters
@@ -41,7 +41,7 @@ internal fun CharacterListResponseDto.toDomain(
                     iconUrl = dto.icon.let { imageUrlMap[it] },
                     bannerUrl = dto.portrait.let { imageUrlMap[it] },
                 ),
-                umo = dto.umo?.cleanHtml().toClickable(),
+                umo = dto.umo?.cleanHtml().formUmo(),
                 ggstProperties = Character.GGSTProperties(
                     defense = dto.defense,
                     guts = dto.guts,
@@ -251,23 +251,10 @@ fun String?.createBBAliases(): List<String> {
     }.distinct()
 }
 
-internal fun String?.toClickable(): List<String> {
+internal fun String?.formUmo(): List<String> {
     if (isNullOrBlank()) return listOf()
 
-    return orEmpty().split(",").map {
-        val option = it.trim()
-        if (option.startsWith("[[") && option.endsWith("]]") && option.contains("|")) {
-            val fields = option
-                .substringAfter("[[")
-                .substringBefore("]]")
-                .split("|")
-            val title = fields.lastOrNull()?.trim() ?: ""
-            val partialUrl = (fields.firstOrNull() ?: "")
-                .replace(" ", "_")
-                .trim()
-            "[$title](${WIKI_BASE_URL}/$partialUrl)"
-        } else {
-            option
-        }
+    return orEmpty().split(",").mapNotNull {
+        it.trim().toClickable()
     }
 }
