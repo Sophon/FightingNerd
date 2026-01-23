@@ -28,6 +28,11 @@ internal sealed class Command(
                 name = "password",
                 description = "Lobby password",
                 isRequired = false,
+            ),
+            Argument(
+                name = "name",
+                description = "Lobby name",
+                isRequired = false,
             )
         )
     )

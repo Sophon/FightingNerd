@@ -16,8 +16,13 @@ internal class CreateJoinEmbedButtonUseCase {
         query: String,
     ): Result<BotOutput, BotError> {
         val parts = query.split(" ")
-        val steamLobbyUrl = parts.first()
-        val password = if (parts.size > 1) parts.last() else null
+        val steamLobbyUrl = parts[0]
+        val password = parts.getOrNull(1)
+        val lobbyName = if (parts.size > 2) {
+            parts.drop(2).joinToString(" ")
+        } else {
+            null
+        }
 
         if (steamLobbyUrl.startsWith("steam://joinlobby/").not())
             return Result.Error(BotError.InvalidSteamLobbyUrl(steamLobbyUrl))
@@ -29,8 +34,14 @@ internal class CreateJoinEmbedButtonUseCase {
             primaryEmbedBuilder = {
                 title = "Join $userName's lobby!"
                 optionalField(
+                    name = "Lobby name",
+                    value = password?.let {  "```$lobbyName```" },
+                    inline = false,
+                )
+                optionalField(
                     name = "Password",
                     value = password?.let {  "```$password```" },
+                    inline = false,
                 )
                 color = Color(PURPLE)
             },
