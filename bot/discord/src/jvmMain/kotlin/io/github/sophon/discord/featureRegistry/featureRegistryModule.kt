@@ -27,6 +27,7 @@ import io.github.sophon.discord.featureRegistry.wikiMizuumi.MizuumiWikiDiscordFe
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchStringFollowupsUseCase
 import io.github.sophon.discord.featureRegistry.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
@@ -77,6 +78,7 @@ internal val featureRegistryModule = module {
 
     //region Wavu
     singleOf(::FileReaderJVM).bind<FileReader>()
+    singleOf(::SearchStringFollowupsUseCase)
     //endregion
 
     //region Mizuumi

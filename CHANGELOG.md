@@ -2,6 +2,7 @@
 
 ## [v8.7.0] - TODO
 - `join` - added optional lobby name parameter
+- `string` command - searches followups of a move
 
 ## [v8.6.0] - 2026-01-22
 - fixed DustLoop move notes URL formatting

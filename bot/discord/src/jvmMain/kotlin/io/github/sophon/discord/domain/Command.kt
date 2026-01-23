@@ -182,6 +182,20 @@ internal sealed class Command(
             ),
         ),
     )
+    object Strings : Command(
+        name = "Strings",
+        description = "Tekken string FOLLOWUPS",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+            ),
+            Argument(
+                name = "move",
+                description = "Starting with",
+            ),
+        ),
+    )
     //endregion
 
     //region SuperCombo
