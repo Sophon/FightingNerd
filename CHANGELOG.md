@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v8.8.0] - 2026-01-23
+- `strings` 
+  - fixed bug with multi-char starting move
+  - now displays levels
+
 ## [v8.7.0] - 2026-01-23
 - `join` - added optional lobby name parameter
 - `string` command - searches followups of a move
