@@ -20,8 +20,8 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.featureRegistry.core.moveListEmbed
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchStringFollowupsUseCase
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
-import io.github.sophon.discord.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
 import io.github.sophon.discord.usecase.GetStancesUseCase
@@ -46,7 +46,7 @@ internal class WavuWikiDiscordFeature(
     private val getMovesUseCase: GetMovesUseCase,
     private val getStancesUseCase: GetStancesUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
-    private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val searchStringFollowupsUseCase: SearchStringFollowupsUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -60,6 +60,7 @@ internal class WavuWikiDiscordFeature(
         Command.Stance,
         Command.AliasTK,
         Command.ThrowTK,
+        Command.Strings,
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -107,6 +108,7 @@ internal class WavuWikiDiscordFeature(
             Command.Stance -> searchStanceMoves(wiki, query)
             Command.AliasTK -> getCharacterAliases(wiki)
             Command.ThrowTK -> searchThrowMoves(wiki, query)
+            Command.Strings -> searchStringFollowupsUseCase.invoke(wiki, query, featureInfo)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -199,6 +201,7 @@ internal class WavuWikiDiscordFeature(
         }
     }
 
+    //TODO: refactor to usecase
     private suspend fun searchStanceMoves(
         wiki: WikiClient,
         query: String,

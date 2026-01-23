@@ -28,6 +28,11 @@ internal sealed class Command(
                 name = "password",
                 description = "Lobby password",
                 isRequired = false,
+            ),
+            Argument(
+                name = "name",
+                description = "Lobby name",
+                isRequired = false,
             )
         )
     )
@@ -174,6 +179,20 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+            ),
+        ),
+    )
+    object Strings : Command(
+        name = "Strings",
+        description = "Tekken string FOLLOWUPS",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+            ),
+            Argument(
+                name = "move",
+                description = "Starting with",
             ),
         ),
     )
