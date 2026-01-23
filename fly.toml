@@ -13,7 +13,7 @@ primary_region = 'fra'
   DATABASE_PATH = "/data/banlist.db"
 
 [[vm]]
-  memory = '512mb'
+  memory = '1024mb'
   cpu_kind = 'shared'
   cpus = 1
 
