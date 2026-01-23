@@ -29,4 +29,11 @@ object WavuFilter {
             move.isThrow() && move.notes.isHitThrow().not()
         }
     }
+
+    data class Strings(val startingMoveInput: String): Filter {
+        override val predicate: (Move) -> Boolean = { move ->
+            move.input.startsWith(startingMoveInput)
+                    && move.input.getOrNull(1) != '+'
+        }
+    }
 }
