@@ -40,7 +40,7 @@ internal class SearchStringFollowupsUseCase(
                     color = Color(BLUE),
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = query),
+                    buttonList = moveList.toButtons(charName),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )
