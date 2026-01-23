@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.8.1] - 2026-01-23
+- increased JVM memory to 256
+
 ## [v8.8.0] - 2026-01-23
 - `strings` 
   - fixed bug with multi-char starting move
