@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v8.7.0] - TODO
+## [v8.7.0] - 2026-01-23
 - `join` - added optional lobby name parameter
 - `string` command - searches followups of a move
 
