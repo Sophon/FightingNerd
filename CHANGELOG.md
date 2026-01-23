@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.8.2] - 2026-01-23
+- increased cloud RAM to 1024
+
 ## [v8.8.1] - 2026-01-23
 - increased JVM memory to 256
 
