@@ -35,7 +35,9 @@ internal class SearchStringFollowupsUseCase(
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
                     category = "${query.uppercase()} Followups",
-                    dataList = moveList.map { it.input },
+                    dataList = moveList.map {
+                        "${it.input}: ${it.guard}"
+                    },
                     featureInfo = featureInfo,
                     color = Color(BLUE),
                 ),
