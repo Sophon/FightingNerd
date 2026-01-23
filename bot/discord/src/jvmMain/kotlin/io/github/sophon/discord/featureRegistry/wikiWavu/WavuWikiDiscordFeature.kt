@@ -60,6 +60,7 @@ internal class WavuWikiDiscordFeature(
         Command.Stance,
         Command.AliasTK,
         Command.ThrowTK,
+        Command.Strings,
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -107,6 +108,7 @@ internal class WavuWikiDiscordFeature(
             Command.Stance -> searchStanceMoves(wiki, query)
             Command.AliasTK -> getCharacterAliases(wiki)
             Command.ThrowTK -> searchThrowMoves(wiki, query)
+            Command.Strings -> searchStringFollowups(wiki, query)
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
@@ -281,6 +283,36 @@ internal class WavuWikiDiscordFeature(
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
                     category = "${query.uppercase()} Throw",
+                    dataList = moveList.map { it.input },
+                    featureInfo = featureInfo,
+                    color = Color(BLUE),
+                ),
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveList.toButtons(charName = query),
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
+                ),
+            )
+        }
+    }
+
+    //TODO: refactor to usecase
+    private suspend fun searchStringFollowups(
+        wiki: WikiClient,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        val parts = query.split(' ').apply {
+            if (size < 2) return Result.Error(BotError.InvalidQuery("charName startingMove"))
+        }
+        val charName = parts.first()
+        val startingMoveInput = parts.drop(1).joinToString()
+        return getMovesUseCase.invoke(
+            wiki = wiki,
+            charName = charName,
+            filter = WavuFilter.Strings(startingMoveInput),
+        ).map { moveList ->
+            BotOutput(
+                primaryEmbedBuilder = moveListEmbed(
+                    category = "${query.uppercase()} Followups",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                     color = Color(BLUE),
