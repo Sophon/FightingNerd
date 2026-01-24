@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.8.3] - 2026-01-24
+- `strings` also checks the move aliases
+
 ## [v8.8.2] - 2026-01-23
 - increased cloud RAM to 1024
 
