@@ -32,8 +32,11 @@ object WavuFilter {
 
     data class Strings(val startingMoveInput: String): Filter {
         override val predicate: (Move) -> Boolean = { move ->
-            move.input.startsWith(startingMoveInput)
-                    && move.input.drop(startingMoveInput.length).getOrNull(0) != '+'
+            val nextChar = move.input.drop(startingMoveInput.length).getOrNull(0)
+            val inputStartsWithQuery = move.input.startsWith(startingMoveInput)
+                    || move.aliases.any { it.startsWith(startingMoveInput) }
+
+            inputStartsWithQuery && nextChar != '+'
         }
     }
 }
