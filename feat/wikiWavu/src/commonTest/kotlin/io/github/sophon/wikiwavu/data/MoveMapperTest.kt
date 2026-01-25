@@ -138,6 +138,19 @@ class MoveMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `formAliases handles ss in input`() {
+        // given
+        val input = "SS.2".cleanMoveInput()
+        val expected = listOf("ss2")
+
+        // when
+        val result = input.formAliases(null, null)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region isStance

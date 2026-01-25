@@ -26,6 +26,10 @@ internal fun MoveDto.mapToDomain(
     characterData: DownloadMoveListUseCase.CharacterData,
     movesById: Map<String, MoveDto>,
 ): Move {
+    if (this.name == "Cloud Gates") {
+        val a = 3
+    }
+
     val cleanedCrushes = splitCrush()
     val unifiedNotes = notes.formNotes() + cleanedCrushes
     val fullInput = formCompleteDataFromParent(movesById) { it.input }
@@ -143,6 +147,10 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         && this.split(".").first().length == 3
     ) {
         aliases.add(this.replace(".", ""))
+    }
+
+    if (this.startsWith("ss.")) {
+        aliases.add(this.replace("ss.", "ss"))
     }
 
     if (

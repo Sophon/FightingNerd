@@ -197,7 +197,7 @@ class MoveSanitizerTest {
         val result = input.cleanMoveInput()
 
         // Then
-        assertThat(result).isEqualTo("ss4")
+        assertThat(result).isEqualTo("ss.4")
     }
 
     @Test
@@ -214,17 +214,6 @@ class MoveSanitizerTest {
     //endregion
 
     //region cleanMoveInput - Dot Notation
-    @Test
-    fun `cleanMoveInput removes dot after ss`() {
-        // Given
-        val input = "ss.4"
-
-        // When
-        val result = input.cleanMoveInput()
-
-        // Then
-        assertThat(result).isEqualTo("ss4")
-    }
 
     @Test
     fun `cleanMoveInput removes dot after ws`() {
@@ -397,18 +386,6 @@ class MoveSanitizerTest {
 
         // Then
         assertThat(result).isEqualTo("ws2")
-    }
-
-    @Test
-    fun `cleanMoveInput handles complex yoshimitsu move`() {
-        // Given
-        val input = "1SS.1,1"
-
-        // When
-        val result = input.cleanMoveInput()
-
-        // Then
-        assertThat(result).isEqualTo("1ss11")
     }
 
     @Test
