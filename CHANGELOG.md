@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v8.8.4] - 2026-01-25
+- fixed DSS not registering as stance
+
 ## [v8.8.3] - 2026-01-24
 - `strings` also checks the move aliases
 
