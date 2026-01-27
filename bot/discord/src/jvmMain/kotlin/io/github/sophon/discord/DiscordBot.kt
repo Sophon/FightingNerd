@@ -229,10 +229,11 @@ internal class DiscordBotImpl(
                 val uuid = action.substringAfter(KEY_EDIT)
                 message?.apply {
                     val botOutput = editableEmbedMap[uuid]
-                    botOutput?.fullEmbedBuilder?.let { builder ->
+                    botOutput?.mutableEmbedBuilder?.manualEditBuilder?.let { embedBuilder ->
+
                         edit {
                             embeds?.clear()
-                            embed(builder)
+                            embed(embedBuilder)
                             editableEmbedMap.remove(uuid)
                             components = mutableListOf() //removes buttons
                             botOutput.images?.urls?.forEach { url ->
