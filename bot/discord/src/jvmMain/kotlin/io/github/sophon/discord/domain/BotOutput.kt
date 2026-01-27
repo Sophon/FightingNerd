@@ -48,6 +48,11 @@ data class BotOutput(
         }
     }
 
+    /**
+     * Editable Embeds always edit themselves after delay.
+     * If `auto` is not null, it will edit itself into that.
+     * `manual` is used when a button is pressed.
+     */
     data class EditableEmbedBuilder(
         val primaryBuilder: (EmbedBuilder.() -> Unit),
         val autoEditBuilder: (EmbedBuilder.() -> Unit)? = null,
