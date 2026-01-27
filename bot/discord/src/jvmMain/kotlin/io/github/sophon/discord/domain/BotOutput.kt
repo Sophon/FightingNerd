@@ -9,13 +9,12 @@ import kotlin.time.Duration.Companion.seconds
 data class BotOutput(
     val primaryEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
     val fullEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
-    val errorEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
+    val errorEmbedBuilder: ErrorEmbedBuilder? = null,
     val plainText: String? = null,
     val images: Images? = null,
     val feedback: Feedback? = null,
     val reply: Reply? = null,
     val buttons: ButtonSet? = null,
-    val duration: Duration? = null,
 ) {
     data class Images(
         val title: String,
@@ -49,4 +48,9 @@ data class BotOutput(
             class Url(val url: String): Action()
         }
     }
+
+    data class ErrorEmbedBuilder(
+        val primaryBuilder: (EmbedBuilder.() -> Unit),
+        val leftOverBuilder: (EmbedBuilder.() -> Unit),
+    )
 }

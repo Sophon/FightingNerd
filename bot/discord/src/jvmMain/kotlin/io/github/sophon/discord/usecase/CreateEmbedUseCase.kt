@@ -96,6 +96,44 @@ internal class CreateEmbedUseCase {
         }
     }
 
+    suspend fun MessageCreateEvent.invoke(
+        errorEmbedBuilder: EmbedBuilder.() -> Unit,
+        leftOverEmbedBuilder: EmbedBuilder.() -> Unit,
+        coroutineScope: CoroutineScope,
+        editAfter: Duration? = null,
+        buttons: ButtonSet? = null,
+    ): Result<String, BotError> {
+        return try {
+            val uuid = Uuid.random()
+
+            val message = message.channel.createMessage {
+                messageReference = message.id
+                allowedMentions { repliedUser = false }
+
+                embed(errorEmbedBuilder)
+
+                if (buttons?.buttonList.isNullOrEmpty().not()) {
+                    createButtons(uuid, buttons.buttonList)
+                }
+            }
+
+            editAfter?.let { duration ->
+                coroutineScope.launch {
+                    delay(duration)
+                    message.edit {
+                        embeds = mutableListOf()
+                        components = mutableListOf()
+                        embed(leftOverEmbedBuilder)
+                    }
+                }
+            }
+
+            Result.Success(uuid.toString())
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+    }
+
     suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
         primaryEmbed: EmbedBuilder.() -> Unit,
         coroutineScope: CoroutineScope,

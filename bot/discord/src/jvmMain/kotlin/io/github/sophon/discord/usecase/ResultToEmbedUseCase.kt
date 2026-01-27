@@ -8,7 +8,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
-import io.github.sophon.discord.TIME_DELETE_ERROR_EMBED_S
+import io.github.sophon.discord.TIME_EDIT_ERROR_EMBED_S
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
@@ -38,11 +38,10 @@ internal class ResultToEmbedUseCase(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
-                val (errorEmbed, buttons) = createErrorEmbedBuilderUseCase.invoke(result.error)
+                val (embedBuilder, buttons) = createErrorEmbedBuilderUseCase.invoke(result.error)
                 BotOutput(
-                    errorEmbedBuilder = errorEmbed,
+                    errorEmbedBuilder = embedBuilder,
                     buttons = buttons,
-                    duration = TIME_DELETE_ERROR_EMBED_S.seconds,
                 )
             }
         }
@@ -82,10 +81,11 @@ internal class ResultToEmbedUseCase(
             botOutput.errorEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
                     invoke(
-                        primaryEmbed = botOutput.errorEmbedBuilder,
+                        errorEmbedBuilder = botOutput.errorEmbedBuilder.primaryBuilder,
+                        leftOverEmbedBuilder = botOutput.errorEmbedBuilder.leftOverBuilder,
                         coroutineScope = coroutineScope,
                         buttons = botOutput.buttons,
-                        deleteAfter = botOutput.duration,
+                        editAfter = TIME_EDIT_ERROR_EMBED_S.seconds,
                     ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
@@ -152,7 +152,7 @@ internal class ResultToEmbedUseCase(
             botOutput.errorEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
                     invoke(
-                        primaryEmbed = botOutput.errorEmbedBuilder,
+                        primaryEmbed = botOutput.errorEmbedBuilder.primaryBuilder,
                         coroutineScope = coroutineScope,
                         buttons = botOutput.buttons,
                         isEphemeral = true,
