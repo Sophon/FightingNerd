@@ -2,14 +2,11 @@ package io.github.sophon.discord.usecase
 
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
-import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.allowedMentions
-import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
@@ -32,9 +29,8 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 class CreateMutableEmbedUseCase {
     suspend fun MessageCreateEvent.invoke(
-        primaryEmbedBuilder: EmbedBuilder.() -> Unit,
+        mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
-        autoEditEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
         buttons: ButtonSet? = null,
         editAfter: Duration = TIME_AUTO_EDIT_EMBED_S.seconds,
         deleteAfter: Duration? = null,
@@ -46,7 +42,7 @@ class CreateMutableEmbedUseCase {
                 messageReference = message.id
                 allowedMentions { repliedUser = false }
 
-                embed(primaryEmbedBuilder)
+                embed(mutableEmbedBuilder.primaryBuilder)
 
                 if (buttons?.buttonList.isNullOrEmpty().not()) {
                     createButtons(uuid, buttons.buttonList)
@@ -57,7 +53,7 @@ class CreateMutableEmbedUseCase {
                 delay(editAfter)
                 message.edit {
                     components = mutableListOf()
-                    autoEditEmbedBuilder?.let { builder ->
+                    mutableEmbedBuilder.autoEditBuilder?.let { builder ->
                         embed(builder)
                     }
                 }
@@ -77,7 +73,7 @@ class CreateMutableEmbedUseCase {
     }
 
     suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
-        editableEmbedBuilder: BotOutput.EditableEmbedBuilder,
+        mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
         imageList: BotOutput.Images? = null,
         buttons: ButtonSet? = null,
@@ -88,7 +84,7 @@ class CreateMutableEmbedUseCase {
             val uuid = Uuid.random()
 
             interaction.respondPublic {
-                embed(editableEmbedBuilder.primaryBuilder)
+                embed(mutableEmbedBuilder.primaryBuilder)
 
                 if (buttons?.buttonList.isNullOrEmpty().not()) {
                     createButtons(uuid, buttons.buttonList)
@@ -122,7 +118,7 @@ class CreateMutableEmbedUseCase {
                 delay(editAfter)
                 interaction.getOriginalInteractionResponseOrNull()?.edit {
                     components = mutableListOf()
-                    editableEmbedBuilder.autoEditBuilder?.let { builder ->
+                    mutableEmbedBuilder.autoEditBuilder?.let { builder ->
                         embeds = mutableListOf(EmbedBuilder().apply(builder))
                     }
                 }

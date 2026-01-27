@@ -155,7 +155,7 @@ internal class SuperComboWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    editableEmbedBuilder = BotOutput.EditableEmbedBuilder(
+                    mutableEmbedBuilder = BotOutput.MutableEmbedBuilder(
                         primaryBuilder = superComboMoveEmbed(move, featureInfo),
                         manualEditBuilder = superComboMoveDetailedEmbed(move, featureInfo),
                     ),

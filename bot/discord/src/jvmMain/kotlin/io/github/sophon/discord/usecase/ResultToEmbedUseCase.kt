@@ -41,7 +41,7 @@ internal class ResultToEmbedUseCase(
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
                 val (embedBuilder, buttons) = createErrorEmbedBuilderUseCase.invoke(result.error)
                 BotOutput(
-                    editableEmbedBuilder = embedBuilder,
+                    mutableEmbedBuilder = embedBuilder,
                     buttons = buttons,
                 )
             }
@@ -58,11 +58,10 @@ internal class ResultToEmbedUseCase(
                     ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
-            botOutput.editableEmbedBuilder != null -> {
+            botOutput.mutableEmbedBuilder != null -> {
                 with (createMutableEmbedUseCase) {
                     invoke(
-                        primaryEmbedBuilder = botOutput.editableEmbedBuilder.primaryBuilder,
-                        autoEditEmbedBuilder = botOutput.editableEmbedBuilder.autoEditBuilder,
+                        mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
                         coroutineScope = coroutineScope,
                         buttons = botOutput.buttons,
                         editAfter = TIME_AUTO_EDIT_EMBED_S.seconds, //TODO: DON'T ALWAYS AUTO EDIT
@@ -112,7 +111,7 @@ internal class ResultToEmbedUseCase(
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
                 val (errorEmbed, buttons) = createErrorEmbedBuilderUseCase.invoke(result.error)
-                BotOutput(editableEmbedBuilder = errorEmbed, buttons = buttons)
+                BotOutput(mutableEmbedBuilder = errorEmbed, buttons = buttons)
             }
         }
 
@@ -127,10 +126,10 @@ internal class ResultToEmbedUseCase(
                     ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
-            botOutput.editableEmbedBuilder != null -> {
+            botOutput.mutableEmbedBuilder != null -> {
                 with (createMutableEmbedUseCase) {
                     invoke(
-                        editableEmbedBuilder = botOutput.editableEmbedBuilder,
+                        mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
                         coroutineScope = coroutineScope,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,

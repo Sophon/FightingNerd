@@ -12,7 +12,7 @@ import io.github.sophon.discord.util.mandatoryField
 import kotlin.time.Duration.Companion.seconds
 
 internal class CreateErrorEmbedBuilderUseCase {
-    fun invoke(error: BotError): Pair<BotOutput.EditableEmbedBuilder, BotOutput.ButtonSet?> {
+    fun invoke(error: BotError): Pair<BotOutput.MutableEmbedBuilder, BotOutput.ButtonSet?> {
         return when (error) {
             is BotError.UnknownCharacter,
             is BotError.UnknownMove,
@@ -36,7 +36,7 @@ internal class CreateErrorEmbedBuilderUseCase {
         }
     }
 
-    private fun createGenericError(error: BotError): BotOutput.EditableEmbedBuilder {
+    private fun createGenericError(error: BotError): BotOutput.MutableEmbedBuilder {
         val errorDescription = error.toString().truncate(EMBED_MAX_LENGTH)
         val primaryBuilder: EmbedBuilder.() -> Unit = {
             title = "ERROR"
@@ -49,12 +49,12 @@ internal class CreateErrorEmbedBuilderUseCase {
             description = errorDescription
         }
 
-        return BotOutput.EditableEmbedBuilder(primaryBuilder, leftOverBuilder)
+        return BotOutput.MutableEmbedBuilder(primaryBuilder, leftOverBuilder)
     }
 
     private fun syntaxErrorEmbed(
         unknownCharacterError: BotError,
-    ): BotOutput.EditableEmbedBuilder {
+    ): BotOutput.MutableEmbedBuilder {
         val errorDescription = unknownCharacterError
             .toString()
             .let { "**$it**" }
@@ -89,12 +89,12 @@ internal class CreateErrorEmbedBuilderUseCase {
             description = errorDescription
         }
 
-        return BotOutput.EditableEmbedBuilder(primaryBuilder, leftOverBuilder)
+        return BotOutput.MutableEmbedBuilder(primaryBuilder, leftOverBuilder)
     }
 
     private fun createCommandSyntaxErrorEmbed(
         invalidQueryError: BotError.InvalidQuery,
-    ): BotOutput.EditableEmbedBuilder {
+    ): BotOutput.MutableEmbedBuilder {
         val errorDescription = invalidQueryError
             .toString()
             .let { "**$it**" }
@@ -125,7 +125,7 @@ internal class CreateErrorEmbedBuilderUseCase {
             description = errorDescription
         }
 
-        return BotOutput.EditableEmbedBuilder(primaryBuilder, leftOverBuilder)
+        return BotOutput.MutableEmbedBuilder(primaryBuilder, leftOverBuilder)
     }
 
     private fun examplesButton(): BotOutput.EmbedButton {

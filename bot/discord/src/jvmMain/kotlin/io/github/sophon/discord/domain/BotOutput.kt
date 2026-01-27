@@ -8,7 +8,7 @@ import kotlin.time.Duration.Companion.seconds
 
 data class BotOutput(
     val primaryEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
-    val editableEmbedBuilder: EditableEmbedBuilder? = null,
+    val mutableEmbedBuilder: MutableEmbedBuilder? = null,
     val plainText: String? = null,
     val images: Images? = null,
     val feedback: Feedback? = null,
@@ -53,7 +53,7 @@ data class BotOutput(
      * If `auto` is not null, it will edit itself into that.
      * `manual` is used when a button is pressed.
      */
-    data class EditableEmbedBuilder(
+    data class MutableEmbedBuilder(
         val primaryBuilder: (EmbedBuilder.() -> Unit),
         val autoEditBuilder: (EmbedBuilder.() -> Unit)? = null,
         val manualEditBuilder: (EmbedBuilder.() -> Unit)? = null,
