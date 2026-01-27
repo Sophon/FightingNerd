@@ -51,6 +51,6 @@ data class BotOutput(
 
     data class ErrorEmbedBuilder(
         val primaryBuilder: (EmbedBuilder.() -> Unit),
-        val leftOverBuilder: (EmbedBuilder.() -> Unit),
+        val editedBuilder: (EmbedBuilder.() -> Unit),
     )
 }
