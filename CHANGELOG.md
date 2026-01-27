@@ -1,7 +1,7 @@
 # BOT CHANGELOG
 
 ## [v9.0.0] - TODO
-- error embeds display either as Ephemeral or delete after 5s
+- error embeds display either as Ephemeral or edits itself to minimum after 5s
 
 ## [v8.8.4] - 2026-01-25
 - fixed DSS not registering as stance
