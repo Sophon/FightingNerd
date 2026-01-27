@@ -15,6 +15,7 @@ data class BotOutput(
     val feedback: Feedback? = null,
     val reply: Reply? = null,
     val buttons: ButtonSet? = null,
+    val duration: Duration? = null,
 ) {
     data class Images(
         val title: String,
