@@ -51,7 +51,7 @@ internal class ResultToEmbedUseCase(
             botOutput.primaryEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
                     invoke(
-                        primaryEmbed = botOutput.primaryEmbedBuilder,
+                        embedBuilder = botOutput.primaryEmbedBuilder,
                         coroutineScope = coroutineScope,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
@@ -120,7 +120,7 @@ internal class ResultToEmbedUseCase(
             botOutput.primaryEmbedBuilder != null -> {
                 with (createEmbedUseCase) {
                     invoke(
-                        primaryEmbed = botOutput.primaryEmbedBuilder,
+                        embedBuilder = botOutput.primaryEmbedBuilder,
                         coroutineScope = coroutineScope,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
@@ -128,12 +128,12 @@ internal class ResultToEmbedUseCase(
                 }
             }
             botOutput.editableEmbedBuilder != null -> {
-                with (createEmbedUseCase) {
+                with (createMutableEmbedUseCase) {
                     invoke(
-                        primaryEmbed = botOutput.editableEmbedBuilder.primaryBuilder,
+                        editableEmbedBuilder = botOutput.editableEmbedBuilder,
                         coroutineScope = coroutineScope,
+                        imageList = botOutput.images,
                         buttons = botOutput.buttons,
-                        isEphemeral = true,
                     )
                         .onSuccess { uuid ->
                             botOutput.buttons?.duration?.let { duration ->
