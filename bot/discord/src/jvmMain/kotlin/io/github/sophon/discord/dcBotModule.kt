@@ -6,7 +6,7 @@ import io.github.sophon.core.coreModule
 import io.github.sophon.discord.data.InMemoryGlossaryDB
 import io.github.sophon.discord.featureRegistry.featureRegistryModule
 import io.github.sophon.discord.usecase.CreateEmbedUseCase
-import io.github.sophon.discord.usecase.CreateErrorEmbedUseCase
+import io.github.sophon.discord.usecase.CreateErrorEmbedBuilderUseCase
 import io.github.sophon.discord.usecase.CreateFeedbackEmbedUseCase
 import io.github.sophon.discord.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.usecase.CreateReplyEmbedUseCase
@@ -61,7 +61,7 @@ fun dcBotModule(kord: Kord) = module {
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
 
     singleOf(::RouteCommandToFeatureUseCase)
-    singleOf(::CreateErrorEmbedUseCase)
+    singleOf(::CreateErrorEmbedBuilderUseCase)
     singleOf(::CreatePlainMessageUseCase)
     singleOf(::CreateEmbedUseCase)
     singleOf(::CreateFeedbackEmbedUseCase)

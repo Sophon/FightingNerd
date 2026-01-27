@@ -11,7 +11,7 @@ import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.util.mandatoryField
 import kotlin.time.Duration.Companion.seconds
 
-internal class CreateErrorEmbedUseCase {
+internal class CreateErrorEmbedBuilderUseCase {
     fun invoke(error: BotError): Pair<EmbedBuilder.() -> Unit, BotOutput.ButtonSet?> {
         return when (error) {
             is BotError.UnknownCharacter,

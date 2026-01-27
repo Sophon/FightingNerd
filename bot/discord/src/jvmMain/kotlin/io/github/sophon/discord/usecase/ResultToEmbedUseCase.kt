@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
 internal class ResultToEmbedUseCase(
-    private val createErrorEmbedUseCase: CreateErrorEmbedUseCase,
+    private val createErrorEmbedBuilderUseCase: CreateErrorEmbedBuilderUseCase,
     private val createPlainMessageUseCase: CreatePlainMessageUseCase,
     private val createEmbedUseCase: CreateEmbedUseCase,
     private val createFeedbackEmbedUseCase: CreateFeedbackEmbedUseCase,
@@ -34,7 +34,7 @@ internal class ResultToEmbedUseCase(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
-                val (errorEmbed, buttons) = createErrorEmbedUseCase.invoke(result.error)
+                val (errorEmbed, buttons) = createErrorEmbedBuilderUseCase.invoke(result.error)
                 BotOutput(
                     errorEmbedBuilder = errorEmbed,
                     buttons = buttons,
@@ -108,7 +108,7 @@ internal class ResultToEmbedUseCase(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
-                val (errorEmbed, buttons) = createErrorEmbedUseCase.invoke(result.error)
+                val (errorEmbed, buttons) = createErrorEmbedBuilderUseCase.invoke(result.error)
                 BotOutput(errorEmbedBuilder = errorEmbed, buttons = buttons)
             }
         }
