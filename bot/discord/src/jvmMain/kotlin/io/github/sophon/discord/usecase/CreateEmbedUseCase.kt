@@ -2,11 +2,14 @@ package io.github.sophon.discord.usecase
 
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
+import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
+import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.allowedMentions
+import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
@@ -87,32 +90,34 @@ internal class CreateEmbedUseCase {
         fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
         buttons: ButtonSet? = null,
+        isEphemeral: Boolean = false,
     ): Result<String, BotError> {
         return try {
             val uuid = Uuid.random()
 
-            interaction.respondPublic {
-                embed(fullEmbed ?: primaryEmbed)
-
-                if (buttons?.buttonList.isNullOrEmpty().not()) {
-                    createButtons(uuid, buttons.buttonList)
-
-                    if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
-                        coroutineScope.launch {
-                            delay(buttons.duration)
-                            interaction.getOriginalInteractionResponse().edit {
-                                components = mutableListOf()
-                            }
-                        }
-                    }
+            if (isEphemeral) {
+                interaction.respondEphemeral {
+                    respond(
+                        uuid = uuid,
+                        primaryEmbed = primaryEmbed,
+                        coroutineScope = coroutineScope,
+                        interaction = interaction,
+                        fullEmbed = fullEmbed,
+                        buttons = buttons,
+                        imageList = imageList,
+                    )
                 }
-
-                imageList?.urls?.forEach { url ->
-                    embed {
-                        title = imageList.title
-                        this.url = imageList.titleUrl
-                        image = url
-                    }
+            } else {
+                interaction.respondPublic {
+                    respond(
+                        uuid = uuid,
+                        primaryEmbed = primaryEmbed,
+                        coroutineScope = coroutineScope,
+                        interaction = interaction,
+                        fullEmbed = fullEmbed,
+                        buttons = buttons,
+                        imageList = imageList,
+                    )
                 }
             }
 
@@ -125,6 +130,39 @@ internal class CreateEmbedUseCase {
             Result.Success(uuid.toString())
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
+        }
+    }
+
+    private fun InteractionResponseCreateBuilder.respond(
+        uuid: Uuid,
+        primaryEmbed: EmbedBuilder.() -> Unit,
+        coroutineScope: CoroutineScope,
+        interaction: GuildChatInputCommandInteraction,
+        fullEmbed: (EmbedBuilder.() -> Unit)? = null,
+        buttons: ButtonSet? = null,
+        imageList: BotOutput.Images? = null,
+    ) {
+        embed(fullEmbed ?: primaryEmbed)
+
+        if (buttons?.buttonList.isNullOrEmpty().not()) {
+            createButtons(uuid, buttons.buttonList)
+
+            if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                coroutineScope.launch {
+                    delay(buttons.duration)
+                    interaction.getOriginalInteractionResponse().edit {
+                        components = mutableListOf()
+                    }
+                }
+            }
+        }
+
+        imageList?.urls?.forEach { url ->
+            embed {
+                title = imageList.title
+                this.url = imageList.titleUrl
+                image = url
+            }
         }
     }
 

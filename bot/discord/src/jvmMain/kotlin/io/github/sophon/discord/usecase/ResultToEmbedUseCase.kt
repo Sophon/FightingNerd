@@ -145,6 +145,7 @@ internal class ResultToEmbedUseCase(
                         primaryEmbed = botOutput.errorEmbedBuilder,
                         coroutineScope = coroutineScope,
                         buttons = botOutput.buttons,
+                        isEphemeral = true,
                     ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
