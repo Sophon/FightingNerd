@@ -16,6 +16,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * TODO: we shouldn't be using embedBuilders here, we should receive the embed already
+ * so extract the CreateErrorEmbedBuilderUseCase out
+ */
 internal class ResultToEmbedUseCase(
     private val createErrorEmbedBuilderUseCase: CreateErrorEmbedBuilderUseCase,
     private val createPlainMessageUseCase: CreatePlainMessageUseCase,
