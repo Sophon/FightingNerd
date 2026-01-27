@@ -9,12 +9,14 @@ import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
 import io.github.sophon.discord.domain.BotOutput.ButtonSet
 import io.github.sophon.discord.util.createButtons
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -22,10 +24,10 @@ import kotlin.uuid.Uuid
 class CreateMutableEmbedUseCase {
     suspend fun MessageCreateEvent.invoke(
         primaryEmbedBuilder: EmbedBuilder.() -> Unit,
-        editedEmbedBuilder: EmbedBuilder.() -> Unit,
         coroutineScope: CoroutineScope,
+        autoEditEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
         buttons: ButtonSet? = null,
-        editAfter: Duration? = null,
+        editAfter: Duration = TIME_AUTO_EDIT_EMBED_S.seconds,
         deleteAfter: Duration? = null,
     ): Result<String, BotError> {
         return try {
@@ -42,13 +44,12 @@ class CreateMutableEmbedUseCase {
                 }
             }
 
-            editAfter?.let { duration ->
-                coroutineScope.launch {
-                    delay(duration)
-                    message.edit {
-                        embeds = mutableListOf()
-                        components = mutableListOf()
-                        embed(editedEmbedBuilder)
+            coroutineScope.launch {
+                delay(editAfter)
+                message.edit {
+                    components = mutableListOf()
+                    autoEditEmbedBuilder?.let { builder ->
+                        embed(builder)
                     }
                 }
             }

@@ -8,7 +8,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
-import io.github.sophon.discord.TIME_EDIT_ERROR_EMBED_S
+import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
@@ -26,6 +26,7 @@ internal class ResultToEmbedUseCase(
     private val createEmbedUseCase: CreateEmbedUseCase,
     private val createFeedbackEmbedUseCase: CreateFeedbackEmbedUseCase,
     private val createReplyEmbedUseCase: CreateReplyEmbedUseCase,
+    private val createMutableEmbedUseCase: CreateMutableEmbedUseCase,
 ) {
 
     suspend fun MessageCreateEvent.invoke(
@@ -40,7 +41,7 @@ internal class ResultToEmbedUseCase(
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
                 val (embedBuilder, buttons) = createErrorEmbedBuilderUseCase.invoke(result.error)
                 BotOutput(
-                    errorEmbedBuilder = embedBuilder,
+                    editableEmbedBuilder = embedBuilder,
                     buttons = buttons,
                 )
             }
@@ -54,16 +55,25 @@ internal class ResultToEmbedUseCase(
                         coroutineScope = coroutineScope,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
+                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
+                }
+            }
+            botOutput.editableEmbedBuilder != null -> {
+                with (createMutableEmbedUseCase) {
+                    invoke(
+                        primaryEmbedBuilder = botOutput.editableEmbedBuilder.primaryBuilder,
+                        autoEditEmbedBuilder = botOutput.editableEmbedBuilder.autoEditBuilder,
+                        coroutineScope = coroutineScope,
+                        buttons = botOutput.buttons,
+                        editAfter = TIME_AUTO_EDIT_EMBED_S.seconds, //TODO: DON'T ALWAYS AUTO EDIT
                     )
                         .onSuccess { uuid ->
-                            botOutput.fullEmbedBuilder?.let {
-                                botOutput.buttons?.duration?.let { duration ->
-                                    if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
-                                        editableEmbedMap[uuid] = botOutput
-                                        coroutineScope.launch {
-                                            delay(duration)
-                                            editableEmbedMap.remove(uuid)
-                                        }
+                            botOutput.buttons?.duration?.let { duration ->
+                                if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                                    editableEmbedMap[uuid] = botOutput
+                                    coroutineScope.launch {
+                                        delay(duration)
+                                        editableEmbedMap.remove(uuid)
                                     }
                                 }
                             }
@@ -76,17 +86,6 @@ internal class ResultToEmbedUseCase(
                     invoke(botOutput.plainText).onError {
                         Napier.e(tag = TAG) { "handleMessage: $it" }
                     }
-                }
-            }
-            botOutput.errorEmbedBuilder != null -> {
-                with (createEmbedUseCase) {
-                    invoke(
-                        errorEmbedBuilder = botOutput.errorEmbedBuilder.primaryBuilder,
-                        leftOverEmbedBuilder = botOutput.errorEmbedBuilder.leftOverBuilder,
-                        coroutineScope = coroutineScope,
-                        buttons = botOutput.buttons,
-                        editAfter = TIME_EDIT_ERROR_EMBED_S.seconds,
-                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
             botOutput.feedback != null -> {
@@ -113,7 +112,7 @@ internal class ResultToEmbedUseCase(
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
                 val (errorEmbed, buttons) = createErrorEmbedBuilderUseCase.invoke(result.error)
-                BotOutput(errorEmbedBuilder = errorEmbed, buttons = buttons)
+                BotOutput(editableEmbedBuilder = errorEmbed, buttons = buttons)
             }
         }
 
@@ -125,16 +124,24 @@ internal class ResultToEmbedUseCase(
                         coroutineScope = coroutineScope,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
+                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
+                }
+            }
+            botOutput.editableEmbedBuilder != null -> {
+                with (createEmbedUseCase) {
+                    invoke(
+                        primaryEmbed = botOutput.editableEmbedBuilder.primaryBuilder,
+                        coroutineScope = coroutineScope,
+                        buttons = botOutput.buttons,
+                        isEphemeral = true,
                     )
                         .onSuccess { uuid ->
-                            botOutput.fullEmbedBuilder?.let {
-                                botOutput.buttons?.duration?.let { duration ->
-                                    if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
-                                        editableEmbedMap[uuid] = botOutput
-                                        coroutineScope.launch {
-                                            delay(duration)
-                                            editableEmbedMap.remove(uuid)
-                                        }
+                            botOutput.buttons?.duration?.let { duration ->
+                                if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                                    editableEmbedMap[uuid] = botOutput
+                                    coroutineScope.launch {
+                                        delay(duration)
+                                        editableEmbedMap.remove(uuid)
                                     }
                                 }
                             }
@@ -147,16 +154,6 @@ internal class ResultToEmbedUseCase(
                     invoke(botOutput.plainText).onError {
                         Napier.e(tag = TAG) { "handleMessage: $it" }
                     }
-                }
-            }
-            botOutput.errorEmbedBuilder != null -> {
-                with (createEmbedUseCase) {
-                    invoke(
-                        primaryEmbed = botOutput.errorEmbedBuilder.primaryBuilder,
-                        coroutineScope = coroutineScope,
-                        buttons = botOutput.buttons,
-                        isEphemeral = true,
-                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
                 }
             }
             botOutput.feedback != null -> {

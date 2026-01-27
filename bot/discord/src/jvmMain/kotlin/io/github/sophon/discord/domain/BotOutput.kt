@@ -8,8 +8,7 @@ import kotlin.time.Duration.Companion.seconds
 
 data class BotOutput(
     val primaryEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
-    val fullEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
-    val errorEmbedBuilder: ErrorEmbedBuilder? = null,
+    val editableEmbedBuilder: EditableEmbedBuilder? = null,
     val plainText: String? = null,
     val images: Images? = null,
     val feedback: Feedback? = null,
@@ -49,8 +48,9 @@ data class BotOutput(
         }
     }
 
-    data class ErrorEmbedBuilder(
+    data class EditableEmbedBuilder(
         val primaryBuilder: (EmbedBuilder.() -> Unit),
-        val editedBuilder: (EmbedBuilder.() -> Unit),
+        val autoEditBuilder: (EmbedBuilder.() -> Unit)? = null,
+        val manualEditBuilder: (EmbedBuilder.() -> Unit)? = null,
     )
 }
