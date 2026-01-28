@@ -283,12 +283,7 @@ internal sealed class Command(
     object AliasKOF : Command(
         name = "AliasKOF",
         description = "KOF character aliases",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-            ),
-        ),
+        argumentList = listOf(),
     )
     object FdCOTW : Command(
         name = "FdCOTW",
@@ -307,12 +302,7 @@ internal sealed class Command(
     object AliasCOTW : Command(
         name = "AliasCOTW",
         description = "COTW character aliases",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-            ),
-        ),
+        argumentList = listOf(),
     )
 
     // DustLoop commands
