@@ -12,11 +12,11 @@ import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 
-internal fun EmbedBuilder.charEmbedGG(
+internal fun charEmbedBuilderGG(
     character: Character,
     fastestMoveList: List<Move>,
     featureInfo: FeatureInfo,
-) {
+): EmbedBuilder.() -> Unit = {
     generalInfoChar(character)
 
     val properties = character.ggstProperties
@@ -85,11 +85,11 @@ internal fun EmbedBuilder.charEmbedGG(
     featureFooter(featureInfo)
 }
 
-internal fun EmbedBuilder.charEmbedDB(
+internal fun charEmbedBuilderDB(
     character: Character,
     fastestMoveList: List<Move>,
     featureInfo: FeatureInfo,
-) {
+): EmbedBuilder.() -> Unit = {
     generalInfoChar(character)
     generalPropertiesChar(
         character,
@@ -100,11 +100,11 @@ internal fun EmbedBuilder.charEmbedDB(
     featureFooter(featureInfo)
 }
 
-internal fun EmbedBuilder.charEmbedGB(
+internal fun charEmbedBuilderGB(
     character: Character,
     fastestMoveList: List<Move>,
     featureInfo: FeatureInfo,
-) {
+): EmbedBuilder.() -> Unit = {
     generalInfoChar(character)
     generalPropertiesChar(
         character,
@@ -124,11 +124,11 @@ internal fun EmbedBuilder.charEmbedGB(
     featureFooter(featureInfo)
 }
 
-internal fun EmbedBuilder.charEmbedBB(
+internal fun charEmbedBuilderBB(
     character: Character,
     fastestMoveList: List<Move>,
     featureInfo: FeatureInfo,
-) {
+): EmbedBuilder.() -> Unit = {
     generalInfoChar(character)
     generalPropertiesChar(
         character,
@@ -154,8 +154,11 @@ internal fun EmbedBuilder.charEmbedBB(
     featureFooter(featureInfo)
 }
 
-internal fun EmbedBuilder.moveEmbedGG(move: Move, featureInfo: FeatureInfo) {
-    generalInfoMove(move)
+internal fun moveEmbedBuilderGG(
+    move: Move,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    generalInfoMove(move = move, displayHitboxes = false)
     generalPropertiesMove(move)
 
     optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
@@ -165,12 +168,28 @@ internal fun EmbedBuilder.moveEmbedGG(move: Move, featureInfo: FeatureInfo) {
     optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
     optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
 
-    moveNotes(move)
-
     featureFooter(featureInfo)
 }
 
-internal fun EmbedBuilder.moveEmbedDB(move: Move, featureInfo: FeatureInfo) {
+internal fun moveDetailedEmbedBuilderGG(
+    move: Move,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    moveEmbedBuilderGG(move, featureInfo).invoke(this)
+
+    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
+        ?: emptyList()
+    images
+        .takeIf { it.size == 1 }
+        ?.let { image = it.first() }
+
+    moveNotes(move)
+}
+
+internal fun moveEmbedBuilderDB(
+    move: Move,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
     generalInfoMove(move)
 
     mandatoryField(name = "Startup", value = move.startup)
@@ -186,7 +205,10 @@ internal fun EmbedBuilder.moveEmbedDB(move: Move, featureInfo: FeatureInfo) {
     featureFooter(featureInfo)
 }
 
-internal fun EmbedBuilder.moveEmbedGB(move: Move, featureInfo: FeatureInfo) {
+internal fun moveEmbedBuilderGB(
+    move: Move,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
     generalInfoMove(move)
     generalPropertiesMove(move)
 
@@ -201,7 +223,10 @@ internal fun EmbedBuilder.moveEmbedGB(move: Move, featureInfo: FeatureInfo) {
     featureFooter(featureInfo)
 }
 
-internal fun EmbedBuilder.moveEmbedBB(move: Move, featureInfo: FeatureInfo) {
+internal fun moveEmbedBuilderBB(
+    move: Move,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
     generalInfoMove(move)
     generalPropertiesMove(move)
 
@@ -238,7 +263,7 @@ internal fun EmbedBuilder.moveEmbedBB(move: Move, featureInfo: FeatureInfo) {
     featureFooter(featureInfo)
 }
 
-internal fun dustLoopMoveListEmbed(
+internal fun dustLoopMoveListEmbedBuilder(
     charName: String,
     category: String,
     moveList: List<Move>,
@@ -317,7 +342,10 @@ private fun EmbedBuilder.generalPropertiesChar(
     )
 }
 
-private fun EmbedBuilder.generalInfoMove(move: Move) {
+private fun EmbedBuilder.generalInfoMove(
+    move: Move,
+    displayHitboxes: Boolean = true,
+) {
     title = move.input
     url = move.urls.wikiUrl
     description = if (move.name.isNullOrBlank()) {
@@ -328,12 +356,13 @@ private fun EmbedBuilder.generalInfoMove(move: Move) {
     this@generalInfoMove.color = Color(RED)
     move.urls.characterImage?.let { thumbnail { url = it } }
 
-    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-        ?: emptyList()
-
-    images
-        .takeIf { it.size == 1 }
-        ?.let { image = it.first() }
+    if (displayHitboxes) {
+        val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
+            ?: emptyList()
+        images
+            .takeIf { it.size == 1 }
+            ?.let { image = it.first() }
+    }
 }
 
 private fun EmbedBuilder.generalPropertiesMove(move: Move) {
@@ -345,7 +374,7 @@ private fun EmbedBuilder.generalPropertiesMove(move: Move) {
     mandatoryField(name = "Recovery", value = move.recovery)
 
     optionalField(name = "Damage", value = move.damage, escapeAsterisks = true)
-    optionalField(name = "Invulnerability", value = move.invulnerability)
+    optionalField(name = "Inv", value = move.invulnerability)
     optionalField(name = "Counter", value = move.onCH)
 
     optionalField(name = "Level", value = move.getLevel())
