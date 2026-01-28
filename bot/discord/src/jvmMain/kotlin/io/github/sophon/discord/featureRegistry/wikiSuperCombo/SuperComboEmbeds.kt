@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.discord.util.separator
 
 internal fun superComboMoveEmbed(
     move: Move,
@@ -23,13 +24,6 @@ internal fun superComboMoveEmbed(
     }
     color = Color(WHITE)
     move.urls.characterImage?.let { thumbnail { url = it } }
-
-    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-        ?: emptyList()
-
-    images
-        .takeIf { it.size == 1 }
-        ?.let { image = it.first() }
 
     mandatoryField(name = "Startup", value = move.startup)
     mandatoryField(name = "Hit", value = move.onHit)
@@ -50,10 +44,16 @@ internal fun superComboMoveDetailedEmbed(
 ): EmbedBuilder.() -> Unit = {
     superComboMoveEmbed(move, featureInfo).invoke(this)
 
+    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
+        ?: emptyList()
+    images
+        .takeIf { it.size == 1 }
+        ?.let { image = it.first() }
+
     sf6Fields(move)
     mk1Fields(move)
 
-    mandatoryField(name = "", value = "", inline = false)
+    separator()
 
     createNotes(move)
     createDetails(move)
