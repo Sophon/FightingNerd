@@ -8,8 +8,7 @@ import kotlin.time.Duration.Companion.seconds
 
 data class BotOutput(
     val primaryEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
-    val fullEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
-    val errorEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
+    val mutableEmbedBuilder: MutableEmbedBuilder? = null,
     val plainText: String? = null,
     val images: Images? = null,
     val feedback: Feedback? = null,
@@ -48,4 +47,15 @@ data class BotOutput(
             class Url(val url: String): Action()
         }
     }
+
+    /**
+     * Editable Embeds always edit themselves after delay.
+     * If `auto` is not null, it will edit itself into that.
+     * `manual` is used when a button is pressed.
+     */
+    data class MutableEmbedBuilder(
+        val primaryBuilder: (EmbedBuilder.() -> Unit),
+        val autoEditBuilder: (EmbedBuilder.() -> Unit)? = null,
+        val manualEditBuilder: (EmbedBuilder.() -> Unit)? = null,
+    )
 }
