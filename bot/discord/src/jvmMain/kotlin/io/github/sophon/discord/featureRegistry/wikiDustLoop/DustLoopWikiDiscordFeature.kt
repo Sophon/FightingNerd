@@ -232,21 +232,7 @@ internal class DustLoopWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
             .map { move ->
-                val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-                    ?: emptyList()
-
-                BotOutput(
-                    primaryEmbedBuilder = createMoveEmbedUseCase.invoke(gameId, move, featureInfo),
-                    images = if (images.size < 2) {
-                        null
-                    } else {
-                        BotOutput.Images(
-                            title = move.input,
-                            titleUrl = move.urls.wikiUrl,
-                            urls = images,
-                        )
-                    }
-                )
+                createMoveEmbedUseCase.invoke(gameId, move, featureInfo)
             }
     }
 
@@ -265,7 +251,7 @@ internal class DustLoopWikiDiscordFeature(
         return fetchDustLoopInvincibleMovesUseCase.invoke(gameId, wiki, charName)
             .map { moveList ->
                 BotOutput(
-                    primaryEmbedBuilder = dustLoopMoveListEmbed(
+                    primaryEmbedBuilder = dustLoopMoveListEmbedBuilder(
                         charName = charName,
                         category = "invincible",
                         moveList = moveList,
