@@ -3,6 +3,7 @@
 ## [v9.0.0] - TODO
 - error embeds edits itself to minimum after 5s
 - made GGST and SF embeds more compact 
+- fixed the `aliasCOTW` and `aliasKOF` commands
 
 ## [v8.8.4] - 2026-01-25
 - fixed DSS not registering as stance
