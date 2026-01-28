@@ -16,8 +16,15 @@ internal class CreateMoveEmbedUseCase {
         move: Move,
         featureInfo: FeatureInfo,
     ): BotOutput {
-        val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-            ?: emptyList()
+        val images = move.urls.hitboxImageList
+            .takeIf { it.size >= 2 }
+            ?.let {
+                BotOutput.Images(
+                    title = move.input,
+                    titleUrl = move.urls.wikiUrl,
+                    urls = it,
+                )
+            }
 
         return when (Game.fromId(gameId)) {
             Game.GGST -> {
@@ -26,15 +33,7 @@ internal class CreateMoveEmbedUseCase {
                         primaryBuilder = moveEmbedBuilderGG(move, featureInfo),
                         manualEditBuilder = moveDetailedEmbedBuilderGG(move, featureInfo)
                     ),
-                    images = if (images.size < 2) {
-                        null
-                    } else {
-                        BotOutput.Images(
-                            title = move.input,
-                            titleUrl = move.urls.wikiUrl,
-                            urls = images,
-                        )
-                    },
+                    images = images,
                     buttons = BotOutput.ButtonSet(
                         buttonList = listOf(
                             BotOutput.EmbedButton(
@@ -47,43 +46,19 @@ internal class CreateMoveEmbedUseCase {
             Game.DBFZ -> {
                 BotOutput(
                     primaryEmbedBuilder = moveEmbedBuilderDB(move, featureInfo),
-                    images = if (images.size < 2) {
-                        null
-                    } else {
-                        BotOutput.Images(
-                            title = move.input,
-                            titleUrl = move.urls.wikiUrl,
-                            urls = images,
-                        )
-                    }
+                    images = images,
                 )
             }
             Game.GBVSR -> {
                 BotOutput(
                     primaryEmbedBuilder = moveEmbedBuilderGB(move, featureInfo),
-                    images = if (images.size < 2) {
-                        null
-                    } else {
-                        BotOutput.Images(
-                            title = move.input,
-                            titleUrl = move.urls.wikiUrl,
-                            urls = images,
-                        )
-                    }
+                    images = images,
                 )
             }
             Game.BBCF -> {
                 BotOutput(
                     primaryEmbedBuilder = moveEmbedBuilderBB(move, featureInfo),
-                    images = if (images.size < 2) {
-                        null
-                    } else {
-                        BotOutput.Images(
-                            title = move.input,
-                            titleUrl = move.urls.wikiUrl,
-                            urls = images,
-                        )
-                    }
+                    images = images,
                 )
             }
             else -> BotOutput(primaryEmbedBuilder = {})
