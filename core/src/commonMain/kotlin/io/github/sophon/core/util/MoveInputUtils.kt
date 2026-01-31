@@ -1,13 +1,18 @@
 package io.github.sophon.core.util
 
-fun String.createAliasesFromSlash(): List<String> {
+fun String.createAliasesFromSlash(
+    isPartial: Boolean,
+): List<String> {
     val parts = split("/")
     if (parts.size < 2) return listOf()
 
-    val motion = parts.first().dropLast(1)
-
-    val aliases = parts.map { button ->
-        "$motion${button.last().lowercase()}"
+    val aliases = if (isPartial) {
+        parts.map { button ->
+            val motion = parts.first().dropLast(1)
+            "$motion${button.last().lowercase()}"
+        }
+    } else {
+        parts
     }
 
     return aliases
@@ -18,6 +23,7 @@ fun String.normalize2dInputs(): String {
         .trim()
         .lowercase()
         .replace(" ", "")
+        .replace("or", "/")
 
     val replacementTable = listOf(
         "cl." to "c.",
@@ -28,7 +34,7 @@ fun String.normalize2dInputs(): String {
     )
 
     for ((old, new) in replacementTable) {
-        if (result.startsWith(old)) {
+        if (result.startsWith(old) && result.startsWith(new).not()) {
             result = new + result.removePrefix(old)
             break
         }
