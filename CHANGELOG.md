@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v9.1.0] - TODO
+- fixed the HTTP client for Kord
+
 ## [v9.0.0] - 2026-01-28
 - error embeds edits itself to minimum after 5s
 - made GGST and SF embeds more compact 
