@@ -36,9 +36,6 @@ internal fun modulesEmbed(
     title = "FightingNerd bot by @phd_cunnilingus"
     color = Color(PURPLE)
 
-    featureFooter(featureInfo)
-
-
     val chunks: List<List<DiscordRegisteredFeature>> = when (featureList.size) {
         in 1..5 -> {
             listOf(featureList)
@@ -76,6 +73,8 @@ internal fun modulesEmbed(
         },
         inline = false,
     )
+
+    featureFooter(featureInfo)
 }
 
 internal fun commandsEmbed(
@@ -102,6 +101,7 @@ internal fun commandsEmbed(
         Command.Pc,
         Command.Stance,
         Command.ThrowTK,
+        Command.Strings,
     )
     val excludedFromOthers = buildSet {
         addAll(fdCommands)
@@ -226,6 +226,58 @@ internal fun examplesEmbed(
                 "      - for Tekken, consider **`stance`** or **`pc`** or **`heat`**\n" +
                 "      - check the Wiki to see the proper notation\n" +
                 "- some outputs have buttons, clicking those outputs the proper query"
+    )
+
+    featureFooter(featureInfo)
+}
+
+internal fun helpEmbed(
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    title = "HOW TO USE THE BOT"
+    color = Color(PURPLE)
+
+    mandatoryField(
+        name = "**Basic syntax**",
+        value = "`@bot [command] [queries]` or `/command [queries]`\n" +
+                "  - each individual query is **one single word without spaces**\n" +
+                "  - don't know the char's one-word name? `alias` - ie `aliastk`\n",
+        inline = false,
+    )
+
+    val bulletPoints = listOf(
+        "1. **frame data** - `fd` default command, no need to write `fd` when tagging\n" +
+                "  - `@bot jin df1` or `/fd feng bt.1`  or `@bot ak h.bad.32`",
+        "2. **list of moves** - `pc`, `homing`, `heat`, `throwtk` (Tekken), `inv`\n" +
+                "  - `@bot homing steve` or `/homing hwo` or `@bot invgg sol`\n" +
+                "  - pressing a button shows the frame data of the corresponding move",
+        "3. **stances** (Tekken) - `stance`\n" +
+                "  - has two variants, `stance char` and `stance char specificStance`\n" +
+                "  - `@bot stance ling` or `/stance lidia` - pressing a button shows all moves of that stance\n" +
+                "  - `@bot stance ak bad` or `/stance ak bad` - pressing a button shows frame data of the corresponding move",
+        "4. **followups** (Tekken) - `strings` \n" +
+                "  - shows all the followups of a move\n" +
+                "  - `@bot strings kaz 1` or `/bot strings miary df1`"
+    )
+
+    val chunks = when (bulletPoints.size) {
+        in 0..5 -> listOf(bulletPoints)
+        in 5..EMBED_LIST_PER_COLUMN -> bulletPoints.chunked(5)
+        else -> bulletPoints.chunked(EMBED_LIST_PER_COLUMN)
+    }
+
+    chunks.forEach { bulletPoints ->
+        mandatoryField(
+            name = "",
+            value = bulletPoints.joinToString("\n")
+        )
+    }
+
+    mandatoryField(
+        name = "",
+        value = "Feedback can be sent to the author via `feedback`.\n" +
+                "Bot also supports 12 other games, see `modules`.",
+        inline = false,
     )
 
     featureFooter(featureInfo)

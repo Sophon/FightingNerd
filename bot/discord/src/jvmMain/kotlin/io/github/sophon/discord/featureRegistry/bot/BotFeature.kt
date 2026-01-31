@@ -68,7 +68,8 @@ internal class BotFeature(
     private fun createHelpEmbed(): Result<BotOutput, BotError> {
         val featureList = featureRegistry.getRegisteredFeatures()
         val result = BotOutput(
-            primaryEmbedBuilder = modulesEmbed(featureList, featureInfo),
+//            primaryEmbedBuilder = modulesEmbed(featureList, featureInfo),
+            primaryEmbedBuilder = helpEmbed(featureInfo),
             buttons = BotOutput.ButtonSet(
                 buttonList = listOf(
                     BotOutput.EmbedButton(
