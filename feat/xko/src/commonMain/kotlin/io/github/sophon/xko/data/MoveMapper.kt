@@ -24,7 +24,7 @@ private fun MoveDto.toMoveList(
         .replace(" ", "_")
     val formattedInput = input.orDash().lowercase()
     val aliases = formattedInput
-        .createAliasesFromSlash()
+        .createAliasesFromSlash(isPartial = false)
         .addExtraAliases(formattedInput)
 
     val move = Move(
