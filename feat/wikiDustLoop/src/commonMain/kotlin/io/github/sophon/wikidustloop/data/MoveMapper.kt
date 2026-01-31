@@ -148,7 +148,7 @@ internal fun String?.formAliases(gameId: String): List<String> {
     val aliases = when (Game.fromId(gameId)) {
         Game.GBVSR -> createNarmayaStanceAliases()
         else -> {
-            if (this.contains("or")) {
+            if (this.contains(" or ")) {
                 this
                     .replace(" or ", "/")
                     .createAliasesFromSlash(isPartial = false)
