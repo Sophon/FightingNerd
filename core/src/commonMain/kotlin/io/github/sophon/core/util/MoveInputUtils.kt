@@ -29,3 +29,12 @@ fun String.normalize2dInputs(): String {
 
     return result
 }
+
+fun List<String>.add2dAliases(input: String): List<String> {
+    return when {
+        input.startsWith("j.") -> this + listOf(input.replace("j.", "j"))
+        input.startsWith("f.") -> this + listOf(input.replace("f.", "f"))
+        input.startsWith("c.") -> this + listOf(input.replace("c.", "c"))
+        else -> this
+    }
+}
