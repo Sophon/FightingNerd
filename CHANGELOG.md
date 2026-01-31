@@ -2,6 +2,7 @@
 
 ## [v9.1.0] - TODO
 - fixed the HTTP client for Kord
+- changed the editable embed window to 10s
 
 ## [v9.0.0] - 2026-01-28
 - error embeds edits itself to minimum after 5s
