@@ -13,7 +13,7 @@ fun String.createAliasesFromSlash(
         }
     } else {
         parts
-    }
+    }.map { it.trim() }
 
     return aliases
 }

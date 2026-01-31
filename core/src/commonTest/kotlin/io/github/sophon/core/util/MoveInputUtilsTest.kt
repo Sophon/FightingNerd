@@ -34,5 +34,18 @@ class MoveInputUtilsTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `aliases from slash handles gb`() {
+        // given
+        val string = "5l~m / 5m~l"
+        val expected = listOf("5l~m", "5m~l")
+
+        // when
+        val result = string.createAliasesFromSlash(isPartial = false)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 }
