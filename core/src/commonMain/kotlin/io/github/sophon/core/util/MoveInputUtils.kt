@@ -23,7 +23,7 @@ fun String.normalize2dInputs(): String {
         .trim()
         .lowercase()
         .replace(" ", "")
-        .replace("or", "/")
+        .replace(" or ", "/")
 
     val replacementTable = listOf(
         "cl." to "c.",
