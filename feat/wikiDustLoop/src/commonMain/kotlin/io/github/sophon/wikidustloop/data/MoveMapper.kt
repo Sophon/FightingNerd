@@ -2,6 +2,7 @@ package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.add2dAliases
 import io.github.sophon.core.util.createAliasesFromSlash
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
@@ -143,10 +144,12 @@ internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
 internal fun String?.formAliases(gameId: String): List<String> {
     if (this == null) return emptyList()
 
-    return when (Game.fromId(gameId)) {
+    val aliases = when (Game.fromId(gameId)) {
         Game.GBVSR -> createNarmayaStanceAliases()
         else -> createAliasesFromSlash()
-    }
+    }.add2dAliases(this)
+
+    return aliases
 }
 
 fun String?.formNagoriyukiAliases(): List<String> {
