@@ -21,10 +21,17 @@ fun String.normalize2dInputs(): String {
 
     val replacementTable = listOf(
         "cl." to "c.",
+        "cl" to "c.",
+        "c" to "c.",
+        "f" to "f.",
+        "j" to "j.",
     )
 
     for ((old, new) in replacementTable) {
-        result = result.replace(old, new)
+        if (result.startsWith(old)) {
+            result = new + result.removePrefix(old)
+            break
+        }
     }
 
     return result
