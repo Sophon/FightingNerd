@@ -33,6 +33,7 @@ kotlin {
             implementation(libs.kord)
             implementation(libs.kotlin.date.time)
             implementation(libs.kotlin.reflect)
+            implementation(libs.ktor.java)
 
             api(libs.koin.core)
         }
