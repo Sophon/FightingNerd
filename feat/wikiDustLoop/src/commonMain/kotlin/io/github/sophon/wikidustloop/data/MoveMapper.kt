@@ -21,7 +21,7 @@ internal fun MoveListResponseDto.toDomain(
             .orDash()
             .normalize2dInputs()
 
-        Move(
+        val move = Move(
             charName = dto.chara.orEmpty().cleanHtml(),
             id = normalizedInput.formMoveId(dto.chara),
             name = dto.name?.cleanHtml(),
@@ -110,6 +110,7 @@ internal fun MoveListResponseDto.toDomain(
                 type = dto.type,
             )
         )
+        move
     }
 }
 
@@ -146,14 +147,22 @@ internal fun String?.formAliases(gameId: String): List<String> {
 
     val aliases = when (Game.fromId(gameId)) {
         Game.GBVSR -> createNarmayaStanceAliases()
-        else -> createAliasesFromSlash()
+        else -> {
+            if (this.contains("or")) {
+                this
+                    .replace(" or ", "/")
+                    .createAliasesFromSlash(isPartial = false)
+            } else {
+                this.createAliasesFromSlash(isPartial = true)
+            }
+        }
     }.let { aliasList ->
-        this.add2dAliases(aliasList)
-    }
+        this.add2dAliases(aliasList) + aliasList.flatMap { it.add2dAliases(aliasList) }
+    }.distinct()
     return aliases
 }
 
-fun String?.formNagoriyukiAliases(): List<String> {
+internal fun String?.formNagoriyukiAliases(): List<String> {
     return when {
         this == null -> emptyList()
         contains("level br", ignoreCase = true) -> listOf(replace(" level br", "b", ignoreCase = true).lowercase())

@@ -15,7 +15,7 @@ class MoveMapperTest {
     fun `formAliases handles regular input`() {
         //given
         val string = "c.m"
-        val expected = listOf<String>()
+        val expected = listOf("cm")
 
         //when
         val result = string.formAliases(gb)
@@ -29,8 +29,8 @@ class MoveMapperTest {
         //given
         val string1 = "f.l[k]"
         val string2 = "c.m[ex]"
-        val expected1 = listOf("k.f.l")
-        val expected2 = listOf("ex.c.m")
+        val expected1 = listOf("k.f.l", "fl[k]")
+        val expected2 = listOf("ex.c.m", "cm[ex]")
 
         //when
         val result1 = string1.formAliases(gb)
@@ -45,7 +45,7 @@ class MoveMapperTest {
     fun `formAliases handles empty form input`() {
         //given
         val string = "f.l[]"
-        val expected = listOf<String>()
+        val expected = listOf<String>("fl[]")
 
         //when
         val result = string.formAliases(gb)
@@ -77,6 +77,25 @@ class MoveMapperTest {
 
         // when
         val result = listOf(input1, input2, input3).flatMap { it.formNagoriyukiAliases() }
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    
+    @Test
+    fun `formAliases handles OR input`() {
+        // given
+        val input = "j.6d or j.4d"
+        val expected = listOf(
+            "j.6d",
+            "j.4d",
+            "j6d or j4d",
+            "j6d",
+            "j4d",
+        )
+        
+        // when
+        val result = input.formAliases(gg)
 
         //then
         assertThat(result).isEqualTo(expected)
