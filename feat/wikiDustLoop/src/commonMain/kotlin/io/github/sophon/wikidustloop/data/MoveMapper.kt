@@ -3,6 +3,7 @@ package io.github.sophon.wikidustloop.data
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.createAliasesFromSlash
+import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -15,16 +16,16 @@ internal fun MoveListResponseDto.toDomain(
 ): List<Move> {
     return cargoQuery.map { wrapper ->
         val dto = wrapper.title
+        val normalizedInput = dto.input
+            .orDash()
+            .normalize2dInputs()
 
         Move(
             charName = dto.chara.orEmpty().cleanHtml(),
-            id = dto.input.formMoveId(dto.chara),
+            id = normalizedInput.formMoveId(dto.chara),
             name = dto.name?.cleanHtml(),
 
-            input = dto.input
-                .orDash()
-                .replace(" ", "")
-                .lowercase(),
+            input = normalizedInput,
             damage = dto.damage?.cleanHtml(),
             startup = dto.startup?.cleanHtml(),
             onBlock = dto.onBlock?.cleanHtml(),
@@ -36,9 +37,9 @@ internal fun MoveListResponseDto.toDomain(
             guard = dto.guard?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
             aliases = if (characterData.name == "Nagoriyuki") {
-                dto.input.formNagoriyukiAliases()
+                normalizedInput.formNagoriyukiAliases()
             } else {
-                dto.input.formAliases(gameId)
+                normalizedInput.formAliases(gameId)
             },
 
             notes = dto.notes.formNotes(),
@@ -59,7 +60,6 @@ internal fun MoveListResponseDto.toDomain(
             ggstProperties = Move.GGSTProperties(
                 chara = dto.chara,
                 name = dto.name,
-                input = dto.input,
                 damage = dto.damage,
                 type = dto.type,
                 riscGain = dto.riscGain,
