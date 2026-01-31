@@ -147,8 +147,9 @@ internal fun String?.formAliases(gameId: String): List<String> {
     val aliases = when (Game.fromId(gameId)) {
         Game.GBVSR -> createNarmayaStanceAliases()
         else -> createAliasesFromSlash()
-    }.add2dAliases(this)
-
+    }.let { aliasList ->
+        this.add2dAliases(aliasList)
+    }
     return aliases
 }
 
