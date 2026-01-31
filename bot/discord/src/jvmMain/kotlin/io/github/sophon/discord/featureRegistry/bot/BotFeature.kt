@@ -35,6 +35,7 @@ internal class BotFeature(
         Command.Commands,
         Command.Examples,
         Command.Join,
+        Command.Modules,
     )
 
     override suspend fun start() {
@@ -59,6 +60,7 @@ internal class BotFeature(
             Command.Commands -> createCommandsEmbed()
             Command.Examples -> createExamples()
             Command.Join -> createJoinEmbedButtonUseCase.invoke(origin, query)
+            Command.Modules -> createModulesEmbed()
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -66,9 +68,7 @@ internal class BotFeature(
 
 
     private fun createHelpEmbed(): Result<BotOutput, BotError> {
-        val featureList = featureRegistry.getRegisteredFeatures()
         val result = BotOutput(
-//            primaryEmbedBuilder = modulesEmbed(featureList, featureInfo),
             primaryEmbedBuilder = helpEmbed(featureInfo),
             buttons = BotOutput.ButtonSet(
                 buttonList = listOf(
@@ -87,6 +87,15 @@ internal class BotFeature(
                 ),
                 duration = EMBED_BUTTON_DURATION_INF.seconds,
             ),
+        )
+
+        return Result.Success(result)
+    }
+
+    private fun createModulesEmbed(): Result<BotOutput, BotError> {
+        val featureList = featureRegistry.getRegisteredFeatures()
+        val result = BotOutput(
+            primaryEmbedBuilder = modulesEmbed(featureList, featureInfo),
         )
 
         return Result.Success(result)
