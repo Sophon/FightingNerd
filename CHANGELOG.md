@@ -9,6 +9,7 @@
 - DustLoop - fixed GBVS and GGST aliases for alternative variants
 - DreamCancel - fixed aliases for alternative variants
 - Mizuumi - fixed aliases for alternative variants
+- Wavu - heat smash (`h.2+3`) now has `heatsmash` and `hs` aliases
 
 ## [v9.0.0] - 2026-01-28
 - error embeds edits itself to minimum after 5s
