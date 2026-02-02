@@ -6,6 +6,9 @@
 - commands
   - reworked `help`
   - new: `modules`
+- DustLoop - fixed GBVS and GGST aliases for alternative variants
+- DreamCancel - fixed aliases for alternative variants
+- Mizuumi - fixed aliases for alternative variants
 
 ## [v9.0.0] - 2026-01-28
 - error embeds edits itself to minimum after 5s

@@ -14,11 +14,11 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles regular input`() {
         //given
-        val string = "c.m"
-        val expected = listOf<String>()
+        val input = "c.m"
+        val expected = listOf("cm")
 
         //when
-        val result = string.formAliases(gb)
+        val result = formAliases(gb, input, "")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -27,14 +27,14 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles form input`() {
         //given
-        val string1 = "f.l[k]"
-        val string2 = "c.m[ex]"
-        val expected1 = listOf("k.f.l")
-        val expected2 = listOf("ex.c.m")
+        val input1 = "f.l[k]"
+        val input2 = "c.m[ex]"
+        val expected1 = listOf("k.f.l", "fl[k]")
+        val expected2 = listOf("ex.c.m", "cm[ex]")
 
         //when
-        val result1 = string1.formAliases(gb)
-        val result2 = string2.formAliases(gb)
+        val result1 = formAliases(gb, input1, "")
+        val result2 = formAliases(gb, input2, "")
 
         //then
         assertThat(result1).isEqualTo(expected1)
@@ -44,11 +44,11 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles empty form input`() {
         //given
-        val string = "f.l[]"
-        val expected = listOf<String>()
+        val input = "f.l[]"
+        val expected = listOf("fl[]")
 
         //when
-        val result = string.formAliases(gb)
+        val result = formAliases(gb, input, "")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -57,11 +57,11 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles slash inputs`() {
         // given
-        val string = "236S/H/D"
+        val input = "236S/H/D"
         val expected = listOf("236s", "236h", "236d")
 
         // when
-        val result = string.formAliases(gg)
+        val result = formAliases(gg, input, "")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -77,6 +77,38 @@ class MoveMapperTest {
 
         // when
         val result = listOf(input1, input2, input3).flatMap { it.formNagoriyukiAliases() }
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    
+    @Test
+    fun `formAliases handles OR input`() {
+        // given
+        val input = "j.6d or j.4d"
+        val expected = listOf(
+            "j.6d",
+            "j.4d",
+            "j6d or j4d",
+            "j6d",
+            "j4d",
+        )
+        
+        // when
+        val result = formAliases(gg, input, "")
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    
+    @Test
+    fun `formAliases handles gb variant inputs`() {
+        // given
+        val input = "22m~l/m"
+        val expected = listOf("22m~l", "22m~m")
+        
+        // when
+        val result = formAliases(gb, input, "")
 
         //then
         assertThat(result).isEqualTo(expected)

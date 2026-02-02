@@ -103,7 +103,6 @@ data class Move(
     data class GGSTProperties(
         val chara: String? = null,
         val name: String? = null,
-        val input: String? = null,
         val damage: String? = null,
         val notes: List<String>? = null,
         val type: String? = null,

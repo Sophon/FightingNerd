@@ -1,9 +1,12 @@
 package io.github.sophon.wikimizuumi.data
 
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.util.add2dAliases
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.decodeHtmlEntities
+import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.useForwardVariantOnly
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -31,14 +34,21 @@ internal fun MoveDto.toDomain(
     hitboxUrlMap: Map<String, String>,
 ): Move {
     val moveName = name?.cleanHtmlOrNull()
+    val normalizedInput = this.input
+        .orDash()
+        .decodeHtmlEntities()
+        .normalize2dInputs()
+    val aliases = buildList {
+        normalizedInput.useForwardVariantOnly().also { forwardVariant ->
+            add(forwardVariant)
+            addAll(forwardVariant.add2dAliases())
+        }
+    }
 
     val move = Move(
         charName = character.displayName,
         id = moveId,
-        input = input
-            .orDash()
-            .decodeHtmlEntities()
-            .lowercase(),
+        input = normalizedInput,
         damage = damage?.cleanHtmlOrNull() ?: totaldmg,
         startup = startup?.cleanHtmlOrNull(),
         onHit = onHit?.cleanHtmlOrNull() ?: advHit?.cleanHtmlOrNull(),
@@ -76,6 +86,7 @@ internal fun MoveDto.toDomain(
             reaction = reaction?.cleanHtmlOrNull(),
             curseTime = cursetime?.cleanHtmlOrNull(),
         ),
+        aliases = aliases,
     )
     return move
 }
@@ -99,14 +110,19 @@ internal fun MoveDto.toDomain(
 ): Move {
     val game = Game.fromId(gameId)
     val moveName = name?.cleanHtmlOrNull()
+    val normalizedInput = this.input
+        .orDash()
+        .decodeHtmlEntities()
+        .normalize2dInputs()
+
+    if (input == "j4/6AD") {
+        val a = 3
+    }
 
     val move = Move(
         charName = this.chara,
         id = moveId,
-        input = input
-            .orDash()
-            .decodeHtmlEntities()
-            .lowercase(),
+        input = normalizedInput,
         damage = damage?.cleanHtmlOrNull(),
         startup = startup?.cleanHtmlOrNull(),
         onHit = onHit?.cleanHtmlOrNull(),
@@ -151,12 +167,8 @@ internal fun MoveDto.toDomain(
             proration = proration?.cleanHtmlOrNull(),
             comboP1 = comboP1?.cleanHtmlOrNull(),
             comboP2 = comboP2?.cleanHtmlOrNull(),
-        )
+        ),
     )
-
-    if (characterData.name == "Wagner") {
-        val a = 3
-    }
     return move
 }
 
