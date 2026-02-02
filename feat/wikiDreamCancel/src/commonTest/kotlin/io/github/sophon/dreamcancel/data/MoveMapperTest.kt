@@ -2,31 +2,32 @@ package io.github.sophon.dreamcancel.data
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.github.sophon.core.util.add2dAliases
+import io.github.sophon.core.util.decodeHtmlEntities
+import io.github.sophon.core.util.normalize2dInputs
+import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.useForwardVariantOnly
 import kotlin.test.Test
 
 class MoveMapperTest {
-    //region input decoding
     @Test
-    fun `use forward variant of move only`() {
-        //given
-        val inputs = listOf(
-            "4/6ac > d",
-            "5/6/2+bc",
-            "cl.d",
-            "2b",
-        )
-        val expected = listOf(
-            "6ac > d",
-            "6+bc",
-            "cl.d",
-            "2b",
-        )
+    fun `input and alias test`() {
+        // given
+        val input = "(close) 4/6C"
+        val expectedInput = "c.6c"
+        val expectedAliases = listOf("c6c")
 
-        //when
-        val result = inputs.map { it.useForwardVariantOnly() }
+        // when
+        val resultInput = input
+            .orDash()
+            .decodeHtmlEntities()
+            .normalize2dInputs()
+            .useForwardVariantOnly()
+            .lowercase()
+        val resultAliases = resultInput.add2dAliases()
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(resultInput).isEqualTo(expectedInput)
+        assertThat(resultAliases).isEqualTo(expectedAliases)
     }
-    //endregion
 }

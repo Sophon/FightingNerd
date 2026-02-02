@@ -21,7 +21,7 @@ internal const val URL_INVITE = "https://discord.com/oauth2/authorize?client_id=
 internal const val URL_IMG_DISCORD = "https://i.imgur.com/HtuRwva.png"
 
 internal const val TIME_UPDATE_INTERVAL_H = 3
-internal const val TIME_AUTO_EDIT_EMBED_S = 5
+internal const val TIME_AUTO_EDIT_EMBED_S = 10
 
 internal const val BUILD_KEY_ENV = "ENV"
 internal const val BUILD_VAL_PROD = "production"

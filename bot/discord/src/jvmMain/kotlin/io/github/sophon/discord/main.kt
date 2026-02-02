@@ -7,6 +7,12 @@ import io.github.aakira.napier.LogLevel
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.util.maskSecret
 import io.github.sophon.discord.config.DiscordConfig
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.java.Java
+import io.ktor.client.plugins.HttpTimeout
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.websocket.WebSockets
+import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
@@ -16,7 +22,7 @@ import java.io.File
 
 suspend fun main() = coroutineScope {
     initLogging()
-    val kord = Kord(token = getApiKey())
+    val kord = createKord()
     initKoin(kord)
 
     val discordBot = getKoin().get<DiscordBot>()
@@ -48,6 +54,30 @@ private fun initLogging() {
                 }
             }
         )
+    }
+}
+
+private suspend fun createKord(): Kord {
+    return Kord(token = getApiKey()) {
+        httpClient = HttpClient(Java) {
+            install(ContentNegotiation) {
+                json(
+                    Json {
+                        encodeDefaults = false
+                        allowStructuredMapKeys = true
+                        ignoreUnknownKeys = true
+                        isLenient = true
+                    }
+                )
+            }
+
+            install(HttpTimeout) {
+                requestTimeoutMillis = 1L shl 20
+                socketTimeoutMillis = requestTimeoutMillis
+            }
+
+            install(WebSockets)
+        }
     }
 }
 

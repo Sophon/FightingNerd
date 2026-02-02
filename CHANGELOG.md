@@ -1,5 +1,16 @@
 # BOT CHANGELOG
 
+## [v9.1.0] - 2026-02-02
+- fixed the HTTP client for Kord
+- changed the editable embed window to 10s
+- commands
+  - reworked `help`
+  - new: `modules`
+- DustLoop - fixed GBVS and GGST aliases for alternative variants
+- DreamCancel - fixed aliases for alternative variants
+- Mizuumi - fixed aliases for alternative variants
+- Wavu - heat smash (`h.2+3`) now has `heatsmash` and `hs` aliases
+
 ## [v9.0.0] - 2026-01-28
 - error embeds edits itself to minimum after 5s
 - made GGST and SF embeds more compact 

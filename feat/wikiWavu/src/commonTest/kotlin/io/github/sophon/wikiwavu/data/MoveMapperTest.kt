@@ -151,6 +151,19 @@ class MoveMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `formAliases handles heat smash`() {
+        // given
+        val input = "h.2+3"
+        val expected = listOf("hs", "heatsmash")
+
+        // when
+        val result = input.formAliases("", "")
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region isStance

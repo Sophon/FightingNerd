@@ -2,7 +2,9 @@ package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.add2dAliases
 import io.github.sophon.core.util.createAliasesFromSlash
+import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -15,16 +17,21 @@ internal fun MoveListResponseDto.toDomain(
 ): List<Move> {
     return cargoQuery.map { wrapper ->
         val dto = wrapper.title
+        val normalizedInput = dto.input
+            .orDash()
+            .normalize2dInputs()
+        val aliases = formAliases(
+            gameId = gameId,
+            input = normalizedInput,
+            charName = dto.chara,
+        )
 
-        Move(
+        val move = Move(
             charName = dto.chara.orEmpty().cleanHtml(),
-            id = dto.input.formMoveId(dto.chara),
+            id = normalizedInput.formMoveId(dto.chara),
             name = dto.name?.cleanHtml(),
 
-            input = dto.input
-                .orDash()
-                .replace(" ", "")
-                .lowercase(),
+            input = normalizedInput,
             damage = dto.damage?.cleanHtml(),
             startup = dto.startup?.cleanHtml(),
             onBlock = dto.onBlock?.cleanHtml(),
@@ -35,11 +42,7 @@ internal fun MoveListResponseDto.toDomain(
             recovery = dto.recovery?.cleanHtml(),
             guard = dto.guard?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
-            aliases = if (characterData.name == "Nagoriyuki") {
-                dto.input.formNagoriyukiAliases()
-            } else {
-                dto.input.formAliases(gameId)
-            },
+            aliases = aliases,
 
             notes = dto.notes.formNotes(),
 
@@ -59,7 +62,6 @@ internal fun MoveListResponseDto.toDomain(
             ggstProperties = Move.GGSTProperties(
                 chara = dto.chara,
                 name = dto.name,
-                input = dto.input,
                 damage = dto.damage,
                 type = dto.type,
                 riscGain = dto.riscGain,
@@ -109,6 +111,7 @@ internal fun MoveListResponseDto.toDomain(
                 type = dto.type,
             )
         )
+        move
     }
 }
 
@@ -140,22 +143,47 @@ internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
     return "${dto.chara.formWikiUrl(gameId)}#${dto.name?.replace(" ", "_")}"
 }
 
-internal fun String?.formAliases(gameId: String): List<String> {
-    if (this == null) return emptyList()
+internal fun formAliases(
+    gameId: String,
+    input: String?,
+    charName: String?,
+): List<String> {
+    if (input == null) return emptyList()
 
-    return when (Game.fromId(gameId)) {
-        Game.GBVSR -> createNarmayaStanceAliases()
-        else -> createAliasesFromSlash()
-    }
+    val game = Game.fromId(gameId)
+    val aliases = when {
+        charName == "Nagoriyuki" -> input.formNagoriyukiAliases()
+        game == Game.GBVSR -> input.createGbvsAliases()
+        else -> {
+            if (input.contains(" or ")) {
+                input
+                    .replace(" or ", "/")
+                    .createAliasesFromSlash(isPartial = false)
+            } else {
+                input.createAliasesFromSlash(isPartial = true)
+            }
+        }
+    }.let { aliasList ->
+        input.add2dAliases(aliasList) + aliasList.flatMap { it.add2dAliases(aliasList) }
+    }.distinct()
+
+    return aliases
 }
 
-fun String?.formNagoriyukiAliases(): List<String> {
+internal fun String?.formNagoriyukiAliases(): List<String> {
     return when {
         this == null -> emptyList()
         contains("level br", ignoreCase = true) -> listOf(replace(" level br", "b", ignoreCase = true).lowercase())
         contains("level 1", ignoreCase = true) -> listOf(replace(" level 1", "", ignoreCase = true).lowercase())
         contains("level", ignoreCase = true) -> listOf(replace(" level ", "", ignoreCase = true).lowercase())
         else -> emptyList()
+    }
+}
+
+private fun String.createGbvsAliases(): List<String> {
+    return buildList {
+        addAll(createAliasesFromSlash(isPartial = true))
+        addAll(createNarmayaStanceAliases())
     }
 }
 

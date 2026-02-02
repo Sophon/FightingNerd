@@ -125,32 +125,6 @@ fun String.maskSecret(): String {
     }
 }
 
-fun String.createAliases(addInitials: Boolean = true): List<String> {
-    return buildList {
-        split(
-            " ",
-            "-",
-            "_",
-            ".",
-        )
-            .filter { it.isNotBlank() }
-            .takeIf { it.size > 1 }
-            ?.apply {
-                if (addInitials) {
-                    add(joinToString("") { it.first().lowercase() })
-                }
-            }
-            ?.let { words ->
-                if (words.first().length >= 2) {
-                    add(words.first().lowercase())
-                }
-                if (words.size >= 2 && words.last().length >= 2) {
-                    add(words.last().lowercase())
-                }
-            }
-    }.distinct()
-}
-
 fun String.capitalize(): String = replaceFirstChar { it.uppercase() }
 
 fun String.extractFirstWord(): String {
@@ -180,17 +154,4 @@ fun String.chunkByNewLines(delimiter: String, maxLength: Int): List<String> {
     }
 
     return chunks
-}
-
-fun String.createAliasesFromSlash(): List<String> {
-    val parts = split("/")
-    if (parts.size < 2) return listOf()
-
-    val motion = parts.first().dropLast(1)
-
-    val aliases = parts.map { button ->
-        "$motion${button.last().lowercase()}"
-    }
-
-    return aliases
 }

@@ -161,6 +161,10 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         aliases.add("h.$heatless")
     }
 
+    if (this == "h.2+3") {
+        aliases.addAll(listOf("hs", "heatsmash"))
+    }
+
     return aliases.distinct()
 }
 

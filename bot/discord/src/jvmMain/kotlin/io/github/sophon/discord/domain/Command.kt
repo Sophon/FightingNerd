@@ -14,6 +14,7 @@ internal sealed class Command(
     object Repo : Command(name = "Repo", description = "Project repository")
     object Invite : Command(name = "Invite", description = "Bot invite link")
     object Help : Command(name = "Help", description = "RTFM")
+    object Modules : Command(name = "Modules", description = "Features")
     object Commands : Command(name = "Commands", description = "Available commands")
     object Examples : Command(name = "Examples", description = "Command examples")
     object Join : Command(
@@ -249,7 +250,7 @@ internal sealed class Command(
     )
     //endregion
 
-    // 2xko
+    // region 2xko
     object FdXko : Command(
         name = "FdXko",
         description = "2XKO frame data",
@@ -304,8 +305,9 @@ internal sealed class Command(
         description = "COTW character aliases",
         argumentList = listOf(),
     )
+    //endregion
 
-    // DustLoop commands
+    //region DustLoop commands
     object CharGG : Command(
         name = "CharGG",
         description = "GG character data",
@@ -428,8 +430,9 @@ internal sealed class Command(
             ),
         ),
     )
+    //endregion
 
-    // Mizuumi
+    // region Mizuumi
     object FdMB : Command(
         name = "FdMB",
         description = "MBTL frame data",
@@ -516,6 +519,7 @@ internal sealed class Command(
         ),
     )
     object AliasVS : Command(name = "AliasVS", description = "VSAV character aliases")
+    //endregion
 
 
 
