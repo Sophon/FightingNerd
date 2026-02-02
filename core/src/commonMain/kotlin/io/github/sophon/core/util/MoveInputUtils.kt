@@ -26,7 +26,7 @@ fun String.normalize2dInputs(): String {
         .replace(" or ", "/")
 
     val replacementTable = listOf(
-        "(close) " to "c.",
+        "(close)" to "c.",
         "cl." to "c.",
         "cl" to "c.",
         "c" to "c.",

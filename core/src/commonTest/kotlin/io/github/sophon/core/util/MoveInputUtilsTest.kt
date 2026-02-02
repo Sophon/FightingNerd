@@ -33,7 +33,7 @@ class MoveInputUtilsTest {
     }
     //endregion
 
-    //region
+    //region Forward variant
     @Test
     fun `use forward variant handles jump`() {
         // given
@@ -81,6 +81,21 @@ class MoveInputUtilsTest {
 
         // when
         val result = string.useForwardVariantOnly()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region Normalize
+    @Test
+    fun `normalize 2d handles close`() {
+        // given
+        val input = "(close)6c"
+        val expected = "c.6c"
+
+        // when
+        val result = input.normalize2dInputs()
 
         //then
         assertThat(result).isEqualTo(expected)
