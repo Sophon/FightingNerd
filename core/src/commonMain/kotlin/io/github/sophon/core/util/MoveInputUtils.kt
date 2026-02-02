@@ -26,6 +26,7 @@ fun String.normalize2dInputs(): String {
         .replace(" or ", "/")
 
     val replacementTable = listOf(
+        "(close) " to "c.",
         "cl." to "c.",
         "cl" to "c.",
         "c" to "c.",
@@ -50,4 +51,10 @@ fun String.add2dAliases(aliasList: List<String> = listOf()): List<String> {
         startsWith("c.") -> aliasList + listOf(replace("c.", "c"))
         else -> aliasList
     }
+}
+
+fun String.useForwardVariantOnly(): String {
+    return this
+        .replace(" ", "")
+        .replace("4/6", "6")
 }
