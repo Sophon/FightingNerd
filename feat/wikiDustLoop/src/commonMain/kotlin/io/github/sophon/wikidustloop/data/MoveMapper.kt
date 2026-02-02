@@ -20,6 +20,11 @@ internal fun MoveListResponseDto.toDomain(
         val normalizedInput = dto.input
             .orDash()
             .normalize2dInputs()
+        val aliases = if (characterData.name == "Nagoriyuki") {
+            normalizedInput.formNagoriyukiAliases()
+        } else {
+            normalizedInput.formAliases(gameId)
+        }
 
         val move = Move(
             charName = dto.chara.orEmpty().cleanHtml(),
@@ -37,11 +42,7 @@ internal fun MoveListResponseDto.toDomain(
             recovery = dto.recovery?.cleanHtml(),
             guard = dto.guard?.cleanHtml(),
             invulnerability = dto.invuln?.cleanHtml(),
-            aliases = if (characterData.name == "Nagoriyuki") {
-                normalizedInput.formNagoriyukiAliases()
-            } else {
-                normalizedInput.formAliases(gameId)
-            },
+            aliases = aliases,
 
             notes = dto.notes.formNotes(),
 
@@ -146,7 +147,7 @@ internal fun String?.formAliases(gameId: String): List<String> {
     if (this == null) return emptyList()
 
     val aliases = when (Game.fromId(gameId)) {
-        Game.GBVSR -> createNarmayaStanceAliases()
+        Game.GBVSR -> createGbvsAliases()
         else -> {
             if (this.contains(" or ")) {
                 this
@@ -169,6 +170,13 @@ internal fun String?.formNagoriyukiAliases(): List<String> {
         contains("level 1", ignoreCase = true) -> listOf(replace(" level 1", "", ignoreCase = true).lowercase())
         contains("level", ignoreCase = true) -> listOf(replace(" level ", "", ignoreCase = true).lowercase())
         else -> emptyList()
+    }
+}
+
+private fun String.createGbvsAliases(): List<String> {
+    return buildList {
+        addAll(createAliasesFromSlash(isPartial = true))
+        addAll(createNarmayaStanceAliases())
     }
 }
 
