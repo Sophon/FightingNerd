@@ -14,11 +14,11 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles regular input`() {
         //given
-        val string = "c.m"
+        val input = "c.m"
         val expected = listOf("cm")
 
         //when
-        val result = string.formAliases(gb)
+        val result = formAliases(gb, input, "")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -27,14 +27,14 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles form input`() {
         //given
-        val string1 = "f.l[k]"
-        val string2 = "c.m[ex]"
+        val input1 = "f.l[k]"
+        val input2 = "c.m[ex]"
         val expected1 = listOf("k.f.l", "fl[k]")
         val expected2 = listOf("ex.c.m", "cm[ex]")
 
         //when
-        val result1 = string1.formAliases(gb)
-        val result2 = string2.formAliases(gb)
+        val result1 = formAliases(gb, input1, "")
+        val result2 = formAliases(gb, input2, "")
 
         //then
         assertThat(result1).isEqualTo(expected1)
@@ -44,11 +44,11 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles empty form input`() {
         //given
-        val string = "f.l[]"
-        val expected = listOf<String>("fl[]")
+        val input = "f.l[]"
+        val expected = listOf("fl[]")
 
         //when
-        val result = string.formAliases(gb)
+        val result = formAliases(gb, input, "")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -57,11 +57,11 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles slash inputs`() {
         // given
-        val string = "236S/H/D"
+        val input = "236S/H/D"
         val expected = listOf("236s", "236h", "236d")
 
         // when
-        val result = string.formAliases(gg)
+        val result = formAliases(gg, input, "")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -95,7 +95,7 @@ class MoveMapperTest {
         )
         
         // when
-        val result = input.formAliases(gg)
+        val result = formAliases(gg, input, "")
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -104,11 +104,11 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles gb variant inputs`() {
         // given
-        val string = "22m~l/m"
+        val input = "22m~l/m"
         val expected = listOf("22m~l", "22m~m")
         
         // when
-        val result = string.formAliases(gb)
+        val result = formAliases(gb, input, "")
 
         //then
         assertThat(result).isEqualTo(expected)

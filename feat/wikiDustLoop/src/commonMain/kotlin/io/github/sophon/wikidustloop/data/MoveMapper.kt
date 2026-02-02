@@ -20,11 +20,11 @@ internal fun MoveListResponseDto.toDomain(
         val normalizedInput = dto.input
             .orDash()
             .normalize2dInputs()
-        val aliases = if (characterData.name == "Nagoriyuki") {
-            normalizedInput.formNagoriyukiAliases()
-        } else {
-            normalizedInput.formAliases(gameId)
-        }
+        val aliases = formAliases(
+            gameId = gameId,
+            input = normalizedInput,
+            charName = dto.chara,
+        )
 
         val move = Move(
             charName = dto.chara.orEmpty().cleanHtml(),
@@ -143,23 +143,30 @@ internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
     return "${dto.chara.formWikiUrl(gameId)}#${dto.name?.replace(" ", "_")}"
 }
 
-internal fun String?.formAliases(gameId: String): List<String> {
-    if (this == null) return emptyList()
+internal fun formAliases(
+    gameId: String,
+    input: String?,
+    charName: String?,
+): List<String> {
+    if (input == null) return emptyList()
 
-    val aliases = when (Game.fromId(gameId)) {
-        Game.GBVSR -> createGbvsAliases()
+    val game = Game.fromId(gameId)
+    val aliases = when {
+        charName == "Nagoriyuki" -> input.formNagoriyukiAliases()
+        game == Game.GBVSR -> input.createGbvsAliases()
         else -> {
-            if (this.contains(" or ")) {
-                this
+            if (input.contains(" or ")) {
+                input
                     .replace(" or ", "/")
                     .createAliasesFromSlash(isPartial = false)
             } else {
-                this.createAliasesFromSlash(isPartial = true)
+                input.createAliasesFromSlash(isPartial = true)
             }
         }
     }.let { aliasList ->
-        this.add2dAliases(aliasList) + aliasList.flatMap { it.add2dAliases(aliasList) }
+        input.add2dAliases(aliasList) + aliasList.flatMap { it.add2dAliases(aliasList) }
     }.distinct()
+
     return aliases
 }
 
