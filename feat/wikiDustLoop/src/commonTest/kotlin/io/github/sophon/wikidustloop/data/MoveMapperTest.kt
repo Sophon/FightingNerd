@@ -100,6 +100,19 @@ class MoveMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+    
+    @Test
+    fun `formAliases handles gb variant inputs`() {
+        // given
+        val string = "22m~l/m"
+        val expected = listOf("22m~l", "22m~m")
+        
+        // when
+        val result = string.formAliases(gb)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     @Test
