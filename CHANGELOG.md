@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v9.1.0] - TODO
+## [v9.1.0] - 2026-02-02
 - fixed the HTTP client for Kord
 - changed the editable embed window to 10s
 - commands
