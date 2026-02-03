@@ -97,7 +97,7 @@ buildkonfig {
 
 sqldelight {
     databases {
-        create("ewgfDatabase") {
+        create("EwgfDatabase") {
             packageName.set("io.github.sophon.ewgf.data")
         }
     }

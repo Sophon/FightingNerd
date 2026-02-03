@@ -2,7 +2,7 @@ package io.github.sophon.data
 
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
-import io.github.sophon.ewgf.data.ewgfDatabase
+import io.github.sophon.ewgf.data.EwgfDatabase
 import java.io.File
 
 actual class DatabaseDriverFactory(
@@ -20,11 +20,11 @@ actual class DatabaseDriverFactory(
         if (savedVersion != currentSchemaVersion) {
             // Schema changed - drop and recreate
             driver.execute(null, "DROP TABLE IF EXISTS ban", 0)
-            ewgfDatabase.Schema.create(driver)
+            EwgfDatabase.Schema.create(driver)
             versionFile.writeText(currentSchemaVersion.toString())
         } else if (!databaseFile.exists()) {
             // New database
-            ewgfDatabase.Schema.create(driver)
+            EwgfDatabase.Schema.create(driver)
             versionFile.writeText(currentSchemaVersion.toString())
         }
 
