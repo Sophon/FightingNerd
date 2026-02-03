@@ -13,6 +13,7 @@ fun ewgfModule() = module {
 
     single { EwgfFeatureInfo }
 
+    singleOf(::EwgfClientImpl).bind<EwgfClient>()
     singleOf(::PlayerRepoImpl).bind<PlayerRepo>()
 }
 
