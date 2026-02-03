@@ -29,15 +29,12 @@ internal class PlayerRepoImpl(
         }
     }
 
-    override suspend fun registerPlayer(
-        discordId: String,
-        polarisId: String,
-    ): EmptyResult<EwgfError.DatabaseError> {
+    override suspend fun registerPlayer(player: Player): EmptyResult<EwgfError.DatabaseError> {
         return withContext(Dispatchers.IO) {
             try {
                 queries.upsertPlayer(
-                    discordId = discordId,
-                    polarisId = polarisId,
+                    discordId = player.discordId,
+                    polarisId = player.polarisId,
                 )
                 Result.Success(Unit)
             } catch (e: Exception) {
