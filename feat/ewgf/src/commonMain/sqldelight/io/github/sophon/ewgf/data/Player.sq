@@ -1,0 +1,4 @@
+CREATE TABLE player (
+    discordId TEXT NOT NULL PRIMARY KEY,
+    polarisId TEXT NOT NULL,
+);
