@@ -1,7 +1,7 @@
 package io.github.sophon
 
 import io.github.sophon.data.PlayerRepo
-import io.github.sophon.data.PlayerRepoImpl
+import io.github.sophon.data.local.PlayerRepoImpl
 import io.github.sophon.domain.EwgfFeatureInfo
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf

@@ -1,4 +1,4 @@
-package io.github.sophon.data
+package io.github.sophon.data.local
 
 import app.cash.sqldelight.db.SqlDriver
 

@@ -1,6 +1,6 @@
 package io.github.sophon
 
-import io.github.sophon.data.DatabaseDriverFactory
+import io.github.sophon.data.local.DatabaseDriverFactory
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 

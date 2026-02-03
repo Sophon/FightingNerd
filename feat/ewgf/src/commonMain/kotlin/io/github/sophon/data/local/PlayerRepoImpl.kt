@@ -1,7 +1,8 @@
-package io.github.sophon.data
+package io.github.sophon.data.local
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.data.PlayerRepo
 import io.github.sophon.domain.EwgfError
 import io.github.sophon.domain.Player
 import io.github.sophon.ewgf.data.EwgfDatabase
