@@ -13,8 +13,8 @@ SELECT *
 FROM player
 WHERE polarisId = ?;
 
-register:
-INSERT INTO player (discordId, polarisId)
+upsertPlayer:
+INSERT OR REPLACE INTO player (discordId, polarisId)
 VALUES (?, ?);
 
 delete:
