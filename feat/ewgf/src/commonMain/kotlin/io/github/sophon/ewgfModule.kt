@@ -12,7 +12,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 fun ewgfModule() = module {
-    includes(platformModule)
+    includes(ewgfPlatformModule)
 
     single { EwgfFeatureInfo }
 
@@ -24,4 +24,4 @@ fun ewgfModule() = module {
     singleOf(::DeletePlayerUseCase)
 }
 
-expect val platformModule: Module
+expect val ewgfPlatformModule: Module
