@@ -53,6 +53,11 @@
         "UNI2",
         "VSAV"
       ]
+    },
+    {
+      "name": "EWGF",
+      "isEnabled": false,
+      "supportedGames": []
     }
   ],
   "adminConfig": {

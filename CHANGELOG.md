@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v10.0.0] - TODO
+- `EWGF.gg` - prepare code for the final feature
+
 ## [v9.1.0] - 2026-02-02
 - fixed the HTTP client for Kord
 - changed the editable embed window to 10s
