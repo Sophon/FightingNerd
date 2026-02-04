@@ -14,6 +14,9 @@ import io.github.sophon.discord.featureRegistry.bot.BotFeature
 import io.github.sophon.discord.featureRegistry.bot.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.ewgf.EwgfDiscordFeature
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.ParseQueryIntoOperationUseCase
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.RegisterPlayerUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
@@ -89,6 +92,11 @@ internal val featureRegistryModule = module {
     singleOf(::GetInfilFeatureInfoUseCase)
     singleOf(::StartGlossaryUseCase)
     singleOf(::SearchGlossaryUseCase)
+    //endregion
+
+    //region EWGF
+    singleOf(::ParseQueryIntoOperationUseCase)
+    singleOf(::RegisterPlayerUseCase)
     //endregion
 
     singleOf(::ConfigLoader)
