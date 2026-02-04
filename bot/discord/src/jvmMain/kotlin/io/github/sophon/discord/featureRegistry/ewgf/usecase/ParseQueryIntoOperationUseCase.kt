@@ -9,9 +9,6 @@ internal class ParseQueryIntoOperationUseCase {
         if (query.isBlank()) return Result.Success(EwgfOperations.Operation.Data)
 
         val parts = query.split(' ')
-        if (parts.size < 2) {
-            return Result.Error(BotError.SyntaxError(query))
-        }
 
         val operation = EwgfOperations.findOperation(
             alias = parts.first(),
