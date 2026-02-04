@@ -23,6 +23,7 @@ Frame data targeting Discord bot and mobile apps:
 graph LR
     classDef green fill:green,color:#000
     classDef grey fill:lightgrey,color:#000
+    classDef yellow fill:#FFEB3B,color:#000
 
     subgraph Bots
         discordBot[Discord bot]
@@ -104,8 +105,8 @@ graph LR
 
 
     style discordBot fill:green,stroke:#2563EB, color:#fff
-    style android fill:green,stroke:green, color:#fff
-    style iOS fill:green,stroke:green, color:#fff
+    style android fill:yellow,stroke:green, color:#000
+    style iOS fill:yellow,stroke:green, color:#000
     style glossaryInfil fill:green, color:#fff
     style communityWiki fill:green, color:#fff
     style wikiWavu fill:green, color:#fff
@@ -127,6 +128,7 @@ graph LR
     style bbcf fill:green, color:#fff
     style uni2 fill:green, color:#fff
     style vsav fill:green, color:#fff
+    style ewgf fill:yellow, color:#000
   ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
