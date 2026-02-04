@@ -96,13 +96,13 @@ internal class EwgfDiscordFeature(
         }
     }
 
-    private fun dataEmbed(data: String): EmbedBuilder.() -> Unit = {
+    private fun dataEmbed(player: Player): EmbedBuilder.() -> Unit = {
         title = "EWGF data"
         color = Color(PINK)
 
         mandatoryField(
             name = "",
-            value = data,
+            value = "${player.discordId} - ${player.polarisId}",
             inline = false,
         )
 
