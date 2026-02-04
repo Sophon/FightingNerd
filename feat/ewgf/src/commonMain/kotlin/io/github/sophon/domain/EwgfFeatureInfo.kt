@@ -10,5 +10,6 @@ object EwgfFeatureInfo {
         name = FEATURE_NAME,
         url = FEATURE_URL,
         version = BuildKonfig.VERSION,
+        iconUrl = "https://i.imgur.com/Fzu2phV.png"
     )
 }
