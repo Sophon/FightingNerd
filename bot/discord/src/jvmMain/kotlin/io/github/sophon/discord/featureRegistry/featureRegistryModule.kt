@@ -125,6 +125,7 @@ internal val featureRegistryModule = module {
     singleOf(::DreamCancelWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::DustLoopWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::MizuumiWikiDiscordFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::EwgfDiscordFeature).bind<DiscordRegisteredFeature>()
 
     single<List<DiscordRegisteredFeature>> {
         val config = get<Config>()
