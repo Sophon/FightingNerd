@@ -15,8 +15,11 @@ import io.github.sophon.discord.featureRegistry.bot.usecase.GetBotFeatureInfoUse
 import io.github.sophon.discord.featureRegistry.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.ewgf.EwgfDiscordFeature
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.GetPlayerDataUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.ParseQueryIntoOperationUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.RegisterPlayerUseCase
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.UnregisterPlayerUseCase
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.UpdatePlayerUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.infilGlossary.usecase.SearchGlossaryUseCase
@@ -97,6 +100,9 @@ internal val featureRegistryModule = module {
     //region EWGF
     singleOf(::ParseQueryIntoOperationUseCase)
     singleOf(::RegisterPlayerUseCase)
+    singleOf(::GetPlayerDataUseCase)
+    singleOf(::UpdatePlayerUseCase)
+    singleOf(::UnregisterPlayerUseCase)
     //endregion
 
     singleOf(::ConfigLoader)

@@ -10,16 +10,24 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.GetPlayerDataUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.ParseQueryIntoOperationUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.RegisterPlayerUseCase
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.UnregisterPlayerUseCase
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.UpdatePlayerUseCase
+import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.EwgfFeatureInfo
+import io.github.sophon.domain.Player
 import io.github.sophon.domain.Source
 
 internal class EwgfDiscordFeature(
     ewgfFeatureInfo: EwgfFeatureInfo,
     private val parseQueryIntoOperationUseCase: ParseQueryIntoOperationUseCase,
     private val registerPlayerUseCase: RegisterPlayerUseCase,
+    private val getPlayerUseCase: GetPlayerDataUseCase,
+    private val updatePlayerUseCase: UpdatePlayerUseCase,
+    private val unregisterPlayerUseCase: UnregisterPlayerUseCase,
 ): DiscordRegisteredFeature {
     override val featureInfo: FeatureInfo = ewgfFeatureInfo.featureInfo
     override val defaultCommand = Command.Ewgf
@@ -56,55 +64,63 @@ internal class EwgfDiscordFeature(
                 registerPlayerUseCase.invoke(
                     discordId = discordId,
                     polarisId = operation.polarisId,
-                )
-                    .map { successEmbed() }
+                ).map { successEmbed(operation) }
             }
-            is EwgfOperations.Operation.Data -> TODO()
-            is EwgfOperations.Operation.Update -> TODO()
-            is EwgfOperations.Operation.Unregister -> TODO()
+            is EwgfOperations.Operation.Data -> {
+                getPlayerUseCase.invoke(discordId).map { data ->
+                    dataEmbed(data)
+                }
+            }
+            is EwgfOperations.Operation.Update -> {
+                updatePlayerUseCase.invoke(
+                    player = Player(
+                        discordId = discordId,
+                        polarisId = operation.polarisId,
+                    )
+                ).map { successEmbed(operation) }
+            }
+            is EwgfOperations.Operation.Unregister -> {
+                unregisterPlayerUseCase.invoke(discordId)
+                    .map { successEmbed(operation) }
+            }
         }
 
-        val embedBuilder = when (result) {
-            is Result.Success -> successEmbed()
-            is Result.Error -> errorEmbed()
-        }
-
-        val output = BotOutput(
-            primaryEmbedBuilder = embedBuilder
-        )
-        return Result.Success(output)
-    }
-
-    private fun dataEmbed(
-        result: Result<String, BotError>
-    ): EmbedBuilder.() -> Unit = {
-        title = "Title placeholder"
-        color = Color(PINK)
-
-        when (result) {
+        return when (result) {
             is Result.Success -> {
-                mandatoryField(
-                    name = "Field",
-                    value = result.data,
-                    inline = false,
-                )
+                val output = BotOutput(primaryEmbedBuilder = result.data)
+                Result.Success(output)
             }
             is Result.Error -> {
-                mandatoryField(
-                    name = "Error",
-                    value = "Error fetching data",
-                    inline = false,
-                )
+                Result.Error(result.error)
             }
         }
     }
 
-    private fun successEmbed(): EmbedBuilder.() -> Unit = {
-        TODO()
+    private fun dataEmbed(data: String): EmbedBuilder.() -> Unit = {
+        title = "EWGF data"
+        color = Color(PINK)
+
+        mandatoryField(
+            name = "",
+            value = data,
+            inline = false,
+        )
+
+        featureFooter(featureInfo)
     }
 
-    private fun errorEmbed(): EmbedBuilder.() -> Unit = {
-        TODO()
+    private fun successEmbed(
+        operation: EwgfOperations.Operation,
+    ): EmbedBuilder.() -> Unit = {
+        title = "Success"
+        color = Color(PINK)
+
+        mandatoryField(
+            name = "",
+            value = operation::class.simpleName,
+        )
+
+        featureFooter(featureInfo)
     }
 
 
