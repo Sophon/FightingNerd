@@ -9,6 +9,7 @@ import io.github.sophon.domain.EwgfError
 import io.github.sophon.domain.EwgfFeatureInfo
 import io.github.sophon.domain.Player
 import io.github.sophon.usecase.DeletePlayerUseCase
+import io.github.sophon.usecase.DownloadPlayerDataUseCase
 import io.github.sophon.usecase.RegisterPlayerUseCase
 import io.github.sophon.usecase.UpdatePolarisIdUseCase
 
@@ -21,12 +22,9 @@ interface EwgfClient {
 
     suspend fun fetchData(
         discordId: String,
-    ): Result<Unit, EwgfError> //TODO: when we get access, replace Unit with proper domain class
+    ): Result<Player, EwgfError> //TODO: when we get access, replace Unit with proper domain class
 
-    suspend fun updatePolarisId(
-        discordId: String,
-        polarisId: String,
-    ): EmptyResult<EwgfError>
+    suspend fun updatePolarisId(player: Player): EmptyResult<EwgfError>
 
     suspend fun deletePlayer(discordId: String): EmptyResult<EwgfError>
 }
@@ -34,6 +32,7 @@ interface EwgfClient {
 internal class EwgfClientImpl(
     private val ewgfFeatureInfo: EwgfFeatureInfo,
     private val registerPlayerUseCase: RegisterPlayerUseCase,
+    private val downloadPlayerDataUseCase: DownloadPlayerDataUseCase,
     private val updatePolarisIdUseCase: UpdatePolarisIdUseCase,
     private val deletePlayerUseCase: DeletePlayerUseCase,
 ): EwgfClient {
@@ -55,19 +54,22 @@ internal class EwgfClientImpl(
             }
     }
 
-    override suspend fun fetchData(discordId: String): Result<Unit, EwgfError> {
-        TODO("Not yet implemented")
+    override suspend fun fetchData(discordId: String): Result<Player, EwgfError> {
+        /**
+         * if in the DB, return the polarisID
+         */
+        return downloadPlayerDataUseCase.invoke(discordId)
+            .onSuccess { player ->
+                Napier.d(tag = TAG) { "downloaded: ${player.discordId} - ${player.polarisId}" }
+            }
     }
 
-    override suspend fun updatePolarisId(
-        discordId: String,
-        polarisId: String,
-    ): EmptyResult<EwgfError> {
+    override suspend fun updatePolarisId(player: Player): EmptyResult<EwgfError> {
         return updatePolarisIdUseCase.invoke(
-            discordId = discordId,
-            polarisId = polarisId,
+            discordId = player.discordId,
+            polarisId = player.polarisId,
         ).onSuccess {
-            Napier.i(tag = TAG) { "updated: $discordId - $polarisId" }
+            Napier.i(tag = TAG) { "updated: ${player.discordId} - ${player.polarisId}" }
         }
     }
 
