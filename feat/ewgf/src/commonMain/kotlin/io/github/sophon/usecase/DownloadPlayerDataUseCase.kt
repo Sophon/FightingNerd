@@ -1,10 +1,12 @@
 package io.github.sophon.usecase
 
+import io.github.sophon.core.domain.ExcludeFromCoverage
 import io.github.sophon.core.domain.Result
 import io.github.sophon.data.PlayerRepo
 import io.github.sophon.domain.EwgfError
 import io.github.sophon.domain.Player
 
+@ExcludeFromCoverage("to be implemented")
 internal class DownloadPlayerDataUseCase(
     private val repo: PlayerRepo,
 ) {
