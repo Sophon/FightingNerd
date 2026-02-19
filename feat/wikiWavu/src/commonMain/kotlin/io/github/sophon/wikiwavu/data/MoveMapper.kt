@@ -26,33 +26,26 @@ internal fun MoveDto.mapToDomain(
     characterData: DownloadMoveListUseCase.CharacterData,
     movesById: Map<String, MoveDto>,
 ): Move {
-    if (this.name == "Cloud Gates") {
-        val a = 3
-    }
-
     val cleanedCrushes = splitCrush()
     val unifiedNotes = notes.formNotes() + cleanedCrushes
-    val fullInput = formCompleteDataFromParent(movesById) { it.input }
-        .orEmpty()
-        .cleanHtml()
-        .cleanMoveInput()
+    val parentalProperties = formCompleteDataFromParent(movesById)
 
     val move = Move(
         charName = characterData.name,
         id = id.formId(),
         name = name?.cleanHtml(),
 
-        input = fullInput,
-        damage = formCompleteDataFromParent(movesById) { it.damage },
-        startup = getRootStartup(movesById),
+        input = parentalProperties.input,
+        damage = parentalProperties.damage,
+        startup = parentalProperties.startup,
         recovery = recv,
         onBlock = block,
         onHit = hit.formatClickable(),
         onCH = ch.formatClickable(),
-        guard = formCompleteDataFromParent(movesById) { it.target },
+        guard = parentalProperties.guard,
 
         notes = notes.formNotes() + cleanedCrushes,
-        aliases = fullInput.formAliases(alias, alt),
+        aliases = parentalProperties.input.formAliases(alias, alt),
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
@@ -63,7 +56,7 @@ internal fun MoveDto.mapToDomain(
         t8Properties = formProperties(
             notes = unifiedNotes,
             crushes = cleanedCrushes,
-            input = fullInput,
+            input = parentalProperties.input,
         )
     )
 
@@ -178,63 +171,68 @@ internal fun formMoveWikiUrl(charName: String, id: String): String {
 
 
 /**
- * Kazuya's 112 is actually:
+ * Kazuya's `112` is actually:
  *
  *  - input: ,2
  *  - damage: ,6
  *  - parent: Kazuya-1,1,
  *
- *  So we have to traverse through parents to form the complete string
+ *  So we have to traverse through parents to form the complete string.
+ *  Same for other properties.
  */
-private fun MoveDto.formCompleteDataFromParent(
-    movesById: Map<String, MoveDto>,
-    fieldSelector: (MoveDto) -> String?,
-): String? {
+internal fun MoveDto.formCompleteDataFromParent(movesById: Map<String, MoveDto>): ParentalProperties {
     var current: MoveDto? = this
-    val reverseLevel = mutableListOf<String>()
+    val reversed = mutableListOf<ParentalProperties>()
+    val visited = mutableSetOf<String>()
+
+    reversed.add(ParentalProperties(input = input, startup = startup, damage = damage, guard = target))
+    visited.add(id)
 
     while (current != null) {
-        fieldSelector(current)?.let { reverseLevel.add(it) }
-        current = current.parent?.let { parent -> movesById[parent] }
-    }
-
-    return reverseLevel
-        .reversed()
-        .joinToString("")
-        .takeIf { it.isNotEmpty() }
-}
-
-/**
- * Similar to the issue above, just with startup
- */
-internal fun MoveDto.getRootStartup(
-    movesById: Map<String, MoveDto>
-): String? {
-    val history = mutableListOf<String>()
-    var current: MoveDto? = this
-    var root: MoveDto = this
-
-    // Traverse up to find the topmost parent
-    while (current != null) {
-        root = current
-        current = current.parent?.let {
-            val parent = movesById[it]
-            current.startup?.let { startup -> history.add(startup) }
-            parent
+        when {
+            current.parent == null -> break
+            visited.contains(current.parent) -> break
+            else -> {
+                current = movesById[current.parent]?.let { parent ->
+                    val parentalProperties = ParentalProperties(
+                        input = parent.input,
+                        startup = parent.startup,
+                        damage = parent.damage,
+                        guard = parent.target,
+                    )
+                    reversed.add(parentalProperties)
+                    visited.add(parent.id)
+                    parent
+                }
+            }
         }
     }
 
-    val formattedHistory = history
-        .reversed()
-        .joinToString(", ") { it.replace(",", "") }
+    val properties = reversed.reversed()
 
-    val result = when {
-        root.startup == null -> null
-        history.isEmpty() -> root.startup
-        else -> "${root.startup} ($formattedHistory)"
+    val input = properties
+        .map { it.input }
+        .filter { it.isNotEmpty() }
+        .joinToString("") { it.replace(",", "").replace(" ", "") }
+
+    val startupList = properties.mapNotNull { it.startup }
+    val startup = when {
+        startupList.isEmpty() -> null
+        startupList.size == 1 -> startupList.first()
+        else -> "${startupList.first()} (${startupList.drop(1).joinToString(", ")})"
     }
 
-    return result
+    val damage = properties
+        .mapNotNull { it.damage }
+        .joinToString(", ")
+        .takeIf { it.isNotEmpty() }
+
+    val guard = properties
+        .mapNotNull { it.guard }
+        .joinToString(", ")
+        .takeIf { it.isNotEmpty() }
+
+    return ParentalProperties(input = input, startup = startup, damage = damage, guard = guard)
 }
 
 private fun MoveDto.splitCrush(): List<String> {
@@ -273,3 +271,10 @@ private fun formProperties(
 
     return Move.T8Properties(isHeat, isHoming, stance, isPowerCrush)
 }
+
+internal data class ParentalProperties(
+    val input: String,
+    val startup: String?,
+    val damage: String?,
+    val guard: String?,
+)
