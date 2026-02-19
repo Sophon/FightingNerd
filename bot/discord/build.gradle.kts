@@ -78,7 +78,7 @@ tasks.matching { it.name == "jvmRun" }.configureEach {
     (this as JavaExec).workingDir = rootProject.projectDir
 }
 
-val featureVersion = "9.1.0"
+val featureVersion = "9.1.1"
 buildkonfig {
     packageName = "io.github.sophon.discord"
 
