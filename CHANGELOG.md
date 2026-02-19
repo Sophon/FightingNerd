@@ -2,6 +2,8 @@
 
 ## [v10.0.0] - TODO
 - `EWGF.gg` - prepare code for the final feature
+- Wavu
+  - fixed bug with potentially infinite loop of parental moves
 
 ## [v9.1.0] - 2026-02-02
 - fixed the HTTP client for Kord
