@@ -1,5 +1,7 @@
 package io.github.sophon.discord.domain
 
+import dev.kord.cache.api.data.description
+
 /**
  * Add registered feature commands HERE
  */
@@ -519,6 +521,30 @@ internal sealed class Command(
         ),
     )
     object AliasVS : Command(name = "AliasVS", description = "VSAV character aliases")
+    //endregion
+
+    //region EWGF
+    object Ewgf : Command(
+        name = "EWGF",
+        description = "EWGF functionality",
+        argumentList = listOf(),
+    )
+
+    object EwgfOperation : Command(
+        name = "EwgfOp",
+        description = "Perform an EWGF operation",
+        argumentList = listOf(
+            Argument(
+                name = "operation",
+                description = "Register | Update | Unregister",
+            ),
+            Argument(
+                name = "polarisid",
+                description = "Polaris ID",
+                isRequired = false,
+            )
+        )
+    )
     //endregion
 
 

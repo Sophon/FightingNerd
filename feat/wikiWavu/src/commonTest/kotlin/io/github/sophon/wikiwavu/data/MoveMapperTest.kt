@@ -220,6 +220,160 @@ class MoveMapperTest {
     }
     //endregion
 
+    //region formUrl
+    @Test
+    fun `formUrl handles basic url`() {
+        //given
+        val charName = "Asuka"
+        val id = "Asuka-3,1"
+        val expected = "https://wavu.wiki/t/Asuka_movelist#Asuka-3,1"
+
+        //when
+        val result = formMoveWikiUrl(charName, id)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region formNotes
+    @Test
+    fun `formNotes handles links`() {
+        //given
+        val string = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em;" +
+                " padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-blue homing&quot;" +
+                "\n&gt;Homing&lt;/div&gt;" +
+                "\n* Deals chip damage on block" +
+                "\n* Transition to SEN (+0/[[Reina_combos#Mini-combos|+13]]/[[Reina_combos#Mini-combos|+18c]]) with input F" +
+                "\n* Transition to UNS (+0/+12/+18c) with u_d" +
+                "\n* Cannot block up to i14 on empty transition on block\n&lt;/div&gt;"
+        val expected = listOf(
+            "Homing",
+            "Deals chip damage on block",
+            "Transition to SEN (+0/[+13](https://wavu.wiki/t/Reina_combos#Mini-combos)/[+18c](https://wavu.wiki/t/Reina_combos#Mini-combos)) with input F",
+            "Transition to UNS (+0/+12/+18c) with u_d",
+            "Cannot block up to i14 on empty transition on block"
+        )
+
+        //when
+        val result = string.formNotes()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region Parental
+    @Test
+    fun `formDataFromParent handles a single move`() {
+        // given
+        val move = MoveDto(
+            id = "1",
+            input = "1",
+            startup = "i10",
+            damage = "1",
+            target = "h",
+        )
+        val map = mapOf(
+            move.id to move,
+        )
+        val expected = ParentalProperties(
+            input = "1",
+            startup = "i10",
+            damage = "1",
+            guard = "h",
+        )
+
+        // when
+        val result = move.formCompleteDataFromParent(map)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `formDataFromParent handles simple string`() {
+        // given
+        val move1 = MoveDto(
+            id = "1",
+            input = "1",
+            startup = "i10",
+            damage = "10",
+            target = "h",
+        )
+        val move2 = MoveDto(
+            id = "1,1",
+            input = ",1",
+            startup = "i11",
+            parent = "1",
+            damage = "11",
+            target = "m"
+        )
+        val map = mapOf(
+            move1.id to move1,
+            move2.id to move2,
+        )
+        val expected = ParentalProperties(
+            input = "11",
+            startup = "i10 (i11)",
+            damage = "10, 11",
+            guard = "h, m",
+        )
+
+        // when
+        val result = move2.formCompleteDataFromParent(map)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `formDataFromParent handles infinite loop cycle`() {
+        // given
+        val move1 = MoveDto(
+            id = "1",
+            input = "1",
+            startup = "i11",
+            parent = "1,1,2",
+            target = "h",
+            damage = "10",
+        )
+        val move2 = MoveDto(
+            id = "1,1",
+            input = ",1",
+            startup = "i12",
+            parent = "1",
+            target = "h",
+            damage = "11",
+        )
+        val move3 = MoveDto(
+            id = "1,1,2",
+            input = ",2",
+            startup = "i13",
+            parent = "1,1",
+            target = "m",
+            damage = "12",
+        )
+        val map = mapOf(
+            move1.id to move1,
+            move2.id to move2,
+            move3.id to move3,
+        )
+        val expected = ParentalProperties(
+            input = "112",
+            startup = "i11 (i12, i13)",
+            damage = "10, 11, 12",
+            guard = "h, h, m",
+        )
+
+        // when
+        val result = move3.formCompleteDataFromParent(map)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
     //region toDomain
     @Test
     fun `toDomain should map simple move`() {
@@ -341,13 +495,13 @@ class MoveMapperTest {
             id = "armor_king-f21",
             name = "Dark Elbow Hook",
             input = "f21",
-            damage = "12,25",
+            damage = "12, 25",
             startup = "i15~16 (i18~19)",
             recovery = "r33",
             onBlock = "-9",
             onHit = "+16a",
             onCH = null,
-            guard = "m,h",
+            guard = "m, h",
             notes = listOf(
                 "Heat Engager",
                 "Heat Dash +5, +36a (+26)",
@@ -527,98 +681,6 @@ class MoveMapperTest {
         // then
         assertThat(result).hasSize(1)
         assertThat(result[0]).isEqualTo(expectedMove)
-    }
-    //endregion
-
-    //region formUrl
-    @Test
-    fun `formUrl handles basic url`() {
-        //given
-        val charName = "Asuka"
-        val id = "Asuka-3,1"
-        val expected = "https://wavu.wiki/t/Asuka_movelist#Asuka-3,1"
-
-        //when
-        val result = formMoveWikiUrl(charName, id)
-
-        //then
-        assertThat(result).isEqualTo(expected)
-    }
-    //endregion
-
-    //region formNotes
-    @Test
-    fun `formNotes handles links`() {
-        //given
-        val string = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em;" +
-                " padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-blue homing&quot;" +
-                "\n&gt;Homing&lt;/div&gt;" +
-                "\n* Deals chip damage on block" +
-                "\n* Transition to SEN (+0/[[Reina_combos#Mini-combos|+13]]/[[Reina_combos#Mini-combos|+18c]]) with input F" +
-                "\n* Transition to UNS (+0/+12/+18c) with u_d" +
-                "\n* Cannot block up to i14 on empty transition on block\n&lt;/div&gt;"
-        val expected = listOf(
-            "Homing",
-            "Deals chip damage on block",
-            "Transition to SEN (+0/[+13](https://wavu.wiki/t/Reina_combos#Mini-combos)/[+18c](https://wavu.wiki/t/Reina_combos#Mini-combos)) with input F",
-            "Transition to UNS (+0/+12/+18c) with u_d",
-            "Cannot block up to i14 on empty transition on block"
-        )
-
-        //when
-        val result = string.formNotes()
-
-        //then
-        assertThat(result).isEqualTo(expected)
-    }
-    //endregion
-
-    //region Root startup
-    @Test
-    fun `root handles a single move`() {
-        // given
-        val move = MoveDto(
-            id = "1",
-            input = "1",
-            startup = "i10"
-        )
-        val map = mapOf(
-            move.id to move,
-        )
-        val expected = "i10"
-
-        // when
-        val result = move.getRootStartup(map)
-
-        //then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `root handles string`() {
-        // given
-        val move1 = MoveDto(
-            id = "1",
-            input = "1",
-            startup = "i10",
-        )
-        val move2 = MoveDto(
-            id = "1,1",
-            input = ",1",
-            startup = "i11",
-            parent = "1",
-        )
-        val map = mapOf(
-            move1.id to move1,
-            move2.id to move2,
-        )
-        val expected = "i10 (i11)"
-
-        // when
-        val result = move2.getRootStartup(map)
-
-        //then
-        assertThat(result).isEqualTo(expected)
     }
     //endregion
 }

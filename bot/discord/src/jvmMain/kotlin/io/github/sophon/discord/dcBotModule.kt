@@ -14,6 +14,7 @@ import io.github.sophon.discord.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.dreamcancel.dreamCancelModule
+import io.github.sophon.ewgfModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.wikiSuperCombo.superComboModule
@@ -48,6 +49,7 @@ fun initKoin(
         dreamCancelModule(),
         dustLoopModule(),
         mizuumiModule(),
+        ewgfModule(),
 
         featureRegistryModule,
     )

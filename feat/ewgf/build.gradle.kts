@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.buildkonfig)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -27,7 +28,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "WikiWavu"
+            baseName = "ewgf"
             isStatic = true
         }
     }
@@ -36,9 +37,11 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":core"))
 
-            implementation(libs.bundles.ktor)
             implementation(libs.napier)
             implementation(libs.kotlin.date.time)
+
+            implementation(libs.sqldelight.coroutines)
+            implementation(libs.sqldelight.primitive.adapters)
 
             api(libs.koin.core)
         }
@@ -48,6 +51,21 @@ kotlin {
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.test.turbine)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.sqldelight.driver.android)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.sqldelight.driver.native)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.sqldelight.driver.sqlite)
+        }
+
+        jvmTest.dependencies {
             implementation(libs.junit)
             implementation(libs.kotlin.testJunit)
         }
@@ -55,7 +73,7 @@ kotlin {
 }
 
 android {
-    namespace = "io.github.sophon.wikiwavu"
+    namespace = "io.github.sophon.ewgf"
     compileSdk = 36
 
     defaultConfig {
@@ -68,11 +86,19 @@ android {
     }
 }
 
-val featureVersion = "1.5.1"
+val featureVersion = "1.0.0"
 buildkonfig {
-    packageName = "io.github.sophon.wikiwavu"
+    packageName = "io.github.sophon.ewgf"
 
     defaultConfigs {
         buildConfigField(STRING, "VERSION", featureVersion)
+    }
+}
+
+sqldelight {
+    databases {
+        create("EwgfDatabase") {
+            packageName.set("io.github.sophon.ewgf.data")
+        }
     }
 }
