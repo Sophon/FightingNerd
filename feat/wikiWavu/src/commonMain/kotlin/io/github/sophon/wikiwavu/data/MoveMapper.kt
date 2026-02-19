@@ -29,13 +29,16 @@ internal fun MoveDto.mapToDomain(
     val cleanedCrushes = splitCrush()
     val unifiedNotes = notes.formNotes() + cleanedCrushes
     val parentalProperties = formCompleteDataFromParent(movesById)
+    val fullInput = parentalProperties.input
+        .cleanHtml()
+        .cleanMoveInput()
 
     val move = Move(
         charName = characterData.name,
         id = id.formId(),
         name = name?.cleanHtml(),
 
-        input = parentalProperties.input,
+        input = fullInput,
         damage = parentalProperties.damage,
         startup = parentalProperties.startup,
         recovery = recv,
@@ -45,7 +48,7 @@ internal fun MoveDto.mapToDomain(
         guard = parentalProperties.guard,
 
         notes = notes.formNotes() + cleanedCrushes,
-        aliases = parentalProperties.input.formAliases(alias, alt),
+        aliases = fullInput.formAliases(alias, alt),
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
@@ -56,7 +59,7 @@ internal fun MoveDto.mapToDomain(
         t8Properties = formProperties(
             notes = unifiedNotes,
             crushes = cleanedCrushes,
-            input = parentalProperties.input,
+            input = fullInput,
         )
     )
 
@@ -215,7 +218,11 @@ internal fun MoveDto.formCompleteDataFromParent(movesById: Map<String, MoveDto>)
         .filter { it.isNotEmpty() }
         .joinToString("") { it.replace(",", "").replace(" ", "") }
 
-    val startupList = properties.mapNotNull { it.startup }
+    val startupList = properties.mapNotNull {
+        it.startup
+            ?.removePrefix(",")
+            ?.ifEmpty { null }
+    }
     val startup = when {
         startupList.isEmpty() -> null
         startupList.size == 1 -> startupList.first()
@@ -223,12 +230,20 @@ internal fun MoveDto.formCompleteDataFromParent(movesById: Map<String, MoveDto>)
     }
 
     val damage = properties
-        .mapNotNull { it.damage }
+        .mapNotNull {
+            it.damage
+                ?.removePrefix(",")
+                ?.ifEmpty { null }
+        }
         .joinToString(", ")
         .takeIf { it.isNotEmpty() }
 
     val guard = properties
-        .mapNotNull { it.guard }
+        .mapNotNull {
+            it.guard
+                ?.removePrefix(",")
+                ?.ifEmpty { null }
+        }
         .joinToString(", ")
         .takeIf { it.isNotEmpty() }
 
