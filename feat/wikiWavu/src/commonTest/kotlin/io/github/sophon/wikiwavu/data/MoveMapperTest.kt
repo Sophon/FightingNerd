@@ -220,316 +220,6 @@ class MoveMapperTest {
     }
     //endregion
 
-    //region toDomain
-    @Test
-    fun `toDomain should map simple move`() {
-        // given
-        val moveDto = MoveDto(
-            id = "Armor King-1",
-            name = "Jab",
-            input = "1",
-            parent = null,
-            target = "h",
-            damage = "5",
-            startup = "i10",
-            recv = "r19",
-            tot = "29",
-            crush = null,
-            block = "+1",
-            hit = "+8",
-            ch = null,
-            notes = "Recovers 2f faster on hit or block (t27 r17)",
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        val responseDto = MoveListResponseDto(
-            cargoQuery = listOf(
-                MoveListResponseDto.Title(moveDto)
-            )
-        )
-        val expectedMove = Move(
-            charName = "Armor King",
-            id = "armor_king-1",
-            name = "Jab",
-            input = "1",
-            damage = "5",
-            startup = "i10",
-            recovery = "r19",
-            onBlock = "+1",
-            onHit = "+8",
-            onCH = null,
-            guard = "h",
-            notes = listOf(
-                "Recovers 2f faster on hit or block (t27 r17)"
-            ),
-            aliases = emptyList(),
-            urls = Move.Urls(videoId = null, wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-1"),
-            t8Properties = Move.T8Properties(
-                isHeat = false,
-                isPowerCrush = false,
-                isHoming = false,
-                stance = null,
-            )
-        )
-
-        // when
-        val result = responseDto.toDomain(
-            DownloadMoveListUseCase.CharacterData(
-                name = "Armor King",
-                imageUrl = null
-            )
-        )
-
-        // then
-        assertThat(result).hasSize(1)
-        assertThat(result[0]).isEqualTo(expectedMove)
-    }
-
-    @Test
-    fun `toDomain should correctly map child move with parent data`() {
-        // given
-        val parentMove = MoveDto(
-            id = "Armor King-f+2",
-            name = null,
-            input = "f+2",
-            parent = null,
-            target = "m",
-            damage = "12",
-            startup = "i15~16",
-            recv = "r29",
-            tot = "45",
-            crush = null,
-            block = "-11",
-            hit = "+2",
-            ch = null,
-            notes = "<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-teal tip\"\n>Elbow</div>",
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        val childMove = MoveDto(
-            id = "Armor King-f+2,1",
-            name = "Dark Elbow Hook",
-            input = ",1",
-            parent = "Armor King-f+2",
-            target = ",h",
-            damage = ",25",
-            startup = ",i18~19",
-            recv = "r33",
-            tot = "69",
-            crush = null,
-            block = "-9",
-            hit = "+16a",
-            ch = null,
-            notes = "<div class=\"plainlist\">\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-purple heat\"\n>Heat Engager\n</div>\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-purple heat\"\n>Heat Dash +5, +36a (+26)\n</div>\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-green balcony-break\"\n>Balcony Break</div>\n* Combo from 1st hit with 6F delay\n* Combo from 1st CH with 12F delay\n* Move can be delayed by 10F\n* Input can be delayed by 12F\n* Opponent recovers in FDFA\n</div>",
-            alias = null,
-            image = null,
-            video = null,
-            alt = null
-        )
-        val responseDto = MoveListResponseDto(
-            cargoQuery = listOf(
-                MoveListResponseDto.Title(parentMove),
-                MoveListResponseDto.Title(childMove)
-            )
-        )
-        val expectedMove = Move(
-            charName = "Armor King",
-            id = "armor_king-f21",
-            name = "Dark Elbow Hook",
-            input = "f21",
-            damage = "12,25",
-            startup = "i15~16 (i18~19)",
-            recovery = "r33",
-            onBlock = "-9",
-            onHit = "+16a",
-            onCH = null,
-            guard = "m,h",
-            notes = listOf(
-                "Heat Engager",
-                "Heat Dash +5, +36a (+26)",
-                "Balcony Break",
-                "Combo from 1st hit with 6F delay",
-                "Combo from 1st CH with 12F delay",
-                "Move can be delayed by 10F",
-                "Input can be delayed by 12F",
-                "Opponent recovers in FDFA"
-            ),
-            aliases = emptyList(),
-            urls = Move.Urls(videoId = null, wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f+2,1"),
-            t8Properties = Move.T8Properties(
-                isHeat = true,
-                isPowerCrush = false,
-                isHoming = false,
-                stance = null
-            )
-        )
-
-        // when
-        val result = responseDto.toDomain(
-            DownloadMoveListUseCase.CharacterData(
-                name = "Armor King",
-                imageUrl = null
-            )
-        )
-
-        // then
-        assertThat(result).hasSize(2)
-        assertThat(result[1]).isEqualTo(expectedMove)
-    }
-
-    @Test
-    fun `toDomain should detect stance from input`() {
-        // given
-        val moveDto = MoveDto(
-            id = "Armor King-BAD.db+1+2",
-            name = "Shadow Press",
-            input = "BAD.db+1+2",
-            parent = null,
-            target = "m,t",
-            damage = "18,15",
-            startup = "i14~17",
-            recv = "r43? FDFA",
-            tot = "60",
-            crush = "js14~34",
-            block = "-18c",
-            hit = "+0d",
-            ch = null,
-            notes = "<div class=\"plainlist\">\n* Transition into hit grab on grounded, airborne, and backturn hit\n* AK is left FDFA on whiff/block\n* Opponent is left FUFT on hit</div>",
-            alias = null,
-            image = null,
-            video = "File:t8-p2-armor_king-bad.db+1+2.mp4",
-            alt = null
-        )
-        val responseDto = MoveListResponseDto(
-            cargoQuery = listOf(
-                MoveListResponseDto.Title(moveDto)
-            )
-        )
-        val expectedMove = Move(
-            charName = "Armor King",
-            id = "armor_king-bad.db1+2",
-            name = "Shadow Press",
-            input = "bad.db1+2",
-            damage = "18,15",
-            startup = "i14~17",
-            recovery = "r43? FDFA",
-            onBlock = "-18c",
-            onHit = "+0d",
-            onCH = null,
-            guard = "m,t",
-            notes = listOf(
-                "Transition into hit grab on grounded, airborne, and backturn hit",
-                "AK is left FDFA on whiff/block",
-                "Opponent is left FUFT on hit",
-                "js14~34"
-            ),
-            aliases = listOf("baddb1+2"),
-            urls = Move.Urls(
-                videoId = "https://wavu.wiki/t/Special:Redirect/file/File%3At8-p2-armor_king-bad.db%2B1%2B2.mp4",
-                wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-BAD.db+1+2",
-            ),
-            t8Properties = Move.T8Properties(
-                isHeat = false,
-                isPowerCrush = false,
-                isHoming = false,
-                stance = "bad"
-            )
-        )
-
-        // when
-        val result = responseDto.toDomain(
-            DownloadMoveListUseCase.CharacterData(
-                name = "Armor King",
-                imageUrl = null
-            )
-        )
-
-        // then
-        assertThat(result).hasSize(1)
-        assertThat(result[0]).isEqualTo(expectedMove)
-    }
-
-    @Test
-    fun `toDomain should correctly parse while running move`() {
-        // given
-        val moveDto = MoveDto(
-            id = "Armor King-f,f,F+2+4",
-            name = "Brilliant Brawler Kick",
-            input = "f,f,F+2+4",
-            parent = null,
-            target = "th(h)",
-            damage = "40 (45)",
-            startup = "i10",
-            recv = "FUFT",
-            tot = null,
-            crush = null,
-            block = "-5",
-            hit = "+10d",
-            ch = null,
-            notes = "<div class=\"plainlist\">\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-green balcony-break\"\n>Balcony Break</div>\n* Throw break 1+2\n* Input n,f,F+2+4 within 6 frames after dash startup (f,n,f) to execute \"blue spark\" (+5 damage).\n* i13 startup for Bluespark throw with buffered input\n* Opponent left FUFT\n* Armor King recovers FUFT\n* becomes Homing in heat\n* Partially restores remaining Heat Time\n </div>",
-            alias = "Shining Wizard",
-            image = null,
-            video = null,
-            alt = "wr2+4"
-        )
-        val responseDto = MoveListResponseDto(
-            cargoQuery = listOf(
-                MoveListResponseDto.Title(moveDto)
-            )
-        )
-        val expectedMove = Move(
-            charName = "Armor King",
-            id = "armor_king-wr2+4",
-            name = "Brilliant Brawler Kick",
-            input = "wr2+4",
-            damage = "40 (45)",
-            startup = "i10",
-            recovery = "FUFT",
-            onBlock = "-5",
-            onHit = "+10d",
-            onCH = null,
-            guard = "th(h)",
-            notes = listOf(
-                "Balcony Break",
-                "Throw break 1+2",
-                "Input n,f,F+2+4 within 6 frames after dash startup (f,n,f) to execute \"blue spark\" (+5 damage).",
-                "i13 startup for Bluespark throw with buffered input",
-                "Opponent left FUFT",
-                "Armor King recovers FUFT",
-                "becomes Homing in heat",
-                "Partially restores remaining Heat Time"
-            ),
-            aliases = listOf("shining wizard", "wr2+4"),
-            urls = Move.Urls(
-                videoId = null,
-                wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f,f,F+2+4"
-            ),
-            t8Properties = Move.T8Properties(
-                isHeat = false,
-                isPowerCrush = false,
-                isHoming = true,
-                stance = null
-            )
-        )
-
-        // when
-        val result = responseDto.toDomain(
-            DownloadMoveListUseCase.CharacterData(
-                name = "Armor King",
-                imageUrl = null
-            )
-        )
-
-        // then
-        assertThat(result).hasSize(1)
-        assertThat(result[0]).isEqualTo(expectedMove)
-    }
-    //endregion
-
     //region formUrl
     @Test
     fun `formUrl handles basic url`() {
@@ -573,49 +263,111 @@ class MoveMapperTest {
     }
     //endregion
 
-    //region Root startup
+    //region Parental
     @Test
-    fun `root handles a single move`() {
+    fun `formDataFromParent handles a single move`() {
         // given
         val move = MoveDto(
             id = "1",
             input = "1",
-            startup = "i10"
+            startup = "i10",
+            damage = "1",
+            target = "h",
         )
         val map = mapOf(
             move.id to move,
         )
-        val expected = "i10"
+        val expected = ParentalProperties(
+            input = "1",
+            startup = "i10",
+            damage = "1",
+            guard = "h",
+        )
 
         // when
-        val result = move.getRootStartup(map)
+        val result = move.formCompleteDataFromParent(map)
 
         //then
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun `root handles string`() {
+    fun `formDataFromParent handles simple string`() {
         // given
         val move1 = MoveDto(
             id = "1",
             input = "1",
             startup = "i10",
+            damage = "10",
+            target = "h",
         )
         val move2 = MoveDto(
             id = "1,1",
             input = ",1",
             startup = "i11",
             parent = "1",
+            damage = "11",
+            target = "m"
         )
         val map = mapOf(
             move1.id to move1,
             move2.id to move2,
         )
-        val expected = "i10 (i11)"
+        val expected = ParentalProperties(
+            input = "11",
+            startup = "i10 (i11)",
+            damage = "10, 11",
+            guard = "h, m",
+        )
 
         // when
-        val result = move2.getRootStartup(map)
+        val result = move2.formCompleteDataFromParent(map)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `formDataFromParent handles infinite loop cycle`() {
+        // given
+        val move1 = MoveDto(
+            id = "1",
+            input = "1",
+            startup = "i11",
+            parent = "1,1,2",
+            target = "h",
+            damage = "10",
+        )
+        val move2 = MoveDto(
+            id = "1,1",
+            input = ",1",
+            startup = "i12",
+            parent = "1",
+            target = "h",
+            damage = "11",
+        )
+        val move3 = MoveDto(
+            id = "1,1,2",
+            input = ",2",
+            startup = "i13",
+            parent = "1,1",
+            target = "m",
+            damage = "12",
+        )
+        val map = mapOf(
+            move1.id to move1,
+            move2.id to move2,
+            move3.id to move3,
+        )
+        val expected = ParentalProperties(
+            input = "112",
+            startup = "i11 (i12, i13)",
+            damage = "10, 11, 12",
+            guard = "h, h, m",
+        )
+
+        // when
+        val result = move3.formCompleteDataFromParent(map)
 
         //then
         assertThat(result).isEqualTo(expected)
