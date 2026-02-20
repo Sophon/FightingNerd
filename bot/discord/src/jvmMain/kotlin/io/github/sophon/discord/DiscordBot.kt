@@ -27,6 +27,7 @@ import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_QUERY
 import io.github.sophon.discord.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.createButtons
+import io.github.sophon.discord.util.safeRestCall
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -84,7 +85,7 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
-            handleCommand()
+            safeRestCall(TAG) { handleCommand() }
         }
 
         kord.on<MessageCreateEvent> {
@@ -99,11 +100,11 @@ internal class DiscordBotImpl(
                 return@on
             }
 
-            handleMessage()
+            safeRestCall(TAG) { handleMessage() }
         }
 
         kord.on<ButtonInteractionCreateEvent> {
-            handleButton()
+            safeRestCall(TAG) { handleButton() }
         }
 
         //‼️ THIS SUSPENDS UNTIL LOGGED OUT
