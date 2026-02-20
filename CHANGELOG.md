@@ -2,6 +2,7 @@
 
 ## [v10.0.0] - TODO
 - `EWGF.gg` - prepare code for the final feature
+- DustLoop - release notations have aliases without the brackets
 
 ## [v9.1.1] - 2026-02-19
 - Wavu
