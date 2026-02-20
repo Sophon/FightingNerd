@@ -16,27 +16,34 @@ internal fun moveListEmbed(
 ): EmbedBuilder.() -> Unit = {
     this.color = color
 
-    val numberedMoves = dataList
-        .mapIndexed { index, data ->
-            "${index + 1}. **${data}**"
+    if (dataList.isEmpty()) {
+        mandatoryField(
+            name = "$category moves",
+            value = "Nothing found 😔"
+        )
+    } else {
+        val numberedMoves = dataList
+            .mapIndexed { index, data ->
+                "${index + 1}. **${data}**"
+            }
+
+        val chunks = when (numberedMoves.size) {
+            in 0..EMBED_LIST_MIN_COLUMN -> numberedMoves.size
+            in EMBED_LIST_MIN_COLUMN..EMBED_LIST_PER_COLUMN -> numberedMoves.size / 2
+            else -> EMBED_LIST_PER_COLUMN
         }
 
-    val chunks = when (numberedMoves.size) {
-        in 0..EMBED_LIST_MIN_COLUMN -> numberedMoves.size
-        in EMBED_LIST_MIN_COLUMN..EMBED_LIST_PER_COLUMN -> numberedMoves.size / 2
-        else -> EMBED_LIST_PER_COLUMN
+        numberedMoves
+            .chunked(chunks)
+            .forEachIndexed { index, moveList ->
+                val text = moveList.joinToString("\n")
+                val name = if (index == 0) "$category moves" else "_"
+                mandatoryField(
+                    name = name,
+                    value = text,
+                )
+            }
     }
-
-    numberedMoves
-        .chunked(chunks)
-        .forEachIndexed { index, moveList ->
-            val text = moveList.joinToString("\n")
-            val name = if (index == 0) "$category moves" else "_"
-            mandatoryField(
-                name = name,
-                value = text,
-            )
-        }
 
     featureFooter(featureInfo)
 }
