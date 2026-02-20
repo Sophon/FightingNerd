@@ -1,6 +1,7 @@
 # BOT CHANGELOG
 
 ## [v10.0.0] - TODO
+- handled some Kord exceptions
 - `EWGF.gg` - prepare code for the final feature
 - DustLoop - release notations have aliases without the brackets
 
