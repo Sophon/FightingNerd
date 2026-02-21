@@ -15,11 +15,15 @@ import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.util.createButtons
+import kotlin.uuid.ExperimentalUuidApi
 
+@OptIn(ExperimentalUuidApi::class)
 internal class CreateFeedbackEmbedUseCase {
 
     suspend fun MessageCreateEvent.invoke(
         feedback: BotOutput.Feedback,
+        buttonSet: BotOutput.ButtonSet?,
     ): Result<Message, BotError> {
         return try {
             feedback.feedbackChannelList.forEach { channelId ->
@@ -27,6 +31,9 @@ internal class CreateFeedbackEmbedUseCase {
 
                 channel?.createMessage {
                     embed(feedback.embedBuilder)
+                    if (buttonSet?.buttonList.isNullOrEmpty().not()) {
+                        createButtons(buttonSet.buttonList)
+                    }
                 }
             }
             val message = message.channel.createMessage {
@@ -41,6 +48,7 @@ internal class CreateFeedbackEmbedUseCase {
 
     suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
         feedback: BotOutput.Feedback,
+        buttonSet: BotOutput.ButtonSet?,
     ): Result<PublicInteractionResponseBehavior, BotError> {
         return try {
             feedback.feedbackChannelList.forEach { channelId ->
@@ -48,6 +56,9 @@ internal class CreateFeedbackEmbedUseCase {
 
                 channel?.createMessage {
                     embed(feedback.embedBuilder)
+                    if (buttonSet?.buttonList.isNullOrEmpty().not()) {
+                        createButtons(buttonSet.buttonList)
+                    }
                 }
             }
             val behavior = interaction.respondPublic {
