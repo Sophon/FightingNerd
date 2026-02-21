@@ -17,6 +17,7 @@ data class Config(
         val name: String,
         val isEnabled: Boolean,
         val supportedGameList: List<Game>,
+        val feedbackDiscordChannelId: String? = null,
     )
 
     @Serializable
