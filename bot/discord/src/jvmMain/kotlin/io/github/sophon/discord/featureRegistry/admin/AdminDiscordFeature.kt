@@ -16,6 +16,7 @@ import io.github.sophon.discord.domain.Command
 import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.CreateRedirectButtonsUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
@@ -38,6 +39,7 @@ internal class AdminDiscordFeature(
     private val startAdminToolsUseCase: StartAdminToolsUseCase,
     private val processFeedbackUseCase: ProcessFeedbackUseCase,
     private val replyToFeedbackUseCase: ReplyToFeedbackUseCase,
+    private val createRedirectButtonsUseCase: CreateRedirectButtonsUseCase,
     private val banUseCase: BanUseCase,
     private val unbanUseCase: UnbanUseCase,
     private val scheduler: Scheduler,
@@ -139,21 +141,6 @@ internal class AdminDiscordFeature(
 
     private fun banList(source: Source): Result<BotOutput, BotError> {
         TODO()
-    }
-
-    private fun createFeedbackEmbed(adminResult: AdminResult): EmbedBuilder.() -> Unit = {
-        adminResult.apply {
-            title = "${source.username}-${source.id}-${source.channelId}"
-            color = Color(TURQUOISE)
-
-            mandatoryField(
-                name = "${source.username} from ${source.serverName}",
-                value = message,
-                inline = false,
-            )
-
-            featureFooter(featureInfo)
-        }
     }
 
     private fun createReplyEmbed(adminResult: AdminResult): EmbedBuilder.() -> Unit = {

@@ -6,6 +6,7 @@ import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.featureRegistry.admin.AdminDiscordFeature
 import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.CreateRedirectButtonsUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
@@ -55,6 +56,7 @@ internal val featureRegistryModule = module {
     singleOf(::ReplyToFeedbackUseCase)
     singleOf(::BanUseCase)
     singleOf(::UnbanUseCase)
+    singleOf(::CreateRedirectButtonsUseCase)
     //endregion
 
     //region CORE
@@ -124,6 +126,7 @@ internal val featureRegistryModule = module {
             startAdminToolsUseCase = get(),
             processFeedbackUseCase = get(),
             replyToFeedbackUseCase = get(),
+            createRedirectButtonsUseCase = get(),
             banUseCase = get(),
             unbanUseCase = get(),
             scheduler = get(),
