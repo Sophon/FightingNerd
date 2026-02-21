@@ -10,7 +10,8 @@
       "isEnabled": true,
       "supportedGames": [
         "Tekken_8"
-      ]
+      ],
+      "feedbackDiscordChannelId": "1193118389825175582"
     },
     {
       "name": "SuperCombo Wiki",
