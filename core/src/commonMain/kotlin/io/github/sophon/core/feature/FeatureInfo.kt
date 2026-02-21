@@ -6,4 +6,5 @@ data class FeatureInfo(
     val version: String,
     val supportedGameSet: Set<Game> = setOf(),
     val iconUrl: String? = null,
+    val feedbackDiscordChannelId: String? = null,
 )
