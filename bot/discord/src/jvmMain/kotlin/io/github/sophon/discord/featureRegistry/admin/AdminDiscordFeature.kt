@@ -30,6 +30,7 @@ import io.github.sophon.domain.model.Ban
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.core.component.KoinComponent
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -44,7 +45,11 @@ internal class AdminDiscordFeature(
     private val unbanUseCase: UnbanUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
-): DiscordRegisteredFeature {
+): DiscordRegisteredFeature, KoinComponent {
+    private val featureList: List<FeatureInfo> by lazy {
+        getKoin().get<List<DiscordRegisteredFeature>>().map { it.featureInfo }
+    }
+
     override val featureInfo: FeatureInfo = adminFeatureInfo.featureInfo
     override val defaultCommand = null
     override val otherCommands = listOf(
@@ -88,10 +93,11 @@ internal class AdminDiscordFeature(
             .map { adminResult ->
                 BotOutput(
                     feedback = BotOutput.Feedback(
-                        embedBuilder = createFeedbackEmbed(adminResult),
+                        embedBuilder = createFeedbackEmbed(adminResult, featureInfo),
                         origin = origin,
-                        feedbackChannelList = adminConfig.feedbackChannelIdList
-                    )
+                        feedbackChannelList = adminConfig.feedbackChannelIdList,
+                    ),
+                    buttons = createRedirectButtonsUseCase.invoke(featureList)
                 )
             }
     }
