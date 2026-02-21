@@ -45,7 +45,7 @@ class CreateMutableEmbedUseCase {
                 embed(mutableEmbedBuilder.primaryBuilder)
 
                 if (buttons?.buttonList.isNullOrEmpty().not()) {
-                    createButtons(uuid, buttons.buttonList)
+                    createButtons(buttons.buttonList, uuid)
                 }
             }
 
@@ -87,7 +87,7 @@ class CreateMutableEmbedUseCase {
                 embed(mutableEmbedBuilder.primaryBuilder)
 
                 if (buttons?.buttonList.isNullOrEmpty().not()) {
-                    createButtons(uuid, buttons.buttonList)
+                    createButtons(buttons.buttonList, uuid)
 
                     if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                         coroutineScope.launch {

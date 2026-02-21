@@ -50,7 +50,7 @@ internal class CreateEmbedUseCase {
                 embed(fullEmbed ?: embedBuilder)
 
                 if (buttons?.buttonList.isNullOrEmpty().not()) {
-                    createButtons(uuid, buttons.buttonList)
+                    createButtons(buttons.buttonList, uuid)
                 }
 
                 imageList?.urls?.forEach { url ->
@@ -142,7 +142,7 @@ internal class CreateEmbedUseCase {
         embed(primaryEmbed)
 
         if (buttons?.buttonList.isNullOrEmpty().not()) {
-            createButtons(uuid, buttons.buttonList)
+            createButtons(buttons.buttonList, uuid)
 
             if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                 coroutineScope.launch {
