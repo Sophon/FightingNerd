@@ -23,7 +23,8 @@ internal class ConfigLoader(
                     isEnabled = feature.isEnabled,
                     supportedGameList = feature.supportedGames.mapNotNull { gameId ->
                         gameId.getGame()
-                    }
+                    },
+                    feedbackDiscordChannelId = feature.feedbackDiscordChannelId,
                 )
             },
             adminConfig = Config.AdminConfig(
@@ -50,6 +51,7 @@ internal class ConfigLoader(
             val name: String,
             val isEnabled: Boolean,
             val supportedGames: List<String>,
+            val feedbackDiscordChannelId: String? = null,
         )
 
         @Serializable
