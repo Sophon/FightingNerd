@@ -4,6 +4,7 @@
 - handled some Kord exceptions
 - `EWGF.gg` - prepare code for the final feature
 - DustLoop - release notations have aliases without the brackets
+- admin - can redirect feedback to feature's feedback channel
 
 ## [v9.1.1] - 2026-02-19
 - Wavu
