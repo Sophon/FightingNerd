@@ -14,8 +14,8 @@ import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Config
-import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.usecase.ResultToEmbedUseCase

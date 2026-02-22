@@ -7,8 +7,8 @@ import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
-import io.github.sophon.discord.domain.Command
-import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.model.Command
+import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField

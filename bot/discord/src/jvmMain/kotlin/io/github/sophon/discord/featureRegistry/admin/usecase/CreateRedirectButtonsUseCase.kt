@@ -1,7 +1,7 @@
 package io.github.sophon.discord.featureRegistry.admin.usecase
 
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput
 
 internal class CreateRedirectButtonsUseCase {
     fun invoke(

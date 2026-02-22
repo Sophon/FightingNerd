@@ -7,7 +7,7 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
-import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.util.mandatoryField
 import kotlin.time.Duration.Companion.seconds
 
