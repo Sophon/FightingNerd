@@ -18,9 +18,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_EDIT
-import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_QUERY
-import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_REDIRECT
+import io.github.sophon.discord.domain.DiscordButton
 import io.github.sophon.discord.util.createButtons
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
@@ -45,17 +43,14 @@ internal class HandleButtonInteractionUseCase(
             id = interaction.user.data.id.toString(),
             channelId = interaction.channelId.toString(),
         )
-        val buttonActionData = interaction.componentId
         val message = interaction.data.message.value?.let {
             interaction.message
         }
 
-        return when {
-            (KEY_QUERY in buttonActionData) -> {
+        return when(val button = DiscordButton.createFromButtonId(buttonId = interaction.componentId)) {
+            is DiscordButton.Query -> {
                 val response = interaction.deferPublicResponse()
-                val message = buttonActionData.substringAfter(KEY_QUERY)
-
-                query(interaction, response, message, source, coroutineScope)
+                query(interaction, response, button.query, source, coroutineScope)
                     .onError { error ->
                         response.respond {
                             embed {
@@ -66,12 +61,12 @@ internal class HandleButtonInteractionUseCase(
                         }
                     }
             }
-            (KEY_EDIT in buttonActionData) -> {
+            is DiscordButton.Edit -> {
                 interaction.deferPublicMessageUpdate()
-                edit(buttonActionData, message, editableEmbedMap)
+                edit(button.messageId, message, editableEmbedMap)
             }
-            (KEY_REDIRECT in buttonActionData) -> {
-                redirect(buttonActionData, message)
+            is DiscordButton.Redirect -> {
+                redirect(button.channelId, message)
             }
             else -> {
                 Result.Error(BotError.BotLogicError("Invalid button action"))
@@ -83,11 +78,11 @@ internal class HandleButtonInteractionUseCase(
     private suspend fun query(
         interaction: ButtonInteraction,
         response: DeferredPublicMessageInteractionResponseBehavior,
-        message: String,
+        query: String,
         source: Source,
         coroutineScope: CoroutineScope,
     ): EmptyResult<BotError> {
-        return routeCommandToFeatureUseCase.invoke(source, message)
+        return routeCommandToFeatureUseCase.invoke(source, query)
             .map { botOutput ->
                 val uuid = Uuid.random()
 
@@ -126,24 +121,22 @@ internal class HandleButtonInteractionUseCase(
     }
 
     private suspend fun edit(
-        buttonActionData: String,
+        messageId: String,
         message: Message?,
         editableEmbedMap: MutableMap<String, BotOutput>,
     ): EmptyResult<BotError> {
         return try {
-            val uuid = buttonActionData.substringAfter(KEY_EDIT)
-
             if (message == null) {
                 Result.Error(BotError.BotLogicError("Button has no data"))
             } else {
                 message.apply {
-                    val botOutput = editableEmbedMap[uuid]
+                    val botOutput = editableEmbedMap[messageId]
                     botOutput?.mutableEmbedBuilder?.manualEditBuilder?.let { embedBuilder ->
 
                         edit {
                             embeds?.clear()
                             embed(embedBuilder)
-                            editableEmbedMap.remove(uuid)
+                            editableEmbedMap.remove(messageId)
                             components = mutableListOf() //removes buttons
                             botOutput.images?.urls?.forEach { url ->
                                 embed {
@@ -164,17 +157,16 @@ internal class HandleButtonInteractionUseCase(
     }
 
     private suspend fun redirect(
-        buttonActionData: String,
+        channelId: String,
         message: Message?,
     ): EmptyResult<BotError> {
         return try {
-            val targetChannelId = buttonActionData.substringAfter(KEY_REDIRECT)
-
             if (message == null) {
                 Result.Error(BotError.BotLogicError("Button has no data"))
             } else {
-                val targetChannel = message.kord.getChannelOf<TextChannel>(Snowflake(targetChannelId))
-                    ?: return Result.Error(BotError.BotLogicError("Channel not found: $targetChannelId"))
+                val id = Snowflake(channelId)
+                val targetChannel = message.kord.getChannelOf<TextChannel>(id)
+                    ?: return Result.Error(BotError.BotLogicError("Channel not found: $channelId"))
 
                 val embed = message.embeds.firstOrNull()
                     ?: return Result.Error(BotError.BotLogicError("Message has no embed"))
