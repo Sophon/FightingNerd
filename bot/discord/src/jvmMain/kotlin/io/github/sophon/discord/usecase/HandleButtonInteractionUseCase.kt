@@ -17,9 +17,9 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.domain.onError
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
+import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.DiscordButton
-import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope

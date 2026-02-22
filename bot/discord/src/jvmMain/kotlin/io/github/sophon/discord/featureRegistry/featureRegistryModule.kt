@@ -2,8 +2,8 @@ package io.github.sophon.discord.featureRegistry
 
 import io.github.sophon.core.feature.Config
 import io.github.sophon.discord.config.ConfigLoader
-import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
+import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.AdminDiscordFeature
 import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.CreateRedirectButtonsUseCase
@@ -12,8 +12,8 @@ import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUse
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.featureRegistry.bot.BotFeature
-import io.github.sophon.discord.featureRegistry.bot.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.bot.usecase.CreateJoinEmbedButtonUseCase
+import io.github.sophon.discord.featureRegistry.bot.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.ewgf.EwgfDiscordFeature
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.GetPlayerDataUseCase

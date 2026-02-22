@@ -15,9 +15,9 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
 import io.github.sophon.discord.URL_KOFI
+import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.BotOutput.ButtonSet
-import io.github.sophon.discord.domain.DiscordButtonBuilder
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
