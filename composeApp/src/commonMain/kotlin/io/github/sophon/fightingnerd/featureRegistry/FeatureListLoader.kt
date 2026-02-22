@@ -48,6 +48,7 @@ internal class FeatureListLoaderImpl(
             val name: String,
             val isEnabled: Boolean,
             val supportedGames: List<String>,
+            val feedbackDiscordChannelId: String? = null,
         )
     }
 }

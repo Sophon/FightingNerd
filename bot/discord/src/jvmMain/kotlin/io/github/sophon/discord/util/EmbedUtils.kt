@@ -13,6 +13,7 @@ import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_EDIT
 import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_QUERY
+import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_REDIRECT
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -107,8 +108,8 @@ internal fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton>
 
 @OptIn(ExperimentalUuidApi::class)
 internal fun MessageBuilder.createButtons(
-    uuid: Uuid,
     buttons: List<BotOutput.EmbedButton>,
+    uuid: Uuid? = null,
 ) {
     buttons
         .take(EMBED_MAX_BUTTONS)
@@ -128,16 +129,27 @@ internal fun MessageBuilder.createButtons(
                         }
 
                         is BotOutput.EmbedButton.Action.Edit -> {
-                            interactionButton(
-                                style = ButtonStyle.Primary,
-                                customId = "$KEY_EDIT$uuid",
-                            ) {
-                                label = button.label
-                                disabled = false
+                            uuid?.let {
+                                interactionButton(
+                                    style = ButtonStyle.Primary,
+                                    customId = "$KEY_EDIT$uuid",
+                                ) {
+                                    label = button.label
+                                    disabled = false
+                                }
                             }
                         }
                         is BotOutput.EmbedButton.Action.Url -> {
                             linkButton(url = button.action.url) {
+                                label = button.label
+                                disabled = false
+                            }
+                        }
+                        is BotOutput.EmbedButton.Action.Redirect -> {
+                            interactionButton(
+                                style = ButtonStyle.Primary,
+                                customId = "$KEY_REDIRECT${button.action.channelId}"
+                            ) {
                                 label = button.label
                                 disabled = false
                             }

@@ -11,6 +11,7 @@ import io.github.sophon.discord.usecase.CreateFeedbackEmbedUseCase
 import io.github.sophon.discord.usecase.CreateMutableEmbedUseCase
 import io.github.sophon.discord.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.usecase.CreateReplyEmbedUseCase
+import io.github.sophon.discord.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.dreamcancel.dreamCancelModule
@@ -71,6 +72,7 @@ fun dcBotModule(kord: Kord) = module {
     singleOf(::CreateReplyEmbedUseCase)
     singleOf(::ResultToEmbedUseCase)
     singleOf(::CreateMutableEmbedUseCase)
+    singleOf(::HandleButtonInteractionUseCase)
 
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 }

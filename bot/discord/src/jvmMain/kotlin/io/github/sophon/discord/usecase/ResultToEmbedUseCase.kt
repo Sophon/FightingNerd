@@ -89,7 +89,7 @@ internal class ResultToEmbedUseCase(
             }
             botOutput.feedback != null -> {
                 with (createFeedbackEmbedUseCase) {
-                    invoke(botOutput.feedback)
+                    invoke(botOutput.feedback, botOutput.buttons)
                 }
             }
             botOutput.reply != null -> {
@@ -157,7 +157,7 @@ internal class ResultToEmbedUseCase(
             }
             botOutput.feedback != null -> {
                 with (createFeedbackEmbedUseCase) {
-                    invoke(botOutput.feedback)
+                    invoke(botOutput.feedback, botOutput.buttons)
                 }
             }
             botOutput.reply != null -> {

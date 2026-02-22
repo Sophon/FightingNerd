@@ -23,7 +23,7 @@ internal class ConfigLoader(
                     isEnabled = feature.isEnabled,
                     supportedGameList = feature.supportedGames.mapNotNull { gameId ->
                         gameId.getGame()
-                    }
+                    },
                 )
             },
             adminConfig = Config.AdminConfig(
