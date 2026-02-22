@@ -102,22 +102,3 @@ internal fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton>
         )
     }
 }
-
-@OptIn(ExperimentalUuidApi::class)
-internal fun MessageBuilder.createButtons(
-    buttons: List<BotOutput.EmbedButton>,
-    uuid: Uuid? = null,
-) {
-    buttons
-        .take(EMBED_MAX_BUTTONS)
-        .chunked(5)
-        .forEach { rowButtons ->
-            actionRow {
-                rowButtons.forEach { button ->
-                    DiscordButton.from(button.action, button.label, uuid)?.let {
-                        components.add(it)
-                    }
-                }
-            }
-        }
-}

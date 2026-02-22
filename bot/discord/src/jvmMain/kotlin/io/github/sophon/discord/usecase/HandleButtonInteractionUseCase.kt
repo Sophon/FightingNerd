@@ -19,7 +19,7 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.domain.BotOutput
 import io.github.sophon.discord.domain.DiscordButton
-import io.github.sophon.discord.util.createButtons
+import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
@@ -32,6 +32,7 @@ import kotlin.uuid.Uuid
 @OptIn(ExperimentalUuidApi::class)
 internal class HandleButtonInteractionUseCase(
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
+    private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
     suspend fun invoke(
         interaction: ButtonInteraction,
@@ -47,7 +48,7 @@ internal class HandleButtonInteractionUseCase(
             interaction.message
         }
 
-        return when(val button = DiscordButton.createFromButtonId(buttonId = interaction.componentId)) {
+        return when(val button = discordButtonBuilder.decodeToDomainModel(buttonId = interaction.componentId)) {
             is DiscordButton.Query -> {
                 val response = interaction.deferPublicResponse()
                 query(interaction, response, button.query, source, coroutineScope)
@@ -91,7 +92,11 @@ internal class HandleButtonInteractionUseCase(
 
                     botOutput.buttons?.let { buttonSet ->
                         if (buttonSet.buttonList.isEmpty().not()) {
-                            createButtons(buttonSet.buttonList, uuid)
+                            discordButtonBuilder.createEmbedButtons(
+                                messageBuilder = this,
+                                buttonList = buttonSet.buttonList,
+                                uuid = uuid,
+                            )
 
                             if (buttonSet.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                                 coroutineScope.launch {

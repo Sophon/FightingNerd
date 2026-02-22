@@ -15,11 +15,13 @@ import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.util.createButtons
+import io.github.sophon.discord.domain.DiscordButtonBuilder
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
-internal class CreateFeedbackEmbedUseCase {
+internal class CreateFeedbackEmbedUseCase(
+    private val discordButtonBuilder: DiscordButtonBuilder,
+) {
 
     suspend fun MessageCreateEvent.invoke(
         feedback: BotOutput.Feedback,
@@ -32,7 +34,10 @@ internal class CreateFeedbackEmbedUseCase {
                 channel?.createMessage {
                     embed(feedback.embedBuilder)
                     if (buttonSet?.buttonList.isNullOrEmpty().not()) {
-                        createButtons(buttonSet.buttonList)
+                        discordButtonBuilder.createEmbedButtons(
+                            messageBuilder = this,
+                            buttonList = buttonSet.buttonList,
+                        )
                     }
                 }
             }
@@ -57,7 +62,10 @@ internal class CreateFeedbackEmbedUseCase {
                 channel?.createMessage {
                     embed(feedback.embedBuilder)
                     if (buttonSet?.buttonList.isNullOrEmpty().not()) {
-                        createButtons(buttonSet.buttonList)
+                        discordButtonBuilder.createEmbedButtons(
+                            messageBuilder = this,
+                            buttonList = buttonSet.buttonList,
+                        )
                     }
                 }
             }

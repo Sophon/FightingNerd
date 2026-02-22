@@ -4,6 +4,7 @@ import dev.kord.core.Kord
 import io.github.sophon.adminModule
 import io.github.sophon.core.coreModule
 import io.github.sophon.discord.data.InMemoryGlossaryDB
+import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.featureRegistry.featureRegistryModule
 import io.github.sophon.discord.usecase.CreateEmbedUseCase
 import io.github.sophon.discord.usecase.CreateErrorEmbedBuilderUseCase
@@ -73,6 +74,8 @@ fun dcBotModule(kord: Kord) = module {
     singleOf(::ResultToEmbedUseCase)
     singleOf(::CreateMutableEmbedUseCase)
     singleOf(::HandleButtonInteractionUseCase)
+
+    singleOf(::DiscordButtonBuilder)
 
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 }
