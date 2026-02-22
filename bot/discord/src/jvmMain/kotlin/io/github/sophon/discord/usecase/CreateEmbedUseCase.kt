@@ -4,7 +4,6 @@ import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
@@ -167,5 +166,6 @@ internal class CreateEmbedUseCase {
     internal companion object {
         const val KEY_QUERY = "query: "
         const val KEY_EDIT = "edit: "
+        const val KEY_REDIRECT = "redirect: "
     }
 }

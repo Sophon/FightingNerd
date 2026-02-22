@@ -1,10 +1,13 @@
 package io.github.sophon.discord.usecase
 
 import dev.kord.common.Color
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.response.DeferredPublicMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.respond
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.interaction.ButtonInteraction
 import dev.kord.rest.builder.message.embed
 import io.github.sophon.core.domain.EmptyResult
@@ -19,6 +22,7 @@ import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_EDIT
 import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_QUERY
 import io.github.sophon.discord.usecase.CreateEmbedUseCase.Companion.KEY_REDIRECT
 import io.github.sophon.discord.util.createButtons
+import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -67,7 +71,7 @@ internal class HandleButtonInteractionUseCase(
                 edit(buttonActionData, message, editableEmbedMap)
             }
             (KEY_REDIRECT in buttonActionData) -> {
-                TODO("we need to decode data from the action")
+                redirect(buttonActionData, message)
             }
             else -> {
                 Result.Error(BotError.BotLogicError("Invalid button action"))
@@ -154,6 +158,43 @@ internal class HandleButtonInteractionUseCase(
             }
 
             Result.Success(Unit)
+        } catch (e: Exception) {
+            Result.Error(BotError.Unknown(e.toString()))
+        }
+    }
+
+    private suspend fun redirect(
+        buttonActionData: String,
+        message: Message?,
+    ): EmptyResult<BotError> {
+        return try {
+            val targetChannelId = buttonActionData.substringAfter(KEY_REDIRECT)
+
+            if (message == null) {
+                Result.Error(BotError.BotLogicError("Button has no data"))
+            } else {
+                val targetChannel = message.kord.getChannelOf<TextChannel>(Snowflake(targetChannelId))
+                    ?: return Result.Error(BotError.BotLogicError("Channel not found: $targetChannelId"))
+
+                val embed = message.embeds.firstOrNull()
+                    ?: return Result.Error(BotError.BotLogicError("Message has no embed"))
+
+                targetChannel.createEmbed {
+                    title = embed.title
+                    color = embed.color
+                    embed.fields.firstOrNull()?.let {
+                        mandatoryField(name = it.name, value = it.value, inline = (it.inline == true))
+                    }
+                    embed.footer?.let {
+                        footer {
+                            text = it.text
+                            icon = it.iconUrl
+                        }
+                    }
+                }
+
+                Result.Success(Unit)
+            }
         } catch (e: Exception) {
             Result.Error(BotError.Unknown(e.toString()))
         }
