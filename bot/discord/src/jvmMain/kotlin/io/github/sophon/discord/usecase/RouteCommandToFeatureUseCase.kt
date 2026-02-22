@@ -4,8 +4,8 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.extractFirstWord
 import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
 import io.github.sophon.domain.Source
 

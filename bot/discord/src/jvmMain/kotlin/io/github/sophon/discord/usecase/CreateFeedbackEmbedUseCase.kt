@@ -14,7 +14,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.URL_KOFI
-import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.DiscordButtonBuilder
 import kotlin.uuid.ExperimentalUuidApi
 

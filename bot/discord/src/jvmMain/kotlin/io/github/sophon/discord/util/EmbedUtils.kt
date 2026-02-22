@@ -1,18 +1,12 @@
 package io.github.sophon.discord.util
 
 import dev.kord.rest.builder.message.EmbedBuilder
-import dev.kord.rest.builder.message.MessageBuilder
-import dev.kord.rest.builder.message.actionRow
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.EMBED_MAX_LENGTH
-import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.domain.DiscordButton
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
+import io.github.sophon.discord.domain.model.BotOutput
 
 internal fun EmbedBuilder.mandatoryField(
     name: String,

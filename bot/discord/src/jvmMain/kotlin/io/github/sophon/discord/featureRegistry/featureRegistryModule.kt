@@ -2,7 +2,7 @@ package io.github.sophon.discord.featureRegistry
 
 import io.github.sophon.core.feature.Config
 import io.github.sophon.discord.config.ConfigLoader
-import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.featureRegistry.admin.AdminDiscordFeature
 import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase

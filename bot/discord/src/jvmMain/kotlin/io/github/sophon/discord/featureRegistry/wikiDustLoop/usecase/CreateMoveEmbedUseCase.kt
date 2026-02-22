@@ -3,7 +3,7 @@ package io.github.sophon.discord.featureRegistry.wikiDustLoop.usecase
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.moveDetailedEmbedBuilderGG
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.moveEmbedBuilderBB
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.moveEmbedBuilderDB

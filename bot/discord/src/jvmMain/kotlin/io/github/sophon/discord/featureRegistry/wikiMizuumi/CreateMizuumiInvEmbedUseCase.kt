@@ -9,7 +9,7 @@ import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
-import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.wikimizuumi.domain.MizuumiFilter
