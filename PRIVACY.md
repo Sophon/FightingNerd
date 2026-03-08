@@ -1,6 +1,6 @@
 # Privacy Policy for FightingNerd
 
-**Last Updated:** 2026-01-03
+**Last Updated:** 2026-03-08
 
 ## Overview
 
@@ -17,10 +17,17 @@ When you use Fighting Nerd commands, **no personal data is collected or stored**
 
 Error information may be temporarily logged for debugging purposes (see Error Logging section below).
 
+### Command Usage Statistics
+
+The bot tracks aggregate counts of command usage for operational purposes. This data is:
+- anonymous — no user, server, or message identifiers are stored
+- aggregate only — only a count per command type is recorded
+- retained for 30 days in rolling daily summaries
+
 ## How Your Data is Used
 
 **For all users:**
-- no data is intentionally collected during normal bot usage
+- anonymous, aggregate command usage statistics are collected to monitor bot health and feature usage
 - error information may be temporarily captured for debugging (see Error Logging below)
 
 ### Error Logging
@@ -42,7 +49,7 @@ When the bot encounters an error processing a command, minimal debugging informa
 ## Data Storage
 
 **For general bot usage:**
-- no permanent data storage
+- command usage statistics: anonymous aggregate counts retained for 30 days, then automatically removed
 - for error logs: temporarily retained on hosting platform for ~7 days
 
 ## Third-Party Services
@@ -63,7 +70,7 @@ These services' privacy policies apply to their public data.
 You have the right to:
 - **Access** - request what error log data may have been temporarily captured
 - **Data minimization** - only minimal error information is captured
-  - automatically deleted after 7 days
+    - automatically deleted after 7 days
 
 ## Changes to This Policy
 
@@ -77,4 +84,4 @@ For privacy questions or data deletion requests:
 
 ## Children's Privacy
 
-Fighting Nerd is not directed at children under 13. Data from children under 13 is not knowingly collected .
+Fighting Nerd is not directed at children under 13. Data from children under 13 is not knowingly collected.
