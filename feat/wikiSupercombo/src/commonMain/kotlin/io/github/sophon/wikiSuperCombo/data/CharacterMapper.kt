@@ -20,7 +20,6 @@ internal fun CharacterListResponseDto.toDomain(
             when (game) {
                 Game.MK1 -> {
                     mkProperties = Character.MK1Properties(
-                        hp = charDto.hp,
                         hpMod = charDto.hpmod,
                         throwDmg = charDto.throwdmg,
                     )
@@ -43,7 +42,6 @@ internal fun CharacterListResponseDto.toDomain(
                         jumpApex = charDto.jumpApex,
                         fwdJumpDist = charDto.fwdJumpDist,
                         bwdJumpDist = charDto.bwdJumpDist,
-                        hp = charDto.hp,
                     )
                     mkProperties = null
                 }
@@ -63,6 +61,7 @@ internal fun CharacterListResponseDto.toDomain(
                     iconUrl = charDto.icon.let { imageUrlMap[it] },
                     bannerUrl = charDto.portrait.let { imageUrlMap[it] },
                 ),
+                hp = charDto.hp,
                 sf6Properties = sf6Properties,
                 mkProperties = mkProperties,
             )

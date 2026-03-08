@@ -111,7 +111,7 @@ fun mizuumiCharacterEmbed(
         name = "Fastest normal",
         value = "${startup}f: $moves"
     )
-    mandatoryField(name = "HP", character.uni2Properties?.hp)
+    mandatoryField(name = "HP", character.hp)
     mandatoryField(
         name = "Umo",
         value = if (character.umo.size == 1) {

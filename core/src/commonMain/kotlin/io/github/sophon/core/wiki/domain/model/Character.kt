@@ -11,6 +11,7 @@ data class Character(
     val aliasList: List<String> = listOf(),
     val images: Images? = null,
 
+    val hp: String? = null,
     val umo: List<String> = listOf(),
 
     val sf6Properties: SF6Properties? = null,
@@ -40,7 +41,6 @@ data class Character(
         val dRushBlock: String?,
         val dRushMax: String?,
 
-        val hp: String?,
         val throwRange: String?,
         val throwHurtbox: String?,
         val jumpSpd: String?,
@@ -106,14 +106,12 @@ data class Character(
 
     @Serializable
     data class MK1Properties(
-        val hp: String? = null,
         val hpMod: String? = null,
         val throwDmg: String? = null,
     )
 
     @Serializable
     data class BBProperties(
-        val hp: String? = null,
         val preJump: String? = null,
         val backDash: String? = null,
         val forwardDash: String? = null,
@@ -122,7 +120,6 @@ data class Character(
     @Serializable
     data class Uni2Properties(
         val smartSteer: String? = null,
-        val hp: String? = null, //TODO: make HP common
         val fWalkSpeed: String? = null,
         val fWalkSpeedNote: String? = null,
         val bWalkSpeed: String? = null,

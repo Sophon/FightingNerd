@@ -7,6 +7,7 @@
   - release notations have aliases without the brackets
   - updated fields for GBVSR
 - admin - can redirect feedback to feature's feedback channel
+- fixed character embeds not working
 
 ## [v9.1.1] - 2026-02-19
 - Wavu

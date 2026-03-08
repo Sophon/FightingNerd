@@ -20,6 +20,9 @@ data class CharacterEntity(
     val imageIconUrl: String? = null,
     val imageBannerUrl: String? = null,
 
+    val hp: String? = null,
+    val umo: String? = null,
+
     val sf6FwdWalkSpd: String? = null,
     val sf6BwdWalkSpd: String? = null,
     val sf6FwdDashSpd: String? = null,
