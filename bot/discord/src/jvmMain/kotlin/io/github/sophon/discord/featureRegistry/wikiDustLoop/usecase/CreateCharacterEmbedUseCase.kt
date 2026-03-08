@@ -17,12 +17,14 @@ internal class CreateCharacterEmbedUseCase {
         fastestMoveList: List<Move>,
         featureInfo: FeatureInfo,
     ): EmbedBuilder.() -> Unit = {
-        when (Game.fromId(gameId)) {
+        val builder = when (Game.fromId(gameId)) {
             Game.GGST -> charEmbedBuilderGG(character, fastestMoveList, featureInfo)
             Game.DBFZ -> charEmbedBuilderDB(character, fastestMoveList, featureInfo)
             Game.GBVSR -> charEmbedBuilderGB(character, fastestMoveList, featureInfo)
             Game.BBCF -> charEmbedBuilderBB(character, fastestMoveList, featureInfo)
-            else -> {}
+            else -> null
         }
+
+        builder?.invoke(this)
     }
 }

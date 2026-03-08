@@ -138,11 +138,6 @@ internal fun charEmbedBuilderBB(
 
     character.bbProperties?.apply {
         mandatoryField(
-            name = "HP",
-            value = hp,
-        )
-
-        mandatoryField(
             name = "Dash",
             value = "Forward: $forwardDash\n" +
                     "Back: $backDash"
@@ -320,13 +315,15 @@ private fun EmbedBuilder.generalPropertiesChar(
     fastestMoveList: List<Move>,
     umo: List<String>?,
 ) {
-    val moves = fastestMoveList.joinToString(", ") { it.input }
-    val startup = fastestMoveList.first().startup.orDash()
-
     mandatoryField(
         name = "",
         value = character.aliasList.joinToString(", "),
         inline = false,
+    )
+
+    optionalField(
+        name = "HP",
+        value = character.hp,
     )
 
     if (umo.isNullOrEmpty().not()) {
@@ -336,6 +333,8 @@ private fun EmbedBuilder.generalPropertiesChar(
         )
     }
 
+    val moves = fastestMoveList.joinToString(", ") { it.input }
+    val startup = fastestMoveList.first().startup.orDash()
     mandatoryField(
         name = "Fastest normal",
         value = "$startup: $moves"

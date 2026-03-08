@@ -82,7 +82,7 @@ internal fun superComboCharacterEmbed(
             name = "BASIC",
             value = listOf(
                 "* **Fastest normal ($startup)**: $moves",
-                "* ❤️ **HP**: ${properties.hp}",
+                "* ❤️ **HP**: ${character.hp}",
                 "* 🤝 **Throw range | hurtbox**: ${properties.throwRange} | ${properties.throwHurtbox}",
             ).joinToString("\n"),
             inline = false
