@@ -46,9 +46,9 @@ internal fun CharacterListResponseDto.toDomain(
             images = Character.Images(
                 iconUrl = imageUrlMap[it.title.chara],
             ),
+            hp = dto.health,
             uni2Properties = Character.Uni2Properties(
                 smartSteer = dto.smartSteer,
-                hp = dto.health,
                 fWalkSpeed = dto.fWalkSpeed?.cleanHtmlOrNull(),
                 fWalkSpeedNote = dto.fWalkSpeedNote?.cleanHtmlOrNull(),
                 bWalkSpeed = dto.bWalkSpeed?.cleanHtmlOrNull(),
