@@ -3,7 +3,9 @@
 ## [v10.0.0] - TODO
 - handled some Kord exceptions
 - `EWGF.gg` - prepare code for the final feature
-- DustLoop - release notations have aliases without the brackets
+- DustLoop 
+  - release notations have aliases without the brackets
+  - updated fields for GBVSR
 - admin - can redirect feedback to feature's feedback channel
 
 ## [v9.1.1] - 2026-02-19

@@ -94,13 +94,14 @@ data class Character(
         val prejump: String?,
         val backdash: String?,
         val walkSpeed: String?,
-        val walkSpeedRelative: String?,
+        val walkSpeedAlt: String?,
         val walkSpeedBack: String?,
-        val walkSpeedBackRelative: String?,
+        val walkSpeedBackAlt: String?,
         val dashInitial: String?,
-        val dashInitialRelative: String?,
+        val dashInitialAlt: String?,
         val dashAcceleration: String?,
-        val dashAccelerationRelative: String?,
+        val dashAccelerationAlt: String?,
+        val alt: String?,
     )
 
     @Serializable
