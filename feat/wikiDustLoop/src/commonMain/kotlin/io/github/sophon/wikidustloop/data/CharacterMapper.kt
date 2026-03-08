@@ -41,6 +41,7 @@ internal fun CharacterListResponseDto.toDomain(
                     iconUrl = dto.icon.let { imageUrlMap[it] },
                     bannerUrl = dto.portrait.let { imageUrlMap[it] },
                 ),
+                hp = dto.health?.cleanHtml(),
                 umo = dto.umo?.cleanHtml().formUmo(),
                 ggstProperties = Character.GGSTProperties(
                     defense = dto.defense,
@@ -92,7 +93,6 @@ internal fun CharacterListResponseDto.toDomain(
                     alt = dto.alt?.cleanHtml(),
                 ),
                 bbProperties = Character.BBProperties(
-                    hp = dto.health?.cleanHtml(),
                     preJump = dto.prejump?.cleanHtml(),
                     backDash = dto.backdash?.cleanHtml(),
                     forwardDash = dto.forwardDash?.cleanHtml(),
