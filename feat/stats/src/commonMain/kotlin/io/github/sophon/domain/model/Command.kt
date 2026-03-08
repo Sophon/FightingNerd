@@ -3,7 +3,7 @@ package io.github.sophon.domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Hit(
+data class Command(
     val feature: String,
-    val command: String,
+    val name: String,
 )

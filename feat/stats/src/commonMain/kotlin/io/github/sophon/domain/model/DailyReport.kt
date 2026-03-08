@@ -1,9 +1,10 @@
 package io.github.sophon.domain.model
 
+import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class DailyReport(
-    val date: String,
-    val hitMap: Map<Hit, Long>,
+    val date: LocalDate,
+    val commandMap: Map<Command, Long>,
 )
