@@ -48,6 +48,7 @@ import io.github.sophon.wikiwavu.infrastructure.FileReader
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import io.github.sophon.core.domain.Result
 
 internal val featureRegistryModule = module {
     //region ADMIN
@@ -108,7 +109,12 @@ internal val featureRegistryModule = module {
     //endregion
 
     singleOf(::ConfigLoader)
-    single { get<ConfigLoader>().loadConfig() }
+    single {
+        when (val result = get<ConfigLoader>().loadConfig()) {
+            is Result.Success -> result.data
+            is Result.Error -> throw IllegalStateException("Failed to load config: ${result.error}")
+        }
+    }
     single<Config.AdminConfig> { get<Config>().adminConfig!! }
 
     //region FEATURES SETUP
