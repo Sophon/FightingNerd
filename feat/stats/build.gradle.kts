@@ -6,7 +6,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.buildkonfig)
-    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -37,11 +36,10 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":core"))
 
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.napier)
             implementation(libs.kotlin.date.time)
-
-            implementation(libs.sqldelight.coroutines)
-            implementation(libs.sqldelight.primitive.adapters)
+            implementation(libs.kotlinx.serialization.json)
 
             api(libs.koin.core)
         }
@@ -51,18 +49,6 @@ kotlin {
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.test.turbine)
-        }
-
-        androidMain.dependencies {
-            implementation(libs.sqldelight.driver.android)
-        }
-
-        iosMain.dependencies {
-            implementation(libs.sqldelight.driver.native)
-        }
-
-        jvmMain.dependencies {
-            implementation(libs.sqldelight.driver.sqlite)
         }
 
         jvmTest.dependencies {
@@ -92,13 +78,5 @@ buildkonfig {
 
     defaultConfigs {
         buildConfigField(STRING, "VERSION", featureVersion)
-    }
-}
-
-sqldelight {
-    databases {
-        create("statsDatabase") {
-            packageName.set("io.github.sophon.stats.data")
-        }
     }
 }
