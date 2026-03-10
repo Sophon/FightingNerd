@@ -16,6 +16,11 @@ sealed class BotError(private vararg val inputs: String) : Error {
     class SyntaxError(input: String): BotError(input)
     class PlayerNotRegistered : BotError()
 
+    class FileNotFound(path: String) : BotError(path)
+    class FileReadError(path: String) : BotError(path)
+    class FileWriteError(path: String) : BotError(path)
+    class FileCreateError(path: String) : BotError(path)
+
     class Unknown(input: String = "") : BotError(input)
 
     override fun toString(): String =

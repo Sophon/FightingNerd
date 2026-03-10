@@ -3,6 +3,7 @@ package io.github.sophon.discord
 import dev.kord.core.Kord
 import io.github.sophon.adminModule
 import io.github.sophon.core.coreModule
+import io.github.sophon.discord.data.FileManager
 import io.github.sophon.discord.data.InMemoryGlossaryDB
 import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.featureRegistry.featureRegistryModule
@@ -80,4 +81,6 @@ fun dcBotModule(kord: Kord) = module {
     singleOf(::DiscordButtonBuilder)
 
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
+
+    singleOf(::FileManager)
 }
