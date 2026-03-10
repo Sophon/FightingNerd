@@ -34,6 +34,10 @@ internal class ConfigLoader(
                         administratorIdList = jsonConfig.adminConfig.administratorIdList,
                         feedbackChannelIdList = jsonConfig.adminConfig.feedbackChannelIdList,
                         adminServerId = jsonConfig.adminConfig.adminServerId,
+                    ),
+                    statsConfig = Config.StatsConfig(
+                        isEnabled = jsonConfig.statsConfig.isEnabled,
+                        statsChannelIdList = jsonConfig.statsConfig.statsChannelIdList,
                     )
                 )
             }
@@ -49,6 +53,7 @@ internal class ConfigLoader(
     private data class JsonConfig(
         val featureList: List<Feature>,
         val adminConfig: AdminConfig,
+        val statsConfig: StatsConfig,
     ) {
         @Serializable
         data class Feature(
@@ -62,6 +67,12 @@ internal class ConfigLoader(
             val administratorIdList: List<String>,
             val feedbackChannelIdList: List<String>,
             val adminServerId: String,
+        )
+
+        @Serializable
+        data class StatsConfig(
+            val isEnabled: Boolean,
+            val statsChannelIdList: List<String>,
         )
     }
 }
