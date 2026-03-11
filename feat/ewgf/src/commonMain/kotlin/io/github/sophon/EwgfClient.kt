@@ -5,24 +5,23 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.domain.Battle
 import io.github.sophon.domain.EwgfError
 import io.github.sophon.domain.EwgfFeatureInfo
 import io.github.sophon.domain.Player
 import io.github.sophon.usecase.DeletePlayerUseCase
-import io.github.sophon.usecase.DownloadPlayerDataUseCase
+import io.github.sophon.usecase.DownloadPlayerBattlesUseCase
 import io.github.sophon.usecase.RegisterPlayerUseCase
 import io.github.sophon.usecase.UpdatePolarisIdUseCase
 
 interface EwgfClient {
     fun getFeatureInfo(): FeatureInfo
 
-    fun init(apiToken: String): EmptyResult<EwgfError>
-
     suspend fun registerPlayer(player: Player): EmptyResult<EwgfError>
 
-    suspend fun fetchData(
+    suspend fun downloadBattleData(
         discordId: String,
-    ): Result<Player, EwgfError> //TODO: when we get access, replace Unit with proper domain class
+    ): Result<List<Battle>, EwgfError> //TODO: when we get access, replace Unit with proper domain class
 
     suspend fun updatePolarisId(player: Player): EmptyResult<EwgfError>
 
@@ -32,19 +31,12 @@ interface EwgfClient {
 internal class EwgfClientImpl(
     private val ewgfFeatureInfo: EwgfFeatureInfo,
     private val registerPlayerUseCase: RegisterPlayerUseCase,
-    private val downloadPlayerDataUseCase: DownloadPlayerDataUseCase,
+    private val downloadPlayerBattlesUseCase: DownloadPlayerBattlesUseCase,
     private val updatePolarisIdUseCase: UpdatePolarisIdUseCase,
     private val deletePlayerUseCase: DeletePlayerUseCase,
 ): EwgfClient {
-    private lateinit var apiToken: String
-
     override fun getFeatureInfo(): FeatureInfo {
         return ewgfFeatureInfo.featureInfo
-    }
-
-    override fun init(apiToken: String): EmptyResult<EwgfError> {
-        this.apiToken = apiToken
-        return Result.Success(Unit)
     }
 
     override suspend fun registerPlayer(player: Player): EmptyResult<EwgfError> {
@@ -54,17 +46,22 @@ internal class EwgfClientImpl(
             }
     }
 
-    override suspend fun fetchData(discordId: String): Result<Player, EwgfError> {
-        /**
-         * if in the DB, return the polarisID
-         */
-        return downloadPlayerDataUseCase.invoke(discordId)
-            .onSuccess { player ->
-                Napier.d(tag = TAG) { "downloaded: ${player.discordId} - ${player.polarisId}" }
+    override suspend fun downloadBattleData(
+        discordId: String,
+    ): Result<List<Battle>, EwgfError> {
+        return downloadPlayerBattlesUseCase.invoke(discordId)
+            .onSuccess { battleList ->
+                Napier.d(tag = TAG) {
+                    "$discordId: ${battleList.size} downloaded"
+                }
             }
     }
 
     override suspend fun updatePolarisId(player: Player): EmptyResult<EwgfError> {
+        if (player.discordId == null) {
+            return Result.Error(EwgfError.LogicError("discord: null"))
+        }
+
         return updatePolarisIdUseCase.invoke(
             discordId = player.discordId,
             polarisId = player.polarisId,

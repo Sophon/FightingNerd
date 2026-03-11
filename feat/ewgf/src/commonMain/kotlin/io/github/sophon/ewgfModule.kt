@@ -6,7 +6,7 @@ import io.github.sophon.data.remote.EwgfDataSource
 import io.github.sophon.data.remote.EwgfDataSourceImpl
 import io.github.sophon.domain.EwgfFeatureInfo
 import io.github.sophon.usecase.DeletePlayerUseCase
-import io.github.sophon.usecase.DownloadPlayerDataUseCase
+import io.github.sophon.usecase.DownloadPlayerBattlesUseCase
 import io.github.sophon.usecase.RegisterPlayerUseCase
 import io.github.sophon.usecase.UpdatePolarisIdUseCase
 import org.koin.core.module.Module
@@ -30,7 +30,7 @@ fun ewgfModule(apiToken: String) = module {
     singleOf(::PlayerRepoImpl).bind<PlayerRepo>()
 
     singleOf(::RegisterPlayerUseCase)
-    singleOf(::DownloadPlayerDataUseCase)
+    singleOf(::DownloadPlayerBattlesUseCase)
     singleOf(::UpdatePolarisIdUseCase)
     singleOf(::DeletePlayerUseCase)
 }
