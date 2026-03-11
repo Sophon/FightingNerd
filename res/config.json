@@ -56,7 +56,7 @@
     },
     {
       "name": "EWGF",
-      "isEnabled": false,
+      "isEnabled": true,
       "supportedGames": []
     }
   ],
