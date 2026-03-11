@@ -99,8 +99,11 @@ internal class EwgfDiscordFeature(
     }
 
     private fun recentSetsEmbed(setList: List<BattleSet>): EmbedBuilder.() -> Unit = {
-        title = "${setList.firstOrNull()?.player?.name}"
+        val player = setList.firstOrNull()?.player
+        val profileUrl = "${featureInfo.url}/player/${player?.polarisId.orEmpty()}"
+        title = player?.name.orEmpty()
         color = Color(PINK)
+        url = profileUrl
 
         fun List<BattleSet>.toColumn() = joinToString("\n") { battleSet ->
             val summary = "* ${battleSet.score.player}-${battleSet.score.opponent}: ${battleSet.player.character} v ${battleSet.opponent.character}"
