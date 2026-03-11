@@ -26,7 +26,7 @@ internal class DownloadPlayerBattlesUseCase(
         }
 
         return source.getBattles(player.polarisId)
-            .map { dto -> dto.toDomain() }
+            .map { dto -> dto.toDomain(player.polarisId) }
             .mapError { EwgfError.PlayerNotFound(player.polarisId) }
     }
 }
