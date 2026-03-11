@@ -1,5 +1,6 @@
 package io.github.sophon.discord.featureRegistry
 
+import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Config
 import io.github.sophon.discord.config.ConfigLoader
 import io.github.sophon.discord.domain.Scheduler
@@ -34,6 +35,7 @@ import io.github.sophon.discord.featureRegistry.wikiMizuumi.MizuumiWikiDiscordFe
 import io.github.sophon.discord.featureRegistry.wikiSuperCombo.SuperComboWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.featureRegistry.wikiWavu.WavuWikiDiscordFeature
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchStringFollowupsUseCase
 import io.github.sophon.discord.featureRegistry.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
@@ -42,13 +44,11 @@ import io.github.sophon.discord.usecase.GetCharacterUseCase
 import io.github.sophon.discord.usecase.GetCharactersUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.wikiwavu.infrastructure.FileReader
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
-import io.github.sophon.core.domain.Result
 
 internal val featureRegistryModule = module {
     //region ADMIN

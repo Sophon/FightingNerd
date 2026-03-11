@@ -1,11 +1,10 @@
-package io.github.sophon.discord.featureRegistry.stats
+package io.github.sophon.discord.data
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.data.ReportRepo
-import io.github.sophon.discord.data.FileManager
 import io.github.sophon.domain.StatsError
 import io.github.sophon.domain.model.DailyReport
 import kotlinx.serialization.json.Json
