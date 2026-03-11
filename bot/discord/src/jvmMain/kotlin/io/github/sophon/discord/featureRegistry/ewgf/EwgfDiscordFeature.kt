@@ -98,19 +98,26 @@ internal class EwgfDiscordFeature(
     }
 
     private fun dataEmbed(battleList: List<Battle>): EmbedBuilder.() -> Unit = {
-        title = "EWGF data"
+        title = "EWGF: ${battleList.firstOrNull()?.player?.name}"
         color = Color(PINK)
 
-        val victories = battleList
-            .map { it.score }
-            .count { it.outcome == Battle.Score.Outcome.WIN }
-        val losses = battleList
-            .map { it.score }
-            .count { it.outcome == Battle.Score.Outcome.LOSE }
+        val recent = battleList
+            .sortedByDescending { it.date }
+            .take(20)
+
+        val lines = recent.joinToString("\n") { battle ->
+            val circle = when (battle.score.outcome) {
+                Battle.Score.Outcome.WIN -> "🟢"
+                Battle.Score.Outcome.LOSE -> "🔴"
+                Battle.Score.Outcome.DRAW -> "🟡"
+            }
+            val score = "${battle.score.playerRounds}:${battle.score.opponentRounds}"
+            "$circle ${battle.player.character} vs ${battle.opponent.name} (${battle.opponent.character}) → $score"
+        }
 
         mandatoryField(
             name = "",
-            value = "W: $victories, L: $losses",
+            value = lines,
             inline = false,
         )
 
