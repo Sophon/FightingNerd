@@ -27,7 +27,11 @@ internal class SaveTodaysReport(
                 val today = today()
                 val report = DailyReport(
                     date = today,
-                    commandMap = cache,
+                    commandMap = cache.entries
+                        .groupBy { it.key.feature }
+                        .mapValues { (_, entries) ->
+                            entries.associate { it.key.name to it.value }
+                        },
                 )
                 val cutoffDate = Clock.System.now()
                     .minus(recordLength)
@@ -35,8 +39,7 @@ internal class SaveTodaysReport(
                     .date
                 val updatedReportList = reportList.filter { it.date >= cutoffDate } + report
 
-                repo.save(updatedReportList)
-                    .map { report }
+                repo.save(updatedReportList).map { report }
             }
     }
 }
