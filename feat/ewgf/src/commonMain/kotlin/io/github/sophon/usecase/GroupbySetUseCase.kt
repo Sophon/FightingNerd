@@ -29,6 +29,7 @@ internal class GroupBySetUseCase {
                 }
                 (currentBattle.isSameSetAs(battle)) -> {
                     currentSet.add(battle)
+                    currentBattle = battle
                 }
                 else -> {
                     val finishedSet = BattleSet(
@@ -79,7 +80,7 @@ internal class GroupBySetUseCase {
                 || this.stageId == battle.stageId
 
         return this.opponent.polarisId == battle.opponent.polarisId
-                && this.player.character == battle.opponent.character
+                && this.opponent.character == battle.opponent.character
                 && this.battleType == battle.battleType
                 && this.version == battle.version
                 && isRankedSameMap
