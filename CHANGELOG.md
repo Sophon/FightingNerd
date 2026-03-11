@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v10.1.0] - 2026-03-12
+- `EWGF.gg` - feature enabled
+  - `+`, `-`, `ewgf` and `update` commands
+
 ## [v10.0.0] - 2026-03-11
 - handled some Kord exceptions
 - `EWGF.gg` - prepare code for the final feature
