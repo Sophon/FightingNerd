@@ -5,11 +5,11 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.domain.StatsError
 import io.github.sophon.domain.model.Command
 import io.github.sophon.domain.model.DailyReport
-import io.github.sophon.domain.usecase.SaveTodaysReport
 import io.github.sophon.domain.usecase.GetReportsUseCase
 import io.github.sophon.domain.usecase.InitRepoUseCase
 import io.github.sophon.domain.usecase.RecordUseCase
 import io.github.sophon.domain.usecase.ResetCacheUseCase
+import io.github.sophon.domain.usecase.SaveTodaysReport
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.Duration
@@ -50,7 +50,9 @@ internal class StatsTrackerImpl(
     ): Result<DailyReport, StatsError> {
         mutex.withLock {
             return saveTodaysReport.invoke(recordLength, cachedStats)
-                .also { resetCached() }
+                .also {
+                    cachedStats.clear()
+                }
         }
     }
 
