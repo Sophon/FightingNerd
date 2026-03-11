@@ -10,7 +10,7 @@ internal class FileManager {
         return try {
             Result.Success(File(path).readText())
         } catch (e: Exception) {
-            Result.Error(BotError.FileReadError(path))
+            Result.Error(BotError.FileError(path))
         }
     }
 
@@ -19,7 +19,7 @@ internal class FileManager {
             File(path).writeText(content)
             Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Error(BotError.FileWriteError(path))
+            Result.Error(BotError.FileError(path))
         }
     }
 
@@ -32,7 +32,7 @@ internal class FileManager {
             File(path).createNewFile()
             Result.Success(Unit)
         } catch (e: Exception) {
-            Result.Error(BotError.FileCreateError(path))
+            Result.Error(BotError.FileError(path))
         }
     }
 }
