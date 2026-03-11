@@ -3,6 +3,7 @@ package io.github.sophon.discord
 import dev.kord.core.Kord
 import io.github.sophon.adminModule
 import io.github.sophon.core.coreModule
+import io.github.sophon.core.feature.Config
 import io.github.sophon.data.ReportRepo
 import io.github.sophon.discord.data.FileManager
 import io.github.sophon.discord.data.InMemoryGlossaryDB
@@ -17,6 +18,7 @@ import io.github.sophon.discord.usecase.CreateMutableEmbedUseCase
 import io.github.sophon.discord.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.usecase.HandleButtonInteractionUseCase
+import io.github.sophon.discord.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.dreamcancel.dreamCancelModule
@@ -71,7 +73,15 @@ fun dcBotModule(kord: Kord) = module {
 
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
 
-    singleOf(::Tracker)
+    single {
+        Tracker(
+            statsFeatureInfo = get(),
+            statsChannelId = get<Config>().statsConfig?.statsChannelIdList?.firstOrNull() ?: "",
+            scheduler = get(),
+            scope = get(),
+            statsTracker = get(),
+        )
+    }
 
     singleOf(::RouteCommandToFeatureUseCase)
     singleOf(::CreateErrorEmbedBuilderUseCase)
@@ -82,6 +92,7 @@ fun dcBotModule(kord: Kord) = module {
     singleOf(::ResultToEmbedUseCase)
     singleOf(::CreateMutableEmbedUseCase)
     singleOf(::HandleButtonInteractionUseCase)
+    singleOf(::PostDailyReportEmbedUseCase)
 
     singleOf(::DiscordButtonBuilder)
 

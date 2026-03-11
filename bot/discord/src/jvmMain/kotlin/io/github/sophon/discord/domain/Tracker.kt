@@ -17,12 +17,22 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
+import kotlinx.datetime.plus
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
 
 private typealias BotCommand = Command
 private typealias TrackedCommand = io.github.sophon.domain.model.Command
 
+@OptIn(ExperimentalTime::class)
 internal class Tracker(
     statsFeatureInfo: StatsFeatureInfo,
+    val statsChannelId: String,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
     private val statsTracker: StatsTracker,
@@ -57,7 +67,17 @@ internal class Tracker(
 
 
     private fun scheduleDaily() {
+        val now = Clock.System.now()
+        val nextMidnight = now
+            .toLocalDateTime(TimeZone.UTC)
+            .date
+            .plus(1, DateTimeUnit.DAY)
+            .atStartOfDayIn(TimeZone.UTC)
+        val delay = nextMidnight - now
+
         scheduler.start(
+            initialDelay = delay,
+            period = 1.minutes,
             task = {
                 statsTracker.finalizeDay()
                     .mapError { it.toDomainError() }
@@ -71,6 +91,22 @@ internal class Tracker(
         }.launchIn(scope)
     }
 
+    private fun scheduleDailyTest() {
+        scheduler.start(
+            initialDelay = 1.minutes,
+            period = 1.minutes,
+            task = {
+                statsTracker.finalizeDay()
+                    .mapError { it.toDomainError() }
+            }
+        ).onEach { result ->
+            result
+                .onSuccess { dailyReport ->
+                    reports.emit(dailyReport)
+                }
+                .onError { Napier.e(tag = TAG) { it.toString() } }
+        }.launchIn(scope)
+    }
 
     private companion object Companion {
         const val TAG = "StatsDiscordFeature"

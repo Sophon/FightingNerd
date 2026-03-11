@@ -19,6 +19,7 @@ import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.usecase.HandleButtonInteractionUseCase
+import io.github.sophon.discord.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.safeRestCall
@@ -37,13 +38,14 @@ interface DiscordBot {
 @OptIn(ExperimentalUuidApi::class)
 internal class DiscordBotImpl(
     private val kord: Kord,
+    private val tracker: Tracker,
     private val featureList: List<DiscordRegisteredFeature>,
     private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
     private val resultToEmbedUseCase: ResultToEmbedUseCase,
     private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
+    private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
-    private val tracker: Tracker,
 ): DiscordBot {
     private val editableEmbedMap = mutableMapOf<String, BotOutput>()
 
@@ -53,7 +55,6 @@ internal class DiscordBotImpl(
         startFeatures()
         startTracking()
         startKord()
-        startTracking()
 
         Napier.e(tag = TAG) { "❌ Bot session ended (this shouldn't happen)" }
     }
