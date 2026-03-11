@@ -1,7 +1,11 @@
 package io.github.sophon.data
 
 import io.github.sophon.data.dto.BattlesDto
-import io.github.sophon.domain.Battle
+import io.github.sophon.domain.model.Battle
+import io.github.sophon.domain.model.BattleType
+import io.github.sophon.domain.model.Combatant
+import io.github.sophon.domain.model.Region
+import io.github.sophon.domain.model.Score
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime
@@ -12,7 +16,7 @@ internal fun BattlesDto.toDomain(polarisId: String): List<Battle> {
     return this.data.map { dto ->
         val isP1 = dto.p1TekkenId.equals(polarisId, ignoreCase = true)
 
-        val player = Battle.Combatant(
+        val player = Combatant(
             name = if (isP1) dto.p1Name else dto.p2Name,
             polarisId = if (isP1) dto.p1TekkenId else dto.p2TekkenId,
             character = if (isP1) dto.p1Char else dto.p2Char,
@@ -21,7 +25,7 @@ internal fun BattlesDto.toDomain(polarisId: String): List<Battle> {
             region = if (isP1) dto.p1Region.toDomainRegion() else dto.p2Region.toDomainRegion(),
         )
 
-        val opponent = Battle.Combatant(
+        val opponent = Combatant(
             name = if (isP1) dto.p2Name else dto.p1Name,
             polarisId = if (isP1) dto.p2TekkenId else dto.p1TekkenId,
             character = if (isP1) dto.p2Char else dto.p1Char,
@@ -30,16 +34,16 @@ internal fun BattlesDto.toDomain(polarisId: String): List<Battle> {
             region = if (isP1) dto.p2Region.toDomainRegion() else dto.p1Region.toDomainRegion(),
         )
 
-        val score = Battle.Score(
-            playerRounds = if (isP1) dto.p1RoundsWon else dto.p2RoundsWon,
-            opponentRounds = if (isP1) dto.p2RoundsWon else dto.p1RoundsWon,
+        val score = Score(
+            player = if (isP1) dto.p1RoundsWon else dto.p2RoundsWon,
+            opponent = if (isP1) dto.p2RoundsWon else dto.p1RoundsWon,
         )
 
         Battle(
             player = player,
             opponent = opponent,
             score = score,
-            type = dto.battleType.toDomainType(),
+            battleType = dto.battleType.toDomainType(),
             date = Instant.parse(dto.battleAt).toLocalDateTime(TimeZone.UTC),
             version = dto.gameVersion,
             stageId = dto.stageId,
@@ -47,18 +51,18 @@ internal fun BattlesDto.toDomain(polarisId: String): List<Battle> {
     }
 }
 
-private fun String.toDomainRegion(): Battle.Region = when (this) {
-    "Asia" -> Battle.Region.ASIA
-    "Middle East" -> Battle.Region.MIDDLE_EAST
-    "Oceania" -> Battle.Region.OCEANIA
-    "Americas" -> Battle.Region.AMERICAS
-    "Europe" -> Battle.Region.EUROPE
+private fun String.toDomainRegion(): Region = when (this) {
+    "Asia" -> Region.ASIA
+    "Middle East" -> Region.MIDDLE_EAST
+    "Oceania" -> Region.OCEANIA
+    "Americas" -> Region.AMERICAS
+    "Europe" -> Region.EUROPE
     else -> error("Unknown region: $this")
 }
 
-private fun String.toDomainType(): Battle.Type = when (this) {
-    "QUICK_BATTLE" -> Battle.Type.QUICK
-    "RANKED_BATTLE" -> Battle.Type.RANKED
-    "PLAYER_BATTLE" -> Battle.Type.LOBBY
+private fun String.toDomainType(): BattleType = when (this) {
+    "QUICK_BATTLE" -> BattleType.QUICK
+    "RANKED_BATTLE" -> BattleType.RANKED
+    "PLAYER_BATTLE" -> BattleType.LOBBY
     else -> error("Unknown battle type: $this")
 }

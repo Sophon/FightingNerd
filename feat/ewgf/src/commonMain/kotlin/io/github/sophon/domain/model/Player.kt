@@ -1,4 +1,4 @@
-package io.github.sophon.domain
+package io.github.sophon.domain.model
 
 import kotlinx.serialization.Serializable
 

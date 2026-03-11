@@ -3,14 +3,16 @@ package io.github.sophon
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.domain.Battle
 import io.github.sophon.domain.EwgfError
 import io.github.sophon.domain.EwgfFeatureInfo
-import io.github.sophon.domain.Player
+import io.github.sophon.domain.model.BattleSet
+import io.github.sophon.domain.model.Player
 import io.github.sophon.usecase.DeletePlayerUseCase
 import io.github.sophon.usecase.DownloadPlayerBattlesUseCase
+import io.github.sophon.usecase.GroupBySetUseCase
 import io.github.sophon.usecase.RegisterPlayerUseCase
 import io.github.sophon.usecase.UpdatePolarisIdUseCase
 
@@ -21,7 +23,7 @@ interface EwgfClient {
 
     suspend fun downloadBattleData(
         discordId: String,
-    ): Result<List<Battle>, EwgfError>
+    ): Result<List<BattleSet>, EwgfError>
 
     suspend fun updatePolarisId(player: Player): EmptyResult<EwgfError>
 
@@ -34,6 +36,7 @@ internal class EwgfClientImpl(
     private val downloadPlayerBattlesUseCase: DownloadPlayerBattlesUseCase,
     private val updatePolarisIdUseCase: UpdatePolarisIdUseCase,
     private val deletePlayerUseCase: DeletePlayerUseCase,
+    private val groupBySetUseCase: GroupBySetUseCase,
 ): EwgfClient {
     override fun getFeatureInfo(): FeatureInfo {
         return ewgfFeatureInfo.featureInfo
@@ -48,12 +51,15 @@ internal class EwgfClientImpl(
 
     override suspend fun downloadBattleData(
         discordId: String,
-    ): Result<List<Battle>, EwgfError> {
+    ): Result<List<BattleSet>, EwgfError> {
         return downloadPlayerBattlesUseCase.invoke(discordId)
-            .onSuccess { battleList ->
-                Napier.d(tag = TAG) {
-                    "$discordId: ${battleList.size} downloaded"
-                }
+            .flatMap { battleList ->
+                groupBySetUseCase.invoke(battleList)
+            }
+            .onSuccess { setList ->
+                val setAmount = setList.size
+                val battleAmount = setList.sumOf { it.battleList.size }
+                Napier.d(tag = TAG) { "$discordId: $setAmount sets, $battleAmount battles downloaded" }
             }
     }
 
