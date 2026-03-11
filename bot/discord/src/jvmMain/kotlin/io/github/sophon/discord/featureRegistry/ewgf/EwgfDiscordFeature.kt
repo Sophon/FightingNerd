@@ -99,12 +99,12 @@ internal class EwgfDiscordFeature(
     }
 
     private fun recentSetsEmbed(setList: List<BattleSet>): EmbedBuilder.() -> Unit = {
-        title = "EWGF: ${setList.firstOrNull()?.player?.name}"
+        title = "${setList.firstOrNull()?.player?.name}"
         color = Color(PINK)
 
         val content = buildString {
             setList.forEachIndexed { index, set ->
-                val summary = "* $index → ${set.score.player}:${set.score.opponent}; ${set.player.character} v ${set.opponent.character} @${set.stageId}"
+                val summary = "* $index → ${set.score.player}:${set.score.opponent}; ${set.player.character} v ${set.opponent.character}"
                 val matchup = set.battleList.joinToString("") { battle ->
                     when (battle.score.outcome) {
                         Score.Outcome.WIN -> "🟢"
@@ -118,7 +118,7 @@ internal class EwgfDiscordFeature(
         }
 
         mandatoryField(
-            name = "Sets",
+            name = "",
             value = content,
         )
 
