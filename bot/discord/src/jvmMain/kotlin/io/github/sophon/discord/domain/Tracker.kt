@@ -34,6 +34,7 @@ internal class Tracker(
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
         scope.launch {
             statsTracker.init()
+                .onError { Napier.e(tag = TAG) { it.toString() } }
         }
         scheduleDaily()
 
@@ -51,6 +52,7 @@ internal class Tracker(
         )
         return statsTracker.record(trackedCommand)
             .mapError { it.toDomainError() }
+            .onError { Napier.e(tag = TAG) { it.toString() } }
     }
 
 
