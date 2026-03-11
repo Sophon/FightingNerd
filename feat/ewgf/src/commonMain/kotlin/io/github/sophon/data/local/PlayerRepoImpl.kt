@@ -39,6 +39,7 @@ internal class PlayerRepoImpl(
                 queries.upsertPlayer(
                     discordId = player.discordId,
                     polarisId = player.polarisId,
+                    name = player.name,
                 )
                 Result.Success(Unit)
             } catch (e: Exception) {

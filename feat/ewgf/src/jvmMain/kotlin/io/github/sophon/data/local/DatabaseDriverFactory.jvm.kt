@@ -12,18 +12,17 @@ actual class DatabaseDriverFactory(
         val databaseFile = File(databasePath)
         val versionFile = File("$databasePath.version")
 
-        val currentSchemaVersion = 2 // Increment when schema changes
+        val currentSchemaVersion = 3
         val savedVersion = versionFile.takeIf { it.exists() }?.readText()?.toIntOrNull() ?: 0
+
+        if (savedVersion != currentSchemaVersion) {
+            databaseFile.delete()
+            versionFile.delete()
+        }
 
         val driver = JdbcSqliteDriver("jdbc:sqlite:$databasePath")
 
-        if (savedVersion != currentSchemaVersion) {
-            // Schema changed - drop and recreate
-            driver.execute(null, "DROP TABLE IF EXISTS ban", 0)
-            EwgfDatabase.Schema.create(driver)
-            versionFile.writeText(currentSchemaVersion.toString())
-        } else if (!databaseFile.exists()) {
-            // New database
+        if (!databaseFile.exists()) {
             EwgfDatabase.Schema.create(driver)
             versionFile.writeText(currentSchemaVersion.toString())
         }
