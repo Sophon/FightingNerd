@@ -11,7 +11,7 @@ internal class RegisterPlayerUseCase(
     private val client: EwgfClient,
 ) {
     suspend fun invoke(discordId: String, polarisId: String): EmptyResult<BotError> {
-        val player = Player(discordId, polarisId)
+        val player = Player(polarisId = polarisId, discordId =  discordId)
         return client.registerPlayer(player)
             .mapError { it.toDomainError() }
     }
