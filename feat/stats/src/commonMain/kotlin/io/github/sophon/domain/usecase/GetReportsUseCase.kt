@@ -1,5 +1,6 @@
 package io.github.sophon.domain.usecase
 
+import io.github.sophon.core.domain.ExcludeFromCoverage
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.data.ReportRepo
@@ -12,6 +13,7 @@ import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 
+@ExcludeFromCoverage("TODO: cover with test")
 @OptIn(ExperimentalTime::class)
 internal class GetReportsUseCase(
     private val repo: ReportRepo,
