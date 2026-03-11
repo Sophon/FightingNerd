@@ -17,7 +17,7 @@ import io.github.sophon.discord.featureRegistry.bot.usecase.CreateJoinEmbedButto
 import io.github.sophon.discord.featureRegistry.bot.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.featureRegistry.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.featureRegistry.ewgf.EwgfDiscordFeature
-import io.github.sophon.discord.featureRegistry.ewgf.usecase.GetPlayerDataUseCase
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.GetRecentMatchesUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.ParseQueryIntoOperationUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.RegisterPlayerUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.UnregisterPlayerUseCase
@@ -103,7 +103,7 @@ internal val featureRegistryModule = module {
     //region EWGF
     singleOf(::ParseQueryIntoOperationUseCase)
     singleOf(::RegisterPlayerUseCase)
-    singleOf(::GetPlayerDataUseCase)
+    singleOf(::GetRecentMatchesUseCase)
     singleOf(::UpdatePlayerUseCase)
     singleOf(::UnregisterPlayerUseCase)
     //endregion

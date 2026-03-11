@@ -10,23 +10,24 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.ewgf.usecase.GetPlayerDataUseCase
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.GetRecentMatchesUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.ParseQueryIntoOperationUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.RegisterPlayerUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.UnregisterPlayerUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.UpdatePlayerUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.domain.Battle
 import io.github.sophon.domain.EwgfFeatureInfo
-import io.github.sophon.domain.Player
 import io.github.sophon.domain.Source
+import io.github.sophon.domain.model.BattleSet
+import io.github.sophon.domain.model.Player
+import io.github.sophon.domain.model.Score
 
 internal class EwgfDiscordFeature(
     ewgfFeatureInfo: EwgfFeatureInfo,
     private val parseQueryIntoOperationUseCase: ParseQueryIntoOperationUseCase,
     private val registerPlayerUseCase: RegisterPlayerUseCase,
-    private val getPlayerUseCase: GetPlayerDataUseCase,
+    private val getPlayerUseCase: GetRecentMatchesUseCase,
     private val updatePlayerUseCase: UpdatePlayerUseCase,
     private val unregisterPlayerUseCase: UnregisterPlayerUseCase,
 ): DiscordRegisteredFeature {
@@ -69,7 +70,7 @@ internal class EwgfDiscordFeature(
             }
             is EwgfOperations.Operation.Data -> {
                 getPlayerUseCase.invoke(discordId).map { data ->
-                    dataEmbed(data)
+                    recentSetsEmbed(data)
                 }
             }
             is EwgfOperations.Operation.Update -> {
@@ -97,28 +98,28 @@ internal class EwgfDiscordFeature(
         }
     }
 
-    private fun dataEmbed(battleList: List<Battle>): EmbedBuilder.() -> Unit = {
-        title = "EWGF: ${battleList.firstOrNull()?.player?.name}"
+    private fun recentSetsEmbed(setList: List<BattleSet>): EmbedBuilder.() -> Unit = {
+        title = "EWGF: ${setList.firstOrNull()?.player?.name}"
         color = Color(PINK)
 
-        val recent = battleList
-            .sortedByDescending { it.date }
-            .take(20)
-
-        val lines = recent.joinToString("\n") { battle ->
-            val circle = when (battle.score.outcome) {
-                Battle.Score.Outcome.WIN -> "🟢"
-                Battle.Score.Outcome.LOSE -> "🔴"
-                Battle.Score.Outcome.DRAW -> "🟡"
+        val content = buildString {
+            setList.forEachIndexed { index, set ->
+                val summary = "* $index → ${set.score.player}:${set.score.opponent}; ${set.player.character} v ${set.opponent.character} @${set.stageId}"
+                val matchup = set.battleList.joinToString("") { battle ->
+                    when (battle.score.outcome) {
+                        Score.Outcome.WIN -> "🟢"
+                        Score.Outcome.LOSE -> "🔴"
+                        Score.Outcome.DRAW -> "🟡"
+                    }
+                }
+                appendLine(summary)
+                appendLine("   * $matchup")
             }
-            val score = "${battle.score.playerRounds}:${battle.score.opponentRounds}"
-            "$circle ${battle.player.character} vs ${battle.opponent.name} (${battle.opponent.character}) → $score"
         }
 
         mandatoryField(
-            name = "",
-            value = lines,
-            inline = false,
+            name = "Sets",
+            value = content,
         )
 
         featureFooter(featureInfo)
