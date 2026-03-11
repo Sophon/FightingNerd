@@ -29,6 +29,7 @@ kotlin {
             implementation(project(":feat:wikiDustLoop"))
             implementation(project(":feat:wikiMizuumi"))
             implementation(project(":feat:ewgf"))
+            implementation(project(":feat:stats"))
 
             implementation(libs.napier)
             implementation(libs.kord)

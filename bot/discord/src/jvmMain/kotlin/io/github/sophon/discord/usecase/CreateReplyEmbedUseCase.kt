@@ -12,7 +12,7 @@ import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput
 
 internal class CreateReplyEmbedUseCase {
 

@@ -1,37 +1,46 @@
 package io.github.sophon.discord.config
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.map
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.util.getGame
+import io.github.sophon.discord.BotError
+import io.github.sophon.discord.data.FileManager
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
-import java.io.File
 
 internal class ConfigLoader(
     private val json: Json,
+    private val fileManager: FileManager,
 ) {
-    fun loadConfig(): Config {
-        val configText = File(CONFIG_PATH).readText()
-        val jsonConfig = json.decodeFromString<JsonConfig>(configText).apply {
-            Napier.d(tag = TAG) { this.toString() }
-        }
-
-        return Config(
-            featureList = jsonConfig.featureList.map { feature ->
-                Config.Feature(
-                    name = feature.name,
-                    isEnabled = feature.isEnabled,
-                    supportedGameList = feature.supportedGames.mapNotNull { gameId ->
-                        gameId.getGame()
-                    }
+    fun loadConfig(): Result<Config, BotError> {
+        return fileManager.read(CONFIG_PATH)
+            .map { configText ->
+                val jsonConfig = json.decodeFromString<JsonConfig>(configText).apply {
+                    Napier.d(tag = TAG) { this.toString() }
+                }
+                Config(
+                    featureList = jsonConfig.featureList.map { feature ->
+                        Config.Feature(
+                            name = feature.name,
+                            isEnabled = feature.isEnabled,
+                            supportedGameList = feature.supportedGames.mapNotNull { gameId ->
+                                gameId.getGame()
+                            },
+                        )
+                    },
+                    adminConfig = Config.AdminConfig(
+                        administratorIdList = jsonConfig.adminConfig.administratorIdList,
+                        feedbackChannelIdList = jsonConfig.adminConfig.feedbackChannelIdList,
+                        adminServerId = jsonConfig.adminConfig.adminServerId,
+                    ),
+                    statsConfig = Config.StatsConfig(
+                        isEnabled = jsonConfig.statsConfig.isEnabled,
+                        statsChannelIdList = jsonConfig.statsConfig.statsChannelIdList,
+                    )
                 )
-            },
-            adminConfig = Config.AdminConfig(
-                administratorIdList = jsonConfig.adminConfig.administratorIdList,
-                feedbackChannelIdList = jsonConfig.adminConfig.feedbackChannelIdList,
-                adminServerId = jsonConfig.adminConfig.adminServerId,
-            )
-        )
+            }
     }
 
 
@@ -44,6 +53,7 @@ internal class ConfigLoader(
     private data class JsonConfig(
         val featureList: List<Feature>,
         val adminConfig: AdminConfig,
+        val statsConfig: StatsConfig,
     ) {
         @Serializable
         data class Feature(
@@ -57,6 +67,12 @@ internal class ConfigLoader(
             val administratorIdList: List<String>,
             val feedbackChannelIdList: List<String>,
             val adminServerId: String,
+        )
+
+        @Serializable
+        data class StatsConfig(
+            val isEnabled: Boolean,
+            val statsChannelIdList: List<String>,
         )
     }
 }

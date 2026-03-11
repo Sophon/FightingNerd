@@ -68,5 +68,11 @@
       "1118576752042713148"
     ],
     "adminServerId": "717398042562658344"
+  },
+  "statsConfig": {
+    "isEnabled": true,
+    "statsChannelIdList": [
+      "1480723668039503994"
+    ]
   }
 }

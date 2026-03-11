@@ -163,9 +163,10 @@ internal fun formAliases(
                 input.createAliasesFromSlash(isPartial = true)
             }
         }
-    }.let { aliasList ->
-        input.add2dAliases(aliasList) + aliasList.flatMap { it.add2dAliases(aliasList) }
-    }.distinct()
+    }
+        .form2dAliases(input)
+        .addAliasForReleaseNotation(input)
+        .distinct()
 
     return aliases
 }
@@ -195,3 +196,20 @@ private fun String.createNarmayaStanceAliases(): List<String> {
     return listOf("${suffix.lowercase()}.${base.lowercase()}")
 }
 
+private fun List<String>.form2dAliases(input: String): List<String> {
+    val result = input.add2dAliases(this) + this.flatMap { it.add2dAliases(this) }
+    return result
+}
+
+private fun List<String>.addAliasForReleaseNotation(input: String): List<String> {
+    val regex = Regex("""\]([a-zA-Z])\[""")
+
+    val result = if (regex.containsMatchIn(input)) {
+        val transformed = regex.replace(input, "$1")
+        this + transformed
+    } else {
+        this
+    }
+
+    return result
+}

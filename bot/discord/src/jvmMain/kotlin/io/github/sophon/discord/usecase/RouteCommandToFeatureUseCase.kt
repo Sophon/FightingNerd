@@ -4,13 +4,15 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.extractFirstWord
 import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.domain.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.Tracker
+import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
 import io.github.sophon.domain.Source
 
 internal class RouteCommandToFeatureUseCase(
     private val featureList: List<DiscordRegisteredFeature>,
+    private val tracker: Tracker,
 ) {
     suspend fun invoke(
         source: Source,
@@ -103,7 +105,14 @@ internal class RouteCommandToFeatureUseCase(
             )
 
             return when (result) {
-                is Result.Success -> result
+                is Result.Success -> {
+                    tracker.recordSuccessfulCommand(
+                        featureName = feature.featureInfo.name,
+                        command = commandToUse,
+                    )
+
+                    result
+                }
                 is Result.Error -> {
                     if (result.error is BotError.UnknownMove) result
                     else continue
@@ -129,7 +138,14 @@ internal class RouteCommandToFeatureUseCase(
             )
 
             return when (result) {
-                is Result.Success -> result
+                is Result.Success -> {
+                    tracker.recordSuccessfulCommand(
+                        featureName = feature.featureInfo.name,
+                        command = defaultCommand,
+                    )
+
+                    result
+                }
                 is Result.Error -> {
                     if (result.error is BotError.UnknownMove) result
                     else continue

@@ -15,16 +15,16 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.data.InMemoryCharacterListDB
 import io.github.sophon.discord.data.InMemoryMoveListDB
-import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.domain.Command
-import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
+import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.domain.model.Command
+import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.core.moveListEmbed
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchStringFollowupsUseCase
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
-import io.github.sophon.discord.usecase.GetStancesUseCase
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
@@ -105,7 +105,7 @@ internal class WavuWikiDiscordFeature(
             Command.Pc -> searchPowerCrushMoves(wiki, query)
             Command.Heat -> searchHeatMoves(wiki, query)
             Command.Homing -> searchHomingMoves(wiki, query)
-            Command.Stance -> searchStanceMoves(wiki, query)
+            Command.Stance -> getStancesUseCase.invoke(featureInfo, wiki, query)
             Command.AliasTK -> getCharacterAliases(wiki)
             Command.ThrowTK -> searchThrowMoves(wiki, query)
             Command.Strings -> searchStringFollowupsUseCase.invoke(wiki, query, featureInfo)
@@ -198,77 +198,6 @@ internal class WavuWikiDiscordFeature(
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )
-        }
-    }
-
-    //TODO: refactor to usecase
-    private suspend fun searchStanceMoves(
-        wiki: WikiClient,
-        query: String,
-    ): Result<BotOutput, BotError> {
-        val charName: String
-        val stance: String
-        query.split(" ").let { queries ->
-            charName = queries.firstOrNull() ?: ""
-            stance = queries.drop(1).joinToString(" ").uppercase()
-        }
-
-        return if (stance.isBlank()) {
-            getStancesUseCase.invoke(wiki, charName)
-                .map { stanceList ->
-                    val buttons = mutableListOf<BotOutput.EmbedButton>()
-                    var text = ""
-
-                    stanceList.forEachIndexed { index, stance ->
-                        val order = (index + 1).toString()
-                        val query = "stance $charName $stance"
-                        buttons.add(
-                            BotOutput.EmbedButton(
-                                label = order,
-                                action = BotOutput.EmbedButton.Action.Query(query),
-                            )
-                        )
-                        text += "$order. **${stance.uppercase()}**\n"
-                    }
-
-                    BotOutput(
-                        primaryEmbedBuilder = moveListEmbed(
-                            category = "${charName.uppercase()} stances",
-                            dataList = stanceList,
-                            featureInfo = featureInfo,
-                            color = Color(BLUE),
-                        ),
-                        buttons = BotOutput.ButtonSet(
-                            buttonList = buttons,
-                            duration = EMBED_BUTTON_DURATION_INF.seconds,
-                        ),
-                    )
-                }
-        } else {
-            val filter = object : Filter {
-                override val predicate: (Move) -> Boolean = { move ->
-                    move.t8Properties?.stance.equals(stance, ignoreCase = true)
-                }
-            }
-
-            getMovesUseCase.invoke(
-                wiki = wiki,
-                charName = charName,
-                filter = filter,
-            ).map { moveList ->
-                BotOutput(
-                    primaryEmbedBuilder = moveListEmbed(
-                        category = stance.uppercase(),
-                        dataList = moveList.map { it.input },
-                        featureInfo = featureInfo,
-                        color = Color(BLUE),
-                    ),
-                    buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = charName),
-                        duration = EMBED_BUTTON_DURATION_INF.seconds,
-                    )
-                )
-            }
         }
     }
 

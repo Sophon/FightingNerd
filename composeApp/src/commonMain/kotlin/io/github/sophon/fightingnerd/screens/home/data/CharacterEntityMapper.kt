@@ -12,6 +12,9 @@ internal fun Character.toEntity(): CharacterEntity {
         imageIconUrl = images?.iconUrl,
         imageBannerUrl = images?.bannerUrl,
 
+        umo = umo.joinToString(";"),
+        hp = hp,
+
         sf6FwdWalkSpd = sf6Properties?.fwdWalkSpd,
         sf6BwdWalkSpd = sf6Properties?.bwdWalkSpd,
         sf6FwdDashSpd = sf6Properties?.fwdDashSpd,
@@ -21,7 +24,6 @@ internal fun Character.toEntity(): CharacterEntity {
         sf6DRushMin = sf6Properties?.dRushMin,
         sf6DRushBlock = sf6Properties?.dRushBlock,
         sf6DRushMax = sf6Properties?.dRushMax,
-        sf6Hp = sf6Properties?.hp,
         sf6ThrowRange = sf6Properties?.throwRange,
         sf6ThrowHurtbox = sf6Properties?.throwHurtbox,
         sf6JumpSpd = sf6Properties?.jumpSpd,
@@ -42,6 +44,8 @@ internal fun CharacterEntity.toDomain(): Character {
             iconUrl = imageIconUrl,
             bannerUrl = imageBannerUrl,
         ),
+        umo = umo.orEmpty().split(";").filter { it.isNotBlank() },
+        hp = hp,
         sf6Properties = if (sf6FwdWalkSpd != null) {
             Character.SF6Properties(
                 fwdWalkSpd = sf6FwdWalkSpd,
@@ -53,7 +57,6 @@ internal fun CharacterEntity.toDomain(): Character {
                 dRushMin = sf6DRushMin ?: "",
                 dRushBlock = sf6DRushBlock ?: "",
                 dRushMax = sf6DRushMax ?: "",
-                hp = sf6Hp ?: "",
                 throwRange = sf6ThrowRange ?: "",
                 throwHurtbox = sf6ThrowHurtbox ?: "",
                 jumpSpd = sf6JumpSpd ?: "",

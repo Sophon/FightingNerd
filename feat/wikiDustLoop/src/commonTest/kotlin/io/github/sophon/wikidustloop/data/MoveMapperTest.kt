@@ -113,6 +113,19 @@ class MoveMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `formAliases handles release notation`() {
+        // given
+        val input = "214]p["
+        val expected = listOf("214p")
+
+        // when
+        val result = formAliases(gg, input, "")
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     @Test

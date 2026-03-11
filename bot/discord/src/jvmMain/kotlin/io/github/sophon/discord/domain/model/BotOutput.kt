@@ -1,4 +1,4 @@
-package io.github.sophon.discord.domain
+package io.github.sophon.discord.domain.model
 
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_DEFAULT_S
@@ -45,6 +45,7 @@ data class BotOutput(
             class Query(val query: String): Action()
             class Edit(): Action()
             class Url(val url: String): Action()
+            class Redirect(val channelId: String): Action()
         }
     }
 

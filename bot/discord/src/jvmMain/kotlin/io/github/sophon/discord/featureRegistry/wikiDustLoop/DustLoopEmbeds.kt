@@ -115,10 +115,10 @@ internal fun charEmbedBuilderGB(
     character.gbvsrProperties?.apply {
         optionalField(name = "Prejump", value = prejump)
         optionalField(name = "Backdash", value = backdash)
-        optionalField(name = "F Walk", value = "$walkSpeed ($walkSpeedRelative)")
-        optionalField(name = "B Walk", value = "$walkSpeedBack ($walkSpeedBackRelative)")
-        optionalField(name = "Dash", value = "$dashInitial ($dashInitialRelative")
-        optionalField(name = "Dash Acc", value = "$dashAcceleration ($dashAccelerationRelative)")
+        optionalField(name = "F Walk", value = "$walkSpeed ($walkSpeedAlt)")
+        optionalField(name = "B Walk", value = "$walkSpeedBack ($walkSpeedBackAlt)")
+        optionalField(name = "Dash", value = "$dashInitial ($dashInitialAlt")
+        optionalField(name = "Dash Acc", value = "$dashAcceleration ($dashAccelerationAlt)")
     }
 
     featureFooter(featureInfo)
@@ -137,11 +137,6 @@ internal fun charEmbedBuilderBB(
     )
 
     character.bbProperties?.apply {
-        mandatoryField(
-            name = "HP",
-            value = hp,
-        )
-
         mandatoryField(
             name = "Dash",
             value = "Forward: $forwardDash\n" +
@@ -320,13 +315,15 @@ private fun EmbedBuilder.generalPropertiesChar(
     fastestMoveList: List<Move>,
     umo: List<String>?,
 ) {
-    val moves = fastestMoveList.joinToString(", ") { it.input }
-    val startup = fastestMoveList.first().startup.orDash()
-
     mandatoryField(
         name = "",
         value = character.aliasList.joinToString(", "),
         inline = false,
+    )
+
+    optionalField(
+        name = "HP",
+        value = character.hp,
     )
 
     if (umo.isNullOrEmpty().not()) {
@@ -336,6 +333,8 @@ private fun EmbedBuilder.generalPropertiesChar(
         )
     }
 
+    val moves = fastestMoveList.joinToString(", ") { it.input }
+    val startup = fastestMoveList.first().startup.orDash()
     mandatoryField(
         name = "Fastest normal",
         value = "$startup: $moves"

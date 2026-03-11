@@ -1,6 +1,4 @@
-package io.github.sophon.discord.domain
-
-import dev.kord.cache.api.data.description
+package io.github.sophon.discord.domain.model
 
 /**
  * Add registered feature commands HERE

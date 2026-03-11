@@ -14,12 +14,18 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.URL_KOFI
-import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.DiscordButtonBuilder
+import io.github.sophon.discord.domain.model.BotOutput
+import kotlin.uuid.ExperimentalUuidApi
 
-internal class CreateFeedbackEmbedUseCase {
+@OptIn(ExperimentalUuidApi::class)
+internal class CreateFeedbackEmbedUseCase(
+    private val discordButtonBuilder: DiscordButtonBuilder,
+) {
 
     suspend fun MessageCreateEvent.invoke(
         feedback: BotOutput.Feedback,
+        buttonSet: BotOutput.ButtonSet?,
     ): Result<Message, BotError> {
         return try {
             feedback.feedbackChannelList.forEach { channelId ->
@@ -27,6 +33,12 @@ internal class CreateFeedbackEmbedUseCase {
 
                 channel?.createMessage {
                     embed(feedback.embedBuilder)
+                    if (buttonSet?.buttonList.isNullOrEmpty().not()) {
+                        discordButtonBuilder.createEmbedButtons(
+                            messageBuilder = this,
+                            buttonList = buttonSet.buttonList,
+                        )
+                    }
                 }
             }
             val message = message.channel.createMessage {
@@ -41,6 +53,7 @@ internal class CreateFeedbackEmbedUseCase {
 
     suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
         feedback: BotOutput.Feedback,
+        buttonSet: BotOutput.ButtonSet?,
     ): Result<PublicInteractionResponseBehavior, BotError> {
         return try {
             feedback.feedbackChannelList.forEach { channelId ->
@@ -48,6 +61,12 @@ internal class CreateFeedbackEmbedUseCase {
 
                 channel?.createMessage {
                     embed(feedback.embedBuilder)
+                    if (buttonSet?.buttonList.isNullOrEmpty().not()) {
+                        discordButtonBuilder.createEmbedButtons(
+                            messageBuilder = this,
+                            buttonList = buttonSet.buttonList,
+                        )
+                    }
                 }
             }
             val behavior = interaction.respondPublic {

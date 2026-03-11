@@ -5,7 +5,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_SCRIPT_LOBBY
-import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.domain.Source
 import kotlin.time.Duration.Companion.seconds

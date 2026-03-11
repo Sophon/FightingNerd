@@ -60,8 +60,8 @@ class CharacterMapperTest {
                 jumpApex = "2.115",
                 fwdJumpDist = "1.90",
                 bwdJumpDist = "1.52",
-                hp = "10000"
-            )
+            ),
+            hp = "10000"
         )
 
         // when
@@ -174,8 +174,8 @@ class CharacterMapperTest {
                 jumpApex = "2.11<br>(2.195)",
                 fwdJumpDist = "1.90<br>(3.00)",
                 bwdJumpDist = "1.52",
-                hp = "10000"
-            )
+            ),
+            hp = "10000"
         )
         val expectedChunLi = Character(
             id = "chun_li",
@@ -184,6 +184,7 @@ class CharacterMapperTest {
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Chun-Li",
             aliasList = listOf("cl", "chun", "li"),
             images = Character.Images(iconUrl = null, bannerUrl = null),
+            hp = "10000",
             sf6Properties = Character.SF6Properties(
                 fwdWalkSpd = "0.050",
                 bwdWalkSpd = "0.035",
@@ -200,7 +201,6 @@ class CharacterMapperTest {
                 jumpApex = "2.247",
                 fwdJumpDist = "2.10",
                 bwdJumpDist = "1.68",
-                hp = "10000"
             )
         )
         val expectedDeeJay = Character(
@@ -226,8 +226,8 @@ class CharacterMapperTest {
                 jumpApex = "2.115",
                 fwdJumpDist = "1.90",
                 bwdJumpDist = "1.52",
-                hp = "10000"
-            )
+            ),
+            hp = "10000"
         )
 
         // when
@@ -299,8 +299,8 @@ class CharacterMapperTest {
                 jumpApex = "2.115",
                 fwdJumpDist = "1.90",
                 bwdJumpDist = "1.52",
-                hp = "10000"
-            )
+            ),
+            hp = "10000",
         )
 
         // when

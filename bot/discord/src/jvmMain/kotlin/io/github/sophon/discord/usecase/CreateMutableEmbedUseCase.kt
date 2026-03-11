@@ -15,9 +15,9 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
 import io.github.sophon.discord.URL_KOFI
-import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.domain.BotOutput.ButtonSet
-import io.github.sophon.discord.util.createButtons
+import io.github.sophon.discord.domain.DiscordButtonBuilder
+import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput.ButtonSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -27,7 +27,9 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
-class CreateMutableEmbedUseCase {
+internal class CreateMutableEmbedUseCase(
+    private val discordButtonBuilder: DiscordButtonBuilder,
+) {
     suspend fun MessageCreateEvent.invoke(
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
@@ -45,7 +47,11 @@ class CreateMutableEmbedUseCase {
                 embed(mutableEmbedBuilder.primaryBuilder)
 
                 if (buttons?.buttonList.isNullOrEmpty().not()) {
-                    createButtons(uuid, buttons.buttonList)
+                    discordButtonBuilder.createEmbedButtons(
+                        messageBuilder = this,
+                        buttonList = buttons.buttonList,
+                        uuid = uuid,
+                    )
                 }
             }
 
@@ -87,7 +93,11 @@ class CreateMutableEmbedUseCase {
                 embed(mutableEmbedBuilder.primaryBuilder)
 
                 if (buttons?.buttonList.isNullOrEmpty().not()) {
-                    createButtons(uuid, buttons.buttonList)
+                    discordButtonBuilder.createEmbedButtons(
+                        messageBuilder = this,
+                        buttonList = buttons.buttonList,
+                        uuid = uuid,
+                    )
 
                     if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                         coroutineScope.launch {

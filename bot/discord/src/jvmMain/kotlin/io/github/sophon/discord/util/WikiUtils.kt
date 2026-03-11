@@ -3,7 +3,7 @@ package io.github.sophon.discord.util
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.domain.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput
 
 internal suspend fun withWiki(
     wikis: Map<String, WikiClient>,

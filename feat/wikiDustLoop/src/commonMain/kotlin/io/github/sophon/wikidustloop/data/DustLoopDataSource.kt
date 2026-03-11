@@ -128,10 +128,11 @@ internal class DustLoopDataSourceImpl(
                     "backwalk_speed",
                     "dash_initial_speed",
                     "dash_acceleration",
-                    "relative_walk_speed",
-                    "relative_backwalk_speed",
-                    "relative_dash_initial_speed",
-                    "relative_dash_acceleration"
+                    "alt_walk_speed",
+                    "alt_backwalk_speed",
+                    "alt_dash_initial_speed",
+                    "alt_dash_acceleration",
+                    "alt"
                 )
             }
             DustLoopTables.TABLE_BBCF_CHARACTERS -> {

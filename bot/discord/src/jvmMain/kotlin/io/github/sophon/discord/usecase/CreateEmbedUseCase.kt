@@ -4,7 +4,6 @@ import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
@@ -18,9 +17,9 @@ import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_KOFI
-import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.domain.BotOutput.ButtonSet
-import io.github.sophon.discord.util.createButtons
+import io.github.sophon.discord.domain.DiscordButtonBuilder
+import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.domain.model.BotOutput.ButtonSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,7 +31,9 @@ import kotlin.uuid.Uuid
  * USED FOR: general and error embeds
  */
 @OptIn(ExperimentalUuidApi::class)
-internal class CreateEmbedUseCase {
+internal class CreateEmbedUseCase(
+    private val discordButtonBuilder: DiscordButtonBuilder,
+) {
 
     suspend fun MessageCreateEvent.invoke(
         embedBuilder: EmbedBuilder.() -> Unit,
@@ -50,7 +51,11 @@ internal class CreateEmbedUseCase {
                 embed(fullEmbed ?: embedBuilder)
 
                 if (buttons?.buttonList.isNullOrEmpty().not()) {
-                    createButtons(uuid, buttons.buttonList)
+                    discordButtonBuilder.createEmbedButtons(
+                        messageBuilder = this,
+                        buttonList = buttons.buttonList,
+                        uuid = uuid,
+                    )
                 }
 
                 imageList?.urls?.forEach { url ->
@@ -142,7 +147,11 @@ internal class CreateEmbedUseCase {
         embed(primaryEmbed)
 
         if (buttons?.buttonList.isNullOrEmpty().not()) {
-            createButtons(uuid, buttons.buttonList)
+            discordButtonBuilder.createEmbedButtons(
+                messageBuilder = this,
+                buttonList = buttons.buttonList,
+                uuid = uuid,
+            )
 
             if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                 coroutineScope.launch {
@@ -161,11 +170,5 @@ internal class CreateEmbedUseCase {
                 image = url
             }
         }
-    }
-
-
-    internal companion object {
-        const val KEY_QUERY = "query: "
-        const val KEY_EDIT = "edit: "
     }
 }

@@ -11,11 +11,12 @@ import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.toFormattedString
 import io.github.sophon.discord.BotError
-import io.github.sophon.discord.domain.BotOutput
-import io.github.sophon.discord.domain.Command
-import io.github.sophon.discord.domain.DiscordRegisteredFeature
 import io.github.sophon.discord.domain.Scheduler
+import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.domain.model.Command
+import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.usecase.BanUseCase
+import io.github.sophon.discord.featureRegistry.admin.usecase.CreateRedirectButtonsUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ProcessFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.featureRegistry.admin.usecase.StartAdminToolsUseCase
@@ -29,6 +30,7 @@ import io.github.sophon.domain.model.Ban
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import org.koin.core.component.KoinComponent
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -38,11 +40,16 @@ internal class AdminDiscordFeature(
     private val startAdminToolsUseCase: StartAdminToolsUseCase,
     private val processFeedbackUseCase: ProcessFeedbackUseCase,
     private val replyToFeedbackUseCase: ReplyToFeedbackUseCase,
+    private val createRedirectButtonsUseCase: CreateRedirectButtonsUseCase,
     private val banUseCase: BanUseCase,
     private val unbanUseCase: UnbanUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
-): DiscordRegisteredFeature {
+): DiscordRegisteredFeature, KoinComponent {
+    private val featureList: List<FeatureInfo> by lazy {
+        getKoin().get<List<DiscordRegisteredFeature>>().map { it.featureInfo }
+    }
+
     override val featureInfo: FeatureInfo = adminFeatureInfo.featureInfo
     override val defaultCommand = null
     override val otherCommands = listOf(
@@ -86,10 +93,11 @@ internal class AdminDiscordFeature(
             .map { adminResult ->
                 BotOutput(
                     feedback = BotOutput.Feedback(
-                        embedBuilder = createFeedbackEmbed(adminResult),
+                        embedBuilder = createFeedbackEmbed(adminResult, featureInfo),
                         origin = origin,
-                        feedbackChannelList = adminConfig.feedbackChannelIdList
-                    )
+                        feedbackChannelList = adminConfig.feedbackChannelIdList,
+                    ),
+                    buttons = createRedirectButtonsUseCase.invoke(featureList)
                 )
             }
     }
@@ -139,21 +147,6 @@ internal class AdminDiscordFeature(
 
     private fun banList(source: Source): Result<BotOutput, BotError> {
         TODO()
-    }
-
-    private fun createFeedbackEmbed(adminResult: AdminResult): EmbedBuilder.() -> Unit = {
-        adminResult.apply {
-            title = "${source.username}-${source.id}-${source.channelId}"
-            color = Color(TURQUOISE)
-
-            mandatoryField(
-                name = "${source.username} from ${source.serverName}",
-                value = message,
-                inline = false,
-            )
-
-            featureFooter(featureInfo)
-        }
     }
 
     private fun createReplyEmbed(adminResult: AdminResult): EmbedBuilder.() -> Unit = {
