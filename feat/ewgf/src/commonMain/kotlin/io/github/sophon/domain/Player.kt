@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class Player(
     val polarisId: String,
     val discordId: String?,
-    val name: String?,
+    val name: String? = null,
 )

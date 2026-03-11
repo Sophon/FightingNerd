@@ -21,7 +21,7 @@ interface EwgfClient {
 
     suspend fun downloadBattleData(
         discordId: String,
-    ): Result<List<Battle>, EwgfError> //TODO: when we get access, replace Unit with proper domain class
+    ): Result<List<Battle>, EwgfError>
 
     suspend fun updatePolarisId(player: Player): EmptyResult<EwgfError>
 

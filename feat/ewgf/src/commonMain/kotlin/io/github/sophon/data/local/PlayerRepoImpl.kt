@@ -30,6 +30,10 @@ internal class PlayerRepoImpl(
     }
 
     override suspend fun registerPlayer(player: Player): EmptyResult<EwgfError.DatabaseError> {
+        if (player.discordId == null) {
+            return Result.Error(EwgfError.DatabaseError("discord: null"))
+        }
+
         return withContext(Dispatchers.IO) {
             try {
                 queries.upsertPlayer(

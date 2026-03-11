@@ -4,20 +4,20 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class BattlesDto(
+internal data class BattlesDto(
     @SerialName("_metadata") val metadata: Metadata,
     @SerialName("data") val data: List<Battle>,
 )
 
 @Serializable
-data class Metadata(
+internal data class Metadata(
     @SerialName("rate_limit_remaining") val rateLimitRemaining: Int,
     @SerialName("rate_limit_reset") val rateLimitReset: String,
     @SerialName("tier") val tier: String
 )
 
 @Serializable
-data class Battle(
+internal data class Battle(
     @SerialName("battle_at") val battleAt: String,
     @SerialName("battle_type") val battleType: String,
     @SerialName("game_version") val gameVersion: Int,
