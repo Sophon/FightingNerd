@@ -29,18 +29,27 @@ import kotlin.time.ExperimentalTime
 private typealias BotCommand = Command
 private typealias TrackedCommand = io.github.sophon.domain.model.Command
 
+internal interface Tracker {
+    val statsChannelId: String
+    fun subscribe(): Flow<DailyReport>
+    suspend fun recordSuccessfulCommand(
+        featureName: String,
+        command: BotCommand,
+    ): EmptyResult<BotError>
+}
+
 @OptIn(ExperimentalTime::class)
-internal class Tracker(
+internal class TrackerImpl(
     statsFeatureInfo: StatsFeatureInfo,
-    val statsChannelId: String,
+    override val statsChannelId: String,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
     private val statsTracker: StatsTracker,
-) {
+): Tracker {
     val featureInfo = statsFeatureInfo.featureInfo
     private val reports = MutableSharedFlow<DailyReport>()
 
-    fun subscribe(): Flow<DailyReport> {
+    override fun subscribe(): Flow<DailyReport> {
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
         scope.launch {
             statsTracker.init()
@@ -52,7 +61,7 @@ internal class Tracker(
     }
 
 
-    suspend fun recordSuccessfulCommand(
+    override suspend fun recordSuccessfulCommand(
         featureName: String,
         command: BotCommand,
     ): EmptyResult<BotError> {

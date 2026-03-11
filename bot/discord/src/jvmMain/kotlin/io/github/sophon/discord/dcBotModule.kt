@@ -10,6 +10,7 @@ import io.github.sophon.discord.data.InMemoryGlossaryDB
 import io.github.sophon.discord.data.JsonReportRepo
 import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.domain.Tracker
+import io.github.sophon.discord.domain.TrackerImpl
 import io.github.sophon.discord.featureRegistry.featureRegistryModule
 import io.github.sophon.discord.usecase.CreateEmbedUseCase
 import io.github.sophon.discord.usecase.CreateErrorEmbedBuilderUseCase
@@ -74,14 +75,14 @@ fun dcBotModule(kord: Kord) = module {
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
 
     single {
-        Tracker(
+        TrackerImpl(
             statsFeatureInfo = get(),
             statsChannelId = get<Config>().statsConfig?.statsChannelIdList?.firstOrNull() ?: "",
             scheduler = get(),
             scope = get(),
             statsTracker = get(),
         )
-    }
+    }.bind<Tracker>()
 
     singleOf(::RouteCommandToFeatureUseCase)
     singleOf(::CreateErrorEmbedBuilderUseCase)
