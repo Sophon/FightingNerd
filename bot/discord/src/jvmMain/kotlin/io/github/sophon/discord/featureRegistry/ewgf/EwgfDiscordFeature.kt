@@ -17,6 +17,7 @@ import io.github.sophon.discord.featureRegistry.ewgf.usecase.UnregisterPlayerUse
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.UpdatePlayerUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.domain.Battle
 import io.github.sophon.domain.EwgfFeatureInfo
 import io.github.sophon.domain.Player
 import io.github.sophon.domain.Source
@@ -96,13 +97,20 @@ internal class EwgfDiscordFeature(
         }
     }
 
-    private fun dataEmbed(player: Player): EmbedBuilder.() -> Unit = {
+    private fun dataEmbed(battleList: List<Battle>): EmbedBuilder.() -> Unit = {
         title = "EWGF data"
         color = Color(PINK)
 
+        val victories = battleList
+            .map { it.score }
+            .count { it.outcome == Battle.Score.Outcome.WIN }
+        val losses = battleList
+            .map { it.score }
+            .count { it.outcome == Battle.Score.Outcome.LOSE }
+
         mandatoryField(
             name = "",
-            value = "${player.discordId} - ${player.polarisId}",
+            value = "W: $victories, L: $losses",
             inline = false,
         )
 

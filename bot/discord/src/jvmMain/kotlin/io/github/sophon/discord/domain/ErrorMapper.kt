@@ -21,10 +21,12 @@ internal fun AdminError.toDomainError(): BotError {
 }
 
 internal fun EwgfError.toDomainError(): BotError {
-    return when (this) {
-        is EwgfError.PlayerNotFound -> BotError.PlayerNotRegistered()
-        else -> BotError.Unknown()
-    }
+//    return when (this) {
+//        is EwgfError.PlayerNotFound -> BotError.PlayerNotRegistered()
+//        else -> BotError.Unknown()
+//    }
+
+    return BotError.Unknown(this.toString())
 }
 
 internal fun StatsError.toDomainError(): BotError {
