@@ -89,8 +89,8 @@ internal class GroupBySetUseCase {
 
     private fun List<Battle>.calculateScore(): Score {
         return Score(
-            player = sumOf { it.score.player },
-            opponent = sumOf { it.score.opponent },
+            player = count { it.score.outcome == Score.Outcome.WIN },
+            opponent = count { it.score.outcome == Score.Outcome.LOSE },
         )
     }
 }
