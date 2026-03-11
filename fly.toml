@@ -11,6 +11,7 @@ primary_region = 'fra'
 [env]
   ENV = "production"
   DATABASE_PATH = "/data/banlist.db"
+  COMMAND_LOG_PATH = "/data/commandLog.json"
 
 [[vm]]
   memory = '1024mb'
