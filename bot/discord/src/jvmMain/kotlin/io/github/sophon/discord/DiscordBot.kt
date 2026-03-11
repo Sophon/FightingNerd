@@ -51,6 +51,7 @@ internal class DiscordBotImpl(
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
 
         startFeatures()
+        startTracking()
         startKord()
         startTracking()
 

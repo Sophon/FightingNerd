@@ -12,8 +12,9 @@ import kotlinx.serialization.json.Json
 internal class JsonReportRepo(
     private val json: Json,
     private val fileManager: FileManager,
-    private val path: String,
 ): ReportRepo {
+    private val path = getReportLogPath()
+
     override suspend fun init(): EmptyResult<StatsError> {
         return if (fileManager.exists(path)) {
             Result.Success(Unit)
@@ -42,9 +43,7 @@ internal class JsonReportRepo(
     }
 
 
-    companion object {
-        fun getReportLogPath(): String {
-            return System.getenv("COMMAND_LOG_PATH") ?: "commandLog.json"
-        }
+    private fun getReportLogPath(): String {
+        return System.getenv("COMMAND_LOG_PATH") ?: "commandLog.json"
     }
 }
