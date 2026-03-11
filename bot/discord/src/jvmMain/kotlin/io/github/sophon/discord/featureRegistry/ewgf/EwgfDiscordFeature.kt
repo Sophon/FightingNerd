@@ -102,25 +102,21 @@ internal class EwgfDiscordFeature(
         title = "${setList.firstOrNull()?.player?.name}"
         color = Color(PINK)
 
-        val content = buildString {
-            setList.forEachIndexed { index, set ->
-                val summary = "* $index → ${set.score.player}:${set.score.opponent}; ${set.player.character} v ${set.opponent.character}"
-                val matchup = set.battleList.joinToString("") { battle ->
-                    when (battle.score.outcome) {
-                        Score.Outcome.WIN -> "🟢"
-                        Score.Outcome.LOSE -> "🔴"
-                        Score.Outcome.DRAW -> "🟡"
-                    }
+        fun List<BattleSet>.toColumn() = joinToString("\n") { battleSet ->
+            val summary = "* ${battleSet.score.player}-${battleSet.score.opponent}: ${battleSet.player.character} v ${battleSet.opponent.character}"
+            val matchup = battleSet.battleList.joinToString("") { battle ->
+                when (battle.score.outcome) {
+                    Score.Outcome.WIN -> "🟢"
+                    Score.Outcome.LOSE -> "🔴"
+                    Score.Outcome.DRAW -> "🟡"
                 }
-                appendLine(summary)
-                appendLine("   * $matchup")
             }
+            "$summary\n   * $matchup"
         }
 
-        mandatoryField(
-            name = "",
-            value = content,
-        )
+        val mid = setList.size / 2 + setList.size % 2
+        mandatoryField(name = "", value = setList.subList(0, mid).toColumn())
+        mandatoryField(name = "", value = setList.subList(mid, setList.size).toColumn())
 
         featureFooter(featureInfo)
     }
