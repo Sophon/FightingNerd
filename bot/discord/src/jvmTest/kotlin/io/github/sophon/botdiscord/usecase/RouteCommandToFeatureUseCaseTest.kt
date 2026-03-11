@@ -8,12 +8,15 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
+import io.github.sophon.discord.domain.Tracker
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.domain.Source
+import io.github.sophon.domain.model.DailyReport
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
@@ -180,7 +183,12 @@ class RouteCommandToFeatureUseCaseTest {
     private val superComboFeature = FakeSuperComboFeature()
     private val coreFeature = FakeCoreFeature()
     private val featureList = listOf(wavuFeature, coreFeature, infilFeature, superComboFeature)
-    private val useCase = RouteCommandToFeatureUseCase(featureList)
+    private val tracker = object : Tracker {
+        override val statsChannelId = ""
+        override fun subscribe() = emptyFlow<DailyReport>()
+        override suspend fun recordSuccessfulCommand(featureName: String, command: Command) = Result.Success(Unit)
+    }
+    private val useCase = RouteCommandToFeatureUseCase(featureList, tracker)
     //endregion
 
     //region Invalid Input
