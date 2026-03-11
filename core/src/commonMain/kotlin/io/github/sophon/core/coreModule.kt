@@ -9,7 +9,7 @@ import org.koin.dsl.module
 val coreModule = module {
     single<HttpClientEngine> { httpClientEngine() }
     single<HttpClient> { HttpClientFactory.create(get(), get()) }
-    single<Json> { Json { ignoreUnknownKeys = true } }
+    single<Json> { Json { ignoreUnknownKeys = true; prettyPrint = true } }
 }
 
 expect fun httpClientEngine(): HttpClientEngine

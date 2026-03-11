@@ -16,16 +16,22 @@ internal class JsonReportRepo(
     private val path = getReportLogPath()
 
     override suspend fun init(): EmptyResult<StatsError> {
-        return if (fileManager.exists(path)) {
-            Result.Success(Unit)
-        } else {
-            fileManager.create(path)
+        if (fileManager.exists(path).not()) {
+            return fileManager.create(path)
                 .map {
                     fileManager.write(path, "[]")
                     Unit
                 }
                 .mapError { StatsError.FileError(it.toString()) }
         }
+
+        val content = fileManager.read(path)
+        if (content is Result.Success && content.data.isBlank()) {
+            return fileManager.write(path, "[]")
+                .mapError { StatsError.FileError(it.toString()) }
+        }
+
+        return Result.Success(Unit)
     }
 
     override suspend fun load(): Result<List<DailyReport>, StatsError> {
