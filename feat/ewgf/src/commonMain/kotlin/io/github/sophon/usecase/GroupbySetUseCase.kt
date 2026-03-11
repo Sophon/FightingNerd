@@ -1,5 +1,6 @@
 package io.github.sophon.usecase
 
+import io.github.sophon.core.domain.ExcludeFromCoverage
 import io.github.sophon.core.domain.Result
 import io.github.sophon.domain.EwgfError
 import io.github.sophon.domain.model.Battle
@@ -11,6 +12,7 @@ import kotlinx.datetime.toInstant
 import kotlin.math.abs
 import kotlin.time.ExperimentalTime
 
+@ExcludeFromCoverage("to be implemented")
 @OptIn(ExperimentalTime::class)
 internal class GroupBySetUseCase {
     fun invoke(battleList: List<Battle>): Result<List<BattleSet>, EwgfError> {
