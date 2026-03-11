@@ -105,18 +105,6 @@ internal class EwgfDiscordFeature(
         color = Color(PINK)
         url = profileUrl
 
-        fun List<BattleSet>.toColumn() = joinToString("\n") { battleSet ->
-            val summary = "* ${battleSet.score.player}-${battleSet.score.opponent}: ${battleSet.player.character} v ${battleSet.opponent.character}"
-            val matchup = battleSet.battleList.joinToString("") { battle ->
-                when (battle.score.outcome) {
-                    Score.Outcome.WIN -> "🟢"
-                    Score.Outcome.LOSE -> "🔴"
-                    Score.Outcome.DRAW -> "🟡"
-                }
-            }
-            "$summary\n   * $matchup"
-        }
-
         val mid = setList.size / 2 + setList.size % 2
         mandatoryField(name = "", value = setList.subList(0, mid).toColumn())
         mandatoryField(name = "", value = setList.subList(mid, setList.size).toColumn())
@@ -136,6 +124,19 @@ internal class EwgfDiscordFeature(
         )
 
         featureFooter(featureInfo)
+    }
+
+    private fun List<BattleSet>.toColumn() = joinToString("\n") { battleSet ->
+        val summary = "* **${battleSet.score.player}-${battleSet.score.opponent}**: " +
+                "${battleSet.player.character} v ${battleSet.opponent.character} (${battleSet.opponent.name})"
+        val matchup = battleSet.battleList.joinToString("") { battle ->
+            when (battle.score.outcome) {
+                Score.Outcome.WIN -> "🟢"
+                Score.Outcome.LOSE -> "🔴"
+                Score.Outcome.DRAW -> "🟡"
+            }
+        }
+        "$summary\n   * $matchup"
     }
 
 
