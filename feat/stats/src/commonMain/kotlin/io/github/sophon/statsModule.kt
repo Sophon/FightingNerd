@@ -2,6 +2,7 @@ package io.github.sophon
 
 import io.github.sophon.domain.StatsFeatureInfo
 import io.github.sophon.domain.usecase.GetReportsUseCase
+import io.github.sophon.domain.usecase.InitRepoUseCase
 import io.github.sophon.domain.usecase.RecordUseCase
 import io.github.sophon.domain.usecase.ResetCacheUseCase
 import io.github.sophon.domain.usecase.SaveTodaysReport
@@ -14,6 +15,7 @@ fun statsModule() = module {
 
     singleOf(::StatsTrackerImpl).bind(StatsTracker::class)
 
+    singleOf(::InitRepoUseCase)
     singleOf(::RecordUseCase)
     singleOf(::SaveTodaysReport)
     singleOf(::ResetCacheUseCase)

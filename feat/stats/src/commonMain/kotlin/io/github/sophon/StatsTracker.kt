@@ -7,6 +7,7 @@ import io.github.sophon.domain.model.Command
 import io.github.sophon.domain.model.DailyReport
 import io.github.sophon.domain.usecase.SaveTodaysReport
 import io.github.sophon.domain.usecase.GetReportsUseCase
+import io.github.sophon.domain.usecase.InitRepoUseCase
 import io.github.sophon.domain.usecase.RecordUseCase
 import io.github.sophon.domain.usecase.ResetCacheUseCase
 import kotlinx.coroutines.sync.Mutex
@@ -15,6 +16,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 
 interface StatsTracker {
+    suspend fun init(): EmptyResult<StatsError>
     suspend fun record(command: Command): EmptyResult<StatsError>
     suspend fun finalizeDay(recordLength: Duration = 30.days): Result<DailyReport, StatsError>
     suspend fun resetCached(): EmptyResult<StatsError>
@@ -23,6 +25,7 @@ interface StatsTracker {
 
 
 internal class StatsTrackerImpl(
+    private val initRepoUseCase: InitRepoUseCase,
     private val recordUseCase: RecordUseCase,
     private val saveTodaysReport: SaveTodaysReport,
     private val resetCacheUseCase: ResetCacheUseCase,
@@ -31,6 +34,10 @@ internal class StatsTrackerImpl(
     private val mutex = Mutex()
     private val cachedStats = mutableMapOf<Command, Long>()
 
+
+    override suspend fun init(): EmptyResult<StatsError> {
+        return initRepoUseCase.invoke()
+    }
 
     override suspend fun record(command: Command): EmptyResult<StatsError> {
         mutex.withLock {
