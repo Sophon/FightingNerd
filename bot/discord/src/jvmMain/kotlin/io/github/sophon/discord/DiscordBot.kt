@@ -14,16 +14,19 @@ import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Config
+import io.github.sophon.discord.domain.Tracker
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.featureRegistry.admin.adminCommands
 import io.github.sophon.discord.usecase.HandleButtonInteractionUseCase
+import io.github.sophon.discord.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.safeRestCall
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlin.uuid.ExperimentalUuidApi
@@ -35,11 +38,13 @@ interface DiscordBot {
 @OptIn(ExperimentalUuidApi::class)
 internal class DiscordBotImpl(
     private val kord: Kord,
+    private val tracker: Tracker,
     private val featureList: List<DiscordRegisteredFeature>,
     private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
     private val resultToEmbedUseCase: ResultToEmbedUseCase,
     private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
+    private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
 ): DiscordBot {
     private val editableEmbedMap = mutableMapOf<String, BotOutput>()
@@ -48,6 +53,7 @@ internal class DiscordBotImpl(
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
 
         startFeatures()
+        startTracking()
         startKord()
 
         Napier.e(tag = TAG) { "❌ Bot session ended (this shouldn't happen)" }
@@ -259,6 +265,17 @@ internal class DiscordBotImpl(
 
         kord.on<dev.kord.core.event.gateway.ResumedEvent> {
             Napier.i(tag = TAG) { "Gateway resumed successfully" }
+        }
+    }
+
+    private fun startTracking() {
+        coroutineScope.launch {
+            tracker.subscribe().collectLatest { dailyReport ->
+                postDailyReportEmbedUseCase.invoke(
+                    statsChannelId = tracker.statsChannelId,
+                    dailyReport = dailyReport,
+                )
+            }
         }
     }
 

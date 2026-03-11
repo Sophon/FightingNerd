@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 data class Config(
     val featureList: List<Feature>,
     val adminConfig: AdminConfig? = null,
+    val statsConfig: StatsConfig? = null,
 ) {
     @Serializable
     data class Feature(
@@ -24,5 +25,11 @@ data class Config(
         val administratorIdList: List<String>,
         val feedbackChannelIdList: List<String>,
         val adminServerId: String,
+    )
+
+    @Serializable
+    data class StatsConfig(
+        val isEnabled: Boolean,
+        val statsChannelIdList: List<String>,
     )
 }

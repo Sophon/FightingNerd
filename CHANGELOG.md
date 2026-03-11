@@ -3,6 +3,9 @@
 ## [v10.0.0] - TODO
 - handled some Kord exceptions
 - `EWGF.gg` - prepare code for the final feature
+- `stats` 
+  - track command usage
+  - daily reports
 - DustLoop 
   - release notations have aliases without the brackets
   - updated fields for GBVSR
