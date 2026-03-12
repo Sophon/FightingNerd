@@ -96,7 +96,7 @@ internal class TrackerImpl(
         ).onEach { result ->
             result
                 .onSuccess { dailyReport ->
-                    reports.tryEmit(dailyReport)
+                    reports.emit(dailyReport)
                 }
                 .onError { Napier.e(tag = TAG) { it.toString() } }
         }.launchIn(scope)
