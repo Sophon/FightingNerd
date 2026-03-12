@@ -3,6 +3,7 @@
 ## [v10.1.0] - 2026-03-12
 - `EWGF.gg` - feature enabled
   - `+`, `-`, `ewgf` and `update` commands
+- fixed the period for daily reports
 
 ## [v10.0.0] - 2026-03-11
 - handled some Kord exceptions
