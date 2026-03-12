@@ -114,12 +114,16 @@ internal class RouteCommandToFeatureUseCase(
                     result
                 }
                 is Result.Error -> {
-                    if (result.error is BotError.UnknownMove) result
+                    if (result.error is BotError.UnknownMove) {
+                        tracker.recordFailure()
+                        result
+                    }
                     else continue
                 }
             }
         }
 
+        tracker.recordFailure()
         //use the last error
         return result
     }
@@ -147,12 +151,16 @@ internal class RouteCommandToFeatureUseCase(
                     result
                 }
                 is Result.Error -> {
-                    if (result.error is BotError.UnknownMove) result
+                    if (result.error is BotError.UnknownMove) {
+                        tracker.recordFailure()
+                        result
+                    }
                     else continue
                 }
             }
         }
 
+        tracker.recordFailure()
         return Result.Error(BotError.InvalidQuery(fullQuery))
     }
 }
