@@ -126,18 +126,24 @@ internal class EwgfDiscordFeature(
         featureFooter(featureInfo)
     }
 
-    private fun List<BattleSet>.toColumn() = joinToString("\n") { battleSet ->
-        val summary = "* **${battleSet.score.player}-${battleSet.score.opponent}**: " +
-                "${battleSet.player.character} v ${battleSet.opponent.character} (${battleSet.opponent.name}); " +
-                battleSet.battleType.shortcut
-        val matchup = battleSet.battleList.joinToString("") { battle ->
-            when (battle.score.outcome) {
-                Score.Outcome.WIN -> "🟢"
-                Score.Outcome.LOSE -> "🔴"
-                Score.Outcome.DRAW -> "🟡"
+    private fun List<BattleSet>.toColumn(): String {
+        return joinToString("\n") { battleSet ->
+            val opponentProfileUrl = "${featureInfo.url}/player/${battleSet.opponent.polarisId}"
+            val opponentLink = "[${battleSet.opponent.name}]($opponentProfileUrl)"
+
+            val summary = "* **${battleSet.score.player}-${battleSet.score.opponent}**: " +
+                    "${battleSet.player.character} v ${battleSet.opponent.character} ($opponentLink); " +
+                    battleSet.battleType.shortcut
+
+            val matchup = battleSet.battleList.joinToString("") { battle ->
+                when (battle.score.outcome) {
+                    Score.Outcome.WIN -> "🟢"
+                    Score.Outcome.LOSE -> "🔴"
+                    Score.Outcome.DRAW -> "🟡"
+                }
             }
+            "$summary\n   * $matchup"
         }
-        "$summary\n   * $matchup"
     }
 
 
