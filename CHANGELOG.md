@@ -1,5 +1,12 @@
 # BOT CHANGELOG
 
+## [v10.3.0] - 2026-03-12
+- `EWGF`
+  - displays Type
+  - fixed issue with GROUP battle type
+  - clickable opponent
+  - fixed the `-` command
+
 ## [v10.2.0] - 2026-03-12
 - tag the person who pressed a button 
 - fixed daily reports
