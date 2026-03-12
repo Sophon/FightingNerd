@@ -13,6 +13,6 @@ internal class UpdatePolarisIdUseCase(
         discordId: String,
         polarisId: String,
     ): EmptyResult<EwgfError> {
-        return repo.updatePolarisId(discordId = discordId, polarisId = polarisId)
+        return repo.updatePolarisId(discordId = discordId, polarisId = polarisId.replace("-", ""))
     }
 }

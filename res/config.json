@@ -1,6 +1,11 @@
 {
   "featureList": [
     {
+      "name": "EWGF",
+      "isEnabled": true,
+      "supportedGames": []
+    },
+    {
       "name": "Infil Glossary",
       "isEnabled": true,
       "supportedGames": []
@@ -53,11 +58,6 @@
         "UNI2",
         "VSAV"
       ]
-    },
-    {
-      "name": "EWGF",
-      "isEnabled": true,
-      "supportedGames": []
     }
   ],
   "adminConfig": {

@@ -11,6 +11,9 @@ internal class RegisterPlayerUseCase(
     private val repo: PlayerRepo,
 ) {
     suspend fun invoke(player: Player): EmptyResult<EwgfError> {
-        return repo.registerPlayer(player)
+        val formatted = player.copy(
+            polarisId = player.polarisId.replace("-", "")
+        )
+        return repo.registerPlayer(formatted)
     }
 }
