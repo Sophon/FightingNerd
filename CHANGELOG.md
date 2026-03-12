@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v10.1.1] - 2026-03-12
+- fix DB on fly.io
+
 ## [v10.1.0] - 2026-03-12
 - `EWGF.gg` - feature enabled
   - `+`, `-`, `ewgf` and `update` commands
