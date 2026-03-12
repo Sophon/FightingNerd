@@ -37,6 +37,7 @@ internal interface Tracker {
         featureName: String,
         command: BotCommand,
     ): EmptyResult<BotError>
+    suspend fun recordFailure(): EmptyResult<BotError>
 }
 
 @OptIn(ExperimentalTime::class)
@@ -56,8 +57,8 @@ internal class TrackerImpl(
             statsTracker.init()
                 .onError { Napier.e(tag = TAG) { it.toString() } }
         }
-//        scheduleDaily()
-        scheduleDailyTest()
+        scheduleDaily()
+//        scheduleDailyTest()
 
         return reports.asSharedFlow()
     }
@@ -74,6 +75,16 @@ internal class TrackerImpl(
         return statsTracker.record(trackedCommand)
             .mapError { it.toDomainError() }
             .onError { Napier.e(tag = TAG) { it.toString() } }
+    }
+
+    override suspend fun recordFailure(): EmptyResult<BotError> {
+        val failure = TrackedCommand(
+            feature = "failed",
+            name = "failed",
+        )
+
+        return statsTracker.record(failure)
+            .mapError { it.toDomainError() }
     }
 
 
@@ -96,7 +107,7 @@ internal class TrackerImpl(
         ).onEach { result ->
             result
                 .onSuccess { dailyReport ->
-                    reports.tryEmit(dailyReport)
+                    reports.emit(dailyReport)
                 }
                 .onError { Napier.e(tag = TAG) { it.toString() } }
         }.launchIn(scope)

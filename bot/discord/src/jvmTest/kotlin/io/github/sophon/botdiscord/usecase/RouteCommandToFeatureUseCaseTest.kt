@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.BotError
@@ -187,6 +188,7 @@ class RouteCommandToFeatureUseCaseTest {
         override val statsChannelId = ""
         override fun subscribe() = emptyFlow<DailyReport>()
         override suspend fun recordSuccessfulCommand(featureName: String, command: Command) = Result.Success(Unit)
+        override suspend fun recordFailure(): EmptyResult<BotError> = Result.Success(Unit)
     }
     private val useCase = RouteCommandToFeatureUseCase(featureList, tracker)
     //endregion

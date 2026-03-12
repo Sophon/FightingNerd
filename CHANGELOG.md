@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v10.2.0] - 2026-03-12
+- tag the person who pressed a button 
+- fixed daily reports
+- track failed interactions
+
 ## [v10.1.2] - 2026-03-12
 - fixed case-sensitivity for frame-data features
 

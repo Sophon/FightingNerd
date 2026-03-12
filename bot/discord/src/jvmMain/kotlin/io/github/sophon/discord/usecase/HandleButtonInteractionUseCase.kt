@@ -88,6 +88,7 @@ internal class HandleButtonInteractionUseCase(
                 val uuid = Uuid.random()
 
                 response.respond {
+                    content = interaction.user.mention
                     botOutput.primaryEmbedBuilder?.let { embed(it) }
 
                     botOutput.buttons?.let { buttonSet ->
