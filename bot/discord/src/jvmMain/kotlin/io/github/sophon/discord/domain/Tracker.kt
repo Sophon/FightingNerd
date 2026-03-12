@@ -56,8 +56,8 @@ internal class TrackerImpl(
             statsTracker.init()
                 .onError { Napier.e(tag = TAG) { it.toString() } }
         }
-//        scheduleDaily()
-        scheduleDailyTest()
+        scheduleDaily()
+//        scheduleDailyTest()
 
         return reports.asSharedFlow()
     }
@@ -96,7 +96,7 @@ internal class TrackerImpl(
         ).onEach { result ->
             result
                 .onSuccess { dailyReport ->
-                    reports.tryEmit(dailyReport)
+                    reports.emit(dailyReport)
                 }
                 .onError { Napier.e(tag = TAG) { it.toString() } }
         }.launchIn(scope)
