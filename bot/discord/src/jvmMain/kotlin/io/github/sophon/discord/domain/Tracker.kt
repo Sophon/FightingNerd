@@ -56,8 +56,8 @@ internal class TrackerImpl(
             statsTracker.init()
                 .onError { Napier.e(tag = TAG) { it.toString() } }
         }
-//        scheduleDaily()
-        scheduleDailyTest()
+        scheduleDaily()
+//        scheduleDailyTest()
 
         return reports.asSharedFlow()
     }
