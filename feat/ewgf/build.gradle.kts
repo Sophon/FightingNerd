@@ -37,11 +37,14 @@ kotlin {
         commonMain.dependencies {
             implementation(project(":core"))
 
+            implementation(libs.bundles.ktor)
+
             implementation(libs.napier)
             implementation(libs.kotlin.date.time)
 
             implementation(libs.sqldelight.coroutines)
             implementation(libs.sqldelight.primitive.adapters)
+            implementation(libs.kotlinx.serialization.json)
 
             api(libs.koin.core)
         }

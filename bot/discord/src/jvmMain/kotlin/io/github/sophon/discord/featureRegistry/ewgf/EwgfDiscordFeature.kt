@@ -10,7 +10,7 @@ import io.github.sophon.discord.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.featureRegistry.ewgf.usecase.GetPlayerDataUseCase
+import io.github.sophon.discord.featureRegistry.ewgf.usecase.GetRecentMatchesUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.ParseQueryIntoOperationUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.RegisterPlayerUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.UnregisterPlayerUseCase
@@ -18,14 +18,16 @@ import io.github.sophon.discord.featureRegistry.ewgf.usecase.UpdatePlayerUseCase
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.EwgfFeatureInfo
-import io.github.sophon.domain.Player
 import io.github.sophon.domain.Source
+import io.github.sophon.domain.model.BattleSet
+import io.github.sophon.domain.model.Player
+import io.github.sophon.domain.model.Score
 
 internal class EwgfDiscordFeature(
     ewgfFeatureInfo: EwgfFeatureInfo,
     private val parseQueryIntoOperationUseCase: ParseQueryIntoOperationUseCase,
     private val registerPlayerUseCase: RegisterPlayerUseCase,
-    private val getPlayerUseCase: GetPlayerDataUseCase,
+    private val getPlayerUseCase: GetRecentMatchesUseCase,
     private val updatePlayerUseCase: UpdatePlayerUseCase,
     private val unregisterPlayerUseCase: UnregisterPlayerUseCase,
 ): DiscordRegisteredFeature {
@@ -68,7 +70,7 @@ internal class EwgfDiscordFeature(
             }
             is EwgfOperations.Operation.Data -> {
                 getPlayerUseCase.invoke(discordId).map { data ->
-                    dataEmbed(data)
+                    recentSetsEmbed(data)
                 }
             }
             is EwgfOperations.Operation.Update -> {
@@ -96,15 +98,16 @@ internal class EwgfDiscordFeature(
         }
     }
 
-    private fun dataEmbed(player: Player): EmbedBuilder.() -> Unit = {
-        title = "EWGF data"
+    private fun recentSetsEmbed(setList: List<BattleSet>): EmbedBuilder.() -> Unit = {
+        val player = setList.firstOrNull()?.player
+        val profileUrl = "${featureInfo.url}/player/${player?.polarisId.orEmpty()}"
+        title = player?.name.orEmpty()
         color = Color(PINK)
+        url = profileUrl
 
-        mandatoryField(
-            name = "",
-            value = "${player.discordId} - ${player.polarisId}",
-            inline = false,
-        )
+        val mid = setList.size / 2 + setList.size % 2
+        mandatoryField(name = "", value = setList.subList(0, mid).toColumn())
+        mandatoryField(name = "", value = setList.subList(mid, setList.size).toColumn())
 
         featureFooter(featureInfo)
     }
@@ -121,6 +124,19 @@ internal class EwgfDiscordFeature(
         )
 
         featureFooter(featureInfo)
+    }
+
+    private fun List<BattleSet>.toColumn() = joinToString("\n") { battleSet ->
+        val summary = "* **${battleSet.score.player}-${battleSet.score.opponent}**: " +
+                "${battleSet.player.character} v ${battleSet.opponent.character} (${battleSet.opponent.name})"
+        val matchup = battleSet.battleList.joinToString("") { battle ->
+            when (battle.score.outcome) {
+                Score.Outcome.WIN -> "🟢"
+                Score.Outcome.LOSE -> "🔴"
+                Score.Outcome.DRAW -> "🟡"
+            }
+        }
+        "$summary\n   * $matchup"
     }
 
 

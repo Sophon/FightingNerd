@@ -83,7 +83,7 @@ private suspend fun createKord(): Kord {
 
 private fun getApiKey(): String {
     // env var first (for production/Docker)
-    System.getenv("discordBotApiKey")?.let { apiKey ->
+    System.getenv(ENV_API_DISCORD)?.let { apiKey ->
         Napier.i(tag = TAG) { "API from env: ${apiKey.maskSecret()}" }
         return apiKey
     }

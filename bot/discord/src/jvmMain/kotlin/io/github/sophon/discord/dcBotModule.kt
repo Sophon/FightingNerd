@@ -60,7 +60,9 @@ fun initKoin(
         dreamCancelModule(),
         dustLoopModule(),
         mizuumiModule(),
-        ewgfModule(),
+        ewgfModule(
+            apiToken = System.getenv(ENV_API_EWGF).orEmpty()
+        ),
 
         featureRegistryModule,
     )
