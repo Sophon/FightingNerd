@@ -128,7 +128,8 @@ internal class EwgfDiscordFeature(
 
     private fun List<BattleSet>.toColumn() = joinToString("\n") { battleSet ->
         val summary = "* **${battleSet.score.player}-${battleSet.score.opponent}**: " +
-                "${battleSet.player.character} v ${battleSet.opponent.character} (${battleSet.opponent.name})"
+                "${battleSet.player.character} v ${battleSet.opponent.character} (${battleSet.opponent.name}); " +
+                battleSet.battleType.shortcut
         val matchup = battleSet.battleList.joinToString("") { battle ->
             when (battle.score.outcome) {
                 Score.Outcome.WIN -> "🟢"
