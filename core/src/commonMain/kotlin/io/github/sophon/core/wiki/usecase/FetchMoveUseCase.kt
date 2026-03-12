@@ -11,6 +11,6 @@ class FetchMoveUseCase(
         charName: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
-        return fetch(charName, moveQuery)
+        return fetch(charName.lowercase(), moveQuery.lowercase())
     }
 }
