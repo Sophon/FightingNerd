@@ -145,7 +145,7 @@ internal class DiscordBotImpl(
 
         val result = routeCommandToFeatureUseCase.invoke(
             source = source,
-            message = message.content.lowercase(),
+            message = message.content,
         )
 
         with (resultToEmbedUseCase) {
@@ -158,7 +158,6 @@ internal class DiscordBotImpl(
             .lowercase()
         val query = interaction.command.strings.values
             .joinToString(" ")
-            .lowercase()
         val source = Source(
             username = interaction.user.username,
             id = interaction.user.data.id.toString(),

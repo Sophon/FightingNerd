@@ -23,6 +23,7 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
@@ -86,7 +87,7 @@ internal class TrackerImpl(
 
         scheduler.start(
             initialDelay = delay,
-            period = 1.minutes,
+            period = 24.hours,
             task = {
                 statsTracker.finalizeDay()
                     .mapError { it.toDomainError() }

@@ -4,7 +4,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.ExcludeFromCoverage
 import io.github.sophon.data.PlayerRepo
 import io.github.sophon.domain.EwgfError
-import io.github.sophon.domain.Player
+import io.github.sophon.domain.model.Player
 
 @ExcludeFromCoverage("to be implemented")
 internal class RegisterPlayerUseCase(
