@@ -64,5 +64,6 @@ private fun String.toDomainType(): BattleType = when (this) {
     "QUICK_BATTLE" -> BattleType.QUICK
     "RANKED_BATTLE" -> BattleType.RANKED
     "PLAYER_BATTLE" -> BattleType.LOBBY
+    "GROUP_BATTLE" -> BattleType.GROUP
     else -> error("Unknown battle type: $this")
 }

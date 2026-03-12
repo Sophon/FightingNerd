@@ -4,4 +4,5 @@ enum class BattleType {
     QUICK,
     RANKED,
     LOBBY,
+    GROUP,
 }
