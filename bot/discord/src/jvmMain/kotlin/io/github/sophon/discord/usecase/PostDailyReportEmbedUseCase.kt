@@ -14,6 +14,8 @@ internal class PostDailyReportEmbedUseCase(
         statsChannelId: String,
         dailyReport: DailyReport,
     ) {
+        Napier.i(tag = TAG) { "Daily report to channel: $statsChannelId" }
+
         val channel = kord.getChannelOf<TextChannel>(Snowflake(statsChannelId))
             ?: run {
                 Napier.e(tag = TAG) { "Stats channel not found: $statsChannelId" }
