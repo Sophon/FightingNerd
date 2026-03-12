@@ -13,7 +13,7 @@ class FetchMoveListUseCase(
         charName: String,
         filter: Filter,
     ): Result<List<Move>, WikiError> {
-        return fetch(charName)
+        return fetch(charName.lowercase())
             .map { it.filter(filter.predicate) }
     }
 }

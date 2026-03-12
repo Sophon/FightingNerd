@@ -8,6 +8,6 @@ class FetchCharacterUseCase(
     private val fetch: suspend (String) -> Result<Character, WikiError>,
 ) {
     suspend fun invoke(charName: String): Result<Character, WikiError> {
-        return fetch(charName)
+        return fetch(charName.lowercase())
     }
 }

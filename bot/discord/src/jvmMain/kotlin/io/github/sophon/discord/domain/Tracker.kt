@@ -56,7 +56,8 @@ internal class TrackerImpl(
             statsTracker.init()
                 .onError { Napier.e(tag = TAG) { it.toString() } }
         }
-        scheduleDaily()
+//        scheduleDaily()
+        scheduleDailyTest()
 
         return reports.asSharedFlow()
     }
@@ -104,7 +105,7 @@ internal class TrackerImpl(
     private fun scheduleDailyTest() {
         scheduler.start(
             initialDelay = 1.minutes,
-            period = 1.minutes,
+            period = 1.hours,
             task = {
                 statsTracker.finalizeDay()
                     .mapError { it.toDomainError() }

@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v10.1.2] - 2026-03-12
+- fixed case-sensitivity for frame-data features
+
 ## [v10.1.1] - 2026-03-12
 - fix DB on fly.io
 
