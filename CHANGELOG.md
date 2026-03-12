@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v10.1.3] - 2026-03-12
+- fixed daily reports
+
 ## [v10.1.2] - 2026-03-12
 - fixed case-sensitivity for frame-data features
 
