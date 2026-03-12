@@ -33,7 +33,7 @@ actual class DatabaseDriverFactory(private val databasePath: String) {
         fun getDatabasePath(): String {
             // Fly.io: /data/banlist.db
             // Local: banlist.db (in working directory)
-            return System.getenv("DATABASE_PATH") ?: "banlist.db"
+            return System.getenv("BANLIST_DATABASE_PATH") ?: "banlist.db"
         }
     }
 }

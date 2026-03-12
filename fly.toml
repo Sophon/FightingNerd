@@ -9,9 +9,10 @@ primary_region = 'fra'
 [build]
 
 [env]
-  ENV = "production"
-  DATABASE_PATH = "/data/banlist.db"
-  COMMAND_LOG_PATH = "/data/commandLog.json"
+    ENV = "production"
+    BANLIST_DATABASE_PATH = "/data/banlist.db"
+    EWGF_DATABASE_PATH = "/data/playerlist.db"
+    COMMAND_LOG_PATH = "/data/commandLog.json"
 
 [[vm]]
   memory = '1024mb'

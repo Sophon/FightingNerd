@@ -35,7 +35,7 @@ actual class DatabaseDriverFactory(
         fun getDatabasePath(): String {
             // Fly.io: /data/playerlist.db
             // Local: playerlist.db (in working directory)
-            return System.getenv("DATABASE_PATH") ?: "playerlist.db"
+            return System.getenv("EWGF_DATABASE_PATH") ?: "playerlist.db"
         }
     }
 }
