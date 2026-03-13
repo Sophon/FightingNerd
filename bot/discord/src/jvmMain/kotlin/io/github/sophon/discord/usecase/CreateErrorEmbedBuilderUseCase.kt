@@ -70,7 +70,7 @@ internal class CreateErrorEmbedBuilderUseCase {
                 name = "",
                 value = "1. `[character name]` `[move input]`\n" +
                         "   - `character name` →  __**NO SPACES**__\n" +
-                        "   - `move input` → __**NO SPACES**__\n" +
+                        "   - `move input`\n" +
                         "   - `lee df1`, `ak h.bad.32`, `ling bt.4`, `ken 236pp` etc.\n\n" +
                         "2. `[character name]` `[move name]`\n" +
                         "   - `move name` → can be multi-word, __**must match exactly**__\n" +
