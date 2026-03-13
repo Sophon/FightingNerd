@@ -27,9 +27,7 @@ internal class EwgfDiscordFeature(
 ): DiscordRegisteredFeature {
     override val featureInfo: FeatureInfo = ewgfFeatureInfo.featureInfo
     override val defaultCommand = Command.Ewgf
-    override val otherCommands = listOf(
-        Command.EwgfOperation,
-    )
+    override val otherCommands = emptyList<Command>()
 
     override suspend fun start() {}
 
@@ -38,7 +36,7 @@ internal class EwgfDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        if (command != Command.Ewgf && command != Command.EwgfOperation) {
+        if (command != Command.Ewgf) {
             Result.Error(BotError.BotLogicError(command.name, query))
         }
 
