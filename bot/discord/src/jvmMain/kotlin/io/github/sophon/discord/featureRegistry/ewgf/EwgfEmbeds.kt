@@ -14,7 +14,7 @@ internal fun recentSetsEmbed(
 ): EmbedBuilder.() -> Unit = {
     val player = setList.firstOrNull()?.player
     val profileUrl = "${featureInfo.url}/player/${player?.polarisId.orEmpty()}"
-    title = player?.name.orEmpty()
+    title = "${player?.name.orEmpty()}: ${player?.rank.orEmpty()}"
     color = Color(PINK)
     url = profileUrl
 
