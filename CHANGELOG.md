@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v10.4.1] - 2026-03-13
+- `EWGF` - fixed the game order within a set
+
 ## [v10.4.0] - 2026-03-13
 - accept move inputs with spaces
 - `EWGF`

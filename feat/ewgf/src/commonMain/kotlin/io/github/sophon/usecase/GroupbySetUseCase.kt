@@ -35,7 +35,7 @@ internal class GroupBySetUseCase {
                 }
                 else -> {
                     val finishedSet = BattleSet(
-                        battleList = currentSet.toList(),
+                        battleList = currentSet.toList().reversed(),
                         player = currentBattle.player,
                         opponent = currentBattle.opponent,
                         score = currentSet.calculateScore(),
