@@ -9,6 +9,7 @@ internal sealed class Command(
     val description: String,
     val argumentList: List<Argument> = listOf()
 ) {
+    //region Core
     object Tip : Command(name = "Tip", description = "Dono arigato!")
     object Donate : Command(name = "Donate", description = "Dono arigato!")
     object Repo : Command(name = "Repo", description = "Project repository")
@@ -37,6 +38,7 @@ internal sealed class Command(
             )
         )
     )
+    //endregion
 
     //region Admin commands
     object Feedback : Command(
@@ -519,17 +521,11 @@ internal sealed class Command(
         ),
     )
     object AliasVS : Command(name = "AliasVS", description = "VSAV character aliases")
-    //endregion
+    //endregion@
 
     //region EWGF
     object Ewgf : Command(
         name = "EWGF",
-        description = "EWGF functionality",
-        argumentList = listOf(),
-    )
-
-    object EwgfOperation : Command(
-        name = "EwgfOp",
         description = "Perform an EWGF operation",
         argumentList = listOf(
             Argument(
@@ -538,7 +534,7 @@ internal sealed class Command(
             ),
             Argument(
                 name = "polarisid",
-                description = "Polaris ID",
+                description = "Tekken ID",
                 isRequired = false,
             )
         )
