@@ -1,5 +1,12 @@
 # BOT CHANGELOG
 
+## [v10.4.0] - 2026-03-13
+- accept move inputs with spaces
+- `EWGF`
+  - shorter battle types
+  - more columns
+  - displays player rank
+
 ## [v10.3.0] - 2026-03-12
 - `EWGF`
   - displays Type

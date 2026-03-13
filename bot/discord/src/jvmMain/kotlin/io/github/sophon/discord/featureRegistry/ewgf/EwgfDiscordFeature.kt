@@ -1,7 +1,5 @@
 package io.github.sophon.discord.featureRegistry.ewgf
 
-import dev.kord.common.Color
-import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
@@ -15,13 +13,9 @@ import io.github.sophon.discord.featureRegistry.ewgf.usecase.ParseQueryIntoOpera
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.RegisterPlayerUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.UnregisterPlayerUseCase
 import io.github.sophon.discord.featureRegistry.ewgf.usecase.UpdatePlayerUseCase
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.domain.EwgfFeatureInfo
 import io.github.sophon.domain.Source
-import io.github.sophon.domain.model.BattleSet
 import io.github.sophon.domain.model.Player
-import io.github.sophon.domain.model.Score
 
 internal class EwgfDiscordFeature(
     ewgfFeatureInfo: EwgfFeatureInfo,
@@ -66,11 +60,11 @@ internal class EwgfDiscordFeature(
                 registerPlayerUseCase.invoke(
                     discordId = discordId,
                     polarisId = operation.polarisId,
-                ).map { successEmbed(operation) }
+                ).map { successEmbed(operation, featureInfo) }
             }
             is EwgfOperations.Operation.Data -> {
                 getPlayerUseCase.invoke(discordId).map { data ->
-                    recentSetsEmbed(data)
+                    recentSetsEmbed(data, featureInfo)
                 }
             }
             is EwgfOperations.Operation.Update -> {
@@ -79,11 +73,11 @@ internal class EwgfDiscordFeature(
                         discordId = discordId,
                         polarisId = operation.polarisId,
                     )
-                ).map { successEmbed(operation) }
+                ).map { successEmbed(operation, featureInfo) }
             }
             is EwgfOperations.Operation.Unregister -> {
                 unregisterPlayerUseCase.invoke(discordId)
-                    .map { successEmbed(operation) }
+                    .map { successEmbed(operation, featureInfo) }
             }
         }
 
@@ -96,58 +90,5 @@ internal class EwgfDiscordFeature(
                 Result.Error(result.error)
             }
         }
-    }
-
-    private fun recentSetsEmbed(setList: List<BattleSet>): EmbedBuilder.() -> Unit = {
-        val player = setList.firstOrNull()?.player
-        val profileUrl = "${featureInfo.url}/player/${player?.polarisId.orEmpty()}"
-        title = player?.name.orEmpty()
-        color = Color(PINK)
-        url = profileUrl
-
-        val mid = setList.size / 2 + setList.size % 2
-        mandatoryField(name = "", value = setList.subList(0, mid).toColumn())
-        mandatoryField(name = "", value = setList.subList(mid, setList.size).toColumn())
-
-        featureFooter(featureInfo)
-    }
-
-    private fun successEmbed(
-        operation: EwgfOperations.Operation,
-    ): EmbedBuilder.() -> Unit = {
-        title = "Success"
-        color = Color(PINK)
-
-        mandatoryField(
-            name = "",
-            value = operation::class.simpleName,
-        )
-
-        featureFooter(featureInfo)
-    }
-
-    private fun List<BattleSet>.toColumn(): String {
-        return joinToString("\n") { battleSet ->
-            val opponentProfileUrl = "${featureInfo.url}/player/${battleSet.opponent.polarisId}"
-            val opponentLink = "[${battleSet.opponent.name}]($opponentProfileUrl)"
-
-            val summary = "* **${battleSet.score.player}-${battleSet.score.opponent}**: " +
-                    "${battleSet.player.character} v ${battleSet.opponent.character} ($opponentLink); " +
-                    battleSet.battleType.shortcut
-
-            val matchup = battleSet.battleList.joinToString("") { battle ->
-                when (battle.score.outcome) {
-                    Score.Outcome.WIN -> "🟢"
-                    Score.Outcome.LOSE -> "🔴"
-                    Score.Outcome.DRAW -> "🟡"
-                }
-            }
-            "$summary\n   * $matchup"
-        }
-    }
-
-
-    private companion object {
-        const val PINK = 0x9F5FF7
     }
 }
