@@ -18,7 +18,7 @@ internal class DownloadPlayerBattlesUseCase(
     suspend fun invoke(discordId: String): Result<List<Battle>, EwgfError> {
         val player = when (val result = repo.getPlayer(discordId)) {
             is Result.Success -> {
-                result.data ?: return Result.Error(EwgfError.PlayerNotFound(discordId))
+                result.data ?: return Result.Error(EwgfError.PlayerNotRegistered(discordId))
             }
             is Result.Error -> {
                 return Result.Error(EwgfError.PlayerNotFound(discordId))
