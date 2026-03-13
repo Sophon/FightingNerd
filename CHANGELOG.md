@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v10.4.0] - 2026-03-13
+- move input can now include spaces
+
 ## [v10.3.0] - 2026-03-12
 - `EWGF`
   - displays Type
