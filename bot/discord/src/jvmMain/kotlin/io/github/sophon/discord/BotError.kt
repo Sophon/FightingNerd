@@ -9,7 +9,6 @@ sealed class BotError(private vararg val inputs: String) : Error {
     class GlossaryTermNotFound(input: String) : BotError(input)
     class DownloadError(input: String) : BotError(input)
     class BotLogicError(vararg inputs: String) : BotError(*inputs)
-    class EmptyDatabase : BotError()
     class UnsupportedGame(vararg inputs: String): BotError(*inputs)
     class Kord(error: String): BotError(error)
     class InvalidSteamLobbyUrl(steamLobbyUrl: String): BotError(steamLobbyUrl)
@@ -17,6 +16,7 @@ sealed class BotError(private vararg val inputs: String) : Error {
     class PlayerNotRegistered : BotError()
 
     class FileError(vararg errors: String) : BotError(*errors)
+    class DatabaseError : BotError()
 
     class Unknown(input: String = "") : BotError(input)
 

@@ -73,12 +73,15 @@ class InMemoryMoveListDB: MoveListDB {
             aliasMap[moveId] = moveId
 
             move.aliases.forEach { alias ->
-                aliasMap[alias] = moveId
+                aliasMap[alias.replace(" ", "")] = moveId
             }
 
-            move.name?.lowercase()?.let { name ->
-                aliasMap[name] = moveId
-            }
+            move.name
+                ?.lowercase()
+                ?.replace(" ", "")
+                ?.let { name ->
+                    aliasMap[name] = moveId
+                }
         }
 
         moveAliasMap[character.id] = aliasMap
@@ -87,7 +90,7 @@ class InMemoryMoveListDB: MoveListDB {
 
         charNameAliasMap[character.id] = character.id
         character.aliasList.forEach { alias ->
-            charNameAliasMap.putIfAbsent(alias, character.id)
+            charNameAliasMap.putIfAbsent(alias.replace(" ", ""), character.id)
         }
 
         return Result.Success(Unit)

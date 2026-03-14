@@ -21,7 +21,7 @@ internal class SearchGlossaryUseCase(
             is Result.Error -> {
                 Napier.e(tag = TAG) { result.error.toString() }
                 startGlossaryUseCase.invoke()
-                Result.Error(BotError.EmptyDatabase())
+                Result.Error(BotError.DatabaseError())
             }
         }
     }

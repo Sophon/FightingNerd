@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v10.5.0] - 2026-03-14
+- `fd` - fixed not being able to search by move name or alias
+- remove redundant EWGF command
+
 ## [v10.4.1] - 2026-03-13
 - `EWGF` - fixed the game order within a set
 
