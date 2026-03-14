@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v10.5.1] - TODO
+- guard Discord command registration and cleanup
+
 ## [v10.5.0] - 2026-03-14
 - `fd` - fixed not being able to search by move name or alias
 - remove redundant EWGF command
