@@ -103,7 +103,7 @@ internal class DiscordBotImpl(
         kord.on<ButtonInteractionCreateEvent> {
             handleButtonInteractionUseCase.invoke(interaction, editableEmbedMap, coroutineScope)
                 .onError { error ->
-                    Napier.e(tag = TAG) { "Button interaction error: $error" }
+                    Napier.e(tag = TAG) { "${interaction.data.guildId} → Button interaction: $error" }
                 }
         }
 
