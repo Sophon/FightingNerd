@@ -53,6 +53,7 @@ internal class ResultToEmbedUseCase(
                     invoke(
                         embedBuilder = botOutput.primaryEmbedBuilder,
                         coroutineScope = coroutineScope,
+                        source = source,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
                     ).onError { Napier.e(tag = TAG) { "embed: $it" } }
@@ -121,6 +122,7 @@ internal class ResultToEmbedUseCase(
                     invoke(
                         embedBuilder = botOutput.primaryEmbedBuilder,
                         coroutineScope = coroutineScope,
+                        source = source,
                         imageList = botOutput.images,
                         buttons = botOutput.buttons,
                     ).onError { Napier.e(tag = TAG) { "embed: $it" } }
