@@ -10,6 +10,7 @@ import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.interaction.ButtonInteraction
 import dev.kord.rest.builder.message.embed
+import dev.kord.rest.request.KtorRequestException
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
@@ -157,6 +158,8 @@ internal class HandleButtonInteractionUseCase(
             }
 
             Result.Success(Unit)
+        } catch (e: KtorRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
         } catch (e: Exception) {
             Result.Error(BotError.Unknown(e.toString()))
         }
@@ -196,5 +199,10 @@ internal class HandleButtonInteractionUseCase(
         } catch (e: Exception) {
             Result.Error(BotError.Unknown(e.toString()))
         }
+    }
+
+
+    private companion object {
+        const val TAG = "HandleButtonInteractionUseCase"
     }
 }
