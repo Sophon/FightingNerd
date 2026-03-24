@@ -15,6 +15,7 @@ internal fun MoveListResponseDto.toDomain(
     return cargoQuery.map { wrapper ->
         val dto = wrapper.title
 
+        val type = dto.getType()
         val move = Move(
             charName = dto.chara,
             id = dto.moveId,
@@ -55,7 +56,7 @@ internal fun MoveListResponseDto.toDomain(
             ),
 
             sf6Properties = Move.SF6Properties(
-                type = dto.moveType,
+                type = type,
                 images = dto.images.takeIfNotTemplate()
                     ?.split(",")
                     ?.map { it.trim() },
@@ -105,6 +106,19 @@ private fun String?.extractNotes(): List<String> {
         ?.split(";")
         ?.map { it.trim() }
         ?: emptyList()
+}
+
+private fun MoveDto.getType(): Move.SF6Properties.Type? {
+    return when (moveType.lowercase()) {
+        "ground_normal" -> Move.SF6Properties.Type.GROUND_NORMAL
+        "air_normal" -> Move.SF6Properties.Type.AIR_NORMAL
+        "special" -> Move.SF6Properties.Type.SPECIAL
+        "super" -> Move.SF6Properties.Type.SUPER
+        "throw" -> Move.SF6Properties.Type.THROW
+        "drive" -> Move.SF6Properties.Type.DRIVE
+        "taunt" -> Move.SF6Properties.Type.TAUNT
+        else -> null
+    }
 }
 
 //https://wiki.supercombo.gg/w/Street_Fighter_6/Blanka#Electric_Thunder_(214P)
