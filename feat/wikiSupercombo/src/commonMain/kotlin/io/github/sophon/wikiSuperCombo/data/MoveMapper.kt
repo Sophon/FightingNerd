@@ -35,6 +35,8 @@ internal fun MoveListResponseDto.toDomain(
             cancel = dto.cancel.takeIfNotTemplate(),
             invulnerability = dto.invuln.takeIfNotTemplate()?.cleanHtml(),
 
+            aliases = dto.formAliases(type),
+
             urls = Move.Urls(
                 characterImage = characterData.imageUrl,
                 moveImageList = dto.images
@@ -144,4 +146,45 @@ internal fun formMoveWikiUrl(
         }
         else -> WIKI_BASE_URL
     }
+}
+
+private fun MoveDto.formAliases(type: Move.SF6Properties.Type?): List<String> {
+    val alias = when (type) {
+        Move.SF6Properties.Type.SUPER -> {
+            this.damage.formSuperLevel()
+        }
+        else -> this.input.formMotionInput()
+    }
+
+    return alias?.let { listOf(it) } ?: listOf()
+}
+
+private fun String?.formSuperLevel(): String? {
+    try {
+        val damageInt = this?.toInt() ?: return null
+        val level = when {
+            damageInt <= 2000 -> "sa1"
+            damageInt >= 4000 -> "sa3"
+            else -> "sa2"
+        }
+
+        return level
+    } catch (_: Exception) {
+        return null
+    }
+}
+
+private fun String?.formMotionInput(): String? {
+    val motion = when {
+        this == null -> return null
+        this.startsWith("41236") -> this.replaceFirst("41236", "hcf")
+        this.startsWith("63214") -> this.replaceFirst("63214", "hcb")
+        this.startsWith("214") -> this.replaceFirst("214", "qcb")
+        this.startsWith("236") -> this.replaceFirst("236", "qcf")
+        this.startsWith("623") -> this.replaceFirst("623", "dp")
+        this.startsWith("421") -> this.replaceFirst("421", "bdp")
+        else -> return null
+    }
+
+    return motion
 }
