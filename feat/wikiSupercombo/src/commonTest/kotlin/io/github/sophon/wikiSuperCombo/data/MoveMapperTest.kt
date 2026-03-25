@@ -8,6 +8,7 @@ import kotlin.test.Test
 class MoveMapperTest {
     val gameIdSF6 = "Street_Fighter_6"
     val gameIdMK1 = "Mortal_Kombat_1"
+    val emptyCharData = DownloadMoveListUseCase.CharacterData("", null)
     
     //region formMoveWikiUrl
     @Test
@@ -54,6 +55,19 @@ class MoveMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `formUrl handles Blanka rolling cannon`() {
+        // given
+        val move = MoveSource.rollingCannon
+        val expected = ""
+
+        // when
+        val result = move.toDomain(gameIdSF6, emptyCharData, emptyMap())
+
+        //then
+        assertThat(result.urls.wikiUrl).isEqualTo(expected)
+    }
     //endregion
 
     //region Aliases
@@ -66,7 +80,7 @@ class MoveMapperTest {
         // when
         val result = hadoken.toDomain(
             gameIdSF6,
-            characterData = DownloadMoveListUseCase.CharacterData("", null),
+            characterData = emptyCharData,
             imageUrlMap = emptyMap(),
         )
 
@@ -83,7 +97,7 @@ class MoveMapperTest {
         // when
         val result = sa1.toDomain(
             gameIdSF6,
-            characterData = DownloadMoveListUseCase.CharacterData("", null),
+            characterData = emptyCharData,
             imageUrlMap = emptyMap(),
         )
 
@@ -100,7 +114,7 @@ class MoveMapperTest {
         // when
         val result = ca.toDomain(
             gameIdSF6,
-            characterData = DownloadMoveListUseCase.CharacterData("", null),
+            characterData = emptyCharData,
             imageUrlMap = emptyMap(),
         )
 
@@ -286,5 +300,49 @@ private object MoveSource {
         projSpeed = null,
         atkRange = "1.131 (1st)",
         notes = "1st hit leads to full animation (non-cinematic damage varies based on juggle height, and allows a follow-up juggle); 2 hits whiff on crouch block (reduced chip, slightly worse advantage); available at 25% HP or below; cinematic time regenerates ~2.1 Drive bars for Ken",
+    )
+    val rollingCannon = MoveDto(
+        moveId = "blanka_xp",
+        moveType = "super",
+        chara = "Blanka",
+        input = "Any Direction + P (during SA2)",
+        name = "Rolling Cannon",
+        images = "SF6_Blanka_xp.png",
+        hitboxes = "SF6_Blanka_xp_hitbox.png",
+        damage = "400",
+        chip = "100",
+        dmgScaling = null,
+        startup = "3",
+        active = "25",
+        recovery = "7(9) land",
+        total = "-",
+        guard = "LH",
+        cancel = "Sp*",
+        hitconfirm = "41*",
+        hitAdv = "KD~",
+        blockAdv = "-",
+        punishAdv = "KD~",
+        perfParryAdv = "-",
+        DRcancelHit = null,
+        DRcancelBlk = null,
+        afterDRHit = null,
+        afterDRBlk = null,
+        hitstun = null,
+        blockstun = "17 (3P: 18)",
+        hitstop = "15",
+        driveDmgBlk = "1000 each",
+        driveDmgHit = "2000 each",
+        driveGain = "1000 oH (500 oB)",
+        superGainHit = null,
+        superGainBlk = null,
+        invuln = null,
+        armor = null,
+        airborne = null,
+        jugStart = "1",
+        jugIncrease = "2 each",
+        jugLimit = "99",
+        projSpeed = null,
+        atkRange = null,
+        notes = "Special move follow-up available during SA2 only (depletes 200f or 13.3% of install time); input with any direction; usable after [4]6P, j.[4]6P, [2]8K, or 63214K; puts opponent into limited juggle state; can chain into itself up to 3 times consecutively if the hits connect (this limit resets if Blanka lands before starting another juggle); frame advantage on KD/block/parry varies significantly depending on height and attack angle (can lead to significant block advantage on 3P or 2P versions); total recovery varies significantly based on input direction, but landing recovery is always 7f for 8P/7P/4P/1P and 9f for 2P/3P/6P/9P; activates Blanka-chan doll with electricity (meterless 1-hit version); POTENTIAL BUG: 2P version canceled from minimum-height Aerial Rolling Attack will grant significant frame advantage without consuming any additional install time",
     )
 }
