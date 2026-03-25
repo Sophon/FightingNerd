@@ -23,7 +23,8 @@ internal class PostDailyReportEmbedUseCase(
             }
 
         channel.createEmbed {
-            title = "📊 Daily Report — ${dailyReport.date}"
+            val totalUses = dailyReport.commandMap.values.sumOf { command -> command.values.sum() }
+            title = "📊 Daily Report — ${dailyReport.date} — ${totalUses}x"
             dailyReport.commandMap.forEach { (feature, commands) ->
                 field {
                     name = feature

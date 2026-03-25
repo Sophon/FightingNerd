@@ -36,7 +36,7 @@ internal fun Move.toEntity(): MoveEntity {
         t8isLowCrush = t8Properties?.isLowCrush,
         t8isHighCrush = t8Properties?.isHighCrush,
 
-        sf6Type = sf6Properties?.type,
+        sf6Type = sf6Properties?.type?.name,
         sf6Images = sf6Properties?.images?.joinToString(";"),
         sf6Chip = sf6Properties?.chip,
         sf6DmgScaling = sf6Properties?.dmgScaling,
@@ -107,7 +107,7 @@ internal fun MoveEntity.toDomain(): Move {
         } else null,
         sf6Properties = if (sf6Type != null) {
             Move.SF6Properties(
-                type = sf6Type,
+                type = Move.SF6Properties.Type.valueOf(sf6Type),
                 images = sf6Images?.split(",")?.map { it.trim() },
                 chip = sf6Chip,
                 dmgScaling = sf6DmgScaling,

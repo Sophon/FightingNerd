@@ -103,7 +103,7 @@ internal class DiscordBotImpl(
         kord.on<ButtonInteractionCreateEvent> {
             handleButtonInteractionUseCase.invoke(interaction, editableEmbedMap, coroutineScope)
                 .onError { error ->
-                    Napier.e(tag = TAG) { "Button interaction error: $error" }
+                    Napier.e(tag = TAG) { "${interaction.data.guildId} → Button interaction: $error" }
                 }
         }
 
@@ -126,11 +126,17 @@ internal class DiscordBotImpl(
         Napier.e(tag = TAG) { "⚠️ Login ended (bot disconnected)" }
     }
 
-    private suspend fun cleanOldGuildCommands(kord: Kord) {
+    private suspend fun cleanOldGuildCommands(kord: Kord) = try {
         val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
         kord.getGuildApplicationCommands(testGuildSnowFlake).collect { command ->
-            command.delete()
+            try {
+                command.delete()
+            } catch (e: Exception) {
+                Napier.e(tag = TAG) { "Failed to delete command ${command.name}: ${e.message}" }
+            }
         }
+    } catch(e: Exception) {
+        Napier.e(tag = TAG, throwable = e) { "Failed to delete old commands" }
     }
 
     private suspend fun MessageCreateEvent.handleMessage() {
@@ -202,47 +208,54 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun createGlobalCommands() {
-        kord.createGlobalApplicationCommands {
-            featureList
-                .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
-                .distinctBy {
-                    it.name.lowercase() }
-                .filter { supportedCommand ->
-                    adminCommands.contains(supportedCommand).not()
-                }
-                .forEach { supportedCommand ->
+        try {
+            kord.createGlobalApplicationCommands {
+                featureList
+                    .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
+                    .distinctBy { it.name.lowercase() }
+                    .filter { supportedCommand ->
+                        adminCommands.contains(supportedCommand).not()
+                    }
+                    .forEach { supportedCommand ->
+                        input(
+                            name = supportedCommand.name.lowercase(),
+                            description = supportedCommand.description
+                        ) {
+                            supportedCommand.argumentList.forEach { argument ->
+                                string(name = argument.name, description = argument.description) {
+                                    required = argument.isRequired
+                                }
+                            }
+                        }
+                    }
+            }.collect()
+        } catch (e: Exception) {
+            Napier.e(tag = TAG) { "Failed to create global commands: ${e.message}" }
+        }
+    }
+
+    private suspend fun createAdminCommands() {
+        try {
+            val adminGuildSnowFlake = Snowflake(adminConfig.adminServerId)
+            kord.createGuildApplicationCommands(adminGuildSnowFlake) {
+                adminCommands.forEach { command ->
                     input(
-                        name = supportedCommand.name.lowercase(),
-                        description = supportedCommand.description
+                        name = command.name.lowercase(),
+                        description = command.description
                     ) {
-                        supportedCommand.argumentList.forEach { argument ->
+                        defaultMemberPermissions = Permissions(Permission.Administrator)
+
+                        command.argumentList.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
                             }
                         }
                     }
                 }
-        }.collect()
-    }
-
-    private suspend fun createAdminCommands() {
-        val adminGuildSnowFlake = Snowflake(adminConfig.adminServerId)
-        kord.createGuildApplicationCommands(adminGuildSnowFlake) {
-            adminCommands.forEach { command ->
-                input(
-                    name = command.name.lowercase(),
-                    description = command.description
-                ) {
-                    defaultMemberPermissions = Permissions(Permission.Administrator)
-
-                    command.argumentList.forEach { argument ->
-                        string(name = argument.name, description = argument.description) {
-                            required = argument.isRequired
-                        }
-                    }
-                }
-            }
-        }.collect()
+            }.collect()
+        } catch (e: Exception) {
+            Napier.e(tag = TAG) { "Failed to create admin commands: ${e.message}" }
+        }
     }
 
     private fun monitorGatewayHealth() {

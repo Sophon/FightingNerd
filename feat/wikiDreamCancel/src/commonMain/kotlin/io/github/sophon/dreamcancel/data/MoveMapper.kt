@@ -35,10 +35,10 @@ internal fun MoveDto.toDomain(
     val normalizedInput = this.input
         .orDash()
         .decodeHtmlEntities()
-        .normalize2dInputs()
+        .normalize2dInputs(minimizeClose = false)
         .useForwardVariantOnly()
         .lowercase()
-    val aliasList = normalizedInput.add2dAliases()
+    val aliasList = normalizedInput.add2dAliases() + normalizedInput.addAliasesForMultipleButtons()
 
     val move = Move(
         charName = character.displayName,
@@ -70,4 +70,13 @@ internal fun MoveDto.toDomain(
 
 internal fun formMoveWikiUrl(gameId: String, charName: String, name: String?): String {
     return "${FEATURE_URL}/$gameId/${charName.createQueryName()}/Data#${name.orEmpty().replace(" ", "_")}"
+}
+
+private fun String.addAliasesForMultipleButtons(): List<String> {
+    if (contains("/").not()) return listOf(this)
+
+    val base = substringBefore("/")
+    val buttons = substringAfter("/").map { it.toString() }
+
+    return listOf(base) + buttons.map { base.dropLast(1) + it }
 }

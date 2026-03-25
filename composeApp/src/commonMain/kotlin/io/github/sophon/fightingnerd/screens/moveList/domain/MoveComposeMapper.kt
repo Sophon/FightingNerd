@@ -127,12 +127,15 @@ private fun Move.getProperties(): Set<UiMove.Property> = buildSet {
     }
 }
 
+//TODO: properly convert the type
 private fun Move.type(): String? {
-    return sf6Properties?.type
-        ?.split("_")
-        ?.joinToString(" ") {
-            it.replaceFirstChar(Char::uppercase)
-        }
+    return null
+
+//    return sf6Properties?.type
+//        ?.split("_")
+//        ?.joinToString(" ") {
+//            it.replaceFirstChar(Char::uppercase)
+//        }
 }
 
 private fun Move.getDetails(): List<String> = buildList {

@@ -60,7 +60,7 @@ data class Move(
 
     @Serializable
     data class SF6Properties(
-        val type: String? = null,
+        val type: Type? = null,
         val images: List<String>? = null,
         val chip: String? = null,
         val dmgScaling: String? = null,
@@ -87,7 +87,17 @@ data class Move(
         val jugLimit: String? = null,
         val projectileSpeed: String? = null,
         val attackRange: String? = null,
-    )
+    ) {
+        enum class Type {
+            GROUND_NORMAL,
+            AIR_NORMAL,
+            SPECIAL,
+            SUPER,
+            THROW,
+            DRIVE,
+            TAUNT,
+        }
+    }
 
     @Serializable
     data class KOF15Properties(

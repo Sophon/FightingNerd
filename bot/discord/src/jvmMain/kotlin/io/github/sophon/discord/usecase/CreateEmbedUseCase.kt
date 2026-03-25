@@ -12,6 +12,7 @@ import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.BotError
@@ -20,6 +21,7 @@ import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.BotOutput.ButtonSet
+import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -38,6 +40,7 @@ internal class CreateEmbedUseCase(
     suspend fun MessageCreateEvent.invoke(
         embedBuilder: EmbedBuilder.() -> Unit,
         coroutineScope: CoroutineScope,
+        source: Source,
         fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
         buttons: ButtonSet? = null,
@@ -71,8 +74,10 @@ internal class CreateEmbedUseCase(
                 if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                     coroutineScope.launch {
                         delay(duration)
-                        message.edit {
-                            components = mutableListOf()
+                        runCatching {
+                            message.edit { components = mutableListOf() }
+                        }.onFailure { error ->
+                            Napier.e(tag = TAG) { "${source.serverName}: ${error.message}" }
                         }
                     }
                 }
@@ -93,6 +98,7 @@ internal class CreateEmbedUseCase(
     suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
         embedBuilder: EmbedBuilder.() -> Unit,
         coroutineScope: CoroutineScope,
+        source: Source,
         imageList: BotOutput.Images? = null,
         buttons: ButtonSet? = null,
         isEphemeral: Boolean = false,
@@ -106,6 +112,7 @@ internal class CreateEmbedUseCase(
                         uuid = uuid,
                         primaryEmbed = embedBuilder,
                         coroutineScope = coroutineScope,
+                        source = source,
                         interaction = interaction,
                         buttons = buttons,
                         imageList = imageList,
@@ -117,6 +124,7 @@ internal class CreateEmbedUseCase(
                         uuid = uuid,
                         primaryEmbed = embedBuilder,
                         coroutineScope = coroutineScope,
+                        source = source,
                         interaction = interaction,
                         buttons = buttons,
                         imageList = imageList,
@@ -140,6 +148,7 @@ internal class CreateEmbedUseCase(
         uuid: Uuid,
         primaryEmbed: EmbedBuilder.() -> Unit,
         coroutineScope: CoroutineScope,
+        source: Source,
         interaction: GuildChatInputCommandInteraction,
         buttons: ButtonSet? = null,
         imageList: BotOutput.Images? = null,
@@ -156,8 +165,12 @@ internal class CreateEmbedUseCase(
             if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                 coroutineScope.launch {
                     delay(buttons.duration)
-                    interaction.getOriginalInteractionResponse().edit {
-                        components = mutableListOf()
+                    runCatching {
+                        interaction.getOriginalInteractionResponse().edit {
+                            components = mutableListOf()
+                        }
+                    }.onFailure { error ->
+                        Napier.e(tag = TAG) { "${source.serverName}: ${error.message}" }
                     }
                 }
             }
@@ -170,5 +183,10 @@ internal class CreateEmbedUseCase(
                 image = url
             }
         }
+    }
+
+
+    private companion object {
+        const val TAG = "CreateEmbedUseCase"
     }
 }

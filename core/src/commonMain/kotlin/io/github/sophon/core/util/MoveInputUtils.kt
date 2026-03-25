@@ -18,21 +18,28 @@ fun String.createAliasesFromSlash(
     return aliases
 }
 
-fun String.normalize2dInputs(): String {
+fun String.normalize2dInputs(minimizeClose: Boolean = true): String {
     var result = this
         .trim()
         .lowercase()
-        .replace(" ", "")
         .replace(" or ", "/")
+        .replace(" ", "")
 
-    val replacementTable = listOf(
+    val replacementTable = mutableListOf(
         "(close)" to "c.",
-        "cl." to "c.",
-        "cl" to "c.",
-        "c" to "c.",
         "f" to "f.",
         "j" to "j.",
     )
+
+    if (minimizeClose) {
+        replacementTable.addAll(
+            listOf(
+                "cl." to "c.",
+                "cl" to "c.",
+                "c" to "c.",
+            )
+        )
+    }
 
     for ((old, new) in replacementTable) {
         if (result.startsWith(old) && result.startsWith(new).not()) {
