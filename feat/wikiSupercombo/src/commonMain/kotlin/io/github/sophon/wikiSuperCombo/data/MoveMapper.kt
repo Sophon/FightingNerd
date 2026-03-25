@@ -150,15 +150,20 @@ internal fun formMoveWikiUrl(
 
 private fun MoveDto.formAliases(type: Move.SF6Properties.Type?): List<String> {
     val alias = when (type) {
-        Move.SF6Properties.Type.SUPER -> this.superGainHit.formSuperLevel()
+        Move.SF6Properties.Type.SUPER -> formSuperLevel(moveId, superGainHit)
         else -> this.input.formMotionInput()
     }
 
     return alias?.let { listOf(it) } ?: listOf()
 }
 
-private fun String?.formSuperLevel(): String? {
-    val superCost = this?.toIntOrNull() ?: return null
+private fun formSuperLevel(
+    moveId: String,
+    superGain: String?,
+): String? {
+    if (moveId.contains("(ca)", ignoreCase = true)) return null
+    val superCost = superGain?.toIntOrNull() ?: return null
+
     return when (superCost) {
         -10_000 -> "sa1"
         -20_000 -> "sa2"
