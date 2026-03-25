@@ -1,12 +1,15 @@
 # BOT CHANGELOG
 
 ## [v11.0.0] - 2026-03-25
-- guard Discord command registration and cleanup
-- guard Kord embed creation and button interactions
 - `stats` - show the total bot usage count
 - `SuperCombo`
   - now supports motion inputs for SF
   - fixed Blanka's Rolling Cannon embed
+- `DreamCancel` 
+  - fixed issue multi-button ie
+    - `236236b/d` now can be queried with both `236236b` or `236236d`
+- guard Discord command registration and cleanup
+- guard Kord embed creation and button interactions
 - fixed `cl` input error
 
 ## [v10.5.0] - 2026-03-14
