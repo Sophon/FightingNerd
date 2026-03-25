@@ -91,7 +91,7 @@ private fun getApiKey(): String {
     // fall back to config file (for local development)
     val configFile = File(CONFIG_FILE_NAME)
     if (configFile.exists().not()) {
-        throw IllegalStateException("No API key found. Set DISCORD_API_KEY env var or create $CONFIG_FILE_NAME")
+        throw IllegalStateException("No API key found. Set $ENV_API_DISCORD env var or create $CONFIG_FILE_NAME")
     }
 
     val json = Json {

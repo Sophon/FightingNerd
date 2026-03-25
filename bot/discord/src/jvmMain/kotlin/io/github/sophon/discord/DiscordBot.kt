@@ -126,7 +126,7 @@ internal class DiscordBotImpl(
         Napier.e(tag = TAG) { "⚠️ Login ended (bot disconnected)" }
     }
 
-    private suspend fun cleanOldGuildCommands(kord: Kord) {
+    private suspend fun cleanOldGuildCommands(kord: Kord) = try {
         val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
         kord.getGuildApplicationCommands(testGuildSnowFlake).collect { command ->
             try {
@@ -135,6 +135,8 @@ internal class DiscordBotImpl(
                 Napier.e(tag = TAG) { "Failed to delete command ${command.name}: ${e.message}" }
             }
         }
+    } catch(e: Exception) {
+        Napier.e(tag = TAG, throwable = e) { "Failed to delete old commands" }
     }
 
     private suspend fun MessageCreateEvent.handleMessage() {
