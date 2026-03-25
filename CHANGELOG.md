@@ -6,6 +6,7 @@
 - `stats` - show the total bot usage count
 - SuperCombo
   - now supports motion inputs for SF
+  - fixed Blanka's Rolling Cannon embed
 
 ## [v10.5.0] - 2026-03-14
 - `fd` - fixed not being able to search by move name or alias
