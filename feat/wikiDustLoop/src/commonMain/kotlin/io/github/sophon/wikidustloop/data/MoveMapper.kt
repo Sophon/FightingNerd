@@ -17,102 +17,114 @@ internal fun MoveListResponseDto.toDomain(
 ): List<Move> {
     return cargoQuery.map { wrapper ->
         val dto = wrapper.title
-        val normalizedInput = dto.input
-            .orDash()
-            .normalize2dInputs()
-        val aliases = formAliases(
-            gameId = gameId,
-            input = normalizedInput,
-            charName = dto.chara,
-        )
-
-        val move = Move(
-            charName = dto.chara.orEmpty().cleanHtml(),
-            id = normalizedInput.formMoveId(dto.chara),
-            name = dto.name?.cleanHtml(),
-
-            input = normalizedInput,
-            damage = dto.damage?.cleanHtml(),
-            startup = dto.startup?.cleanHtml(),
-            onBlock = dto.onBlock?.cleanHtml(),
-            onHit = dto.onHit?.cleanHtml(),
-            onCH = dto.counter?.cleanHtml(),
-            active = dto.active?.cleanHtml(),
-            cancel = dto.cancel?.cleanHtml(),
-            recovery = dto.recovery?.cleanHtml(),
-            guard = dto.guard?.cleanHtml(),
-            invulnerability = dto.invuln?.cleanHtml(),
-            aliases = aliases,
-
-            notes = dto.notes.formNotes(),
-
-            urls = Move.Urls(
-                characterImage = characterData.imageUrl,
-                hitboxImageList = dto.hitboxes
-                    .orEmpty()
-                    .split(";", "\\")
-                    .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
-                moveImageList = dto.images
-                    .orEmpty()
-                    .split(";", "\\")
-                    .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
-                wikiUrl = formMoveWikiUrl(gameId, dto),
-            ),
-
-            ggstProperties = Move.GGSTProperties(
-                chara = dto.chara,
-                name = dto.name,
-                damage = dto.damage,
-                type = dto.type,
-                riscGain = dto.riscGain,
-                riscLoss = dto.riscLoss,
-                wallDamage = dto.wallDamage,
-                inputTension = dto.inputTension,
-                chipRatio = dto.chipRatio,
-                otgType = dto.OTGType,
-                prorate = dto.prorate,
-                cancel = dto.cancel,
-                level = dto.level,
-            ),
-            dbfzProperties = Move.DBFZProperties(
-                attribute = dto.attribute,
-                smash = dto.smash,
-                kiGain = dto.kigain,
-                prorate = dto.prorate,
-                blockStun = dto.blockstun,
-                groundHit = dto.groundHit,
-                airHit = dto.airHit,
-                type = dto.type,
-                level = dto.level,
-            ),
-            gbvsrProperties = Move.GBVSRProperties(
-                meter = dto.meter,
-                level = dto.level,
-                cooldown = dto.cooldown,
-                cls = dto.cls,
-                type = dto.type,
-            ),
-            bbProperties = Move.BBProperties(
-                onODR = dto.onODR,
-                attribute = dto.attribute,
-                p1 = dto.p1,
-                p2 = dto.p2,
-                starter = dto.starter,
-                level = dto.level,
-                blockstun = dto.blockstun,
-                groundHit = dto.groundHit,
-                airHit = dto.airHit,
-                groundCH = dto.groundCH,
-                airCH = dto.airCH,
-                blockstop = dto.blockstop,
-                hitstop = dto.hitstop,
-                chStop = dto.CHstop,
-                cancelTiming = dto.cancelTiming,
-                type = dto.type,
-            )
+        val move = dto.toDomain(
+            gameId,
+            characterData,
+            imageUrlMap,
         )
         move
     }
+}
+
+internal fun MoveDto.toDomain(
+    gameId: String,
+    characterData: DownloadMoveListUseCase.CharacterData,
+    imageUrlMap: Map<String, String>,
+): Move {
+    val normalizedInput = input
+        .orDash()
+        .normalize2dInputs(normalizeClose = false)
+    val aliases = formAliases(
+        gameId = gameId,
+        input = normalizedInput,
+        charName = chara,
+    )
+
+    return Move(
+        charName = chara.orEmpty().cleanHtml(),
+        id = normalizedInput.formMoveId(chara),
+        name = name?.cleanHtml(),
+
+        input = normalizedInput,
+        damage = damage?.cleanHtml(),
+        startup = startup?.cleanHtml(),
+        onBlock = onBlock?.cleanHtml(),
+        onHit = onHit?.cleanHtml(),
+        onCH = counter?.cleanHtml(),
+        active = active?.cleanHtml(),
+        cancel = cancel?.cleanHtml(),
+        recovery = recovery?.cleanHtml(),
+        guard = guard?.cleanHtml(),
+        invulnerability = invuln?.cleanHtml(),
+        aliases = aliases,
+
+        notes = notes.formNotes(),
+
+        urls = Move.Urls(
+            characterImage = characterData.imageUrl,
+            hitboxImageList = hitboxes
+                .orEmpty()
+                .split(";", "\\")
+                .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
+            moveImageList = images
+                .orEmpty()
+                .split(";", "\\")
+                .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
+            wikiUrl = formMoveWikiUrl(gameId, this),
+        ),
+
+        ggstProperties = Move.GGSTProperties(
+            chara = chara,
+            name = name,
+            damage = damage,
+            type = type,
+            riscGain = riscGain,
+            riscLoss = riscLoss,
+            wallDamage = wallDamage,
+            inputTension = inputTension,
+            chipRatio = chipRatio,
+            otgType = OTGType,
+            prorate = prorate,
+            cancel = cancel,
+            level = level,
+        ),
+        dbfzProperties = Move.DBFZProperties(
+            attribute = attribute,
+            smash = smash,
+            kiGain = kigain,
+            prorate = prorate,
+            blockStun = blockstun,
+            groundHit = groundHit,
+            airHit = airHit,
+            type = type,
+            level = level,
+        ),
+        gbvsrProperties = Move.GBVSRProperties(
+            meter = meter,
+            level = level,
+            cooldown = cooldown,
+            cls = cls,
+            type = type,
+        ),
+        bbProperties = Move.BBProperties(
+            onODR = onODR,
+            attribute = attribute,
+            p1 = p1,
+            p2 = p2,
+            starter = starter,
+            level = level,
+            blockstun = blockstun,
+            groundHit = groundHit,
+            airHit = airHit,
+            groundCH = groundCH,
+            airCH = airCH,
+            blockstop = blockstop,
+            hitstop = hitstop,
+            chStop = CHstop,
+            cancelTiming = cancelTiming,
+            type = type,
+        )
+    )
 }
 
 internal fun String?.formMoveId(charName: String?): String {
