@@ -18,7 +18,7 @@ fun String.createAliasesFromSlash(
     return aliases
 }
 
-fun String.normalize2dInputs(normalizeClose: Boolean = true): String {
+fun String.normalize2dInputs(minimizeClose: Boolean = true): String {
     var result = this
         .trim()
         .lowercase()
@@ -31,7 +31,7 @@ fun String.normalize2dInputs(normalizeClose: Boolean = true): String {
         "j" to "j.",
     )
 
-    if (normalizeClose) {
+    if (minimizeClose) {
         replacementTable.addAll(
             listOf(
                 "cl." to "c.",

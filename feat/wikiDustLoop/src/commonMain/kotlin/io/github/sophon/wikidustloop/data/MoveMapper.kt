@@ -33,7 +33,7 @@ internal fun MoveDto.toDomain(
 ): Move {
     val normalizedInput = input
         .orDash()
-        .normalize2dInputs(normalizeClose = false)
+        .normalize2dInputs()
     val aliases = formAliases(
         gameId = gameId,
         input = normalizedInput,
