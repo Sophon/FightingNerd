@@ -137,6 +137,10 @@ internal fun formMoveWikiUrl(
     input: String,
     name: String?,
 ): String {
+    if (input.contains("direction", ignoreCase = true)) return ""
+
+    val input = input
+        .replace(" ", "_")
     val moveId = if (name.isNullOrBlank().not()) {
         "${name.replace(" ", "_")}_($input)"
     } else {
@@ -144,7 +148,7 @@ internal fun formMoveWikiUrl(
     }
     val charQueryName = charName.replace(" ", "_")
 
-    return when (gameId) {
+    val url = when (gameId) {
         Game.StreetFighter6.id -> {
             "${WIKI_BASE_URL}/$gameId/$charQueryName#$moveId"
         }
@@ -153,6 +157,8 @@ internal fun formMoveWikiUrl(
         }
         else -> WIKI_BASE_URL
     }
+
+    return url
 }
 
 private fun MoveDto.formAliases(type: Move.SF6Properties.Type?): List<String> {
