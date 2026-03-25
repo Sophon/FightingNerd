@@ -1,12 +1,13 @@
 # BOT CHANGELOG
 
-## [v10.5.1] - TODO
+## [v11.0.0] - 2026-03-25
 - guard Discord command registration and cleanup
 - guard Kord embed creation and button interactions
 - `stats` - show the total bot usage count
-- SuperCombo
+- `SuperCombo`
   - now supports motion inputs for SF
   - fixed Blanka's Rolling Cannon embed
+- fixed `cl` input error
 
 ## [v10.5.0] - 2026-03-14
 - `fd` - fixed not being able to search by move name or alias
