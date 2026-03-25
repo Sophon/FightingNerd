@@ -150,9 +150,7 @@ internal fun formMoveWikiUrl(
 
 private fun MoveDto.formAliases(type: Move.SF6Properties.Type?): List<String> {
     val alias = when (type) {
-        Move.SF6Properties.Type.SUPER -> {
-            this.damage.formSuperLevel()
-        }
+        Move.SF6Properties.Type.SUPER -> this.superGainHit.formSuperLevel()
         else -> this.input.formMotionInput()
     }
 
@@ -160,17 +158,11 @@ private fun MoveDto.formAliases(type: Move.SF6Properties.Type?): List<String> {
 }
 
 private fun String?.formSuperLevel(): String? {
-    try {
-        val damageInt = this?.toInt() ?: return null
-        val level = when {
-            damageInt <= 2000 -> "sa1"
-            damageInt >= 4000 -> "sa3"
-            else -> "sa2"
-        }
-
-        return level
-    } catch (_: Exception) {
-        return null
+    val superCost = this?.toIntOrNull() ?: return null
+    return when (superCost) {
+        -10_000 -> "sa1"
+        -20_000 -> "sa2"
+        else -> "sa3"
     }
 }
 
@@ -183,6 +175,7 @@ private fun String?.formMotionInput(): String? {
         this.startsWith("236") -> this.replaceFirst("236", "qcf")
         this.startsWith("623") -> this.replaceFirst("623", "dp")
         this.startsWith("421") -> this.replaceFirst("421", "bdp")
+        this.startsWith("360") -> this.replaceFirst("360", "spd")
         else -> return null
     }
 
