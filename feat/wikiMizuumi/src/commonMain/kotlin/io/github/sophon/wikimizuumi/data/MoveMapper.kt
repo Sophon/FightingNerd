@@ -115,10 +115,6 @@ internal fun MoveDto.toDomain(
         .decodeHtmlEntities()
         .normalize2dInputs()
 
-    if (input == "j4/6AD") {
-        val a = 3
-    }
-
     val move = Move(
         charName = this.chara,
         id = moveId,
