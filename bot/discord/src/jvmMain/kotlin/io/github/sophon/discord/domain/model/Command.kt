@@ -531,6 +531,7 @@ internal sealed class Command(
             Argument(
                 name = "operation",
                 description = "Register | Update | Unregister",
+                isRequired = false,
             ),
             Argument(
                 name = "polarisid",
