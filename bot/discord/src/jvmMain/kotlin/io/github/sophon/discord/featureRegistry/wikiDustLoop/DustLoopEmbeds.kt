@@ -156,13 +156,6 @@ internal fun moveEmbedBuilderGG(
     generalInfoMove(move = move, displayHitboxes = false)
     generalPropertiesMove(move)
 
-    optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
-    optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
-    optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
-    optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
-    optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
-    optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
-
     featureFooter(featureInfo)
 }
 
@@ -171,6 +164,13 @@ internal fun moveDetailedEmbedBuilderGG(
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     moveEmbedBuilderGG(move, featureInfo).invoke(this)
+
+    optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
+    optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
+    optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
+    optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
+    optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
+    optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
 
     val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
         ?: emptyList()
