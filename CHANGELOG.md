@@ -6,6 +6,9 @@
   - fixed `360` inputs requiring `+`
 - `DustLoop`
   - split move properties to basic and detailed
+- `ewgf`
+  - fixed slash command not showing the set list
+  - `help` (alt input `?`) operation
 
 ## [v11.0.0] - 2026-03-25
 - `stats` - show the total bot usage count
