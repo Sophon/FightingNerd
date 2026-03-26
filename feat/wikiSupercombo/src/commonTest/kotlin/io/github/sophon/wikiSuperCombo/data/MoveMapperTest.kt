@@ -135,6 +135,21 @@ class MoveMapperTest {
         assertThat(result.aliases).isEqualTo(expected)
     }
     //endregion
+
+    @Test
+    fun `toDomain fixes SPD input`() {
+        // given
+        val move = MoveSource.spd
+        val expectedInput = "360hp"
+        val expectedAliases = listOf("spdhp")
+
+        // when
+        val result = move.toDomain(gameIdSF6, emptyCharData, emptyMap())
+
+        //then
+        assertThat(result.input).isEqualTo(expectedInput)
+        assertThat(result.aliases).isEqualTo(expectedAliases)
+    }
 }
 
 private object MoveSource {
@@ -401,5 +416,49 @@ private object MoveSource {
         projSpeed = null,
         atkRange = "1.148",
         notes = "Forces stand; decent anti-air (cannot hit cross-up); only first 2 active frames are cancelable; Run~Stop cancel: +3/-10",
+    )
+    val spd = MoveDto(
+        moveId = "zangief_360hp",
+        moveType = "special",
+        chara = "Zangief",
+        input = "360+HP",
+        name = "Screw Piledriver",
+        images = "SF6_Zangief_360hp.png",
+        hitboxes = "SF6_Zangief_360hp_hitbox.png",
+        damage = "3300 (3795)",
+        chip = null,
+        dmgScaling = "10% Immediate",
+        startup = "5",
+        active = "3",
+        recovery = "54",
+        total = "61",
+        guard = "T",
+        cancel = "-",
+        hitconfirm = null,
+        hitAdv = "HKD +28",
+        blockAdv = "-",
+        punishAdv = "HKD +28",
+        perfParryAdv = null,
+        DRcancelHit = null,
+        DRcancelBlk = null,
+        afterDRHit = null,
+        afterDRBlk = null,
+        hitstun = null,
+        blockstun = null,
+        hitstop = null,
+        driveDmgBlk = null,
+        driveDmgHit = "[10000]",
+        driveGain = "7000",
+        superGainHit = "4000 (2800)",
+        superGainBlk = null,
+        invuln = null,
+        armor = null,
+        airborne = null,
+        jugStart = null,
+        jugIncrease = null,
+        jugLimit = null,
+        projSpeed = null,
+        atkRange = "1.22",
+        notes = "Can be input up to 6th jump frame; () refers to Punish Counter damage; highest damage for meterless SPD but shortest range",
     )
 }
