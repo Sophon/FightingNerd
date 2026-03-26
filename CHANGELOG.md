@@ -4,6 +4,8 @@
 - `SuperCombo`
   - add `cr` motion input support
   - fixed `360` inputs requiring `+`
+- `DustLoop`
+  - split move properties to basic and detailed
 
 ## [v11.0.0] - 2026-03-25
 - `stats` - show the total bot usage count

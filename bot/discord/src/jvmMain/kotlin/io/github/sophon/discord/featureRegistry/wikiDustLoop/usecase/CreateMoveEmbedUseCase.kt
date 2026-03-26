@@ -4,6 +4,7 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.featureRegistry.wikiDustLoop.moveDetailedEmbedBuilderBB
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.moveDetailedEmbedBuilderGG
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.moveEmbedBuilderBB
 import io.github.sophon.discord.featureRegistry.wikiDustLoop.moveEmbedBuilderDB
@@ -57,8 +58,18 @@ internal class CreateMoveEmbedUseCase {
             }
             Game.BBCF -> {
                 BotOutput(
-                    primaryEmbedBuilder = moveEmbedBuilderBB(move, featureInfo),
+                    mutableEmbedBuilder = BotOutput.MutableEmbedBuilder(
+                        primaryBuilder = moveEmbedBuilderBB(move, featureInfo),
+                        manualEditBuilder = moveDetailedEmbedBuilderBB(move, featureInfo)
+                    ),
                     images = images,
+                    buttons = BotOutput.ButtonSet(
+                        buttonList = listOf(
+                            BotOutput.EmbedButton(
+                                label = "Details", action = BotOutput.EmbedButton.Action.Edit()
+                            ),
+                        )
+                    ),
                 )
             }
             else -> BotOutput(primaryEmbedBuilder = {})

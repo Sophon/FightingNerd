@@ -96,3 +96,13 @@ internal fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton>
         )
     }
 }
+
+internal fun hitboxImages(
+    urls: Move.Urls
+): EmbedBuilder.() -> Unit = {
+    val images = urls.hitboxImageList.takeIf { it.isNotEmpty() }
+        ?: emptyList()
+    images
+        .takeIf { it.size == 1 }
+        ?.let { image = it.first() }
+}
