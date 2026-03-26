@@ -7,6 +7,7 @@ internal object EwgfOperations {
         data object Data: Operation()
         data class Update(val polarisId: String): Operation()
         data object Unregister: Operation()
+        data class Search(val discordId: String): Operation()
     }
 
     fun findOperation(alias: String, data: String): Operation? {
@@ -15,9 +16,9 @@ internal object EwgfOperations {
     }
 
     private val dictionary = listOf(
+        listOf("?", "help") to { _: String -> Operation.Help },
         listOf("+", "register") to { polarisId: String -> Operation.Register(polarisId) },
         listOf("update") to { polarisId: String -> Operation.Update(polarisId) },
         listOf("-", "unregister") to { _: String -> Operation.Unregister },
-        listOf("?", "help") to { _: String -> Operation.Help }
     )
 }
