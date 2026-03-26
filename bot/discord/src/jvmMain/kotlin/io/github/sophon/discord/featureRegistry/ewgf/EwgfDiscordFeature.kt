@@ -54,6 +54,10 @@ internal class EwgfDiscordFeature(
         operation: EwgfOperations.Operation,
     ): Result<BotOutput, BotError> {
         val result = when (operation) {
+            is EwgfOperations.Operation.Help -> {
+                Result.Success(ewgfHelpEmbed(featureInfo))
+            }
+
             is EwgfOperations.Operation.Register -> {
                 registerPlayerUseCase.invoke(
                     discordId = discordId,
