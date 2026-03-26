@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v11.1.0] - TODO
+- `SuperCombo`
+  - add `cr` motion input support
+  - fixed `360` inputs requiring `+`
+
 ## [v11.0.0] - 2026-03-25
 - `stats` - show the total bot usage count
 - `SuperCombo`
