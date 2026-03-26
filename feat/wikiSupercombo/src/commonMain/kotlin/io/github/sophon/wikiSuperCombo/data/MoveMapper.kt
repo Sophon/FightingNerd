@@ -31,7 +31,7 @@ fun MoveDto.toDomain(
         id = moveId,
         name = name,
 
-        input = input.cleanMoveInput(),
+        input = input.cleanMoveInput().replace("360+", "360"),
         damage = damage.takeIfNotTemplate()?.cleanHtml(),
         startup = startup.takeIfNotTemplate(),
         onBlock = blockAdv.takeIfNotTemplate()?.cleanHtml(),
@@ -193,6 +193,7 @@ private fun String?.formMotionInput(): String? {
         this.startsWith("236") -> this.replace("236", "qcf")
         this.startsWith("623") -> this.replaceFirst("623", "dp")
         this.startsWith("421") -> this.replaceFirst("421", "bdp")
+        this.startsWith("360+") -> this.replaceFirst("360+", "spd")
         this.startsWith("360") -> this.replaceFirst("360", "spd")
         this.startsWith("2") -> this.replaceFirst("2", "cr")
         else -> return null
