@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v11.1.1] - TODO
+- accepts `st` notation
+
 ## [v11.1.0] - 2026-03-27
 - `SuperCombo`
   - add `cr` motion input support
