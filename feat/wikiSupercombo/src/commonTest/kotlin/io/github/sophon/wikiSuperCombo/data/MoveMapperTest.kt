@@ -150,6 +150,21 @@ class MoveMapperTest {
         assertThat(result.input).isEqualTo(expectedInput)
         assertThat(result.aliases).isEqualTo(expectedAliases)
     }
+    
+    @Test
+    fun `toDomain handles OR inputs`() {
+        // given
+        val move = MoveSource.swiftThrust
+        val expectedInput = "4/6mp"
+        val expectedAlias = listOf("4mp", "6mp")
+        
+        // when
+        val result = move.toDomain(gameIdSF6, emptyCharData, emptyMap())
+
+        //then
+        assertThat(result.input).isEqualTo(expectedInput)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
+    }
 }
 
 private object MoveSource {
@@ -460,5 +475,49 @@ private object MoveSource {
         projSpeed = null,
         atkRange = "1.22",
         notes = "Can be input up to 6th jump frame; () refers to Punish Counter damage; highest damage for meterless SPD but shortest range",
+    )
+    val swiftThrust = MoveDto(
+        moveId = "Chun-Li_6mp",
+        moveType = "ground_normal",
+        chara = "Chun-Li",
+        input = "4/6MP",
+        name = "Swift Thrust",
+        images = "SF6_Chun-Li_6mp.png",
+        hitboxes = "SF6_Chun-Li_6mp_hitbox.png",
+        damage = "600",
+        chip = null,
+        dmgScaling = null,
+        startup = "7",
+        active = "3",
+        recovery = "15",
+        total = "24",
+        guard = "LH",
+        cancel = "SS Sp SA",
+        hitconfirm = "15",
+        hitAdv = "<span style=\"color: #32CD32;\">+2</span>",
+        blockAdv = "<span style=\"color: #ff6347;\">-3</span>",
+        punishAdv = "<span style=\"color: #30D5B8;\">'''+6'''</span>",
+        perfParryAdv = "<span style=\"color: #b70c0b;\">'''-16'''</span>",
+        DRcancelHit = "<span style=\"color: #30D5B8;\">'''+8'''</span>",
+        DRcancelBlk = "<span style=\"color: #32CD32;\">+3</span>",
+        afterDRHit = "<span style=\"color: #30D5B8;\">'''+6'''</span>",
+        afterDRBlk = "<span style=\"color: #32CD32;\">+1</span>",
+        hitstun = "20",
+        blockstun = "15",
+        hitstop = "11",
+        driveDmgBlk = "3000",
+        driveDmgHit = "[4000]",
+        driveGain = "1500",
+        superGainHit = "500 (350)",
+        superGainBlk = "250 (125)",
+        invuln = null,
+        armor = null,
+        airborne = null,
+        jugStart = "1",
+        jugIncrease = "1",
+        jugLimit = "0",
+        projSpeed = null,
+        atkRange = "1.397",
+        notes = "Great poke and neutral buffer tool with a disjointed hitbox and lenient hitconfirm window; Stance Cancel: +5/+1; DR cancel is delayed until after active frames",
     )
 }
