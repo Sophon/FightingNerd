@@ -5,7 +5,6 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
 
     val motionInputs = listOf(
         "," to "",
-        "/" to "",
         "d+" to "d",
         "f+" to "f",
         "u+" to "u",
