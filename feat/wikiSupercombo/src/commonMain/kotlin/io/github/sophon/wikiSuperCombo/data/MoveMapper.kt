@@ -196,6 +196,7 @@ private fun String?.formMotionInput(): String? {
         this.startsWith("360+") -> this.replaceFirst("360+", "spd")
         this.startsWith("360") -> this.replaceFirst("360", "spd")
         this.startsWith("2") -> this.replaceFirst("2", "cr")
+        this.startsWith("5") -> this.replaceFirst("5", "st")
         else -> return null
     }
 
