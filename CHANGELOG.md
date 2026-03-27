@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v11.1.1] - TODO
+- `SuperCombo`
+  - accepts `st` notation
+  - fixed issue with OR inputs (like Chun-Li's `4/6MP`)
+
 ## [v11.1.0] - 2026-03-27
 - `SuperCombo`
   - add `cr` motion input support

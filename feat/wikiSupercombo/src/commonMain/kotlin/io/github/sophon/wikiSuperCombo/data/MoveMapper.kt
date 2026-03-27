@@ -130,7 +130,6 @@ private fun MoveDto.getType(): Move.SF6Properties.Type? {
     }
 }
 
-//https://wiki.supercombo.gg/w/Street_Fighter_6/Blanka#Electric_Thunder_(214P)
 internal fun formMoveWikiUrl(
     gameId: String,
     charName: String,
@@ -162,12 +161,22 @@ internal fun formMoveWikiUrl(
 }
 
 private fun MoveDto.formAliases(type: Move.SF6Properties.Type?): List<String> {
-    val alias = when (type) {
+    val motionAlias = when (type) {
         Move.SF6Properties.Type.SUPER -> formSuperLevel(moveId, superGainHit)
         else -> this.input.formMotionInput()
+    }?.lowercase()
+
+    val orAliases = if (input.contains("/")) {
+        val directions = input
+            .substringBefore(input.first { it.isLetter() })
+            .split("/")
+        val button = input.dropWhile { it.isLetter().not() }
+        directions.map { "$it$button".lowercase() }
+    } else {
+        emptyList()
     }
 
-    return alias?.let { listOf(it.lowercase()) } ?: listOf()
+    return listOfNotNull(motionAlias) + orAliases
 }
 
 private fun formSuperLevel(
@@ -196,6 +205,7 @@ private fun String?.formMotionInput(): String? {
         this.startsWith("360+") -> this.replaceFirst("360+", "spd")
         this.startsWith("360") -> this.replaceFirst("360", "spd")
         this.startsWith("2") -> this.replaceFirst("2", "cr")
+        this.startsWith("5") -> this.replaceFirst("5", "st")
         else -> return null
     }
 
