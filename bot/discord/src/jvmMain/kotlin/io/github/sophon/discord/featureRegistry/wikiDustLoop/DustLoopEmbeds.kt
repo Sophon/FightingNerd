@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.util.getLevel
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.util.featureFooter
+import io.github.sophon.discord.util.hitboxImages
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 
@@ -156,13 +157,6 @@ internal fun moveEmbedBuilderGG(
     generalInfoMove(move = move, displayHitboxes = false)
     generalPropertiesMove(move)
 
-    optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
-    optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
-    optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
-    optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
-    optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
-    optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
-
     featureFooter(featureInfo)
 }
 
@@ -172,11 +166,14 @@ internal fun moveDetailedEmbedBuilderGG(
 ): EmbedBuilder.() -> Unit = {
     moveEmbedBuilderGG(move, featureInfo).invoke(this)
 
-    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-        ?: emptyList()
-    images
-        .takeIf { it.size == 1 }
-        ?.let { image = it.first() }
+    optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
+    optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
+    optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
+    optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
+    optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
+    optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
+
+    hitboxImages(move.urls).invoke(this)
 
     moveNotes(move)
 }
@@ -222,8 +219,17 @@ internal fun moveEmbedBuilderBB(
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    generalInfoMove(move)
+    generalInfoMove(move, displayHitboxes = false)
     generalPropertiesMove(move)
+
+    featureFooter(featureInfo)
+}
+
+internal fun moveDetailedEmbedBuilderBB(
+    move: Move,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    moveEmbedBuilderBB(move, featureInfo).invoke(this)
 
     move.bbProperties?.apply {
         if (p1 != null || p2 != null) {
@@ -253,9 +259,9 @@ internal fun moveEmbedBuilderBB(
         }
     }
 
-    moveNotes(move)
+    hitboxImages(move.urls).invoke(this)
 
-    featureFooter(featureInfo)
+    moveNotes(move)
 }
 
 internal fun dustLoopMoveListEmbedBuilder(

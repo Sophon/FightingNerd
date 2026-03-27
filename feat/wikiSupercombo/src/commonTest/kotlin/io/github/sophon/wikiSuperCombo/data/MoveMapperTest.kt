@@ -87,6 +87,19 @@ class MoveMapperTest {
         //then
         assertThat(result.aliases).isEqualTo(expected)
     }
+
+    @Test
+    fun `formAliases handles crouching input`() {
+        // given
+        val move = MoveSource.crHP
+        val expected = listOf("crhp")
+
+        // when
+        val result = move.toDomain(gameIdSF6, emptyCharData, emptyMap())
+
+        //then
+        assertThat(result.aliases).isEqualTo(expected)
+    }
     
     @Test
     fun `formAliases handles SA`() {
@@ -122,6 +135,21 @@ class MoveMapperTest {
         assertThat(result.aliases).isEqualTo(expected)
     }
     //endregion
+
+    @Test
+    fun `toDomain fixes SPD input`() {
+        // given
+        val move = MoveSource.spd
+        val expectedInput = "360hp"
+        val expectedAliases = listOf("spdhp")
+
+        // when
+        val result = move.toDomain(gameIdSF6, emptyCharData, emptyMap())
+
+        //then
+        assertThat(result.input).isEqualTo(expectedInput)
+        assertThat(result.aliases).isEqualTo(expectedAliases)
+    }
 }
 
 private object MoveSource {
@@ -344,5 +372,93 @@ private object MoveSource {
         projSpeed = null,
         atkRange = null,
         notes = "Special move follow-up available during SA2 only (depletes 200f or 13.3% of install time); input with any direction; usable after [4]6P, j.[4]6P, [2]8K, or 63214K; puts opponent into limited juggle state; can chain into itself up to 3 times consecutively if the hits connect (this limit resets if Blanka lands before starting another juggle); frame advantage on KD/block/parry varies significantly depending on height and attack angle (can lead to significant block advantage on 3P or 2P versions); total recovery varies significantly based on input direction, but landing recovery is always 7f for 8P/7P/4P/1P and 9f for 2P/3P/6P/9P; activates Blanka-chan doll with electricity (meterless 1-hit version); POTENTIAL BUG: 2P version canceled from minimum-height Aerial Rolling Attack will grant significant frame advantage without consuming any additional install time",
+    )
+    val crHP = MoveDto(
+        moveId = "ken_2hp",
+        moveType = "ground_normal",
+        chara = "Ken",
+        input = "2HP",
+        name = "Crouching Heavy Punch",
+        images = "SF6_Ken_2hp.png",
+        hitboxes = "SF6_Ken_2hp_hitbox_preview.png, SF6_Ken_2hp_hitbox_1.png, SF6_Ken_2hp_hitbox_2.png",
+        damage = "800",
+        chip = null,
+        dmgScaling = null,
+        startup = "8",
+        active = "4",
+        recovery = "24",
+        total = "35",
+        guard = "LH",
+        cancel = "Sp SA",
+        hitconfirm = "16",
+        hitAdv = "<span style=\"color: #32CD32;\">+3</span>",
+        blockAdv = "<span style=\"color: #b70c0b;\">'''-10'''</span>",
+        punishAdv = "<span style=\"color: #30D5B8;\">'''+7'''</span>",
+        perfParryAdv = "<span style=\"color: #b70c0b;\">'''-26'''</span>",
+        DRcancelHit = "<span style=\"color: #30D5B8;\">'''+21'''</span>",
+        DRcancelBlk = "<span style=\"color: #30D5B8;\">'''+8'''</span>",
+        afterDRHit = "<span style=\"color: #30D5B8;\">'''+7'''</span>",
+        afterDRBlk = "<span style=\"color: #b70c0b;\">'''-6'''</span>",
+        hitstun = "31",
+        blockstun = "18",
+        hitstop = "13",
+        driveDmgBlk = "5000",
+        driveDmgHit = "[8000]",
+        driveGain = "2000",
+        superGainHit = "1000 (700)",
+        superGainBlk = "500 (250)",
+        invuln = null,
+        armor = null,
+        airborne = null,
+        jugStart = "1",
+        jugIncrease = "1",
+        jugLimit = "0",
+        projSpeed = null,
+        atkRange = "1.148",
+        notes = "Forces stand; decent anti-air (cannot hit cross-up); only first 2 active frames are cancelable; Run~Stop cancel: +3/-10",
+    )
+    val spd = MoveDto(
+        moveId = "zangief_360hp",
+        moveType = "special",
+        chara = "Zangief",
+        input = "360+HP",
+        name = "Screw Piledriver",
+        images = "SF6_Zangief_360hp.png",
+        hitboxes = "SF6_Zangief_360hp_hitbox.png",
+        damage = "3300 (3795)",
+        chip = null,
+        dmgScaling = "10% Immediate",
+        startup = "5",
+        active = "3",
+        recovery = "54",
+        total = "61",
+        guard = "T",
+        cancel = "-",
+        hitconfirm = null,
+        hitAdv = "HKD +28",
+        blockAdv = "-",
+        punishAdv = "HKD +28",
+        perfParryAdv = null,
+        DRcancelHit = null,
+        DRcancelBlk = null,
+        afterDRHit = null,
+        afterDRBlk = null,
+        hitstun = null,
+        blockstun = null,
+        hitstop = null,
+        driveDmgBlk = null,
+        driveDmgHit = "[10000]",
+        driveGain = "7000",
+        superGainHit = "4000 (2800)",
+        superGainBlk = null,
+        invuln = null,
+        armor = null,
+        airborne = null,
+        jugStart = null,
+        jugIncrease = null,
+        jugLimit = null,
+        projSpeed = null,
+        atkRange = "1.22",
+        notes = "Can be input up to 6th jump frame; () refers to Punish Counter damage; highest damage for meterless SPD but shortest range",
     )
 }

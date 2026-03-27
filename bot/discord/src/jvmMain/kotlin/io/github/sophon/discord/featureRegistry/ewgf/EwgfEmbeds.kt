@@ -46,6 +46,25 @@ internal fun successEmbed(
     featureFooter(featureInfo)
 }
 
+internal fun ewgfHelpEmbed(
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    title = "How to use EWGF"
+    color = Color(PINK)
+
+    mandatoryField(
+        name = "",
+        value = "1. register: `@bot ewgf + {your Tekken ID}` or `/ewgf + {your Tekken ID}`\n" +
+                "   - Tekken ID is the 12-character code; found on [**ewgf.gg**](https://ewgf.gg/) or in the game\n" +
+                "   - can also be used to update with new Tekken ID\n" +
+                "2. show sets: `@bot ewgf` or `/ewgf`\n\n" +
+                "- to unregister: `@bot ewgf -` or `/ewgf -`\n" +
+                "- to search: `@bot ewgf @user` or `/ewgf @user`"
+    )
+
+    featureFooter(featureInfo)
+}
+
 private fun BattleSet.toColumn(url: String): String {
     val opponentProfileUrl = "${url}/player/${this.opponent.polarisId}"
     val opponentLink = "[${this.opponent.name}]($opponentProfileUrl)"

@@ -530,7 +530,8 @@ internal sealed class Command(
         argumentList = listOf(
             Argument(
                 name = "operation",
-                description = "Register | Update | Unregister",
+                description = "Help | Register | Update | Unregister",
+                isRequired = false,
             ),
             Argument(
                 name = "polarisid",
