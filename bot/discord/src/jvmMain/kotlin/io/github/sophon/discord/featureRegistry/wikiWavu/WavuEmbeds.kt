@@ -75,7 +75,7 @@ private fun List<String>.emojify(): List<String> {
                 if (note.contains("Tailspin", ignoreCase = true)) append("️🌀 ")
                 if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
                 if (note.contains("Homing", ignoreCase = true)) append(Emoji.TK_HOMING)
-                if (note.contains("Throw", ignoreCase = true)) append(Emoji.TK_THROW)
+                if (note.contains("Throw", ignoreCase = true)) append(Emoji.THROW)
                 if (note.contains("pc", ignoreCase = true)) append(Emoji.TK_PC)
                 if (note.contains("weapon", ignoreCase = true)) append("⚔️ ")
                 if (note.contains("jail", ignoreCase = true)) append("⛓️ ")

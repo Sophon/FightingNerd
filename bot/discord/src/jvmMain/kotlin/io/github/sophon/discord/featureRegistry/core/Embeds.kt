@@ -5,6 +5,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.EMBED_LIST_MIN_COLUMN
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
+import io.github.sophon.discord.domain.model.Emoji
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 
@@ -13,12 +14,15 @@ internal fun moveListEmbed(
     dataList: List<String>,
     featureInfo: FeatureInfo,
     color: Color,
+    emoji: Emoji? = null,
 ): EmbedBuilder.() -> Unit = {
+    val formattedTitle = emoji?.let { "$it $category" } ?: category
+
     this.color = color
 
     if (dataList.isEmpty()) {
         mandatoryField(
-            name = "$category moves",
+            name = "$formattedTitle moves",
             value = "Nothing found 😔"
         )
     } else {
@@ -37,7 +41,7 @@ internal fun moveListEmbed(
             .chunked(chunks)
             .forEachIndexed { index, moveList ->
                 val text = moveList.joinToString("\n")
-                val name = if (index == 0) "$category moves" else "_"
+                val name = if (index == 0) "$formattedTitle moves" else "_"
                 mandatoryField(
                     name = name,
                     value = text,
