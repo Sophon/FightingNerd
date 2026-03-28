@@ -6,6 +6,7 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.discord.domain.model.Emoji
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
@@ -208,7 +209,7 @@ private fun List<String>.emojify(): List<String> {
                 if (note.contains("rhythm", ignoreCase = true)) append("🥁 ")
                 if (note.contains("scaling", ignoreCase = true)) append("📉 ")
                 if (note.contains("shimmy", ignoreCase = true)) append("💃 ")
-                if (note.contains("throw", ignoreCase = true)) append("🤝 ")
+                if (note.contains("throw", ignoreCase = true)) append(Emoji.THROW)
                 append(note)
             }
             add(emojified)
