@@ -4,6 +4,7 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.discord.domain.model.Emoji
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
@@ -66,20 +67,20 @@ private fun List<String>.emojify(): List<String> {
     return buildList {
         this@emojify.forEach { note ->
             val emojified = buildString {
-                if (note.contains("Heat", ignoreCase = true)) append("<:fn_tk_heat:1487469502286532618> ")
-                if (note.contains("Balcony Break", ignoreCase = true)) append("<:fn_tk_balcony:1487473524229804063> ")
+                if (note.contains("Heat", ignoreCase = true)) append(Emoji.TK_HEAT)
+                if (note.contains("Balcony Break", ignoreCase = true)) append(Emoji.TK_BALCONY)
                 if (note.contains("Spike", ignoreCase = true)) append("⬇️ ")
-                if (note.contains("Floor break", ignoreCase = true)) append("<:fn_tk_floor:1487469431327031328> ")
-                if (note.contains("Tornado", ignoreCase = true)) append("<:fn_tk_tornado:1487469696923078726> ")
+                if (note.contains("Floor break", ignoreCase = true)) append(Emoji.TK_FLOOR)
+                if (note.contains("Tornado", ignoreCase = true)) append(Emoji.TK_TORNADO)
                 if (note.contains("Tailspin", ignoreCase = true)) append("️🌀 ")
                 if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
-                if (note.contains("Homing", ignoreCase = true)) append("️<:fn_tk_homing:1487469538776711390> ")
-                if (note.contains("Throw", ignoreCase = true)) append("️<:fn_tk_throw:1487469629919199456> ")
-                if (note.contains("pc", ignoreCase = true)) append("<:fn_tk_pc:1487469585556045885> ")
+                if (note.contains("Homing", ignoreCase = true)) append(Emoji.TK_HOMING)
+                if (note.contains("Throw", ignoreCase = true)) append(Emoji.TK_THROW)
+                if (note.contains("pc", ignoreCase = true)) append(Emoji.TK_PC)
                 if (note.contains("weapon", ignoreCase = true)) append("⚔️ ")
                 if (note.contains("jail", ignoreCase = true)) append("⛓️ ")
                 if (note.contains("delay", ignoreCase = true)) append("⏳ ")
-                if (note.contains("chip", ignoreCase = true)) append("<:fn_tk_chip:1487469368945414275> ")
+                if (note.contains("chip", ignoreCase = true)) append(Emoji.TK_CHIP)
                 append(note)
             }
             add(emojified)
