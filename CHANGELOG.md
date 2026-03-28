@@ -1,6 +1,9 @@
 # BOT CHANGELOG
 
-## [v11.1.1] - TODO
+## [v11.2.0] - 2026-03-29
+- `Wavu` - better emoji in Discord embeds
+
+## [v11.1.1] - 2026-03-28
 - `SuperCombo`
   - accepts `st` notation
   - fixed issue with OR inputs (like Chun-Li's `4/6MP`)
