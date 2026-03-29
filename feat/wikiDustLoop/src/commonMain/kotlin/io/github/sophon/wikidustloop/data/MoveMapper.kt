@@ -185,10 +185,11 @@ internal fun String?.formNagoriyukiAliases(): List<String> {
 }
 
 private fun String.createGbvsAliases(): List<String> {
-    return buildList {
+    val result = buildList {
         addAll(create2dAliases(isPartial = true))
         addAll(createNarmayaStanceAliases())
     }
+    return result
 }
 
 private fun String.createNarmayaStanceAliases(): List<String> {
@@ -196,7 +197,8 @@ private fun String.createNarmayaStanceAliases(): List<String> {
     val match = regex.find(this) ?: return emptyList()
     val (base, suffix) = match.destructured
 
-    return listOf("${suffix.lowercase()}.${base.lowercase()}")
+    val result = listOf("${suffix.lowercase()}.${base.lowercase()}")
+    return result
 }
 
 private fun List<String>.addAliasForReleaseNotation(input: String): List<String> {
