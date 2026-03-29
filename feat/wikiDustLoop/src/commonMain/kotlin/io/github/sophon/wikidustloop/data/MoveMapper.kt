@@ -174,13 +174,14 @@ internal fun formAliases(
 }
 
 internal fun String?.formNagoriyukiAliases(): List<String> {
-    return when {
+    val result = when {
         this == null -> emptyList()
-        contains("level br", ignoreCase = true) -> listOf(replace(" level br", "b", ignoreCase = true).lowercase())
-        contains("level 1", ignoreCase = true) -> listOf(replace(" level 1", "", ignoreCase = true).lowercase())
-        contains("level", ignoreCase = true) -> listOf(replace(" level ", "", ignoreCase = true).lowercase())
+        contains("levelbr", ignoreCase = true) -> listOf(replace("levelbr", "b", ignoreCase = true).lowercase())
+        contains("level1", ignoreCase = true) -> listOf(replace("level1", "", ignoreCase = true).lowercase())
+        contains("level", ignoreCase = true) -> listOf(replace("level", "", ignoreCase = true).lowercase())
         else -> emptyList()
     }
+    return result
 }
 
 private fun String.createGbvsAliases(): List<String> {
