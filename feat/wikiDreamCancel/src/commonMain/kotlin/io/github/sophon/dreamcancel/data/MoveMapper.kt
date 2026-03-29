@@ -1,11 +1,10 @@
 package io.github.sophon.dreamcancel.data
 
-import io.github.sophon.core.util.add2dAliases
 import io.github.sophon.core.util.cleanHtml
-import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.normalize2dInputs
-import io.github.sophon.core.util.splitOr
+import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.dreamcancel.FEATURE_URL
@@ -37,11 +36,7 @@ internal fun MoveDto.toDomain(
         .decodeHtmlEntities()
         .normalize2dInputs()
         .lowercase()
-    val aliasList = buildList {
-        addAll(normalizedInput.add2dAliases())
-        addAll(normalizedInput.addAliasesForMultipleButtons())
-        addAll(normalizedInput.splitOr())
-    }
+    val aliasList = normalizedInput.create2dAliases(isPartial = true)
 
     val move = Move(
         charName = character.displayName,
@@ -73,13 +68,4 @@ internal fun MoveDto.toDomain(
 
 internal fun formMoveWikiUrl(gameId: String, charName: String, name: String?): String {
     return "${FEATURE_URL}/$gameId/${charName.createQueryName()}/Data#${name.orEmpty().replace(" ", "_")}"
-}
-
-private fun String.addAliasesForMultipleButtons(): List<String> {
-    if (contains("/").not()) return listOf(this)
-
-    val base = substringBefore("/")
-    val buttons = substringAfter("/").map { it.toString() }
-
-    return listOf(base) + buttons.map { base.dropLast(1) + it }
 }
