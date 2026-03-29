@@ -2,6 +2,7 @@ package io.github.sophon.wikiSuperCombo.data
 
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
@@ -25,6 +26,7 @@ fun MoveDto.toDomain(
     imageUrlMap: Map<String, String>,
 ): Move {
     val type = getType()
+    val aliasList = formAliases(type)
 
     return Move(
         charName = chara,
@@ -45,7 +47,7 @@ fun MoveDto.toDomain(
         cancel = cancel.takeIfNotTemplate(),
         invulnerability = invuln.takeIfNotTemplate()?.cleanHtml(),
 
-        aliases = formAliases(type),
+        aliases = aliasList,
 
         urls = Move.Urls(
             characterImage = characterData.imageUrl,
@@ -165,18 +167,13 @@ private fun MoveDto.formAliases(type: Move.SF6Properties.Type?): List<String> {
         Move.SF6Properties.Type.SUPER -> formSuperLevel(moveId, superGainHit)
         else -> this.input.formMotionInput()
     }?.lowercase()
-
-    val orAliases = if (input.contains("/")) {
-        val directions = input
-            .substringBefore(input.first { it.isLetter() })
-            .split("/")
-        val button = input.dropWhile { it.isLetter().not() }
-        directions.map { "$it$button".lowercase() }
-    } else {
-        emptyList()
+    val aliases2d = input.create2dAliases(isPartial = false)
+    val result = buildList {
+        motionAlias?.let { add(it) }
+        addAll(aliases2d)
     }
 
-    return listOfNotNull(motionAlias) + orAliases
+    return result
 }
 
 private fun formSuperLevel(

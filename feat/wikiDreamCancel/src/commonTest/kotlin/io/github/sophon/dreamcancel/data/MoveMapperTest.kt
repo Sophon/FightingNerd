@@ -24,7 +24,7 @@ class MoveMapperTest {
     fun `input and alias test`() {
         // given
         val input = "(close) 4/6C"
-        val expectedInput = "c.6c"
+        val expectedInput = "c6c"
         val expectedAliases = listOf("c6c")
 
         // when

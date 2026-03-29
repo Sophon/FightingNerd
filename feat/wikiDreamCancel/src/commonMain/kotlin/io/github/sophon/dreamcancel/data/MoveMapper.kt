@@ -5,7 +5,7 @@ import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.normalize2dInputs
-import io.github.sophon.core.util.useForwardVariantOnly
+import io.github.sophon.core.util.splitOr
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.dreamcancel.FEATURE_URL
@@ -35,10 +35,13 @@ internal fun MoveDto.toDomain(
     val normalizedInput = this.input
         .orDash()
         .decodeHtmlEntities()
-        .normalize2dInputs(minimizeClose = false)
-        .useForwardVariantOnly()
+        .normalize2dInputs()
         .lowercase()
-    val aliasList = normalizedInput.add2dAliases() + normalizedInput.addAliasesForMultipleButtons()
+    val aliasList = buildList {
+        addAll(normalizedInput.add2dAliases())
+        addAll(normalizedInput.addAliasesForMultipleButtons())
+        addAll(normalizedInput.splitOr())
+    }
 
     val move = Move(
         charName = character.displayName,

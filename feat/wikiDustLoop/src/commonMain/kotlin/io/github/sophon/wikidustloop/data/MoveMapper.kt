@@ -2,7 +2,7 @@ package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
-import io.github.sophon.core.util.add2dAliases
+import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.createAliasesFromSlash
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
@@ -166,17 +166,8 @@ internal fun formAliases(
     val aliases = when {
         charName == "Nagoriyuki" -> input.formNagoriyukiAliases()
         game == Game.GBVSR -> input.createGbvsAliases()
-        else -> {
-            if (input.contains(" or ")) {
-                input
-                    .replace(" or ", "/")
-                    .createAliasesFromSlash(isPartial = false)
-            } else {
-                input.createAliasesFromSlash(isPartial = true)
-            }
-        }
+        else -> { input.create2dAliases(isPartial = true) }
     }
-        .form2dAliases(input)
         .addAliasForReleaseNotation(input)
         .distinct()
 
@@ -206,11 +197,6 @@ private fun String.createNarmayaStanceAliases(): List<String> {
     val (base, suffix) = match.destructured
 
     return listOf("${suffix.lowercase()}.${base.lowercase()}")
-}
-
-private fun List<String>.form2dAliases(input: String): List<String> {
-    val result = input.add2dAliases(this) + this.flatMap { it.add2dAliases(this) }
-    return result
 }
 
 private fun List<String>.addAliasForReleaseNotation(input: String): List<String> {

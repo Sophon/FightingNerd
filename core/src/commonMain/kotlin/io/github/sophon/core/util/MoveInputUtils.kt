@@ -18,7 +18,7 @@ fun String.createAliasesFromSlash(
     return aliases
 }
 
-fun String.normalize2dInputs(minimizeClose: Boolean = true): String {
+fun String.normalize2dInputs(): String {
     var result = this
         .trim()
         .lowercase()
@@ -26,20 +26,10 @@ fun String.normalize2dInputs(minimizeClose: Boolean = true): String {
         .replace(" ", "")
 
     val replacementTable = mutableListOf(
-        "(close)" to "c.",
-        "f" to "f.",
-        "j" to "j.",
+        "(close)" to "c",
+        "f." to "f",
+        "j." to "j",
     )
-
-    if (minimizeClose) {
-        replacementTable.addAll(
-            listOf(
-                "cl." to "c.",
-                "cl" to "c.",
-                "c" to "c.",
-            )
-        )
-    }
 
     for ((old, new) in replacementTable) {
         if (result.startsWith(old) && result.startsWith(new).not()) {
@@ -55,13 +45,54 @@ fun String.add2dAliases(aliasList: List<String> = listOf()): List<String> {
     return when {
         startsWith("j.") -> aliasList + listOf(replace("j.", "j"))
         startsWith("f.") -> aliasList + listOf(replace("f.", "f"))
-        startsWith("c.") -> aliasList + listOf(replace("c.", "c"))
+        startsWith("c.") -> {
+            aliasList + listOf(replace("c.", "c")) + listOf(replace("c.", "cl"))
+        }
         else -> aliasList
     }
 }
 
-fun String.useForwardVariantOnly(): String {
-    return this
-        .replace(" ", "")
-        .replace("4/6", "6")
+fun String.splitOr(
+    isPartial: Boolean,
+    delimiter: String = "/",
+): List<String> {
+    if (contains(delimiter).not()) return emptyList()
+
+    val parts = split(delimiter).map { it.trim() }
+    if (parts.size < 2) return emptyList()
+
+    val isMixedPartial = isPartial.not() &&
+            parts.any { it.first().isLetter() } &&
+            parts.any { it.first().isDigit() }
+
+    if (isPartial.not() && isMixedPartial.not()) return parts
+
+    val normalized = replace(" ", "")
+    val prefix = normalized.takeWhile { it.isLetter() }
+    val withoutPrefix = normalized.removePrefix(prefix)
+    val dirParts = withoutPrefix.split(delimiter).map { it.trim() }
+
+    val button = dirParts.last().dropWhile { it.isDigit() }
+
+    val result = dirParts.map { part ->
+        val dir = part.takeWhile { it.isDigit() }
+        "$prefix$dir$button".lowercase()
+    }
+
+    return result
+}
+
+fun String.create2dAliases(
+    isPartial: Boolean,
+    delimiter: String = "/",
+): List<String> {
+    val alias2d = this.add2dAliases()
+    val orAliases = this.splitOr(isPartial, delimiter)
+
+    val result = buildList {
+        addAll(alias2d)
+        addAll(orAliases)
+    }.distinct()
+
+    return result
 }

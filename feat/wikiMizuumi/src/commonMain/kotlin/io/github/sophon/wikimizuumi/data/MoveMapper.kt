@@ -6,7 +6,7 @@ import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.util.useForwardVariantOnly
+import io.github.sophon.core.util.splitOr
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -39,10 +39,8 @@ internal fun MoveDto.toDomain(
         .decodeHtmlEntities()
         .normalize2dInputs()
     val aliases = buildList {
-        normalizedInput.useForwardVariantOnly().also { forwardVariant ->
-            add(forwardVariant)
-            addAll(forwardVariant.add2dAliases())
-        }
+        addAll(normalizedInput.add2dAliases())
+        addAll(normalizedInput.splitOr())
     }
 
     val move = Move(
