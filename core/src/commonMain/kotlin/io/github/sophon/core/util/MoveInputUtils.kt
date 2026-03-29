@@ -24,23 +24,6 @@ fun String.normalize2dInputs(): String {
     return result
 }
 
-fun String.add2dAliases(aliasList: List<String> = listOf()): List<String> {
-    val result = when {
-        startsWith("j") -> aliasList + listOf("j." + removePrefix("j"))
-        startsWith("f") -> aliasList + listOf("f." + removePrefix("f"))
-        startsWith("c") -> {
-            buildList {
-                addAll(aliasList)
-                add("c." + removePrefix("c"))
-                add("cl" + removePrefix("c"))
-                add("cl." + removePrefix("c"))
-            }
-        }
-        else -> aliasList
-    }
-    return result
-}
-
 fun String.splitOr(
     isPartial: Boolean,
     delimiter: String = "/",
@@ -103,5 +86,24 @@ fun String.create2dAliases(
         }.distinct()
     }
 
+    return result
+}
+
+private fun String.add2dAliases(
+    aliasList: List<String> = listOf(),
+): List<String> {
+    val result = when {
+        startsWith("j") -> aliasList + listOf("j." + removePrefix("j"))
+        startsWith("f") -> aliasList + listOf("f." + removePrefix("f"))
+        startsWith("c") -> {
+            buildList {
+                addAll(aliasList)
+                add("c." + removePrefix("c"))
+                add("cl" + removePrefix("c"))
+                add("cl." + removePrefix("c"))
+            }
+        }
+        else -> aliasList
+    }
     return result
 }

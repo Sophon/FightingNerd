@@ -10,7 +10,7 @@ class MoveInputUtilsTest {
     fun `alias handles full slash`() {
         // given
         val input = "j5s1/j2s1"
-        val expectedAlias = listOf("j5s1", "j2s1")
+        val expectedAlias = listOf("j5s1", "j2s1", "j.5s1", "j.2s1",)
 
         // when
         val resultAlias =  input.create2dAliases(isPartial = false)
@@ -36,7 +36,7 @@ class MoveInputUtilsTest {
     fun `alias handles jump`() {
         // given
         val input = "j4/6ad"
-        val expectedAlias = listOf("j4ad", "j6ad")
+        val expectedAlias = listOf("j4ad", "j6ad", "j.4ad", "j.6ad",)
 
         // when
         val resultAlias =  input.create2dAliases(isPartial = true)
@@ -62,7 +62,16 @@ class MoveInputUtilsTest {
     fun `alias handles slash with close`() {
         // given
         val input = "c4/6d"
-        val expectedAlias = listOf("c4d", "c6d")
+        val expectedAlias = listOf(
+            "c4d",
+            "c6d",
+            "c.4d",
+            "cl4d",
+            "cl.4d",
+            "c.6d",
+            "cl6d",
+            "cl.6d",
+        )
 
         // when
         val result = input.create2dAliases(isPartial = true)
@@ -78,6 +87,19 @@ class MoveInputUtilsTest {
         // given
         val input = "(close)6c"
         val expected = "c6c"
+
+        // when
+        val result = input.normalize2dInputs()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `normalize 2d handles OR`() {
+        // given
+        val input = "j.6D or j.4D"
+        val expected = "j6d/j4d"
 
         // when
         val result = input.normalize2dInputs()
