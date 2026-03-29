@@ -3,7 +3,6 @@ package io.github.sophon.wikidustloop.data
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.create2dAliases
-import io.github.sophon.core.util.createAliasesFromSlash
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
@@ -166,7 +165,7 @@ internal fun formAliases(
     val aliases = when {
         charName == "Nagoriyuki" -> input.formNagoriyukiAliases()
         game == Game.GBVSR -> input.createGbvsAliases()
-        else -> { input.create2dAliases(isPartial = true) }
+        else -> { input.create2dAliases(isPartial = false) }
     }
         .addAliasForReleaseNotation(input)
         .distinct()
@@ -186,7 +185,7 @@ internal fun String?.formNagoriyukiAliases(): List<String> {
 
 private fun String.createGbvsAliases(): List<String> {
     return buildList {
-        addAll(createAliasesFromSlash(isPartial = true))
+        addAll(create2dAliases(isPartial = true))
         addAll(createNarmayaStanceAliases())
     }
 }
