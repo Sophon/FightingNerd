@@ -65,7 +65,7 @@ class MoveInputUtilsTest {
         val expectedAlias = listOf("c4d", "c6d")
 
         // when
-        val result = input.create2dAliases(isPartial = false)
+        val result = input.create2dAliases(isPartial = true)
 
         //then
         assertThat(result).isEqualTo(expectedAlias)

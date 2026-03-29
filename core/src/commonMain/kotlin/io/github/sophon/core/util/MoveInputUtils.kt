@@ -61,25 +61,18 @@ fun String.splitOr(
     val parts = split(delimiter).map { it.trim() }
     if (parts.size < 2) return emptyList()
 
-    val isMixedPartial = isPartial.not() &&
-            parts.any { it.first().isLetter() } &&
-            parts.any { it.first().isDigit() }
-
-    if (isPartial.not() && isMixedPartial.not()) return parts
+    if (isPartial.not()) return parts
 
     val normalized = replace(" ", "")
     val prefix = normalized.takeWhile { it.isLetter() }
     val withoutPrefix = normalized.removePrefix(prefix)
-    val dirParts = withoutPrefix.split(delimiter).map { it.trim() }
+    val directions = withoutPrefix.split(delimiter).map { it.trim() }
+    val suffix = directions.last().dropWhile { it.isDigit() }
 
-    val button = dirParts.last().dropWhile { it.isDigit() }
-
-    val result = dirParts.map { part ->
-        val dir = part.takeWhile { it.isDigit() }
-        "$prefix$dir$button".lowercase()
+    return directions.map { part ->
+        val direction = part.takeWhile { it.isDigit() }
+        "$prefix$direction$suffix".lowercase()
     }
-
-    return result
 }
 
 fun String.create2dAliases(
