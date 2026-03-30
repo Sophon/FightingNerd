@@ -167,7 +167,7 @@ private fun MoveDto.formAliases(type: Move.SF6Properties.Type?): List<String> {
         Move.SF6Properties.Type.SUPER -> formSuperLevel(moveId, superGainHit)
         else -> this.input.formMotionInput()
     }?.lowercase()
-    val aliases2d = input.create2dAliases(isPartial = false)
+    val aliases2d = input.create2dAliases(isPartial = true)
     val result = buildList {
         motionAlias?.let { add(it) }
         addAll(aliases2d)
