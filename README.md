@@ -128,7 +128,7 @@ graph LR
     style bbcf fill:green, color:#fff
     style uni2 fill:green, color:#fff
     style vsav fill:green, color:#fff
-    style ewgf fill:yellow, color:#000
+    style ewgf fill:green, color:#000
   ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)

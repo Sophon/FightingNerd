@@ -2,8 +2,7 @@ package io.github.sophon.wikidustloop.data
 
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
-import io.github.sophon.core.util.add2dAliases
-import io.github.sophon.core.util.createAliasesFromSlash
+import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Move
@@ -166,17 +165,8 @@ internal fun formAliases(
     val aliases = when {
         charName == "Nagoriyuki" -> input.formNagoriyukiAliases()
         game == Game.GBVSR -> input.createGbvsAliases()
-        else -> {
-            if (input.contains(" or ")) {
-                input
-                    .replace(" or ", "/")
-                    .createAliasesFromSlash(isPartial = false)
-            } else {
-                input.createAliasesFromSlash(isPartial = true)
-            }
-        }
+        else -> { input.create2dAliases(isPartial = false) }
     }
-        .form2dAliases(input)
         .addAliasForReleaseNotation(input)
         .distinct()
 
@@ -184,20 +174,22 @@ internal fun formAliases(
 }
 
 internal fun String?.formNagoriyukiAliases(): List<String> {
-    return when {
+    val result = when {
         this == null -> emptyList()
-        contains("level br", ignoreCase = true) -> listOf(replace(" level br", "b", ignoreCase = true).lowercase())
-        contains("level 1", ignoreCase = true) -> listOf(replace(" level 1", "", ignoreCase = true).lowercase())
-        contains("level", ignoreCase = true) -> listOf(replace(" level ", "", ignoreCase = true).lowercase())
+        contains("levelbr", ignoreCase = true) -> listOf(replace("levelbr", "b", ignoreCase = true).lowercase())
+        contains("level1", ignoreCase = true) -> listOf(replace("level1", "", ignoreCase = true).lowercase())
+        contains("level", ignoreCase = true) -> listOf(replace("level", "", ignoreCase = true).lowercase())
         else -> emptyList()
     }
+    return result
 }
 
 private fun String.createGbvsAliases(): List<String> {
-    return buildList {
-        addAll(createAliasesFromSlash(isPartial = true))
+    val result = buildList {
+        addAll(create2dAliases(isPartial = true))
         addAll(createNarmayaStanceAliases())
     }
+    return result
 }
 
 private fun String.createNarmayaStanceAliases(): List<String> {
@@ -205,11 +197,7 @@ private fun String.createNarmayaStanceAliases(): List<String> {
     val match = regex.find(this) ?: return emptyList()
     val (base, suffix) = match.destructured
 
-    return listOf("${suffix.lowercase()}.${base.lowercase()}")
-}
-
-private fun List<String>.form2dAliases(input: String): List<String> {
-    val result = input.add2dAliases(this) + this.flatMap { it.add2dAliases(this) }
+    val result = listOf("${suffix.lowercase()}.${base.lowercase()}")
     return result
 }
 

@@ -1,7 +1,8 @@
 # BOT CHANGELOG
 
-## [v11.2.0] - 2026-03-29
+## [v11.2.0] - 2026-03-30
 - `Wavu` - better emoji in Discord embeds
+- normalization of inputs and aliases for all 2D games
 
 ## [v11.1.1] - 2026-03-28
 - `SuperCombo`
