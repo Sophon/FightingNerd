@@ -110,6 +110,7 @@ internal fun MoveDto.toDomain(
         .orDash()
         .decodeHtmlEntities()
         .normalize2dInputs()
+    val aliasList = normalizedInput.create2dAliases(isPartial = true)
 
     val move = Move(
         charName = this.chara,
@@ -160,6 +161,7 @@ internal fun MoveDto.toDomain(
             comboP1 = comboP1?.cleanHtmlOrNull(),
             comboP2 = comboP2?.cleanHtmlOrNull(),
         ),
+        aliases = aliasList,
     )
     return move
 }

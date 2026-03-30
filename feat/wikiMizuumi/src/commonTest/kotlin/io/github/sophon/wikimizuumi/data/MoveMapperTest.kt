@@ -2,10 +2,16 @@ package io.github.sophon.wikimizuumi.data
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import kotlin.collections.emptyMap
 import kotlin.test.Test
 
 class MoveMapperTest {
+    val uni = Game.Uni2.id
+    val emptyCharData = DownloadMoveListUseCase.CharacterData("", null)
+    
     //region URL
     @Test
     fun `toDomain handles url`() {
@@ -38,6 +44,25 @@ class MoveMapperTest {
         assertThat(result.mbProperties?.property).isEqualTo(expectedUrl)
     }
     //endregion
+    
+    @Test
+    fun `toDomain handles jump and charge`() {
+        // given
+        val move = MoveSource.lumenStellaAir
+        val expectedInput = "j[4]6a"
+        val expectedAlias = listOf("j.[4]6a")
+        
+        // when
+        val result = move.toDomain(
+            characterData = emptyCharData,
+            imageUrlMap = emptyMap(),
+            gameId = uni,
+        )
+
+        //then
+        assertThat(result.input).isEqualTo(expectedInput)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
+    }
 }
 
 private object MoveSource {
@@ -101,5 +126,43 @@ private object MoveSource {
         overall = "55",
         frameAdv = "-2 / +21",
         invul = "",
+    )
+    val lumenStellaAir = MoveDto(
+        moveId = "va_j4_ic_6a",
+        chara = "Vatista",
+        input = "j[4]6A",
+        inputInfo = "",
+        name = "Lumen Stella (Air)",
+        subtitle = "ルーメンステラ",
+        images = "UNI_Vatista_j.46A.png",
+        hitboxes = "",
+        damage = "819",
+        minDamage = "",
+        type = "special",
+        guard = "All",
+        cancel = "CS",
+        cancelWindow = "",
+        property = "",
+        cost = "",
+        attribute = "Projectile",
+        startup = "13",
+        active = "",
+        recovery = "",
+        landing = "",
+        overall = "42",
+        frameAdv = "-1",
+        onHit = "",
+        assaultAdv = "",
+        blockstun = "",
+        groundHit = "",
+        airHit = "",
+        groundCH = "",
+        airCH = "",
+        hitstop = "",
+        CHstop = "",
+        invul = "",
+        proration = "84",
+        comboP1 = "77",
+        comboP2 = "93",
     )
 }
