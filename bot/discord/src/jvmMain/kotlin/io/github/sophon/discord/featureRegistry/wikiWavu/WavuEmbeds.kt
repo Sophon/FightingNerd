@@ -4,6 +4,7 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.discord.domain.model.Emoji
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
@@ -66,19 +67,20 @@ private fun List<String>.emojify(): List<String> {
     return buildList {
         this@emojify.forEach { note ->
             val emojified = buildString {
-                if (note.contains("Heat", ignoreCase = true)) append("🔥 ")
-                if (note.contains("Balcony Break", ignoreCase = true)) append("➡️ ")
+                if (note.contains("Heat", ignoreCase = true)) append(Emoji.TK_HEAT)
+                if (note.contains("Balcony Break", ignoreCase = true)) append(Emoji.TK_BALCONY)
                 if (note.contains("Spike", ignoreCase = true)) append("⬇️ ")
-                if (note.contains("Floor break", ignoreCase = true)) append("⬇️ ")
-                if (note.contains("Tornado", ignoreCase = true)) append("🌪️ ")
+                if (note.contains("Floor break", ignoreCase = true)) append(Emoji.TK_FLOOR)
+                if (note.contains("Tornado", ignoreCase = true)) append(Emoji.TK_TORNADO)
                 if (note.contains("Tailspin", ignoreCase = true)) append("️🌀 ")
                 if (note.contains("Transition", ignoreCase = true)) append("️⏭️ ")
-                if (note.contains("Homing", ignoreCase = true)) append("️🔄 ")
-                if (note.contains("Throw", ignoreCase = true)) append("️🤝 ")
-                if (note.contains("pc", ignoreCase = true)) append("🛡️ ")
+                if (note.contains("Homing", ignoreCase = true)) append(Emoji.TK_HOMING)
+                if (note.contains("Throw", ignoreCase = true)) append(Emoji.THROW)
+                if (note.contains("pc", ignoreCase = true)) append(Emoji.TK_PC)
                 if (note.contains("weapon", ignoreCase = true)) append("⚔️ ")
                 if (note.contains("jail", ignoreCase = true)) append("⛓️ ")
                 if (note.contains("delay", ignoreCase = true)) append("⏳ ")
+                if (note.contains("chip", ignoreCase = true)) append(Emoji.TK_CHIP)
                 append(note)
             }
             add(emojified)

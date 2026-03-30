@@ -1,6 +1,6 @@
 package io.github.sophon.xko.data
 
-import io.github.sophon.core.util.createAliasesFromSlash
+import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
@@ -24,7 +24,7 @@ private fun MoveDto.toMoveList(
         .replace(" ", "_")
     val formattedInput = input.orDash().lowercase()
     val aliases = formattedInput
-        .createAliasesFromSlash(isPartial = false)
+        .create2dAliases(isPartial = false)
         .addExtraAliases(formattedInput)
 
     val move = Move(

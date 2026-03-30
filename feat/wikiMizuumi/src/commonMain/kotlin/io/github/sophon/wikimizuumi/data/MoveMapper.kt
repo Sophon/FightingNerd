@@ -1,12 +1,11 @@
 package io.github.sophon.wikimizuumi.data
 
 import io.github.sophon.core.feature.Game
-import io.github.sophon.core.util.add2dAliases
 import io.github.sophon.core.util.cleanHtmlOrNull
+import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.util.useForwardVariantOnly
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -29,6 +28,7 @@ internal fun MoveListResponseDto.toDomainAll(
         }.toMap()
 }
 
+//MBVS
 internal fun MoveDto.toDomain(
     character: Character,
     hitboxUrlMap: Map<String, String>,
@@ -38,12 +38,7 @@ internal fun MoveDto.toDomain(
         .orDash()
         .decodeHtmlEntities()
         .normalize2dInputs()
-    val aliases = buildList {
-        normalizedInput.useForwardVariantOnly().also { forwardVariant ->
-            add(forwardVariant)
-            addAll(forwardVariant.add2dAliases())
-        }
-    }
+    val aliases = normalizedInput.create2dAliases(isPartial = true)
 
     val move = Move(
         charName = character.displayName,
@@ -103,6 +98,7 @@ internal fun MoveListResponseDto.toDomain(
         }
 }
 
+//Uni
 internal fun MoveDto.toDomain(
     characterData: DownloadMoveListUseCase.CharacterData,
     imageUrlMap: Map<String, String>,
@@ -114,6 +110,7 @@ internal fun MoveDto.toDomain(
         .orDash()
         .decodeHtmlEntities()
         .normalize2dInputs()
+    val aliasList = normalizedInput.create2dAliases(isPartial = true)
 
     val move = Move(
         charName = this.chara,
@@ -164,11 +161,12 @@ internal fun MoveDto.toDomain(
             comboP1 = comboP1?.cleanHtmlOrNull(),
             comboP2 = comboP2?.cleanHtmlOrNull(),
         ),
+        aliases = aliasList,
     )
     return move
 }
 
-internal fun String.formPropertiesUrl(): String {
+private fun String.formPropertiesUrl(): String {
     val wikiLinkPattern = Regex("""\[\[([^|\]]+)\|([^\]]+)\]\]""")
 
     val final = wikiLinkPattern.replace(this) { matchResult ->

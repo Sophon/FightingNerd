@@ -7,83 +7,77 @@ import kotlin.test.Test
 class MoveInputUtilsTest {
     //region Slash
     @Test
-    fun `aliases from slash handles 2x`() {
+    fun `alias handles full slash`() {
         // given
-        val string = "j.5s1/j.2s1"
-        val expected = listOf("j.5s1", "j.2s1")
+        val input = "j5s1/j2s1"
+        val expectedAlias = listOf("j5s1", "j2s1", "j.5s1", "j.2s1",)
 
         // when
-        val result = string.createAliasesFromSlash(isPartial = false)
+        val resultAlias =  input.create2dAliases(isPartial = false)
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(resultAlias).isEqualTo(expectedAlias)
     }
 
     @Test
-    fun `aliases from slash handles gb`() {
+    fun `alias handles plink`() {
         // given
-        val string = "5l~m / 5m~l"
-        val expected = listOf("5l~m", "5m~l")
+        val input = "5l~m / 5m~l"
+        val expectedAlias = listOf("5l~m", "5m~l")
 
         // when
-        val result = string.createAliasesFromSlash(isPartial = false)
+        val resultAlias = input.create2dAliases(isPartial = false)
 
         //then
-        assertThat(result).isEqualTo(expected)
-    }
-    //endregion
-
-    //region Forward variant
-    @Test
-    fun `use forward variant handles jump`() {
-        // given
-        val string = "j4/6ad"
-        val expected = "j6ad"
-
-        // when
-        val result = string.useForwardVariantOnly()
-
-        //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(resultAlias).isEqualTo(expectedAlias)
     }
 
     @Test
-    fun `use forward variant handles normal slash`() {
+    fun `alias handles jump`() {
         // given
-        val string = "4/6a"
-        val expected = "6a"
+        val input = "j4/6ad"
+        val expectedAlias = listOf("j4ad", "j6ad", "j.4ad", "j.6ad",)
 
         // when
-        val result = string.useForwardVariantOnly()
+        val resultAlias =  input.create2dAliases(isPartial = true)
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(resultAlias).isEqualTo(expectedAlias)
     }
 
     @Test
-    fun `use forward variant handles text close`() {
+    fun `alias handles partial slash`() {
         // given
-        val string = "c.4/6d"
-        val expected = "c.6d"
+        val input = "4/6a"
+        val expectedAlias = listOf("4a", "6a")
 
         // when
-        val result = string.useForwardVariantOnly()
+        val resultAlias = input.create2dAliases(isPartial = true)
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(resultAlias).isEqualTo(expectedAlias)
     }
 
     @Test
-    fun `use forward variant handles keeps non back forward`() {
+    fun `alias handles slash with close`() {
         // given
-        val string = "214h/236d"
-        val expected = "214h/236d"
+        val input = "c4/6d"
+        val expectedAlias = listOf(
+            "c4d",
+            "c6d",
+            "c.4d",
+            "cl4d",
+            "cl.4d",
+            "c.6d",
+            "cl6d",
+            "cl.6d",
+        )
 
         // when
-        val result = string.useForwardVariantOnly()
+        val result = input.create2dAliases(isPartial = true)
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result).isEqualTo(expectedAlias)
     }
     //endregion
 
@@ -92,7 +86,20 @@ class MoveInputUtilsTest {
     fun `normalize 2d handles close`() {
         // given
         val input = "(close)6c"
-        val expected = "c.6c"
+        val expected = "c6c"
+
+        // when
+        val result = input.normalize2dInputs()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `normalize 2d handles OR`() {
+        // given
+        val input = "j.6D or j.4D"
+        val expected = "j6d/j4d"
 
         // when
         val result = input.normalize2dInputs()

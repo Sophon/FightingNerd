@@ -8,9 +8,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.feature.WikiClientFeature
-import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.data.InMemoryCharacterListDB
@@ -19,12 +17,13 @@ import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.domain.model.Emoji
 import io.github.sophon.discord.featureRegistry.core.moveListEmbed
+import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.SearchStringFollowupsUseCase
 import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.usecase.GetMoveUseCase
 import io.github.sophon.discord.usecase.GetMovesUseCase
-import io.github.sophon.discord.featureRegistry.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
@@ -144,6 +143,7 @@ internal class WavuWikiDiscordFeature(
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
                         color = Color(BLUE),
+                        emoji = Emoji.TK_PC,
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -168,6 +168,7 @@ internal class WavuWikiDiscordFeature(
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
                         color = Color(BLUE),
+                        emoji = Emoji.TK_HEAT,
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = moveList.toButtons(charName = query),
@@ -192,6 +193,7 @@ internal class WavuWikiDiscordFeature(
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                     color = Color(BLUE),
+                    emoji = Emoji.TK_HOMING,
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = query),
@@ -216,6 +218,7 @@ internal class WavuWikiDiscordFeature(
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                     color = Color(BLUE),
+                    emoji = Emoji.THROW,
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = query),

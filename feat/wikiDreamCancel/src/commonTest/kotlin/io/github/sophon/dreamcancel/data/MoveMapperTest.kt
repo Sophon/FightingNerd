@@ -3,11 +3,6 @@ package io.github.sophon.dreamcancel.data
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.feature.Game
-import io.github.sophon.core.util.add2dAliases
-import io.github.sophon.core.util.decodeHtmlEntities
-import io.github.sophon.core.util.normalize2dInputs
-import io.github.sophon.core.util.orDash
-import io.github.sophon.core.util.useForwardVariantOnly
 import io.github.sophon.core.wiki.domain.model.Character
 import kotlin.test.Test
 
@@ -20,26 +15,6 @@ class MoveMapperTest {
         wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV/B.Jenet",
     )
 
-    @Test
-    fun `input and alias test`() {
-        // given
-        val input = "(close) 4/6C"
-        val expectedInput = "c.6c"
-        val expectedAliases = listOf("c6c")
-
-        // when
-        val resultInput = input
-            .orDash()
-            .decodeHtmlEntities()
-            .normalize2dInputs()
-            .useForwardVariantOnly()
-            .lowercase()
-        val resultAliases = resultInput.add2dAliases()
-
-        //then
-        assertThat(resultInput).isEqualTo(expectedInput)
-        assertThat(resultAliases).isEqualTo(expectedAliases)
-    }
 
     @Test
     fun `form aliases handles multi-button inputs`() {
@@ -56,6 +31,30 @@ class MoveMapperTest {
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toDomain handles close and OR input`() {
+        // given
+        val move = MoveSource.byeByeBoo
+        val expectedInput = "c4/6c"
+        val expectedAlias = listOf(
+            "c4c",
+            "c6c",
+            "c.4c",
+            "cl4c",
+            "cl.4c",
+            "c.6c",
+            "cl6c",
+            "cl.6c",
+        )
+
+        // when
+        val result = move.toDomain(kofId, bj, emptyMap())
+
+        //then
+        assertThat(result.input).isEqualTo(expectedInput)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
 }
 
@@ -76,6 +75,26 @@ private object MoveSource {
         cancel = "advanced, climax",
         images = "XV_bjenet_236236b_ima.png",
         hitboxes = "XV_bjenet_236236k.png, XV_bjenet_236236k2.png, XV_bjenet_236236k3.png, XV_bjenet_236236k4.png",
+        guardDamage = "0",
+    )
+    val byeByeBoo = MoveDto(
+        chara = "B.Jenet",
+        moveId = "bjenet_cthrow",
+        name = "Bye-Bye Boo",
+        idle = "",
+        rank = "",
+        input = "(close) 4/6C",
+        images = "XV_bjenet_cthrow_ima.png",
+        hitboxes = "XV_bjenet_cthrow.png",
+        damage = "100 (50+50)",
+        guard = "N/A",
+        cancel = "",
+        startup = "1",
+        active = "1",
+        recovery = "0",
+        hitAdv = "HKD (52)",
+        blockAdv = "Unblockable",
+        invul = "",
         guardDamage = "0",
     )
 }
