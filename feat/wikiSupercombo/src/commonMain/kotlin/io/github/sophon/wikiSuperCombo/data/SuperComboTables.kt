@@ -12,7 +12,11 @@ internal object SuperComboTables {
         Game.MK1.id to QueryTable(
             character = TABLE_MK1_CHARACTERS,
             moves = TABLE_MK1_MOVE_LIST,
-        )
+        ),
+        Game.AVL.id to QueryTable(
+            character = TABLE_AVL_CHARACTERS,
+            moves = TABLE_AVL_MOVE_LIST,
+        ),
     )
 
     fun getTable(gameId: String): QueryTable? {
@@ -23,4 +27,6 @@ internal object SuperComboTables {
     internal const val TABLE_SF6_MOVE_LIST = "SF6_FrameData"
     internal const val TABLE_MK1_CHARACTERS = "MK1_CharacterData"
     internal const val TABLE_MK1_MOVE_LIST = "MK1_FrameData"
+    internal const val TABLE_AVL_CHARACTERS = "AL_CharacterData"
+    internal const val TABLE_AVL_MOVE_LIST = "AL_FrameData"
 }
