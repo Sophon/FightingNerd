@@ -21,6 +21,11 @@ enum class Game(
         iconUrl = "https://i.imgur.com/4OcVxqP.png",
         wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1"
     ),
+    AVL(
+        id = "Avatar_Legends",
+        iconUrl = "https://i.imgur.com/aRyOZfI.png",
+        wikiUrl = "https://wiki.supercombo.gg/w/Avatar_Legends",
+    ),
 
     Xko(
         id = "XKO",
