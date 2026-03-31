@@ -111,7 +111,8 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         ?.lowercase()
 
     val aliases: MutableList<String> = listOfNotNull(cleanedAliases, cleanedAlts)
-        .flatMap { it.split("* ", "or") }
+        .asSequence()
+        .flatMap { it.split("* ", " or ") }
         .map {
             it
                 .trim()
