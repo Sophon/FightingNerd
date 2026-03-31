@@ -2,6 +2,7 @@
 
 ## [v11.3.0] - TODO
 - `SuperCombo` - Avatar: Legends support
+- `Wavu` - fixed alias for Matterhorn and such
 
 ## [v11.2.0] - 2026-03-30
 - `Wavu` - better emoji in Discord embeds
