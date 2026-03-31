@@ -16,7 +16,7 @@ data class CargoQueryItem(
 data class CharacterDto(
     val Character: String? = null,
     val chara: String,
-    val name: String,
+    val name: String? = null,
     val portrait: String? = null,
     val icon: String? = null,
     val hp: String? = null,
