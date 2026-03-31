@@ -46,6 +46,8 @@ internal class SuperComboWikiDiscordFeature(
         Command.CharSF,
         Command.FdMK,
         Command.CharMK,
+        Command.FdAV,
+        Command.CharAV,
     )
     private val wikis = mutableMapOf<String, WikiClient>()
 
@@ -115,6 +117,21 @@ internal class SuperComboWikiDiscordFeature(
             Command.FdMK -> withWiki(
                 wikis = wikis,
                 gameId = Game.MK1.id,
+                query = query,
+            ) { _, wiki, query ->
+                searchMove(wiki, query)
+            }
+
+            Command.CharAV -> withWiki(
+                wikis = wikis,
+                gameId = Game.AVL.id,
+                query = query,
+            ) { _, wiki, query ->
+                searchCharacter(wiki, query)
+            }
+            Command.FdAV -> withWiki(
+                wikis = wikis,
+                gameId = Game.AVL.id,
                 query = query,
             ) { _, wiki, query ->
                 searchMove(wiki, query)
