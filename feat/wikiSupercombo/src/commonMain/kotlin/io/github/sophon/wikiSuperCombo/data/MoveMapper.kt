@@ -27,6 +27,12 @@ fun MoveDto.toDomain(
 ): Move {
     val type = getType()
     val aliasList = formAliases(type)
+    val onBlock = (blockAdv ?: onBlock).takeIfNotTemplate()?.cleanHtml()
+    val onHit = (hitAdv ?: onHit).takeIfNotTemplate()?.cleanHtml()
+    val notes = (notes ?: properties)
+        .takeIfNotTemplate()
+        ?.cleanHtml()
+        .extractNotes()
 
     return Move(
         charName = chara,
@@ -36,12 +42,11 @@ fun MoveDto.toDomain(
         input = input.cleanMoveInput().replace("360+", "360"),
         damage = damage.takeIfNotTemplate()?.cleanHtml(),
         startup = startup.takeIfNotTemplate(),
-        onBlock = blockAdv.takeIfNotTemplate()?.cleanHtml(),
-        onHit = hitAdv.takeIfNotTemplate()?.cleanHtml(),
+        onBlock = onBlock,
+        onHit = onHit,
         onCH = null,
         recovery = recovery.takeIfNotTemplate()?.cleanHtml(),
-        notes = notes.takeIfNotTemplate()?.cleanHtml()
-            .extractNotes(),
+        notes = notes,
         active = active.takeIfNotTemplate()?.cleanHtml(),
         guard = guard.takeIfNotTemplate(),
         cancel = cancel.takeIfNotTemplate(),
@@ -104,6 +109,10 @@ fun MoveDto.toDomain(
             cost = moveType
                 .split(",")
                 .filterNot { it.takeIfNotTemplate() == null }
+        ),
+        avlProperties = Move.AVLProperties(
+            chiDamage = chiDamage,
+            flow = flow,
         )
     )
 }
