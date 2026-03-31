@@ -9,6 +9,8 @@ import io.github.sophon.wikiwavu.domain.cleanMoveInput
 import kotlin.test.Test
 
 class MoveMapperTest {
+    val emptyCharData = DownloadMoveListUseCase.CharacterData("", null)
+
     //region formId
     @Test
     fun `formId handles multi word names`() {
@@ -163,6 +165,19 @@ class MoveMapperTest {
 
         //then
         assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toDomain with name OR creates correct aliases`() {
+        // given
+        val move = MoveSource.matterhorn
+        val expectedAlias = listOf("matterhorn")
+
+        // when
+        val result = move.mapToDomain(emptyCharData, emptyMap())
+
+        //then
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
     //endregion
 
@@ -683,4 +698,27 @@ class MoveMapperTest {
         assertThat(result[0]).isEqualTo(expectedMove)
     }
     //endregion
+}
+
+private object MoveSource {
+    val matterhorn = MoveDto(
+        id = "Lili-d+3+4",
+        name = "Matterhorn Ascension",
+        input = "d+3+4",
+        parent = null,
+        target = "m",
+        damage = "23",
+        startup = "i17~21",
+        recv = "r41",
+        tot = "62",
+        crush = "fs14~44",
+        block = "-21",
+        hit = "+45a (+35)",
+        ch = null,
+        notes = "<div class=\"plainlist\">\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-orange tornado\"\n>Tornado</div>\n* Evasive, can go under some mids and highs\n</div>",
+        alias = "Matterhorn",
+        image = null,
+        video = "File:t8-p2-lili-d+3+4.mp4",
+        alt = null,
+    )
 }
