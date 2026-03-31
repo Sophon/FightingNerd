@@ -103,6 +103,15 @@ internal class SuperComboDataSourceImpl(
                     "dRushMax"
                 )
             }
+            SuperComboTables.TABLE_AVL_CHARACTERS -> {
+                listOf(
+                    "Character",
+                    "chara",
+                    "portrait",
+                    "icon",
+                    "hp"
+                )
+            }
             else -> emptyList()
         }
 
@@ -182,6 +191,29 @@ internal class SuperComboDataSourceImpl(
                     "projSpeed",
                     "atkRange",
                     "notes"
+                )
+            }
+            SuperComboTables.TABLE_AVL_MOVE_LIST -> {
+                listOf(
+                    "moveId",
+                    "chara",
+                    "input",
+                    "moveType",
+                    "name",
+                    "images",
+                    "hitboxes",
+                    "damage",
+                    "chiDamage",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "onBlock",
+                    "onHit",
+                    "guard",
+                    "flow",
+                    "invuln",
+                    "cancel",
+                    "properties"
                 )
             }
             else -> listOf()

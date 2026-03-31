@@ -63,4 +63,11 @@ data class MoveDto(
     val hitCancelAdv: String? = null,
     val blockCancelAdv: String? = null,
     val punish: String? = null,
+
+    //AVL
+    val chiDamage: String? = null,
+    val onBlock: String? = null,
+    val onHit: String? = null,
+    val flow: String? = null,
+    val properties: String? = null,
 )

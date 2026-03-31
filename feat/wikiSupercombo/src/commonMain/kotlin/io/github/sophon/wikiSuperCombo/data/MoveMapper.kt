@@ -3,6 +3,7 @@ package io.github.sophon.wikiSuperCombo.data
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.create2dAliases
+import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
@@ -26,22 +27,31 @@ fun MoveDto.toDomain(
     imageUrlMap: Map<String, String>,
 ): Move {
     val type = getType()
-    val aliasList = formAliases(type)
+    val normalizedInput = input
+        .cleanMoveInput()
+        .normalize2dInputs()
+        .replace("360+", "360")
+    val aliasList = formAliases(normalizedInput, type)
+    val onBlock = (blockAdv ?: onBlock).takeIfNotTemplate()?.cleanHtml()
+    val onHit = (hitAdv ?: onHit).takeIfNotTemplate()?.cleanHtml()
+    val notes = (notes ?: properties)
+        .takeIfNotTemplate()
+        ?.cleanHtml()
+        .extractNotes()
 
-    return Move(
+    val move = Move(
         charName = chara,
         id = moveId,
-        name = name,
+        name = name.ignoreImageNames(),
 
-        input = input.cleanMoveInput().replace("360+", "360"),
+        input = normalizedInput,
         damage = damage.takeIfNotTemplate()?.cleanHtml(),
         startup = startup.takeIfNotTemplate(),
-        onBlock = blockAdv.takeIfNotTemplate()?.cleanHtml(),
-        onHit = hitAdv.takeIfNotTemplate()?.cleanHtml(),
+        onBlock = onBlock,
+        onHit = onHit,
         onCH = null,
         recovery = recovery.takeIfNotTemplate()?.cleanHtml(),
-        notes = notes.takeIfNotTemplate()?.cleanHtml()
-            .extractNotes(),
+        notes = notes,
         active = active.takeIfNotTemplate()?.cleanHtml(),
         guard = guard.takeIfNotTemplate(),
         cancel = cancel.takeIfNotTemplate(),
@@ -104,8 +114,13 @@ fun MoveDto.toDomain(
             cost = moveType
                 .split(",")
                 .filterNot { it.takeIfNotTemplate() == null }
+        ),
+        avlProperties = Move.AVLProperties(
+            chiDamage = chiDamage,
+            flow = flow,
         )
     )
+    return move
 }
 
 private fun String?.takeIfNotTemplate(): String? {
@@ -162,12 +177,15 @@ internal fun formMoveWikiUrl(
     return url
 }
 
-private fun MoveDto.formAliases(type: Move.SF6Properties.Type?): List<String> {
+private fun MoveDto.formAliases(
+    normalizedInput: String,
+    type: Move.SF6Properties.Type?
+): List<String> {
     val motionAlias = when (type) {
         Move.SF6Properties.Type.SUPER -> formSuperLevel(moveId, superGainHit)
         else -> this.input.formMotionInput()
     }?.lowercase()
-    val aliases2d = input.create2dAliases(isPartial = true)
+    val aliases2d = normalizedInput.create2dAliases(isPartial = true)
     val result = buildList {
         motionAlias?.let { add(it) }
         addAll(aliases2d)
@@ -207,4 +225,10 @@ private fun String?.formMotionInput(): String? {
     }
 
     return motion
+}
+
+private fun String?.ignoreImageNames(): String? {
+    if (this == null) return this
+    if (this.contains("[[") || this.contains("]]") || this.contains(".png")) return null
+    return this
 }

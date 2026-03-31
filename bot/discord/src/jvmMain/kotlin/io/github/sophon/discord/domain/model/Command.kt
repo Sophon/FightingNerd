@@ -250,6 +250,30 @@ internal sealed class Command(
             ),
         ),
     )
+    object CharAV : Command(
+        name = "CharAV",
+        description = "AVL character data",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+            ),
+        ),
+    )
+    object FdAV : Command(
+        name = "FdAV",
+        description = "AVL frame data",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+            ),
+            Argument(
+                name = "move",
+                description = "Move",
+            ),
+        ),
+    )
     //endregion
 
     // region 2xko
