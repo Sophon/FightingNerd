@@ -15,6 +15,7 @@ object SuperComboFeatureInfo {
         supportedGameSet = setOf(
             Game.StreetFighter6,
             Game.MK1,
+            Game.AVL,
         ),
         version = BuildKonfig.VERSION,
     )
