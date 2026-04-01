@@ -7,7 +7,9 @@ set -e
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+NC='\033[0m'
 
 # Check if version parameter is provided
 if [ -z "$1" ]; then
@@ -19,7 +21,25 @@ fi
 
 VERSION="$1"
 
-echo -e "${GREEN}Starting bot release process for version: ${VERSION}${NC}"
+# Prompt user to select release mode
+echo -e "${BOLD}FightingNerd Bot Release — ${VERSION}${NC}"
+echo ""
+echo -e "Select release type:"
+echo -e "  ${CYAN}IMMEDIATE${NC}  — push now, deploy starts right away"
+echo -e "  ${CYAN}SCHEDULED${NC}  — push to staging, GitHub promotes at 00:05 UTC"
+echo ""
+read -rp "Type IMMEDIATE or SCHEDULED: " MODE_INPUT
+echo ""
+
+# Map input to mode name
+case "$MODE_INPUT" in
+    "IMMEDIATE") MODE="immediate" ;;
+    "SCHEDULED") MODE="scheduled" ;;
+    *)
+        echo -e "${RED}Invalid selection. Aborting.${NC}"
+        exit 1
+        ;;
+esac
 
 # Step 1: Update dev branch
 echo -e "${YELLOW}Step 1: Updating dev branch...${NC}"
@@ -40,20 +60,30 @@ echo -e "${YELLOW}Step 4: Committing changes...${NC}"
 git add .
 git commit -m "${VERSION}"
 
-# Confirmation prompt
-echo -e "${YELLOW}Ready to push version ${VERSION} to release_bot and trigger deployment.${NC}"
-echo -e "${YELLOW}Type 'go' to proceed: ${NC}"
-read -r confirmation
-
-if [ "$confirmation" != "go" ]; then
-    echo -e "${RED}Deployment cancelled.${NC}"
-    exit 1
-fi
-
-# Step 5: Push and trigger deployment
-echo -e "${YELLOW}Step 5: Pushing to trigger deployment...${NC}"
-git push origin release_bot
-
-echo -e "${GREEN}✓ Bot release ${VERSION} completed successfully!${NC}"
-
 git checkout dev
+
+# Step 5a: Push immediately and trigger deployment
+if [ "$MODE" = "immediate" ]; then
+    echo ""
+    echo -e "${YELLOW}This will deploy ${VERSION} immediately.${NC}"
+    read -rp "Type 'IMMEDIATE' to confirm: " CONFIRM
+    if [ "$CONFIRM" != "IMMEDIATE" ]; then
+        echo -e "${RED}Deployment cancelled.${NC}"
+        exit 1
+    fi
+    git push origin release_bot
+    echo -e "${GREEN}✓ Bot release ${VERSION} pushed. Deployment starting now.${NC}"
+
+# Step 5b: Push to staging branch — scheduled workflow promotes to release_bot at 00:05 UTC
+elif [ "$MODE" = "scheduled" ]; then
+    echo ""
+    echo -e "${YELLOW}This will stage ${VERSION} for deployment at 00:05 UTC tonight.${NC}"
+    read -rp "Type 'SCHEDULED' to confirm: " CONFIRM
+    if [ "$CONFIRM" != "SCHEDULED" ]; then
+        echo -e "${RED}Deployment cancelled.${NC}"
+        exit 1
+    fi
+    git push origin release_bot:release_bot_pending --force
+    echo -e "${GREEN}✓ Bot release ${VERSION} staged. GitHub will deploy at 00:05 UTC.${NC}"
+    echo -e "${CYAN}  To cancel: git push origin --delete release_bot_pending${NC}"
+fi

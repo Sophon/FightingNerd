@@ -1,0 +1,35 @@
+name: Bot Deploy - Scheduled
+
+on:
+  schedule:
+    - cron: '5 0 * * *'  # 00:05 UTC daily
+
+jobs:
+  promote:
+    name: Promote pending release to release_bot
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check if pending release exists
+        id: check
+        run: |
+          git fetch origin
+          if git show-ref --verify --quiet refs/remotes/origin/release_bot_pending; then
+            echo "pending=true" >> $GITHUB_OUTPUT
+          else
+            echo "pending=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Promote release_bot_pending to release_bot
+        if: steps.check.outputs.pending == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git push origin refs/remotes/origin/release_bot_pending:refs/heads/release_bot --force
+          git push origin --delete release_bot_pending

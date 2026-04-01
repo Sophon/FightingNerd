@@ -1,8 +1,12 @@
 # BOT CHANGELOG
 
-## [v11.3.0] - TODO
+## [v11.3.0] - 2026-04-02
 - `SuperCombo` - Avatar: Legends support
 - `Wavu` - fixed alias for Matterhorn and such
+- `GitHub`
+  - two release modes:
+    1. IMMEDIATE - same as before
+    2. SCHEDULED - is released at 05:00 UTC; this is to start the release process AFTER daily report (which is at 00:00 UTC)
 
 ## [v11.2.0] - 2026-03-30
 - `Wavu` - better emoji in Discord embeds
