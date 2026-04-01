@@ -14,7 +14,7 @@ internal fun MoveListResponseDto.toDomain(
 ): List<Move> {
     val downloadedMoves = extractMoveDto()
     val movesById = downloadedMoves.associateBy { it.id }
-    val moveList = downloadedMoves.map { it.mapToDomain(characterData, movesById) }
+    val moveList = downloadedMoves.map { it.toDomain(characterData, movesById) }
     return moveList
 }
 
@@ -22,7 +22,7 @@ internal fun MoveListResponseDto.extractMoveDto(): List<MoveDto> {
     return cargoQuery.map { it.title }
 }
 
-internal fun MoveDto.mapToDomain(
+internal fun MoveDto.toDomain(
     characterData: DownloadMoveListUseCase.CharacterData,
     movesById: Map<String, MoveDto>,
 ): Move {

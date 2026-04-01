@@ -15,105 +15,101 @@ class MoveMapperTest {
     @Test
     fun `formId handles multi word names`() {
         //given
-        val name = "Armor King"
-        val expected = "armor_king"
+        val move = MoveSource.ffn2
+        val expectedId = "armor_king-ffn2"
 
         //when
-        val result = name.formId()
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.id).isEqualTo(expectedId)
     }
 
     @Test
     fun `formId handles mixed case with special characters`() {
         //given
-        val name = "Jack-8"
-        val expected = "jack-8"
+        val move = MoveSource.df2
+        val expectedId = "jack-8-df2"
 
         //when
-        val result = name.formId()
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.id).isEqualTo(expectedId)
     }
     //endregion
 
     //region formAliases
     @Test
-    fun `formAliases handles null`() {
+    fun `toDomain handles null alias`() {
         //given
-        val alias: String? = null
-        val expected: List<String> = emptyList()
+        val move = MoveSource.konvictKick
+        val expectedAlias = emptyList<String>()
 
         //when
-        val result = "".formAliases(alias = alias, alt = null)
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
 
     @Test
-    fun `formAliases handles multi-word alias`() {
-        //given
-        val alias = "Shining Wizard"
-        val expected = listOf("shining wizard")
+    fun `toDomain handles multi-word aliases`() {
+        // given
+        val move = MoveSource.shiningWizard
+        val expectedAlias = listOf("shining wizard")
 
-        //when
-        val result = "".formAliases(alias, null)
+        // when
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
 
     @Test
     fun `formAliases handles http with multiple aliases`() {
         //given
-        val alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* Can Cans\n* Cancan\n\n&lt;/div&gt;"
-        val expected = listOf(
-            "can cans",
-            "cancan",
-        )
+        val move = MoveSource.cancans
+        val expectedAlias = listOf("can cans", "cancan",)
 
         //when
-        val result = "".formAliases(alias, null)
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
 
     @Test
     fun `formAliases handles cd`() {
         // given
-        val string = "cd.df2"
-        val expected = listOf("cd2", "cd.2")
+        val move = MoveSource.whf
+        val expectedAlias = listOf("whf", "cd.2", "cd2")
 
         // when
-        val result = string.formAliases(null, null)
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
 
     @Test
     fun `formAliases handles just-frame cd with df`() {
         // given
-        val string = "cd.df#2"
-        val expected = listOf("cd#2")
+        val move = MoveSource.ewhf
+        val expectedAlias = listOf("ewhf", "electric", "ecd2", "cd#2", "fndf#2")
 
         // when
-        val result = string.formAliases(null, null)
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
 
     @Test
     fun `formAliases handles alt and alias`() {
         // given
-        val input = "WGS.df+3".cleanMoveInput()
-        val alt = "&lt;div class=&quot;dotlist&quot;&gt;\\n\\n* f,n,d,DF+3\\n* f,n,DF+3\\n* df+3,df+3\\n&lt;/div&gt;"
-        val expected = listOf(
+        val move = MoveSource.wgk
+        val expectedAlias = listOf(
             "cd.3",
             "cd3",
             "fndf3",
@@ -122,10 +118,10 @@ class MoveMapperTest {
         )
 
         // when
-        val result = input.formAliases(null, alt)
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
 
     @Test
@@ -144,27 +140,27 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles ss in input`() {
         // given
-        val input = "SS.2".cleanMoveInput()
-        val expected = listOf("ss2")
+        val move = MoveSource.ss4
+        val expectedAlias = listOf("ss4")
 
         // when
-        val result = input.formAliases(null, null)
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
 
     @Test
     fun `formAliases handles heat smash`() {
         // given
-        val input = "h.2+3"
-        val expected = listOf("hs", "heatsmash")
+        val move = MoveSource.heatSmash
+        val expectedAlias = listOf("hs", "heatsmash")
 
         // when
-        val result = input.formAliases("", "")
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
 
     @Test
@@ -174,7 +170,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("matterhorn")
 
         // when
-        val result = move.mapToDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -183,55 +179,55 @@ class MoveMapperTest {
 
     //region isStance
     @Test
-    fun `getStance handles basic stance`() {
+    fun `toDomain handles basic stance`() {
         //given
-        val string = "BAD.1+2"
-        val expected = "BAD"
+        val move = MoveSource.bad4
+        val expectedStance = "bad"
 
         //when
-        val result = string.getStance()
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.t8Properties?.stance).isEqualTo(expectedStance)
     }
 
     @Test
-    fun `getStance ignores non stance`() {
+    fun `toDomain ignores non stance`() {
         //given
-        val string = "FCdf4"
-        val expected = null
+        val move = MoveSource.matterhorn
+        val expectedStance = null
 
         //when
-        val result = string.getStance()
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.t8Properties?.stance).isEqualTo(expectedStance)
     }
 
     @Test
-    fun `getStance ignores OTG`() {
+    fun `toDomain ignores OTG`() {
         //given
-        val string = "otg3"
-        val expected = null
+        val move = MoveSource.stomp
+        val expectedStance = null
 
         //when
-        val result = string.getStance()
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.t8Properties?.stance).isEqualTo(expectedStance)
     }
 
     @Test
-    fun `getStances handles backturn`() {
+    fun `toDomain handles backturn`() {
         //given
-        val string = "BTws3"
-        val expected = "BT"
+        val move = MoveSource.moonsault
+        val expectedStance = "BT"
 
         //when
-        val result = string.getStance()
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.t8Properties?.stance).isEqualTo(expectedStance)
     }
     //endregion
 
@@ -239,15 +235,15 @@ class MoveMapperTest {
     @Test
     fun `formUrl handles basic url`() {
         //given
-        val charName = "Asuka"
-        val id = "Asuka-3,1"
-        val expected = "https://wavu.wiki/t/Asuka_movelist#Asuka-3,1"
+        val charData = DownloadMoveListUseCase.CharacterData("Lili", null)
+        val move = MoveSource.matterhorn
+        val expectedUrl = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4"
 
         //when
-        val result = formMoveWikiUrl(charName, id)
+        val result = move.toDomain(charData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.urls.wikiUrl).isEqualTo(expectedUrl)
     }
     //endregion
 
@@ -255,91 +251,44 @@ class MoveMapperTest {
     @Test
     fun `formNotes handles links`() {
         //given
-        val string = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em;" +
-                " padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-blue homing&quot;" +
-                "\n&gt;Homing&lt;/div&gt;" +
-                "\n* Deals chip damage on block" +
-                "\n* Transition to SEN (+0/[[Reina_combos#Mini-combos|+13]]/[[Reina_combos#Mini-combos|+18c]]) with input F" +
-                "\n* Transition to UNS (+0/+12/+18c) with u_d" +
-                "\n* Cannot block up to i14 on empty transition on block\n&lt;/div&gt;"
-        val expected = listOf(
-            "Homing",
-            "Deals chip damage on block",
-            "Transition to SEN (+0/[+13](https://wavu.wiki/t/Reina_combos#Mini-combos)/[+18c](https://wavu.wiki/t/Reina_combos#Mini-combos)) with input F",
-            "Transition to UNS (+0/+12/+18c) with u_d",
-            "Cannot block up to i14 on empty transition on block"
+        val move = MoveSource.matterhorn
+        val expectedNotes = listOf(
+            "Tornado",
+            "Evasive, can go under some mids and highs",
+            "fs14~44",
         )
 
         //when
-        val result = string.formNotes()
+        val result = move.toDomain(emptyCharData, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.notes).isEqualTo(expectedNotes)
     }
     //endregion
 
     //region Parental
     @Test
-    fun `formDataFromParent handles a single move`() {
+    fun `toDomain handles parental string`() {
         // given
-        val move = MoveDto(
-            id = "1",
-            input = "1",
-            startup = "i10",
-            damage = "1",
-            target = "h",
-        )
+        val stomp = MoveSource.stomp
+        val secondStomp = MoveSource.secondStomp
         val map = mapOf(
-            move.id to move,
+            stomp.id to stomp,
+            secondStomp.id to secondStomp,
         )
-        val expected = ParentalProperties(
-            input = "1",
-            startup = "i10",
-            damage = "1",
-            guard = "h",
-        )
+        val expectedInput = "otg.d44"
+        val expectedStartup = "i19~21 (i18~21)"
+        val expectedDamage = "18, 8"
+        val expectedGuard = "L, L"
 
         // when
-        val result = move.formCompleteDataFromParent(map)
+        val result = secondStomp.toDomain(emptyCharData, map)
 
         //then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `formDataFromParent handles simple string`() {
-        // given
-        val move1 = MoveDto(
-            id = "1",
-            input = "1",
-            startup = "i10",
-            damage = "10",
-            target = "h",
-        )
-        val move2 = MoveDto(
-            id = "1,1",
-            input = ",1",
-            startup = "i11",
-            parent = "1",
-            damage = "11",
-            target = "m"
-        )
-        val map = mapOf(
-            move1.id to move1,
-            move2.id to move2,
-        )
-        val expected = ParentalProperties(
-            input = "11",
-            startup = "i10 (i11)",
-            damage = "10, 11",
-            guard = "h, m",
-        )
-
-        // when
-        val result = move2.formCompleteDataFromParent(map)
-
-        //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.input).isEqualTo(expectedInput)
+        assertThat(result.startup).isEqualTo(expectedStartup)
+        assertThat(result.damage).isEqualTo(expectedDamage)
+        assertThat(result.guard).isEqualTo(expectedGuard)
     }
 
     @Test
@@ -719,6 +668,286 @@ private object MoveSource {
         alias = "Matterhorn",
         image = null,
         video = "File:t8-p2-lili-d+3+4.mp4",
+        alt = null,
+    )
+    val shiningWizard = MoveDto(
+        id = "King-f,f,F+2+4",
+        name = "Tomahawk",
+        input = "f,f,F+2+4",
+        parent = null,
+        target = "t",
+        damage = "40(45)",
+        startup = "i10",
+        recv = "r29",
+        tot = "39",
+        crush = null,
+        block = "-5",
+        hit = "+1d",
+        ch = null,
+        notes = "<div class=\"plainlist\">\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-blue homing\"\n>Homing</div> during heat\n* 1+2 throw break\n* Input f,F+2+4 in 6 frames after f,f for bluespark.\n* i13 startup for Bluespark throw with buffered input\n* 45 damage on bluespark\n* 18F throw break window on bluespark\n* 7F throw break window on CH bluespark\n* Partially restores remaining Heat time.\n* Opponent recovers in FUFL.\n</div>",
+        alias = "Shining Wizard",
+        image = null,
+        video = "File:t8-p2-king-f,f,f+2+4.mp4",
+        alt = null,
+    )
+    val konvictKick = MoveDto(
+        id = "King-f,F+4",
+        name = "Konvict Kick",
+        input = "f,F+4",
+        parent = null,
+        target = "m,(t)",
+        damage = "25,(14)",
+        startup = "i15",
+        recv = null,
+        tot = null,
+        crush = null,
+        block = "-15",
+        hit = "+14a(+4)",
+        ch = "+1d",
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-orange tornado&quot;\n&gt;Tornado&lt;/div&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-green balcony-break&quot;\n&gt;Balcony Break&lt;/div&gt;\n* Shifts to 14dmg throw on front grounded CH.\n&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = "File:t8-p2-king-f,f,4.mp4",
+        alt = null
+    )
+    val cancans = MoveDto(
+        id = "Asuka-d+3+4",
+        name = "Double Lift Kicks",
+        input = "d+3+4",
+        parent = null,
+        target = "l,h",
+        damage = "5,15",
+        startup = "i14 i9~12",
+        recv = "r31",
+        tot = "73",
+        crush = "&lt;div class=&quot;plainlist&quot;&gt;\n* js5~42\n* fs43~45&lt;/div&gt;",
+        block = "-8",
+        hit = "[[Asuka_combos#Staples|+30a (+20)]]",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* Combo from 1st CH\n* -25 if 1st hit is blocked \n&lt;/div&gt;",
+        alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* Can Cans\n* Cancan\n\n&lt;/div&gt;",
+        image = null,
+        video = "File:t8-p2-asuka-d+3+4.mp4",
+        alt = null
+    )
+    val whf = MoveDto(
+        id = "Jin-CD.df+2",
+        name = "Wind Hook Fist",
+        input = "CD.df+2",
+        parent = null,
+        target = "h",
+        damage = "20",
+        startup = "i11~12",
+        recv = "r28",
+        tot = "40",
+        crush = null,
+        block = "-10",
+        hit = "[[Jin_combos#Staples|+74a (+58)]]",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-green balcony-break&quot;\n&gt;Balcony Break&lt;/div&gt;\n* Turns into EWHF (CD.df#2) while in heat\n&lt;/div&gt;",
+        alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* WHF\n* f,n,d,df+2\n&lt;/div&gt;",
+        image = null,
+        video = "File:t8-p2-jin-cd.df+2.mp4",
+        alt = null
+    )
+    val ewhf = MoveDto(
+        id = "Jin-CD.df\${justFrame}2",
+        name = "Electric Wind Hook Fist",
+        input = "CD.df#2",
+        parent = null,
+        target = "h",
+        damage = "25",
+        startup = "i11~i12",
+        recv = "r27",
+        tot = "39",
+        crush = null,
+        block = "+5~+6",
+        hit = "[[Jin_combos#Staples|+76a (+60)]]",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-green balcony-break&quot;\n&gt;Balcony Break&lt;/div&gt;\n* Recovers 3f faster on hit or block (t36 r24)\n&lt;/div&gt;",
+        alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* EWHF\n* Electric\n* ECD+2\n* f,n,d,df#2\n&lt;/div&gt;",
+        image = null,
+        video = "File:t8-p2-jin-cd.dfh2.mp4",
+        alt = "f,n,df#2"
+    )
+    val wgk = MoveDto(
+        id = "Reina-WGS.DF+3",
+        name = "War God Kick",
+        input = "WGS.df+3",
+        parent = null,
+        target = "M",
+        damage = "17",
+        startup = "i15~17",
+        recv = "r38 FC",
+        tot = null,
+        crush = null,
+        block = "-13",
+        hit = "+13a (-4)",
+        ch = "[[Reina_combos#Staples|+23a (+17)]]",
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* Becomes 22dmg Electric War God Kick during Heat (partially uses remaining Heat Time)\n** 4 chip damage on block\n* 21dmg when performing f,n,d,DF+3/f,n,DF+3 without Heat\n&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = "File:Reina-WGS.df+3.mp4",
+        alt = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* f,n,d,DF+3\n* f,n,DF+3\n* df+3,df+3\n&lt;/div&gt;"
+    )
+    val ss4 = MoveDto(
+        id = "Claudio-SS.4",
+        name = "Luxuria",
+        input = "SS.4",
+        parent = null,
+        target = "L",
+        damage = "20",
+        startup = "i20~21",
+        recv = "r30",
+        tot = "51",
+        crush = null,
+        block = "-12",
+        hit = "+6c",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* Side step takes 9f, effective startup i29\n* Tracking and range notes:\n* Assuming i29 startup with 9f left sidestep\n* SSL4 range: 2.45\n* SSR4 range: 2.39\n* Pseudo homing low?\n&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = "File:t8-p2-claudio-ss.4.mp4",
+        alt = null
+    )
+    val heatSmash = MoveDto(
+        id = "Bryan-H.2+3",
+        name = "Notorious Monster",
+        input = "H.2+3",
+        parent = null,
+        target = "m,m,t",
+        damage = "20,20,35",
+        startup = "i16",
+        recv = "r34",
+        tot = "70",
+        crush = "js9~",
+        block = "+9",
+        hit = "-1d",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-purple heat&quot;\n&gt;Heat Smash&lt;/div&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-blue reversal-break&quot;\n&gt;Reversal Break&lt;/div&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-yellow spike&quot;\n&gt;Spike&lt;/div&gt;\n* Transition to attack throw on hit\n&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = null,
+        alt = null
+    )
+    val df2 = MoveDto(
+        id = "Jack-8-df+2",
+        name = "Programmed Uppercut",
+        input = "df+2",
+        parent = null,
+        target = "m",
+        damage = "13",
+        startup = "i15",
+        recv = null,
+        tot = null,
+        crush = null,
+        block = "-14",
+        hit = "+31a (+21)",
+        ch = null,
+        notes = null,
+        alias = null,
+        image = null,
+        video = "File:t8-p2-jack-8-df+2.mp4",
+        alt = null
+    )
+    val ffn2 = MoveDto(
+        id = "Armor King-f,f,n,2",
+        name = "Underhanded",
+        input = "f,f,n,2",
+        parent = null,
+        target = "L",
+        damage = "20",
+        startup = "i19",
+        recv = null,
+        tot = null,
+        crush = "cs8~37",
+        block = "-13",
+        hit = "+5",
+        ch = "+10",
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* Transition to BAD on hit with F (+8/+13)\n&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = null,
+        alt = null
+    )
+    val bad4 = MoveDto(
+        id = "Armor King-BAD.4",
+        name = "Bandido Snatch",
+        input = "BAD.4",
+        parent = null,
+        target = "L",
+        damage = "23",
+        startup = "i17~18",
+        recv = "r31",
+        tot = "49",
+        crush = null,
+        block = "-13",
+        hit = "+3c",
+        ch = "+26a",
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n  &lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = "File:t8-p2-armor_king-bad.4.mp4",
+        alt = null
+    )
+    val moonsault = MoveDto(
+        id = "Armor King-BT.1+4",
+        name = "Moonsault Drop",
+        input = "BT.1+4",
+        parent = null,
+        target = "m!",
+        damage = "20",
+        startup = "i41~47",
+        recv = null,
+        tot = null,
+        crush = "js",
+        block = "!",
+        hit = "+0d",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* Armor King recovers FDFR on close hit, and FUFT on far hit or whiff\n&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = null,
+        alt = null
+    )
+    val stomp = MoveDto(
+        id = "Armor King-OTG.d+4",
+        name = null,
+        input = "OTG.d+4",
+        parent = null,
+        target = "L",
+        damage = "18",
+        startup = "i19~21",
+        recv = null,
+        tot = null,
+        crush = null,
+        block = "-16",
+        hit = "-5d (-13)",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* -5 on hit when opponent is standing\n&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = null,
+        alt = null
+    )
+    val secondStomp = MoveDto(
+        id = "Armor King-OTG.d+4,4",
+        name = null,
+        input = ",4",
+        parent = "Armor King-OTG.d+4",
+        target = ",L",
+        damage = ",8",
+        startup = "i18~21",
+        recv = null,
+        tot = null,
+        crush = null,
+        block = "-16",
+        hit = "-8d",
+        ch = null,
+        notes = "<div class=\"plainlist\">\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-yellow floor-break\"\n>Floor Break</div>\n* Combos from 1st hit on grounded opponent\n* -5 on hit when opponent is standing\n</div>",
+        alias = null,
+        image = null,
+        video = null,
         alt = null,
     )
 }
