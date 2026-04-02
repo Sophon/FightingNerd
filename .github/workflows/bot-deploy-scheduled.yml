@@ -9,6 +9,8 @@ jobs:
   promote:
     name: Promote pending release to release_bot
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout code
