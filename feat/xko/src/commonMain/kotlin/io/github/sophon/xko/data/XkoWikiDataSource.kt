@@ -19,7 +19,7 @@ internal class XkoWikiDataSourceImpl(
         return safeCall {
             httpClient.get(URL_BASE) {
                 parameter("action", "bucket")
-                parameter("query", "bucket('move').select('page_name', 'input', 'damage', 'guard', 'startup', 'active', 'recovery', 'onblock', 'cancel', 'invuln').run()")
+                parameter("query", "bucket('move').select('page_name', 'input', 'damage', 'guard', 'startup', 'active', 'recovery', 'onblock', 'cancel', 'invuln').limit(5000).run()")
                 parameter("format", "json")
             }
         }
