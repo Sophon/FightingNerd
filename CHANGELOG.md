@@ -1,6 +1,9 @@
 # BOT CHANGELOG
 
 ## [v11.3.0] - 2026-04-02
+- `2xko` - fixed the Bucket missing Akali and Caitlyn
+
+## [v11.3.0] - 2026-04-02
 - `SuperCombo` - Avatar: Legends support
 - `Wavu` - fixed alias for Matterhorn and such
 - `GitHub`
