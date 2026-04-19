@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v11.3.0] - 2026-04-02
+## [v11.3.1] - 2026-04-19
 - `2xko` - fixed the Bucket missing Akali and Caitlyn
 
 ## [v11.3.0] - 2026-04-02
