@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v11.4.1] - 2026-04-23
+- mention `feedback` in the footer
+
 ## [v11.3.1] - 2026-04-19
 - `2xko` - fixed the Bucket missing Akali and Caitlyn
 

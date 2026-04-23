@@ -82,7 +82,8 @@ internal fun EmbedBuilder.separator() {
 
 internal fun EmbedBuilder.featureFooter(featureInfo: FeatureInfo) {
     footer {
-        text = featureInfo.name
+        text = "${featureInfo.name}\n" +
+                "Ideas or errors? Use /feedback"
         icon = featureInfo.iconUrl
     }
 }
