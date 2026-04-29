@@ -8,7 +8,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.discord.BotError
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.Tracker
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command

@@ -9,7 +9,7 @@ import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.discord.BotError
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.toDomainError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow

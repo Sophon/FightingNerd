@@ -3,7 +3,6 @@ package io.github.sophon.discord.domain.model
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
-import io.github.sophon.discord.BotError
 import io.github.sophon.domain.Source
 
 internal interface DiscordRegisteredFeature {

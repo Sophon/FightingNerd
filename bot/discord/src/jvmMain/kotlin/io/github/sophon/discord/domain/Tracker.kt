@@ -6,7 +6,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
-import io.github.sophon.discord.BotError
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.domain.StatsFeatureInfo
 import io.github.sophon.domain.model.DailyReport

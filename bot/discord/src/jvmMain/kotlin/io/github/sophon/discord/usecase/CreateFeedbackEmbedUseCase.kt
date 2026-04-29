@@ -12,7 +12,7 @@ import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
-import io.github.sophon.discord.BotError
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.domain.model.BotOutput

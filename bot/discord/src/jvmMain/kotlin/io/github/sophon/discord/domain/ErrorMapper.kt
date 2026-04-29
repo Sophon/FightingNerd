@@ -1,7 +1,7 @@
 package io.github.sophon.discord.domain
 
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.discord.BotError
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.domain.AdminError
 import io.github.sophon.domain.EwgfError
 import io.github.sophon.domain.StatsError

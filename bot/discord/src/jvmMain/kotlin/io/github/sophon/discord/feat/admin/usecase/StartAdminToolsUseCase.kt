@@ -4,7 +4,7 @@ import io.github.sophon.AdminTool
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.feature.Config
-import io.github.sophon.discord.BotError
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.toDomainError
 
 internal class StartAdminToolsUseCase(
