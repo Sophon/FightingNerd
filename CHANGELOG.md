@@ -1,5 +1,11 @@
 # BOT CHANGELOG
 
+## [v11.5.0] - 2026-04-30
+- `alias` command that outputs all game-specific alias commands
+- better error output for invalid command
+  - better description
+  - `alias` button
+
 ## [v11.4.1] - 2026-04-23
 - mention `feedback` in the footer
 
