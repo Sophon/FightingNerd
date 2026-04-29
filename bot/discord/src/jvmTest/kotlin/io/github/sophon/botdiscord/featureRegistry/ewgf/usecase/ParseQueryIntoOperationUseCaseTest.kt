@@ -3,8 +3,8 @@ package io.github.sophon.botdiscord.featureRegistry.ewgf.usecase
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
-import io.github.sophon.discord.featureRegistry.ewgf.EwgfOperations
-import io.github.sophon.discord.featureRegistry.ewgf.usecase.ParseQueryIntoOperationUseCase
+import io.github.sophon.discord.feat.ewgf.EwgfOperations
+import io.github.sophon.discord.feat.ewgf.usecase.ParseQueryIntoOperationUseCase
 import kotlin.test.Test
 import io.github.sophon.core.domain.Result
 
