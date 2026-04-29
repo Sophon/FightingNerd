@@ -8,6 +8,7 @@ import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.util.mandatoryField
 import kotlin.time.Duration.Companion.seconds
 
@@ -32,7 +33,7 @@ internal class CreateErrorEmbedBuilderUseCase {
 
             is BotError.InvalidCommand -> {
                 createCommandErrorEmbed(error) to BotOutput.ButtonSet(
-                    buttonList = listOf(commandsButton(), helpButton()),
+                    buttonList = listOf(aliasButton(), commandsButton()),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 )
             }
@@ -196,6 +197,15 @@ internal class CreateErrorEmbedBuilderUseCase {
         return BotOutput.EmbedButton(
             label = "HELP",
             action = BotOutput.EmbedButton.Action.Query("help")
+        )
+    }
+
+    private fun aliasButton(): BotOutput.EmbedButton {
+        val commandName = Command.Alias.name
+
+        return BotOutput.EmbedButton(
+            label = commandName.uppercase(),
+            action = BotOutput.EmbedButton.Action.Query(commandName),
         )
     }
 }
