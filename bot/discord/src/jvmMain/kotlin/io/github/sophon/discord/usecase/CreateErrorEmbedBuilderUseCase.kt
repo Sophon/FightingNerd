@@ -24,7 +24,14 @@ internal class CreateErrorEmbedBuilderUseCase {
             }
 
             is BotError.InvalidQuery -> {
-                createCommandSyntaxErrorEmbed(error) to BotOutput.ButtonSet(
+                createQueryErrorEmbed(error) to BotOutput.ButtonSet(
+                    buttonList = listOf(commandsButton(), helpButton()),
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
+                )
+            }
+
+            is BotError.InvalidCommand -> {
+                createCommandErrorEmbed(error) to BotOutput.ButtonSet(
                     buttonList = listOf(commandsButton(), helpButton()),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 )
@@ -92,7 +99,7 @@ internal class CreateErrorEmbedBuilderUseCase {
         return BotOutput.MutableEmbedBuilder(primaryBuilder, leftOverBuilder)
     }
 
-    private fun createCommandSyntaxErrorEmbed(
+    private fun createQueryErrorEmbed(
         invalidQueryError: BotError.InvalidQuery,
     ): BotOutput.MutableEmbedBuilder {
         val errorDescription = invalidQueryError
@@ -105,6 +112,49 @@ internal class CreateErrorEmbedBuilderUseCase {
             color = Color(RED)
 
             description = errorDescription
+
+            mandatoryField(
+                name = "Command usage ⚙️".uppercase(),
+                value = "- **tag** → `@FightingNerdBot` `[command]` `[query]`\n" +
+                        "   - frame data (`fd`) is the default command; `@FightingNerdBot jun df1` works\n" +
+                        "- **slash** → `/command`\n" +
+                        "- use `/help` to see available commands"
+            )
+
+            footer {
+                text = "Got something to say, nerd? Use `/feedback`"
+                icon = URL_IMG_FIGHTING_NERD
+            }
+        }
+        val leftOverBuilder: EmbedBuilder.() -> Unit = {
+            title = "ERROR"
+            color = Color(RED)
+            description = errorDescription
+        }
+
+        return BotOutput.MutableEmbedBuilder(primaryBuilder, leftOverBuilder)
+    }
+
+    private fun createCommandErrorEmbed(
+        error: BotError.InvalidCommand,
+    ): BotOutput.MutableEmbedBuilder {
+        val errorDescription = error
+            .toString()
+            .let { "**$it**" }
+            .truncate(EMBED_MAX_LENGTH) + "\n Was **${error.command}** supposed to be a part of a character name?"
+
+        val primaryBuilder: EmbedBuilder.() -> Unit = {
+            title = "ERROR"
+            color = Color(RED)
+
+            description = errorDescription
+
+            mandatoryField(
+                name = "Did you mean a character? 🤔".uppercase(),
+                value = "if `${error.command}` was the start of a character name, **character names must be one word**\n" +
+                        "- see game specific `/alias` (like `aliasTK` or `aliasBB`) for the full list",
+                inline = false,
+            )
 
             mandatoryField(
                 name = "Command usage ⚙️".uppercase(),
