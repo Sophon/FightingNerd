@@ -1,6 +1,4 @@
-@file:OptIn(ExperimentalTime::class)
-
-package io.github.sophon.botdiscord.usecase
+package io.github.sophon.botdiscord.feat.core.usecase
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
@@ -24,7 +22,7 @@ import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.time.ExperimentalTime
 
-
+@OptIn(ExperimentalTime::class)
 class SyncWikiDataUseCaseTest {
     //region Test Setup
     private val useCase = SyncWikiDataUseCase()

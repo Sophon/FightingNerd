@@ -1,4 +1,4 @@
-package io.github.sophon.botdiscord.featureRegistry.ewgf.usecase
+package io.github.sophon.botdiscord.feat.ewgf.usecase
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

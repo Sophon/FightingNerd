@@ -1,4 +1,4 @@
-package io.github.sophon.botdiscord.usecase
+package io.github.sophon.botdiscord.feat.bot.usecase
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -8,15 +8,15 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.core.domain.Tracker
+import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.domain.Source
 import io.github.sophon.domain.model.DailyReport
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -205,7 +205,7 @@ class RouteCommandToFeatureUseCaseTest {
         )
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertTrue((result as Result.Error).error is BotError.InvalidQuery)
+        TestCase.assertTrue((result as Result.Error).error is BotError.InvalidQuery)
     }
 
     @Test
@@ -213,10 +213,10 @@ class RouteCommandToFeatureUseCaseTest {
         // given
         val message = "@bot"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertTrue((result as Result.Error).error is BotError.InvalidCommand)
+        TestCase.assertTrue((result as Result.Error).error is BotError.InvalidCommand)
     }
     //endregion
 
@@ -226,7 +226,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given
         val message = "@bot fd ak f21"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
     }
@@ -236,7 +236,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given
         val message = "@bot pc jin"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
     }
@@ -246,7 +246,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given
         val message = "@bot gl frame"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
     }
@@ -256,7 +256,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given
         val message = "@bot charsf ken"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
     }
@@ -266,7 +266,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given - Feature has no default command but has HEAT as explicit command
         val message = "@bot heat jin"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
     }
@@ -278,10 +278,10 @@ class RouteCommandToFeatureUseCaseTest {
         // given
         val message = "@bot fd unknown f21"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertTrue((result as Result.Error).error is BotError.UnknownCharacter)
+        TestCase.assertTrue((result as Result.Error).error is BotError.UnknownCharacter)
     }
 
     @Test
@@ -289,10 +289,10 @@ class RouteCommandToFeatureUseCaseTest {
         // given
         val message = "@bot gl unknownterm"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertTrue((result as Result.Error).error is BotError.GlossaryTermNotFound)
+        TestCase.assertTrue((result as Result.Error).error is BotError.GlossaryTermNotFound)
     }
     //endregion
 
@@ -302,7 +302,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given - Lily exists in both Tekken and SF, but Wavu is first
         val message = "@bot lily 5lk"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
         val embedBuilder = (result as Result.Success).data.primaryEmbedBuilder
@@ -316,7 +316,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given - AK only exists in Tekken
         val message = "@bot ak f21"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
         val embedBuilder = (result as Result.Success).data.primaryEmbedBuilder
@@ -330,7 +330,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given - Ken only exists in SF, so Wavu fails, SuperCombo succeeds
         val message = "@bot ken dp"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
         val embedBuilder = (result as Result.Success).data.primaryEmbedBuilder
@@ -346,7 +346,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given - No feature recognizes this
         val message = "@bot completelyunknown whatever"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
     }
@@ -356,7 +356,7 @@ class RouteCommandToFeatureUseCaseTest {
         // given - Move notation without character name
         val message = "@bot 5lp"
         // when
-        val result = useCase.invoke(Source("", "", ""),message)
+        val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
     }
@@ -394,7 +394,7 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(commandString, Source("", "", ""), query)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertTrue((result as Result.Error).error is BotError.UnknownCharacter)
+        TestCase.assertTrue((result as Result.Error).error is BotError.UnknownCharacter)
     }
 
     @Test

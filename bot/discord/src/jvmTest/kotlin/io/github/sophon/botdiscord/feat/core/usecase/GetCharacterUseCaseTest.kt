@@ -1,4 +1,4 @@
-package io.github.sophon.botdiscord.usecase
+package io.github.sophon.botdiscord.feat.core.usecase
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
