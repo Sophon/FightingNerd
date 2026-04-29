@@ -1,4 +1,4 @@
-package io.github.sophon.discord.feat
+package io.github.sophon.discord.feat.config
 
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 

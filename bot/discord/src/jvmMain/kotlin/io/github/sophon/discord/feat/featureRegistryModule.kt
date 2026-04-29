@@ -2,7 +2,7 @@ package io.github.sophon.discord.feat
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Config
-import io.github.sophon.discord.config.ConfigLoader
+import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.domain.Scheduler
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
