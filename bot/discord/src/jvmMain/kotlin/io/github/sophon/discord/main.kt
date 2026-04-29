@@ -6,7 +6,8 @@ import io.github.aakira.napier.DebugAntilog
 import io.github.aakira.napier.LogLevel
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.util.maskSecret
-import io.github.sophon.discord.config.DiscordConfig
+import io.github.sophon.discord.feat.bot.DiscordBot
+import io.github.sophon.discord.feat.config.DiscordConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.java.Java
 import io.ktor.client.plugins.HttpTimeout

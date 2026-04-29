@@ -1,10 +1,11 @@
-package io.github.sophon.discord
+package io.github.sophon.discord.feat.bot
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.event.gateway.DisconnectEvent
+import dev.kord.core.event.gateway.ResumedEvent
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
@@ -74,9 +75,9 @@ internal class DiscordBotImpl(
     }
 
     private suspend fun startKord() {
-        cleanOldGuildCommands(kord)
-        createGlobalCommands()
-        createAdminCommands()
+//        cleanOldGuildCommands(kord)
+//        createGlobalCommands()
+//        createAdminCommands()
 //        createCommandsForTestServer()
 
         monitorGatewayHealth()
@@ -275,7 +276,7 @@ internal class DiscordBotImpl(
             }
         }
 
-        kord.on<dev.kord.core.event.gateway.ResumedEvent> {
+        kord.on<ResumedEvent> {
             Napier.i(tag = TAG) { "Gateway resumed successfully" }
         }
     }

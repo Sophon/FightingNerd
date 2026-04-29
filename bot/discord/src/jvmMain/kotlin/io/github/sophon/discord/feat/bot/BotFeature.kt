@@ -10,7 +10,7 @@ import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.feat.FeatureRegistry
+import io.github.sophon.discord.feat.config.FeatureRegistry
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.domain.Source

@@ -15,6 +15,7 @@ import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.feat.bot.BotFeature
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.feat.config.FeatureRegistry
 import io.github.sophon.discord.feat.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.feat.ewgf.EwgfDiscordFeature
 import io.github.sophon.discord.feat.ewgf.usecase.GetRecentMatchesUseCase

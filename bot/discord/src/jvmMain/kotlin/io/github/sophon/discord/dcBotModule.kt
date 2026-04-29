@@ -11,6 +11,8 @@ import io.github.sophon.discord.data.JsonReportRepo
 import io.github.sophon.discord.domain.DiscordButtonBuilder
 import io.github.sophon.discord.domain.Tracker
 import io.github.sophon.discord.domain.TrackerImpl
+import io.github.sophon.discord.feat.bot.DiscordBot
+import io.github.sophon.discord.feat.bot.DiscordBotImpl
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.discord.usecase.CreateEmbedUseCase
 import io.github.sophon.discord.usecase.CreateErrorEmbedBuilderUseCase
