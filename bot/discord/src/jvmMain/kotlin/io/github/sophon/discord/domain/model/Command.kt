@@ -38,6 +38,10 @@ internal sealed class Command(
             )
         )
     )
+    object Alias : Command(
+        name = "Alias",
+        description = "Shows alias commands for supported games",
+    )
     //endregion
 
     //region Admin commands

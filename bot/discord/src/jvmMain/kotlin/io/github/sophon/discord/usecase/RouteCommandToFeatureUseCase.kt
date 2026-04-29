@@ -1,6 +1,7 @@
 package io.github.sophon.discord.usecase
 
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.util.extractFirstWord
 import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.BotError
@@ -31,7 +32,7 @@ internal class RouteCommandToFeatureUseCase(
             val (commandString, query) = formatQuery(fullQuery)
             useExplicitCommands(source, commandString, query)
         } else {
-            useDefaultCommands(source, fullQuery)
+            useDefaultCommands(source, fullQuery).mapError { BotError.InvalidCommand(firstWord) }
         }
     }
 

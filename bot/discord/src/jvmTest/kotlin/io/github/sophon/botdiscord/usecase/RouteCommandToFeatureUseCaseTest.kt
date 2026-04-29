@@ -209,14 +209,14 @@ class RouteCommandToFeatureUseCaseTest {
     }
 
     @Test
-    fun `invoke with only tag returns InvalidQuery(query) error`() = runTest {
+    fun `invoke with only tag returns InvalidCommand(query) error`() = runTest {
         // given
         val message = "@bot"
         // when
         val result = useCase.invoke(Source("", "", ""),message)
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertTrue((result as Result.Error).error is BotError.InvalidQuery)
+        assertTrue((result as Result.Error).error is BotError.InvalidCommand)
     }
     //endregion
 
@@ -430,6 +430,4 @@ class RouteCommandToFeatureUseCaseTest {
         assertThat(result).isInstanceOf(Result.Success::class)
     }
     //endregion
-
-    //TODO: properly returns UnknownMove
 }
