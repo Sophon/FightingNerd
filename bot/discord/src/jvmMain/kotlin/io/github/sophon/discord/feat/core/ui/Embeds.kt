@@ -1,4 +1,4 @@
-package io.github.sophon.discord.feat.core
+package io.github.sophon.discord.feat.core.ui
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
