@@ -1,4 +1,4 @@
-package io.github.sophon.discord.domain.model
+package io.github.sophon.discord.feat.core.domain.model
 
 internal enum class Emoji(val id: String) {
     THROW("fn_throw:1487477489713283072"),

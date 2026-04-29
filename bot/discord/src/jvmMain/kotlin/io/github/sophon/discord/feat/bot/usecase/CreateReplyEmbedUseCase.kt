@@ -11,8 +11,8 @@ import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
-import io.github.sophon.discord.domain.model.BotError
-import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 internal class CreateReplyEmbedUseCase {
 

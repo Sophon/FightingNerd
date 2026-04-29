@@ -3,10 +3,10 @@ package io.github.sophon.discord.feat.infilGlossary
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
-import io.github.sophon.discord.domain.model.BotError
-import io.github.sophon.discord.domain.model.BotOutput
-import io.github.sophon.discord.domain.model.Command
-import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.feat.core.domain.model.Command
+import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.StartGlossaryUseCase

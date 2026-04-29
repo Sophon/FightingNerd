@@ -2,10 +2,6 @@ package io.github.sophon.discord.feat
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Config
-import io.github.sophon.discord.domain.Scheduler
-import io.github.sophon.discord.domain.Tracker
-import io.github.sophon.discord.domain.TrackerImpl
-import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
@@ -30,6 +26,17 @@ import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.feat.config.FeatureRegistry
+import io.github.sophon.discord.feat.core.domain.Scheduler
+import io.github.sophon.discord.feat.core.domain.Tracker
+import io.github.sophon.discord.feat.core.domain.TrackerImpl
+import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
+import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
+import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
+import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.feat.ewgf.EwgfDiscordFeature
 import io.github.sophon.discord.feat.ewgf.usecase.GetRecentMatchesUseCase
@@ -53,13 +60,6 @@ import io.github.sophon.discord.feat.wikiWavu.WavuWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCase
 import io.github.sophon.discord.feat.wikiXko.XkoWikiDiscordFeature
-import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
-import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
-import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
-import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
-import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
-import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
-import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.wikiwavu.infrastructure.FileReader
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind

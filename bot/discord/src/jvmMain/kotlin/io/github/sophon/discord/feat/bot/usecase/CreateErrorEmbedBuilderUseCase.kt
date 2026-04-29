@@ -6,9 +6,9 @@ import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
-import io.github.sophon.discord.domain.model.BotError
-import io.github.sophon.discord.domain.model.BotOutput
-import io.github.sophon.discord.domain.model.Command
+import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.util.mandatoryField
 import kotlin.time.Duration.Companion.seconds
 

@@ -5,8 +5,8 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.util.getGame
-import io.github.sophon.discord.data.FileManager
-import io.github.sophon.discord.domain.model.BotError
+import io.github.sophon.discord.feat.core.data.FileManager
+import io.github.sophon.discord.feat.core.domain.model.BotError
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 

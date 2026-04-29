@@ -7,8 +7,8 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.discord.domain.model.BotError
-import io.github.sophon.discord.domain.toDomainError
+import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.toDomainError
 
 internal class GetCharacterUseCase {
     suspend fun invoke(

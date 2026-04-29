@@ -4,10 +4,10 @@ import dev.kord.core.Kord
 import io.github.sophon.adminModule
 import io.github.sophon.core.coreModule
 import io.github.sophon.data.ReportRepo
-import io.github.sophon.discord.data.FileManager
-import io.github.sophon.discord.data.InMemoryGlossaryDB
-import io.github.sophon.discord.data.JsonReportRepo
-import io.github.sophon.discord.domain.DiscordButtonBuilder
+import io.github.sophon.discord.feat.core.data.FileManager
+import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
+import io.github.sophon.discord.feat.core.data.JsonReportRepo
+import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.dreamcancel.dreamCancelModule
 import io.github.sophon.ewgfModule

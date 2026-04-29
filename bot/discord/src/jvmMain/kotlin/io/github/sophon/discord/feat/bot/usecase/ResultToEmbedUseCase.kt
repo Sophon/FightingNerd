@@ -8,8 +8,8 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
-import io.github.sophon.discord.domain.model.BotError
-import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay

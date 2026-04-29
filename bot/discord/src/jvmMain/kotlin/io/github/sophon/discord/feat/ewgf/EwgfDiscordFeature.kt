@@ -4,10 +4,10 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.discord.domain.model.BotError
-import io.github.sophon.discord.domain.model.BotOutput
-import io.github.sophon.discord.domain.model.Command
-import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.feat.core.domain.model.Command
+import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.ewgf.usecase.GetRecentMatchesUseCase
 import io.github.sophon.discord.feat.ewgf.usecase.ParseQueryIntoOperationUseCase
 import io.github.sophon.discord.feat.ewgf.usecase.RegisterPlayerUseCase

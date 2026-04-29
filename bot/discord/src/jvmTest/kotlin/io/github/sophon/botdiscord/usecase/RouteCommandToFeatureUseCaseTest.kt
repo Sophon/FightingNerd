@@ -8,11 +8,11 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.discord.domain.model.BotError
-import io.github.sophon.discord.domain.Tracker
-import io.github.sophon.discord.domain.model.BotOutput
-import io.github.sophon.discord.domain.model.Command
-import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.Tracker
+import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.feat.core.domain.model.Command
+import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.domain.Source
 import io.github.sophon.domain.model.DailyReport

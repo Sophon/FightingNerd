@@ -6,7 +6,7 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
-import io.github.sophon.discord.domain.model.BotOutput
+import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 internal fun EmbedBuilder.mandatoryField(
     name: String,

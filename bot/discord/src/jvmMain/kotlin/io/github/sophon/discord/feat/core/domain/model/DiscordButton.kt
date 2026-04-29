@@ -1,4 +1,4 @@
-package io.github.sophon.discord.domain.model
+package io.github.sophon.discord.feat.core.domain.model
 
 internal sealed class DiscordButton(
     private val key: String,

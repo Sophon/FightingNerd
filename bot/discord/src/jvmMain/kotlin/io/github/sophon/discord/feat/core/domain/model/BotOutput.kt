@@ -1,4 +1,4 @@
-package io.github.sophon.discord.domain.model
+package io.github.sophon.discord.feat.core.domain.model
 
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_DEFAULT_S

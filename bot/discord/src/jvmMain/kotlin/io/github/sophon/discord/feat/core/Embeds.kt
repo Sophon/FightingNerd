@@ -5,7 +5,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.EMBED_LIST_MIN_COLUMN
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
-import io.github.sophon.discord.domain.model.Emoji
+import io.github.sophon.discord.feat.core.domain.model.Emoji
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 

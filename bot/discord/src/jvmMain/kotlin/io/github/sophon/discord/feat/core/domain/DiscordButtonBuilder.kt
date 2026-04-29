@@ -1,4 +1,4 @@
-package io.github.sophon.discord.domain
+package io.github.sophon.discord.feat.core.domain
 
 import dev.kord.common.entity.ButtonStyle
 import dev.kord.rest.builder.component.ActionRowComponentBuilder
@@ -6,14 +6,14 @@ import dev.kord.rest.builder.component.ButtonBuilder
 import dev.kord.rest.builder.message.MessageBuilder
 import dev.kord.rest.builder.message.actionRow
 import io.github.sophon.discord.EMBED_MAX_BUTTONS
-import io.github.sophon.discord.domain.model.BotOutput
-import io.github.sophon.discord.domain.model.DiscordButton
-import io.github.sophon.discord.domain.model.DiscordButton.Companion.KEY_EDIT
-import io.github.sophon.discord.domain.model.DiscordButton.Companion.KEY_QUERY
-import io.github.sophon.discord.domain.model.DiscordButton.Companion.KEY_REDIRECT
-import io.github.sophon.discord.domain.model.DiscordButton.Edit
-import io.github.sophon.discord.domain.model.DiscordButton.Query
-import io.github.sophon.discord.domain.model.DiscordButton.Redirect
+import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.feat.core.domain.model.DiscordButton
+import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Companion.KEY_EDIT
+import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Companion.KEY_QUERY
+import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Companion.KEY_REDIRECT
+import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Edit
+import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Query
+import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Redirect
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

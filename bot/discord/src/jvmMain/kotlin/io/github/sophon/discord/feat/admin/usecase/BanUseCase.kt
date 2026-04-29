@@ -4,8 +4,8 @@ import io.github.sophon.AdminTool
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
-import io.github.sophon.discord.domain.model.BotError
-import io.github.sophon.discord.domain.toDomainError
+import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.domain.Source
 import io.github.sophon.domain.model.Ban
 import io.github.sophon.util.toSource

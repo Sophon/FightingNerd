@@ -10,8 +10,8 @@ import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.discord.EMBED_LIST_MIN_COLUMN
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
-import io.github.sophon.discord.domain.model.BotError
-import io.github.sophon.discord.domain.toDomainError
+import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 

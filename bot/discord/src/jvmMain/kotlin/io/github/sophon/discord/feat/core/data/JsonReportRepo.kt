@@ -1,4 +1,4 @@
-package io.github.sophon.discord.data
+package io.github.sophon.discord.feat.core.data
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result

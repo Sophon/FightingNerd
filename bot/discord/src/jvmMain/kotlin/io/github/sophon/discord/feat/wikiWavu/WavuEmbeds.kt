@@ -4,7 +4,7 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.discord.domain.model.Emoji
+import io.github.sophon.discord.feat.core.domain.model.Emoji
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
