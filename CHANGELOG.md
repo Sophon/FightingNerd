@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v11.5.0] - 2026-04-30
+- better error output for invalid command 
+
 ## [v11.4.1] - 2026-04-23
 - mention `feedback` in the footer
 
