@@ -13,7 +13,7 @@ import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.discord.usecase.GetMovesUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 

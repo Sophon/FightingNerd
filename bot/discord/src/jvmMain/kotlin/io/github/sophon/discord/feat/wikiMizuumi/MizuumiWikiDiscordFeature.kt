@@ -15,10 +15,10 @@ import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
-import io.github.sophon.discord.usecase.GetCharacterUseCase
-import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
+import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.domain.Source
 import io.github.sophon.wikimizuumi.MizuumiFeatureInfo
 import kotlinx.coroutines.CoroutineScope

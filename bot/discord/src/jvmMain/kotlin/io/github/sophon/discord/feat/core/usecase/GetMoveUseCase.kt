@@ -1,4 +1,4 @@
-package io.github.sophon.discord.usecase
+package io.github.sophon.discord.feat.core.usecase
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.mapError

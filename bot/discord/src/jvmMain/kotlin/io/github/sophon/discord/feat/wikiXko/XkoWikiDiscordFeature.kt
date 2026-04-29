@@ -15,8 +15,8 @@ import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
+import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.domain.Source
 import io.github.sophon.xko.domain.XkoFeatureInfo
 import kotlinx.coroutines.CoroutineScope

@@ -9,7 +9,7 @@ import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.moveListEmbed
-import io.github.sophon.discord.usecase.GetMovesUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.wikiwavu.domain.WavuFilter
 import kotlin.time.Duration.Companion.seconds

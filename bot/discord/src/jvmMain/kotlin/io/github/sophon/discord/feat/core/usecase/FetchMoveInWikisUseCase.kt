@@ -1,9 +1,10 @@
-package io.github.sophon.discord.usecase
+package io.github.sophon.discord.feat.core.usecase
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
+import kotlin.collections.iterator
 
 internal class FetchMoveInWikisUseCase {
     suspend fun invoke(

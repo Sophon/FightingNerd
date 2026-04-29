@@ -1,4 +1,4 @@
-package io.github.sophon.discord.usecase
+package io.github.sophon.discord.feat.core.usecase
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder

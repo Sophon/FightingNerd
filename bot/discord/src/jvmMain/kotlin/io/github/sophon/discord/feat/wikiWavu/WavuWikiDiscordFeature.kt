@@ -21,10 +21,10 @@ import io.github.sophon.discord.domain.model.Emoji
 import io.github.sophon.discord.feat.core.moveListEmbed
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCase
-import io.github.sophon.discord.usecase.CreateCharacterAliasesEmbedUseCase
-import io.github.sophon.discord.usecase.GetMoveUseCase
-import io.github.sophon.discord.usecase.GetMovesUseCase
-import io.github.sophon.discord.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
+import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.domain.Source
 import io.github.sophon.wikiwavu.domain.WavuFeatureInfo

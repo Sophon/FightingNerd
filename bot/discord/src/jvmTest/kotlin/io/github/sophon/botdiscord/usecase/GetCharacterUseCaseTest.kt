@@ -8,7 +8,7 @@ import assertk.assertions.isEmpty
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.discord.usecase.GetCharacterUseCase
+import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import io.github.sophon.core.domain.Result
