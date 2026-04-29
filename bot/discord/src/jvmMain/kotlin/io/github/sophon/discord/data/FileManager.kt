@@ -1,8 +1,8 @@
 package io.github.sophon.discord.data
 
 import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.core.domain.Result
+import io.github.sophon.discord.domain.model.BotError
 import java.io.File
 
 internal class FileManager {

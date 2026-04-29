@@ -1,4 +1,4 @@
-package io.github.sophon.discord.usecase
+package io.github.sophon.discord.feat.bot.usecase
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createMessage

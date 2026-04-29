@@ -3,27 +3,12 @@ package io.github.sophon.discord
 import dev.kord.core.Kord
 import io.github.sophon.adminModule
 import io.github.sophon.core.coreModule
-import io.github.sophon.core.feature.Config
 import io.github.sophon.data.ReportRepo
 import io.github.sophon.discord.data.FileManager
 import io.github.sophon.discord.data.InMemoryGlossaryDB
 import io.github.sophon.discord.data.JsonReportRepo
 import io.github.sophon.discord.domain.DiscordButtonBuilder
-import io.github.sophon.discord.domain.Tracker
-import io.github.sophon.discord.domain.TrackerImpl
-import io.github.sophon.discord.feat.bot.DiscordBot
-import io.github.sophon.discord.feat.bot.DiscordBotImpl
 import io.github.sophon.discord.feat.featureRegistryModule
-import io.github.sophon.discord.usecase.CreateEmbedUseCase
-import io.github.sophon.discord.usecase.CreateErrorEmbedBuilderUseCase
-import io.github.sophon.discord.usecase.CreateFeedbackEmbedUseCase
-import io.github.sophon.discord.usecase.CreateMutableEmbedUseCase
-import io.github.sophon.discord.usecase.CreatePlainMessageUseCase
-import io.github.sophon.discord.usecase.CreateReplyEmbedUseCase
-import io.github.sophon.discord.usecase.HandleButtonInteractionUseCase
-import io.github.sophon.discord.usecase.PostDailyReportEmbedUseCase
-import io.github.sophon.discord.usecase.ResultToEmbedUseCase
-import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.dreamcancel.dreamCancelModule
 import io.github.sophon.ewgfModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
@@ -75,29 +60,6 @@ fun dcBotModule(kord: Kord) = module {
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }
     single { kord }
-
-    singleOf(::DiscordBotImpl).bind<DiscordBot>()
-
-    single {
-        TrackerImpl(
-            statsFeatureInfo = get(),
-            statsChannelId = get<Config>().statsConfig?.statsChannelIdList?.firstOrNull() ?: "",
-            scheduler = get(),
-            scope = get(),
-            statsTracker = get(),
-        )
-    }.bind<Tracker>()
-
-    singleOf(::RouteCommandToFeatureUseCase)
-    singleOf(::CreateErrorEmbedBuilderUseCase)
-    singleOf(::CreatePlainMessageUseCase)
-    singleOf(::CreateEmbedUseCase)
-    singleOf(::CreateFeedbackEmbedUseCase)
-    singleOf(::CreateReplyEmbedUseCase)
-    singleOf(::ResultToEmbedUseCase)
-    singleOf(::CreateMutableEmbedUseCase)
-    singleOf(::HandleButtonInteractionUseCase)
-    singleOf(::PostDailyReportEmbedUseCase)
 
     singleOf(::DiscordButtonBuilder)
 

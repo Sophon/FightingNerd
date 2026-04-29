@@ -19,10 +19,10 @@ import io.github.sophon.discord.domain.Tracker
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.admin.adminCommands
-import io.github.sophon.discord.usecase.HandleButtonInteractionUseCase
-import io.github.sophon.discord.usecase.PostDailyReportEmbedUseCase
-import io.github.sophon.discord.usecase.ResultToEmbedUseCase
-import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
+import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
+import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
+import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.util.safeRestCall
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope

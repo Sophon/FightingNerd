@@ -1,11 +1,11 @@
-package io.github.sophon.discord.usecase
+package io.github.sophon.discord.feat.bot.usecase
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.util.extractFirstWord
 import io.github.sophon.core.util.normalizeWhiteSpace
-import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.Tracker
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag

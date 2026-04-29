@@ -1,4 +1,4 @@
-package io.github.sophon.discord.usecase
+package io.github.sophon.discord.feat.bot.usecase
 
 import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
@@ -16,9 +16,9 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.domain.onError
-import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.domain.DiscordButtonBuilder
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.DiscordButton
 import io.github.sophon.discord.util.mandatoryField
@@ -86,7 +86,7 @@ internal class HandleButtonInteractionUseCase(
     ): EmptyResult<BotError> {
         return routeCommandToFeatureUseCase.invoke(source, query)
             .map { botOutput ->
-                val uuid = Uuid.random()
+                val uuid = Uuid.Companion.random()
 
                 response.respond {
                     content = interaction.user.mention

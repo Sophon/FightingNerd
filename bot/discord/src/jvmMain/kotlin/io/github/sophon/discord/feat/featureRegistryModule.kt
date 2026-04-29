@@ -2,8 +2,9 @@ package io.github.sophon.discord.feat
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Config
-import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.domain.Scheduler
+import io.github.sophon.discord.domain.Tracker
+import io.github.sophon.discord.domain.TrackerImpl
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
@@ -13,8 +14,21 @@ import io.github.sophon.discord.feat.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.feat.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.feat.bot.BotFeature
+import io.github.sophon.discord.feat.bot.DiscordBot
+import io.github.sophon.discord.feat.bot.DiscordBotImpl
+import io.github.sophon.discord.feat.bot.usecase.CreateEmbedUseCase
+import io.github.sophon.discord.feat.bot.usecase.CreateErrorEmbedBuilderUseCase
+import io.github.sophon.discord.feat.bot.usecase.CreateFeedbackEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
+import io.github.sophon.discord.feat.bot.usecase.CreateMutableEmbedUseCase
+import io.github.sophon.discord.feat.bot.usecase.CreatePlainMessageUseCase
+import io.github.sophon.discord.feat.bot.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
+import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
+import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
+import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.feat.config.FeatureRegistry
 import io.github.sophon.discord.feat.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.feat.ewgf.EwgfDiscordFeature
@@ -62,8 +76,30 @@ internal val featureRegistryModule = module {
     //endregion
 
     //region CORE
+    singleOf(::DiscordBotImpl).bind<DiscordBot>()
+
+    single {
+        TrackerImpl(
+            statsFeatureInfo = get(),
+            statsChannelId = get<Config>().statsConfig?.statsChannelIdList?.firstOrNull() ?: "",
+            scheduler = get(),
+            scope = get(),
+            statsTracker = get(),
+        )
+    }.bind<Tracker>()
+
     singleOf(::GetBotFeatureInfoUseCase)
     singleOf(::CreateJoinEmbedButtonUseCase)
+    singleOf(::RouteCommandToFeatureUseCase)
+    singleOf(::CreateErrorEmbedBuilderUseCase)
+    singleOf(::CreatePlainMessageUseCase)
+    singleOf(::CreateEmbedUseCase)
+    singleOf(::CreateFeedbackEmbedUseCase)
+    singleOf(::CreateReplyEmbedUseCase)
+    singleOf(::ResultToEmbedUseCase)
+    singleOf(::CreateMutableEmbedUseCase)
+    singleOf(::HandleButtonInteractionUseCase)
+    singleOf(::PostDailyReportEmbedUseCase)
     //endregion
 
     //region Generic
@@ -109,6 +145,7 @@ internal val featureRegistryModule = module {
     singleOf(::UnregisterPlayerUseCase)
     //endregion
 
+    //region CONFIG
     singleOf(::ConfigLoader)
     single {
         when (val result = get<ConfigLoader>().loadConfig()) {
@@ -117,6 +154,7 @@ internal val featureRegistryModule = module {
         }
     }
     single<Config.AdminConfig> { get<Config>().adminConfig!! }
+    //endregion
 
     //region FEATURES SETUP
     single {

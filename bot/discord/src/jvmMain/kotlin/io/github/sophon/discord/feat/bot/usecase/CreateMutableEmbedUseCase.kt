@@ -1,4 +1,4 @@
-package io.github.sophon.discord.usecase
+package io.github.sophon.discord.feat.bot.usecase
 
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
@@ -11,13 +11,12 @@ import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
-import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.DiscordButtonBuilder
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
-import io.github.sophon.discord.domain.model.BotOutput.ButtonSet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -33,12 +32,12 @@ internal class CreateMutableEmbedUseCase(
     suspend fun MessageCreateEvent.invoke(
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
-        buttons: ButtonSet? = null,
+        buttons: BotOutput.ButtonSet? = null,
         editAfter: Duration = TIME_AUTO_EDIT_EMBED_S.seconds,
         deleteAfter: Duration? = null,
     ): Result<String, BotError> {
         return try {
-            val uuid = Uuid.random()
+            val uuid = Uuid.Companion.random()
 
             val message = message.channel.createMessage {
                 messageReference = message.id
@@ -82,12 +81,12 @@ internal class CreateMutableEmbedUseCase(
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
         imageList: BotOutput.Images? = null,
-        buttons: ButtonSet? = null,
+        buttons: BotOutput.ButtonSet? = null,
         editAfter: Duration = TIME_AUTO_EDIT_EMBED_S.seconds,
         deleteAfter: Duration? = null,
     ): Result<String, BotError> {
         return try {
-            val uuid = Uuid.random()
+            val uuid = Uuid.Companion.random()
 
             interaction.respondPublic {
                 embed(mutableEmbedBuilder.primaryBuilder)
@@ -120,7 +119,7 @@ internal class CreateMutableEmbedUseCase(
 
             if (rollChance(successPercentage = 1)) {
                 interaction.channel.createMessage {
-                    content = "Consider donating (`/donate` or `/tip`): **<$URL_KOFI>**"
+                    content = "Consider donating (`/donate` or `/tip`): **<${URL_KOFI}>**"
                 }
             }
 

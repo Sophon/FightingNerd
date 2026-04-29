@@ -7,8 +7,8 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.toDomainError
 import io.github.sophon.discord.util.toButtons

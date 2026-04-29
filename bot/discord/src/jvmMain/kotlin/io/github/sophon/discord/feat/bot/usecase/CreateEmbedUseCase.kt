@@ -1,4 +1,4 @@
-package io.github.sophon.discord.usecase
+package io.github.sophon.discord.feat.bot.usecase
 
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
@@ -15,12 +15,11 @@ import dev.kord.rest.request.RestRequestException
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
-import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.DiscordButtonBuilder
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
-import io.github.sophon.discord.domain.model.BotOutput.ButtonSet
 import io.github.sophon.domain.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -43,10 +42,10 @@ internal class CreateEmbedUseCase(
         source: Source,
         fullEmbed: (EmbedBuilder.() -> Unit)? = null,
         imageList: BotOutput.Images? = null,
-        buttons: ButtonSet? = null,
+        buttons: BotOutput.ButtonSet? = null,
     ): Result<String, BotError> {
         return try {
-            val uuid = Uuid.random()
+            val uuid = Uuid.Companion.random()
             val message = message.channel.createMessage {
                 messageReference = message.id
                 allowedMentions { repliedUser = false }
@@ -85,7 +84,7 @@ internal class CreateEmbedUseCase(
 
             if (rollChance(successPercentage = 1)) {
                 message.channel.createMessage {
-                    content = "Consider donating (`/donate` or `/tip`): **<$URL_KOFI>**"
+                    content = "Consider donating (`/donate` or `/tip`): **<${URL_KOFI}>**"
                 }
             }
 
@@ -100,11 +99,11 @@ internal class CreateEmbedUseCase(
         coroutineScope: CoroutineScope,
         source: Source,
         imageList: BotOutput.Images? = null,
-        buttons: ButtonSet? = null,
+        buttons: BotOutput.ButtonSet? = null,
         isEphemeral: Boolean = false,
     ): Result<String, BotError> {
         return try {
-            val uuid = Uuid.random()
+            val uuid = Uuid.Companion.random()
 
             if (isEphemeral) {
                 interaction.respondEphemeral {
@@ -134,7 +133,7 @@ internal class CreateEmbedUseCase(
 
             if (rollChance(successPercentage = 1)) {
                 interaction.channel.createMessage {
-                    content = "Consider donating (`/donate` or `/tip`): **<$URL_KOFI>**"
+                    content = "Consider donating (`/donate` or `/tip`): **<${URL_KOFI}>**"
                 }
             }
 
@@ -150,7 +149,7 @@ internal class CreateEmbedUseCase(
         coroutineScope: CoroutineScope,
         source: Source,
         interaction: GuildChatInputCommandInteraction,
-        buttons: ButtonSet? = null,
+        buttons: BotOutput.ButtonSet? = null,
         imageList: BotOutput.Images? = null,
     ) {
         embed(primaryEmbed)

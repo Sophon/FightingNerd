@@ -13,7 +13,7 @@ import io.github.sophon.discord.domain.Tracker
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.domain.Source
 import io.github.sophon.domain.model.DailyReport
 import junit.framework.TestCase.assertTrue

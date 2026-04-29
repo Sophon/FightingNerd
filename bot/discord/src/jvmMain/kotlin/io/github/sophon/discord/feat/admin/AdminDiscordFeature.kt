@@ -10,8 +10,8 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.util.toFormattedString
-import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.Scheduler
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import io.github.sophon.discord.domain.model.Command
 import io.github.sophon.discord.domain.model.DiscordRegisteredFeature

@@ -1,4 +1,4 @@
-package io.github.sophon.discord.usecase
+package io.github.sophon.discord.feat.bot.usecase
 
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.behavior.channel.createMessage
@@ -12,9 +12,9 @@ import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.rollChance
-import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.domain.DiscordButtonBuilder
+import io.github.sophon.discord.domain.model.BotError
 import io.github.sophon.discord.domain.model.BotOutput
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -83,7 +83,7 @@ internal class CreateFeedbackEmbedUseCase(
     private fun createResponseMessage(): String {
         return if (rollChance(successPercentage = 20)) {
             "Feedback sent successfully!\n" +
-                    "Consider donating (`/donate` or `/tip`): **<$URL_KOFI>**"
+                    "Consider donating (`/donate` or `/tip`): **<${URL_KOFI}>**"
         } else {
             "Feedback sent successfully!"
         }
