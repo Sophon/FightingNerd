@@ -28,7 +28,7 @@ import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class DustLoopWikiClient(
+internal class DustLoopWikiClient(
     private val gameId: String,
 
     private val dustLoopFeatureInfo: DustLoopFeatureInfo,

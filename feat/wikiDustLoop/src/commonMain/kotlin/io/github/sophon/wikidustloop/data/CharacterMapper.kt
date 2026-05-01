@@ -195,7 +195,7 @@ private fun String?.createGGAliases(): List<String> {
     }.distinct()
 }
 
-fun String?.createBBAliases(): List<String> {
+internal fun String?.createBBAliases(): List<String> {
     if (this.isNullOrBlank()) return emptyList()
 
     val bbCodeMap = mapOf(
