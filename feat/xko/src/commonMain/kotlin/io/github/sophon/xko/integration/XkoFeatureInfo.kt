@@ -1,11 +1,11 @@
-package io.github.sophon.xko.domain
+package io.github.sophon.xko.integration
 
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.xko.BuildKonfig
-import io.github.sophon.xko.FEATURE_IMG_URL
-import io.github.sophon.xko.FEATURE_NAME
-import io.github.sophon.xko.FEATURE_URL
+import io.github.sophon.xko.domain.FEATURE_IMG_URL
+import io.github.sophon.xko.domain.FEATURE_NAME
+import io.github.sophon.xko.domain.FEATURE_URL
 
 object XkoFeatureInfo {
     val featureInfo = FeatureInfo(

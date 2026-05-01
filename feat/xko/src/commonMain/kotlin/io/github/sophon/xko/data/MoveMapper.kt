@@ -4,9 +4,9 @@ import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.xko.FEATURE_URL
-import io.github.sophon.xko.URL_HITBOX_PREFIX
-import io.github.sophon.xko.URL_HITBOX_SUFIX
+import io.github.sophon.xko.domain.FEATURE_URL
+import io.github.sophon.xko.domain.URL_HITBOX_PREFIX
+import io.github.sophon.xko.domain.URL_HITBOX_SUFIX
 
 internal fun MoveListResponseDto.toDomain(): Map<Character, List<Move>> {
     return bucket

@@ -1,4 +1,4 @@
-package io.github.sophon.xko
+package io.github.sophon.xko.integration
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
@@ -19,7 +19,8 @@ import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.xko.data.XkoWikiDataSource
 import io.github.sophon.xko.data.XkoWikiDataSourceImpl
 import io.github.sophon.xko.data.toDomain
-import io.github.sophon.xko.domain.XkoFeatureInfo
+import io.github.sophon.xko.integration.XkoFeatureInfo
+import io.github.sophon.xko.domain.XkoWikiClient
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind

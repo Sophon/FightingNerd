@@ -1,4 +1,4 @@
-package io.github.sophon.xko
+package io.github.sophon.xko.domain
 
 internal const val URL_BASE = "https://wiki.play2xko.com/en-us/api.php"
 internal const val URL_HITBOX_PREFIX = "https://wiki.play2xko.com/en-us/images"
