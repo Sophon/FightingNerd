@@ -1,0 +1,7 @@
+<!--WHERE - DESCRIPTION-->
+
+<resources>
+    <string name="bottom_bar_item_character_list">Characters</string>
+    <string name="bottom_bar_item_search">Search</string>
+    <string name="bottom_bar_item_saved">Saved</string>
+</resources>
