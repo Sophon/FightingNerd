@@ -1,10 +1,10 @@
-package io.github.sophon.dreamcancel.domain
+package io.github.sophon.dreamcancel.integration
 
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
-import io.github.sophon.dreamcancel.FEATURE_IMG_URL
-import io.github.sophon.dreamcancel.FEATURE_NAME
-import io.github.sophon.dreamcancel.FEATURE_URL
+import io.github.sophon.dreamcancel.domain.FEATURE_IMG_URL
+import io.github.sophon.dreamcancel.domain.FEATURE_NAME
+import io.github.sophon.dreamcancel.domain.FEATURE_URL
 import io.github.sophon.wikiDreamCancel.BuildKonfig
 
 object DreamCancelFeatureInfo {

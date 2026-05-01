@@ -1,4 +1,4 @@
-package io.github.sophon.dreamcancel
+package io.github.sophon.dreamcancel.domain
 
 internal const val FEATURE_NAME = "DreamCancel Wiki"
 internal const val FEATURE_URL = "https://dreamcancel.com/wiki"

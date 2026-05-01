@@ -1,4 +1,4 @@
-package io.github.sophon.dreamcancel
+package io.github.sophon.dreamcancel.integration
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
@@ -21,7 +21,7 @@ import io.github.sophon.dreamcancel.data.DreamCancelWikiDataSource
 import io.github.sophon.dreamcancel.data.DreamCancelWikiDataSourceImpl
 import io.github.sophon.dreamcancel.data.WikiImageUrlResolver
 import io.github.sophon.dreamcancel.data.toDomain
-import io.github.sophon.dreamcancel.domain.DreamCancelFeatureInfo
+import io.github.sophon.dreamcancel.domain.DreamCancelWikiClient
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named

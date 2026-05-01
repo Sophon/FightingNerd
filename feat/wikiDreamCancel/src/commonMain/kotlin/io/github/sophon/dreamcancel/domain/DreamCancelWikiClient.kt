@@ -1,4 +1,4 @@
-package io.github.sophon.dreamcancel
+package io.github.sophon.dreamcancel.domain
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
@@ -24,7 +24,7 @@ import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
 import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
 import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.dreamcancel.data.DreamCancelTables
-import io.github.sophon.dreamcancel.domain.DreamCancelFeatureInfo
+import io.github.sophon.dreamcancel.integration.DreamCancelFeatureInfo
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 

@@ -4,7 +4,7 @@ import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.util.getWikiImageUrl
-import io.github.sophon.dreamcancel.BASE_URL
+import io.github.sophon.dreamcancel.domain.BASE_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
