@@ -16,7 +16,7 @@ internal data class BottomBarState(
     val selectedItemIndex: Int = 0,
 ) {
     companion object {
-        val MOCK = BottomBarState(
+        val DEFAULT = BottomBarState(
             itemList = listOf(
                 BottomBarItem(
                     label = Res.string.bottom_bar_item_character_list,

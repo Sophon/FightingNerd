@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
@@ -47,20 +48,27 @@ private fun BottomBarContent(
     onItemClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyRow(
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = modifier
-            .background(
-                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                shape = RoundedCornerShape(50),
-            )
-            .padding(12.dp)
+            .fillMaxWidth()
+            .background(color = Color.Transparent),
     ) {
-        itemsIndexed(state.itemList) { index, item ->
-            BarItem(
-                item = item,
-                isSelected = (index == state.selectedItemIndex),
-                onClick = { onItemClick(index) },
-            )
+        LazyRow(
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.9f),
+                    shape = RoundedCornerShape(48),
+                )
+                .padding(vertical = 8.dp, horizontal = 24.dp)
+        ) {
+            itemsIndexed(state.itemList) { index, item ->
+                BarItem(
+                    item = item,
+                    isSelected = (index == state.selectedItemIndex),
+                    onClick = { onItemClick(index) },
+                )
+            }
         }
     }
 }
@@ -132,7 +140,7 @@ private fun BarItem(
 private fun LightPreview() {
     AppTheme(darkTheme = false) {
         BottomBarContent(
-            state = BottomBarState.MOCK,
+            state = BottomBarState.DEFAULT,
             onItemClick = {},
         )
     }
@@ -143,7 +151,7 @@ private fun LightPreview() {
 private fun DarkPreview() {
     AppTheme(darkTheme = true) {
         BottomBarContent(
-            state = BottomBarState.MOCK,
+            state = BottomBarState.DEFAULT,
             onItemClick = {},
         )
     }

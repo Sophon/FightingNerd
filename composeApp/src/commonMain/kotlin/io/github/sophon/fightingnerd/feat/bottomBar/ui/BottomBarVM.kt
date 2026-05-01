@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 internal class BottomBarVM: ViewModel() {
-    private val _state = MutableStateFlow(BottomBarState())
+    private val _state = MutableStateFlow(BottomBarState.DEFAULT)
     val state = _state.asStateFlow()
 
 
