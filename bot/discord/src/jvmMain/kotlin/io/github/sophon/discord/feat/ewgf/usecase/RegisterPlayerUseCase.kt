@@ -1,11 +1,11 @@
 package io.github.sophon.discord.feat.ewgf.usecase
 
-import io.github.sophon.EwgfClient
+import io.github.sophon.integration.EwgfClient
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
-import io.github.sophon.domain.model.Player
+import io.github.sophon.integration.model.Player
 
 internal class RegisterPlayerUseCase(
     private val client: EwgfClient,

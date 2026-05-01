@@ -1,4 +1,4 @@
-package io.github.sophon.domain.model
+package io.github.sophon.integration.model
 
 enum class BattleType(
     val shortcut: String,

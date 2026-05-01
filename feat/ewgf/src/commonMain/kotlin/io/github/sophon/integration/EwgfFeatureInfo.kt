@@ -1,7 +1,7 @@
-package io.github.sophon.domain
+package io.github.sophon.integration
 
-import io.github.sophon.FEATURE_NAME
-import io.github.sophon.FEATURE_URL
+import io.github.sophon.domain.FEATURE_NAME
+import io.github.sophon.domain.FEATURE_URL
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.ewgf.BuildKonfig
 

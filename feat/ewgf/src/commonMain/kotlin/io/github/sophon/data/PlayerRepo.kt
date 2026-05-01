@@ -1,7 +1,7 @@
 package io.github.sophon.data
 
-import io.github.sophon.domain.EwgfError
-import io.github.sophon.domain.model.Player
+import io.github.sophon.integration.model.EwgfError
+import io.github.sophon.integration.model.Player
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 

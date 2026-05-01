@@ -1,10 +1,10 @@
-package io.github.sophon
+package io.github.sophon.integration
 
 import io.github.sophon.data.PlayerRepo
 import io.github.sophon.data.local.PlayerRepoImpl
 import io.github.sophon.data.remote.EwgfDataSource
 import io.github.sophon.data.remote.EwgfDataSourceImpl
-import io.github.sophon.domain.EwgfFeatureInfo
+import io.github.sophon.domain.EwgfClientImpl
 import io.github.sophon.usecase.DeletePlayerUseCase
 import io.github.sophon.usecase.DownloadPlayerBattlesUseCase
 import io.github.sophon.usecase.GroupBySetUseCase

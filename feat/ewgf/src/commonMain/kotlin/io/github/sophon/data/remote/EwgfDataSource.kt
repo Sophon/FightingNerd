@@ -1,6 +1,6 @@
 package io.github.sophon.data.remote
 
-import io.github.sophon.BASE_URL
+import io.github.sophon.domain.BASE_URL
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall

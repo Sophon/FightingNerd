@@ -7,8 +7,8 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.data.PlayerRepo
 import io.github.sophon.data.remote.EwgfDataSource
 import io.github.sophon.data.toDomain
-import io.github.sophon.domain.model.Battle
-import io.github.sophon.domain.EwgfError
+import io.github.sophon.integration.model.Battle
+import io.github.sophon.integration.model.EwgfError
 
 @ExcludeFromCoverage("to be implemented")
 internal class DownloadPlayerBattlesUseCase(

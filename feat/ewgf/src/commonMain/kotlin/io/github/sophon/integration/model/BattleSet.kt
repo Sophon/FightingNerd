@@ -1,10 +1,9 @@
-package io.github.sophon.domain.model
+package io.github.sophon.integration.model
 
 import kotlinx.datetime.LocalDateTime
-import kotlinx.serialization.Serializable
 
-@Serializable
-data class Battle(
+data class BattleSet(
+    val battleList: List<Battle>,
     val player: Combatant,
     val opponent: Combatant,
     val score: Score,

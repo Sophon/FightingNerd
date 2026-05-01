@@ -1,4 +1,4 @@
-package io.github.sophon
+package io.github.sophon.domain
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
@@ -6,29 +6,16 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.domain.EwgfError
-import io.github.sophon.domain.EwgfFeatureInfo
-import io.github.sophon.domain.model.BattleSet
-import io.github.sophon.domain.model.Player
+import io.github.sophon.integration.EwgfClient
+import io.github.sophon.integration.model.BattleSet
+import io.github.sophon.integration.model.EwgfError
+import io.github.sophon.integration.EwgfFeatureInfo
+import io.github.sophon.integration.model.Player
 import io.github.sophon.usecase.DeletePlayerUseCase
 import io.github.sophon.usecase.DownloadPlayerBattlesUseCase
 import io.github.sophon.usecase.GroupBySetUseCase
 import io.github.sophon.usecase.RegisterPlayerUseCase
 import io.github.sophon.usecase.UpdatePolarisIdUseCase
-
-interface EwgfClient {
-    fun getFeatureInfo(): FeatureInfo
-
-    suspend fun registerPlayer(player: Player): EmptyResult<EwgfError>
-
-    suspend fun downloadBattleData(
-        discordId: String,
-    ): Result<List<BattleSet>, EwgfError>
-
-    suspend fun updatePolarisId(player: Player): EmptyResult<EwgfError>
-
-    suspend fun deletePlayer(discordId: String): EmptyResult<EwgfError>
-}
 
 internal class EwgfClientImpl(
     private val ewgfFeatureInfo: EwgfFeatureInfo,
