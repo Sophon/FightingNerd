@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.bottomBar
+package io.github.sophon.fightingnerd.feat.bottomBar.ui
 
 import io.github.sophon.fightingnerd.feat.bottomBar.model.BottomBarItem
 
