@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 
-interface MizuumiWikiDataSource {
+internal interface MizuumiWikiDataSource {
     suspend fun downloadData(table: String): Result<MoveListResponseDto, DataError.Remote>
     suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
     suspend fun downloadMoveList(

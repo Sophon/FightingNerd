@@ -3,17 +3,17 @@ package io.github.sophon.wikimizuumi.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CharacterListResponseDto(
+internal data class CharacterListResponseDto(
     val cargoquery: List<CharacterTitle>
 )
 
 @Serializable
-data class CharacterTitle(
+internal data class CharacterTitle(
     val title: UniCharacterDto
 )
 
 @Serializable
-data class UniCharacterDto(
+internal data class UniCharacterDto(
     val chara: String,
     val smartSteer: String? = null,
     val health: String? = null,
