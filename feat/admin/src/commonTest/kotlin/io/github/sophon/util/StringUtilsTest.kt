@@ -2,7 +2,7 @@ package io.github.sophon.util
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.Source
 import kotlin.test.Test
 
 class StringUtilsTest {

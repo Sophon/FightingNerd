@@ -17,7 +17,7 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.Source
 import io.github.sophon.xko.domain.XkoFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn

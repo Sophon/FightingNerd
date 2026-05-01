@@ -2,7 +2,7 @@ package io.github.sophon.discord.feat.core.domain
 
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.domain.AdminError
+import io.github.sophon.integration.model.AdminError
 import io.github.sophon.domain.EwgfError
 import io.github.sophon.domain.StatsError
 

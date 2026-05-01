@@ -2,7 +2,7 @@ package io.github.sophon.discord.feat.core.domain.model
 
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_DEFAULT_S
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.Source
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 

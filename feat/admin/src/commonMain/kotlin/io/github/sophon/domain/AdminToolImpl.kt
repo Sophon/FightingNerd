@@ -1,6 +1,7 @@
-package io.github.sophon
+package io.github.sophon.domain
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.integration.AdminTool
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
@@ -8,51 +9,14 @@ import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.data.BanRepo
-import io.github.sophon.domain.AdminError
-import io.github.sophon.domain.AdminFeatureInfo
-import io.github.sophon.domain.AdminResult
-import io.github.sophon.domain.Source
-import io.github.sophon.domain.model.Ban
+import io.github.sophon.integration.model.AdminError
+import io.github.sophon.integration.AdminFeatureInfo
+import io.github.sophon.integration.model.AdminResult
+import io.github.sophon.integration.model.Ban
+import io.github.sophon.integration.model.Source
 import io.github.sophon.usecase.ProcessFeedbackUseCase
 import io.github.sophon.usecase.ProcessReplyUseCase
 import kotlin.time.Duration
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
-
-interface AdminTool {
-    fun getFeatureInfo(): FeatureInfo
-
-    fun init(adminConfig: Config.AdminConfig): EmptyResult<AdminError>
-
-    suspend fun processFeedback(
-        origin: Source,
-        feedback: String,
-    ): Result<AdminResult, AdminError>
-
-    fun replyToFeedback(
-        origin: Source,
-        target: Source,
-        reply: String,
-    ): Result<AdminResult, AdminError>
-
-    suspend fun banUser(
-        origin: Source,
-        offenderId: String,
-        duration: Duration = 30.toDuration(DurationUnit.DAYS),
-        preventBotUsage: Boolean = false,
-    ): Result<Ban, AdminError>
-
-    suspend fun unbanUser(origin: Source, offenderId: String): EmptyResult<AdminError>
-
-    suspend fun updateUserPenalty(
-        source: Source,
-        offenderId: String,
-        duration: Duration,
-        preventBotUsage: Boolean,
-    ): Result<Ban, AdminError>
-
-    suspend fun cleanExpiredBans(): EmptyResult<AdminError>
-}
 
 internal class AdminToolImpl(
     private val adminFeatureInfo: AdminFeatureInfo,

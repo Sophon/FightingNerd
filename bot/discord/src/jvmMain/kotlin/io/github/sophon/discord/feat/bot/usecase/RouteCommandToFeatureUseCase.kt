@@ -8,7 +8,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.Source
 
 internal class RouteCommandToFeatureUseCase(
     private val featureList: List<DiscordRegisteredFeature>,

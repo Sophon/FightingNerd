@@ -1,4 +1,4 @@
-package io.github.sophon.domain
+package io.github.sophon.integration.model
 
 import io.github.sophon.core.domain.Error
 

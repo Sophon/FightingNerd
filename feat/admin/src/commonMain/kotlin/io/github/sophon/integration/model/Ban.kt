@@ -1,4 +1,4 @@
-package io.github.sophon.domain.model
+package io.github.sophon.integration.model
 
 import io.github.sophon.core.util.toFormattedString
 import kotlin.time.ExperimentalTime

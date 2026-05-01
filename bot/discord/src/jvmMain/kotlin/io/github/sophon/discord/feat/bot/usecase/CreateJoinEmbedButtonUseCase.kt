@@ -7,7 +7,7 @@ import io.github.sophon.discord.URL_SCRIPT_LOBBY
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.util.optionalField
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.Source
 import kotlin.time.Duration.Companion.seconds
 
 internal class CreateJoinEmbedButtonUseCase {

@@ -5,10 +5,10 @@ import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-internal fun Ban?.toDomain(): io.github.sophon.domain.model.Ban? {
+internal fun Ban?.toDomain(): io.github.sophon.integration.model.Ban? {
     if (this == null) return null
 
-    return io.github.sophon.domain.model.Ban(
+    return io.github.sophon.integration.model.Ban(
         offenderId = offenderId,
         bannedAt = Instant.fromEpochMilliseconds(bannedAt),
         expiresAt = Instant.fromEpochMilliseconds(expiresAt),

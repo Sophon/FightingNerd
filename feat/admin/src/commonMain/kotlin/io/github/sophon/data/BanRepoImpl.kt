@@ -3,8 +3,8 @@ package io.github.sophon.data
 import io.github.sophon.admin.data.AdminDatabase
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import io.github.sophon.domain.AdminError
-import io.github.sophon.domain.model.Ban
+import io.github.sophon.integration.model.AdminError
+import io.github.sophon.integration.model.Ban
 import io.github.sophon.util.toLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO

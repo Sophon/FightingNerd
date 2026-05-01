@@ -14,7 +14,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.Source
 import io.github.sophon.domain.model.DailyReport
 import junit.framework.TestCase
 import kotlinx.coroutines.flow.emptyFlow

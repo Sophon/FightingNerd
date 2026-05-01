@@ -7,11 +7,10 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Config
 import io.github.sophon.data.BanRepo
-import io.github.sophon.domain.AdminError
-import io.github.sophon.domain.AdminResult
-import io.github.sophon.domain.Source
-import io.github.sophon.domain.model.Ban
-import io.github.sophon.usecase.ProcessFeedbackUseCase
+import io.github.sophon.integration.model.AdminError
+import io.github.sophon.integration.model.AdminResult
+import io.github.sophon.integration.model.Source
+import io.github.sophon.integration.model.Ban
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.time.Duration

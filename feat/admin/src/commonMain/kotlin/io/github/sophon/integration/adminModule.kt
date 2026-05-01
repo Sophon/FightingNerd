@@ -1,8 +1,8 @@
-package io.github.sophon
+package io.github.sophon.integration
 
 import io.github.sophon.data.BanRepo
 import io.github.sophon.data.BanRepoImpl
-import io.github.sophon.domain.AdminFeatureInfo
+import io.github.sophon.domain.AdminToolImpl
 import io.github.sophon.usecase.ProcessFeedbackUseCase
 import io.github.sophon.usecase.ProcessReplyUseCase
 import org.koin.core.module.Module

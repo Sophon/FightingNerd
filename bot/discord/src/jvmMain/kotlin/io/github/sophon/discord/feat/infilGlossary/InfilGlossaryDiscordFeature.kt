@@ -10,7 +10,7 @@ import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.StartGlossaryUseCase
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.Source
 
 internal class InfilGlossaryDiscordFeature(
     getInfilFeatureInfoUseCase: GetInfilFeatureInfoUseCase,
