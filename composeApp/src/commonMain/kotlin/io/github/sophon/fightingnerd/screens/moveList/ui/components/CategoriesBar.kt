@@ -30,7 +30,7 @@ import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun CategoriesBar(
+internal fun CategoriesBar(
     categories: List<MoveCategory>,
     listState: LazyListState,
     currentCategoryIndex: Int,

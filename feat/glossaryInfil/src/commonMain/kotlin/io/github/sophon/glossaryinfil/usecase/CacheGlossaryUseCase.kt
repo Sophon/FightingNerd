@@ -4,11 +4,11 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.asEmptyDataResult
 import io.github.sophon.core.domain.flatMap
-import io.github.sophon.glossaryinfil.GlossaryError
-import io.github.sophon.glossaryinfil.data.GlossaryDB
-import io.github.sophon.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
+import io.github.sophon.glossaryinfil.integration.model.GlossaryError
+import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 
-class CacheGlossaryUseCase(
+internal class CacheGlossaryUseCase(
     private val db: GlossaryDB,
 ) {
     suspend fun invoke(items: List<GlossaryItem>): EmptyResult<GlossaryError> {

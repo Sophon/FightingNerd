@@ -9,25 +9,25 @@ import androidx.compose.ui.graphics.Color
  * UI specific color to be added here.
  */
 @Immutable
-data class AppColorPalette(
+internal data class AppColorPalette(
     val profitGreen: Color = Color.Unspecified,
     val lossRed: Color = Color.Unspecified,
 )
 
-val lightProfitGreenColor = Color(color = 0xFF32de84)
-val lightLossRedColor = Color(color = 0xFFD2122E)
+internal val lightProfitGreenColor = Color(color = 0xFF32de84)
+internal val lightLossRedColor = Color(color = 0xFFD2122E)
 
-val darkProfitGreenColor = Color(color = 0xFF32de84)
-val darkLossRedColor = Color(color = 0xFFD2122E)
+internal val darkProfitGreenColor = Color(color = 0xFF32de84)
+internal val darkLossRedColor = Color(color = 0xFFD2122E)
 
-val lightAppColorPalette = AppColorPalette(
+internal val lightAppColorPalette = AppColorPalette(
     profitGreen = lightProfitGreenColor,
     lossRed = lightLossRedColor,
 )
 
-val darkAppColorPalette = AppColorPalette(
+internal val darkAppColorPalette = AppColorPalette(
     profitGreen = darkProfitGreenColor,
     lossRed = darkLossRedColor,
 )
 
-val localAppColorPalette = compositionLocalOf { AppColorPalette() }
+internal val localAppColorPalette = compositionLocalOf { AppColorPalette() }

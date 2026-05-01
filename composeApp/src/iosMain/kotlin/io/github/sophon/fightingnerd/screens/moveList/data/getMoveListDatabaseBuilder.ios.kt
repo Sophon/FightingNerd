@@ -4,7 +4,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import platform.Foundation.NSHomeDirectory
 
-fun getMoveListDatabaseBuilder(
+internal fun getMoveListDatabaseBuilder(
     dbName: String = "moveList.db"
 ): RoomDatabase.Builder<MoveListDatabase> {
     val dbFile = NSHomeDirectory() + "/$dbName"

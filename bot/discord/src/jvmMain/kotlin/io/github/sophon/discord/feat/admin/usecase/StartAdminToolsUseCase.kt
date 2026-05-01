@@ -1,6 +1,6 @@
 package io.github.sophon.discord.feat.admin.usecase
 
-import io.github.sophon.AdminTool
+import io.github.sophon.integration.AdminTool
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.feature.Config

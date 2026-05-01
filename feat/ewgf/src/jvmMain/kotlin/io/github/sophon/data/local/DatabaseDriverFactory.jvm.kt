@@ -5,7 +5,7 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import io.github.sophon.ewgf.data.EwgfDatabase
 import java.io.File
 
-actual class DatabaseDriverFactory(
+internal actual class DatabaseDriverFactory(
     private val databasePath: String,
 ) {
     actual fun createDriver(): SqlDriver {

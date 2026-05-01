@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface MoveListDao {
+internal interface MoveListDao {
     @Query("SELECT * FROM moves WHERE input LIKE '%' || :query || '%'")
     suspend fun fetchMovesByInput(query: String): List<MoveEntity>
 

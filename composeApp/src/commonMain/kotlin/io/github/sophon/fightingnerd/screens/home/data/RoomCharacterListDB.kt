@@ -7,7 +7,7 @@ import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
 
-class RoomCharacterListDB(
+internal class RoomCharacterListDB(
     private val dao: CharacterListDao,
 ): CharacterListDB {
     override suspend fun insertCharacterList(

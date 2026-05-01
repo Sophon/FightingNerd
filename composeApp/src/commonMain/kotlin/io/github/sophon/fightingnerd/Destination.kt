@@ -3,7 +3,7 @@ package io.github.sophon.fightingnerd
 import kotlinx.serialization.Serializable
 
 @Serializable
-sealed class Destination {
+internal sealed class Destination {
 
     @Serializable
     object Home

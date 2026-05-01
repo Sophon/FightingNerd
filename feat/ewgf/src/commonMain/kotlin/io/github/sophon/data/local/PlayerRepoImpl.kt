@@ -2,12 +2,11 @@ package io.github.sophon.data.local
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import io.github.sophon.data.PlayerRepo
-import io.github.sophon.domain.EwgfError
-import io.github.sophon.domain.model.Player
+import io.github.sophon.integration.data.PlayerRepo
 import io.github.sophon.ewgf.data.EwgfDatabase
+import io.github.sophon.integration.model.EwgfError
+import io.github.sophon.integration.model.Player
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 internal class PlayerRepoImpl(

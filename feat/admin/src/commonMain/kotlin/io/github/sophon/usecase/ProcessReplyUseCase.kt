@@ -2,9 +2,9 @@ package io.github.sophon.usecase
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Config
-import io.github.sophon.domain.AdminError
-import io.github.sophon.domain.AdminResult
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.AdminError
+import io.github.sophon.integration.model.AdminResult
+import io.github.sophon.integration.model.Source
 
 internal class ProcessReplyUseCase {
     fun invoke(

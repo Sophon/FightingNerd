@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.featureRegistry.superComboWiki.ui
 
 import io.github.sophon.core.wiki.domain.model.Character
 
-data class SuperComboHomeScreenViewState(
+internal data class SuperComboHomeScreenViewState(
     val characterList: List<Character> = listOf(),
     val isExpanded: Boolean = false,
 

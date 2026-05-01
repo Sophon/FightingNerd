@@ -27,7 +27,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun MoveItem(
+internal fun MoveItem(
     move: UiMove,
     isNotesExpanded: Boolean,
     onNotesExpandClick: () -> Unit,

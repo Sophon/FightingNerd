@@ -2,7 +2,7 @@ package io.github.sophon.discord.feat.core.domain.model
 
 import io.github.sophon.core.domain.Error
 
-sealed class BotError(private vararg val inputs: String) : Error {
+internal sealed class BotError(private vararg val inputs: String) : Error {
     class InvalidCommand(val command: String): BotError(command)
     class InvalidQuery(input: String) : BotError(input)
     class UnknownCharacter(input: String) : BotError(input)

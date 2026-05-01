@@ -23,10 +23,10 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.domain.AdminFeatureInfo
-import io.github.sophon.domain.AdminResult
-import io.github.sophon.domain.Source
-import io.github.sophon.domain.model.Ban
+import io.github.sophon.integration.AdminFeatureInfo
+import io.github.sophon.integration.model.AdminResult
+import io.github.sophon.integration.model.Source
+import io.github.sophon.integration.model.Ban
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

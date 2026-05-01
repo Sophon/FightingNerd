@@ -12,7 +12,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.discord.util.toButtons
-import io.github.sophon.wikimizuumi.domain.MizuumiFilter
+import io.github.sophon.wikimizuumi.integration.model.MizuumiFilter
 import kotlin.time.Duration.Companion.seconds
 
 internal class CreateMizuumiInvEmbedUseCase {

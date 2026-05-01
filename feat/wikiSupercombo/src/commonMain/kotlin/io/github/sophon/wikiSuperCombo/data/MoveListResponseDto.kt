@@ -14,7 +14,7 @@ internal data class MoveListResponseDto(
 }
 
 @Serializable
-data class MoveDto(
+internal data class MoveDto(
     val moveId: String,
     val moveType: String,
     val chara: String,

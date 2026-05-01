@@ -4,9 +4,9 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
-import io.github.sophon.data.ReportRepo
-import io.github.sophon.domain.StatsError
-import io.github.sophon.domain.model.DailyReport
+import io.github.sophon.integration.data.ReportRepo
+import io.github.sophon.integration.model.StatsError
+import io.github.sophon.integration.model.DailyReport
 import kotlinx.serialization.json.Json
 
 internal class JsonReportRepo(

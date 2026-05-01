@@ -3,7 +3,7 @@ package io.github.sophon.discord.feat.core.domain.model
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.Source
 
 internal interface DiscordRegisteredFeature {
     val featureInfo: FeatureInfo

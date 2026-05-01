@@ -1,8 +1,8 @@
 package io.github.sophon.wikidustloop.util
 
-import io.github.sophon.wikidustloop.WIKI_BASE_URL
+import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
 
-fun String?.toClickable(): String? {
+internal fun String?.toClickable(): String? {
     if (this == null) return null
 
     val regex = """\[\[(.*?)\]\]""".toRegex() // "text text [[match]] text [[match]] text.

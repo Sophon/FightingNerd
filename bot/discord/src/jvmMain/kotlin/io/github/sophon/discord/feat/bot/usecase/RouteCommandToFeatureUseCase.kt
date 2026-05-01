@@ -1,7 +1,6 @@
 package io.github.sophon.discord.feat.bot.usecase
 
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.util.extractFirstWord
 import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.feat.core.domain.Tracker
@@ -9,7 +8,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
-import io.github.sophon.domain.Source
+import io.github.sophon.integration.model.Source
 
 internal class RouteCommandToFeatureUseCase(
     private val featureList: List<DiscordRegisteredFeature>,
@@ -32,7 +31,7 @@ internal class RouteCommandToFeatureUseCase(
             val (commandString, query) = formatQuery(fullQuery)
             useExplicitCommands(source, commandString, query)
         } else {
-            useDefaultCommands(source, fullQuery).mapError { BotError.InvalidCommand(firstWord) }
+            useDefaultCommands(source, fullQuery)
         }
     }
 
@@ -162,6 +161,6 @@ internal class RouteCommandToFeatureUseCase(
         }
 
         tracker.recordFailure()
-        return Result.Error(BotError.InvalidQuery(fullQuery))
+        return Result.Error(BotError.InvalidCommand(fullQuery.split(" ").first()))
     }
 }

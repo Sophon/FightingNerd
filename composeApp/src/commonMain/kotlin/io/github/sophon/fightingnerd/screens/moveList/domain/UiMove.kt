@@ -14,7 +14,7 @@ import fightingnerd.composeapp.generated.resources.ic_tornado
 import fightingnerd.composeapp.generated.resources.ic_wall_break
 import org.jetbrains.compose.resources.DrawableResource
 
-data class UiMove(
+internal data class UiMove(
     val id: String,
     val input: String,
     val mandatoryFields: List<Field>,

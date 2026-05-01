@@ -18,24 +18,15 @@ internal class CreateErrorEmbedBuilderUseCase {
             is BotError.UnknownCharacter,
             is BotError.UnknownMove,
                 -> {
-                syntaxErrorEmbed(error) to BotOutput.ButtonSet(
-                    buttonList = listOf(examplesButton(), commandsButton()),
-                    duration = EMBED_BUTTON_DURATION_INF.seconds,
-                )
+                syntaxErrorEmbed(error) to BotOutput.ButtonSet(buttonList = listOf(examplesButton(), commandsButton()))
             }
 
             is BotError.InvalidQuery -> {
-                createQueryErrorEmbed(error) to BotOutput.ButtonSet(
-                    buttonList = listOf(commandsButton(), helpButton()),
-                    duration = EMBED_BUTTON_DURATION_INF.seconds,
-                )
+                createQueryErrorEmbed(error) to BotOutput.ButtonSet(buttonList = listOf(commandsButton(), helpButton()))
             }
 
             is BotError.InvalidCommand -> {
-                createCommandErrorEmbed(error) to BotOutput.ButtonSet(
-                    buttonList = listOf(aliasButton(), commandsButton()),
-                    duration = EMBED_BUTTON_DURATION_INF.seconds,
-                )
+                createCommandErrorEmbed(error) to BotOutput.ButtonSet(buttonList = listOf(aliasButton(), commandsButton()))
             }
 
             else -> {
@@ -151,8 +142,8 @@ internal class CreateErrorEmbedBuilderUseCase {
             description = errorDescription
 
             mandatoryField(
-                name = "Did you mean a character? 🤔".uppercase(),
-                value = "if `${error.command}` was the start of a character name, **character names must be one word**\n" +
+                name = "",
+                value = "If `${error.command}` was the start of a character name, **character names must be one word**\n" +
                         "- see game specific `/alias` (like `aliasTK` or `aliasBB`) for the full list",
                 inline = false,
             )

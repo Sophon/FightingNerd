@@ -12,7 +12,7 @@ import io.github.sophon.fightingnerd.screens.moveList.data.getMoveListDatabaseBu
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-actual val platformModule = module {
+internal actual val platformModule = module {
     single { createDataStore() }
 
     // Single factory that creates both DBs for any gameId

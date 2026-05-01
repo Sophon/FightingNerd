@@ -60,7 +60,7 @@ import io.github.sophon.discord.feat.wikiWavu.WavuWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCase
 import io.github.sophon.discord.feat.wikiXko.XkoWikiDiscordFeature
-import io.github.sophon.wikiwavu.infrastructure.FileReader
+import io.github.sophon.wikiwavu.integration.data.FileReader
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module

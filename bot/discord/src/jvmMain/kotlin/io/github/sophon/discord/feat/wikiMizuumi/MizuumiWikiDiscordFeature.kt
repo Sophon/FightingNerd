@@ -19,8 +19,8 @@ import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUse
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
-import io.github.sophon.domain.Source
-import io.github.sophon.wikimizuumi.MizuumiFeatureInfo
+import io.github.sophon.integration.model.Source
+import io.github.sophon.wikimizuumi.integration.MizuumiFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

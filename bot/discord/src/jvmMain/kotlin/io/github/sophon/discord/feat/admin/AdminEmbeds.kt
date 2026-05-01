@@ -5,7 +5,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.domain.AdminResult
+import io.github.sophon.integration.model.AdminResult
 
 internal  fun createFeedbackEmbed(
     adminResult: AdminResult,

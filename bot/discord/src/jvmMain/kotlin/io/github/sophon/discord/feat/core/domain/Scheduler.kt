@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.flow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.hours
 
-class Scheduler {
+internal class Scheduler {
     fun <T>start(
         initialDelay: Duration = Duration.ZERO,
         period: Duration = TIME_UPDATE_INTERVAL_H.hours,

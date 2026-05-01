@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-fun getMoveListDatabaseBuilder(
+internal fun getMoveListDatabaseBuilder(
     context: Context,
     dbName: String = "moveList.db"
 ): RoomDatabase.Builder<MoveListDatabase> {

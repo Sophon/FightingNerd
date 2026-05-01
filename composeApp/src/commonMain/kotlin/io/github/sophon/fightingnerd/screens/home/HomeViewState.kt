@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.screens.home
 
 import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
 
-data class HomeViewState(
+internal data class HomeViewState(
     val composeRegisteredFeatures: List<ComposeRegisteredFeature> = listOf(),
     val expandedFeatureIndex: Int? = null,
 

@@ -3,17 +3,17 @@ package io.github.sophon.wikimizuumi.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MoveListResponseDto(
+internal data class MoveListResponseDto(
     val cargoquery: List<Title>,
 )
 
 @Serializable
-data class Title(
+internal data class Title(
     val title: MoveDto,
 )
 
 @Serializable
-data class MoveDto(
+internal data class MoveDto(
     val moveId: String,
     val chara: String,
     val input: String? = null,
