@@ -4,13 +4,13 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MoveListResponseDto(
+internal data class MoveListResponseDto(
     val bucketQuery: String,
     val bucket: List<MoveDto> = listOf()
 )
 
 @Serializable
-data class MoveDto(
+internal data class MoveDto(
     @SerialName("page_name") val pageName: String,
     val input: String? = null,
     val damage: String? = null,
