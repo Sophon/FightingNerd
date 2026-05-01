@@ -4,8 +4,8 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.glossaryinfil.integration.GlossaryError
-import io.github.sophon.glossaryinfil.integration.GlossaryItem
+import io.github.sophon.glossaryinfil.integration.model.GlossaryError
+import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient
 import io.github.sophon.glossaryinfil.usecase.CacheGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase

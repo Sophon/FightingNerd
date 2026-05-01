@@ -11,8 +11,8 @@ import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
 import io.github.sophon.integration.ewgfModule
-import io.github.sophon.glossaryinfil.data.GlossaryDB
-import io.github.sophon.glossaryinfil.infilModule
+import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
+import io.github.sophon.glossaryinfil.integration.infilModule
 import io.github.sophon.integration.statsModule
 import io.github.sophon.wikiSuperCombo.integration.superComboModule
 import io.github.sophon.wikidustloop.integration.dustLoopModule

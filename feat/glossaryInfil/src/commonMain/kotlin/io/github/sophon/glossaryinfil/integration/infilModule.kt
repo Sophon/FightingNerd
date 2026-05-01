@@ -1,9 +1,8 @@
-package io.github.sophon.glossaryinfil
+package io.github.sophon.glossaryinfil.integration
 
 import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSource
 import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSourceImpl
 import io.github.sophon.glossaryinfil.domain.InfilGlossaryClientImpl
-import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient
 import io.github.sophon.glossaryinfil.usecase.CacheGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.FetchDataForTermUseCase

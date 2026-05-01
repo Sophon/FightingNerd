@@ -5,8 +5,8 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSource
 import io.github.sophon.glossaryinfil.data.toDomain
-import io.github.sophon.glossaryinfil.integration.GlossaryError
-import io.github.sophon.glossaryinfil.integration.GlossaryItem
+import io.github.sophon.glossaryinfil.integration.model.GlossaryError
+import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 
 internal class DownloadGlossaryUseCase(
     private val dataSource: InfilGlossaryDataSource,

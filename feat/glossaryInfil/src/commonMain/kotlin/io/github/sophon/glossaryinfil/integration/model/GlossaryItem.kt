@@ -1,4 +1,4 @@
-package io.github.sophon.glossaryinfil.integration
+package io.github.sophon.glossaryinfil.integration.model
 
 import kotlinx.serialization.Serializable
 

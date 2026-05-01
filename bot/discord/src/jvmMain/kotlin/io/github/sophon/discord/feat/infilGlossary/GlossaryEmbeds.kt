@@ -7,7 +7,7 @@ import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.glossaryinfil.integration.GlossaryItem
+import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 
 internal fun glossaryEmbed(
     item: GlossaryItem,

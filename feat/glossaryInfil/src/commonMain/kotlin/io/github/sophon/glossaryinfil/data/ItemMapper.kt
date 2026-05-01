@@ -2,7 +2,7 @@ package io.github.sophon.glossaryinfil.data
 
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.glossaryinfil.domain.FEATURE_URL
-import io.github.sophon.glossaryinfil.integration.GlossaryItem
+import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 
 internal fun GlossaryItemDto.toDomain(): GlossaryItem {
     return GlossaryItem(
