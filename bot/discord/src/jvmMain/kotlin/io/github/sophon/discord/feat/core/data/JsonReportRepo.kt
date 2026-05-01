@@ -5,7 +5,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.data.ReportRepo
-import io.github.sophon.domain.StatsError
+import io.github.sophon.domain.model.StatsError
 import io.github.sophon.domain.model.DailyReport
 import kotlinx.serialization.json.Json
 

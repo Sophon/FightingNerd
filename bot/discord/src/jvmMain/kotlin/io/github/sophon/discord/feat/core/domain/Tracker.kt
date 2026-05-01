@@ -1,7 +1,7 @@
 package io.github.sophon.discord.feat.core.domain
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.StatsTracker
+import io.github.sophon.integration.StatsTracker
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.domain.onError

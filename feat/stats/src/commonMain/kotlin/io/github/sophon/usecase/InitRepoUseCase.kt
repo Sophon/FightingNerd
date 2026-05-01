@@ -1,9 +1,9 @@
-package io.github.sophon.domain.usecase
+package io.github.sophon.usecase
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.ExcludeFromCoverage
 import io.github.sophon.data.ReportRepo
-import io.github.sophon.domain.StatsError
+import io.github.sophon.domain.model.StatsError
 
 @ExcludeFromCoverage("TODO: cover with test")
 internal class InitRepoUseCase(

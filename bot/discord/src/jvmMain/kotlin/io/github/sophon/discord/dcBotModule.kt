@@ -13,7 +13,7 @@ import io.github.sophon.dreamcancel.dreamCancelModule
 import io.github.sophon.integration.ewgfModule
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.infilModule
-import io.github.sophon.statsModule
+import io.github.sophon.integration.statsModule
 import io.github.sophon.wikiSuperCombo.superComboModule
 import io.github.sophon.wikidustloop.dustLoopModule
 import io.github.sophon.wikimizuumi.mizuumiModule

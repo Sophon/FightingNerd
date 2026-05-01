@@ -4,7 +4,7 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.integration.model.AdminError
 import io.github.sophon.integration.model.EwgfError
-import io.github.sophon.domain.StatsError
+import io.github.sophon.domain.model.StatsError
 
 internal fun WikiError.toDomainError(): BotError {
     return when (this) {

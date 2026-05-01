@@ -1,6 +1,5 @@
 package io.github.sophon.domain
 
-import io.github.sophon.FEATURE_NAME
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.stats.BuildKonfig
 
