@@ -3,7 +3,7 @@ package io.github.sophon.discord
 import dev.kord.core.Kord
 import io.github.sophon.integration.adminModule
 import io.github.sophon.core.coreModule
-import io.github.sophon.data.ReportRepo
+import io.github.sophon.integration.data.ReportRepo
 import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.data.JsonReportRepo

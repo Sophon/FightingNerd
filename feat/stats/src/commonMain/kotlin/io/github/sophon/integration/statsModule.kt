@@ -1,6 +1,6 @@
 package io.github.sophon.integration
 
-import io.github.sophon.domain.StatsFeatureInfo
+import io.github.sophon.integration.StatsFeatureInfo
 import io.github.sophon.domain.StatsTrackerImpl
 import io.github.sophon.usecase.GetReportsUseCase
 import io.github.sophon.usecase.InitRepoUseCase

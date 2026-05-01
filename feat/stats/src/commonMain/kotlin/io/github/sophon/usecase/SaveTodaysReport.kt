@@ -4,10 +4,10 @@ import io.github.sophon.core.domain.ExcludeFromCoverage
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
-import io.github.sophon.data.ReportRepo
-import io.github.sophon.domain.model.Command
-import io.github.sophon.domain.model.DailyReport
-import io.github.sophon.domain.model.StatsError
+import io.github.sophon.integration.data.ReportRepo
+import io.github.sophon.integration.model.Command
+import io.github.sophon.integration.model.DailyReport
+import io.github.sophon.integration.model.StatsError
 import io.github.sophon.util.today
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime

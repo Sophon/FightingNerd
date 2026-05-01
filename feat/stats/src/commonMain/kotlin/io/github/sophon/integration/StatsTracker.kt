@@ -2,9 +2,9 @@ package io.github.sophon.integration
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import io.github.sophon.domain.model.Command
-import io.github.sophon.domain.model.DailyReport
-import io.github.sophon.domain.model.StatsError
+import io.github.sophon.integration.model.Command
+import io.github.sophon.integration.model.DailyReport
+import io.github.sophon.integration.model.StatsError
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 

@@ -5,7 +5,7 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.channel.TextChannel
 import io.github.aakira.napier.Napier
-import io.github.sophon.domain.model.DailyReport
+import io.github.sophon.integration.model.DailyReport
 
 internal class PostDailyReportEmbedUseCase(
     private val kord: Kord,

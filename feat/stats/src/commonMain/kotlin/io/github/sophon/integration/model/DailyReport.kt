@@ -1,4 +1,4 @@
-package io.github.sophon.domain.model
+package io.github.sophon.integration.model
 
 import kotlinx.datetime.LocalDate
 import kotlinx.serialization.Serializable
