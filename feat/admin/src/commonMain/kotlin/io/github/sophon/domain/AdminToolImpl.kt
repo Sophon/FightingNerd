@@ -1,7 +1,6 @@
 package io.github.sophon.domain
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.integration.AdminTool
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
@@ -9,8 +8,9 @@ import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.data.BanRepo
-import io.github.sophon.integration.model.AdminError
 import io.github.sophon.integration.AdminFeatureInfo
+import io.github.sophon.integration.AdminTool
+import io.github.sophon.integration.model.AdminError
 import io.github.sophon.integration.model.AdminResult
 import io.github.sophon.integration.model.Ban
 import io.github.sophon.integration.model.Source

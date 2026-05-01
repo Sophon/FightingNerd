@@ -8,10 +8,9 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
-import io.github.sophon.glossaryinfil.integration.GlossaryError
 import io.github.sophon.glossaryinfil.data.GlossaryItemDto
 import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSource
-import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase
+import io.github.sophon.glossaryinfil.integration.GlossaryError
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test

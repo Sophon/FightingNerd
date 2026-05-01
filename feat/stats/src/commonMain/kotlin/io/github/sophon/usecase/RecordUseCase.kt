@@ -3,8 +3,8 @@ package io.github.sophon.usecase
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.ExcludeFromCoverage
 import io.github.sophon.core.domain.Result
-import io.github.sophon.domain.model.StatsError
 import io.github.sophon.domain.model.Command
+import io.github.sophon.domain.model.StatsError
 
 @ExcludeFromCoverage("TODO: cover with test")
 internal class RecordUseCase() {

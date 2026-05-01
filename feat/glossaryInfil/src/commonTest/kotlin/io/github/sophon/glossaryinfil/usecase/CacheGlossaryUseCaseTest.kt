@@ -6,8 +6,8 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import io.github.sophon.glossaryinfil.integration.GlossaryError
 import io.github.sophon.glossaryinfil.data.GlossaryDB
+import io.github.sophon.glossaryinfil.integration.GlossaryError
 import io.github.sophon.glossaryinfil.integration.GlossaryItem
 import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest

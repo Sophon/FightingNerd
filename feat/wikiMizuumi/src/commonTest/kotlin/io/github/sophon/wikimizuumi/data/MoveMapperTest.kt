@@ -5,7 +5,6 @@ import assertk.assertions.isEqualTo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import kotlin.collections.emptyMap
 import kotlin.test.Test
 
 class MoveMapperTest {

@@ -9,8 +9,8 @@ import io.github.sophon.core.feature.Config
 import io.github.sophon.data.BanRepo
 import io.github.sophon.integration.model.AdminError
 import io.github.sophon.integration.model.AdminResult
-import io.github.sophon.integration.model.Source
 import io.github.sophon.integration.model.Ban
+import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.time.Duration

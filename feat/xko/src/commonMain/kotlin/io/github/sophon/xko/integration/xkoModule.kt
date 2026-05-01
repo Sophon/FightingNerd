@@ -19,7 +19,6 @@ import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.xko.data.XkoWikiDataSource
 import io.github.sophon.xko.data.XkoWikiDataSourceImpl
 import io.github.sophon.xko.data.toDomain
-import io.github.sophon.xko.integration.XkoFeatureInfo
 import io.github.sophon.xko.domain.XkoWikiClient
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named

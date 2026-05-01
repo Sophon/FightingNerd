@@ -22,7 +22,6 @@ import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
 import io.github.sophon.wikiwavu.data.toDomain
-import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import io.github.sophon.wikiwavu.domain.WavuWikiClient
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named

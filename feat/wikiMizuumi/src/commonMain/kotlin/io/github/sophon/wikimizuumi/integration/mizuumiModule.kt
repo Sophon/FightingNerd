@@ -22,8 +22,8 @@ import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSource
 import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSourceImpl
 import io.github.sophon.wikimizuumi.data.WikiImageUrlResolver
-import io.github.sophon.wikimizuumi.data.toDomainAll
 import io.github.sophon.wikimizuumi.data.toDomain
+import io.github.sophon.wikimizuumi.data.toDomainAll
 import io.github.sophon.wikimizuumi.domain.MizuumiWikiClient
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf

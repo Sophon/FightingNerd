@@ -24,7 +24,6 @@ import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSourceImpl
 import io.github.sophon.wikiSuperCombo.data.WikiImageUrlResolver
 import io.github.sophon.wikiSuperCombo.data.toDomain
-import io.github.sophon.wikiSuperCombo.integration.SuperComboFeatureInfo
 import io.github.sophon.wikiSuperCombo.domain.SuperComboWikiClient
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf

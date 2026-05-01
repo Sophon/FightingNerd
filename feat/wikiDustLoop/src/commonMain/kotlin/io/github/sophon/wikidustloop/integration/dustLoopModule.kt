@@ -24,7 +24,6 @@ import io.github.sophon.wikidustloop.data.DustLoopDataSource
 import io.github.sophon.wikidustloop.data.DustLoopDataSourceImpl
 import io.github.sophon.wikidustloop.data.ImageUrlResolver
 import io.github.sophon.wikidustloop.data.toDomain
-import io.github.sophon.wikidustloop.integration.DustLoopFeatureInfo
 import io.github.sophon.wikidustloop.domain.DustLoopWikiClient
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf

@@ -1,11 +1,11 @@
 package io.github.sophon.domain
 
-import io.github.sophon.integration.StatsTracker
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.domain.model.Command
 import io.github.sophon.domain.model.DailyReport
 import io.github.sophon.domain.model.StatsError
+import io.github.sophon.integration.StatsTracker
 import io.github.sophon.usecase.GetReportsUseCase
 import io.github.sophon.usecase.InitRepoUseCase
 import io.github.sophon.usecase.RecordUseCase

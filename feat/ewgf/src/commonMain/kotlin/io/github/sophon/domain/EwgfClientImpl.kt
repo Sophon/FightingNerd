@@ -7,9 +7,9 @@ import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.integration.EwgfClient
+import io.github.sophon.integration.EwgfFeatureInfo
 import io.github.sophon.integration.model.BattleSet
 import io.github.sophon.integration.model.EwgfError
-import io.github.sophon.integration.EwgfFeatureInfo
 import io.github.sophon.integration.model.Player
 import io.github.sophon.usecase.DeletePlayerUseCase
 import io.github.sophon.usecase.DownloadPlayerBattlesUseCase

@@ -25,8 +25,8 @@ import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
 import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
 import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
 import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
-import io.github.sophon.wikimizuumi.integration.MizuumiFeatureInfo
 import io.github.sophon.wikimizuumi.data.MizuumiTables
+import io.github.sophon.wikimizuumi.integration.MizuumiFeatureInfo
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 

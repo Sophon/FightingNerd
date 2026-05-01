@@ -1,18 +1,17 @@
 package io.github.sophon.glossaryinfil.usecase
 
-import io.github.sophon.core.domain.Result
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.glossaryinfil.integration.GlossaryError
+import io.github.sophon.core.domain.Result
 import io.github.sophon.glossaryinfil.data.GlossaryDB
+import io.github.sophon.glossaryinfil.integration.GlossaryError
 import io.github.sophon.glossaryinfil.integration.GlossaryItem
-import io.github.sophon.glossaryinfil.usecase.FetchDataForTermUseCase
+import kotlinx.coroutines.test.runTest
 import kotlin.test.BeforeTest
 import kotlin.test.Test
-import kotlinx.coroutines.test.runTest
 
 class FetchDataForTermUseCaseTest {
     private lateinit var db: FakeGlossaryDB
