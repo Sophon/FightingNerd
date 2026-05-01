@@ -28,7 +28,7 @@ import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-fun initKoin(
+internal fun initKoin(
     kord: Kord,
     config: KoinAppDeclaration? = null
 ) = startKoin {
@@ -55,7 +55,7 @@ fun initKoin(
     )
 }
 
-fun dcBotModule(kord: Kord) = module {
+internal fun dcBotModule(kord: Kord) = module {
     single {
         CoroutineScope(SupervisorJob() + Dispatchers.Default)
     }

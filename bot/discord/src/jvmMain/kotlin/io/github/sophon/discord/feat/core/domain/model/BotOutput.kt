@@ -6,7 +6,7 @@ import io.github.sophon.integration.model.Source
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-data class BotOutput(
+internal data class BotOutput(
     val primaryEmbedBuilder: (EmbedBuilder.() -> Unit)? = null,
     val mutableEmbedBuilder: MutableEmbedBuilder? = null,
     val plainText: String? = null,

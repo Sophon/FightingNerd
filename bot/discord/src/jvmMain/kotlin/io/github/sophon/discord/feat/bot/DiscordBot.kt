@@ -32,7 +32,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlin.uuid.ExperimentalUuidApi
 
-interface DiscordBot {
+internal interface DiscordBot {
     suspend fun startSession()
 }
 

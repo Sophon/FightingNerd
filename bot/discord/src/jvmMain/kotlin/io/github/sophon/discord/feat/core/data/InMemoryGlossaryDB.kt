@@ -7,7 +7,7 @@ import io.github.sophon.glossaryinfil.integration.GlossaryError
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.integration.GlossaryItem
 
-class InMemoryGlossaryDB: GlossaryDB {
+internal class InMemoryGlossaryDB: GlossaryDB {
     private var glossary = mutableMapOf<String, GlossaryItem>()
 
     override suspend fun fetchDataFor(query: String): Result<List<GlossaryItem>, GlossaryError> {

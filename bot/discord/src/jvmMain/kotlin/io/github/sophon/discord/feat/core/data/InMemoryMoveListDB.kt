@@ -14,7 +14,7 @@ import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class InMemoryMoveListDB: MoveListDB {
+internal class InMemoryMoveListDB: MoveListDB {
     private lateinit var game: Game
     private val database: MutableMap<String, Map<String, Move>> = mutableMapOf()
     private var insertTimeInstant: Instant? = null
