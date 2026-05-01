@@ -4,18 +4,18 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MoveListResponseDto(
+internal data class MoveListResponseDto(
     @SerialName("cargoquery")
     val cargoQuery: List<Title>
 )
 
 @Serializable
-data class Title(
+internal data class Title(
     val title: MoveDto
 )
 
 @Serializable
-data class MoveDto(
+internal data class MoveDto(
     val chara: String,
     val moveId: String,
     val name: String? = null,

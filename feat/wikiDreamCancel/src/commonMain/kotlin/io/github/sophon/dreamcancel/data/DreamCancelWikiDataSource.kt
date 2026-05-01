@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 
-interface DreamCancelWikiDataSource {
+internal interface DreamCancelWikiDataSource {
     suspend fun downloadData(table: String): Result<MoveListResponseDto, DataError.Remote>
     suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
 }
