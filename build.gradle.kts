@@ -168,105 +168,107 @@ data class TopLevelDeclaration(
     val lineNumber: Int,
 )
 
-val hexagonalDeclarationRegex = Regex(
-    """^(?:(public|internal|private)\s+)?""" +
-            """(?:(?:abstract|open|final|sealed|data|enum|value|inline|external|expect|actual|""" +
-            """companion|inner|annotation|const|lateinit|override|operator|infix|suspend|tailrec|""" +
-            """fun(?=\s+interface))\s+)*""" +
-            """(class|interface|object|fun|val|var|typealias)\s+([A-Za-z_][\w.]*)"""
-)
+object HexagonalArchScanner {
+    private val declarationRegex = Regex(
+        """^(?:(public|internal|private)\s+)?""" +
+                """(?:(?:abstract|open|final|sealed|data|enum|value|inline|external|expect|actual|""" +
+                """companion|inner|annotation|const|lateinit|override|operator|infix|suspend|tailrec|""" +
+                """fun(?=\s+interface))\s+)*""" +
+                """(class|interface|object|fun|val|var|typealias)\s+([A-Za-z_][\w.]*)"""
+    )
 
-fun stripBlockComments(source: String): String {
-    val result = StringBuilder()
-    var i = 0
-    while (i < source.length) {
-        if (i + 1 < source.length && source[i] == '/' && source[i + 1] == '*') {
-            i += 2
-            while (i + 1 < source.length) {
-                if (source[i] == '*' && source[i + 1] == '/') break
-                if (source[i] == '\n') result.append('\n')
-                i++
-            }
-            i = (i + 2).coerceAtMost(source.length)
-        } else {
-            result.append(source[i])
-            i++
-        }
-    }
-    return result.toString()
-}
-
-fun stripRawStringLiterals(source: String): String {
-    val result = StringBuilder()
-    var i = 0
-    while (i < source.length) {
-        if (i + 2 < source.length && source[i] == '"' && source[i + 1] == '"' && source[i + 2] == '"') {
-            i += 3
-            while (i + 2 < source.length) {
-                if (source[i] == '"' && source[i + 1] == '"' && source[i + 2] == '"') break
-                if (source[i] == '\n') result.append('\n')
-                i++
-            }
-            i = (i + 3).coerceAtMost(source.length)
-        } else {
-            result.append(source[i])
-            i++
-        }
-    }
-    return result.toString()
-}
-
-fun stripLeadingAnnotations(line: String): String {
-    var s = line.trimStart()
-    while (s.startsWith("@")) {
-        var i = 1
-        while (i < s.length && (s[i].isLetterOrDigit() || s[i] == '_' || s[i] == '.' || s[i] == ':')) {
-            i++
-        }
-        if (i < s.length && s[i] == '(') {
-            var depth = 1
-            i++
-            while (i < s.length && depth > 0) {
-                when (s[i]) {
-                    '(' -> depth++
-                    ')' -> depth--
+    fun stripBlockComments(source: String): String {
+        val result = StringBuilder()
+        var i = 0
+        while (i < source.length) {
+            if (i + 1 < source.length && source[i] == '/' && source[i + 1] == '*') {
+                i += 2
+                while (i + 1 < source.length) {
+                    if (source[i] == '*' && source[i + 1] == '/') break
+                    if (source[i] == '\n') result.append('\n')
+                    i++
                 }
+                i = (i + 2).coerceAtMost(source.length)
+            } else {
+                result.append(source[i])
                 i++
             }
         }
-        s = s.substring(i).trimStart()
+        return result.toString()
     }
-    return s
-}
 
-fun findTopLevelDeclarations(file: File): List<TopLevelDeclaration> {
-    val source = stripRawStringLiterals(stripBlockComments(file.readText()))
-    val lines = source.lines()
-    val declarations = mutableListOf<TopLevelDeclaration>()
+    fun stripRawStringLiterals(source: String): String {
+        val result = StringBuilder()
+        var i = 0
+        while (i < source.length) {
+            if (i + 2 < source.length && source[i] == '"' && source[i + 1] == '"' && source[i + 2] == '"') {
+                i += 3
+                while (i + 2 < source.length) {
+                    if (source[i] == '"' && source[i + 1] == '"' && source[i + 2] == '"') break
+                    if (source[i] == '\n') result.append('\n')
+                    i++
+                }
+                i = (i + 3).coerceAtMost(source.length)
+            } else {
+                result.append(source[i])
+                i++
+            }
+        }
+        return result.toString()
+    }
 
-    for (index in lines.indices) {
-        val withoutComment = lines[index].substringBefore("//")
-        if (withoutComment.isBlank() || withoutComment[0].isWhitespace()) continue
+    fun stripLeadingAnnotations(line: String): String {
+        var s = line.trimStart()
+        while (s.startsWith("@")) {
+            var i = 1
+            while (i < s.length && (s[i].isLetterOrDigit() || s[i] == '_' || s[i] == '.' || s[i] == ':')) {
+                i++
+            }
+            if (i < s.length && s[i] == '(') {
+                var depth = 1
+                i++
+                while (i < s.length && depth > 0) {
+                    when (s[i]) {
+                        '(' -> depth++
+                        ')' -> depth--
+                    }
+                    i++
+                }
+            }
+            s = s.substring(i).trimStart()
+        }
+        return s
+    }
 
-        val stripped = stripLeadingAnnotations(withoutComment)
-        if (stripped.isBlank()) continue
+    fun findTopLevelDeclarations(file: File): List<TopLevelDeclaration> {
+        val source = stripRawStringLiterals(stripBlockComments(file.readText()))
+        val lines = source.lines()
+        val declarations = mutableListOf<TopLevelDeclaration>()
 
-        val match = hexagonalDeclarationRegex.find(stripped) ?: continue
-        val visibility = match.groupValues[1].takeIf { it.isNotEmpty() }
-        val kind = match.groupValues[2]
-        val name = match.groupValues[3]
+        for (index in lines.indices) {
+            val withoutComment = lines[index].substringBefore("//")
+            if (withoutComment.isBlank() || withoutComment[0].isWhitespace()) continue
 
-        declarations.add(
-            TopLevelDeclaration(
-                kind = kind,
-                name = name,
-                visibility = visibility,
-                lineNumber = index + 1,
+            val stripped = stripLeadingAnnotations(withoutComment)
+            if (stripped.isBlank()) continue
+
+            val match = declarationRegex.find(stripped) ?: continue
+            val visibility = match.groupValues[1].takeIf { it.isNotEmpty() }
+            val kind = match.groupValues[2]
+            val name = match.groupValues[3]
+
+            declarations.add(
+                TopLevelDeclaration(
+                    kind = kind,
+                    name = name,
+                    visibility = visibility,
+                    lineNumber = index + 1,
+                )
             )
-        )
-    }
+        }
 
-    return declarations
+        return declarations
+    }
 }
 
 tasks.register("testArchHexagonal") {
@@ -321,7 +323,7 @@ tasks.register("testArchHexagonal") {
                     val isIntegration = ktFile.invariantSeparatorsPath.contains("/integration/")
                     val relativePath = ktFile.relativeTo(projectDir.asFile).invariantSeparatorsPath
 
-                    findTopLevelDeclarations(ktFile).forEach { decl ->
+                    HexagonalArchScanner.findTopLevelDeclarations(ktFile).forEach { decl ->
                         totalDeclarations++
                         val isPublic = decl.visibility == null || decl.visibility == "public"
 
@@ -347,21 +349,6 @@ tasks.register("testArchHexagonal") {
                         }
                     }
                 }
-        }
-
-        println("\n========================================")
-        println("📊 Hexagonal Architecture Check:")
-        println("  Total Top-Level Declarations: $totalDeclarations")
-        println("  Valid: $validDeclarations")
-        println("  Violations: ${violations.size}")
-        println("========================================\n")
-
-        if (violations.isNotEmpty()) {
-            println("❌ Hexagonal architecture violations:")
-            violations.forEach { println("  - $it") }
-            throw GradleException("Hexagonal architecture check failed! ${violations.size} violation(s) found.")
-        } else {
-            println("✅ All declarations follow hexagonal architecture rules!")
         }
     }
 }
