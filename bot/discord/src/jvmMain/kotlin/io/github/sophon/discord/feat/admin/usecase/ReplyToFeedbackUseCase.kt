@@ -7,7 +7,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.integration.model.AdminResult
 import io.github.sophon.integration.model.Source
-import io.github.sophon.util.toSourceAndMessage
+import io.github.sophon.integration.util.toSourceAndMessage
 
 internal class ReplyToFeedbackUseCase(
     private val adminTool: AdminTool,

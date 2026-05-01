@@ -1,4 +1,4 @@
-package io.github.sophon.util
+package io.github.sophon.integration.util
 
 import io.github.sophon.integration.model.Source
 

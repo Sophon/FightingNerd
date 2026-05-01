@@ -7,7 +7,7 @@ import io.github.sophon.core.domain.mapError
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.integration.model.Source
-import io.github.sophon.util.toSource
+import io.github.sophon.integration.util.toSource
 
 internal class UnbanUseCase(
     private val adminTool: AdminTool,
