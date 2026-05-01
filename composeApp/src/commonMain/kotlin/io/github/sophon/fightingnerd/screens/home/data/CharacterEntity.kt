@@ -10,7 +10,7 @@ import androidx.room.PrimaryKey
         Index(value =["displayName"]),
     ]
 )
-data class CharacterEntity(
+internal data class CharacterEntity(
     @PrimaryKey val id: String,
     val displayName: String,
     val queryName: String,

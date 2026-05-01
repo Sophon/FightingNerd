@@ -31,7 +31,7 @@ import io.github.sophon.fightingnerd.uiGallery.BottomBarItem
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun HomeScreen(
+internal fun HomeScreen(
     navHostController: NavHostController,
     modifier: Modifier = Modifier
 ) {

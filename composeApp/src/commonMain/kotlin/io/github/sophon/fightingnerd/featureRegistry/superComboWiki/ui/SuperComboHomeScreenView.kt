@@ -21,7 +21,7 @@ import io.github.sophon.fightingnerd.uiGallery.FeatureInfoHeader
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SuperComboHomeScreenView(
+internal fun SuperComboHomeScreenView(
     featureInfo: FeatureInfo,
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier

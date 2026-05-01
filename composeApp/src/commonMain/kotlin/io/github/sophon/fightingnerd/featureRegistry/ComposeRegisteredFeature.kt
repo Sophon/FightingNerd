@@ -7,7 +7,7 @@ import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.WikiClient
 import kotlinx.coroutines.flow.Flow
 
-interface ComposeRegisteredFeature {
+internal interface ComposeRegisteredFeature {
     val featureInfo: FeatureInfo
 
     fun registerGames(enabledGameList: List<Game>)

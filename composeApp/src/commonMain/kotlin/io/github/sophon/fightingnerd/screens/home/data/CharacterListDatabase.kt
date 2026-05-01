@@ -16,7 +16,7 @@ import kotlinx.coroutines.IO
     exportSchema = true,
 )
 @ConstructedBy(CharacterListDatabaseFactory::class)
-abstract class CharacterListDatabase: RoomDatabase() {
+internal abstract class CharacterListDatabase: RoomDatabase() {
     abstract fun characterListDao(): CharacterListDao
 }
 
@@ -25,9 +25,9 @@ abstract class CharacterListDatabase: RoomDatabase() {
  * Room creates the expect classes itself
  */
 @Suppress("NO_ACTUAL_FOR_EXPECT")
-expect object CharacterListDatabaseFactory: RoomDatabaseConstructor<CharacterListDatabase>
+internal expect object CharacterListDatabaseFactory: RoomDatabaseConstructor<CharacterListDatabase>
 
-fun getCharacterListDatabase(
+internal fun getCharacterListDatabase(
     builder: RoomDatabase.Builder<CharacterListDatabase>,
 ): CharacterListDatabase = builder
     .setDriver(BundledSQLiteDriver()) //multiplatform driver

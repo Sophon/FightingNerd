@@ -46,7 +46,7 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
 @Composable
-fun MoveListScreen(
+internal fun MoveListScreen(
     charName: String,
     gameId: String,
     modifier: Modifier = Modifier

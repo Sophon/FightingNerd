@@ -7,7 +7,7 @@ import io.github.sophon.core.util.getGame
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 
-interface FeatureListLoader {
+internal interface FeatureListLoader {
     suspend fun loadFeatureList(): Config
 }
 

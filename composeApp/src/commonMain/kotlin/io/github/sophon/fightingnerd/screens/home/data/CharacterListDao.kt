@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
-interface CharacterListDao {
+internal interface CharacterListDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCharacterList(characterList: List<CharacterEntity>)
 

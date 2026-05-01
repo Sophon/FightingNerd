@@ -39,8 +39,6 @@ kotlin {
         }
     }
     
-    jvm()
-    
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -99,10 +97,6 @@ kotlin {
             implementation(libs.kotlinx.coroutines.test)
             implementation(libs.test.turbine)
         }
-
-        jvmMain.dependencies {
-            implementation(compose.desktop.currentOs)
-        }
     }
 }
 
@@ -135,7 +129,6 @@ android {
 
 dependencies {
     add("kspAndroid", libs.room.compiler)
-    add("kspJvm", libs.room.compiler)
     add("kspIosArm64", libs.room.compiler)
     add("kspIosSimulatorArm64", libs.room.compiler)
     debugImplementation(compose.uiTooling)
