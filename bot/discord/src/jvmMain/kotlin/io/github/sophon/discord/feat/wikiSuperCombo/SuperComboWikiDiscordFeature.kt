@@ -21,7 +21,7 @@ import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
-import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
+import io.github.sophon.wikiSuperCombo.integration.SuperComboFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

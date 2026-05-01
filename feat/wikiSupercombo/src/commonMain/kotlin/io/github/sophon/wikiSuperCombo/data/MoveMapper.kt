@@ -6,7 +6,7 @@ import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
+import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
 import io.github.sophon.wikiSuperCombo.util.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(

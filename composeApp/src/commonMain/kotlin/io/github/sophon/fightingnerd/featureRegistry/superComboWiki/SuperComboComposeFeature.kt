@@ -10,7 +10,7 @@ import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.Destination
 import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.ui.SuperComboHomeScreenView
-import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
+import io.github.sophon.wikiSuperCombo.integration.SuperComboFeatureInfo
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get

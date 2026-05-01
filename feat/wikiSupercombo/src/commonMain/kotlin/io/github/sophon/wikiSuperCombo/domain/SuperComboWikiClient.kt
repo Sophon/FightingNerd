@@ -1,4 +1,4 @@
-package io.github.sophon.wikiSuperCombo
+package io.github.sophon.wikiSuperCombo.domain
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
@@ -23,7 +23,7 @@ import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
 import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
 import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikiSuperCombo.data.SuperComboTables
-import io.github.sophon.wikiSuperCombo.domain.SuperComboFeatureInfo
+import io.github.sophon.wikiSuperCombo.integration.SuperComboFeatureInfo
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 

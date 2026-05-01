@@ -1,11 +1,11 @@
-package io.github.sophon.wikiSuperCombo.domain
+package io.github.sophon.wikiSuperCombo.integration
 
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.wikiSuperCombo.BuildKonfig
-import io.github.sophon.wikiSuperCombo.FEATURE_IMG_URL
-import io.github.sophon.wikiSuperCombo.FEATURE_NAME
-import io.github.sophon.wikiSuperCombo.FEATURE_URL
+import io.github.sophon.wikiSuperCombo.domain.FEATURE_IMG_URL
+import io.github.sophon.wikiSuperCombo.domain.FEATURE_NAME
+import io.github.sophon.wikiSuperCombo.domain.FEATURE_URL
 
 object SuperComboFeatureInfo {
     val featureInfo = FeatureInfo(

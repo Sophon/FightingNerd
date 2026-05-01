@@ -1,4 +1,4 @@
-package io.github.sophon.wikiSuperCombo
+package io.github.sophon.wikiSuperCombo.domain
 
 internal const val BASE_URL = "https://wiki.supercombo.gg/api.php"
 internal const val WIKI_BASE_URL = "https://wiki.supercombo.gg/w"
