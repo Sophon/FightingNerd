@@ -1,21 +1,16 @@
-package io.github.sophon.glossaryinfil
+package io.github.sophon.glossaryinfil.domain
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient
+import io.github.sophon.glossaryinfil.integration.GlossaryError
+import io.github.sophon.glossaryinfil.integration.GlossaryItem
 import io.github.sophon.glossaryinfil.usecase.CacheGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.DownloadGlossaryUseCase
 import io.github.sophon.glossaryinfil.usecase.FetchDataForTermUseCase
 import io.github.sophon.glossaryinfil.usecase.GetFeatureInfoUseCase
-
-interface InfilGlossaryClient {
-    fun getFeatureInfo(): FeatureInfo
-
-    suspend fun downloadGlossary(): EmptyResult<GlossaryError>
-    suspend fun search(query: String): Result<List<GlossaryItem>, GlossaryError>
-}
 
 internal class InfilGlossaryClientImpl(
     private val getFeatureInfoUseCase: GetFeatureInfoUseCase,

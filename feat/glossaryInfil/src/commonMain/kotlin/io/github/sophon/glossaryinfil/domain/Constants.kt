@@ -1,4 +1,4 @@
-package io.github.sophon.glossaryinfil
+package io.github.sophon.glossaryinfil.domain
 
 internal const val BASE_URL = "https://glossary.infil.net/json/glossary.json"
 internal const val TERM_URL = "https://glossary.infil.net/?t="

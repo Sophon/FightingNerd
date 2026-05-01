@@ -2,7 +2,7 @@ package io.github.sophon.glossaryinfil.data
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.integration.GlossaryItem
 import kotlin.test.Test
 
 class ItemMapperTest {

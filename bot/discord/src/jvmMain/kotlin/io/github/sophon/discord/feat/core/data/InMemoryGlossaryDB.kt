@@ -3,9 +3,9 @@ package io.github.sophon.discord.feat.core.data
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.removeWhiteSpace
-import io.github.sophon.glossaryinfil.GlossaryError
+import io.github.sophon.glossaryinfil.integration.GlossaryError
 import io.github.sophon.glossaryinfil.data.GlossaryDB
-import io.github.sophon.glossaryinfil.domain.GlossaryItem
+import io.github.sophon.glossaryinfil.integration.GlossaryItem
 
 class InMemoryGlossaryDB: GlossaryDB {
     private var glossary = mutableMapOf<String, GlossaryItem>()
