@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-data class BottomBarItem(
+internal data class BottomBarItem(
     val icon: ImageVector,
     val onClick: () -> Unit,
     val text: String? = null,
@@ -36,7 +36,7 @@ data class BottomBarItem(
 )
 
 @Composable
-fun AppBottomBar(
+internal fun AppBottomBar(
     items: List<BottomBarItem>,
     modifier: Modifier = Modifier,
 ) {

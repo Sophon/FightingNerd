@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-fun getCharacterListDatabaseBuilder(
+internal fun getCharacterListDatabaseBuilder(
     context: Context,
     dbName: String = "characterList.db"
 ): RoomDatabase.Builder<CharacterListDatabase> {

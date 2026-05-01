@@ -24,8 +24,8 @@ import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.util.withWiki
-import io.github.sophon.domain.Source
-import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
+import io.github.sophon.integration.model.Source
+import io.github.sophon.wikidustloop.integration.DustLoopFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

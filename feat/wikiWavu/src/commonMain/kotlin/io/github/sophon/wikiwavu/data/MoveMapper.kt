@@ -5,8 +5,8 @@ import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.wikiwavu.MOVE_URL
-import io.github.sophon.wikiwavu.VIDEO_URL
+import io.github.sophon.wikiwavu.domain.MOVE_URL
+import io.github.sophon.wikiwavu.domain.VIDEO_URL
 import io.github.sophon.wikiwavu.domain.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(

@@ -1,14 +1,14 @@
 package io.github.sophon.discord.feat.admin.usecase
 
-import io.github.sophon.AdminTool
+import io.github.sophon.integration.AdminTool
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
-import io.github.sophon.domain.Source
-import io.github.sophon.domain.model.Ban
-import io.github.sophon.util.toSource
+import io.github.sophon.integration.model.Source
+import io.github.sophon.integration.model.Ban
+import io.github.sophon.integration.util.toSource
 
 internal class BanUseCase(
     private val adminTool: AdminTool,

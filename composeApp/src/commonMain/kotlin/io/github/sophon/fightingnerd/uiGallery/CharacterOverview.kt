@@ -28,7 +28,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun CharacterOverview(
+internal fun CharacterOverview(
     characterList: List<Character>,
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier

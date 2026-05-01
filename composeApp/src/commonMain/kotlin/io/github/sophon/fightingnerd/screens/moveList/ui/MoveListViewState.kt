@@ -3,7 +3,7 @@ package io.github.sophon.fightingnerd.screens.moveList.ui
 import io.github.sophon.fightingnerd.screens.moveList.domain.MoveCategory
 import io.github.sophon.fightingnerd.screens.moveList.domain.UiMove
 
-data class MoveListViewState(
+internal data class MoveListViewState(
     val allMoves: List<MoveCategory> = emptyList(),
     val filteredMoves: List<MoveCategory> = emptyList(),
     val expandedNotesId: Set<String> = emptySet(),

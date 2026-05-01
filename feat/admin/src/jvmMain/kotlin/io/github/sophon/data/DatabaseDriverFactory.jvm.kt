@@ -5,7 +5,7 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import io.github.sophon.admin.data.AdminDatabase
 import java.io.File
 
-actual class DatabaseDriverFactory(private val databasePath: String) {
+internal actual class DatabaseDriverFactory(private val databasePath: String) {
     actual fun createDriver(): SqlDriver {
         val databaseFile = File(databasePath)
         val versionFile = File("$databasePath.version")

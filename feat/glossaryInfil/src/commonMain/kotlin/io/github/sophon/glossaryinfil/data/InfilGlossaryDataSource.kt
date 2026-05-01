@@ -3,7 +3,7 @@ package io.github.sophon.glossaryinfil.data
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
-import io.github.sophon.glossaryinfil.BASE_URL
+import io.github.sophon.glossaryinfil.domain.BASE_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 

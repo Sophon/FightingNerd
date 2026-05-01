@@ -1,11 +1,11 @@
 package io.github.sophon.data
 
 import io.github.sophon.data.dto.BattlesDto
-import io.github.sophon.domain.model.Battle
-import io.github.sophon.domain.model.BattleType
-import io.github.sophon.domain.model.Combatant
-import io.github.sophon.domain.model.Region
-import io.github.sophon.domain.model.Score
+import io.github.sophon.integration.model.Battle
+import io.github.sophon.integration.model.BattleType
+import io.github.sophon.integration.model.Combatant
+import io.github.sophon.integration.model.Region
+import io.github.sophon.integration.model.Score
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.ExperimentalTime

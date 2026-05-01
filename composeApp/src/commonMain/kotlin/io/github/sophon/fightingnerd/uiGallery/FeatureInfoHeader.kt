@@ -27,7 +27,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun FeatureInfoHeader(
+internal fun FeatureInfoHeader(
     featureInfo: FeatureInfo,
     isExpanded: Boolean,
     onExpandClick: () -> Unit,

@@ -16,7 +16,7 @@ import kotlinx.coroutines.IO
     exportSchema = true,
 )
 @ConstructedBy(MoveListDatabaseFactory::class)
-abstract class MoveListDatabase: RoomDatabase() {
+internal abstract class MoveListDatabase: RoomDatabase() {
     abstract fun moveListDao(): MoveListDao
 }
 
@@ -24,10 +24,10 @@ abstract class MoveListDatabase: RoomDatabase() {
  * Room creates the expect classes itself
  */
 @Suppress("NO_ACTUAL_FOR_EXPECT")
-expect object MoveListDatabaseFactory: RoomDatabaseConstructor<MoveListDatabase>
+internal expect object MoveListDatabaseFactory: RoomDatabaseConstructor<MoveListDatabase>
 
 
-fun getMoveListDatabase(
+internal fun getMoveListDatabase(
     builder: RoomDatabase.Builder<MoveListDatabase>,
 ): MoveListDatabase = builder
     .setDriver(BundledSQLiteDriver()) //multiplatform driver

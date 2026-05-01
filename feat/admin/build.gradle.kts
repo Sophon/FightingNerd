@@ -2,7 +2,6 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
-    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.buildkonfig)
@@ -13,23 +12,6 @@ kotlin {
     jvm {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_21)
-        }
-    }
-
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
-    }
-
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "admin"
-            isStatic = true
         }
     }
 
@@ -53,14 +35,6 @@ kotlin {
             implementation(libs.test.turbine)
         }
 
-        androidMain.dependencies {
-            implementation(libs.sqldelight.driver.android)
-        }
-
-        iosMain.dependencies {
-            implementation(libs.sqldelight.driver.native)
-        }
-
         jvmMain.dependencies {
             implementation(libs.sqldelight.driver.sqlite)
         }
@@ -72,21 +46,7 @@ kotlin {
     }
 }
 
-android {
-    namespace = "io.github.sophon.admin"
-    compileSdk = 36
-
-    defaultConfig {
-        minSdk = 30
-    }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
-    }
-}
-
-val featureVersion = "1.0.0"
+val featureVersion = "1.1.0"
 buildkonfig {
     packageName = "io.github.sophon.admin"
 

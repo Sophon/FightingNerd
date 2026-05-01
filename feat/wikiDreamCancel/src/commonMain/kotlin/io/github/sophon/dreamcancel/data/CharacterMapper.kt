@@ -4,7 +4,7 @@ import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.util.removeAccents
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.dreamcancel.FEATURE_URL
+import io.github.sophon.dreamcancel.domain.FEATURE_URL
 
 internal fun String.toDomain(
     gameId: String,

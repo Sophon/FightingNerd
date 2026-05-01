@@ -5,9 +5,9 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.util.getWikiImageUrl
-import io.github.sophon.wikimizuumi.BASE_URL
-import io.github.sophon.wikimizuumi.LIMIT_CHARACTERS
-import io.github.sophon.wikimizuumi.LIMIT_MOVES
+import io.github.sophon.wikimizuumi.domain.BASE_URL
+import io.github.sophon.wikimizuumi.domain.LIMIT_CHARACTERS
+import io.github.sophon.wikimizuumi.domain.LIMIT_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.toList
 
-interface MizuumiWikiDataSource {
+internal interface MizuumiWikiDataSource {
     suspend fun downloadData(table: String): Result<MoveListResponseDto, DataError.Remote>
     suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
     suspend fun downloadMoveList(

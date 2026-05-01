@@ -159,3 +159,197 @@ tasks.register("testCoverage") {
         }
     }
 }
+
+//region HEXAGONAL ARCH TEST
+data class TopLevelDeclaration(
+    val kind: String,
+    val name: String,
+    val visibility: String?,
+    val lineNumber: Int,
+)
+
+object HexagonalArchScanner {
+    private val declarationRegex = Regex(
+        """^(?:(public|internal|private)\s+)?""" +
+                """(?:(?:abstract|open|final|sealed|data|enum|value|inline|external|expect|actual|""" +
+                """companion|inner|annotation|const|lateinit|override|operator|infix|suspend|tailrec|""" +
+                """fun(?=\s+interface))\s+)*""" +
+                """(class|interface|object|fun|val|var|typealias)\s+([A-Za-z_][\w.]*)"""
+    )
+
+    fun stripBlockComments(source: String): String {
+        val result = StringBuilder()
+        var i = 0
+        while (i < source.length) {
+            if (i + 1 < source.length && source[i] == '/' && source[i + 1] == '*') {
+                i += 2
+                while (i + 1 < source.length) {
+                    if (source[i] == '*' && source[i + 1] == '/') break
+                    if (source[i] == '\n') result.append('\n')
+                    i++
+                }
+                i = (i + 2).coerceAtMost(source.length)
+            } else {
+                result.append(source[i])
+                i++
+            }
+        }
+        return result.toString()
+    }
+
+    fun stripRawStringLiterals(source: String): String {
+        val result = StringBuilder()
+        var i = 0
+        while (i < source.length) {
+            if (i + 2 < source.length && source[i] == '"' && source[i + 1] == '"' && source[i + 2] == '"') {
+                i += 3
+                while (i + 2 < source.length) {
+                    if (source[i] == '"' && source[i + 1] == '"' && source[i + 2] == '"') break
+                    if (source[i] == '\n') result.append('\n')
+                    i++
+                }
+                i = (i + 3).coerceAtMost(source.length)
+            } else {
+                result.append(source[i])
+                i++
+            }
+        }
+        return result.toString()
+    }
+
+    fun stripLeadingAnnotations(line: String): String {
+        var s = line.trimStart()
+        while (s.startsWith("@")) {
+            var i = 1
+            while (i < s.length && (s[i].isLetterOrDigit() || s[i] == '_' || s[i] == '.' || s[i] == ':')) {
+                i++
+            }
+            if (i < s.length && s[i] == '(') {
+                var depth = 1
+                i++
+                while (i < s.length && depth > 0) {
+                    when (s[i]) {
+                        '(' -> depth++
+                        ')' -> depth--
+                    }
+                    i++
+                }
+            }
+            s = s.substring(i).trimStart()
+        }
+        return s
+    }
+
+    fun findTopLevelDeclarations(file: File): List<TopLevelDeclaration> {
+        val source = stripRawStringLiterals(stripBlockComments(file.readText()))
+        val lines = source.lines()
+        val declarations = mutableListOf<TopLevelDeclaration>()
+
+        for (index in lines.indices) {
+            val withoutComment = lines[index].substringBefore("//")
+            if (withoutComment.isBlank() || withoutComment[0].isWhitespace()) continue
+
+            val stripped = stripLeadingAnnotations(withoutComment)
+            if (stripped.isBlank()) continue
+
+            val match = declarationRegex.find(stripped) ?: continue
+            val visibility = match.groupValues[1].takeIf { it.isNotEmpty() }
+            val kind = match.groupValues[2]
+            val name = match.groupValues[3]
+
+            declarations.add(
+                TopLevelDeclaration(
+                    kind = kind,
+                    name = name,
+                    visibility = visibility,
+                    lineNumber = index + 1,
+                )
+            )
+        }
+
+        return declarations
+    }
+}
+
+tasks.register("testArchHexagonal") {
+    group = "verification"
+    description = "Verifies hexagonal architecture: integration package members must be public; everything else must be internal or private"
+
+    val projectDir = layout.projectDirectory
+    val testSourceSetRegex = Regex("/src/[^/]*[Tt]est[^/]*/")
+
+    doLast {
+        val modulesToScan = mutableListOf<File>()
+
+        // bot submodules (e.g. bot/discord)
+        val botDir = projectDir.dir("bot").asFile
+        if (botDir.exists()) {
+            botDir.listFiles()
+                ?.filter { it.isDirectory && it.name.startsWith(".").not() }
+                ?.forEach { modulesToScan.add(it) }
+        }
+
+        // composeApp (single module, no submodules)
+        val composeApp = projectDir.dir("composeApp").asFile
+        if (composeApp.exists()) modulesToScan.add(composeApp)
+
+        // feat submodules
+        val featDir = projectDir.dir("feat").asFile
+        if (featDir.exists()) {
+            featDir.listFiles()
+                ?.filter { it.isDirectory && it.name.startsWith(".").not() }
+                ?.forEach { modulesToScan.add(it) }
+        }
+
+        if (modulesToScan.isEmpty()) {
+            println("⚠️  No modules to scan")
+            return@doLast
+        }
+
+        println("🔍 Scanning modules: ${modulesToScan.joinToString(", ") { it.name }}\n")
+
+        val violations = mutableListOf<String>()
+        var totalDeclarations = 0
+        var validDeclarations = 0
+
+        modulesToScan.forEach module@{ module ->
+            val srcDir = File(module, "src")
+            if (srcDir.exists().not()) return@module
+
+            srcDir.walk()
+                .filter { it.isFile && it.extension == "kt" }
+                .filter { testSourceSetRegex.containsMatchIn(it.invariantSeparatorsPath).not() }
+                .forEach { ktFile ->
+                    val isIntegration = ktFile.invariantSeparatorsPath.contains("/integration/")
+                    val relativePath = ktFile.relativeTo(projectDir.asFile).invariantSeparatorsPath
+
+                    HexagonalArchScanner.findTopLevelDeclarations(ktFile).forEach { decl ->
+                        totalDeclarations++
+                        val isPublic = decl.visibility == null || decl.visibility == "public"
+
+                        if (isIntegration) {
+                            if (isPublic) {
+                                validDeclarations++
+                            } else {
+                                violations.add(
+                                    "${module.name}: ${decl.kind} ${decl.name} at $relativePath:${decl.lineNumber} " +
+                                            "→ integration members must be public, found '${decl.visibility}'"
+                                )
+                            }
+                        } else {
+                            if (isPublic) {
+                                val found = decl.visibility ?: "no modifier (public by default)"
+                                violations.add(
+                                    "${module.name}: ${decl.kind} ${decl.name} at $relativePath:${decl.lineNumber} " +
+                                            "→ adapters must be internal or private, found $found"
+                                )
+                            } else {
+                                validDeclarations++
+                            }
+                        }
+                    }
+                }
+        }
+    }
+}
+//endregion

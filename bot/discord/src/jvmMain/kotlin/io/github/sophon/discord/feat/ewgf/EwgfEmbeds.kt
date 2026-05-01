@@ -5,8 +5,8 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.domain.model.BattleSet
-import io.github.sophon.domain.model.Score
+import io.github.sophon.integration.model.BattleSet
+import io.github.sophon.integration.model.Score
 
 internal fun recentSetsEmbed(
     setList: List<BattleSet>,

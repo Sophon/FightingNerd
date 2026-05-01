@@ -17,7 +17,7 @@ import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class RoomMoveListDB(
+internal class RoomMoveListDB(
     private val dao: MoveListDao,
     private val dataStore: DataStore<Preferences>
 ): MoveListDB {

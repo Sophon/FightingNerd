@@ -2,11 +2,11 @@ package io.github.sophon.usecase
 
 import io.github.sophon.core.domain.ExcludeFromCoverage
 import io.github.sophon.core.domain.Result
-import io.github.sophon.domain.EwgfError
-import io.github.sophon.domain.model.Battle
-import io.github.sophon.domain.model.BattleSet
-import io.github.sophon.domain.model.BattleType
-import io.github.sophon.domain.model.Score
+import io.github.sophon.integration.model.Battle
+import io.github.sophon.integration.model.BattleSet
+import io.github.sophon.integration.model.BattleType
+import io.github.sophon.integration.model.EwgfError
+import io.github.sophon.integration.model.Score
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toInstant
 import kotlin.math.abs

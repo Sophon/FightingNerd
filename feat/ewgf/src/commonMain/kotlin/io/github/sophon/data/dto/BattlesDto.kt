@@ -1,7 +1,7 @@
 package io.github.sophon.data.dto
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 internal data class BattlesDto(

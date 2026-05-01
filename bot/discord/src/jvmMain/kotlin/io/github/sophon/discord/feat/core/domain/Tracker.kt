@@ -1,15 +1,15 @@
 package io.github.sophon.discord.feat.core.domain
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.StatsTracker
+import io.github.sophon.integration.StatsTracker
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.Command
-import io.github.sophon.domain.StatsFeatureInfo
-import io.github.sophon.domain.model.DailyReport
+import io.github.sophon.integration.StatsFeatureInfo
+import io.github.sophon.integration.model.DailyReport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -28,7 +28,7 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
 private typealias BotCommand = Command
-private typealias TrackedCommand = io.github.sophon.domain.model.Command
+private typealias TrackedCommand = io.github.sophon.integration.model.Command
 
 internal interface Tracker {
     val statsChannelId: String

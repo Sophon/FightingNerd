@@ -3,7 +3,7 @@ package io.github.sophon.wikiSuperCombo.data
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.wikiSuperCombo.WIKI_BASE_URL
+import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
 
 internal fun CharacterListResponseDto.toDomain(
     gameId: String,

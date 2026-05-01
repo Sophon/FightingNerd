@@ -93,7 +93,7 @@ internal fun mizuumiMoveListEmbed(
     featureFooter(featureInfo)
 }
 
-fun mizuumiCharacterEmbed(
+internal fun mizuumiCharacterEmbed(
     character: Character,
     fastestMoveList: List<Move>,
     featureInfo: FeatureInfo,

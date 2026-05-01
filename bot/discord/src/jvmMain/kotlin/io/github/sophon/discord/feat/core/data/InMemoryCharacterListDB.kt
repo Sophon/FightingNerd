@@ -6,7 +6,7 @@ import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
 
-class InMemoryCharacterListDB: CharacterListDB {
+internal class InMemoryCharacterListDB: CharacterListDB {
     private var database: MutableMap<String, Character> = mutableMapOf()
     private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
 

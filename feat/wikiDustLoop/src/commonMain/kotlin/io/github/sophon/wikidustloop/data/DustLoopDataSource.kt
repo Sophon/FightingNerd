@@ -5,9 +5,9 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.util.getWikiImageUrl
-import io.github.sophon.wikidustloop.BASE_URL
-import io.github.sophon.wikidustloop.LIMIT_CHARACTERS
-import io.github.sophon.wikidustloop.LIMIT_MOVES
+import io.github.sophon.wikidustloop.domain.BASE_URL
+import io.github.sophon.wikidustloop.domain.LIMIT_CHARACTERS
+import io.github.sophon.wikidustloop.domain.LIMIT_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter

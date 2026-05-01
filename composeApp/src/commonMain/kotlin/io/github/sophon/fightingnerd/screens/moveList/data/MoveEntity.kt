@@ -11,7 +11,7 @@ import androidx.room.PrimaryKey
         Index(value = ["charName"]),
     ]
 )
-data class MoveEntity(
+internal data class MoveEntity(
     val charName: String,
     @PrimaryKey val id: String,
     val name: String?,

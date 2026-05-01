@@ -29,7 +29,7 @@ import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun SearchBar(
+internal fun SearchBar(
     type: MoveListViewState.SearchBar.Type,
     query: String,
     onSearch: (String) -> Unit,

@@ -24,7 +24,7 @@ import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun Details(
+internal fun Details(
     title: String,
     items: List<String>,
     isExpanded: Boolean? = null,

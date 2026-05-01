@@ -17,7 +17,7 @@ import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun Section(
+internal fun Section(
     title: String,
     moves: List<UiMove>,
     expandedNotes: Set<String>,

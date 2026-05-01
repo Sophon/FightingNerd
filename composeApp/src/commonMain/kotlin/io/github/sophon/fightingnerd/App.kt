@@ -25,7 +25,7 @@ import org.koin.compose.koinInject
 
 @Composable
 @Preview
-fun App() {
+internal fun App() {
     val featureRegistry = koinInject<FeatureRegistry>()
     var isInitialized by rememberSaveable { mutableStateOf(false) }
 

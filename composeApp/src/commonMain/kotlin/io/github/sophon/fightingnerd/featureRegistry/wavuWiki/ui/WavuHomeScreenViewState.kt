@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.featureRegistry.wavuWiki.ui
 
 import io.github.sophon.core.wiki.domain.model.Character
 
-data class WavuHomeScreenViewState(
+internal data class WavuHomeScreenViewState(
     val characterList: List<Character> = listOf(),
     val isExpanded: Boolean = false,
 

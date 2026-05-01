@@ -21,7 +21,7 @@ import org.koin.java.KoinJavaComponent.getKoin
 import java.io.EOFException
 import java.io.File
 
-suspend fun main() = coroutineScope {
+internal suspend fun main() = coroutineScope {
     initLogging()
     val kord = createKord()
     initKoin(kord)
