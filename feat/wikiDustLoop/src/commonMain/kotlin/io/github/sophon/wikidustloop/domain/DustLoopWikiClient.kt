@@ -1,4 +1,4 @@
-package io.github.sophon.wikidustloop
+package io.github.sophon.wikidustloop.domain
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
@@ -23,7 +23,7 @@ import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
 import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
 import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
 import io.github.sophon.wikidustloop.data.DustLoopTables
-import io.github.sophon.wikidustloop.domain.DustLoopFeatureInfo
+import io.github.sophon.wikidustloop.integration.DustLoopFeatureInfo
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 

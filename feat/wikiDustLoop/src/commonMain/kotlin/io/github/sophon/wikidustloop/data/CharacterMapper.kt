@@ -5,7 +5,7 @@ import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.wikidustloop.BASE_URL
+import io.github.sophon.wikidustloop.domain.BASE_URL
 import io.github.sophon.wikidustloop.util.toClickable
 
 /**

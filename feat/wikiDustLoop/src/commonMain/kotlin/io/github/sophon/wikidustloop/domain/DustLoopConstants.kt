@@ -1,4 +1,4 @@
-package io.github.sophon.wikidustloop
+package io.github.sophon.wikidustloop.domain
 
 internal const val BASE_URL = "https://www.dustloop.com/wiki/api.php"
 internal const val LIMIT_CHARACTERS = 50

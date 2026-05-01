@@ -1,4 +1,4 @@
-package io.github.sophon.wikidustloop.domain
+package io.github.sophon.wikidustloop.integration.model
 
 import io.github.sophon.core.wiki.domain.Filter
 import io.github.sophon.core.wiki.domain.model.Move
