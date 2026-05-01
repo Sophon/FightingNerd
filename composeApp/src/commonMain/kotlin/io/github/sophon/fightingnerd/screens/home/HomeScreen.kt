@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,12 +21,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
-import io.github.sophon.fightingnerd.Destination
+import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
 import io.github.sophon.fightingnerd.uiGallery.AppBottomBar
 import io.github.sophon.fightingnerd.uiGallery.BottomBarItem
 import org.koin.compose.viewmodel.koinViewModel
@@ -39,23 +39,15 @@ internal fun HomeScreen(
     val state by vm.state.collectAsStateWithLifecycle()
 
     Scaffold(
-        containerColor = Color.Transparent,
-        bottomBar = {
-            HomeBottomBar(
-                onSavedClick = vm::onSavedClick,
-                onSearchClick = vm::onSearchClick,
-                onSettingsClick = { navHostController.navigate(Destination.Settings) },
-            )
-        },
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
+        containerColor = MaterialTheme.colorScheme.surface,
+        modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
         val focusManager = LocalFocusManager.current
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(paddingValues)
                 .clickable(
                     onClick = {
@@ -74,6 +66,12 @@ internal fun HomeScreen(
                     registeredFeature.HomeScreenContent(navHostController)
                 }
             }
+
+            BottomBarView(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding(),
+            )
 
             if (state.isLoading) {
                 CircularProgressIndicator(
