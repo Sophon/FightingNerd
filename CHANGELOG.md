@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v11.5.1] - 2026-05-02
+- fixed bugs with wrong commands displaying command error embed
+- increased the error auto edit duration to 20s
+
 ## [v11.5.0] - 2026-04-30
 - `alias` command that outputs all game-specific alias commands
 - better error output for invalid command
