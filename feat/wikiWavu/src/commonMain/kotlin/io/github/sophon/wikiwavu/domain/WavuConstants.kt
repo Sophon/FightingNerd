@@ -1,4 +1,4 @@
-package io.github.sophon.wikiwavu
+package io.github.sophon.wikiwavu.domain
 
 internal const val BASE_URL = "https://wavu.wiki/w/api.php"
 internal const val LIMIT_MOVES = 500

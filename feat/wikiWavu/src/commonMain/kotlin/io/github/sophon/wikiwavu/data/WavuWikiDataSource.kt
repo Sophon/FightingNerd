@@ -3,11 +3,10 @@ package io.github.sophon.wikiwavu.data
 import io.github.sophon.core.domain.DataError
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.network.safeCall
-import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.wikiwavu.BASE_URL
-import io.github.sophon.wikiwavu.CHAR_LIST_URL
-import io.github.sophon.wikiwavu.LIMIT_MOVES
+import io.github.sophon.wikiwavu.domain.BASE_URL
+import io.github.sophon.wikiwavu.domain.CHAR_LIST_URL
+import io.github.sophon.wikiwavu.domain.LIMIT_MOVES
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter

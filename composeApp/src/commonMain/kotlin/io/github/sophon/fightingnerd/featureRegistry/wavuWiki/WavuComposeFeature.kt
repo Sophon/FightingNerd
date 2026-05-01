@@ -10,7 +10,7 @@ import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.Destination
 import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.ui.WavuHomeScreenView
-import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
+import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import kotlinx.coroutines.flow.Flow
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get

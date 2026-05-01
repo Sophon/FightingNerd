@@ -1,7 +1,7 @@
 package io.github.sophon.fightingnerd.featureRegistry.wavuWiki
 
 import fightingnerd.composeapp.generated.resources.Res
-import io.github.sophon.wikiwavu.infrastructure.FileReader
+import io.github.sophon.wikiwavu.integration.data.FileReader
 
 internal class FileReaderKMP: FileReader {
     override suspend fun readFile(path: String): String {

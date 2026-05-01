@@ -27,8 +27,8 @@ import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCase
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.integration.model.Source
-import io.github.sophon.wikiwavu.domain.WavuFeatureInfo
-import io.github.sophon.wikiwavu.domain.WavuFilter
+import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
+import io.github.sophon.wikiwavu.integration.model.WavuFilter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

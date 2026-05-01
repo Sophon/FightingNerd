@@ -11,7 +11,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.util.toButtons
-import io.github.sophon.wikiwavu.domain.WavuFilter
+import io.github.sophon.wikiwavu.integration.model.WavuFilter
 import kotlin.time.Duration.Companion.seconds
 
 internal class SearchStringFollowupsUseCase(
