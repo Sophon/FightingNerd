@@ -2,7 +2,7 @@ package io.github.sophon.data.local
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import io.github.sophon.data.PlayerRepo
+import io.github.sophon.integration.data.PlayerRepo
 import io.github.sophon.ewgf.data.EwgfDatabase
 import io.github.sophon.integration.model.EwgfError
 import io.github.sophon.integration.model.Player

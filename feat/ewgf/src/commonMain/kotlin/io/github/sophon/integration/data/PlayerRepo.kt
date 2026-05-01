@@ -1,4 +1,4 @@
-package io.github.sophon.data
+package io.github.sophon.integration.data
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
