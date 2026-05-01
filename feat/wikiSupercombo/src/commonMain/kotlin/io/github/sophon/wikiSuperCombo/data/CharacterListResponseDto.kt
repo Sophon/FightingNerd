@@ -3,17 +3,17 @@ package io.github.sophon.wikiSuperCombo.data
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CharacterListResponseDto(
+internal data class CharacterListResponseDto(
     val cargoquery: List<CargoQueryItem>,
 )
 
 @Serializable
-data class CargoQueryItem(
+internal data class CargoQueryItem(
     val title: CharacterDto
 )
 
 @Serializable
-data class CharacterDto(
+internal data class CharacterDto(
     val Character: String? = null,
     val chara: String,
     val name: String? = null,

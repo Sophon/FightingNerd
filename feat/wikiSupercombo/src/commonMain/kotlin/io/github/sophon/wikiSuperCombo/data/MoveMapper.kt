@@ -21,7 +21,7 @@ internal fun MoveListResponseDto.toDomain(
     }
 }
 
-fun MoveDto.toDomain(
+internal fun MoveDto.toDomain(
     gameId: String,
     characterData: DownloadMoveListUseCase.CharacterData,
     imageUrlMap: Map<String, String>,
