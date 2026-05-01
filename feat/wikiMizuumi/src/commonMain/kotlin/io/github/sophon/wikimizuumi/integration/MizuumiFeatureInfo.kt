@@ -1,8 +1,11 @@
-package io.github.sophon.wikimizuumi
+package io.github.sophon.wikimizuumi.integration
 
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
 import io.github.sophon.mizuumi.BuildKonfig
+import io.github.sophon.wikimizuumi.domain.FEATURE_IMG_URL
+import io.github.sophon.wikimizuumi.domain.FEATURE_NAME
+import io.github.sophon.wikimizuumi.domain.FEATURE_URL
 
 object MizuumiFeatureInfo {
     val featureInfo = FeatureInfo(

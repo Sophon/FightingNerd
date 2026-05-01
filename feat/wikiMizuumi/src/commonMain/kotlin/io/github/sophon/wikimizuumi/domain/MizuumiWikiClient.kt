@@ -1,4 +1,4 @@
-package io.github.sophon.wikimizuumi
+package io.github.sophon.wikimizuumi.domain
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
@@ -25,6 +25,7 @@ import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
 import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
 import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
 import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
+import io.github.sophon.wikimizuumi.integration.MizuumiFeatureInfo
 import io.github.sophon.wikimizuumi.data.MizuumiTables
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime

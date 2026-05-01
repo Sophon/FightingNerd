@@ -9,7 +9,7 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.wikimizuumi.WIKI_BASE_URL
+import io.github.sophon.wikimizuumi.domain.WIKI_BASE_URL
 
 internal fun MoveListResponseDto.toDomainAll(
     gameId: String,

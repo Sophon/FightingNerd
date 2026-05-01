@@ -1,4 +1,4 @@
-package io.github.sophon.wikimizuumi
+package io.github.sophon.wikimizuumi.domain
 
 internal const val BASE_URL = "https://mizuumi.wiki/api.php"
 internal const val WIKI_BASE_URL = "https://mizuumi.wiki/w"

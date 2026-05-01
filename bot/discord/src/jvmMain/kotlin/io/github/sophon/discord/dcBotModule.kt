@@ -16,7 +16,7 @@ import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.integration.statsModule
 import io.github.sophon.wikiSuperCombo.superComboModule
 import io.github.sophon.wikidustloop.integration.dustLoopModule
-import io.github.sophon.wikimizuumi.mizuumiModule
+import io.github.sophon.wikimizuumi.integration.mizuumiModule
 import io.github.sophon.wikiwavu.wavuModule
 import io.github.sophon.xko.xkoModule
 import kotlinx.coroutines.CoroutineScope

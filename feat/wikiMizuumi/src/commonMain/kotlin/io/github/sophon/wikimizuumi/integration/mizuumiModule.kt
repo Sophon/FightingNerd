@@ -1,4 +1,4 @@
-package io.github.sophon.wikimizuumi
+package io.github.sophon.wikimizuumi.integration
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
@@ -24,6 +24,7 @@ import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSourceImpl
 import io.github.sophon.wikimizuumi.data.WikiImageUrlResolver
 import io.github.sophon.wikimizuumi.data.toDomainAll
 import io.github.sophon.wikimizuumi.data.toDomain
+import io.github.sophon.wikimizuumi.domain.MizuumiWikiClient
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
