@@ -140,7 +140,7 @@ private fun BarItem(
 private fun LightPreview() {
     AppTheme(darkTheme = false) {
         BottomBarContent(
-            state = BottomBarState.DEFAULT,
+            state = BottomBarState(),
             onItemClick = {},
         )
     }
@@ -151,7 +151,7 @@ private fun LightPreview() {
 private fun DarkPreview() {
     AppTheme(darkTheme = true) {
         BottomBarContent(
-            state = BottomBarState.DEFAULT,
+            state = BottomBarState(),
             onItemClick = {},
         )
     }
