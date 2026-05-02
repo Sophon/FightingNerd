@@ -12,25 +12,20 @@ import io.github.sophon.fightingnerd.feat.bottomBar.model.BottomBarItem
 import io.github.sophon.fightingnerd.feat.core.FlexibleIcon
 
 internal data class BottomBarState(
-    val itemList: List<BottomBarItem> = listOf(),
+    val itemList: List<BottomBarItem> = listOf(
+        BottomBarItem(
+            label = Res.string.bottom_bar_item_character_list,
+            icon = FlexibleIcon.Vector(Icons.Default.GridView),
+        ),
+        BottomBarItem(
+            label = Res.string.bottom_bar_item_search,
+            icon = FlexibleIcon.Vector(Icons.Default.Search),
+        ),
+        BottomBarItem(
+            label = Res.string.bottom_bar_item_saved,
+            icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
+        ),
+    )
+    ,
     val selectedItemIndex: Int = 0,
-) {
-    companion object {
-        val DEFAULT = BottomBarState(
-            itemList = listOf(
-                BottomBarItem(
-                    label = Res.string.bottom_bar_item_character_list,
-                    icon = FlexibleIcon.Vector(Icons.Default.GridView),
-                ),
-                BottomBarItem(
-                    label = Res.string.bottom_bar_item_search,
-                    icon = FlexibleIcon.Vector(Icons.Default.Search),
-                ),
-                BottomBarItem(
-                    label = Res.string.bottom_bar_item_saved,
-                    icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
-                ),
-            )
-        )
-    }
-}
+)
