@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
+import io.github.sophon.fightingnerd.feat.moduleList.model.WikiModule
 import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
 import io.github.sophon.fightingnerd.screens.KEY_PREFIX_FEATURE
 import io.github.sophon.fightingnerd.screens.home.HomeError
@@ -18,7 +18,7 @@ internal class GetAvailableFeaturesUseCase(
     private val registry: FeatureRegistry,
     private val store: DataStore<Preferences>
 ) {
-    fun invoke(): Flow<Result<List<ComposeRegisteredFeature>, HomeError>> {
+    fun invoke(): Flow<Result<List<WikiModule>, HomeError>> {
         return store.data
             .map { filterEnabledFeatures(it) }
             .catch { e ->
@@ -33,7 +33,7 @@ internal class GetAvailableFeaturesUseCase(
 
     private fun filterEnabledFeatures(
         preferences: Preferences
-    ): Result<List<ComposeRegisteredFeature>, HomeError> {
+    ): Result<List<WikiModule>, HomeError> {
         val featureList = getAvailableFeatures()
         val enabledFeatures = featureList.mapNotNull { featureInfo ->
             val key = booleanPreferencesKey(KEY_PREFIX_FEATURE + featureInfo.name)

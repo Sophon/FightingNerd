@@ -15,7 +15,7 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
+import io.github.sophon.fightingnerd.feat.moduleList.model.WikiModule
 import io.github.sophon.fightingnerd.featureRegistry.FeatureListLoader
 import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
 import io.github.sophon.fightingnerd.screens.KEY_PREFIX_FEATURE
@@ -37,8 +37,8 @@ class GetAvailableFeaturesUseCaseTest {
         val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", setOf(), "1.0.0")
 
         val features = listOf(
-            FakeComposeRegisteredFeature(featureInfo1),
-            FakeComposeRegisteredFeature(featureInfo2)
+            FakeWikiModule(featureInfo1),
+            FakeWikiModule(featureInfo2)
         )
         val mockRegistry = createRegistry(features)
         val mockStore = FakeDataStore()
@@ -63,8 +63,8 @@ class GetAvailableFeaturesUseCaseTest {
         val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", setOf(), "1.0.0")
 
         val features = listOf(
-            FakeComposeRegisteredFeature(featureInfo1),
-            FakeComposeRegisteredFeature(featureInfo2)
+            FakeWikiModule(featureInfo1),
+            FakeWikiModule(featureInfo2)
         )
         val mockRegistry = createRegistry(features)
 
@@ -110,8 +110,8 @@ class GetAvailableFeaturesUseCaseTest {
         val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", setOf(), "1.0.0")
 
         val features = listOf(
-            FakeComposeRegisteredFeature(featureInfo1),
-            FakeComposeRegisteredFeature(featureInfo2)
+            FakeWikiModule(featureInfo1),
+            FakeWikiModule(featureInfo2)
         )
         val mockRegistry = createRegistry(features)
 
@@ -141,8 +141,8 @@ class GetAvailableFeaturesUseCaseTest {
         val featureInfo2 = FeatureInfo("Feature2", "url2", "icon2", setOf(), "1.0.0")
 
         val features = listOf(
-            FakeComposeRegisteredFeature(featureInfo1),
-            FakeComposeRegisteredFeature(featureInfo2)
+            FakeWikiModule(featureInfo1),
+            FakeWikiModule(featureInfo2)
         )
         val mockRegistry = createRegistry(features)
 
@@ -186,7 +186,7 @@ class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `given datastore throws IOException when invoke then emits IO_ERROR`() = runTest {
         // Given
-        val features = listOf(FakeComposeRegisteredFeature(FeatureInfo("Feature", "url", "icon", setOf(), "1.0.0")))
+        val features = listOf(FakeWikiModule(FeatureInfo("Feature", "url", "icon", setOf(), "1.0.0")))
         val mockRegistry = createRegistry(features)
         val mockStore = FakeDataStore(shouldThrowIOException = true)
         val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
@@ -204,7 +204,7 @@ class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `given datastore throws generic exception when invoke then emits UNKNOWN error`() = runTest {
         // Given
-        val features = listOf(FakeComposeRegisteredFeature(FeatureInfo("Feature", "url", "icon", setOf(), "1.0.0")))
+        val features = listOf(FakeWikiModule(FeatureInfo("Feature", "url", "icon", setOf(), "1.0.0")))
         val mockRegistry = createRegistry(features)
         val mockStore = FakeDataStore(shouldThrowGenericException = true)
         val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
@@ -221,7 +221,7 @@ class GetAvailableFeaturesUseCaseTest {
     // endregion
 
     // region Test Helpers
-    private suspend fun createRegistry(features: List<ComposeRegisteredFeature>): FeatureRegistry {
+    private suspend fun createRegistry(features: List<WikiModule>): FeatureRegistry {
         val featureNames = features.map { it.featureInfo.name }
         val fakeLoader = FakeFeatureListLoader(featureNames)
         val registry = FeatureRegistry(fakeLoader, features)
@@ -242,9 +242,9 @@ class GetAvailableFeaturesUseCaseTest {
         }
     }
 
-    private class FakeComposeRegisteredFeature(
+    private class FakeWikiModule(
         override val featureInfo: FeatureInfo
-    ) : ComposeRegisteredFeature {
+    ) : WikiModule {
         override fun registerGames(enabledGameList: List<Game>) {}
         override fun getWikiClient(gameId: String): WikiClient? {
             return null

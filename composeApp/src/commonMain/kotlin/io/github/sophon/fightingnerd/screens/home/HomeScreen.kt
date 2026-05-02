@@ -54,7 +54,7 @@ internal fun HomeScreen(
                 ),
                 modifier = Modifier.fillMaxSize(),
             ) {
-                items(state.composeRegisteredFeatures) { registeredFeature ->
+                items(state.wikiModules) { registeredFeature ->
                     registeredFeature.HomeScreenContent(navHostController)
                 }
             }

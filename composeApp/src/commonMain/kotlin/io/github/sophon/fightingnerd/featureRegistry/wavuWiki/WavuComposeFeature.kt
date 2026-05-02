@@ -8,7 +8,7 @@ import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.Destination
-import io.github.sophon.fightingnerd.featureRegistry.ComposeRegisteredFeature
+import io.github.sophon.fightingnerd.feat.moduleList.model.WikiModule
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.ui.WavuHomeScreenView
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +20,7 @@ import org.koin.core.qualifier.named
 internal class WavuComposeFeature(
     wavuFeatureInfo: WavuFeatureInfo,
     private val dbFactory: (String) -> Pair<CharacterListDB, MoveListDB>,
-): ComposeRegisteredFeature, KoinComponent {
+): WikiModule, KoinComponent {
     override val featureInfo: FeatureInfo = wavuFeatureInfo.featureInfo
     private val wikis = mutableMapOf<String, WikiClient>()
 
