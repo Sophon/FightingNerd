@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.feat.bottomBar.model.BottomBarItem
-import io.github.sophon.fightingnerd.feat.core.FlexibleIcon
+import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource

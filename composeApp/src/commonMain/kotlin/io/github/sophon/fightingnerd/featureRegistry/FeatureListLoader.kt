@@ -35,7 +35,7 @@ internal class FeatureListLoaderImpl(
 
 
     private companion object {
-        const val CONFIG_PATH = "files/features.json"
+        const val CONFIG_PATH = "files/modules.json"
         const val TAG = "FeatureListLoader"
     }
 
