@@ -16,7 +16,7 @@ import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.fightingnerd.feat.config.model.Module
+import io.github.sophon.fightingnerd.core.model.Module
 import io.github.sophon.fightingnerd.featureRegistry.FeatureListLoader
 import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
 import io.github.sophon.fightingnerd.screens.KEY_PREFIX_FEATURE

@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.featureRegistry
 
-import io.github.sophon.fightingnerd.feat.config.model.Module
+import io.github.sophon.fightingnerd.core.model.Module
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.SuperComboComposeFeature
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.superComboComposeModule
 import io.github.sophon.fightingnerd.featureRegistry.usecase.FetchCharacterListUseCase

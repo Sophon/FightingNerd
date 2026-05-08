@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.screens.home
 
-import io.github.sophon.fightingnerd.feat.config.model.Module
+import io.github.sophon.fightingnerd.core.model.Module
 
 internal data class HomeViewState(
     val modules: List<Module> = listOf(),

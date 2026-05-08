@@ -6,7 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.fightingnerd.feat.config.model.Module
+import io.github.sophon.fightingnerd.core.model.Module
 import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
 import io.github.sophon.fightingnerd.screens.KEY_PREFIX_FEATURE
 import io.github.sophon.fightingnerd.screens.home.HomeError

@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.config.model
+package io.github.sophon.fightingnerd.core.model
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController

@@ -8,7 +8,7 @@ import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.Destination
-import io.github.sophon.fightingnerd.feat.config.model.Module
+import io.github.sophon.fightingnerd.core.model.Module
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.ui.WavuHomeScreenView
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import kotlinx.coroutines.flow.Flow

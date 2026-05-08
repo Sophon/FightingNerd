@@ -1,7 +1,7 @@
 package io.github.sophon.fightingnerd.featureRegistry
 
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.fightingnerd.feat.config.model.Module
+import io.github.sophon.fightingnerd.core.model.Module
 
 internal class FeatureRegistry(
     private val featureListLoader: FeatureListLoader,
