@@ -8,7 +8,7 @@ import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.Destination
-import io.github.sophon.fightingnerd.feat.moduleList.model.WikiModule
+import io.github.sophon.fightingnerd.feat.config.model.Module
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.ui.SuperComboHomeScreenView
 import io.github.sophon.wikiSuperCombo.integration.SuperComboFeatureInfo
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +20,7 @@ import org.koin.core.qualifier.named
 internal class SuperComboComposeFeature(
     supercomboFeatureInfo: SuperComboFeatureInfo,
     private val dbFactory: (String) -> Pair<CharacterListDB, MoveListDB>,
-): WikiModule, KoinComponent {
+): Module, KoinComponent {
     override val featureInfo: FeatureInfo = supercomboFeatureInfo.featureInfo
     private val wikis = mutableMapOf<String, WikiClient>()
 

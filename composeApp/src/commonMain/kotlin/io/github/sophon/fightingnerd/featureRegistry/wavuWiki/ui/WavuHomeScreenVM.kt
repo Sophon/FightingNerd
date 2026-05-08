@@ -6,7 +6,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.fightingnerd.feat.moduleList.model.WikiModule
+import io.github.sophon.fightingnerd.feat.config.model.Module
 import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
 import io.github.sophon.fightingnerd.featureRegistry.usecase.FetchCharacterListUseCase
 import io.github.sophon.fightingnerd.featureRegistry.usecase.SyncDataIfOldUseCase
@@ -21,7 +21,7 @@ internal class WavuHomeScreenVM(
     private val syncDataIfOldUseCase: SyncDataIfOldUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
-    private val wavuFeature: WikiModule? by lazy {
+    private val wavuFeature: Module? by lazy {
         featureRegistry.getFeatures()
             .find { it.featureInfo.name == "Wavu Wiki" }
     }

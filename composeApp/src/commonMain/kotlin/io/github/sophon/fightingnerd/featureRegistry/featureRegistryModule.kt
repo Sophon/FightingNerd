@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.featureRegistry
 
-import io.github.sophon.fightingnerd.feat.moduleList.model.WikiModule
+import io.github.sophon.fightingnerd.feat.config.model.Module
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.SuperComboComposeFeature
 import io.github.sophon.fightingnerd.featureRegistry.superComboWiki.superComboComposeModule
 import io.github.sophon.fightingnerd.featureRegistry.usecase.FetchCharacterListUseCase
@@ -23,11 +23,11 @@ internal val featureRegistryModule = module {
     singleOf(::FetchCharacterListUseCase)
 
     // 1. Register individual features
-    singleOf(::WavuComposeFeature).bind<WikiModule>()
-    singleOf(::SuperComboComposeFeature).bind<WikiModule>()
+    singleOf(::WavuComposeFeature).bind<Module>()
+    singleOf(::SuperComboComposeFeature).bind<Module>()
 
     // 2. Collect features into a list
-    single<List<WikiModule>> {
+    single<List<Module>> {
         getAll()
     }
 

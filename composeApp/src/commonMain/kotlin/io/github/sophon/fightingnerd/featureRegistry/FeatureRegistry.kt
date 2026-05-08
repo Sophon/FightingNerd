@@ -1,13 +1,13 @@
 package io.github.sophon.fightingnerd.featureRegistry
 
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.fightingnerd.feat.moduleList.model.WikiModule
+import io.github.sophon.fightingnerd.feat.config.model.Module
 
 internal class FeatureRegistry(
     private val featureListLoader: FeatureListLoader,
-    private val fullFeatureList: List<WikiModule>,
+    private val fullFeatureList: List<Module>,
 ) {
-    private val featureMap = mutableMapOf<String, WikiModule>()
+    private val featureMap = mutableMapOf<String, Module>()
 
     suspend fun initialize() {
         val config = featureListLoader.loadFeatureList()
@@ -26,9 +26,9 @@ internal class FeatureRegistry(
         }
     }
 
-    fun getFeatures(): List<WikiModule> = featureMap.values.toList()
+    fun getFeatures(): List<Module> = featureMap.values.toList()
 
-    fun getFeature(featureInfo: FeatureInfo): WikiModule? {
+    fun getFeature(featureInfo: FeatureInfo): Module? {
         return featureMap[featureInfo.name]
     }
 }

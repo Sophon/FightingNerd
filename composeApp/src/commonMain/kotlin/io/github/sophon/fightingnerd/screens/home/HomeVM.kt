@@ -42,7 +42,7 @@ internal class HomeVM(
         getAvailableFeaturesUseCase.invoke().collect { result ->
             when (result) {
                 is Result.Success -> {
-                    _state.update { it.copy(wikiModules = result.data) }
+                    _state.update { it.copy(modules = result.data) }
                 }
                 is Result.Error -> {
                     Napier.e(tag = TAG) { result.error.toString() }
