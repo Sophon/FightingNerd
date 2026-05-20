@@ -3,14 +3,14 @@ package io.github.sophon.fightingnerd.feat.home.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.sophon.core.domain.onSuccess
-import io.github.sophon.fightingnerd.feat.home.usecase.GetAvailableFeaturesUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.LoadModulesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class HomeVM(
-    private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
+    private val loadModulesUseCase: LoadModulesUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
@@ -30,21 +30,8 @@ internal class HomeVM(
 
 
     private fun loadFeatures() {
-//        viewModelScope.launch {
-//            getAvailableFeaturesUseCase.invoke().collect { result ->
-//                when (result) {
-//                    is Result.Success -> {
-//                        _state.update { it.copy(modules = result.data) }
-//                    }
-//                    is Result.Error -> {
-//                        Napier.e(tag = TAG) { result.error.toString() }
-//                    }
-//                }
-//            }
-//        }
-
         viewModelScope.launch {
-            getAvailableFeaturesUseCase.invoke()
+            loadModulesUseCase.invoke()
                 .onSuccess { moduleList ->
                     _state.update { it.copy(modules = moduleList) }
                 }

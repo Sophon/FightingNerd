@@ -8,7 +8,7 @@ import io.github.sophon.fightingnerd.core.model.Module
 import io.github.sophon.fightingnerd.feat.config.ModuleRegistry
 import io.github.sophon.fightingnerd.feat.home.model.HomeError
 
-internal class GetAvailableFeaturesUseCase(
+internal class LoadModulesUseCase(
     private val store: DataStore<Preferences>,
     private val moduleRegistry: ModuleRegistry,
 ) {

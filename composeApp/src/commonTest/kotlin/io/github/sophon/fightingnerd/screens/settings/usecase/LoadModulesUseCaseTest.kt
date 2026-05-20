@@ -27,7 +27,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
 import kotlin.test.Test
 
-class GetAvailableFeaturesUseCaseTest {
+class LoadModulesUseCaseTest {
     // region Happy Path Tests
     @Test
     fun `given features with no preferences when invoke then returns all features enabled by default`() = runTest {

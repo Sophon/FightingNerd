@@ -20,7 +20,7 @@ import io.github.sophon.fightingnerd.featureRegistry.FeatureListLoader
 import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
 import io.github.sophon.fightingnerd.screens.KEY_PREFIX_FEATURE
 import io.github.sophon.fightingnerd.feat.home.model.HomeError
-import io.github.sophon.fightingnerd.feat.home.usecase.GetAvailableFeaturesUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.LoadModulesUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow
@@ -29,7 +29,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.io.IOException
 import kotlin.test.Test
 
-class GetAvailableFeaturesUseCaseTest {
+class LoadModulesUseCaseTest {
     // region Happy Path Tests
     @Test
     fun `given features with no preferences when invoke then emits all features enabled by default`() = runTest {
@@ -43,7 +43,7 @@ class GetAvailableFeaturesUseCaseTest {
         )
         val mockRegistry = createRegistry(features)
         val mockStore = FakeDataStore()
-        val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
+        val useCase = LoadModulesUseCase(mockRegistry, mockStore)
 
         // When/Then
         useCase.invoke().test {
@@ -74,7 +74,7 @@ class GetAvailableFeaturesUseCaseTest {
             booleanPreferencesKey(KEY_PREFIX_FEATURE + featureInfo2.name) to true
         )
         val mockStore = FakeDataStore(initialPreferences)
-        val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
+        val useCase = LoadModulesUseCase(mockRegistry, mockStore)
 
         // When/Then
         useCase.invoke().test {
@@ -92,7 +92,7 @@ class GetAvailableFeaturesUseCaseTest {
         // Given
         val mockRegistry = createRegistry(emptyList())
         val mockStore = FakeDataStore()
-        val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
+        val useCase = LoadModulesUseCase(mockRegistry, mockStore)
 
         // When/Then
         useCase.invoke().test {
@@ -121,7 +121,7 @@ class GetAvailableFeaturesUseCaseTest {
             booleanPreferencesKey(KEY_PREFIX_FEATURE + featureInfo2.name) to false
         )
         val mockStore = FakeDataStore(initialPreferences)
-        val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
+        val useCase = LoadModulesUseCase(mockRegistry, mockStore)
 
         // When/Then
         useCase.invoke().test {
@@ -152,7 +152,7 @@ class GetAvailableFeaturesUseCaseTest {
             booleanPreferencesKey(KEY_PREFIX_FEATURE + featureInfo2.name) to false
         )
         val mockStore = FakeDataStore(initialPreferences, reactive = true)
-        val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
+        val useCase = LoadModulesUseCase(mockRegistry, mockStore)
 
         // When/Then
         useCase.invoke().test {
@@ -190,7 +190,7 @@ class GetAvailableFeaturesUseCaseTest {
         val features = listOf(FakeModule(FeatureInfo("Feature", "url", "icon", setOf(), "1.0.0")))
         val mockRegistry = createRegistry(features)
         val mockStore = FakeDataStore(shouldThrowIOException = true)
-        val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
+        val useCase = LoadModulesUseCase(mockRegistry, mockStore)
 
         // When/Then
         useCase.invoke().test {
@@ -208,7 +208,7 @@ class GetAvailableFeaturesUseCaseTest {
         val features = listOf(FakeModule(FeatureInfo("Feature", "url", "icon", setOf(), "1.0.0")))
         val mockRegistry = createRegistry(features)
         val mockStore = FakeDataStore(shouldThrowGenericException = true)
-        val useCase = GetAvailableFeaturesUseCase(mockRegistry, mockStore)
+        val useCase = LoadModulesUseCase(mockRegistry, mockStore)
 
         // When/Then
         useCase.invoke().test {
