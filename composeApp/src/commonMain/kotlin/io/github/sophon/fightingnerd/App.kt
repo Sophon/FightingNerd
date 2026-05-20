@@ -20,7 +20,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.config.ModuleRegistry
-import io.github.sophon.fightingnerd.screens.home.HomeScreen
+import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.screens.moveList.ui.MoveListScreen
 import io.github.sophon.fightingnerd.screens.settings.ui.SettingsScreen
 import io.github.sophon.fightingnerd.theme.AppTheme

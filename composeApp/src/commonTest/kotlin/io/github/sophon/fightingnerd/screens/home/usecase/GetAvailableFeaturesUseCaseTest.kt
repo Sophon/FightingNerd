@@ -19,7 +19,8 @@ import io.github.sophon.fightingnerd.core.model.Module
 import io.github.sophon.fightingnerd.featureRegistry.FeatureListLoader
 import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
 import io.github.sophon.fightingnerd.screens.KEY_PREFIX_FEATURE
-import io.github.sophon.fightingnerd.screens.home.HomeError
+import io.github.sophon.fightingnerd.feat.home.model.HomeError
+import io.github.sophon.fightingnerd.feat.home.usecase.GetAvailableFeaturesUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flow

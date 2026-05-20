@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.screens.home
+package io.github.sophon.fightingnerd.feat.home.ui
 
 import io.github.sophon.fightingnerd.core.model.Module
 

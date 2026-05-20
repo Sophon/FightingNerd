@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.screens.home
+package io.github.sophon.fightingnerd.feat.home.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

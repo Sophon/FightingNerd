@@ -1,11 +1,9 @@
-package io.github.sophon.fightingnerd.screens.home
+package io.github.sophon.fightingnerd.feat.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onSuccess
-import io.github.sophon.fightingnerd.screens.home.usecase.GetAvailableFeaturesUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.GetAvailableFeaturesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update

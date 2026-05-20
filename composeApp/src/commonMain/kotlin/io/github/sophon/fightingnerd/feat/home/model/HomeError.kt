@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.screens.home
+package io.github.sophon.fightingnerd.feat.home.model
 
 import io.github.sophon.core.domain.Error
 import io.github.sophon.core.wiki.data.WikiError

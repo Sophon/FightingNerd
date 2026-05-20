@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.screens.home.data
+package io.github.sophon.fightingnerd.feat.home.data
 
 import androidx.room.Entity
 import androidx.room.Index

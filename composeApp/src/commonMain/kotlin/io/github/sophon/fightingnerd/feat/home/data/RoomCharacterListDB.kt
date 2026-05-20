@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.screens.home.data
+package io.github.sophon.fightingnerd.feat.home.data
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult

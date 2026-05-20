@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.screens
 
-import io.github.sophon.fightingnerd.screens.home.homeModule
+import io.github.sophon.fightingnerd.feat.home.homeModule
 import io.github.sophon.fightingnerd.screens.moveList.moveListModule
 import io.github.sophon.fightingnerd.screens.settings.ui.SettingsVM
 import io.github.sophon.fightingnerd.screens.settings.usecase.GetAvailableFeaturesUseCase

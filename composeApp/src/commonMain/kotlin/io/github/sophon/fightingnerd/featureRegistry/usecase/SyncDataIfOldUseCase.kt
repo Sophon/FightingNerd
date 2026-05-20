@@ -10,8 +10,8 @@ import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.fightingnerd.screens.home.HomeError
-import io.github.sophon.fightingnerd.screens.home.toDomainError
+import io.github.sophon.fightingnerd.feat.home.model.HomeError
+import io.github.sophon.fightingnerd.feat.home.model.toDomainError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.firstOrNull

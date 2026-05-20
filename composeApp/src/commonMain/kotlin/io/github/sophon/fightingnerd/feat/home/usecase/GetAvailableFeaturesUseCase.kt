@@ -1,16 +1,12 @@
-package io.github.sophon.fightingnerd.screens.home.usecase
+package io.github.sophon.fightingnerd.feat.home.usecase
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.fightingnerd.core.model.Module
 import io.github.sophon.fightingnerd.feat.config.ModuleRegistry
-import io.github.sophon.fightingnerd.screens.KEY_PREFIX_FEATURE
-import io.github.sophon.fightingnerd.screens.home.HomeError
-import kotlinx.coroutines.flow.map
+import io.github.sophon.fightingnerd.feat.home.model.HomeError
 
 internal class GetAvailableFeaturesUseCase(
     private val store: DataStore<Preferences>,
