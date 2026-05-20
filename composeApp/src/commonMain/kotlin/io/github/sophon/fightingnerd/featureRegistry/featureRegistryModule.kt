@@ -7,8 +7,6 @@ import io.github.sophon.fightingnerd.featureRegistry.usecase.FetchCharacterListU
 import io.github.sophon.fightingnerd.featureRegistry.usecase.SyncDataIfOldUseCase
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.WavuComposeFeature
 import io.github.sophon.fightingnerd.featureRegistry.wavuWiki.wavuComposeModule
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -31,19 +29,16 @@ internal val featureRegistryModule = module {
         getAll()
     }
 
-    // 3. Create loader
-    singleOf(::FeatureListLoaderImpl).bind<FeatureListLoader>()
-
     // 4. Create registry with the list
-    single {
-        FeatureRegistry(
-            featureListLoader = get(),
-            fullFeatureList = get()  // Explicit dependency
-        ).apply {
-            // 5. Initialize after creation
-            GlobalScope.launch {
-                initialize()
-            }
-        }
-    }
+//    single {
+//        FeatureRegistry(
+//            featureListLoader = get(),
+//            fullFeatureList = get()  // Explicit dependency
+//        ).apply {
+//            // 5. Initialize after creation
+//            GlobalScope.launch {
+//                initialize()
+//            }
+//        }
+//    }
 }
