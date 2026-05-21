@@ -7,7 +7,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
+import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 import io.github.sophon.fightingnerd.screens.moveList.domain.MoveCategory
 import io.github.sophon.fightingnerd.screens.moveList.domain.usecase.FetchMoveListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,7 +19,7 @@ import kotlinx.coroutines.flow.update
 internal class MoveListVM(
     private val gameId: String,
     private val charName: String,
-    private val featureRegistry: FeatureRegistry,
+    private val moduleRepo: ModuleRepo,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListViewState())
@@ -33,8 +33,9 @@ internal class MoveListVM(
             initialValue = MoveListViewState()
         )
     private val wiki: WikiClient? by lazy {
-        featureRegistry.getFeatures()
-            .firstNotNullOfOrNull { it.getWikiClient(gameId) }
+//        moduleRepo.getEnabledModules()
+//            .firstNotNullOfOrNull { it.getWikiClient(gameId) }
+        TODO()
     }
 
 

@@ -15,7 +15,7 @@ internal val moveListModule = module {
         MoveListVM(
             gameId = gameId,
             charName = charName,
-            featureRegistry = get(),
+            moduleRepo = get(),
             fetchMoveListUseCase = get(),
         )
     }

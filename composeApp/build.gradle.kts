@@ -89,6 +89,10 @@ kotlin {
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
             implementation(project(":feat:wikiSupercombo"))
+            implementation(project(":feat:xko"))
+            implementation(project(":feat:wikiDreamCancel"))
+            implementation(project(":feat:wikiDustLoop"))
+            implementation(project(":feat:wikiMizuumi"))
         }
 
         commonTest.dependencies {
