@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.feature.Game
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,6 +31,20 @@ internal class HomeVM(
 
     fun onSearchClick() {
         //TODO
+    }
+
+    fun onExpandWidget(game: Game) {
+        _state.update { state ->
+            val updatedList = state.gameWidgetList.map { widget ->
+                if (widget.game == game) {
+                    widget.copy(isExpanded = widget.isExpanded.not())
+                } else {
+                    widget
+                }
+            }
+            val updatedState = state.copy(gameWidgetList = updatedList)
+            updatedState
+        }
     }
 
 

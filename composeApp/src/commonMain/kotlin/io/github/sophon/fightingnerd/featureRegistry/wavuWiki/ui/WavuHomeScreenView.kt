@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.fightingnerd.theme.AppTheme
-import io.github.sophon.fightingnerd.uiGallery.CharacterOverview
-import io.github.sophon.fightingnerd.uiGallery.FeatureInfoHeader
+import io.github.sophon.fightingnerd.feat.home.ui.composables.CharacterList
+import io.github.sophon.fightingnerd.feat.home.ui.composables.WidgetHeader
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -60,19 +60,19 @@ private fun Content(
                 shape = RoundedCornerShape(16.dp)
             )
     ) {
-        if (featureInfo != null) {
-            FeatureInfoHeader(
-                featureInfo = featureInfo,
-                isExpanded = state.isExpanded,
-                onExpandClick = onExpandClick,
-                isLoading = state.isLoading,
-            )
-        }
+//        if (featureInfo != null) {
+//            WidgetHeader(
+//                featureInfo = featureInfo,
+//                isExpanded = state.isExpanded,
+//                onExpandClick = onExpandClick,
+//                isLoading = state.isLoading,
+//            )
+//        }
 
         if (state.isExpanded && state.isLoading.not()) {
             Spacer(Modifier.height(8.dp))
 
-            CharacterOverview(
+            CharacterList(
                 characterList = state.characterList,
                 onCharacterClick = onCharacterClick,
             )

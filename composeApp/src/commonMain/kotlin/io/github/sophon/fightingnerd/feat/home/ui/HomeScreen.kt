@@ -20,6 +20,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import io.github.sophon.fightingnerd.feat.home.ui.composables.CharacterList
+import io.github.sophon.fightingnerd.feat.home.ui.composables.Widget
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -54,17 +56,12 @@ internal fun HomeScreen(
                 ),
                 modifier = Modifier.fillMaxSize(),
             ) {
-                items(state.modules) { registeredFeature ->
-//                    registeredFeature.HomeScreenContent(navHostController)
+                items(state.gameWidgetList) { gameWidget ->
+                    Widget(
+                        widget = gameWidget,
+                        onExpandWidget = vm::onExpandWidget,
+                    )
                 }
-            }
-
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .size(92.dp)
-                        .align(Alignment.Center)
-                )
             }
         }
     }

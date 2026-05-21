@@ -7,7 +7,6 @@ import io.github.sophon.core.wiki.domain.model.Character
 internal data class HomeViewState(
     val gameWidgetList: List<WikiWidget> = emptyList(),
 
-    val isLoading: Boolean = false,
     val error: String? = null,
 ) {
     data class WikiWidget(
