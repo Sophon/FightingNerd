@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.feat.home.ui.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -22,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -84,6 +86,8 @@ internal fun WidgetHeader(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -92,6 +96,8 @@ internal fun WidgetHeader(
             .background(color = MaterialTheme.colorScheme.surface)
             .padding(horizontal = 8.dp)
             .clickable(
+                interactionSource = interactionSource,
+                indication = null,
                 onClick = { onExpandClick(game) },
                 enabled = isLoading.not(),
             )
