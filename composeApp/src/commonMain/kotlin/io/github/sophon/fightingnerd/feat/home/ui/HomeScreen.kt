@@ -33,18 +33,11 @@ internal fun HomeScreen(
         containerColor = MaterialTheme.colorScheme.surface,
         modifier = modifier.fillMaxSize(),
     ) { paddingValues ->
-        val focusManager = LocalFocusManager.current
-
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(paddingValues)
-                .clickable(
-                    onClick = {
-                        focusManager.clearFocus()
-                    }
-                )
         ) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(
