@@ -3,7 +3,6 @@ package io.github.sophon.fightingnerd
 import io.github.sophon.core.coreModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
 import io.github.sophon.fightingnerd.feat.featureModule
-import io.github.sophon.fightingnerd.featureRegistry.featureRegistryModule
 import io.github.sophon.fightingnerd.screens.screensModule
 import io.github.sophon.wikiSuperCombo.integration.superComboModule
 import io.github.sophon.wikidustloop.integration.dustLoopModule
@@ -30,7 +29,6 @@ internal fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
 
         screensModule,
 
-        featureRegistryModule,
         featureModule(),
     )
 }
