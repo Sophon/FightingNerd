@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
@@ -108,6 +109,7 @@ internal fun WidgetHeader(
                 alignment = Alignment.Start,
             ),
             verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.weight(1f),
         ) {
             AsyncImage(
                 model = featureInfo.iconUrl,
@@ -123,8 +125,12 @@ internal fun WidgetHeader(
                 text = "${game.name} (${featureInfo.name})",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
+
+        Spacer(Modifier.width(8.dp))
 
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.size(32.dp))
@@ -134,8 +140,7 @@ internal fun WidgetHeader(
                 imageVector = icon,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier
-                    .size(32.dp)
+                modifier = Modifier.size(32.dp)
             )
         }
     }
