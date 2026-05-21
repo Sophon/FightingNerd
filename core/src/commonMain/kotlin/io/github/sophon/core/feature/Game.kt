@@ -4,86 +4,105 @@ enum class Game(
     val id: String,
     val iconUrl: String,
     val wikiUrl: String,
+    val wiki: WikiClientFeature,
 ) {
     Tekken8(
         id = "Tekken_8",
         iconUrl = "https://i.imgur.com/Yl6j809.png",
         wikiUrl = "https://wavu.wiki/t/Main_Page",
+        wiki = WikiClientFeature.Wavu,
     ),
 
     StreetFighter6(
         id = "Street_Fighter_6",
         iconUrl = "https://i.imgur.com/N9wYA5K.png",
         wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6",
+        wiki = WikiClientFeature.SuperCombo,
     ),
     MK1(
         id = "Mortal_Kombat_1",
         iconUrl = "https://i.imgur.com/4OcVxqP.png",
-        wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1"
+        wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1",
+        wiki = WikiClientFeature.SuperCombo,
     ),
     AVL(
         id = "Avatar_Legends",
         iconUrl = "https://i.imgur.com/aRyOZfI.png",
         wikiUrl = "https://wiki.supercombo.gg/w/Avatar_Legends",
+        wiki = WikiClientFeature.SuperCombo,
     ),
 
     Xko(
         id = "XKO",
         iconUrl = "https://i.imgur.com/XtHOd6T.png",
         wikiUrl = "https://wiki.play2xko.com/en-us/",
+        wiki = WikiClientFeature.Xko,
     ),
 
     KoFXV(
         id = "The_King_of_Fighters_XV",
         iconUrl = "https://i.imgur.com/Zlin7xi.png",
         wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV",
+        wiki = WikiClientFeature.DreamCancel,
     ),
     COTW(
         id = "Fatal_Fury:_City_of_the_Wolves",
         iconUrl = "https://i.imgur.com/ucbtSgx.png",
         wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves",
+        wiki = WikiClientFeature.DreamCancel,
     ),
 
     GGST(
         id = "GGST",
         iconUrl = "https://i.imgur.com/07yTLtj.png",
         wikiUrl = "https://www.dustloop.com/w/GGST",
+        wiki = WikiClientFeature.DustLoop,
     ),
     DBFZ(
         id = "DBFZ",
         iconUrl = "https://i.imgur.com/UuX6ZYv.png",
         wikiUrl = "https://www.dustloop.com/w/DBFZ",
+        wiki = WikiClientFeature.DustLoop,
     ),
     GBVSR(
         id = "GBVSR",
         iconUrl = "https://i.imgur.com/N6eeM4q.png",
         wikiUrl = "https://www.dustloop.com/w/GBVSR",
+        wiki = WikiClientFeature.DustLoop,
     ),
     BBCF(
         id = "BBCF",
         iconUrl = "https://i.imgur.com/RYWkC7x.png",
         wikiUrl = "https://www.dustloop.com/w/BBCF",
+        wiki = WikiClientFeature.DustLoop,
     ),
 
     MBTL(
         id = "MBTL",
         iconUrl = "https://i.imgur.com/E6O7DMi.png",
-        wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL"
+        wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL",
+        wiki = WikiClientFeature.Mizuumi,
     ),
     Uni2(
         id = "UNI2",
         iconUrl = "https://i.imgur.com/G5RoTij.png",
-        wikiUrl = "https://mizuumi.wiki/w/Under_Night_In-Birth/UNI2"
+        wikiUrl = "https://mizuumi.wiki/w/Under_Night_In-Birth/UNI2",
+        wiki = WikiClientFeature.Mizuumi,
     ),
     VSAV(
         id = "VSAV",
         iconUrl = "https://i.imgur.com/e3xYkHf.png",
         wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior",
+        wiki = WikiClientFeature.Mizuumi,
     );
 
     companion object {
         fun fromId(id: String): Game? {
             return entries.find { it.id == id }
+        }
+
+        fun gamesFor(wiki: WikiClientFeature): List<Game> {
+            return entries.filter { it.wiki == wiki }
         }
     }
 }
