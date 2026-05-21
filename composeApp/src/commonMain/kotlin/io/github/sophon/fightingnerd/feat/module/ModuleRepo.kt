@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.config
+package io.github.sophon.fightingnerd.feat.module
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
@@ -6,9 +6,9 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.feature.Config
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.core.model.Module
-import io.github.sophon.fightingnerd.feat.config.usecase.LoadConfigUseCase
+import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 
-internal class ModuleRegistry(
+internal class ModuleRepo(
     private val loadConfigUseCase: LoadConfigUseCase,
     private val availableModules: List<Module>,
 ) {

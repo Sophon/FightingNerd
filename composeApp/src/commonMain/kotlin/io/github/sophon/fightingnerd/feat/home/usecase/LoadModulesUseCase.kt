@@ -5,12 +5,12 @@ import androidx.datastore.preferences.core.Preferences
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
 import io.github.sophon.fightingnerd.core.model.Module
-import io.github.sophon.fightingnerd.feat.config.ModuleRegistry
+import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 import io.github.sophon.fightingnerd.feat.home.model.HomeError
 
 internal class LoadModulesUseCase(
     private val store: DataStore<Preferences>,
-    private val moduleRegistry: ModuleRegistry,
+    private val moduleRepo: ModuleRepo,
 ) {
     fun invoke(): Result<List<Module>, HomeError> {
 //        return store.data
@@ -24,7 +24,7 @@ internal class LoadModulesUseCase(
 //                )
 //            }
 
-        val modules = moduleRegistry.getEnabledModules().also {
+        val modules = moduleRepo.getEnabledModules().also {
             Napier.d(tag = TAG) { "Modules loaded: ${it.size}" }
         }
         return Result.Success(modules)

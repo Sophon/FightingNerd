@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.config.usecase
+package io.github.sophon.fightingnerd.feat.module.usecase
 
 import fightingnerd.composeapp.generated.resources.Res
 import io.github.aakira.napier.Napier

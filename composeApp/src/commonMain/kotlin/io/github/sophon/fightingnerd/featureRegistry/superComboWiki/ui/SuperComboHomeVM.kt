@@ -7,7 +7,7 @@ import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.fightingnerd.core.model.Module
-import io.github.sophon.fightingnerd.feat.config.ModuleRegistry
+import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 import io.github.sophon.fightingnerd.featureRegistry.usecase.FetchCharacterListUseCase
 import io.github.sophon.fightingnerd.featureRegistry.usecase.SyncDataIfOldUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,12 +17,12 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
 internal class SuperComboHomeVM(
-    private val moduleRegistry: ModuleRegistry,
+    private val moduleRepo: ModuleRepo,
     private val syncDataIfOldUseCase: SyncDataIfOldUseCase,
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
     private val superComboFeature: Module? by lazy {
-        moduleRegistry.getEnabledModules()
+        moduleRepo.getEnabledModules()
             .find { it.featureInfo.name == "SuperCombo Wiki" }
     }
     private val _state = MutableStateFlow(SuperComboHomeScreenViewState())

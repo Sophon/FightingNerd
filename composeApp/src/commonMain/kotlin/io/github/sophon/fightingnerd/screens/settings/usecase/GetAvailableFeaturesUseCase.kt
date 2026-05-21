@@ -8,18 +8,18 @@ import androidx.datastore.preferences.core.edit
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.fightingnerd.feat.config.ModuleRegistry
+import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 import io.github.sophon.fightingnerd.screens.KEY_PREFIX_FEATURE
 import io.github.sophon.fightingnerd.screens.settings.SettingsError
 import io.github.sophon.fightingnerd.screens.settings.ui.SettingsViewState
 import kotlinx.coroutines.flow.first
 
 internal class GetAvailableFeaturesUseCase(
-    private val moduleRegistry: ModuleRegistry,
+    private val moduleRepo: ModuleRepo,
     private val store: DataStore<Preferences>,
 ) {
     suspend fun invoke(): Result<List<SettingsViewState.FeatureSetting>, SettingsError> {
-        val featureList = moduleRegistry.getEnabledModules().map { it.featureInfo }
+        val featureList = moduleRepo.getEnabledModules().map { it.featureInfo }
         return when (val result = updatePreferences(featureList)) {
             is Result.Success -> getFeatureSettings(featureList)
             is Result.Error -> result

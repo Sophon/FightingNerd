@@ -19,7 +19,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
-import io.github.sophon.fightingnerd.feat.config.ModuleRegistry
+import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.screens.moveList.ui.MoveListScreen
 import io.github.sophon.fightingnerd.screens.settings.ui.SettingsScreen
@@ -30,11 +30,11 @@ import org.koin.compose.koinInject
 @Composable
 @Preview
 internal fun App() {
-    val moduleRegistry = koinInject<ModuleRegistry>()
+    val moduleRepo = koinInject<ModuleRepo>()
     var isInitialized by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        moduleRegistry.initialize()
+        moduleRepo.initialize()
         isInitialized = true
     }
 

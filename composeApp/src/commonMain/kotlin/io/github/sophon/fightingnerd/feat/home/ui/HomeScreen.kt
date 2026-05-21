@@ -55,7 +55,7 @@ internal fun HomeScreen(
                 modifier = Modifier.fillMaxSize(),
             ) {
                 items(state.modules) { registeredFeature ->
-                    registeredFeature.HomeScreenContent(navHostController)
+//                    registeredFeature.HomeScreenContent(navHostController)
                 }
             }
 
