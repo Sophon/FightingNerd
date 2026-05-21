@@ -6,6 +6,7 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.Game
 import io.github.sophon.fightingnerd.core.model.AppError
+import io.github.sophon.fightingnerd.feat.module.CONFIG_PATH
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerializationException
@@ -67,7 +68,6 @@ internal class LoadConfigUseCase(
 
 
     private companion object {
-        const val CONFIG_PATH = "files/modules.json"
         const val TAG = "LoadConfigUseCase"
     }
 }
