@@ -112,7 +112,7 @@ internal fun WidgetHeader(
             modifier = Modifier.weight(1f),
         ) {
             AsyncImage(
-                model = featureInfo.iconUrl,
+                model = game.iconUrl,
                 contentDescription = featureInfo.name,
                 placeholder = painterResource(Res.drawable.compose_multiplatform),
                 error = painterResource(Res.drawable.compose_multiplatform),
@@ -122,7 +122,7 @@ internal fun WidgetHeader(
             )
 
             Text(
-                text = "${game.name} (${featureInfo.name})",
+                text = game.displayName,
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
