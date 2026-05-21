@@ -33,8 +33,9 @@ internal class MoveListVM(
             initialValue = MoveListViewState()
         )
     private val wiki: WikiClient? by lazy {
-        moduleRepo.getEnabledModules()
-            .firstNotNullOfOrNull { it.getWikiClient(gameId) }
+//        moduleRepo.getEnabledModules()
+//            .firstNotNullOfOrNull { it.getWikiClient(gameId) }
+        TODO()
     }
 
 

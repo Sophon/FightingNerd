@@ -22,8 +22,9 @@ internal class SuperComboHomeVM(
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
     private val superComboFeature: Module? by lazy {
-        moduleRepo.getEnabledModules()
-            .find { it.featureInfo.name == "SuperCombo Wiki" }
+//        moduleRepo.getEnabledModules()
+//            .find { it.featureInfo.name == "SuperCombo Wiki" }
+        TODO()
     }
     private val _state = MutableStateFlow(SuperComboHomeScreenViewState())
     val state = _state

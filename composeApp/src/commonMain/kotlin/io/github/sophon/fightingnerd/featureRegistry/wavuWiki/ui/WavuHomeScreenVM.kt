@@ -22,8 +22,9 @@ internal class WavuHomeScreenVM(
     private val fetchCharacterListUseCase: FetchCharacterListUseCase,
 ): ViewModel() {
     private val wavuFeature: Module? by lazy {
-        moduleRepo.getEnabledModules()
-            .find { it.featureInfo.name == "Wavu Wiki" }
+//        moduleRepo.getEnabledModules()
+//            .find { it.featureInfo.name == "Wavu Wiki" }
+        TODO()
     }
     private val _state = MutableStateFlow(WavuHomeScreenViewState())
     val state = _state

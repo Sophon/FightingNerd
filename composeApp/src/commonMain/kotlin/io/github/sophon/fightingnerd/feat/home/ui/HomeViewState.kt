@@ -1,9 +1,9 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
-import io.github.sophon.fightingnerd.core.model.Module
+import io.github.sophon.core.wiki.domain.WikiClient
 
 internal data class HomeViewState(
-    val modules: List<Module> = listOf(),
+    val modules: List<WikiClient> = listOf(),
     val expandedFeatureIndex: Int? = null,
 
     val isLoading: Boolean = false,

@@ -19,11 +19,13 @@ internal class GetAvailableFeaturesUseCase(
     private val store: DataStore<Preferences>,
 ) {
     suspend fun invoke(): Result<List<SettingsViewState.FeatureSetting>, SettingsError> {
-        val featureList = moduleRepo.getEnabledModules().map { it.featureInfo }
-        return when (val result = updatePreferences(featureList)) {
-            is Result.Success -> getFeatureSettings(featureList)
-            is Result.Error -> result
-        }
+        TODO("GetAvailableFeaturesUseCase")
+
+//        val featureList = moduleRepo.getGameClients().map { it.featureInfo }
+//        return when (val result = updatePreferences(featureList)) {
+//            is Result.Success -> getFeatureSettings(featureList)
+//            is Result.Error -> result
+//        }
     }
 
     private suspend fun updatePreferences(
