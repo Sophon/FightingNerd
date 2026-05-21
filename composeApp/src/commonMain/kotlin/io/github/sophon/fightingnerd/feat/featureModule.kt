@@ -1,6 +1,9 @@
 package io.github.sophon.fightingnerd.feat
 
 import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarVM
+import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
+import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
@@ -11,8 +14,15 @@ import org.koin.dsl.module
 internal fun featureModule() = module {
     viewModelOf(::BottomBarVM)
 
+    //region Module
     singleOf(::LoadConfigUseCase)
     singleOf(::WikiClientFactory)
-
     singleOf(::ModuleRepo)
+    //endregion
+
+    //region Home
+    viewModelOf(::HomeVM)
+    singleOf(::LoadEmptyWidgetsUseCase)
+    singleOf(::LoadGameCharacterListUseCase)
+    //endregion
 }

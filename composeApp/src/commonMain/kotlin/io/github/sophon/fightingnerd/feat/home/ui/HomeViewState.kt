@@ -1,11 +1,20 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
-import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.feature.Game
+import io.github.sophon.core.wiki.domain.model.Character
 
 internal data class HomeViewState(
-    val modules: List<WikiClient> = listOf(),
-    val expandedFeatureIndex: Int? = null,
+    val gameWidgetList: List<WikiWidget> = emptyList(),
 
     val isLoading: Boolean = false,
     val error: String? = null,
-)
+) {
+    data class WikiWidget(
+        val game: Game,
+        val featureInfo: FeatureInfo,
+        val characterList: List<Character> = emptyList(),
+        val isExpanded: Boolean = false,
+        val isLoading: Boolean = true,
+    )
+}

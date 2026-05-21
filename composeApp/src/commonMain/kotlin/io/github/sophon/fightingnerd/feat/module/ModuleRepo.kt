@@ -24,8 +24,8 @@ internal class ModuleRepo(
         return result
     }
 
-    fun getGameClients(): List<WikiClient> {
-        return gameClients.values.toList()
+    fun getGameClients(): Map<Game, WikiClient> {
+        return gameClients
     }
 
     fun getWikiClientFor(game: Game): WikiClient? {
