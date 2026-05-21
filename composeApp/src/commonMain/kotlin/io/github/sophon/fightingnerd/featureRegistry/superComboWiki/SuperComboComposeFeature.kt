@@ -41,7 +41,7 @@ internal class SuperComboComposeFeature(
     override fun getWikiClient(gameId: String): WikiClient? = wikis[gameId]
 
     @Composable
-    override fun HomeScreenContent(
+    fun HomeScreenContent(
         navHostController: NavHostController
     ) {
         val gameId = wikis.keys.firstOrNull() ?: return

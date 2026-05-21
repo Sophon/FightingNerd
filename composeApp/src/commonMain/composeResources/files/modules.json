@@ -3,14 +3,14 @@
     {
       "name": "Wavu Wiki",
       "isEnabled": true,
-      "supportedGameList": [
+      "supportedGames": [
         "Tekken_8"
       ]
     },
     {
       "name": "SuperCombo Wiki",
       "isEnabled": true,
-      "supportedGameList": [
+      "supportedGames": [
         "Street_Fighter_6",
         "Mortal_Kombat_1",
         "Avatar_Legends"
@@ -19,14 +19,14 @@
     {
       "name": "2XKO Wiki",
       "isEnabled": true,
-      "supportedGameList": [
+      "supportedGames": [
         "XKO"
       ]
     },
     {
       "name": "DreamCancel Wiki",
       "isEnabled": true,
-      "supportedGameList": [
+      "supportedGames": [
         "The_King_of_Fighters_XV",
         "Fatal_Fury:_City_of_the_Wolves"
       ]
@@ -34,7 +34,7 @@
     {
       "name": "DustLoop Wiki",
       "isEnabled": true,
-      "supportedGameList": [
+      "supportedGames": [
         "GGST",
         "GBVSR",
         "DBFZ",
@@ -44,7 +44,7 @@
     {
       "name": "Mizuumi Wiki",
       "isEnabled": true,
-      "supportedGameList": [
+      "supportedGames": [
         "MBTL",
         "UNI2",
         "VSAV"
