@@ -100,5 +100,9 @@ enum class Game(
         fun fromId(id: String): Game? {
             return entries.find { it.id == id }
         }
+
+        fun gamesFor(wiki: WikiClientFeature): List<Game> {
+            return entries.filter { it.wiki == wiki }
+        }
     }
 }
