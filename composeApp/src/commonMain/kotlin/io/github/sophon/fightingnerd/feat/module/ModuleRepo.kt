@@ -4,46 +4,60 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.feature.Config
+import io.github.sophon.core.feature.Game
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.core.model.AppError
-import io.github.sophon.fightingnerd.core.model.Module
+import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 
 internal class ModuleRepo(
     private val loadConfigUseCase: LoadConfigUseCase,
-    private val availableModules: List<Module>,
+    private val wikiClientFactory: WikiClientFactory,
 ) {
-    private var enabledModules: List<Module> = emptyList()
-
-    fun getEnabledModules(): List<Module> {
-        return enabledModules
-    }
+    private var gameClients: Map<Game, WikiClient> = emptyMap()
 
     suspend fun initialize(): EmptyResult<AppError> {
         val result = loadConfigUseCase.invoke()
             .map { config ->
-                enabledModules = resolveModules(config)
-                enabledModules.forEach { it.onInit() }
+                gameClients = buildGameClients(config)
             }
-
         return result
     }
 
-    private fun resolveModules(config: Config): List<Module> {
-        val moduleByName = availableModules.associateBy { it.featureInfo.name }
-        return config.featureList
-            .filter { it.isEnabled }
-            .mapNotNull { featureConfig ->
-                val module = moduleByName[featureConfig.name]
-                if (module == null) {
-                    Napier.w(tag = TAG) { "No Module impl found for: ${featureConfig.name}" }
-                    return@mapNotNull null
-                }
-                module.registerGames(featureConfig.supportedGameList)
-                module
-            }
+    fun getGameClients(): List<WikiClient> {
+        return gameClients.values.toList()
     }
 
+    fun getWikiClientFor(game: Game): WikiClient? {
+        return gameClients[game]
+    }
+
+    private fun buildGameClients(config: Config): Map<Game, WikiClient> {
+        val enabledGames = config.featureList
+            .filter { it.isEnabled }
+            .flatMap { it.supportedGameList }
+
+        enabledGames
+            .groupingBy { it }
+            .eachCount()
+            .filter { it.value > 1 }
+            .keys
+            .takeIf { it.isNotEmpty() }
+            ?.let { duplicates ->
+                Napier.w(tag = TAG) { "Duplicate games in config: $duplicates" }
+            }
+
+        val gameClients = enabledGames
+            .distinct()
+            .associateWith { game ->
+                wikiClientFactory.create(game)
+            }
+
+        return gameClients
+    }
+
+
     private companion object {
-        const val TAG = "ModuleRegistry"
+        const val TAG = "ModuleRepo"
     }
 }

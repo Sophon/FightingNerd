@@ -1,5 +1,6 @@
 package io.github.sophon.fightingnerd
 
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.fightingnerd.infrastructure.createDataStore
@@ -14,22 +15,23 @@ import org.koin.dsl.module
 internal actual val platformModule = module {
     single { createDataStore() }
 
-    // Single factory that creates both DBs for any gameId
-    single<(String) -> Pair<CharacterListDB, MoveListDB>> {
-        { gameId ->
+    // Single factory that creates both DBs for any game
+    single<(Game) -> Pair<CharacterListDB, MoveListDB>> {
+        { game ->
             val charBuilder = getCharacterListDatabaseBuilder(
-                "${gameId.lowercase()}_characters.db"
+                "${game.id.lowercase()}_characters.db"
             )
             val charDatabase = getCharacterListDatabase(charBuilder)
             val characterDB = RoomCharacterListDB(charDatabase.characterListDao())
 
             val moveBuilder = getMoveListDatabaseBuilder(
-                "${gameId.lowercase()}_moves.db"
+                "${game.id.lowercase()}_moves.db"
             )
             val moveDatabase = getMoveListDatabase(moveBuilder)
             val moveDB = RoomMoveListDB(moveDatabase.moveListDao(), get())
 
-            characterDB to moveDB
+            val dbPair = characterDB to moveDB
+            dbPair
         }
     }
 }

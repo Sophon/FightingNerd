@@ -4,15 +4,15 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
-import io.github.sophon.fightingnerd.core.model.Module
-import io.github.sophon.fightingnerd.feat.module.ModuleRepo
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.fightingnerd.feat.home.model.HomeError
+import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 
 internal class LoadModulesUseCase(
     private val store: DataStore<Preferences>,
     private val moduleRepo: ModuleRepo,
 ) {
-    fun invoke(): Result<List<Module>, HomeError> {
+    fun invoke(): Result<List<WikiClient>, HomeError> {
 //        return store.data
 //            .map { filterEnabledFeatures(it) }
 //            .catch { e ->
@@ -24,7 +24,7 @@ internal class LoadModulesUseCase(
 //                )
 //            }
 
-        val modules = moduleRepo.getEnabledModules().also {
+        val modules = moduleRepo.getGameClients().also {
             Napier.d(tag = TAG) { "Modules loaded: ${it.size}" }
         }
         return Result.Success(modules)
