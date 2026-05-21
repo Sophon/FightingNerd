@@ -196,7 +196,6 @@ private fun CharacterPanel(
 }
 
 
-
 //region PREVIEW
 @Composable
 @Preview(showBackground = true)
@@ -286,4 +285,67 @@ private fun mockCharacters(): List<Character> = listOf(
     Character(displayName = "Hana", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
     Character(displayName = "Nina", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
 )
+
+@Composable
+@Preview(showBackground = true)
+private fun WidgetExpandedPreviewDark() {
+    AppTheme(darkTheme = true) {
+        Widget(
+            widget = mockWidget(isExpanded = true, isLoading = false),
+            onExpandWidget = {},
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun WidgetExpandedPreviewLight() {
+    AppTheme(darkTheme = false) {
+        Widget(
+            widget = mockWidget(isExpanded = true, isLoading = false),
+            onExpandWidget = {},
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun WidgetCollapsedPreviewDark() {
+    AppTheme(darkTheme = true) {
+        Widget(
+            widget = mockWidget(isExpanded = false, isLoading = false),
+            onExpandWidget = {},
+        )
+    }
+}
+
+@Composable
+@Preview(showBackground = true)
+private fun WidgetLoadingPreviewDark() {
+    AppTheme(darkTheme = true) {
+        Widget(
+            widget = mockWidget(isExpanded = false, isLoading = true),
+            onExpandWidget = {},
+        )
+    }
+}
+
+private fun mockWidget(
+    isExpanded: Boolean,
+    isLoading: Boolean,
+): HomeViewState.WikiWidget {
+    val widget = HomeViewState.WikiWidget(
+        game = Game.Tekken8,
+        featureInfo = FeatureInfo(
+            name = "Wavu Wiki",
+            url = "https://wavu.wiki/t/Main_Page",
+            iconUrl = "https://i.imgur.com/0cnTzNk.png",
+            version = "1.0.0",
+        ),
+        characterList = mockCharacters(),
+        isExpanded = isExpanded,
+        isLoading = isLoading,
+    )
+    return widget
+}
 //endregion
