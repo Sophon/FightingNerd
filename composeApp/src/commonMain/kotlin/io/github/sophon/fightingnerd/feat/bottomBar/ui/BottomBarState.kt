@@ -8,8 +8,8 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_character_list
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_saved
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_search
-import io.github.sophon.fightingnerd.feat.bottomBar.model.BottomBarItem
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
+import io.github.sophon.fightingnerd.feat.bottomBar.model.BottomBarItem
 
 internal data class BottomBarState(
     val itemList: List<BottomBarItem> = listOf(
