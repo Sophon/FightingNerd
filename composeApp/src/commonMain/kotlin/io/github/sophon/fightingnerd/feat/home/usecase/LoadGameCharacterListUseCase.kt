@@ -11,15 +11,22 @@ internal class LoadGameCharacterListUseCase(
     private val moduleRepo: ModuleRepo,
 ) {
     suspend fun invoke(
-        gameWidget: HomeViewState.WikiWidget,
-    ): Result<HomeViewState.WikiWidget, AppError> {
+        gameWidget: HomeViewState.GameWidget,
+    ): Result<HomeViewState.GameWidget, AppError> {
         val wikiClient = moduleRepo.getWikiClientFor(gameWidget.game)
             ?: return Result.Error(AppError.WikiClientNotFound(gameWidget.game.id))
 
         val result = wikiClient.downloadCharacterList()
             .map { characterList ->
                 val loadedWidget = gameWidget.copy(
-                    characterList = characterList,
+                    characterList = characterList.map { domainCharacter ->
+                        HomeViewState.GameWidget.Character(
+                            id = domainCharacter.id,
+                            displayName = domainCharacter.displayName,
+                            queryName = domainCharacter.queryName,
+                            iconUrl = domainCharacter.images?.iconUrl,
+                        )
+                    },
                     isLoading = false,
                 )
                 loadedWidget

@@ -33,9 +33,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
-import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
-import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
@@ -43,7 +41,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun Widget(
-    widget: HomeViewState.WikiWidget,
+    widget: HomeViewState.GameWidget,
     onExpandWidget: (Game) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -61,7 +59,7 @@ internal fun Widget(
     ) {
         WidgetHeader(
             game = widget.game,
-            featureInfo = widget.featureInfo,
+            featureName = widget.featureName,
             isExpanded = widget.isExpanded,
             onExpandClick = onExpandWidget,
             isLoading = widget.isLoading,
@@ -81,7 +79,7 @@ internal fun Widget(
 @Composable
 internal fun WidgetHeader(
     game: Game,
-    featureInfo: FeatureInfo,
+    featureName: String,
     isExpanded: Boolean,
     onExpandClick: (Game) -> Unit,
     isLoading: Boolean,
@@ -113,7 +111,7 @@ internal fun WidgetHeader(
         ) {
             AsyncImage(
                 model = game.iconUrl,
-                contentDescription = featureInfo.name,
+                contentDescription = featureName,
                 placeholder = painterResource(Res.drawable.compose_multiplatform),
                 error = painterResource(Res.drawable.compose_multiplatform),
                 modifier = Modifier
@@ -148,7 +146,7 @@ internal fun WidgetHeader(
 
 @Composable
 internal fun CharacterList(
-    characterList: List<Character>,
+    characterList: List<HomeViewState.GameWidget.Character>,
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -173,7 +171,7 @@ internal fun CharacterList(
 
 @Composable
 private fun CharacterPanel(
-    character: Character,
+    character: HomeViewState.GameWidget.Character,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -189,7 +187,7 @@ private fun CharacterPanel(
             .padding(8.dp)
     ) {
         AsyncImage(
-            model = character.images?.iconUrl,
+            model = character.iconUrl,
             contentDescription = character.displayName,
             placeholder = painterResource(Res.drawable.compose_multiplatform),
             error = painterResource(Res.drawable.compose_multiplatform),
@@ -214,12 +212,7 @@ private fun FeatureInfoPreviewDark() {
     AppTheme(darkTheme = true) {
         WidgetHeader(
             game = Game.Tekken8,
-            featureInfo = FeatureInfo(
-                name = "Wavu Wiki",
-                url = "https://wavu.wiki/t/Main_Page",
-                iconUrl = "https://i.imgur.com/0cnTzNk.png",
-                version = "1.0.0",
-            ),
+            featureName = "Wavu Wiki",
             isExpanded = true,
             onExpandClick = {},
             isLoading = false,
@@ -233,12 +226,7 @@ private fun FeatureInfoLoadingPreview() {
     AppTheme(darkTheme = true) {
         WidgetHeader(
             game = Game.Tekken8,
-            featureInfo = FeatureInfo(
-                name = "Wavu Wiki",
-                url = "https://wavu.wiki/t/Main_Page",
-                iconUrl = "https://i.imgur.com/0cnTzNk.png",
-                version = "1.0.0",
-            ),
+            featureName = "Wavu Wiki",
             isExpanded = true,
             onExpandClick = {},
             isLoading = true,
@@ -252,12 +240,7 @@ private fun FeatureInfoPreviewLight() {
     AppTheme(darkTheme = false) {
         WidgetHeader(
             game = Game.Tekken8,
-            featureInfo = FeatureInfo(
-                name = "WavuWiki",
-                url = "https://wavu.wiki/t/Main_Page",
-                iconUrl = "https://i.imgur.com/0cnTzNk.png",
-                version = "1.0.0",
-            ),
+            featureName = "Wavu Wiki",
             isExpanded = false,
             onExpandClick = {},
             isLoading = false,
@@ -287,15 +270,16 @@ private fun CharacterOverviewPreviewLight() {
     }
 }
 
-private fun mockCharacters(): List<Character> = listOf(
-    Character(displayName = "Zuzana", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Eva", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Karolina", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Marcela", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Zdenka", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Hana", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Nina", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-)
+private fun mockCharacters(): List<HomeViewState.GameWidget.Character> {
+    val names = listOf("Zuzana", "Eva", "Karolina", "Marcela", "Zdenka", "Hana", "Nina")
+    return names.map { name ->
+        HomeViewState.GameWidget.Character(
+            id = "",
+            displayName = name,
+            queryName = "",
+        )
+    }
+}
 
 @Composable
 @Preview(showBackground = true)
@@ -344,15 +328,10 @@ private fun WidgetLoadingPreviewDark() {
 private fun mockWidget(
     isExpanded: Boolean,
     isLoading: Boolean,
-): HomeViewState.WikiWidget {
-    val widget = HomeViewState.WikiWidget(
+): HomeViewState.GameWidget {
+    val widget = HomeViewState.GameWidget(
         game = Game.Tekken8,
-        featureInfo = FeatureInfo(
-            name = "Wavu Wiki",
-            url = "https://wavu.wiki/t/Main_Page",
-            iconUrl = "https://i.imgur.com/0cnTzNk.png",
-            version = "1.0.0",
-        ),
+        featureName = "Wavu Wiki",
         characterList = mockCharacters(),
         isExpanded = isExpanded,
         isLoading = isLoading,
