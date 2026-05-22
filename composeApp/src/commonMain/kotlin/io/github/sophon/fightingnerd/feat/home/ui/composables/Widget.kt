@@ -9,11 +9,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
@@ -35,43 +38,47 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.feature.Game
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
+import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-internal fun Widget(
-    widget: HomeViewState.GameWidget,
+internal fun WidgetSection(
+    widgetList: List<GameWidget>,
     onExpandWidget: (Game) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.Start,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(.2f),
-                shape = RoundedCornerShape(16.dp)
-            )
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(
+            space = 8.dp,
+            alignment = Alignment.Top,
+        ),
+        modifier = modifier.fillMaxSize(),
     ) {
-        WidgetHeader(
-            game = widget.game,
-            featureName = widget.featureName,
-            isExpanded = widget.isExpanded,
-            onExpandClick = onExpandWidget,
-            isLoading = widget.isLoading,
-        )
+        widgetList.forEach { widget ->
+            item(key = "header_${widget.game.id}") {
+                WidgetHeader(
+                    game = widget.game,
+                    featureName = widget.featureName,
+                    isExpanded = widget.isExpanded,
+                    onExpandClick = onExpandWidget,
+                    isLoading = widget.isLoading,
+                )
+            }
 
-        if (widget.isExpanded && widget.isLoading.not()) {
-            Spacer(Modifier.height(8.dp))
-
-            CharacterList(
-                characterList = widget.characterList,
-                onCharacterClick = { /*TODO*/ },
-            )
+            if (widget.isExpanded) {
+                val rows = widget.characterList.chunked(4) //TODO: calculate columns
+                items(
+                    items = rows,
+                    key = { row -> "row_${widget.game.id}_${row.first().id}" },
+                ) { rowCharacters ->
+                    CharacterRow(
+                        characterList = rowCharacters,
+                        onCharacterClick = {},
+                    )
+                }
+            }
         }
     }
 }
@@ -302,50 +309,6 @@ private fun mockCharacters(): List<HomeViewState.GameWidget.Character> {
             id = "",
             displayName = name,
             queryName = "",
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun WidgetExpandedPreviewDark() {
-    AppTheme(darkTheme = true) {
-        Widget(
-            widget = mockWidget(isExpanded = true, isLoading = false),
-            onExpandWidget = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun WidgetExpandedPreviewLight() {
-    AppTheme(darkTheme = false) {
-        Widget(
-            widget = mockWidget(isExpanded = true, isLoading = false),
-            onExpandWidget = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun WidgetCollapsedPreviewDark() {
-    AppTheme(darkTheme = true) {
-        Widget(
-            widget = mockWidget(isExpanded = false, isLoading = false),
-            onExpandWidget = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun WidgetLoadingPreviewDark() {
-    AppTheme(darkTheme = true) {
-        Widget(
-            widget = mockWidget(isExpanded = false, isLoading = true),
-            onExpandWidget = {},
         )
     }
 }
