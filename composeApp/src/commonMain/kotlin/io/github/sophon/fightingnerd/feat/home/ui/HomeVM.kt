@@ -39,7 +39,7 @@ internal class HomeVM(
                 if (widget.game == game) {
                     widget.copy(isExpanded = widget.isExpanded.not())
                 } else {
-                    widget
+                    widget.copy(isExpanded = false)
                 }
             }
             val updatedState = state.copy(gameWidgetList = updatedList)
