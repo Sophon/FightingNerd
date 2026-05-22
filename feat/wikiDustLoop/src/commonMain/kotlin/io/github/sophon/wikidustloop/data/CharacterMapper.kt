@@ -80,12 +80,26 @@ internal fun CharacterListResponseDto.toDomain(
                     kiMod = dto.kimod?.cleanHtml(),
                 ),
                 gbvsrProperties = Character.GBVSRProperties(
-                    prejump = dto.prejump?.cleanHtml(),
+                    jump = Character.GBVSRProperties.Jump(
+                        pre = dto.prejump,
+                        forwardDistance = dto.f_jump_distance?.toString(),
+                        superForwardDistance = dto.f_superjump_distance?.toString(),
+                        backDistance = dto.b_jump_distance?.toString(),
+                        superBackDistance = dto.b_superjump_distance?.toString(),
+                        gravity = dto.jumpGravity,
+                        superGravity = dto.superjump_gravity?.toString(),
+                        superHeight = dto.superjump_height?.toString(),
+                    ),
                     backdash = dto.backdash?.cleanHtml(),
                     walkSpeed = dto.walk_speed.toString(),
                     walkSpeedBack = dto.backwalk_speed.toString(),
                     dashInitial = dto.dash_initial_speed.toString(),
                     dashAcceleration = dto.dash_acceleration,
+                    closeRange = Character.GBVSRProperties.CloseRange(
+                        l = dto.close_l_range?.toString(),
+                        m = dto.close_m_range?.toString(),
+                        h = dto.close_h_range?.toString(),
+                    )
                 ),
                 bbProperties = Character.BBProperties(
                     preJump = dto.prejump?.cleanHtml(),
