@@ -1,19 +1,24 @@
 package io.github.sophon.fightingnerd.feat.home.ui.composables
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
@@ -33,47 +38,53 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
-import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
+import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-internal fun Widget(
-    widget: HomeViewState.WikiWidget,
+internal fun WidgetSection(
+    widgetList: List<GameWidget>,
     onExpandWidget: (Game) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
-        horizontalAlignment = Alignment.Start,
+    val botPaddingValues = PaddingValues(bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(
+            space = 8.dp,
+            alignment = Alignment.Top,
+        ),
+        contentPadding = botPaddingValues,
         modifier = modifier
-            .fillMaxWidth()
-            .padding(16.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(.2f),
-                shape = RoundedCornerShape(16.dp)
-            )
+            .fillMaxSize()
+            .background(color = MaterialTheme.colorScheme.surfaceContainerLow),
     ) {
-        WidgetHeader(
-            game = widget.game,
-            featureInfo = widget.featureInfo,
-            isExpanded = widget.isExpanded,
-            onExpandClick = onExpandWidget,
-            isLoading = widget.isLoading,
-        )
+        widgetList.forEach { widget ->
+            item(key = "header_${widget.game.id}") {
+                WidgetHeader(
+                    game = widget.game,
+                    featureName = widget.featureName,
+                    isExpanded = widget.isExpanded,
+                    onExpandClick = onExpandWidget,
+                    isLoading = widget.isLoading,
+                )
+            }
 
-        if (widget.isExpanded && widget.isLoading.not()) {
-            Spacer(Modifier.height(8.dp))
-
-            CharacterList(
-                characterList = widget.characterList,
-                onCharacterClick = { /*TODO*/ },
-            )
+            if (widget.isExpanded) {
+                val rows = widget.characterList.chunked(4) //TODO: calculate columns
+                items(
+                    items = rows,
+                    key = { row -> "row_${widget.game.id}_${row.first().id}" },
+                ) { rowCharacters ->
+                    CharacterRow(
+                        characterList = rowCharacters,
+                        onCharacterClick = {},
+                        modifier = Modifier.padding(vertical = 4.dp),
+                    )
+                }
+            }
         }
     }
 }
@@ -81,7 +92,7 @@ internal fun Widget(
 @Composable
 internal fun WidgetHeader(
     game: Game,
-    featureInfo: FeatureInfo,
+    featureName: String,
     isExpanded: Boolean,
     onExpandClick: (Game) -> Unit,
     isLoading: Boolean,
@@ -113,7 +124,7 @@ internal fun WidgetHeader(
         ) {
             AsyncImage(
                 model = game.iconUrl,
-                contentDescription = featureInfo.name,
+                contentDescription = featureName,
                 placeholder = painterResource(Res.drawable.compose_multiplatform),
                 error = painterResource(Res.drawable.compose_multiplatform),
                 modifier = Modifier
@@ -133,13 +144,16 @@ internal fun WidgetHeader(
         Spacer(Modifier.width(8.dp))
 
         if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.size(32.dp))
+            CircularProgressIndicator(
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                modifier = Modifier.size(32.dp)
+            )
         } else {
             val icon = if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore
             Icon(
                 imageVector = icon,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurface,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(32.dp)
             )
         }
@@ -147,17 +161,17 @@ internal fun WidgetHeader(
 }
 
 @Composable
-internal fun CharacterList(
-    characterList: List<Character>,
+internal fun CharacterRow(
+    characterList: List<GameWidget.Character>,
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    FlowRow(
+    Row(
         horizontalArrangement = Arrangement.spacedBy(
             space = 4.dp,
             alignment = Alignment.CenterHorizontally,
         ),
-        verticalArrangement = Arrangement.spacedBy(4.dp),
+        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
             .background(color = MaterialTheme.colorScheme.surface)
@@ -173,7 +187,7 @@ internal fun CharacterList(
 
 @Composable
 private fun CharacterPanel(
-    character: Character,
+    character: GameWidget.Character,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -185,11 +199,11 @@ private fun CharacterPanel(
             .height(128.dp)
             .clickable(onClick = onClick)
             .clip(RoundedCornerShape(8.dp))
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
+            .background(color = MaterialTheme.colorScheme.surfaceContainer)
             .padding(8.dp)
     ) {
         AsyncImage(
-            model = character.images?.iconUrl,
+            model = character.iconUrl,
             contentDescription = character.displayName,
             placeholder = painterResource(Res.drawable.compose_multiplatform),
             error = painterResource(Res.drawable.compose_multiplatform),
@@ -208,155 +222,60 @@ private fun CharacterPanel(
 
 
 //region PREVIEW
+@Preview
 @Composable
-@Preview(showBackground = true)
-private fun FeatureInfoPreviewDark() {
+private fun WidgetSectionDarkPreview() {
     AppTheme(darkTheme = true) {
-        WidgetHeader(
-            game = Game.Tekken8,
-            featureInfo = FeatureInfo(
-                name = "Wavu Wiki",
-                url = "https://wavu.wiki/t/Main_Page",
-                iconUrl = "https://i.imgur.com/0cnTzNk.png",
-                version = "1.0.0",
-            ),
-            isExpanded = true,
-            onExpandClick = {},
-            isLoading = false,
+        WidgetSection(
+            widgetList = mockWidgetList(),
+            onExpandWidget = {},
         )
     }
 }
 
+@Preview
 @Composable
-@Preview(showBackground = true)
-private fun FeatureInfoLoadingPreview() {
-    AppTheme(darkTheme = true) {
-        WidgetHeader(
-            game = Game.Tekken8,
-            featureInfo = FeatureInfo(
-                name = "Wavu Wiki",
-                url = "https://wavu.wiki/t/Main_Page",
-                iconUrl = "https://i.imgur.com/0cnTzNk.png",
-                version = "1.0.0",
-            ),
-            isExpanded = true,
-            onExpandClick = {},
-            isLoading = true,
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun FeatureInfoPreviewLight() {
+private fun WidgetSectionLightPreview() {
     AppTheme(darkTheme = false) {
-        WidgetHeader(
-            game = Game.Tekken8,
-            featureInfo = FeatureInfo(
-                name = "WavuWiki",
-                url = "https://wavu.wiki/t/Main_Page",
-                iconUrl = "https://i.imgur.com/0cnTzNk.png",
-                version = "1.0.0",
-            ),
-            isExpanded = false,
-            onExpandClick = {},
-            isLoading = false,
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun CharacterOverviewPreviewDark() {
-    AppTheme(darkTheme = true) {
-        CharacterList(
-            characterList = mockCharacters(),
-            onCharacterClick = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun CharacterOverviewPreviewLight() {
-    AppTheme(darkTheme = false) {
-        CharacterList(
-            characterList = mockCharacters(),
-            onCharacterClick = {},
-        )
-    }
-}
-
-private fun mockCharacters(): List<Character> = listOf(
-    Character(displayName = "Zuzana", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Eva", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Karolina", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Marcela", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Zdenka", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Hana", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-    Character(displayName = "Nina", aliasList = listOf(), wikiUrl = "", id = "", queryName = ""),
-)
-
-@Composable
-@Preview(showBackground = true)
-private fun WidgetExpandedPreviewDark() {
-    AppTheme(darkTheme = true) {
-        Widget(
-            widget = mockWidget(isExpanded = true, isLoading = false),
+        WidgetSection(
+            widgetList = mockWidgetList(),
             onExpandWidget = {},
         )
     }
 }
 
-@Composable
-@Preview(showBackground = true)
-private fun WidgetExpandedPreviewLight() {
-    AppTheme(darkTheme = false) {
-        Widget(
-            widget = mockWidget(isExpanded = true, isLoading = false),
-            onExpandWidget = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun WidgetCollapsedPreviewDark() {
-    AppTheme(darkTheme = true) {
-        Widget(
-            widget = mockWidget(isExpanded = false, isLoading = false),
-            onExpandWidget = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun WidgetLoadingPreviewDark() {
-    AppTheme(darkTheme = true) {
-        Widget(
-            widget = mockWidget(isExpanded = false, isLoading = true),
-            onExpandWidget = {},
+private fun mockCharacters(): List<GameWidget.Character> {
+    val names = listOf("Zuzana", "Eva", "Karolina", "Marcela", "Zdenka", "Hana")
+    return names.mapIndexed { index, name ->
+        GameWidget.Character(
+            id = "char_$index",
+            displayName = name,
+            queryName = "",
         )
     }
 }
 
 private fun mockWidget(
+    game: Game,
+    featureName: String,
     isExpanded: Boolean,
     isLoading: Boolean,
-): HomeViewState.WikiWidget {
-    val widget = HomeViewState.WikiWidget(
-        game = Game.Tekken8,
-        featureInfo = FeatureInfo(
-            name = "Wavu Wiki",
-            url = "https://wavu.wiki/t/Main_Page",
-            iconUrl = "https://i.imgur.com/0cnTzNk.png",
-            version = "1.0.0",
-        ),
+): GameWidget {
+    val widget = GameWidget(
+        game = game,
+        featureName = featureName,
         characterList = mockCharacters(),
         isExpanded = isExpanded,
         isLoading = isLoading,
     )
     return widget
+}
+
+private fun mockWidgetList(): List<GameWidget> {
+    return listOf(
+        mockWidget(Game.Tekken8, "Wavu Wiki", isExpanded = true, isLoading = false),
+        mockWidget(Game.StreetFighter6, "SuperCombo", isExpanded = false, isLoading = false),
+        mockWidget(Game.KoFXV, "Dream Cancel", isExpanded = false, isLoading = false),
+    )
 }
 //endregion

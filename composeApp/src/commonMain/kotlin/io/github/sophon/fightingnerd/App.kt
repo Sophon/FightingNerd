@@ -18,6 +18,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.util.DebugLogger
 import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.ModuleRepo
@@ -30,6 +34,9 @@ import org.koin.compose.koinInject
 @Composable
 @Preview
 internal fun App() {
+    setSingletonImageLoaderFactory { context ->
+        getAsyncImageLoader(context)
+    }
     val moduleRepo = koinInject<ModuleRepo>()
     var isInitialized by rememberSaveable { mutableStateOf(false) }
 
@@ -84,4 +91,10 @@ internal fun App() {
             CircularProgressIndicator()
         }
     }
+}
+
+fun getAsyncImageLoader(context: PlatformContext): ImageLoader {
+    return ImageLoader.Builder(context)
+        .logger(DebugLogger())
+        .build()
 }

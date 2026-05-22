@@ -8,12 +8,12 @@ import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 internal class LoadEmptyWidgetsUseCase(
     private val moduleRepo: ModuleRepo,
 ) {
-    fun invoke(): Result<List<HomeViewState.WikiWidget>, AppError> {
+    fun invoke(): Result<List<HomeViewState.GameWidget>, AppError> {
         val gameClientMap = moduleRepo.getGameClients()
         val widgetList = gameClientMap.map { (game, wikiClient) ->
-            val widget = HomeViewState.WikiWidget(
+            val widget = HomeViewState.GameWidget(
                 game = game,
-                featureInfo = wikiClient.getFeatureInfo(),
+                featureName = wikiClient.getFeatureInfo().name,
                 isLoading = true,
             )
             widget
