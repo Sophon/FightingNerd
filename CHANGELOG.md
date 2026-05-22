@@ -3,6 +3,7 @@
 ## [v11.6.0] - TODO
 - refactor core's `Game`
   - a small step in a bigger refactor process that reworks how games and wikis are constructed per config
+- `DustLoop` - update fields for `GBVSR`
 
 ## [v11.5.1] - 2026-05-02
 - fixed bugs with wrong commands displaying command error embed

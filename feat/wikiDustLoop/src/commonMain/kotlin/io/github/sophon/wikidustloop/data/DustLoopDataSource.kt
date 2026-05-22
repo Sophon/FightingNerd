@@ -128,11 +128,17 @@ internal class DustLoopDataSourceImpl(
                     "backwalk_speed",
                     "dash_initial_speed",
                     "dash_acceleration",
-                    "alt_walk_speed",
-                    "alt_backwalk_speed",
-                    "alt_dash_initial_speed",
-                    "alt_dash_acceleration",
-                    "alt"
+                    "jump_height",
+                    "f_jump_distance",
+                    "b_jump_distance",
+                    "jump_gravity",
+                    "superjump_height",
+                    "f_superjump_distance",
+                    "b_superjump_distance",
+                    "superjump_gravity",
+                    "close_l_range",
+                    "close_m_range",
+                    "close_h_range",
                 )
             }
             DustLoopTables.TABLE_BBCF_CHARACTERS -> {
