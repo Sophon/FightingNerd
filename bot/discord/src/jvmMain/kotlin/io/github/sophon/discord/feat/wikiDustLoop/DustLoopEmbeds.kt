@@ -114,12 +114,8 @@ internal fun charEmbedBuilderGB(
     )
 
     character.gbvsrProperties?.apply {
-        optionalField(name = "Prejump", value = prejump)
+        optionalField(name = "Prejump", value = jump?.pre)
         optionalField(name = "Backdash", value = backdash)
-        optionalField(name = "F Walk", value = "$walkSpeed ($walkSpeedAlt)")
-        optionalField(name = "B Walk", value = "$walkSpeedBack ($walkSpeedBackAlt)")
-        optionalField(name = "Dash", value = "$dashInitial ($dashInitialAlt")
-        optionalField(name = "Dash Acc", value = "$dashAcceleration ($dashAccelerationAlt)")
     }
 
     featureFooter(featureInfo)
