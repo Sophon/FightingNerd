@@ -170,6 +170,31 @@ internal fun CharacterList(
 }
 
 @Composable
+internal fun CharacterRow(
+    characterList: List<HomeViewState.GameWidget.Character>,
+    onCharacterClick: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(
+            space = 4.dp,
+            alignment = Alignment.CenterHorizontally,
+        ),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier
+            .fillMaxWidth()
+            .background(color = MaterialTheme.colorScheme.surface)
+    ) {
+        characterList.forEach { character ->
+            CharacterPanel(
+                character = character,
+                onClick = { onCharacterClick(character.queryName) },
+            )
+        }
+    }
+}
+
+@Composable
 private fun CharacterPanel(
     character: HomeViewState.GameWidget.Character,
     onClick: () -> Unit,

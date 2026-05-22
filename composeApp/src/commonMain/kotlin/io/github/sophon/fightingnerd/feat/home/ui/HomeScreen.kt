@@ -18,7 +18,9 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import io.github.sophon.fightingnerd.feat.home.ui.composables.CharacterRow
 import io.github.sophon.fightingnerd.feat.home.ui.composables.Widget
+import io.github.sophon.fightingnerd.feat.home.ui.composables.WidgetHeader
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -46,11 +48,36 @@ internal fun HomeScreen(
                 ),
                 modifier = Modifier.fillMaxSize(),
             ) {
-                items(state.gameWidgetList) { gameWidget ->
-                    Widget(
-                        widget = gameWidget,
-                        onExpandWidget = vm::onExpandWidget,
-                    )
+//                items(state.gameWidgetList) { gameWidget ->
+//                    Widget(
+//                        widget = gameWidget,
+//                        onExpandWidget = vm::onExpandWidget,
+//                    )
+//                }
+
+                state.gameWidgetList.forEach { widget ->
+                    item(key = "header_${widget.game.id}") {
+                        WidgetHeader(
+                            game = widget.game,
+                            featureName = widget.featureName,
+                            isExpanded = widget.isExpanded,
+                            onExpandClick = vm::onExpandWidget,
+                            isLoading = widget.isLoading,
+                        )
+                    }
+
+                    if (widget.isExpanded) {
+                        val rows = widget.characterList.chunked(4) //TODO: calculate columns
+                        items(
+                            items = rows,
+                            key = { row -> "row_${widget.game.id}_${row.first().id}" },
+                        ) { rowCharacters ->
+                            CharacterRow(
+                                characterList = rowCharacters,
+                                onCharacterClick = {},
+                            )
+                        }
+                    }
                 }
             }
         }
