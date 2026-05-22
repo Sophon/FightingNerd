@@ -74,6 +74,10 @@ internal class HomeVM(
                     }
                     .onError {
                         //TODO: display toast
+                        _state.update { state ->
+                            val updatedList = state.gameWidgetList.filterNot { it.game.id == gameWidget.game.id }
+                            state.copy(gameWidgetList = updatedList)
+                        }
                     }
             }
         }
