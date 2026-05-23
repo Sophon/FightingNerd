@@ -34,6 +34,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -209,7 +210,7 @@ internal fun CharacterRow(
                 else Modifier
             )
             .background(color = MaterialTheme.colorScheme.surfaceContainerLow)
-            .padding(bottom = 4.dp)
+            .padding(bottom = 8.dp)
     ) {
         characterList.forEach { character ->
             CharacterPanel(
@@ -226,13 +227,19 @@ private fun CharacterPanel(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .width(CHARACTER_CARD_WIDTH.dp)
             .height(128.dp)
-            .clickable(onClick = onClick)
+            .clickable(
+                interactionSource = interactionSource,
+                onClick = onClick,
+                indication = ripple(color = MaterialTheme.colorScheme.primaryContainer),
+            )
             .clip(RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
             .padding(vertical = 8.dp)
