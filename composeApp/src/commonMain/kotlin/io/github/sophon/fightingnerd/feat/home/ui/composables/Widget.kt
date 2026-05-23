@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,7 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandLess
@@ -39,6 +40,7 @@ import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.feature.Game
+import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
@@ -50,38 +52,41 @@ internal fun WidgetSection(
     onExpandWidget: (Game) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val botPaddingValues = PaddingValues(bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
-    LazyColumn(
-        contentPadding = botPaddingValues,
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surfaceContainerLow),
+    BoxWithConstraints(
+        modifier = modifier.fillMaxSize(),
     ) {
-        widgetList.forEach { widget ->
-            item(key = "header_${widget.game.id}") {
-                WidgetHeader(
-                    game = widget.game,
-                    featureName = widget.featureName,
-                    isExpanded = widget.isExpanded,
-                    onExpandClick = onExpandWidget,
-                    isLoading = widget.isLoading,
-                )
-            }
-
-            if (widget.isExpanded) {
-                val rows = widget.characterList.chunked(4) //TODO: calculate columns
-                items(
-                    items = rows,
-                    key = { row -> "row_${widget.game.id}_${row.first().id}" },
-                ) { rowCharacters ->
-                    CharacterRow(
-                        characterList = rowCharacters,
-                        onCharacterClick = {},
+        val botPaddingValues = PaddingValues(bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
+        val columns = (maxWidth / CHARACTER_CARD_WIDTH.dp).toInt().coerceAtLeast(1)
+        LazyColumn(
+            contentPadding = botPaddingValues,
+        ) {
+            widgetList.forEach { widget ->
+                item(key = "header_${widget.game.id}") {
+                    WidgetHeader(
+                        game = widget.game,
+                        featureName = widget.featureName,
+                        isExpanded = widget.isExpanded,
+                        onExpandClick = onExpandWidget,
+                        isLoading = widget.isLoading,
                     )
                 }
-            }
-            item {
-                Spacer(Modifier.height(8.dp))
+
+                if (widget.isExpanded) {
+                    val rows = widget.characterList.chunked(columns)
+                    itemsIndexed(
+                        items = rows,
+                        key = { _, row -> "row_${widget.game.id}_${row.first().id}" },
+                    ) { index, rowCharacters ->
+                        CharacterRow(
+                            characterList = rowCharacters,
+                            onCharacterClick = {},
+                            isLast = (index == rows.lastIndex),
+                        )
+                    }
+                }
+                item {
+                    Spacer(Modifier.height(8.dp))
+                }
             }
         }
     }
@@ -109,7 +114,7 @@ internal fun WidgetHeader(
         modifier = modifier
             .fillMaxWidth()
             .clip(shape)
-            .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .background(color = MaterialTheme.colorScheme.surfaceContainerLow)
             .padding(horizontal = 8.dp)
             .clickable(
                 interactionSource = interactionSource,
@@ -168,6 +173,7 @@ internal fun WidgetHeader(
 internal fun CharacterRow(
     characterList: List<GameWidget.Character>,
     onCharacterClick: (String) -> Unit,
+    isLast: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -178,7 +184,11 @@ internal fun CharacterRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.surface)
+            .then(
+                if (isLast) Modifier.clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+                else Modifier
+            )
+            .background(color = MaterialTheme.colorScheme.surfaceContainerLow)
     ) {
         characterList.forEach { character ->
             CharacterPanel(
@@ -199,7 +209,7 @@ private fun CharacterPanel(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
-            .width(100.dp)
+            .width(CHARACTER_CARD_WIDTH.dp)
             .height(128.dp)
             .padding(vertical = 2.dp)
             .clickable(onClick = onClick)
@@ -224,6 +234,8 @@ private fun CharacterPanel(
     }
 }
 
+private const val CHARACTER_CARD_WIDTH = 100
+
 
 //region PREVIEW
 @Preview
@@ -231,7 +243,7 @@ private fun CharacterPanel(
 private fun WidgetSectionDarkPreview() {
     AppTheme(darkTheme = true) {
         WidgetSection(
-            widgetList = mockWidgetList(),
+            widgetList = HomeViewState.PREVIEW.gameWidgetList,
             onExpandWidget = {},
         )
     }
@@ -242,44 +254,9 @@ private fun WidgetSectionDarkPreview() {
 private fun WidgetSectionLightPreview() {
     AppTheme(darkTheme = false) {
         WidgetSection(
-            widgetList = mockWidgetList(),
+            widgetList = HomeViewState.PREVIEW.gameWidgetList,
             onExpandWidget = {},
         )
     }
-}
-
-private fun mockCharacters(): List<GameWidget.Character> {
-    val names = listOf("Zuzana", "Eva", "Karolina", "Marcela", "Zdenka", "Hana")
-    return names.mapIndexed { index, name ->
-        GameWidget.Character(
-            id = "char_$index",
-            displayName = name,
-            queryName = "",
-        )
-    }
-}
-
-private fun mockWidget(
-    game: Game,
-    featureName: String,
-    isExpanded: Boolean,
-    isLoading: Boolean,
-): GameWidget {
-    val widget = GameWidget(
-        game = game,
-        featureName = featureName,
-        characterList = mockCharacters(),
-        isExpanded = isExpanded,
-        isLoading = isLoading,
-    )
-    return widget
-}
-
-private fun mockWidgetList(): List<GameWidget> {
-    return listOf(
-        mockWidget(Game.Tekken8, "Wavu Wiki", isExpanded = true, isLoading = false),
-        mockWidget(Game.StreetFighter6, "SuperCombo", isExpanded = false, isLoading = false),
-        mockWidget(Game.KoFXV, "Dream Cancel", isExpanded = false, isLoading = false),
-    )
 }
 //endregion
