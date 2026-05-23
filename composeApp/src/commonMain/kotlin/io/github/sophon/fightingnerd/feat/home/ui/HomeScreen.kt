@@ -9,9 +9,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import io.github.sophon.core.feature.Game
 import io.github.sophon.fightingnerd.feat.home.ui.composables.WidgetSection
+import io.github.sophon.fightingnerd.theme.AppTheme
+import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -22,6 +26,19 @@ internal fun HomeScreen(
     val vm = koinViewModel<HomeVM>()
     val state by vm.state.collectAsStateWithLifecycle()
 
+    Content(
+        state = state,
+        onExpandWidget = vm::onExpandWidget,
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun Content(
+    state: HomeViewState,
+    onExpandWidget: (Game) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
         modifier = modifier.fillMaxSize(),
@@ -34,8 +51,34 @@ internal fun HomeScreen(
         ) {
             WidgetSection(
                 widgetList = state.gameWidgetList,
-                onExpandWidget = vm::onExpandWidget,
+                onExpandWidget = onExpandWidget,
+                modifier = Modifier.padding(horizontal = 8.dp)
             )
         }
     }
 }
+
+
+//region PREVIEW
+@Composable
+@Preview
+private fun DarkHomeScreenPreview() {
+    AppTheme(darkTheme = true) {
+        Content(
+            state = HomeViewState.PREVIEW,
+            onExpandWidget = {},
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun LightHomeScreenPreview() {
+    AppTheme(darkTheme = false) {
+        Content(
+            state = HomeViewState.PREVIEW,
+            onExpandWidget = {},
+        )
+    }
+}
+//endregion

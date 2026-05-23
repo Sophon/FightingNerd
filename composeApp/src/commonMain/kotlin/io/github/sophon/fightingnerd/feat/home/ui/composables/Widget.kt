@@ -1,9 +1,17 @@
 package io.github.sophon.fightingnerd.feat.home.ui.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -18,20 +26,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -39,7 +48,9 @@ import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.feature.Game
+import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
+import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.Character
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -50,39 +61,33 @@ internal fun WidgetSection(
     onExpandWidget: (Game) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val botPaddingValues = PaddingValues(bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(
-            space = 8.dp,
-            alignment = Alignment.Top,
-        ),
-        contentPadding = botPaddingValues,
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = MaterialTheme.colorScheme.surfaceContainerLow),
+    BoxWithConstraints(
+        modifier = modifier.fillMaxSize(),
     ) {
-        widgetList.forEach { widget ->
-            item(key = "header_${widget.game.id}") {
-                WidgetHeader(
-                    game = widget.game,
-                    featureName = widget.featureName,
-                    isExpanded = widget.isExpanded,
-                    onExpandClick = onExpandWidget,
-                    isLoading = widget.isLoading,
-                )
-            }
-
-            if (widget.isExpanded) {
-                val rows = widget.characterList.chunked(4) //TODO: calculate columns
-                items(
-                    items = rows,
-                    key = { row -> "row_${widget.game.id}_${row.first().id}" },
-                ) { rowCharacters ->
-                    CharacterRow(
-                        characterList = rowCharacters,
-                        onCharacterClick = {},
-                        modifier = Modifier.padding(vertical = 4.dp),
+        val botPaddingValues = PaddingValues(bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
+        LazyColumn(
+            contentPadding = botPaddingValues,
+        ) {
+            widgetList.forEach { widget ->
+                item(key = "header_${widget.game.id}") {
+                    WidgetHeader(
+                        game = widget.game,
+                        featureName = widget.featureName,
+                        isExpanded = widget.isExpanded,
+                        onExpandClick = onExpandWidget,
+                        isLoading = widget.isLoading,
                     )
+                }
+
+                item(key = "characters_${widget.game.id}") {
+                    CharacterMatrix(
+                        isExpanded = widget.isExpanded,
+                        characterList = widget.characterList,
+                    )
+                }
+
+                item {
+                    Spacer(Modifier.height(8.dp))
                 }
             }
         }
@@ -99,13 +104,19 @@ internal fun WidgetHeader(
     modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val shape = if (isExpanded) {
+        RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+    } else {
+        RoundedCornerShape(16.dp)
+    }
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.surface)
+            .clip(shape)
+            .background(color = MaterialTheme.colorScheme.surfaceContainerLow)
             .padding(horizontal = 8.dp)
             .clickable(
                 interactionSource = interactionSource,
@@ -143,38 +154,77 @@ internal fun WidgetHeader(
 
         Spacer(Modifier.width(8.dp))
 
+        val chevronFlip by animateFloatAsState(
+            targetValue = if (isExpanded) -1f else 1f,
+            label = "chevronFlip",
+        )
         if (isLoading) {
             CircularProgressIndicator(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(32.dp)
             )
         } else {
-            val icon = if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore
             Icon(
-                imageVector = icon,
+                imageVector = Icons.Outlined.ExpandMore,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier
+                    .size(32.dp)
+                    .graphicsLayer { scaleY = chevronFlip }
             )
         }
     }
 }
 
 @Composable
+private fun BoxWithConstraintsScope.CharacterMatrix(
+    isExpanded: Boolean,
+    characterList: List<Character>,
+    modifier: Modifier = Modifier,
+) {
+    val columns = (maxWidth / CHARACTER_CARD_WIDTH.dp).toInt().coerceAtLeast(1)
+
+    AnimatedVisibility(
+        visible = isExpanded,
+        enter = expandVertically() + fadeIn(),
+        exit = shrinkVertically() + fadeOut(),
+    ) {
+        Column(
+             modifier = modifier,
+        ) {
+            val rows = characterList.chunked(columns)
+            rows.forEachIndexed { index, rowCharacters ->
+                CharacterRow(
+                    characterList = rowCharacters,
+                    onCharacterClick = {},
+                    isLast = index == rows.lastIndex,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 internal fun CharacterRow(
-    characterList: List<GameWidget.Character>,
+    characterList: List<Character>,
     onCharacterClick: (String) -> Unit,
+    isLast: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(
-            space = 4.dp,
+            space = 8.dp,
             alignment = Alignment.CenterHorizontally,
         ),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.surface)
+            .then(
+                if (isLast) Modifier.clip(RoundedCornerShape(bottomStart = 16.dp, bottomEnd = 16.dp))
+                else Modifier
+            )
+            .background(color = MaterialTheme.colorScheme.surfaceContainerLow)
+            .padding(bottom = 8.dp)
     ) {
         characterList.forEach { character ->
             CharacterPanel(
@@ -187,20 +237,26 @@ internal fun CharacterRow(
 
 @Composable
 private fun CharacterPanel(
-    character: GameWidget.Character,
+    character: Character,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
-            .width(100.dp)
+            .width(CHARACTER_CARD_WIDTH.dp)
             .height(128.dp)
-            .clickable(onClick = onClick)
+            .clickable(
+                interactionSource = interactionSource,
+                onClick = onClick,
+                indication = ripple(color = MaterialTheme.colorScheme.primaryContainer),
+            )
             .clip(RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
-            .padding(8.dp)
+            .padding(vertical = 8.dp)
     ) {
         AsyncImage(
             model = character.iconUrl,
@@ -220,6 +276,8 @@ private fun CharacterPanel(
     }
 }
 
+private const val CHARACTER_CARD_WIDTH = 100
+
 
 //region PREVIEW
 @Preview
@@ -227,7 +285,7 @@ private fun CharacterPanel(
 private fun WidgetSectionDarkPreview() {
     AppTheme(darkTheme = true) {
         WidgetSection(
-            widgetList = mockWidgetList(),
+            widgetList = HomeViewState.PREVIEW.gameWidgetList,
             onExpandWidget = {},
         )
     }
@@ -238,44 +296,9 @@ private fun WidgetSectionDarkPreview() {
 private fun WidgetSectionLightPreview() {
     AppTheme(darkTheme = false) {
         WidgetSection(
-            widgetList = mockWidgetList(),
+            widgetList = HomeViewState.PREVIEW.gameWidgetList,
             onExpandWidget = {},
         )
     }
-}
-
-private fun mockCharacters(): List<GameWidget.Character> {
-    val names = listOf("Zuzana", "Eva", "Karolina", "Marcela", "Zdenka", "Hana")
-    return names.mapIndexed { index, name ->
-        GameWidget.Character(
-            id = "char_$index",
-            displayName = name,
-            queryName = "",
-        )
-    }
-}
-
-private fun mockWidget(
-    game: Game,
-    featureName: String,
-    isExpanded: Boolean,
-    isLoading: Boolean,
-): GameWidget {
-    val widget = GameWidget(
-        game = game,
-        featureName = featureName,
-        characterList = mockCharacters(),
-        isExpanded = isExpanded,
-        isLoading = isLoading,
-    )
-    return widget
-}
-
-private fun mockWidgetList(): List<GameWidget> {
-    return listOf(
-        mockWidget(Game.Tekken8, "Wavu Wiki", isExpanded = true, isLoading = false),
-        mockWidget(Game.StreetFighter6, "SuperCombo", isExpanded = false, isLoading = false),
-        mockWidget(Game.KoFXV, "Dream Cancel", isExpanded = false, isLoading = false),
-    )
 }
 //endregion
