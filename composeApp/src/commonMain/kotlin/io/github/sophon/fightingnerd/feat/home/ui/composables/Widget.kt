@@ -1,5 +1,11 @@
 package io.github.sophon.fightingnerd.feat.home.ui.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -29,10 +35,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -71,19 +80,25 @@ internal fun WidgetSection(
                     )
                 }
 
-                if (widget.isExpanded) {
-                    val rows = widget.characterList.chunked(columns)
-                    itemsIndexed(
-                        items = rows,
-                        key = { _, row -> "row_${widget.game.id}_${row.first().id}" },
-                    ) { index, rowCharacters ->
-                        CharacterRow(
-                            characterList = rowCharacters,
-                            onCharacterClick = {},
-                            isLast = (index == rows.lastIndex),
-                        )
+                item(key = "characters_${widget.game.id}") {
+                    AnimatedVisibility(
+                        visible = widget.isExpanded,
+                        enter = expandVertically() + fadeIn(),
+                        exit = shrinkVertically() + fadeOut(),
+                    ) {
+                        Column {
+                            val rows = widget.characterList.chunked(columns)
+                            rows.forEachIndexed { index, rowCharacters ->
+                                CharacterRow(
+                                    characterList = rowCharacters,
+                                    onCharacterClick = {},
+                                    isLast = index == rows.lastIndex,
+                                )
+                            }
+                        }
                     }
                 }
+
                 item {
                     Spacer(Modifier.height(8.dp))
                 }
@@ -152,18 +167,23 @@ internal fun WidgetHeader(
 
         Spacer(Modifier.width(8.dp))
 
+        val chevronFlip by animateFloatAsState(
+            targetValue = if (isExpanded) -1f else 1f,
+            label = "chevronFlip",
+        )
         if (isLoading) {
             CircularProgressIndicator(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.size(32.dp)
             )
         } else {
-            val icon = if (isExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore
             Icon(
-                imageVector = icon,
+                imageVector = Icons.Outlined.ExpandMore,
                 contentDescription = null,
                 tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier
+                    .size(32.dp)
+                    .graphicsLayer { scaleY = chevronFlip }
             )
         }
     }
