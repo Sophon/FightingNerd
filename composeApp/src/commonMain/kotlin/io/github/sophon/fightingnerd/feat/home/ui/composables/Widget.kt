@@ -178,7 +178,7 @@ internal fun CharacterRow(
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(
-            space = 4.dp,
+            space = 8.dp,
             alignment = Alignment.CenterHorizontally,
         ),
         verticalAlignment = Alignment.CenterVertically,
@@ -189,6 +189,7 @@ internal fun CharacterRow(
                 else Modifier
             )
             .background(color = MaterialTheme.colorScheme.surfaceContainerLow)
+            .padding(bottom = 4.dp)
     ) {
         characterList.forEach { character ->
             CharacterPanel(
