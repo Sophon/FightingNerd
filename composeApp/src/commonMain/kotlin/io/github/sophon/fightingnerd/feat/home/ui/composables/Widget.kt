@@ -52,10 +52,6 @@ internal fun WidgetSection(
 ) {
     val botPaddingValues = PaddingValues(bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
     LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(
-            space = 8.dp,
-            alignment = Alignment.Top,
-        ),
         contentPadding = botPaddingValues,
         modifier = modifier
             .fillMaxSize()
@@ -81,9 +77,11 @@ internal fun WidgetSection(
                     CharacterRow(
                         characterList = rowCharacters,
                         onCharacterClick = {},
-                        modifier = Modifier.padding(vertical = 4.dp),
                     )
                 }
+            }
+            item {
+                Spacer(Modifier.height(8.dp))
             }
         }
     }
@@ -99,13 +97,19 @@ internal fun WidgetHeader(
     modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val shape = if (isExpanded) {
+        RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+    } else {
+        RoundedCornerShape(16.dp)
+    }
 
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.surface)
+            .clip(shape)
+            .background(color = MaterialTheme.colorScheme.surfaceContainer)
             .padding(horizontal = 8.dp)
             .clickable(
                 interactionSource = interactionSource,
@@ -197,10 +201,10 @@ private fun CharacterPanel(
         modifier = modifier
             .width(100.dp)
             .height(128.dp)
+            .padding(vertical = 2.dp)
             .clickable(onClick = onClick)
             .clip(RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
-            .padding(8.dp)
     ) {
         AsyncImage(
             model = character.iconUrl,
