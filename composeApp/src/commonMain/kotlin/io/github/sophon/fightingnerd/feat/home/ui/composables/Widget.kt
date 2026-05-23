@@ -232,10 +232,10 @@ private fun CharacterPanel(
         modifier = modifier
             .width(CHARACTER_CARD_WIDTH.dp)
             .height(128.dp)
-            .padding(vertical = 2.dp)
             .clickable(onClick = onClick)
             .clip(RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
+            .padding(vertical = 8.dp)
     ) {
         AsyncImage(
             model = character.iconUrl,
