@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,10 +26,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ExpandLess
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
@@ -41,7 +40,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,6 +50,7 @@ import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.feature.Game
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
+import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.Character
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -66,7 +65,6 @@ internal fun WidgetSection(
         modifier = modifier.fillMaxSize(),
     ) {
         val botPaddingValues = PaddingValues(bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
-        val columns = (maxWidth / CHARACTER_CARD_WIDTH.dp).toInt().coerceAtLeast(1)
         LazyColumn(
             contentPadding = botPaddingValues,
         ) {
@@ -82,22 +80,10 @@ internal fun WidgetSection(
                 }
 
                 item(key = "characters_${widget.game.id}") {
-                    AnimatedVisibility(
-                        visible = widget.isExpanded,
-                        enter = expandVertically() + fadeIn(),
-                        exit = shrinkVertically() + fadeOut(),
-                    ) {
-                        Column {
-                            val rows = widget.characterList.chunked(columns)
-                            rows.forEachIndexed { index, rowCharacters ->
-                                CharacterRow(
-                                    characterList = rowCharacters,
-                                    onCharacterClick = {},
-                                    isLast = index == rows.lastIndex,
-                                )
-                            }
-                        }
-                    }
+                    CharacterMatrix(
+                        isExpanded = widget.isExpanded,
+                        characterList = widget.characterList,
+                    )
                 }
 
                 item {
@@ -191,8 +177,36 @@ internal fun WidgetHeader(
 }
 
 @Composable
+private fun BoxWithConstraintsScope.CharacterMatrix(
+    isExpanded: Boolean,
+    characterList: List<Character>,
+    modifier: Modifier = Modifier,
+) {
+    val columns = (maxWidth / CHARACTER_CARD_WIDTH.dp).toInt().coerceAtLeast(1)
+
+    AnimatedVisibility(
+        visible = isExpanded,
+        enter = expandVertically() + fadeIn(),
+        exit = shrinkVertically() + fadeOut(),
+    ) {
+        Column(
+             modifier = modifier,
+        ) {
+            val rows = characterList.chunked(columns)
+            rows.forEachIndexed { index, rowCharacters ->
+                CharacterRow(
+                    characterList = rowCharacters,
+                    onCharacterClick = {},
+                    isLast = index == rows.lastIndex,
+                )
+            }
+        }
+    }
+}
+
+@Composable
 internal fun CharacterRow(
-    characterList: List<GameWidget.Character>,
+    characterList: List<Character>,
     onCharacterClick: (String) -> Unit,
     isLast: Boolean,
     modifier: Modifier = Modifier
@@ -223,7 +237,7 @@ internal fun CharacterRow(
 
 @Composable
 private fun CharacterPanel(
-    character: GameWidget.Character,
+    character: Character,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
