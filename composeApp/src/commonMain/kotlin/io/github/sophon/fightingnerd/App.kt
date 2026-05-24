@@ -14,10 +14,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.compose.setSingletonImageLoaderFactory
@@ -25,11 +26,21 @@ import coil3.util.DebugLogger
 import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.ModuleRepo
-import io.github.sophon.fightingnerd.screens.moveList.ui.MoveListScreen
-import io.github.sophon.fightingnerd.screens.settings.ui.SettingsScreen
+import io.github.sophon.fightingnerd.navigation.Destination
 import io.github.sophon.fightingnerd.theme.AppTheme
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
+
+private val navConfig = SavedStateConfiguration {
+    serializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            subclass(Destination.Home::class, Destination.Home.serializer())
+            subclass(Destination.MoveList::class, Destination.MoveList.serializer())
+        }
+    }
+}
 
 @Composable
 @Preview
@@ -47,34 +58,28 @@ internal fun App() {
 
     if (isInitialized) {
         AppTheme {
-            val navHostController = rememberNavController()
+            val backStack = rememberNavBackStack(navConfig, Destination.Home)
 
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.surface),
             ) {
-                NavHost(
-                    navController = navHostController,
-                    startDestination = Destination.Home,
+                NavDisplay(
+                    backStack = backStack,
+                    onBack = { backStack.removeLastOrNull() },
                     modifier = Modifier.fillMaxSize(),
-                ) {
-                    composable<Destination.Home> {
-                        HomeScreen(navHostController)
+                    entryProvider = entryProvider {
+                        entry<Destination.Home> {
+                            HomeScreen(
+                                onNavigateToMoveList = { gameId, characterId ->
+                                    backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
+                                }
+                            )
+                        }
+                        entry<Destination.MoveList>{}
                     }
-
-                    composable<Destination.MoveList> { navBackstackEntry ->
-                        val route = navBackstackEntry.toRoute<Destination.MoveList>()
-                        MoveListScreen(
-                            gameId = route.gameId,
-                            charName = route.charName,
-                        )
-                    }
-
-                    composable<Destination.Settings> {
-                        SettingsScreen()
-                    }
-                }
+                )
 
                 BottomBarView(
                     modifier = Modifier

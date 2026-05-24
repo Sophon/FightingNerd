@@ -59,6 +59,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 internal fun WidgetSection(
     widgetList: List<GameWidget>,
     onExpandWidget: (Game) -> Unit,
+    onCharacterClick: (gameId: String, characterId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(
@@ -83,6 +84,9 @@ internal fun WidgetSection(
                     CharacterMatrix(
                         isExpanded = widget.isExpanded,
                         characterList = widget.characterList,
+                        onCharacterClick = { characterId ->
+                            onCharacterClick(widget.game.id, characterId)
+                        }
                     )
                 }
 
@@ -180,6 +184,7 @@ internal fun WidgetHeader(
 private fun BoxWithConstraintsScope.CharacterMatrix(
     isExpanded: Boolean,
     characterList: List<Character>,
+    onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val columns = (maxWidth / CHARACTER_CARD_WIDTH.dp).toInt().coerceAtLeast(1)
@@ -196,7 +201,7 @@ private fun BoxWithConstraintsScope.CharacterMatrix(
             rows.forEachIndexed { index, rowCharacters ->
                 CharacterRow(
                     characterList = rowCharacters,
-                    onCharacterClick = {},
+                    onCharacterClick = onCharacterClick,
                     isLast = index == rows.lastIndex,
                 )
             }
@@ -229,7 +234,7 @@ internal fun CharacterRow(
         characterList.forEach { character ->
             CharacterPanel(
                 character = character,
-                onClick = { onCharacterClick(character.queryName) },
+                onClick = { onCharacterClick(character.id) },
             )
         }
     }
@@ -287,6 +292,7 @@ private fun WidgetSectionDarkPreview() {
         WidgetSection(
             widgetList = HomeViewState.PREVIEW.gameWidgetList,
             onExpandWidget = {},
+            onCharacterClick = {_, _ -> },
         )
     }
 }
@@ -298,6 +304,7 @@ private fun WidgetSectionLightPreview() {
         WidgetSection(
             widgetList = HomeViewState.PREVIEW.gameWidgetList,
             onExpandWidget = {},
+            onCharacterClick = {_, _ -> },
         )
     }
 }

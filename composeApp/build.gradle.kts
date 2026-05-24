@@ -61,13 +61,11 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.androidx.navigation.compose)
-            implementation(libs.androidx.navigation.runtime)
+            implementation(libs.jetbrains.navigation3.ui)
 
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.compose.navigation)
 
             implementation(libs.coil.compose.core)
             implementation(libs.coil.compose)
