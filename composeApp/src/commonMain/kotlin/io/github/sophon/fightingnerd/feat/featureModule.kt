@@ -8,6 +8,7 @@ import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.moveList.MoveListVM
+import io.github.sophon.fightingnerd.feat.moveList.usecase.LoadMoveListUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -30,7 +31,12 @@ internal fun featureModule() = module {
 
     //region
     viewModel { (gameId: String, characterId: String) ->
-        MoveListVM(gameId = gameId, characterId = characterId)
+        MoveListVM(
+            gameId = gameId,
+            characterId = characterId,
+            loadMoveListUseCase = get(),
+        )
     }
+    singleOf(::LoadMoveListUseCase)
     //endregion
 }
