@@ -11,7 +11,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.NavHostController
 import io.github.sophon.core.feature.Game
 import io.github.sophon.fightingnerd.feat.home.ui.composables.WidgetSection
 import io.github.sophon.fightingnerd.theme.AppTheme
@@ -20,7 +19,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun HomeScreen(
-    navHostController: NavHostController,
+    onNavigateToMoveList: (gameId: String, characterId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val vm = koinViewModel<HomeVM>()
