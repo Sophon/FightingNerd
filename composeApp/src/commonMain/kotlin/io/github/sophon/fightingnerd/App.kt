@@ -81,7 +81,7 @@ internal fun App() {
                         entry<Destination.MoveList>{ destination ->
                             MoveListScreen(
                                 gameId = destination.gameId,
-                                characterId = destination.gameId,
+                                characterId = destination.characterId,
                             )
                         }
                     }
