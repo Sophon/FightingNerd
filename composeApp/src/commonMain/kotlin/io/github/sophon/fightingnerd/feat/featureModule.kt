@@ -7,7 +7,9 @@ import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseC
 import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
+import io.github.sophon.fightingnerd.feat.moveList.MoveListVM
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -24,5 +26,11 @@ internal fun featureModule() = module {
     viewModelOf(::HomeVM)
     singleOf(::LoadEmptyWidgetsUseCase)
     singleOf(::LoadGameCharacterListUseCase)
+    //endregion
+
+    //region
+    viewModel { (gameId: String, characterId: String) ->
+        MoveListVM(gameId = gameId, characterId = characterId)
+    }
     //endregion
 }

@@ -26,6 +26,7 @@ import coil3.util.DebugLogger
 import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.ModuleRepo
+import io.github.sophon.fightingnerd.feat.moveList.MoveListScreen
 import io.github.sophon.fightingnerd.navigation.Destination
 import io.github.sophon.fightingnerd.theme.AppTheme
 import kotlinx.serialization.modules.SerializersModule
@@ -77,7 +78,12 @@ internal fun App() {
                                 }
                             )
                         }
-                        entry<Destination.MoveList>{}
+                        entry<Destination.MoveList>{ destination ->
+                            MoveListScreen(
+                                gameId = destination.gameId,
+                                characterId = destination.gameId,
+                            )
+                        }
                     }
                 )
 
