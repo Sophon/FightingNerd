@@ -38,18 +38,18 @@ internal fun MoveItem(
 
         InfoFieldRow(
             fields = listOf(
-                "startup" to move.startup,
-                "level" to move.level,
-                "properties" to move.propertySet.joinToString(),
+                stringResource(Res.string.move_list_field_startup) to move.startup,
+                stringResource(Res.string.move_list_field_level) to move.level,
+                stringResource(Res.string.move_list_field_properties) to move.propertySet.joinToString(),
             )
         )
         Spacer(Modifier.height(8.dp))
 
         InfoFieldRow(
             fields = listOf(
-                "on hit" to move.onHit,
-                "on block" to move.onBlock,
-                "on counter" to move.onCounter,
+                stringResource(Res.string.move_list_field_on_hit) to move.onHit,
+                stringResource(Res.string.move_list_field_on_block) to move.onBlock,
+                stringResource(Res.string.move_list_field_on_counter) to move.onCounter,
             )
         )
         Spacer(Modifier.height(16.dp))
