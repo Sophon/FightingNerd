@@ -1,16 +1,13 @@
 package io.github.sophon.fightingnerd.feat.moveList.ui.composables
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -26,7 +23,6 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 internal fun MoveItem(
     move: MoveListState.UiMove,
-    onMoveClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -57,10 +53,6 @@ internal fun MoveItem(
             )
         )
         Spacer(Modifier.height(16.dp))
-
-        MoveDetailsButton(
-            onShowMoreClick = onMoveClick,
-        )
     }
 }
 
@@ -110,25 +102,6 @@ private fun InfoFieldRow(
     }
 }
 
-@Composable
-private fun MoveDetailsButton(
-    onShowMoreClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        horizontalArrangement = Arrangement.Center,
-        modifier = modifier.fillMaxWidth()
-    ) {
-        FilledTonalButton(
-            onClick = onShowMoreClick,
-            shape = CircleShape,
-            modifier = modifier,
-        ) {
-            Text(text = "Details")
-        }
-    }
-}
-
 
 //region PREVIEW
 @Preview
@@ -137,7 +110,6 @@ private fun ItemPreviewDark() {
     AppTheme(darkTheme = true) {
         MoveItem(
             move = MoveListState.PREVIEW.uiMoveList.last(),
-            onMoveClick = {},
         )
     }
 }
@@ -148,7 +120,6 @@ private fun ItemPreviewLight() {
     AppTheme(darkTheme = false) {
         MoveItem(
             move = MoveListState.PREVIEW.uiMoveList.first(),
-            onMoveClick = {},
         )
     }
 }
