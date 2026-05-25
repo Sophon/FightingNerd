@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.unit.dp
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListState
 import io.github.sophon.fightingnerd.theme.AppTheme
@@ -25,7 +26,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 internal fun MoveItem(
     move: MoveListState.UiMove,
-    onMoveClick: (id: String) -> Unit,
+    onMoveClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -33,7 +34,7 @@ internal fun MoveItem(
             .fillMaxWidth()
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(16.dp)
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp)
     ) {
         Header(
             input = move.input
@@ -55,8 +56,11 @@ internal fun MoveItem(
                 "on counter" to move.onCounter,
             )
         )
+        Spacer(Modifier.height(16.dp))
 
-        //TODO: show more
+        MoveDetailsButton(
+            onShowMoreClick = onMoveClick,
+        )
     }
 }
 
@@ -92,7 +96,7 @@ private fun InfoFieldRow(
             ) {
                 Text(
                     text = value ?: "-",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
 
@@ -102,6 +106,25 @@ private fun InfoFieldRow(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun MoveDetailsButton(
+    onShowMoreClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        FilledTonalButton(
+            onClick = onShowMoreClick,
+            shape = CircleShape,
+            modifier = modifier,
+        ) {
+            Text(text = "Details")
         }
     }
 }

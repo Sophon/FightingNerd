@@ -43,8 +43,7 @@ private fun Content(
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
-        modifier = modifier
-            .background(color = MaterialTheme.colorScheme.surface),
+        modifier = modifier,
     ) { paddingValues ->
         LazyColumn(
             modifier = Modifier
@@ -59,7 +58,7 @@ private fun Content(
                 ) {
                     MoveItem(
                         move = move,
-                        onMoveClick = onMoveClick,
+                        onMoveClick = { onMoveClick(move.id) },
                         modifier = Modifier.padding(4.dp)
                     )
                 }
