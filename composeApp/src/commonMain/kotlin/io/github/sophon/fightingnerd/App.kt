@@ -14,9 +14,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import coil3.ImageLoader
@@ -26,6 +28,7 @@ import coil3.util.DebugLogger
 import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.ModuleRepo
+import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
 import io.github.sophon.fightingnerd.navigation.Destination
 import io.github.sophon.fightingnerd.theme.AppTheme
 import kotlinx.serialization.modules.SerializersModule
@@ -68,6 +71,10 @@ internal fun App() {
                 NavDisplay(
                     backStack = backStack,
                     onBack = { backStack.removeLastOrNull() },
+                    entryDecorators = listOf(
+                        rememberSaveableStateHolderNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator(),
+                    ),
                     modifier = Modifier.fillMaxSize(),
                     entryProvider = entryProvider {
                         entry<Destination.Home> {
@@ -77,7 +84,12 @@ internal fun App() {
                                 }
                             )
                         }
-                        entry<Destination.MoveList>{}
+                        entry<Destination.MoveList>{ destination ->
+                            MoveListScreen(
+                                gameId = destination.gameId,
+                                characterId = destination.characterId,
+                            )
+                        }
                     }
                 )
 
