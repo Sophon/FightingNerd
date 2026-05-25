@@ -1,6 +1,5 @@
 package io.github.sophon.fightingnerd.screens
 
-import io.github.sophon.fightingnerd.screens.moveList.moveListModule
 import io.github.sophon.fightingnerd.screens.settings.ui.SettingsVM
 import io.github.sophon.fightingnerd.screens.settings.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.screens.settings.usecase.ToggleFeatureUseCase
@@ -9,9 +8,6 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 internal val screensModule = module {
-    includes(
-        moveListModule,
-    )
 
     singleOf(::GetAvailableFeaturesUseCase)
     singleOf(::ToggleFeatureUseCase)
