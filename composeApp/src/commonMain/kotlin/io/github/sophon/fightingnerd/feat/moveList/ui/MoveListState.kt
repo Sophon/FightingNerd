@@ -15,6 +15,7 @@ internal data class MoveListState(
 ) {
     data class UiMove(
         val id: String,
+        val input: String,
 
         val startup: String?,
         val level: String?,
@@ -111,6 +112,7 @@ internal data class MoveListState(
         private fun Move.toUiMove(): UiMove {
             return UiMove(
                 id = id,
+                input = input,
                 startup = startup,
                 level = guard,
                 onHit = onHit,

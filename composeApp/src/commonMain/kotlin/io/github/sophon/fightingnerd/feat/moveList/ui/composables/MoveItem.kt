@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,7 +35,9 @@ internal fun MoveItem(
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(16.dp)
     ) {
-        //TODO: header
+        Header(
+            input = move.input
+        )
 
         InfoFieldRow(
             fields = listOf(
@@ -54,6 +57,21 @@ internal fun MoveItem(
         )
 
         //TODO: show more
+    }
+}
+
+@Composable
+private fun Header(
+    input: String,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Text(
+            text = input,
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+        )
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
     }
 }
 
