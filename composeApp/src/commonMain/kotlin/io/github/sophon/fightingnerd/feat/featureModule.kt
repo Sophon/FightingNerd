@@ -7,7 +7,7 @@ import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseC
 import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
-import io.github.sophon.fightingnerd.feat.moveList.MoveListVM
+import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListVM
 import io.github.sophon.fightingnerd.feat.moveList.usecase.LoadMoveListUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel

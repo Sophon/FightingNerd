@@ -7,4 +7,5 @@ internal enum class Property {
     HighCrush,
     LowCrush,
     Heat,
+    Throw
 }

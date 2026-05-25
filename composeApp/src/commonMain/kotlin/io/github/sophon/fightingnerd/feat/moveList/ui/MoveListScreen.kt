@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.moveList
+package io.github.sophon.fightingnerd.feat.moveList.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -18,5 +18,18 @@ internal fun MoveListScreen(
     )
     val state by vm.state.collectAsStateWithLifecycle()
 
-    //content
+    Content(
+        state = state,
+        onMoveClick = { /*TODO*/ },
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun Content(
+    state: MoveListState,
+    onMoveClick: (id: String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    //TODO:
 }

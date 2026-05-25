@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.moveList
+package io.github.sophon.fightingnerd.feat.moveList.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
