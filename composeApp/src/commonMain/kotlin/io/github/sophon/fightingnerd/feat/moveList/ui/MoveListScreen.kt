@@ -61,9 +61,8 @@ private fun Content(
                 ) {
                     MoveItem(
                         move = move,
-                        modifier = Modifier
-                            .padding(4.dp)
-                            .clickable(onClick = { onMoveClick(move.id) })
+                        onMoveClick = { onMoveClick(move.id) },
+                        modifier = Modifier.padding(4.dp)
                     )
                     Spacer(Modifier.height(4.dp))
                 }

@@ -1,6 +1,8 @@
 package io.github.sophon.fightingnerd.feat.moveList.ui.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,23 +13,41 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.move_list_field_level
+import fightingnerd.composeapp.generated.resources.move_list_field_on_block
+import fightingnerd.composeapp.generated.resources.move_list_field_on_counter
+import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
+import fightingnerd.composeapp.generated.resources.move_list_field_properties
+import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListState
 import io.github.sophon.fightingnerd.theme.AppTheme
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun MoveItem(
     move: MoveListState.UiMove,
+    onMoveClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .clickable(
+                interactionSource = interactionSource,
+                onClick = onMoveClick,
+                indication = ripple(color = MaterialTheme.colorScheme.primaryContainer)
+            )
             .clip(RoundedCornerShape(8.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp)
@@ -110,6 +130,7 @@ private fun ItemPreviewDark() {
     AppTheme(darkTheme = true) {
         MoveItem(
             move = MoveListState.PREVIEW.uiMoveList.last(),
+            onMoveClick = {},
         )
     }
 }
@@ -120,6 +141,7 @@ private fun ItemPreviewLight() {
     AppTheme(darkTheme = false) {
         MoveItem(
             move = MoveListState.PREVIEW.uiMoveList.first(),
+            onMoveClick = {},
         )
     }
 }
