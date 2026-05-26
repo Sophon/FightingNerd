@@ -1,0 +1,404 @@
+{
+  "characters": [
+    {
+      "id": "alisa",
+      "displayName": "Alisa",
+      "wavuName": "Alisa",
+      "aliasList": ["ali", "als"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_mnt.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_mnt.png"
+      }
+    },
+    {
+      "id": "anna",
+      "displayName": "Anna",
+      "wavuName": "Anna",
+      "aliasList": ["ana", "an"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/03/T_UI_CS_Character_Thumb_Selected_kgr.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/03/T_UI_CS_Character_Thumb_Selected_kgr.png"
+      }
+    },
+    {
+      "id": "armor-king",
+      "displayName": "Armor King",
+      "wavuName": "Armor King",
+      "aliasList": ["ak", "aking", "armor-king"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png"
+      }
+    },
+    {
+      "id": "asuka",
+      "displayName": "Asuka",
+      "wavuName": "Asuka",
+      "aliasList": ["oscar", "oskar", "aska"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_der.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_der.png"
+      }
+    },
+    {
+      "id": "azucena",
+      "displayName": "Azucena",
+      "wavuName": "Azucena",
+      "aliasList": ["azu"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_cat.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_cat.png"
+      }
+    },
+    {
+      "id": "bryan",
+      "displayName": "Bryan",
+      "wavuName": "Bryan",
+      "aliasList": ["bry", "byron"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_cht.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_cht.png"
+      }
+    },
+    {
+      "id": "claudio",
+      "displayName": "Claudio",
+      "wavuName": "Claudio",
+      "aliasList": ["cld", "cla", "claud"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ctr.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ctr.png"
+      }
+    },
+    {
+      "id": "clive",
+      "displayName": "Clive",
+      "wavuName": "Clive",
+      "aliasList": ["cli", "clv"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/12/T_UI_CS_Character_Thumb_Selected_okm.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/12/T_UI_CS_Character_Thumb_Selected_okm.png"
+      }
+    },
+    {
+      "id": "devil-jin",
+      "displayName": "Devil Jin",
+      "wavuName": "Devil Jin",
+      "aliasList": ["dvj", "dj", "deviljin", "djin"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_swl.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_swl.png"
+      }
+    },
+    {
+      "id": "dragunov",
+      "displayName": "Dragunov",
+      "wavuName": "Dragunov",
+      "aliasList": ["dra", "drag", "dragu", "sergei"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_kmd.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_kmd.png"
+      }
+    },
+    {
+      "id": "eddy",
+      "displayName": "Eddy",
+      "wavuName": "Eddy",
+      "aliasList": ["ed", "capo", "edy"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/04/T_UI_CS_Character_Thumb_Selected_dog.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/04/T_UI_CS_Character_Thumb_Selected_dog.png"
+      }
+    },
+    {
+      "id": "fahkumram",
+      "displayName": "Fahkumram",
+      "wavuName": "Fahkumram",
+      "aliasList": ["fahk", "fak", "fah"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/07/T_UI_CS_Character_Thumb_Selected_tgr.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/07/T_UI_CS_Character_Thumb_Selected_tgr.png"
+      }
+    },
+    {
+      "id": "feng",
+      "displayName": "Feng",
+      "wavuName": "Feng",
+      "aliasList": ["fen"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_klw.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_klw.png"
+      }
+    },
+    {
+      "id": "hwoarang",
+      "displayName": "Hwoarang",
+      "wavuName": "Hwoarang",
+      "aliasList": ["hwo"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_snk.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_snk.png"
+      }
+    },
+    {
+      "id": "heihachi",
+      "displayName": "Heihachi",
+      "wavuName": "Heihachi",
+      "aliasList": ["hei", "hachi"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/09/T_UI_CS_Character_Thumb_Selected_bee.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/09/T_UI_CS_Character_Thumb_Selected_bee.png"
+      }
+    },
+    {
+      "id": "jack-8",
+      "displayName": "Jack-8",
+      "wavuName": "Jack-8",
+      "aliasList": ["jack", "j8", "jack8"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ccn.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ccn.png"
+      }
+    },
+    {
+      "id": "jin",
+      "displayName": "Jin",
+      "wavuName": "Jin",
+      "aliasList": ["jim"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ant.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ant.png"
+      }
+    },
+    {
+      "id": "jun",
+      "displayName": "Jun",
+      "wavuName": "Jun",
+      "aliasList": ["june"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_aml.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_aml.png"
+      }
+    },
+    {
+      "id": "kazuya",
+      "displayName": "Kazuya",
+      "wavuName": "Kazuya",
+      "aliasList": ["kaz", "masku"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_grl.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_grl.png"
+      }
+    },
+    {
+      "id": "king",
+      "displayName": "King",
+      "wavuName": "King",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_pgn.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_pgn.png"
+      }
+    },
+    {
+      "id": "kuma",
+      "displayName": "Kuma",
+      "wavuName": "Kuma",
+      "aliasList": ["bear"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_rbt.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_rbt.png"
+      }
+    },
+    {
+      "id": "lars",
+      "displayName": "Lars",
+      "wavuName": "Lars",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_lzd.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_lzd.png"
+      }
+    },
+    {
+      "id": "law",
+      "displayName": "Law",
+      "wavuName": "Law",
+      "aliasList": ["marshall"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_pig.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_pig.png"
+      }
+    },
+    {
+      "id": "lee",
+      "displayName": "Lee",
+      "wavuName": "Lee",
+      "aliasList": ["violet"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_wlf.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_wlf.png"
+      }
+    },
+    {
+      "id": "leo",
+      "displayName": "Leo",
+      "wavuName": "Leo",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ghp.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ghp.png"
+      }
+    },
+    {
+      "id": "leroy",
+      "displayName": "Leroy",
+      "wavuName": "Leroy",
+      "aliasList": ["ler", "roy"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_jly.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_jly.png"
+      }
+    },
+    {
+      "id": "lidia",
+      "displayName": "Lidia",
+      "wavuName": "Lidia",
+      "aliasList": ["lid", "pm"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/07/T_UI_CS_Character_Thumb_Normal_cbr.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/07/T_UI_CS_Character_Thumb_Normal_cbr.png"
+      }
+    },
+    {
+      "id": "lili",
+      "displayName": "Lili",
+      "wavuName": "Lili",
+      "aliasList": ["lil", "riri"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_hms.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_hms.png"
+      }
+    },
+    {
+      "id": "miary-zo",
+      "displayName": "Miary Zo",
+      "wavuName": "Miary Zo",
+      "aliasList": ["miary", "zo", "mz"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/12/T_UI_CS_Character_Thumb_Selected_wkz.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/12/T_UI_CS_Character_Thumb_Selected_wkz.png"
+      }
+    },
+    {
+      "id": "nina",
+      "displayName": "Nina",
+      "wavuName": "Nina",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_kal.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_kal.png"
+      }
+    },
+    {
+      "id": "panda",
+      "displayName": "Panda",
+      "wavuName": "Panda",
+      "aliasList": ["pan"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ttr.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ttr.png"
+      }
+    },
+    {
+      "id": "paul",
+      "displayName": "Paul",
+      "wavuName": "Paul",
+      "aliasList": ["phoenix"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_grf.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_grf.png"
+      }
+    },
+    {
+      "id": "raven",
+      "displayName": "Raven",
+      "wavuName": "Raven",
+      "aliasList": ["maven", "masterraven", "mrv"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_bbn.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_bbn.png"
+      }
+    },
+    {
+      "id": "reina",
+      "displayName": "Reina",
+      "wavuName": "Reina",
+      "aliasList": ["rei"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_zbr.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_zbr.png"
+      }
+    },
+    {
+      "id": "shaheen",
+      "displayName": "Shaheen",
+      "wavuName": "Shaheen",
+      "aliasList": ["sha", "heen"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_hrs.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_hrs.png"
+      }
+    },
+    {
+      "id": "steve",
+      "displayName": "Steve",
+      "wavuName": "Steve",
+      "aliasList": ["stv", "fox", "guv"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_bsn.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_bsn.png"
+      }
+    },
+    {
+      "id": "victor",
+      "displayName": "Victor",
+      "wavuName": "Victor",
+      "aliasList": ["vic"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_lon.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_lon.png"
+      }
+    },
+    {
+      "id": "xiaoyu",
+      "displayName": "Xiaoyu",
+      "wavuName": "Xiaoyu",
+      "aliasList": ["ling", "xiao"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_rat.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_rat.png"
+      }
+    },
+    {
+      "id": "yoshimitsu",
+      "displayName": "Yoshimitsu",
+      "wavuName": "Yoshimitsu",
+      "aliasList": ["yoshi"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_cml.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_cml.png"
+      }
+    },
+    {
+      "id": "zafina",
+      "displayName": "Zafina",
+      "wavuName": "Zafina",
+      "aliasList": ["zaf"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_crw.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_crw.png"
+      }
+    }
+  ]
+}
