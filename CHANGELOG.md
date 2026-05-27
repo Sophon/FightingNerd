@@ -7,6 +7,9 @@
 - `Wavu` 
   - use custom character list json hosted on this repo
   - image links use Tekken Warehouse
+- `Mizumi` 
+  - `UNI` allows non-charge input for charge moves
+    - ie `[4]6b` can be input via `46b`
 
 ## [v11.5.1] - 2026-05-02
 - fixed bugs with wrong commands displaying command error embed
