@@ -1,6 +1,7 @@
 package io.github.sophon.wikimizuumi.data
 
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.util.chargeAlias
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.decodeHtmlEntities
@@ -110,7 +111,7 @@ internal fun MoveDto.toDomain(
         .orDash()
         .decodeHtmlEntities()
         .normalize2dInputs()
-    val aliasList = normalizedInput.create2dAliases(isPartial = true)
+    val aliasList = normalizedInput.create2dAliases(isPartial = true) + normalizedInput.chargeAlias()
 
     val move = Move(
         charName = this.chara,
