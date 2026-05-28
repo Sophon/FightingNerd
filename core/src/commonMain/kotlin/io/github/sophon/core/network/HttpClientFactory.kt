@@ -26,6 +26,7 @@ object HttpClientFactory {
 
             install(ContentNegotiation) {
                 json(json)
+                json(json, contentType = ContentType.Text.Plain)
             }
 
             install(
