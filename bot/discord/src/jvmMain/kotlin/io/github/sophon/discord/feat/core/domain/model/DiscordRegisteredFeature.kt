@@ -1,5 +1,6 @@
 package io.github.sophon.discord.feat.core.domain.model
 
+import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
@@ -22,4 +23,6 @@ internal interface DiscordRegisteredFeature {
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError>
+
+    suspend fun refreshData(): EmptyResult<BotError>
 }

@@ -1,5 +1,6 @@
 package io.github.sophon.discord.feat.ewgf
 
+import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
@@ -96,5 +97,9 @@ internal class EwgfDiscordFeature(
                 Result.Error(result.error)
             }
         }
+    }
+
+    override suspend fun refreshData(): EmptyResult<BotError> {
+        return Result.Success(Unit)
     }
 }

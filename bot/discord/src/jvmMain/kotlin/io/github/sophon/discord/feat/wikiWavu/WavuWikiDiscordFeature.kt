@@ -83,7 +83,7 @@ internal class WavuWikiDiscordFeature(
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
 
         scheduler.start(
-            task = ::syncData,
+            task = ::refreshData,
         ).onEach { result ->
             result.onError { Napier.e(tag = TAG) { it.toString() } }
         }.launchIn(scope)
@@ -113,7 +113,7 @@ internal class WavuWikiDiscordFeature(
     }
 
 
-    private suspend fun syncData(): EmptyResult<BotError> {
+    override suspend fun refreshData(): EmptyResult<BotError> {
         return syncWikiDataUseCase.invoke(wikiList = wikis.values)
     }
 

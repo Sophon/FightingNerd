@@ -80,6 +80,10 @@ internal class AdminDiscordFeature(
         }
     }
 
+    override suspend fun refreshData(): EmptyResult<BotError> {
+        return Result.Success(Unit)
+    }
+
 
     private suspend fun syncBans(): EmptyResult<BotError> {
         return startAdminToolsUseCase.invoke(adminConfig)
