@@ -78,7 +78,7 @@ internal class AdminDiscordFeature(
             Command.Reply -> reply(origin, query)
             Command.Ban -> ban(origin, query = query)
             Command.Unban -> unban(origin, query = query)
-            Command.Update -> updateFeatureData()
+            Command.Refresh -> updateFeatureData()
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
         return result

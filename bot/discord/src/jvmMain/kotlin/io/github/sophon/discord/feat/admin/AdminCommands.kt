@@ -7,5 +7,5 @@ internal val adminCommands = listOf(
     Command.Ban,
     Command.Unban,
     Command.Banlist,
-    Command.Update,
+    Command.Refresh,
 )
