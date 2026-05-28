@@ -1,6 +1,7 @@
 package io.github.sophon.discord
 
 import dev.kord.core.Kord
+import io.github.aakira.napier.Napier
 import io.github.sophon.integration.adminModule
 import io.github.sophon.core.coreModule
 import io.github.sophon.integration.data.ReportRepo
@@ -19,6 +20,7 @@ import io.github.sophon.wikidustloop.integration.dustLoopModule
 import io.github.sophon.wikimizuumi.integration.mizuumiModule
 import io.github.sophon.wikiwavu.integration.wavuModule
 import io.github.sophon.xko.integration.xkoModule
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -57,7 +59,13 @@ internal fun initKoin(
 
 internal fun dcBotModule(kord: Kord) = module {
     single {
-        CoroutineScope(SupervisorJob() + Dispatchers.Default)
+        CoroutineScope(
+            SupervisorJob() +
+                    Dispatchers.Default +
+                    CoroutineExceptionHandler { _, throwable ->
+                        Napier.e(tag = "Kord") { "Unhandled exception: $throwable" }
+                    }
+        )
     }
     single { kord }
 
