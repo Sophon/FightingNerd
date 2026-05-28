@@ -1,6 +1,7 @@
 # BOT CHANGELOG
 
-## [v11.6.1] - TODO
+## [v11.7.0] - TODO
+- `admind` - `refresh` command to update data without restart 
 - handle Kord REST exceptions
 
 ## [v11.6.0] - 2026-05-28
