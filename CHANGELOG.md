@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v11.7.1] - 2026-05-28
+- `ewgf` - `Region Not Set` region
+
 ## [v11.7.0] - 2026-05-28
 - `admin` - `refresh` command to update data without restart 
 - handle Kord REST exceptions
