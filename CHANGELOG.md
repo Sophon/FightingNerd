@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v11.6.1] - TODO
+- handle Kord REST exceptions
+
 ## [v11.6.0] - 2026-05-28
 - refactor core's `Game`
   - a small step in a bigger refactor process that reworks how games and wikis are constructed per config
