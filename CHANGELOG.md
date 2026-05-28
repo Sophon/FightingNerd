@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v11.7.0] - 2026-05-28
+- `admin` - `refresh` command to update data without restart 
+- handle Kord REST exceptions
+
 ## [v11.6.0] - 2026-05-28
 - refactor core's `Game`
   - a small step in a bigger refactor process that reworks how games and wikis are constructed per config
