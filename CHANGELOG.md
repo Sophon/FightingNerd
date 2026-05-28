@@ -1,5 +1,16 @@
 # BOT CHANGELOG
 
+## [v11.6.0] - 2026-05-28
+- refactor core's `Game`
+  - a small step in a bigger refactor process that reworks how games and wikis are constructed per config
+- `DustLoop` - update fields for `GBVSR`
+- `Wavu` 
+  - use custom character list json hosted on this repo
+  - image links use Tekken Warehouse
+- `Mizumi` 
+  - `UNI` allows non-charge input for charge moves
+    - ie `[4]6b` can be input via `46b`
+
 ## [v11.5.1] - 2026-05-02
 - fixed bugs with wrong commands displaying command error embed
 - increased the error auto edit duration to 20s

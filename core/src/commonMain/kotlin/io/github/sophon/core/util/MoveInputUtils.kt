@@ -107,3 +107,9 @@ private fun String.add2dAliases(
     }
     return result
 }
+
+fun String.chargeAlias(): List<String> {
+    return if (contains("[4]")) {
+        listOf(replace("[4]", "4"))
+    } else emptyList()
+}

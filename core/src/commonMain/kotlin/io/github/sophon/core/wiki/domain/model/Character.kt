@@ -91,18 +91,33 @@ data class Character(
 
     @Serializable
     data class GBVSRProperties(
-        val prejump: String?,
+        val jump: Jump?,
         val backdash: String?,
         val walkSpeed: String?,
-        val walkSpeedAlt: String?,
         val walkSpeedBack: String?,
-        val walkSpeedBackAlt: String?,
         val dashInitial: String?,
-        val dashInitialAlt: String?,
-        val dashAcceleration: String?,
-        val dashAccelerationAlt: String?,
-        val alt: String?,
-    )
+        val dashAcceleration: Float?,
+        val closeRange: CloseRange?,
+    ) {
+        @Serializable
+        data class Jump(
+            val pre: String?,
+            val forwardDistance: String?,
+            val superForwardDistance: String?,
+            val backDistance: String?,
+            val superBackDistance: String?,
+            val gravity: String?,
+            val superGravity: String?,
+            val superHeight: String?,
+        )
+
+        @Serializable
+        data class CloseRange(
+            val l: String?,
+            val m: String?,
+            val h: String?,
+        )
+    }
 
     @Serializable
     data class MK1Properties(

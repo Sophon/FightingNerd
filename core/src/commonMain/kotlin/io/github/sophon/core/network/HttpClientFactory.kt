@@ -26,6 +26,7 @@ object HttpClientFactory {
 
             install(ContentNegotiation) {
                 json(json)
+                json(json, contentType = ContentType.Text.Plain)
             }
 
             install(
@@ -39,7 +40,6 @@ object HttpClientFactory {
             install(HttpCache)
 
             defaultRequest {
-//                headers { append("x-access-token", API_KEY) } //API KEY
                 contentType(ContentType.Application.Json)
             }
         }

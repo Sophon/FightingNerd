@@ -1,0 +1,14 @@
+<!--WHERE - DESCRIPTION-->
+
+<resources>
+    <string name="bottom_bar_item_character_list">Characters</string>
+    <string name="bottom_bar_item_search">Search</string>
+    <string name="bottom_bar_item_saved">Saved</string>
+
+    <string name="move_list_field_startup">Startup</string>
+    <string name="move_list_field_level">Level</string>
+    <string name="move_list_field_properties">Properties</string>
+    <string name="move_list_field_on_hit">On Hit</string>
+    <string name="move_list_field_on_block">On Block</string>
+    <string name="move_list_field_on_counter">On Counter</string>
+</resources>

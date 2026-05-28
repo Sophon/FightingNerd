@@ -1,8 +1,11 @@
 package io.github.sophon.fightingnerd
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -11,53 +14,90 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry
-import io.github.sophon.fightingnerd.screens.home.HomeScreen
-import io.github.sophon.fightingnerd.screens.moveList.ui.MoveListScreen
-import io.github.sophon.fightingnerd.screens.settings.ui.SettingsScreen
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberNavBackStack
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
+import androidx.savedstate.serialization.SavedStateConfiguration
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.util.DebugLogger
+import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
+import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
+import io.github.sophon.fightingnerd.feat.module.ModuleRepo
+import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
+import io.github.sophon.fightingnerd.navigation.Destination
 import io.github.sophon.fightingnerd.theme.AppTheme
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.polymorphic
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
+
+private val navConfig = SavedStateConfiguration {
+    serializersModule = SerializersModule {
+        polymorphic(NavKey::class) {
+            subclass(Destination.Home::class, Destination.Home.serializer())
+            subclass(Destination.MoveList::class, Destination.MoveList.serializer())
+        }
+    }
+}
 
 @Composable
 @Preview
 internal fun App() {
-    val featureRegistry = koinInject<FeatureRegistry>()
+    setSingletonImageLoaderFactory { context ->
+        getAsyncImageLoader(context)
+    }
+    val moduleRepo = koinInject<ModuleRepo>()
     var isInitialized by rememberSaveable { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        featureRegistry.initialize()
+        moduleRepo.initialize()
         isInitialized = true
     }
 
     if (isInitialized) {
         AppTheme {
-            val navHostController = rememberNavController()
+            val backStack = rememberNavBackStack(navConfig, Destination.Home)
 
-            NavHost(
-                navController = navHostController,
-                startDestination = Destination.Home,
-                modifier = Modifier.fillMaxSize(),
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface),
             ) {
-                composable<Destination.Home> {
-                    HomeScreen(navHostController)
-                }
+                NavDisplay(
+                    backStack = backStack,
+                    onBack = { backStack.removeLastOrNull() },
+                    entryDecorators = listOf(
+                        rememberSaveableStateHolderNavEntryDecorator(),
+                        rememberViewModelStoreNavEntryDecorator(),
+                    ),
+                    modifier = Modifier.fillMaxSize(),
+                    entryProvider = entryProvider {
+                        entry<Destination.Home> {
+                            HomeScreen(
+                                onNavigateToMoveList = { gameId, characterId ->
+                                    backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
+                                }
+                            )
+                        }
+                        entry<Destination.MoveList>{ destination ->
+                            MoveListScreen(
+                                gameId = destination.gameId,
+                                characterId = destination.characterId,
+                            )
+                        }
+                    }
+                )
 
-                composable<Destination.MoveList> { navBackstackEntry ->
-                    val route = navBackstackEntry.toRoute<Destination.MoveList>()
-                    MoveListScreen(
-                        gameId = route.gameId,
-                        charName = route.charName,
-                    )
-                }
-
-                composable<Destination.Settings> {
-                    SettingsScreen()
-                }
+                BottomBarView(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .navigationBarsPadding()
+                )
             }
         }
     } else {
@@ -68,4 +108,10 @@ internal fun App() {
             CircularProgressIndicator()
         }
     }
+}
+
+fun getAsyncImageLoader(context: PlatformContext): ImageLoader {
+    return ImageLoader.Builder(context)
+        .logger(DebugLogger())
+        .build()
 }

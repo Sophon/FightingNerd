@@ -61,13 +61,12 @@ kotlin {
 
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-            implementation(libs.androidx.navigation.compose)
-            implementation(libs.androidx.navigation.runtime)
+            implementation(libs.jetbrains.navigation3.ui)
+            implementation(libs.jetbrains.lifecycle.viewmodelNavigation3)
 
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
-            implementation(libs.koin.compose.navigation)
 
             implementation(libs.coil.compose.core)
             implementation(libs.coil.compose)
@@ -89,6 +88,10 @@ kotlin {
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
             implementation(project(":feat:wikiSupercombo"))
+            implementation(project(":feat:xko"))
+            implementation(project(":feat:wikiDreamCancel"))
+            implementation(project(":feat:wikiDustLoop"))
+            implementation(project(":feat:wikiMizuumi"))
         }
 
         commonTest.dependencies {

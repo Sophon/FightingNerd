@@ -49,7 +49,7 @@ class MoveMapperTest {
         // given
         val move = MoveSource.lumenStellaAir
         val expectedInput = "j[4]6a"
-        val expectedAlias = listOf("j.[4]6a")
+        val expectedAlias = listOf("j.[4]6a", "j46a")
         
         // when
         val result = move.toDomain(
