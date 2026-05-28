@@ -6,6 +6,7 @@ import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
 import io.github.sophon.discord.feat.admin.usecase.ProcessFeedbackUseCase
+import io.github.sophon.discord.feat.admin.usecase.RefreshDataUseCase
 import io.github.sophon.discord.feat.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.feat.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
@@ -73,6 +74,11 @@ internal val featureRegistryModule = module {
     singleOf(::BanUseCase)
     singleOf(::UnbanUseCase)
     singleOf(::CreateRedirectButtonsUseCase)
+    single {
+        RefreshDataUseCase(
+            featureList = lazy { get<List<DiscordRegisteredFeature>>() },
+        )
+    }
     //endregion
 
     //region CORE
@@ -174,6 +180,7 @@ internal val featureRegistryModule = module {
             createRedirectButtonsUseCase = get(),
             banUseCase = get(),
             unbanUseCase = get(),
+            refreshDataUseCase = get(),
             scheduler = get(),
             scope = get(),
         )

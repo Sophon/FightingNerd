@@ -69,6 +69,10 @@ class RouteCommandToFeatureUseCaseTest {
                 else -> Result.Error(BotError.BotLogicError())
             }
         }
+
+        override suspend fun refreshData(): EmptyResult<BotError> {
+            return Result.Success(Unit)
+        }
     }
 
     private class FakeInfilFeature : DiscordRegisteredFeature {
@@ -104,6 +108,10 @@ class RouteCommandToFeatureUseCaseTest {
                 }
                 else -> Result.Error(BotError.BotLogicError())
             }
+        }
+
+        override suspend fun refreshData(): EmptyResult<BotError> {
+            return Result.Success(Unit)
         }
     }
 
@@ -153,6 +161,10 @@ class RouteCommandToFeatureUseCaseTest {
                 else -> Result.Error(BotError.BotLogicError())
             }
         }
+
+        override suspend fun refreshData(): EmptyResult<BotError> {
+            return Result.Success(Unit)
+        }
     }
 
     private class FakeCoreFeature : DiscordRegisteredFeature {
@@ -174,6 +186,9 @@ class RouteCommandToFeatureUseCaseTest {
             } else {
                 Result.Error(BotError.InvalidQuery(query))
             }
+        }
+        override suspend fun refreshData(): EmptyResult<BotError> {
+            return Result.Success(Unit)
         }
     }
     //endregion
