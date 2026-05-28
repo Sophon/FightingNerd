@@ -78,7 +78,7 @@ internal class DiscordBotImpl(
         cleanOldGuildCommands(kord)
         createGlobalCommands()
         createAdminCommands()
-        createCommandsForTestServer()
+//        createCommandsForTestServer()
 
         monitorGatewayHealth()
 
