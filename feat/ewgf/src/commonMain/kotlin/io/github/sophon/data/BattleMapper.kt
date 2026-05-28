@@ -57,6 +57,7 @@ private fun String.toDomainRegion(): Region = when (this) {
     "Oceania" -> Region.OCEANIA
     "Americas" -> Region.AMERICAS
     "Europe" -> Region.EUROPE
+    "Region Not Set" -> Region.UNKNOWN
     else -> error("Unknown region: $this")
 }
 

@@ -6,4 +6,5 @@ enum class Region {
     OCEANIA,
     AMERICAS,
     EUROPE,
+    UNKNOWN,
 }
