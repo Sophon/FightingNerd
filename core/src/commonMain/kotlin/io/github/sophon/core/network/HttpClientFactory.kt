@@ -40,7 +40,6 @@ object HttpClientFactory {
             install(HttpCache)
 
             defaultRequest {
-//                headers { append("x-access-token", API_KEY) } //API KEY
                 contentType(ContentType.Application.Json)
             }
         }
