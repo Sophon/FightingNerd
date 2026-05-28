@@ -211,6 +211,16 @@
       }
     },
     {
+      "id": "kunimitsu",
+      "displayName": "Kunimitsu",
+      "wavuName": "Kunimitsu",
+      "aliasList": ["kuni"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2026/05/T_UI_CS_Character_Thumb_Selected_ker.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2026/05/T_UI_CS_Character_Thumb_Selected_ker.png"
+      }
+    },
+    {
       "id": "lars",
       "displayName": "Lars",
       "wavuName": "Lars",
