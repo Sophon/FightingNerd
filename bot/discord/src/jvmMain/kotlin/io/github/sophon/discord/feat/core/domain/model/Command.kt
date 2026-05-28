@@ -90,6 +90,7 @@ internal sealed class Command(
         )
     )
     object Banlist : Command(name = "Banlist", description = "List of users banned from using the bot")
+    object Update : Command(name = "Update", description = "Updates the bot database")
     //endregion
 
     object Fd : Command(

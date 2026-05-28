@@ -1,6 +1,7 @@
 package io.github.sophon.discord.feat.bot
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
@@ -66,6 +67,10 @@ internal class BotFeature(
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+    }
+
+    override suspend fun refreshData(): EmptyResult<BotError> {
+        return Result.Success(Unit)
     }
 
 

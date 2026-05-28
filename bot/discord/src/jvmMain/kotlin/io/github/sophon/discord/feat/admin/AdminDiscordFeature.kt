@@ -13,6 +13,7 @@ import io.github.sophon.core.util.toFormattedString
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
 import io.github.sophon.discord.feat.admin.usecase.ProcessFeedbackUseCase
+import io.github.sophon.discord.feat.admin.usecase.RefreshDataUseCase
 import io.github.sophon.discord.feat.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.feat.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
@@ -25,8 +26,8 @@ import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.integration.AdminFeatureInfo
 import io.github.sophon.integration.model.AdminResult
-import io.github.sophon.integration.model.Source
 import io.github.sophon.integration.model.Ban
+import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -43,6 +44,7 @@ internal class AdminDiscordFeature(
     private val createRedirectButtonsUseCase: CreateRedirectButtonsUseCase,
     private val banUseCase: BanUseCase,
     private val unbanUseCase: UnbanUseCase,
+    private val refreshDataUseCase: RefreshDataUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, KoinComponent {
@@ -71,13 +73,15 @@ internal class AdminDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        return when (command) {
+        val result = when (command) {
             Command.Feedback -> feedback(origin, message = query)
             Command.Reply -> reply(origin, query)
             Command.Ban -> ban(origin, query = query)
             Command.Unban -> unban(origin, query = query)
+            Command.Update -> updateFeatureData()
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+        return result
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
@@ -186,6 +190,15 @@ internal class AdminDiscordFeature(
             )
             featureFooter(featureInfo)
         }
+    }
+
+    private suspend fun updateFeatureData(): Result<BotOutput, BotError> {
+        val result = refreshDataUseCase.invoke()
+            .map {
+                BotOutput(plainText = "Refreshing data")
+            }
+
+        return result
     }
 
 
