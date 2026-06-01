@@ -8,7 +8,7 @@ import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.fightingnerd.feat.moveList.model.Property
-import io.github.sophon.fightingnerd.feat.moveList.usecase.LoadMoveListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
@@ -48,7 +48,7 @@ internal class MoveListVM(
         viewModelScope.launch {
             loadMoveListUseCase.invoke(
                 game = game,
-                characterId = characterId,
+                characterQueryId = characterId,
             )
                 .onSuccess { moveList ->
                     Napier.d(tag = TAG) { "Moves loaded: ${moveList.size}" }
