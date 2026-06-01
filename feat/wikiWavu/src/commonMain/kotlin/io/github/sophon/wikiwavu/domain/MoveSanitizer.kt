@@ -35,8 +35,8 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
 
 
     when {
-        result.startsWith("fnddf#") -> result = result.replace("fnddf#", "cd#")
-        result.startsWith("fnddf") -> result = result.replace("fnddf", "cd.")
+        result.contains("fnddf#") -> result = result.replace("fnddf#", "cd#")
+        result.contains("fnddf") -> result = result.replace("fnddf", "cd.")
     }
 
     result = result

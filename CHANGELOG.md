@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v11.7.2] - 2026-06-02
+- `wavu` - fix input formatting for Heat-crouch-dash moves (ie AK's `H.cd1+2`)
+
 ## [v11.7.1] - 2026-05-28
 - `ewgf` - `Region Not Set` region
 

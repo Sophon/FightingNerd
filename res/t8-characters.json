@@ -24,7 +24,7 @@
       "id": "armor-king",
       "displayName": "Armor King",
       "wavuName": "Armor King",
-      "aliasList": ["ak", "aking", "armor-king"],
+      "aliasList": ["ak", "aking", "armorking"],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
         "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png"
@@ -284,7 +284,7 @@
       "id": "lili",
       "displayName": "Lili",
       "wavuName": "Lili",
-      "aliasList": ["lil", "riri"],
+      "aliasList": ["lil", "riri", "lilli", "lilly", "lily"],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_hms.png",
         "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_hms.png"
@@ -294,7 +294,7 @@
       "id": "miary-zo",
       "displayName": "Miary Zo",
       "wavuName": "Miary Zo",
-      "aliasList": ["miary", "zo", "mz"],
+      "aliasList": ["miary", "zo", "mz", "miaryzo"],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/12/T_UI_CS_Character_Thumb_Selected_wkz.png",
         "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/12/T_UI_CS_Character_Thumb_Selected_wkz.png"

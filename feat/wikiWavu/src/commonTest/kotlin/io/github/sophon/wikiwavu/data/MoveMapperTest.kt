@@ -83,7 +83,7 @@ class MoveMapperTest {
     fun `formAliases handles cd`() {
         // given
         val move = MoveSource.whf
-        val expectedAlias = listOf("whf", "cd.2", "cd2")
+        val expectedAlias = listOf("whf", "cd.2", "cd2", "cddf2")
 
         // when
         val result = move.toDomain(emptyCharData, emptyMap())
@@ -96,7 +96,7 @@ class MoveMapperTest {
     fun `formAliases handles just-frame cd with df`() {
         // given
         val move = MoveSource.ewhf
-        val expectedAlias = listOf("ewhf", "electric", "ecd2", "cd#2", "fndf#2")
+        val expectedAlias = listOf("ewhf", "electric", "ecd2", "cd#2", "fndf#2", "cddf#2")
 
         // when
         val result = move.toDomain(emptyCharData, emptyMap())
@@ -621,7 +621,7 @@ class MoveMapperTest {
                 "becomes Homing in heat",
                 "Partially restores remaining Heat Time"
             ),
-            aliases = listOf("shining wizard", "wr2+4"),
+            aliases = listOf("shining wizard"),
             urls = Move.Urls(
                 videoId = null,
                 wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f,f,F+2+4"
@@ -645,6 +645,21 @@ class MoveMapperTest {
         // then
         assertThat(result).hasSize(1)
         assertThat(result[0]).isEqualTo(expectedMove)
+    }
+
+    @Test
+    fun `toDomain formats input for heat and crouch dash`() {
+        // given
+        val move = MoveSource.heatMist
+        val expectedInput = "h.cd.1+2"
+        val expectedAlias = listOf("h.bad.f1+2", "h.cd1+2")
+
+        // when
+        val result = move.toDomain(emptyCharData, emptyMap())
+
+        //then
+        assertThat(result.input).isEqualTo(expectedInput)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
     }
     //endregion
 }
@@ -949,5 +964,25 @@ private object MoveSource {
         image = null,
         video = null,
         alt = null,
+    )
+    val heatMist = MoveDto(
+        id = "Armor King-H.f,n,d,df+1+2",
+        name = "Malice Mist: Villain",
+        input = "H.f,n,d,df+1+2",
+        parent = null,
+        target = "h!",
+        damage = "[10]",
+        startup = "i25~28",
+        recv = "r29",
+        tot = "57",
+        crush = null,
+        block = null,
+        hit = "+23g",
+        ch = null,
+        notes = "<div class=\"plainlist\">\n* On hit, gives a special stun that makes throws unbreakable for the stun duration\n* Consumes 600F of remaining Heat time\n* Only deals recoverable damage\n* Cannot K.O </div>",
+        alias = null,
+        image = null,
+        video = null,
+        alt = "H.BAD.f+1+2",
     )
 }
