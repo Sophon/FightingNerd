@@ -6,6 +6,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.Game
+import io.github.sophon.fightingnerd.core.MoveRepository
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
@@ -21,6 +22,7 @@ internal class HomeVM(
     private val loadEmptyWidgetsUseCase: LoadEmptyWidgetsUseCase,
     private val loadGameCharacterListUseCase: LoadGameCharacterListUseCase,
     private val loadMoveListUseCase: LoadMoveListUseCase,
+    private val moveRepository: MoveRepository,
 ): ViewModel() {
     private val moveListSemaphore = Semaphore(permits = MAX_PERMITS)
     private val _state = MutableStateFlow(HomeViewState())
@@ -51,6 +53,27 @@ internal class HomeVM(
             }
             val updatedState = state.copy(gameWidgetList = updatedList)
             updatedState
+        }
+    }
+
+    /**
+     * TODO: REPLACE WITH PROPER REPOSITORY
+     * this only serves to avoid having to pass the movelist around
+     */
+    fun onCacheMoveList(gameId: String, characterId: String) {
+        val character = state.value.gameWidgetList
+            .firstOrNull { widget ->
+                widget.game.id == gameId
+            }
+            ?.characterList
+            ?.firstOrNull { character ->
+                character.queryName == characterId
+            }
+        character?.moveList?.let { moveList ->
+            moveRepository.moveList.apply {
+                clear()
+                addAll(moveList)
+            }
         }
     }
 
