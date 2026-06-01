@@ -46,11 +46,10 @@ private val navConfig = SavedStateConfiguration {
 }
 
 @Composable
-@Preview
 internal fun App() {
-    setSingletonImageLoaderFactory { context ->
-        getAsyncImageLoader(context)
-    }
+//    setSingletonImageLoaderFactory { context ->
+//        getAsyncImageLoader(context)
+//    }
     val moduleRepo = koinInject<ModuleRepo>()
     var isInitialized by rememberSaveable { mutableStateOf(false) }
 
