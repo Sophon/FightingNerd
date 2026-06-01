@@ -10,6 +10,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.BoxWithConstraintsScope
 import androidx.compose.foundation.layout.Column
@@ -258,18 +259,25 @@ private fun CharacterPanel(
                 interactionSource = interactionSource,
                 onClick = onClick,
                 indication = ripple(color = MaterialTheme.colorScheme.primaryContainer),
+                enabled = character.isLoading.not(),
             )
             .clip(RoundedCornerShape(8.dp))
             .background(color = MaterialTheme.colorScheme.surfaceContainer)
             .padding(vertical = 8.dp)
     ) {
-        AsyncImage(
-            model = character.iconUrl,
-            contentDescription = character.displayName,
-            placeholder = painterResource(Res.drawable.compose_multiplatform),
-            error = painterResource(Res.drawable.compose_multiplatform),
-            modifier = Modifier.size(64.dp)
-        )
+        Box {
+            AsyncImage(
+                model = character.iconUrl,
+                contentDescription = character.displayName,
+                placeholder = painterResource(Res.drawable.compose_multiplatform),
+                error = painterResource(Res.drawable.compose_multiplatform),
+                modifier = Modifier.size(64.dp)
+            )
+
+            if (character.isLoading) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+        }
 
         Text(
             text = character.displayName,

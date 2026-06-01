@@ -1,6 +1,7 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
 import io.github.sophon.core.feature.Game
+import io.github.sophon.core.wiki.domain.model.Move
 
 internal data class HomeViewState(
     val gameWidgetList: List<GameWidget> = emptyList(),
@@ -19,7 +20,26 @@ internal data class HomeViewState(
             val displayName: String,
             val queryName: String,
             val iconUrl: String? = null,
+            val moveList: List<Move> = emptyList(),
+            val isLoading: Boolean = true,
         )
+
+        fun withUpdatedCharacter(
+            characterId: String,
+            moveList: List<Move>,
+        ): GameWidget {
+            val updatedCharacterList = characterList.map { character ->
+                if (character.id == characterId) {
+                    character.copy(
+                        moveList = moveList,
+                        isLoading = false,
+                    )
+                } else {
+                    character
+                }
+            }
+            return copy(characterList = updatedCharacterList)
+        }
     }
 
 

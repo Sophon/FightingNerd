@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.moveList.usecase
+package io.github.sophon.fightingnerd.feat.home.usecase
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.Result
@@ -14,11 +14,11 @@ internal class LoadMoveListUseCase(
 ) {
     suspend fun invoke(
         game: Game,
-        characterId: String,
+        characterQueryId: String,
     ): Result<List<Move>, AppError> {
         val wiki = moduleRepo.getWikiClientFor(game)
             ?: return Result.Error(AppError.WikiClientNotFound(game.id))
-        val characterData = DownloadMoveListUseCase.CharacterData(name = characterId, imageUrl = null)
+        val characterData = DownloadMoveListUseCase.CharacterData(name = characterQueryId, imageUrl = null)
         val result = wiki.downloadMoveList(characterData)
             .mapError {
                 Napier.e(tag = TAG) { it.toString() }
