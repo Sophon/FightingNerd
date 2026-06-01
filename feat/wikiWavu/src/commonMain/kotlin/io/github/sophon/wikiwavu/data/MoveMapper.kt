@@ -32,6 +32,7 @@ internal fun MoveDto.toDomain(
     val fullInput = parentalProperties.input
         .cleanHtml()
         .cleanMoveInput()
+    val aliases = fullInput.formAliases(alias, alt)
 
     val move = Move(
         charName = characterData.name,
@@ -48,7 +49,7 @@ internal fun MoveDto.toDomain(
         guard = parentalProperties.guard,
 
         notes = notes.formNotes() + cleanedCrushes,
-        aliases = fullInput.formAliases(alias, alt),
+        aliases = aliases,
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
@@ -120,7 +121,7 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         }
         .filter { it.isNotEmpty() }
         .flatMap { alias ->
-            if (alias.startsWith("cd.")) {
+            if (alias.contains("cd.")) {
                 listOf(alias, alias.replace(".", ""))
             } else {
                 listOf(alias)
@@ -139,10 +140,7 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         this.startsWith("cd.") -> aliases.add(this.replace("cd.", "cd"))
     }
 
-    if (
-        this.contains(".")
-        && this.split(".").first().length == 3
-    ) {
+    if (this.contains(".") && this.split(".").first().length == 3) {
         aliases.add(this.replace(".", ""))
     }
 
@@ -150,10 +148,7 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         aliases.add(this.replace("ss.", "ss"))
     }
 
-    if (
-        this.contains("h.", ignoreCase = true)
-        && this.startsWith("h.", ignoreCase = true).not()
-    ) {
+    if (this.contains("h.", ignoreCase = true) && this.startsWith("h.", ignoreCase = true).not()) {
         val heatless = this.replace("h.", "")
         aliases.add("h.$heatless")
     }
@@ -162,7 +157,15 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
         aliases.addAll(listOf("hs", "heatsmash"))
     }
 
-    return aliases.distinct()
+    if (this.contains("cd.", ignoreCase = true)) {
+        aliases.add(this.replace("cd.", "cd"))
+    }
+
+    val result = aliases
+        .distinct()
+        .filterNot { it == this }
+
+    return result
 }
 
 internal fun String?.formVideoUrl(): String? {
