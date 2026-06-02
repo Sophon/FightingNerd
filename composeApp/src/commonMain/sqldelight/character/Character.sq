@@ -1,0 +1,134 @@
+CREATE TABLE character (
+    id TEXT NOT NULL PRIMARY KEY,
+    displayName TEXT NOT NULL,
+    queryName TEXT NOT NULL,
+    wikiUrl TEXT NOT NULL,
+    aliasList TEXT NOT NULL,
+    imageIconUrl TEXT,
+    imageBannerUrl TEXT,
+    hp TEXT,
+    umo TEXT NOT NULL
+);
+
+CREATE TABLE sf6_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    fwdWalkSpd TEXT,
+    bwdWalkSpd TEXT,
+    fwdDashSpd TEXT,
+    bwdDashSpd TEXT,
+    fwdDashDist TEXT,
+    bwdDashDist TEXT,
+    dRushMin TEXT,
+    dRushBlock TEXT,
+    dRushMax TEXT,
+    throwRange TEXT,
+    throwHurtbox TEXT,
+    jumpSpd TEXT,
+    jumpApex TEXT,
+    fwdJumpDist TEXT,
+    bwdJumpDist TEXT
+);
+
+CREATE TABLE ggst_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    defense TEXT,
+    guts TEXT,
+    guardBalance TEXT,
+    prejump TEXT,
+    bwdDash TEXT,
+    bwdDashDuration TEXT,
+    bwdDashInvulnerability TEXT,
+    bwdDashAirborne TEXT,
+    bwdDashDist TEXT,
+    fwdDash TEXT,
+    jumpDuration TEXT,
+    highJumpDuration TEXT,
+    jumpHeight TEXT,
+    highJumpHeight TEXT,
+    earliestIAD TEXT,
+    adDuration TEXT,
+    abdDuration TEXT,
+    adDist TEXT,
+    abdDist TEXT,
+    movementTension TEXT,
+    jumpTension TEXT,
+    airDashTension TEXT,
+    walkSpd TEXT,
+    bwdWalkSpd TEXT,
+    dashInitialSpd TEXT,
+    dashAcceleration TEXT,
+    dashFriction TEXT,
+    jumpGravity TEXT,
+    highJumpGravity TEXT,
+    boostAttack TEXT,
+    boostDefense TEXT
+);
+
+CREATE TABLE dbfz_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    kiMod TEXT
+);
+
+CREATE TABLE gbvsr_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    backdash TEXT,
+    walkSpeed TEXT,
+    walkSpeedBack TEXT,
+    dashInitial TEXT,
+    dashAcceleration TEXT,
+    jumpPre TEXT,
+    jumpForwardDistance TEXT,
+    jumpSuperForwardDistance TEXT,
+    jumpBackDistance TEXT,
+    jumpSuperBackDistance TEXT,
+    jumpGravity TEXT,
+    jumpSuperGravity TEXT,
+    jumpSuperHeight TEXT,
+    closeRangeL TEXT,
+    closeRangeM TEXT,
+    closeRangeH TEXT
+);
+
+CREATE TABLE mk1_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    hpMod TEXT,
+    throwDmg TEXT
+);
+
+CREATE TABLE bb_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    preJump TEXT,
+    backDash TEXT,
+    forwardDash TEXT
+);
+
+CREATE TABLE uni2_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    smartSteer TEXT,
+    fWalkSpeed TEXT,
+    fWalkSpeedNote TEXT,
+    bWalkSpeed TEXT,
+    bWalkSpeedNote TEXT,
+    jumpStartup TEXT,
+    jumpDuration TEXT,
+    jumpDurationNote TEXT,
+    dashStartup TEXT,
+    iDashSpeed TEXT,
+    iDashSpeedNote TEXT,
+    dashAccel TEXT,
+    dashAccelNote TEXT,
+    maxDashSpeed TEXT,
+    bDashStartup TEXT,
+    bDashDuration TEXT,
+    bDashDurationNote TEXT,
+    bDashDistance TEXT,
+    bDashDistanceNote TEXT,
+    bDashFullInvulStart TEXT,
+    bDashFullInvulEnd TEXT,
+    bDashThrowInvulStart TEXT,
+    bDashThrowInvulEnd TEXT,
+    throwWidth TEXT,
+    throwRange TEXT,
+    trait TEXT,
+    vorpalTrait TEXT
+);
