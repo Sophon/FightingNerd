@@ -10,8 +10,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
     alias(libs.plugins.buildkonfig)
 }
 
@@ -78,9 +76,6 @@ kotlin {
 
             implementation(libs.kotlinx.serialization.json)
 
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
-
             implementation(libs.kotlin.date.time)
 
             implementation(libs.datastore)
@@ -131,9 +126,6 @@ android {
 }
 
 dependencies {
-    add("kspAndroid", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
     debugImplementation(compose.uiTooling)
 }
 
@@ -147,17 +139,6 @@ compose.desktop {
             packageVersion = "1.0.0"
         }
     }
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
-tasks.matching {
-    it.name.contains("Metadata") &&
-            (it.name.contains("ksp") || it.name.contains("compile"))
-}.configureEach {
-    enabled = false
 }
 
 buildkonfig {
