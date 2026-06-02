@@ -1,15 +1,15 @@
 package io.github.sophon.fightingnerd.core.data
 
+import character.SelectAllBb
+import character.SelectAllDbfz
+import character.SelectAllGbvsr
+import character.SelectAllGgst
+import character.SelectAllMk1
+import character.SelectAllSf6
+import character.SelectAllUni2
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.fightingnerd.db.character.SelectAllBb
-import io.github.sophon.fightingnerd.db.character.SelectAllDbfz
-import io.github.sophon.fightingnerd.db.character.SelectAllGbvsr
-import io.github.sophon.fightingnerd.db.character.SelectAllGgst
-import io.github.sophon.fightingnerd.db.character.SelectAllMk1
-import io.github.sophon.fightingnerd.db.character.SelectAllSf6
-import io.github.sophon.fightingnerd.db.character.SelectAllUni2
 
-internal fun io.github.sophon.fightingnerd.db.character.Character.toDomain(): Character {
+internal fun character.Character.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,

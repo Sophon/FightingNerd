@@ -1,21 +1,21 @@
 package io.github.sophon.fightingnerd.core.data
 
 import io.github.sophon.core.wiki.domain.model.Move
-import io.github.sophon.fightingnerd.db.move.SelectAllAvl
-import io.github.sophon.fightingnerd.db.move.SelectAllBb
-import io.github.sophon.fightingnerd.db.move.SelectAllCotw
-import io.github.sophon.fightingnerd.db.move.SelectAllDbfz
-import io.github.sophon.fightingnerd.db.move.SelectAllGbvsr
-import io.github.sophon.fightingnerd.db.move.SelectAllGgst
-import io.github.sophon.fightingnerd.db.move.SelectAllKof15
-import io.github.sophon.fightingnerd.db.move.SelectAllMb
-import io.github.sophon.fightingnerd.db.move.SelectAllMk
-import io.github.sophon.fightingnerd.db.move.SelectAllSf6
-import io.github.sophon.fightingnerd.db.move.SelectAllT8
-import io.github.sophon.fightingnerd.db.move.SelectAllUni2
-import io.github.sophon.fightingnerd.db.move.SelectAllVsav
+import move.SelectAllAvl
+import move.SelectAllBb
+import move.SelectAllCotw
+import move.SelectAllDbfz
+import move.SelectAllGbvsr
+import move.SelectAllGgst
+import move.SelectAllKof15
+import move.SelectAllMb
+import move.SelectAllMk
+import move.SelectAllSf6
+import move.SelectAllT8
+import move.SelectAllUni2
+import move.SelectAllVsav
 
-internal fun io.github.sophon.fightingnerd.db.move.Move.toDomain(): Move {
+internal fun move.Move.toDomain(): Move {
     return Move(
         id = id,
         charName = charName,
@@ -37,7 +37,7 @@ internal fun io.github.sophon.fightingnerd.db.move.Move.toDomain(): Move {
     )
 }
 
-internal fun io.github.sophon.fightingnerd.db.move.Move.buildUrls(): Move.Urls {
+internal fun move.Move.buildUrls(): Move.Urls {
     return Move.Urls(
         characterWiki = urlsCharacterWiki,
         characterImage = urlsCharacterImage,
