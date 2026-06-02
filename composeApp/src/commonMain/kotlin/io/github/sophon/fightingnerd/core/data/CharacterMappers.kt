@@ -9,17 +9,6 @@ import io.github.sophon.fightingnerd.db.character.SelectAllMk1
 import io.github.sophon.fightingnerd.db.character.SelectAllSf6
 import io.github.sophon.fightingnerd.db.character.SelectAllUni2
 
-internal fun List<String>.fromDomain(): String {
-    return joinToString(LIST_DELIMITER)
-}
-
-internal fun String.toDomain(): List<String> {
-    if (isEmpty()) {
-        return emptyList()
-    }
-    return split(LIST_DELIMITER)
-}
-
 internal fun io.github.sophon.fightingnerd.db.character.Character.toDomain(): Character {
     return Character(
         id = id,
@@ -271,5 +260,3 @@ internal fun toImages(icon: String?, banner: String?): Character.Images? {
     }
     return Character.Images(iconUrl = icon, bannerUrl = banner)
 }
-
-private const val LIST_DELIMITER = ";"
