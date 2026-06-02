@@ -165,9 +165,9 @@ sqldelight {
             packageName.set("io.github.sophon.fightingnerd.db.character")
             srcDirs.setFrom("src/commonMain/sqldelight")
         }
-//        create("MoveDatabase") {
-//            packageName.set("io.github.sophon.fightingnerd.db.move")
-//            srcDirs.setFrom("src/commonMain/sqldelight/move")
-//        }
+        create("MoveDatabase") {
+            packageName.set("io.github.sophon.fightingnerd.db.move")
+            srcDirs.setFrom("src/commonMain/sqldelight")
+        }
     }
 }
