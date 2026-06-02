@@ -1,0 +1,271 @@
+CREATE TABLE character (
+    id TEXT NOT NULL PRIMARY KEY,
+    displayName TEXT NOT NULL,
+    queryName TEXT NOT NULL,
+    wikiUrl TEXT NOT NULL,
+    aliasList TEXT NOT NULL,
+    imageIconUrl TEXT,
+    imageBannerUrl TEXT,
+    hp TEXT,
+    umo TEXT NOT NULL
+);
+
+CREATE TABLE sf6_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    fwdWalkSpd TEXT,
+    bwdWalkSpd TEXT,
+    fwdDashSpd TEXT,
+    bwdDashSpd TEXT,
+    fwdDashDist TEXT,
+    bwdDashDist TEXT,
+    dRushMin TEXT,
+    dRushBlock TEXT,
+    dRushMax TEXT,
+    throwRange TEXT,
+    throwHurtbox TEXT,
+    jumpSpd TEXT,
+    jumpApex TEXT,
+    fwdJumpDist TEXT,
+    bwdJumpDist TEXT
+);
+
+CREATE TABLE ggst_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    defense TEXT,
+    guts TEXT,
+    guardBalance TEXT,
+    prejump TEXT,
+    bwdDash TEXT,
+    bwdDashDuration TEXT,
+    bwdDashInvulnerability TEXT,
+    bwdDashAirborne TEXT,
+    bwdDashDist TEXT,
+    fwdDash TEXT,
+    jumpDuration TEXT,
+    highJumpDuration TEXT,
+    jumpHeight TEXT,
+    highJumpHeight TEXT,
+    earliestIAD TEXT,
+    adDuration TEXT,
+    abdDuration TEXT,
+    adDist TEXT,
+    abdDist TEXT,
+    movementTension TEXT,
+    jumpTension TEXT,
+    airDashTension TEXT,
+    walkSpd TEXT,
+    bwdWalkSpd TEXT,
+    dashInitialSpd TEXT,
+    dashAcceleration TEXT,
+    dashFriction TEXT,
+    jumpGravity TEXT,
+    highJumpGravity TEXT,
+    boostAttack TEXT,
+    boostDefense TEXT
+);
+
+CREATE TABLE dbfz_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    kiMod TEXT
+);
+
+CREATE TABLE gbvsr_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    backdash TEXT,
+    walkSpeed TEXT,
+    walkSpeedBack TEXT,
+    dashInitial TEXT,
+    dashAcceleration TEXT,
+    jumpPre TEXT,
+    jumpForwardDistance TEXT,
+    jumpSuperForwardDistance TEXT,
+    jumpBackDistance TEXT,
+    jumpSuperBackDistance TEXT,
+    jumpGravity TEXT,
+    jumpSuperGravity TEXT,
+    jumpSuperHeight TEXT,
+    closeRangeL TEXT,
+    closeRangeM TEXT,
+    closeRangeH TEXT
+);
+
+CREATE TABLE mk1_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    hpMod TEXT,
+    throwDmg TEXT
+);
+
+CREATE TABLE bb_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    preJump TEXT,
+    backDash TEXT,
+    forwardDash TEXT
+);
+
+CREATE TABLE uni2_character_props (
+    characterId TEXT NOT NULL PRIMARY KEY REFERENCES character(id),
+    smartSteer TEXT,
+    fWalkSpeed TEXT,
+    fWalkSpeedNote TEXT,
+    bWalkSpeed TEXT,
+    bWalkSpeedNote TEXT,
+    jumpStartup TEXT,
+    jumpDuration TEXT,
+    jumpDurationNote TEXT,
+    dashStartup TEXT,
+    iDashSpeed TEXT,
+    iDashSpeedNote TEXT,
+    dashAccel TEXT,
+    dashAccelNote TEXT,
+    maxDashSpeed TEXT,
+    bDashStartup TEXT,
+    bDashDuration TEXT,
+    bDashDurationNote TEXT,
+    bDashDistance TEXT,
+    bDashDistanceNote TEXT,
+    bDashFullInvulStart TEXT,
+    bDashFullInvulEnd TEXT,
+    bDashThrowInvulStart TEXT,
+    bDashThrowInvulEnd TEXT,
+    throwWidth TEXT,
+    throwRange TEXT,
+    trait TEXT,
+    vorpalTrait TEXT
+);
+
+insertCharacter:
+INSERT INTO character(id, displayName, queryName, wikiUrl, aliasList, imageIconUrl, imageBannerUrl, hp, umo)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteAllCharacters:
+DELETE FROM character;
+
+insertSf6Props:
+INSERT INTO sf6_character_props(characterId, fwdWalkSpd, bwdWalkSpd, fwdDashSpd, bwdDashSpd, fwdDashDist, bwdDashDist, dRushMin, dRushBlock, dRushMax, throwRange, throwHurtbox, jumpSpd, jumpApex, fwdJumpDist, bwdJumpDist)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAllSf6:
+SELECT character.*, sf6_character_props.*
+FROM character
+LEFT JOIN sf6_character_props ON character.id = sf6_character_props.characterId;
+
+selectSf6ById:
+SELECT character.*, sf6_character_props.*
+FROM character
+LEFT JOIN sf6_character_props ON character.id = sf6_character_props.characterId
+WHERE character.id = ?;
+
+deleteAllSf6Props:
+DELETE FROM sf6_character_props;
+
+insertGgstProps:
+INSERT INTO ggst_character_props(characterId, defense, guts, guardBalance, prejump, bwdDash, bwdDashDuration, bwdDashInvulnerability, bwdDashAirborne, bwdDashDist, fwdDash, jumpDuration, highJumpDuration, jumpHeight, highJumpHeight, earliestIAD, adDuration, abdDuration, adDist, abdDist, movementTension, jumpTension, airDashTension, walkSpd, bwdWalkSpd, dashInitialSpd, dashAcceleration, dashFriction, jumpGravity, highJumpGravity, boostAttack, boostDefense)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAllGgst:
+SELECT character.*, ggst_character_props.*
+FROM character
+LEFT JOIN ggst_character_props ON character.id = ggst_character_props.characterId;
+
+selectGgstById:
+SELECT character.*, ggst_character_props.*
+FROM character
+LEFT JOIN ggst_character_props ON character.id = ggst_character_props.characterId
+WHERE character.id = ?;
+
+deleteAllGgstProps:
+DELETE FROM ggst_character_props;
+
+insertDbfzProps:
+INSERT INTO dbfz_character_props(characterId, kiMod)
+VALUES (?, ?);
+
+selectAllDbfz:
+SELECT character.*, dbfz_character_props.*
+FROM character
+LEFT JOIN dbfz_character_props ON character.id = dbfz_character_props.characterId;
+
+selectDbfzById:
+SELECT character.*, dbfz_character_props.*
+FROM character
+LEFT JOIN dbfz_character_props ON character.id = dbfz_character_props.characterId
+WHERE character.id = ?;
+
+deleteAllDbfzProps:
+DELETE FROM dbfz_character_props;
+
+insertGbvsrProps:
+INSERT INTO gbvsr_character_props(characterId, backdash, walkSpeed, walkSpeedBack, dashInitial, dashAcceleration, jumpPre, jumpForwardDistance, jumpSuperForwardDistance, jumpBackDistance, jumpSuperBackDistance, jumpGravity, jumpSuperGravity, jumpSuperHeight, closeRangeL, closeRangeM, closeRangeH)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAllGbvsr:
+SELECT character.*, gbvsr_character_props.*
+FROM character
+LEFT JOIN gbvsr_character_props ON character.id = gbvsr_character_props.characterId;
+
+selectGbvsrById:
+SELECT character.*, gbvsr_character_props.*
+FROM character
+LEFT JOIN gbvsr_character_props ON character.id = gbvsr_character_props.characterId
+WHERE character.id = ?;
+
+deleteAllGbvsrProps:
+DELETE FROM gbvsr_character_props;
+
+insertMk1Props:
+INSERT INTO mk1_character_props(characterId, hpMod, throwDmg)
+VALUES (?, ?, ?);
+
+selectAllMk1:
+SELECT character.*, mk1_character_props.*
+FROM character
+LEFT JOIN mk1_character_props ON character.id = mk1_character_props.characterId;
+
+selectMk1ById:
+SELECT character.*, mk1_character_props.*
+FROM character
+LEFT JOIN mk1_character_props ON character.id = mk1_character_props.characterId
+WHERE character.id = ?;
+
+deleteAllMk1Props:
+DELETE FROM mk1_character_props;
+
+insertBbProps:
+INSERT INTO bb_character_props(characterId, preJump, backDash, forwardDash)
+VALUES (?, ?, ?, ?);
+
+selectAllBb:
+SELECT character.*, bb_character_props.*
+FROM character
+LEFT JOIN bb_character_props ON character.id = bb_character_props.characterId;
+
+selectBbById:
+SELECT character.*, bb_character_props.*
+FROM character
+LEFT JOIN bb_character_props ON character.id = bb_character_props.characterId
+WHERE character.id = ?;
+
+deleteAllBbProps:
+DELETE FROM bb_character_props;
+
+insertUni2Props:
+INSERT INTO uni2_character_props(characterId, smartSteer, fWalkSpeed, fWalkSpeedNote, bWalkSpeed, bWalkSpeedNote, jumpStartup, jumpDuration, jumpDurationNote, dashStartup, iDashSpeed, iDashSpeedNote, dashAccel, dashAccelNote, maxDashSpeed, bDashStartup, bDashDuration, bDashDurationNote, bDashDistance, bDashDistanceNote, bDashFullInvulStart, bDashFullInvulEnd, bDashThrowInvulStart, bDashThrowInvulEnd, throwWidth, throwRange, trait, vorpalTrait)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+selectAllUni2:
+SELECT character.*, uni2_character_props.*
+FROM character
+LEFT JOIN uni2_character_props ON character.id = uni2_character_props.characterId;
+
+selectUni2ById:
+SELECT character.*, uni2_character_props.*
+FROM character
+LEFT JOIN uni2_character_props ON character.id = uni2_character_props.characterId
+WHERE character.id = ?;
+
+deleteAllUni2Props:
+DELETE FROM uni2_character_props;
+
+selectAllCommon:
+SELECT *
+FROM character;

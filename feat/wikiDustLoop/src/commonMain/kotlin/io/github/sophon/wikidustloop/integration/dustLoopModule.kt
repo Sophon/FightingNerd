@@ -63,16 +63,7 @@ fun dustLoopModule() = module {
                 characterListDB.insertCharacterList(characterList)
             },
             fetchCharacterListUseCase = FetchCharacterListUseCase {
-                when (val result = characterListDB.fetchCharacterList()) {
-                    is Result.Success -> {
-                        if (result.data.isEmpty()) {
-                            Result.Error(WikiError.DatabaseError("Empty"))
-                        } else {
-                            Result.Success(result.data)
-                        }
-                    }
-                    is Result.Error -> Result.Error(result.error)
-                }
+                characterListDB.fetchCharacterList()
             },
             fetchCharacterUseCase = FetchCharacterUseCase { charName ->
                 characterListDB.fetchCharacterDataFor(charName)

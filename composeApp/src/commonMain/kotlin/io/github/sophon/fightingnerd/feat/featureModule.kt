@@ -41,6 +41,4 @@ internal fun featureModule() = module {
     }
     singleOf(::LoadMoveListUseCase)
     //endregion
-
-    singleOf(::MoveRepository)
 }

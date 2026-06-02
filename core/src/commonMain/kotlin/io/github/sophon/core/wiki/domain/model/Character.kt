@@ -96,7 +96,7 @@ data class Character(
         val walkSpeed: String?,
         val walkSpeedBack: String?,
         val dashInitial: String?,
-        val dashAcceleration: Float?,
+        val dashAcceleration: String?,
         val closeRange: CloseRange?,
     ) {
         @Serializable
