@@ -11,6 +11,7 @@ plugins {
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.buildkonfig)
+    alias(libs.plugins.sqldelight)
 }
 
 val appVersionName = project.properties["app.version.name"] as String
@@ -46,6 +47,12 @@ kotlin {
             implementation(libs.koin.androidx.compose)
 
             implementation(libs.napier)
+
+            implementation(libs.sqldelight.driver.android)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.sqldelight.driver.native)
         }
 
         commonMain.dependencies {
@@ -79,6 +86,9 @@ kotlin {
             implementation(libs.kotlin.date.time)
 
             implementation(libs.datastore)
+
+            implementation(libs.sqldelight.coroutines)
+            implementation(libs.sqldelight.primitive.adapters)
 
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
@@ -146,5 +156,18 @@ buildkonfig {
     defaultConfigs {
         buildConfigField(STRING, "VERSION", appVersionName)
         buildConfigField(INT, "VERSION_CODE", appVersionCode.toString())
+    }
+}
+
+sqldelight {
+    databases {
+        create("CharacterDatabase") {
+            packageName.set("io.github.sophon.fightingnerd.db.character")
+            srcDirs.setFrom("src/commonMain/sqldelight/character")
+        }
+        create("MoveDatabase") {
+            packageName.set("io.github.sophon.fightingnerd.db.move")
+            srcDirs.setFrom("src/commonMain/sqldelight/move")
+        }
     }
 }
