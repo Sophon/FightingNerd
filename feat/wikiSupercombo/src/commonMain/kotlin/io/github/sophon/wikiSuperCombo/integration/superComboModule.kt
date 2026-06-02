@@ -66,16 +66,7 @@ fun superComboModule() = module {
                 characterListDB.fetchCharacterDataFor(charName)
             },
             fetchCharacterListUseCase = FetchCharacterListUseCase {
-                when (val result = characterListDB.fetchCharacterList()) {
-                    is Result.Success -> {
-                        if (result.data.isEmpty()) {
-                            Result.Error(WikiError.DatabaseError("Empty"))
-                        } else {
-                            Result.Success(result.data)
-                        }
-                    }
-                    is Result.Error -> Result.Error(result.error)
-                }
+                characterListDB.fetchCharacterList()
             },
 
             downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, characterData ->
