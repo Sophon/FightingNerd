@@ -265,3 +265,7 @@ WHERE character.id = ?;
 
 deleteAllUni2Props:
 DELETE FROM uni2_character_props;
+
+selectAllCommon:
+SELECT *
+FROM character;
