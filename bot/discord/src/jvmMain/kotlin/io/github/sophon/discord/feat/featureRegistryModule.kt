@@ -2,6 +2,9 @@ package io.github.sophon.discord.feat
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Config
+import io.github.sophon.core.feature.Game
+import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
@@ -27,6 +30,9 @@ import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.feat.config.FeatureRegistry
+import io.github.sophon.discord.feat.config.InitializeFeaturesFromConfigUseCase
+import io.github.sophon.discord.feat.core.data.InMemoryCharacterListDB
+import io.github.sophon.discord.feat.core.data.InMemoryMoveListDB
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.TrackerImpl
@@ -153,6 +159,8 @@ internal val featureRegistryModule = module {
 
     //region CONFIG
     singleOf(::ConfigLoader)
+    singleOf(::InitializeFeaturesFromConfigUseCase)
+
     single {
         when (val result = get<ConfigLoader>().loadConfig()) {
             is Result.Success -> result.data
@@ -195,6 +203,15 @@ internal val featureRegistryModule = module {
     singleOf(::DustLoopWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::MizuumiWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::EwgfDiscordFeature).bind<DiscordRegisteredFeature>()
+
+    single<(Game) -> Pair<CharacterListDB, MoveListDB>> {
+        return@single  { game ->
+            val moveDB = InMemoryMoveListDB(game)
+            val characterDB = InMemoryCharacterListDB(game)
+
+            characterDB to moveDB
+        }
+    }
 
     single<List<DiscordRegisteredFeature>> {
         val config = get<Config>()
