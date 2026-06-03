@@ -3,19 +3,16 @@ package io.github.sophon.fightingnerd.feat.moveList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.onError
-import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.fightingnerd.core.MoveRepository
-import io.github.sophon.fightingnerd.feat.moveList.model.Property
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
+import io.github.sophon.fightingnerd.feat.moveList.model.Property
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
 internal class MoveListVM(
     gameId: String,

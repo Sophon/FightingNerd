@@ -122,7 +122,7 @@ internal class HomeVM(
             gameWidget.characterList.forEach { character ->
                 launch {
                     moveListSemaphore.withPermit {
-                        loadMoveListUseCase.invoke(game = gameWidget.game, characterQueryId = character.queryName)
+                        loadMoveListUseCase.invoke(game = gameWidget.game, characterQueryId = character.id)
                             .onSuccess { moveList ->
                                 _state.update { state ->
                                     val updatedGameWidgetList = state.gameWidgetList.map { widget ->
@@ -137,8 +137,6 @@ internal class HomeVM(
                                     }
                                     state.copy(gameWidgetList = updatedGameWidgetList)
                                 }
-
-                                //TODO: then refactor to store it in the DB
                             }
                             .onError { error ->
                                 //TODO: display toast

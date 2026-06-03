@@ -1,26 +1,15 @@
 package io.github.sophon.fightingnerd.core.data
 
+import character.SelectAllBb
+import character.SelectAllDbfz
+import character.SelectAllGbvsr
+import character.SelectAllGgst
+import character.SelectAllMk1
+import character.SelectAllSf6
+import character.SelectAllUni2
 import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.fightingnerd.db.character.SelectAllBb
-import io.github.sophon.fightingnerd.db.character.SelectAllDbfz
-import io.github.sophon.fightingnerd.db.character.SelectAllGbvsr
-import io.github.sophon.fightingnerd.db.character.SelectAllGgst
-import io.github.sophon.fightingnerd.db.character.SelectAllMk1
-import io.github.sophon.fightingnerd.db.character.SelectAllSf6
-import io.github.sophon.fightingnerd.db.character.SelectAllUni2
 
-internal fun List<String>.fromDomain(): String {
-    return joinToString(LIST_DELIMITER)
-}
-
-internal fun String.toDomain(): List<String> {
-    if (isEmpty()) {
-        return emptyList()
-    }
-    return split(LIST_DELIMITER)
-}
-
-internal fun io.github.sophon.fightingnerd.db.character.Character.toDomain(): Character {
+internal fun character.Character.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
@@ -271,5 +260,3 @@ internal fun toImages(icon: String?, banner: String?): Character.Images? {
     }
     return Character.Images(iconUrl = icon, bannerUrl = banner)
 }
-
-private const val LIST_DELIMITER = ";"

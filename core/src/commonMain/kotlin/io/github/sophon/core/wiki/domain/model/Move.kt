@@ -112,10 +112,6 @@ data class Move(
 
     @Serializable
     data class GGSTProperties(
-        val chara: String? = null,
-        val name: String? = null,
-        val damage: String? = null,
-        val notes: List<String>? = null,
         val type: String? = null,
         val riscGain: String? = null,
         val riscLoss: String? = null,
@@ -124,7 +120,6 @@ data class Move(
         val chipRatio: String? = null,
         val otgType: String? = null,
         val prorate: String? = null,
-        val cancel: String? = null,
         val level: String? = null,
     )
 

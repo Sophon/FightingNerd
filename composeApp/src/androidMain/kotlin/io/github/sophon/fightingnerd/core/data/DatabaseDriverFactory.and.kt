@@ -1,16 +1,20 @@
 package io.github.sophon.fightingnerd.core.data
 
 import android.content.Context
+import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
-import io.github.sophon.fightingnerd.db.character.CharacterDatabase
 
 actual class DatabaseDriverFactory(
     private val context: Context,
 ) {
-    actual fun create(databaseName: String): SqlDriver {
+    actual fun create(
+        databaseName: String,
+        schema: SqlSchema<QueryResult.Value<Unit>>,
+    ): SqlDriver {
         val driver: SqlDriver = AndroidSqliteDriver(
-            schema = CharacterDatabase.Schema,
+            schema = schema,
             context = context,
             name = databaseName,
         )
