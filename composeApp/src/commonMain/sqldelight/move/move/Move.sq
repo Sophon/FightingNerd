@@ -27,7 +27,7 @@ CREATE TABLE move (
 );
 
 insertMove:
-INSERT INTO move(id, charName, name, input, damage, startup, onBlock, onHit, onCH, active, cancel, recovery, guard, invulnerability, notes, aliases, urlsCharacterWiki, urlsCharacterImage, urlsVideoId, urlsHitboxImageList, urlsMoveImageList, urlsWikiUrl, insertedAt)
+INSERT OR IGNORE INTO move(id, charName, name, input, damage, startup, onBlock, onHit, onCH, active, cancel, recovery, guard, invulnerability, notes, aliases, urlsCharacterWiki, urlsCharacterImage, urlsVideoId, urlsHitboxImageList, urlsMoveImageList, urlsWikiUrl, insertedAt)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteAllMoves:
@@ -214,7 +214,7 @@ CREATE TABLE avl_move_props (
 
 
 insertT8Props:
-INSERT INTO t8_move_props(moveId, isHeat, isHoming, stance, isPowerCrush, isHighCrush, isLowCrush)
+INSERT OR IGNORE INTO t8_move_props(moveId, isHeat, isHoming, stance, isPowerCrush, isHighCrush, isLowCrush)
 VALUES (?, ?, ?, ?, ?, ?, ?);
 
 selectAllT8:
@@ -227,7 +227,7 @@ DELETE FROM t8_move_props;
 
 
 insertSf6Props:
-INSERT INTO sf6_move_props(moveId, type, images, chip, dmgScaling, total, hitConfirm, punishAdv, perfParryAdv, DRcOH, DRcOB, DROH, DROB, hitStun, blockStun, hitStop, driveDmgOnBlock, driveDmgOnHit, driveGain, superGainOnHit, superGainOnBlock, armor, airborne, jugStart, jugIncrease, jugLimit, projectileSpeed, attackRange)
+INSERT OR IGNORE  INTO sf6_move_props(moveId, type, images, chip, dmgScaling, total, hitConfirm, punishAdv, perfParryAdv, DRcOH, DRcOB, DROH, DROB, hitStun, blockStun, hitStop, driveDmgOnBlock, driveDmgOnHit, driveGain, superGainOnHit, superGainOnBlock, armor, airborne, jugStart, jugIncrease, jugLimit, projectileSpeed, attackRange)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllSf6:
@@ -240,7 +240,7 @@ DELETE FROM sf6_move_props;
 
 
 insertKof15Props:
-INSERT INTO kof15_move_props(moveId, stun)
+INSERT OR IGNORE  INTO kof15_move_props(moveId, stun)
 VALUES (?, ?);
 
 selectAllKof15:
@@ -253,7 +253,7 @@ DELETE FROM kof15_move_props;
 
 
 insertCotwProps:
-INSERT INTO cotw_move_props(moveId, revDamage)
+INSERT OR IGNORE  INTO cotw_move_props(moveId, revDamage)
 VALUES (?, ?);
 
 selectAllCotw:
@@ -266,7 +266,7 @@ DELETE FROM cotw_move_props;
 
 
 insertGgstProps:
-INSERT INTO ggst_move_props(moveId, type, riscGain, riscLoss, wallDamage, inputTension, chipRatio, otgType, prorate, level)
+INSERT OR IGNORE  INTO ggst_move_props(moveId, type, riscGain, riscLoss, wallDamage, inputTension, chipRatio, otgType, prorate, level)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllGgst:
@@ -279,7 +279,7 @@ DELETE FROM ggst_move_props;
 
 
 insertDbfzProps:
-INSERT INTO dbfz_move_props(moveId, attribute, smash, kiGain, prorate, blockStun, groundHit, airHit, type, level)
+INSERT OR IGNORE  INTO dbfz_move_props(moveId, attribute, smash, kiGain, prorate, blockStun, groundHit, airHit, type, level)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 
@@ -293,7 +293,7 @@ DELETE FROM dbfz_move_props;
 
 
 insertGbvsrProps:
-INSERT INTO gbvsr_move_props(moveId, meter, level, cooldown, cls, type)
+INSERT OR IGNORE  INTO gbvsr_move_props(moveId, meter, level, cooldown, cls, type)
 VALUES (?, ?, ?, ?, ?, ?);
 
 selectAllGbvsr:
@@ -306,7 +306,7 @@ DELETE FROM gbvsr_move_props;
 
 
 insertMkProps:
-INSERT INTO mk_move_props(moveId, moveType, cost, chip, flawlessBlockAdv, hitCancelAdv, blockCancelAdv, punish)
+INSERT OR IGNORE  INTO mk_move_props(moveId, moveType, cost, chip, flawlessBlockAdv, hitCancelAdv, blockCancelAdv, punish)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllMk:
@@ -319,7 +319,7 @@ DELETE FROM mk_move_props;
 
 
 insertMbProps:
-INSERT INTO mb_move_props(moveId, inputInfo, subtitle, minDamage, property, cost, attribute, landing, overall)
+INSERT OR IGNORE  INTO mb_move_props(moveId, inputInfo, subtitle, minDamage, property, cost, attribute, landing, overall)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllMb:
@@ -332,7 +332,7 @@ DELETE FROM mb_move_props;
 
 
 insertBbProps:
-INSERT INTO bb_move_props(moveId, onODR, attribute, p1, p2, starter, level, blockstun, groundHit, airHit, groundCH, airCH, blockstop, hitstop, chStop, cancelTiming, type)
+INSERT OR IGNORE  INTO bb_move_props(moveId, onODR, attribute, p1, p2, starter, level, blockstun, groundHit, airHit, groundCH, airCH, blockstop, hitstop, chStop, cancelTiming, type)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllBb:
@@ -345,7 +345,7 @@ DELETE FROM bb_move_props;
 
 
 insertUni2Props:
-INSERT INTO uni2_move_props(moveId, inputInfo, subtitle, minDamage, type, cancelWindow, property, cost, attribute, landing, overall, assaultAdv, blockstun, groundHit, airHit, groundCH, airCH, hitstop, CHstop, proration, comboP1, comboP2)
+INSERT OR IGNORE  INTO uni2_move_props(moveId, inputInfo, subtitle, minDamage, type, cancelWindow, property, cost, attribute, landing, overall, assaultAdv, blockstun, groundHit, airHit, groundCH, airCH, hitstop, CHstop, proration, comboP1, comboP2)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllUni2:
@@ -358,7 +358,7 @@ DELETE FROM uni2_move_props;
 
 
 insertVsavProps:
-INSERT INTO vsav_move_props(moveId, inputInfo, subtitle, whiteDmg, renda, meter, reaction, curseTime)
+INSERT OR IGNORE  INTO vsav_move_props(moveId, inputInfo, subtitle, whiteDmg, renda, meter, reaction, curseTime)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllVsav:
@@ -371,7 +371,7 @@ DELETE FROM vsav_move_props;
 
 
 insertAvlProps:
-INSERT INTO avl_move_props(moveId, chiDamage, flow)
+INSERT OR IGNORE  INTO avl_move_props(moveId, chiDamage, flow)
 VALUES (?, ?, ?);
 
 selectAllAvl:
