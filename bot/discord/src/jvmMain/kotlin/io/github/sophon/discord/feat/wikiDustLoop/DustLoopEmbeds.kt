@@ -164,7 +164,7 @@ internal fun moveDetailedEmbedBuilderGG(
 
     optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
     optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
-    optionalField(name = "Cancel", value = move.ggstProperties?.cancel)
+    optionalField(name = "Cancel", value = move.cancel)
     optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
     optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
     optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
