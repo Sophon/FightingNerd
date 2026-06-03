@@ -3,11 +3,10 @@ package io.github.sophon.fightingnerd.feat.home.usecase
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
-import io.github.sophon.core.domain.mapError
-import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.fightingnerd.core.model.AppError
+import io.github.sophon.fightingnerd.core.util.mapWikiError
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 
@@ -21,7 +20,7 @@ internal class LoadGameCharacterListUseCase(
             ?: return Result.Error(AppError.WikiClientNotFound(gameWidget.game.id))
 
         val result = wikiClient.fetchCharacterList()
-            .mapToAppError()
+            .mapWikiError()
             .flatMap { cachedCharacterList ->
                 if (cachedCharacterList.isEmpty()) {
                     refreshCharacterList(wikiClient)
@@ -38,19 +37,13 @@ internal class LoadGameCharacterListUseCase(
 
     private suspend fun refreshCharacterList(wikiClient: WikiClient): Result<List<Character>, AppError> {
         val result = wikiClient.downloadCharacterList()
-            .mapToAppError()
+            .mapWikiError()
             .flatMap { characterList ->
                 wikiClient.cacheCharacterList(characterList)
                     .map { characterList }
-                    .mapToAppError()
+                    .mapWikiError()
             }
         return result
-    }
-
-    private fun <T> Result<T, WikiError>.mapToAppError(): Result<T, AppError> {
-        return mapError { wikiError ->
-            AppError.WikiError(wikiError.toString())
-        }
     }
 
     private fun HomeViewState.GameWidget.updateWithCharacterList(characterList: List<Character>): HomeViewState.GameWidget {
