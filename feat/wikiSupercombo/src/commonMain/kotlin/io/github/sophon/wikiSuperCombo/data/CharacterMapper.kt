@@ -54,7 +54,7 @@ internal fun CharacterListResponseDto.toDomain(
             Character(
                 id = charDto.Character.createId(),
                 displayName = charDto.name ?: charDto.chara,
-                queryName = charDto.chara,
+                remoteQueryId = charDto.chara,
                 wikiUrl = createWikiUrlFrom(gameId, charDto.chara),
                 aliasList = charDto.chara.createAliases(addInitials = (game != Game.MK1)),
                 images = Character.Images(

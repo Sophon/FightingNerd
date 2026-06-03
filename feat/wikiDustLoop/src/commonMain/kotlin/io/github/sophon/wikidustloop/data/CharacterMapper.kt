@@ -34,7 +34,7 @@ internal fun CharacterListResponseDto.toDomain(
             val character = Character(
                 id = id,
                 displayName = displayName,
-                queryName = queryName,
+                remoteQueryId = queryName,
                 wikiUrl = queryName.formWikiUrl(gameId),
                 aliasList = dto.name.createAliases(gameId, dto.aliases),
                 images = Character.Images(

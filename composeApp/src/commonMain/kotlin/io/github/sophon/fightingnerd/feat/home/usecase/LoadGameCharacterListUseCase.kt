@@ -52,7 +52,7 @@ internal class LoadGameCharacterListUseCase(
                 HomeViewState.GameWidget.Character(
                     id = domainCharacter.id,
                     displayName = domainCharacter.displayName,
-                    queryName = domainCharacter.queryName,
+                    queryName = domainCharacter.remoteQueryId,
                     iconUrl = domainCharacter.images?.iconUrl,
                 )
             },

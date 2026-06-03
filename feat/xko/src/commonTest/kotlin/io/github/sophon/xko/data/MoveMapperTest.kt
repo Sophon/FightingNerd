@@ -83,12 +83,12 @@ class MoveMapperTest {
         // then
         assertThat(result.size).isEqualTo(2)
 
-        val jinxCharacter = result.keys.find { it.queryName == "Jinx" }
+        val jinxCharacter = result.keys.find { it.remoteQueryId == "Jinx" }
         assertThat(jinxCharacter).isNotNull()
         assertThat(result[jinxCharacter]!!).hasSize(1)
         assertThat(result[jinxCharacter]!![0]).isEqualTo(expectedJinxMove)
 
-        val dariusCharacter = result.keys.find { it.queryName == "Darius" }
+        val dariusCharacter = result.keys.find { it.remoteQueryId == "Darius" }
         assertThat(dariusCharacter).isNotNull()
         assertThat(result[dariusCharacter]!!).hasSize(1)
         assertThat(result[dariusCharacter]!![0]).isEqualTo(expectedDariusMove)
@@ -139,7 +139,7 @@ class MoveMapperTest {
         // then
         assertThat(result.size).isEqualTo(1)
 
-        val jinxCharacter = result.keys.find { it.queryName == "Jinx" }
+        val jinxCharacter = result.keys.find { it.remoteQueryId == "Jinx" }
         assertThat(jinxCharacter).isNotNull()
         assertThat(result[jinxCharacter]!!).hasSize(1)
         assertThat(result[jinxCharacter]!![0]).isEqualTo(expectedMove)

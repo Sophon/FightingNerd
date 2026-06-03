@@ -11,7 +11,7 @@ class MoveMapperTest {
     val bj = Character(
         id = "B.Jenet",
         displayName = "B. Jenet",
-        queryName = "b.jenet",
+        remoteQueryId = "b.jenet",
         wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV/B.Jenet",
     )
 

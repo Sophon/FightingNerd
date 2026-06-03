@@ -77,7 +77,7 @@ internal class SqlCharacterDB(
         queries.insertCharacter(
             id = character.id,
             displayName = character.displayName,
-            queryName = character.queryName,
+            queryName = character.remoteQueryId,
             wikiUrl = character.wikiUrl,
             aliasList = character.aliasList.fromDomain(),
             imageIconUrl = character.images?.iconUrl,

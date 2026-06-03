@@ -8,7 +8,7 @@ internal fun String.toCharacter(): Character {
     return Character(
         id = this.lowercase(),
         displayName = this,
-        queryName = this,
+        remoteQueryId = this,
         wikiUrl = "https://wiki.play2xko.com/en-us/$this"
     )
 }

@@ -110,7 +110,7 @@ internal class MizuumiWikiClient(
                 downloadOrFetchUseCase.invoke(gameTables)
                     .map { map ->
                         map
-                            .filterKeys { it.queryName.equals(characterData.name, ignoreCase = true) }
+                            .filterKeys { it.remoteQueryId.equals(characterData.name, ignoreCase = true) }
                             .values
                             .flatten()
                     }

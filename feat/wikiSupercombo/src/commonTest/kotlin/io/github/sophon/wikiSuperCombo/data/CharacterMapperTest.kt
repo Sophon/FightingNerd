@@ -41,7 +41,7 @@ class CharacterMapperTest {
         val expectedCharacter = Character(
             id = "ken",
             displayName = "Ken",
-            queryName = "Ken",
+            remoteQueryId = "Ken",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken",
             aliasList = emptyList(),
             images = Character.Images(iconUrl = null, bannerUrl = null),
@@ -155,7 +155,7 @@ class CharacterMapperTest {
         val expectedCViper = Character(
             id = "cviper",
             displayName = "C. Viper",
-            queryName = "C.Viper",
+            remoteQueryId = "C.Viper",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/C.Viper",
             aliasList = listOf("cv", "viper"),
             images = Character.Images(iconUrl = null, bannerUrl = null),
@@ -181,7 +181,7 @@ class CharacterMapperTest {
         val expectedChunLi = Character(
             id = "chun_li",
             displayName = "Chun-Li",
-            queryName = "Chun-Li",
+            remoteQueryId = "Chun-Li",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Chun-Li",
             aliasList = listOf("cl", "chun", "li"),
             images = Character.Images(iconUrl = null, bannerUrl = null),
@@ -207,7 +207,7 @@ class CharacterMapperTest {
         val expectedDeeJay = Character(
             id = "dee_jay",
             displayName = "Dee Jay",
-            queryName = "Dee_Jay",
+            remoteQueryId = "Dee_Jay",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Dee_Jay",
             aliasList = listOf("dj", "dee", "jay"),
             images = Character.Images(iconUrl = null, bannerUrl = null),
@@ -277,7 +277,7 @@ class CharacterMapperTest {
         val expectedCharacter = Character(
             id = "ken",
             displayName = "Ken",
-            queryName = "Ken",
+            remoteQueryId = "Ken",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken",
             aliasList = emptyList(),
             images = Character.Images(
