@@ -6,32 +6,29 @@ import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.Game
-import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.discord.feat.core.data.InMemoryCharacterListDB
-import io.github.sophon.discord.feat.core.data.InMemoryMoveListDB
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
+import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.xko.integration.XkoFeatureInfo
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 
 internal class XkoWikiDiscordFeature(
     xkoFeatureInfo: XkoFeatureInfo,
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getMoveUseCase: GetMoveUseCase,
+    private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -40,22 +37,11 @@ internal class XkoWikiDiscordFeature(
     override val otherCommands = listOf(
         Command.FdXko,
     )
-    private val wikis = mutableMapOf<String, WikiClient>()
+    private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
-    override fun registerGames(enabledGames: List<Game>) {
-        val supportedGames = enabledGames.filter {
-            it in featureInfo.supportedGameSet
-        }
 
-        supportedGames.forEach { game ->
-            wikis[game.id] = get(named(WikiClientFeature.Xko.id)) {
-                parametersOf(
-                    game.id,
-                    InMemoryCharacterListDB(game),
-                    InMemoryMoveListDB(game),
-                )
-            }
-        }
+    override fun registerWikiClients(wikiClientMap: Map<Game, WikiClient>) {
+        this.wikiClientMap = wikiClientMap
     }
 
     override suspend fun start() {
@@ -73,19 +59,27 @@ internal class XkoWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        val wiki = wikis[Game.Xko.id]
-            ?: return Result.Error(BotError.UnsupportedGame(query))
-
         return when (command) {
-            Command.Fd,
-            Command.FdXko -> searchMove(wiki, query)
+            Command.Fd -> {
+                fetchMoveInWikisUseCase.invoke(
+                    wikis = wikiClientMap,
+                    query = query,
+                ) { _, wiki, query -> searchMove(wiki, query) }
+            }
+            Command.FdXko -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Xko,
+                    query = query,
+                ) { _, wiki, query -> searchMove(wiki, query) }
+            }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikis.values)
+        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
 

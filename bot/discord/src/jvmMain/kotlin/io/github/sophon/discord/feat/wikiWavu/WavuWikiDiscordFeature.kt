@@ -21,12 +21,14 @@ import io.github.sophon.discord.feat.core.domain.model.Emoji
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCase
 import io.github.sophon.discord.util.toButtons
+import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import io.github.sophon.wikiwavu.integration.model.WavuFilter
@@ -47,6 +49,7 @@ internal class WavuWikiDiscordFeature(
     private val getStancesUseCase: GetStancesUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val searchStringFollowupsUseCase: SearchStringFollowupsUseCase,
+    private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -62,22 +65,11 @@ internal class WavuWikiDiscordFeature(
         Command.ThrowTK,
         Command.Strings,
     )
-    private val wikis = mutableMapOf<String, WikiClient>()
+    private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
-    override fun registerGames(enabledGames: List<Game>) {
-        val supportedGames = enabledGames.filter {
-            it in featureInfo.supportedGameSet
-        }
 
-        supportedGames.forEach { game ->
-            wikis[game.id] = get(named(WikiClientFeature.Wavu.id)) {
-                parametersOf(
-                    game.id,
-                    InMemoryCharacterListDB(game),
-                    InMemoryMoveListDB(game),
-                )
-            }
-        }
+    override fun registerWikiClients(wikiClientMap: Map<Game, WikiClient>) {
+        this.wikiClientMap = wikiClientMap
     }
 
     override suspend fun start() {
@@ -95,27 +87,81 @@ internal class WavuWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        val wiki = wikis[Game.Tekken8.id]
-            ?: return Result.Error(BotError.UnsupportedGame(query))
-
         return when (command) {
-            Command.Fd,
-            Command.FdTK -> searchMove(wiki, query)
+            Command.Fd -> {
+                fetchMoveInWikisUseCase.invoke(
+                    wikis = wikiClientMap,
+                    query = query,
+                ) { _, wiki, query -> searchMove(wiki, query) }
+            }
 
-            Command.Pc -> searchPowerCrushMoves(wiki, query)
-            Command.Heat -> searchHeatMoves(wiki, query)
-            Command.Homing -> searchHomingMoves(wiki, query)
-            Command.Stance -> getStancesUseCase.invoke(featureInfo, wiki, query)
-            Command.AliasTK -> getCharacterAliases(wiki)
-            Command.ThrowTK -> searchThrowMoves(wiki, query)
-            Command.Strings -> searchStringFollowupsUseCase.invoke(wiki, query, featureInfo)
+            Command.FdTK -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Tekken8,
+                    query = query,
+                ) { _, wiki, query -> searchMove(wiki, query) }
+            }
+
+            Command.Pc -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Tekken8,
+                    query = query,
+                ) { _, wiki, query -> searchPowerCrushMoves(wiki, query) }
+            }
+            Command.Heat -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Tekken8,
+                    query = query,
+                ) { _, wiki, query -> searchHeatMoves(wiki, query) }
+            }
+            Command.Homing -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Tekken8,
+                    query = query,
+                ) { _, wiki, query -> searchHomingMoves(wiki, query) }
+            }
+            Command.ThrowTK -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Tekken8,
+                    query = query,
+                ) { _, wiki, query -> searchThrowMoves(wiki, query) }
+            }
+
+            Command.AliasTK -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Tekken8,
+                    query = query,
+                ) { _, wiki, _ -> getCharacterAliases(wiki) }
+            }
+
+            Command.Stance -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Tekken8,
+                    query = query,
+                ) { _, wiki, query -> getStancesUseCase.invoke(featureInfo, wiki, query) }
+            }
+            Command.Strings -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Tekken8,
+                    query = query,
+                ) { _, wiki, query -> searchStringFollowupsUseCase.invoke(wiki, query, featureInfo) }
+            }
+
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikis.values)
+        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
     private suspend fun searchMove(

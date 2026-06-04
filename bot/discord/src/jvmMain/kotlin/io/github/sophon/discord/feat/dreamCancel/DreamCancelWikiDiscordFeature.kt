@@ -49,22 +49,11 @@ internal class DreamCancelWikiDiscordFeature(
         Command.FdCOTW,
         Command.AliasCOTW,
     )
-    private val wikis = mutableMapOf<String, WikiClient>()
+    private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
-    override fun registerGames(enabledGames: List<Game>) {
-        val supportedGames = enabledGames.filter {
-            it in featureInfo.supportedGameSet
-        }
 
-        supportedGames.forEach { game ->
-            wikis[game.id] = get(named(WikiClientFeature.DreamCancel.id)) {
-                parametersOf(
-                    game.id,
-                    InMemoryCharacterListDB(game),
-                    InMemoryMoveListDB(game),
-                )
-            }
-        }
+    override fun registerWikiClients(wikiClientMap: Map<Game, WikiClient>) {
+        this.wikiClientMap = wikiClientMap
     }
 
     override suspend fun start() {
@@ -84,53 +73,54 @@ internal class DreamCancelWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.Fd -> fetchMoveInWikisUseCase.invoke(
-                wikis = wikis,
+                wikis = wikiClientMap,
                 query = query,
                 searchFun = ::searchMove,
             )
+
             Command.FdKOF -> withWiki(
-                wikis = wikis,
-                gameId = Game.KoFXV.id,
+                wikis = wikiClientMap,
+                game = Game.KoFXV,
                 query = query,
                 action = ::searchMove,
             )
-            Command.AliasKOF -> withWiki(
-                wikis = wikis,
-                gameId = Game.KoFXV.id,
-                query = query,
-            ) { _, wiki, _ ->
-                getCharacterAliases(wiki)
-            }
-            Command.FdCOTW -> withWiki(
-                wikis = wikis,
-                gameId = Game.COTW.id,
-                query = query,
-                action = ::searchMove,
-            )
-            Command.AliasCOTW -> withWiki(
-                wikis = wikis,
-                gameId = Game.COTW.id,
-                query = query,
-            ) { _, wiki, _ ->
-                getCharacterAliases(wiki)
+            Command.AliasKOF -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.KoFXV,
+                    query = query,
+                ) { _, wiki, _ ->
+                    getCharacterAliases(wiki)
+                }
             }
 
-            else -> Result.Error(
-                BotError.BotLogicError(
-                    command.name,
-                    query,
-                )
+            Command.FdCOTW -> withWiki(
+                wikis = wikiClientMap,
+                game = Game.COTW,
+                query = query,
+                action = ::searchMove,
             )
+            Command.AliasCOTW -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.COTW,
+                    query = query,
+                ) { _, wiki, _ ->
+                    getCharacterAliases(wiki)
+                }
+            }
+
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 
-
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikis.values)
+        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
+
     private suspend fun searchMove(
-        gameId: String,
+        game: Game,
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
@@ -140,7 +130,7 @@ internal class DreamCancelWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    primaryEmbedBuilder = dreamCancelMoveEmbed(gameId, move, featureInfo),
+                    primaryEmbedBuilder = dreamCancelMoveEmbed(game, move, featureInfo),
                     images = if (images.size < 2) {
                         null
                     } else {

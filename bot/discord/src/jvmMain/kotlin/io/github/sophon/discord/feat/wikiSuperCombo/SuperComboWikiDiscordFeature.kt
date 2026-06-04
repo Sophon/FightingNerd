@@ -50,24 +50,11 @@ internal class SuperComboWikiDiscordFeature(
         Command.FdAV,
         Command.CharAV,
     )
-    private val wikis = mutableMapOf<String, WikiClient>()
+    private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
-    override fun registerGames(
-        enabledGames: List<Game>
-    ) {
-        val supportedGames = enabledGames.filter {
-            it in featureInfo.supportedGameSet
-        }
 
-        supportedGames.forEach { game ->
-            wikis[game.id] = get(named(WikiClientFeature.SuperCombo.id)) {
-                parametersOf(
-                    game.id,
-                    InMemoryCharacterListDB(game),
-                    InMemoryMoveListDB(game),
-                )
-            }
-        }
+    override fun registerWikiClients(wikiClientMap: Map<Game, WikiClient>) {
+        this.wikiClientMap = wikiClientMap
     }
 
     override suspend fun start() {
@@ -86,56 +73,54 @@ internal class SuperComboWikiDiscordFeature(
         origin: Source,
     ): Result<BotOutput, BotError> {
         return when (command) {
-            Command.Fd -> fetchMoveInWikisUseCase.invoke(
-                wikis = wikis,
-                query = query,
-            ) { _, wiki, query ->
-                searchMove(wiki, query)
+            Command.Fd -> {
+                fetchMoveInWikisUseCase.invoke(
+                    wikis = wikiClientMap,
+                    query = query,
+                ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
-            Command.CharSF -> withWiki(
-                wikis = wikis,
-                gameId = Game.StreetFighter6.id,
-                query = query,
-            ) { _, wiki, query ->
-                searchCharacter(wiki, query)
+            Command.CharSF -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.StreetFighter6,
+                    query = query,
+                ) { _, wiki, query -> searchCharacter(wiki, query) }
             }
             Command.FdSF -> withWiki(
-                wikis = wikis,
-                gameId = Game.StreetFighter6.id,
+                wikis = wikiClientMap,
+                game = Game.StreetFighter6,
                 query = query,
-            ) { _, wiki, query ->
-                searchMove(wiki, query)
+            ) { _, wiki, query -> searchMove(wiki, query) }
+
+            Command.CharMK -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.MK1,
+                    query = query,
+                ) { _, wiki, query -> searchCharacter(wiki, query) }
+            }
+            Command.FdMK -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.MK1,
+                    query = query,
+                ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
-            Command.CharMK -> withWiki(
-                wikis = wikis,
-                gameId = Game.MK1.id,
-                query = query,
-            ) { _, wiki, query ->
-                searchCharacter(wiki, query)
+            Command.CharAV -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.AVL,
+                    query = query,
+                ) { _, wiki, query -> searchCharacter(wiki, query) }
             }
-            Command.FdMK -> withWiki(
-                wikis = wikis,
-                gameId = Game.MK1.id,
-                query = query,
-            ) { _, wiki, query ->
-                searchMove(wiki, query)
-            }
-
-            Command.CharAV -> withWiki(
-                wikis = wikis,
-                gameId = Game.AVL.id,
-                query = query,
-            ) { _, wiki, query ->
-                searchCharacter(wiki, query)
-            }
-            Command.FdAV -> withWiki(
-                wikis = wikis,
-                gameId = Game.AVL.id,
-                query = query,
-            ) { _, wiki, query ->
-                searchMove(wiki, query)
+            Command.FdAV -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.AVL,
+                    query = query,
+                ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
@@ -143,7 +128,7 @@ internal class SuperComboWikiDiscordFeature(
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikis.values)
+        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
     private suspend fun searchCharacter(

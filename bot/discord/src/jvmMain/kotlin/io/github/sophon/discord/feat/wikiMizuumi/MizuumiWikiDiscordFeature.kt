@@ -17,9 +17,11 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikimizuumi.integration.MizuumiFeatureInfo
 import kotlinx.coroutines.CoroutineScope
@@ -37,6 +39,7 @@ internal class MizuumiWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMizuumiInvEmbedUseCase: CreateMizuumiInvEmbedUseCase,
+    private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -53,22 +56,11 @@ internal class MizuumiWikiDiscordFeature(
         Command.InvVS,
         Command.AliasVS,
     )
-    private val wikis = mutableMapOf<String, WikiClient>()
+    private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
-    override fun registerGames(enabledGames: List<Game>) {
-        val supportedGames = enabledGames.filter {
-            it in featureInfo.supportedGameSet
-        }
 
-        supportedGames.forEach { game ->
-            wikis[game.id] = get(named(WikiClientFeature.Mizuumi.id)) {
-                parametersOf(
-                    game.id,
-                    InMemoryCharacterListDB(game),
-                    InMemoryMoveListDB(game),
-                )
-            }
-        }
+    override fun registerWikiClients(wikiClientMap: Map<Game, WikiClient>) {
+        this.wikiClientMap = wikiClientMap
     }
 
     override suspend fun start() {
@@ -88,90 +80,103 @@ internal class MizuumiWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return when (command) {
             Command.Fd -> {
-                var lastError: BotError? = null
-                for ((gameId, wiki) in wikis) {
-                    val game = Game.fromId(gameId)
-                    if (game == null) {
-                        Result.Error(lastError ?: BotError.UnknownMove(query))
-                    } else {
-                        when (val result = searchMove(wiki, query)) {
-                            is Result.Success -> return result
-                            is Result.Error -> lastError = result.error
-                        }
-                    }
-                }
-                Result.Error(lastError ?: BotError.UnknownMove(query))
+                fetchMoveInWikisUseCase.invoke(
+                    wikis = wikiClientMap,
+                    query = query,
+                ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
             Command.FdMB -> {
-                val game = Game.MBTL
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.MBTL,
+                    query = query,
+                ) { _, wiki, query ->
+                    searchMove(wiki, query)
+                }
             }
             Command.AliasMB -> {
-                val game = Game.MBTL
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                getCharacterAliases(wiki)
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.MBTL,
+                    query = query,
+                ) { _, wiki, _ ->
+                    getCharacterAliases(wiki)
+                }
             }
             Command.InvMB -> {
-                val game = Game.MBTL
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.MBTL,
+                    query = query,
+                ) { game, wiki, query ->
+                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+                }
             }
 
             Command.FdUNI -> {
-                val game = Game.Uni2
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Uni2,
+                    query = query,
+                ) { _, wiki, query ->
+                    searchMove(wiki, query)
+                }
             }
             Command.CharUNI -> {
-                val game = Game.Uni2
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchCharacter(wiki, query)
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Uni2,
+                    query = query,
+                ) { _, wiki, query ->
+                    searchCharacter(wiki, query)
+                }
             }
             Command.InvUNI -> {
-                val game = Game.Uni2
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Uni2,
+                    query = query,
+                ) { game, wiki, query ->
+                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+                }
             }
 
             Command.FdVS -> {
-                val game = Game.VSAV
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                searchMove(wiki, query)
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.VSAV,
+                    query = query,
+                ) { _, wiki, query ->
+                    searchMove(wiki, query)
+                }
             }
             Command.InvVS -> {
-                val game = Game.VSAV
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.VSAV,
+                    query = query,
+                ) { game, wiki, query ->
+                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+                }
             }
             Command.AliasVS -> {
-                val game = Game.VSAV
-                val wiki = wikis[game.id]
-                    ?: return Result.Error(BotError.UnsupportedGame(query))
-                getCharacterAliases(wiki)
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.VSAV,
+                    query = query,
+                ) { _, wiki, _ ->
+                    getCharacterAliases(wiki)
+                }
             }
 
-            else -> Result.Error(
-                BotError.BotLogicError(
-                    command.name,
-                    query,
-                )
-            )
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikis.values)
+        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
     private suspend fun searchMove(

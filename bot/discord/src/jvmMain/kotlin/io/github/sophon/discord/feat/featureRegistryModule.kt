@@ -5,6 +5,7 @@ import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
@@ -71,6 +72,8 @@ import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCa
 import io.github.sophon.discord.feat.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.wikiwavu.integration.data.FileReader
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.parameter.parametersOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -220,6 +223,7 @@ internal val featureRegistryModule = module {
     single<List<DiscordRegisteredFeature>> {
         val config = get<Config>()
         val registry = get<FeatureRegistry>()
+        val dbFactory = get<(Game) -> Pair<CharacterListDB, MoveListDB>>()
         val enabledFeatures = config.featureList
             .filter { it.isEnabled }
             .map { it.name }
@@ -230,12 +234,22 @@ internal val featureRegistryModule = module {
                 .find { it.name == feature.featureInfo.name }
 
             if (featureConfig != null) {
-                (feature as? GameWikiDiscordFeature)?.registerGames(featureConfig.supportedGameList)
+                val gameWikiFeature = feature as? GameWikiDiscordFeature
+                if (gameWikiFeature != null) {
+                    val wikiClientMap = featureConfig.supportedGameList.associateWith { game ->
+                        val (characterDB, moveDB) = dbFactory(game)
+                        get<WikiClient>(named(game.wiki.id)) {
+                            parametersOf(game.id, characterDB, moveDB)
+                        }
+                    }
+                    gameWikiFeature.registerWikiClients(wikiClientMap)
+                }
             }
         }
         val adminFeature: AdminDiscordFeature = get()
 
-        features + adminFeature
+        val result = features + adminFeature
+        result
     }
     //endregion
 }

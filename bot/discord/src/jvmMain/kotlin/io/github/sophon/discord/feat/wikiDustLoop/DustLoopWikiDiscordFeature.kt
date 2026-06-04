@@ -7,10 +7,7 @@ import io.github.sophon.core.domain.map
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.core.feature.Game
-import io.github.sophon.core.feature.WikiClientFeature
 import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.discord.feat.core.data.InMemoryCharacterListDB
-import io.github.sophon.discord.feat.core.data.InMemoryMoveListDB
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
@@ -31,9 +28,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 
 internal class DustLoopWikiDiscordFeature(
     dustLoopFeatureInfo: DustLoopFeatureInfo,
@@ -68,21 +62,10 @@ internal class DustLoopWikiDiscordFeature(
         Command.CharGB,
         Command.FdGB,
     )
-    private val wikis = mutableMapOf<String, WikiClient>()
+    private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
-    override fun registerGames(enabledGames: List<Game>) {
-        val supportedGames = enabledGames.filter {
-            it in featureInfo.supportedGameSet
-        }
-        supportedGames.forEach { game ->
-            wikis[game.id] = get(named(WikiClientFeature.DustLoop.id)) {
-                parametersOf(
-                    game.id,
-                    InMemoryCharacterListDB(game),
-                    InMemoryMoveListDB(game),
-                )
-            }
-        }
+    override fun registerWikiClients(wikiClientMap: Map<Game, WikiClient>) {
+        this.wikiClientMap = wikiClientMap
     }
 
     override suspend fun start() {
@@ -103,113 +86,108 @@ internal class DustLoopWikiDiscordFeature(
         return when (command) {
             Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
-                    wikis = wikis,
+                    wikis = wikiClientMap,
                     query = query,
                     searchFun = ::searchMove,
                 )
             }
 
             Command.CharGG -> withWiki(
-                wikis = wikis,
-                gameId = Game.GGST.id,
+                wikis = wikiClientMap,
+                game = Game.GGST,
                 query = query,
                 action = ::searchCharacter,
             )
             Command.FdGG -> withWiki(
-                wikis = wikis,
-                gameId = Game.GGST.id,
+                wikis = wikiClientMap,
+                game = Game.GGST,
                 query = query,
                 action = ::searchMove,
             )
             Command.InvGG -> withWiki(
-                wikis = wikis,
-                gameId = Game.GGST.id,
+                wikis = wikiClientMap,
+                game = Game.GGST,
                 query = query,
                 action = ::searchInvincible,
             )
             Command.AliasGG -> withWiki(
-                wikis = wikis,
-                gameId = Game.GGST.id,
+                wikis = wikiClientMap,
+                game = Game.GGST,
                 query = query,
             ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
 
             Command.CharDB -> withWiki(
-                wikis = wikis,
-                gameId = Game.DBFZ.id,
+                wikis = wikiClientMap,
+                game = Game.DBFZ,
                 query = query,
                 action = ::searchCharacter,
             )
             Command.FdDB -> withWiki(
-                wikis = wikis,
-                gameId = Game.DBFZ.id,
+                wikis = wikiClientMap,
+                game = Game.DBFZ,
                 query = query,
                 action = ::searchMove,
             )
             Command.AliasDB -> withWiki(
-                wikis = wikis,
-                gameId = Game.DBFZ.id,
+                wikis = wikiClientMap,
+                game = Game.DBFZ,
                 query = query,
             ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
 
             Command.CharGB -> withWiki(
-                wikis = wikis,
-                gameId = Game.GBVSR.id,
+                wikis = wikiClientMap,
+                game = Game.GBVSR,
                 query = query,
                 action = ::searchCharacter,
             )
             Command.FdGB -> withWiki(
-                wikis = wikis,
-                gameId = Game.GBVSR.id,
+                wikis = wikiClientMap,
+                game = Game.GBVSR,
                 query = query,
                 action = ::searchMove,
             )
 
             Command.CharBB -> withWiki(
-                wikis = wikis,
-                gameId = Game.BBCF.id,
+                wikis = wikiClientMap,
+                game = Game.BBCF,
                 query = query,
                 action = ::searchCharacter,
             )
             Command.FdBB -> withWiki(
-                wikis = wikis,
-                gameId = Game.BBCF.id,
+                wikis = wikiClientMap,
+                game = Game.BBCF,
                 query = query,
                 action = ::searchMove,
             )
             Command.AliasBB -> withWiki(
-                wikis = wikis,
-                gameId = Game.BBCF.id,
+                wikis = wikiClientMap,
+                game = Game.BBCF,
                 query = query,
             ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
             Command.InvBB -> withWiki(
-                wikis = wikis,
-                gameId = Game.BBCF.id,
+                wikis = wikiClientMap,
+                game = Game.BBCF,
                 query = query,
                 action = ::searchInvincible,
             )
 
-            else -> Result.Error(
-                BotError.BotLogicError(
-                    command.name,
-                    query,
-                )
-            )
+            else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
     }
 
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikis.values)
+        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
     private suspend fun searchCharacter(
-        gameId: String,
+        game: Game,
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
@@ -217,7 +195,7 @@ internal class DustLoopWikiDiscordFeature(
             .map { (character, fastestMoveList) ->
                 BotOutput(
                     primaryEmbedBuilder = createCharacterEmbedUseCase.invoke(
-                        gameId = gameId,
+                        game = game,
                         character = character,
                         fastestMoveList = fastestMoveList,
                         featureInfo = featureInfo,
@@ -227,14 +205,15 @@ internal class DustLoopWikiDiscordFeature(
     }
 
     private suspend fun searchMove(
-        gameId: String,
+        game: Game,
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMoveUseCase.invoke(wiki, query)
+        val result = getMoveUseCase.invoke(wiki, query)
             .map { move ->
-                createMoveEmbedUseCase.invoke(gameId, move, featureInfo)
+                createMoveEmbedUseCase.invoke(game, move, featureInfo)
             }
+        return result
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
@@ -245,11 +224,11 @@ internal class DustLoopWikiDiscordFeature(
     }
 
     private suspend fun searchInvincible(
-        gameId: String,
+        game: Game,
         wiki: WikiClient,
         charName: String,
     ): Result<BotOutput, BotError> {
-        return fetchDustLoopInvincibleMovesUseCase.invoke(gameId, wiki, charName)
+        return fetchDustLoopInvincibleMovesUseCase.invoke(game, wiki, charName)
             .map { moveList ->
                 BotOutput(
                     primaryEmbedBuilder = dustLoopMoveListEmbedBuilder(
