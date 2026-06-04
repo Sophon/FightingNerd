@@ -13,7 +13,7 @@ internal fun character.Character.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = wikiUrl,
         aliasList = aliasList.toDomain(),
         images = toImages(imageIconUrl, imageBannerUrl),
@@ -26,7 +26,7 @@ internal fun SelectAllSf6.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = wikiUrl,
         aliasList = aliasList.toDomain(),
         images = toImages(imageIconUrl, imageBannerUrl),
@@ -60,7 +60,7 @@ internal fun SelectAllGgst.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = wikiUrl,
         aliasList = aliasList.toDomain(),
         images = toImages(imageIconUrl, imageBannerUrl),
@@ -110,7 +110,7 @@ internal fun SelectAllDbfz.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = wikiUrl,
         aliasList = aliasList.toDomain(),
         images = toImages(imageIconUrl, imageBannerUrl),
@@ -130,7 +130,7 @@ internal fun SelectAllGbvsr.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = wikiUrl,
         aliasList = aliasList.toDomain(),
         images = toImages(imageIconUrl, imageBannerUrl),
@@ -169,7 +169,7 @@ internal fun SelectAllMk1.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = wikiUrl,
         aliasList = aliasList.toDomain(),
         images = toImages(imageIconUrl, imageBannerUrl),
@@ -190,7 +190,7 @@ internal fun SelectAllBb.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = wikiUrl,
         aliasList = aliasList.toDomain(),
         images = toImages(imageIconUrl, imageBannerUrl),
@@ -212,7 +212,7 @@ internal fun SelectAllUni2.toDomain(): Character {
     return Character(
         id = id,
         displayName = displayName,
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = wikiUrl,
         aliasList = aliasList.toDomain(),
         images = toImages(imageIconUrl, imageBannerUrl),

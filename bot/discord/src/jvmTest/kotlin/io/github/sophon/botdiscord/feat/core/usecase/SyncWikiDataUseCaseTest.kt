@@ -34,7 +34,7 @@ class SyncWikiDataUseCaseTest {
     ) = Character(
         id = id,
         displayName = displayName,
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = "https://wavu.wiki/t/Jin",
         aliasList = listOf("jin", "kazama"),
         images = null,
@@ -130,7 +130,7 @@ class SyncWikiDataUseCaseTest {
 
         override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError> {
             _cacheMoveListCalls.add(character to moveList)
-            return cacheMoveListResults[character.queryName]
+            return cacheMoveListResults[character.remoteQueryId]
                 ?: Result.Success(Unit)
         }
 

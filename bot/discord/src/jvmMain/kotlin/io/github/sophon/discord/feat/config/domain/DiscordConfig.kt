@@ -1,4 +1,4 @@
-package io.github.sophon.discord.feat.config
+package io.github.sophon.discord.feat.config.domain
 
 import kotlinx.serialization.Serializable
 

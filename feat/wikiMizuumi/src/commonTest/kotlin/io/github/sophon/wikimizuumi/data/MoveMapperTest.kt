@@ -68,13 +68,13 @@ private object MoveSource {
     val ak = Character(
         id = "akiha_tohno",
         displayName = "Akiha Tohno",
-        queryName = "Akiha_Tohno",
+        remoteQueryId = "Akiha_Tohno",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Akiha_Tohno"
     )
     val dn = Character(
         id = "dead_apostle_noel",
         displayName = "Dead Apostle Noel",
-        queryName = "Dead_Apostle_Noel",
+        remoteQueryId = "Dead_Apostle_Noel",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Dead_Apostle_Noel"
     )
 

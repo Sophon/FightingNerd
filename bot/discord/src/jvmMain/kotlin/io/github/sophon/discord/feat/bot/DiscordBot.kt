@@ -20,16 +20,15 @@ import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.safeRestCall
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.supervisorScope
 import kotlin.uuid.ExperimentalUuidApi
 
 internal interface DiscordBot {
@@ -40,13 +39,13 @@ internal interface DiscordBot {
 internal class DiscordBotImpl(
     private val kord: Kord,
     private val tracker: Tracker,
-    private val featureList: List<DiscordRegisteredFeature>,
     private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
     private val resultToEmbedUseCase: ResultToEmbedUseCase,
     private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
+    private val botFeatureRepo: BotFeatureRepo,
 ): DiscordBot {
     private val editableEmbedMap = mutableMapOf<String, BotOutput>()
 
@@ -62,16 +61,7 @@ internal class DiscordBotImpl(
 
 
     private suspend fun startFeatures() {
-        supervisorScope {
-            featureList.forEach { feature ->
-                launch {
-                    runCatching { feature.start() }
-                        .onFailure {
-                            Napier.e(tag = TAG) { "Failed to load ${feature.featureInfo.name}: $it" }
-                        }
-                }
-            }
-        }
+        botFeatureRepo.initialize()
     }
 
     private suspend fun startKord() {
@@ -185,6 +175,7 @@ internal class DiscordBotImpl(
 
     private suspend fun createCommandsForTestServer() {
         val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
+        val featureList = botFeatureRepo.getFeatures()
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
             featureList
                 .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
@@ -210,6 +201,7 @@ internal class DiscordBotImpl(
 
     private suspend fun createGlobalCommands() {
         try {
+            val featureList = botFeatureRepo.getFeatures()
             kord.createGlobalApplicationCommands {
                 featureList
                     .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
