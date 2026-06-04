@@ -20,6 +20,7 @@ import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.util.donationMessage
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -82,9 +83,9 @@ internal class CreateEmbedUseCase(
                 }
             }
 
-            if (rollChance(successPercentage = 1)) {
+            if (rollChance(successPercentage = 5)) {
                 message.channel.createMessage {
-                    content = "Consider donating (`/donate` or `/tip`): **<${URL_KOFI}>**"
+                    content = donationMessage()
                 }
             }
 

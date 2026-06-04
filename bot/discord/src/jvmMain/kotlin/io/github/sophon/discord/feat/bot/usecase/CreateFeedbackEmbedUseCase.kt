@@ -16,6 +16,7 @@ import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.util.donationMessage
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -82,8 +83,7 @@ internal class CreateFeedbackEmbedUseCase(
 
     private fun createResponseMessage(): String {
         return if (rollChance(successPercentage = 20)) {
-            "Feedback sent successfully!\n" +
-                    "Consider donating (`/donate` or `/tip`): **<${URL_KOFI}>**"
+            "Feedback sent successfully!\n" + donationMessage()
         } else {
             "Feedback sent successfully!"
         }
