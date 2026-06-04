@@ -5,7 +5,9 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
+import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_INVITE
+import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
@@ -161,11 +163,12 @@ internal class BotFeature(
     }
 
     private fun createInviteText(): Result<BotOutput, BotError> {
-        return Result.Success(
-            BotOutput(
-                plainText = "FightingNerd bot invite: $URL_INVITE"
-            )
-        )
+        val text = "FightingNerd bot invite: $URL_INVITE\n" +
+                "Enjoy the bot? Buy me a coffee:\n" +
+                "- ☕️ <$URL_KOFI>\n" +
+                "- ☕️ <$URL_BUY_ME_COFFEE>\n"
+
+        return Result.Success(BotOutput(plainText = text))
     }
 
     private fun createExamples(): Result<BotOutput, BotError> {

@@ -15,9 +15,10 @@ internal const val URL_IMG_GITHUB = "https://i.imgur.com/PdgcKV2.png"
 internal const val URL_IMG_FIGHTING_NERD = "https://i.imgur.com/TAgvOxX.png"
 
 internal const val URL_KOFI = "https://ko-fi.com/sorryuken"
+internal const val URL_BUY_ME_COFFEE = "https://buymeacoffee.com/sophon"
 internal const val URL_IMG_KOFI = "https://i.imgur.com/8MpFC8T.png"
 
-internal const val URL_INVITE = "https://discord.com/oauth2/authorize?client_id=1438716136790429776&permissions=346112&integration_type=0&scope=applications.commands+bot"
+internal const val URL_INVITE = "https://discord.com/discovery/applications/1438716136790429776"
 internal const val URL_IMG_DISCORD = "https://i.imgur.com/HtuRwva.png"
 
 internal const val TIME_UPDATE_INTERVAL_H = 3
