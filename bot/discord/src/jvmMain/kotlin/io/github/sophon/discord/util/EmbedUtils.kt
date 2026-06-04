@@ -6,6 +6,9 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.domain.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
+import io.github.sophon.discord.URL_BUY_ME_COFFEE
+import io.github.sophon.discord.URL_INVITE
+import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 internal fun EmbedBuilder.mandatoryField(
@@ -106,4 +109,10 @@ internal fun hitboxImages(
     images
         .takeIf { it.size == 1 }
         ?.let { image = it.first() }
+}
+
+internal fun donationMessage(): String {
+    return "Enjoy the bot? Buy me a coffee:\n" +
+            "- ☕️ <$URL_KOFI>\n" +
+            "- ☕️ <$URL_BUY_ME_COFFEE>\n"
 }

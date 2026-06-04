@@ -16,6 +16,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.util.donationMessage
 import io.github.sophon.integration.model.Source
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -163,11 +164,7 @@ internal class BotFeature(
     }
 
     private fun createInviteText(): Result<BotOutput, BotError> {
-        val text = "FightingNerd bot invite: $URL_INVITE\n" +
-                "Enjoy the bot? Buy me a coffee:\n" +
-                "- ☕️ <$URL_KOFI>\n" +
-                "- ☕️ <$URL_BUY_ME_COFFEE>\n"
-
+        val text = "FightingNerd bot invite: $URL_INVITE\n" + donationMessage()
         return Result.Success(BotOutput(plainText = text))
     }
 
