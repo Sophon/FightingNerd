@@ -77,8 +77,8 @@ internal class DustLoopWikiDiscordFeature(
             wikis[game.id] = get(named(WikiClientFeature.DustLoop.id)) {
                 parametersOf(
                     game.id,
-                    InMemoryCharacterListDB(),
-                    InMemoryMoveListDB(),
+                    InMemoryCharacterListDB(game),
+                    InMemoryMoveListDB(game),
                 )
             }
         }

@@ -62,8 +62,8 @@ internal class SuperComboWikiDiscordFeature(
             wikis[game.id] = get(named(WikiClientFeature.SuperCombo.id)) {
                 parametersOf(
                     game.id,
-                    InMemoryCharacterListDB(),
-                    InMemoryMoveListDB(),
+                    InMemoryCharacterListDB(game),
+                    InMemoryMoveListDB(game),
                 )
             }
         }

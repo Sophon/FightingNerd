@@ -59,8 +59,8 @@ internal class DreamCancelWikiDiscordFeature(
             wikis[game.id] = get(named(WikiClientFeature.DreamCancel.id)) {
                 parametersOf(
                     game.id,
-                    InMemoryCharacterListDB(),
-                    InMemoryMoveListDB(),
+                    InMemoryCharacterListDB(game),
+                    InMemoryMoveListDB(game),
                 )
             }
         }

@@ -50,8 +50,8 @@ internal class XkoWikiDiscordFeature(
             wikis[game.id] = get(named(WikiClientFeature.Xko.id)) {
                 parametersOf(
                     game.id,
-                    InMemoryCharacterListDB(),
-                    InMemoryMoveListDB(),
+                    InMemoryCharacterListDB(game),
+                    InMemoryMoveListDB(game),
                 )
             }
         }
