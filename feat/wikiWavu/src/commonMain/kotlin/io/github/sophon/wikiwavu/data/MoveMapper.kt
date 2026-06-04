@@ -34,6 +34,10 @@ internal fun MoveDto.toDomain(
         .cleanMoveInput()
     val aliases = fullInput.formAliases(alias, alt)
 
+    if (characterData.name == "Kunimitsu") {
+        val a = 3
+    }
+
     val move = Move(
         charName = characterData.name,
         id = id.formId(),
@@ -159,6 +163,10 @@ internal fun String.formAliases(alias: String?, alt: String?): List<String> {
 
     if (this.contains("cd.", ignoreCase = true)) {
         aliases.add(this.replace("cd.", "cd"))
+    }
+
+    if (this.startsWith("hfc", ignoreCase = true)) {
+        aliases.add(this.replace("hfc", "fc"))
     }
 
     val result = aliases

@@ -4,6 +4,7 @@
 - architectural rework of feature loading
   - extract the config loading flow from DI to objects
 - update donation links
+- `wavu` - `hFC` moves have `FC` as alias
 
 ## [v11.7.2] - 2026-06-02
 - `wavu` - fix input formatting for Heat-crouch-dash moves (ie AK's `H.cd1+2`)
