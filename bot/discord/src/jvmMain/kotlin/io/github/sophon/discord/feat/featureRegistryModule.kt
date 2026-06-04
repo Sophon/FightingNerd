@@ -29,6 +29,7 @@ import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
+import io.github.sophon.discord.feat.config.BotFeatureRepoImpl
 import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.feat.config.FeatureRegistry
 import io.github.sophon.discord.feat.config.usecase.BindToDiscordFeaturesUseCase
@@ -161,7 +162,7 @@ internal val featureRegistryModule = module {
 
     //region CONFIG
     singleOf(::ConfigLoader)
-    singleOf(::BotFeatureRepo)
+    singleOf(::BotFeatureRepoImpl).bind<BotFeatureRepo>()
 
     singleOf(::LoadConfigurationUseCase)
     single {

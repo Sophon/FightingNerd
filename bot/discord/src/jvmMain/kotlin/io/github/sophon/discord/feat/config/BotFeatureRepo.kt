@@ -12,14 +12,19 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.toDomainError
 
-internal class BotFeatureRepo(
+internal interface BotFeatureRepo {
+    suspend fun initialize(): EmptyResult<BotError>
+    fun getFeatures(): List<DiscordRegisteredFeature>
+}
+
+internal class BotFeatureRepoImpl(
     private val coreFeatureRepo: CoreFeatureRepo,
     private val loadConfigurationUseCase: LoadConfigurationUseCase,
     private val bindToDiscordFeaturesUseCase: BindToDiscordFeaturesUseCase,
-) {
+): BotFeatureRepo {
     private val featureList: MutableList<DiscordRegisteredFeature> = mutableListOf()
 
-    suspend fun initialize(): EmptyResult<BotError> {
+    override suspend fun initialize(): EmptyResult<BotError> {
         val result = loadConfigurationUseCase.invoke()
             .flatMap { config ->
                 coreFeatureRepo.initialize(config)
@@ -42,7 +47,7 @@ internal class BotFeatureRepo(
         return result
     }
 
-    fun getFeatures(): List<DiscordRegisteredFeature> {
+    override fun getFeatures(): List<DiscordRegisteredFeature> {
         val result = featureList.toList()
         return result
     }
