@@ -47,10 +47,10 @@ internal class AdminDiscordFeature(
     private val refreshDataUseCase: RefreshDataUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
-    private val featureRepo: BotFeatureRepo,
+    private val featureRepo: Lazy<BotFeatureRepo>,
 ): DiscordRegisteredFeature {
     private val featureList by lazy {
-        featureRepo.getFeatures().map { it.featureInfo }
+        featureRepo.value.getFeatures().map { it.featureInfo }
     }
 
     override val featureInfo: FeatureInfo = adminFeatureInfo.featureInfo

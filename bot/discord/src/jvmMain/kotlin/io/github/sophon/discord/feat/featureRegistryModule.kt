@@ -5,7 +5,6 @@ import io.github.sophon.core.feature.Config
 import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
-import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
@@ -29,9 +28,9 @@ import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.feat.config.FeatureRegistry
-import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.config.usecase.BindToDiscordFeaturesUseCase
 import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
 import io.github.sophon.discord.feat.core.data.InMemoryCharacterListDB
@@ -40,7 +39,6 @@ import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.TrackerImpl
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
@@ -73,8 +71,6 @@ import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCa
 import io.github.sophon.discord.feat.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.wikiwavu.integration.data.FileReader
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
@@ -206,7 +202,7 @@ internal val featureRegistryModule = module {
             refreshDataUseCase = get(),
             scheduler = get(),
             scope = get(),
-            featureRepo = get(),
+            featureRepo = lazy { get<BotFeatureRepo>() },
         )
     }
 
