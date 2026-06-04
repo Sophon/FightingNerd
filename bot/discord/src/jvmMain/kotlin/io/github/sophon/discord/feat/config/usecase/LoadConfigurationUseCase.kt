@@ -1,39 +1,24 @@
-package io.github.sophon.discord.feat.config
+package io.github.sophon.discord.feat.config.usecase
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
-import io.github.sophon.core.domain.mapError
 import io.github.sophon.core.feature.Config
-import io.github.sophon.core.feature.module.CoreFeatureRepo
 import io.github.sophon.core.util.getGame
+import io.github.sophon.discord.feat.config.data.JsonConfig
 import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import kotlinx.serialization.json.Json
-import io.github.sophon.discord.feat.config.data.JsonConfig
-import io.github.sophon.discord.feat.core.domain.toDomainError
 
-internal class InitializeFeaturesFromConfigUseCase(
+internal class LoadConfigurationUseCase(
     private val json: Json,
     private val fileManager: FileManager,
-    private val coreFeatureRepo: CoreFeatureRepo,
 ) {
-    fun invoke(): EmptyResult<BotError> {
-        val result = loadConfiguration()
-            .flatMap { config ->
-                coreFeatureRepo.initialize(config).mapError { it.toDomainError() }
-            }
-
-        return result
-    }
-
-    private fun loadConfiguration(): Result<Config, BotError> {
+    fun invoke(): Result<Config, BotError> {
         val result = fileManager.read(CONFIG_PATH)
             .map { configText ->
                 val jsonConfig = json.decodeFromString<JsonConfig>(configText).apply {
-                    Napier.d(tag =TAG) { this.toString() }
+                    Napier.d(tag = TAG) { this.toString() }
                 }
                 Config(
                     featureList = jsonConfig.featureList.map { feature ->
@@ -62,6 +47,6 @@ internal class InitializeFeaturesFromConfigUseCase(
 
     private companion object {
         const val CONFIG_PATH = "res/config.json"
-        const val TAG = "LoadConfigUseCase"
+        const val TAG = "LoadConfigurationUseCase"
     }
 }

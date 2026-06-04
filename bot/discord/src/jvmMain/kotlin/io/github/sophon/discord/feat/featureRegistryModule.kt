@@ -32,6 +32,7 @@ import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.feat.config.FeatureRegistry
 import io.github.sophon.discord.feat.config.BotFeatureRepo
+import io.github.sophon.discord.feat.config.usecase.BindToDiscordFeaturesUseCase
 import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
 import io.github.sophon.discord.feat.core.data.InMemoryCharacterListDB
 import io.github.sophon.discord.feat.core.data.InMemoryMoveListDB
@@ -167,6 +168,7 @@ internal val featureRegistryModule = module {
     singleOf(::BotFeatureRepo)
 
     singleOf(::LoadConfigurationUseCase)
+    singleOf(::BindToDiscordFeaturesUseCase)
 
     single {
         when (val result = get<ConfigLoader>().loadConfig()) {
