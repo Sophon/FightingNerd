@@ -15,6 +15,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.integration.model.Source
@@ -33,7 +34,7 @@ internal class XkoWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
-): DiscordRegisteredFeature, KoinComponent {
+): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
     override val featureInfo = xkoFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(

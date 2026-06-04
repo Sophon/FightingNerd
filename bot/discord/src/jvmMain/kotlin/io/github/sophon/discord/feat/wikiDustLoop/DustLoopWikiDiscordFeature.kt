@@ -16,6 +16,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
@@ -46,7 +47,7 @@ internal class DustLoopWikiDiscordFeature(
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
-): DiscordRegisteredFeature, KoinComponent {
+): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
     override val featureInfo: FeatureInfo = dustLoopFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(

@@ -30,13 +30,15 @@ import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.feat.config.FeatureRegistry
-import io.github.sophon.discord.feat.config.InitializeFeaturesFromConfigUseCase
+import io.github.sophon.discord.feat.config.BotFeatureRepo
+import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
 import io.github.sophon.discord.feat.core.data.InMemoryCharacterListDB
 import io.github.sophon.discord.feat.core.data.InMemoryMoveListDB
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.TrackerImpl
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
@@ -159,7 +161,9 @@ internal val featureRegistryModule = module {
 
     //region CONFIG
     singleOf(::ConfigLoader)
-    singleOf(::InitializeFeaturesFromConfigUseCase)
+    singleOf(::BotFeatureRepo)
+
+    singleOf(::LoadConfigurationUseCase)
 
     single {
         when (val result = get<ConfigLoader>().loadConfig()) {
@@ -226,7 +230,7 @@ internal val featureRegistryModule = module {
                 .find { it.name == feature.featureInfo.name }
 
             if (featureConfig != null) {
-                feature.registerGames(featureConfig.supportedGameList)
+                (feature as? GameWikiDiscordFeature)?.registerGames(featureConfig.supportedGameList)
             }
         }
         val adminFeature: AdminDiscordFeature = get()

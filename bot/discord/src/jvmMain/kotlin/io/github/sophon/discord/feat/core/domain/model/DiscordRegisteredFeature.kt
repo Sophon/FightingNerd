@@ -3,7 +3,6 @@ package io.github.sophon.discord.feat.core.domain.model
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.feature.Game
 import io.github.sophon.integration.model.Source
 
 internal interface DiscordRegisteredFeature {
@@ -11,10 +10,6 @@ internal interface DiscordRegisteredFeature {
 
     val defaultCommand: Command?
     val otherCommands: List<Command>
-
-    fun registerGames(enabledGames: List<Game>) {
-        //default: for when feature doesn't support games
-    }
 
     suspend fun start()
 
