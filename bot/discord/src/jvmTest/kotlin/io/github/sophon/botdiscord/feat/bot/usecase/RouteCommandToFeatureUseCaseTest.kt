@@ -9,6 +9,7 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
@@ -205,7 +206,15 @@ class RouteCommandToFeatureUseCaseTest {
         override suspend fun recordSuccessfulCommand(featureName: String, command: Command) = Result.Success(Unit)
         override suspend fun recordFailure(): EmptyResult<BotError> = Result.Success(Unit)
     }
-    private val useCase = RouteCommandToFeatureUseCase(featureList, tracker)
+    private val botFeatureRepo = object : BotFeatureRepo {
+        override suspend fun initialize(): EmptyResult<BotError> {
+            return Result.Success(Unit)
+        }
+        override fun getFeatures(): List<DiscordRegisteredFeature> {
+            return featureList
+        }
+    }
+    private val useCase = RouteCommandToFeatureUseCase(botFeatureRepo, tracker)
     //endregion
 
     //region Invalid Input
