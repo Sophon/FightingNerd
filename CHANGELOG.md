@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v12.0.0] - TODO
+## [v12.0.0] - 2026-06-05
 - architectural rework of feature loading
   - extract the config loading flow from DI to objects
 - update donation links
