@@ -3,17 +3,21 @@ package io.github.sophon.discord.feat.bot.usecase
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.util.extractFirstWord
 import io.github.sophon.core.util.normalizeWhiteSpace
+import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.removeTag
 import io.github.sophon.integration.model.Source
 
 internal class RouteCommandToFeatureUseCase(
-    private val featureList: List<DiscordRegisteredFeature>,
+    botFeatureRepo: BotFeatureRepo,
     private val tracker: Tracker,
 ) {
+    private val featureList by lazy {
+        botFeatureRepo.getFeatures()
+    }
+
     suspend fun invoke(
         source: Source,
         message: String
@@ -27,12 +31,13 @@ internal class RouteCommandToFeatureUseCase(
 
         val firstWord = fullQuery.extractFirstWord()
 
-        return if (firstWord.isCommand()) {
+        val result = if (firstWord.isCommand()) {
             val (commandString, query) = formatQuery(fullQuery)
             useExplicitCommands(source, commandString, query)
         } else {
             useDefaultCommands(source, fullQuery)
         }
+        return result
     }
 
     suspend fun invoke(
@@ -40,11 +45,12 @@ internal class RouteCommandToFeatureUseCase(
         source: Source,
         query: String,
     ): Result<BotOutput, BotError> {
-        return useExplicitCommands(
+        val result = useExplicitCommands(
             source,
             commandString,
             query,
         )
+        return result
     }
 
     private fun String.isCommand(): Boolean {

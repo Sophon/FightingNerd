@@ -4,6 +4,7 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
+import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
@@ -21,9 +22,10 @@ internal fun tipEmbed(
     color = Color(PURPLE)
 
     mandatoryField(
-        name = "💸💸💸",
+        name = "☕️ ☕️ ☕️",
         value = "I don't drink coffee but feel free to support the server costs!\n" +
-                URL_KOFI
+                "- ${URL_KOFI}\n" +
+                "- ${URL_BUY_ME_COFFEE}\n"
     )
 
     featureFooter(featureInfo)

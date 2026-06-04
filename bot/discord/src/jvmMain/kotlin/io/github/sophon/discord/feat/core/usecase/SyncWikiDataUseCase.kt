@@ -80,7 +80,7 @@ internal class SyncWikiDataUseCase {
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { character ->
                 flow {
                     val data = DownloadMoveListUseCase.CharacterData(
-                        name = character.queryName,
+                        name = character.remoteQueryId,
                         imageUrl = character.images?.iconUrl
                     )
                     val result = wiki.downloadMoveList(data)

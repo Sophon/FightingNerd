@@ -175,6 +175,19 @@ class MoveMapperTest {
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
     }
+
+    @Test
+    fun `formAliases with hFC`() {
+        // given
+        val move = MoveSource.yakouga
+        val expectedAlias = listOf("hfcdb1+2", "fc1+2")
+
+        // when
+        val result = move.toDomain(emptyCharData, emptyMap())
+
+        //then
+        assertThat(result.aliases).isEqualTo(expectedAlias)
+    }
     //endregion
 
     //region isStance
@@ -984,5 +997,25 @@ private object MoveSource {
         image = null,
         video = null,
         alt = "H.BAD.f+1+2",
+    )
+    val yakouga = MoveDto(
+        id = "Kunimitsu-hFC.1+2",
+        name = "Yakouga",
+        input = "hFC.1+2",
+        parent = null,
+        target = "l,sm",
+        damage = "8,15",
+        startup = "i18 i15",
+        recv = "r31",
+        tot = "70",
+        crush = "cs1~24",
+        block = "-12",
+        hit = "+5",
+        ch = null,
+        notes = "<div class=\"plainlist\">\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-teal tip\"\n>Weapon</div>\n* Can hit grounded when off-axis\n* Recovers in BT on hit only\n</div>",
+        alias = null,
+        image = null,
+        video = null,
+        alt = "hFC.db+1+2",
     )
 }

@@ -85,7 +85,7 @@ internal data class CharacterDto(
     val walk_speed: Float? = null,
     val backwalk_speed: Float? = null,
     val dash_initial_speed: Float? = null,
-    val dash_acceleration: Float? = null,
+    val dash_acceleration: String? = null,
     val jump_height: Float? = null,
     val f_jump_distance: Float? = null,
     val b_jump_distance: Float? = null,

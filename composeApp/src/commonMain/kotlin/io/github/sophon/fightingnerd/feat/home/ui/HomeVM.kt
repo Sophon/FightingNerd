@@ -2,20 +2,29 @@ package io.github.sophon.fightingnerd.feat.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.domain.onError
 import io.github.sophon.core.domain.onSuccess
 import io.github.sophon.core.feature.Game
+import io.github.sophon.fightingnerd.core.MoveRepository
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Semaphore
+import kotlinx.coroutines.sync.withPermit
 
 internal class HomeVM(
     private val loadEmptyWidgetsUseCase: LoadEmptyWidgetsUseCase,
     private val loadGameCharacterListUseCase: LoadGameCharacterListUseCase,
+    private val loadMoveListUseCase: LoadMoveListUseCase,
+    private val moveRepository: MoveRepository,
 ): ViewModel() {
+    private val moveListSemaphore = Semaphore(permits = MAX_PERMITS)
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
 
@@ -47,6 +56,27 @@ internal class HomeVM(
         }
     }
 
+    /**
+     * TODO: REPLACE WITH PROPER REPOSITORY
+     * this only serves to avoid having to pass the movelist around
+     */
+    fun onCacheMoveList(gameId: String, characterId: String) {
+        val character = state.value.gameWidgetList
+            .firstOrNull { widget ->
+                widget.game.id == gameId
+            }
+            ?.characterList
+            ?.firstOrNull { character ->
+                character.queryName == characterId
+            }
+        character?.moveList?.let { moveList ->
+            moveRepository.moveList.apply {
+                clear()
+                addAll(moveList)
+            }
+        }
+    }
+
 
     private fun loadWidgets() {
         loadEmptyWidgetsUseCase.invoke()
@@ -71,9 +101,13 @@ internal class HomeVM(
                             val updatedState = state.copy(gameWidgetList = updatedList)
                             updatedState
                         }
+
+                        downloadMoveList(gameWidget = loadedWidget)
                     }
-                    .onError {
+                    .onError { error ->
                         //TODO: display toast
+                        Napier.e(tag = TAG) { error.toString() }
+
                         _state.update { state ->
                             val updatedList = state.gameWidgetList.filterNot { it.game.id == gameWidget.game.id }
                             state.copy(gameWidgetList = updatedList)
@@ -83,8 +117,40 @@ internal class HomeVM(
         }
     }
 
+    private suspend fun downloadMoveList(gameWidget: HomeViewState.GameWidget) {
+        coroutineScope {
+            gameWidget.characterList.forEach { character ->
+                launch {
+                    moveListSemaphore.withPermit {
+                        loadMoveListUseCase.invoke(game = gameWidget.game, characterQueryId = character.id)
+                            .onSuccess { moveList ->
+                                _state.update { state ->
+                                    val updatedGameWidgetList = state.gameWidgetList.map { widget ->
+                                        if (widget.game == gameWidget.game) {
+                                            widget.withUpdatedCharacter(
+                                                characterId = character.id,
+                                                moveList = moveList,
+                                            )
+                                        } else {
+                                            widget
+                                        }
+                                    }
+                                    state.copy(gameWidgetList = updatedGameWidgetList)
+                                }
+                            }
+                            .onError { error ->
+                                //TODO: display toast
+                                Napier.e(tag = TAG) { error.toString() }
+                            }
+                    }
+                }
+            }
+        }
+    }
+
 
     companion object {
         private const val TAG = "HomeVM"
+        private const val MAX_PERMITS = 6
     }
 }

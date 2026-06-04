@@ -10,9 +10,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.kotlinSerialization)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
     alias(libs.plugins.buildkonfig)
+    alias(libs.plugins.sqldelight)
 }
 
 val appVersionName = project.properties["app.version.name"] as String
@@ -48,6 +47,12 @@ kotlin {
             implementation(libs.koin.androidx.compose)
 
             implementation(libs.napier)
+
+            implementation(libs.sqldelight.driver.android)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.sqldelight.driver.native)
         }
 
         commonMain.dependencies {
@@ -78,12 +83,12 @@ kotlin {
 
             implementation(libs.kotlinx.serialization.json)
 
-            implementation(libs.room.runtime)
-            implementation(libs.sqlite.bundled)
-
             implementation(libs.kotlin.date.time)
 
             implementation(libs.datastore)
+
+            implementation(libs.sqldelight.coroutines)
+            implementation(libs.sqldelight.primitive.adapters)
 
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
@@ -131,9 +136,6 @@ android {
 }
 
 dependencies {
-    add("kspAndroid", libs.room.compiler)
-    add("kspIosArm64", libs.room.compiler)
-    add("kspIosSimulatorArm64", libs.room.compiler)
     debugImplementation(compose.uiTooling)
 }
 
@@ -149,21 +151,23 @@ compose.desktop {
     }
 }
 
-room {
-    schemaDirectory("$projectDir/schemas")
-}
-
-tasks.matching {
-    it.name.contains("Metadata") &&
-            (it.name.contains("ksp") || it.name.contains("compile"))
-}.configureEach {
-    enabled = false
-}
-
 buildkonfig {
     packageName = "io.github.sophon.fightingnerd"
     defaultConfigs {
         buildConfigField(STRING, "VERSION", appVersionName)
         buildConfigField(INT, "VERSION_CODE", appVersionCode.toString())
+    }
+}
+
+sqldelight {
+    databases {
+        create("CharacterDatabase") {
+            packageName.set("io.github.sophon.fightingnerd.db.character")
+            srcDirs.setFrom("src/commonMain/sqldelight/character")
+        }
+        create("MoveDatabase") {
+            packageName.set("io.github.sophon.fightingnerd.db.move")
+            srcDirs.setFrom("src/commonMain/sqldelight/move")
+        }
     }
 }

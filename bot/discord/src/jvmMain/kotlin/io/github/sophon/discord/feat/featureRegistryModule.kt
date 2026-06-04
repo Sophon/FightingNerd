@@ -2,6 +2,9 @@ package io.github.sophon.discord.feat
 
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.Config
+import io.github.sophon.core.feature.Game
+import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
@@ -25,8 +28,14 @@ import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
+import io.github.sophon.discord.feat.config.BotFeatureRepo
+import io.github.sophon.discord.feat.config.BotFeatureRepoImpl
 import io.github.sophon.discord.feat.config.ConfigLoader
 import io.github.sophon.discord.feat.config.FeatureRegistry
+import io.github.sophon.discord.feat.config.usecase.BindToDiscordFeaturesUseCase
+import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
+import io.github.sophon.discord.feat.core.data.InMemoryCharacterListDB
+import io.github.sophon.discord.feat.core.data.InMemoryMoveListDB
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.TrackerImpl
@@ -153,6 +162,17 @@ internal val featureRegistryModule = module {
 
     //region CONFIG
     singleOf(::ConfigLoader)
+    singleOf(::BotFeatureRepoImpl).bind<BotFeatureRepo>()
+
+    singleOf(::LoadConfigurationUseCase)
+    single {
+        BindToDiscordFeaturesUseCase(
+            availableFeatures = getAll(),
+            coreFeatureRepo = get(),
+            adminFeature = get(),
+        )
+    }
+
     single {
         when (val result = get<ConfigLoader>().loadConfig()) {
             is Result.Success -> result.data
@@ -183,6 +203,7 @@ internal val featureRegistryModule = module {
             refreshDataUseCase = get(),
             scheduler = get(),
             scope = get(),
+            featureRepo = lazy { get<BotFeatureRepo>() },
         )
     }
 
@@ -196,25 +217,13 @@ internal val featureRegistryModule = module {
     singleOf(::MizuumiWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::EwgfDiscordFeature).bind<DiscordRegisteredFeature>()
 
-    single<List<DiscordRegisteredFeature>> {
-        val config = get<Config>()
-        val registry = get<FeatureRegistry>()
-        val enabledFeatures = config.featureList
-            .filter { it.isEnabled }
-            .map { it.name }
-        val features = registry.getFeatures(enabledFeatures)
+    single<(Game) -> Pair<CharacterListDB, MoveListDB>> {
+        return@single  { game ->
+            val moveDB = InMemoryMoveListDB(game)
+            val characterDB = InMemoryCharacterListDB(game)
 
-        features.forEach { feature ->
-            val featureConfig = config.featureList
-                .find { it.name == feature.featureInfo.name }
-
-            if (featureConfig != null) {
-                feature.registerGames(featureConfig.supportedGameList)
-            }
+            characterDB to moveDB
         }
-        val adminFeature: AdminDiscordFeature = get()
-
-        features + adminFeature
     }
     //endregion
 }

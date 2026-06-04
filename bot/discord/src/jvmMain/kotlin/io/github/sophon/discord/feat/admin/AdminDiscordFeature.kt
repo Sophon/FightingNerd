@@ -17,6 +17,7 @@ import io.github.sophon.discord.feat.admin.usecase.RefreshDataUseCase
 import io.github.sophon.discord.feat.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.feat.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
+import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
@@ -31,7 +32,6 @@ import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import org.koin.core.component.KoinComponent
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -47,9 +47,10 @@ internal class AdminDiscordFeature(
     private val refreshDataUseCase: RefreshDataUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
-): DiscordRegisteredFeature, KoinComponent {
-    private val featureList: List<FeatureInfo> by lazy {
-        getKoin().get<List<DiscordRegisteredFeature>>().map { it.featureInfo }
+    private val featureRepo: Lazy<BotFeatureRepo>,
+): DiscordRegisteredFeature {
+    private val featureList by lazy {
+        featureRepo.value.getFeatures().map { it.featureInfo }
     }
 
     override val featureInfo: FeatureInfo = adminFeatureInfo.featureInfo

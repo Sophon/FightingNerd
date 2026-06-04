@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 data class Character(
     val id: String, //used for local queries
     val displayName: String,
-    val queryName: String, //used for remote queries
+    val remoteQueryId: String,
     val wikiUrl: String,
     val aliasList: List<String> = listOf(),
     val images: Images? = null,
@@ -96,7 +96,7 @@ data class Character(
         val walkSpeed: String?,
         val walkSpeedBack: String?,
         val dashInitial: String?,
-        val dashAcceleration: Float?,
+        val dashAcceleration: String?,
         val closeRange: CloseRange?,
     ) {
         @Serializable

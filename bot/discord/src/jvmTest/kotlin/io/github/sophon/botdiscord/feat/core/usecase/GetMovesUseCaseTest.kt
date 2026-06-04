@@ -91,7 +91,7 @@ class GetMovesUseCaseTest {
         return Character(
             id = name,
             displayName = name,
-            queryName = name,
+            remoteQueryId = name,
             wikiUrl = "",
         )
     }

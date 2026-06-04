@@ -158,7 +158,7 @@ class GetCharacterUseCaseTest {
         return Character(
             id = name,
             displayName = name,
-            queryName = name,
+            remoteQueryId = name,
             wikiUrl = "https://wiki.example.com/$name",
             aliasList = emptyList()
         )

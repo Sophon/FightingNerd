@@ -22,7 +22,7 @@ internal fun String.toDomain(
         id = idName,
         displayName = displayName,
         aliasList = displayName.createAliases(),
-        queryName = queryName,
+        remoteQueryId = queryName,
         wikiUrl = "$FEATURE_URL/$gameId/$queryName",
     )
 

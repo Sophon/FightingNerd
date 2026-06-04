@@ -2,11 +2,12 @@ package io.github.sophon.discord.feat.core.data
 
 import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
+import io.github.sophon.core.feature.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.model.Character
 
-internal class InMemoryCharacterListDB: CharacterListDB {
+internal class InMemoryCharacterListDB(private val game: Game): CharacterListDB {
     private var database: MutableMap<String, Character> = mutableMapOf()
     private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
 

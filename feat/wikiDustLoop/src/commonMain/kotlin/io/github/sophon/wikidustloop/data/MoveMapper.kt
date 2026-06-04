@@ -73,9 +73,6 @@ internal fun MoveDto.toDomain(
         ),
 
         ggstProperties = Move.GGSTProperties(
-            chara = chara,
-            name = name,
-            damage = damage,
             type = type,
             riscGain = riscGain,
             riscLoss = riscLoss,
@@ -84,7 +81,6 @@ internal fun MoveDto.toDomain(
             chipRatio = chipRatio,
             otgType = OTGType,
             prorate = prorate,
-            cancel = cancel,
             level = level,
         ),
         dbfzProperties = Move.DBFZProperties(

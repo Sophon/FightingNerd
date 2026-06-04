@@ -73,16 +73,7 @@ fun wavuModule() = module {
                     .asEmptyDataResult()
             },
             fetchMoveListUseCase = FetchMoveListUseCase { charName ->
-                when (val result = moveListDB.fetchMoveListFor(charName)) {
-                    is Result.Success -> {
-                        if (result.data.isEmpty()) {
-                            Result.Error(WikiError.DatabaseError("Empty"))
-                        } else {
-                            Result.Success(result.data)
-                        }
-                    }
-                    is Result.Error -> Result.Error(result.error)
-                }
+                moveListDB.fetchMoveListFor(charName)
             },
             fetchMoveUseCase = FetchMoveUseCase { charName, moveQuery ->
                 moveListDB.fetchMoveDataFor(charName, moveQuery)

@@ -13,7 +13,7 @@ import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilderGG
 
 internal class CreateMoveEmbedUseCase {
     fun invoke(
-        gameId: String,
+        game: Game,
         move: Move,
         featureInfo: FeatureInfo,
     ): BotOutput {
@@ -27,7 +27,7 @@ internal class CreateMoveEmbedUseCase {
                 )
             }
 
-        return when (Game.fromId(gameId)) {
+        return when (game) {
             Game.GGST -> {
                 BotOutput(
                     mutableEmbedBuilder = BotOutput.MutableEmbedBuilder(

@@ -5,7 +5,9 @@ import io.github.sophon.core.domain.EmptyResult
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.feature.FeatureInfo
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
+import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_INVITE
+import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
@@ -14,6 +16,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.util.donationMessage
 import io.github.sophon.integration.model.Source
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -161,11 +164,8 @@ internal class BotFeature(
     }
 
     private fun createInviteText(): Result<BotOutput, BotError> {
-        return Result.Success(
-            BotOutput(
-                plainText = "FightingNerd bot invite: $URL_INVITE"
-            )
-        )
+        val text = "FightingNerd bot invite: $URL_INVITE\n" + donationMessage()
+        return Result.Success(BotOutput(plainText = text))
     }
 
     private fun createExamples(): Result<BotOutput, BotError> {

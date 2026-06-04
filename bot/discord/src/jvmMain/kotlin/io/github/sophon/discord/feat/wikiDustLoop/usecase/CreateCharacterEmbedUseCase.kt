@@ -12,12 +12,12 @@ import io.github.sophon.discord.feat.wikiDustLoop.charEmbedBuilderGG
 
 internal class CreateCharacterEmbedUseCase {
     fun invoke(
-        gameId: String,
+        game: Game,
         character: Character,
         fastestMoveList: List<Move>,
         featureInfo: FeatureInfo,
     ): EmbedBuilder.() -> Unit = {
-        val builder = when (Game.fromId(gameId)) {
+        val builder = when (game) {
             Game.GGST -> charEmbedBuilderGG(character, fastestMoveList, featureInfo)
             Game.DBFZ -> charEmbedBuilderDB(character, fastestMoveList, featureInfo)
             Game.GBVSR -> charEmbedBuilderGB(character, fastestMoveList, featureInfo)
