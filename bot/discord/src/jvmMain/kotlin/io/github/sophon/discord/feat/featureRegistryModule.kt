@@ -168,7 +168,13 @@ internal val featureRegistryModule = module {
     singleOf(::BotFeatureRepo)
 
     singleOf(::LoadConfigurationUseCase)
-    singleOf(::BindToDiscordFeaturesUseCase)
+    single {
+        BindToDiscordFeaturesUseCase(
+            availableFeatures = getAll(),
+            coreFeatureRepo = get(),
+            adminFeature = get(),
+        )
+    }
 
     single {
         when (val result = get<ConfigLoader>().loadConfig()) {
@@ -200,6 +206,7 @@ internal val featureRegistryModule = module {
             refreshDataUseCase = get(),
             scheduler = get(),
             scope = get(),
+            featureRepo = get(),
         )
     }
 
@@ -220,38 +227,6 @@ internal val featureRegistryModule = module {
 
             characterDB to moveDB
         }
-    }
-
-    single<List<DiscordRegisteredFeature>> {
-        val config = get<Config>()
-        val registry = get<FeatureRegistry>()
-        val dbFactory = get<(Game) -> Pair<CharacterListDB, MoveListDB>>()
-        val enabledFeatures = config.featureList
-            .filter { it.isEnabled }
-            .map { it.name }
-        val features = registry.getFeatures(enabledFeatures)
-
-        features.forEach { feature ->
-            val featureConfig = config.featureList
-                .find { it.name == feature.featureInfo.name }
-
-            if (featureConfig != null) {
-                val gameWikiFeature = feature as? GameWikiDiscordFeature
-                if (gameWikiFeature != null) {
-                    val wikiClientMap = featureConfig.supportedGameList.associateWith { game ->
-                        val (characterDB, moveDB) = dbFactory(game)
-                        get<WikiClient>(named(game.wiki.id)) {
-                            parametersOf(game.id, characterDB, moveDB)
-                        }
-                    }
-                    gameWikiFeature.registerWikiClients(wikiClientMap)
-                }
-            }
-        }
-        val adminFeature: AdminDiscordFeature = get()
-
-        val result = features + adminFeature
-        result
     }
     //endregion
 }

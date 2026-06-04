@@ -19,16 +19,21 @@ internal class BotFeatureRepo(
 ) {
     private val featureList: MutableList<DiscordRegisteredFeature> = mutableListOf()
 
-    fun initialize(): EmptyResult<BotError> {
+    suspend fun initialize(): EmptyResult<BotError> {
         val result = loadConfigurationUseCase.invoke()
             .flatMap { config ->
                 coreFeatureRepo.initialize(config)
                     .mapError { it.toDomainError() }
                     .flatMap {
                         bindToDiscordFeaturesUseCase.invoke()
-                            .onSuccess { features ->
-                                featureList.clear()
-                                featureList.addAll(features)
+                            .onSuccess { loadedFeatureList ->
+                                this.featureList.apply {
+                                    clear()
+                                    addAll(loadedFeatureList)
+                                    forEach {
+                                        it.start()
+                                    }
+                                }
                             }
                             .map { }
                     }
