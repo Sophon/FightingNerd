@@ -1,7 +1,7 @@
 package io.github.sophon.wikimizuumi.integration.model
 
-import io.github.sophon.core.wiki.domain.Filter
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Move
 
 object MizuumiFilter {
     object MBTLInvincible: Filter {

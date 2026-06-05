@@ -11,11 +11,11 @@ import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.interaction.ButtonInteraction
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.KtorRequestException
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.domain.mapError
-import io.github.sophon.core.domain.onError
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.mapError
+import io.github.sophon.core.architecture.onError
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError

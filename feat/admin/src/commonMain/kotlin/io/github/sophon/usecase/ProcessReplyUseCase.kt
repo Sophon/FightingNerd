@@ -1,7 +1,7 @@
 package io.github.sophon.usecase
 
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.Config
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.integration.model.AdminError
 import io.github.sophon.integration.model.AdminResult
 import io.github.sophon.integration.model.Source

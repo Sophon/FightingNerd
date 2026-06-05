@@ -1,11 +1,11 @@
 package io.github.sophon.discord.feat.config
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.flatMap
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.domain.mapError
-import io.github.sophon.core.domain.onSuccess
-import io.github.sophon.core.feature.module.CoreFeatureRepo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.mapError
+import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.discord.feat.config.usecase.BindToDiscordFeaturesUseCase
 import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
 import io.github.sophon.discord.feat.core.domain.model.BotError

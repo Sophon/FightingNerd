@@ -1,7 +1,7 @@
 package io.github.sophon.integration.data
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.integration.model.DailyReport
 import io.github.sophon.integration.model.StatsError
 

@@ -6,8 +6,8 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNull
-import io.github.sophon.core.domain.DataError
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.DataError
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.glossaryinfil.data.GlossaryItemDto
 import io.github.sophon.glossaryinfil.data.InfilGlossaryDataSource
 import io.github.sophon.glossaryinfil.integration.model.GlossaryError

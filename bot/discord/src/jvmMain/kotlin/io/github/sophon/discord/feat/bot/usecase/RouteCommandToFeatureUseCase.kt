@@ -1,6 +1,6 @@
 package io.github.sophon.discord.feat.bot.usecase
 
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.extractFirstWord
 import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.feat.config.BotFeatureRepo

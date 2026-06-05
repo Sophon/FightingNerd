@@ -1,7 +1,7 @@
 package io.github.sophon.xko.data
 
-import io.github.sophon.core.domain.ExcludeFromCoverage
-import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.architecture.ExcludeFromCoverage
+import io.github.sophon.core.wiki.model.Character
 
 @ExcludeFromCoverage("only from string")
 internal fun String.toCharacter(): Character {

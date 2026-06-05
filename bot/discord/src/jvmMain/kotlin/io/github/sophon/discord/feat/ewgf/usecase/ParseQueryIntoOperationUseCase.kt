@@ -1,6 +1,6 @@
 package io.github.sophon.discord.feat.ewgf.usecase
 
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.ewgf.EwgfOperations
 

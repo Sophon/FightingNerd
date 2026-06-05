@@ -1,6 +1,6 @@
 package io.github.sophon.discord.feat.core.domain.model
 
-import io.github.sophon.core.domain.Error
+import io.github.sophon.core.architecture.Error
 
 internal sealed class BotError(private vararg val inputs: String) : Error {
     class InvalidCommand(val command: String): BotError(command)

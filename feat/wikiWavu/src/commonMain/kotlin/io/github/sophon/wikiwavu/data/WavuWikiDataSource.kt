@@ -1,7 +1,7 @@
 package io.github.sophon.wikiwavu.data
 
-import io.github.sophon.core.domain.DataError
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.DataError
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.domain.BASE_URL

@@ -2,20 +2,20 @@ package io.github.sophon.botdiscord.feat.core.usecase
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.domain.Filter
-import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.time.ExperimentalTime
+import io.github.sophon.core.wiki.model.Character
 
 class GetMovesUseCaseTest {
     @Test

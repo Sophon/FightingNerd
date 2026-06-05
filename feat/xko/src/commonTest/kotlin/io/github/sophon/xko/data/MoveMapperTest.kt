@@ -4,7 +4,7 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 import kotlin.test.Test
 
 class MoveMapperTest {

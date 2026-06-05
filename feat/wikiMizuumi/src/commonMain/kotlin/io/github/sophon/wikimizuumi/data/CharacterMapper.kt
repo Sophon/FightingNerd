@@ -1,10 +1,10 @@
 package io.github.sophon.wikimizuumi.data
 
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.removeAccents
-import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikimizuumi.domain.FEATURE_URL
 
 internal fun String.toDomain(

@@ -1,10 +1,10 @@
 package io.github.sophon.wikiSuperCombo.data
 
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.normalize2dInputs
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
 import io.github.sophon.wikiSuperCombo.util.cleanMoveInput

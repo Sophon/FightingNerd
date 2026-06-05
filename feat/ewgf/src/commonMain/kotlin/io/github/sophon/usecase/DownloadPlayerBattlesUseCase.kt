@@ -1,9 +1,9 @@
 package io.github.sophon.usecase
 
-import io.github.sophon.core.domain.ExcludeFromCoverage
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.domain.mapError
+import io.github.sophon.core.architecture.ExcludeFromCoverage
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.mapError
 import io.github.sophon.integration.data.PlayerRepo
 import io.github.sophon.data.remote.EwgfDataSource
 import io.github.sophon.data.toDomain

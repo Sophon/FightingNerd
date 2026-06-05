@@ -1,9 +1,9 @@
 package io.github.sophon.core.wiki.usecase
 
-import io.github.sophon.core.domain.EmptyResult
+import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 
 class CacheMoveListUseCase(
     private val cache: suspend (Character, List<Move>) -> EmptyResult<WikiError>

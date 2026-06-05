@@ -1,8 +1,8 @@
 package io.github.sophon.core.wiki.data
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.wiki.model.Character
 
 interface CharacterListDB {
     suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<WikiError>

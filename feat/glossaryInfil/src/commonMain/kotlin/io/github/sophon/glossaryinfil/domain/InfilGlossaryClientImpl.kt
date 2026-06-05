@@ -1,9 +1,9 @@
 package io.github.sophon.glossaryinfil.domain
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.glossaryinfil.integration.model.GlossaryError
 import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient

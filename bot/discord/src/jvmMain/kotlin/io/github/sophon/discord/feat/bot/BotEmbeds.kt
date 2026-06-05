@@ -2,7 +2,7 @@ package io.github.sophon.discord.feat.bot
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_INVITE

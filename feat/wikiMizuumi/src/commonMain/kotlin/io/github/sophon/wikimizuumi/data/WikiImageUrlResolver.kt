@@ -1,9 +1,9 @@
 package io.github.sophon.wikimizuumi.data
 
-import io.github.sophon.core.domain.DataError
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.architecture.DataError
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.featureConfig.model.Game
 
 internal class WikiImageUrlResolver(
     private val source: MizuumiWikiDataSource,

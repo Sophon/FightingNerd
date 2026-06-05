@@ -13,8 +13,8 @@ import dev.kord.core.on
 import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.onError
-import io.github.sophon.core.feature.Config
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase

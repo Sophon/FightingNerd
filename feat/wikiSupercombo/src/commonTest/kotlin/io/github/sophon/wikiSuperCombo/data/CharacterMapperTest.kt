@@ -3,7 +3,7 @@ package io.github.sophon.wikiSuperCombo.data
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.wiki.model.Character
 import kotlin.test.Test
 
 class CharacterMapperTest {

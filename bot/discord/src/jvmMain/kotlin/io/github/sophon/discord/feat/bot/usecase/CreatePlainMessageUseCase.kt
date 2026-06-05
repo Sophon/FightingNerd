@@ -8,7 +8,7 @@ import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEve
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.request.RestRequestException
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.model.BotError
 
 internal class CreatePlainMessageUseCase {

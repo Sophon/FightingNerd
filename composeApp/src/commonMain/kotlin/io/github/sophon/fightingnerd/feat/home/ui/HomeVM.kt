@@ -3,9 +3,9 @@ package io.github.sophon.fightingnerd.feat.home.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.onError
-import io.github.sophon.core.domain.onSuccess
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.core.MoveRepository
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase

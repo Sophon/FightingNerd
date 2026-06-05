@@ -1,15 +1,15 @@
 package io.github.sophon.fightingnerd.feat.home.usecase
 
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
-import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 
 internal class LoadEmptyWidgetsUseCase(
-    private val moduleRepo: ModuleRepo,
+    private val featureRepo: CoreFeatureRepo,
 ) {
     fun invoke(): Result<List<HomeViewState.GameWidget>, AppError> {
-        val gameClientMap = moduleRepo.getGameClients()
+        val gameClientMap = featureRepo.getGameClients()
         val widgetList = gameClientMap.map { (game, wikiClient) ->
             val widget = HomeViewState.GameWidget(
                 game = game,

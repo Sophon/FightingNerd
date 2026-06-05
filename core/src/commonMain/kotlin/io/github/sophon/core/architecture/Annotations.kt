@@ -1,4 +1,4 @@
-package io.github.sophon.core.domain
+package io.github.sophon.core.architecture
 
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)

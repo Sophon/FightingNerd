@@ -1,8 +1,8 @@
 package io.github.sophon.core.wiki.usecase
 
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 
 class FetchMoveUseCase(
     private val fetch: suspend (String, String) -> Result<Move, WikiError>

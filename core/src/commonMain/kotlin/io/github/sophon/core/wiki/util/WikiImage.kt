@@ -1,9 +1,8 @@
 package io.github.sophon.core.wiki.util
 
-import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.DataError
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.map
+import io.github.sophon.core.architecture.DataError
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.data.ImageUrlResponseDto
 import io.ktor.client.HttpClient
@@ -31,9 +30,6 @@ suspend fun getWikiImageUrl(
             }
         }.map { response ->
             if (response.query == null) {
-                Napier.e(tag = TAG) {
-                    "API error: ${response.error?.info} ($url)"
-                }
                 return@map emptyMap()
             }
 

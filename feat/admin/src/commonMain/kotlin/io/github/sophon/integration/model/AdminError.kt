@@ -1,6 +1,6 @@
 package io.github.sophon.integration.model
 
-import io.github.sophon.core.domain.Error
+import io.github.sophon.core.architecture.Error
 
 sealed class AdminError(vararg val errors: String): Error {
     class DatabaseError(error: String): AdminError(error)

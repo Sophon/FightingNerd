@@ -1,6 +1,6 @@
 package io.github.sophon.wikiwavu.util
 
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 
 //TODO: throw should be a property of Move
 //TODO: use this for the DTO

@@ -1,10 +1,10 @@
 package io.github.sophon.core.wiki.usecase
 
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.map
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.domain.Filter
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Move
 
 class FetchMoveListUseCase(
     private val fetch: suspend (String) -> Result<List<Move>, WikiError>
