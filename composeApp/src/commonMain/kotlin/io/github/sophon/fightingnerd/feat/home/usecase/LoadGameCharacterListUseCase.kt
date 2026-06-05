@@ -3,20 +3,20 @@ package io.github.sophon.fightingnerd.feat.home.usecase
 import io.github.sophon.core.domain.Result
 import io.github.sophon.core.domain.flatMap
 import io.github.sophon.core.domain.map
+import io.github.sophon.core.feature.module.CoreFeatureRepo
 import io.github.sophon.core.wiki.domain.WikiClient
 import io.github.sophon.core.wiki.domain.model.Character
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.core.util.mapWikiError
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
-import io.github.sophon.fightingnerd.feat.module.ModuleRepo
 
 internal class LoadGameCharacterListUseCase(
-    private val moduleRepo: ModuleRepo,
+    private val featureRepo: CoreFeatureRepo,
 ) {
     suspend fun invoke(
         gameWidget: HomeViewState.GameWidget,
     ): Result<HomeViewState.GameWidget, AppError> {
-        val wikiClient = moduleRepo.getWikiClientFor(gameWidget.game)
+        val wikiClient = featureRepo.getWikiClientFor(gameWidget.game)
             ?: return Result.Error(AppError.WikiClientNotFound(gameWidget.game.id))
 
         val result = wikiClient.fetchCharacterList()
