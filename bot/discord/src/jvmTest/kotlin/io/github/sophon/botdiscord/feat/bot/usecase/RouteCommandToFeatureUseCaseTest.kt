@@ -5,9 +5,9 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isNotNull
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker

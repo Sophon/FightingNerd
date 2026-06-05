@@ -48,7 +48,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.Character

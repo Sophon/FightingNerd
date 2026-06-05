@@ -1,7 +1,7 @@
 package io.github.sophon.dreamcancel.data
 
-import io.github.sophon.core.domain.DataError
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.DataError
+import io.github.sophon.core.architecture.Result
 
 internal class WikiImageUrlResolver (
     private val source: DreamCancelWikiDataSource,

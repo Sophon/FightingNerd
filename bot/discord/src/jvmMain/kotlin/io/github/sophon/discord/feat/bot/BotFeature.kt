@@ -1,13 +1,11 @@
 package io.github.sophon.discord.feat.bot
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
-import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_INVITE
-import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase

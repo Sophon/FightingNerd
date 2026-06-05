@@ -1,13 +1,13 @@
 package io.github.sophon.fightingnerd.feat.home.usecase
 
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.flatMap
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.feature.module.CoreFeatureRepo
-import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.core.util.mapWikiError

@@ -1,8 +1,8 @@
 package io.github.sophon.discord.feat.wikiDustLoop.usecase
 
-import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.wikiDustLoop.moveDetailedEmbedBuilderBB
 import io.github.sophon.discord.feat.wikiDustLoop.moveDetailedEmbedBuilderGG

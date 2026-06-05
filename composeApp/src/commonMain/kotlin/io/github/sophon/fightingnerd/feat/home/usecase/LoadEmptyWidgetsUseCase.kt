@@ -1,7 +1,7 @@
 package io.github.sophon.fightingnerd.feat.home.usecase
 
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.module.CoreFeatureRepo
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 

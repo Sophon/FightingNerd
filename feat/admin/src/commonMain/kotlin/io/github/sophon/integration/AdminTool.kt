@@ -1,9 +1,9 @@
 package io.github.sophon.integration
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.Config
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.integration.model.AdminError
 import io.github.sophon.integration.model.AdminResult
 import io.github.sophon.integration.model.Ban

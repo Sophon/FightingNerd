@@ -1,7 +1,7 @@
 package io.github.sophon.xko.data
 
-import io.github.sophon.core.domain.DataError
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.DataError
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.xko.domain.URL_BASE
 import io.ktor.client.HttpClient

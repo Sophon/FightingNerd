@@ -3,9 +3,9 @@ package io.github.sophon.discord.feat.bot.usecase
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.onError
-import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
 import io.github.sophon.discord.feat.core.domain.model.BotError

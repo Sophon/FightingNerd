@@ -1,4 +1,4 @@
-package io.github.sophon.core.feature
+package io.github.sophon.core.featureConfig.model
 
 data class FeatureInfo(
     val name: String,

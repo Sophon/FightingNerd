@@ -11,8 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.core.feature.Game
-import io.github.sophon.fightingnerd.core.MoveRepository
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.feat.home.ui.composables.WidgetSection
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview

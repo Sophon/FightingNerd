@@ -1,7 +1,7 @@
 package io.github.sophon.data.remote
 
-import io.github.sophon.core.domain.DataError
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.DataError
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.data.dto.BattlesDto
 import io.github.sophon.domain.BASE_URL

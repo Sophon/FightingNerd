@@ -5,15 +5,14 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
-import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.domain.Filter
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 
 class GetCharacterUseCaseTest {

@@ -1,6 +1,6 @@
 package io.github.sophon.discord.feat.bot.usecase
 
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.discord.BOT_NAME
 import io.github.sophon.discord.BuildKonfig
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD

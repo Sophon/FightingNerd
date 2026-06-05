@@ -1,14 +1,13 @@
 package io.github.sophon.wikiwavu.integration
 
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.asEmptyDataResult
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.feature.WikiClientFeature
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.asEmptyDataResult
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.featureConfig.model.WikiClientFeature
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
-import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase

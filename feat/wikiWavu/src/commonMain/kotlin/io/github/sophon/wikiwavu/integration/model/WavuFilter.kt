@@ -1,7 +1,7 @@
 package io.github.sophon.wikiwavu.integration.model
 
-import io.github.sophon.core.wiki.domain.Filter
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.util.isHitThrow
 import io.github.sophon.wikiwavu.util.isThrow
 

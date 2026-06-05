@@ -24,8 +24,8 @@ import androidx.savedstate.serialization.SavedStateConfiguration
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.util.DebugLogger
-import io.github.sophon.core.domain.onSuccess
-import io.github.sophon.core.feature.module.CoreFeatureRepo
+import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase

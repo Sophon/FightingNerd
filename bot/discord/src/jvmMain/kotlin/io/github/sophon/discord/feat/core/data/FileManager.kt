@@ -1,7 +1,7 @@
 package io.github.sophon.discord.feat.core.data
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import java.io.File
 

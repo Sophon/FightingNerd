@@ -1,9 +1,9 @@
 package io.github.sophon.usecase
 
-import io.github.sophon.core.domain.ExcludeFromCoverage
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.flatMap
-import io.github.sophon.core.domain.map
+import io.github.sophon.core.architecture.ExcludeFromCoverage
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
 import io.github.sophon.integration.data.ReportRepo
 import io.github.sophon.integration.model.Command
 import io.github.sophon.integration.model.DailyReport

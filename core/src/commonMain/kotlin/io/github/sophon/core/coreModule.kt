@@ -1,7 +1,7 @@
 package io.github.sophon.core
 
-import io.github.sophon.core.feature.module.CoreFeatureRepo
-import io.github.sophon.core.feature.module.CoreWikiClientFactory
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.CoreWikiClientFactory
 import io.github.sophon.core.network.HttpClientFactory
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine

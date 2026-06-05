@@ -2,7 +2,7 @@ package io.github.sophon.discord.feat.admin
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.integration.model.AdminResult

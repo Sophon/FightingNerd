@@ -2,10 +2,10 @@ package io.github.sophon.discord.feat.core.domain
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.integration.StatsTracker
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.mapError
-import io.github.sophon.core.domain.onError
-import io.github.sophon.core.domain.onSuccess
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.mapError
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.integration.StatsFeatureInfo

@@ -5,8 +5,8 @@ import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.dreamcancel.domain.FEATURE_URL
 
 internal fun MoveListResponseDto.toDomain(

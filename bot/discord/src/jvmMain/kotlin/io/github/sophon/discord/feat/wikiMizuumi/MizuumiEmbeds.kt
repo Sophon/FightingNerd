@@ -2,11 +2,11 @@ package io.github.sophon.discord.feat.wikiMizuumi
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField

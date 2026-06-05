@@ -1,13 +1,14 @@
 package io.github.sophon.discord.feat.config.usecase
 
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.feature.module.CoreFeatureRepo
-import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
+import kotlin.collections.filterKeys
 
 internal class BindToDiscordFeaturesUseCase(
     private val availableFeatures: List<DiscordRegisteredFeature>,

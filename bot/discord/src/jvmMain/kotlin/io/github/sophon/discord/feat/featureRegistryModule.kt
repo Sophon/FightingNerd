@@ -1,8 +1,8 @@
 package io.github.sophon.discord.feat
 
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.Config
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature

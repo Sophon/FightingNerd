@@ -1,11 +1,11 @@
-package io.github.sophon.core.feature.module
+package io.github.sophon.core.featureConfig
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.Config
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.wiki.model.WikiClient
 
 class CoreFeatureRepo(
     private val coreWikiClientFactory: CoreWikiClientFactory,

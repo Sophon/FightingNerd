@@ -1,15 +1,12 @@
 package io.github.sophon.discord.feat.wikiMizuumi
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.domain.onError
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.feature.WikiClientFeature
-import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.discord.feat.core.data.InMemoryCharacterListDB
-import io.github.sophon.discord.feat.core.data.InMemoryMoveListDB
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
@@ -28,9 +25,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.get
-import org.koin.core.parameter.parametersOf
-import org.koin.core.qualifier.named
 
 internal class MizuumiWikiDiscordFeature(
     mizuumiFeatureInfo: MizuumiFeatureInfo,

@@ -1,11 +1,11 @@
 package io.github.sophon.fightingnerd.core.data
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.fightingnerd.db.character.CharacterDatabase
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers

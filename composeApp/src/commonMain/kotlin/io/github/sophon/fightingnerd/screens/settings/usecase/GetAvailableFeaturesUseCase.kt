@@ -5,10 +5,10 @@ import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.feature.module.CoreFeatureRepo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.screens.KEY_PREFIX_FEATURE
 import io.github.sophon.fightingnerd.screens.settings.SettingsError
 import io.github.sophon.fightingnerd.screens.settings.ui.SettingsViewState

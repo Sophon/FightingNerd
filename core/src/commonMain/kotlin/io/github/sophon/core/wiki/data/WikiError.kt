@@ -1,6 +1,6 @@
 package io.github.sophon.core.wiki.data
 
-import io.github.sophon.core.domain.Error
+import io.github.sophon.core.architecture.Error
 
 sealed class WikiError(vararg val inputs: String) : Error {
     class DownloadError(input: String) : WikiError(input)

@@ -1,8 +1,8 @@
 package io.github.sophon.discord.util
 
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 

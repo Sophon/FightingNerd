@@ -1,4 +1,4 @@
-package io.github.sophon.core.feature
+package io.github.sophon.core.featureConfig.model
 
 enum class WikiClientFeature(
     val id: String,
