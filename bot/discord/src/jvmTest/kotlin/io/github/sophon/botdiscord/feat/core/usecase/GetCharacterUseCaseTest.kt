@@ -14,6 +14,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.model.Character
 
 class GetCharacterUseCaseTest {
     //region Successful Character and Move Fetch

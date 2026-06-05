@@ -20,6 +20,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.time.ExperimentalTime
+import io.github.sophon.core.wiki.model.Character
 
 @OptIn(ExperimentalTime::class)
 class SyncWikiDataUseCaseTest {
