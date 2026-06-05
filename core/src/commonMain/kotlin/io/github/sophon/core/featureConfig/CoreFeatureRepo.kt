@@ -10,7 +10,7 @@ import io.github.sophon.core.wiki.model.WikiClient
 class CoreFeatureRepo(
     private val coreWikiClientFactory: CoreWikiClientFactory,
 ) {
-    private var gameClients: Map<Game, WikiClient> = emptyMap()
+    private var gameClients: LinkedHashMap<Game, WikiClient> = linkedMapOf()
     private var otherFeatures: List<Config.Feature> = emptyList()
 
     fun initialize(config: Config): EmptyResult<WikiError> {
@@ -31,7 +31,7 @@ class CoreFeatureRepo(
         return gameClients[game]
     }
 
-    private fun buildGameClients(config: Config): Map<Game, WikiClient> {
+    private fun buildGameClients(config: Config): LinkedHashMap<Game, WikiClient> {
         val enabledGames = config.featureList
             .filter { it.isEnabled }
             .flatMap { it.supportedGameList }
@@ -48,7 +48,7 @@ class CoreFeatureRepo(
 
         val gameClients = enabledGames
             .distinct()
-            .associateWith { game ->
+            .associateWithTo(linkedMapOf()) { game ->
                 coreWikiClientFactory.create(game)
             }
 
