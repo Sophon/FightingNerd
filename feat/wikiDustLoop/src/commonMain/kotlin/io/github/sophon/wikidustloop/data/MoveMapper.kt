@@ -147,7 +147,12 @@ internal fun String?.formNotes(): List<String> {
 }
 
 internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
-    return "${dto.chara.formWikiUrl(gameId)}#${dto.name?.replace(" ", "_")}"
+    val moveId = if (dto.name.isNullOrBlank()) {
+        dto.input
+    } else {
+        dto.name.replace(" ", "_")
+    }
+    return "${dto.chara.formWikiUrl(gameId)}#${moveId}"
 }
 
 internal fun formAliases(
