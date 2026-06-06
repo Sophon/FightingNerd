@@ -206,4 +206,5 @@ private class FakeWikiClient(
     override suspend fun fetchMove(characterId: String, moveQuery: String) = error("Not implemented")
     override suspend fun getLastUpdateTimeStamp() = error("Not implemented")
     override suspend fun clearCache() = error("Not implemented")
+    override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
 }

@@ -150,6 +150,7 @@ class SyncWikiDataUseCaseTest {
             return clearCacheResult
                 ?: Result.Success(Unit)
         }
+        override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
     }
     //endregion
 
