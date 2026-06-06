@@ -471,7 +471,7 @@ class FetchMovesWithPropertyUseCaseTest {
         isPowerCrush: Boolean = false,
         isHoming: Boolean = false,
     ) = Move(
-        charName = "TestChar",
+        characterId = "TestChar",
         id = id,
         input = id,
         name = name,

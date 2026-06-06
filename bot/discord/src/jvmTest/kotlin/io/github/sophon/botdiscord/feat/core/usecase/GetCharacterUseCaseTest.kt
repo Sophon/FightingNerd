@@ -169,7 +169,7 @@ class GetCharacterUseCaseTest {
         startup: String? = null
     ): Move {
         return Move(
-            charName = "TestChar",
+            characterId = "TestChar",
             id = input,
             input = input,
             startup = startup,

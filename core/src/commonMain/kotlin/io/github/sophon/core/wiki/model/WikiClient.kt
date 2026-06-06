@@ -4,7 +4,6 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 
@@ -17,7 +16,7 @@ interface WikiClient {
     suspend fun fetchCharacterList(): Result<List<Character>, WikiError>
     suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError>
 
-    suspend fun downloadMoveList(characterData: DownloadMoveListUseCase.CharacterData): Result<List<Move>, WikiError>
+    suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError>
     suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError>
     suspend fun fetchMoveList(
         characterQuery: String,

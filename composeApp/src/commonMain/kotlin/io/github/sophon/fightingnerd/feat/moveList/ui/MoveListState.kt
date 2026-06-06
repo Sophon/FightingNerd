@@ -34,7 +34,7 @@ internal data class MoveListState(
     companion object {
         val armorKingMoves = listOf(
             Move(
-                charName = "Armor King",
+                characterId = "Armor King",
                 id = "armor_king-b12",
                 name = "Dark Jab > Hell Stab",
                 input = "b12",
@@ -58,7 +58,7 @@ internal data class MoveListState(
                 t8Properties = Move.T8Properties(),
             ),
             Move(
-                charName = "Armor King",
+                characterId = "Armor King",
                 id = "armor_king-b1+2",
                 name = "Blindside",
                 input = "b1+2",
@@ -76,7 +76,7 @@ internal data class MoveListState(
                 t8Properties = Move.T8Properties(),
             ),
             Move(
-                charName = "Armor King",
+                characterId = "Armor King",
                 id = "armor_king-h.ub1",
                 name = "Neck Hunter: Villain",
                 input = "h.ub1",

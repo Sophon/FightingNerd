@@ -45,7 +45,7 @@ internal class LoadMoveListUseCase(
     ): Result<List<Move>, AppError> {
         val characterData = DownloadMoveListUseCase.CharacterData(name = character.remoteQueryId, imageUrl = null)
 
-        val result = wikiClient.downloadMoveList(characterData)
+        val result = wikiClient.downloadMoveListFor(characterData)
             .mapWikiError()
             .flatMap { moveList ->
                 wikiClient.cacheMoveList(character, moveList)

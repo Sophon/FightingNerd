@@ -46,7 +46,7 @@ class SyncWikiDataUseCaseTest {
         id: String = "1",
         input: String = "1"
     ) = Move(
-        charName = charName,
+        characterId = charName,
         id = id,
         input = input,
         damage = "10",

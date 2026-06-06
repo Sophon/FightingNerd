@@ -93,16 +93,16 @@ internal class MizuumiWikiClient(
             .onError { Napier.w(tag = TAG) { "fetchCharacter: $it" } }
     }
 
-    override suspend fun downloadMoveList(
-        characterData: DownloadMoveListUseCase.CharacterData,
+    override suspend fun downloadMoveListFor(
+        character: Character,
     ): Result<List<Move>, WikiError> {
         val game = Game.fromId(gameId)
 
         return when (game) {
             Game.Uni2 -> {
-                downloadMoveListUseCase.invoke(gameTables, characterData)
+                downloadMoveListUseCase.invoke(gameTables, character)
                     .onSuccess { moveList ->
-                        Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
+                        Napier.d(tag = TAG) { "${character.displayName}: ${moveList.size} moves downloaded" }
                     }
                     .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
             }
@@ -110,14 +110,16 @@ internal class MizuumiWikiClient(
                 downloadOrFetchUseCase.invoke(gameTables)
                     .map { map ->
                         map
-                            .filterKeys { it.remoteQueryId.equals(characterData.name, ignoreCase = true) }
+                            .filterKeys { it.remoteQueryId == character.remoteQueryId }
                             .values
                             .flatten()
                     }
                     .onSuccess { moveList ->
-                        Napier.d(tag = TAG) { "${characterData.name}: ${moveList.size} moves downloaded" }
+                        Napier.d(tag = TAG) { "${character.displayName}: ${moveList.size} moves downloaded" }
                     }
-                    .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
+                    .onError {
+                        Napier.e(tag = TAG) { "downloadMoveList (${character.remoteQueryId}): $it" }
+                    }
             }
         }
     }

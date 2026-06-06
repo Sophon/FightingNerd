@@ -39,7 +39,7 @@ class MoveMapperTest {
             bucket = listOf(jinxMove, dariusMove)
         )
         val expectedJinxMove = Move(
-            charName = "Jinx",
+            characterId = "Jinx",
             id = "jinx_5m",
             input = "5m",
             damage = "55",
@@ -58,7 +58,7 @@ class MoveMapperTest {
             )
         )
         val expectedDariusMove = Move(
-            charName = "Darius",
+            characterId = "Darius",
             id = "darius_5m",
             input = "5m",
             damage = "65",
@@ -114,7 +114,7 @@ class MoveMapperTest {
             bucket = listOf(moveDto)
         )
         val expectedMove = Move(
-            charName = "Jinx",
+            characterId = "Jinx",
             id = "jinx_5m",
             input = "5m",
             damage = null,

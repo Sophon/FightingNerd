@@ -101,7 +101,7 @@ class GetMovesUseCaseTest {
         properties: Move.T8Properties,
     ): Move {
         return Move(
-            charName = "Test",
+            characterId = "Test",
             id = input,
             startup = "",
             input = input,

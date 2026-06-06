@@ -12,13 +12,12 @@ internal fun MoveListResponseDto.toDomain(): Map<Character, List<Move>> {
     return bucket
         .groupBy { it.pageName.toCharacter() }
         .filterOutTemplates()
-        .mapValues { (character, moveList) ->
-            moveList.map { it.toMoveList(charWikiUrl = character.wikiUrl) }
+        .mapValues { (_, moveList) ->
+            moveList.map { it.toMoveList() }
         }
 }
 
 private fun MoveDto.toMoveList(
-    charWikiUrl: String,
 ): Move {
     val charName = pageName
         .replace(" ", "_")
@@ -28,7 +27,7 @@ private fun MoveDto.toMoveList(
         .addExtraAliases(formattedInput)
 
     val move = Move(
-        charName = charName,
+        characterId = charName,
         id = "${charName.lowercase()}_$formattedInput",
 
         input = formattedInput,
@@ -45,7 +44,6 @@ private fun MoveDto.toMoveList(
         urls = Move.Urls(
             hitboxImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX"),
             moveImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}.png"),
-            characterWiki = charWikiUrl,
             wikiUrl = "$FEATURE_URL/${pageName}#${input}"
         ),
     )

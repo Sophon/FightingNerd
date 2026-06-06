@@ -381,7 +381,7 @@ class MoveMapperTest {
             )
         )
         val expectedMove = Move(
-            charName = "Armor King",
+            characterId = "Armor King",
             id = "armor_king-1",
             name = "Jab",
             input = "1",
@@ -468,7 +468,7 @@ class MoveMapperTest {
             )
         )
         val expectedMove = Move(
-            charName = "Armor King",
+            characterId = "Armor King",
             id = "armor_king-f21",
             name = "Dark Elbow Hook",
             input = "f21",
@@ -541,7 +541,7 @@ class MoveMapperTest {
             )
         )
         val expectedMove = Move(
-            charName = "Armor King",
+            characterId = "Armor King",
             id = "armor_king-bad.db1+2",
             name = "Shadow Press",
             input = "bad.db1+2",
@@ -613,7 +613,7 @@ class MoveMapperTest {
             )
         )
         val expectedMove = Move(
-            charName = "Armor King",
+            characterId = "Armor King",
             id = "armor_king-wr2+4",
             name = "Brilliant Brawler Kick",
             input = "wr2+4",

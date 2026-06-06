@@ -80,17 +80,17 @@ internal class DustLoopWikiClient(
             .onError { Napier.e(tag = TAG) { "fetchCharacter: $it" } }
     }
 
-    override suspend fun downloadMoveList(
-        characterData: DownloadMoveListUseCase.CharacterData,
+    override suspend fun downloadMoveListFor(
+        character: Character,
     ): Result<List<Move>, WikiError> {
-        return downloadMoveListUseCase.invoke(gameTables, characterData)
+        return downloadMoveListUseCase.invoke(gameTables, character)
             .onSuccess { moveList ->
                 Napier.d(tag = TAG) {
-                    "${characterData.name}: ${moveList.size} moves downloaded"
+                    "${character.displayName}: ${moveList.size} moves downloaded"
                 }
             }
             .onError {
-                Napier.e(tag = TAG) { "downloadMoveList(${characterData.name}): $it" }
+                Napier.e(tag = TAG) { "downloadMoveList(${character.remoteQueryId}): $it" }
             }
     }
 

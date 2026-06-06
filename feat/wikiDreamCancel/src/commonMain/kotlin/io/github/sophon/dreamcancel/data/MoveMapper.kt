@@ -39,7 +39,7 @@ internal fun MoveDto.toDomain(
     val aliasList = normalizedInput.create2dAliases(isPartial = true)
 
     val move = Move(
-        charName = character.displayName,
+        characterId = character.id,
         id = moveId,
         input = normalizedInput,
         damage = damage?.cleanHtml(),
@@ -50,7 +50,6 @@ internal fun MoveDto.toDomain(
         recovery = recovery?.cleanHtml(),
         active = active?.cleanHtml(),
         urls = Move.Urls(
-            characterWiki = character.wikiUrl,
             hitboxImageList = hitboxes
                 .orEmpty()
                 .split(",")

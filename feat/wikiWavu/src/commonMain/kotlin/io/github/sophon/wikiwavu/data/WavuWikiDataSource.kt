@@ -3,6 +3,7 @@ package io.github.sophon.wikiwavu.data
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.safeCall
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.domain.BASE_URL
 import io.github.sophon.wikiwavu.domain.CHAR_LIST_URL
@@ -19,7 +20,7 @@ internal interface WavuWikiDataSource {
     suspend fun downloadCharacterList(): Result<CharacterListResponseDto, DataError.Remote>
     suspend fun downloadMoveList(
         table: String,
-        characterData: DownloadMoveListUseCase.CharacterData
+        character: Character,
     ): Result<MoveListResponseDto, DataError.Remote>
 }
 
@@ -33,13 +34,13 @@ internal class WavuWikiDataSourceImpl(
 
     override suspend fun downloadMoveList(
         table: String,
-        characterData: DownloadMoveListUseCase.CharacterData,
+        character: Character,
     ): Result<MoveListResponseDto, DataError.Remote> {
         return safeCall {
             httpClient.get(BASE_URL) {
                 parameter("action", "cargoquery")
                 parameter("tables", table)
-                parameter("where", "id LIKE '${characterData.name}%'")
+                parameter("where", "id LIKE '${character.remoteQueryId}%'")
                 parameter("order_by", "id")
                 parameter("format", "json")
                 parameter("limit", LIMIT_MOVES)

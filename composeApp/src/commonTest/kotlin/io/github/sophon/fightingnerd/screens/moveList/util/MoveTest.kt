@@ -94,7 +94,7 @@ class MoveTest {
         onHit: String? = null,
         onCH: String? = null,
     ) = Move(
-        charName = "Dragunov",
+        characterId = "Dragunov",
         id = "test",
         input = "1",
         onHit = onHit,
