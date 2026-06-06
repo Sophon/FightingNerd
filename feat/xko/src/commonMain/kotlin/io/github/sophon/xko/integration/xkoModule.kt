@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.CheckHasCachedMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadOrFetchUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
@@ -42,34 +43,21 @@ fun xkoModule() = module {
         XkoWikiClient(
             gameId = gameId,
 
-            downloadOrFetchUseCase = DownloadOrFetchUseCase { table ->
-                source.downloadMoveList()
-                    .map { it.toDomain() }
+            downloadOrFetchUseCase = DownloadOrFetchUseCase {
+                source.downloadMoveList().map { it.toDomain() }
             },
 
-            cacheCharacterListUseCase = CacheCharacterListUseCase { characterList ->
-                charListDB.insertCharacterList(characterList)
-            },
-            fetchCharacterListUseCase = FetchCharacterListUseCase {
-                charListDB.fetchCharacterList()
-            },
-            fetchCharacterUseCase = FetchCharacterUseCase { charName ->
-                charListDB.fetchCharacterDataFor(charName)
-            },
+            cacheCharacterListUseCase = CacheCharacterListUseCase(charListDB::insertCharacterList),
+            fetchCharacterListUseCase = FetchCharacterListUseCase(charListDB::fetchCharacterList),
+            fetchCharacterUseCase = FetchCharacterUseCase(charListDB::fetchCharacterDataFor),
 
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
                 moveListDB.insertMoveList(game, character, moveList)
             },
-            fetchMoveListUseCase = FetchMoveListUseCase { charName ->
-                moveListDB.fetchMoveListFor(charName)
-            },
-            fetchMoveUseCase = FetchMoveUseCase { charName, moveQuery ->
-                moveListDB.fetchMoveDataFor(charName, moveQuery)
-            },
+            fetchMoveListUseCase = FetchMoveListUseCase(moveListDB::fetchMoveListFor),
+            fetchMoveUseCase = FetchMoveUseCase( moveListDB::fetchMoveDataFor),
 
-            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase {
-                moveListDB.getLastInsertTimeStamp()
-            },
+            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase(moveListDB::getLastInsertTimeStamp),
             clearCacheUseCase = ClearCacheUseCase {
                 val charResult = charListDB.wipe()
                 val moveResult = moveListDB.wipe()
@@ -80,6 +68,7 @@ fun xkoModule() = module {
                     else -> Result.Success(Unit)
                 }
             },
+            checkHasCachedMoveListUseCase = CheckHasCachedMoveListUseCase(moveListDB::hasMovesCachedFor)
         )
     }
 }

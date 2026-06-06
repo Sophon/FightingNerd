@@ -11,6 +11,7 @@ import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.CheckHasCachedMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -58,15 +59,9 @@ fun dustLoopModule() = module {
                             .map { dto.toDomain(imageUrlMap = it, gameId = gameId) }
                     }
             },
-            cacheCharacterListUseCase = CacheCharacterListUseCase { characterList ->
-                characterListDB.insertCharacterList(characterList)
-            },
-            fetchCharacterListUseCase = FetchCharacterListUseCase {
-                characterListDB.fetchCharacterList()
-            },
-            fetchCharacterUseCase = FetchCharacterUseCase { charName ->
-                characterListDB.fetchCharacterDataFor(charName)
-            },
+            cacheCharacterListUseCase = CacheCharacterListUseCase(characterListDB::insertCharacterList),
+            fetchCharacterListUseCase = FetchCharacterListUseCase(characterListDB::fetchCharacterList),
+            fetchCharacterUseCase = FetchCharacterUseCase(characterListDB::fetchCharacterDataFor),
 
             downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, characterData ->
                 source.downloadMoveList(queryTable.moves, characterData)
@@ -79,16 +74,10 @@ fun dustLoopModule() = module {
                 moveListDB.insertMoveList(game, character, moveList)
                     .asEmptyDataResult()
             },
-            fetchMoveUseCase = FetchMoveUseCase { charName, moveQuery ->
-                moveListDB.fetchMoveDataFor(charName, moveQuery)
-            },
-            fetchMoveListUseCase = FetchMoveListUseCase { charName ->
-                moveListDB.fetchMoveListFor(charName)
-            },
+            fetchMoveUseCase = FetchMoveUseCase(moveListDB::fetchMoveDataFor),
+            fetchMoveListUseCase = FetchMoveListUseCase(moveListDB::fetchMoveListFor),
 
-            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase {
-                moveListDB.getLastInsertTimeStamp()
-            },
+            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase(moveListDB::getLastInsertTimeStamp),
             clearCacheUseCase = ClearCacheUseCase {
                 val charResult = characterListDB.wipe()
                 val moveResult = moveListDB.wipe()
@@ -98,6 +87,7 @@ fun dustLoopModule() = module {
                     else -> Result.Success(Unit)
                 }
             },
+            checkHasCachedMoveListUseCase = CheckHasCachedMoveListUseCase(moveListDB::hasMovesCachedFor)
         )
     }
 }

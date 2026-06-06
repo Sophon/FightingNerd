@@ -10,6 +10,7 @@ import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.CheckHasCachedMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -50,18 +51,12 @@ fun wavuModule() = module {
 
             wavuFeatureInfo = get(),
 
-            downloadCharacterListUseCase = DownloadCharacterListUseCase { queryTable ->
+            downloadCharacterListUseCase = DownloadCharacterListUseCase {
                 source.downloadCharacterList().map { dto -> dto.toDomain() }
             },
-            cacheCharacterListUseCase = CacheCharacterListUseCase {
-                charListDB.insertCharacterList(it)
-            },
-            fetchCharacterListUseCase = FetchCharacterListUseCase {
-                charListDB.fetchCharacterList()
-            },
-            fetchCharacterUseCase = FetchCharacterUseCase {
-                charListDB.fetchCharacterDataFor(it)
-            },
+            cacheCharacterListUseCase = CacheCharacterListUseCase(charListDB::insertCharacterList),
+            fetchCharacterListUseCase = FetchCharacterListUseCase(charListDB::fetchCharacterList),
+            fetchCharacterUseCase = FetchCharacterUseCase(charListDB::fetchCharacterDataFor),
 
             downloadMoveListUseCase = DownloadMoveListUseCase { queryTable, characterData ->
                 source.downloadMoveList(queryTable.moves, characterData)
@@ -71,16 +66,10 @@ fun wavuModule() = module {
                 moveListDB.insertMoveList(game, character, moveList)
                     .asEmptyDataResult()
             },
-            fetchMoveListUseCase = FetchMoveListUseCase { charName ->
-                moveListDB.fetchMoveListFor(charName)
-            },
-            fetchMoveUseCase = FetchMoveUseCase { charName, moveQuery ->
-                moveListDB.fetchMoveDataFor(charName, moveQuery)
-            },
+            fetchMoveListUseCase = FetchMoveListUseCase(moveListDB::fetchMoveListFor),
+            fetchMoveUseCase = FetchMoveUseCase(moveListDB::fetchMoveDataFor),
 
-            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase {
-                moveListDB.getLastInsertTimeStamp()
-            },
+            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase(moveListDB::getLastInsertTimeStamp),
             clearCacheUseCase = ClearCacheUseCase {
                 val charResult = charListDB.wipe()
                 val moveResult = moveListDB.wipe()
@@ -90,7 +79,8 @@ fun wavuModule() = module {
                     moveResult is Result.Error -> moveResult
                     else -> Result.Success(Unit)
                 }
-            }
+            },
+            checkHasCachedMoveListUseCase = CheckHasCachedMoveListUseCase(moveListDB::hasMovesCachedFor)
         )
     }
 }
