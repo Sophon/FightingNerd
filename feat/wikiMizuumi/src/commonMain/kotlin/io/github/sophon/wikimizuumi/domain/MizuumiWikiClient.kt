@@ -141,10 +141,10 @@ internal class MizuumiWikiClient(
     }
 
     override suspend fun fetchMove(
-        characterQuery: String,
+        characterId: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(characterQuery, moveQuery)
+        return fetchMoveUseCase.invoke(characterId, moveQuery)
             .onError { Napier.w(tag = TAG) { "fetchMoveList: $it" } }
     }
 

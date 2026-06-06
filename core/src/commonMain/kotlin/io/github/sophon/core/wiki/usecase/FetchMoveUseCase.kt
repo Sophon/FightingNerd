@@ -8,9 +8,9 @@ class FetchMoveUseCase(
     private val fetch: suspend (String, String) -> Result<Move, WikiError>
 ) {
     suspend fun invoke(
-        charName: String,
+        characterId: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
-        return fetch(charName.lowercase(), moveQuery.lowercase())
+        return fetch(characterId.lowercase(), moveQuery.lowercase())
     }
 }

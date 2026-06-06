@@ -107,12 +107,12 @@ internal class WavuWikiClient(
     }
 
     override suspend fun fetchMove(
-        characterQuery: String,
+        characterId: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(characterQuery, moveQuery.cleanMoveInput(keepSpaces = true))
+        return fetchMoveUseCase.invoke(characterId, moveQuery.cleanMoveInput(keepSpaces = true))
             .onError {
-                Napier.w(tag = TAG) { "fetchMove($characterQuery, $moveQuery): $it" }
+                Napier.w(tag = TAG) { "fetchMove($characterId, $moveQuery): $it" }
             }
     }
 

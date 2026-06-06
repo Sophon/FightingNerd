@@ -22,7 +22,7 @@ interface WikiClient {
         characterQuery: String,
         filter: Filter = Filter.None,
     ): Result<List<Move>, WikiError>
-    suspend fun fetchMove(characterQuery: String, moveQuery: String): Result<Move, WikiError>
+    suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError>
 
     suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
     suspend fun clearCache(): EmptyResult<WikiError>

@@ -495,16 +495,16 @@ class FetchMovesWithPropertyUseCaseTest {
     private class MockMoveListDB : MoveListDB {
         var mockResponse: Result<List<Move>, WikiError>? = null
 
-        override suspend fun fetchMoveListFor(characterQuery: String): Result<List<Move>, WikiError> {
-            return mockResponse ?: Result.Error(WikiError.UnknownCharacter(characterQuery))
+        override suspend fun fetchMoveListFor(characterId: String): Result<List<Move>, WikiError> {
+            return mockResponse ?: Result.Error(WikiError.UnknownCharacter(characterId))
         }
 
         override suspend fun fetchMoveDataFor(
-            characterQuery: String,
+            characterId: String,
             moveQuery: String
         ): Result<Move, WikiError> {
             // Not used in FetchMovesWithPropertyUseCase
-            return Result.Error(WikiError.UnknownMove(characterQuery, moveQuery))
+            return Result.Error(WikiError.UnknownMove(characterId, moveQuery))
         }
 
         override suspend fun insertMoveList(
