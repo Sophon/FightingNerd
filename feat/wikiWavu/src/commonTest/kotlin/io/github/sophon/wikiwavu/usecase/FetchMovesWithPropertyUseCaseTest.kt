@@ -525,5 +525,9 @@ class FetchMovesWithPropertyUseCaseTest {
             // Not used in current tests
             return Result.Success(null)
         }
+
+        override suspend fun hasMovesCachedFor(characterId: String): Result<Boolean, WikiError> {
+            return Result.Success(true)
+        }
     }
 }
