@@ -19,16 +19,17 @@ internal fun MoveListResponseDto.toDomain(): Map<Character, List<Move>> {
 
 private fun MoveDto.toMoveList(
 ): Move {
-    val charName = pageName
+    val characterId = pageName
         .replace(" ", "_")
+        .lowercase()
     val formattedInput = input.orDash().lowercase()
     val aliases = formattedInput
         .create2dAliases(isPartial = false)
         .addExtraAliases(formattedInput)
 
     val move = Move(
-        characterId = charName,
-        id = "${charName.lowercase()}_$formattedInput",
+        characterId = characterId,
+        id = "${characterId}_$formattedInput",
 
         input = formattedInput,
         damage = damage?.ifEmpty { null },
@@ -52,7 +53,8 @@ private fun MoveDto.toMoveList(
 }
 
 private fun Map<Character, List<MoveDto>>.filterOutTemplates(): Map<Character, List<MoveDto>> {
-    return filter { it.key.id.contains(":").not() }
+    val filtered = filter { it.key.id.contains(":").not() && it.key.id.contains(" poc").not() }
+    return filtered
 }
 
 internal fun List<String>.addExtraAliases(formattedInput: String): List<String> {

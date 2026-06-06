@@ -10,6 +10,7 @@ import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.CheckHasCachedMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadOrFetchUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
@@ -55,29 +56,17 @@ fun dreamCancelModule() = module {
                     }
             },
 
-            cacheCharacterListUseCase = CacheCharacterListUseCase { characterList ->
-                characterListDB.insertCharacterList(characterList)
-            },
-            fetchCharacterListUseCase = FetchCharacterListUseCase {
-                characterListDB.fetchCharacterList()
-            },
-            fetchCharacterUseCase = FetchCharacterUseCase { charName ->
-                characterListDB.fetchCharacterDataFor(charName)
-            },
+            cacheCharacterListUseCase = CacheCharacterListUseCase(characterListDB::insertCharacterList),
+            fetchCharacterListUseCase = FetchCharacterListUseCase(characterListDB::fetchCharacterList),
+            fetchCharacterUseCase = FetchCharacterUseCase(characterListDB::fetchCharacterDataFor),
 
             cacheMoveListUseCase = CacheMoveListUseCase { character, moveList ->
                 moveListDB.insertMoveList(game, character, moveList)
             },
-            fetchMoveListUseCase = FetchMoveListUseCase { charName ->
-                moveListDB.fetchMoveListFor(charName)
-            },
-            fetchMoveUseCase = FetchMoveUseCase { charName, moveQuery ->
-                moveListDB.fetchMoveDataFor(charName, moveQuery)
-            },
+            fetchMoveListUseCase = FetchMoveListUseCase(moveListDB::fetchMoveListFor),
+            fetchMoveUseCase = FetchMoveUseCase(moveListDB::fetchMoveDataFor),
 
-            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase {
-                moveListDB.getLastInsertTimeStamp()
-            },
+            getLastCacheInsertInstantUseCase = GetLastCacheInsertInstantUseCase(moveListDB::getLastInsertTimeStamp),
             clearCacheUseCase = ClearCacheUseCase {
                 val charResult = characterListDB.wipe()
                 val moveResult = moveListDB.wipe()
@@ -88,6 +77,7 @@ fun dreamCancelModule() = module {
                     else -> Result.Success(Unit)
                 }
             },
+            checkHasCachedMoveListUseCase = CheckHasCachedMoveListUseCase(moveListDB::hasMovesCachedFor)
         )
     }
 }

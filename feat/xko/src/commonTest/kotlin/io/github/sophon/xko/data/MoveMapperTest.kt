@@ -39,7 +39,7 @@ class MoveMapperTest {
             bucket = listOf(jinxMove, dariusMove)
         )
         val expectedJinxMove = Move(
-            characterId = "Jinx",
+            characterId = "jinx",
             id = "jinx_5m",
             input = "5m",
             damage = "55",
@@ -57,7 +57,7 @@ class MoveMapperTest {
             )
         )
         val expectedDariusMove = Move(
-            characterId = "Darius",
+            characterId = "darius",
             id = "darius_5m",
             input = "5m",
             damage = "65",
@@ -81,12 +81,12 @@ class MoveMapperTest {
         // then
         assertThat(result.size).isEqualTo(2)
 
-        val jinxCharacter = result.keys.find { it.remoteQueryId == "Jinx" }
+        val jinxCharacter = result.keys.find { it.id == "jinx" }
         assertThat(jinxCharacter).isNotNull()
         assertThat(result[jinxCharacter]!!).hasSize(1)
         assertThat(result[jinxCharacter]!![0]).isEqualTo(expectedJinxMove)
 
-        val dariusCharacter = result.keys.find { it.remoteQueryId == "Darius" }
+        val dariusCharacter = result.keys.find { it.id == "darius" }
         assertThat(dariusCharacter).isNotNull()
         assertThat(result[dariusCharacter]!!).hasSize(1)
         assertThat(result[dariusCharacter]!![0]).isEqualTo(expectedDariusMove)
@@ -112,7 +112,7 @@ class MoveMapperTest {
             bucket = listOf(moveDto)
         )
         val expectedMove = Move(
-            characterId = "Jinx",
+            characterId = "jinx",
             id = "jinx_5m",
             input = "5m",
             damage = null,
@@ -136,7 +136,7 @@ class MoveMapperTest {
         // then
         assertThat(result.size).isEqualTo(1)
 
-        val jinxCharacter = result.keys.find { it.remoteQueryId == "Jinx" }
+        val jinxCharacter = result.keys.find { it.id == "jinx" }
         assertThat(jinxCharacter).isNotNull()
         assertThat(result[jinxCharacter]!!).hasSize(1)
         assertThat(result[jinxCharacter]!![0]).isEqualTo(expectedMove)

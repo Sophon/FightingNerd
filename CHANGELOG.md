@@ -3,6 +3,8 @@
 ## [v12.1.0] - TODO
 - fixed URLs for moves
 - refactor character parameter passing
+- `DustLoop` - `GGST` ignores alt-mode characters
+- `DreamCancel` - fixed bad character creation from data
 
 ## [v12.0.1] - 2026-06-06
 - features are ordered in the repo

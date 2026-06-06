@@ -21,8 +21,8 @@ internal fun CharacterListResponseDto.toDomain(
     imageUrlMap: Map<String, String>,
     gameId: String,
 ): List<Character> {
-    return cargoQuery
-//        .filterOutJunkCharacters()
+    val characterList = cargoQuery
+        .filterAltModeCharacters()
         .map { query ->
             val dto = query.title
             val id = dto.name?.cleanHtml().formCharacterId()
@@ -110,6 +110,7 @@ internal fun CharacterListResponseDto.toDomain(
 
             character
         }
+    return characterList
 }
 
 internal fun String?.formCharacterId(): String {
@@ -267,4 +268,9 @@ internal fun String?.formUmo(): List<String> {
     return orEmpty().split(",").mapNotNull {
         it.trim().toClickable()
     }
+}
+
+private fun List<CargoQueryItem>.filterAltModeCharacters(): List<CargoQueryItem> {
+    val filtered = this.filterNot { it.title.name.orEmpty().contains("(") }
+    return filtered
 }

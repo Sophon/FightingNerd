@@ -20,20 +20,15 @@ internal data class HomeViewState(
             val displayName: String,
             val queryName: String,
             val iconUrl: String? = null,
-            val moveList: List<Move> = emptyList(),
             val isLoading: Boolean = true,
         )
 
         fun withUpdatedCharacter(
             characterId: String,
-            moveList: List<Move>,
         ): GameWidget {
             val updatedCharacterList = characterList.map { character ->
                 if (character.id == characterId) {
-                    character.copy(
-                        moveList = moveList,
-                        isLoading = false,
-                    )
+                    character.copy(isLoading = false)
                 } else {
                     character
                 }

@@ -141,6 +141,7 @@ class GetMovesUseCaseTest {
         @OptIn(ExperimentalTime::class)
         override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = error("Not yet implemented")
         override suspend fun clearCache(): EmptyResult<WikiError> = error("Not yet implemented")
+        override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
     }
     //endregion
 }

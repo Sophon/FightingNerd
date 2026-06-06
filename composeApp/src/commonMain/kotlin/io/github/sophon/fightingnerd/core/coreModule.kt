@@ -8,12 +8,9 @@ import io.github.sophon.fightingnerd.core.data.SqlCharacterDB
 import io.github.sophon.fightingnerd.core.data.SqlMoveDB
 import io.github.sophon.fightingnerd.db.character.CharacterDatabase
 import io.github.sophon.fightingnerd.db.move.MoveDatabase
-import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 internal fun coreModule() = module {
-    singleOf(::MoveRepository)
-
     single<(Game) -> Pair<CharacterListDB, MoveListDB>> {
         val driverFactory: DatabaseDriverFactory = get()
 

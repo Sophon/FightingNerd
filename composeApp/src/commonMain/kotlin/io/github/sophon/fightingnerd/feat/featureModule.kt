@@ -4,7 +4,7 @@ import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarVM
 import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListVM
@@ -32,10 +32,8 @@ internal fun featureModule() = module {
         MoveListVM(
             gameId = gameId,
             characterId = characterId,
-            loadMoveListUseCase = get(),
-            moveRepository = get(),
         )
     }
-    singleOf(::LoadMoveListUseCase)
+    singleOf(::EnsureMoveListIsCached)
     //endregion
 }

@@ -13,7 +13,7 @@ internal fun String.toDomain(
         .cleanHtml()
         .removeAccents()
         .replace("'", "")
-        .replace(Regex("[\\s.']+"), "_")
+        .replace(Regex("[\\s._']+"), "_")
         .lowercase()
     val displayName = this.cleanHtml()
     val queryName = this.createQueryName()

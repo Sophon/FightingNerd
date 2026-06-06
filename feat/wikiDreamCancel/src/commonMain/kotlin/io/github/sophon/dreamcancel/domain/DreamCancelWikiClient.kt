@@ -15,6 +15,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.CheckHasCachedMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadOrFetchUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
@@ -40,6 +41,7 @@ internal class DreamCancelWikiClient(
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
+    private val checkHasCachedMoveListUseCase: CheckHasCachedMoveListUseCase,
 
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val fetchMoveUseCase: FetchMoveUseCase,
@@ -93,6 +95,11 @@ internal class DreamCancelWikiClient(
             .onError {
                 Napier.e(tag = TAG) { "downloadMoveList (${character.remoteQueryId}): $it" }
             }
+    }
+
+    override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> {
+        val result = checkHasCachedMoveListUseCase.invoke(characterId)
+        return result
     }
 
     override suspend fun cacheMoveList(

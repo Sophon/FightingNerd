@@ -13,17 +13,18 @@ internal fun MoveListResponseDto.toDomain(
     gameId: String,
     imageUrlMap: Map<String, String>,
 ): Map<Character, List<Move>> {
-    return cargoQuery
-        .groupBy { it.title.chara }
-        .map { (charName, moveDtoList) ->
-            val character = charName.toDomain(gameId)
-            val moveList = moveDtoList.map {
-                it.title.toDomain(gameId, character, imageUrlMap)
-            }
+    val grouped = cargoQuery.groupBy { it.title.chara.toDomain(gameId).id }
 
-            character to moveList
+    val result = grouped.map { (_, moveDtoList) ->
+        val character = moveDtoList.first().title.chara.toDomain(gameId)
+        val moveList = moveDtoList.map {
+            it.title.toDomain(gameId, character, imageUrlMap)
         }
-        .toMap()
+
+        character to moveList
+    }.toMap()
+
+    return result
 }
 
 internal fun MoveDto.toDomain(

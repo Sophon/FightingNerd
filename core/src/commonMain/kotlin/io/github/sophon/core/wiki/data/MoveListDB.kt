@@ -11,6 +11,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 interface MoveListDB {
     suspend fun fetchMoveListFor(characterId: String): Result<List<Move>, WikiError>
+    suspend fun hasMovesCachedFor(characterId: String): Result<Boolean, WikiError> //TODO: change to getMoveCountFor()
     suspend fun fetchMoveDataFor(characterId: String, moveQuery: String): Result<Move, WikiError>
     suspend fun insertMoveList(game: Game?, character: Character, moveList: List<Move>): EmptyResult<WikiError>
     suspend fun wipe(): EmptyResult<WikiError>

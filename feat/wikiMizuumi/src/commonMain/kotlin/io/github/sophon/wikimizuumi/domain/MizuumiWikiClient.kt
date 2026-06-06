@@ -16,6 +16,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
+import io.github.sophon.core.wiki.usecase.CheckHasCachedMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
 import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
@@ -45,6 +46,7 @@ internal class MizuumiWikiClient(
     private val cacheMoveListUseCase: CacheMoveListUseCase,
     private val clearCacheUseCase: ClearCacheUseCase,
     private val fetchMoveListUseCase: FetchMoveListUseCase,
+    private val checkHasCachedMoveListUseCase: CheckHasCachedMoveListUseCase,
 
     private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
     private val fetchMoveUseCase: FetchMoveUseCase,
@@ -122,6 +124,10 @@ internal class MizuumiWikiClient(
                     }
             }
         }
+    }
+
+    override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> {
+        return checkHasCachedMoveListUseCase.invoke(characterId)
     }
 
     override suspend fun cacheMoveList(

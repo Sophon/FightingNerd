@@ -22,20 +22,25 @@ internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
     override suspend fun fetchMoveListFor(
         characterId: String
     ): Result<List<Move>, WikiError> {
-        //TODO: this should be an exception
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(characterId))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId)) //TODO: this should be an exception
+        val result = moveList.values.toList()
+        return Result.Success(result)
+    }
 
-        return Result.Success(moveList.values.toList())
+    override suspend fun hasMovesCachedFor(characterId: String): Result<Boolean, WikiError> {
+        val moveList = database[characterId]
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId)) //TODO: this should be an exception
+        val result = moveList.isNotEmpty()
+        return Result.Success(result)
     }
 
     override suspend fun fetchMoveDataFor(
         characterId: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        //TODO: this should be an exception
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(characterId))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId)) //TODO: this should be an exception
 
         val moveId = moveAliasMap[characterId]?.get(moveQuery) ?: moveQuery
 
