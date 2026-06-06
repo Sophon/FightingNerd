@@ -58,13 +58,13 @@ internal fun MoveDto.toDomain(
                 .orEmpty()
                 .split(",")
                 .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
-            wikiUrl = formMoveWikiUrl(gameId, chara, name),
+            wikiUrl = formMoveWikiUrl(gameId, chara),
         ),
         aliases = aliasList,
     )
     return move
 }
 
-internal fun formMoveWikiUrl(gameId: String, charName: String, name: String?): String {
-    return "${FEATURE_URL}/$gameId/${charName.createQueryName()}/Data#${name.orEmpty().replace(" ", "_")}"
+internal fun formMoveWikiUrl(gameId: String, charName: String): String {
+    return "${FEATURE_URL}/$gameId/${charName.createQueryName()}"
 }
