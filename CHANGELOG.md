@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v12.1.0] - TODO
+- fixed URLs for moves
+- refactor character parameter passing
+
 ## [v12.0.1] - 2026-06-06
 - features are ordered in the repo
   - this allows game priority to be configured from the `config.json`
