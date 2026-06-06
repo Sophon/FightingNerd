@@ -127,8 +127,6 @@ internal class SqlMoveDB(
             invulnerability = move.invulnerability,
             notes = move.notes.fromDomain(),
             aliases = move.aliases.fromDomain(),
-            urlsCharacterWiki = move.urls.characterWiki,
-            urlsCharacterImage = move.urls.characterImage,
             urlsVideoId = move.urls.videoId,
             urlsHitboxImageList = move.urls.hitboxImageList.fromDomain(),
             urlsMoveImageList = move.urls.moveImageList.fromDomain(),

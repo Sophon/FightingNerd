@@ -52,7 +52,6 @@ internal data class MoveListState(
                     "Input can be delayed by 12F",
                 ),
                 urls = Move.Urls(
-                    characterImage = "https://tekkendocs.com/t8/avatars/armor-king-512.png",
                     wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-b+1,2",
                 ),
                 t8Properties = Move.T8Properties(),
@@ -70,7 +69,6 @@ internal data class MoveListState(
                 recovery = "r27",
                 guard = "m",
                 urls = Move.Urls(
-                    characterImage = "https://tekkendocs.com/t8/avatars/armor-king-512.png",
                     wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-b+1+2",
                 ),
                 t8Properties = Move.T8Properties(),
@@ -94,7 +92,6 @@ internal data class MoveListState(
                     "7 chip damage on block",
                 ),
                 urls = Move.Urls(
-                    characterImage = "https://tekkendocs.com/t8/avatars/armor-king-512.png",
                     wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-H.ub+1",
                 ),
                 t8Properties = Move.T8Properties(isHeat = true, isHoming = true),

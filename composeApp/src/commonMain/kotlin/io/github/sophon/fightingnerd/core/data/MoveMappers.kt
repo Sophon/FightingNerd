@@ -39,8 +39,6 @@ internal fun move.Move.toDomain(): Move {
 
 internal fun move.Move.buildUrls(): Move.Urls {
     return Move.Urls(
-        characterWiki = urlsCharacterWiki,
-        characterImage = urlsCharacterImage,
         videoId = urlsVideoId,
         hitboxImageList = urlsHitboxImageList.toDomain(),
         moveImageList = urlsMoveImageList.toDomain(),
@@ -67,8 +65,6 @@ internal fun SelectAllT8.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -108,8 +104,6 @@ internal fun SelectAllSf6.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -170,8 +164,6 @@ internal fun SelectAllKof15.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -206,8 +198,6 @@ internal fun SelectAllCotw.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -242,8 +232,6 @@ internal fun SelectAllGgst.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -286,8 +274,6 @@ internal fun SelectAllDbfz.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -330,8 +316,6 @@ internal fun SelectAllGbvsr.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -370,8 +354,6 @@ internal fun SelectAllMk.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -412,8 +394,6 @@ internal fun SelectAllMb.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -455,8 +435,6 @@ internal fun SelectAllBb.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -506,8 +484,6 @@ internal fun SelectAllUni2.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -562,8 +538,6 @@ internal fun SelectAllVsav.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -604,8 +578,6 @@ internal fun SelectAllAvl.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
