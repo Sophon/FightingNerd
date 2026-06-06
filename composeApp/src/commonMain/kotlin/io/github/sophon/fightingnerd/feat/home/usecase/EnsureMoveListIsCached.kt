@@ -31,7 +31,6 @@ internal class EnsureMoveListIsCached(
                 if (hasCachedMoveList) {
                     Result.Success(Unit)
                 } else {
-                    Napier.d(tag = "Sorry") { "refreshing: $characterId (${game.id})" }
                     refreshMoveList(character, wikiClient)
                 }
             }
@@ -50,10 +49,5 @@ internal class EnsureMoveListIsCached(
                     .mapWikiError()
             }
         return result
-    }
-
-
-    private companion object {
-        const val TAG = "EnsureMoveListIsCached"
     }
 }
