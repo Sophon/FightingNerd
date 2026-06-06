@@ -30,7 +30,7 @@ internal class BotFeatureRepoImpl(
                 coreFeatureRepo.initialize(config)
                     .mapError { it.toDomainError() }
                     .flatMap {
-                        bindToDiscordFeaturesUseCase.invoke()
+                        bindToDiscordFeaturesUseCase.invoke(config)
                             .onSuccess { loadedFeatureList ->
                                 this.featureList.apply {
                                     clear()
