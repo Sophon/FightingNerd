@@ -2,7 +2,7 @@ import kotlin.Boolean;
 
 CREATE TABLE move (
     id TEXT NOT NULL PRIMARY KEY,
-    charName TEXT NOT NULL,
+    characterId TEXT NOT NULL,
     name TEXT,
     input TEXT NOT NULL,
     damage TEXT,
@@ -25,7 +25,7 @@ CREATE TABLE move (
 );
 
 insertMove:
-INSERT OR IGNORE INTO move(id, charName, name, input, damage, startup, onBlock, onHit, onCH, active, cancel, recovery, guard, invulnerability, notes, aliases, urlsVideoId, urlsHitboxImageList, urlsMoveImageList, urlsWikiUrl, insertedAt)
+INSERT OR IGNORE INTO move(id, characterId, name, input, damage, startup, onBlock, onHit, onCH, active, cancel, recovery, guard, invulnerability, notes, aliases, urlsVideoId, urlsHitboxImageList, urlsMoveImageList, urlsWikiUrl, insertedAt)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteAllMoves:
@@ -38,6 +38,10 @@ FROM move;
 selectLastInsertTimestamp:
 SELECT MAX(insertedAt) AS lastInsertedAt
 FROM move;
+
+hasMovesForCharacter:
+SELECT EXISTS(SELECT 1 FROM move WHERE characterId = ?);
+
 
 CREATE TABLE t8_move_props (
     moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),

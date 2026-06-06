@@ -18,7 +18,7 @@ import move.SelectAllVsav
 internal fun move.Move.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -49,7 +49,7 @@ internal fun move.Move.buildUrls(): Move.Urls {
 internal fun SelectAllT8.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -88,7 +88,7 @@ internal fun SelectAllT8.toDomain(): Move {
 internal fun SelectAllSf6.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -148,7 +148,7 @@ internal fun SelectAllSf6.toDomain(): Move {
 internal fun SelectAllKof15.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -182,7 +182,7 @@ internal fun SelectAllKof15.toDomain(): Move {
 internal fun SelectAllCotw.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -216,7 +216,7 @@ internal fun SelectAllCotw.toDomain(): Move {
 internal fun SelectAllGgst.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -258,7 +258,7 @@ internal fun SelectAllGgst.toDomain(): Move {
 internal fun SelectAllDbfz.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -300,7 +300,7 @@ internal fun SelectAllDbfz.toDomain(): Move {
 internal fun SelectAllGbvsr.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -338,7 +338,7 @@ internal fun SelectAllGbvsr.toDomain(): Move {
 internal fun SelectAllMk.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -378,7 +378,7 @@ internal fun SelectAllMk.toDomain(): Move {
 internal fun SelectAllMb.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -419,7 +419,7 @@ internal fun SelectAllMb.toDomain(): Move {
 internal fun SelectAllBb.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -468,7 +468,7 @@ internal fun SelectAllBb.toDomain(): Move {
 internal fun SelectAllUni2.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -522,7 +522,7 @@ internal fun SelectAllUni2.toDomain(): Move {
 internal fun SelectAllVsav.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,
@@ -562,7 +562,7 @@ internal fun SelectAllVsav.toDomain(): Move {
 internal fun SelectAllAvl.toDomain(): Move {
     return Move(
         id = id,
-        characterId = charName,
+        characterId = characterId,
         name = name,
         input = input,
         damage = damage,

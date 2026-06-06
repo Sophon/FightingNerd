@@ -46,6 +46,15 @@ internal class SqlMoveDB(
         return result
     }
 
+    override suspend fun hasMovesCachedFor(characterId: String): Result<Boolean, WikiError> {
+        val result = dbCall {
+            queries.transactionWithResult {
+                queries.hasMovesForCharacter(characterId).executeAsOne()
+            }
+        }
+        return result
+    }
+
     override suspend fun fetchMoveDataFor(
         characterId: String,
         moveQuery: String,
@@ -112,7 +121,7 @@ internal class SqlMoveDB(
     private fun insertCommon(move: Move, insertedAt: Long) {
         queries.insertMove(
             id = move.id,
-            charName = move.characterId,
+            characterId = move.characterId,
             name = move.name,
             input = move.input,
             damage = move.damage,
