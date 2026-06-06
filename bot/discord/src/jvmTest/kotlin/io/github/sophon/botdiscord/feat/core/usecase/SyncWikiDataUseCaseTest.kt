@@ -10,17 +10,16 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.time.ExperimentalTime
-import io.github.sophon.core.wiki.model.Character
 
 @OptIn(ExperimentalTime::class)
 class SyncWikiDataUseCaseTest {
@@ -120,11 +119,11 @@ class SyncWikiDataUseCaseTest {
             throw NotImplementedError("Not used in this use case")
         }
 
-        override suspend fun downloadMoveList(
-            characterData: DownloadMoveListUseCase.CharacterData,
+        override suspend fun downloadMoveListFor(
+            character: Character,
         ): Result<List<Move>, WikiError> {
-            _downloadMoveListCalls.add(characterData.name)
-            return downloadMoveListResults[characterData.name]
+            _downloadMoveListCalls.add(character.id)
+            return downloadMoveListResults[character.id]
                 ?: Result.Success(emptyList())
         }
 
@@ -138,7 +137,7 @@ class SyncWikiDataUseCaseTest {
             throw NotImplementedError("Not used in this use case")
         }
 
-        override suspend fun fetchMove(characterQuery: String, moveQuery: String): Result<Move, WikiError> {
+        override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> {
             throw NotImplementedError("Not used in this use case")
         }
 

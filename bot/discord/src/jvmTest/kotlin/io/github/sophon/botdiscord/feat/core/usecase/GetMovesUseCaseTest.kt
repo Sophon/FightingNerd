@@ -6,16 +6,15 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.time.ExperimentalTime
-import io.github.sophon.core.wiki.model.Character
 
 class GetMovesUseCaseTest {
     @Test
@@ -126,7 +125,7 @@ class GetMovesUseCaseTest {
         }
 
         override suspend fun fetchMove(
-            characterQuery: String,
+            characterId: String,
             moveQuery: String,
         ): Result<Move, WikiError> {
             return moves.firstOrNull()?.let { Result.Success(it) }
@@ -137,7 +136,7 @@ class GetMovesUseCaseTest {
         override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> = error("Not yet implemented")
         override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> = error("Not yet implemented")
         override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = error("Not yet implemented")
-        override suspend fun downloadMoveList(characterData: DownloadMoveListUseCase.CharacterData): Result<List<Move>, WikiError> = error("Not yet implemented")
+        override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError> = error("Not yet implemented")
         override suspend fun cacheMoveList(character: Character, moveList: List<Move>, ): EmptyResult<WikiError> = error("Not yet implemented")
         @OptIn(ExperimentalTime::class)
         override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = error("Not yet implemented")

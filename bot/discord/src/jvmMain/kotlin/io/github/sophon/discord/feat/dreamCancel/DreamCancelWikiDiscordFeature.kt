@@ -119,12 +119,12 @@ internal class DreamCancelWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { move ->
+            .map { (character, move) ->
                 val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
                     ?: emptyList()
 
                 BotOutput(
-                    primaryEmbedBuilder = dreamCancelMoveEmbed(game, move, featureInfo),
+                    primaryEmbedBuilder = dreamCancelMoveEmbed(game, character, move, featureInfo),
                     images = if (images.size < 2) {
                         null
                     } else {

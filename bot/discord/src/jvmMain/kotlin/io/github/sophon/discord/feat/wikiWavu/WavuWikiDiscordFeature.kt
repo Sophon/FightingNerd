@@ -163,8 +163,8 @@ internal class WavuWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { move ->
-                BotOutput(primaryEmbedBuilder = wavuMoveEmbed(move, featureInfo))
+            .map { (character, move) ->
+                BotOutput(primaryEmbedBuilder = wavuMoveEmbed(character, move, featureInfo))
             }
     }
 

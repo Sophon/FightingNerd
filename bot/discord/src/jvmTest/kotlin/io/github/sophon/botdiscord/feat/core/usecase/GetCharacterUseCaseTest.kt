@@ -1,20 +1,19 @@
 package io.github.sophon.botdiscord.feat.core.usecase
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.isInstanceOf
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
-import io.github.sophon.core.wiki.model.WikiClient
+import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
-import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.core.wiki.model.Character
 
 class GetCharacterUseCaseTest {
     //region Successful Character and Move Fetch
@@ -202,9 +201,9 @@ private class FakeWikiClient(
     override suspend fun downloadCharacterList() = error("Not implemented")
     override suspend fun cacheCharacterList(characterList: List<Character>) = error("Not implemented")
     override suspend fun fetchCharacterList() = error("Not implemented")
-    override suspend fun downloadMoveList(characterData: DownloadMoveListUseCase.CharacterData) = error("Not implemented")
+    override suspend fun downloadMoveListFor(character: Character) = error("Not implemented")
     override suspend fun cacheMoveList(character: Character, moveList: List<Move>) = error("Not implemented")
-    override suspend fun fetchMove(characterQuery: String, moveQuery: String) = error("Not implemented")
+    override suspend fun fetchMove(characterId: String, moveQuery: String) = error("Not implemented")
     override suspend fun getLastUpdateTimeStamp() = error("Not implemented")
     override suspend fun clearCache() = error("Not implemented")
 }

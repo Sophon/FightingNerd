@@ -17,34 +17,25 @@ import kotlin.time.ExperimentalTime
 internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
     private val database: MutableMap<String, Map<String, Move>> = mutableMapOf()
     private var insertTimeInstant: Instant? = null
-    private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
     private val moveAliasMap: MutableMap<String, MutableMap<String, String>> = mutableMapOf()
 
     override suspend fun fetchMoveListFor(
-        characterQuery: String
+        characterId: String
     ): Result<List<Move>, WikiError> {
-        val characterId = if (database.containsKey(characterQuery)) {
-            characterQuery
-        } else {
-            charNameAliasMap[characterQuery]
-        }
-        if (characterId == null)
-            return Result.Error(WikiError.UnknownCharacter(characterQuery))
-
+        //TODO: this should be an exception
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(characterQuery))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId))
 
         return Result.Success(moveList.values.toList())
     }
 
     override suspend fun fetchMoveDataFor(
-        characterQuery: String,
+        characterId: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        val characterId = charNameAliasMap[characterQuery] ?: characterQuery
-
+        //TODO: this should be an exception
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(characterQuery))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId))
 
         val moveId = moveAliasMap[characterId]?.get(moveQuery) ?: moveQuery
 
@@ -85,11 +76,6 @@ internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
         moveAliasMap[character.id] = aliasMap
 
         insertTimeInstant = Clock.System.now()
-
-        charNameAliasMap[character.id] = character.id
-        character.aliasList.forEach { alias ->
-            charNameAliasMap.putIfAbsent(alias.replace(" ", ""), character.id)
-        }
 
         return Result.Success(Unit)
     }
