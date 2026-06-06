@@ -6,10 +6,9 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.fightingnerd.core.MoveRepository
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,8 +20,7 @@ import kotlinx.coroutines.sync.withPermit
 internal class HomeVM(
     private val loadEmptyWidgetsUseCase: LoadEmptyWidgetsUseCase,
     private val loadGameCharacterListUseCase: LoadGameCharacterListUseCase,
-    private val loadMoveListUseCase: LoadMoveListUseCase,
-    private val moveRepository: MoveRepository,
+    private val ensureMoveListIsCached: EnsureMoveListIsCached,
 ): ViewModel() {
     private val moveListSemaphore = Semaphore(permits = MAX_PERMITS)
     private val _state = MutableStateFlow(HomeViewState())
@@ -53,27 +51,6 @@ internal class HomeVM(
             }
             val updatedState = state.copy(gameWidgetList = updatedList)
             updatedState
-        }
-    }
-
-    /**
-     * TODO: REPLACE WITH PROPER REPOSITORY
-     * this only serves to avoid having to pass the movelist around
-     */
-    fun onCacheMoveList(gameId: String, characterId: String) {
-        val character = state.value.gameWidgetList
-            .firstOrNull { widget ->
-                widget.game.id == gameId
-            }
-            ?.characterList
-            ?.firstOrNull { character ->
-                character.queryName == characterId
-            }
-        character?.moveList?.let { moveList ->
-            moveRepository.moveList.apply {
-                clear()
-                addAll(moveList)
-            }
         }
     }
 
@@ -122,15 +99,12 @@ internal class HomeVM(
             gameWidget.characterList.forEach { character ->
                 launch {
                     moveListSemaphore.withPermit {
-                        loadMoveListUseCase.invoke(game = gameWidget.game, characterQueryId = character.id)
-                            .onSuccess { moveList ->
+                        ensureMoveListIsCached.invoke(game = gameWidget.game, characterId = character.id)
+                            .onSuccess {
                                 _state.update { state ->
                                     val updatedGameWidgetList = state.gameWidgetList.map { widget ->
                                         if (widget.game == gameWidget.game) {
-                                            widget.withUpdatedCharacter(
-                                                characterId = character.id,
-                                                moveList = moveList,
-                                            )
+                                            widget.withUpdatedCharacter(characterId = character.id)
                                         } else {
                                             widget
                                         }

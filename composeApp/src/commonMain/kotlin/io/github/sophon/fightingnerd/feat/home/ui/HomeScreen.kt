@@ -30,7 +30,6 @@ internal fun HomeScreen(
         onExpandWidget = vm::onExpandWidget,
         onCharacterClick = { gameId, characterId ->
             onNavigateToMoveList(gameId, characterId)
-            vm.onCacheMoveList(gameId, characterId)
         },
         modifier = modifier,
     )
