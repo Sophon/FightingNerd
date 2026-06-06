@@ -5,7 +5,6 @@ import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.domain.MOVE_URL
 import io.github.sophon.wikiwavu.domain.VIDEO_URL
 import io.github.sophon.wikiwavu.domain.cleanMoveInput
@@ -52,7 +51,7 @@ internal fun MoveDto.toDomain(
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
-            wikiUrl = formMoveWikiUrl(character.id, id),
+            wikiUrl = formMoveWikiUrl(characterRemoteQueryId = character.remoteQueryId, moveId = id),
         ),
 
         t8Properties = formProperties(
@@ -174,8 +173,9 @@ internal fun String?.formVideoUrl(): String? {
     return this?.let { VIDEO_URL + it.urlEncode() }
 }
 
-internal fun formMoveWikiUrl(charName: String, id: String): String {
-    return "${MOVE_URL}/${charName.replace(" ", "_")}_movelist#${id.replace(" ", "_")}"
+internal fun formMoveWikiUrl(characterRemoteQueryId: String, moveId: String): String {
+    val formattedCharacterName = characterRemoteQueryId.replace(" ", "_")
+    return "${MOVE_URL}/${formattedCharacterName}_movelist#${moveId.replace(" ", "_")}"
 }
 
 
