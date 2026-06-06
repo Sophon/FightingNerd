@@ -30,15 +30,15 @@ internal class InMemoryCharacterListDB(private val game: Game): CharacterListDB 
         return Result.Success(Unit)
     }
 
-    override suspend fun fetchCharacterDataFor(charName: String): Result<Character, WikiError> {
-        val characterId = if (database.containsKey(charName)) {
-            charName
+    override suspend fun fetchCharacterDataFor(characterQuery: String): Result<Character, WikiError> {
+        val characterId = if (database.containsKey(characterQuery)) {
+            characterQuery
         } else {
-            charNameAliasMap[charName]
+            charNameAliasMap[characterQuery]
         }
 
         val character: Character = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(charName))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterQuery))
 
         return Result.Success(character)
     }

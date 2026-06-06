@@ -4,6 +4,7 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
@@ -11,15 +12,16 @@ import io.github.sophon.discord.util.optionalField
 
 internal fun dreamCancelMoveEmbed(
     game: Game,
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     title = move.input
     url = move.urls.wikiUrl
     description = if (move.name.isNullOrBlank()) {
-        "**${move.charName}**"
+        "**${character.displayName}**"
     } else {
-        "**${move.charName}**: ${move.name.orEmpty()}"
+        "**${character.displayName}**: ${move.name.orEmpty()}"
     }
     color = Color(BLUE)
 

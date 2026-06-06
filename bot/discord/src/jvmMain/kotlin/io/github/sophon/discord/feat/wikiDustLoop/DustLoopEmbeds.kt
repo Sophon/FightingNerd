@@ -147,20 +147,22 @@ internal fun charEmbedBuilderBB(
 }
 
 internal fun moveEmbedBuilderGG(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    generalInfoMove(move = move, displayHitboxes = false)
+    generalInfoMove(character, move, displayHitboxes = false)
     generalPropertiesMove(move)
 
     featureFooter(featureInfo)
 }
 
 internal fun moveDetailedEmbedBuilderGG(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    moveEmbedBuilderGG(move, featureInfo).invoke(this)
+    moveEmbedBuilderGG(character, move, featureInfo).invoke(this)
 
     optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
     optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
@@ -175,10 +177,11 @@ internal fun moveDetailedEmbedBuilderGG(
 }
 
 internal fun moveEmbedBuilderDB(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    generalInfoMove(move)
+    generalInfoMove(character, move)
 
     mandatoryField(name = "Startup", value = move.startup)
     mandatoryField(name = "Active", value = move.active)
@@ -194,10 +197,11 @@ internal fun moveEmbedBuilderDB(
 }
 
 internal fun moveEmbedBuilderGB(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    generalInfoMove(move)
+    generalInfoMove(character, move)
     generalPropertiesMove(move)
 
     optionalField(name = "Meter", value = move.gbvsrProperties?.meter)
@@ -212,20 +216,22 @@ internal fun moveEmbedBuilderGB(
 }
 
 internal fun moveEmbedBuilderBB(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    generalInfoMove(move, displayHitboxes = false)
+    generalInfoMove(character, move, displayHitboxes = false)
     generalPropertiesMove(move)
 
     featureFooter(featureInfo)
 }
 
 internal fun moveDetailedEmbedBuilderBB(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    moveEmbedBuilderBB(move, featureInfo).invoke(this)
+    moveEmbedBuilderBB(character, move, featureInfo).invoke(this)
 
     move.bbProperties?.apply {
         if (p1 != null || p2 != null) {
@@ -344,18 +350,19 @@ private fun EmbedBuilder.generalPropertiesChar(
 }
 
 private fun EmbedBuilder.generalInfoMove(
+    character: Character,
     move: Move,
     displayHitboxes: Boolean = true,
 ) {
     title = move.input
     url = move.urls.wikiUrl
     description = if (move.name.isNullOrBlank()) {
-        "**${move.charName}**"
+        "**${move.characterId}**"
     } else {
-        "**${move.charName}**: ${move.name.orEmpty()}"
+        "**${move.characterId}**: ${move.name.orEmpty()}"
     }
     this@generalInfoMove.color = Color(RED)
-    move.urls.characterImage?.let { thumbnail { url = it } }
+    character.images?.iconUrl?.let { thumbnail { url = it } }
 
     if (displayHitboxes) {
         val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }

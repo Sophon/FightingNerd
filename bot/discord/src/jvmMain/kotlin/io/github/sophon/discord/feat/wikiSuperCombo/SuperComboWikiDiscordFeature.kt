@@ -147,14 +147,14 @@ internal class SuperComboWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { move ->
+            .map { (character, move) ->
                 val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
                     ?: emptyList()
 
                 BotOutput(
                     mutableEmbedBuilder = BotOutput.MutableEmbedBuilder(
-                        primaryBuilder = superComboMoveEmbed(move, featureInfo),
-                        manualEditBuilder = superComboMoveDetailedEmbed(move, featureInfo),
+                        primaryBuilder = superComboMoveEmbed(character, move, featureInfo),
+                        manualEditBuilder = superComboMoveDetailedEmbed(character, move, featureInfo),
                     ),
                     buttons = BotOutput.ButtonSet(
                         buttonList = listOf(

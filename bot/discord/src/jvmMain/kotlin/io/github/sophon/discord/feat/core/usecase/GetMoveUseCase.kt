@@ -1,30 +1,39 @@
 package io.github.sophon.discord.feat.core.usecase
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.util.dropFirstAndJoin
-import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
 
-internal class GetMoveUseCase() {
+internal class GetMoveUseCase {
     suspend fun invoke(
         wiki: WikiClient,
         query: String
-    ): Result<Move, BotError> {
+    ): Result<Pair<Character, Move>, BotError> {
         val parsedQuery = query.parseQuery()
             ?: return Result.Error(BotError.UnknownMove(query))
 
-        return wiki.fetchMove(
-            charName = parsedQuery.charName,
-            moveQuery = parsedQuery.move.replace(" ", "")
-        ).mapError { it.toDomainError() }
+        val result = wiki.fetchCharacter(characterQuery = parsedQuery.characterQuery)
+            .flatMap { character ->
+                wiki.fetchMove(
+                    characterId = character.id,
+                    moveQuery = parsedQuery.moveQuery.replace(" ", ""),
+                ).map { move -> Pair(character, move) }
+            }
+            .mapError { it.toDomainError() }
+
+        return result
     }
 
     internal data class ParsedQuery(
-        val charName: String,
-        val move: String,
+        val characterQuery: String,
+        val moveQuery: String,
     )
 
     internal fun String.parseQuery(): ParsedQuery? {

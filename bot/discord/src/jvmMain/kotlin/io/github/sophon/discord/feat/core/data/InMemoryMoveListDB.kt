@@ -17,34 +17,25 @@ import kotlin.time.ExperimentalTime
 internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
     private val database: MutableMap<String, Map<String, Move>> = mutableMapOf()
     private var insertTimeInstant: Instant? = null
-    private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
     private val moveAliasMap: MutableMap<String, MutableMap<String, String>> = mutableMapOf()
 
     override suspend fun fetchMoveListFor(
-        charName: String
+        characterId: String
     ): Result<List<Move>, WikiError> {
-        val characterId = if (database.containsKey(charName)) {
-            charName
-        } else {
-            charNameAliasMap[charName]
-        }
-        if (characterId == null)
-            return Result.Error(WikiError.UnknownCharacter(charName))
-
+        //TODO: this should be an exception
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(charName))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId))
 
         return Result.Success(moveList.values.toList())
     }
 
     override suspend fun fetchMoveDataFor(
-        charName: String,
+        characterId: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        val characterId = charNameAliasMap[charName] ?: charName
-
+        //TODO: this should be an exception
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(charName))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId))
 
         val moveId = moveAliasMap[characterId]?.get(moveQuery) ?: moveQuery
 
@@ -85,11 +76,6 @@ internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
         moveAliasMap[character.id] = aliasMap
 
         insertTimeInstant = Clock.System.now()
-
-        charNameAliasMap[character.id] = character.id
-        character.aliasList.forEach { alias ->
-            charNameAliasMap.putIfAbsent(alias.replace(" ", ""), character.id)
-        }
 
         return Result.Success(Unit)
     }

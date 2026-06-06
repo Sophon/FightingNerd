@@ -39,7 +39,7 @@ internal fun MoveDto.toDomain(
     val aliasList = normalizedInput.create2dAliases(isPartial = true)
 
     val move = Move(
-        charName = character.displayName,
+        characterId = character.id,
         id = moveId,
         input = normalizedInput,
         damage = damage?.cleanHtml(),
@@ -50,7 +50,6 @@ internal fun MoveDto.toDomain(
         recovery = recovery?.cleanHtml(),
         active = active?.cleanHtml(),
         urls = Move.Urls(
-            characterWiki = character.wikiUrl,
             hitboxImageList = hitboxes
                 .orEmpty()
                 .split(",")
@@ -59,13 +58,13 @@ internal fun MoveDto.toDomain(
                 .orEmpty()
                 .split(",")
                 .mapNotNull { imageUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
-            wikiUrl = formMoveWikiUrl(gameId, chara, name),
+            wikiUrl = formMoveWikiUrl(gameId, chara),
         ),
         aliases = aliasList,
     )
     return move
 }
 
-internal fun formMoveWikiUrl(gameId: String, charName: String, name: String?): String {
-    return "${FEATURE_URL}/$gameId/${charName.createQueryName()}/Data#${name.orEmpty().replace(" ", "_")}"
+internal fun formMoveWikiUrl(gameId: String, charName: String): String {
+    return "${FEATURE_URL}/$gameId/${charName.createQueryName()}"
 }

@@ -3,7 +3,7 @@ package io.github.sophon.wikimizuumi.data
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.safeCall
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wikimizuumi.domain.BASE_URL
 import io.github.sophon.wikimizuumi.domain.LIMIT_CHARACTERS
@@ -21,7 +21,7 @@ internal interface MizuumiWikiDataSource {
     suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
     suspend fun downloadMoveList(
         table: String,
-        characterData: DownloadMoveListUseCase.CharacterData,
+        character: Character,
     ): Result<MoveListResponseDto, DataError.Remote>
     suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
 }
@@ -91,7 +91,7 @@ internal class MizuumiWikiDataSourceImpl(
 
     override suspend fun downloadMoveList(
         table: String,
-        characterData: DownloadMoveListUseCase.CharacterData,
+        character: Character,
     ): Result<MoveListResponseDto, DataError.Remote> {
         return safeCall {
             httpClient.get(urlString = BASE_URL) {
@@ -100,7 +100,7 @@ internal class MizuumiWikiDataSourceImpl(
                 parameter("limit", LIMIT_MOVES)
                 parameter("format", "json")
                 parameter("fields", getMoveFields(table))
-                parameter("where", "chara=\"${characterData.name}\"")
+                parameter("where", "chara=\"${character.remoteQueryId}\"")
             }
         }
     }

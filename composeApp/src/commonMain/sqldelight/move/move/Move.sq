@@ -17,8 +17,6 @@ CREATE TABLE move (
     invulnerability TEXT,
     notes TEXT NOT NULL,
     aliases TEXT NOT NULL,
-    urlsCharacterWiki TEXT,
-    urlsCharacterImage TEXT,
     urlsVideoId TEXT,
     urlsHitboxImageList TEXT NOT NULL,
     urlsMoveImageList TEXT NOT NULL,
@@ -27,8 +25,8 @@ CREATE TABLE move (
 );
 
 insertMove:
-INSERT OR IGNORE INTO move(id, charName, name, input, damage, startup, onBlock, onHit, onCH, active, cancel, recovery, guard, invulnerability, notes, aliases, urlsCharacterWiki, urlsCharacterImage, urlsVideoId, urlsHitboxImageList, urlsMoveImageList, urlsWikiUrl, insertedAt)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR IGNORE INTO move(id, charName, name, input, damage, startup, onBlock, onHit, onCH, active, cancel, recovery, guard, invulnerability, notes, aliases, urlsVideoId, urlsHitboxImageList, urlsMoveImageList, urlsWikiUrl, insertedAt)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteAllMoves:
 DELETE FROM move;

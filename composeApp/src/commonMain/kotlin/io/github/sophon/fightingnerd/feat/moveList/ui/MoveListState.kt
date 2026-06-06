@@ -34,7 +34,7 @@ internal data class MoveListState(
     companion object {
         val armorKingMoves = listOf(
             Move(
-                charName = "Armor King",
+                characterId = "Armor King",
                 id = "armor_king-b12",
                 name = "Dark Jab > Hell Stab",
                 input = "b12",
@@ -52,13 +52,12 @@ internal data class MoveListState(
                     "Input can be delayed by 12F",
                 ),
                 urls = Move.Urls(
-                    characterImage = "https://tekkendocs.com/t8/avatars/armor-king-512.png",
                     wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-b+1,2",
                 ),
                 t8Properties = Move.T8Properties(),
             ),
             Move(
-                charName = "Armor King",
+                characterId = "Armor King",
                 id = "armor_king-b1+2",
                 name = "Blindside",
                 input = "b1+2",
@@ -70,13 +69,12 @@ internal data class MoveListState(
                 recovery = "r27",
                 guard = "m",
                 urls = Move.Urls(
-                    characterImage = "https://tekkendocs.com/t8/avatars/armor-king-512.png",
                     wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-b+1+2",
                 ),
                 t8Properties = Move.T8Properties(),
             ),
             Move(
-                charName = "Armor King",
+                characterId = "Armor King",
                 id = "armor_king-h.ub1",
                 name = "Neck Hunter: Villain",
                 input = "h.ub1",
@@ -94,7 +92,6 @@ internal data class MoveListState(
                     "7 chip damage on block",
                 ),
                 urls = Move.Urls(
-                    characterImage = "https://tekkendocs.com/t8/avatars/armor-king-512.png",
                     wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-H.ub+1",
                 ),
                 t8Properties = Move.T8Properties(isHeat = true, isHoming = true),

@@ -5,20 +5,21 @@ import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikidustloop.util.toClickable
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
-    characterData: DownloadMoveListUseCase.CharacterData,
+    character: Character,
     imageUrlMap: Map<String, String>,
 ): List<Move> {
     return cargoQuery.map { wrapper ->
         val dto = wrapper.title
         val move = dto.toDomain(
             gameId,
-            characterData,
+            character,
             imageUrlMap,
         )
         move
@@ -27,7 +28,7 @@ internal fun MoveListResponseDto.toDomain(
 
 internal fun MoveDto.toDomain(
     gameId: String,
-    characterData: DownloadMoveListUseCase.CharacterData,
+    character: Character,
     imageUrlMap: Map<String, String>,
 ): Move {
     val normalizedInput = input
@@ -40,7 +41,7 @@ internal fun MoveDto.toDomain(
     )
 
     return Move(
-        charName = chara.orEmpty().cleanHtml(),
+        characterId = character.id,
         id = normalizedInput.formMoveId(chara),
         name = name?.cleanHtml(),
 
@@ -60,7 +61,6 @@ internal fun MoveDto.toDomain(
         notes = notes.formNotes(),
 
         urls = Move.Urls(
-            characterImage = characterData.imageUrl,
             hitboxImageList = hitboxes
                 .orEmpty()
                 .split(";", "\\")
@@ -147,7 +147,12 @@ internal fun String?.formNotes(): List<String> {
 }
 
 internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
-    return "${dto.chara.formWikiUrl(gameId)}#${dto.name?.replace(" ", "_")}"
+    val moveId = if (dto.name.isNullOrBlank()) {
+        dto.input
+    } else {
+        dto.name.replace(" ", "_")
+    }
+    return "${dto.chara.formWikiUrl(gameId)}#${moveId}"
 }
 
 internal fun formAliases(

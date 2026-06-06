@@ -8,14 +8,13 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
 import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.usecase.DownloadOrFetchUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
 import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
@@ -68,25 +67,27 @@ internal class XkoWikiClient(
             .onError { Napier.e(tag = TAG) { "fetchCharacterList: $it" } }
     }
 
-    override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
-        return fetchCharacterUseCase.invoke(charName)
+    override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
+        return fetchCharacterUseCase.invoke(characterQuery)
             .onError { Napier.w(tag = TAG) { "fetchCharacter: $it" } }
     }
 
-    override suspend fun downloadMoveList(
-        characterData: DownloadMoveListUseCase.CharacterData,
+    override suspend fun downloadMoveListFor(
+        character: Character,
     ): Result<List<Move>, WikiError> {
         return downloadOrFetchUseCase.invoke()
             .map { map ->
                 map
-                    .filterKeys { it.remoteQueryId.equals(characterData.name, ignoreCase = true) }
+                    .filterKeys { it.remoteQueryId == character.remoteQueryId }
                     .values
                     .flatten()
             }
             .onSuccess {
-                Napier.d(tag = TAG) { "${characterData.name}: ${it.size} moves downloaded" }
+                Napier.d(tag = TAG) { "${character.displayName}: ${it.size} moves downloaded" }
             }
-            .onError { Napier.e(tag = TAG) { "downloadMoveList: $it" } }
+            .onError {
+                Napier.e(tag = TAG) { "downloadMoveList (${character.remoteQueryId}): $it" }
+            }
     }
 
     override suspend fun cacheMoveList(
@@ -101,18 +102,18 @@ internal class XkoWikiClient(
     }
 
     override suspend fun fetchMoveList(
-        charName: String,
+        characterQuery: String,
         filter: Filter,
     ): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName, filter)
+        return fetchMoveListUseCase.invoke(characterQuery, filter)
             .onError { Napier.e(tag = TAG) { "fetchMoveList: $it" } }
     }
 
     override suspend fun fetchMove(
-        charName: String,
+        characterId: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(charName, moveQuery)
+        return fetchMoveUseCase.invoke(characterId, moveQuery)
             .onError { Napier.w(tag = TAG) { "fetchMove: $it" } }
     }
 

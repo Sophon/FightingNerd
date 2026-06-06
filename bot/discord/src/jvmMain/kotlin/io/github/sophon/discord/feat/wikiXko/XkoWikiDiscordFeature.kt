@@ -88,9 +88,9 @@ internal class XkoWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         return getMoveUseCase.invoke(wiki, query)
-            .map { move ->
+            .map { (character, move) ->
                 BotOutput(
-                    primaryEmbedBuilder = xkoMoveEmbed(move, featureInfo),
+                    primaryEmbedBuilder = xkoMoveEmbed(character, move, featureInfo),
                     images = if (move.urls.hitboxImageList.size < 2) {
                         null
                     } else {

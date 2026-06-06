@@ -4,12 +4,16 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import kotlin.test.Test
 
 class MoveMapperTest {
     val uni = Game.Uni2.id
-    val emptyCharData = DownloadMoveListUseCase.CharacterData("", null)
+    val character = Character(
+        id = "",
+        displayName = "",
+        remoteQueryId = "",
+        wikiUrl = "",
+    )
     
     //region URL
     @Test
@@ -53,7 +57,7 @@ class MoveMapperTest {
         
         // when
         val result = move.toDomain(
-            characterData = emptyCharData,
+            character,
             imageUrlMap = emptyMap(),
             gameId = uni,
         )

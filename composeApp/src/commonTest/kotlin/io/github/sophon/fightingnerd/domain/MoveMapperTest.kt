@@ -159,7 +159,7 @@ class MoveMapperTest {
         notes: List<String> = emptyList(),
         properties: Move.T8Properties = Move.T8Properties()
     ) = Move(
-        charName = "Charname",
+        characterId = "Charname",
         id = "test-${input}",
         name = "Test Move",
         input = input,

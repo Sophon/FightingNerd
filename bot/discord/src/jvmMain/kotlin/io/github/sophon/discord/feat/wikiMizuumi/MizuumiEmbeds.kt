@@ -13,18 +13,19 @@ import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 
 internal fun mizuumiMoveEmbed(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     title = move.input
     url = move.urls.wikiUrl
     description = when {
-        move.charName.isBlank() -> "Move data"
-        move.name.isNullOrBlank() -> "**${move.charName}**"
-        else -> "**${move.charName}**: ${move.name}"
+        move.characterId.isBlank() -> "Move data"
+        move.name.isNullOrBlank() -> "**${move.characterId}**"
+        else -> "**${move.characterId}**: ${move.name}"
     }
     color = Color(TEAL)
-    move.urls.characterImage?.let { thumbnail { url = it } }
+    character.images?.iconUrl?.let { thumbnail { url = it } }
 
     val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
         ?: emptyList()

@@ -58,12 +58,12 @@ internal class SqlCharacterDB(
         return result
     }
 
-    override suspend fun fetchCharacterDataFor(charName: String): Result<Character, WikiError> {
+    override suspend fun fetchCharacterDataFor(characterQuery: String): Result<Character, WikiError> {
         return when (val result = fetchCharacterList()) {
             is Result.Success -> {
-                val character = result.data.firstOrNull { it.id == charName }
+                val character = result.data.firstOrNull { it.id == characterQuery }
                 if (character == null) {
-                    Result.Error(WikiError.DatabaseError("No character found for id=$charName"))
+                    Result.Error(WikiError.DatabaseError("No character found for id=$characterQuery"))
                 } else {
                     Result.Success(character)
                 }

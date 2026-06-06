@@ -74,23 +74,23 @@ internal class DustLoopWikiClient(
     }
 
     override suspend fun fetchCharacter(
-        charName: String
+        characterQuery: String
     ): Result<Character, WikiError> {
-        return fetchCharacterUseCase.invoke(charName)
+        return fetchCharacterUseCase.invoke(characterQuery)
             .onError { Napier.e(tag = TAG) { "fetchCharacter: $it" } }
     }
 
-    override suspend fun downloadMoveList(
-        characterData: DownloadMoveListUseCase.CharacterData,
+    override suspend fun downloadMoveListFor(
+        character: Character,
     ): Result<List<Move>, WikiError> {
-        return downloadMoveListUseCase.invoke(gameTables, characterData)
+        return downloadMoveListUseCase.invoke(gameTables, character)
             .onSuccess { moveList ->
                 Napier.d(tag = TAG) {
-                    "${characterData.name}: ${moveList.size} moves downloaded"
+                    "${character.displayName}: ${moveList.size} moves downloaded"
                 }
             }
             .onError {
-                Napier.e(tag = TAG) { "downloadMoveList(${characterData.name}): $it" }
+                Napier.e(tag = TAG) { "downloadMoveList(${character.remoteQueryId}): $it" }
             }
     }
 
@@ -106,22 +106,22 @@ internal class DustLoopWikiClient(
     }
 
     override suspend fun fetchMoveList(
-        charName: String,
+        characterQuery: String,
         filter: Filter,
     ): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName, filter)
+        return fetchMoveListUseCase.invoke(characterQuery, filter)
             .onError {
-                Napier.e(tag = TAG) { "fetchMoveList($charName): $it" }
+                Napier.e(tag = TAG) { "fetchMoveList($characterQuery): $it" }
             }
     }
 
     override suspend fun fetchMove(
-        charName: String,
+        characterId: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(charName, moveQuery)
+        return fetchMoveUseCase.invoke(characterId, moveQuery)
             .onError {
-                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+                Napier.w(tag = TAG) { "fetchMove($characterId, $moveQuery): $it" }
             }
     }
 

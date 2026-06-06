@@ -39,7 +39,7 @@ class MoveMapperTest {
             bucket = listOf(jinxMove, dariusMove)
         )
         val expectedJinxMove = Move(
-            charName = "Jinx",
+            characterId = "Jinx",
             id = "jinx_5m",
             input = "5m",
             damage = "55",
@@ -53,12 +53,11 @@ class MoveMapperTest {
             urls = Move.Urls(
                 hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png"),
                 moveImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M.png"),
-                characterWiki = "https://wiki.play2xko.com/en-us/Jinx",
                 wikiUrl = "https://wiki.play2xko.com/en-us/Jinx#5M"
             )
         )
         val expectedDariusMove = Move(
-            charName = "Darius",
+            characterId = "Darius",
             id = "darius_5m",
             input = "5m",
             damage = "65",
@@ -72,7 +71,6 @@ class MoveMapperTest {
             urls = Move.Urls(
                 hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Darius_5M_Hitbox.png"),
                 moveImageList = listOf("https://wiki.play2xko.com/en-us/images/Darius_5M.png"),
-                characterWiki = "https://wiki.play2xko.com/en-us/Darius",
                 wikiUrl = "https://wiki.play2xko.com/en-us/Darius#5M"
             )
         )
@@ -114,7 +112,7 @@ class MoveMapperTest {
             bucket = listOf(moveDto)
         )
         val expectedMove = Move(
-            charName = "Jinx",
+            characterId = "Jinx",
             id = "jinx_5m",
             input = "5m",
             damage = null,
@@ -128,7 +126,6 @@ class MoveMapperTest {
             urls = Move.Urls(
                 hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png"),
                 moveImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M.png"),
-                characterWiki = "https://wiki.play2xko.com/en-us/Jinx",
                 wikiUrl = "https://wiki.play2xko.com/en-us/Jinx#5M"
             )
         )

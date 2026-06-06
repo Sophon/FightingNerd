@@ -10,17 +10,16 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.Test
 import kotlin.time.ExperimentalTime
-import io.github.sophon.core.wiki.model.Character
 
 @OptIn(ExperimentalTime::class)
 class SyncWikiDataUseCaseTest {
@@ -42,11 +41,11 @@ class SyncWikiDataUseCaseTest {
     )
 
     private fun createTestMove(
-        charName: String = "jin",
+        characterId: String = "jin",
         id: String = "1",
         input: String = "1"
     ) = Move(
-        charName = charName,
+        characterId = characterId,
         id = id,
         input = input,
         damage = "10",
@@ -116,15 +115,15 @@ class SyncWikiDataUseCaseTest {
             throw NotImplementedError("Not used in this use case")
         }
 
-        override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
+        override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
             throw NotImplementedError("Not used in this use case")
         }
 
-        override suspend fun downloadMoveList(
-            characterData: DownloadMoveListUseCase.CharacterData,
+        override suspend fun downloadMoveListFor(
+            character: Character,
         ): Result<List<Move>, WikiError> {
-            _downloadMoveListCalls.add(characterData.name)
-            return downloadMoveListResults[characterData.name]
+            _downloadMoveListCalls.add(character.remoteQueryId)
+            return downloadMoveListResults[character.id]
                 ?: Result.Success(emptyList())
         }
 
@@ -134,11 +133,11 @@ class SyncWikiDataUseCaseTest {
                 ?: Result.Success(Unit)
         }
 
-        override suspend fun fetchMoveList(charName: String, filter: Filter): Result<List<Move>, WikiError> {
+        override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> {
             throw NotImplementedError("Not used in this use case")
         }
 
-        override suspend fun fetchMove(charName: String, moveQuery: String): Result<Move, WikiError> {
+        override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> {
             throw NotImplementedError("Not used in this use case")
         }
 
@@ -160,8 +159,8 @@ class SyncWikiDataUseCaseTest {
         // given
         val character = createTestCharacter()
         val moves = listOf(
-            createTestMove(charName = "jin", id = "1", input = "1"),
-            createTestMove(charName = "jin", id = "2", input = "2")
+            createTestMove(characterId = "jin", id = "1", input = "1"),
+            createTestMove(characterId = "jin", id = "2", input = "2")
         )
         val wiki = FakeWikiClient().apply {
             downloadCharacterListResult = Result.Success(listOf(character))
@@ -186,8 +185,8 @@ class SyncWikiDataUseCaseTest {
         // given
         val jin = createTestCharacter(id = "jin", displayName = "Jin", queryName = "jin")
         val kazuya = createTestCharacter(id = "kazuya", displayName = "Kazuya", queryName = "kazuya")
-        val jinMoves = listOf(createTestMove(charName = "jin", id = "1"))
-        val kazuyaMoves = listOf(createTestMove(charName = "kazuya", id = "1"))
+        val jinMoves = listOf(createTestMove(characterId = "jin", id = "1"))
+        val kazuyaMoves = listOf(createTestMove(characterId = "kazuya", id = "1"))
         val wiki = FakeWikiClient().apply {
             downloadCharacterListResult = Result.Success(listOf(jin, kazuya))
             downloadMoveListResults = mapOf(
@@ -217,7 +216,7 @@ class SyncWikiDataUseCaseTest {
         }
         val wiki2 = FakeWikiClient().apply {
             downloadCharacterListResult = Result.Success(listOf(character2))
-            downloadMoveListResults = mapOf("ryu" to Result.Success(listOf(createTestMove(charName = "ryu"))))
+            downloadMoveListResults = mapOf("ryu" to Result.Success(listOf(createTestMove(characterId = "ryu"))))
         }
 
         // when
@@ -294,7 +293,7 @@ class SyncWikiDataUseCaseTest {
             downloadCharacterListResult = Result.Success(listOf(jin, kazuya))
             downloadMoveListResults = mapOf(
                 "jin" to Result.Error(WikiError.DownloadError("Failed to download jin moves")),
-                "kazuya" to Result.Success(listOf(createTestMove(charName = "kazuya")))
+                "kazuya" to Result.Success(listOf(createTestMove(characterId = "kazuya")))
             )
         }
 
@@ -337,9 +336,9 @@ class SyncWikiDataUseCaseTest {
         val wiki = FakeWikiClient().apply {
             downloadCharacterListResult = Result.Success(listOf(jin, kazuya, paul))
             downloadMoveListResults = mapOf(
-                "jin" to Result.Success(listOf(createTestMove(charName = "jin"))),
+                "jin" to Result.Success(listOf(createTestMove(characterId = "jin"))),
                 "kazuya" to Result.Error(WikiError.DownloadError("Failed")),
-                "paul" to Result.Success(listOf(createTestMove(charName = "paul")))
+                "paul" to Result.Success(listOf(createTestMove(characterId = "paul")))
             )
         }
 
@@ -408,8 +407,8 @@ class SyncWikiDataUseCaseTest {
         val wiki = FakeWikiClient().apply {
             downloadCharacterListResult = Result.Success(listOf(jin, kazuya))
             downloadMoveListResults = mapOf(
-                "jin" to Result.Success(listOf(createTestMove(charName = "jin"))),
-                "kazuya" to Result.Success(listOf(createTestMove(charName = "kazuya")))
+                "jin" to Result.Success(listOf(createTestMove(characterId = "jin"))),
+                "kazuya" to Result.Success(listOf(createTestMove(characterId = "kazuya")))
             )
             cacheMoveListResults = mapOf(
                 "jin" to Result.Error(WikiError.DatabaseError("Failed to cache jin moves"))
@@ -433,8 +432,8 @@ class SyncWikiDataUseCaseTest {
         val wiki = FakeWikiClient().apply {
             downloadCharacterListResult = Result.Success(listOf(jin, kazuya))
             downloadMoveListResults = mapOf(
-                "jin" to Result.Success(listOf(createTestMove(charName = "jin"))),
-                "kazuya" to Result.Success(listOf(createTestMove(charName = "kazuya")))
+                "jin" to Result.Success(listOf(createTestMove(characterId = "jin"))),
+                "kazuya" to Result.Success(listOf(createTestMove(characterId = "kazuya")))
             )
             cacheMoveListResults = mapOf(
                 "jin" to Result.Error(WikiError.DatabaseError("Failed")),
@@ -516,7 +515,7 @@ class SyncWikiDataUseCaseTest {
         val character = createTestCharacter(queryName = "")
         val wiki = FakeWikiClient().apply {
             downloadCharacterListResult = Result.Success(listOf(character))
-            downloadMoveListResults = mapOf("" to Result.Success(listOf(createTestMove(charName = ""))))
+            downloadMoveListResults = mapOf("" to Result.Success(listOf(createTestMove(id = ""))))
         }
 
         // when

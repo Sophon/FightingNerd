@@ -4,20 +4,22 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 
 internal fun xkoMoveEmbed(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    title = "${move.charName}: ${move.input.uppercase()}"
+    title = "${move.characterId}: ${move.input.uppercase()}"
     description = if (move.name.isNullOrBlank()) {
-        "**${move.charName}**"
+        "**${character.displayName}**"
     } else {
-        "**${move.charName}**: ${move.name.orEmpty()}"
+        "**${character.displayName}**: ${move.name.orEmpty()}"
     }
 
     val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }

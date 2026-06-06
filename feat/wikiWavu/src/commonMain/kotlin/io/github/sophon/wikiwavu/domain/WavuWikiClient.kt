@@ -70,20 +70,22 @@ internal class WavuWikiClient(
     }
 
     override suspend fun fetchCharacter(
-        charName: String
+        characterQuery: String
     ): Result<Character, WikiError> {
-        return fetchCharacterUseCase.invoke(charName)
-            .onError { Napier.w(tag = TAG) { "fetchCharacter(${charName}): $it" } }
+        return fetchCharacterUseCase.invoke(characterQuery)
+            .onError { Napier.w(tag = TAG) { "fetchCharacter(${characterQuery}): $it" } }
     }
 
-    override suspend fun downloadMoveList(
-        characterData: DownloadMoveListUseCase.CharacterData,
+    override suspend fun downloadMoveListFor(
+        character: Character,
     ): Result<List<Move>, WikiError> {
-        return downloadMoveListUseCase.invoke(queryTable, characterData)
+        return downloadMoveListUseCase.invoke(queryTable, character)
             .onSuccess {
-                Napier.d(tag = TAG) { "${characterData.name}: ${it.size} moves downloaded" }
+                Napier.d(tag = TAG) { "${character.displayName}: ${it.size} moves downloaded" }
             }
-            .onError { Napier.e(tag = TAG) { "downloadMoveList(${characterData.name}): $it" } }
+            .onError {
+                Napier.e(tag = TAG) { "downloadMoveList(${character.remoteQueryId}): $it" }
+            }
     }
 
     override suspend fun cacheMoveList(
@@ -97,20 +99,20 @@ internal class WavuWikiClient(
     }
 
     override suspend fun fetchMoveList(
-        charName: String,
+        characterQuery: String,
         filter: Filter,
     ): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName, filter)
-            .onError { Napier.e(tag = TAG) { "fetchMoveList($charName): $it" } }
+        return fetchMoveListUseCase.invoke(characterQuery, filter)
+            .onError { Napier.e(tag = TAG) { "fetchMoveList($characterQuery): $it" } }
     }
 
     override suspend fun fetchMove(
-        charName: String,
+        characterId: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(charName, moveQuery.cleanMoveInput(keepSpaces = true))
+        return fetchMoveUseCase.invoke(characterId, moveQuery.cleanMoveInput(keepSpaces = true))
             .onError {
-                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+                Napier.w(tag = TAG) { "fetchMove($characterId, $moveQuery): $it" }
             }
     }
 

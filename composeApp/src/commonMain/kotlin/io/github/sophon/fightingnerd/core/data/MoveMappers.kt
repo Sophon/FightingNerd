@@ -18,7 +18,7 @@ import move.SelectAllVsav
 internal fun move.Move.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -39,8 +39,6 @@ internal fun move.Move.toDomain(): Move {
 
 internal fun move.Move.buildUrls(): Move.Urls {
     return Move.Urls(
-        characterWiki = urlsCharacterWiki,
-        characterImage = urlsCharacterImage,
         videoId = urlsVideoId,
         hitboxImageList = urlsHitboxImageList.toDomain(),
         moveImageList = urlsMoveImageList.toDomain(),
@@ -51,7 +49,7 @@ internal fun move.Move.buildUrls(): Move.Urls {
 internal fun SelectAllT8.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -67,8 +65,6 @@ internal fun SelectAllT8.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -92,7 +88,7 @@ internal fun SelectAllT8.toDomain(): Move {
 internal fun SelectAllSf6.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -108,8 +104,6 @@ internal fun SelectAllSf6.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -154,7 +148,7 @@ internal fun SelectAllSf6.toDomain(): Move {
 internal fun SelectAllKof15.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -170,8 +164,6 @@ internal fun SelectAllKof15.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -190,7 +182,7 @@ internal fun SelectAllKof15.toDomain(): Move {
 internal fun SelectAllCotw.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -206,8 +198,6 @@ internal fun SelectAllCotw.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -226,7 +216,7 @@ internal fun SelectAllCotw.toDomain(): Move {
 internal fun SelectAllGgst.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -242,8 +232,6 @@ internal fun SelectAllGgst.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -270,7 +258,7 @@ internal fun SelectAllGgst.toDomain(): Move {
 internal fun SelectAllDbfz.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -286,8 +274,6 @@ internal fun SelectAllDbfz.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -314,7 +300,7 @@ internal fun SelectAllDbfz.toDomain(): Move {
 internal fun SelectAllGbvsr.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -330,8 +316,6 @@ internal fun SelectAllGbvsr.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -354,7 +338,7 @@ internal fun SelectAllGbvsr.toDomain(): Move {
 internal fun SelectAllMk.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -370,8 +354,6 @@ internal fun SelectAllMk.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -396,7 +378,7 @@ internal fun SelectAllMk.toDomain(): Move {
 internal fun SelectAllMb.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -412,8 +394,6 @@ internal fun SelectAllMb.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -439,7 +419,7 @@ internal fun SelectAllMb.toDomain(): Move {
 internal fun SelectAllBb.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -455,8 +435,6 @@ internal fun SelectAllBb.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -490,7 +468,7 @@ internal fun SelectAllBb.toDomain(): Move {
 internal fun SelectAllUni2.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -506,8 +484,6 @@ internal fun SelectAllUni2.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -546,7 +522,7 @@ internal fun SelectAllUni2.toDomain(): Move {
 internal fun SelectAllVsav.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -562,8 +538,6 @@ internal fun SelectAllVsav.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
@@ -588,7 +562,7 @@ internal fun SelectAllVsav.toDomain(): Move {
 internal fun SelectAllAvl.toDomain(): Move {
     return Move(
         id = id,
-        charName = charName,
+        characterId = charName,
         name = name,
         input = input,
         damage = damage,
@@ -604,8 +578,6 @@ internal fun SelectAllAvl.toDomain(): Move {
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
-            characterWiki = urlsCharacterWiki,
-            characterImage = urlsCharacterImage,
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),

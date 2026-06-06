@@ -22,7 +22,7 @@ internal class SqlMoveDB(
 ): MoveListDB {
     private val queries = db.moveQueries
 
-    override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
+    override suspend fun fetchMoveListFor(characterId: String): Result<List<Move>, WikiError> {
         val result = dbCall {
             val all = when (gameId) {
                 Game.Tekken8.id -> queries.selectAllT8().executeAsList().map { it.toDomain() }
@@ -40,14 +40,14 @@ internal class SqlMoveDB(
                 Game.AVL.id -> queries.selectAllAvl().executeAsList().map { it.toDomain() }
                 else -> queries.selectAllCommon().executeAsList().map { it.toDomain() }
             }
-            val filtered = all.filter { it.charName == charName }
+            val filtered = all.filter { it.characterId == characterId }
             filtered
         }
         return result
     }
 
     override suspend fun fetchMoveDataFor(
-        charName: String,
+        characterId: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
         return Result.Error(WikiError.DatabaseError("fetchMoveDataFor not yet implemented"))
@@ -112,7 +112,7 @@ internal class SqlMoveDB(
     private fun insertCommon(move: Move, insertedAt: Long) {
         queries.insertMove(
             id = move.id,
-            charName = move.charName,
+            charName = move.characterId,
             name = move.name,
             input = move.input,
             damage = move.damage,
@@ -127,8 +127,6 @@ internal class SqlMoveDB(
             invulnerability = move.invulnerability,
             notes = move.notes.fromDomain(),
             aliases = move.aliases.fromDomain(),
-            urlsCharacterWiki = move.urls.characterWiki,
-            urlsCharacterImage = move.urls.characterImage,
             urlsVideoId = move.urls.videoId,
             urlsHitboxImageList = move.urls.hitboxImageList.fromDomain(),
             urlsMoveImageList = move.urls.moveImageList.fromDomain(),

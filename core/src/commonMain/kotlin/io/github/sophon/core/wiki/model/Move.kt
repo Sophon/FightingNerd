@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Move(
-    val charName: String,
+    val characterId: String,
     val id: String,
     val name: String? = null,
 
@@ -41,8 +41,6 @@ data class Move(
 ) {
     @Serializable
     data class Urls(
-        val characterWiki: String? = null,
-        val characterImage: String? = null,
         val videoId: String? = null, //TODO: change to videoUrl
         val hitboxImageList: List<String> = listOf(),
         val moveImageList: List<String> = listOf(),

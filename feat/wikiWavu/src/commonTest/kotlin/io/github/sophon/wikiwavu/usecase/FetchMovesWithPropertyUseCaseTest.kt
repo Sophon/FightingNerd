@@ -471,7 +471,7 @@ class FetchMovesWithPropertyUseCaseTest {
         isPowerCrush: Boolean = false,
         isHoming: Boolean = false,
     ) = Move(
-        charName = "TestChar",
+        characterId = "TestChar",
         id = id,
         input = id,
         name = name,
@@ -495,16 +495,16 @@ class FetchMovesWithPropertyUseCaseTest {
     private class MockMoveListDB : MoveListDB {
         var mockResponse: Result<List<Move>, WikiError>? = null
 
-        override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
-            return mockResponse ?: Result.Error(WikiError.UnknownCharacter(charName))
+        override suspend fun fetchMoveListFor(characterId: String): Result<List<Move>, WikiError> {
+            return mockResponse ?: Result.Error(WikiError.UnknownCharacter(characterId))
         }
 
         override suspend fun fetchMoveDataFor(
-            charName: String,
+            characterId: String,
             moveQuery: String
         ): Result<Move, WikiError> {
             // Not used in FetchMovesWithPropertyUseCase
-            return Result.Error(WikiError.UnknownMove(charName, moveQuery))
+            return Result.Error(WikiError.UnknownMove(characterId, moveQuery))
         }
 
         override suspend fun insertMoveList(
