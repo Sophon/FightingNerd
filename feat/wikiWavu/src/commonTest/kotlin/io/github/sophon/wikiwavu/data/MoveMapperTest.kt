@@ -3,7 +3,7 @@ package io.github.sophon.wikiwavu.data
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.domain.cleanMoveInput
 import kotlin.test.Test

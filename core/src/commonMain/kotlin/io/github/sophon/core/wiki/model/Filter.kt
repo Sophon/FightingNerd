@@ -1,6 +1,4 @@
-package io.github.sophon.core.wiki.domain
-
-import io.github.sophon.core.wiki.domain.model.Move
+package io.github.sophon.core.wiki.model
 
 interface Filter {
     val predicate: (Move) -> Boolean

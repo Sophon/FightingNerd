@@ -1,11 +1,11 @@
-package io.github.sophon.core.domain
+package io.github.sophon.core.architecture
 
 
 typealias EmptyResult<E> = Result<Unit, E>
 
 sealed interface Result<out T, out E: Error> {
     data class Success<out T>(val data: T): Result< T, Nothing>
-    data class Error<out E: io.github.sophon.core.domain.Error>(val error: E): Result<Nothing, E>
+    data class Error<out E: io.github.sophon.core.architecture.Error>(val error: E): Result<Nothing, E>
 }
 
 /**

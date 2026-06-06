@@ -1,10 +1,10 @@
 package io.github.sophon.discord.feat.ewgf
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.flatMap
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command

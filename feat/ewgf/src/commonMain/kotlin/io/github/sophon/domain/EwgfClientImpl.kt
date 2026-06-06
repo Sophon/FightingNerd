@@ -1,11 +1,11 @@
 package io.github.sophon.domain
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.flatMap
-import io.github.sophon.core.domain.onSuccess
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.integration.EwgfClient
 import io.github.sophon.integration.EwgfFeatureInfo
 import io.github.sophon.integration.model.BattleSet

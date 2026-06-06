@@ -1,9 +1,9 @@
-package io.github.sophon.core.feature.module
+package io.github.sophon.core.featureConfig
 
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
-import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.wiki.model.WikiClient
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf

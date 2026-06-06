@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.screens.moveList.util
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 import kotlin.test.Test
 
 class MoveTest {

@@ -10,11 +10,11 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isTrue
-import io.github.sophon.core.feature.Config
-import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.core.model.Module
 import io.github.sophon.fightingnerd.featureRegistry.FeatureListLoader
 import io.github.sophon.fightingnerd.featureRegistry.FeatureRegistry

@@ -1,8 +1,8 @@
 package io.github.sophon.discord.feat.core.domain.model
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.integration.model.Source
 
 internal interface DiscordRegisteredFeature {

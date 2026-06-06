@@ -3,7 +3,7 @@ package io.github.sophon.wikiwavu.data
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.domain.MOVE_URL
 import io.github.sophon.wikiwavu.domain.VIDEO_URL

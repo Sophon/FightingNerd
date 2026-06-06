@@ -6,7 +6,7 @@ import assertk.assertions.isInstanceOf
 import io.github.sophon.discord.feat.ewgf.EwgfOperations
 import io.github.sophon.discord.feat.ewgf.usecase.ParseQueryIntoOperationUseCase
 import kotlin.test.Test
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.Result
 
 class ParseQueryIntoOperationUseCaseTest {
     private val usecase = ParseQueryIntoOperationUseCase()

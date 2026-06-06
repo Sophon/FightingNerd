@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,17 +23,17 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import coil3.ImageLoader
 import coil3.PlatformContext
-import coil3.compose.setSingletonImageLoaderFactory
 import coil3.util.DebugLogger
+import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
-import io.github.sophon.fightingnerd.feat.module.ModuleRepo
+import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
 import io.github.sophon.fightingnerd.navigation.Destination
 import io.github.sophon.fightingnerd.theme.AppTheme
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
 private val navConfig = SavedStateConfiguration {
@@ -50,12 +50,16 @@ internal fun App() {
 //    setSingletonImageLoaderFactory { context ->
 //        getAsyncImageLoader(context)
 //    }
-    val moduleRepo = koinInject<ModuleRepo>()
-    var isInitialized by rememberSaveable { mutableStateOf(false) }
+    var isInitialized by remember { mutableStateOf(false) }
 
+    val featureRepo = koinInject<CoreFeatureRepo>()
+    val loadConfigUseCase = koinInject<LoadConfigUseCase>()
     LaunchedEffect(Unit) {
-        moduleRepo.initialize()
-        isInitialized = true
+        loadConfigUseCase.invoke()
+            .onSuccess { config ->
+                featureRepo.initialize(config)
+                isInitialized = true
+            }
     }
 
     if (isInitialized) {

@@ -1,14 +1,14 @@
 package io.github.sophon.wikimizuumi.data
 
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.chargeAlias
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikimizuumi.domain.WIKI_BASE_URL
 

@@ -1,11 +1,11 @@
 package io.github.sophon.wikidustloop.data
 
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikidustloop.util.toClickable
 

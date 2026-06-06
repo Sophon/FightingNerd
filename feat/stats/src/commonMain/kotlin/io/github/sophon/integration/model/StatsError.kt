@@ -1,6 +1,6 @@
 package io.github.sophon.integration.model
 
-import io.github.sophon.core.domain.Error
+import io.github.sophon.core.architecture.Error
 
 sealed class StatsError(vararg val errors: String) : Error {
     class FileError(vararg errors: String) : StatsError(*errors)

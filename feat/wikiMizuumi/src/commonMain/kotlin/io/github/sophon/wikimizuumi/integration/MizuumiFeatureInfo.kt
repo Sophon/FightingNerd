@@ -1,7 +1,7 @@
 package io.github.sophon.wikimizuumi.integration
 
-import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.mizuumi.BuildKonfig
 import io.github.sophon.wikimizuumi.domain.FEATURE_IMG_URL
 import io.github.sophon.wikimizuumi.domain.FEATURE_NAME

@@ -1,8 +1,8 @@
 package io.github.sophon.fightingnerd.feat.moveList.ui
 
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.moveList.model.Property
 
 internal data class MoveListState(

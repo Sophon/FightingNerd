@@ -1,8 +1,8 @@
 package io.github.sophon.fightingnerd.core.model
 
-import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.wiki.domain.WikiClient
+import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.WikiClient
 import kotlinx.coroutines.flow.Flow
 
 internal interface Module {

@@ -1,13 +1,12 @@
 package io.github.sophon.discord.util
 
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
-import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 

@@ -1,9 +1,9 @@
 package io.github.sophon.discord.feat.admin.usecase
 
 import io.github.sophon.integration.AdminTool
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.mapError
-import io.github.sophon.core.feature.Config
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.mapError
+import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
 

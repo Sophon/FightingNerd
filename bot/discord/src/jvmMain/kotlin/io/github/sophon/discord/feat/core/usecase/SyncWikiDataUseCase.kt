@@ -1,13 +1,13 @@
 package io.github.sophon.discord.feat.core.usecase
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.flatMap
-import io.github.sophon.core.domain.map
-import io.github.sophon.core.domain.mapError
-import io.github.sophon.core.wiki.domain.WikiClient
-import io.github.sophon.core.wiki.domain.model.Character
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.mapError
+import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError

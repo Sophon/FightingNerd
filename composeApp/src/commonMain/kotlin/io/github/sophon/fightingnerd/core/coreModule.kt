@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.core
 
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.fightingnerd.core.data.DatabaseDriverFactory

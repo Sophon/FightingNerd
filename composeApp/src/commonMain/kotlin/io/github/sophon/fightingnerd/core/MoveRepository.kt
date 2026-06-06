@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.core
 
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.wiki.model.Move
 
 /**
  * THIS IS STRICTLY TEMPORARY

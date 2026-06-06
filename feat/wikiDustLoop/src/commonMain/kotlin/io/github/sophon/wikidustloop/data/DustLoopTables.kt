@@ -1,6 +1,6 @@
 package io.github.sophon.wikidustloop.data
 
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.QueryTable
 
 internal object DustLoopTables {

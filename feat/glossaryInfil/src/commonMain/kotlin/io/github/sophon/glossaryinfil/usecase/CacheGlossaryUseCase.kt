@@ -1,9 +1,9 @@
 package io.github.sophon.glossaryinfil.usecase
 
-import io.github.sophon.core.domain.EmptyResult
-import io.github.sophon.core.domain.Result
-import io.github.sophon.core.domain.asEmptyDataResult
-import io.github.sophon.core.domain.flatMap
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.asEmptyDataResult
+import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
 import io.github.sophon.glossaryinfil.integration.model.GlossaryError
 import io.github.sophon.glossaryinfil.integration.model.GlossaryItem

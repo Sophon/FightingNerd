@@ -10,9 +10,8 @@ import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEve
 import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.rollChance
-import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput

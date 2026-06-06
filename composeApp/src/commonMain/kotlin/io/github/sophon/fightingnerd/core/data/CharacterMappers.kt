@@ -7,7 +7,7 @@ import character.SelectAllGgst
 import character.SelectAllMk1
 import character.SelectAllSf6
 import character.SelectAllUni2
-import io.github.sophon.core.wiki.domain.model.Character
+import io.github.sophon.core.wiki.model.Character
 
 internal fun character.Character.toDomain(): Character {
     return Character(

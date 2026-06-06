@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.screens.settings.ui
 
-import io.github.sophon.core.feature.FeatureInfo
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.fightingnerd.BuildKonfig
 
 internal data class SettingsViewState(

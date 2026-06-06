@@ -1,7 +1,7 @@
 package io.github.sophon.xko.integration
 
-import io.github.sophon.core.feature.FeatureInfo
-import io.github.sophon.core.feature.Game
+import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.xko.BuildKonfig
 import io.github.sophon.xko.domain.FEATURE_IMG_URL
 import io.github.sophon.xko.domain.FEATURE_NAME

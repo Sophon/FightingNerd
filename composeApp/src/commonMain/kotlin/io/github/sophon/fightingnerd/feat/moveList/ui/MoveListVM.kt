@@ -3,8 +3,8 @@ package io.github.sophon.fightingnerd.feat.moveList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.feature.Game
-import io.github.sophon.core.wiki.domain.model.Move
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.MoveRepository
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
 import io.github.sophon.fightingnerd.feat.moveList.model.Property

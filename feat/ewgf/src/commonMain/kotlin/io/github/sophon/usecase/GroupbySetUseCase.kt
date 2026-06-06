@@ -1,7 +1,7 @@
 package io.github.sophon.usecase
 
-import io.github.sophon.core.domain.ExcludeFromCoverage
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.ExcludeFromCoverage
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.integration.model.Battle
 import io.github.sophon.integration.model.BattleSet
 import io.github.sophon.integration.model.BattleType

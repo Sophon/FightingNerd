@@ -1,7 +1,7 @@
 package io.github.sophon.discord.feat.infilGlossary.usecase
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.domain.Result
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient
 import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
