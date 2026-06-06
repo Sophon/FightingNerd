@@ -32,8 +32,6 @@ internal fun featureModule() = module {
         MoveListVM(
             gameId = gameId,
             characterId = characterId,
-            loadMoveListUseCase = get(),
-            moveRepository = get(),
         )
     }
     singleOf(::EnsureMoveListIsCached)
