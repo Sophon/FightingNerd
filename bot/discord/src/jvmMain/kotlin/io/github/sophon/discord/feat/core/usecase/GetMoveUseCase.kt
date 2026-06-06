@@ -17,7 +17,7 @@ internal class GetMoveUseCase() {
             ?: return Result.Error(BotError.UnknownMove(query))
 
         return wiki.fetchMove(
-            charName = parsedQuery.charName,
+            characterQuery = parsedQuery.charName,
             moveQuery = parsedQuery.move.replace(" ", "")
         ).mapError { it.toDomainError() }
     }

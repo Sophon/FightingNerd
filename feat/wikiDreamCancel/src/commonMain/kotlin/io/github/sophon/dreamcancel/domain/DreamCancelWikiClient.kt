@@ -73,8 +73,8 @@ internal class DreamCancelWikiClient(
             .onError { Napier.e(tag = TAG) { "fetchCharacterList: $it" } }
     }
 
-    override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
-        return fetchCharacterUseCase.invoke(charName)
+    override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
+        return fetchCharacterUseCase.invoke(characterQuery)
             .onError { Napier.w(tag = TAG) { "fetchCharacter: $it" } }
     }
 
@@ -103,18 +103,18 @@ internal class DreamCancelWikiClient(
     }
 
     override suspend fun fetchMoveList(
-        charName: String,
+        characterQuery: String,
         filter: Filter,
     ): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName, filter)
+        return fetchMoveListUseCase.invoke(characterQuery, filter)
             .onError { Napier.e(tag = TAG) { "fetchMoveList: $it" } }
     }
 
     override suspend fun fetchMove(
-        charName: String,
+        characterQuery: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(charName, moveQuery)
+        return fetchMoveUseCase.invoke(characterQuery, moveQuery)
             .onError { Napier.w(tag = TAG) { "fetchMoveList: $it" } }
     }
 

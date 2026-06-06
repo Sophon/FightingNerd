@@ -8,5 +8,5 @@ interface CharacterListDB {
     suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<WikiError>
     suspend fun fetchCharacterList(): Result<List<Character>, WikiError>
     suspend fun wipe(): EmptyResult<WikiError>
-    suspend fun fetchCharacterDataFor(charName: String): Result<Character, WikiError>
+    suspend fun fetchCharacterDataFor(characterQuery: String): Result<Character, WikiError>
 }

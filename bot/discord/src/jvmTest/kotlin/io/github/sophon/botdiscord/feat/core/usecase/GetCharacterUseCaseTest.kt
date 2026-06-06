@@ -188,12 +188,12 @@ private class FakeWikiClient(
     private val moveListResult: Result<List<Move>, WikiError>? = null
 ) : WikiClient {
 
-    override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
+    override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
         return characterResult ?: character?.let { Result.Success(it) }
         ?: Result.Error(WikiError.UnknownCharacter("Character not found"))
     }
 
-    override suspend fun fetchMoveList(charName: String, filter: Filter): Result<List<Move>, WikiError> {
+    override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> {
         return moveListResult ?: Result.Success(moves)
     }
 
@@ -204,7 +204,7 @@ private class FakeWikiClient(
     override suspend fun fetchCharacterList() = error("Not implemented")
     override suspend fun downloadMoveList(characterData: DownloadMoveListUseCase.CharacterData) = error("Not implemented")
     override suspend fun cacheMoveList(character: Character, moveList: List<Move>) = error("Not implemented")
-    override suspend fun fetchMove(charName: String, moveQuery: String) = error("Not implemented")
+    override suspend fun fetchMove(characterQuery: String, moveQuery: String) = error("Not implemented")
     override suspend fun getLastUpdateTimeStamp() = error("Not implemented")
     override suspend fun clearCache() = error("Not implemented")
 }

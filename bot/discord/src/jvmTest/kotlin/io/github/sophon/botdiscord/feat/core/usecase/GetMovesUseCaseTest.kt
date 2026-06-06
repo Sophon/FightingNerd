@@ -116,17 +116,17 @@ class GetMovesUseCaseTest {
         private val characterResult: Result<Character, WikiError>? = null,
         private val moveListResult: Result<List<Move>, WikiError>? = null
     ): WikiClient {
-        override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
+        override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
             return character?.let { Result.Success(it) }
                 ?: Result.Error(WikiError.UnknownCharacter(""))
         }
 
-        override suspend fun fetchMoveList(charName: String, filter: Filter): Result<List<Move>, WikiError> {
+        override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> {
             return Result.Success(moves)
         }
 
         override suspend fun fetchMove(
-            charName: String,
+            characterQuery: String,
             moveQuery: String,
         ): Result<Move, WikiError> {
             return moves.firstOrNull()?.let { Result.Success(it) }

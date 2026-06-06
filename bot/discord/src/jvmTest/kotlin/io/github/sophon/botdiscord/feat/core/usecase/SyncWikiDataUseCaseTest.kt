@@ -116,7 +116,7 @@ class SyncWikiDataUseCaseTest {
             throw NotImplementedError("Not used in this use case")
         }
 
-        override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
+        override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
             throw NotImplementedError("Not used in this use case")
         }
 
@@ -134,11 +134,11 @@ class SyncWikiDataUseCaseTest {
                 ?: Result.Success(Unit)
         }
 
-        override suspend fun fetchMoveList(charName: String, filter: Filter): Result<List<Move>, WikiError> {
+        override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> {
             throw NotImplementedError("Not used in this use case")
         }
 
-        override suspend fun fetchMove(charName: String, moveQuery: String): Result<Move, WikiError> {
+        override suspend fun fetchMove(characterQuery: String, moveQuery: String): Result<Move, WikiError> {
             throw NotImplementedError("Not used in this use case")
         }
 

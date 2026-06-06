@@ -74,9 +74,9 @@ internal class DustLoopWikiClient(
     }
 
     override suspend fun fetchCharacter(
-        charName: String
+        characterQuery: String
     ): Result<Character, WikiError> {
-        return fetchCharacterUseCase.invoke(charName)
+        return fetchCharacterUseCase.invoke(characterQuery)
             .onError { Napier.e(tag = TAG) { "fetchCharacter: $it" } }
     }
 
@@ -106,22 +106,22 @@ internal class DustLoopWikiClient(
     }
 
     override suspend fun fetchMoveList(
-        charName: String,
+        characterQuery: String,
         filter: Filter,
     ): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName, filter)
+        return fetchMoveListUseCase.invoke(characterQuery, filter)
             .onError {
-                Napier.e(tag = TAG) { "fetchMoveList($charName): $it" }
+                Napier.e(tag = TAG) { "fetchMoveList($characterQuery): $it" }
             }
     }
 
     override suspend fun fetchMove(
-        charName: String,
+        characterQuery: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(charName, moveQuery)
+        return fetchMoveUseCase.invoke(characterQuery, moveQuery)
             .onError {
-                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+                Napier.w(tag = TAG) { "fetchMove($characterQuery, $moveQuery): $it" }
             }
     }
 

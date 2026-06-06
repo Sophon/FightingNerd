@@ -21,12 +21,12 @@ internal class LoadMoveListUseCase(
     ): Result<List<Move>, AppError> {
         val wikiClient = featureRepo.getWikiClientFor(game)
             ?: return Result.Error(AppError.WikiError(game.id))
-        val character = when (val result = wikiClient.fetchCharacter(charName = characterQueryId)) {
+        val character = when (val result = wikiClient.fetchCharacter(characterQuery = characterQueryId)) {
             is Result.Success -> result.data
             is Result.Error -> return Result.Error(AppError.WikiError(result.error.toString()))
         }
 
-        val result = wikiClient.fetchMoveList(charName = characterQueryId)
+        val result = wikiClient.fetchMoveList(characterQuery = characterQueryId)
             .mapWikiError()
             .flatMap { cachedMoveList ->
                 if (cachedMoveList.isEmpty()) {

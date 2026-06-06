@@ -70,10 +70,10 @@ internal class WavuWikiClient(
     }
 
     override suspend fun fetchCharacter(
-        charName: String
+        characterQuery: String
     ): Result<Character, WikiError> {
-        return fetchCharacterUseCase.invoke(charName)
-            .onError { Napier.w(tag = TAG) { "fetchCharacter(${charName}): $it" } }
+        return fetchCharacterUseCase.invoke(characterQuery)
+            .onError { Napier.w(tag = TAG) { "fetchCharacter(${characterQuery}): $it" } }
     }
 
     override suspend fun downloadMoveList(
@@ -97,20 +97,20 @@ internal class WavuWikiClient(
     }
 
     override suspend fun fetchMoveList(
-        charName: String,
+        characterQuery: String,
         filter: Filter,
     ): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName, filter)
-            .onError { Napier.e(tag = TAG) { "fetchMoveList($charName): $it" } }
+        return fetchMoveListUseCase.invoke(characterQuery, filter)
+            .onError { Napier.e(tag = TAG) { "fetchMoveList($characterQuery): $it" } }
     }
 
     override suspend fun fetchMove(
-        charName: String,
+        characterQuery: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(charName, moveQuery.cleanMoveInput(keepSpaces = true))
+        return fetchMoveUseCase.invoke(characterQuery, moveQuery.cleanMoveInput(keepSpaces = true))
             .onError {
-                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
+                Napier.w(tag = TAG) { "fetchMove($characterQuery, $moveQuery): $it" }
             }
     }
 

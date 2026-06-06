@@ -21,30 +21,30 @@ internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
     private val moveAliasMap: MutableMap<String, MutableMap<String, String>> = mutableMapOf()
 
     override suspend fun fetchMoveListFor(
-        charName: String
+        characterQuery: String
     ): Result<List<Move>, WikiError> {
-        val characterId = if (database.containsKey(charName)) {
-            charName
+        val characterId = if (database.containsKey(characterQuery)) {
+            characterQuery
         } else {
-            charNameAliasMap[charName]
+            charNameAliasMap[characterQuery]
         }
         if (characterId == null)
-            return Result.Error(WikiError.UnknownCharacter(charName))
+            return Result.Error(WikiError.UnknownCharacter(characterQuery))
 
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(charName))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterQuery))
 
         return Result.Success(moveList.values.toList())
     }
 
     override suspend fun fetchMoveDataFor(
-        charName: String,
+        characterQuery: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        val characterId = charNameAliasMap[charName] ?: charName
+        val characterId = charNameAliasMap[characterQuery] ?: characterQuery
 
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(charName))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterQuery))
 
         val moveId = moveAliasMap[characterId]?.get(moveQuery) ?: moveQuery
 

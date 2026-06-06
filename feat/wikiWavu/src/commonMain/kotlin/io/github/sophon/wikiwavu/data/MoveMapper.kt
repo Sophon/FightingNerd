@@ -34,10 +34,6 @@ internal fun MoveDto.toDomain(
         .cleanMoveInput()
     val aliases = fullInput.formAliases(alias, alt)
 
-    if (characterData.name == "Kunimitsu") {
-        val a = 3
-    }
-
     val move = Move(
         charName = characterData.name,
         id = id.formId(),

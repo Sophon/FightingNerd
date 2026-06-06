@@ -22,7 +22,7 @@ internal class SqlMoveDB(
 ): MoveListDB {
     private val queries = db.moveQueries
 
-    override suspend fun fetchMoveListFor(charName: String): Result<List<Move>, WikiError> {
+    override suspend fun fetchMoveListFor(characterQuery: String): Result<List<Move>, WikiError> {
         val result = dbCall {
             val all = when (gameId) {
                 Game.Tekken8.id -> queries.selectAllT8().executeAsList().map { it.toDomain() }
@@ -40,14 +40,14 @@ internal class SqlMoveDB(
                 Game.AVL.id -> queries.selectAllAvl().executeAsList().map { it.toDomain() }
                 else -> queries.selectAllCommon().executeAsList().map { it.toDomain() }
             }
-            val filtered = all.filter { it.charName == charName }
+            val filtered = all.filter { it.charName == characterQuery }
             filtered
         }
         return result
     }
 
     override suspend fun fetchMoveDataFor(
-        charName: String,
+        characterQuery: String,
         moveQuery: String,
     ): Result<Move, WikiError> {
         return Result.Error(WikiError.DatabaseError("fetchMoveDataFor not yet implemented"))
