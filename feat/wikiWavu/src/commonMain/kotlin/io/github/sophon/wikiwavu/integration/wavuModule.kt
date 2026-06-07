@@ -14,6 +14,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 fun wavuModule() = module {
     singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
+    single { WavuFeatureInfo }
 
     factory<WikiClient>(named(WikiClientFeature.Wavu.id)) { params ->
         WavuWikiClient(
@@ -24,4 +25,3 @@ fun wavuModule() = module {
         )
     }
 }
-
