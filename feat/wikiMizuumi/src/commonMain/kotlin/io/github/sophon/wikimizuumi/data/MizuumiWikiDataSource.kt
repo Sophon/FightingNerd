@@ -2,6 +2,8 @@ package io.github.sophon.wikimizuumi.data
 
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.util.getWikiImageUrl
@@ -23,7 +25,12 @@ internal interface MizuumiWikiDataSource {
         table: String,
         character: Character,
     ): Result<MoveListResponseDto, DataError.Remote>
-    suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
+    suspend fun resolveCharacterImageUrls(dto: CharacterListResponseDto): Result<Map<String, String>, DataError.Remote>
+    suspend fun resolveHitboxUrls(dto: MoveListResponseDto): Result<Map<String, String>, DataError.Remote>
+    suspend fun resolveCharacterImageUrlsFromMoveList(
+        gameId: String,
+        dto: MoveListResponseDto,
+    ): Result<Map<String, String>, DataError.Remote>
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -105,14 +112,69 @@ internal class MizuumiWikiDataSourceImpl(
         }
     }
 
-    override suspend fun getImageUrl(
-        fileNames: List<String>
+    override suspend fun resolveCharacterImageUrls(
+        dto: CharacterListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
-        return getWikiImageUrl(
-            httpClient = httpClient,
-            fileNames = fileNames,
-            url = BASE_URL,
-        )
+        val prefix = "UNI2_"
+        val suffix = "_CSel.png"
+
+        val imageFileNames = dto.cargoquery.flatMap {
+            listOfNotNull(prefix + it.title.chara + suffix)
+        }.distinct()
+
+        val result = getImageUrl(imageFileNames)
+            .map { urlMap ->
+                urlMap.mapKeys { (filename, _) ->
+                    filename
+                        .removePrefix(prefix)
+                        .removeSuffix(suffix)
+                }
+            }
+        return result
+    }
+
+    override suspend fun resolveHitboxUrls(
+        dto: MoveListResponseDto,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val imageFileNames = dto.cargoquery.flatMap { moveDto ->
+            listOfNotNull(moveDto.title.hitboxes, moveDto.title.images)
+                .takeIf { it.isNotEmpty() }
+                ?.joinToString(",")
+                ?.split(",")
+                ?.map { it.trim() }
+                ?: emptyList()
+        }.distinct()
+        val result = getImageUrl(imageFileNames)
+        return result
+    }
+
+    override suspend fun resolveCharacterImageUrlsFromMoveList(
+        gameId: String,
+        dto: MoveListResponseDto,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val game = Game.fromId(gameId)
+
+        // MBTL has impossible to decipher filenames, ignore
+        if (game == Game.MBTL) {
+            return Result.Success(emptyMap())
+        }
+
+        val prefix = "Vsav-nav-portrait-"
+        val suffix = ".gif"
+
+        val imageFileNames = dto.cargoquery.flatMap {
+            listOfNotNull(prefix + it.title.chara.lowercase() + suffix)
+        }.distinct()
+
+        val result = getImageUrl(imageFileNames)
+            .map { urlMap ->
+                urlMap.mapKeys { (filename, _) ->
+                    filename
+                        .removePrefix(prefix)
+                        .removeSuffix(suffix)
+                }
+            }
+        return result
     }
 
 
@@ -254,6 +316,19 @@ internal class MizuumiWikiDataSourceImpl(
 
         return allFields.joinToString(",")
     }
+
+
+    private suspend fun getImageUrl(
+        fileNames: List<String>,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val result = getWikiImageUrl(
+            httpClient = httpClient,
+            fileNames = fileNames,
+            url = BASE_URL,
+        )
+        return result
+    }
+
 
     private companion object {
         const val NO_MAX_PAGES = 10

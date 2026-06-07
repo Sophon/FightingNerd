@@ -22,19 +22,15 @@ abstract class BaseWikiClient(
     private val characterDB: CharacterListDB,
     private val moveDB: MoveListDB,
 ) : WikiClient {
-    protected abstract suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
-    protected abstract suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError>
+    abstract override suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
+    abstract override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError>
 
     final override fun getFeatureInfo(): FeatureInfo {
         return featureInfo
     }
 
-    final override suspend fun downloadAndCacheCharacterList(): EmptyResult<WikiError> {
-        val result = downloadCharacterList()
-            .map { characterList ->
-                characterDB.insertCharacterList(characterList)
-                Unit
-            }
+    final override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
+        val result = characterDB.insertCharacterList(characterList)
         return result
     }
 
@@ -48,12 +44,13 @@ abstract class BaseWikiClient(
         return result
     }
 
-    final override suspend fun downloadAndCacheMoveListFor(character: Character): EmptyResult<WikiError> {
-        val result = downloadMoveListFor(character)
-            .map { moveList ->
-                moveDB.insertMoveList(game, character, moveList)
-                Unit
-            }
+    final override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> {
+        val result = moveDB.hasMovesCachedFor(characterId)
+        return result
+    }
+
+    final override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError> {
+        val result = moveDB.insertMoveList(game, character, moveList)
         return result
     }
 
@@ -79,8 +76,13 @@ abstract class BaseWikiClient(
         val result = when {
             charResult is Result.Error -> charResult
             moveResult is Result.Error -> moveResult
-            else -> Result.Success(Unit)
+            else -> {
+                onClearCache()
+                Result.Success(Unit)
+            }
         }
         return result
     }
+
+    protected open suspend fun onClearCache() { /* no-op by default */ }
 }

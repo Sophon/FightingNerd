@@ -4,7 +4,6 @@ import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wikiSuperCombo.domain.BASE_URL
 import io.github.sophon.wikiSuperCombo.domain.LIMIT_CHARACTERS
@@ -15,11 +14,9 @@ import io.ktor.client.request.parameter
 
 internal interface SuperComboDataSource {
     suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
-    suspend fun downloadMoveList(
-        table: String,
-        character: Character,
-    ): Result<MoveListResponseDto, DataError.Remote>
-    suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
+    suspend fun downloadMoveList(table: String, character: Character): Result<MoveListResponseDto, DataError.Remote>
+    suspend fun resolveCharacterImageUrls(dto: CharacterListResponseDto): Result<Map<String, String>, DataError.Remote>
+    suspend fun resolveHitboxUrls(dto: MoveListResponseDto): Result<Map<String, String>, DataError.Remote>
 }
 
 internal class SuperComboDataSourceImpl(
@@ -55,15 +52,42 @@ internal class SuperComboDataSourceImpl(
         }
     }
 
-    override suspend fun getImageUrl(
-        fileNames: List<String>
+    override suspend fun resolveCharacterImageUrls(
+        dto: CharacterListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
-        return getWikiImageUrl(
+        val imageFileNames = dto.cargoquery.flatMap {
+            listOfNotNull(it.title.icon, it.title.portrait)
+        }.distinct()
+        val result = getImageUrl(imageFileNames)
+        return result
+    }
+
+    override suspend fun resolveHitboxUrls(
+        dto: MoveListResponseDto,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val imageFileNames = dto.cargoQuery.flatMap { moveDto ->
+            listOfNotNull(moveDto.title.hitboxes, moveDto.title.images)
+                .takeIf { it.isNotEmpty() }
+                ?.joinToString(",")
+                ?.split(",")
+                ?.map { it.trim() }
+                ?: emptyList()
+        }.distinct()
+        val result = getImageUrl(imageFileNames)
+        return result
+    }
+
+    private suspend fun getImageUrl(
+        fileNames: List<String>,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val result = getWikiImageUrl(
             httpClient = httpClient,
             fileNames = fileNames,
             url = BASE_URL,
         )
+        return result
     }
+
 
     private fun getCharacterFields(table: String): String {
         val allFields = when (table) {
