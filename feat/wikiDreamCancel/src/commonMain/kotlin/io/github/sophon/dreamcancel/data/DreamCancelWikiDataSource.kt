@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.toList
 
 internal interface DreamCancelWikiDataSource {
     suspend fun downloadData(table: String): Result<MoveListResponseDto, DataError.Remote>
-    suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
+    suspend fun resolveHitboxUrls(dto: MoveListResponseDto): Result<Map<String, String>, DataError.Remote>
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -67,14 +67,31 @@ internal class DreamCancelWikiDataSourceImpl(
         return Result.Success(MoveListResponseDto(cargoQuery = allCargoQueries))
     }
 
-    override suspend fun getImageUrl(
-        fileNames: List<String>
+    override suspend fun resolveHitboxUrls(
+        dto: MoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
-        return getWikiImageUrl(
+        val imageFileNames = dto.cargoQuery.flatMap { moveDto ->
+            listOfNotNull(moveDto.title.hitboxes, moveDto.title.images)
+                .takeIf { it.isNotEmpty() }
+                ?.joinToString(",")
+                ?.split(",")
+                ?.map { it.trim() }
+                ?: emptyList()
+        }.distinct()
+        val result = getImageUrl(imageFileNames)
+        return result
+    }
+
+
+    private suspend fun getImageUrl(
+        fileNames: List<String>,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val result = getWikiImageUrl(
             httpClient = httpClient,
             fileNames = fileNames,
             url = BASE_URL,
         )
+        return result
     }
 
 

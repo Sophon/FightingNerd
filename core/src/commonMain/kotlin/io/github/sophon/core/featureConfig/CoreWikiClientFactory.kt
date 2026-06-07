@@ -15,7 +15,7 @@ class CoreWikiClientFactory(
     fun create(game: Game): WikiClient {
         val (characterListDB, moveListDB) = dbFactory(game)
         val wikiClient: WikiClient = get(named(game.wiki.id)) {
-            parametersOf(game.id, characterListDB, moveListDB)
+            parametersOf(game, characterListDB, moveListDB)
         }
         return wikiClient
     }

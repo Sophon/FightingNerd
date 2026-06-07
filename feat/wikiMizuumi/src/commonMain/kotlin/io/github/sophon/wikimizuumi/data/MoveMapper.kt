@@ -9,7 +9,6 @@ import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikimizuumi.domain.WIKI_BASE_URL
 
 internal fun MoveListResponseDto.toDomainAll(
