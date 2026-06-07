@@ -2,6 +2,7 @@
 
 ## [v12.1.0] - TODO
 - fixed URLs for moves
+- `core` - new architecture with `WikiClient` and `BaseWikiClient`
 - refactor character parameter passing
 - `DustLoop` - `GGST` ignores alt-mode characters
 - `DreamCancel` - fixed bad character creation from data
