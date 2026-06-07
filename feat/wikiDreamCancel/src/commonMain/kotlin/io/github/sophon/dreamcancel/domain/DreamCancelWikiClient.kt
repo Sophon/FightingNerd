@@ -1,5 +1,6 @@
 package io.github.sophon.dreamcancel.domain
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
@@ -20,7 +21,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class DreamCancelWikiClient(
-    game: Game,
+    private val game: Game,
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
     private val source: DreamCancelWikiDataSource,
@@ -43,7 +44,9 @@ internal class DreamCancelWikiClient(
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         val result = cachedDownloadUseCase.invoke().map { map ->
-            map.keys.toList()
+            val characterList = map.keys.toList()
+            Napier.i(tag = TAG) { "${game.id}: ${characterList.size} downloaded" }
+            characterList
         }
         return result
     }
@@ -51,10 +54,12 @@ internal class DreamCancelWikiClient(
     override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError> {
         val result = cachedDownloadUseCase.invoke()
             .map { map ->
-                map
+                val moveList = map
                     .filterKeys { it.remoteQueryId == character.remoteQueryId }
                     .values
                     .flatten()
+                Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
+                moveList
             }
         return result
     }

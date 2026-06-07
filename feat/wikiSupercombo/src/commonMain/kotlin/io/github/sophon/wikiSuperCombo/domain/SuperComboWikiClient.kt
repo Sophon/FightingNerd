@@ -1,5 +1,6 @@
 package io.github.sophon.wikiSuperCombo.domain
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
@@ -39,7 +40,9 @@ internal class SuperComboWikiClient(
         val result = source.downloadCharacterList(table = gameTables.character)
             .flatMap { dto ->
                 source.resolveCharacterImageUrls(dto).map { imageUrlMap ->
-                    dto.toDomain(gameId = game.id, imageUrlMap = imageUrlMap)
+                    val characterList = dto.toDomain(gameId = game.id, imageUrlMap = imageUrlMap)
+                    Napier.i(tag = TAG) { "${game.id}: ${characterList.size} downloaded" }
+                    characterList
                 }
             }
             .mapError { it.toDomainError(TAG) }
@@ -50,11 +53,13 @@ internal class SuperComboWikiClient(
         val result = source.downloadMoveList(table = gameTables.moves, character)
             .flatMap { dto ->
                 source.resolveHitboxUrls(dto).map { imageUrlMap ->
-                    dto.toDomain(
+                    val moveList = dto.toDomain(
                         gameId = game.id,
                         character = character,
                         imageUrlMap = imageUrlMap,
                     )
+                    Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
+                    moveList
                 }
             }
             .mapError { it.toDomainError(TAG) }

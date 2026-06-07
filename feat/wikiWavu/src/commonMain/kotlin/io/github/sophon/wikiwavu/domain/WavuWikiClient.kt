@@ -1,5 +1,6 @@
 package io.github.sophon.wikiwavu.domain
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
@@ -20,7 +21,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class WavuWikiClient(
-    game: Game,
+    private val game: Game,
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
     private val source: WavuWikiDataSource,
@@ -36,7 +37,11 @@ internal class WavuWikiClient(
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
         val result = source.downloadCharacterList()
-            .map { dto -> dto.toDomain() }
+            .map { dto ->
+                val characterList = dto.toDomain()
+                Napier.i(tag = TAG) { "${game.id}: ${characterList.size} downloaded" }
+                characterList
+            }
             .mapError { it.toDomainError(TAG) }
         return result
     }
@@ -45,7 +50,11 @@ internal class WavuWikiClient(
         character: Character,
     ): Result<List<Move>, WikiError> {
         val result = source.downloadMoveList(table = gameTables.moves, character = character)
-            .map { dto -> dto.toDomain(character) }
+            .map { dto ->
+                val moveList = dto.toDomain(character)
+                Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
+                moveList
+            }
             .mapError { it.toDomainError(TAG) }
         return result
     }

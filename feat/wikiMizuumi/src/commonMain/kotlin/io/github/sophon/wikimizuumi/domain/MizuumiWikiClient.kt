@@ -1,5 +1,6 @@
 package io.github.sophon.wikimizuumi.domain
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
@@ -58,13 +59,19 @@ internal class MizuumiWikiClient(
             source.downloadCharacterList(gameTables.character)
                 .flatMap { dto ->
                     source.resolveCharacterImageUrls(dto).map { imageUrlMap ->
-                        dto.toDomain(gameId = game.id, imageUrlMap = imageUrlMap)
+                        val characterList = dto.toDomain(gameId = game.id, imageUrlMap = imageUrlMap)
+                        Napier.i(tag = TAG) { "${game.id}: ${characterList.size} downloaded" }
+                        characterList
                     }
                 }
                 .mapError { it.toDomainError(TAG) }
         } else {
             cachedDownloadUseCase.invoke()
-                .map { map -> map.keys.toList() }
+                .map { map ->
+                    val characterList = map.keys.toList()
+                    Napier.i(tag = TAG) { "${game.id}: ${characterList.size} downloaded" }
+                    characterList
+                }
         }
         return result
     }
@@ -72,16 +79,24 @@ internal class MizuumiWikiClient(
     override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError> {
         val result = if (game.separateCharMoveDownload) {
             cachedDownloadUseCase.invoke().map { map ->
-                map
+                val moveList = map
                     .filterKeys { it.remoteQueryId == character.remoteQueryId }
                     .values
                     .flatten()
+                Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
+                moveList
             }
         } else {
             source.downloadMoveList(table = gameTables.moves, character = character)
                 .flatMap { dto ->
                     source.resolveHitboxUrls(dto).map { imageUrlMap ->
-                        dto.toDomain(character = character, gameId = game.id, imageUrlMap = imageUrlMap)
+                        val moveList = dto.toDomain(
+                            character = character,
+                            gameId = game.id,
+                            imageUrlMap = imageUrlMap,
+                        )
+                        Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
+                        moveList
                     }
                 }
                 .mapError { it.toDomainError(TAG) }
