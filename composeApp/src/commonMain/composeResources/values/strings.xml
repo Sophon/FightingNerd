@@ -4,6 +4,7 @@
     <string name="bottom_bar_item_character_list">Characters</string>
     <string name="bottom_bar_item_search">Search</string>
     <string name="bottom_bar_item_saved">Saved</string>
+    <string name="bottom_bar_item_quiz">Quiz</string>
 
     <string name="move_list_field_startup">Startup</string>
     <string name="move_list_field_level">Level</string>

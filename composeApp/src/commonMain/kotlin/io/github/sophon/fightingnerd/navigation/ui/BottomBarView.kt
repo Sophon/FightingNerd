@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -26,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_character_list
+import fightingnerd.composeapp.generated.resources.bottom_bar_item_quiz
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_saved
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_search
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
@@ -52,6 +54,11 @@ private val bottomBarItems = listOf(
         icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
         destination = Destination.Saved,
     ),
+    BottomBarItem(
+        label = Res.string.bottom_bar_item_quiz,
+        icon = FlexibleIcon.Vector(Icons.Default.Quiz),
+        destination = Destination.Quiz,
+    )
 )
 
 
