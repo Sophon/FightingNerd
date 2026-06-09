@@ -1,13 +1,11 @@
 package io.github.sophon.fightingnerd.feat.moveList.ui
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.moveList.model.Property
 
 internal data class MoveListState(
     val character: Character?,
-    val game: Game?,
     val fullMoveList: Map<String, Move> = emptyMap(),
 
     val uiMoveList: List<UiMove> = emptyList(),
@@ -100,7 +98,6 @@ internal data class MoveListState(
 
         val PREVIEW = MoveListState(
             character = null,
-            game = null,
             fullMoveList = armorKingMoves.associateBy { it.id },
             uiMoveList = armorKingMoves.map { it.toUiMove() },
             moveDetail = null,

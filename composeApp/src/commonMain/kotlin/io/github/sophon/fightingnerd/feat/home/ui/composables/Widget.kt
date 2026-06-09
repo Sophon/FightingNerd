@@ -235,7 +235,7 @@ internal fun CharacterRow(
         characterList.forEach { character ->
             CharacterPanel(
                 character = character,
-                onClick = { onCharacterClick(character.queryName) },
+                onClick = { onCharacterClick(character.id) },
             )
         }
     }

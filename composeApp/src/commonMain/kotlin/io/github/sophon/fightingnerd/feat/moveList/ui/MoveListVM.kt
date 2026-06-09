@@ -3,51 +3,52 @@ package io.github.sophon.fightingnerd.feat.moveList.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.moveList.model.Property
+import io.github.sophon.fightingnerd.feat.moveList.usecase.LoadMoveListDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 internal class MoveListVM(
-    gameId: String,
-    characterId: String,
+    private val gameId: String,
+    private val characterId: String,
+
+    private val loadMoveListDataUseCase: LoadMoveListDataUseCase,
 ): ViewModel() {
-    private val _state = MutableStateFlow(MoveListState(null, null))
+    private val _state = MutableStateFlow(MoveListState(character = null))
     val state = _state
         .onStart {
-            loadGameFromId(gameId)
-            loadMoveList()
+            loadData()
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = MoveListState(null, null),
+            initialValue = MoveListState(null),
         )
 
 
-    private fun loadGameFromId(gameId: String) {
-        val game = Game.fromId(gameId)
-        if (game == null) {
-            Napier.e(tag = TAG) { "loadGameFromId: $gameId -> $game" }
-        } else {
-            _state.update { it.copy(game = game) }
+    private fun loadData() {
+        viewModelScope.launch {
+            loadMoveListDataUseCase.invoke(gameId = gameId, characterId = characterId)
+                .onSuccess { (character, moveList) ->
+                    _state.update { state ->
+                        val fullMoveList = moveList.associateBy { it.id }
+                        val uiMoveList = moveList.map { it.toUiMove() }
+                        state.copy(
+                            character = character,
+                            fullMoveList = fullMoveList,
+                            uiMoveList = uiMoveList,
+                        )
+                    }
+                }
+                .onError { Napier.e(tag = TAG) { "loadData: $it" } }
         }
-    }
-
-    private fun loadMoveList() {
-//        val moveList = moveRepository.moveList
-//        Napier.d(tag = TAG) { "Moves loaded: ${moveList.size}" }
-//        val uiMoveList = moveList.map { it.toUiMove() }
-//        _state.update { state ->
-//            state.copy(
-//                fullMoveList = moveList.associateBy { it.id },
-//                uiMoveList = uiMoveList,
-//            )
-//        }
     }
 
     private fun Move.toUiMove(): MoveListState.UiMove {
