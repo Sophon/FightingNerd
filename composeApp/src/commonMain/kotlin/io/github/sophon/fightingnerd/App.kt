@@ -1,5 +1,8 @@
 package io.github.sophon.fightingnerd
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -96,11 +99,16 @@ internal fun App() {
                     }
                 )
 
-                BottomBarView(
+                AnimatedVisibility(
+                    visible = backStack.size == 1,
+                    enter = slideInVertically { it },
+                    exit = slideOutVertically { it },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .navigationBarsPadding()
-                )
+                        .navigationBarsPadding(),
+                ) {
+                    BottomBarView()
+                }
             }
         }
     } else {
