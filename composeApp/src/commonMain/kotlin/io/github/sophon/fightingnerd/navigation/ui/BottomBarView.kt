@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.bottomBar.ui
+package io.github.sophon.fightingnerd.navigation.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,44 +11,55 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
+import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.bottom_bar_item_character_list
+import fightingnerd.composeapp.generated.resources.bottom_bar_item_saved
+import fightingnerd.composeapp.generated.resources.bottom_bar_item_search
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
-import io.github.sophon.fightingnerd.feat.bottomBar.model.BottomBarItem
+import io.github.sophon.fightingnerd.navigation.domain.BottomBarItem
+import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.viewmodel.koinViewModel
+
+private val bottomBarItems = listOf(
+    BottomBarItem(
+        label = Res.string.bottom_bar_item_character_list,
+        icon = FlexibleIcon.Vector(Icons.Default.GridView),
+        destination = Destination.Home,
+    ),
+    BottomBarItem(
+        label = Res.string.bottom_bar_item_search,
+        icon = FlexibleIcon.Vector(Icons.Default.Search),
+        destination = Destination.Search,
+    ),
+    BottomBarItem(
+        label = Res.string.bottom_bar_item_saved,
+        icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
+        destination = Destination.Saved,
+    ),
+)
+
 
 @Composable
 internal fun BottomBarView(
-    modifier: Modifier = Modifier
-) {
-    val vm = koinViewModel<BottomBarVM>()
-    val state by vm.state.collectAsStateWithLifecycle()
-
-    BottomBarContent(
-        state = state,
-        onItemClick = vm::onItemClick,
-        modifier = modifier,
-    )
-}
-
-@Composable
-private fun BottomBarContent(
-    state: BottomBarState,
-    onItemClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
+    currentRoot: Destination.TopLevelDestination,
+    onTabClick: (Destination.TopLevelDestination) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -63,19 +74,20 @@ private fun BottomBarContent(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.9f),
                     shape = RoundedCornerShape(48),
                 )
-                .padding(8.dp)
+                .padding(8.dp),
         ) {
-            state.itemList.forEachIndexed { index, item ->
+            bottomBarItems.forEach { item ->
                 BarItem(
                     item = item,
-                    isSelected = (index == state.selectedItemIndex),
-                    onClick = { onItemClick(index) },
-                    modifier = Modifier.widthIn(min = 96.dp)
+                    isSelected = (item.destination == currentRoot),
+                    onClick = { onTabClick(item.destination) },
+                    modifier = Modifier.widthIn(min = 96.dp),
                 )
             }
         }
     }
 }
+
 
 @Composable
 private fun BarItem(
@@ -139,9 +151,9 @@ private fun BarItem(
 @Preview(showBackground = false)
 private fun LightPreview() {
     AppTheme(darkTheme = false) {
-        BottomBarContent(
-            state = BottomBarState(),
-            onItemClick = {},
+        BottomBarView(
+            currentRoot = Destination.Home,
+            onTabClick = {},
         )
     }
 }
@@ -150,9 +162,9 @@ private fun LightPreview() {
 @Preview(showBackground = false)
 private fun DarkPreview() {
     AppTheme(darkTheme = true) {
-        BottomBarContent(
-            state = BottomBarState(),
-            onItemClick = {},
+        BottomBarView(
+            currentRoot = Destination.Home,
+            onTabClick = {},
         )
     }
 }

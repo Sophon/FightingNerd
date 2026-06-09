@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.bottomBar.model
+package io.github.sophon.fightingnerd.navigation.domain
 
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
 import org.jetbrains.compose.resources.StringResource
@@ -6,5 +6,5 @@ import org.jetbrains.compose.resources.StringResource
 internal data class BottomBarItem(
     val label: StringResource,
     val icon: FlexibleIcon,
-    //TODO: navigation route
+    val destination: Destination.TopLevelDestination,
 )

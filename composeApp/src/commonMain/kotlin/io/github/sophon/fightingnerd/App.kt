@@ -29,11 +29,11 @@ import coil3.PlatformContext
 import coil3.util.DebugLogger
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
+import io.github.sophon.fightingnerd.navigation.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
-import io.github.sophon.fightingnerd.navigation.Destination
+import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.theme.AppTheme
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -107,7 +107,13 @@ internal fun App() {
                         .align(Alignment.BottomCenter)
                         .navigationBarsPadding(),
                 ) {
-                    BottomBarView()
+                    BottomBarView(
+                        currentRoot = backStack.first() as Destination.TopLevelDestination,
+                        onTabClick = { destination ->
+                            backStack.clear()
+                            backStack.add(destination)
+                        },
+                    )
                 }
             }
         }
