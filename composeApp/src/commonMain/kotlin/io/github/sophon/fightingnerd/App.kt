@@ -1,9 +1,13 @@
 package io.github.sophon.fightingnerd
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -26,11 +30,12 @@ import coil3.PlatformContext
 import coil3.util.DebugLogger
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarView
+import io.github.sophon.fightingnerd.navigation.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
-import io.github.sophon.fightingnerd.navigation.Destination
+import io.github.sophon.fightingnerd.navigation.domain.Destination
+import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
 import io.github.sophon.fightingnerd.theme.AppTheme
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -78,7 +83,9 @@ internal fun App() {
                         rememberSaveableStateHolderNavEntryDecorator(),
                         rememberViewModelStoreNavEntryDecorator(),
                     ),
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .statusBarsPadding(),
                     entryProvider = entryProvider {
                         entry<Destination.Home> {
                             HomeScreen(
@@ -87,6 +94,16 @@ internal fun App() {
                                 }
                             )
                         }
+                        entry<Destination.Search> {
+                            PlaceholderScreen(label = "Search")
+                        }
+                        entry<Destination.Saved> {
+                            PlaceholderScreen(label = "Saved")
+                        }
+                        entry<Destination.Quiz> {
+                            PlaceholderScreen(label = "Quiz")
+                        }
+
                         entry<Destination.MoveList>{ destination ->
                             MoveListScreen(
                                 gameId = destination.gameId,
@@ -96,11 +113,22 @@ internal fun App() {
                     }
                 )
 
-                BottomBarView(
+                AnimatedVisibility(
+                    visible = backStack.size == 1,
+                    enter = slideInVertically { it },
+                    exit = slideOutVertically { it },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .navigationBarsPadding()
-                )
+                        .navigationBarsPadding(),
+                ) {
+                    BottomBarView(
+                        currentRoot = backStack.first() as Destination.TopLevelDestination,
+                        onTabClick = { destination ->
+                            backStack.clear()
+                            backStack.add(destination)
+                        },
+                    )
+                }
             }
         }
     } else {

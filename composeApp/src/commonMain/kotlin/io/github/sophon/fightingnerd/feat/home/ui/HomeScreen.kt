@@ -42,24 +42,12 @@ private fun Content(
     onCharacterClick: (gameId: String, characterId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
-        modifier = modifier.fillMaxSize(),
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(paddingValues)
-        ) {
-            WidgetSection(
-                widgetList = state.gameWidgetList,
-                onExpandWidget = onExpandWidget,
-                onCharacterClick = onCharacterClick,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-        }
-    }
+    WidgetSection(
+        widgetList = state.gameWidgetList,
+        onExpandWidget = onExpandWidget,
+        onCharacterClick = onCharacterClick,
+        modifier = modifier.padding(horizontal = 8.dp)
+    )
 }
 
 
