@@ -34,6 +34,7 @@ import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
+import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
 import io.github.sophon.fightingnerd.theme.AppTheme
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -90,6 +91,16 @@ internal fun App() {
                                 }
                             )
                         }
+                        entry<Destination.Search> {
+                            PlaceholderScreen(label = "Search")
+                        }
+                        entry<Destination.Saved> {
+                            PlaceholderScreen(label = "Saved")
+                        }
+                        entry<Destination.Quiz> {
+                            PlaceholderScreen(label = "Quiz")
+                        }
+
                         entry<Destination.MoveList>{ destination ->
                             MoveListScreen(
                                 gameId = destination.gameId,
