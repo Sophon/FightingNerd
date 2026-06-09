@@ -19,6 +19,9 @@ sealed interface Destination : NavKey {
     @Serializable
     data object Quiz : TopLevelDestination
 
+    @Serializable
+    data object More : TopLevelDestination
+
 
     @Serializable
     data class MoveList(val gameId: String, val characterId: String) : Destination

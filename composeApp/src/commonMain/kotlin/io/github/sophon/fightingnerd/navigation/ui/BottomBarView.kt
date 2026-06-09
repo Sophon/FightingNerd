@@ -27,6 +27,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_character_list
+import fightingnerd.composeapp.generated.resources.bottom_bar_item_more
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_quiz
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_saved
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_search
@@ -58,7 +59,12 @@ private val bottomBarItems = listOf(
         label = Res.string.bottom_bar_item_quiz,
         icon = FlexibleIcon.Vector(Icons.Default.Quiz),
         destination = Destination.Quiz,
-    )
+    ),
+    BottomBarItem(
+        label = Res.string.bottom_bar_item_more,
+        icon = FlexibleIcon.Vector(Icons.Outlined.MoreHoriz),
+        destination = Destination.More,
+    ),
 )
 
 

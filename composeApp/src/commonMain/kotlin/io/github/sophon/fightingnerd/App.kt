@@ -103,6 +103,9 @@ internal fun App() {
                         entry<Destination.Quiz> {
                             PlaceholderScreen(label = "Quiz")
                         }
+                        entry<Destination.More> {
+                            PlaceholderScreen(label = "More")
+                        }
 
                         entry<Destination.MoveList>{ destination ->
                             MoveListScreen(
