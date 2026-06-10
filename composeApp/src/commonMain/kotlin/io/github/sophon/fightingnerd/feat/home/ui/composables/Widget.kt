@@ -49,6 +49,7 @@ import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.Character
@@ -66,9 +67,8 @@ internal fun WidgetSection(
     BoxWithConstraints(
         modifier = modifier.fillMaxSize(),
     ) {
-        val botPaddingValues = PaddingValues(bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())
         LazyColumn(
-            contentPadding = botPaddingValues,
+            contentPadding = LocalBottomBarPadding.current,
         ) {
             widgetList.forEach { widget ->
                 item(key = "header_${widget.game.id}") {
