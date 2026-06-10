@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.more
+package io.github.sophon.fightingnerd.feat.more.model
 
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.more_donate
