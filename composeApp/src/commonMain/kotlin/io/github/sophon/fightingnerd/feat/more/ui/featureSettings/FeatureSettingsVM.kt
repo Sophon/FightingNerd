@@ -24,32 +24,46 @@ internal class FeatureSettingsVM(
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.Companion.WhileSubscribed(5_000),
+            started = SharingStarted.WhileSubscribed(5_000),
             initialValue = FeatureSettingsState(),
         )
 
-    fun toggleFeature(index: Int) {
-//        val feature = _state.value.featureList.getOrNull(index)
-//        if (feature == null) {
-//            Napier.e(tag = TAG) { "$index: out of bounds" }
-//            return
-//        }
-//        val newEnabledState = feature.isEnabled.not()
-//
-//        viewModelScope.launch {
-//            toggleFeatureUseCase.invoke(featureInfo = feature.featureInfo, isEnabled = newEnabledState)
-//                .onSuccess {
-//                    _state.update {
-//                        it.copy(
-//                            featureList = it.featureList.mapIndexed { i, feature ->
-//                                if (i == index) feature.copy(isEnabled = newEnabledState)
-//                                else feature
-//                            }
-//                        )
-//                    }
-//                }
-//                .onError { Napier.e(tag = TAG) { it.toString() } }
-//        }
+    fun toggleFeature(featureIndex: Int, isEnabled: Boolean) {
+        //TODO: updated DataStore
+
+        _state.update { state ->
+            val feature = state.featureList[featureIndex].run {
+                copy(
+                    gameList = gameList.map { game -> game.copy(isEnabled = isEnabled) }
+                )
+            }
+            val updatedList = state.featureList.toMutableList().apply {
+                set(featureIndex, feature)
+            }
+            state.copy(featureList = updatedList)
+        }
+    }
+
+    fun toggleGame(featureIndex: Int, gameIndex: Int, isEnabled: Boolean) {
+        //TODO: update DataStore
+
+        _state.update { state ->
+            val feature = state.featureList[featureIndex].run {
+                copy(
+                    gameList = gameList.mapIndexed { index, game ->
+                        if (index == gameIndex) {
+                            game.copy(isEnabled = isEnabled)
+                        } else {
+                            game
+                        }
+                    }
+                )
+            }
+            val updatedList = state.featureList.toMutableList().apply {
+                set(featureIndex, feature)
+            }
+            state.copy(featureList = updatedList)
+        }
     }
 
 

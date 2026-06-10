@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -35,6 +35,8 @@ internal fun FeatureSettingsScreen(
 
     Content(
         state = state,
+        onFeatureToggle = vm::toggleFeature,
+        onGameToggle = vm::toggleGame,
         modifier = modifier,
     )
 }
@@ -42,6 +44,8 @@ internal fun FeatureSettingsScreen(
 @Composable
 private fun Content(
     state: FeatureSettingsState,
+    onFeatureToggle: (featureIndex: Int, isEnabled: Boolean) -> Unit,
+    onGameToggle: (featureIndex: Int, gameIndex: Int, isEnabled: Boolean) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -55,7 +59,7 @@ private fun Content(
     ) {
         item { Spacer(Modifier.height(16.dp)) }
 
-        items(state.featureList) { feature ->
+        itemsIndexed(state.featureList) { featureIndex, feature ->
             val shape = RoundedCornerShape(16.dp)
             Column(
                 modifier = modifier
@@ -74,14 +78,15 @@ private fun Content(
                     title = feature.featureName,
                     subtitle = feature.version,
                     isEnabled = feature.isEnabled,
-                    onToggle = { /* TODO */ },
+                    onToggle = { onFeatureToggle(featureIndex, it) },
                 )
+                Spacer(Modifier.height(8.dp))
 
-                feature.gameList.forEach { game ->
+                feature.gameList.forEachIndexed { gameIndex, game ->
                     Toggle(
                         title = game.displayName,
                         isEnabled = game.isEnabled,
-                        onToggle = { /* TODO */ },
+                        onToggle = { onGameToggle(featureIndex, gameIndex, it) },
                         modifier = Modifier.padding(start = 16.dp),
                     )
                 }
@@ -141,6 +146,8 @@ private fun FeatureSettingsPreviewDark() {
     AppTheme(true) {
         Content(
             state = FeatureSettingsState.PREVIEW,
+            onFeatureToggle = { _, _ -> },
+            onGameToggle = { _, _, _, -> },
         )
     }
 }
@@ -151,6 +158,8 @@ private fun FeatureSettingsPreviewLight() {
     AppTheme(false) {
         Content(
             state = FeatureSettingsState.PREVIEW,
+            onFeatureToggle = { _, _ -> },
+            onGameToggle = { _, _, _, -> },
         )
     }
 }
