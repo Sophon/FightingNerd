@@ -20,6 +20,7 @@ internal data class FeatureSettingsState(
 
         data class UiGame(
             val displayName: String,
+            val id: String,
             val isEnabled: Boolean,
         )
     }
@@ -32,7 +33,7 @@ internal data class FeatureSettingsState(
                     iconUrl = "",
                     version = "1.0.0",
                     gameList = listOf(
-                        UiFeatureSetting.UiGame(displayName = "Tekken 8", isEnabled = true),
+                        UiFeatureSetting.UiGame(displayName = "Tekken 8", id = "T8", isEnabled = true),
                     ),
                 ),
                 UiFeatureSetting(
@@ -40,8 +41,8 @@ internal data class FeatureSettingsState(
                     iconUrl = "",
                     version = "1.0.9",
                     gameList = listOf(
-                        UiFeatureSetting.UiGame(displayName = "Street Fighter 6", isEnabled = true),
-                        UiFeatureSetting.UiGame(displayName = "Mortal Kombat 1", isEnabled = false),
+                        UiFeatureSetting.UiGame(displayName = "Street Fighter 6", id = "SF6", isEnabled = true),
+                        UiFeatureSetting.UiGame(displayName = "Mortal Kombat 1", id = "MK1", isEnabled = false),
                     ),
                 ),
                 UiFeatureSetting(
@@ -49,9 +50,9 @@ internal data class FeatureSettingsState(
                     iconUrl = "",
                     version = "2.1.0",
                     gameList = listOf(
-                        UiFeatureSetting.UiGame(displayName = "Guilty Gear Strive", isEnabled = true),
-                        UiFeatureSetting.UiGame(displayName = "Granblue Fantasy Versus Rising", isEnabled = true),
-                        UiFeatureSetting.UiGame(displayName = "BlazBlue Central Fiction", isEnabled = false),
+                        UiFeatureSetting.UiGame(displayName = "Guilty Gear Strive", id = "GGST", isEnabled = true),
+                        UiFeatureSetting.UiGame(displayName = "Granblue Fantasy Versus Rising", id = "GBVSR", isEnabled = true),
+                        UiFeatureSetting.UiGame(displayName = "BlazBlue Central Fiction", id = "BBCF",  isEnabled = false),
                     ),
                 ),
             ),
