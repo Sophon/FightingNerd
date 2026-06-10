@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.Icon
@@ -17,6 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.sophon.fightingnerd.BuildKonfig
@@ -58,13 +60,16 @@ private fun ItemSection(
     LazyColumn(
         modifier = modifier
             .padding(horizontal = 16.dp, vertical = 32.dp)
-            .background(MaterialTheme.colorScheme.surface)
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
     ) {
         itemsIndexed(MoreItem.entries) { index, moreItem ->
             RoundedItem(
                 isFirst = index == 0,
                 isLast = index == MoreItem.entries.lastIndex,
-                modifier = Modifier.clickable { onItemClick(moreItem) },
+                modifier = Modifier
+                    .clickable { onItemClick(moreItem) }
+                    .padding(8.dp),
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
