@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.screens.settings.ui
+package io.github.sophon.fightingnerd.feat.settings.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.sophon.fightingnerd.feat.settings.ui.SettingsState.UiFeatureSetting
+import io.github.sophon.fightingnerd.feat.settings.ui.composables.FeatureSettings
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -36,7 +38,7 @@ internal fun SettingsScreen(
 
 @Composable
 private fun Content(
-    state: SettingsViewState,
+    state: SettingsState,
     onFeatureClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -65,16 +67,24 @@ private fun Content(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .padding(padding)
-        ) {
-            FeatureSettings(
-                featureSettingList = state.featureList,
-                onClick = onFeatureClick,
-            )
-        }
+//        Column(
+//            modifier = Modifier
+//                .padding(padding)
+//        ) {
+//            FeatureSettings(
+//                featureSettingList = state.featureList,
+//                onClick = onFeatureClick,
+//            )
+//        }
     }
+}
+
+@Composable
+private fun FeatureSection(
+    featureList: List<UiFeatureSetting>,
+    modifier: Modifier = Modifier
+) {
+    
 }
 
 
@@ -84,7 +94,7 @@ private fun Content(
 private fun SettingsPreviewDark() {
     AppTheme(darkTheme = true) {
         Content(
-            state = SettingsViewState.PREVIEW,
+            state = SettingsState.PREVIEW,
             onFeatureClick = {},
         )
     }
@@ -95,7 +105,7 @@ private fun SettingsPreviewDark() {
 private fun SettingsPreviewLight() {
     AppTheme(darkTheme = false) {
         Content(
-            state = SettingsViewState.PREVIEW,
+            state = SettingsState.PREVIEW,
             onFeatureClick = {},
         )
     }

@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.screens.settings
+package io.github.sophon.fightingnerd.feat.settings
 
 import io.github.sophon.core.architecture.Error
 
