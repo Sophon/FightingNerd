@@ -1,11 +1,6 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -46,7 +41,7 @@ private fun Content(
         widgetList = state.gameWidgetList,
         onExpandWidget = onExpandWidget,
         onCharacterClick = onCharacterClick,
-        modifier = modifier.padding(horizontal = 8.dp)
+        modifier = modifier.padding(horizontal = 8.dp, vertical = 32.dp)
     )
 }
 

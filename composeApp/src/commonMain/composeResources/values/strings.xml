@@ -5,6 +5,7 @@
     <string name="bottom_bar_item_search">Search</string>
     <string name="bottom_bar_item_saved">Saved</string>
     <string name="bottom_bar_item_quiz">Quiz</string>
+    <string name="bottom_bar_item_more">More</string>
 
     <string name="move_list_field_startup">Startup</string>
     <string name="move_list_field_level">Level</string>
@@ -12,4 +13,8 @@
     <string name="move_list_field_on_hit">On Hit</string>
     <string name="move_list_field_on_block">On Block</string>
     <string name="move_list_field_on_counter">On Counter</string>
+
+    <string name="more_theme">Select theme</string>
+    <string name="more_item">Feature settings</string>
+    <string name="more_donate">Donate</string>
 </resources>

@@ -6,6 +6,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
@@ -28,7 +29,6 @@ internal class HomeVM(
 
     init {
         loadWidgets()
-        loadWidgetData()
     }
 
 
@@ -56,14 +56,27 @@ internal class HomeVM(
 
 
     private fun loadWidgets() {
-        loadEmptyWidgetsUseCase.invoke()
-            .onSuccess { moduleList ->
-                _state.update { it.copy(gameWidgetList = moduleList) }
+        viewModelScope.launch {
+            loadEmptyWidgetsUseCase.invoke().collect { result ->
+                result.onSuccess { loadedWidgetList ->
+                    val currentWidgetList = _state.value.gameWidgetList
+                    val currentIds = currentWidgetList.map { it.game.id }.toSet()
+                    val newIds = loadedWidgetList.map { it.game.id }.toSet()
+
+                    val kept = currentWidgetList.filter { it.game.id in newIds }
+                    val added = loadedWidgetList.filterNot { it.game.id in currentIds }
+                    val merged = kept + added
+
+                    _state.update { it.copy(gameWidgetList = merged) }
+
+                    loadWidgetData(added)
+                }
             }
+        }
     }
 
-    private fun loadWidgetData() {
-        _state.value.gameWidgetList.forEach { gameWidget ->
+    private fun loadWidgetData(widgetList: List<GameWidget>) {
+        widgetList.forEach { gameWidget ->
             viewModelScope.launch {
                 loadGameCharacterListUseCase.invoke(gameWidget)
                     .onSuccess { loadedWidget ->

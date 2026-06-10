@@ -1,7 +1,6 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Move
 
 internal data class HomeViewState(
     val gameWidgetList: List<GameWidget> = emptyList(),

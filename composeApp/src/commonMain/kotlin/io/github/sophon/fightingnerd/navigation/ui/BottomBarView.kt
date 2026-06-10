@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_character_list
+import fightingnerd.composeapp.generated.resources.bottom_bar_item_more
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_quiz
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_saved
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_search
@@ -58,7 +60,12 @@ private val bottomBarItems = listOf(
         label = Res.string.bottom_bar_item_quiz,
         icon = FlexibleIcon.Vector(Icons.Default.Quiz),
         destination = Destination.Quiz,
-    )
+    ),
+    BottomBarItem(
+        label = Res.string.bottom_bar_item_more,
+        icon = FlexibleIcon.Vector(Icons.Outlined.MoreHoriz),
+        destination = Destination.More,
+    ),
 )
 
 
@@ -81,14 +88,14 @@ internal fun BottomBarView(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.9f),
                     shape = RoundedCornerShape(48),
                 )
-                .padding(8.dp),
+                .padding(4.dp),
         ) {
             bottomBarItems.forEach { item ->
                 BarItem(
                     item = item,
                     isSelected = (item.destination == currentRoot),
                     onClick = { onTabClick(item.destination) },
-                    modifier = Modifier.widthIn(min = 96.dp),
+                    modifier = Modifier.widthIn(min = 80.dp),
                 )
             }
         }
