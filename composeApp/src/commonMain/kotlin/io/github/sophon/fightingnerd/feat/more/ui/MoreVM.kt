@@ -1,24 +1,23 @@
-package io.github.sophon.fightingnerd.feat.settings.ui
+package io.github.sophon.fightingnerd.feat.more.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.fightingnerd.feat.settings.usecase.GetAvailableFeaturesUseCase
-import io.github.sophon.fightingnerd.feat.settings.usecase.ToggleFeatureUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 
-internal class SettingsVM(
+internal class MoreVM(
     private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
     private val toggleFeatureUseCase: ToggleFeatureUseCase,
 ): ViewModel() {
-    private val _state = MutableStateFlow(SettingsState())
+    private val _state = MutableStateFlow(MoreState())
     val state = _state
         .onStart {
             loadFeatures()
@@ -26,7 +25,7 @@ internal class SettingsVM(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = SettingsState(),
+            initialValue = MoreState(),
         )
 
     fun toggleFeature(index: Int) {

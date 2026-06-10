@@ -1,7 +1,6 @@
-package io.github.sophon.fightingnerd.feat.settings.ui
+package io.github.sophon.fightingnerd.feat.more.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.navigationBarsPadding
@@ -16,8 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.fightingnerd.feat.settings.ui.SettingsState.UiFeatureSetting
-import io.github.sophon.fightingnerd.feat.settings.ui.composables.FeatureSettings
+import io.github.sophon.fightingnerd.feat.more.ui.MoreState.UiFeatureSetting
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
@@ -26,7 +24,7 @@ import org.koin.compose.koinInject
 internal fun SettingsScreen(
     modifier: Modifier = Modifier,
 ) {
-    val vm = koinInject<SettingsVM>()
+    val vm = koinInject<MoreVM>()
     val state by vm.state.collectAsStateWithLifecycle()
 
     Content(
@@ -38,7 +36,7 @@ internal fun SettingsScreen(
 
 @Composable
 private fun Content(
-    state: SettingsState,
+    state: MoreState,
     onFeatureClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -94,7 +92,7 @@ private fun FeatureSection(
 private fun SettingsPreviewDark() {
     AppTheme(darkTheme = true) {
         Content(
-            state = SettingsState.PREVIEW,
+            state = MoreState.PREVIEW,
             onFeatureClick = {},
         )
     }
@@ -105,7 +103,7 @@ private fun SettingsPreviewDark() {
 private fun SettingsPreviewLight() {
     AppTheme(darkTheme = false) {
         Content(
-            state = SettingsState.PREVIEW,
+            state = MoreState.PREVIEW,
             onFeatureClick = {},
         )
     }

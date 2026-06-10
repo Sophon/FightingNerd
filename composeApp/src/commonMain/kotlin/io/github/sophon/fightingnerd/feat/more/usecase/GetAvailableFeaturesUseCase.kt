@@ -1,19 +1,11 @@
-package io.github.sophon.fightingnerd.feat.settings.usecase
+package io.github.sophon.fightingnerd.feat.more.usecase
 
 import androidx.datastore.core.DataStore
-import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
-import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.fightingnerd.feat.settings.KEY_PREFIX_FEATURE
-import io.github.sophon.fightingnerd.feat.settings.SettingsError
-import io.github.sophon.fightingnerd.feat.settings.ui.SettingsState
-import io.github.sophon.fightingnerd.feat.settings.ui.SettingsState.UiFeatureSetting
-import kotlinx.coroutines.flow.first
+import io.github.sophon.fightingnerd.feat.more.SettingsError
+import io.github.sophon.fightingnerd.feat.more.ui.MoreState.UiFeatureSetting
 
 internal class GetAvailableFeaturesUseCase(
     private val featureRepo: CoreFeatureRepo,

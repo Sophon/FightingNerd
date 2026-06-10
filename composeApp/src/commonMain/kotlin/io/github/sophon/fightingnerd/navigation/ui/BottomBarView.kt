@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -87,14 +88,14 @@ internal fun BottomBarView(
                     color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.9f),
                     shape = RoundedCornerShape(48),
                 )
-                .padding(8.dp),
+                .padding(4.dp),
         ) {
             bottomBarItems.forEach { item ->
                 BarItem(
                     item = item,
                     isSelected = (item.destination == currentRoot),
                     onClick = { onTabClick(item.destination) },
-                    modifier = Modifier.widthIn(min = 96.dp),
+                    modifier = Modifier.widthIn(min = 80.dp),
                 )
             }
         }
