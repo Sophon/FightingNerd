@@ -1,38 +1,66 @@
 package io.github.sophon.fightingnerd.feat.more.ui
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.fightingnerd.feat.more.ui.composables.FeatureSettings
+import androidx.compose.ui.unit.dp
+import io.github.sophon.fightingnerd.core.ui.RoundedItem
+import io.github.sophon.fightingnerd.feat.home.ui.MoreItem
 import io.github.sophon.fightingnerd.theme.AppTheme
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
 
 @Composable
 internal fun MoreScreen(
+    onItemClick: (MoreItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val vm = koinInject<MoreVM>()
-    val state by vm.state.collectAsStateWithLifecycle()
-
-    Content(
-        state = state,
-        onFeatureClick = vm::toggleFeature,
-        modifier = modifier,
-    )
-}
-
-@Composable
-private fun Content(
-    state: MoreState,
-    onFeatureClick: (Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    FeatureSettings(
-        featureList = state.featureList,
-        onClick = {/*TODO*/},
-    )
+    LazyColumn(
+        modifier = modifier
+            .fillMaxSize()
+            .padding(16.dp)
+            .background(MaterialTheme.colorScheme.surface)
+    ) {
+        itemsIndexed(MoreItem.entries) { index, moreItem ->
+            RoundedItem(
+                isFirst = index == 0,
+                isLast = index == MoreItem.entries.lastIndex,
+                modifier = Modifier.clickable { onItemClick(moreItem) },
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
+                ) {
+                    Text(
+                        text = stringResource(moreItem.stringResource),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+        }
+    }
 }
 
 
@@ -41,9 +69,8 @@ private fun Content(
 @Preview(showBackground = true)
 private fun SettingsPreviewDark() {
     AppTheme(darkTheme = true) {
-        Content(
-            state = MoreState.PREVIEW,
-            onFeatureClick = {},
+        MoreScreen(
+            onItemClick = {},
         )
     }
 }
@@ -52,9 +79,8 @@ private fun SettingsPreviewDark() {
 @Preview(showBackground = true)
 private fun SettingsPreviewLight() {
     AppTheme(darkTheme = false) {
-        Content(
-            state = MoreState.PREVIEW,
-            onFeatureClick = {},
+        MoreScreen(
+            onItemClick = {},
         )
     }
 }

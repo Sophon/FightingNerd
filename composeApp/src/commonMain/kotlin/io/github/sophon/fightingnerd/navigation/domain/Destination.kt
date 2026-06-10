@@ -31,4 +31,7 @@ sealed interface Destination : NavKey {
 
     @Serializable
     data class CharacterDetail(val gameId: String, val characterId: String) : Destination
+
+    @Serializable
+    data object FeatureSettings : Destination
 }

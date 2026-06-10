@@ -1,8 +1,8 @@
-package io.github.sophon.fightingnerd.feat.more.ui
+package io.github.sophon.fightingnerd.feat.more.ui.featureSettings
 
 import io.github.sophon.fightingnerd.BuildKonfig
 
-internal data class MoreState(
+internal data class FeatureSettingsState(
     val featureList: List<UiFeatureSetting> = listOf(),
 
     val appVersion: String = BuildKonfig.VERSION,
@@ -25,7 +25,7 @@ internal data class MoreState(
     }
 
     companion object {
-        internal val PREVIEW = MoreState(
+        internal val PREVIEW = FeatureSettingsState(
             featureList = listOf(
                 UiFeatureSetting(
                     featureName = "Wavu Wiki",

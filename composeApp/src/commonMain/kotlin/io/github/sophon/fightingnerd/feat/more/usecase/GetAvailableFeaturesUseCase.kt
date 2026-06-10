@@ -5,7 +5,7 @@ import androidx.datastore.preferences.core.Preferences
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.feat.more.SettingsError
-import io.github.sophon.fightingnerd.feat.more.ui.MoreState.UiFeatureSetting
+import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
 
 internal class GetAvailableFeaturesUseCase(
     private val featureRepo: CoreFeatureRepo,
@@ -13,10 +13,10 @@ internal class GetAvailableFeaturesUseCase(
 ) {
     fun invoke(): Result<List<UiFeatureSetting>, SettingsError> {
         val gameClients = featureRepo.getGameClients()
-        val grouped = gameClients.entries.groupBy { it.value }
+        val grouped = gameClients.entries.groupBy { it.value.getFeatureInfo().name }
 
-        val featureList = grouped.map { (client, entries) ->
-            val info = client.getFeatureInfo()
+        val featureList = grouped.map { (_, entries) ->
+            val info = entries.first().value.getFeatureInfo()
             UiFeatureSetting(
                 featureName = info.name,
                 iconUrl = info.iconUrl.orEmpty(),

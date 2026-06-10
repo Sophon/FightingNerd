@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.more.ui
+package io.github.sophon.fightingnerd.feat.more.ui.featureSettings
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,19 +13,19 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 
-internal class MoreVM(
+internal class FeatureSettingsVM(
     private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
     private val toggleFeatureUseCase: ToggleFeatureUseCase,
 ): ViewModel() {
-    private val _state = MutableStateFlow(MoreState())
+    private val _state = MutableStateFlow(FeatureSettingsState())
     val state = _state
         .onStart {
             loadFeatures()
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = MoreState(),
+            started = SharingStarted.Companion.WhileSubscribed(5_000),
+            initialValue = FeatureSettingsState(),
         )
 
     fun toggleFeature(index: Int) {

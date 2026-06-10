@@ -1,34 +1,49 @@
-package io.github.sophon.fightingnerd.feat.more.ui.composables
+package io.github.sophon.fightingnerd.feat.more.ui.featureSettings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import io.github.sophon.fightingnerd.feat.more.ui.MoreState
-import io.github.sophon.fightingnerd.feat.more.ui.MoreState.UiFeatureSetting
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-internal fun FeatureSettings(
-    featureList: List<UiFeatureSetting>,
-    onClick: (Int) -> Unit,
+internal fun FeatureSettingsScreen(
     modifier: Modifier = Modifier,
+) {
+    val vm = koinViewModel<FeatureSettingsVM>()
+    val state by vm.state.collectAsStateWithLifecycle()
+
+    Content(
+        state = state,
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun Content(
+    state: FeatureSettingsState,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(
@@ -37,20 +52,12 @@ internal fun FeatureSettings(
         ),
         modifier = modifier
             .fillMaxWidth()
-            .padding(8.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(.2f),
-                shape = RoundedCornerShape(16.dp),
-            ),
     ) {
-        itemsIndexed(featureList) { index, feature ->
+        itemsIndexed(state.featureList) { index, feature ->
             FeatureSetting(
                 feature = feature,
                 isFirst = index == 0,
-                isLast = index == featureList.lastIndex,
+                isLast = (index == state.featureList.lastIndex),
             )
         }
     }
@@ -63,7 +70,19 @@ private fun FeatureSetting(
     isLast: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxWidth()) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(8.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(color = MaterialTheme.colorScheme.surfaceVariant)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline.copy(.2f),
+                shape = RoundedCornerShape(16.dp),
+            ),
+    ) {
+        Spacer(Modifier.height(4.dp))
         Toggle(
             title = feature.featureName,
             subtitle = feature.version,
@@ -83,12 +102,6 @@ private fun FeatureSetting(
                 modifier = Modifier.padding(start = 16.dp),
             )
         }
-
-        HorizontalDivider(
-            modifier = Modifier
-                .padding(horizontal = 16.dp)
-                .background(MaterialTheme.colorScheme.outline)
-        )
     }
 }
 
@@ -114,7 +127,7 @@ private fun Toggle(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .clip(shape)
+//            .clip(shape)
             .padding(horizontal = 16.dp),
     ) {
         Column(
@@ -149,9 +162,8 @@ private fun Toggle(
 @Preview(showBackground = true)
 private fun FeatureSettingsPreviewDark() {
     AppTheme(true) {
-        FeatureSettings(
-            featureList = MoreState.PREVIEW.featureList,
-            onClick = {},
+        Content(
+            state = FeatureSettingsState.PREVIEW,
         )
     }
 }
@@ -160,9 +172,8 @@ private fun FeatureSettingsPreviewDark() {
 @Preview
 private fun FeatureSettingsPreviewLight() {
     AppTheme(false) {
-        FeatureSettings(
-            featureList = MoreState.PREVIEW.featureList,
-            onClick = {},
+        Content(
+            state = FeatureSettingsState.PREVIEW,
         )
     }
 }

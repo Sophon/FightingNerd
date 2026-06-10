@@ -38,8 +38,10 @@ import coil3.util.DebugLogger
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
+import io.github.sophon.fightingnerd.feat.home.ui.MoreItem
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen
+import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsScreen
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.navigation.ui.BottomBarView
@@ -117,14 +119,23 @@ internal fun App() {
                                 PlaceholderScreen(label = "Quiz")
                             }
                             entry<Destination.More> {
-                                MoreScreen()
+                                MoreScreen(
+                                    onItemClick = { moreItem ->
+                                        when (moreItem) {
+                                            MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
+                                        }
+                                    }
+                                )
                             }
 
-                            entry<Destination.MoveList>{ destination ->
+                            entry<Destination.MoveList> { destination ->
                                 MoveListScreen(
                                     gameId = destination.gameId,
                                     characterId = destination.characterId,
                                 )
+                            }
+                            entry<Destination.FeatureSettings> {
+                                FeatureSettingsScreen()
                             }
                         }
                     )
