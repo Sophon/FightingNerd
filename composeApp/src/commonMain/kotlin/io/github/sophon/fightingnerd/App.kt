@@ -33,6 +33,7 @@ import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.navigation.ui.BottomBarView
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
+import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
@@ -104,7 +105,7 @@ internal fun App() {
                             PlaceholderScreen(label = "Quiz")
                         }
                         entry<Destination.More> {
-                            PlaceholderScreen(label = "More")
+                            MoreScreen()
                         }
 
                         entry<Destination.MoveList>{ destination ->
