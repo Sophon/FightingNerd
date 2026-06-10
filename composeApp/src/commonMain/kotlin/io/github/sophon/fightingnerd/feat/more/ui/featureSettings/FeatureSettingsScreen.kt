@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -52,56 +51,44 @@ private fun Content(
         ),
         modifier = modifier
             .fillMaxWidth()
+            .padding(vertical = 8.dp)
     ) {
-        itemsIndexed(state.featureList) { index, feature ->
-            FeatureSetting(
-                feature = feature,
-                isFirst = index == 0,
-                isLast = (index == state.featureList.lastIndex),
-            )
-        }
-    }
-}
+        item { Spacer(Modifier.height(16.dp)) }
 
-@Composable
-private fun FeatureSetting(
-    feature: UiFeatureSetting,
-    isFirst: Boolean,
-    isLast: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(color = MaterialTheme.colorScheme.surfaceVariant)
-            .border(
-                width = 1.dp,
-                color = MaterialTheme.colorScheme.outline.copy(.2f),
-                shape = RoundedCornerShape(16.dp),
-            ),
-    ) {
-        Spacer(Modifier.height(4.dp))
-        Toggle(
-            title = feature.featureName,
-            subtitle = feature.version,
-            isEnabled = feature.isEnabled,
-            onToggle = { /* TODO */ },
-            isFirst = isFirst,
-            isLast = isLast && feature.gameList.isEmpty(),
-        )
+        items(state.featureList) { feature ->
+            val shape = RoundedCornerShape(16.dp)
+            Column(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+                    .clip(shape)
+                    .background(color = MaterialTheme.colorScheme.surfaceVariant)
+                    .border(
+                        width = 1.dp,
+                        color = MaterialTheme.colorScheme.outline.copy(.2f),
+                        shape = shape,
+                    ),
+            ) {
+                Spacer(Modifier.height(4.dp))
+                Toggle(
+                    title = feature.featureName,
+                    subtitle = feature.version,
+                    isEnabled = feature.isEnabled,
+                    onToggle = { /* TODO */ },
+                )
 
-        val gameCount = feature.gameList.size
-        feature.gameList.forEachIndexed { index, game ->
-            Toggle(
-                title = game.displayName,
-                isEnabled = game.isEnabled,
-                onToggle = { /* TODO */ },
-                isLast = isLast && (index == gameCount - 1),
-                modifier = Modifier.padding(start = 16.dp),
-            )
+                feature.gameList.forEach { game ->
+                    Toggle(
+                        title = game.displayName,
+                        isEnabled = game.isEnabled,
+                        onToggle = { /* TODO */ },
+                        modifier = Modifier.padding(start = 16.dp),
+                    )
+                }
+            }
         }
+
+        item { Spacer(Modifier.height(32.dp)) }
     }
 }
 
@@ -111,23 +98,13 @@ private fun Toggle(
     isEnabled: Boolean,
     onToggle: (Boolean) -> Unit,
     subtitle: String? = null,
-    isFirst: Boolean = false,
-    isLast: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
-    val shape = RoundedCornerShape(
-        topStart = if (isFirst) 12.dp else 4.dp,
-        topEnd = if (isFirst) 12.dp else 4.dp,
-        bottomStart = if (isLast) 12.dp else 4.dp,
-        bottomEnd = if (isLast) 12.dp else 4.dp,
-    )
-
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-//            .clip(shape)
             .padding(horizontal = 16.dp),
     ) {
         Column(
