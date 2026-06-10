@@ -5,13 +5,16 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -24,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.RoundedItem
-import io.github.sophon.fightingnerd.feat.home.ui.MoreItem
+import io.github.sophon.fightingnerd.feat.more.MoreItem
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -63,34 +66,44 @@ private fun ItemSection(
             .clip(RoundedCornerShape(12.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerLow)
     ) {
+        item { Spacer(Modifier.height(8.dp)) }
+
         itemsIndexed(MoreItem.entries) { index, moreItem ->
+            val isLast = (index == MoreItem.entries.lastIndex)
             RoundedItem(
-                isFirst = index == 0,
-                isLast = index == MoreItem.entries.lastIndex,
+                isFirst = (index == 0),
+                isLast = isLast,
                 modifier = Modifier
                     .clickable { onItemClick(moreItem) }
-                    .padding(8.dp),
+                    .padding(horizontal = 8.dp),
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 14.dp),
-                ) {
-                    Text(
-                        text = stringResource(moreItem.stringResource),
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.weight(1f),
-                    )
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
+                Column {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 14.dp),
+                    ) {
+                        Text(
+                            text = stringResource(moreItem.stringResource),
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                    if (isLast.not()) {
+                        HorizontalDivider(Modifier.padding(horizontal = 16.dp))
+                    }
                 }
             }
         }
+
+        item { Spacer(Modifier.height(8.dp)) }
     }
 }
 

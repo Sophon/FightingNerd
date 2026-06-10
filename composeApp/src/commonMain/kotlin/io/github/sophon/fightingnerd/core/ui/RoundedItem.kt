@@ -18,7 +18,7 @@ internal fun RoundedItem(
     isLast: Boolean,
     modifier: Modifier = Modifier,
     outerRadius: Dp = 12.dp,
-    innerRadius: Dp = 4.dp,
+    innerRadius: Dp = 0.dp,
     background: Color = MaterialTheme.colorScheme.surfaceContainer,
     content: @Composable () -> Unit,
 ) {

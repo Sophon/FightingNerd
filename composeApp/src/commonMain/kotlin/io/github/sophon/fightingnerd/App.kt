@@ -38,7 +38,7 @@ import coil3.util.DebugLogger
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
-import io.github.sophon.fightingnerd.feat.home.ui.MoreItem
+import io.github.sophon.fightingnerd.feat.more.MoreItem
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsScreen
@@ -123,6 +123,9 @@ internal fun App() {
                                     onItemClick = { moreItem ->
                                         when (moreItem) {
                                             MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
+
+                                            MoreItem.Donate,
+                                            MoreItem.Theme -> {/* no navigation */}
                                         }
                                     }
                                 )

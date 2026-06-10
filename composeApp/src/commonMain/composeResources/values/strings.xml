@@ -14,5 +14,7 @@
     <string name="move_list_field_on_block">On Block</string>
     <string name="move_list_field_on_counter">On Counter</string>
 
-    <string name="more_item">Feature Settings</string>
+    <string name="more_theme">Select theme</string>
+    <string name="more_item">Feature settings</string>
+    <string name="more_donate">Donate</string>
 </resources>
