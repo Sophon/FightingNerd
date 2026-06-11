@@ -5,6 +5,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -26,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -98,73 +100,9 @@ internal fun App() {
                         .fillMaxSize()
                         .background(MaterialTheme.colorScheme.surface),
                 ) {
-                    NavDisplay(
-                        backStack = backStack,
-                        onBack = { backStack.removeLastOrNull() },
-                        entryDecorators = listOf(
-                            rememberSaveableStateHolderNavEntryDecorator(),
-                            rememberViewModelStoreNavEntryDecorator(),
-                        ),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .statusBarsPadding(),
-                        entryProvider = entryProvider {
-                            entry<Destination.Home> {
-                                HomeScreen(
-                                    onNavigateToMoveList = { gameId, characterId ->
-                                        backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
-                                    }
-                                )
-                            }
-                            entry<Destination.Search> {
-                                PlaceholderScreen(label = "Search")
-                            }
-                            entry<Destination.Saved> {
-                                PlaceholderScreen(label = "Saved")
-                            }
-                            entry<Destination.Quiz> {
-                                PlaceholderScreen(label = "Quiz")
-                            }
-                            entry<Destination.More> {
-                                MoreScreen(
-                                    onNavigate = { moreItem ->
-                                        when (moreItem) {
-                                            MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
+                    AppNavDisplay(backStack = backStack)
 
-                                            MoreItem.Theme -> {/* no navigation */}
-                                        }
-                                    }
-                                )
-                            }
-
-                            entry<Destination.MoveList> { destination ->
-                                MoveListScreen(
-                                    gameId = destination.gameId,
-                                    characterId = destination.characterId,
-                                )
-                            }
-                            entry<Destination.FeatureSettings> {
-                                FeatureSettingsScreen()
-                            }
-                        }
-                    )
-
-                    AnimatedVisibility(
-                        visible = backStack.size == 1,
-                        enter = slideInVertically { it },
-                        exit = slideOutVertically { it },
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .navigationBarsPadding(),
-                    ) {
-                        BottomBarView(
-                            currentRoot = backStack.first() as Destination.TopLevelDestination,
-                            onTabClick = { destination ->
-                                backStack.clear()
-                                backStack.add(destination)
-                            },
-                        )
-                    }
+                    AppBottomBar(backStack = backStack)
                 }
             }
         }
@@ -175,6 +113,86 @@ internal fun App() {
         ) {
             CircularProgressIndicator()
         }
+    }
+}
+
+@Composable
+private fun AppNavDisplay(
+    backStack: NavBackStack<NavKey>,
+    modifier: Modifier = Modifier
+) {
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
+        entryProvider = entryProvider {
+            entry<Destination.Home> {
+                HomeScreen(
+                    onNavigateToMoveList = { gameId, characterId ->
+                        backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
+                    }
+                )
+            }
+            entry<Destination.Search> {
+                PlaceholderScreen(label = "Search")
+            }
+            entry<Destination.Saved> {
+                PlaceholderScreen(label = "Saved")
+            }
+            entry<Destination.Quiz> {
+                PlaceholderScreen(label = "Quiz")
+            }
+            entry<Destination.More> {
+                MoreScreen(
+                    onNavigate = { moreItem ->
+                        when (moreItem) {
+                            MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
+
+                            MoreItem.Theme -> {/* no navigation */}
+                        }
+                    }
+                )
+            }
+
+            entry<Destination.MoveList> { destination ->
+                MoveListScreen(
+                    gameId = destination.gameId,
+                    characterId = destination.characterId,
+                )
+            }
+            entry<Destination.FeatureSettings> {
+                FeatureSettingsScreen()
+            }
+        }
+    )
+}
+
+@Composable
+private fun BoxScope.AppBottomBar(
+    backStack: NavBackStack<NavKey>,
+    modifier: Modifier = Modifier
+) {
+    AnimatedVisibility(
+        visible = (backStack.size == 1),
+        enter = slideInVertically { it },
+        exit = slideOutVertically { it },
+        modifier = modifier
+            .align(Alignment.BottomCenter)
+            .navigationBarsPadding(),
+    ) {
+        BottomBarView(
+            currentRoot = backStack.first() as Destination.TopLevelDestination,
+            onTabClick = { destination ->
+                backStack.clear()
+                backStack.add(destination)
+            },
+        )
     }
 }
 
