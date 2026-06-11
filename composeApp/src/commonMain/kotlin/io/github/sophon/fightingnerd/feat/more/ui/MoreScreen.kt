@@ -144,8 +144,8 @@ private fun ItemSection(
                 isFirst = (index == 0),
                 isLast = isLast,
                 modifier = Modifier
-                    .clickable { onItemClick(moreItem) }
-                    .padding(horizontal = 8.dp),
+                    .padding(horizontal = 8.dp)
+                    .clickable { onItemClick(moreItem) },
             ) {
                 Column {
                     Row(
