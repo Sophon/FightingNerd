@@ -3,9 +3,9 @@ package io.github.sophon.fightingnerd.core
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
-import io.github.sophon.fightingnerd.core.data.DatabaseDriverFactory
-import io.github.sophon.fightingnerd.core.data.SqlCharacterDB
-import io.github.sophon.fightingnerd.core.data.SqlMoveDB
+import io.github.sophon.fightingnerd.core.data.db.DatabaseDriverFactory
+import io.github.sophon.fightingnerd.core.data.db.SqlCharacterDB
+import io.github.sophon.fightingnerd.core.data.db.SqlMoveDB
 import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
 import io.github.sophon.fightingnerd.db.character.CharacterDatabase
 import io.github.sophon.fightingnerd.db.move.MoveDatabase
