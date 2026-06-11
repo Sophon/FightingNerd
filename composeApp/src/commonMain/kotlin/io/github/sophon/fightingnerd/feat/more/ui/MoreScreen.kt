@@ -44,7 +44,7 @@ import io.github.sophon.fightingnerd.core.ui.RoundedItem
 import io.github.sophon.fightingnerd.core.ui.SingleSelectDialog
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
-import io.github.sophon.fightingnerd.feat.more.model.Theme
+import io.github.sophon.fightingnerd.theme.ThemeMode
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -78,7 +78,7 @@ private fun Content(
     state: MoreState,
     onItemClick: (MoreItem) -> Unit,
     onThemeItemClick: (isDialogVisible: Boolean) -> Unit,
-    onThemeSelected: (Theme) -> Unit,
+    onThemeSelected: (ThemeMode) -> Unit,
     onDonateClick: (isVisible: Boolean) -> Unit,
     onSelectDonationMethod: (DonationMethod) -> Unit,
     modifier: Modifier = Modifier
@@ -106,8 +106,8 @@ private fun Content(
         state.themeSelectorDialog?.let { dialog ->
             SingleSelectDialog(
                 title = stringResource(Res.string.more_theme_dialog_title),
-                items = dialog.themeList,
-                selectedItem = dialog.themeList.first(),
+                items = dialog.themeModeLists,
+                selectedItem = dialog.themeModeLists.first(),
                 onItemSelect = onThemeSelected,
                 onDismiss = { onThemeItemClick(false) },
             )
@@ -223,7 +223,7 @@ private fun Footer(
 @Composable
 @Preview(showBackground = true)
 private fun SettingsPreviewDark() {
-    AppTheme(darkTheme = true) {
+    AppTheme(themeMode = ThemeMode.Dark) {
         Content(
             state = MoreState(),
             onItemClick = {},
@@ -238,7 +238,7 @@ private fun SettingsPreviewDark() {
 @Composable
 @Preview(showBackground = true)
 private fun SettingsPreviewLight() {
-    AppTheme(darkTheme = false) {
+    AppTheme(themeMode = ThemeMode.Light) {
         Content(
             state = MoreState(),
             onItemClick = {},

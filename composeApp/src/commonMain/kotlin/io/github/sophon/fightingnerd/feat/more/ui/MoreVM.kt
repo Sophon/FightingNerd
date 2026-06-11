@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
-import io.github.sophon.fightingnerd.feat.more.model.Theme
+import io.github.sophon.fightingnerd.theme.ThemeMode
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,7 +30,7 @@ internal class MoreVM(
         }
     }
 
-    fun onThemeSelect(theme: Theme) {
+    fun onThemeSelect(themeMode: ThemeMode) {
         onThemeDialog(isDialogVisible = false)
         //TODO: call usecase
     }

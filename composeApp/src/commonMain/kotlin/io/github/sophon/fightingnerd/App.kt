@@ -42,6 +42,7 @@ import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
+import io.github.sophon.fightingnerd.theme.ThemeMode
 import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsScreen
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen

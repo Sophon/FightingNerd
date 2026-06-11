@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.feat.more.ui
 
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
-import io.github.sophon.fightingnerd.feat.more.model.Theme
+import io.github.sophon.fightingnerd.theme.ThemeMode
 
 internal data class MoreState(
     val items: List<MoreItem> = MoreItem.entries,
@@ -11,7 +11,7 @@ internal data class MoreState(
     val donationSelectorDialog: DonationDialog? = null,
 ) {
     data class ThemeSelectorDialog(
-        val themeList: List<Theme> = Theme.entries,
+        val themeModeLists: List<ThemeMode> = ThemeMode.entries,
     )
 
     data class DonationDialog(

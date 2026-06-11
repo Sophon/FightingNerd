@@ -81,11 +81,18 @@ private val darkColorScheme = darkColorScheme(
 
 @Composable
 internal fun AppTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: ThemeMode = ThemeMode.System,
     content: @Composable () -> Unit,
 ) {
-    val colorScheme = if (darkTheme) darkColorScheme else lightColorScheme
-    val appColorPalette = if (darkTheme) darkAppColorPalette else lightAppColorPalette
+    val systemDark = isSystemInDarkTheme()
+    val darkThemeMode = when (themeMode) {
+        ThemeMode.System -> systemDark
+        ThemeMode.Light -> false
+        ThemeMode.Dark -> true
+    }
+
+    val colorScheme = if (darkThemeMode) darkColorScheme else lightColorScheme
+    val appColorPalette = if (darkThemeMode) darkAppColorPalette else lightAppColorPalette
 
     CompositionLocalProvider(localAppColorPalette provides appColorPalette) {
         MaterialTheme(colorScheme = colorScheme, content = content)
