@@ -8,7 +8,7 @@ internal data class MoreState(
     val items: List<MoreItem> = MoreItem.entries,
 
     val themeSelectorDialog: ThemeSelectorDialog? = null,
-    val donationMethod: DonationMethod? = null,
+    val donationSelectorDialog: DonationDialog? = null,
 ) {
     data class ThemeSelectorDialog(
         val themeList: List<Theme> = Theme.entries,

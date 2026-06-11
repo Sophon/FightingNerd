@@ -2,6 +2,8 @@ package io.github.sophon.fightingnerd.feat.more.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
+import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.more.model.Theme
 import kotlinx.coroutines.channels.Channel
@@ -13,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class MoreVM(
-    //
+    private val openUrlUseCase: OpenUrlUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoreState())
     val state = _state.asStateFlow()
@@ -37,8 +39,16 @@ internal class MoreVM(
         }
     }
 
-    fun onDonateClick() {
-        //TODO:
+    fun onDonateClick(isVisible: Boolean) {
+        _state.update {
+            val dialog = if (isVisible) MoreState.DonationDialog() else null
+            it.copy(donationSelectorDialog = dialog)
+        }
+    }
+
+    fun onDonateItemClick(method: DonationMethod) {
+        _state.update { it.copy(donationSelectorDialog = null) }
+        openUrlUseCase.invoke(url = method.url)
     }
 
     fun onThemeSelect(theme: Theme) {

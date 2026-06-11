@@ -36,9 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.more_donate
+import fightingnerd.composeapp.generated.resources.more_donate_dialog_title
 import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.RoundedItem
+import io.github.sophon.fightingnerd.core.ui.SingleSelectDialog
+import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.more.model.Theme
 import io.github.sophon.fightingnerd.feat.more.ui.theme.ThemeDialog
@@ -65,6 +68,7 @@ internal fun MoreScreen(
         onThemeItemClick = vm::onThemeItemClick,
         onThemeSelected = vm::onThemeSelect,
         onDonateClick = vm::onDonateClick,
+        onSelectDonationMethod = vm::onDonateItemClick,
         modifier = modifier,
     )
 }
@@ -75,7 +79,8 @@ private fun Content(
     onItemClick: (MoreItem) -> Unit,
     onThemeItemClick: (isDialogVisible: Boolean) -> Unit,
     onThemeSelected: (Theme) -> Unit,
-    onDonateClick: () -> Unit,
+    onDonateClick: (isVisible: Boolean) -> Unit,
+    onSelectDonationMethod: (DonationMethod) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -93,7 +98,9 @@ private fun Content(
                 onItemClick = onItemClick,
             )
 
-            Footer(onDonateClick)
+            Footer(
+                onDonateClick = { onDonateClick(true) }
+            )
         }
 
         state.themeSelectorDialog?.let { dialog ->
@@ -102,6 +109,15 @@ private fun Content(
                 selectedTheme = Theme.System,
                 onThemeSelected = onThemeSelected,
                 onDismiss = { onThemeItemClick(false) },
+            )
+        }
+
+        state.donationSelectorDialog?.let { dialog ->
+            SingleSelectDialog(
+                title = stringResource(Res.string.more_donate_dialog_title),
+                items = dialog.methodList,
+                onItemSelect = onSelectDonationMethod,
+                onDismiss = { onDonateClick(false) },
             )
         }
     }
@@ -213,6 +229,7 @@ private fun SettingsPreviewDark() {
             onThemeItemClick = {},
             onDonateClick = {},
             onThemeSelected = {},
+            onSelectDonationMethod = {},
         )
     }
 }
@@ -227,6 +244,7 @@ private fun SettingsPreviewLight() {
             onThemeItemClick = {},
             onDonateClick = {},
             onThemeSelected = {},
+            onSelectDonationMethod = {},
         )
     }
 }
