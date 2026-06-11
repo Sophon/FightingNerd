@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -39,6 +40,7 @@ import coil3.PlatformContext
 import coil3.util.DebugLogger
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.fightingnerd.core.data.PreferenceRepo
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
@@ -88,8 +90,12 @@ internal fun App() {
             }
     }
 
-    if (isInitialized) {
-        AppTheme {
+    val preferenceRepo = koinInject<PreferenceRepo>()
+    val themeMode by preferenceRepo.subscribeToTheme()
+        .collectAsStateWithLifecycle(initialValue = ThemeMode.System)
+
+    AppTheme(themeMode = themeMode) {
+        if (isInitialized) {
             val backStack = rememberNavBackStack(navConfig, Destination.Home)
 
             val botPaddingValues = PaddingValues(
@@ -106,13 +112,13 @@ internal fun App() {
                     AppBottomBar(backStack = backStack)
                 }
             }
-        }
-    } else {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 }
@@ -197,7 +203,7 @@ private fun BoxScope.AppBottomBar(
     }
 }
 
-fun getAsyncImageLoader(context: PlatformContext): ImageLoader {
+private fun getAsyncImageLoader(context: PlatformContext): ImageLoader {
     return ImageLoader.Builder(context)
         .logger(DebugLogger())
         .build()
