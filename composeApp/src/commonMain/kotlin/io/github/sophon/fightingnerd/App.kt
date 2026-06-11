@@ -124,7 +124,6 @@ internal fun App() {
                                         when (moreItem) {
                                             MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
 
-                                            MoreItem.Donate,
                                             MoreItem.Theme -> {/* no navigation */}
                                         }
                                     }

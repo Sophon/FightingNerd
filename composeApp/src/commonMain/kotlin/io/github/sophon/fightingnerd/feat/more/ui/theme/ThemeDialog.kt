@@ -18,9 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import fightingnerd.composeapp.generated.resources.Res
-import fightingnerd.composeapp.generated.resources.more_theme_dialog_dark
-import fightingnerd.composeapp.generated.resources.more_theme_dialog_light
-import fightingnerd.composeapp.generated.resources.more_theme_dialog_system
 import fightingnerd.composeapp.generated.resources.more_theme_dialog_title
 import io.github.sophon.fightingnerd.feat.more.model.Theme
 import io.github.sophon.fightingnerd.theme.AppTheme
@@ -29,6 +26,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun ThemeDialog(
+    themeList: List<Theme>,
     selectedTheme: Theme,
     onThemeSelected: (Theme) -> Unit,
     onDismiss: () -> Unit,
@@ -48,13 +46,7 @@ internal fun ThemeDialog(
                     modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
                 )
 
-                Theme.entries.forEach { theme ->
-                    val label = when (theme) {
-                        Theme.System -> stringResource(Res.string.more_theme_dialog_system)
-                        Theme.Dark -> stringResource(Res.string.more_theme_dialog_dark)
-                        Theme.Light -> stringResource(Res.string.more_theme_dialog_light)
-                    }
-
+                themeList.forEach { theme ->
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
@@ -68,7 +60,7 @@ internal fun ThemeDialog(
                         )
                         Spacer(Modifier.width(12.dp))
                         Text(
-                            text = label,
+                            text = stringResource(theme.stringResource),
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
@@ -86,6 +78,7 @@ internal fun ThemeDialog(
 private fun Preview() {
     AppTheme {
         ThemeDialog(
+            themeList = Theme.entries,
             selectedTheme = Theme.System,
             onThemeSelected = {},
             onDismiss = {},

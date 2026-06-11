@@ -11,11 +11,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -29,6 +34,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.more_donate
 import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.RoundedItem
@@ -57,6 +64,7 @@ internal fun MoreScreen(
         onItemClick = vm::onItemClick,
         onThemeItemClick = vm::onThemeItemClick,
         onThemeSelected = vm::onThemeSelect,
+        onDonateClick = vm::onDonateClick,
         modifier = modifier,
     )
 }
@@ -67,6 +75,7 @@ private fun Content(
     onItemClick: (MoreItem) -> Unit,
     onThemeItemClick: (isDialogVisible: Boolean) -> Unit,
     onThemeSelected: (Theme) -> Unit,
+    onDonateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -79,19 +88,17 @@ private fun Content(
                 .fillMaxSize()
                 .padding(LocalBottomBarPadding.current),
         ) {
-            ItemSection(onItemClick)
-
-            Text(
-                text = BuildKonfig.VERSION,
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
+            ItemSection(
+                items = state.items,
+                onItemClick = onItemClick,
             )
+
+            Footer(onDonateClick)
         }
 
-        if (state.isThemeSelectorVisible) {
+        state.themeSelectorDialog?.let { dialog ->
             ThemeDialog(
+                themeList = dialog.themeList,
                 selectedTheme = Theme.System,
                 onThemeSelected = onThemeSelected,
                 onDismiss = { onThemeItemClick(false) },
@@ -102,6 +109,7 @@ private fun Content(
 
 @Composable
 private fun ItemSection(
+    items: List<MoreItem>,
     onItemClick: (MoreItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -113,7 +121,7 @@ private fun ItemSection(
     ) {
         item { Spacer(Modifier.height(8.dp)) }
 
-        itemsIndexed(MoreItem.entries) { index, moreItem ->
+        itemsIndexed(items) { index, moreItem ->
             val isLast = (index == MoreItem.entries.lastIndex)
             RoundedItem(
                 isFirst = (index == 0),
@@ -152,6 +160,47 @@ private fun ItemSection(
     }
 }
 
+@Composable
+private fun Footer(
+    onDonateClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        Button(
+            onClick = onDonateClick,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
+            modifier = modifier,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Favorite,
+                contentDescription = null,
+                modifier = Modifier.size(32.dp),
+            )
+            Spacer(Modifier.width(8.dp))
+
+            Text(
+                text = stringResource(Res.string.more_donate),
+                style = MaterialTheme.typography.labelLarge,
+            )
+        }
+        Spacer(Modifier.height(16.dp))
+
+        Text(
+            text = BuildKonfig.VERSION,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
 
 //region PREVIEW
 @Composable
@@ -162,6 +211,7 @@ private fun SettingsPreviewDark() {
             state = MoreState(),
             onItemClick = {},
             onThemeItemClick = {},
+            onDonateClick = {},
             onThemeSelected = {},
         )
     }
@@ -175,6 +225,7 @@ private fun SettingsPreviewLight() {
             state = MoreState(),
             onItemClick = {},
             onThemeItemClick = {},
+            onDonateClick = {},
             onThemeSelected = {},
         )
     }

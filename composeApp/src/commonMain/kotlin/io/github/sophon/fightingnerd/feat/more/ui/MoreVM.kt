@@ -22,17 +22,23 @@ internal class MoreVM(
     val navEvent: Flow<MoreItem> = _navEvent.receiveAsFlow()
 
     fun onThemeItemClick(isDialogVisible: Boolean) {
-        _state.update { it.copy(isThemeSelectorVisible = isDialogVisible) }
+        _state.update {
+            val themeSelectorDialog = if (isDialogVisible) MoreState.ThemeSelectorDialog() else null
+            it.copy(themeSelectorDialog = themeSelectorDialog)
+        }
     }
 
     fun onItemClick(item: MoreItem) {
         viewModelScope.launch {
             when (item) {
-                MoreItem.Theme -> _state.update { it.copy(isThemeSelectorVisible = true) }
-                MoreItem.Donate -> { /*TODO*/ }
+                MoreItem.Theme -> onThemeItemClick(isDialogVisible = true)
                 MoreItem.FeatureSettings -> _navEvent.send(item)
             }
         }
+    }
+
+    fun onDonateClick() {
+        //TODO:
     }
 
     fun onThemeSelect(theme: Theme) {
