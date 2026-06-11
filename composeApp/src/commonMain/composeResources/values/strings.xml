@@ -17,4 +17,8 @@
     <string name="more_theme">Select theme</string>
     <string name="more_item">Feature settings</string>
     <string name="more_donate">Donate</string>
+    <string name="more_theme_dialog_title">Select theme</string>
+    <string name="more_theme_dialog_system">System</string>
+    <string name="more_theme_dialog_dark">Dark</string>
+    <string name="more_theme_dialog_light">Light</string>
 </resources>

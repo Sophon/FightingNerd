@@ -32,6 +32,8 @@ import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.RoundedItem
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
+import io.github.sophon.fightingnerd.feat.more.model.Theme
+import io.github.sophon.fightingnerd.feat.more.ui.theme.ThemeDialog
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -48,6 +50,8 @@ internal fun MoreScreen(
     Content(
         state = state,
         onItemClick = onItemClick,
+        onThemeItemClick = vm::onThemeItemClick,
+        onThemeSelected = vm::onThemeSelect,
         modifier = modifier,
     )
 }
@@ -56,6 +60,8 @@ internal fun MoreScreen(
 private fun Content(
     state: MoreState,
     onItemClick: (MoreItem) -> Unit,
+    onThemeItemClick: (isDialogVisible: Boolean) -> Unit,
+    onThemeSelected: (Theme) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -80,7 +86,11 @@ private fun Content(
         }
 
         if (state.isThemeSelectorVisible) {
-            //TODO:
+            ThemeDialog(
+                selectedTheme = Theme.System,
+                onThemeSelected = onThemeSelected,
+                onDismiss = { onThemeItemClick(false) },
+            )
         }
     }
 }
@@ -146,6 +156,8 @@ private fun SettingsPreviewDark() {
         Content(
             state = MoreState(),
             onItemClick = {},
+            onThemeItemClick = {},
+            onThemeSelected = {},
         )
     }
 }
@@ -157,6 +169,8 @@ private fun SettingsPreviewLight() {
         Content(
             state = MoreState(),
             onItemClick = {},
+            onThemeItemClick = {},
+            onThemeSelected = {},
         )
     }
 }

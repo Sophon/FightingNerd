@@ -16,7 +16,8 @@ internal class MoreVM(
         _state.update { it.copy(isThemeSelectorVisible = isDialogVisible) }
     }
 
-    fun onChangeTheme(theme: Theme) {
+    fun onThemeSelect(theme: Theme) {
+        onThemeItemClick(isDialogVisible = false)
         //TODO: call usecase
     }
 }
