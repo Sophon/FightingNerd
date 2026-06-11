@@ -6,10 +6,13 @@ import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
+import io.github.sophon.fightingnerd.feat.more.ui.MoreVM
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListVM
 import io.github.sophon.fightingnerd.feat.moveList.usecase.LoadMoveListDataUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsVM
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -29,9 +32,13 @@ internal fun featureModule() = module {
     singleOf(::EnsureMoveListIsCached)
     //endregion
 
-    //region Settings
+    //region More
+    viewModelOf(::MoreVM)
+
     singleOf(::GetAvailableFeaturesUseCase)
     singleOf(::ToggleFeatureUseCase)
+    singleOf(::SetThemeUseCase)
+    singleOf(::SubscribeToThemeUseCase)
 
     viewModelOf(::FeatureSettingsVM)
     //endregion

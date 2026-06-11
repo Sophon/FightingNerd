@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.data
+package io.github.sophon.fightingnerd.core.data.db
 
 import character.SelectAllBb
 import character.SelectAllDbfz

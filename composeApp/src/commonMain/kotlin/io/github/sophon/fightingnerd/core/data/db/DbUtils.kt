@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.data
+package io.github.sophon.fightingnerd.core.data.db
 
 internal fun List<String>.fromDomain(): String {
     return joinToString(LIST_DELIMITER)

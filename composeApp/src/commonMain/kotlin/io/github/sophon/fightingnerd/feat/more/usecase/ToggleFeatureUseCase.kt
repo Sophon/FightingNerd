@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.edit
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.feat.more.KEY_PREFIX_FEATURE
-import io.github.sophon.fightingnerd.feat.more.SettingsError
+import io.github.sophon.fightingnerd.feat.more.model.SettingsError
 
 internal class ToggleFeatureUseCase(
     private val store: DataStore<Preferences>,

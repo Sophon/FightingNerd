@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.theme.AppTheme
+import io.github.sophon.fightingnerd.theme.ThemeMode
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -143,7 +144,7 @@ private fun Toggle(
 @Composable
 @Preview(showBackground = true)
 private fun FeatureSettingsPreviewDark() {
-    AppTheme(true) {
+    AppTheme(themeMode = ThemeMode.Dark) {
         Content(
             state = FeatureSettingsState.PREVIEW,
             onFeatureToggle = { _, _ -> },
@@ -155,7 +156,7 @@ private fun FeatureSettingsPreviewDark() {
 @Composable
 @Preview
 private fun FeatureSettingsPreviewLight() {
-    AppTheme(false) {
+    AppTheme(themeMode = ThemeMode.Light) {
         Content(
             state = FeatureSettingsState.PREVIEW,
             onFeatureToggle = { _, _ -> },

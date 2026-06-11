@@ -8,7 +8,7 @@ import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.feat.more.KEY_PREFIX_FEATURE
-import io.github.sophon.fightingnerd.feat.more.SettingsError
+import io.github.sophon.fightingnerd.feat.more.model.SettingsError
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
 import kotlinx.coroutines.flow.first
 import kotlinx.io.IOException

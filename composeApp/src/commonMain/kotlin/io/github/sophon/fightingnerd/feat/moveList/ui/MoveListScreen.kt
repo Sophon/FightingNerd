@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.feat.moveList.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.theme.AppTheme
+import io.github.sophon.fightingnerd.theme.ThemeMode
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -76,7 +77,7 @@ private fun Content(
 @Composable
 @Preview
 private fun MoveListPreviewDark() {
-    AppTheme(darkTheme = true) {
+    AppTheme(themeMode = ThemeMode.Dark) {
         Content(
             state = MoveListState.PREVIEW,
             onMoveClick = {},
@@ -87,7 +88,7 @@ private fun MoveListPreviewDark() {
 @Composable
 @Preview
 private fun MoveListPreviewLight() {
-    AppTheme(darkTheme = false) {
+    AppTheme(themeMode = ThemeMode.Light) {
         Content(
             state = MoveListState.PREVIEW,
             onMoveClick = {},

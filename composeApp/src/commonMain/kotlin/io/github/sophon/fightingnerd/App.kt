@@ -5,6 +5,7 @@ import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -25,7 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
+import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
@@ -33,13 +36,14 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import coil3.ImageLoader
-import coil3.PlatformContext
+import coil3.compose.setSingletonImageLoaderFactory
 import coil3.util.DebugLogger
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.fightingnerd.core.data.PreferenceRepo
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
-import io.github.sophon.fightingnerd.feat.more.MoreItem
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
+import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsScreen
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
@@ -47,6 +51,7 @@ import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.navigation.ui.BottomBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
 import io.github.sophon.fightingnerd.theme.AppTheme
+import io.github.sophon.fightingnerd.theme.ThemeMode
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.koin.compose.koinInject
@@ -55,7 +60,14 @@ private val navConfig = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
             subclass(Destination.Home::class, Destination.Home.serializer())
+            subclass(Destination.Search::class, Destination.Search.serializer())
+            subclass(Destination.Saved::class, Destination.Saved.serializer())
+            subclass(Destination.Quiz::class, Destination.Quiz.serializer())
+            subclass(Destination.More::class, Destination.More.serializer())
             subclass(Destination.MoveList::class, Destination.MoveList.serializer())
+            subclass(Destination.MoveDetail::class, Destination.MoveDetail.serializer())
+            subclass(Destination.CharacterDetail::class, Destination.CharacterDetail.serializer())
+            subclass(Destination.FeatureSettings::class, Destination.FeatureSettings.serializer())
         }
     }
 }
@@ -63,9 +75,26 @@ val LocalBottomBarPadding = compositionLocalOf { PaddingValues(0.dp) }
 
 @Composable
 internal fun App() {
-//    setSingletonImageLoaderFactory { context ->
-//        getAsyncImageLoader(context)
-//    }
+//    LogCoil()
+    val isInitialized = rememberFeaturesLoaded()
+    val themeMode = rememberThemeMode()
+
+    AppTheme(themeMode = themeMode) {
+        if (isInitialized) {
+            Content()
+        } else {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
+    }
+}
+
+@Composable
+private fun rememberFeaturesLoaded(): Boolean {
     var isInitialized by remember { mutableStateOf(false) }
 
     val featureRepo = koinInject<CoreFeatureRepo>()
@@ -78,102 +107,125 @@ internal fun App() {
             }
     }
 
-    if (isInitialized) {
-        AppTheme {
-            val backStack = rememberNavBackStack(navConfig, Destination.Home)
+    return isInitialized
+}
 
-            val botPaddingValues = PaddingValues(
-                bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-            )
-            CompositionLocalProvider(LocalBottomBarPadding provides botPaddingValues) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface),
-                ) {
-                    NavDisplay(
-                        backStack = backStack,
-                        onBack = { backStack.removeLastOrNull() },
-                        entryDecorators = listOf(
-                            rememberSaveableStateHolderNavEntryDecorator(),
-                            rememberViewModelStoreNavEntryDecorator(),
-                        ),
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .statusBarsPadding(),
-                        entryProvider = entryProvider {
-                            entry<Destination.Home> {
-                                HomeScreen(
-                                    onNavigateToMoveList = { gameId, characterId ->
-                                        backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
-                                    }
-                                )
-                            }
-                            entry<Destination.Search> {
-                                PlaceholderScreen(label = "Search")
-                            }
-                            entry<Destination.Saved> {
-                                PlaceholderScreen(label = "Saved")
-                            }
-                            entry<Destination.Quiz> {
-                                PlaceholderScreen(label = "Quiz")
-                            }
-                            entry<Destination.More> {
-                                MoreScreen(
-                                    onItemClick = { moreItem ->
-                                        when (moreItem) {
-                                            MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
+@Composable
+private fun rememberThemeMode(): ThemeMode {
+    val preferenceRepo = koinInject<PreferenceRepo>()
+    val themeMode by preferenceRepo.subscribeToTheme()
+        .collectAsStateWithLifecycle(initialValue = ThemeMode.System)
 
-                                            MoreItem.Donate,
-                                            MoreItem.Theme -> {/* no navigation */}
-                                        }
-                                    }
-                                )
-                            }
+    return themeMode
+}
 
-                            entry<Destination.MoveList> { destination ->
-                                MoveListScreen(
-                                    gameId = destination.gameId,
-                                    characterId = destination.characterId,
-                                )
-                            }
-                            entry<Destination.FeatureSettings> {
-                                FeatureSettingsScreen()
-                            }
-                        }
-                    )
+@Composable
+private fun Content(
+    modifier: Modifier = Modifier
+) {
+    val backStack = rememberNavBackStack(navConfig, Destination.Home)
 
-                    AnimatedVisibility(
-                        visible = backStack.size == 1,
-                        enter = slideInVertically { it },
-                        exit = slideOutVertically { it },
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .navigationBarsPadding(),
-                    ) {
-                        BottomBarView(
-                            currentRoot = backStack.first() as Destination.TopLevelDestination,
-                            onTabClick = { destination ->
-                                backStack.clear()
-                                backStack.add(destination)
-                            },
-                        )
-                    }
-                }
-            }
-        }
-    } else {
+    val botPaddingValues = PaddingValues(
+        bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    )
+    CompositionLocalProvider(LocalBottomBarPadding provides botPaddingValues) {
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface),
         ) {
-            CircularProgressIndicator()
+            AppNavDisplay(backStack = backStack)
+
+            AppBottomBar(backStack = backStack)
         }
     }
 }
 
-fun getAsyncImageLoader(context: PlatformContext): ImageLoader {
-    return ImageLoader.Builder(context)
-        .logger(DebugLogger())
-        .build()
+@Composable
+private fun AppNavDisplay(
+    backStack: NavBackStack<NavKey>,
+    modifier: Modifier = Modifier
+) {
+    NavDisplay(
+        backStack = backStack,
+        onBack = { backStack.removeLastOrNull() },
+        entryDecorators = listOf(
+            rememberSaveableStateHolderNavEntryDecorator(),
+            rememberViewModelStoreNavEntryDecorator(),
+        ),
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
+        entryProvider = entryProvider {
+            entry<Destination.Home> {
+                HomeScreen(
+                    onNavigateToMoveList = { gameId, characterId ->
+                        backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
+                    }
+                )
+            }
+            entry<Destination.Search> {
+                PlaceholderScreen(label = "Search")
+            }
+            entry<Destination.Saved> {
+                PlaceholderScreen(label = "Saved")
+            }
+            entry<Destination.Quiz> {
+                PlaceholderScreen(label = "Quiz")
+            }
+            entry<Destination.More> {
+                MoreScreen(
+                    onNavigate = { moreItem ->
+                        when (moreItem) {
+                            MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
+
+                            MoreItem.Theme -> {/* no navigation */}
+                        }
+                    }
+                )
+            }
+
+            entry<Destination.MoveList> { destination ->
+                MoveListScreen(
+                    gameId = destination.gameId,
+                    characterId = destination.characterId,
+                )
+            }
+            entry<Destination.FeatureSettings> {
+                FeatureSettingsScreen()
+            }
+        }
+    )
+}
+
+@Composable
+private fun BoxScope.AppBottomBar(
+    backStack: NavBackStack<NavKey>,
+    modifier: Modifier = Modifier
+) {
+    AnimatedVisibility(
+        visible = (backStack.size == 1),
+        enter = slideInVertically { it },
+        exit = slideOutVertically { it },
+        modifier = modifier
+            .align(Alignment.BottomCenter)
+            .navigationBarsPadding(),
+    ) {
+        BottomBarView(
+            currentRoot = backStack.first() as Destination.TopLevelDestination,
+            onTabClick = { destination ->
+                backStack.clear()
+                backStack.add(destination)
+            },
+        )
+    }
+}
+
+@Composable
+private fun LogCoil() {
+    setSingletonImageLoaderFactory { context ->
+        ImageLoader.Builder(context)
+            .logger(DebugLogger())
+            .build()
+    }
 }
