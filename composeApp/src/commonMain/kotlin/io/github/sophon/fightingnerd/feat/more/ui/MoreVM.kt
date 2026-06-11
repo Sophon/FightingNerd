@@ -23,17 +23,22 @@ internal class MoreVM(
     private val _navEvent = Channel<MoreItem>(Channel.BUFFERED)
     val navEvent: Flow<MoreItem> = _navEvent.receiveAsFlow()
 
-    fun onThemeItemClick(isDialogVisible: Boolean) {
+    fun onThemeDialog(isDialogVisible: Boolean) {
         _state.update {
             val themeSelectorDialog = if (isDialogVisible) MoreState.ThemeSelectorDialog() else null
             it.copy(themeSelectorDialog = themeSelectorDialog)
         }
     }
 
+    fun onThemeSelect(theme: Theme) {
+        onThemeDialog(isDialogVisible = false)
+        //TODO: call usecase
+    }
+
     fun onItemClick(item: MoreItem) {
         viewModelScope.launch {
             when (item) {
-                MoreItem.Theme -> onThemeItemClick(isDialogVisible = true)
+                MoreItem.Theme -> onThemeDialog(isDialogVisible = true)
                 MoreItem.FeatureSettings -> _navEvent.send(item)
             }
         }
@@ -49,10 +54,5 @@ internal class MoreVM(
     fun onDonateItemClick(method: DonationMethod) {
         _state.update { it.copy(donationSelectorDialog = null) }
         openUrlUseCase.invoke(url = method.url)
-    }
-
-    fun onThemeSelect(theme: Theme) {
-        onThemeItemClick(isDialogVisible = false)
-        //TODO: call usecase
     }
 }

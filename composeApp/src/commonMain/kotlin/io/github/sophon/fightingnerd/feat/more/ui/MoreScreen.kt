@@ -65,7 +65,7 @@ internal fun MoreScreen(
     Content(
         state = state,
         onItemClick = vm::onItemClick,
-        onThemeItemClick = vm::onThemeItemClick,
+        onThemeItemClick = vm::onThemeDialog,
         onThemeSelected = vm::onThemeSelect,
         onDonateClick = vm::onDonateClick,
         onSelectDonationMethod = vm::onDonateItemClick,

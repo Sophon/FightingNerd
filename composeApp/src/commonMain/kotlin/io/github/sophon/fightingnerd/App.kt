@@ -55,7 +55,14 @@ private val navConfig = SavedStateConfiguration {
     serializersModule = SerializersModule {
         polymorphic(NavKey::class) {
             subclass(Destination.Home::class, Destination.Home.serializer())
+            subclass(Destination.Search::class, Destination.Search.serializer())
+            subclass(Destination.Saved::class, Destination.Saved.serializer())
+            subclass(Destination.Quiz::class, Destination.Quiz.serializer())
+            subclass(Destination.More::class, Destination.More.serializer())
             subclass(Destination.MoveList::class, Destination.MoveList.serializer())
+            subclass(Destination.MoveDetail::class, Destination.MoveDetail.serializer())
+            subclass(Destination.CharacterDetail::class, Destination.CharacterDetail.serializer())
+            subclass(Destination.FeatureSettings::class, Destination.FeatureSettings.serializer())
         }
     }
 }
