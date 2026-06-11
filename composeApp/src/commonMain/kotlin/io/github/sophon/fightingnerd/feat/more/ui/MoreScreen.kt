@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.more_donate
 import fightingnerd.composeapp.generated.resources.more_donate_dialog_title
+import fightingnerd.composeapp.generated.resources.more_theme_dialog_title
 import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.RoundedItem
@@ -44,7 +45,6 @@ import io.github.sophon.fightingnerd.core.ui.SingleSelectDialog
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.more.model.Theme
-import io.github.sophon.fightingnerd.feat.more.ui.theme.ThemeDialog
 import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -104,10 +104,11 @@ private fun Content(
         }
 
         state.themeSelectorDialog?.let { dialog ->
-            ThemeDialog(
-                themeList = dialog.themeList,
-                selectedTheme = Theme.System,
-                onThemeSelected = onThemeSelected,
+            SingleSelectDialog(
+                title = stringResource(Res.string.more_theme_dialog_title),
+                items = dialog.themeList,
+                selectedItem = dialog.themeList.first(),
+                onItemSelect = onThemeSelected,
                 onDismiss = { onThemeItemClick(false) },
             )
         }
