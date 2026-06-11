@@ -103,20 +103,20 @@ private fun Content(
             )
         }
 
-        state.themeSelectorDialog?.let { dialog ->
+        if (state.themeSelectorDialog.isVisible) {
             SingleSelectDialog(
                 title = stringResource(Res.string.more_theme_dialog_title),
-                items = dialog.themeModeLists,
-                selectedItem = dialog.themeModeLists.first(),
+                items = state.themeSelectorDialog.themeModeLists,
+                selectedItem = state.themeSelectorDialog.selectedTheme,
                 onItemSelect = onThemeSelected,
                 onDismiss = { onThemeItemClick(false) },
             )
         }
 
-        state.donationSelectorDialog?.let { dialog ->
+        if (state.donationSelectorDialog.isVisible) {
             SingleSelectDialog(
                 title = stringResource(Res.string.more_donate_dialog_title),
-                items = dialog.methodList,
+                items = state.donationSelectorDialog.methodList,
                 onItemSelect = onSelectDonationMethod,
                 onDismiss = { onDonateClick(false) },
             )

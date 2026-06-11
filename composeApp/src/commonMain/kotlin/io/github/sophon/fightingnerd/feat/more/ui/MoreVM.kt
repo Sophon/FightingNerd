@@ -8,6 +8,7 @@ import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.theme.ThemeMode
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 internal class MoreVM(
     private val openUrlUseCase: OpenUrlUseCase,
     private val setThemeUseCase: SetThemeUseCase,
+    private val subscribeToThemeUseCase: SubscribeToThemeUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoreState())
     val state = _state.asStateFlow()
@@ -27,10 +29,15 @@ internal class MoreVM(
     private val _navEvent = Channel<MoreItem>(Channel.BUFFERED)
     val navEvent: Flow<MoreItem> = _navEvent.receiveAsFlow()
 
+
+    init {
+        loadTheme()
+    }
+
+
     fun onThemeDialog(isDialogVisible: Boolean) {
         _state.update {
-            val themeSelectorDialog = if (isDialogVisible) MoreState.ThemeSelectorDialog() else null
-            it.copy(themeSelectorDialog = themeSelectorDialog)
+            it.copy(themeSelectorDialog = it.themeSelectorDialog.copy(isVisible = isDialogVisible))
         }
     }
 
@@ -54,14 +61,27 @@ internal class MoreVM(
 
     fun onDonateClick(isVisible: Boolean) {
         _state.update {
-            val dialog = if (isVisible) MoreState.DonationDialog() else null
-            it.copy(donationSelectorDialog = dialog)
+            it.copy(donationSelectorDialog = it.donationSelectorDialog.copy(isVisible = isVisible))
         }
     }
 
     fun onDonateItemClick(method: DonationMethod) {
-        _state.update { it.copy(donationSelectorDialog = null) }
+        _state.update {
+            it.copy(donationSelectorDialog = it.donationSelectorDialog.copy(isVisible = false))
+        }
         openUrlUseCase.invoke(url = method.url)
+    }
+
+
+    private fun loadTheme() {
+        viewModelScope.launch {
+            subscribeToThemeUseCase.invoke().collect { themeMode ->
+                _state.update { state ->
+                    val updatedDialog = state.themeSelectorDialog.copy(selectedTheme = themeMode)
+                    state.copy(themeSelectorDialog = updatedDialog)
+                }
+            }
+        }
     }
 
 
