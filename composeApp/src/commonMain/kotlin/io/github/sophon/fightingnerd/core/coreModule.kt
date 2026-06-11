@@ -3,13 +3,16 @@ package io.github.sophon.fightingnerd.core
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.fightingnerd.core.data.PreferenceRepo
 import io.github.sophon.fightingnerd.core.data.db.DatabaseDriverFactory
 import io.github.sophon.fightingnerd.core.data.db.SqlCharacterDB
 import io.github.sophon.fightingnerd.core.data.db.SqlMoveDB
+import io.github.sophon.fightingnerd.core.data.store.PreferenceRepoImpl
 import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
 import io.github.sophon.fightingnerd.db.character.CharacterDatabase
 import io.github.sophon.fightingnerd.db.move.MoveDatabase
 import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal fun coreModule() = module {
@@ -30,6 +33,8 @@ internal fun coreModule() = module {
             characterListDB to moveListDB
         }
     }
+
+    singleOf(::PreferenceRepoImpl).bind<PreferenceRepo>()
 
     singleOf(::OpenUrlUseCase)
 }
