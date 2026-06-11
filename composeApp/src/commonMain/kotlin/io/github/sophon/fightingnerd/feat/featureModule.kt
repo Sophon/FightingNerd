@@ -11,6 +11,7 @@ import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListVM
 import io.github.sophon.fightingnerd.feat.moveList.usecase.LoadMoveListDataUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsVM
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
@@ -35,6 +36,7 @@ internal fun featureModule() = module {
 
     singleOf(::GetAvailableFeaturesUseCase)
     singleOf(::ToggleFeatureUseCase)
+    singleOf(::SetThemeUseCase)
 
     viewModelOf(::FeatureSettingsVM)
     //endregion

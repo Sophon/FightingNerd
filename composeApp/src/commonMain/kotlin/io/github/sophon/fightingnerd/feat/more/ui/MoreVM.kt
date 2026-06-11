@@ -2,9 +2,12 @@ package io.github.sophon.fightingnerd.feat.more.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.onError
 import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
+import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
 import io.github.sophon.fightingnerd.theme.ThemeMode
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -16,6 +19,7 @@ import kotlinx.coroutines.launch
 
 internal class MoreVM(
     private val openUrlUseCase: OpenUrlUseCase,
+    private val setThemeUseCase: SetThemeUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoreState())
     val state = _state.asStateFlow()
@@ -32,7 +36,11 @@ internal class MoreVM(
 
     fun onThemeSelect(themeMode: ThemeMode) {
         onThemeDialog(isDialogVisible = false)
-        //TODO: call usecase
+
+        viewModelScope.launch {
+            setThemeUseCase.invoke(themeMode)
+                .onError { Napier.e(tag = TAG) { "onThemeSelect: $it" } }
+        }
     }
 
     fun onItemClick(item: MoreItem) {
@@ -54,5 +62,10 @@ internal class MoreVM(
     fun onDonateItemClick(method: DonationMethod) {
         _state.update { it.copy(donationSelectorDialog = null) }
         openUrlUseCase.invoke(url = method.url)
+    }
+
+
+    private companion object {
+        const val TAG = "MoreVM"
     }
 }

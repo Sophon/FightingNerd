@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import io.github.sophon.fightingnerd.theme.AppTheme
+import io.github.sophon.fightingnerd.theme.ThemeMode
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 internal data class BottomBarItem(
@@ -103,7 +104,7 @@ private fun BottomBarItem(
 @Composable
 @Preview(showBackground = true)
 private fun BottomBarPreviewDark() {
-    AppTheme(darkTheme = true) {
+    AppTheme(themeMode = ThemeMode.Dark) {
         AppBottomBar(
             items = listOf(
                 BottomBarItem(
@@ -135,7 +136,7 @@ private fun BottomBarPreviewDark() {
 @Composable
 @Preview(showBackground = true)
 private fun BottomBarPreviewLight() {
-    AppTheme(darkTheme = false) {
+    AppTheme(themeMode = ThemeMode.Light) {
         AppBottomBar(
             items = listOf(
                 BottomBarItem(

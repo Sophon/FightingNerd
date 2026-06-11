@@ -9,6 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.feat.home.ui.composables.WidgetSection
 import io.github.sophon.fightingnerd.theme.AppTheme
+import io.github.sophon.fightingnerd.theme.ThemeMode
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -50,7 +51,7 @@ private fun Content(
 @Composable
 @Preview
 private fun DarkHomeScreenPreview() {
-    AppTheme(darkTheme = true) {
+    AppTheme(themeMode = ThemeMode.Dark) {
         Content(
             state = HomeViewState.PREVIEW,
             onExpandWidget = {},
@@ -62,7 +63,7 @@ private fun DarkHomeScreenPreview() {
 @Composable
 @Preview
 private fun LightHomeScreenPreview() {
-    AppTheme(darkTheme = false) {
+    AppTheme(themeMode = ThemeMode.Light) {
         Content(
             state = HomeViewState.PREVIEW,
             onExpandWidget = {},
