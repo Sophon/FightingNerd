@@ -120,7 +120,7 @@ internal fun App() {
                             }
                             entry<Destination.More> {
                                 MoreScreen(
-                                    onItemClick = { moreItem ->
+                                    onNavigate = { moreItem ->
                                         when (moreItem) {
                                             MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
 
