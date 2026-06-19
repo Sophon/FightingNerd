@@ -162,7 +162,7 @@ private fun AppNavDisplay(
                         when (moreItem) {
                             MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
 
-                            MoreItem.Theme -> {/* no navigation */}
+//                            MoreItem.Theme -> {/* no navigation */}
                         }
                     }
                 )
