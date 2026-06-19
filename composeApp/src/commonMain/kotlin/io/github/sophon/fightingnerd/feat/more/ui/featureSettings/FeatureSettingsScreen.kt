@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
@@ -51,7 +50,7 @@ private fun Content(
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(
-            space = nerdDimensions.listRowPaddingHorizontal,
+            space = nerdDimensions.inlineGap,
             alignment = Alignment.Top,
         ),
         modifier = modifier
@@ -64,7 +63,7 @@ private fun Content(
         itemsIndexed(state.featureList) { featureIndex, feature ->
             val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
             Column(
-                modifier = modifier
+                modifier = Modifier
                     .fillMaxWidth()
                     .clip(shape)
                     .background(nerdColorPalette.surface)
@@ -81,8 +80,9 @@ private fun Content(
                     Toggle(
                         title = game.displayName,
                         isEnabled = game.isEnabled,
-                        onToggle = { onGameToggle(featureIndex, gameIndex, it) },
-                        modifier = Modifier.padding(start = 16.dp),
+                        onToggle = {
+                            onGameToggle(featureIndex, gameIndex, it)
+                        },
                     )
                 }
             }
@@ -121,7 +121,7 @@ private fun Toggle(
             subtitle?.let {
                 Text(
                     text = it,
-                    style = nerdTypography.labelMedium,
+                    style = nerdTypography.bodySmall,
                     color = nerdColorPalette.textTertiary,
                 )
             }
