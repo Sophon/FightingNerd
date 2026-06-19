@@ -3,11 +3,12 @@ package io.github.sophon.fightingnerd.navigation.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import io.github.sophon.fightingnerd.theme.nerdColorPalette
+import io.github.sophon.fightingnerd.theme.nerdTypography
 
 @Composable
 internal fun PlaceholderScreen(
@@ -18,12 +19,12 @@ internal fun PlaceholderScreen(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
+            .background(nerdColorPalette.background),
     ) {
         Text(
-            text = label,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface,
+            text = label.uppercase(),
+            style = nerdTypography.displayLarge,
+            color = nerdColorPalette.textPrimary,
         )
     }
 }

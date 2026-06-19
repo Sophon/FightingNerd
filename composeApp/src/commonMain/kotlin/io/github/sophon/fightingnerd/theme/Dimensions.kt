@@ -80,7 +80,7 @@ internal data class FightingNerdDimensions(
     val strokeThin: Dp = 1.dp,
     val strokeStrong: Dp = 2.dp,
     val iconInline: Dp = 16.dp,
-    val iconDefault: Dp = 24.dp,
+    val iconDefault: Dp = 32.dp,
     val iconLarge: Dp = 48.dp,
     val iconHeadline: Dp = 64.dp,
     val topAppBarHeight: Dp = 56.dp,
