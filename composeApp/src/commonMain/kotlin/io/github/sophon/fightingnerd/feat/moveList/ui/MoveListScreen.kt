@@ -1,21 +1,19 @@
 package io.github.sophon.fightingnerd.feat.moveList.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.feat.moveList.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdDimensions
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -48,23 +46,23 @@ private fun Content(
         modifier = modifier,
     ) { paddingValues ->
         LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(nerdDimensions.listRowPaddingVertical),
             modifier = Modifier
                 .padding(paddingValues)
-                .padding(4.dp)
-                .clip(RoundedCornerShape(8.dp))
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                .padding(
+                    horizontal = nerdDimensions.screenPaddingHorizontal,
+                    vertical = nerdDimensions.screenPaddingVertical,
+                )
+                .background(MaterialTheme.colorScheme.surface)
         ) {
-            state.uiMoveList.forEach { move ->
-                item(
-                    key = move.id
-                ) {
-                    MoveItem(
-                        move = move,
-                        onMoveClick = { onMoveClick(move.id) },
-                        modifier = Modifier.padding(4.dp)
-                    )
-                    Spacer(Modifier.height(4.dp))
-                }
+            items(
+                items = state.uiMoveList,
+                key = { it.id }
+            ) { move ->
+                MoveItem(
+                    move = move,
+                    onMoveClick = { onMoveClick(move.id) },
+                )
             }
         }
     }

@@ -5,8 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.fightingnerd.feat.moveList.model.Property
+import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListState.Companion.toUiMove
 import io.github.sophon.fightingnerd.feat.moveList.usecase.LoadMoveListDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -49,28 +48,6 @@ internal class MoveListVM(
                 }
                 .onError { Napier.e(tag = TAG) { "loadData: $it" } }
         }
-    }
-
-    private fun Move.toUiMove(): MoveListState.UiMove {
-        return MoveListState.UiMove(
-            id = id,
-            input = input,
-            startup = startup,
-            level = guard,
-            onHit = onHit,
-            onBlock = onBlock,
-            onCounter = onCH,
-            propertySet = buildSet {
-                invulnerability?.let { add(Property.Invincible) }
-                t8Properties?.let { props ->
-                    if (props.isHeat) add(Property.Heat)
-                    if (props.isHoming) add(Property.Homing)
-                    if (props.isPowerCrush) add(Property.PowerCrush)
-                    if (props.isHighCrush) add(Property.HighCrush)
-                    if (props.isLowCrush) add(Property.LowCrush)
-                }
-            },
-        )
     }
 
 
