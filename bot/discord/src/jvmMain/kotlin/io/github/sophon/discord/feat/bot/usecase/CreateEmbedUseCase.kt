@@ -135,7 +135,7 @@ internal class CreateEmbedUseCase(
 
             if (rollChance(successPercentage = RNG_DONATION_PCT_COMMAND)) {
                 interaction.channel.createMessage {
-                    content = "Consider donating (`/donate` or `/tip`): **<${URL_KOFI}>**"
+                    content = donationMessage()
                 }
             }
 
