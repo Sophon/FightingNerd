@@ -1,7 +1,6 @@
 package io.github.sophon.fightingnerd.feat.more.ui.featureSettings
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +21,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdColorPalette
+import io.github.sophon.fightingnerd.theme.nerdDimensions
+import io.github.sophon.fightingnerd.theme.nerdTypography
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -50,37 +51,31 @@ private fun Content(
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(
-            space = 2.dp,
+            space = nerdDimensions.listRowPaddingHorizontal,
             alignment = Alignment.Top,
         ),
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(
+                horizontal = nerdDimensions.screenPaddingHorizontal,
+                vertical = nerdDimensions.screenPaddingVertical,
+            )
     ) {
-        item { Spacer(Modifier.height(16.dp)) }
-
         itemsIndexed(state.featureList) { featureIndex, feature ->
-            val shape = RoundedCornerShape(16.dp)
+            val shape = RoundedCornerShape(nerdDimensions.cornerSubtle)
             Column(
                 modifier = modifier
                     .fillMaxWidth()
-                    .padding(8.dp)
                     .clip(shape)
-                    .background(color = MaterialTheme.colorScheme.surfaceVariant)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline.copy(.2f),
-                        shape = shape,
-                    ),
+                    .background(nerdColorPalette.surface)
             ) {
-                Spacer(Modifier.height(4.dp))
                 Toggle(
                     title = feature.featureName,
                     subtitle = feature.version,
                     isEnabled = feature.isEnabled,
+                    isCategory = true,
                     onToggle = { onFeatureToggle(featureIndex, it) },
                 )
-                Spacer(Modifier.height(8.dp))
 
                 feature.gameList.forEachIndexed { gameIndex, game ->
                     Toggle(
@@ -92,8 +87,6 @@ private fun Content(
                 }
             }
         }
-
-        item { Spacer(Modifier.height(32.dp)) }
     }
 }
 
@@ -103,6 +96,7 @@ private fun Toggle(
     isEnabled: Boolean,
     onToggle: (Boolean) -> Unit,
     subtitle: String? = null,
+    isCategory: Boolean = false,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -110,7 +104,7 @@ private fun Toggle(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp),
+            .padding(nerdDimensions.componentPadding),
     ) {
         Column(
             horizontalAlignment = Alignment.Start,
@@ -119,14 +113,16 @@ private fun Toggle(
         ) {
             Text(
                 text = title,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface,
+                style = if (isCategory) nerdTypography.titleLarge else nerdTypography.bodyLarge,
+                color = nerdColorPalette.textPrimary,
             )
+            Spacer(Modifier.height(nerdDimensions.inlineGap))
+
             subtitle?.let {
                 Text(
                     text = it,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = nerdTypography.labelMedium,
+                    color = nerdColorPalette.textTertiary,
                 )
             }
         }
@@ -141,7 +137,7 @@ private fun Toggle(
 
 //region PREVIEW
 @Composable
-@Preview(showBackground = true)
+@Preview
 private fun FeatureSettingsPreview() {
     FightingNerdTheme {
         Content(

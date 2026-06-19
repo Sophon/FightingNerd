@@ -84,7 +84,12 @@ private fun Content(
     modifier: Modifier = Modifier
 ) {
     Box(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = nerdDimensions.screenPaddingHorizontal,
+                vertical = nerdDimensions.screenPaddingVertical,
+            )
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -131,10 +136,6 @@ private fun ItemSection(
 ) {
     LazyColumn(
         modifier = modifier
-            .padding(
-                horizontal = nerdDimensions.listRowPaddingHorizontal,
-                vertical = nerdDimensions.listRowPaddingVertical,
-            )
             .clip(RoundedCornerShape(nerdDimensions.cornerSubtle))
             .background(nerdColorPalette.surface)
     ) {
@@ -201,7 +202,7 @@ private fun Footer(
                 style = nerdTypography.labelLarge,
             )
         }
-        Spacer(Modifier.height(nerdDimensions.sectionGap))
+        Spacer(Modifier.height(nerdDimensions.componentPadding))
 
         Text(
             text = BuildKonfig.VERSION,
