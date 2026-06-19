@@ -110,9 +110,9 @@ internal fun WidgetHeader(
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val shape = if (isExpanded) {
-        RoundedCornerShape(topStart = nerdDimensions.cornerSubtle, topEnd = nerdDimensions.cornerSubtle)
+        RoundedCornerShape(topStart = nerdDimensions.cornerDefault, topEnd = nerdDimensions.cornerDefault)
     } else {
-        RoundedCornerShape(nerdDimensions.cornerSubtle)
+        RoundedCornerShape(nerdDimensions.cornerDefault)
     }
 
     Row(
@@ -203,8 +203,8 @@ private fun CharacterMatrix(
                 .fillMaxWidth()
                 .clip(
                     RoundedCornerShape(
-                        bottomStart = nerdDimensions.cornerSubtle,
-                        bottomEnd = nerdDimensions.cornerSubtle,
+                        bottomStart = nerdDimensions.cornerDefault,
+                        bottomEnd = nerdDimensions.cornerDefault,
                     ),
                 )
                 .background(color = nerdColorPalette.surface)
@@ -227,7 +227,7 @@ private fun CharacterPanel(
     modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val shape = RoundedCornerShape(nerdDimensions.cornerSubtle)
+    val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,

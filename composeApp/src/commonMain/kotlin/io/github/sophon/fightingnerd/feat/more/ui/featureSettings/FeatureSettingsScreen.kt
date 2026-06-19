@@ -62,7 +62,7 @@ private fun Content(
             )
     ) {
         itemsIndexed(state.featureList) { featureIndex, feature ->
-            val shape = RoundedCornerShape(nerdDimensions.cornerSubtle)
+            val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -113,7 +113,7 @@ private fun Toggle(
         ) {
             Text(
                 text = title,
-                style = if (isCategory) nerdTypography.titleLarge else nerdTypography.bodyLarge,
+                style = if (isCategory) nerdTypography.titleLarge else nerdTypography.titleSmall,
                 color = nerdColorPalette.textPrimary,
             )
             Spacer(Modifier.height(nerdDimensions.inlineGap))

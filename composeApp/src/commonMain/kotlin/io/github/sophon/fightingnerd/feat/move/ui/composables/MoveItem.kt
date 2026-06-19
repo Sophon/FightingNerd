@@ -59,7 +59,7 @@ internal fun MoveItem(
                 onClick = onMoveClick,
                 indication = ripple(color = MaterialTheme.colorScheme.primaryContainer)
             )
-            .clip(RoundedCornerShape(nerdDimensions.cornerSubtle))
+            .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(nerdDimensions.componentPadding)
     ) {

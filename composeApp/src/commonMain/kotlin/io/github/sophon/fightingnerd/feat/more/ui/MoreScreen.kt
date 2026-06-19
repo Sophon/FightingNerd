@@ -136,7 +136,7 @@ private fun ItemSection(
 ) {
     LazyColumn(
         modifier = modifier
-            .clip(RoundedCornerShape(nerdDimensions.cornerSubtle))
+            .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
             .background(nerdColorPalette.surface)
     ) {
         itemsIndexed(items) { index, moreItem ->
