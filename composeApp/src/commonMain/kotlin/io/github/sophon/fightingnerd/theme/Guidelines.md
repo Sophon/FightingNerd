@@ -1,7 +1,7 @@
 # FightingNerd UI Guideline
 
 A clone of [STRV's brand system](https://brand.strv.com/), adapted for FightingNerd's UI.
-This document covers **rules and use cases**. Actual color codes and typography values live in Kotlin code (see `core/ui/theme/` — TBD).
+This document covers **rules and use cases**. Actual color codes, type sizes, and spacing values live in Kotlin code (see `core/ui/theme/`).
 
 ---
 
@@ -11,8 +11,8 @@ This document covers **rules and use cases**. Actual color codes and typography 
 |---|---|
 | Display font | **Anton** (ALL CAPS, headlines) |
 | UI font | **Inter** (body, labels, supporting headlines) |
-| Background (dark) | Near-black (`Neutral 3%`) |
-| Background (light) | Near-white (`Neutral 95%`) |
+| Background (dark) | Near-black |
+| Background (light) | Near-white |
 | Accent | Brand red — sparingly |
 | Canonical mode | Dark |
 
@@ -22,93 +22,81 @@ This document covers **rules and use cases**. Actual color codes and typography 
 
 ### Palette structure
 
-One accent (red) on a neutral grayscale ramp. No secondary or tertiary accent colors. System colors (green / yellow / orange) exist **only** for status feedback, never for decoration.
+One accent (red) on a neutral grayscale ramp. No secondary or tertiary accent colors. System colors (success / warning / error) exist **only** for status feedback, never for decoration.
 
 **Token families:**
-- `Red` — brand accent + hover/pressed states
-- `Neutral` — `3%` (near-black) through `95%` (near-white), 10 stops
-- `White` / `Black` — pure
-- System — Green (confirmations), Yellow (alerts), Orange (errors)
+- `accent` / `accentHover` / `accentPressed` — brand red + interaction states
+- `background` — app background, the dominant color on every screen
+- `surface` / `surfaceHigh` / `surfacePressed` — elevated neutrals
+- `textPrimary` / `textSecondary` / `textTertiary` / `textDisabled` — text on background
+- `divider` / `dividerSubtle` — separators and outlines
+- `success` / `warning` / `error` — status feedback
+- `scrim` — modal overlays (combined with alpha at call site)
 
 ### The space allocation rule (most important)
 
 Per screen, the visual budget is roughly:
 
-1. **Most space** → background
+1. **Most space** → `background`
 2. **Next most** → text on background
-3. **Cherry on top** → red
+3. **Cherry on top** → `accent`
 
-If a screen looks "red-heavy," it's wrong. Pull red back.
+If a screen looks "red-heavy," it's wrong. Pull `accent` back.
 
-### Where each color goes — dark mode (canonical)
+### Where each color goes
 
 **Backgrounds (from lowest to highest elevation):**
-| Surface | Color |
+| Surface | Token |
 |---|---|
-| App background | Neutral 3% |
-| Elevated surface (card, sheet, list row container) | Neutral 10% |
-| Higher elevation (dialog, popup, menu) | Neutral 15% |
-| Highest / pressed states | Neutral 20% |
+| App background | `background` |
+| Elevated surface (card, sheet, list row container) | `surface` |
+| Higher elevation (dialog, popup, menu) | `surfaceHigh` |
+| Pressed states on neutral surfaces | `surfacePressed` |
 
-**Text on dark backgrounds:**
-| Role | Color |
+**Text on backgrounds:**
+| Role | Token |
 |---|---|
-| Primary text (headlines, body) | White |
-| Secondary text (subtitles, supporting info) | Neutral 65% |
-| Tertiary text (timestamps, metadata, hints) | Neutral 40% |
-| Disabled text | Neutral 40% |
+| Primary text (headlines, body) | `textPrimary` |
+| Secondary text (subtitles, supporting info) | `textSecondary` |
+| Tertiary text (timestamps, metadata, hints) | `textTertiary` |
+| Disabled text | `textDisabled` |
 
 **Dividers & borders:**
-| Role | Color |
+| Role | Token |
 |---|---|
-| Strong divider / focused outline | Neutral 40% |
-| Subtle divider / unfocused outline | Neutral 20% |
+| Strong divider / focused outline | `divider` |
+| Subtle divider / unfocused outline | `dividerSubtle` |
 
-### Where each color goes — light mode
+Light mode mirrors the same role structure. Light is supported but not canonical.
 
-Mirror the dark scheme. Light mode is supported but not canonical.
+### `accent` — explicit usage list
 
-**Backgrounds:**
-| Surface | Color |
-|---|---|
-| App background | Neutral 95% |
-| Elevated surface | White |
-| Higher elevation | Neutral 90% |
+`accent` is **reserved**. Use only for the cases below — anywhere else is wrong unless added to this list.
 
-**Text on light backgrounds:**
-| Role | Color |
-|---|---|
-| Primary text | Black |
-| Secondary text | Neutral 40% |
-| Tertiary text | Neutral 65% |
-
-### Red — explicit usage list
-
-Red appears **only** in these places. Anywhere else is wrong unless added to this list.
-
-**Use red for:**
+**Use `accent` for:**
 - The FightingNerd logo
 - Primary CTA buttons (the single most important action on a screen)
 - Selected / active state on primary navigation (bottom nav, tabs)
 - High-importance move properties: **Heat**, **Homing**, and any future property of similar weight
-- Focused outline on text fields (optional — neutral also valid)
 
-**Do not use red for:**
+**Never use `accent` for:**
 - Ordinary body or heading text
 - Dividers, borders, outlines (use neutrals)
 - Backgrounds of any kind (no red surfaces, no red banners)
 - Hover/pressed states on non-CTA buttons
 - Secondary actions
 - Decorative accents (no red dots, lines, or shapes "just because")
-- Error states — use **Orange** instead
+- Error states — use `error` instead
+
+`accentHover` and `accentPressed` are for interaction states on `accent` surfaces only (i.e. the primary CTA). They are not general-purpose neutrals.
 
 ### System colors
 
-| Color | Use for |
+| Token | Use for |
 |---|---|
-| Green | Success confirmations only (toasts, checkmarks) |
-| Yellow | Warning states (non-blocking alerts) |
-| Orange | Error states, destructive action confirmation, blocking alerts |
+| `success` | Confirmation feedback only (toasts, checkmarks) |
+| `warning` | Non-blocking alerts |
+| `error` | Error states, destructive action confirmation, blocking alerts |
 
 System colors are never decorative. If they're not communicating status, they shouldn't be on the screen.
 
@@ -117,7 +105,7 @@ System colors are never decorative. If they're not communicating status, they sh
 - Don't introduce new accent colors. One red is enough.
 - Don't use gradients. Flat fills only.
 - Don't use semi-transparent red over photos or surfaces.
-- Don't use red as a "warning" — that's Orange's job. Red is brand.
+- Don't use `accent` as a "warning" — that's `error`'s job. `accent` is brand.
 
 ---
 
@@ -139,7 +127,7 @@ Anton appears in:
 - Card titles for hero / featured content
 - "Display" moments: dialog headlines, prominent CTAs (button label optional — usually Inter is fine)
 
-Anton is **always ALL CAPS** and uses **−2% letter spacing**. Never sentence case. Never used for sentences or paragraphs.
+Anton is **always ALL CAPS** (uppercase at call site) and uses **−2% letter spacing**. Never sentence case. Never used for sentences or paragraphs.
 
 ### When to use Inter
 
@@ -161,23 +149,18 @@ Inter weights used:
 - **Regular** — default body text
 - (Skip Light / Thin — too fragile on mobile)
 
-### Type scale (roles, not pixel sizes)
+### Type scale (M3 slot mapping)
 
-Sizes get defined later in code. For now, these are the **roles** the scale needs to cover:
-
-| Role | Font | Casing | Where it appears |
-|---|---|---|---|
-| Display Large | Anton | UPPER | Splash, onboarding hero, marketing-y empty states |
-| Display | Anton | UPPER | Screen titles in large top app bar |
-| Headline | Anton | UPPER | Section headers within a screen |
-| Sub-headline | Anton | UPPER | Card titles, dialog titles |
-| Title | Inter Bold | Sentence | Top app bar small title, list row primary text (when bolded) |
-| Body Large | Inter Regular | Sentence | Body paragraphs |
-| Body | Inter Regular | Sentence | Default body, list row secondary text |
-| Label | Inter Medium | Sentence | Buttons, chips, tags |
-| Label Small | Inter Medium | UPPER | Subtitle eyebrows, all-caps subtitles (use 5% letter spacing) |
-| Caption | Inter Regular | Sentence | Timestamps, metadata, hints |
-| Mono | Inter (use Inter, skip mono for now) | — | Reserved if needed later for frame data alignment |
+| Role | M3 slot(s) | Font | Casing | Where it appears |
+|---|---|---|---|---|
+| Display | `displayLarge` / `displayMedium` / `displaySmall` | Anton | UPPER | Hero moments: splash, onboarding, marketing empty states |
+| Headline | `headlineLarge` / `headlineMedium` | Anton | UPPER | Screen titles in large top app bar, section headers |
+| Sub-headline | `headlineSmall` | Anton | UPPER | Card titles, dialog titles |
+| Title | `titleLarge` / `titleMedium` / `titleSmall` | Inter Bold/SemiBold | Sentence | Top app bar small title, list row primary text |
+| Body | `bodyLarge` / `bodyMedium` | Inter Regular | Sentence | Paragraphs, list row secondary text |
+| Caption | `bodySmall` | Inter Regular | Sentence | Timestamps, metadata, hints |
+| Label | `labelLarge` | Inter Medium | Sentence | Buttons, chips, tags |
+| Label Small | `labelMedium` / `labelSmall` | Inter Medium | UPPER | Subtitle eyebrows, all-caps subtitles |
 
 ### Letter spacing
 
@@ -204,29 +187,74 @@ Copy STRV's "give it space to breathe" density for general UI. Frame data and mo
 
 ### Base unit
 
-4dp grid. All spacing should be a multiple of 4 (4, 8, 12, 16, 20, 24, 32, 40, 48, 64).
+4dp grid. All spacing should be a multiple of 4.
 
-### Common spacing roles (rough guidance, to be tokenized later)
+### Spacing roles
 
-| Role | Approx |
+Values live in code; the markdown documents what each role is *for*.
+
+**Screen-level:**
+| Token | Role |
 |---|---|
-| Tight (within a component) | 4–8 dp |
-| Default (between related elements) | 12–16 dp |
-| Section gap (between unrelated groups) | 24–32 dp |
-| Screen padding (horizontal) | 16–24 dp |
-| Screen padding (vertical, top of section) | 32–48 dp |
+| `screenPaddingHorizontal` | Left/right padding inside a screen |
+| `screenPaddingVertical` | Top/bottom padding inside a screen |
+| `sectionGap` | Between unrelated sections within a screen |
+| `sectionGapLarge` | Between major sections (e.g. screen title → first content) |
+
+**Component-level:**
+| Token | Role |
+|---|---|
+| `componentPadding` | Default internal padding for cards, sheets, dialogs |
+| `componentPaddingTight` | Tighter internal padding for compact components |
+| `componentGap` | Between sibling components (button row, card-to-card) |
+| `componentGapTight` | Between closely related sibling components |
+
+**Inline:**
+| Token | Role |
+|---|---|
+| `inlineGap` | Gap between icon and label, or two inline elements |
+| `inlineGapTight` | Very tight inline pairings (badge + count) |
+| `matrixGap` | Used for matrices (frame data grids etc.) |
+
+**Component-specific paddings:**
+| Token | Role |
+|---|---|
+| `buttonPaddingHorizontal` / `buttonPaddingVertical` | Inside buttons |
+| `chipPaddingHorizontal` / `chipPaddingVertical` | Inside chips and tags |
+| `listRowPaddingHorizontal` / `listRowPaddingVertical` | Inside list rows |
+| `topAppBarPaddingHorizontal` | Inside the top app bar |
+| `dialogPadding` | Inside dialogs |
 
 ### Corners
 
-**Sharp.** Use sharp corners for boxes, buttons, cards, charts, and other components. No rounded corners by default. Exceptions:
-- Floating action elements (if any) — small radius acceptable
+**Subtle rounding by default.** Use `cornerDefault` for buttons, cards, chips, sheets, dialogs, and other surfaces. Use `cornerExtra` only when a component genuinely needs more pronounced rounding (rare).
+
+Exceptions:
 - Avatars / character images — circular when appropriate
+- Dividers, borders — no radius (they're lines)
+
+### Strokes
+
+| Token | Role |
+|---|---|
+| `strokeThin` | Dividers, default borders |
+| `strokeStrong` | Focused outlines, emphasized borders |
+
+### Heights
+
+| Token | Role |
+|---|---|
+| `topAppBarHeight` | Top app bar |
+| `bottomNavHeight` | Bottom nav bar |
+| `buttonHeight` | Default button height |
+| `buttonHeightCompact` | Compact button variant |
+| `minTouchTarget` | Accessibility minimum for any interactive element |
 
 ### Layout principles
 
 - One primary CTA per screen. Two only if both are equally weighted (rare).
 - Less is more. If a screen feels cluttered, remove something before adding density.
-- Sharp alignment. Things line up on the grid or they don't appear.
+- Grid alignment. Things line up on the 4dp grid or they don't appear.
 
 ---
 
@@ -236,71 +264,74 @@ Copy STRV's "give it space to breathe" density for general UI. Frame data and mo
 
 | Type | Background | Text | When |
 |---|---|---|---|
-| Primary CTA | Red | White | The single most important action on a screen |
-| Secondary | Neutral 10% (dark) / Neutral 90% (light) | White (dark) / Black (light) | Common actions |
-| Outlined | Transparent, border Neutral 40% | White (dark) / Black (light) | Tertiary actions |
-| Text-only | Transparent | White (dark) / Black (light) | Inline / low-emphasis actions |
-| Destructive | Orange | White | Delete, irreversible actions |
+| Primary CTA | `accent` | `textPrimary` on red | The single most important action on a screen |
+| Secondary | `surface` | `textPrimary` | Common actions |
+| Outlined | Transparent, border `divider` | `textPrimary` | Tertiary actions |
+| Text-only | Transparent | `textPrimary` | Inline / low-emphasis actions |
+| Destructive | `error` | `textPrimary` on orange | Delete, irreversible actions |
 
 **Button rules:**
-- Sharp corners.
-- Label: Inter Medium or SemiBold.
+- `cornerDefault` corners.
+- Label: Inter Medium or SemiBold (`labelLarge` / `titleSmall`).
 - Casing: sentence case for actions ("Save changes"), ALL CAPS only when intentionally striking (rare).
 - Primary CTA: max one per screen.
-- Hover/pressed states defined per token in code (Red Hover, Red Pressed for primary; neutral shift for others).
+- Hover/pressed states: `accentHover` / `accentPressed` on the primary CTA; `surfacePressed` for neutral buttons.
 
 ### Text fields
 
-- Background: Neutral 10% (dark) / White (light)
-- Border (unfocused): Neutral 20%
-- Border (focused): Neutral 40% — red is optional but not default
-- Label: Inter Medium, Neutral 65% when unfocused, White when focused
-- Helper / error text: Inter Regular Caption size; Orange for errors
+- Background: `surface`
+- Border (unfocused): `dividerSubtle`
+- Border (focused): `divider` (neutral — `accent` is not used on text field outlines)
+- Label: Inter Medium, `textSecondary` when unfocused, `textPrimary` when focused
+- Helper / error text: Caption size (`bodySmall`); `error` for errors
 
 ### Cards & list rows
 
-- Background: Neutral 10% on a Neutral 3% screen
-- Padding: 16dp default
-- Primary text: Inter SemiBold, White
-- Secondary text: Inter Regular, Neutral 65%
-- Metadata / tertiary: Inter Regular Caption, Neutral 40%
-- Dividers between list rows: Neutral 20%, or no divider if cards are visually separated by spacing
+- Background: `surface` on a `background` screen
+- Padding: `componentPadding` default, `listRowPadding*` for list rows
+- Primary text: Inter SemiBold (`titleMedium`), `textPrimary`
+- Secondary text: Inter Regular (`bodyMedium`), `textSecondary`
+- Metadata / tertiary: Caption (`bodySmall`), `textTertiary`
+- Dividers between list rows: `dividerSubtle`, or no divider if cards are visually separated by spacing
+- Corners: `cornerDefault`
 
 ### Top app bar
 
-- Background: Neutral 3% (matches screen, no elevation)
-- Large title (when scrolled to top): Anton, ALL CAPS, White
-- Small title (when collapsed): Inter Bold, sentence case, White
-- Back arrow & action icons: White, Neutral 65% when disabled
+- Background: `background` (matches screen, no elevation)
+- Large title (when scrolled to top): Anton ALL CAPS, `textPrimary` (`headlineLarge`)
+- Small title (when collapsed): Inter Bold sentence case, `textPrimary` (`titleLarge`)
+- Back arrow & action icons: `textPrimary`, `textDisabled` when disabled
 
-### Bottom navigation (if used)
+### Bottom navigation
 
-- Background: Neutral 3% with subtle top divider (Neutral 20%)
-- Icon: Neutral 65% (unselected), Red (selected)
-- Label: Inter Medium, Neutral 65% (unselected), White (selected)
-- Selected state uses red on the icon, not the label background
+- Background: `background` with subtle top divider (`dividerSubtle`)
+- Icon: `textSecondary` (unselected), `accent` (selected)
+- Label: Inter Medium (`labelLarge`), `textSecondary` (unselected), `textPrimary` (selected)
+- Selected state uses `accent` on the icon, not the label background
 
 ### Property tags / chips
 
-The main place red appears in regular UI. Tags display move properties (Heat, Homing, Tornado, etc.).
+The main place `accent` appears in regular UI. Tags display move properties (Heat, Homing, Tornado, etc.).
 
 | Property importance | Background | Text |
 |---|---|---|
-| High (Heat, Homing) | Red | White |
-| Standard | Neutral 15% | White |
-| Subtle / informational | Transparent, border Neutral 20% | Neutral 65% |
+| High (Heat, Homing) | `accent` | `textPrimary` on red |
+| Standard | `surfaceHigh` | `textPrimary` |
+| Subtle / informational | Transparent, border `dividerSubtle` | `textSecondary` |
 
-- Sharp corners.
-- Small padding (4–8 dp vertical, 8–12 dp horizontal).
-- Label: Inter Medium or SemiBold, often ALL CAPS Label Small role.
+- Corners: `cornerDefault`.
+- Padding: `chipPaddingHorizontal` / `chipPaddingVertical`.
+- Label: Inter Medium, often ALL CAPS Label Small role (`labelMedium`).
 
 ### Dialogs / sheets
 
-- Background: Neutral 15%
-- Title: Anton, ALL CAPS
-- Body: Inter Regular
+- Background: `surfaceHigh`
+- Padding: `dialogPadding`
+- Title: Anton ALL CAPS (`headlineSmall`)
+- Body: Inter Regular (`bodyMedium`)
 - Buttons: standard button rules (one primary CTA max)
 - Dismiss: text-only button or X icon
+- Corners: `cornerDefault`
 
 ---
 
@@ -310,23 +341,24 @@ The main place red appears in regular UI. Tags display move properties (Heat, Ho
 
 - **Vector only** (SVG / vector drawables / SF Symbol-style line icons). No raster.
 - **Simple, single-color**, designed to be tinted.
-- **Consistent stroke weight** across the icon set (pick one — 1.5dp or 2dp typically — and stick to it).
+- **Consistent stroke weight** across the icon set (pick one and stick to it).
 - **Outline preferred** over filled, unless the icon represents a selected/active state.
 
 ### Sizes
 
-| Use | Size |
+| Token | Use |
 |---|---|
-| Inline with text | 16 dp |
-| Default | 24 dp |
-| Large (empty state, hero) | 48 dp |
+| `iconInline` | Alongside text |
+| `iconDefault` | Top bar, buttons, list rows |
+| `iconLarge` | Empty states, hero moments |
+| `iconHeadline` | With headlines |
 
 ### Tinting
 
-- Default: White (dark mode) / Black (light mode)
-- Disabled: Neutral 40%
-- Selected / active: Red (only for nav / toggle states)
-- Within a Red CTA button: White
+- Default: `textPrimary`
+- Disabled: `textDisabled`
+- Selected / active: `accent` (only for nav / toggle states)
+- Within an `accent` CTA button: `textPrimary` on red
 
 ### Imagery
 
@@ -342,8 +374,7 @@ These are intentionally not covered yet. Decide when they become relevant.
 
 - **Frame data semantic colors** — plus on block, minus on block, launcher, knockdown, etc. Likely needs its own sub-system separate from brand.
 - **Motion / animation conventions** — durations, easings, transition patterns.
-- **Touch target sizes** — accessibility minimums.
-- **Contrast ratios** — formal accessibility audit.
+- **Contrast ratios** — formal accessibility audit. (`minTouchTarget` token exists; contrast still pending.)
 - **Density variant for frame data tables** — tighter spacing than general UI.
 - **Skeleton / loading states** — placeholder color and animation rules.
 - **Pull-to-refresh, swipe actions, gestures** — interaction polish patterns.
@@ -353,6 +384,6 @@ These are intentionally not covered yet. Decide when they become relevant.
 
 ## Source of truth split
 
-- **Rules and use cases** → this document (GitHub wiki)
-- **Color values, type sizes, spacing tokens** → Kotlin code in `core/ui/theme/` (TBD)
+- **Rules and use cases** → this document
+- **Color values, type sizes, spacing tokens** → Kotlin code in `core/ui/theme/`
 - When in doubt about a *rule*, check here. When in doubt about a *value*, check the code.
