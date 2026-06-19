@@ -19,4 +19,3 @@ internal val SuccessDefault = Color(0xFF30D158)
 internal val WarningDefault = Color(0xFFFFD60A)
 internal val ErrorDefault = Color(0xFFFF453A)
 internal val ScrimDefault = Color(0xFF000000)
-

@@ -56,7 +56,10 @@ private val defaultColorScheme = darkColorScheme(
 internal fun FightingNerdTheme(
     content: @Composable () -> Unit,
 ) {
-    CompositionLocalProvider(localFightingNerdColorPalette provides defaultFightingNerdColorPalette) {
+    CompositionLocalProvider(
+        localFightingNerdColorPalette provides FightingNerdColorPalette(),
+        localFightingNerdDimensions provides FightingNerdDimensions(),
+    ) {
         MaterialTheme(
             colorScheme = defaultColorScheme,
             typography = fightingNerdTypography(),

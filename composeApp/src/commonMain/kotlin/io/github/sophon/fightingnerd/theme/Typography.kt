@@ -37,6 +37,26 @@ import org.jetbrains.compose.resources.Font
  * - `Label` - `Inter Medium, sentence case`. Buttons, chips, tags.
  * - `Label Small` - `Inter Medium, ALL CAPS`. Subtitle eyebrows, all-caps subtitles.
  */
+
+@Composable
+internal fun interFontFamily(): FontFamily {
+    return FontFamily(
+        Font(Res.font.inter_black, FontWeight.Black),
+        Font(Res.font.inter_bold, FontWeight.Bold),
+        Font(Res.font.inter_extra_bold, FontWeight.ExtraBold),
+        Font(Res.font.inter_medium, FontWeight.Medium),
+        Font(Res.font.inter_regular, FontWeight.Normal),
+        Font(Res.font.inter_semi_bold, FontWeight.SemiBold),
+    )
+}
+
+@Composable
+internal fun antonFontFamily(): FontFamily {
+    return FontFamily(
+        Font(Res.font.anton, FontWeight.Normal)
+    )
+}
+
 @Composable
 internal fun fightingNerdTypography(): Typography {
     val inter = interFontFamily()
@@ -151,25 +171,5 @@ internal fun fightingNerdTypography(): Typography {
             lineHeight = 16.sp,
             letterSpacing = allCapsLabelSpacing,
         ),
-    )
-}
-
-
-@Composable
-internal fun interFontFamily(): FontFamily {
-    return FontFamily(
-        Font(Res.font.inter_black, FontWeight.Black),
-        Font(Res.font.inter_bold, FontWeight.Bold),
-        Font(Res.font.inter_extra_bold, FontWeight.ExtraBold),
-        Font(Res.font.inter_medium, FontWeight.Medium),
-        Font(Res.font.inter_regular, FontWeight.Normal),
-        Font(Res.font.inter_semi_bold, FontWeight.SemiBold),
-    )
-}
-
-@Composable
-internal fun antonFontFamily(): FontFamily {
-    return FontFamily(
-        Font(Res.font.anton, FontWeight.Normal)
     )
 }

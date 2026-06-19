@@ -37,51 +37,32 @@ import androidx.compose.ui.graphics.Color
  * - `error` - Error states, destructive actions, blocking alerts.
  * - `scrim` - Modal scrims and overlays (use with alpha at call site).
  */
-internal val nerdColorPalette: FightingNerdColorPalette
-    @Composable
-    @ReadOnlyComposable
-    get() = localFightingNerdColorPalette.current
+
 
 @Immutable
 internal data class FightingNerdColorPalette(
-    val accent: Color = Color.Unspecified,
-    val accentHover: Color = Color.Unspecified,
-    val accentPressed: Color = Color.Unspecified,
-    val background: Color = Color.Unspecified,
-    val surface: Color = Color.Unspecified,
-    val surfaceHigh: Color = Color.Unspecified,
-    val surfacePressed: Color = Color.Unspecified,
-    val textPrimary: Color = Color.Unspecified,
-    val textSecondary: Color = Color.Unspecified,
-    val textTertiary: Color = Color.Unspecified,
-    val textDisabled: Color = Color.Unspecified,
-    val divider: Color = Color.Unspecified,
-    val dividerSubtle: Color = Color.Unspecified,
-    val success: Color = Color.Unspecified,
-    val warning: Color = Color.Unspecified,
-    val error: Color = Color.Unspecified,
-    val scrim: Color = Color.Unspecified,
-)
-
-internal val defaultFightingNerdColorPalette = FightingNerdColorPalette(
-    accent = AccentDefault,
-    accentHover = AccentHoverDefault,
-    accentPressed = AccentPressedDefault,
-    background = BackgroundDefault,
-    surface = SurfaceDefault,
-    surfaceHigh = SurfaceHighDefault,
-    surfacePressed = SurfacePressedDefault,
-    textPrimary = TextPrimaryDefault,
-    textSecondary = TextSecondaryDefault,
-    textTertiary = TextTertiaryDefault,
-    textDisabled = TextDisabledDefault,
-    divider = DividerDefault,
-    dividerSubtle = DividerSubtleDefault,
-    success = SuccessDefault,
-    warning = WarningDefault,
-    error = ErrorDefault,
-    scrim = ScrimDefault,
+    val accent: Color = AccentDefault,
+    val accentHover: Color = AccentHoverDefault,
+    val accentPressed: Color = AccentPressedDefault,
+    val background: Color = BackgroundDefault,
+    val surface: Color = SurfaceDefault,
+    val surfaceHigh: Color = SurfaceHighDefault,
+    val surfacePressed: Color = SurfacePressedDefault,
+    val textPrimary: Color = TextPrimaryDefault,
+    val textSecondary: Color = TextSecondaryDefault,
+    val textTertiary: Color = TextTertiaryDefault,
+    val textDisabled: Color = TextDisabledDefault,
+    val divider: Color = DividerDefault,
+    val dividerSubtle: Color = DividerSubtleDefault,
+    val success: Color = SuccessDefault,
+    val warning: Color = WarningDefault,
+    val error: Color = ErrorDefault,
+    val scrim: Color = ScrimDefault,
 )
 
 internal val localFightingNerdColorPalette = staticCompositionLocalOf { FightingNerdColorPalette() }
 
+internal val nerdColorPalette: FightingNerdColorPalette
+    @Composable
+    @ReadOnlyComposable
+    get() = localFightingNerdColorPalette.current
