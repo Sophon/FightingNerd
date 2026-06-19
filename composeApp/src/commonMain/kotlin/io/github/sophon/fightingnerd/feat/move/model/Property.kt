@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.moveList.model
+package io.github.sophon.fightingnerd.feat.move.model
 
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform

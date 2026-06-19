@@ -41,7 +41,7 @@ import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsScreen
-import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.navigation.ui.BottomBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen

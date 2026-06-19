@@ -7,8 +7,8 @@ import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseC
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.MoreVM
-import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListVM
-import io.github.sophon.fightingnerd.feat.moveList.usecase.LoadMoveListDataUseCase
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
+import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsVM
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase

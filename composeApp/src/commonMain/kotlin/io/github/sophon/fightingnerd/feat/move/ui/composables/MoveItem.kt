@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.moveList.ui.composables
+package io.github.sophon.fightingnerd.feat.move.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -32,9 +32,9 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_counter
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
-import io.github.sophon.fightingnerd.feat.moveList.model.Property
-import io.github.sophon.fightingnerd.feat.moveList.model.icon
-import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListState
+import io.github.sophon.fightingnerd.feat.move.model.Property
+import io.github.sophon.fightingnerd.feat.move.model.icon
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

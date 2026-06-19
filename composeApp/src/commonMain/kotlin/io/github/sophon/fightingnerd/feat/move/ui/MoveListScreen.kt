@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.moveList.ui
+package io.github.sophon.fightingnerd.feat.move.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.fightingnerd.feat.moveList.ui.composables.MoveItem
+import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import org.jetbrains.compose.ui.tooling.preview.Preview

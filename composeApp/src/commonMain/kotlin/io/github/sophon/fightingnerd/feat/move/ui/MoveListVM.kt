@@ -1,12 +1,12 @@
-package io.github.sophon.fightingnerd.feat.moveList.ui
+package io.github.sophon.fightingnerd.feat.move.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListState.Companion.toUiMove
-import io.github.sophon.fightingnerd.feat.moveList.usecase.LoadMoveListDataUseCase
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
+import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.onStart
