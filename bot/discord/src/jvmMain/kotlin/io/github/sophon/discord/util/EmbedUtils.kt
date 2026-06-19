@@ -8,6 +8,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_KOFI
+import io.github.sophon.discord.URL_TOPGG
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 internal fun EmbedBuilder.mandatoryField(
@@ -113,5 +114,6 @@ internal fun hitboxImages(
 internal fun donationMessage(): String {
     return "Enjoy the bot? Buy me a coffee:\n" +
             "- ☕️ <$URL_KOFI>\n" +
-            "- ☕️ <$URL_BUY_ME_COFFEE>\n"
+            "- ☕️ <$URL_BUY_ME_COFFEE>\n" +
+            "- ⭐️ rate me at: <$URL_TOPGG>"
 }
