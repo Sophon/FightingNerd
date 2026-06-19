@@ -18,7 +18,6 @@ import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -35,8 +34,10 @@ import fightingnerd.composeapp.generated.resources.bottom_bar_item_search
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
 import io.github.sophon.fightingnerd.navigation.domain.BottomBarItem
 import io.github.sophon.fightingnerd.navigation.domain.Destination
-import io.github.sophon.fightingnerd.theme.AppTheme
-import io.github.sophon.fightingnerd.theme.ThemeMode
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdColorPalette
+import io.github.sophon.fightingnerd.theme.nerdDimensions
+import io.github.sophon.fightingnerd.theme.nerdTypography
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -86,10 +87,10 @@ internal fun BottomBarView(
             horizontalArrangement = Arrangement.spacedBy(2.dp),
             modifier = Modifier
                 .background(
-                    color = MaterialTheme.colorScheme.surfaceContainerHigh.copy(alpha = 0.9f),
-                    shape = RoundedCornerShape(48),
+                    color = nerdColorPalette.surfaceHigh.copy(alpha = 0.9f),
+                    shape = RoundedCornerShape(RADIUS_CORNER.dp),
                 )
-                .padding(4.dp),
+                .padding(2.dp),
         ) {
             bottomBarItems.forEach { item ->
                 BarItem(
@@ -115,30 +116,31 @@ private fun BarItem(
     val backgroundColor: Color
 
     if (isSelected) {
-        itemColor = MaterialTheme.colorScheme.onSecondaryContainer
-        backgroundColor = MaterialTheme.colorScheme.secondaryContainer
+        itemColor = nerdColorPalette.accent
+        backgroundColor = nerdColorPalette.surface
     } else {
-        itemColor = MaterialTheme.colorScheme.onSurfaceVariant
+        itemColor = nerdColorPalette.textPrimary
         backgroundColor = Color.Transparent
     }
+    val shape = RoundedCornerShape(RADIUS_CORNER.dp)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .clip(RoundedCornerShape(48))
+            .clip(shape)
             .clickable(enabled = true, onClick = onClick)
             .background(
                 color = backgroundColor,
-                shape = RoundedCornerShape(48),
+                shape = shape,
             )
-            .padding(8.dp),
+            .padding(nerdDimensions.componentGapTight),
     ) {
         when (val icon = item.icon) {
             is FlexibleIcon.Vector -> {
                 Icon(
                     imageVector = icon.imageVector,
                     contentDescription = null,
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier.size(nerdDimensions.iconDefault),
                     tint = itemColor,
                 )
             }
@@ -146,7 +148,7 @@ private fun BarItem(
                 Icon(
                     painter = painterResource(icon.drawableResource),
                     contentDescription = null,
-                    modifier = Modifier.size(32.dp),
+                    modifier = Modifier.size(nerdDimensions.iconDefault),
                     tint = itemColor,
                 )
             }
@@ -154,29 +156,20 @@ private fun BarItem(
 
         Text(
             text = stringResource(item.label),
-            style = MaterialTheme.typography.labelSmall,
+            style = nerdTypography.labelMedium,
             color = itemColor,
         )
     }
 }
 
+private const val RADIUS_CORNER = 30
+
 
 //region PREVIEW
 @Composable
 @Preview(showBackground = false)
-private fun LightPreview() {
-    AppTheme(themeMode = ThemeMode.Dark) {
-        BottomBarView(
-            currentRoot = Destination.Home,
-            onTabClick = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = false)
-private fun DarkPreview() {
-    AppTheme(themeMode = ThemeMode.Light) {
+private fun BottomBarPreview() {
+    FightingNerdTheme {
         BottomBarView(
             currentRoot = Destination.Home,
             onTabClick = {},

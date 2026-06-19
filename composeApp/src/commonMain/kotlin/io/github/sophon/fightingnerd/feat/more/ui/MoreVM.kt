@@ -53,7 +53,7 @@ internal class MoreVM(
     fun onItemClick(item: MoreItem) {
         viewModelScope.launch {
             when (item) {
-                MoreItem.Theme -> onThemeDialog(isDialogVisible = true)
+//                MoreItem.Theme -> onThemeDialog(isDialogVisible = true)
                 MoreItem.FeatureSettings -> _navEvent.send(item)
             }
         }

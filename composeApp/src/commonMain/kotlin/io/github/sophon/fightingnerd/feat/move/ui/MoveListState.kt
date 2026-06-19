@@ -1,8 +1,9 @@
-package io.github.sophon.fightingnerd.feat.moveList.ui
+package io.github.sophon.fightingnerd.feat.move.ui
 
+import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.fightingnerd.feat.moveList.model.Property
+import io.github.sophon.fightingnerd.feat.move.model.Property
 
 internal data class MoveListState(
     val character: Character?,
@@ -14,10 +15,11 @@ internal data class MoveListState(
     data class UiMove(
         val id: String,
         val input: String,
+        val propertySet: Set<Property> = emptySet(),
 
         val startup: String?,
-        val level: String?,
-        val propertySet: Set<Property> = emptySet(),
+        val guard: String?,
+        val damage: String?,
 
         val onHit: String?,
         val onBlock: String?,
@@ -103,15 +105,16 @@ internal data class MoveListState(
             moveDetail = null,
         )
 
-        private fun Move.toUiMove(): UiMove {
-            return UiMove(
+        fun Move.toUiMove(): UiMove {
+            val result = UiMove(
                 id = id,
                 input = input,
-                startup = startup,
-                level = guard,
-                onHit = onHit,
-                onBlock = onBlock,
-                onCounter = onCH,
+                startup = startup?.stripMarkdownLinks(),
+                guard = guard?.stripMarkdownLinks(),
+                damage = damage?.stripMarkdownLinks(),
+                onHit = onHit?.stripMarkdownLinks(),
+                onBlock = onBlock?.stripMarkdownLinks(),
+                onCounter = onCH?.stripMarkdownLinks(),
                 propertySet = buildSet {
                     invulnerability?.let { add(Property.Invincible) }
                     t8Properties?.let { props ->
@@ -123,6 +126,7 @@ internal data class MoveListState(
                     }
                 },
             )
+            return result
         }
     }
 }

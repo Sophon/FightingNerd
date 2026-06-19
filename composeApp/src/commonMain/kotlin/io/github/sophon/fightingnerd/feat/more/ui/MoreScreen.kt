@@ -23,7 +23,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.more_donate
@@ -40,12 +38,14 @@ import fightingnerd.composeapp.generated.resources.more_donate_dialog_title
 import fightingnerd.composeapp.generated.resources.more_theme_dialog_title
 import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
-import io.github.sophon.fightingnerd.core.ui.RoundedItem
 import io.github.sophon.fightingnerd.core.ui.SingleSelectDialog
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.ThemeMode
-import io.github.sophon.fightingnerd.theme.AppTheme
+import io.github.sophon.fightingnerd.theme.nerdColorPalette
+import io.github.sophon.fightingnerd.theme.nerdDimensions
+import io.github.sophon.fightingnerd.theme.nerdTypography
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -86,6 +86,10 @@ private fun Content(
     Box(
         modifier = modifier
             .fillMaxSize()
+            .padding(
+                horizontal = nerdDimensions.screenPaddingHorizontal,
+                vertical = nerdDimensions.screenPaddingVertical,
+            )
     ) {
         Column(
             verticalArrangement = Arrangement.SpaceBetween,
@@ -132,48 +136,39 @@ private fun ItemSection(
 ) {
     LazyColumn(
         modifier = modifier
-            .padding(horizontal = 16.dp, vertical = 32.dp)
-            .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
+            .background(nerdColorPalette.surface)
     ) {
-        item { Spacer(Modifier.height(8.dp)) }
-
         itemsIndexed(items) { index, moreItem ->
-            val isLast = (index == MoreItem.entries.lastIndex)
-            RoundedItem(
-                isFirst = (index == 0),
-                isLast = isLast,
-                modifier = Modifier
-                    .padding(horizontal = 8.dp)
-                    .clickable { onItemClick(moreItem) },
-            ) {
-                Column {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 14.dp),
-                    ) {
-                        Text(
-                            text = stringResource(moreItem.stringResource),
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            modifier = Modifier.weight(1f),
-                        )
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                    if (isLast.not()) {
-                        HorizontalDivider(Modifier.padding(horizontal = 16.dp))
-                    }
+            Column {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { onItemClick(moreItem) }
+                        .padding(nerdDimensions.componentPadding),
+                ) {
+                    Text(
+                        text = stringResource(moreItem.stringResource),
+                        style = nerdTypography.titleMedium,
+                        color = nerdColorPalette.textPrimary,
+                        modifier = Modifier.weight(1f),
+                    )
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = nerdColorPalette.textSecondary,
+                    )
+                }
+                if (index != items.lastIndex) {
+                    HorizontalDivider(
+                        Modifier
+                            .padding(horizontal = nerdDimensions.componentPadding)
+                            .background(nerdColorPalette.dividerSubtle)
+                    )
                 }
             }
         }
-
-        item { Spacer(Modifier.height(8.dp)) }
     }
 }
 
@@ -190,29 +185,29 @@ private fun Footer(
         Button(
             onClick = onDonateClick,
             colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary,
+                containerColor = nerdColorPalette.accent,
+                contentColor = nerdColorPalette.textPrimary,
             ),
             modifier = modifier,
         ) {
             Icon(
                 imageVector = Icons.Default.Favorite,
                 contentDescription = null,
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(nerdDimensions.iconDefault),
             )
-            Spacer(Modifier.width(8.dp))
+            Spacer(Modifier.width(nerdDimensions.inlineGap))
 
             Text(
                 text = stringResource(Res.string.more_donate),
-                style = MaterialTheme.typography.labelLarge,
+                style = nerdTypography.labelLarge,
             )
         }
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(nerdDimensions.componentPadding))
 
         Text(
             text = BuildKonfig.VERSION,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = nerdTypography.labelLarge,
+            color = nerdColorPalette.textSecondary,
             textAlign = TextAlign.Center,
         )
     }
@@ -221,24 +216,9 @@ private fun Footer(
 
 //region PREVIEW
 @Composable
-@Preview(showBackground = true)
-private fun SettingsPreviewDark() {
-    AppTheme(themeMode = ThemeMode.Dark) {
-        Content(
-            state = MoreState(),
-            onItemClick = {},
-            onThemeItemClick = {},
-            onDonateClick = {},
-            onThemeSelected = {},
-            onSelectDonationMethod = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun SettingsPreviewLight() {
-    AppTheme(themeMode = ThemeMode.Light) {
+@Preview()
+private fun SettingsPreview() {
+    FightingNerdTheme {
         Content(
             state = MoreState(),
             onItemClick = {},

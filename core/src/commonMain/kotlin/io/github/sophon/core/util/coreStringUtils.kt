@@ -155,3 +155,11 @@ fun String.chunkByNewLines(delimiter: String, maxLength: Int): List<String> {
 
     return chunks
 }
+
+fun String.stripMarkdownLinks(): String {
+    val markdownLinkRegex = Regex("""\[([^\]]+)]\([^)]+\)""")
+    val result = markdownLinkRegex.replace(this) { match ->
+        return@replace match.groupValues[1]
+    }
+    return result
+}

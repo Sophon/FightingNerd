@@ -19,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import io.github.sophon.fightingnerd.theme.AppTheme
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -139,8 +139,8 @@ enum class PreviewEnum(val string: String) {
 @Composable
 @Preview(showBackground = true)
 private fun SingleSelectDialogPreview() {
-    AppTheme {
-        SingleSelectDialog<PreviewEnum>(
+    FightingNerdTheme {
+        SingleSelectDialog(
             title = "Title",
             items = PreviewEnum.entries,
             selectedItem = PreviewEnum.SecondItem,

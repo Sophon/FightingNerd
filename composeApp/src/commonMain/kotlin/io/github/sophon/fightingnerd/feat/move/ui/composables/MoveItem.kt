@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.moveList.ui.composables
+package io.github.sophon.fightingnerd.feat.move.ui.composables
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,17 +26,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
-import fightingnerd.composeapp.generated.resources.move_list_field_level
+import fightingnerd.composeapp.generated.resources.move_list_field_damage
+import fightingnerd.composeapp.generated.resources.move_list_field_guard
 import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_counter
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
-import fightingnerd.composeapp.generated.resources.move_list_field_properties
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
-import io.github.sophon.fightingnerd.feat.moveList.model.Property
-import io.github.sophon.fightingnerd.feat.moveList.model.icon
-import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListState
-import io.github.sophon.fightingnerd.theme.AppTheme
-import io.github.sophon.fightingnerd.theme.ThemeMode
+import io.github.sophon.fightingnerd.feat.move.model.Property
+import io.github.sophon.fightingnerd.feat.move.model.icon
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdColorPalette
+import io.github.sophon.fightingnerd.theme.nerdDimensions
+import io.github.sophon.fightingnerd.theme.nerdTypography
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -57,47 +59,22 @@ internal fun MoveItem(
                 onClick = onMoveClick,
                 indication = ripple(color = MaterialTheme.colorScheme.primaryContainer)
             )
-            .clip(RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp)
+            .padding(nerdDimensions.componentPadding)
     ) {
         Header(
-            input = move.input
+            input = move.input,
+            propertySet = move.propertySet,
         )
 
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(4.dp),
-        ) {
-            FieldColumn(
-                label = stringResource(Res.string.move_list_field_startup),
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = move.startup ?: "-",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-            FieldColumn(
-                label = stringResource(Res.string.move_list_field_level),
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = move.level ?: "-",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-            FieldColumn(
-                label = stringResource(Res.string.move_list_field_properties),
-                modifier = Modifier.weight(1f),
-            ) {
-                Properties(propertySet = move.propertySet)
-            }
-        }
+        InfoFieldRow(
+            fields = listOf(
+                stringResource(Res.string.move_list_field_startup) to move.startup,
+                stringResource(Res.string.move_list_field_guard) to move.guard,
+                stringResource(Res.string.move_list_field_damage) to move.damage,
+            )
+        )
 
         Spacer(Modifier.height(8.dp))
 
@@ -108,22 +85,39 @@ internal fun MoveItem(
                 stringResource(Res.string.move_list_field_on_counter) to move.onCounter,
             )
         )
-        Spacer(Modifier.height(16.dp))
     }
 }
 
 @Composable
 private fun Header(
     input: String,
+    propertySet: Set<Property>,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        Text(
-            text = input,
-            style = MaterialTheme.typography.titleLarge,
-            color = MaterialTheme.colorScheme.onSurface,
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = input,
+                style = nerdTypography.titleLarge,
+                color = nerdColorPalette.textPrimary,
+                maxLines = 2,
+                modifier = Modifier.weight(1f),
+            )
+
+            Properties(
+                propertySet = propertySet
+            )
+        }
+
+        HorizontalDivider(
+            modifier = Modifier
+                .padding(vertical = nerdDimensions.listRowPaddingVertical)
+                .background(nerdColorPalette.dividerSubtle)
         )
-        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
     }
 }
 
@@ -139,8 +133,8 @@ private fun FieldColumn(
         }
         Text(
             text = label.uppercase(),
-            style = MaterialTheme.typography.labelSmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            style = nerdTypography.labelMedium,
+            color = nerdColorPalette.textSecondary,
         )
     }
 }
@@ -154,7 +148,7 @@ private fun InfoFieldRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(4.dp),
+            .padding(nerdDimensions.inlineGapTight),
     ) {
         fields.forEach { (label, value) ->
             FieldColumn(
@@ -177,7 +171,7 @@ private fun Properties(
     modifier: Modifier = Modifier
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(4.dp),
+        horizontalArrangement = Arrangement.spacedBy(nerdDimensions.componentGapTight),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier,
     ) {
@@ -185,7 +179,7 @@ private fun Properties(
             Image(
                 painter = painterResource(property.icon()),
                 contentDescription = property.name,
-                modifier = Modifier.size(28.dp),
+                modifier = Modifier.size(nerdDimensions.iconInline),
             )
         }
     }
@@ -195,21 +189,10 @@ private fun Properties(
 //region PREVIEW
 @Preview
 @Composable
-private fun ItemPreviewDark() {
-    AppTheme(themeMode = ThemeMode.Dark) {
+private fun ItemPreview() {
+    FightingNerdTheme {
         MoveItem(
             move = MoveListState.PREVIEW.uiMoveList.last(),
-            onMoveClick = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ItemPreviewLight() {
-    AppTheme(themeMode = ThemeMode.Light) {
-        MoveItem(
-            move = MoveListState.PREVIEW.uiMoveList.first(),
             onMoveClick = {},
         )
     }

@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.moveList.usecase
+package io.github.sophon.fightingnerd.feat.move.usecase
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
