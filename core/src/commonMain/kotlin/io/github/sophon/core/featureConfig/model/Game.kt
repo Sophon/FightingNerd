@@ -117,6 +117,11 @@ enum class Game(
         separateCharMoveDownload = false,
     );
 
+    val shortDisplayName: String
+        get() {
+            return displayName.substringBefore(":")
+        }
+
     companion object {
         fun fromId(id: String): Game? {
             return entries.find { it.id == id }
