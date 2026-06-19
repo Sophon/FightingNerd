@@ -6,12 +6,17 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		4FDBF67E2FE5BC6E00AF83B0 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDBF67D2FE5BC6E00AF83B0 /* libsqlite3.tbd */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		14CC418499E9A50C4C3DFB65 /* Fighting Nerd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fighting Nerd.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		4FDBF67D2FE5BC6E00AF83B0 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		50985614D358970B158CF08F /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		50985614D358970B158CF08F /* Exceptions for "iosApp" folder in "iosApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -29,7 +34,7 @@
 		4B06E6588F528CC92252DDAA /* iosApp */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				50985614D358970B158CF08F /* PBXFileSystemSynchronizedBuildFileExceptionSet */,
+				50985614D358970B158CF08F /* Exceptions for "iosApp" folder in "iosApp" target */,
 			);
 			path = iosApp;
 			sourceTree = "<group>";
@@ -41,12 +46,21 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4FDBF67E2FE5BC6E00AF83B0 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4FDBF67C2FE5BC6E00AF83B0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				4FDBF67D2FE5BC6E00AF83B0 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7F834BCE11DA3804BB2410EC /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -60,6 +74,7 @@
 			children = (
 				2036BDD6A1218C41109527B1 /* Configuration */,
 				4B06E6588F528CC92252DDAA /* iosApp */,
+				4FDBF67C2FE5BC6E00AF83B0 /* Frameworks */,
 				7F834BCE11DA3804BB2410EC /* Products */,
 			);
 			sourceTree = "<group>";
