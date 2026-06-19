@@ -44,8 +44,8 @@ import io.github.sophon.fightingnerd.core.ui.RoundedItem
 import io.github.sophon.fightingnerd.core.ui.SingleSelectDialog
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.ThemeMode
-import io.github.sophon.fightingnerd.theme.AppTheme
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -222,23 +222,8 @@ private fun Footer(
 //region PREVIEW
 @Composable
 @Preview(showBackground = true)
-private fun SettingsPreviewDark() {
-    AppTheme(themeMode = ThemeMode.Dark) {
-        Content(
-            state = MoreState(),
-            onItemClick = {},
-            onThemeItemClick = {},
-            onDonateClick = {},
-            onThemeSelected = {},
-            onSelectDonationMethod = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = true)
-private fun SettingsPreviewLight() {
-    AppTheme(themeMode = ThemeMode.Light) {
+private fun SettingsPreview() {
+    FightingNerdTheme {
         Content(
             state = MoreState(),
             onItemClick = {},

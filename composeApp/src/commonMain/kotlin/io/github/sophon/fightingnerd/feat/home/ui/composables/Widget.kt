@@ -49,7 +49,7 @@ import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.Character
-import io.github.sophon.fightingnerd.theme.AppTheme
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.ThemeMode
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -292,20 +292,8 @@ private const val CHARACTER_CARD_WIDTH = 100
 //region PREVIEW
 @Preview
 @Composable
-private fun WidgetSectionDarkPreview() {
-    AppTheme(themeMode = ThemeMode.Dark) {
-        WidgetSection(
-            widgetList = HomeViewState.PREVIEW.gameWidgetList,
-            onExpandWidget = {},
-            onCharacterClick = {_, _ -> },
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun WidgetSectionLightPreview() {
-    AppTheme(themeMode = ThemeMode.Light) {
+private fun WidgetSectionPreview() {
+    FightingNerdTheme {
         WidgetSection(
             widgetList = HomeViewState.PREVIEW.gameWidgetList,
             onExpandWidget = {},

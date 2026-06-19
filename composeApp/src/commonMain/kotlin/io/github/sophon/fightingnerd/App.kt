@@ -26,7 +26,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavKey
@@ -35,12 +34,8 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
-import coil3.ImageLoader
-import coil3.compose.setSingletonImageLoaderFactory
-import coil3.util.DebugLogger
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.fightingnerd.core.data.PreferenceRepo
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
@@ -50,8 +45,7 @@ import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.navigation.ui.BottomBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
-import io.github.sophon.fightingnerd.theme.AppTheme
-import io.github.sophon.fightingnerd.theme.ThemeMode
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
 import org.koin.compose.koinInject
@@ -75,11 +69,9 @@ val LocalBottomBarPadding = compositionLocalOf { PaddingValues(0.dp) }
 
 @Composable
 internal fun App() {
-//    LogCoil()
     val isInitialized = rememberFeaturesLoaded()
-    val themeMode = rememberThemeMode()
 
-    AppTheme(themeMode = themeMode) {
+    FightingNerdTheme {
         if (isInitialized) {
             Content()
         } else {
@@ -108,15 +100,6 @@ private fun rememberFeaturesLoaded(): Boolean {
     }
 
     return isInitialized
-}
-
-@Composable
-private fun rememberThemeMode(): ThemeMode {
-    val preferenceRepo = koinInject<PreferenceRepo>()
-    val themeMode by preferenceRepo.subscribeToTheme()
-        .collectAsStateWithLifecycle(initialValue = ThemeMode.System)
-
-    return themeMode
 }
 
 @Composable
@@ -218,14 +201,5 @@ private fun BoxScope.AppBottomBar(
                 backStack.add(destination)
             },
         )
-    }
-}
-
-@Composable
-private fun LogCoil() {
-    setSingletonImageLoaderFactory { context ->
-        ImageLoader.Builder(context)
-            .logger(DebugLogger())
-            .build()
     }
 }

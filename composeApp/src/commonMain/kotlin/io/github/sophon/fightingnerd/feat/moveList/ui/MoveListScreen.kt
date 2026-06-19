@@ -1,7 +1,6 @@
 package io.github.sophon.fightingnerd.feat.moveList.ui
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -16,8 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.feat.moveList.ui.composables.MoveItem
-import io.github.sophon.fightingnerd.theme.AppTheme
-import io.github.sophon.fightingnerd.theme.ThemeMode
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -77,18 +75,7 @@ private fun Content(
 @Composable
 @Preview
 private fun MoveListPreviewDark() {
-    AppTheme(themeMode = ThemeMode.Dark) {
-        Content(
-            state = MoveListState.PREVIEW,
-            onMoveClick = {},
-        )
-    }
-}
-
-@Composable
-@Preview
-private fun MoveListPreviewLight() {
-    AppTheme(themeMode = ThemeMode.Light) {
+    FightingNerdTheme {
         Content(
             state = MoveListState.PREVIEW,
             onMoveClick = {},

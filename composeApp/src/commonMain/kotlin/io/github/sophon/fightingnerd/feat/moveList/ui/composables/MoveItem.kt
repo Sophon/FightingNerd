@@ -35,8 +35,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.fightingnerd.feat.moveList.model.Property
 import io.github.sophon.fightingnerd.feat.moveList.model.icon
 import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListState
-import io.github.sophon.fightingnerd.theme.AppTheme
-import io.github.sophon.fightingnerd.theme.ThemeMode
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -195,21 +194,10 @@ private fun Properties(
 //region PREVIEW
 @Preview
 @Composable
-private fun ItemPreviewDark() {
-    AppTheme(themeMode = ThemeMode.Dark) {
+private fun ItemPreview() {
+    FightingNerdTheme {
         MoveItem(
             move = MoveListState.PREVIEW.uiMoveList.last(),
-            onMoveClick = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ItemPreviewLight() {
-    AppTheme(themeMode = ThemeMode.Light) {
-        MoveItem(
-            move = MoveListState.PREVIEW.uiMoveList.first(),
             onMoveClick = {},
         )
     }

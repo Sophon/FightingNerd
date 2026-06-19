@@ -22,8 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.fightingnerd.theme.AppTheme
-import io.github.sophon.fightingnerd.theme.ThemeMode
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -143,20 +142,8 @@ private fun Toggle(
 //region PREVIEW
 @Composable
 @Preview(showBackground = true)
-private fun FeatureSettingsPreviewDark() {
-    AppTheme(themeMode = ThemeMode.Dark) {
-        Content(
-            state = FeatureSettingsState.PREVIEW,
-            onFeatureToggle = { _, _ -> },
-            onGameToggle = { _, _, _, -> },
-        )
-    }
-}
-
-@Composable
-@Preview
-private fun FeatureSettingsPreviewLight() {
-    AppTheme(themeMode = ThemeMode.Light) {
+private fun FeatureSettingsPreview() {
+    FightingNerdTheme {
         Content(
             state = FeatureSettingsState.PREVIEW,
             onFeatureToggle = { _, _ -> },

@@ -35,8 +35,7 @@ import fightingnerd.composeapp.generated.resources.bottom_bar_item_search
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
 import io.github.sophon.fightingnerd.navigation.domain.BottomBarItem
 import io.github.sophon.fightingnerd.navigation.domain.Destination
-import io.github.sophon.fightingnerd.theme.AppTheme
-import io.github.sophon.fightingnerd.theme.ThemeMode
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -164,19 +163,8 @@ private fun BarItem(
 //region PREVIEW
 @Composable
 @Preview(showBackground = false)
-private fun LightPreview() {
-    AppTheme(themeMode = ThemeMode.Dark) {
-        BottomBarView(
-            currentRoot = Destination.Home,
-            onTabClick = {},
-        )
-    }
-}
-
-@Composable
-@Preview(showBackground = false)
-private fun DarkPreview() {
-    AppTheme(themeMode = ThemeMode.Light) {
+private fun BottomBarPreview() {
+    FightingNerdTheme {
         BottomBarView(
             currentRoot = Destination.Home,
             onTabClick = {},

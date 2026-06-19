@@ -54,7 +54,6 @@ private val defaultColorScheme = darkColorScheme(
 
 @Composable
 internal fun FightingNerdTheme(
-    themeMode: ThemeMode = ThemeMode.System,
     content: @Composable () -> Unit,
 ) {
     CompositionLocalProvider(localFightingNerdColorPalette provides defaultFightingNerdColorPalette) {
