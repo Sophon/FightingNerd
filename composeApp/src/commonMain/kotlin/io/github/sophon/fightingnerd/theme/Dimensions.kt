@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
  * - `iconInline` - alongside text
  * - `iconDefault` - top bar, buttons, list rows
  * - `iconLarge` - empty states, hero moments
- * - `iconHeadlin` - with headlines
+ * - `iconHeadline` - with headlines
  *
  * Heights:
  * - `topAppBarHeight` - top app bar

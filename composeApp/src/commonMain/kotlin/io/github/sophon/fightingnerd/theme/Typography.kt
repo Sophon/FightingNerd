@@ -29,15 +29,15 @@ import org.jetbrains.compose.resources.Font
  *
  * General: no outlined text, no "..." in titles, no tiny fonts.
  *
- * Roles:
- * - `Display` - `Anton, ALL CAPS`. Hero moments: splash, onboarding, marketing empty states.
- * - `Headline` - `Anton, ALL CAPS`. Screen titles in large top app bar, section headers.
- * - `Sub-headline` - `Anton, ALL CAPS`. Card titles, dialog titles.
- * - `Title` - `Inter Bold/SemiBold, sentence case`. Top app bar small title, list row primary text.
- * - `Body` - `Inter Regular, sentence case`. Paragraphs, list row secondary text.
- * - `Caption` - `Inter Regular, sentence case`. Timestamps, metadata, hints.
- * - `Label` - `Inter Medium, sentence case`. Buttons, chips, tags.
- * - `Label Small` - `Inter Medium, ALL CAPS`. Subtitle eyebrows, all-caps subtitles.
+ * Roles (mapped to M3 [Typography] slots):
+ * - `Display` (`displayLarge/Medium/Small`) - `Anton, ALL CAPS`. Hero moments: splash, onboarding, marketing empty states.
+ * - `Headline` (`headlineLarge/Medium`) - `Anton, ALL CAPS`. Screen titles in large top app bar, section headers.
+ * - `Sub-headline` (`headlineSmall`) - `Anton, ALL CAPS`. Card titles, dialog titles.
+ * - `Title` (`titleLarge/Medium/Small`) - `Inter Bold/SemiBold, sentence case`. Top app bar small title, list row primary text.
+ * - `Body` (`bodyLarge/Medium`) - `Inter Regular, sentence case`. Paragraphs, list row secondary text.
+ * - `Caption` (`bodySmall`) - `Inter Regular, sentence case`. Timestamps, metadata, hints.
+ * - `Label` (`labelLarge`) - `Inter Medium, sentence case`. Buttons, chips, tags.
+ * - `Label Small` (`labelMedium/Small`) - `Inter Medium, ALL CAPS`. Subtitle eyebrows, all-caps subtitles.
  */
 
 @Composable
