@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
  * Errors use `error` (orange), never `accent` (red).
  *
  * Roles:
- * - `accent` - Brand red. Logo, primary CTA, selected nav, Heat/Homing tags.
+ * - `accent` - Brand red. Logo, primary CTA, selected nav.
  * - `accentHover` - Brighter red. Hover state on accent surfaces.
  * - `accentPressed` - Darker red. Pressed state on accent surfaces.
  * - `background` - App background. The dominant color on every screen.

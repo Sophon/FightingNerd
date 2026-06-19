@@ -1,7 +1,9 @@
 package io.github.sophon.fightingnerd.theme
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Typography
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -173,3 +175,8 @@ internal fun fightingNerdTypography(): Typography {
         ),
     )
 }
+
+internal val nerdTypography: Typography
+    @Composable
+    @ReadOnlyComposable
+    get() = MaterialTheme.typography

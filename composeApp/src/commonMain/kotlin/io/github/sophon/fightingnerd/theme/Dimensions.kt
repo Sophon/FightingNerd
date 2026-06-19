@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
  * Inline:
  * - `inlineGap` - gap between icon and label, or two inline elements
  * - `inlineGapTight` - gap for very tight inline pairings (badge + count)
+ * - `matrixGap` - used for matrices
  *
  * Component-specific paddings:
  * - `buttonPaddingHorizontal` / `buttonPaddingVertical` - inside buttons
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
  * - `iconInline` - alongside text
  * - `iconDefault` - top bar, buttons, list rows
  * - `iconLarge` - empty states, hero moments
+ * - `iconHeadlin` - with headlines
  *
  * Heights:
  * - `topAppBarHeight` - top app bar
@@ -58,6 +60,7 @@ internal data class FightingNerdDimensions(
     val screenPaddingVertical: Dp = 24.dp,
     val sectionGap: Dp = 32.dp,
     val sectionGapLarge: Dp = 48.dp,
+    val matrixGap: Dp = 4.dp,
     val componentPadding: Dp = 16.dp,
     val componentPaddingTight: Dp = 12.dp,
     val componentGap: Dp = 16.dp,
@@ -79,6 +82,7 @@ internal data class FightingNerdDimensions(
     val iconInline: Dp = 16.dp,
     val iconDefault: Dp = 24.dp,
     val iconLarge: Dp = 48.dp,
+    val iconHeadline: Dp = 64.dp,
     val topAppBarHeight: Dp = 56.dp,
     val bottomNavHeight: Dp = 80.dp,
     val buttonHeight: Dp = 48.dp,

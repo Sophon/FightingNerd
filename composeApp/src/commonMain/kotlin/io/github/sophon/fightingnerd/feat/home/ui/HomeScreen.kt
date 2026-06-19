@@ -9,6 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.feat.home.ui.composables.WidgetSection
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdDimensions
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -41,7 +42,8 @@ private fun Content(
         widgetList = state.gameWidgetList,
         onExpandWidget = onExpandWidget,
         onCharacterClick = onCharacterClick,
-        modifier = modifier.padding(horizontal = 8.dp, vertical = 32.dp)
+        modifier = modifier
+            .padding(horizontal = nerdDimensions.screenPaddingHorizontal, vertical = nerdDimensions.screenPaddingVertical)
     )
 }
 
