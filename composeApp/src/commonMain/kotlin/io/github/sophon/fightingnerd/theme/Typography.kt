@@ -17,26 +17,6 @@ import fightingnerd.composeapp.generated.resources.inter_regular
 import fightingnerd.composeapp.generated.resources.inter_semi_bold
 import org.jetbrains.compose.resources.Font
 
-@Composable
-internal fun interFontFamily(): FontFamily {
-    return FontFamily(
-        Font(Res.font.inter_black, FontWeight.Black),
-        Font(Res.font.inter_bold, FontWeight.Bold),
-        Font(Res.font.inter_extra_bold, FontWeight.ExtraBold),
-        Font(Res.font.inter_medium, FontWeight.Medium),
-        Font(Res.font.inter_regular, FontWeight.Normal),
-        Font(Res.font.inter_semi_bold, FontWeight.SemiBold),
-    )
-}
-
-@Composable
-internal fun antonFontFamily(): FontFamily {
-    return FontFamily(
-        Font(Res.font.anton, FontWeight.Normal)
-    )
-}
-
-
 /**
  * `Anton` - ALL CAPS only, −2% letter spacing. Uppercase at the call site:
  * `text.uppercase()`. Do NOT use for: sentence case, body, list rows, button
@@ -171,5 +151,25 @@ internal fun fightingNerdTypography(): Typography {
             lineHeight = 16.sp,
             letterSpacing = allCapsLabelSpacing,
         ),
+    )
+}
+
+
+@Composable
+internal fun interFontFamily(): FontFamily {
+    return FontFamily(
+        Font(Res.font.inter_black, FontWeight.Black),
+        Font(Res.font.inter_bold, FontWeight.Bold),
+        Font(Res.font.inter_extra_bold, FontWeight.ExtraBold),
+        Font(Res.font.inter_medium, FontWeight.Medium),
+        Font(Res.font.inter_regular, FontWeight.Normal),
+        Font(Res.font.inter_semi_bold, FontWeight.SemiBold),
+    )
+}
+
+@Composable
+internal fun antonFontFamily(): FontFamily {
+    return FontFamily(
+        Font(Res.font.anton, FontWeight.Normal)
     )
 }
