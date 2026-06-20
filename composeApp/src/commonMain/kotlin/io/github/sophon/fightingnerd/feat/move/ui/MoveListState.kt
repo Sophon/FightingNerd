@@ -101,7 +101,12 @@ internal data class MoveListState(
         )
 
         val PREVIEW = MoveListState(
-            character = null,
+            character = Character(
+                id = "id",
+                displayName = "Nina",
+                remoteQueryId = "",
+                wikiUrl = "",
+            ),
             fullMoveList = armorKingMoves.associateBy { it.id },
             uiMoveList = armorKingMoves.map { it.toUiMove() },
             moveDetail = null,
