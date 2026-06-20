@@ -58,7 +58,7 @@ private fun ChipSection(
             alignment = Alignment.CenterHorizontally,
         ),
         verticalArrangement = Arrangement.spacedBy(nerdDimensions.matrixGap),
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
     ) {
         filterSheet.filterSet.forEach { filter ->
             val isActive = filter in filterSheet.activeFilterSet
@@ -69,7 +69,7 @@ private fun ChipSection(
                     Text(
                         text = filter::class.simpleName?.uppercase() ?: "UNKNOWN",
                         style = nerdTypography.labelMedium,
-                        color = if (isActive) nerdColorPalette.accent else nerdColorPalette.textDisabled,
+                        color = if (isActive) nerdColorPalette.accent else nerdColorPalette.textSecondary,
                     )
                 },
             )
