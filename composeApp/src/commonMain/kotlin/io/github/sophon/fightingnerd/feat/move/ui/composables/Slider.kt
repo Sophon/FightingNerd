@@ -28,9 +28,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.DpSize
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.move_list_filter_max
@@ -250,29 +254,39 @@ private fun NumberField(
     range: IntRange,
     modifier: Modifier = Modifier,
 ) {
-    var text by remember { mutableStateOf(value?.toString().orEmpty()) }
+    var fieldValue by remember {
+        mutableStateOf(TextFieldValue(text = value?.toString().orEmpty()))
+    }
+    var isFocused by remember { mutableStateOf(false) }
 
     LaunchedEffect(value) {
-        if (text.toIntOrNull() != value) {
-            text = value?.toString().orEmpty()
+        if (fieldValue.text.toIntOrNull() != value) {
+            fieldValue = TextFieldValue(text = value?.toString().orEmpty())
+        }
+    }
+
+    LaunchedEffect(isFocused) {
+        if (isFocused && fieldValue.text.isNotEmpty()) {
+            withFrameNanos { }
+            fieldValue = fieldValue.copy(
+                selection = TextRange(0, fieldValue.text.length)
+            )
         }
     }
 
     TextField(
-        value = text,
-        onValueChange = { newText ->
-            text = newText
-            val parsed = newText.toIntOrNull()
+        value = fieldValue,
+        onValueChange = { new ->
+            fieldValue = new
+            val parsed = new.text.toIntOrNull()
             if (parsed != null && parsed in range) {
                 onValueChange(parsed)
             }
         },
-        placeholder = {
-            Text(text = hint)
-        },
+        placeholder = { Text(text = hint) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
-        modifier = modifier,
+        modifier = modifier.onFocusChanged { isFocused = it.isFocused },
     )
 }
 
