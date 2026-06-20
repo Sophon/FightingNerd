@@ -41,6 +41,10 @@ internal class MoveListVM(
     }
 
 
+    fun onDisplayFilter(isVisible: Boolean) {
+        _state.update { it.copy(filterSheet = it.filterSheet.copy(isVisible = isVisible)) }
+    }
+
     fun toggleFilter(filter: Filter) {
         _state.update { state ->
             val current = state.filterSheet.activeFilterSet

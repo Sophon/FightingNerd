@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
@@ -54,6 +55,8 @@ internal fun MoveListScreen(
         state = state,
         moveList = filteredMoves,
         onMoveClick = { /*TODO*/ },
+        onFilterClick = vm::onDisplayFilter,
+        onFilterChipClick = vm::toggleFilter,
         modifier = modifier,
     )
 }
@@ -63,13 +66,15 @@ private fun Content(
     state: MoveListState,
     moveList: List<MoveListState.UiMove>,
     onMoveClick: (id: String) -> Unit,
+    onFilterClick: (Boolean) -> Unit,
+    onFilterChipClick: (Filter) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
         topBar = {
             TopBar(
                 characterName = state.character?.displayName.orEmpty(),
-                onDisplayFilterSheet = {},
+                onDisplayFilterSheet = { onFilterClick(true) },
             )
         },
         modifier = modifier,
@@ -99,6 +104,8 @@ private fun Content(
             if (state.filterSheet.isVisible) {
                 FilterBottomSheet(
                     filterSheet = state.filterSheet,
+                    onFilterChipClick = onFilterChipClick,
+                    onDismiss = { onFilterClick(false) },
                 )
             }
         }
@@ -151,6 +158,8 @@ private fun MoveListPreviewDark() {
             state = state,
             moveList = state.fullMoveList.values.applyFilters(emptySet()),
             onMoveClick = {},
+            onFilterClick = {},
+            onFilterChipClick = {},
         )
     }
 }
