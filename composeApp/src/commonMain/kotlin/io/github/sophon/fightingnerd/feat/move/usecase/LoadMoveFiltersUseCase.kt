@@ -1,0 +1,19 @@
+package io.github.sophon.fightingnerd.feat.move.usecase
+
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.fightingnerd.core.model.AppError
+
+internal class LoadMoveFiltersUseCase(
+    private val repo: CoreFeatureRepo
+) {
+    fun invoke(gameId: String): Result<Set<Filter>, AppError> {
+        val game = Game.fromId(gameId) ?: return Result.Error(AppError.GameNotFound(gameId))
+        val wiki = repo.getWikiClientFor(game) ?: return Result.Error(AppError.WikiClientNotFound(gameId))
+
+        val filters = wiki.getFiltersFor(game)
+        return Result.Success(filters)
+    }
+}

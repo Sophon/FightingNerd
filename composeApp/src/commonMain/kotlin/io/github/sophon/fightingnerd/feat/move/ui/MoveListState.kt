@@ -2,6 +2,7 @@ package io.github.sophon.fightingnerd.feat.move.ui
 
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
 
@@ -11,6 +12,7 @@ internal data class MoveListState(
 
     val uiMoveList: List<UiMove> = emptyList(),
     val moveDetail: MoveDetail? = null,
+    val filterSet: Set<Filter> = emptySet(),
 ) {
     data class UiMove(
         val id: String,

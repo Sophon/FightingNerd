@@ -14,6 +14,7 @@ import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCa
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -43,14 +44,16 @@ internal fun featureModule() = module {
     viewModelOf(::FeatureSettingsVM)
     //endregion
 
-    //region Move list
+    //region Move
     viewModel { (gameId: String, characterId: String) ->
         MoveListVM(
             gameId = gameId,
             characterId = characterId,
             loadMoveListDataUseCase = get(),
+            loadMoveFiltersUseCase = get(),
         )
     }
     singleOf(::LoadMoveListDataUseCase)
+    singleOf(::LoadMoveFiltersUseCase)
     //endregion
 }

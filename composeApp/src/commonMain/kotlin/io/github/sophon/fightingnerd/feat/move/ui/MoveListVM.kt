@@ -6,6 +6,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
+import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,6 +20,7 @@ internal class MoveListVM(
     private val characterId: String,
 
     private val loadMoveListDataUseCase: LoadMoveListDataUseCase,
+    private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState(character = null))
     val state = _state
@@ -30,6 +32,11 @@ internal class MoveListVM(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = MoveListState(null),
         )
+
+
+    init {
+        loadMoveFiltersFor(gameId)
+    }
 
 
     private fun loadData() {
@@ -48,6 +55,18 @@ internal class MoveListVM(
                 }
                 .onError { Napier.e(tag = TAG) { "loadData: $it" } }
         }
+    }
+
+    private fun loadMoveFiltersFor(gameId: String) {
+        loadMoveFiltersUseCase.invoke(gameId)
+            .onSuccess { filterSet ->
+                _state.update { it.copy(filterSet = filterSet) }
+            }
+            .onError {
+                //TODO: error toast
+                Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $it" }
+            }
+
     }
 
 
