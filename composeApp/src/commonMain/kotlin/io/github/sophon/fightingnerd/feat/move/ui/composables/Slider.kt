@@ -1,6 +1,5 @@
 package io.github.sophon.fightingnerd.feat.move.ui.composables
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -59,6 +57,19 @@ internal fun Slider(
     val sliderMin = min - 1
     val sliderMax = max + 1
 
+    val onChangeNormalized: (MoveListState.FilterSheet.MinMax?) -> Unit = { raw ->
+        val normalized = raw?.let {
+            val newMin = if (it.min != null && it.min <= sliderMin) null else it.min
+            val newMax = if (it.max != null && it.max >= sliderMax) null else it.max
+            if (newMin == null && newMax == null) {
+                null
+            } else {
+                MoveListState.FilterSheet.MinMax(min = newMin, max = newMax)
+            }
+        }
+        onChange(normalized)
+    }
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -76,7 +87,7 @@ internal fun Slider(
             sliderMin = sliderMin,
             sliderMax = sliderMax,
             value = value,
-            onChange = onChange,
+            onChange = onChangeNormalized,
         )
 
         Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
@@ -85,7 +96,7 @@ internal fun Slider(
             sliderMin = sliderMin,
             sliderMax = sliderMax,
             value = value,
-            onChange = onChange,
+            onChange = onChangeNormalized,
         )
     }
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material3.Icon
@@ -17,6 +18,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -94,24 +96,13 @@ private fun Content(
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(paddingValues)
                 .background(MaterialTheme.colorScheme.surface),
         ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(nerdDimensions.listRowPaddingVertical),
-                modifier = Modifier
-                    .padding(paddingValues)
-                    .padding(horizontal = nerdDimensions.screenPaddingHorizontal),
-            ) {
-                items(
-                    items = moveList,
-                    key = { it.id },
-                ) { move ->
-                    MoveItem(
-                        move = move,
-                        onMoveClick = { onMoveClick(move.id) },
-                    )
-                }
-            }
+            MoveList(
+                moveList = moveList,
+                onMoveClick = onMoveClick,
+            )
 
             if (state.filterSheet.isVisible) {
                 FilterBottomSheet(
@@ -123,6 +114,34 @@ private fun Content(
                     onDismiss = { onFilterClick(false) },
                 )
             }
+        }
+    }
+}
+
+@Composable
+private fun MoveList(
+    moveList: List<MoveListState.UiMove>,
+    onMoveClick: (id: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val listState = rememberLazyListState()
+    LaunchedEffect(moveList) {
+        listState.scrollToItem(0)
+    }
+    LazyColumn(
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(nerdDimensions.listRowPaddingVertical),
+        modifier = modifier
+            .padding(horizontal = nerdDimensions.screenPaddingHorizontal),
+    ) {
+        items(
+            items = moveList,
+            key = { it.id },
+        ) { move ->
+            MoveItem(
+                move = move,
+                onMoveClick = { onMoveClick(move.id) },
+            )
         }
     }
 }

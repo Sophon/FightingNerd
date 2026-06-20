@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.util.firstIntOrNull
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
@@ -81,17 +80,11 @@ internal class MoveListVM(
         viewModelScope.launch {
             loadMoveListDataUseCase.invoke(gameId = gameId, characterId = characterId)
                 .onSuccess { (character, moveList) ->
-                    val bounds = computeSliderBounds(moveList)
                     _state.update { state ->
                         val fullMoveList = moveList.associateBy { it.id }
                         state.copy(
                             character = character,
                             fullMoveList = fullMoveList,
-                            filterSheet = state.filterSheet.copy(
-                                startupBounds = bounds.startup,
-                                onHitBounds = bounds.onHit,
-                                onBlockBounds = bounds.onBlock,
-                            ),
                         )
                     }
                 }
@@ -114,38 +107,6 @@ internal class MoveListVM(
 
     private companion object {
         const val TAG = "MoveListVM"
-    }
-
-    private data class SliderBounds(
-        val startup: IntRange?,
-        val onHit: IntRange?,
-        val onBlock: IntRange?,
-    )
-
-    private fun computeSliderBounds(moves: Collection<Move>): SliderBounds {
-        var startupRange: IntRange? = null
-        var onHitRange: IntRange? = null
-        var onBlockRange: IntRange? = null
-
-        fun expand(current: IntRange?, value: Int): IntRange {
-            return if (current == null) {
-                value..value
-            } else {
-                minOf(current.first, value)..maxOf(current.last, value)
-            }
-        }
-
-        moves.forEach { move ->
-            move.startup?.firstIntOrNull()?.let { startupRange = expand(startupRange, it) }
-            move.onHit?.firstIntOrNull()?.let { onHitRange = expand(onHitRange, it) }
-            move.onBlock?.firstIntOrNull()?.let { onBlockRange = expand(onBlockRange, it) }
-        }
-
-        return SliderBounds(
-            startup = startupRange,
-            onHit = onHitRange,
-            onBlock = onBlockRange,
-        )
     }
 }
 

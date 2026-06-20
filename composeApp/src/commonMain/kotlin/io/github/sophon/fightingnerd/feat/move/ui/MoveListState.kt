@@ -37,10 +37,6 @@ internal data class MoveListState(
         val isVisible: Boolean = false,
         val filterSet: Set<Filter> = emptySet(),
 
-        val startupBounds: IntRange? = null,
-        val onHitBounds: IntRange? = null,
-        val onBlockBounds: IntRange? = null,
-
         val startup: MinMax? = null,
         val onHit: MinMax? = null,
         val onBlock: MinMax? = null,

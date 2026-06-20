@@ -78,7 +78,13 @@ private fun ChipSection(
             alignment = Alignment.CenterHorizontally,
         ),
         verticalArrangement = Arrangement.spacedBy(nerdDimensions.matrixGap),
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = nerdDimensions.strokeThin,
+                shape = RoundedCornerShape(nerdDimensions.cornerDefault),
+                color = nerdColorPalette.dividerSubtle,
+            ),
     ) {
         filterSheet.filterSet.forEach { filter ->
             val isActive = filter in filterSheet.activeFilterSet
@@ -114,40 +120,38 @@ private fun MinMaxSection(
                 color = nerdColorPalette.dividerSubtle,
             ),
     ) {
-        filterSheet.startupBounds?.let { bounds ->
-            Slider(
-                label = stringResource(Res.string.move_list_filter_label_startup),
-                min = bounds.first,
-                max = bounds.last,
-                value = filterSheet.startup,
-                onChange = onChangeStartup,
-            )
-            Spacer(Modifier.height(nerdDimensions.inlineGapTight))
-        }
+        Slider(
+            label = stringResource(Res.string.move_list_filter_label_startup),
+            min = FRAME_MIN_STARTUP,
+            max = FRAME_MAX,
+            value = filterSheet.startup,
+            onChange = onChangeStartup,
+        )
+        Spacer(Modifier.height(nerdDimensions.inlineGapTight))
 
-        filterSheet.onBlockBounds?.let { bounds ->
-            Slider(
-                label = stringResource(Res.string.move_list_filter_label_on_block),
-                min = bounds.first,
-                max = bounds.last,
-                value = filterSheet.onBlock,
-                onChange = onChangeOnBlock,
-            )
-            Spacer(Modifier.height(nerdDimensions.inlineGapTight))
-        }
+        Slider(
+            label = stringResource(Res.string.move_list_filter_label_on_block),
+            min = FRAME_MIN,
+            max = FRAME_MAX,
+            value = filterSheet.onBlock,
+            onChange = onChangeOnBlock,
+        )
+        Spacer(Modifier.height(nerdDimensions.inlineGapTight))
 
-        filterSheet.onHitBounds?.let { bounds ->
-            Slider(
-                label = stringResource(Res.string.move_list_filter_label_on_hit),
-                min = bounds.first,
-                max = bounds.last,
-                value = filterSheet.onHit,
-                onChange = onChangeOnHit,
-            )
-            Spacer(Modifier.height(nerdDimensions.inlineGapTight))
-        }
+        Slider(
+            label = stringResource(Res.string.move_list_filter_label_on_hit),
+            min = FRAME_MIN,
+            max = FRAME_MAX,
+            value = filterSheet.onHit,
+            onChange = onChangeOnHit,
+        )
+        Spacer(Modifier.height(nerdDimensions.inlineGapTight))
     }
 }
+
+private const val FRAME_MIN_STARTUP = 3
+private const val FRAME_MIN = -20
+private const val FRAME_MAX = 20
 
 
 //region PREVIEW
