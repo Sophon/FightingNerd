@@ -1,10 +1,14 @@
 package io.github.sophon.fightingnerd.feat.move.ui.composables
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ModalBottomSheet
@@ -12,6 +16,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_block
+import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_hit
+import fightingnerd.composeapp.generated.resources.move_list_filter_label_startup
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
@@ -19,6 +27,7 @@ import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
 import io.github.sophon.wikiwavu.integration.model.TekkenFilters
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -26,6 +35,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 internal fun FilterBottomSheet(
     filterSheet: MoveListState.FilterSheet,
     onFilterChipClick: (Filter) -> Unit,
+    onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -36,11 +48,19 @@ internal fun FilterBottomSheet(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(nerdDimensions.componentPadding)
+                .padding(nerdDimensions.componentPadding),
         ) {
             ChipSection(
                 filterSheet = filterSheet,
                 onFilterChipClick = onFilterChipClick,
+            )
+            Spacer(Modifier.height(nerdDimensions.sectionGap))
+
+            MinMaxSection(
+                filterSheet = filterSheet,
+                onChangeStartup = onChangeStartup,
+                onChangeOnBlock = onChangeOnBlock,
+                onChangeOnHit = onChangeOnHit,
             )
         }
     }
@@ -77,6 +97,58 @@ private fun ChipSection(
     }
 }
 
+@Composable
+private fun MinMaxSection(
+    filterSheet: MoveListState.FilterSheet,
+    onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .border(
+                width = nerdDimensions.strokeThin,
+                shape = RoundedCornerShape(nerdDimensions.cornerDefault),
+                color = nerdColorPalette.dividerSubtle,
+            ),
+    ) {
+        filterSheet.startupBounds?.let { bounds ->
+            Slider(
+                label = stringResource(Res.string.move_list_filter_label_startup),
+                min = bounds.first,
+                max = bounds.last,
+                value = filterSheet.startup,
+                onChange = onChangeStartup,
+            )
+            Spacer(Modifier.height(nerdDimensions.inlineGapTight))
+        }
+
+        filterSheet.onBlockBounds?.let { bounds ->
+            Slider(
+                label = stringResource(Res.string.move_list_filter_label_on_block),
+                min = bounds.first,
+                max = bounds.last,
+                value = filterSheet.onBlock,
+                onChange = onChangeOnBlock,
+            )
+            Spacer(Modifier.height(nerdDimensions.inlineGapTight))
+        }
+
+        filterSheet.onHitBounds?.let { bounds ->
+            Slider(
+                label = stringResource(Res.string.move_list_filter_label_on_hit),
+                min = bounds.first,
+                max = bounds.last,
+                value = filterSheet.onHit,
+                onChange = onChangeOnHit,
+            )
+            Spacer(Modifier.height(nerdDimensions.inlineGapTight))
+        }
+    }
+}
+
 
 //region PREVIEW
 @Preview
@@ -94,6 +166,9 @@ private fun FilterBottomSheetPreview() {
             ),
             onFilterChipClick = {},
             onDismiss = {},
+            onChangeStartup = {},
+            onChangeOnBlock = {},
+            onChangeOnHit = {},
         )
     }
 }

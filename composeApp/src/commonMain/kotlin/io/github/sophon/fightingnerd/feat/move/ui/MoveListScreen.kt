@@ -45,9 +45,15 @@ internal fun MoveListScreen(
     )
     val state by vm.state.collectAsStateWithLifecycle()
 
-    val filteredMoves by remember(state.fullMoveList, state.filterSheet.activeFilterSet) {
+    val filteredMoves by remember(
+        state.fullMoveList,
+        state.filterSheet.activeFilterSet,
+        state.filterSheet.activeSliderFilters,
+    ) {
         derivedStateOf {
-            state.fullMoveList.values.applyFilters(state.filterSheet.activeFilterSet)
+            state.fullMoveList.values.applyFilters(
+                state.filterSheet.activeFilterSet + state.filterSheet.activeSliderFilters
+            )
         }
     }
 
@@ -57,6 +63,9 @@ internal fun MoveListScreen(
         onMoveClick = { /*TODO*/ },
         onFilterClick = vm::onDisplayFilter,
         onFilterChipClick = vm::toggleFilter,
+        onChangeStartup = vm::onChangeStartup,
+        onChangeOnBlock = vm::onChangeOnBlock,
+        onChangeOnHit = vm::onChangeOnHit,
         modifier = modifier,
     )
 }
@@ -68,6 +77,9 @@ private fun Content(
     onMoveClick: (id: String) -> Unit,
     onFilterClick: (Boolean) -> Unit,
     onFilterChipClick: (Filter) -> Unit,
+    onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -82,17 +94,17 @@ private fun Content(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
+                .background(MaterialTheme.colorScheme.surface),
         ) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(nerdDimensions.listRowPaddingVertical),
                 modifier = Modifier
                     .padding(paddingValues)
-                    .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
+                    .padding(horizontal = nerdDimensions.screenPaddingHorizontal),
             ) {
                 items(
                     items = moveList,
-                    key = { it.id }
+                    key = { it.id },
                 ) { move ->
                     MoveItem(
                         move = move,
@@ -105,6 +117,9 @@ private fun Content(
                 FilterBottomSheet(
                     filterSheet = state.filterSheet,
                     onFilterChipClick = onFilterChipClick,
+                    onChangeStartup = onChangeStartup,
+                    onChangeOnBlock = onChangeOnBlock,
+                    onChangeOnHit = onChangeOnHit,
                     onDismiss = { onFilterClick(false) },
                 )
             }
@@ -160,6 +175,9 @@ private fun MoveListPreviewDark() {
             onMoveClick = {},
             onFilterClick = {},
             onFilterChipClick = {},
+            onChangeStartup = {},
+            onChangeOnBlock = {},
+            onChangeOnHit = {},
         )
     }
 }

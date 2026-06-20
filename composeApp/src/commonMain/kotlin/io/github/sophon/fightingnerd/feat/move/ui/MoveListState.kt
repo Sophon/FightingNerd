@@ -2,6 +2,7 @@ package io.github.sophon.fightingnerd.feat.move.ui
 
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
@@ -36,8 +37,30 @@ internal data class MoveListState(
         val isVisible: Boolean = false,
         val filterSet: Set<Filter> = emptySet(),
 
-        val activeFilterSet: Set<Filter> = emptySet(), //TODO: this should be a flow
-    )
+        val startupBounds: IntRange? = null,
+        val onHitBounds: IntRange? = null,
+        val onBlockBounds: IntRange? = null,
+
+        val startup: MinMax? = null,
+        val onHit: MinMax? = null,
+        val onBlock: MinMax? = null,
+
+        val activeFilterSet: Set<Filter> = emptySet(),
+    ) {
+        val activeSliderFilters: List<Filter>
+            get() {
+                return listOfNotNull(
+                    startup?.let { CoreFilters.Startup(it.min, it.max) },
+                    onHit?.let { CoreFilters.OnHit(it.min, it.max) },
+                    onBlock?.let { CoreFilters.OnBlock(it.min, it.max) },
+                )
+            }
+
+        data class MinMax(
+            val min: Int? = null,
+            val max: Int? = null,
+        )
+    }
 
 
     companion object {

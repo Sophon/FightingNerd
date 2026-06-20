@@ -4,32 +4,44 @@ import io.github.sophon.core.util.firstIntOrNull
 
 object CoreFilters {
     data class Startup(
-        val from: Int,
-        val to: Int,
+        val from: Int?,
+        val to: Int?,
     ): Filter {
         override val predicate: (Move) -> Boolean = { move ->
             val value = move.startup?.firstIntOrNull()
-            (value != null) && (value in from..to)
+            if (value == null) {
+                false
+            } else {
+                (from == null || value >= from) && (to == null || value <= to)
+            }
         }
     }
 
     data class OnHit(
-        val from: Int,
-        val to: Int,
+        val from: Int?,
+        val to: Int?,
     ): Filter {
         override val predicate: (Move) -> Boolean = { move ->
             val value = move.onHit?.firstIntOrNull()
-            (value != null) && (value in from..to)
+            if (value == null) {
+                false
+            } else {
+                (from == null || value >= from) && (to == null || value <= to)
+            }
         }
     }
 
     data class OnBlock(
-        val from: Int,
-        val to: Int,
+        val from: Int?,
+        val to: Int?,
     ): Filter {
         override val predicate: (Move) -> Boolean = { move ->
             val value = move.onBlock?.firstIntOrNull()
-            (value != null) && (value in from..to)
+            if (value == null) {
+                false
+            } else {
+                (from == null || value >= from) && (to == null || value <= to)
+            }
         }
     }
 }
