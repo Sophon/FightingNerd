@@ -29,7 +29,7 @@ object BBFilters {
         }
     }
 
-    fun getAll(): Set<Filter> {
+    fun getAllBinaryFilters(): Set<Filter> {
         return setOf(
             Invincible,
         )
@@ -43,7 +43,7 @@ object GGFilters {
         }
     }
 
-    fun getAll(): Set<Filter> {
+    fun getAllBinaryFilters(): Set<Filter> {
         return setOf(
             Invincible,
         )

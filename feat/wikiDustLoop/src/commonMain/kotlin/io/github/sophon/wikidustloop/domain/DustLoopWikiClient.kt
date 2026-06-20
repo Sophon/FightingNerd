@@ -75,8 +75,8 @@ internal class DustLoopWikiClient(
         }
 
         val set = when (game) {
-            Game.BBCF -> BBFilters.getAll()
-            Game.GGST -> GGFilters.getAll()
+            Game.BBCF -> BBFilters.getAllBinaryFilters()
+            Game.GGST -> GGFilters.getAllBinaryFilters()
             else -> emptySet()
         }
         return set
