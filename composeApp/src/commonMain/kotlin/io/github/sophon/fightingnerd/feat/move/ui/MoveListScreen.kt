@@ -2,7 +2,9 @@ package io.github.sophon.fightingnerd.feat.move.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,10 +17,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
@@ -39,8 +44,15 @@ internal fun MoveListScreen(
     )
     val state by vm.state.collectAsStateWithLifecycle()
 
+    val filteredMoves by remember(state.fullMoveList, state.filterSheet.activeFilterSet) {
+        derivedStateOf {
+            state.fullMoveList.values.applyFilters(state.filterSheet.activeFilterSet)
+        }
+    }
+
     Content(
         state = state,
+        moveList = filteredMoves,
         onMoveClick = { /*TODO*/ },
         modifier = modifier,
     )
@@ -49,6 +61,7 @@ internal fun MoveListScreen(
 @Composable
 private fun Content(
     state: MoveListState,
+    moveList: List<MoveListState.UiMove>,
     onMoveClick: (id: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -61,20 +74,31 @@ private fun Content(
         },
         modifier = modifier,
     ) { paddingValues ->
-        LazyColumn(
-            verticalArrangement = Arrangement.spacedBy(nerdDimensions.listRowPaddingVertical),
+        Box(
             modifier = Modifier
-                .padding(paddingValues)
-                .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
+                .fillMaxSize()
                 .background(MaterialTheme.colorScheme.surface)
         ) {
-            items(
-                items = state.uiMoveList,
-                key = { it.id }
-            ) { move ->
-                MoveItem(
-                    move = move,
-                    onMoveClick = { onMoveClick(move.id) },
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(nerdDimensions.listRowPaddingVertical),
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
+            ) {
+                items(
+                    items = moveList,
+                    key = { it.id }
+                ) { move ->
+                    MoveItem(
+                        move = move,
+                        onMoveClick = { onMoveClick(move.id) },
+                    )
+                }
+            }
+
+            if (state.filterSheet.isVisible) {
+                FilterBottomSheet(
+                    filterSheet = state.filterSheet,
                 )
             }
         }
@@ -122,8 +146,10 @@ private fun TopBar(
 @Preview
 private fun MoveListPreviewDark() {
     FightingNerdTheme {
+        val state = MoveListState.PREVIEW
         Content(
-            state = MoveListState.PREVIEW,
+            state = state,
+            moveList = state.fullMoveList.values.applyFilters(emptySet()),
             onMoveClick = {},
         )
     }

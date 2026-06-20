@@ -10,9 +10,9 @@ internal data class MoveListState(
     val character: Character?,
     val fullMoveList: Map<String, Move> = emptyMap(),
 
-    val uiMoveList: List<UiMove> = emptyList(),
     val moveDetail: MoveDetail? = null,
-    val filterSet: Set<Filter> = emptySet(),
+
+    val filterSheet: FilterSheet = FilterSheet(),
 ) {
     data class UiMove(
         val id: String,
@@ -30,6 +30,13 @@ internal data class MoveListState(
 
     data class MoveDetail(
         val move: Move,
+    )
+
+    data class FilterSheet(
+        val isVisible: Boolean = false,
+        val filterSet: Set<Filter> = emptySet(),
+
+        val activeFilterSet: Set<Filter> = emptySet(), //TODO: this should be a flow
     )
 
 
@@ -108,7 +115,6 @@ internal data class MoveListState(
                 wikiUrl = "",
             ),
             fullMoveList = armorKingMoves.associateBy { it.id },
-            uiMoveList = armorKingMoves.map { it.toUiMove() },
             moveDetail = null,
         )
 

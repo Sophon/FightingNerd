@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
@@ -39,17 +41,28 @@ internal class MoveListVM(
     }
 
 
+    fun toggleFilter(filter: Filter) {
+        _state.update { state ->
+            val current = state.filterSheet.activeFilterSet
+            val newFilterSet = if (filter in current) {
+                current - filter
+            } else {
+                current + filter
+            }
+            state.copy(filterSheet = state.filterSheet.copy(activeFilterSet = newFilterSet))
+        }
+    }
+
+
     private fun loadData() {
         viewModelScope.launch {
             loadMoveListDataUseCase.invoke(gameId = gameId, characterId = characterId)
                 .onSuccess { (character, moveList) ->
                     _state.update { state ->
                         val fullMoveList = moveList.associateBy { it.id }
-                        val uiMoveList = moveList.map { it.toUiMove() }
                         state.copy(
                             character = character,
                             fullMoveList = fullMoveList,
-                            uiMoveList = uiMoveList,
                         )
                     }
                 }
@@ -60,17 +73,27 @@ internal class MoveListVM(
     private fun loadMoveFiltersFor(gameId: String) {
         loadMoveFiltersUseCase.invoke(gameId)
             .onSuccess { filterSet ->
-                _state.update { it.copy(filterSet = filterSet) }
+                val filterSheet = state.value.filterSheet.copy(filterSet = filterSet)
+                _state.update { it.copy(filterSheet = filterSheet) }
             }
             .onError {
                 //TODO: error toast
                 Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $it" }
             }
-
     }
 
 
     private companion object {
         const val TAG = "MoveListVM"
     }
+}
+
+internal fun Collection<Move>.applyFilters(filterSet: Set<Filter>): List<MoveListState.UiMove> {
+    val filtered = this
+        .filter { move ->
+            filterSet.all { it.predicate(move) }
+        }
+        .map { it.toUiMove() }
+
+    return filtered
 }
