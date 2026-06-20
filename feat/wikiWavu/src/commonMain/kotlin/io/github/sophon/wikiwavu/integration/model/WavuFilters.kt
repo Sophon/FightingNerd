@@ -30,6 +30,12 @@ object TekkenFilters {
         }
     }
 
+    object Stance: Filter {
+        override val predicate: (Move) -> Boolean = { move ->
+            move.t8Properties?.stance?.isNotBlank() == true
+        }
+    }
+
     data class Strings(val startingMoveInput: String): Filter {
         override val predicate: (Move) -> Boolean = { move ->
             val nextChar = move.input.drop(startingMoveInput.length).getOrNull(0)
@@ -41,12 +47,13 @@ object TekkenFilters {
     }
 
 
-    fun getAll(): Set<Filter> {
+    fun getAllBinaryFilters(): Set<Filter> {
         return setOf(
             PowerCrush,
             Heat,
             Homing,
-            Throw, // this should be generic, so in core
+            Throw,
+            Stance,
 //            Strings,
         )
     }

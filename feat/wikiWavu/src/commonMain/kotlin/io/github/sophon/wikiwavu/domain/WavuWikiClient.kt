@@ -67,7 +67,7 @@ internal class WavuWikiClient(
         }
 
         val filters = when (game) {
-            Game.Tekken8 -> TekkenFilters.getAll()
+            Game.Tekken8 -> TekkenFilters.getAllBinaryFilters()
             else -> emptySet()
         }
         return filters
