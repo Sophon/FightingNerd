@@ -12,16 +12,18 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.data.WavuTables
 import io.github.sophon.wikiwavu.data.WavuWikiDataSource
 import io.github.sophon.wikiwavu.data.toDomain
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
+import io.github.sophon.wikiwavu.integration.model.TekkenFilters
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class WavuWikiClient(
-    private val game: Game,
+    game: Game,
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
     private val source: WavuWikiDataSource,
@@ -32,7 +34,7 @@ internal class WavuWikiClient(
     featureInfo = WavuFeatureInfo.featureInfo,
 ) {
     private val gameTables: QueryTable = WavuTables.getTable(game.id)
-        ?: error("${game.id} not supported. Supported: ${WavuFeatureInfo.featureInfo.supportedGameSet}")
+        ?: error("${game.id} not supported. Supported: $supportedGameSet")
 
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
@@ -57,6 +59,18 @@ internal class WavuWikiClient(
             }
             .mapError { it.toDomainError(TAG) }
         return result
+    }
+
+    override fun getFiltersFor(game: Game): Set<Filter> {
+        require(game in supportedGameSet) {
+            "${game.id} not supported. Supported: $supportedGameSet"
+        }
+
+        val filters = when (game) {
+            Game.Tekken8 -> TekkenFilters.getAll()
+            else -> emptySet()
+        }
+        return filters
     }
 
 

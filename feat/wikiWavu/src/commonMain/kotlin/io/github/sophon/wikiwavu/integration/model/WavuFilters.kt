@@ -5,7 +5,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.util.isHitThrow
 import io.github.sophon.wikiwavu.util.isThrow
 
-object WavuFilter {
+object TekkenFilters {
     object PowerCrush: Filter {
         override val predicate: (Move) -> Boolean = {
             it.t8Properties?.isPowerCrush == true
@@ -38,5 +38,16 @@ object WavuFilter {
 
             inputStartsWithQuery && nextChar != '+'
         }
+    }
+
+
+    fun getAll(): Set<Filter> {
+        return setOf(
+            PowerCrush,
+            Heat,
+            Homing,
+            Throw, // this should be generic, so in core
+//            Strings,
+        )
     }
 }
