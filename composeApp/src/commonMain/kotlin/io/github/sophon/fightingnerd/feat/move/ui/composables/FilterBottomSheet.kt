@@ -1,6 +1,5 @@
 package io.github.sophon.fightingnerd.feat.move.ui.composables
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -10,17 +9,19 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.move_list_filter_button_clear
 import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_block
 import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_filter_label_startup
@@ -41,6 +42,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 internal fun FilterBottomSheet(
     filterSheet: MoveListState.FilterSheet,
+    onClear: () -> Unit,
     onFilterChipClick: (Filter) -> Unit,
     onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
@@ -54,6 +56,7 @@ internal fun FilterBottomSheet(
     ) {
         val focusManager = LocalFocusManager.current
         Column(
+            horizontalAlignment = Alignment.End,
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(
@@ -62,8 +65,21 @@ internal fun FilterBottomSheet(
                 ) {
                     focusManager.clearFocus()
                 }
-                .padding(nerdDimensions.componentPadding),
+                .padding(horizontal = nerdDimensions.componentPadding),
         ) {
+            TextButton(
+                onClick = onClear,
+                colors = ButtonDefaults.textButtonColors(
+                    contentColor = nerdColorPalette.textSecondary,
+                ),
+            ) {
+                Text(
+                    text = stringResource(Res.string.move_list_filter_button_clear).uppercase(),
+                    style = nerdTypography.labelLarge,
+                )
+            }
+            Spacer(Modifier.height(nerdDimensions.sectionGap))
+
             ChipSection(
                 filterSheet = filterSheet,
                 onFilterChipClick = onFilterChipClick,
@@ -94,11 +110,6 @@ private fun ChipSection(
         verticalArrangement = Arrangement.spacedBy(nerdDimensions.matrixGap),
         modifier = modifier
             .fillMaxWidth()
-            .border(
-                width = nerdDimensions.strokeThin,
-                shape = RoundedCornerShape(nerdDimensions.cornerDefault),
-                color = nerdColorPalette.dividerSubtle,
-            ),
     ) {
         filterSheet.filterSet.forEach { filter ->
             val isActive = filter in filterSheet.activeFilterSet
@@ -128,11 +139,6 @@ private fun MinMaxSection(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .border(
-                width = nerdDimensions.strokeThin,
-                shape = RoundedCornerShape(nerdDimensions.cornerDefault),
-                color = nerdColorPalette.dividerSubtle,
-            ),
     ) {
         Slider(
             label = stringResource(Res.string.move_list_filter_label_startup),
@@ -183,6 +189,7 @@ private fun FilterBottomSheetPreview() {
             onChangeStartup = {},
             onChangeOnBlock = {},
             onChangeOnHit = {},
+            onClear = {},
         )
     }
 }

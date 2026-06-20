@@ -47,6 +47,18 @@ internal class MoveListVM(
         _state.update { it.copy(filterSheet = it.filterSheet.copy(isVisible = isVisible)) }
     }
 
+    fun onClearFilters() {
+        _state.update { state ->
+            val resetFilterSheet = state.filterSheet.copy(
+                activeFilterSet = emptySet(),
+                startup = null,
+                onBlock = null,
+                onHit = null,
+            )
+            state.copy(filterSheet = resetFilterSheet)
+        }
+    }
+
     fun toggleFilter(filter: Filter) {
         _state.update { state ->
             val current = state.filterSheet.activeFilterSet

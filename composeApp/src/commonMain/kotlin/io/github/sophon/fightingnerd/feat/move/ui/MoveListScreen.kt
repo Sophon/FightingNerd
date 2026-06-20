@@ -64,6 +64,7 @@ internal fun MoveListScreen(
         moveList = filteredMoves,
         onMoveClick = { /*TODO*/ },
         onFilterClick = vm::onDisplayFilter,
+        onClearFilters = vm::onClearFilters,
         onFilterChipClick = vm::toggleFilter,
         onChangeStartup = vm::onChangeStartup,
         onChangeOnBlock = vm::onChangeOnBlock,
@@ -79,6 +80,7 @@ private fun Content(
     onMoveClick: (id: String) -> Unit,
     onFilterClick: (Boolean) -> Unit,
     onFilterChipClick: (Filter) -> Unit,
+    onClearFilters: () -> Unit,
     onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
@@ -107,6 +109,7 @@ private fun Content(
             if (state.filterSheet.isVisible) {
                 FilterBottomSheet(
                     filterSheet = state.filterSheet,
+                    onClear = onClearFilters,
                     onFilterChipClick = onFilterChipClick,
                     onChangeStartup = onChangeStartup,
                     onChangeOnBlock = onChangeOnBlock,
@@ -197,6 +200,7 @@ private fun MoveListPreviewDark() {
             onChangeStartup = {},
             onChangeOnBlock = {},
             onChangeOnHit = {},
+            onClearFilters = {},
         )
     }
 }
