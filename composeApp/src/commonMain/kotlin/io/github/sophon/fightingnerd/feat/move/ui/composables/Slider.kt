@@ -32,6 +32,7 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
@@ -258,6 +259,7 @@ private fun NumberField(
         mutableStateOf(TextFieldValue(text = value?.toString().orEmpty()))
     }
     var isFocused by remember { mutableStateOf(false) }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(value) {
         if (fieldValue.text.toIntOrNull() != value) {
@@ -271,6 +273,8 @@ private fun NumberField(
             fieldValue = fieldValue.copy(
                 selection = TextRange(0, fieldValue.text.length)
             )
+        } else if (isFocused.not()) {
+            keyboardController?.hide()
         }
     }
 
@@ -286,7 +290,9 @@ private fun NumberField(
         placeholder = { Text(text = hint) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
-        modifier = modifier.onFocusChanged { isFocused = it.isFocused },
+        modifier = modifier.onFocusChanged {
+            isFocused = it.isFocused
+        }
     )
 }
 

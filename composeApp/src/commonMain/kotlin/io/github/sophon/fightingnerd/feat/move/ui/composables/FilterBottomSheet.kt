@@ -1,6 +1,8 @@
 package io.github.sophon.fightingnerd.feat.move.ui.composables
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
@@ -14,8 +16,10 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalFocusManager
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_block
 import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_hit
@@ -45,9 +49,16 @@ internal fun FilterBottomSheet(
         onDismissRequest = onDismiss,
         modifier = modifier,
     ) {
+        val focusManager = LocalFocusManager.current
         Column(
             modifier = Modifier
                 .fillMaxWidth()
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                ) {
+                    focusManager.clearFocus()
+                }
                 .padding(nerdDimensions.componentPadding),
         ) {
             ChipSection(
