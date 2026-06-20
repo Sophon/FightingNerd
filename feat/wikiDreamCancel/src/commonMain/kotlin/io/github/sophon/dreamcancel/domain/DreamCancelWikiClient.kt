@@ -11,6 +11,7 @@ import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.CachedDownloadUseCase
 import io.github.sophon.dreamcancel.data.DreamCancelTables
@@ -21,7 +22,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class DreamCancelWikiClient(
-    private val game: Game,
+    game: Game,
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
     private val source: DreamCancelWikiDataSource,
@@ -31,8 +32,9 @@ internal class DreamCancelWikiClient(
     characterDB = characterDB,
     moveDB = moveDB,
 ) {
+    override val supportedGameSet = DreamCancelFeatureInfo.featureInfo.supportedGameSet
     private val gameTables: QueryTable = DreamCancelTables.getTable(game.id)
-        ?: error("${game.id} not supported. Supported: ${DreamCancelFeatureInfo.featureInfo.supportedGameSet}")
+        ?: error("${game.id} not supported. Supported: $supportedGameSet")
 
     private val cachedDownloadUseCase = CachedDownloadUseCase {
         source.downloadData(gameTables.moves)
@@ -66,6 +68,14 @@ internal class DreamCancelWikiClient(
 
     override suspend fun onClearCache() {
         cachedDownloadUseCase.clearCache()
+    }
+
+    override fun getFiltersFor(game: Game): Set<Filter> {
+        require(game in supportedGameSet) {
+            "${game.id} not supported. Supported: $supportedGameSet"
+        }
+
+        return emptySet()
     }
 
 
