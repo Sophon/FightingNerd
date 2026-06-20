@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.CachedDownloadUseCase
 import io.github.sophon.xko.data.XkoWikiDataSource
@@ -18,7 +19,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class XkoWikiClient(
-    private val game: Game,
+    game: Game,
     private val source: XkoWikiDataSource,
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
@@ -57,6 +58,14 @@ internal class XkoWikiClient(
 
     override suspend fun onClearCache() {
         cachedDownloadUseCase.clearCache()
+    }
+
+    override fun getFiltersFor(game: Game): Set<Filter> {
+        require(game in supportedGameSet) {
+            "${game.id} not supported. Supported: $supportedGameSet"
+        }
+
+        return emptySet()
     }
 
 
