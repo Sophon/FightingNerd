@@ -112,6 +112,7 @@ internal class MoveListVM(
         max: Int,
     ): MoveListState.FilterSheet.MinMax? {
         if (this == null) return null
+        if (isValid.not()) return null
         val sliderMin = min - 1
         val sliderMax = max + 1
         val newMin = if (this.min != null && this.min <= sliderMin) null else this.min

@@ -55,7 +55,12 @@ internal data class MoveListState(
         data class MinMax(
             val min: Int? = null,
             val max: Int? = null,
-        )
+        ) {
+            val isValid: Boolean
+                get() {
+                    return min == null || max == null || min <= max
+                }
+        }
     }
 
 

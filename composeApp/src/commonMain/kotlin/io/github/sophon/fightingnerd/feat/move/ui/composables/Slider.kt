@@ -85,8 +85,6 @@ internal fun Slider(
         Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
 
         NumericInputSection(
-            sliderMin = sliderMin,
-            sliderMax = sliderMax,
             value = value,
             onChange = onChange,
         )
@@ -182,8 +180,6 @@ private fun SliderSection(
 
 @Composable
 private fun NumericInputSection(
-    sliderMin: Int,
-    sliderMax: Int,
     value: MoveListState.FilterSheet.MinMax?,
     onChange: (MoveListState.FilterSheet.MinMax?) -> Unit,
     modifier: Modifier = Modifier,
@@ -201,7 +197,6 @@ private fun NumericInputSection(
                     value?.copy(min = newMin) ?: MoveListState.FilterSheet.MinMax(min = newMin)
                 )
             },
-            range = sliderMin..sliderMax,
             modifier = Modifier.weight(1f),
         )
 
@@ -228,7 +223,6 @@ private fun NumericInputSection(
                     value?.copy(max = newMax) ?: MoveListState.FilterSheet.MinMax(max = newMax)
                 )
             },
-            range = sliderMin..sliderMax,
             modifier = Modifier.weight(1f),
         )
     }
@@ -239,7 +233,6 @@ private fun NumberField(
     value: Int?,
     hint: String,
     onValueChange: (Int) -> Unit,
-    range: IntRange,
     modifier: Modifier = Modifier,
 ) {
     var fieldValue by remember {
@@ -247,6 +240,7 @@ private fun NumberField(
     }
     var isFocused by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
+
     LaunchedEffect(isFocused) {
         if (isFocused && fieldValue.text.isNotEmpty()) {
             withFrameNanos { }
@@ -269,16 +263,14 @@ private fun NumberField(
         onValueChange = { new ->
             fieldValue = new
             val parsed = new.text.toIntOrNull()
-            if (parsed != null && parsed in range) {
+            if (parsed != null) {
                 onValueChange(parsed)
             }
         },
         placeholder = { Text(text = hint) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
-        modifier = modifier.onFocusChanged {
-            isFocused = it.isFocused
-        }
+        modifier = modifier.onFocusChanged { isFocused = it.isFocused },
     )
 }
 
