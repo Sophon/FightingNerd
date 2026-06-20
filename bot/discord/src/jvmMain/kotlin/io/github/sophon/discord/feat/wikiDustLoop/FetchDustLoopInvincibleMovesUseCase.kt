@@ -5,11 +5,12 @@ import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
-import io.github.sophon.wikidustloop.integration.model.DustLoopFilter
+import io.github.sophon.wikidustloop.integration.model.BBFilters
+import io.github.sophon.wikidustloop.integration.model.GGFilters
 
 internal class FetchDustLoopInvincibleMovesUseCase {
     suspend fun invoke(
@@ -27,8 +28,8 @@ internal class FetchDustLoopInvincibleMovesUseCase {
         wiki: WikiClient,
     ): Result<List<Move>, WikiError> {
         val filter = when (game) {
-            Game.BBCF -> DustLoopFilter.BBInvincible
-            Game.GGST -> DustLoopFilter.GGSTInvincible
+            Game.BBCF -> BBFilters.Invincible
+            Game.GGST -> GGFilters.Invincible
             else -> Filter.None
         }
 
