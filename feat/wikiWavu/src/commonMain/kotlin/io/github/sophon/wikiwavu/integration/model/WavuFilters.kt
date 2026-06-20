@@ -36,6 +36,18 @@ object TekkenFilters {
         }
     }
 
+    object HighCrush: Filter {
+        override val predicate: (Move) -> Boolean = { move ->
+            move.t8Properties?.isHighCrush == true
+        }
+    }
+
+    object LowCrush: Filter {
+        override val predicate: (Move) -> Boolean = { move ->
+            move.t8Properties?.isLowCrush == true
+        }
+    }
+
     data class Strings(val startingMoveInput: String): Filter {
         override val predicate: (Move) -> Boolean = { move ->
             val nextChar = move.input.drop(startingMoveInput.length).getOrNull(0)
@@ -54,7 +66,8 @@ object TekkenFilters {
             Homing,
             Throw,
             Stance,
-//            Strings,
+            LowCrush,
+            HighCrush,
         )
     }
 }
