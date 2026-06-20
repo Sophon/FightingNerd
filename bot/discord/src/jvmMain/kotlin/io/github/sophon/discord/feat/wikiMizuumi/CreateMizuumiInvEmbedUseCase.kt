@@ -12,7 +12,9 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.discord.util.toButtons
-import io.github.sophon.wikimizuumi.integration.model.MizuumiFilter
+import io.github.sophon.wikimizuumi.integration.model.MBFilters
+import io.github.sophon.wikimizuumi.integration.model.UniFilters
+import io.github.sophon.wikimizuumi.integration.model.VSAVFilters
 import kotlin.time.Duration.Companion.seconds
 
 internal class CreateMizuumiInvEmbedUseCase {
@@ -23,9 +25,9 @@ internal class CreateMizuumiInvEmbedUseCase {
         charName: String,
     ): Result<BotOutput, BotError> {
         val filter = when (game) {
-            Game.MBTL -> MizuumiFilter.MBTLInvincible
-            Game.Uni2 -> MizuumiFilter.Uni2Invincible
-            Game.VSAV -> MizuumiFilter.VSAVInvincible
+            Game.MBTL -> MBFilters.Invincible
+            Game.Uni2 -> UniFilters.Invincible
+            Game.VSAV -> VSAVFilters.Invincible
             else -> Filter.None
         }
 
