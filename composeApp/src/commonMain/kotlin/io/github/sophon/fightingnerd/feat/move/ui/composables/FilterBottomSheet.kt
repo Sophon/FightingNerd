@@ -26,6 +26,9 @@ import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_filter_label_startup
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MAX
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -159,10 +162,6 @@ private fun MinMaxSection(
         Spacer(Modifier.height(nerdDimensions.inlineGapTight))
     }
 }
-
-private const val FRAME_MIN_STARTUP = 3
-private const val FRAME_MIN = -20
-private const val FRAME_MAX = 20
 
 
 //region PREVIEW

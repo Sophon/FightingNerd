@@ -62,19 +62,6 @@ internal fun Slider(
     val sliderMin = min - 1
     val sliderMax = max + 1
 
-    val onChangeNormalized: (MoveListState.FilterSheet.MinMax?) -> Unit = { raw ->
-        val normalized = raw?.let {
-            val newMin = if (it.min != null && it.min <= sliderMin) null else it.min
-            val newMax = if (it.max != null && it.max >= sliderMax) null else it.max
-            if (newMin == null && newMax == null) {
-                null
-            } else {
-                MoveListState.FilterSheet.MinMax(min = newMin, max = newMax)
-            }
-        }
-        onChange(normalized)
-    }
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -92,7 +79,7 @@ internal fun Slider(
             sliderMin = sliderMin,
             sliderMax = sliderMax,
             value = value,
-            onChange = onChangeNormalized,
+            onChange = onChange,
         )
 
         Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
@@ -101,7 +88,7 @@ internal fun Slider(
             sliderMin = sliderMin,
             sliderMax = sliderMax,
             value = value,
-            onChange = onChangeNormalized,
+            onChange = onChange,
         )
     }
 }
@@ -260,13 +247,6 @@ private fun NumberField(
     }
     var isFocused by remember { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    LaunchedEffect(value) {
-        if (fieldValue.text.toIntOrNull() != value) {
-            fieldValue = TextFieldValue(text = value?.toString().orEmpty())
-        }
-    }
-
     LaunchedEffect(isFocused) {
         if (isFocused && fieldValue.text.isNotEmpty()) {
             withFrameNanos { }
@@ -275,6 +255,12 @@ private fun NumberField(
             )
         } else if (isFocused.not()) {
             keyboardController?.hide()
+        }
+    }
+
+    LaunchedEffect(value) {
+        if (fieldValue.text.toIntOrNull() != value) {
+            fieldValue = TextFieldValue(text = value?.toString().orEmpty())
         }
     }
 

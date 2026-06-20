@@ -7,6 +7,8 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MAX
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
@@ -59,7 +61,8 @@ internal class MoveListVM(
 
     fun onChangeStartup(minMax: MoveListState.FilterSheet.MinMax?) {
         _state.update { state ->
-            state.copy(filterSheet = state.filterSheet.copy(startup = minMax))
+            val normalized = minMax.normalize(min = FRAME_MIN_STARTUP, max = FRAME_MAX)
+            state.copy(filterSheet = state.filterSheet.copy(startup = normalized))
         }
     }
 
@@ -102,6 +105,22 @@ internal class MoveListVM(
                 //TODO: error toast
                 Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $it" }
             }
+    }
+
+    private fun MoveListState.FilterSheet.MinMax?.normalize(
+        min: Int,
+        max: Int,
+    ): MoveListState.FilterSheet.MinMax? {
+        if (this == null) return null
+        val sliderMin = min - 1
+        val sliderMax = max + 1
+        val newMin = if (this.min != null && this.min <= sliderMin) null else this.min
+        val newMax = if (this.max != null && this.max >= sliderMax) null else this.max
+        return if (newMin == null && newMax == null) {
+            null
+        } else {
+            copy(min = newMin, max = newMax)
+        }
     }
 
 

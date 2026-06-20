@@ -60,7 +60,7 @@ internal data class MoveListState(
 
 
     companion object {
-        val armorKingMoves = listOf(
+        private val armorKingMoves = listOf(
             Move(
                 characterId = "Armor King",
                 id = "armor_king-b12",
@@ -125,7 +125,6 @@ internal data class MoveListState(
                 t8Properties = Move.T8Properties(isHeat = true, isHoming = true),
             ),
         )
-
         val PREVIEW = MoveListState(
             character = Character(
                 id = "id",
@@ -160,5 +159,9 @@ internal data class MoveListState(
             )
             return result
         }
+
+        const val FRAME_MIN_STARTUP = 3
+        const val FRAME_MIN = -20
+        const val FRAME_MAX = 20
     }
 }
