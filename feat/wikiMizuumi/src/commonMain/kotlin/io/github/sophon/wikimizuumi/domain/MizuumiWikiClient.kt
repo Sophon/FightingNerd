@@ -118,9 +118,9 @@ internal class MizuumiWikiClient(
         }
 
         val set = when (game) {
-            Game.MBTL -> MBFilters.getAll()
-            Game.Uni2 -> UniFilters.getAll()
-            Game.VSAV -> VSAVFilters.getAll()
+            Game.MBTL -> MBFilters.getAllBinaryFilters()
+            Game.Uni2 -> UniFilters.getAllBinaryFilters()
+            Game.VSAV -> VSAVFilters.getAllBinaryFilters()
             else -> emptySet()
         }
 

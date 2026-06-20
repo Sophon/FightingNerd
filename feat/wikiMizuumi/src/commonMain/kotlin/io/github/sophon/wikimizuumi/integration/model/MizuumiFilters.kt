@@ -14,7 +14,7 @@ object MBFilters {
         }
     }
 
-    fun getAll(): Set<Filter> {
+    fun getAllBinaryFilters(): Set<Filter> {
         return setOf(
             Invincible,
         )
@@ -35,7 +35,7 @@ object UniFilters {
         override val predicate: (Move) -> Boolean = { it.invulnerability?.isNotEmpty() == true }
     }
 
-    fun getAll(): Set<Filter> {
+    fun getAllBinaryFilters(): Set<Filter> {
         return setOf(
             Invincible,
         )
@@ -51,7 +51,7 @@ object VSAVFilters {
         }
     }
 
-    fun getAll(): Set<Filter> {
+    fun getAllBinaryFilters(): Set<Filter> {
         return setOf(
             Invincible,
         )
