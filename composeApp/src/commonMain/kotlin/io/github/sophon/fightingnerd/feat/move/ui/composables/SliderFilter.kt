@@ -255,8 +255,8 @@ private fun NumberField(
         }
     }
 
-    LaunchedEffect(value) {
-        if (fieldValue.text.toIntOrNull() != value) {
+    LaunchedEffect(value, isFocused) {
+        if (isFocused.not() && fieldValue.text.toIntOrNull() != value) {
             fieldValue = TextFieldValue(text = value?.toString().orEmpty())
         }
     }

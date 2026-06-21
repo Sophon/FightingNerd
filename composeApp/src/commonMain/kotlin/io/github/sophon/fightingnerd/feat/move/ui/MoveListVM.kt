@@ -129,11 +129,12 @@ internal class MoveListVM(
         val sliderMax = max + 1
         val newMin = if (this.min != null && this.min <= sliderMin) null else this.min
         val newMax = if (this.max != null && this.max >= sliderMax) null else this.max
-        return if (newMin == null && newMax == null) {
+        val normalized = if (newMin == null && newMax == null) {
             null
         } else {
             copy(min = newMin, max = newMax)
         }
+        return normalized
     }
 
 
