@@ -1,6 +1,6 @@
 import kotlin.Boolean;
 
-CREATE TABLE move (
+CREATE TABLE MoveEntity (
     id TEXT NOT NULL PRIMARY KEY,
     characterId TEXT NOT NULL,
     name TEXT,
@@ -15,6 +15,7 @@ CREATE TABLE move (
     recovery TEXT,
     guard TEXT,
     invulnerability TEXT,
+    isThrow INTEGER AS Boolean NOT NULL DEFAULT 0,
     notes TEXT NOT NULL,
     aliases TEXT NOT NULL,
     urlsVideoId TEXT,
@@ -25,26 +26,26 @@ CREATE TABLE move (
 );
 
 insertMove:
-INSERT OR IGNORE INTO move(id, characterId, name, input, damage, startup, onBlock, onHit, onCH, active, cancel, recovery, guard, invulnerability, notes, aliases, urlsVideoId, urlsHitboxImageList, urlsMoveImageList, urlsWikiUrl, insertedAt)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR IGNORE INTO MoveEntity(id, characterId, name, input, damage, startup, onBlock, onHit, onCH, active, cancel, recovery, guard, invulnerability, isThrow, notes, aliases, urlsVideoId, urlsHitboxImageList, urlsMoveImageList, urlsWikiUrl, insertedAt)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 deleteAllMoves:
-DELETE FROM move;
+DELETE FROM MoveEntity;
 
 selectAllCommon:
 SELECT *
-FROM move;
+FROM MoveEntity;
 
 selectLastInsertTimestamp:
 SELECT MAX(insertedAt) AS lastInsertedAt
-FROM move;
+FROM MoveEntity;
 
 hasMovesForCharacter:
-SELECT EXISTS(SELECT 1 FROM move WHERE characterId = ?);
+SELECT EXISTS(SELECT 1 FROM MoveEntity WHERE characterId = ?);
 
 
 CREATE TABLE t8_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     isHeat INTEGER AS Boolean NOT NULL,
     isHoming INTEGER AS Boolean NOT NULL,
     stance TEXT,
@@ -54,7 +55,7 @@ CREATE TABLE t8_move_props (
 );
 
 CREATE TABLE sf6_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     type TEXT,
     images TEXT,
     chip TEXT,
@@ -85,17 +86,17 @@ CREATE TABLE sf6_move_props (
 );
 
 CREATE TABLE kof15_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     stun TEXT
 );
 
 CREATE TABLE cotw_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     revDamage TEXT
 );
 
 CREATE TABLE ggst_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     type TEXT,
     riscGain TEXT,
     riscLoss TEXT,
@@ -108,7 +109,7 @@ CREATE TABLE ggst_move_props (
 );
 
 CREATE TABLE dbfz_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     attribute TEXT,
     smash TEXT,
     kiGain TEXT,
@@ -121,7 +122,7 @@ CREATE TABLE dbfz_move_props (
 );
 
 CREATE TABLE gbvsr_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     meter TEXT,
     level TEXT,
     cooldown TEXT,
@@ -130,7 +131,7 @@ CREATE TABLE gbvsr_move_props (
 );
 
 CREATE TABLE mk_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     moveType TEXT,
     cost TEXT NOT NULL,
     chip TEXT,
@@ -141,7 +142,7 @@ CREATE TABLE mk_move_props (
 );
 
 CREATE TABLE mb_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     inputInfo TEXT,
     subtitle TEXT,
     minDamage TEXT,
@@ -153,7 +154,7 @@ CREATE TABLE mb_move_props (
 );
 
 CREATE TABLE bb_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     onODR TEXT,
     attribute TEXT,
     p1 TEXT,
@@ -173,7 +174,7 @@ CREATE TABLE bb_move_props (
 );
 
 CREATE TABLE uni2_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     inputInfo TEXT,
     subtitle TEXT,
     minDamage TEXT,
@@ -198,7 +199,7 @@ CREATE TABLE uni2_move_props (
 );
 
 CREATE TABLE vsav_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     inputInfo TEXT,
     subtitle TEXT,
     whiteDmg TEXT,
@@ -209,7 +210,7 @@ CREATE TABLE vsav_move_props (
 );
 
 CREATE TABLE avl_move_props (
-    moveId TEXT NOT NULL PRIMARY KEY REFERENCES move(id),
+    moveId TEXT NOT NULL PRIMARY KEY REFERENCES MoveEntity(id),
     chiDamage TEXT,
     flow TEXT
 );
@@ -220,9 +221,9 @@ INSERT OR IGNORE INTO t8_move_props(moveId, isHeat, isHoming, stance, isPowerCru
 VALUES (?, ?, ?, ?, ?, ?, ?);
 
 selectAllT8:
-SELECT move.*, t8_move_props.*
-FROM move
-LEFT JOIN t8_move_props ON move.id = t8_move_props.moveId;
+SELECT MoveEntity.*, t8_move_props.*
+FROM MoveEntity
+LEFT JOIN t8_move_props ON MoveEntity.id = t8_move_props.moveId;
 
 deleteAllT8Props:
 DELETE FROM t8_move_props;
@@ -233,9 +234,9 @@ INSERT OR IGNORE  INTO sf6_move_props(moveId, type, images, chip, dmgScaling, to
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllSf6:
-SELECT move.*, sf6_move_props.*
-FROM move
-LEFT JOIN sf6_move_props ON move.id = sf6_move_props.moveId;
+SELECT MoveEntity.*, sf6_move_props.*
+FROM MoveEntity
+LEFT JOIN sf6_move_props ON MoveEntity.id = sf6_move_props.moveId;
 
 deleteAllSf6Props:
 DELETE FROM sf6_move_props;
@@ -246,9 +247,9 @@ INSERT OR IGNORE  INTO kof15_move_props(moveId, stun)
 VALUES (?, ?);
 
 selectAllKof15:
-SELECT move.*, kof15_move_props.*
-FROM move
-LEFT JOIN kof15_move_props ON move.id = kof15_move_props.moveId;
+SELECT MoveEntity.*, kof15_move_props.*
+FROM MoveEntity
+LEFT JOIN kof15_move_props ON MoveEntity.id = kof15_move_props.moveId;
 
 deleteAllKof15Props:
 DELETE FROM kof15_move_props;
@@ -259,9 +260,9 @@ INSERT OR IGNORE  INTO cotw_move_props(moveId, revDamage)
 VALUES (?, ?);
 
 selectAllCotw:
-SELECT move.*, cotw_move_props.*
-FROM move
-LEFT JOIN cotw_move_props ON move.id = cotw_move_props.moveId;
+SELECT MoveEntity.*, cotw_move_props.*
+FROM MoveEntity
+LEFT JOIN cotw_move_props ON MoveEntity.id = cotw_move_props.moveId;
 
 deleteAllCotwProps:
 DELETE FROM cotw_move_props;
@@ -272,9 +273,9 @@ INSERT OR IGNORE  INTO ggst_move_props(moveId, type, riscGain, riscLoss, wallDam
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllGgst:
-SELECT move.*, ggst_move_props.*
-FROM move
-LEFT JOIN ggst_move_props ON move.id = ggst_move_props.moveId;
+SELECT MoveEntity.*, ggst_move_props.*
+FROM MoveEntity
+LEFT JOIN ggst_move_props ON MoveEntity.id = ggst_move_props.moveId;
 
 deleteAllGgstProps:
 DELETE FROM ggst_move_props;
@@ -286,9 +287,9 @@ VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 
 selectAllDbfz:
-SELECT move.*, dbfz_move_props.*
-FROM move
-LEFT JOIN dbfz_move_props ON move.id = dbfz_move_props.moveId;
+SELECT MoveEntity.*, dbfz_move_props.*
+FROM MoveEntity
+LEFT JOIN dbfz_move_props ON MoveEntity.id = dbfz_move_props.moveId;
 
 deleteAllDbfzProps:
 DELETE FROM dbfz_move_props;
@@ -299,9 +300,9 @@ INSERT OR IGNORE  INTO gbvsr_move_props(moveId, meter, level, cooldown, cls, typ
 VALUES (?, ?, ?, ?, ?, ?);
 
 selectAllGbvsr:
-SELECT move.*, gbvsr_move_props.*
-FROM move
-LEFT JOIN gbvsr_move_props ON move.id = gbvsr_move_props.moveId;
+SELECT MoveEntity.*, gbvsr_move_props.*
+FROM MoveEntity
+LEFT JOIN gbvsr_move_props ON MoveEntity.id = gbvsr_move_props.moveId;
 
 deleteAllGbvsrProps:
 DELETE FROM gbvsr_move_props;
@@ -312,9 +313,9 @@ INSERT OR IGNORE  INTO mk_move_props(moveId, moveType, cost, chip, flawlessBlock
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllMk:
-SELECT move.*, mk_move_props.*
-FROM move
-LEFT JOIN mk_move_props ON move.id = mk_move_props.moveId;
+SELECT MoveEntity.*, mk_move_props.*
+FROM MoveEntity
+LEFT JOIN mk_move_props ON MoveEntity.id = mk_move_props.moveId;
 
 deleteAllMkProps:
 DELETE FROM mk_move_props;
@@ -325,9 +326,9 @@ INSERT OR IGNORE  INTO mb_move_props(moveId, inputInfo, subtitle, minDamage, pro
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllMb:
-SELECT move.*, mb_move_props.*
-FROM move
-LEFT JOIN mb_move_props ON move.id = mb_move_props.moveId;
+SELECT MoveEntity.*, mb_move_props.*
+FROM MoveEntity
+LEFT JOIN mb_move_props ON MoveEntity.id = mb_move_props.moveId;
 
 deleteAllMbProps:
 DELETE FROM mb_move_props;
@@ -338,9 +339,9 @@ INSERT OR IGNORE  INTO bb_move_props(moveId, onODR, attribute, p1, p2, starter, 
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllBb:
-SELECT move.*, bb_move_props.*
-FROM move
-LEFT JOIN bb_move_props ON move.id = bb_move_props.moveId;
+SELECT MoveEntity.*, bb_move_props.*
+FROM MoveEntity
+LEFT JOIN bb_move_props ON MoveEntity.id = bb_move_props.moveId;
 
 deleteAllBbProps:
 DELETE FROM bb_move_props;
@@ -351,9 +352,9 @@ INSERT OR IGNORE  INTO uni2_move_props(moveId, inputInfo, subtitle, minDamage, t
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllUni2:
-SELECT move.*, uni2_move_props.*
-FROM move
-LEFT JOIN uni2_move_props ON move.id = uni2_move_props.moveId;
+SELECT MoveEntity.*, uni2_move_props.*
+FROM MoveEntity
+LEFT JOIN uni2_move_props ON MoveEntity.id = uni2_move_props.moveId;
 
 deleteAllUni2Props:
 DELETE FROM uni2_move_props;
@@ -364,9 +365,9 @@ INSERT OR IGNORE  INTO vsav_move_props(moveId, inputInfo, subtitle, whiteDmg, re
 VALUES (?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllVsav:
-SELECT move.*, vsav_move_props.*
-FROM move
-LEFT JOIN vsav_move_props ON move.id = vsav_move_props.moveId;
+SELECT MoveEntity.*, vsav_move_props.*
+FROM MoveEntity
+LEFT JOIN vsav_move_props ON MoveEntity.id = vsav_move_props.moveId;
 
 deleteAllVsavProps:
 DELETE FROM vsav_move_props;
@@ -377,9 +378,9 @@ INSERT OR IGNORE  INTO avl_move_props(moveId, chiDamage, flow)
 VALUES (?, ?, ?);
 
 selectAllAvl:
-SELECT move.*, avl_move_props.*
-FROM move
-LEFT JOIN avl_move_props ON move.id = avl_move_props.moveId;
+SELECT MoveEntity.*, avl_move_props.*
+FROM MoveEntity
+LEFT JOIN avl_move_props ON MoveEntity.id = avl_move_props.moveId;
 
 deleteAllAvlProps:
 DELETE FROM avl_move_props;
