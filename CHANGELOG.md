@@ -6,6 +6,7 @@
 - refactor character parameter passing
 - `DustLoop` - `GGST` ignores alt-mode characters
 - `DreamCancel` - fixed bad character creation from data
+- `Wavu` - fixed moves not having properly assigned high/low crush properties 
 - add Top.gg link to donation message
 
 ## [v12.0.1] - 2026-06-06
