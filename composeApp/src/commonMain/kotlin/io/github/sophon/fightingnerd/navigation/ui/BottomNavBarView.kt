@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Quiz
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.MoreHoriz
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -30,7 +29,6 @@ import fightingnerd.composeapp.generated.resources.bottom_bar_item_character_lis
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_more
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_quiz
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_saved
-import fightingnerd.composeapp.generated.resources.bottom_bar_item_search
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
 import io.github.sophon.fightingnerd.navigation.domain.BottomBarItem
 import io.github.sophon.fightingnerd.navigation.domain.Destination
@@ -72,7 +70,7 @@ private val bottomBarItems = listOf(
 
 
 @Composable
-internal fun BottomBarView(
+internal fun BottomNavBarView(
     currentRoot: Destination.TopLevelDestination,
     onTabClick: (Destination.TopLevelDestination) -> Unit,
     modifier: Modifier = Modifier,
@@ -87,7 +85,7 @@ internal fun BottomBarView(
             horizontalArrangement = Arrangement.spacedBy(2.dp),
             modifier = Modifier
                 .background(
-                    color = nerdColorPalette.surfaceHigh.copy(alpha = 0.9f),
+                    color = nerdColorPalette.surfaceHigh,
                     shape = RoundedCornerShape(RADIUS_CORNER.dp),
                 )
                 .padding(2.dp),
@@ -170,7 +168,7 @@ private const val RADIUS_CORNER = 30
 @Preview(showBackground = false)
 private fun BottomBarPreview() {
     FightingNerdTheme {
-        BottomBarView(
+        BottomNavBarView(
             currentRoot = Destination.Home,
             onTabClick = {},
         )

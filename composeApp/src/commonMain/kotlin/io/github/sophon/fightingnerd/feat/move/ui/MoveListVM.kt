@@ -7,6 +7,7 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MAX
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
@@ -23,6 +24,7 @@ internal class MoveListVM(
     private val gameId: String,
     private val characterId: String,
 
+    private val overlayService: OverlayService,
     private val loadMoveListDataUseCase: LoadMoveListDataUseCase,
     private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
 ): ViewModel() {
@@ -107,7 +109,10 @@ internal class MoveListVM(
                         )
                     }
                 }
-                .onError { Napier.e(tag = TAG) { "loadData: $it" } }
+                .onError { error ->
+                    Napier.e(tag = TAG) { "loadData: $error" }
+                    overlayService.show(error)
+                }
         }
     }
 
@@ -117,9 +122,9 @@ internal class MoveListVM(
                 val filterSheet = state.value.filterSheet.copy(filterSet = filterSet)
                 _state.update { it.copy(filterSheet = filterSheet) }
             }
-            .onError {
-                //TODO: error toast
-                Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $it" }
+            .onError { error ->
+                Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $error" }
+                overlayService.show(error)
             }
     }
 

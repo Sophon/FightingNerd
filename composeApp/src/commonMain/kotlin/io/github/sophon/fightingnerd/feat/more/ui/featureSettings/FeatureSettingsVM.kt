@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.fightingnerd.core.ui.OverlayService
+import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,6 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class FeatureSettingsVM(
+    private val overlayService: OverlayService,
     private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
     private val toggleFeatureUseCase: ToggleFeatureUseCase,
 ): ViewModel() {
@@ -46,7 +49,14 @@ internal class FeatureSettingsVM(
                         state.copy(featureList = updatedList)
                     }
                 }
-                .onError { Napier.e(tag = TAG) { "toggleFeature: $it" } }
+                .onError { error ->
+                    Napier.e(tag = TAG) { "toggleFeature: $error" }
+                    error::class.simpleName?.let { errorName ->
+                        overlayService.show(
+                            Toast(message = errorName, type = Toast.Type.ERROR)
+                        )
+                    }
+                }
         }
     }
 
@@ -78,7 +88,14 @@ internal class FeatureSettingsVM(
                         state.copy(featureList = updatedList)
                     }
                 }
-                .onError { Napier.e(tag = TAG) { "toggleGame: $it" } }
+                .onError { error ->
+                    Napier.e(tag = TAG) { "toggleGame: $error" }
+                    error::class.simpleName?.let { errorName ->
+                        overlayService.show(
+                            Toast(message = errorName, type = Toast.Type.ERROR)
+                        )
+                    }
+                }
         }
     }
 

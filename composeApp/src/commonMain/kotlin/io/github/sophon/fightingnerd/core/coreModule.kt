@@ -8,6 +8,7 @@ import io.github.sophon.fightingnerd.core.data.db.DatabaseDriverFactory
 import io.github.sophon.fightingnerd.core.data.db.SqlCharacterDB
 import io.github.sophon.fightingnerd.core.data.db.SqlMoveDB
 import io.github.sophon.fightingnerd.core.data.store.PreferenceRepoImpl
+import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
 import io.github.sophon.fightingnerd.db.character.CharacterDatabase
 import io.github.sophon.fightingnerd.db.move.MoveDatabase
@@ -37,4 +38,6 @@ internal fun coreModule() = module {
     singleOf(::PreferenceRepoImpl).bind<PreferenceRepo>()
 
     singleOf(::OpenUrlUseCase)
+
+    singleOf(::OverlayService)
 }
