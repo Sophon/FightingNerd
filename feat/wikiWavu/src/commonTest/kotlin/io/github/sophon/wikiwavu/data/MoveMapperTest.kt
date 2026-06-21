@@ -559,6 +559,7 @@ class MoveMapperTest {
             onBlock = "-18c",
             onHit = "+0d",
             onCH = null,
+            isThrow = true,
             guard = "m,t",
             notes = listOf(
                 "Transition into hit grab on grounded, airborne, and backturn hit",
@@ -624,6 +625,7 @@ class MoveMapperTest {
             input = "wr2+4",
             damage = "40 (45)",
             startup = "i10",
+            isThrow = true,
             recovery = "FUFT",
             onBlock = "-5",
             onHit = "+10d",
@@ -673,6 +675,19 @@ class MoveMapperTest {
         //then
         assertThat(result.input).isEqualTo(expectedInput)
         assertThat(result.aliases).isEqualTo(expectedAlias)
+    }
+
+    @Test
+    fun `toDomain detects throw`() {
+        // given
+        val move = MoveSource.shiningWizard
+        val expectedIsThrow = true
+
+        // when
+        val result = move.toDomain(character, emptyMap())
+
+        //then
+        assertThat(result.isThrow).isEqualTo(expectedIsThrow)
     }
     //endregion
 }
