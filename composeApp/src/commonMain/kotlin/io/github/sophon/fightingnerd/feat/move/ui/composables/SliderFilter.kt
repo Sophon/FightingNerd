@@ -1,6 +1,7 @@
 package io.github.sophon.fightingnerd.feat.move.ui.composables
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.DragInteraction
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -50,6 +51,7 @@ import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
+import kotlinx.coroutines.flow.merge
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import kotlin.math.roundToInt
@@ -62,11 +64,10 @@ internal fun SliderFilter(
     max: Int,
     value: MoveListState.FilterSheet.MinMax?,
     onChange: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onDraggingChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val sliderMin = min - 1
-    val sliderMax = max + 1
-
+    var isSliderDragging by remember { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -80,11 +81,14 @@ internal fun SliderFilter(
         )
         Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
 
+        val sliderMin = min - 1
+        val sliderMax = max + 1
         SliderSection(
             sliderMin = sliderMin,
             sliderMax = sliderMax,
             value = value,
             onChange = onChange,
+            onDraggingChange = onDraggingChange,
         )
 
         Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
@@ -103,6 +107,7 @@ private fun SliderSection(
     sliderMax: Int,
     value: MoveListState.FilterSheet.MinMax?,
     onChange: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onDraggingChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val effectiveMin = value?.min ?: sliderMin
@@ -115,7 +120,6 @@ private fun SliderSection(
             valueRange = sliderMin.toFloat()..sliderMax.toFloat(),
         )
     }
-
     LaunchedEffect(effectiveMin, effectiveMax) {
         rangeSliderState.activeRangeStart = effectiveMin.toFloat()
         rangeSliderState.activeRangeEnd = effectiveMax.toFloat()
@@ -144,6 +148,18 @@ private fun SliderSection(
     )
     val startInteractionSource = remember { MutableInteractionSource() }
     val endInteractionSource = remember { MutableInteractionSource() }
+    LaunchedEffect(startInteractionSource, endInteractionSource) {
+        merge(
+            startInteractionSource.interactions,
+            endInteractionSource.interactions,
+        ).collect { interaction ->
+            when (interaction) {
+                is DragInteraction.Start -> onDraggingChange(true)
+                is DragInteraction.Stop,
+                is DragInteraction.Cancel -> onDraggingChange(false)
+            }
+        }
+    }
     RangeSlider(
         state = rangeSliderState,
         startInteractionSource = startInteractionSource,
@@ -293,6 +309,7 @@ private fun SliderPreview_NoInput() {
             max = 40,
             value = null,
             onChange = {},
+            onDraggingChange = {},
         )
     }
 }
@@ -307,6 +324,7 @@ private fun SliderPreview_Adjusted() {
             max = 40,
             value = MoveListState.FilterSheet.MinMax(min = 10, max = 25),
             onChange = {},
+            onDraggingChange = {},
         )
     }
 }
@@ -321,6 +339,7 @@ private fun SliderPreview_MinOnly() {
             max = 40,
             value = MoveListState.FilterSheet.MinMax(min = 10, max = null),
             onChange = {},
+            onDraggingChange = {},
         )
     }
 }

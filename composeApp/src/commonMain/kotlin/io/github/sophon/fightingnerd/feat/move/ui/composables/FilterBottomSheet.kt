@@ -20,7 +20,10 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
@@ -55,9 +58,11 @@ internal fun FilterBottomSheet(
     modifier: Modifier = Modifier,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var isSliderDragging by remember { mutableStateOf(false) }
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
+        sheetGesturesEnabled = isSliderDragging.not(),
         modifier = modifier,
     ) {
         val focusManager = LocalFocusManager.current
@@ -99,6 +104,7 @@ internal fun FilterBottomSheet(
                 onChangeStartup = onChangeStartup,
                 onChangeOnBlock = onChangeOnBlock,
                 onChangeOnHit = onChangeOnHit,
+                onDraggingChange = { isSliderDragging = it },
             )
         }
     }
@@ -142,6 +148,7 @@ private fun MinMaxSection(
     onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onDraggingChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -154,6 +161,7 @@ private fun MinMaxSection(
             max = FRAME_MAX,
             value = filterSheet.startup,
             onChange = onChangeStartup,
+            onDraggingChange = onDraggingChange,
         )
         Spacer(Modifier.height(nerdDimensions.inlineGapTight))
 
@@ -163,6 +171,7 @@ private fun MinMaxSection(
             max = FRAME_MAX,
             value = filterSheet.onBlock,
             onChange = onChangeOnBlock,
+            onDraggingChange = onDraggingChange,
         )
         Spacer(Modifier.height(nerdDimensions.inlineGapTight))
 
@@ -172,6 +181,7 @@ private fun MinMaxSection(
             max = FRAME_MAX,
             value = filterSheet.onHit,
             onChange = onChangeOnHit,
+            onDraggingChange = onDraggingChange,
         )
         Spacer(Modifier.height(nerdDimensions.inlineGapTight))
     }
