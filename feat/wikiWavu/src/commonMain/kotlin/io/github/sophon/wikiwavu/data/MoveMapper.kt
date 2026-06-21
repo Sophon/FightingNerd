@@ -45,8 +45,9 @@ internal fun MoveDto.toDomain(
         onHit = hit.formatClickable(),
         onCH = ch.formatClickable(),
         guard = parentalProperties.guard,
+        isThrow = isThrow(target, unifiedNotes),
 
-        notes = notes.formNotes() + cleanedCrushes,
+        notes = unifiedNotes,
         aliases = aliases,
 
         urls = Move.Urls(
@@ -301,6 +302,14 @@ private fun formProperties(
         isLowCrush = isLowCrush,
     )
     return properties
+}
+
+private fun isThrow(guard: String?, notes: List<String>): Boolean {
+    val level = guard.orEmpty().lowercase()
+    val isThrow = level.contains("t")
+            || level.contains("th(")
+            || notes.any { it.contains("throw break", ignoreCase = true) }
+    return isThrow
 }
 
 internal data class ParentalProperties(

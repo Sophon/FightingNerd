@@ -161,6 +161,7 @@ internal data class MoveListState(
                         if (props.isHighCrush) add(Property.HighCrush)
                         if (props.isLowCrush) add(Property.LowCrush)
                     }
+                    if (isThrow) { add(Property.Throw) }
                 },
             )
             return result

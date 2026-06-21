@@ -20,7 +20,7 @@ internal class SqlMoveDB(
     private val gameId: String,
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
 ): MoveListDB {
-    private val queries = db.moveQueries
+    private val queries = db.moveEntityQueries
 
     override suspend fun fetchMoveListFor(characterId: String): Result<List<Move>, WikiError> {
         val result = dbCall {
@@ -134,6 +134,7 @@ internal class SqlMoveDB(
             recovery = move.recovery,
             guard = move.guard,
             invulnerability = move.invulnerability,
+            isThrow = move.isThrow,
             notes = move.notes.fromDomain(),
             aliases = move.aliases.fromDomain(),
             urlsVideoId = move.urls.videoId,

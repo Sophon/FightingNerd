@@ -1,6 +1,7 @@
 package io.github.sophon.fightingnerd.core.data.db
 
 import io.github.sophon.core.wiki.model.Move
+import move.MoveEntity
 import move.SelectAllAvl
 import move.SelectAllBb
 import move.SelectAllCotw
@@ -15,7 +16,7 @@ import move.SelectAllT8
 import move.SelectAllUni2
 import move.SelectAllVsav
 
-internal fun move.Move.toDomain(): Move {
+internal fun MoveEntity.toDomain(): Move {
     return Move(
         id = id,
         characterId = characterId,
@@ -37,7 +38,7 @@ internal fun move.Move.toDomain(): Move {
     )
 }
 
-internal fun move.Move.buildUrls(): Move.Urls {
+internal fun MoveEntity.buildUrls(): Move.Urls {
     return Move.Urls(
         videoId = urlsVideoId,
         hitboxImageList = urlsHitboxImageList.toDomain(),
@@ -62,6 +63,7 @@ internal fun SelectAllT8.toDomain(): Move {
         recovery = recovery,
         guard = guard,
         invulnerability = invulnerability,
+        isThrow = isThrow,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
