@@ -43,6 +43,10 @@ internal class MoveListVM(
     }
 
 
+    fun onSearchInput(searchQuery: String?) {
+        _state.update { it.copy(searchQuery = searchQuery) }
+    }
+
     fun onDisplayFilter(isVisible: Boolean) {
         _state.update { it.copy(filterSheet = it.filterSheet.copy(isVisible = isVisible)) }
     }
@@ -143,10 +147,20 @@ internal class MoveListVM(
     }
 }
 
-internal fun Collection<Move>.applyFilters(filterSet: Set<Filter>): List<MoveListState.UiMove> {
+internal fun Collection<Move>.applyFilters(
+    filterSet: Set<Filter>,
+    searchQuery: String?,
+): List<MoveListState.UiMove> {
     val filtered = this
         .filter { move ->
             filterSet.all { it.predicate(move) }
+        }
+        .filter { move ->
+            searchQuery?.let { query ->
+                move.input.contains(query, ignoreCase = true)
+                        || move.aliases.any { it.contains(query, ignoreCase = true) }
+                        || (move.name?.contains(query, ignoreCase = true) == true)
+            } ?: true
         }
         .map { it.toUiMove() }
 

@@ -3,35 +3,26 @@ package io.github.sophon.fightingnerd.feat.move.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.FilterList
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
+import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveTopBar
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
-import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
-import io.github.sophon.fightingnerd.theme.nerdTypography
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -54,7 +45,8 @@ internal fun MoveListScreen(
     ) {
         derivedStateOf {
             state.fullMoveList.values.applyFilters(
-                state.filterSheet.activeFilterSet + state.filterSheet.activeSliderFilters
+                filterSet = (state.filterSheet.activeFilterSet + state.filterSheet.activeSliderFilters),
+                searchQuery = state.searchQuery,
             )
         }
     }
@@ -63,6 +55,8 @@ internal fun MoveListScreen(
         state = state,
         moveList = filteredMoves,
         onMoveClick = { /*TODO*/ },
+        searchQuery = state.searchQuery,
+        onSearch = vm::onSearchInput,
         onFilterClick = vm::onDisplayFilter,
         onClearFilters = vm::onClearFilters,
         onFilterChipClick = vm::toggleFilter,
@@ -78,6 +72,8 @@ private fun Content(
     state: MoveListState,
     moveList: List<MoveListState.UiMove>,
     onMoveClick: (id: String) -> Unit,
+    searchQuery: String?,
+    onSearch: (query: String?) -> Unit,
     onFilterClick: (Boolean) -> Unit,
     onFilterChipClick: (Filter) -> Unit,
     onClearFilters: () -> Unit,
@@ -88,8 +84,10 @@ private fun Content(
 ) {
     Scaffold(
         topBar = {
-            TopBar(
+            MoveTopBar(
                 characterName = state.character?.displayName.orEmpty(),
+                searchQuery = searchQuery,
+                onSearch = onSearch,
                 onDisplayFilterSheet = { onFilterClick(true) },
             )
         },
@@ -149,58 +147,46 @@ private fun MoveList(
     }
 }
 
-@Composable
-private fun TopBar(
-    characterName: String,
-    onDisplayFilterSheet: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(
-                horizontal = nerdDimensions.screenPaddingHorizontal,
-                vertical = nerdDimensions.screenPaddingVertical,
-            )
-    ) {
-        Text(
-            text = characterName.uppercase(),
-            style = nerdTypography.displaySmall,
-            color = nerdColorPalette.textPrimary,
-            modifier = Modifier.weight(1f)
-        )
-
-        IconButton(
-            onClick = onDisplayFilterSheet,
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.FilterList,
-                contentDescription = "Filter moves",
-                tint = nerdColorPalette.textPrimary,
-            )
-        }
-    }
-}
-
 
 //region PREVIEW
 @Composable
 @Preview
-private fun MoveListPreviewDark() {
+private fun MoveListPreview() {
     FightingNerdTheme {
         val state = MoveListState.PREVIEW
         Content(
             state = state,
-            moveList = state.fullMoveList.values.applyFilters(emptySet()),
+            moveList = state.fullMoveList.values.applyFilters(emptySet(), null),
             onMoveClick = {},
+            searchQuery = null,
             onFilterClick = {},
             onFilterChipClick = {},
             onChangeStartup = {},
             onChangeOnBlock = {},
             onChangeOnHit = {},
             onClearFilters = {},
+            onSearch = {},
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun MoveListSearchPreview() {
+    FightingNerdTheme {
+        val state = MoveListState.PREVIEW
+        Content(
+            state = state,
+            moveList = state.fullMoveList.values.applyFilters(emptySet(), null),
+            onMoveClick = {},
+            searchQuery = "",
+            onFilterClick = {},
+            onFilterChipClick = {},
+            onChangeStartup = {},
+            onChangeOnBlock = {},
+            onChangeOnHit = {},
+            onClearFilters = {},
+            onSearch = {},
         )
     }
 }

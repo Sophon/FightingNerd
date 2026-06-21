@@ -13,6 +13,7 @@ internal data class MoveListState(
 
     val moveDetail: MoveDetail? = null,
 
+    val searchQuery: String? = null,
     val filterSheet: FilterSheet = FilterSheet(),
 ) {
     data class UiMove(
