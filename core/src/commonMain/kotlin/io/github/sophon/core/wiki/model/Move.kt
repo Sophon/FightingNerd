@@ -19,6 +19,7 @@ data class Move(
     val recovery: String? = null,
     val guard: String? = null,
     val invulnerability: String? = null,
+    val isThrow: Boolean = false,
 
     val notes: List<String> = listOf(),
     val aliases: List <String> = listOf(),
