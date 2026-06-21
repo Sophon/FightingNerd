@@ -49,6 +49,7 @@ internal fun featureModule() = module {
         MoveListVM(
             gameId = gameId,
             characterId = characterId,
+            overlayService = get(),
             loadMoveListDataUseCase = get(),
             loadMoveFiltersUseCase = get(),
         )
