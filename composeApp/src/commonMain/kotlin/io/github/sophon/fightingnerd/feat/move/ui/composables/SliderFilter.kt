@@ -1,7 +1,9 @@
 package io.github.sophon.fightingnerd.feat.move.ui.composables
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
@@ -39,7 +42,6 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.unit.DpSize
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.move_list_filter_max
 import fightingnerd.composeapp.generated.resources.move_list_filter_min
@@ -135,40 +137,19 @@ private fun SliderSection(
             }
     }
 
-    val inactiveColor = nerdColorPalette.divider
-    val accentColor = nerdColorPalette.accent
-    val minThumbColor = if (value?.min != null) accentColor else inactiveColor
-    val maxThumbColor = if (value?.max != null) accentColor else inactiveColor
-    val trackColor = if (value != null) accentColor else inactiveColor
-
-    val minThumbColors = SliderDefaults.colors(thumbColor = minThumbColor)
-    val maxThumbColors = SliderDefaults.colors(thumbColor = maxThumbColor)
+    val trackColor = if (value == null) nerdColorPalette.divider else nerdColorPalette.accent
     val trackColors = SliderDefaults.colors(
         activeTrackColor = trackColor,
         inactiveTrackColor = nerdColorPalette.dividerSubtle,
     )
-
     val startInteractionSource = remember { MutableInteractionSource() }
     val endInteractionSource = remember { MutableInteractionSource() }
-
     RangeSlider(
         state = rangeSliderState,
         startInteractionSource = startInteractionSource,
         endInteractionSource = endInteractionSource,
-        startThumb = {
-            SliderDefaults.Thumb(
-                interactionSource = startInteractionSource,
-                colors = minThumbColors,
-                thumbSize = DpSize(width = nerdDimensions.iconDefault, height = nerdDimensions.iconDefault),
-            )
-        },
-        endThumb = {
-            SliderDefaults.Thumb(
-                interactionSource = endInteractionSource,
-                colors = maxThumbColors,
-                thumbSize = DpSize(width = nerdDimensions.iconDefault, height =nerdDimensions.iconDefault),
-            )
-        },
+        startThumb = { CircleThumb(value?.min) },
+        endThumb = { CircleThumb(value?.max) },
         track = { sliderState ->
             SliderDefaults.Track(
                 rangeSliderState = sliderState,
@@ -178,6 +159,19 @@ private fun SliderSection(
             )
         },
         modifier = modifier,
+    )
+}
+
+@Composable
+private fun CircleThumb(
+    value: Int?,
+    modifier: Modifier = Modifier
+) {
+    val color = if (value == null) nerdColorPalette.divider else nerdColorPalette.accent
+    Box(
+        modifier = modifier
+            .size(nerdDimensions.iconDefault)
+            .background(color = color, shape = CircleShape),
     )
 }
 
