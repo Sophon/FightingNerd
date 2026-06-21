@@ -5,7 +5,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.util.isHitThrow
 import io.github.sophon.wikiwavu.util.isThrow
 
-object WavuFilter {
+object TekkenFilters {
     object PowerCrush: Filter {
         override val predicate: (Move) -> Boolean = {
             it.t8Properties?.isPowerCrush == true
@@ -30,6 +30,24 @@ object WavuFilter {
         }
     }
 
+    object Stance: Filter {
+        override val predicate: (Move) -> Boolean = { move ->
+            move.t8Properties?.stance?.isNotBlank() == true
+        }
+    }
+
+    object HighCrush: Filter {
+        override val predicate: (Move) -> Boolean = { move ->
+            move.t8Properties?.isHighCrush == true
+        }
+    }
+
+    object LowCrush: Filter {
+        override val predicate: (Move) -> Boolean = { move ->
+            move.t8Properties?.isLowCrush == true
+        }
+    }
+
     data class Strings(val startingMoveInput: String): Filter {
         override val predicate: (Move) -> Boolean = { move ->
             val nextChar = move.input.drop(startingMoveInput.length).getOrNull(0)
@@ -38,5 +56,18 @@ object WavuFilter {
 
             inputStartsWithQuery && nextChar != '+'
         }
+    }
+
+
+    fun getAllBinaryFilters(): Set<Filter> {
+        return setOf(
+            PowerCrush,
+            Heat,
+            Homing,
+            Throw,
+            Stance,
+            LowCrush,
+            HighCrush,
+        )
     }
 }

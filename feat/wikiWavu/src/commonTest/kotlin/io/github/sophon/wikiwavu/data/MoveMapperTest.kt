@@ -575,7 +575,9 @@ class MoveMapperTest {
                 isHeat = false,
                 isPowerCrush = false,
                 isHoming = false,
-                stance = "bad"
+                stance = "bad",
+                isLowCrush = true,
+                isHighCrush = false,
             )
         )
 

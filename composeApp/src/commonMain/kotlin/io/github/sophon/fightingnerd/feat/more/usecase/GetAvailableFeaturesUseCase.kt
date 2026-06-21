@@ -19,7 +19,7 @@ internal class GetAvailableFeaturesUseCase(
 ) {
     suspend fun invoke(): Result<List<UiFeatureSetting>, SettingsError> {
         val gameClients: Map<Game, WikiClient> = featureRepo.getGameClients()
-        val grouped = gameClients.entries.groupBy { it.value.getFeatureInfo().name }
+        val grouped = gameClients.entries.groupBy { it.value.featureInfo.name }
 
         val gameConfigMap = when (val configResult = getFeatureSettings()) {
             is Result.Success -> configResult.data
@@ -27,7 +27,7 @@ internal class GetAvailableFeaturesUseCase(
         }
 
         val list = grouped.map { (_, entries) ->
-            val featureInfo = entries.first().value.getFeatureInfo()
+            val featureInfo = entries.first().value.featureInfo
             UiFeatureSetting(
                 featureName = featureInfo.name,
                 iconUrl = featureInfo.iconUrl.orEmpty(),
@@ -47,7 +47,7 @@ internal class GetAvailableFeaturesUseCase(
 
     private suspend fun getFeatureSettings(): Result<Map<String, Boolean>, SettingsError> {
         val map = featureRepo.getGameClients().entries.associate { (game, wiki) ->
-            game.id to wiki.getFeatureInfo().name
+            game.id to wiki.featureInfo.name
         }
 
         val result = try {

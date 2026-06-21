@@ -289,8 +289,18 @@ private fun formProperties(
     val isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) }
     val isHoming = notes.any { it.contains("Homing", ignoreCase = true) }
     val stance = input.getStance()
+    val isHighCrush = notes.any { it.contains("cs") }
+    val isLowCrush = notes.any { it.contains("js") }
 
-    return Move.T8Properties(isHeat, isHoming, stance, isPowerCrush)
+    val properties = Move.T8Properties(
+        isHeat = isHeat,
+        isHoming = isHoming,
+        stance = stance,
+        isPowerCrush = isPowerCrush,
+        isHighCrush = isHighCrush,
+        isLowCrush = isLowCrush,
+    )
+    return properties
 }
 
 internal data class ParentalProperties(

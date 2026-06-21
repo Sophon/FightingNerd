@@ -17,17 +17,13 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 abstract class BaseWikiClient(
-    private val game: Game,
-    private val featureInfo: FeatureInfo,
+    protected val game: Game,
+    override val featureInfo: FeatureInfo,
     private val characterDB: CharacterListDB,
     private val moveDB: MoveListDB,
 ) : WikiClient {
     abstract override suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
     abstract override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError>
-
-    final override fun getFeatureInfo(): FeatureInfo {
-        return featureInfo
-    }
 
     final override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
         val result = characterDB.insertCharacterList(characterList)

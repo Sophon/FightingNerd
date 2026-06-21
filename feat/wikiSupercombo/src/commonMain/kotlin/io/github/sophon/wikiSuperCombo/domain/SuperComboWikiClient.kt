@@ -13,6 +13,7 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
 import io.github.sophon.wikiSuperCombo.data.SuperComboTables
@@ -22,7 +23,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class SuperComboWikiClient(
-    private val game: Game,
+    game: Game,
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
     private val source: SuperComboDataSource,
@@ -33,7 +34,7 @@ internal class SuperComboWikiClient(
     featureInfo = SuperComboFeatureInfo.featureInfo,
 ) {
     private val gameTables: QueryTable = SuperComboTables.getTable(game.id)
-        ?: error("${game.id} not supported. Supported: ${SuperComboFeatureInfo.featureInfo.supportedGameSet}")
+        ?: error("${game.id} not supported. Supported: $supportedGameSet")
 
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
@@ -64,6 +65,14 @@ internal class SuperComboWikiClient(
             }
             .mapError { it.toDomainError(TAG) }
         return result
+    }
+
+    override fun getFiltersFor(game: Game): Set<Filter> {
+        require(game in supportedGameSet) {
+            "${game.id} not supported. Supported: $supportedGameSet"
+        }
+
+        return emptySet()
     }
 
 

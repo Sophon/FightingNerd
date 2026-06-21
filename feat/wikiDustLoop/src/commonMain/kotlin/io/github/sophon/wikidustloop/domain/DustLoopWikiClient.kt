@@ -13,16 +13,19 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikidustloop.data.DustLoopDataSource
 import io.github.sophon.wikidustloop.data.DustLoopTables
 import io.github.sophon.wikidustloop.data.toDomain
 import io.github.sophon.wikidustloop.integration.DustLoopFeatureInfo
+import io.github.sophon.wikidustloop.integration.model.BBFilters
+import io.github.sophon.wikidustloop.integration.model.GGFilters
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class DustLoopWikiClient(
-    private val game: Game,
+    game: Game,
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
     private val source: DustLoopDataSource,
@@ -33,7 +36,7 @@ internal class DustLoopWikiClient(
     featureInfo = DustLoopFeatureInfo.featureInfo,
 ) {
     private val gameTables: QueryTable = DustLoopTables.getTable(game.id)
-        ?: error("${game.id} not supported. Supported: ${DustLoopFeatureInfo.featureInfo.supportedGameSet}")
+        ?: error("${game.id} not supported. Supported: $supportedGameSet")
 
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
@@ -64,6 +67,19 @@ internal class DustLoopWikiClient(
             }
             .mapError { it.toDomainError(TAG) }
         return result
+    }
+
+    override fun getFiltersFor(game: Game): Set<Filter> {
+        require(game in DustLoopFeatureInfo.featureInfo.supportedGameSet) {
+            "${game.id} not supported. Supported: ${DustLoopFeatureInfo.featureInfo.supportedGameSet}"
+        }
+
+        val set = when (game) {
+            Game.BBCF -> BBFilters.getAllBinaryFilters()
+            Game.GGST -> GGFilters.getAllBinaryFilters()
+            else -> emptySet()
+        }
+        return set
     }
 
 

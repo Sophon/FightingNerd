@@ -5,7 +5,12 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MAX
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
+import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,6 +24,7 @@ internal class MoveListVM(
     private val characterId: String,
 
     private val loadMoveListDataUseCase: LoadMoveListDataUseCase,
+    private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState(character = null))
     val state = _state
@@ -32,17 +38,68 @@ internal class MoveListVM(
         )
 
 
+    init {
+        loadMoveFiltersFor(gameId)
+    }
+
+
+    fun onDisplayFilter(isVisible: Boolean) {
+        _state.update { it.copy(filterSheet = it.filterSheet.copy(isVisible = isVisible)) }
+    }
+
+    fun onClearFilters() {
+        _state.update { state ->
+            val resetFilterSheet = state.filterSheet.copy(
+                activeFilterSet = emptySet(),
+                startup = null,
+                onBlock = null,
+                onHit = null,
+            )
+            state.copy(filterSheet = resetFilterSheet)
+        }
+    }
+
+    fun toggleFilter(filter: Filter) {
+        _state.update { state ->
+            val current = state.filterSheet.activeFilterSet
+            val newFilterSet = if (filter in current) {
+                current - filter
+            } else {
+                current + filter
+            }
+            state.copy(filterSheet = state.filterSheet.copy(activeFilterSet = newFilterSet))
+        }
+    }
+
+    fun onChangeStartup(minMax: MoveListState.FilterSheet.MinMax?) {
+        _state.update { state ->
+            val normalized = minMax.normalize(min = FRAME_MIN_STARTUP, max = FRAME_MAX)
+            state.copy(filterSheet = state.filterSheet.copy(startup = normalized))
+        }
+    }
+
+    fun onChangeOnHit(minMax: MoveListState.FilterSheet.MinMax?) {
+        _state.update { state ->
+            state.copy(filterSheet = state.filterSheet.copy(onHit = minMax))
+        }
+    }
+
+    fun onChangeOnBlock(minMax: MoveListState.FilterSheet.MinMax?) {
+        _state.update { state ->
+            state.copy(filterSheet = state.filterSheet.copy(onBlock = minMax))
+        }
+    }
+
+
     private fun loadData() {
         viewModelScope.launch {
             loadMoveListDataUseCase.invoke(gameId = gameId, characterId = characterId)
                 .onSuccess { (character, moveList) ->
                     _state.update { state ->
                         val fullMoveList = moveList.associateBy { it.id }
-                        val uiMoveList = moveList.map { it.toUiMove() }
                         state.copy(
                             character = character,
                             fullMoveList = fullMoveList,
-                            uiMoveList = uiMoveList,
                         )
                     }
                 }
@@ -50,8 +107,48 @@ internal class MoveListVM(
         }
     }
 
+    private fun loadMoveFiltersFor(gameId: String) {
+        loadMoveFiltersUseCase.invoke(gameId)
+            .onSuccess { filterSet ->
+                val filterSheet = state.value.filterSheet.copy(filterSet = filterSet)
+                _state.update { it.copy(filterSheet = filterSheet) }
+            }
+            .onError {
+                //TODO: error toast
+                Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $it" }
+            }
+    }
+
+    private fun MoveListState.FilterSheet.MinMax?.normalize(
+        min: Int,
+        max: Int,
+    ): MoveListState.FilterSheet.MinMax? {
+        if (this == null) return null
+        if (isValid.not()) return null
+        val sliderMin = min - 1
+        val sliderMax = max + 1
+        val newMin = if (this.min != null && this.min <= sliderMin) null else this.min
+        val newMax = if (this.max != null && this.max >= sliderMax) null else this.max
+        val normalized = if (newMin == null && newMax == null) {
+            null
+        } else {
+            copy(min = newMin, max = newMax)
+        }
+        return normalized
+    }
+
 
     private companion object {
         const val TAG = "MoveListVM"
     }
+}
+
+internal fun Collection<Move>.applyFilters(filterSet: Set<Filter>): List<MoveListState.UiMove> {
+    val filtered = this
+        .filter { move ->
+            filterSet.all { it.predicate(move) }
+        }
+        .map { it.toUiMove() }
+
+    return filtered
 }

@@ -6,12 +6,15 @@ import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
+import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
@@ -197,7 +200,6 @@ private class FakeWikiClient(
     }
 
     // Stub implementations for other WikiClient methods
-    override fun getFeatureInfo() = error("Not implemented")
     override suspend fun downloadCharacterList() = error("Not implemented")
     override suspend fun cacheCharacterList(characterList: List<Character>) = error("Not implemented")
     override suspend fun fetchCharacterList() = error("Not implemented")
@@ -207,4 +209,6 @@ private class FakeWikiClient(
     override suspend fun getLastUpdateTimeStamp() = error("Not implemented")
     override suspend fun clearCache() = error("Not implemented")
     override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
+    override val featureInfo: FeatureInfo = WavuFeatureInfo.featureInfo
+    override fun getFiltersFor(game: Game): Set<Filter> = emptySet()
 }

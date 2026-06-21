@@ -35,6 +35,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.fightingnerd.feat.move.model.Property
 import io.github.sophon.fightingnerd.feat.move.model.icon
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -192,7 +193,7 @@ private fun Properties(
 private fun ItemPreview() {
     FightingNerdTheme {
         MoveItem(
-            move = MoveListState.PREVIEW.uiMoveList.last(),
+            move = MoveListState.PREVIEW.fullMoveList.values.last().toUiMove(),
             onMoveClick = {},
         )
     }

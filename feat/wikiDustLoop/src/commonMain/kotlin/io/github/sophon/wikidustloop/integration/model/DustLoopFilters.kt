@@ -3,9 +3,9 @@ package io.github.sophon.wikidustloop.integration.model
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 
-object DustLoopFilter {
 
-    object BBInvincible: Filter {
+object BBFilters {
+    object Invincible: Filter {
         override val predicate: (Move) -> Boolean = { move ->
             val isFullyFromFrameOne = move.invulnerability.orEmpty()
                 .split(",")
@@ -29,9 +29,23 @@ object DustLoopFilter {
         }
     }
 
-    object GGSTInvincible: Filter {
+    fun getAllBinaryFilters(): Set<Filter> {
+        return setOf(
+            Invincible,
+        )
+    }
+}
+
+object GGFilters {
+    object Invincible: Filter {
         override val predicate: (Move) -> Boolean = { move ->
             move.invulnerability?.isNotBlank() == true
         }
+    }
+
+    fun getAllBinaryFilters(): Set<Filter> {
+        return setOf(
+            Invincible,
+        )
     }
 }

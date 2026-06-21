@@ -28,7 +28,7 @@ import io.github.sophon.discord.util.toButtons
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
-import io.github.sophon.wikiwavu.integration.model.WavuFilter
+import io.github.sophon.wikiwavu.integration.model.TekkenFilters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -175,7 +175,7 @@ internal class WavuWikiDiscordFeature(
         return getMovesUseCase.invoke(
             wiki = wiki,
             charName = query,
-            filter = WavuFilter.PowerCrush,
+            filter = TekkenFilters.PowerCrush,
         )
             .map { moveList ->
                 BotOutput(
@@ -201,7 +201,7 @@ internal class WavuWikiDiscordFeature(
         return getMovesUseCase.invoke(
             wiki = wiki,
             charName = query,
-            filter = WavuFilter.Heat,
+            filter = TekkenFilters.Heat,
         ).map { moveList ->
                 BotOutput(
                     primaryEmbedBuilder = moveListEmbed(
@@ -226,7 +226,7 @@ internal class WavuWikiDiscordFeature(
         return getMovesUseCase.invoke(
             wiki = wiki,
             charName = query,
-            filter = WavuFilter.Homing,
+            filter = TekkenFilters.Homing,
         ).map { moveList ->
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
@@ -251,7 +251,7 @@ internal class WavuWikiDiscordFeature(
         return getMovesUseCase.invoke(
             wiki = wiki,
             charName = query,
-            filter = WavuFilter.Throw,
+            filter = TekkenFilters.Throw,
         ).map { moveList ->
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(

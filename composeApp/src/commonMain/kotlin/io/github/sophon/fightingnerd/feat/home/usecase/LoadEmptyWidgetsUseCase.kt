@@ -24,14 +24,14 @@ internal class LoadEmptyWidgetsUseCase(
             .map { preferences ->
                 val widgetList = gameClientMap
                     .filter { (game, wikiClient) ->
-                        val featureName = wikiClient.getFeatureInfo().name
+                        val featureName = wikiClient.featureInfo.name
                         val key = booleanPreferencesKey("${KEY_PREFIX_FEATURE}_${featureName}_${game.id}")
                         preferences[key] ?: true
                     }
                     .map { (game, wikiClient) ->
                         HomeViewState.GameWidget(
                             game = game,
-                            featureName = wikiClient.getFeatureInfo().name,
+                            featureName = wikiClient.featureInfo.name,
                             isLoading = true,
                         )
                     }

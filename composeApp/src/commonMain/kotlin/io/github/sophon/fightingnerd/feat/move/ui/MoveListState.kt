@@ -2,6 +2,8 @@ package io.github.sophon.fightingnerd.feat.move.ui
 
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.CoreFilters
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
 
@@ -9,8 +11,9 @@ internal data class MoveListState(
     val character: Character?,
     val fullMoveList: Map<String, Move> = emptyMap(),
 
-    val uiMoveList: List<UiMove> = emptyList(),
     val moveDetail: MoveDetail? = null,
+
+    val filterSheet: FilterSheet = FilterSheet(),
 ) {
     data class UiMove(
         val id: String,
@@ -30,9 +33,39 @@ internal data class MoveListState(
         val move: Move,
     )
 
+    data class FilterSheet(
+        val isVisible: Boolean = false,
+        val filterSet: Set<Filter> = emptySet(),
+
+        val startup: MinMax? = null,
+        val onHit: MinMax? = null,
+        val onBlock: MinMax? = null,
+
+        val activeFilterSet: Set<Filter> = emptySet(),
+    ) {
+        val activeSliderFilters: List<Filter>
+            get() {
+                return listOfNotNull(
+                    startup?.let { CoreFilters.Startup(it.min, it.max) },
+                    onHit?.let { CoreFilters.OnHit(it.min, it.max) },
+                    onBlock?.let { CoreFilters.OnBlock(it.min, it.max) },
+                )
+            }
+
+        data class MinMax(
+            val min: Int? = null,
+            val max: Int? = null,
+        ) {
+            val isValid: Boolean
+                get() {
+                    return min == null || max == null || min <= max
+                }
+        }
+    }
+
 
     companion object {
-        val armorKingMoves = listOf(
+        private val armorKingMoves = listOf(
             Move(
                 characterId = "Armor King",
                 id = "armor_king-b12",
@@ -97,11 +130,14 @@ internal data class MoveListState(
                 t8Properties = Move.T8Properties(isHeat = true, isHoming = true),
             ),
         )
-
         val PREVIEW = MoveListState(
-            character = null,
+            character = Character(
+                id = "id",
+                displayName = "Nina",
+                remoteQueryId = "",
+                wikiUrl = "",
+            ),
             fullMoveList = armorKingMoves.associateBy { it.id },
-            uiMoveList = armorKingMoves.map { it.toUiMove() },
             moveDetail = null,
         )
 
@@ -128,5 +164,9 @@ internal data class MoveListState(
             )
             return result
         }
+
+        const val FRAME_MIN_STARTUP = 3
+        const val FRAME_MIN = -20
+        const val FRAME_MAX = 20
     }
 }
