@@ -49,7 +49,7 @@ import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsScreen
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
-import io.github.sophon.fightingnerd.navigation.ui.BottomBarView
+import io.github.sophon.fightingnerd.navigation.ui.BottomNavBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import kotlinx.serialization.modules.SerializersModule
@@ -233,7 +233,7 @@ private fun BoxScope.AppBottomBar(
             .align(Alignment.BottomCenter)
             .navigationBarsPadding(),
     ) {
-        BottomBarView(
+        BottomNavBarView(
             currentRoot = backStack.first() as Destination.TopLevelDestination,
             onTabClick = { destination ->
                 backStack.clear()
