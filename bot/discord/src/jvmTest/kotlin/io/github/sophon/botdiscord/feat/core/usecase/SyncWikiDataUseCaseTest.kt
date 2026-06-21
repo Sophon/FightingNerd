@@ -9,6 +9,7 @@ import assertk.assertions.isInstanceOf
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
@@ -71,7 +72,7 @@ class SyncWikiDataUseCaseTest {
     )
 
     private class FakeWikiClient(
-        private val featureInfo: FeatureInfo = FeatureInfo(
+        override val featureInfo: FeatureInfo = FeatureInfo(
             name = "wavu",
             url = "",
             version = "",
@@ -97,8 +98,6 @@ class SyncWikiDataUseCaseTest {
         private val _cacheMoveListCalls = mutableListOf<Pair<Character, List<Move>>>()
         private var _clearCacheCalls = 0
 
-        override fun getFeatureInfo(): FeatureInfo = featureInfo
-
         override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
             _downloadCharacterListCallCount++
             return downloadCharacterListResult
@@ -109,14 +108,6 @@ class SyncWikiDataUseCaseTest {
             _cacheCharacterListCalls.add(characterList)
             return cacheCharacterListResult
                 ?: Result.Success(Unit)
-        }
-
-        override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> {
-            throw NotImplementedError("Not used in this use case")
-        }
-
-        override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
-            throw NotImplementedError("Not used in this use case")
         }
 
         override suspend fun downloadMoveListFor(
@@ -133,24 +124,20 @@ class SyncWikiDataUseCaseTest {
                 ?: Result.Success(Unit)
         }
 
-        override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> {
-            throw NotImplementedError("Not used in this use case")
-        }
-
-        override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> {
-            throw NotImplementedError("Not used in this use case")
-        }
-
-        override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
-            throw NotImplementedError("Not used in this use case")
-        }
-
         override suspend fun clearCache(): EmptyResult<WikiError> {
             _clearCacheCalls++
             return clearCacheResult
                 ?: Result.Success(Unit)
         }
+
+
+        override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> = throw NotImplementedError("Not used in this use case")
         override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
+        override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = throw NotImplementedError("Not used in this use case")
+        override fun getFiltersFor(game: Game): Set<Filter> = return emptySet()
     }
     //endregion
 

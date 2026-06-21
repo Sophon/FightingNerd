@@ -5,12 +5,14 @@ import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
+import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.Test
@@ -132,7 +134,6 @@ class GetMovesUseCaseTest {
                 ?: Result.Error(WikiError.UnknownMove(moveQuery))
         }
 
-        override fun getFeatureInfo(): FeatureInfo = error("Not yet implemented")
         override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> = error("Not yet implemented")
         override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> = error("Not yet implemented")
         override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = error("Not yet implemented")
@@ -142,6 +143,8 @@ class GetMovesUseCaseTest {
         override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = error("Not yet implemented")
         override suspend fun clearCache(): EmptyResult<WikiError> = error("Not yet implemented")
         override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
+        override val featureInfo: FeatureInfo = WavuFeatureInfo.featureInfo
+        override fun getFiltersFor(game: Game): Set<Filter> = emptySet()
     }
     //endregion
 }
