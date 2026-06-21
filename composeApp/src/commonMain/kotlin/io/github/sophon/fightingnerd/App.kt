@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -36,6 +39,9 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.fightingnerd.core.ui.OverlayService
+import io.github.sophon.fightingnerd.core.ui.ToastSnackbar
+import io.github.sophon.fightingnerd.core.ui.ToastVisuals
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
@@ -107,6 +113,8 @@ private fun Content(
     modifier: Modifier = Modifier
 ) {
     val backStack = rememberNavBackStack(navConfig, Destination.Home)
+    val overlayService = koinInject<OverlayService>()
+    val snackbarHostState = remember { SnackbarHostState() }
 
     val botPaddingValues = PaddingValues(
         bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
@@ -120,6 +128,11 @@ private fun Content(
             AppNavDisplay(backStack = backStack)
 
             AppBottomBar(backStack = backStack)
+
+            OverlayContent(
+                overlayService = overlayService,
+                snackbarHostState = snackbarHostState,
+            )
         }
     }
 }
@@ -179,6 +192,32 @@ private fun AppNavDisplay(
             }
         }
     )
+}
+
+@Composable
+internal fun OverlayContent(
+    overlayService: OverlayService,
+    snackbarHostState: SnackbarHostState,
+    modifier: Modifier = Modifier,
+) {
+    LaunchedEffect(overlayService) {
+        overlayService.toast.collect { toast ->
+            snackbarHostState.showSnackbar(ToastVisuals(toast))
+        }
+    }
+
+    val bottomBarPadding = LocalBottomBarPadding.current
+    Box(modifier = modifier.fillMaxSize()) {
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottomBarPadding),
+        ) { snackbarData ->
+            val visuals = snackbarData.visuals as ToastVisuals
+            ToastSnackbar(toast = visuals.toast)
+        }
+    }
 }
 
 @Composable
