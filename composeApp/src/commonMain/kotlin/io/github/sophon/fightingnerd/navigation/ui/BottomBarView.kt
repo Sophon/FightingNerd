@@ -48,11 +48,11 @@ private val bottomBarItems = listOf(
         icon = FlexibleIcon.Vector(Icons.Default.GridView),
         destination = Destination.Home,
     ),
-    BottomBarItem(
-        label = Res.string.bottom_bar_item_search,
-        icon = FlexibleIcon.Vector(Icons.Default.Search),
-        destination = Destination.Search,
-    ),
+//    BottomBarItem(
+//        label = Res.string.bottom_bar_item_search,
+//        icon = FlexibleIcon.Vector(Icons.Default.Search),
+//        destination = Destination.Search,
+//    ),
     BottomBarItem(
         label = Res.string.bottom_bar_item_saved,
         icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
