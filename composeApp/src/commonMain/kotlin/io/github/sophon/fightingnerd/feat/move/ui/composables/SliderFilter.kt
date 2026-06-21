@@ -21,6 +21,7 @@ import androidx.compose.material3.RangeSliderState
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -32,6 +33,8 @@ import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
@@ -51,7 +54,7 @@ import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun Slider(
+internal fun SliderFilter(
     label: String,
     min: Int,
     max: Int,
@@ -70,7 +73,7 @@ internal fun Slider(
     ) {
         Text(
             text = label,
-            color = nerdColorPalette.textSecondary,
+            color = nerdColorPalette.textPrimary,
             style = nerdTypography.titleMedium,
         )
         Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
@@ -270,6 +273,16 @@ private fun NumberField(
         placeholder = { Text(text = hint) },
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true,
+        shape = RectangleShape,
+        colors = TextFieldDefaults.colors(
+            focusedContainerColor = nerdColorPalette.surfaceHigh,
+            unfocusedContainerColor = nerdColorPalette.surfaceHigh,
+            disabledContainerColor = nerdColorPalette.surfaceHigh,
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent,
+            disabledIndicatorColor = Color.Transparent,
+            errorIndicatorColor = Color.Transparent,
+        ),
         modifier = modifier.onFocusChanged { isFocused = it.isFocused },
     )
 }
@@ -280,7 +293,7 @@ private fun NumberField(
 @Composable
 private fun SliderPreview_NoInput() {
     FightingNerdTheme {
-        Slider(
+        SliderFilter(
             label = "Startup",
             min = 5,
             max = 40,
@@ -294,7 +307,7 @@ private fun SliderPreview_NoInput() {
 @Composable
 private fun SliderPreview_Adjusted() {
     FightingNerdTheme {
-        Slider(
+        SliderFilter(
             label = "Startup",
             min = 5,
             max = 40,
@@ -308,7 +321,7 @@ private fun SliderPreview_Adjusted() {
 @Composable
 private fun SliderPreview_MinOnly() {
     FightingNerdTheme {
-        Slider(
+        SliderFilter(
             label = "Startup",
             min = 5,
             max = 40,

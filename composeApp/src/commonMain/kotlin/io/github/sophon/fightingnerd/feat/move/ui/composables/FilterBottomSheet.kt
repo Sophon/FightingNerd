@@ -70,7 +70,7 @@ internal fun FilterBottomSheet(
             TextButton(
                 onClick = onClear,
                 colors = ButtonDefaults.textButtonColors(
-                    contentColor = nerdColorPalette.textSecondary,
+                    contentColor = nerdColorPalette.textPrimary,
                 ),
             ) {
                 Text(
@@ -120,7 +120,7 @@ private fun ChipSection(
                     Text(
                         text = filter::class.simpleName?.uppercase() ?: "UNKNOWN",
                         style = nerdTypography.labelMedium,
-                        color = if (isActive) nerdColorPalette.accent else nerdColorPalette.textSecondary,
+                        color = if (isActive) nerdColorPalette.accent else nerdColorPalette.textPrimary,
                     )
                 },
             )
@@ -140,7 +140,7 @@ private fun MinMaxSection(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Slider(
+        SliderFilter(
             label = stringResource(Res.string.move_list_filter_label_startup),
             min = FRAME_MIN_STARTUP,
             max = FRAME_MAX,
@@ -149,7 +149,7 @@ private fun MinMaxSection(
         )
         Spacer(Modifier.height(nerdDimensions.inlineGapTight))
 
-        Slider(
+        SliderFilter(
             label = stringResource(Res.string.move_list_filter_label_on_block),
             min = FRAME_MIN,
             max = FRAME_MAX,
@@ -158,7 +158,7 @@ private fun MinMaxSection(
         )
         Spacer(Modifier.height(nerdDimensions.inlineGapTight))
 
-        Slider(
+        SliderFilter(
             label = stringResource(Res.string.move_list_filter_label_on_hit),
             min = FRAME_MIN,
             max = FRAME_MAX,
