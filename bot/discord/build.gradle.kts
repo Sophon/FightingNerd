@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.buildkonfig)
 }
 
+val botVersionName = project.properties["bot.version.name"] as String
+
 kotlin {
     jvm {
         compilerOptions {
@@ -84,6 +86,6 @@ buildkonfig {
     packageName = "io.github.sophon.discord"
 
     defaultConfigs {
-        buildConfigField(STRING, "VERSION", featureVersion)
+        buildConfigField(STRING, "VERSION", botVersionName)
     }
 }

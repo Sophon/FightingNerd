@@ -1,5 +1,4 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
-import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.INT
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -15,7 +14,6 @@ plugins {
 }
 
 val appVersionName = project.properties["app.version.name"] as String
-val appVersionCode = (project.properties["app.version.code"] as String).toInt()
 
 kotlin {
     androidTarget {
@@ -32,8 +30,6 @@ kotlin {
             baseName = "ComposeApp"
             isStatic = true
             binaryOption("bundleId", "io.github.sophon.fightingnerd")
-
-            binaryOption("bundleVersion", appVersionCode.toString())
             binaryOption("bundleShortVersionString", appVersionName)
         }
     }
@@ -118,7 +114,6 @@ android {
         applicationId = "io.github.sophon.fightingnerd"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = appVersionCode
         versionName = appVersionName
     }
     packaging {
@@ -157,7 +152,6 @@ buildkonfig {
     packageName = "io.github.sophon.fightingnerd"
     defaultConfigs {
         buildConfigField(STRING, "VERSION", appVersionName)
-        buildConfigField(INT, "VERSION_CODE", appVersionCode.toString())
     }
 }
 
