@@ -36,13 +36,16 @@ import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
 
 @Composable
 internal fun QuizScreen(
-    //TODO: navigate to quiz
+    gameId: String,
     modifier: Modifier = Modifier,
 ) {
-    val vm = koinViewModel<QuizVM>()
+    val vm = koinViewModel<QuizVM>(
+        parameters = { parametersOf(gameId) }
+    )
     val state by vm.state.collectAsStateWithLifecycle()
 
     Content(
