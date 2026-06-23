@@ -15,6 +15,9 @@ import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
+import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
+import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizVM
+import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -56,5 +59,18 @@ internal fun featureModule() = module {
     }
     singleOf(::LoadMoveListDataUseCase)
     singleOf(::LoadMoveFiltersUseCase)
+    //endregion
+
+    //region Quiz
+    viewModelOf(::QuizOverviewVM)
+    viewModel { (gameId: String) ->
+        QuizVM(
+            gameId = gameId,
+            overlayService = get(),
+            generateQuestionsUseCase = get(),
+        )
+    }
+
+    singleOf(::GenerateQuestionsUseCase)
     //endregion
 }

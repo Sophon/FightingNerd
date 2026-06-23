@@ -59,7 +59,7 @@ private val bottomBarItems = listOf(
     BottomBarItem(
         label = Res.string.bottom_bar_item_quiz,
         icon = FlexibleIcon.Vector(Icons.Default.Quiz),
-        destination = Destination.Quiz,
+        destination = Destination.QuizOverview,
     ),
     BottomBarItem(
         label = Res.string.bottom_bar_item_more,
