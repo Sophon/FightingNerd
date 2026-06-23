@@ -1,4 +1,7 @@
 # APP CHANGELOG
 
-## [v1.0.0] - TODO
+## [v0.2.0] - 2026-06-24
+- Quiz tab
+
+## [v0.1.0] - TODO
 - reworked the whole theme
