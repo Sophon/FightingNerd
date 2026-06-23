@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v12.1.0] - TODO
+## [v12.1.0] - 2026-06-24
 - fixed URLs for moves
 - `core` - new architecture with `WikiClient` and `BaseWikiClient`
 - refactor character parameter passing
