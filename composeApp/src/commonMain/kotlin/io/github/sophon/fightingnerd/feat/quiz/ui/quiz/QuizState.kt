@@ -9,6 +9,8 @@ internal data class QuizState(
     val currentQuestionIndex: Int = 0,
     val correct: Int = 0,
     val incorrect: Int = 0,
+
+    val isLoading: Boolean = false,
 ) {
     val isLastQuestion: Boolean get() = (currentQuestionIndex == questionList.lastIndex)
     val currentQuestion: Question? get() = questionList.getOrNull(currentQuestionIndex)

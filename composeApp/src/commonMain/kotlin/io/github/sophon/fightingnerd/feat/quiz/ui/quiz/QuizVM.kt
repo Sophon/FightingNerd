@@ -76,6 +76,8 @@ internal class QuizVM(
 
     private fun loadMoveList() {
         viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+
             generateQuestionsUseCase.invoke(gameId = gameId)
                 .onSuccess { questionList ->
                     _state.update { it.copy(questionList = questionList) }
@@ -84,6 +86,8 @@ internal class QuizVM(
                     Napier.e(tag = TAG) { "loadMoveList: $error" }
                     overlayService.show(error)
                 }
+
+            _state.update { it.copy(isLoading = false) }
         }
     }
 

@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
+import io.github.sophon.fightingnerd.core.ui.components.LoadingContent
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_QUESTIONS
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.QuestionSection
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
@@ -48,14 +49,18 @@ internal fun QuizScreen(
     )
     val state by vm.state.collectAsStateWithLifecycle()
 
-    Content(
-        state = state,
-        onQuit = vm::onQuit,
-        onAnswer = vm::answer,
-        onClickNext = vm::nextQuestion,
-        onClickBack = vm::previousQuestion,
-        modifier = modifier,
-    )
+    if (state.isLoading) {
+        LoadingContent(modifier = modifier)
+    } else {
+        Content(
+            state = state,
+            onQuit = vm::onQuit,
+            onAnswer = vm::answer,
+            onClickNext = vm::nextQuestion,
+            onClickBack = vm::previousQuestion,
+            modifier = modifier,
+        )
+    }
 }
 
 @Composable

@@ -12,13 +12,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.PlayArrow
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,13 +24,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_counter
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_block
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_hit
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_startup
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizState
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
@@ -67,7 +64,7 @@ internal fun QuestionSection(
         Spacer(Modifier.height(nerdDimensions.componentPadding))
 
         move.urls.videoId?.let { videoUrl ->
-            Video(videoUrl)
+            VideoPlayer(videoUrl = videoUrl)
         } ?: Image(move.urls)
 
         Options(
@@ -76,29 +73,6 @@ internal fun QuestionSection(
             modifier = Modifier.fillMaxWidth(),
         )
     }
-}
-
-@Composable
-private fun Video(
-    videoUrl: String,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(16f / 9f)
-            .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
-            .background(nerdColorPalette.surface),
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.PlayArrow,
-            contentDescription = null,
-            modifier = Modifier
-                .size(128.dp)
-                .align(Alignment.Center)
-        )
-    }
-    Spacer(Modifier.height(nerdDimensions.componentPadding))
 }
 
 @Composable
@@ -117,10 +91,11 @@ private fun Image(
             .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
             .background(nerdColorPalette.surface),
     ) {
-        AsyncImage(
+        SubcomposeAsyncImage(
             model = image,
             contentDescription = null,
-            modifier = Modifier.align(Alignment.Center)
+            loading = { CircularLoader() },
+            modifier = Modifier.align(Alignment.Center),
         )
     }
     Spacer(Modifier.height(nerdDimensions.componentPadding))
