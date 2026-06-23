@@ -62,7 +62,12 @@ private fun WidgetSection(
     modifier: Modifier = Modifier
 ) {
     BoxWithConstraints(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(
+                horizontal = nerdDimensions.screenPaddingHorizontal,
+                vertical = nerdDimensions.screenPaddingVertical,
+            ),
     ) {
         LazyColumn(
             contentPadding = LocalBottomBarPadding.current,
