@@ -28,6 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_counter
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_block
@@ -65,9 +66,9 @@ internal fun QuestionSection(
         )
         Spacer(Modifier.height(nerdDimensions.componentPadding))
 
-        move.urls.videoId?.let { videoId ->
-            Video()
-        }
+        move.urls.videoId?.let { videoUrl ->
+            Video(videoUrl)
+        } ?: Image(move.urls)
 
         Options(
             question = question,
@@ -79,10 +80,11 @@ internal fun QuestionSection(
 
 @Composable
 private fun Video(
+    videoUrl: String,
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .aspectRatio(16f / 9f)
             .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
@@ -94,6 +96,31 @@ private fun Video(
             modifier = Modifier
                 .size(128.dp)
                 .align(Alignment.Center)
+        )
+    }
+    Spacer(Modifier.height(nerdDimensions.componentPadding))
+}
+
+@Composable
+private fun Image(
+    url: Move.Urls,
+    modifier: Modifier = Modifier
+) {
+    val image = url.hitboxImageList.firstOrNull()
+        ?: url.moveImageList.firstOrNull()
+        ?: return
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .aspectRatio(16f / 9f)
+            .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
+            .background(nerdColorPalette.surface),
+    ) {
+        AsyncImage(
+            model = image,
+            contentDescription = null,
+            modifier = Modifier.align(Alignment.Center)
         )
     }
     Spacer(Modifier.height(nerdDimensions.componentPadding))
