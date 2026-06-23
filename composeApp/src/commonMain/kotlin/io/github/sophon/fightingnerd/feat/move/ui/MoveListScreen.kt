@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.fightingnerd.core.ui.components.LoadingContent
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveTopBar
@@ -31,6 +32,7 @@ import org.koin.core.parameter.parametersOf
 internal fun MoveListScreen(
     gameId: String,
     characterId: String,
+    onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val vm = koinViewModel<MoveListVM>(
@@ -53,6 +55,7 @@ internal fun MoveListScreen(
 
     Content(
         state = state,
+        onExit = onExit,
         moveList = filteredMoves,
         onMoveClick = { /*TODO*/ },
         searchQuery = state.searchQuery,
@@ -70,6 +73,7 @@ internal fun MoveListScreen(
 @Composable
 private fun Content(
     state: MoveListState,
+    onExit: () -> Unit,
     moveList: List<MoveListState.UiMove>,
     onMoveClick: (id: String) -> Unit,
     searchQuery: String?,
@@ -85,6 +89,7 @@ private fun Content(
     Scaffold(
         topBar = {
             MoveTopBar(
+                onExit = onExit,
                 characterName = state.character?.displayName.orEmpty(),
                 searchQuery = searchQuery,
                 onSearch = onSearch,
@@ -93,27 +98,31 @@ private fun Content(
         },
         modifier = modifier,
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.surface),
-        ) {
-            MoveList(
-                moveList = moveList,
-                onMoveClick = onMoveClick,
-            )
-
-            if (state.filterSheet.isVisible) {
-                FilterBottomSheet(
-                    filterSheet = state.filterSheet,
-                    onClear = onClearFilters,
-                    onFilterChipClick = onFilterChipClick,
-                    onChangeStartup = onChangeStartup,
-                    onChangeOnBlock = onChangeOnBlock,
-                    onChangeOnHit = onChangeOnHit,
-                    onDismiss = { onFilterClick(false) },
+        if (state.isLoading) {
+            LoadingContent()
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(MaterialTheme.colorScheme.surface),
+            ) {
+                MoveList(
+                    moveList = moveList,
+                    onMoveClick = onMoveClick,
                 )
+
+                if (state.filterSheet.isVisible) {
+                    FilterBottomSheet(
+                        filterSheet = state.filterSheet,
+                        onClear = onClearFilters,
+                        onFilterChipClick = onFilterChipClick,
+                        onChangeStartup = onChangeStartup,
+                        onChangeOnBlock = onChangeOnBlock,
+                        onChangeOnHit = onChangeOnHit,
+                        onDismiss = { onFilterClick(false) },
+                    )
+                }
             }
         }
     }
@@ -156,6 +165,7 @@ private fun MoveListPreview() {
         val state = MoveListState.PREVIEW
         Content(
             state = state,
+            onExit = {},
             moveList = state.fullMoveList.values.applyFilters(emptySet(), null),
             onMoveClick = {},
             searchQuery = null,
@@ -177,6 +187,7 @@ private fun MoveListSearchPreview() {
         val state = MoveListState.PREVIEW
         Content(
             state = state,
+            onExit = {},
             moveList = state.fullMoveList.values.applyFilters(emptySet(), null),
             onMoveClick = {},
             searchQuery = "",

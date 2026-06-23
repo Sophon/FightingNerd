@@ -99,6 +99,7 @@ internal class MoveListVM(
 
     private fun loadData() {
         viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
             loadMoveListDataUseCase.invoke(gameId = gameId, characterId = characterId)
                 .onSuccess { (character, moveList) ->
                     _state.update { state ->
@@ -113,6 +114,7 @@ internal class MoveListVM(
                     Napier.e(tag = TAG) { "loadData: $error" }
                     overlayService.show(error)
                 }
+            _state.update { it.copy(isLoading = false) }
         }
     }
 

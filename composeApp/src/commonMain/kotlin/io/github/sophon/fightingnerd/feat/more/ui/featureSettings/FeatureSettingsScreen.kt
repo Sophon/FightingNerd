@@ -2,6 +2,7 @@ package io.github.sophon.fightingnerd.feat.more.ui.featureSettings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -19,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -28,6 +30,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun FeatureSettingsScreen(
+    onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val vm = koinViewModel<FeatureSettingsVM>()
@@ -35,6 +38,7 @@ internal fun FeatureSettingsScreen(
 
     Content(
         state = state,
+        onExit = onExit,
         onFeatureToggle = vm::toggleFeature,
         onGameToggle = vm::toggleGame,
         modifier = modifier,
@@ -44,6 +48,7 @@ internal fun FeatureSettingsScreen(
 @Composable
 private fun Content(
     state: FeatureSettingsState,
+    onExit: () -> Unit,
     onFeatureToggle: (featureIndex: Int, isEnabled: Boolean) -> Unit,
     onGameToggle: (featureIndex: Int, gameIndex: Int, isEnabled: Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -60,6 +65,12 @@ private fun Content(
                 vertical = nerdDimensions.screenPaddingVertical,
             )
     ) {
+        item {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                TopBarButton(onClick = onExit)
+            }
+        }
+
         itemsIndexed(state.featureList) { featureIndex, feature ->
             val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
             Column(
@@ -142,6 +153,7 @@ private fun FeatureSettingsPreview() {
     FightingNerdTheme {
         Content(
             state = FeatureSettingsState.PREVIEW,
+            onExit = {},
             onFeatureToggle = { _, _ -> },
             onGameToggle = { _, _, _, -> },
         )

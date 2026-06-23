@@ -18,9 +18,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.move_list_search_hint
+import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
@@ -28,6 +30,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun MoveTopBar(
+    onExit: () -> Unit,
     characterName: String,
     searchQuery: String?,
     onSearch: (query: String?) -> Unit,
@@ -44,11 +47,14 @@ internal fun MoveTopBar(
                 vertical = nerdDimensions.screenPaddingVertical,
             )
     ) {
+        TopBarButton(onClick = onExit)
+
         if (searchQuery == null) {
             Text(
                 text = characterName.uppercase(),
                 style = nerdTypography.displaySmall,
                 color = nerdColorPalette.textPrimary,
+                textAlign = TextAlign.Center,
                 modifier = Modifier.weight(1f),
             )
         } else {

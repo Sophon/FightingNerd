@@ -28,8 +28,6 @@ internal class QuizVM(
     }
 
 
-    fun onQuit() {}
-
     fun nextQuestion() {
         if (state.value.isLastQuestion) {
             finishQuiz()
