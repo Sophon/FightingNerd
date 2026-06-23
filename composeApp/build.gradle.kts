@@ -90,6 +90,8 @@ kotlin {
             implementation(libs.sqldelight.coroutines)
             implementation(libs.sqldelight.primitive.adapters)
 
+            implementation(libs.composemediaplayer)
+
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
             implementation(project(":feat:wikiSupercombo"))
