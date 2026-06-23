@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.fightingnerd.core.ui.components.LoadingContent
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveTopBar
@@ -97,27 +98,31 @@ private fun Content(
         },
         modifier = modifier,
     ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.surface),
-        ) {
-            MoveList(
-                moveList = moveList,
-                onMoveClick = onMoveClick,
-            )
-
-            if (state.filterSheet.isVisible) {
-                FilterBottomSheet(
-                    filterSheet = state.filterSheet,
-                    onClear = onClearFilters,
-                    onFilterChipClick = onFilterChipClick,
-                    onChangeStartup = onChangeStartup,
-                    onChangeOnBlock = onChangeOnBlock,
-                    onChangeOnHit = onChangeOnHit,
-                    onDismiss = { onFilterClick(false) },
+        if (state.isLoading) {
+            LoadingContent()
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(MaterialTheme.colorScheme.surface),
+            ) {
+                MoveList(
+                    moveList = moveList,
+                    onMoveClick = onMoveClick,
                 )
+
+                if (state.filterSheet.isVisible) {
+                    FilterBottomSheet(
+                        filterSheet = state.filterSheet,
+                        onClear = onClearFilters,
+                        onFilterChipClick = onFilterChipClick,
+                        onChangeStartup = onChangeStartup,
+                        onChangeOnBlock = onChangeOnBlock,
+                        onChangeOnHit = onChangeOnHit,
+                        onDismiss = { onFilterClick(false) },
+                    )
+                }
             }
         }
     }
