@@ -2,6 +2,7 @@ package io.github.sophon.fightingnerd.feat.quiz.ui.quiz
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,8 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
+import io.github.sophon.fightingnerd.core.ui.CircularLoader
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_QUESTIONS
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.QuestionSection
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
@@ -48,14 +51,20 @@ internal fun QuizScreen(
     )
     val state by vm.state.collectAsStateWithLifecycle()
 
-    Content(
-        state = state,
-        onQuit = vm::onQuit,
-        onAnswer = vm::answer,
-        onClickNext = vm::nextQuestion,
-        onClickBack = vm::previousQuestion,
-        modifier = modifier,
-    )
+    if (state.isLoading) {
+        Box(Modifier.fillMaxSize()) {
+            CircularLoader(Modifier.size(128.dp).align(Alignment.Center))
+        }
+    } else {
+        Content(
+            state = state,
+            onQuit = vm::onQuit,
+            onAnswer = vm::answer,
+            onClickNext = vm::nextQuestion,
+            onClickBack = vm::previousQuestion,
+            modifier = modifier,
+        )
+    }
 }
 
 @Composable
