@@ -191,13 +191,17 @@ private fun AppNavDisplay(
                 MoveListScreen(
                     gameId = destination.gameId,
                     characterId = destination.characterId,
+                    onExit = { backStack.removeLastOrNull() },
                 )
             }
             entry<Destination.FeatureSettings> {
-                FeatureSettingsScreen()
+                FeatureSettingsScreen(onExit = { backStack.removeLastOrNull() })
             }
             entry<Destination.Quiz> { destination ->
-                QuizScreen(gameId = destination.gameId)
+                QuizScreen(
+                    gameId = destination.gameId,
+                    onExit = { backStack.removeLastOrNull() },
+                )
             }
         }
     )

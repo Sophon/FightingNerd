@@ -26,9 +26,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.components.LoadingContent
+import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_QUESTIONS
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.QuestionSection
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
@@ -42,6 +44,7 @@ import org.koin.core.parameter.parametersOf
 @Composable
 internal fun QuizScreen(
     gameId: String,
+    onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val vm = koinViewModel<QuizVM>(
@@ -54,7 +57,7 @@ internal fun QuizScreen(
     } else {
         Content(
             state = state,
-            onQuit = vm::onQuit,
+            onExit = onExit,
             onAnswer = vm::answer,
             onClickNext = vm::nextQuestion,
             onClickBack = vm::previousQuestion,
@@ -66,7 +69,7 @@ internal fun QuizScreen(
 @Composable
 private fun Content(
     state: QuizState,
-    onQuit: () -> Unit,
+    onExit: () -> Unit,
     onAnswer: (answerIndex: Int) -> Unit,
     onClickNext: () -> Unit,
     onClickBack: () -> Unit,
@@ -76,7 +79,7 @@ private fun Content(
         topBar = {
             QuizTopBar(
                 currentQuestionIndex = state.currentQuestionIndex,
-                onQuit = onQuit,
+                onQuit = onExit,
             )
         },
         modifier = modifier
@@ -122,28 +125,17 @@ private fun QuizTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
-            .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
     ) {
+        TopBarButton(onClick = onQuit)
+        Spacer(Modifier.width(nerdDimensions.inlineGap))
+
         Text(
             text = "${currentQuestionIndex + 1}/$COUNT_QUESTIONS",
             style = nerdTypography.displaySmall,
             color = nerdColorPalette.textPrimary,
+            textAlign = TextAlign.End,
             modifier = Modifier.weight(1f)
         )
-        Spacer(Modifier.width(nerdDimensions.inlineGap))
-
-        IconButton(
-            onClick = onQuit,
-            modifier = Modifier
-                .clip(CircleShape)
-                .size(nerdDimensions.iconLarge)
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Close,
-                contentDescription = null,
-                tint = nerdColorPalette.textPrimary,
-            )
-        }
     }
 }
 
@@ -204,7 +196,7 @@ private fun QuizPreview() {
             onAnswer = {},
             onClickNext = {},
             onClickBack = {},
-            onQuit = {},
+            onExit = {},
         )
     }
 }

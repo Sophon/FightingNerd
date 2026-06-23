@@ -31,6 +31,7 @@ import org.koin.core.parameter.parametersOf
 internal fun MoveListScreen(
     gameId: String,
     characterId: String,
+    onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val vm = koinViewModel<MoveListVM>(
@@ -53,6 +54,7 @@ internal fun MoveListScreen(
 
     Content(
         state = state,
+        onExit = onExit,
         moveList = filteredMoves,
         onMoveClick = { /*TODO*/ },
         searchQuery = state.searchQuery,
@@ -70,6 +72,7 @@ internal fun MoveListScreen(
 @Composable
 private fun Content(
     state: MoveListState,
+    onExit: () -> Unit,
     moveList: List<MoveListState.UiMove>,
     onMoveClick: (id: String) -> Unit,
     searchQuery: String?,
@@ -85,6 +88,7 @@ private fun Content(
     Scaffold(
         topBar = {
             MoveTopBar(
+                onExit = onExit,
                 characterName = state.character?.displayName.orEmpty(),
                 searchQuery = searchQuery,
                 onSearch = onSearch,
@@ -156,6 +160,7 @@ private fun MoveListPreview() {
         val state = MoveListState.PREVIEW
         Content(
             state = state,
+            onExit = {},
             moveList = state.fullMoveList.values.applyFilters(emptySet(), null),
             onMoveClick = {},
             searchQuery = null,
@@ -177,6 +182,7 @@ private fun MoveListSearchPreview() {
         val state = MoveListState.PREVIEW
         Content(
             state = state,
+            onExit = {},
             moveList = state.fullMoveList.values.applyFilters(emptySet(), null),
             onMoveClick = {},
             searchQuery = "",
