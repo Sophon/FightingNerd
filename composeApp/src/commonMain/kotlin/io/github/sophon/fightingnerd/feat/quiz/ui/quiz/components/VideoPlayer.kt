@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import io.github.kdroidfilter.composemediaplayer.InitialPlayerState
 import io.github.kdroidfilter.composemediaplayer.VideoPlayerSurface
 import io.github.kdroidfilter.composemediaplayer.rememberVideoPlayerState
+import io.github.sophon.fightingnerd.core.ui.CircularLoader
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 
@@ -62,7 +63,15 @@ internal fun VideoPlayer(
             playerState = playerState,
             modifier = Modifier.fillMaxSize(),
         )
-        if (playerState.isPlaying.not()) {
+        if (playerState.isLoading) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(nerdColorPalette.surface),
+            ) {
+                CircularLoader(modifier = Modifier.align(Alignment.Center))
+            }
+        } else if (playerState.isPlaying.not()) {
             Icon(
                 imageVector = Icons.Outlined.PlayArrow,
                 contentDescription = null,
