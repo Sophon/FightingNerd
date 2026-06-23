@@ -9,6 +9,7 @@ internal data class QuizState(
     val currentQuestionIndex: Int = 0,
     val correct: Int = 0,
     val incorrect: Int = 0,
+    val displayFinishDialog: Boolean = false,
 
     val isLoading: Boolean = false,
 ) {

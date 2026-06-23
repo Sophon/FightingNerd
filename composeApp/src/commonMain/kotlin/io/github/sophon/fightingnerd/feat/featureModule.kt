@@ -63,9 +63,10 @@ internal fun featureModule() = module {
 
     //region Quiz
     viewModelOf(::QuizOverviewVM)
-    viewModel { (gameId: String) ->
+    viewModel { (gameId: String, onExit: () -> Unit) ->
         QuizVM(
             gameId = gameId,
+            onExit = onExit,
             overlayService = get(),
             generateQuestionsUseCase = get(),
         )
