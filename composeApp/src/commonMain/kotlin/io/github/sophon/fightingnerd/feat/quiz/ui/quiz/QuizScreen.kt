@@ -52,18 +52,14 @@ internal fun QuizScreen(
     )
     val state by vm.state.collectAsStateWithLifecycle()
 
-    if (state.isLoading) {
-        LoadingContent(modifier = modifier)
-    } else {
-        Content(
-            state = state,
-            onExit = onExit,
-            onAnswer = vm::answer,
-            onClickNext = vm::nextQuestion,
-            onClickBack = vm::previousQuestion,
-            modifier = modifier,
-        )
-    }
+    Content(
+        state = state,
+        onExit = onExit,
+        onAnswer = vm::answer,
+        onClickNext = vm::nextQuestion,
+        onClickBack = vm::previousQuestion,
+        modifier = modifier,
+    )
 }
 
 @Composable
@@ -90,26 +86,30 @@ private fun Content(
                 vertical = nerdDimensions.screenPaddingVertical,
             )
     ) { paddingValues ->
-        Column (
-            verticalArrangement = Arrangement.SpaceBetween,
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .padding(LocalBottomBarPadding.current),
-        ) {
-            state.currentQuestion?.let { question ->
-                QuestionSection(
-                    question = question,
-                    onAnswer = onAnswer,
-                    modifier = Modifier.weight(1f),
+        if (state.isLoading) {
+            LoadingContent()
+        } else {
+            Column (
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .padding(LocalBottomBarPadding.current),
+            ) {
+                state.currentQuestion?.let { question ->
+                    QuestionSection(
+                        question = question,
+                        onAnswer = onAnswer,
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+                Spacer(Modifier.height(nerdDimensions.componentPadding))
+
+                NavigationSection(
+                    onClickNext = onClickNext,
+                    onClickBack = onClickBack,
                 )
             }
-            Spacer(Modifier.height(nerdDimensions.componentPadding))
-
-            NavigationSection(
-                onClickNext = onClickNext,
-                onClickBack = onClickBack,
-            )
         }
     }
 }
