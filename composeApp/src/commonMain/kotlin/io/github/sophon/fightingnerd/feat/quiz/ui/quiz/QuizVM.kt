@@ -5,8 +5,10 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.fightingnerd.core.ui.Dialog
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
+import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.FinishDialog
 import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,6 +17,7 @@ import kotlinx.coroutines.launch
 
 internal class QuizVM(
     private val gameId: String,
+    private val onExit: () -> Unit,
 
     private val overlayService: OverlayService,
     private val generateQuestionsUseCase: GenerateQuestionsUseCase,
@@ -55,19 +58,24 @@ internal class QuizVM(
             return
         }
 
-        _state.update {
-            val updatedQuestionList = it.questionList.toMutableList().apply {
-                this[it.currentQuestionIndex] = currentQuestion.copy(answeredIndex = answerIndex)
+        _state.update { state ->
+            val updatedQuestionList = state.questionList.toMutableList().apply {
+                this[state.currentQuestionIndex] = currentQuestion.copy(answeredIndex = answerIndex)
             }
-            val isCorrect = answerIndex == currentQuestion.correctIndex
-            val correct = it.correct + if (isCorrect) 1 else 0
-            val incorrect = it.incorrect + if (isCorrect) 1 else 0
+            val isCorrect = (answerIndex == currentQuestion.correctIndex)
+            val correct = state.correct + if (isCorrect) 1 else 0
+            val incorrect = state.incorrect + if (isCorrect.not()) 1 else 0
 
-            it.copy(
+            state.copy(
                 questionList = updatedQuestionList,
                 correct = correct,
                 incorrect = incorrect,
+                displayFinishDialog = state.isLastQuestion,
             )
+        }
+
+        if (state.isLastQuestion) {
+            finishQuiz()
         }
     }
 
@@ -90,8 +98,19 @@ internal class QuizVM(
     }
 
     private fun finishQuiz() {
-        //display dialog
-        //navigate back to Overview
+        overlayService.show(
+            Dialog { onDismiss ->
+                FinishDialog(
+                    correctCount = state.value.correct,
+                    incorrectCount = state.value.incorrect,
+                    onExit = {
+                        _state.update { it.copy(displayFinishDialog = false) }
+                        onDismiss()
+                        onExit()
+                    }
+                )
+            }
+        )
     }
 
 

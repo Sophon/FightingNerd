@@ -2,6 +2,7 @@ package io.github.sophon.fightingnerd.feat.quiz.ui.quiz
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -15,7 +16,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ArrowCircleLeft
 import androidx.compose.material.icons.outlined.ArrowCircleRight
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -48,7 +48,7 @@ internal fun QuizScreen(
     modifier: Modifier = Modifier,
 ) {
     val vm = koinViewModel<QuizVM>(
-        parameters = { parametersOf(gameId) }
+        parameters = { parametersOf(gameId, onExit) }
     )
     val state by vm.state.collectAsStateWithLifecycle()
 
@@ -89,26 +89,31 @@ private fun Content(
         if (state.isLoading) {
             LoadingContent()
         } else {
-            Column (
-                verticalArrangement = Arrangement.SpaceBetween,
+            Box(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(paddingValues)
                     .padding(LocalBottomBarPadding.current),
             ) {
-                state.currentQuestion?.let { question ->
-                    QuestionSection(
-                        question = question,
-                        onAnswer = onAnswer,
-                        modifier = Modifier.weight(1f),
+                Column (
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    state.currentQuestion?.let { question ->
+                        QuestionSection(
+                            question = question,
+                            onAnswer = onAnswer,
+                            modifier = Modifier.weight(1f),
+                        )
+                    }
+                    Spacer(Modifier.height(nerdDimensions.componentPadding))
+
+                    NavigationSection(
+                        onClickNext = onClickNext,
+                        onClickBack = onClickBack,
+                        canGoForward = state.isLastQuestion.not(),
+                        canGoBack = (state.currentQuestionIndex != 0),
                     )
                 }
-                Spacer(Modifier.height(nerdDimensions.componentPadding))
-
-                NavigationSection(
-                    onClickNext = onClickNext,
-                    onClickBack = onClickBack,
-                )
             }
         }
     }
@@ -141,6 +146,8 @@ private fun QuizTopBar(
 
 @Composable
 private fun NavigationSection(
+    canGoBack: Boolean,
+    canGoForward: Boolean,
     onClickNext: () -> Unit,
     onClickBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -153,11 +160,13 @@ private fun NavigationSection(
         NavigationButton(
             onClick = onClickBack,
             icon = Icons.Outlined.ArrowCircleLeft,
+            isEnabled = canGoBack,
         )
 
         NavigationButton(
             onClick = onClickNext,
             icon = Icons.Outlined.ArrowCircleRight,
+            isEnabled = canGoForward,
         )
     }
 }
@@ -166,10 +175,12 @@ private fun NavigationSection(
 private fun NavigationButton(
     onClick: () -> Unit,
     icon: ImageVector,
+    isEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     IconButton(
         onClick = onClick,
+        enabled = isEnabled,
         modifier = modifier
             .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
             .clip(CircleShape)
@@ -178,7 +189,7 @@ private fun NavigationButton(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = nerdColorPalette.textPrimary,
+            tint = if (isEnabled) nerdColorPalette.textPrimary else nerdColorPalette.textDisabled,
             modifier = Modifier
                 .size(nerdDimensions.iconLarge)
         )
