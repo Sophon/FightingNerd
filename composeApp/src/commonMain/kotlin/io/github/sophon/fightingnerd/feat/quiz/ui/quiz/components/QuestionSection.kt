@@ -67,7 +67,7 @@ internal fun QuestionSection(
         Spacer(Modifier.height(nerdDimensions.componentPadding))
 
         move.urls.videoId?.let { videoUrl ->
-            Video(videoUrl)
+            VideoPlayer(videoUrl = videoUrl)
         } ?: Image(move.urls)
 
         Options(
@@ -76,29 +76,6 @@ internal fun QuestionSection(
             modifier = Modifier.fillMaxWidth(),
         )
     }
-}
-
-@Composable
-private fun Video(
-    videoUrl: String,
-    modifier: Modifier = Modifier,
-) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(16f / 9f)
-            .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
-            .background(nerdColorPalette.surface),
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.PlayArrow,
-            contentDescription = null,
-            modifier = Modifier
-                .size(128.dp)
-                .align(Alignment.Center)
-        )
-    }
-    Spacer(Modifier.height(nerdDimensions.componentPadding))
 }
 
 @Composable
