@@ -108,6 +108,8 @@ private fun Content(
                 NavigationSection(
                     onClickNext = onClickNext,
                     onClickBack = onClickBack,
+                    canGoForward = state.isLastQuestion.not(),
+                    canGoBack = (state.currentQuestionIndex != 0),
                 )
             }
         }
@@ -141,6 +143,8 @@ private fun QuizTopBar(
 
 @Composable
 private fun NavigationSection(
+    canGoBack: Boolean,
+    canGoForward: Boolean,
     onClickNext: () -> Unit,
     onClickBack: () -> Unit,
     modifier: Modifier = Modifier
@@ -153,11 +157,13 @@ private fun NavigationSection(
         NavigationButton(
             onClick = onClickBack,
             icon = Icons.Outlined.ArrowCircleLeft,
+            isEnabled = canGoBack,
         )
 
         NavigationButton(
             onClick = onClickNext,
             icon = Icons.Outlined.ArrowCircleRight,
+            isEnabled = canGoForward,
         )
     }
 }
@@ -166,10 +172,12 @@ private fun NavigationSection(
 private fun NavigationButton(
     onClick: () -> Unit,
     icon: ImageVector,
+    isEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     IconButton(
         onClick = onClick,
+        enabled = isEnabled,
         modifier = modifier
             .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
             .clip(CircleShape)
@@ -178,7 +186,7 @@ private fun NavigationButton(
         Icon(
             imageVector = icon,
             contentDescription = null,
-            tint = nerdColorPalette.textPrimary,
+            tint = if (isEnabled) nerdColorPalette.textPrimary else nerdColorPalette.textDisabled,
             modifier = Modifier
                 .size(nerdDimensions.iconLarge)
         )
