@@ -20,6 +20,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -213,6 +214,8 @@ internal fun OverlayContent(
     snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
 ) {
+    val currentDialog by overlayService.currentDialog.collectAsState()
+
     LaunchedEffect(overlayService) {
         overlayService.toast.collect { toast ->
             snackbarHostState.showSnackbar(ToastVisuals(toast))
@@ -229,6 +232,10 @@ internal fun OverlayContent(
         ) { snackbarData ->
             val visuals = snackbarData.visuals as ToastVisuals
             ToastSnackbar(toast = visuals.toast)
+        }
+
+        currentDialog?.let { dialog ->
+            dialog.content { overlayService.popDialog() }
         }
     }
 }
