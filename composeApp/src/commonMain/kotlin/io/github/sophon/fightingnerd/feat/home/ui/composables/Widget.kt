@@ -27,7 +27,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandMore
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
@@ -47,6 +46,7 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
+import io.github.sophon.fightingnerd.core.ui.CircularLoader
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.Character
@@ -164,7 +164,7 @@ private fun WidgetHeader(
             label = "chevronFlip",
         )
         if (isLoading) {
-            CircularProgressIndicator(
+            CircularLoader(
                 color = nerdColorPalette.textSecondary,
                 modifier = Modifier.size(nerdDimensions.iconLarge)
             )
@@ -259,7 +259,7 @@ private fun CharacterPanel(
             )
 
             if (character.isLoading) {
-                CircularProgressIndicator(
+                CircularLoader(
                     color = nerdColorPalette.textSecondary,
                     trackColor = Color.Transparent,
                     modifier = Modifier.align(Alignment.Center),
