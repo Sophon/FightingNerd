@@ -1,14 +1,13 @@
 package io.github.sophon.discord.feat.core.usecase
 
 import io.github.sophon.core.architecture.EmptyResult
-import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
-import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -79,11 +78,7 @@ internal class SyncWikiDataUseCase {
         characterList.asFlow()
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { character ->
                 flow {
-                    val data = DownloadMoveListUseCase.CharacterData(
-                        name = character.remoteQueryId,
-                        imageUrl = character.images?.iconUrl
-                    )
-                    val result = wiki.downloadMoveList(data)
+                    val result = wiki.downloadMoveListFor(character)
                         .map { moveList -> character to moveList }
                         .mapError { it.toDomainError() }
                     emit(result)

@@ -2,13 +2,18 @@ package io.github.sophon.wikiSuperCombo.data
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.model.Character
 import kotlin.test.Test
 
 class MoveMapperTest {
     val gameIdSF6 = "Street_Fighter_6"
     val gameIdMK1 = "Mortal_Kombat_1"
-    val emptyCharData = DownloadMoveListUseCase.CharacterData("", null)
+    val character = Character(
+        id = "",
+        displayName = "",
+        remoteQueryId = "",
+        wikiUrl = "",
+    )
     
     //region formMoveWikiUrl
     @Test
@@ -63,7 +68,7 @@ class MoveMapperTest {
         val expected = ""
 
         // when
-        val result = move.toDomain(gameIdSF6, emptyCharData, emptyMap())
+        val result = move.toDomain(gameIdSF6, character, emptyMap())
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -80,7 +85,7 @@ class MoveMapperTest {
         // when
         val result = hadoken.toDomain(
             gameIdSF6,
-            characterData = emptyCharData,
+            character,
             imageUrlMap = emptyMap(),
         )
 
@@ -95,7 +100,7 @@ class MoveMapperTest {
         val expected = listOf("crhp")
 
         // when
-        val result = move.toDomain(gameIdSF6, emptyCharData, emptyMap())
+        val result = move.toDomain(gameIdSF6, character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -110,7 +115,7 @@ class MoveMapperTest {
         // when
         val result = sa1.toDomain(
             gameIdSF6,
-            characterData = emptyCharData,
+            character,
             imageUrlMap = emptyMap(),
         )
 
@@ -127,7 +132,7 @@ class MoveMapperTest {
         // when
         val result = ca.toDomain(
             gameIdSF6,
-            characterData = emptyCharData,
+            character,
             imageUrlMap = emptyMap(),
         )
 
@@ -144,7 +149,7 @@ class MoveMapperTest {
         val expectedAliases = listOf("spdhp")
 
         // when
-        val result = move.toDomain(gameIdSF6, emptyCharData, emptyMap())
+        val result = move.toDomain(gameIdSF6, character, emptyMap())
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)
@@ -159,7 +164,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("4mp", "6mp")
         
         // when
-        val result = move.toDomain(gameIdSF6, emptyCharData, emptyMap())
+        val result = move.toDomain(gameIdSF6, character, emptyMap())
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)

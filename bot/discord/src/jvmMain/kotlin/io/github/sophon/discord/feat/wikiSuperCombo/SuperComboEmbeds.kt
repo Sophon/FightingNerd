@@ -13,18 +13,19 @@ import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.separator
 
 internal fun superComboMoveEmbed(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     title = move.input
     url = move.urls.wikiUrl
     description = if (move.name.isNullOrBlank()) {
-        "**${move.charName}**"
+        "**${character.displayName}**"
     } else {
-        "**${move.charName}**: ${move.name.orEmpty()}"
+        "**${character.displayName}**: ${move.name.orEmpty()}"
     }
     color = Color(WHITE)
-    move.urls.characterImage?.let { thumbnail { url = it } }
+    character.images?.iconUrl?.let { thumbnail { url = it } }
 
     mandatoryField(name = "Startup", value = move.startup)
     mandatoryField(name = "Hit", value = move.onHit)
@@ -40,10 +41,11 @@ internal fun superComboMoveEmbed(
 }
 
 internal fun superComboMoveDetailedEmbed(
+    character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    superComboMoveEmbed(move, featureInfo).invoke(this)
+    superComboMoveEmbed(character, move, featureInfo).invoke(this)
 
     val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
         ?: emptyList()

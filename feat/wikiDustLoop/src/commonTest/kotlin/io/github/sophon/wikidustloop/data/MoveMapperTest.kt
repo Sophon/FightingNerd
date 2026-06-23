@@ -3,6 +3,7 @@ package io.github.sophon.wikidustloop.data
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import kotlin.test.Test
 
@@ -10,7 +11,12 @@ class MoveMapperTest {
     val gb = Game.GBVSR.id
     val gg = Game.GGST.id
     val bb = Game.BBCF.id
-    val emptyCharData = DownloadMoveListUseCase.CharacterData("", null)
+    val character = Character(
+        id = "",
+        displayName = "",
+        remoteQueryId = "",
+        wikiUrl = "",
+    )
 
     //region Aliases
     @Test
@@ -76,7 +82,7 @@ class MoveMapperTest {
         // when
         val result = move.toDomain(
             gameId = gg,
-            characterData = emptyCharData,
+            character,
             imageUrlMap = emptyMap(),
         )
 
@@ -93,7 +99,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("j6d", "j4d", "j.6d", "j.4d")
 
         // when
-        val result = move.toDomain(gg, emptyCharData, emptyMap())
+        val result = move.toDomain(gg, character, emptyMap())
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)
@@ -111,9 +117,9 @@ class MoveMapperTest {
         val expectedAliasB = listOf("2hb")
 
         // when
-        val result1 = move1.toDomain(gg, emptyCharData, emptyMap())
-        val result3 = move3.toDomain(gg, emptyCharData, emptyMap())
-        val resultB = moveB.toDomain(gg, emptyCharData, emptyMap())
+        val result1 = move1.toDomain(gg, character, emptyMap())
+        val result3 = move3.toDomain(gg, character, emptyMap())
+        val resultB = moveB.toDomain(gg, character, emptyMap())
 
         //then
         assertThat(result1.aliases).isEqualTo(expectedAlias1)
@@ -130,8 +136,8 @@ class MoveMapperTest {
         val expectedG = listOf("f.h[g]", "g.fh")
 
         // when
-        val resultK = moveK.toDomain(gb, emptyCharData, emptyMap())
-        val resultG = moveG.toDomain(gb, emptyCharData, emptyMap())
+        val resultK = moveK.toDomain(gb, character, emptyMap())
+        val resultG = moveG.toDomain(gb, character, emptyMap())
 
         //then
         assertThat(resultK.aliases).isEqualTo(expectedK)

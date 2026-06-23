@@ -17,6 +17,7 @@ internal const val URL_IMG_FIGHTING_NERD = "https://i.imgur.com/TAgvOxX.png"
 internal const val URL_KOFI = "https://ko-fi.com/sorryuken"
 internal const val URL_BUY_ME_COFFEE = "https://buymeacoffee.com/sophon"
 internal const val URL_IMG_KOFI = "https://i.imgur.com/8MpFC8T.png"
+internal const val URL_TOPGG = "https://top.gg/bot/1438716136790429776"
 
 internal const val URL_INVITE = "https://discord.com/discovery/applications/1438716136790429776"
 internal const val URL_IMG_DISCORD = "https://i.imgur.com/HtuRwva.png"
@@ -31,3 +32,6 @@ internal const val URL_SCRIPT_LOBBY = "https://Sophon.github.io/lobby.html"
 
 internal const val ENV_API_DISCORD = "discordBotApiKey"
 internal const val ENV_API_EWGF = "ewgfApiKey"
+
+internal const val RNG_DONATION_PCT_COMMAND = 5
+internal const val RNG_DONATION_PCT_FEEDBACK = 20

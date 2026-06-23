@@ -1,21 +1,29 @@
 package io.github.sophon.fightingnerd.feat
 
-import io.github.sophon.fightingnerd.feat.bottomBar.ui.BottomBarVM
 import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
+import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
-import io.github.sophon.fightingnerd.feat.moveList.ui.MoveListVM
+import io.github.sophon.fightingnerd.feat.more.ui.MoreVM
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
+import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
+import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsVM
+import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
+import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
+import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizVM
+import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 internal fun featureModule() = module {
-    viewModelOf(::BottomBarVM)
-
     //region Module
     singleOf(::LoadConfigUseCase)
     singleOf(::WikiClientFactory)
@@ -25,17 +33,45 @@ internal fun featureModule() = module {
     viewModelOf(::HomeVM)
     singleOf(::LoadEmptyWidgetsUseCase)
     singleOf(::LoadGameCharacterListUseCase)
+    singleOf(::EnsureMoveListIsCached)
     //endregion
 
-    //region
+    //region More
+    viewModelOf(::MoreVM)
+
+    singleOf(::GetAvailableFeaturesUseCase)
+    singleOf(::ToggleFeatureUseCase)
+    singleOf(::SetThemeUseCase)
+    singleOf(::SubscribeToThemeUseCase)
+
+    viewModelOf(::FeatureSettingsVM)
+    //endregion
+
+    //region Move
     viewModel { (gameId: String, characterId: String) ->
         MoveListVM(
             gameId = gameId,
             characterId = characterId,
-            loadMoveListUseCase = get(),
-            moveRepository = get(),
+            overlayService = get(),
+            loadMoveListDataUseCase = get(),
+            loadMoveFiltersUseCase = get(),
         )
     }
-    singleOf(::LoadMoveListUseCase)
+    singleOf(::LoadMoveListDataUseCase)
+    singleOf(::LoadMoveFiltersUseCase)
+    //endregion
+
+    //region Quiz
+    viewModelOf(::QuizOverviewVM)
+    viewModel { (gameId: String, onExit: () -> Unit) ->
+        QuizVM(
+            gameId = gameId,
+            onExit = onExit,
+            overlayService = get(),
+            generateQuestionsUseCase = get(),
+        )
+    }
+
+    singleOf(::GenerateQuestionsUseCase)
     //endregion
 }

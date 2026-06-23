@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.buildkonfig)
 }
 
+val botVersionName = project.properties["bot.version.name"] as String
+
 kotlin {
     jvm {
         compilerOptions {
@@ -79,11 +81,11 @@ tasks.matching { it.name == "jvmRun" }.configureEach {
     (this as JavaExec).workingDir = rootProject.projectDir
 }
 
-val featureVersion = "12.0.1"
+val featureVersion = "12.1.0"
 buildkonfig {
     packageName = "io.github.sophon.discord"
 
     defaultConfigs {
-        buildConfigField(STRING, "VERSION", featureVersion)
+        buildConfigField(STRING, "VERSION", botVersionName)
     }
 }

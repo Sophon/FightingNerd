@@ -12,6 +12,7 @@ import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.rollChance
+import io.github.sophon.discord.RNG_DONATION_PCT_FEEDBACK
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
@@ -81,7 +82,7 @@ internal class CreateFeedbackEmbedUseCase(
 
 
     private fun createResponseMessage(): String {
-        return if (rollChance(successPercentage = 20)) {
+        return if (rollChance(successPercentage = RNG_DONATION_PCT_FEEDBACK)) {
             "Feedback sent successfully!\n" + donationMessage()
         } else {
             "Feedback sent successfully!"

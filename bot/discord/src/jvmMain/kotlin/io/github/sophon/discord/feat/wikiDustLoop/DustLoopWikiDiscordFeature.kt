@@ -210,8 +210,8 @@ internal class DustLoopWikiDiscordFeature(
         query: String,
     ): Result<BotOutput, BotError> {
         val result = getMoveUseCase.invoke(wiki, query)
-            .map { move ->
-                createMoveEmbedUseCase.invoke(game, move, featureInfo)
+            .map { (character, move) ->
+                createMoveEmbedUseCase.invoke(game, character ,move, featureInfo)
             }
         return result
     }

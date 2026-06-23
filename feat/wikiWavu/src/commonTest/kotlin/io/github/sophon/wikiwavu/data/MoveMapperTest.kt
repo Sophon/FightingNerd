@@ -3,13 +3,24 @@ package io.github.sophon.wikiwavu.data
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.domain.cleanMoveInput
 import kotlin.test.Test
 
 class MoveMapperTest {
-    val emptyCharData = DownloadMoveListUseCase.CharacterData("", null)
+    val character = Character(
+        id = "",
+        displayName = "",
+        remoteQueryId = "",
+        wikiUrl = "",
+    )
+    val ak = Character(
+        id = "armor_king",
+        displayName = "Armor King",
+        remoteQueryId = "Armor_King",
+        wikiUrl = "https://wavu.wiki/t/Armor_King_movelist",
+    )
 
     //region formId
     @Test
@@ -19,7 +30,7 @@ class MoveMapperTest {
         val expectedId = "armor_king-ffn2"
 
         //when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.id).isEqualTo(expectedId)
@@ -32,7 +43,7 @@ class MoveMapperTest {
         val expectedId = "jack-8-df2"
 
         //when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.id).isEqualTo(expectedId)
@@ -47,7 +58,7 @@ class MoveMapperTest {
         val expectedAlias = emptyList<String>()
 
         //when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -60,7 +71,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("shining wizard")
 
         // when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -73,7 +84,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("can cans", "cancan",)
 
         //when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -86,7 +97,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("whf", "cd.2", "cd2", "cddf2")
 
         // when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -99,7 +110,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("ewhf", "electric", "ecd2", "cd#2", "fndf#2", "cddf#2")
 
         // when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -118,7 +129,7 @@ class MoveMapperTest {
         )
 
         // when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -144,7 +155,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("ss4")
 
         // when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -157,7 +168,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("hs", "heatsmash")
 
         // when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -170,7 +181,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("matterhorn")
 
         // when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -183,7 +194,7 @@ class MoveMapperTest {
         val expectedAlias = listOf("hfcdb1+2", "fc1+2")
 
         // when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
@@ -198,7 +209,7 @@ class MoveMapperTest {
         val expectedStance = "bad"
 
         //when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expectedStance)
@@ -211,7 +222,7 @@ class MoveMapperTest {
         val expectedStance = null
 
         //when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expectedStance)
@@ -224,7 +235,7 @@ class MoveMapperTest {
         val expectedStance = null
 
         //when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expectedStance)
@@ -237,7 +248,7 @@ class MoveMapperTest {
         val expectedStance = "BT"
 
         //when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expectedStance)
@@ -248,12 +259,17 @@ class MoveMapperTest {
     @Test
     fun `formUrl handles basic url`() {
         //given
-        val charData = DownloadMoveListUseCase.CharacterData("Lili", null)
         val move = MoveSource.matterhorn
         val expectedUrl = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4"
+        val character = Character(
+            id = "Lili",
+            remoteQueryId = "Lili",
+            displayName = "Lili",
+            wikiUrl = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4",
+        )
 
         //when
-        val result = move.toDomain(charData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expectedUrl)
@@ -272,7 +288,7 @@ class MoveMapperTest {
         )
 
         //when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.notes).isEqualTo(expectedNotes)
@@ -295,7 +311,7 @@ class MoveMapperTest {
         val expectedGuard = "L, L"
 
         // when
-        val result = secondStomp.toDomain(emptyCharData, map)
+        val result = secondStomp.toDomain(character, map)
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)
@@ -381,7 +397,7 @@ class MoveMapperTest {
             )
         )
         val expectedMove = Move(
-            charName = "Armor King",
+            characterId = "armor_king",
             id = "armor_king-1",
             name = "Jab",
             input = "1",
@@ -407,10 +423,7 @@ class MoveMapperTest {
 
         // when
         val result = responseDto.toDomain(
-            DownloadMoveListUseCase.CharacterData(
-                name = "Armor King",
-                imageUrl = null
-            )
+            ak
         )
 
         // then
@@ -468,7 +481,7 @@ class MoveMapperTest {
             )
         )
         val expectedMove = Move(
-            charName = "Armor King",
+            characterId = "armor_king",
             id = "armor_king-f21",
             name = "Dark Elbow Hook",
             input = "f21",
@@ -500,12 +513,7 @@ class MoveMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(
-            DownloadMoveListUseCase.CharacterData(
-                name = "Armor King",
-                imageUrl = null
-            )
-        )
+        val result = responseDto.toDomain(ak)
 
         // then
         assertThat(result).hasSize(2)
@@ -541,7 +549,7 @@ class MoveMapperTest {
             )
         )
         val expectedMove = Move(
-            charName = "Armor King",
+            characterId = "armor_king",
             id = "armor_king-bad.db1+2",
             name = "Shadow Press",
             input = "bad.db1+2",
@@ -551,6 +559,7 @@ class MoveMapperTest {
             onBlock = "-18c",
             onHit = "+0d",
             onCH = null,
+            isThrow = true,
             guard = "m,t",
             notes = listOf(
                 "Transition into hit grab on grounded, airborne, and backturn hit",
@@ -567,17 +576,14 @@ class MoveMapperTest {
                 isHeat = false,
                 isPowerCrush = false,
                 isHoming = false,
-                stance = "bad"
+                stance = "bad",
+                isLowCrush = true,
+                isHighCrush = false,
             )
         )
 
         // when
-        val result = responseDto.toDomain(
-            DownloadMoveListUseCase.CharacterData(
-                name = "Armor King",
-                imageUrl = null
-            )
-        )
+        val result = responseDto.toDomain(ak)
 
         // then
         assertThat(result).hasSize(1)
@@ -613,12 +619,13 @@ class MoveMapperTest {
             )
         )
         val expectedMove = Move(
-            charName = "Armor King",
+            characterId = "armor_king",
             id = "armor_king-wr2+4",
             name = "Brilliant Brawler Kick",
             input = "wr2+4",
             damage = "40 (45)",
             startup = "i10",
+            isThrow = true,
             recovery = "FUFT",
             onBlock = "-5",
             onHit = "+10d",
@@ -648,12 +655,7 @@ class MoveMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(
-            DownloadMoveListUseCase.CharacterData(
-                name = "Armor King",
-                imageUrl = null
-            )
-        )
+        val result = responseDto.toDomain(ak)
 
         // then
         assertThat(result).hasSize(1)
@@ -668,11 +670,24 @@ class MoveMapperTest {
         val expectedAlias = listOf("h.bad.f1+2", "h.cd1+2")
 
         // when
-        val result = move.toDomain(emptyCharData, emptyMap())
+        val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)
         assertThat(result.aliases).isEqualTo(expectedAlias)
+    }
+
+    @Test
+    fun `toDomain detects throw`() {
+        // given
+        val move = MoveSource.shiningWizard
+        val expectedIsThrow = true
+
+        // when
+        val result = move.toDomain(character, emptyMap())
+
+        //then
+        assertThat(result.isThrow).isEqualTo(expectedIsThrow)
     }
     //endregion
 }

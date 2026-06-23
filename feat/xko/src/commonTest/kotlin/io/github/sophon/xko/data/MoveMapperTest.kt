@@ -39,7 +39,7 @@ class MoveMapperTest {
             bucket = listOf(jinxMove, dariusMove)
         )
         val expectedJinxMove = Move(
-            charName = "Jinx",
+            characterId = "jinx",
             id = "jinx_5m",
             input = "5m",
             damage = "55",
@@ -53,12 +53,11 @@ class MoveMapperTest {
             urls = Move.Urls(
                 hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png"),
                 moveImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M.png"),
-                characterWiki = "https://wiki.play2xko.com/en-us/Jinx",
                 wikiUrl = "https://wiki.play2xko.com/en-us/Jinx#5M"
             )
         )
         val expectedDariusMove = Move(
-            charName = "Darius",
+            characterId = "darius",
             id = "darius_5m",
             input = "5m",
             damage = "65",
@@ -72,7 +71,6 @@ class MoveMapperTest {
             urls = Move.Urls(
                 hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Darius_5M_Hitbox.png"),
                 moveImageList = listOf("https://wiki.play2xko.com/en-us/images/Darius_5M.png"),
-                characterWiki = "https://wiki.play2xko.com/en-us/Darius",
                 wikiUrl = "https://wiki.play2xko.com/en-us/Darius#5M"
             )
         )
@@ -83,12 +81,12 @@ class MoveMapperTest {
         // then
         assertThat(result.size).isEqualTo(2)
 
-        val jinxCharacter = result.keys.find { it.remoteQueryId == "Jinx" }
+        val jinxCharacter = result.keys.find { it.id == "jinx" }
         assertThat(jinxCharacter).isNotNull()
         assertThat(result[jinxCharacter]!!).hasSize(1)
         assertThat(result[jinxCharacter]!![0]).isEqualTo(expectedJinxMove)
 
-        val dariusCharacter = result.keys.find { it.remoteQueryId == "Darius" }
+        val dariusCharacter = result.keys.find { it.id == "darius" }
         assertThat(dariusCharacter).isNotNull()
         assertThat(result[dariusCharacter]!!).hasSize(1)
         assertThat(result[dariusCharacter]!![0]).isEqualTo(expectedDariusMove)
@@ -114,7 +112,7 @@ class MoveMapperTest {
             bucket = listOf(moveDto)
         )
         val expectedMove = Move(
-            charName = "Jinx",
+            characterId = "jinx",
             id = "jinx_5m",
             input = "5m",
             damage = null,
@@ -128,7 +126,6 @@ class MoveMapperTest {
             urls = Move.Urls(
                 hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png"),
                 moveImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M.png"),
-                characterWiki = "https://wiki.play2xko.com/en-us/Jinx",
                 wikiUrl = "https://wiki.play2xko.com/en-us/Jinx#5M"
             )
         )
@@ -139,7 +136,7 @@ class MoveMapperTest {
         // then
         assertThat(result.size).isEqualTo(1)
 
-        val jinxCharacter = result.keys.find { it.remoteQueryId == "Jinx" }
+        val jinxCharacter = result.keys.find { it.id == "jinx" }
         assertThat(jinxCharacter).isNotNull()
         assertThat(result[jinxCharacter]!!).hasSize(1)
         assertThat(result[jinxCharacter]!![0]).isEqualTo(expectedMove)

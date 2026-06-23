@@ -1,19 +1,14 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.feat.home.ui.composables.WidgetSection
-import io.github.sophon.fightingnerd.theme.AppTheme
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdDimensions
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -30,7 +25,6 @@ internal fun HomeScreen(
         onExpandWidget = vm::onExpandWidget,
         onCharacterClick = { gameId, characterId ->
             onNavigateToMoveList(gameId, characterId)
-            vm.onCacheMoveList(gameId, characterId)
         },
         modifier = modifier,
     )
@@ -43,44 +37,21 @@ private fun Content(
     onCharacterClick: (gameId: String, characterId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Scaffold(
-        containerColor = MaterialTheme.colorScheme.surface,
-        modifier = modifier.fillMaxSize(),
-    ) { paddingValues ->
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surface)
-                .padding(paddingValues)
-        ) {
-            WidgetSection(
-                widgetList = state.gameWidgetList,
-                onExpandWidget = onExpandWidget,
-                onCharacterClick = onCharacterClick,
-                modifier = Modifier.padding(horizontal = 8.dp)
-            )
-        }
-    }
+    WidgetSection(
+        widgetList = state.gameWidgetList,
+        onExpandWidget = onExpandWidget,
+        onCharacterClick = onCharacterClick,
+        modifier = modifier
+            .padding(horizontal = nerdDimensions.screenPaddingHorizontal, vertical = nerdDimensions.screenPaddingVertical)
+    )
 }
 
 
 //region PREVIEW
 @Composable
 @Preview
-private fun DarkHomeScreenPreview() {
-    AppTheme(darkTheme = true) {
-        Content(
-            state = HomeViewState.PREVIEW,
-            onExpandWidget = {},
-            onCharacterClick = {_, _ -> },
-        )
-    }
-}
-
-@Composable
-@Preview
-private fun LightHomeScreenPreview() {
-    AppTheme(darkTheme = false) {
+private fun HomeScreenPreview() {
+    FightingNerdTheme {
         Content(
             state = HomeViewState.PREVIEW,
             onExpandWidget = {},

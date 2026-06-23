@@ -1,5 +1,14 @@
 # BOT CHANGELOG
 
+## [v12.1.0] - 2026-06-24
+- fixed URLs for moves
+- `core` - new architecture with `WikiClient` and `BaseWikiClient`
+- refactor character parameter passing
+- `DustLoop` - `GGST` ignores alt-mode characters
+- `DreamCancel` - fixed bad character creation from data
+- `Wavu` - fixed moves not having properly assigned high/low crush properties 
+- add Top.gg link to donation message
+
 ## [v12.0.1] - 2026-06-06
 - features are ordered in the repo
   - this allows game priority to be configured from the `config.json`

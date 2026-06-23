@@ -3,18 +3,16 @@ package io.github.sophon.wikiwavu.data
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.domain.MOVE_URL
 import io.github.sophon.wikiwavu.domain.VIDEO_URL
 import io.github.sophon.wikiwavu.domain.cleanMoveInput
 
-internal fun MoveListResponseDto.toDomain(
-    characterData: DownloadMoveListUseCase.CharacterData
-): List<Move> {
+internal fun MoveListResponseDto.toDomain(character: Character): List<Move> {
     val downloadedMoves = extractMoveDto()
     val movesById = downloadedMoves.associateBy { it.id }
-    val moveList = downloadedMoves.map { it.toDomain(characterData, movesById) }
+    val moveList = downloadedMoves.map { it.toDomain(character, movesById) }
     return moveList
 }
 
@@ -23,7 +21,7 @@ internal fun MoveListResponseDto.extractMoveDto(): List<MoveDto> {
 }
 
 internal fun MoveDto.toDomain(
-    characterData: DownloadMoveListUseCase.CharacterData,
+    character: Character,
     movesById: Map<String, MoveDto>,
 ): Move {
     val cleanedCrushes = splitCrush()
@@ -34,12 +32,8 @@ internal fun MoveDto.toDomain(
         .cleanMoveInput()
     val aliases = fullInput.formAliases(alias, alt)
 
-    if (characterData.name == "Kunimitsu") {
-        val a = 3
-    }
-
     val move = Move(
-        charName = characterData.name,
+        characterId = character.id,
         id = id.formId(),
         name = name?.cleanHtml(),
 
@@ -51,14 +45,14 @@ internal fun MoveDto.toDomain(
         onHit = hit.formatClickable(),
         onCH = ch.formatClickable(),
         guard = parentalProperties.guard,
+        isThrow = isThrow(target, unifiedNotes),
 
-        notes = notes.formNotes() + cleanedCrushes,
+        notes = unifiedNotes,
         aliases = aliases,
 
         urls = Move.Urls(
             videoId = video.formVideoUrl(),
-            wikiUrl = formMoveWikiUrl(characterData.name, id),
-            characterImage = characterData.imageUrl,
+            wikiUrl = formMoveWikiUrl(characterRemoteQueryId = character.remoteQueryId, moveId = id),
         ),
 
         t8Properties = formProperties(
@@ -180,8 +174,9 @@ internal fun String?.formVideoUrl(): String? {
     return this?.let { VIDEO_URL + it.urlEncode() }
 }
 
-internal fun formMoveWikiUrl(charName: String, id: String): String {
-    return "${MOVE_URL}/${charName.replace(" ", "_")}_movelist#${id.replace(" ", "_")}"
+internal fun formMoveWikiUrl(characterRemoteQueryId: String, moveId: String): String {
+    val formattedCharacterName = characterRemoteQueryId.replace(" ", "_")
+    return "${MOVE_URL}/${formattedCharacterName}_movelist#${moveId.replace(" ", "_")}"
 }
 
 
@@ -295,8 +290,26 @@ private fun formProperties(
     val isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) }
     val isHoming = notes.any { it.contains("Homing", ignoreCase = true) }
     val stance = input.getStance()
+    val isHighCrush = notes.any { it.contains("cs") }
+    val isLowCrush = notes.any { it.contains("js") }
 
-    return Move.T8Properties(isHeat, isHoming, stance, isPowerCrush)
+    val properties = Move.T8Properties(
+        isHeat = isHeat,
+        isHoming = isHoming,
+        stance = stance,
+        isPowerCrush = isPowerCrush,
+        isHighCrush = isHighCrush,
+        isLowCrush = isLowCrush,
+    )
+    return properties
+}
+
+private fun isThrow(guard: String?, notes: List<String>): Boolean {
+    val level = guard.orEmpty().lowercase()
+    val isThrow = level.contains("t")
+            || level.contains("th(")
+            || notes.any { it.contains("throw break", ignoreCase = true) }
+    return isThrow
 }
 
 internal data class ParentalProperties(

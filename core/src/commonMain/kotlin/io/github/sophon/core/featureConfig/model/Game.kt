@@ -6,6 +6,7 @@ enum class Game(
     val iconUrl: String,
     val wikiUrl: String,
     val wiki: WikiClientFeature,
+    val separateCharMoveDownload: Boolean = true,
 ) {
     Tekken8(
         id = "Tekken_8",
@@ -43,6 +44,7 @@ enum class Game(
         iconUrl = "https://i.imgur.com/XtHOd6T.png",
         wikiUrl = "https://wiki.play2xko.com/en-us/",
         wiki = WikiClientFeature.Xko,
+        separateCharMoveDownload = false,
     ),
 
     KoFXV(
@@ -51,6 +53,7 @@ enum class Game(
         iconUrl = "https://i.imgur.com/Zlin7xi.png",
         wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV",
         wiki = WikiClientFeature.DreamCancel,
+        separateCharMoveDownload = false,
     ),
     COTW(
         id = "Fatal_Fury:_City_of_the_Wolves",
@@ -58,6 +61,7 @@ enum class Game(
         iconUrl = "https://i.imgur.com/ucbtSgx.png",
         wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves",
         wiki = WikiClientFeature.DreamCancel,
+        separateCharMoveDownload = false,
     ),
 
     GGST(
@@ -95,6 +99,7 @@ enum class Game(
         iconUrl = "https://i.imgur.com/E6O7DMi.png",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL",
         wiki = WikiClientFeature.Mizuumi,
+        separateCharMoveDownload = false,
     ),
     Uni2(
         id = "UNI2",
@@ -109,7 +114,13 @@ enum class Game(
         iconUrl = "https://i.imgur.com/e3xYkHf.png",
         wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior",
         wiki = WikiClientFeature.Mizuumi,
+        separateCharMoveDownload = false,
     );
+
+    val shortDisplayName: String
+        get() {
+            return displayName.substringBefore(":")
+        }
 
     companion object {
         fun fromId(id: String): Game? {

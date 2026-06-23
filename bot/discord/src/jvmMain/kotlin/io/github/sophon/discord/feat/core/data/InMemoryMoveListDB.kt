@@ -17,34 +17,30 @@ import kotlin.time.ExperimentalTime
 internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
     private val database: MutableMap<String, Map<String, Move>> = mutableMapOf()
     private var insertTimeInstant: Instant? = null
-    private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
     private val moveAliasMap: MutableMap<String, MutableMap<String, String>> = mutableMapOf()
 
     override suspend fun fetchMoveListFor(
-        charName: String
+        characterId: String
     ): Result<List<Move>, WikiError> {
-        val characterId = if (database.containsKey(charName)) {
-            charName
-        } else {
-            charNameAliasMap[charName]
-        }
-        if (characterId == null)
-            return Result.Error(WikiError.UnknownCharacter(charName))
-
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(charName))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId)) //TODO: this should be an exception
+        val result = moveList.values.toList()
+        return Result.Success(result)
+    }
 
-        return Result.Success(moveList.values.toList())
+    override suspend fun hasMovesCachedFor(characterId: String): Result<Boolean, WikiError> {
+        val moveList = database[characterId]
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId)) //TODO: this should be an exception
+        val result = moveList.isNotEmpty()
+        return Result.Success(result)
     }
 
     override suspend fun fetchMoveDataFor(
-        charName: String,
+        characterId: String,
         moveQuery: String
     ): Result<Move, WikiError> {
-        val characterId = charNameAliasMap[charName] ?: charName
-
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(charName))
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId)) //TODO: this should be an exception
 
         val moveId = moveAliasMap[characterId]?.get(moveQuery) ?: moveQuery
 
@@ -85,11 +81,6 @@ internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
         moveAliasMap[character.id] = aliasMap
 
         insertTimeInstant = Clock.System.now()
-
-        charNameAliasMap[character.id] = character.id
-        character.aliasList.forEach { alias ->
-            charNameAliasMap.putIfAbsent(alias.replace(" ", ""), character.id)
-        }
 
         return Result.Success(Unit)
     }

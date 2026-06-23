@@ -15,6 +15,7 @@ assertK = "0.25"
 biometry = "1.1.0"
 buildkonfig = "0.17.1"
 coil-compose = "3.0.0"
+composemediaplayer = "0.10.0"
 compose-test = "1.7.6"
 composeHotReload = "1.0.0"
 composeMultiplatform = "1.11.0"
@@ -73,6 +74,9 @@ androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecyc
 androidx-navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "androidx-navigation" }
 androidx-navigation-runtime = { module = "org.jetbrains.androidx.navigation:navigation-runtime", version.ref = "androidx-navigation" }
 androidx-runner = { group = "androidx.test", name = "runner", version.ref = "runner" }
+
+# Media
+composemediaplayer = { module = "io.github.kdroidfilter:composemediaplayer", version.ref = "composemediaplayer" }
 
 # Ktor
 ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }

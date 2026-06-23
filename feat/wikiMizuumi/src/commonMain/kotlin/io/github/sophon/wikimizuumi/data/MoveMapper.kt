@@ -9,7 +9,6 @@ import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikimizuumi.domain.WIKI_BASE_URL
 
 internal fun MoveListResponseDto.toDomainAll(
@@ -42,7 +41,7 @@ internal fun MoveDto.toDomain(
     val aliases = normalizedInput.create2dAliases(isPartial = true)
 
     val move = Move(
-        charName = character.displayName,
+        characterId = character.id,
         id = moveId,
         input = normalizedInput,
         damage = damage?.cleanHtmlOrNull() ?: totaldmg,
@@ -56,7 +55,6 @@ internal fun MoveDto.toDomain(
         guard = guard?.cleanHtmlOrNull(),
         invulnerability = invul?.cleanHtmlOrNull()?.formPropertiesUrl()?.formPropertiesUrl(),
         urls = Move.Urls(
-            characterImage = character.images?.iconUrl,
             wikiUrl = character.wikiUrl,
             hitboxImageList = hitboxes
                 .orEmpty()
@@ -88,20 +86,20 @@ internal fun MoveDto.toDomain(
 }
 
 internal fun MoveListResponseDto.toDomain(
-    characterData: DownloadMoveListUseCase.CharacterData,
+    character: Character,
     imageUrlMap: Map<String, String>,
     gameId: String,
 ): List<Move> {
     return cargoquery
         .map {
             val dto = it.title
-            dto.toDomain(characterData, imageUrlMap, gameId)
+            dto.toDomain(character, imageUrlMap, gameId)
         }
 }
 
 //Uni
 internal fun MoveDto.toDomain(
-    characterData: DownloadMoveListUseCase.CharacterData,
+    character: Character,
     imageUrlMap: Map<String, String>,
     gameId: String,
 ): Move {
@@ -114,7 +112,7 @@ internal fun MoveDto.toDomain(
     val aliasList = normalizedInput.create2dAliases(isPartial = true) + normalizedInput.chargeAlias()
 
     val move = Move(
-        charName = this.chara,
+        characterId = character.id,
         id = moveId,
         input = normalizedInput,
         damage = damage?.cleanHtmlOrNull(),
@@ -129,7 +127,6 @@ internal fun MoveDto.toDomain(
         invulnerability = invul?.cleanHtmlOrNull()?.formPropertiesUrl(),
         urls = Move.Urls(
             wikiUrl = game?.wikiUrl ?: WIKI_BASE_URL,
-            characterImage = characterData.imageUrl,
             hitboxImageList = hitboxes
                 .orEmpty()
                 .split(",")

@@ -12,24 +12,24 @@ internal fun MoveListResponseDto.toDomain(): Map<Character, List<Move>> {
     return bucket
         .groupBy { it.pageName.toCharacter() }
         .filterOutTemplates()
-        .mapValues { (character, moveList) ->
-            moveList.map { it.toMoveList(charWikiUrl = character.wikiUrl) }
+        .mapValues { (_, moveList) ->
+            moveList.map { it.toMoveList() }
         }
 }
 
 private fun MoveDto.toMoveList(
-    charWikiUrl: String,
 ): Move {
-    val charName = pageName
+    val characterId = pageName
         .replace(" ", "_")
+        .lowercase()
     val formattedInput = input.orDash().lowercase()
     val aliases = formattedInput
         .create2dAliases(isPartial = false)
         .addExtraAliases(formattedInput)
 
     val move = Move(
-        charName = charName,
-        id = "${charName.lowercase()}_$formattedInput",
+        characterId = characterId,
+        id = "${characterId}_$formattedInput",
 
         input = formattedInput,
         damage = damage?.ifEmpty { null },
@@ -45,7 +45,6 @@ private fun MoveDto.toMoveList(
         urls = Move.Urls(
             hitboxImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}_$URL_HITBOX_SUFIX"),
             moveImageList = listOf("$URL_HITBOX_PREFIX/${pageName}_${input}.png"),
-            characterWiki = charWikiUrl,
             wikiUrl = "$FEATURE_URL/${pageName}#${input}"
         ),
     )
@@ -54,7 +53,8 @@ private fun MoveDto.toMoveList(
 }
 
 private fun Map<Character, List<MoveDto>>.filterOutTemplates(): Map<Character, List<MoveDto>> {
-    return filter { it.key.id.contains(":").not() }
+    val filtered = filter { it.key.id.contains(":").not() && it.key.id.contains(" poc").not() }
+    return filtered
 }
 
 internal fun List<String>.addExtraAliases(formattedInput: String): List<String> {

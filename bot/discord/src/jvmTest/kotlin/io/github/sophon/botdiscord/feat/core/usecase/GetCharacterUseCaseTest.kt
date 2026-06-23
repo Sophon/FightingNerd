@@ -1,20 +1,22 @@
 package io.github.sophon.botdiscord.feat.core.usecase
 
 import assertk.assertThat
-import assertk.assertions.isEqualTo
-import assertk.assertions.isInstanceOf
 import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
-import io.github.sophon.core.wiki.model.WikiClient
+import assertk.assertions.isEqualTo
+import assertk.assertions.isInstanceOf
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
+import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
-import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.core.wiki.model.Character
 
 class GetCharacterUseCaseTest {
     //region Successful Character and Move Fetch
@@ -169,7 +171,7 @@ class GetCharacterUseCaseTest {
         startup: String? = null
     ): Move {
         return Move(
-            charName = "TestChar",
+            characterId = "TestChar",
             id = input,
             input = input,
             startup = startup,
@@ -188,23 +190,25 @@ private class FakeWikiClient(
     private val moveListResult: Result<List<Move>, WikiError>? = null
 ) : WikiClient {
 
-    override suspend fun fetchCharacter(charName: String): Result<Character, WikiError> {
+    override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
         return characterResult ?: character?.let { Result.Success(it) }
         ?: Result.Error(WikiError.UnknownCharacter("Character not found"))
     }
 
-    override suspend fun fetchMoveList(charName: String, filter: Filter): Result<List<Move>, WikiError> {
+    override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> {
         return moveListResult ?: Result.Success(moves)
     }
 
     // Stub implementations for other WikiClient methods
-    override fun getFeatureInfo() = error("Not implemented")
     override suspend fun downloadCharacterList() = error("Not implemented")
     override suspend fun cacheCharacterList(characterList: List<Character>) = error("Not implemented")
     override suspend fun fetchCharacterList() = error("Not implemented")
-    override suspend fun downloadMoveList(characterData: DownloadMoveListUseCase.CharacterData) = error("Not implemented")
+    override suspend fun downloadMoveListFor(character: Character) = error("Not implemented")
     override suspend fun cacheMoveList(character: Character, moveList: List<Move>) = error("Not implemented")
-    override suspend fun fetchMove(charName: String, moveQuery: String) = error("Not implemented")
+    override suspend fun fetchMove(characterId: String, moveQuery: String) = error("Not implemented")
     override suspend fun getLastUpdateTimeStamp() = error("Not implemented")
     override suspend fun clearCache() = error("Not implemented")
+    override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
+    override val featureInfo: FeatureInfo = WavuFeatureInfo.featureInfo
+    override fun getFiltersFor(game: Game): Set<Filter> = emptySet()
 }

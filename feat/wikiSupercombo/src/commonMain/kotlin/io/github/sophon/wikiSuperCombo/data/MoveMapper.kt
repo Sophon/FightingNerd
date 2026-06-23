@@ -4,6 +4,7 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.normalize2dInputs
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
@@ -11,19 +12,19 @@ import io.github.sophon.wikiSuperCombo.util.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
-    characterData: DownloadMoveListUseCase.CharacterData,
+    character: Character,
     imageUrlMap: Map<String, String>
 ): List<Move> {
     return cargoQuery.map { wrapper ->
         val dto = wrapper.title
-        val move = dto.toDomain(gameId, characterData, imageUrlMap)
+        val move = dto.toDomain(gameId, character, imageUrlMap)
         move
     }
 }
 
 internal fun MoveDto.toDomain(
     gameId: String,
-    characterData: DownloadMoveListUseCase.CharacterData,
+    character: Character,
     imageUrlMap: Map<String, String>,
 ): Move {
     val type = getType()
@@ -40,7 +41,7 @@ internal fun MoveDto.toDomain(
         .extractNotes()
 
     val move = Move(
-        charName = chara,
+        characterId = character.id,
         id = moveId,
         name = name.ignoreImageNames(),
 
@@ -60,7 +61,6 @@ internal fun MoveDto.toDomain(
         aliases = aliasList,
 
         urls = Move.Urls(
-            characterImage = characterData.imageUrl,
             moveImageList = images
                 .orEmpty()
                 .split(",")

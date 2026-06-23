@@ -3,7 +3,7 @@ package io.github.sophon.wikidustloop.data
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.safeCall
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wikidustloop.domain.BASE_URL
 import io.github.sophon.wikidustloop.domain.LIMIT_CHARACTERS
@@ -14,11 +14,9 @@ import io.ktor.client.request.parameter
 
 internal interface DustLoopDataSource {
     suspend fun downloadCharacterList(table: String): Result<CharacterListResponseDto, DataError.Remote>
-    suspend fun downloadMoveList(
-        table: String,
-        characterData: DownloadMoveListUseCase.CharacterData,
-    ): Result<MoveListResponseDto, DataError.Remote>
-    suspend fun getImageUrl(fileNames: List<String>): Result<Map<String, String>, DataError.Remote>
+    suspend fun downloadMoveList(table: String, character: Character): Result<MoveListResponseDto, DataError.Remote>
+    suspend fun resolveCharacterImageUrls(dto: CharacterListResponseDto): Result<Map<String, String>, DataError.Remote>
+    suspend fun resolveHitboxUrls(dto: MoveListResponseDto): Result<Map<String, String>, DataError.Remote>
 }
 
 internal class DustLoopDataSourceImpl(
@@ -38,7 +36,7 @@ internal class DustLoopDataSourceImpl(
 
     override suspend fun downloadMoveList(
         table: String,
-        characterData: DownloadMoveListUseCase.CharacterData,
+        character: Character,
     ): Result<MoveListResponseDto, DataError.Remote> {
         return safeCall {
             httpClient.get(BASE_URL) {
@@ -47,21 +45,47 @@ internal class DustLoopDataSourceImpl(
                 parameter("limit", LIMIT_MOVES)
                 parameter("format", "json")
                 parameter("fields", getMoveFields(table))
-                parameter("where", "chara=\"${characterData.name}\"")
+                parameter("where", "chara=\"${character.remoteQueryId}\"")
             }
         }
     }
 
-    override suspend fun getImageUrl(
-        fileNames: List<String>
+    override suspend fun resolveCharacterImageUrls(
+        dto: CharacterListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
-        return getWikiImageUrl(
+        val imageFileNames = dto.cargoQuery.flatMap {
+            listOfNotNull(it.title.icon, it.title.portrait)
+        }.distinct()
+        val result = getImageUrl(imageFileNames)
+        return result
+    }
+
+    override suspend fun resolveHitboxUrls(
+        dto: MoveListResponseDto,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val imageFileNames = dto.cargoQuery.flatMap { moveDto ->
+            listOfNotNull(moveDto.title.hitboxes, moveDto.title.images)
+                .takeIf { it.isNotEmpty() }
+                ?.joinToString(";")
+                ?.split(";", "\\")
+                ?.map { it.trim() }
+                ?: emptyList()
+        }.distinct()
+        val result = getImageUrl(imageFileNames)
+        return result
+    }
+
+
+    private suspend fun getImageUrl(
+        fileNames: List<String>,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val result = getWikiImageUrl(
             httpClient = httpClient,
             fileNames = fileNames,
             url = BASE_URL,
         )
+        return result
     }
-
 
     private fun getCharacterFields(table: String): String {
         val allFields = when (table) {

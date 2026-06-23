@@ -1,141 +1,80 @@
 package io.github.sophon.wikiSuperCombo.domain
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.architecture.onError
-import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.mapError
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.core.wiki.data.toDomainError
+import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.usecase.CacheCharacterListUseCase
-import io.github.sophon.core.wiki.usecase.CacheMoveListUseCase
-import io.github.sophon.core.wiki.usecase.ClearCacheUseCase
-import io.github.sophon.core.wiki.usecase.DownloadCharacterListUseCase
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
-import io.github.sophon.core.wiki.usecase.FetchCharacterListUseCase
-import io.github.sophon.core.wiki.usecase.FetchCharacterUseCase
-import io.github.sophon.core.wiki.usecase.FetchMoveListUseCase
-import io.github.sophon.core.wiki.usecase.FetchMoveUseCase
-import io.github.sophon.core.wiki.usecase.GetLastCacheInsertInstantUseCase
+import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
 import io.github.sophon.wikiSuperCombo.data.SuperComboTables
+import io.github.sophon.wikiSuperCombo.data.toDomain
 import io.github.sophon.wikiSuperCombo.integration.SuperComboFeatureInfo
-import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 internal class SuperComboWikiClient(
-    private val gameId: String,
+    game: Game,
+    characterDB: CharacterListDB,
+    moveDB: MoveListDB,
+    private val source: SuperComboDataSource,
+): BaseWikiClient(
+    game = game,
+    characterDB = characterDB,
+    moveDB = moveDB,
+    featureInfo = SuperComboFeatureInfo.featureInfo,
+) {
+    private val gameTables: QueryTable = SuperComboTables.getTable(game.id)
+        ?: error("${game.id} not supported. Supported: $supportedGameSet")
 
-    private val superComboFeatureInfo: SuperComboFeatureInfo,
-
-    private val downloadCharacterListUseCase: DownloadCharacterListUseCase,
-    private val cacheCharacterListUseCase: CacheCharacterListUseCase,
-    private val fetchCharacterUseCase: FetchCharacterUseCase,
-    private val fetchCharacterListUseCase: FetchCharacterListUseCase,
-
-    private val downloadMoveListUseCase: DownloadMoveListUseCase,
-    private val cacheMoveListUseCase: CacheMoveListUseCase,
-    private val clearCacheUseCase: ClearCacheUseCase,
-    private val fetchMoveListUseCase: FetchMoveListUseCase,
-
-    private val getLastCacheInsertInstantUseCase: GetLastCacheInsertInstantUseCase,
-    private val fetchMoveUseCase: FetchMoveUseCase,
-): WikiClient {
-    private val gameTables: QueryTable = SuperComboTables.getTable(gameId)
-        ?: error("$gameId not supported. Supported: ${SuperComboFeatureInfo.featureInfo.supportedGameSet}")
-
-    override fun getFeatureInfo(): FeatureInfo {
-        return superComboFeatureInfo.featureInfo
-    }
 
     override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
-        return downloadCharacterListUseCase.invoke(gameTables)
-            .onSuccess { characterList ->
-                Napier.i(tag = TAG) { "$gameId - ${characterList.size} characters loaded" }
-            }
-            .onError { Napier.e(tag = TAG) { "downloadCharacterList: $it" } }
-    }
-
-    override suspend fun cacheCharacterList(
-        characterList: List<Character>
-    ): EmptyResult<WikiError> {
-        return cacheCharacterListUseCase.invoke(characterList)
-            .onError { Napier.e(tag = TAG) { it.toString() } }
-    }
-
-    override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> {
-        return fetchCharacterListUseCase.invoke()
-            .onError { Napier.e(tag = TAG) { "fetchCharacterList: $it" } }
-    }
-
-    override suspend fun fetchCharacter(
-        charName: String
-    ): Result<Character, WikiError> {
-        return fetchCharacterUseCase.invoke(charName)
-            .onError {
-                Napier.w(tag = TAG) { "fetchCharacter($charName): $it" }
-            }
-    }
-
-    override suspend fun downloadMoveList(
-        characterData: DownloadMoveListUseCase.CharacterData,
-    ): Result<List<Move>, WikiError> {
-        return downloadMoveListUseCase.invoke(gameTables, characterData)
-            .onSuccess { moveList ->
-                Napier.d(tag = TAG) {
-                    "${characterData.name}: ${moveList.size} moves downloaded"
+        val result = source.downloadCharacterList(table = gameTables.character)
+            .flatMap { dto ->
+                source.resolveCharacterImageUrls(dto).map { imageUrlMap ->
+                    val characterList = dto.toDomain(gameId = game.id, imageUrlMap = imageUrlMap)
+                    Napier.i(tag = TAG) { "${game.id}: ${characterList.size} downloaded" }
+                    characterList
                 }
             }
-            .onError {
-                Napier.e(tag = TAG) { "downloadMoveList(${characterData.name}): $it" }
+            .mapError { it.toDomainError(TAG) }
+        return result
+    }
+
+    override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError> {
+        val result = source.downloadMoveList(table = gameTables.moves, character)
+            .flatMap { dto ->
+                source.resolveHitboxUrls(dto).map { imageUrlMap ->
+                    val moveList = dto.toDomain(
+                        gameId = game.id,
+                        character = character,
+                        imageUrlMap = imageUrlMap,
+                    )
+                    Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
+                    moveList
+                }
             }
+            .mapError { it.toDomainError(TAG) }
+        return result
     }
 
-    override suspend fun cacheMoveList(
-        character: Character,
-        moveList: List<Move>,
-    ): EmptyResult<WikiError> {
-        return cacheMoveListUseCase.invoke(character, moveList)
-            .onError {
-                Napier.e(tag = TAG) { "cacheMoveList(${character.id}, ${moveList.size}): $it" }
-            }
+    override fun getFiltersFor(game: Game): Set<Filter> {
+        require(game in supportedGameSet) {
+            "${game.id} not supported. Supported: $supportedGameSet"
+        }
 
+        return emptySet()
     }
 
-    override suspend fun fetchMoveList(
-        charName: String,
-        filter: Filter,
-    ): Result<List<Move>, WikiError> {
-        return fetchMoveListUseCase.invoke(charName, filter)
-            .onError {
-                Napier.e(tag = TAG) { "fetchMoveList($charName): $it" }
-            }
-    }
-
-    override suspend fun fetchMove(
-        charName: String,
-        moveQuery: String,
-    ): Result<Move, WikiError> {
-        return fetchMoveUseCase.invoke(charName, moveQuery)
-            .onError {
-                Napier.w(tag = TAG) { "fetchMove($charName, $moveQuery): $it" }
-            }
-    }
-
-    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
-        return getLastCacheInsertInstantUseCase.invoke()
-            .onError { Napier.e(tag = TAG) { it.toString() } }
-    }
-
-    override suspend fun clearCache(): EmptyResult<WikiError> {
-        return clearCacheUseCase.invoke()
-            .onError { Napier.e(tag = TAG) { it.toString() } }
-    }
 
     private  companion object {
         const val TAG = "SuperComboWikiClient"

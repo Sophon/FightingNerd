@@ -6,10 +6,11 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.fightingnerd.core.MoveRepository
+import io.github.sophon.fightingnerd.core.ui.OverlayService
+import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
+import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,10 +20,10 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 
 internal class HomeVM(
+    private val overlayService: OverlayService,
     private val loadEmptyWidgetsUseCase: LoadEmptyWidgetsUseCase,
     private val loadGameCharacterListUseCase: LoadGameCharacterListUseCase,
-    private val loadMoveListUseCase: LoadMoveListUseCase,
-    private val moveRepository: MoveRepository,
+    private val ensureMoveListIsCached: EnsureMoveListIsCached,
 ): ViewModel() {
     private val moveListSemaphore = Semaphore(permits = MAX_PERMITS)
     private val _state = MutableStateFlow(HomeViewState())
@@ -30,7 +31,6 @@ internal class HomeVM(
 
     init {
         loadWidgets()
-        loadWidgetData()
     }
 
 
@@ -56,37 +56,34 @@ internal class HomeVM(
         }
     }
 
-    /**
-     * TODO: REPLACE WITH PROPER REPOSITORY
-     * this only serves to avoid having to pass the movelist around
-     */
-    fun onCacheMoveList(gameId: String, characterId: String) {
-        val character = state.value.gameWidgetList
-            .firstOrNull { widget ->
-                widget.game.id == gameId
-            }
-            ?.characterList
-            ?.firstOrNull { character ->
-                character.queryName == characterId
-            }
-        character?.moveList?.let { moveList ->
-            moveRepository.moveList.apply {
-                clear()
-                addAll(moveList)
+
+    private fun loadWidgets() {
+        viewModelScope.launch {
+            loadEmptyWidgetsUseCase.invoke().collect { result ->
+                result
+                    .onSuccess { loadedWidgetList ->
+                        val currentWidgetList = _state.value.gameWidgetList
+                        val currentIds = currentWidgetList.map { it.game.id }.toSet()
+                        val newIds = loadedWidgetList.map { it.game.id }.toSet()
+
+                        val kept = currentWidgetList.filter { it.game.id in newIds }
+                        val added = loadedWidgetList.filterNot { it.game.id in currentIds }
+                        val merged = kept + added
+
+                        _state.update { it.copy(gameWidgetList = merged) }
+
+                        loadWidgetData(added)
+                    }
+                    .onError { error ->
+                        Napier.e(tag = TAG) { "loadWidgets(): $error" }
+                        overlayService.show(error)
+                    }
             }
         }
     }
 
-
-    private fun loadWidgets() {
-        loadEmptyWidgetsUseCase.invoke()
-            .onSuccess { moduleList ->
-                _state.update { it.copy(gameWidgetList = moduleList) }
-            }
-    }
-
-    private fun loadWidgetData() {
-        _state.value.gameWidgetList.forEach { gameWidget ->
+    private fun loadWidgetData(widgetList: List<GameWidget>) {
+        widgetList.forEach { gameWidget ->
             viewModelScope.launch {
                 loadGameCharacterListUseCase.invoke(gameWidget)
                     .onSuccess { loadedWidget ->
@@ -105,8 +102,8 @@ internal class HomeVM(
                         downloadMoveList(gameWidget = loadedWidget)
                     }
                     .onError { error ->
-                        //TODO: display toast
                         Napier.e(tag = TAG) { error.toString() }
+                        overlayService.show(error)
 
                         _state.update { state ->
                             val updatedList = state.gameWidgetList.filterNot { it.game.id == gameWidget.game.id }
@@ -117,20 +114,17 @@ internal class HomeVM(
         }
     }
 
-    private suspend fun downloadMoveList(gameWidget: HomeViewState.GameWidget) {
+    private suspend fun downloadMoveList(gameWidget: GameWidget) {
         coroutineScope {
             gameWidget.characterList.forEach { character ->
                 launch {
                     moveListSemaphore.withPermit {
-                        loadMoveListUseCase.invoke(game = gameWidget.game, characterQueryId = character.id)
-                            .onSuccess { moveList ->
+                        ensureMoveListIsCached.invoke(game = gameWidget.game, characterId = character.id)
+                            .onSuccess {
                                 _state.update { state ->
                                     val updatedGameWidgetList = state.gameWidgetList.map { widget ->
                                         if (widget.game == gameWidget.game) {
-                                            widget.withUpdatedCharacter(
-                                                characterId = character.id,
-                                                moveList = moveList,
-                                            )
+                                            widget.withUpdatedCharacter(characterId = character.id)
                                         } else {
                                             widget
                                         }
@@ -139,8 +133,8 @@ internal class HomeVM(
                                 }
                             }
                             .onError { error ->
-                                //TODO: display toast
                                 Napier.e(tag = TAG) { error.toString() }
+                                overlayService.show(error)
                             }
                     }
                 }
