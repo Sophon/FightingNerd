@@ -2,11 +2,12 @@ package io.github.sophon.fightingnerd.feat.quiz.ui.quiz
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_QUESTIONS
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.QuestionSection
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
@@ -36,7 +38,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-private fun QuizScreen(
+internal fun QuizScreen(
     //TODO: navigate to quiz
     modifier: Modifier = Modifier,
 ) {
@@ -71,34 +73,31 @@ private fun Content(
         },
         modifier = modifier
             .fillMaxSize()
+            .background(nerdColorPalette.background)
             .padding(
                 horizontal = nerdDimensions.screenPaddingHorizontal,
                 vertical = nerdDimensions.screenPaddingVertical,
             )
-            .background(nerdColorPalette.background),
     ) { paddingValues ->
-        Box(
+        Column (
+            verticalArrangement = Arrangement.SpaceBetween,
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(LocalBottomBarPadding.current),
         ) {
             state.currentQuestion?.let { question ->
                 QuestionSection(
                     question = question,
                     onAnswer = onAnswer,
+                    modifier = Modifier.weight(1f),
                 )
             }
+            Spacer(Modifier.height(nerdDimensions.componentPadding))
 
-            NavigationButton(
-                onClick = onClickBack,
-                icon = Icons.Outlined.ArrowCircleLeft,
-                modifier = Modifier.align(Alignment.CenterStart)
-            )
-
-            NavigationButton(
-                onClick = onClickNext,
-                icon = Icons.Outlined.ArrowCircleRight,
-                modifier = Modifier.align(Alignment.CenterEnd)
+            NavigationSection(
+                onClickNext = onClickNext,
+                onClickBack = onClickBack,
             )
         }
     }
@@ -115,10 +114,7 @@ private fun QuizTopBar(
         horizontalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
             .fillMaxWidth()
-            .padding(
-                horizontal = nerdDimensions.screenPaddingHorizontal,
-                vertical = nerdDimensions.screenPaddingVertical,
-            )
+            .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
     ) {
         Text(
             text = "${currentQuestionIndex + 1}/$COUNT_QUESTIONS",
@@ -140,6 +136,29 @@ private fun QuizTopBar(
                 tint = nerdColorPalette.textPrimary,
             )
         }
+    }
+}
+
+@Composable
+private fun NavigationSection(
+    onClickNext: () -> Unit,
+    onClickBack: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        NavigationButton(
+            onClick = onClickBack,
+            icon = Icons.Outlined.ArrowCircleLeft,
+        )
+
+        NavigationButton(
+            onClick = onClickNext,
+            icon = Icons.Outlined.ArrowCircleRight,
+        )
     }
 }
 

@@ -48,6 +48,7 @@ import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsScreen
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListScreen
+import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.navigation.ui.BottomNavBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
@@ -167,7 +168,7 @@ private fun AppNavDisplay(
                 PlaceholderScreen(label = "Saved")
             }
             entry<Destination.Quiz> {
-                PlaceholderScreen(label = "Quiz")
+                QuizScreen()
             }
             entry<Destination.More> {
                 MoreScreen(

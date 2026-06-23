@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 internal class QuizVM(
-    private val gameId: String,
+//    private val gameId: String,
 
     private val overlayService: OverlayService,
     private val generateQuestionsUseCase: GenerateQuestionsUseCase,
@@ -76,7 +77,7 @@ internal class QuizVM(
 
     private fun loadMoveList() {
         viewModelScope.launch {
-            generateQuestionsUseCase.invoke(gameId)
+            generateQuestionsUseCase.invoke(Game.Tekken8.id)
                 .onSuccess { questionList ->
                     _state.update { it.copy(questionList = questionList) }
                 }

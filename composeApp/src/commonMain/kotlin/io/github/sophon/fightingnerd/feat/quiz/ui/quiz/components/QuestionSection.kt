@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
@@ -42,13 +42,15 @@ internal fun QuestionSection(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
-        modifier = modifier,
+        modifier = modifier
+            .fillMaxSize(),
     ) {
         Text(
             text = "${move.characterId}: ${move.input}",
             color = nerdColorPalette.textPrimary,
             style = nerdTypography.headlineSmall,
         )
+        Spacer(Modifier.height(nerdDimensions.componentPadding))
 
         move.urls.videoId?.let { videoId ->
             //TODO: replace with video down the line
@@ -56,8 +58,10 @@ internal fun QuestionSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f / 9f)
+                    .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
                     .background(nerdColorPalette.surface),
             )
+            Spacer(Modifier.height(nerdDimensions.componentPadding))
         }
 
         Options(
@@ -74,7 +78,6 @@ private fun Options(
     onAnswer: (answerIndex: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val labelList = listOf("A", "B", "C", "D")
     val isAnswered = question.answeredIndex != null
 
     Column(
@@ -92,7 +95,6 @@ private fun Options(
                     val isWrong = (isAnswered && index == question.answeredIndex)
                             && (index != question.correctIndex)
                     Option(
-                        label = labelList[index],
                         move = move,
                         isCorrect = isCorrect,
                         isWrong = isWrong,
@@ -108,7 +110,6 @@ private fun Options(
 
 @Composable
 private fun Option(
-    label: String,
     move: Move,
     isCorrect: Boolean,
     isWrong: Boolean,
@@ -140,18 +141,21 @@ private fun Option(
             .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
             .background(background)
             .clickable(enabled = isEnabled, onClick = onClick)
-            .heightIn(min = 120.dp)
-            .padding(16.dp),
+            .height(170.dp)
+            .padding(nerdDimensions.inlineGap),
     ) {
-        Text(
-            text = label,
-            color = textColor,
-            style = nerdTypography.displaySmall,
-        )
+//        Text(
+//            text = label,
+//            color = textColor,
+//            style = nerdTypography.displaySmall,
+//        )
         Spacer(Modifier.height(nerdDimensions.inlineGap))
 
         Text(
-            text = "${move.startup} / ${move.onBlock} / ${move.onHit} / ${move.onCH}",
+            text = "START: ${move.startup}\n" +
+                    "OB: ${move.onBlock}\n" +
+                    "OH: ${move.onHit}\n" +
+                    "CH: ${move.onCH}",
             color = textColor,
             style = nerdTypography.bodyMedium,
             textAlign = TextAlign.Center,
