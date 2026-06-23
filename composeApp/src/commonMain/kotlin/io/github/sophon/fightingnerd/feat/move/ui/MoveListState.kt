@@ -146,12 +146,12 @@ internal data class MoveListState(
             val result = UiMove(
                 id = id,
                 input = input,
-                startup = startup?.stripMarkdownLinks(),
-                guard = guard?.stripMarkdownLinks(),
-                damage = damage?.stripMarkdownLinks(),
-                onHit = onHit?.stripMarkdownLinks(),
-                onBlock = onBlock?.stripMarkdownLinks(),
-                onCounter = onCH?.stripMarkdownLinks(),
+                startup = startup,
+                guard = guard,
+                damage = damage,
+                onHit = onHit,
+                onBlock = onBlock,
+                onCounter = onCH,
                 propertySet = buildSet {
                     invulnerability?.let { add(Property.Invincible) }
                     t8Properties?.let { props ->
