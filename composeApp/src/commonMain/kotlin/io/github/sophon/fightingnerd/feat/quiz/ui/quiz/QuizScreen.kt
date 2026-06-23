@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.quiz
+package io.github.sophon.fightingnerd.feat.quiz.ui.quiz
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
