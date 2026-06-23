@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.feat.quiz.model
 import io.github.sophon.core.wiki.model.Move
 
 data class Question(
+    val characterName: String,
     val options: List<Move>,
     val correctIndex: Int,
     val answeredIndex: Int? = null,

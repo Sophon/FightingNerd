@@ -12,7 +12,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.PlayArrow
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,6 +28,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_counter
+import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_block
+import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_hit
+import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_startup
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizState
@@ -29,6 +40,7 @@ import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -43,25 +55,18 @@ internal fun QuestionSection(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceBetween,
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
     ) {
         Text(
-            text = "${move.characterId}: ${move.input}",
+            text = "${question.characterName}: ${move.input}",
             color = nerdColorPalette.textPrimary,
             style = nerdTypography.headlineSmall,
         )
         Spacer(Modifier.height(nerdDimensions.componentPadding))
 
         move.urls.videoId?.let { videoId ->
-            //TODO: replace with video down the line
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(16f / 9f)
-                    .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
-                    .background(nerdColorPalette.surface),
-            )
-            Spacer(Modifier.height(nerdDimensions.componentPadding))
+            Video()
         }
 
         Options(
@@ -70,6 +75,28 @@ internal fun QuestionSection(
             modifier = Modifier.fillMaxWidth(),
         )
     }
+}
+
+@Composable
+private fun Video(
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(16f / 9f)
+            .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
+            .background(nerdColorPalette.surface),
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.PlayArrow,
+            contentDescription = null,
+            modifier = Modifier
+                .size(128.dp)
+                .align(Alignment.Center)
+        )
+    }
+    Spacer(Modifier.height(nerdDimensions.componentPadding))
 }
 
 @Composable
@@ -142,23 +169,55 @@ private fun Option(
             .background(background)
             .clickable(enabled = isEnabled, onClick = onClick)
             .height(170.dp)
-            .padding(nerdDimensions.inlineGap),
+            .padding(nerdDimensions.componentGap),
     ) {
-//        Text(
-//            text = label,
-//            color = textColor,
-//            style = nerdTypography.displaySmall,
-//        )
-        Spacer(Modifier.height(nerdDimensions.inlineGap))
+        FrameData(
+            label = stringResource(Res.string.quiz_frame_dat_label_startup),
+            body = move.startup,
+            textColor = textColor,
+        )
+        FrameData(
+            label = stringResource(Res.string.quiz_frame_dat_label_on_block),
+            body = move.onBlock,
+            textColor = textColor,
+        )
+        FrameData(
+            label = stringResource(Res.string.quiz_frame_dat_label_on_hit),
+            body = move.onHit,
+            textColor = textColor,
+        )
+        FrameData(
+            label = stringResource(Res.string.quiz_frame_dat_label_counter),
+            body = move.onCH,
+            textColor = textColor,
+        )
+    }
+}
+
+@Composable
+private fun FrameData(
+    label: String,
+    body: String?,
+    textColor: Color,
+    modifier: Modifier = Modifier
+) {
+    val style = nerdTypography.titleMedium
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Text(
+            text = label,
+            color = textColor,
+            style = style,
+            textAlign = TextAlign.Start,
+        )
 
         Text(
-            text = "START: ${move.startup}\n" +
-                    "OB: ${move.onBlock}\n" +
-                    "OH: ${move.onHit}\n" +
-                    "CH: ${move.onCH}",
+            text = body ?: "-",
             color = textColor,
-            style = nerdTypography.bodyMedium,
-            textAlign = TextAlign.Center,
+            style = style,
+            textAlign = TextAlign.End,
         )
     }
 }

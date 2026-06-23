@@ -88,10 +88,10 @@ internal data class QuizState(
         val PREVIEW = QuizState(
             enabledCharacterIdList = listOf("Armor King"),
             questionList = listOf(
-                Question(options = armorKingMoves, correctIndex = 0, answeredIndex = 0),
-                Question(options = armorKingMoves, correctIndex = 1, answeredIndex = 3),
-                Question(options = armorKingMoves, correctIndex = 2, answeredIndex = 2),
-                Question(options = armorKingMoves, correctIndex = 3, answeredIndex = null),
+                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 0, answeredIndex = 0),
+                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 1, answeredIndex = 3),
+                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 2, answeredIndex = 2),
+                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 3, answeredIndex = null),
             ),
             currentQuestionIndex = 3,
             correct = 2,

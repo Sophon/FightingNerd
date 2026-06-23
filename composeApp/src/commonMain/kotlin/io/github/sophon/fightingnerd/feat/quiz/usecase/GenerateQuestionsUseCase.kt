@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.feat.quiz.usecase
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_DISTRACTIONS
@@ -22,34 +23,26 @@ internal class GenerateQuestionsUseCase(
         }
 
         val allQuestions = mutableListOf<Question>()
-        for (character in characterList) {
-            val moveList = when (val moveListResult = wiki.fetchMoveList(characterQuery = character.id)) {
-                is Result.Success -> moveListResult.data
-                is Result.Error -> return Result.Error(AppError.WikiError(moveListResult.error.inputs.joinToString(";")))
+        while (allQuestions.size < COUNT_QUESTIONS) {
+            val randomCharacter = characterList.random()
+            when (val moveListResult = wiki.fetchMoveList(characterQuery = randomCharacter.id)) {
+                is Result.Success -> {
+                    val randomMove = moveListResult.data.random()
+                    val question = randomMove.generateQuestion(randomCharacter, moveListResult.data)
+                    allQuestions.add(question)
+                }
+                is Result.Error -> continue
             }
-            allQuestions += moveList.generateQuestions()
         }
 
         return Result.Success(allQuestions)
     }
 
 
-    private fun List<Move>.generateQuestions(): List<Question> {
-        require(this.size >= COUNT_QUESTIONS) { "Need at least 10 moves in the Move pool" }
-        val questionIndices = this.indices
-            .shuffled()
-            .take(COUNT_QUESTIONS)
-
-        val questionList: List<Question> = questionIndices.map { index ->
-            val move = this[index]
-            val question = move.generateQuestion(this)
-            question
-        }
-
-        return questionList
-    }
-
-    private fun Move.generateQuestion(moveList: List<Move>): Question {
+    private fun Move.generateQuestion(
+        character: Character,
+        moveList: List<Move>
+    ): Question {
         val distractions = moveList
             .filter { move -> move.id != this.id }
             .shuffled()
@@ -58,6 +51,7 @@ internal class GenerateQuestionsUseCase(
         val options = (distractions + this).shuffled()
         val correctIndex = options.indexOfFirst { move -> move.id == this.id }
         val question = Question(
+            characterName = character.displayName,
             options = options,
             correctIndex = correctIndex,
         )
