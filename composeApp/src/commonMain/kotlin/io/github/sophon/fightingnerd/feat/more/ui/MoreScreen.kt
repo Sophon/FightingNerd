@@ -38,7 +38,7 @@ import fightingnerd.composeapp.generated.resources.more_donate_dialog_title
 import fightingnerd.composeapp.generated.resources.more_theme_dialog_title
 import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
-import io.github.sophon.fightingnerd.core.ui.SingleSelectDialog
+import io.github.sophon.fightingnerd.core.ui.components.SingleSelectDialog
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme

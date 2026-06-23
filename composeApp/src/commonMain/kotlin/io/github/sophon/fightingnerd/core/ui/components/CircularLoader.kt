@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.ui
+package io.github.sophon.fightingnerd.core.ui.components
 
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
@@ -8,9 +8,9 @@ import io.github.sophon.fightingnerd.theme.nerdColorPalette
 
 @Composable
 internal fun CircularLoader(
+    modifier: Modifier = Modifier,
     color: Color = nerdColorPalette.accent,
     trackColor: Color = nerdColorPalette.surfaceHigh,
-    modifier: Modifier = Modifier,
 ) {
     CircularProgressIndicator(
         color = color,

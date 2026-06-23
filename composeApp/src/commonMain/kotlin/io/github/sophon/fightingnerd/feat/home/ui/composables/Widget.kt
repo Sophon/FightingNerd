@@ -46,7 +46,7 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
-import io.github.sophon.fightingnerd.core.ui.CircularLoader
+import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.Character

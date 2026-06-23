@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.ui
+package io.github.sophon.fightingnerd.core.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

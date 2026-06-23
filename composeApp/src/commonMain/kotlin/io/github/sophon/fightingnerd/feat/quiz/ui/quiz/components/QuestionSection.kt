@@ -31,7 +31,7 @@ import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_block
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_hit
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_startup
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.fightingnerd.core.ui.CircularLoader
+import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizState
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme

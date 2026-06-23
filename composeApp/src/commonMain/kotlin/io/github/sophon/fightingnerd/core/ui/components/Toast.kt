@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.ui
+package io.github.sophon.fightingnerd.core.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
