@@ -100,7 +100,7 @@ internal fun WidgetSection(
 }
 
 @Composable
-internal fun WidgetHeader(
+private fun WidgetHeader(
     game: Game,
     featureName: String,
     isExpanded: Boolean,
