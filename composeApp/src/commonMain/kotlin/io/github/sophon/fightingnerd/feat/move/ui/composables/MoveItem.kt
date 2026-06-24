@@ -46,7 +46,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun MoveItem(
-    move: MoveListState.UiMove,
+    uiMove: MoveListState.UiMove,
     onMoveClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -65,15 +65,15 @@ internal fun MoveItem(
             .padding(nerdDimensions.componentPadding)
     ) {
         Header(
-            input = move.input,
-            propertySet = move.propertySet,
+            input = uiMove.move.input,
+            propertySet = uiMove.propertySet,
         )
 
         InfoFieldRow(
             fields = listOf(
-                stringResource(Res.string.move_list_field_startup) to move.startup,
-                stringResource(Res.string.move_list_field_guard) to move.guard,
-                stringResource(Res.string.move_list_field_damage) to move.damage,
+                stringResource(Res.string.move_list_field_startup) to uiMove.move.startup,
+                stringResource(Res.string.move_list_field_guard) to uiMove.move.guard,
+                stringResource(Res.string.move_list_field_damage) to uiMove.move.damage,
             )
         )
 
@@ -81,9 +81,9 @@ internal fun MoveItem(
 
         InfoFieldRow(
             fields = listOf(
-                stringResource(Res.string.move_list_field_on_hit) to move.onHit,
-                stringResource(Res.string.move_list_field_on_block) to move.onBlock,
-                stringResource(Res.string.move_list_field_on_counter) to move.onCounter,
+                stringResource(Res.string.move_list_field_on_hit) to uiMove.move.onHit,
+                stringResource(Res.string.move_list_field_on_block) to uiMove.move.onBlock,
+                stringResource(Res.string.move_list_field_on_counter) to uiMove.move.onCH,
             )
         )
     }
@@ -193,7 +193,7 @@ private fun Properties(
 private fun ItemPreview() {
     FightingNerdTheme {
         MoveItem(
-            move = MoveListState.PREVIEW.fullMoveList.values.last().toUiMove(),
+            uiMove = MoveListState.PREVIEW.fullMoveList.values.last().toUiMove(),
             onMoveClick = {},
         )
     }

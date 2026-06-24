@@ -96,6 +96,10 @@ internal class MoveListVM(
         }
     }
 
+    fun onMoveClick(moveId: String) {
+        _state.update { it.copy(expandedMoveId = moveId) }
+    }
+
 
     private fun loadData() {
         viewModelScope.launch {

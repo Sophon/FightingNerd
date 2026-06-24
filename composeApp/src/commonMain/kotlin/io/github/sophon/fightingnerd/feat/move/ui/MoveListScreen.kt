@@ -57,7 +57,7 @@ internal fun MoveListScreen(
         state = state,
         onExit = onExit,
         moveList = filteredMoves,
-        onMoveClick = { /*TODO*/ },
+        onMoveClick = vm::onMoveClick,
         searchQuery = state.searchQuery,
         onSearch = vm::onSearchInput,
         onFilterClick = vm::onDisplayFilter,
@@ -75,7 +75,7 @@ private fun Content(
     state: MoveListState,
     onExit: () -> Unit,
     moveList: List<MoveListState.UiMove>,
-    onMoveClick: (id: String) -> Unit,
+    onMoveClick: (moveId: String) -> Unit,
     searchQuery: String?,
     onSearch: (query: String?) -> Unit,
     onFilterClick: (Boolean) -> Unit,
@@ -131,7 +131,7 @@ private fun Content(
 @Composable
 private fun MoveList(
     moveList: List<MoveListState.UiMove>,
-    onMoveClick: (id: String) -> Unit,
+    onMoveClick: (moveId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -146,11 +146,11 @@ private fun MoveList(
     ) {
         items(
             items = moveList,
-            key = { it.id },
+            key = { it.move.id },
         ) { move ->
             MoveItem(
-                move = move,
-                onMoveClick = { onMoveClick(move.id) },
+                uiMove = move,
+                onMoveClick = { onMoveClick(move.move.id) },
             )
         }
     }

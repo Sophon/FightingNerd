@@ -1,6 +1,5 @@
 package io.github.sophon.fightingnerd.feat.move.ui
 
-import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
@@ -17,19 +16,13 @@ internal data class MoveListState(
     val filterSheet: FilterSheet = FilterSheet(),
 
     val isLoading: Boolean = false,
+    val expandedMoveId: String? = null,
 ) {
     data class UiMove(
-        val id: String,
-        val input: String,
+        val move: Move,
         val propertySet: Set<Property> = emptySet(),
 
-        val startup: String?,
-        val guard: String?,
-        val damage: String?,
-
-        val onHit: String?,
-        val onBlock: String?,
-        val onCounter: String?,
+        val isExpanded: Boolean = false,
     )
 
     data class MoveDetail(
@@ -146,14 +139,7 @@ internal data class MoveListState(
 
         fun Move.toUiMove(): UiMove {
             val result = UiMove(
-                id = id,
-                input = input,
-                startup = startup,
-                guard = guard,
-                damage = damage,
-                onHit = onHit,
-                onBlock = onBlock,
-                onCounter = onCH,
+                move = this,
                 propertySet = buildSet {
                     invulnerability?.let { add(Property.Invincible) }
                     t8Properties?.let { props ->
