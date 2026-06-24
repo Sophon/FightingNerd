@@ -5,9 +5,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -116,20 +118,23 @@ private fun Options(
         question.options.chunked(2).forEachIndexed { rowIndex, rowOptions ->
             Row(
                 horizontalArrangement = Arrangement.spacedBy(nerdDimensions.inlineGap),
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(IntrinsicSize.Min),
             ) {
-                rowOptions.forEachIndexed { colIndex, move ->
-                    val index = (rowIndex * 2 + colIndex)
-                    val isCorrect = isAnswered && (index == question.correctIndex)
-                    val isWrong = (isAnswered && index == question.answeredIndex)
-                            && (index != question.correctIndex)
+                rowOptions.forEach { move ->
+                    val isCorrect = isAnswered && (move == question.correct)
+                    val isWrong = isAnswered && (move == question.answered) && move != question.correct
+
                     Option(
                         move = move,
                         isCorrect = isCorrect,
                         isWrong = isWrong,
                         isEnabled = isAnswered.not(),
-                        onClick = { onAnswer(index) },
-                        modifier = Modifier.weight(1f),
+                        onClick = { onAnswer(question.options.indexOf(move)) },
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight(),
                     )
                 }
             }

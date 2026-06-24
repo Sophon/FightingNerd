@@ -93,7 +93,6 @@ private fun Content(
                 modifier = modifier
                     .fillMaxSize()
                     .padding(paddingValues)
-                    .padding(LocalBottomBarPadding.current),
             ) {
                 Column (
                     verticalArrangement = Arrangement.SpaceBetween
