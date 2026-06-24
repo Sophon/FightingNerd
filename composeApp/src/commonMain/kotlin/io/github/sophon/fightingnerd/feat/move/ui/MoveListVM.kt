@@ -15,10 +15,13 @@ import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.collections.emptyList
 
 internal class MoveListVM(
     private val gameId: String,
@@ -37,6 +40,20 @@ internal class MoveListVM(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = MoveListState(null),
+        )
+    val filteredMoves: StateFlow<List<MoveListState.UiMove>> = _state
+        .map { state ->
+            val filters = state.filterSheet.activeFilterSet + state.filterSheet.activeSliderFilters
+            state.fullMoveList.values.applyFilters(
+                filterSet = filters,
+                searchQuery = state.searchQuery,
+                expandedMoveId = state.expandedMoveId,
+            )
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5_000),
+            initialValue = emptyList(),
         )
 
 
@@ -97,7 +114,10 @@ internal class MoveListVM(
     }
 
     fun onMoveClick(moveId: String) {
-        _state.update { it.copy(expandedMoveId = moveId) }
+        _state.update { state ->
+            val newExpandedMoveId = if (state.expandedMoveId == moveId) null else moveId
+            state.copy(expandedMoveId = newExpandedMoveId)
+        }
     }
 
 
@@ -152,28 +172,32 @@ internal class MoveListVM(
         return normalized
     }
 
+    private fun Collection<Move>.applyFilters(
+        filterSet: Set<Filter>,
+        searchQuery: String?,
+        expandedMoveId: String?,
+    ): List<MoveListState.UiMove> {
+        val filtered = this
+            .filter { move ->
+                filterSet.all { it.predicate(move) }
+            }
+            .filter { move ->
+                searchQuery?.let { query ->
+                    move.input.contains(query, ignoreCase = true)
+                            || move.aliases.any { it.contains(query, ignoreCase = true) }
+                            || (move.name?.contains(query, ignoreCase = true) == true)
+                } ?: true
+            }
+            .map { move ->
+                val uiMove = move.toUiMove()
+                uiMove.copy(isExpanded = move.id == expandedMoveId)
+            }
+
+        return filtered
+    }
+
 
     private companion object {
         const val TAG = "MoveListVM"
     }
-}
-
-internal fun Collection<Move>.applyFilters(
-    filterSet: Set<Filter>,
-    searchQuery: String?,
-): List<MoveListState.UiMove> {
-    val filtered = this
-        .filter { move ->
-            filterSet.all { it.predicate(move) }
-        }
-        .filter { move ->
-            searchQuery?.let { query ->
-                move.input.contains(query, ignoreCase = true)
-                        || move.aliases.any { it.contains(query, ignoreCase = true) }
-                        || (move.name?.contains(query, ignoreCase = true) == true)
-            } ?: true
-        }
-        .map { it.toUiMove() }
-
-    return filtered
 }

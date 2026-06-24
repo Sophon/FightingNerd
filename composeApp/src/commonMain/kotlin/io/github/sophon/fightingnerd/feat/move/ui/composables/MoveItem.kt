@@ -32,10 +32,12 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_counter
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
 import io.github.sophon.fightingnerd.feat.move.model.icon
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
+import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.VideoPlayer
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -76,8 +78,7 @@ internal fun MoveItem(
                 stringResource(Res.string.move_list_field_damage) to uiMove.move.damage,
             )
         )
-
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
 
         InfoFieldRow(
             fields = listOf(
@@ -86,6 +87,11 @@ internal fun MoveItem(
                 stringResource(Res.string.move_list_field_on_counter) to uiMove.move.onCH,
             )
         )
+
+        if (uiMove.isExpanded) {
+            Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+            Details(uiMove.move)
+        }
     }
 }
 
@@ -182,6 +188,20 @@ private fun Properties(
                 contentDescription = property.name,
                 modifier = Modifier.size(nerdDimensions.iconInline),
             )
+        }
+    }
+}
+
+@Composable
+private fun Details(
+    move: Move,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        move.urls.videoId?.let { videoUrl ->
+            VideoPlayer(videoUrl)
         }
     }
 }
