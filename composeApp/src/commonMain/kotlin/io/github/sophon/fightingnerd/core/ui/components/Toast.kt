@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Check
 import androidx.compose.material.icons.outlined.Error
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
@@ -31,16 +32,19 @@ internal fun ToastSnackbar(
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor = when (toast.type) {
+        Toast.Type.SUCCESS -> nerdColorPalette.success
         Toast.Type.INFO -> nerdColorPalette.surfaceHigh
         Toast.Type.WARNING -> nerdColorPalette.warning
         Toast.Type.ERROR -> nerdColorPalette.error
     }
     val textColor = when (toast.type) {
+        Toast.Type.SUCCESS -> nerdColorPalette.textPrimary
         Toast.Type.INFO -> nerdColorPalette.textPrimary
         Toast.Type.WARNING -> nerdColorPalette.background
-        Toast.Type.ERROR -> nerdColorPalette.background
+        Toast.Type.ERROR -> nerdColorPalette.textPrimary
     }
     val icon = when (toast.type) {
+        Toast.Type.SUCCESS -> Icons.Outlined.Check
         Toast.Type.INFO -> Icons.Outlined.Info
         Toast.Type.WARNING -> Icons.Outlined.Warning
         Toast.Type.ERROR -> Icons.Outlined.Error
@@ -81,6 +85,19 @@ internal data class ToastVisuals(val toast: Toast) : SnackbarVisuals {
 
 
 //region PREVIEW
+@Preview
+@Composable
+private fun ToastSnackbarSuccessPreview() {
+    FightingNerdTheme {
+        ToastSnackbar(
+            toast = Toast(
+                message = "Profile saved",
+                type = Toast.Type.SUCCESS,
+            ),
+        )
+    }
+}
+
 @Preview
 @Composable
 private fun ToastSnackbarInfoPreview() {

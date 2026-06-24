@@ -46,6 +46,7 @@ internal data class Toast(
     val type: Type,
 ) {
     enum class Type {
+        SUCCESS,
         INFO,
         WARNING,
         ERROR,

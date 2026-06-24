@@ -67,7 +67,7 @@ internal class FeatureSettingsVM(
             saveFeatureConfigUseCase.invoke(featureList = state.value.featureList)
                 .onSuccess {
                     overlayService.show(
-                        Toast(message = "Success", type = Toast.Type.INFO,)
+                        Toast(message = "Saved", type = Toast.Type.SUCCESS)
                     )
                 }
                 .onError { error ->
