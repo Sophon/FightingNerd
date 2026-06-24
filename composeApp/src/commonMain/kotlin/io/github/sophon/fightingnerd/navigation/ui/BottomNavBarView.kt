@@ -51,11 +51,11 @@ internal val bottomBarItems = listOf(
 //        icon = FlexibleIcon.Vector(Icons.Default.Search),
 //        destination = Destination.Search,
 //    ),
-    BottomBarItem(
-        label = Res.string.bottom_bar_item_saved,
-        icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
-        destination = Destination.Saved,
-    ),
+//    BottomBarItem(
+//        label = Res.string.bottom_bar_item_saved,
+//        icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
+//        destination = Destination.Saved,
+//    ),
     BottomBarItem(
         label = Res.string.bottom_bar_item_quiz,
         icon = FlexibleIcon.Vector(Icons.Default.Quiz),
