@@ -1,7 +1,8 @@
 # APP CHANGELOG
 
 ## [v0.3.0] - TODO
-- adjusted heights for the Quiz screen
+- `Quiz`
+  - adjusted heights and paddings
 
 ## [v0.2.0] - 2026-06-24
 - Quiz tab
