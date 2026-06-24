@@ -18,13 +18,6 @@ internal data class MoveListState(
     val isLoading: Boolean = false,
     val expandedMoveId: String? = null,
 ) {
-    data class UiMove(
-        val move: Move,
-        val propertySet: Set<Property> = emptySet(),
-
-        val isExpanded: Boolean = false,
-    )
-
     data class MoveDetail(
         val move: Move,
     )

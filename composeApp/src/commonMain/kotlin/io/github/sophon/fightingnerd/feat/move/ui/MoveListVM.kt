@@ -41,13 +41,12 @@ internal class MoveListVM(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = MoveListState(null),
         )
-    val filteredMoves: StateFlow<List<MoveListState.UiMove>> = _state
+    val filteredMoves: StateFlow<List<UiMove>> = _state
         .map { state ->
             val filters = state.filterSheet.activeFilterSet + state.filterSheet.activeSliderFilters
             state.fullMoveList.values.applyFilters(
                 filterSet = filters,
                 searchQuery = state.searchQuery,
-                expandedMoveId = state.expandedMoveId,
             )
         }
         .stateIn(
@@ -175,8 +174,7 @@ internal class MoveListVM(
     private fun Collection<Move>.applyFilters(
         filterSet: Set<Filter>,
         searchQuery: String?,
-        expandedMoveId: String?,
-    ): List<MoveListState.UiMove> {
+    ): List<UiMove> {
         val filtered = this
             .filter { move ->
                 filterSet.all { it.predicate(move) }
@@ -190,7 +188,7 @@ internal class MoveListVM(
             }
             .map { move ->
                 val uiMove = move.toUiMove()
-                uiMove.copy(isExpanded = move.id == expandedMoveId)
+                uiMove
             }
 
         return filtered

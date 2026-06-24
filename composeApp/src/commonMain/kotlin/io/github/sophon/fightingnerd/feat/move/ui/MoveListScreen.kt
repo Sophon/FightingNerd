@@ -61,7 +61,7 @@ internal fun MoveListScreen(
 private fun Content(
     state: MoveListState,
     onExit: () -> Unit,
-    moveList: List<MoveListState.UiMove>,
+    moveList: List<UiMove>,
     onMoveClick: (moveId: String) -> Unit,
     searchQuery: String?,
     onSearch: (query: String?) -> Unit,
@@ -97,6 +97,7 @@ private fun Content(
                 MoveList(
                     moveList = moveList,
                     onMoveClick = onMoveClick,
+                    expandedMoveId = state.expandedMoveId,
                 )
 
                 if (state.filterSheet.isVisible) {
@@ -117,7 +118,8 @@ private fun Content(
 
 @Composable
 private fun MoveList(
-    moveList: List<MoveListState.UiMove>,
+    moveList: List<UiMove>,
+    expandedMoveId: String?,
     onMoveClick: (moveId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -134,10 +136,11 @@ private fun MoveList(
         items(
             items = moveList,
             key = { it.move.id },
-        ) { move ->
+        ) { uiMove ->
             MoveItem(
-                uiMove = move,
-                onMoveClick = { onMoveClick(move.move.id) },
+                uiMove = uiMove,
+                onMoveClick = { onMoveClick(uiMove.move.id) },
+                isExpanded = (uiMove.move.id == expandedMoveId)
             )
         }
     }
