@@ -56,7 +56,7 @@ abstract class BaseWikiClient(
         return result
     }
 
-    final override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> {
+    override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> {
         val result = moveDB.fetchMoveDataFor(characterId, moveQuery)
         return result
     }
