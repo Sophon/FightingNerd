@@ -32,6 +32,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.SubcomposeAsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.move_list_field_damage
 import fightingnerd.composeapp.generated.resources.move_list_field_guard
@@ -40,6 +41,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_counter
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.move.model.Property
 import io.github.sophon.fightingnerd.feat.move.model.icon
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
@@ -62,11 +64,13 @@ internal fun MoveItem(
     modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val isExpandable = remember { uiMove.isExpandable() }
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .clickable(
+                enabled = isExpandable,
                 interactionSource = interactionSource,
                 onClick = onMoveClick,
                 indication = ripple(color = MaterialTheme.colorScheme.primaryContainer)
@@ -97,7 +101,7 @@ internal fun MoveItem(
             )
         )
 
-        if (uiMove.isExpandable()) {
+        if (isExpandable) {
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
             ExpansionIndicator(isExpanded = isExpanded)
 
@@ -238,17 +242,44 @@ private fun Details(
     Column(
         modifier = modifier,
     ) {
-        Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
-
         move.urls.videoId?.let { videoUrl ->
             VideoPlayer(videoUrl)
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+        }
+
+        when {
+            move.urls.hitboxImageList.isNotEmpty() -> {
+                MoveImage(move.urls.hitboxImageList.first())
+                Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+            }
+            move.urls.moveImageList.isNotEmpty() -> {
+                MoveImage(move.urls.moveImageList.first())
+                Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+            }
         }
 
         move.notes.takeIf { it.isNotEmpty() }?.let { noteList ->
             NotesSection(noteList)
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
         }
+    }
+}
+
+@Composable
+private fun MoveImage(
+    imageUrl: String,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxWidth()
+    ) {
+        SubcomposeAsyncImage(
+            model = imageUrl,
+            contentDescription = null,
+            loading = { CircularLoader() },
+            modifier = modifier,
+        )
     }
 }
 
