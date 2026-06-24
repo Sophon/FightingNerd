@@ -88,6 +88,8 @@ kotlin {
 
             implementation(libs.composemediaplayer)
 
+            implementation(libs.kotlinx.collections.immutable)
+
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
             implementation(project(":feat:wikiSupercombo"))

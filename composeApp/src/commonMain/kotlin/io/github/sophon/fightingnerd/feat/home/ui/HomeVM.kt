@@ -11,6 +11,8 @@ import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +20,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
+import io.github.sophon.core.architecture.Result
+import kotlinx.collections.immutable.toImmutableList
 
 internal class HomeVM(
     private val overlayService: OverlayService,
@@ -51,7 +55,7 @@ internal class HomeVM(
                     widget.copy(isExpanded = false)
                 }
             }
-            val updatedState = state.copy(gameWidgetList = updatedList)
+            val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
             updatedState
         }
     }
@@ -70,7 +74,7 @@ internal class HomeVM(
                         val added = loadedWidgetList.filterNot { it.game.id in currentIds }
                         val merged = kept + added
 
-                        _state.update { it.copy(gameWidgetList = merged) }
+                        _state.update { it.copy(gameWidgetList = merged.toImmutableList()) }
 
                         loadWidgetData(added)
                     }
@@ -95,7 +99,7 @@ internal class HomeVM(
                                     widget
                                 }
                             }
-                            val updatedState = state.copy(gameWidgetList = updatedList)
+                            val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
                             updatedState
                         }
 
@@ -107,7 +111,7 @@ internal class HomeVM(
 
                         _state.update { state ->
                             val updatedList = state.gameWidgetList.filterNot { it.game.id == gameWidget.game.id }
-                            state.copy(gameWidgetList = updatedList)
+                            state.copy(gameWidgetList = updatedList.toImmutableList())
                         }
                     }
             }
@@ -116,35 +120,58 @@ internal class HomeVM(
 
     private suspend fun downloadMoveList(gameWidget: GameWidget) {
         coroutineScope {
-            gameWidget.characterList.forEach { character ->
-                launch {
+            val deferredList = gameWidget.characterList.map { character ->
+                async {
                     moveListSemaphore.withPermit {
-                        ensureMoveListIsCached.invoke(game = gameWidget.game, characterId = character.id)
-                            .onSuccess {
-                                _state.update { state ->
-                                    val updatedGameWidgetList = state.gameWidgetList.map { widget ->
-                                        if (widget.game == gameWidget.game) {
-                                            widget.withUpdatedCharacter(characterId = character.id)
-                                        } else {
-                                            widget
-                                        }
-                                    }
-                                    state.copy(gameWidgetList = updatedGameWidgetList)
-                                }
-                            }
-                            .onError { error ->
-                                Napier.e(tag = TAG) { error.toString() }
-                                overlayService.show(error)
-                            }
+                        val result = ensureMoveListIsCached.invoke(
+                            game = gameWidget.game,
+                            characterId = character.id,
+                        )
+                        if (result is Result.Error) {
+                            Napier.e(tag = TAG) { result.error.toString() }
+                            overlayService.show(result.error)
+                        }
+                        val isSuccess = result is Result.Success
+                        return@async character.id to isSuccess
                     }
                 }
             }
+
+            val results = deferredList.awaitAll()
+            val cachedIds = results.filter { it.second }.map { it.first }
+
+            if (cachedIds.isEmpty()) {
+                return@coroutineScope
+            }
+
+            _state.update { state ->
+                val updatedGameWidgetList = state.gameWidgetList.map { widget ->
+                    if (widget.game == gameWidget.game) {
+                        widget.withUpdatedCharacters(characterIds = cachedIds)
+                    } else {
+                        widget
+                    }
+                }
+                return@update state.copy(gameWidgetList = updatedGameWidgetList.toImmutableList())
+            }
         }
+    }
+
+    private fun GameWidget.withUpdatedCharacters(characterIds: Collection<String>): GameWidget {
+        val idSet = characterIds.toSet()
+        val updatedList = characterList.map { character ->
+            if (character.id in idSet) {
+                character.copy(isLoading = false)
+            } else {
+                character
+            }
+        }
+        return copy(characterList = updatedList.toImmutableList())
     }
 
 
     companion object {
         private const val TAG = "HomeVM"
-        private const val MAX_PERMITS = 6
+        private const val MAX_PERMITS = 2
     }
 }

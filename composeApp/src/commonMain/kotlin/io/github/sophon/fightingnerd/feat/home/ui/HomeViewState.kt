@@ -1,19 +1,25 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
+import androidx.compose.runtime.Immutable
 import io.github.sophon.core.featureConfig.model.Game
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 internal data class HomeViewState(
-    val gameWidgetList: List<GameWidget> = emptyList(),
+    val gameWidgetList: ImmutableList<GameWidget> = persistentListOf(),
 
     val error: String? = null,
 ) {
+    @Immutable
     data class GameWidget(
         val game: Game,
         val featureName: String,
-        val characterList: List<Character> = emptyList(),
+        val characterList: ImmutableList<Character> = persistentListOf(),
         val isExpanded: Boolean = false,
         val isLoading: Boolean = true,
     ) {
+        @Immutable
         internal data class Character(
             val id: String,
             val displayName: String,
@@ -31,22 +37,37 @@ internal data class HomeViewState(
                 } else {
                     character
                 }
-            }
+            }.toImmutableList()
+            return copy(characterList = updatedCharacterList)
+        }
+
+        fun withUpdatedCharacters(
+            characterIds: Collection<String>,
+        ): GameWidget {
+            val idSet = characterIds.toSet()
+            val updatedCharacterList = characterList.map { character ->
+                if (character.id in idSet) {
+                    character.copy(isLoading = false)
+                } else {
+                    character
+                }
+            }.toImmutableList()
             return copy(characterList = updatedCharacterList)
         }
     }
 
 
     companion object {
-        private fun mockCharacters(): List<GameWidget.Character> {
+        private fun mockCharacters(): ImmutableList<GameWidget.Character> {
             val names = listOf("Zuzana", "Eva", "Karolina", "Marcela", "Zdenka", "Hana")
-            return names.mapIndexed { index, name ->
+            val mocked = names.mapIndexed { index, name ->
                 GameWidget.Character(
                     id = "char_$index",
                     displayName = name,
                     queryName = "",
                 )
-            }
+            }.toImmutableList()
+            return mocked
         }
 
         private fun mockWidget(
@@ -65,7 +86,7 @@ internal data class HomeViewState(
         }
 
         val PREVIEW = HomeViewState(
-            gameWidgetList = listOf(
+            gameWidgetList = persistentListOf(
                 mockWidget(Game.Tekken8, "Wavu Wiki", isExpanded = true, isLoading = false),
                 mockWidget(Game.StreetFighter6, "SuperCombo", isExpanded = false, isLoading = false),
                 mockWidget(Game.KoFXV, "Dream Cancel", isExpanded = false, isLoading = false),
