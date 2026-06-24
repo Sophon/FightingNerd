@@ -4,11 +4,12 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.core.util.mapWikiError
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -60,7 +61,7 @@ internal class LoadGameCharacterListUseCase(
                     queryName = domainCharacter.remoteQueryId,
                     iconUrl = domainCharacter.images?.iconUrl,
                 )
-            },
+            }.toImmutableList(),
             isLoading = false,
         )
         return updatedWidget
