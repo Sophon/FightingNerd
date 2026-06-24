@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v12.1.1] - 2026-06-24
+- hotfix queries no longer required to be lowercase
+
 ## [v12.1.0] - 2026-06-24
 - fixed URLs for moves
 - `core` - new architecture with `WikiClient` and `BaseWikiClient`
