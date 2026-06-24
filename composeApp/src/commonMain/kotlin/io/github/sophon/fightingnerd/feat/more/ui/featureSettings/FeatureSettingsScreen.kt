@@ -2,7 +2,6 @@ package io.github.sophon.fightingnerd.feat.more.ui.featureSettings
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Save
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,6 +42,10 @@ internal fun FeatureSettingsScreen(
         onExit = onExit,
         onFeatureToggle = vm::toggleFeature,
         onGameToggle = vm::toggleGame,
+        onSaveConfig = {
+            vm.saveConfiguration()
+            onExit()
+        },
         modifier = modifier,
     )
 }
@@ -51,6 +56,7 @@ private fun Content(
     onExit: () -> Unit,
     onFeatureToggle: (featureIndex: Int, isEnabled: Boolean) -> Unit,
     onGameToggle: (featureIndex: Int, gameIndex: Int, isEnabled: Boolean) -> Unit,
+    onSaveConfig: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -66,8 +72,17 @@ private fun Content(
             )
     ) {
         item {
-            Box(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth(),
+            ) {
                 TopBarButton(onClick = onExit)
+
+                TopBarButton(
+                    onClick = onSaveConfig,
+                    imageVector = Icons.Outlined.Save,
+                )
             }
         }
 
@@ -156,6 +171,7 @@ private fun FeatureSettingsPreview() {
             onExit = {},
             onFeatureToggle = { _, _ -> },
             onGameToggle = { _, _, _, -> },
+            onSaveConfig = {},
         )
     }
 }

@@ -8,7 +8,7 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
-import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 internal class FeatureSettingsVM(
     private val overlayService: OverlayService,
     private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
-    private val toggleFeatureUseCase: ToggleFeatureUseCase,
+    private val saveFeatureConfigUseCase: SaveFeatureConfigUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(FeatureSettingsState())
     val state = _state.asStateFlow()
@@ -62,27 +62,17 @@ internal class FeatureSettingsVM(
         }
     }
 
+    fun saveConfiguration() {
         viewModelScope.launch {
-            toggleFeatureUseCase.invoke(
-                featureName = feature.featureName,
-                gameId = game.id,
-                isEnabled = isEnabled,
-            )
+            saveFeatureConfigUseCase.invoke(featureList = state.value.featureList)
                 .onSuccess {
-                    _state.update { state ->
-                        val updatedList = state.featureList.toMutableList().apply {
-                            set(featureIndex, feature)
-                        }
-                        state.copy(featureList = updatedList)
-                    }
+                    overlayService.show(
+                        Toast(message = "Success", type = Toast.Type.INFO,)
+                    )
                 }
                 .onError { error ->
-                    Napier.e(tag = TAG) { "toggleGame: $error" }
-                    error::class.simpleName?.let { errorName ->
-                        overlayService.show(
-                            Toast(message = errorName, type = Toast.Type.ERROR)
-                        )
-                    }
+                    Napier.e(tag = TAG) { "saveConfiguration: $error" }
+                    overlayService.show(Toast(message = error.name, type = Toast.Type.ERROR))
                 }
         }
     }
