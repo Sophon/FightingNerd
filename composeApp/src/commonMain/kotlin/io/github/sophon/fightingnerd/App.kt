@@ -1,8 +1,11 @@
 package io.github.sophon.fightingnerd
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -39,8 +42,8 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.core.ui.OverlayService
+import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.core.ui.components.ToastSnackbar
 import io.github.sophon.fightingnerd.core.ui.components.ToastVisuals
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
@@ -54,6 +57,7 @@ import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.navigation.ui.BottomNavBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
+import io.github.sophon.fightingnerd.navigation.ui.bottomBarItems
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -143,7 +147,7 @@ private fun Content(
 @Composable
 private fun AppNavDisplay(
     backStack: NavBackStack<NavKey>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavDisplay(
         backStack = backStack,
@@ -152,36 +156,49 @@ private fun AppNavDisplay(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
         ),
+        transitionSpec = {
+            val initial = initialState.key.toString()
+            val target = targetState.key.toString()
+            val from = bottomBarItems.indexOfFirst { it.label.toString() == initial }
+            val to = bottomBarItems.indexOfFirst { it.label.toString() == target }
+            val goingForward = (from < 0) || (to < 0) || (to > from)
+            if (goingForward) {
+                slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+            } else {
+                slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+            }
+        },
+        popTransitionSpec = { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } },
+        predictivePopTransitionSpec = { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } },
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding(),
         entryProvider = entryProvider {
-            entry<Destination.Home> {
+            entry<Destination.Home>(clazzContentKey = { it.label.toString() }) {
                 HomeScreen(
                     onNavigateToMoveList = { gameId, characterId ->
                         backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
                     }
                 )
             }
-            entry<Destination.Search> {
+            entry<Destination.Search>(clazzContentKey = { it.label.toString() }) {
                 PlaceholderScreen(label = "Search")
             }
-            entry<Destination.Saved> {
+            entry<Destination.Saved>(clazzContentKey = { it.label.toString() }) {
                 PlaceholderScreen(label = "Saved")
             }
-            entry<Destination.QuizOverview> {
+            entry<Destination.QuizOverview>(clazzContentKey = { it.label.toString() }) {
                 QuizOverviewScreen(
                     onNavigateToQuiz = { gameId ->
                         backStack.add(Destination.Quiz(gameId = gameId))
                     }
                 )
             }
-            entry<Destination.More> {
+            entry<Destination.More>(clazzContentKey = { it.label.toString() }) {
                 MoreScreen(
                     onNavigate = { moreItem ->
                         when (moreItem) {
                             MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
-
 //                            MoreItem.Theme -> {/* no navigation */}
                         }
                     }

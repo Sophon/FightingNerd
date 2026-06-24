@@ -40,7 +40,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private val bottomBarItems = listOf(
+internal val bottomBarItems = listOf(
     BottomBarItem(
         label = Res.string.bottom_bar_item_character_list,
         icon = FlexibleIcon.Vector(Icons.Default.GridView),
