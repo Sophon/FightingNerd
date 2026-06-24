@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v12.1.2] - 2026-06-24
+- `Wavu` - fixed the bot requiring non-clean input (ie `df1,2` instead of clean `df12`)
+
 ## [v12.1.1] - 2026-06-24
 - hotfix queries no longer required to be lowercase
 

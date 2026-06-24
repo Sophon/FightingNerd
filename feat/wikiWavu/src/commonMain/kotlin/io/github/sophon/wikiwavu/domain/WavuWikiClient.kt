@@ -73,6 +73,13 @@ internal class WavuWikiClient(
         return filters
     }
 
+    override suspend fun fetchMove(
+        characterId: String,
+        moveQuery: String,
+    ): Result<Move, WikiError> {
+        val cleanedMoveQuery = moveQuery.cleanMoveInput(keepSpaces = true)
+        return super.fetchMove(characterId, cleanedMoveQuery)
+    }
 
     private companion object {
         const val TAG = "WavuWikiClient"
