@@ -29,50 +29,38 @@ internal class FeatureSettingsVM(
 
 
     fun toggleFeature(featureIndex: Int, isEnabled: Boolean) {
-        val feature = state.value.featureList[featureIndex].run {
-            copy(
-                gameList = gameList.map { game -> game.copy(isEnabled = isEnabled) }
-            )
-        }
-
-        viewModelScope.launch {
-            toggleFeatureUseCase.invoke(
-                featureName = feature.featureName,
-                gameIdList = feature.gameList.map { it.id },
-                isEnabled = isEnabled,
-            )
-                .onSuccess {
-                    _state.update { state ->
-                        val updatedList = state.featureList.toMutableList().apply {
-                            set(featureIndex, feature)
-                        }
-                        state.copy(featureList = updatedList)
-                    }
-                }
-                .onError { error ->
-                    Napier.e(tag = TAG) { "toggleFeature: $error" }
-                    error::class.simpleName?.let { errorName ->
-                        overlayService.show(
-                            Toast(message = errorName, type = Toast.Type.ERROR)
-                        )
-                    }
-                }
+        _state.update { current ->
+            val updatedFeature = current.featureList[featureIndex].run {
+                copy(
+                    gameList = gameList.map { game -> game.copy(isEnabled = isEnabled) }
+                )
+            }
+            val updatedList = current.featureList.toMutableList().apply {
+                set(featureIndex, updatedFeature)
+            }
+            current.copy(featureList = updatedList)
         }
     }
 
     fun toggleGame(featureIndex: Int, gameIndex: Int, isEnabled: Boolean) {
-        val feature = state.value.featureList[featureIndex].run {
-            copy(
-                gameList = gameList.mapIndexed { index, game ->
-                    if (index == gameIndex) {
-                        game.copy(isEnabled = isEnabled)
-                    } else {
-                        game
+        _state.update { current ->
+            val updatedFeature = current.featureList[featureIndex].run {
+                copy(
+                    gameList = gameList.mapIndexed { index, game ->
+                        if (index == gameIndex) {
+                            game.copy(isEnabled = isEnabled)
+                        } else {
+                            game
+                        }
                     }
-                }
-            )
+                )
+            }
+            val updatedList = current.featureList.toMutableList().apply {
+                set(featureIndex, updatedFeature)
+            }
+            current.copy(featureList = updatedList)
         }
-        val game = feature.gameList[gameIndex]
+    }
 
         viewModelScope.launch {
             toggleFeatureUseCase.invoke(
