@@ -157,18 +157,6 @@ internal class HomeVM(
         }
     }
 
-    private fun GameWidget.withUpdatedCharacters(characterIds: Collection<String>): GameWidget {
-        val idSet = characterIds.toSet()
-        val updatedList = characterList.map { character ->
-            if (character.id in idSet) {
-                character.copy(isLoading = false)
-            } else {
-                character
-            }
-        }
-        return copy(characterList = updatedList.toImmutableList())
-    }
-
 
     companion object {
         private const val TAG = "HomeVM"
