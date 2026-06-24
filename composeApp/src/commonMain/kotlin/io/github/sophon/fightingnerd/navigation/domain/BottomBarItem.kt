@@ -6,5 +6,5 @@ import org.jetbrains.compose.resources.StringResource
 internal data class BottomBarItem(
     val label: StringResource,
     val icon: FlexibleIcon,
-    val destination: Destination.TopLevelDestination,
+    val destination: Destination,
 )

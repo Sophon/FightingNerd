@@ -1,6 +1,9 @@
 package io.github.sophon.fightingnerd
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
@@ -55,6 +58,7 @@ import io.github.sophon.fightingnerd.feat.move.ui.MoveListScreen
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewScreen
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
+import io.github.sophon.fightingnerd.navigation.domain.topLevelOrder
 import io.github.sophon.fightingnerd.navigation.ui.BottomNavBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
 import io.github.sophon.fightingnerd.navigation.ui.bottomBarItems
@@ -159,42 +163,68 @@ private fun AppNavDisplay(
         transitionSpec = {
             val initial = initialState.key.toString()
             val target = targetState.key.toString()
-            val from = bottomBarItems.indexOfFirst { it.label.toString() == initial }
-            val to = bottomBarItems.indexOfFirst { it.label.toString() == target }
-            val goingForward = (from < 0) || (to < 0) || (to > from)
-            if (goingForward) {
-                slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+            val from = bottomBarItems.indexOfFirst { it.destination::class.simpleName == initial }
+            val to = bottomBarItems.indexOfFirst { it.destination::class.simpleName == target }
+            val bothTopLevel = (from >= 0) && (to >= 0)
+            if (bothTopLevel) {
+                val goingForward = to > from
+                if (goingForward) {
+                    slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+                } else {
+                    slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+                }
             } else {
-                slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+                slideInVertically { it } togetherWith ExitTransition.None
             }
         },
-        popTransitionSpec = { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } },
-        predictivePopTransitionSpec = { slideInHorizontally { -it } togetherWith slideOutHorizontally { it } },
+        popTransitionSpec = {
+            val initial = initialState.key.toString()
+            val target = targetState.key.toString()
+            val from = bottomBarItems.indexOfFirst { it.destination::class.simpleName == initial }
+            val to = bottomBarItems.indexOfFirst { it.destination::class.simpleName == target }
+            val bothTopLevel = (from >= 0) && (to >= 0)
+            if (bothTopLevel) {
+                slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+            } else {
+                ContentTransform(
+                    targetContentEnter = EnterTransition.None,
+                    initialContentExit = slideOutVertically { it },
+                    targetContentZIndex = -1f,
+                )
+            }
+        },
+        predictivePopTransitionSpec = {
+            ContentTransform(
+                targetContentEnter = EnterTransition.None,
+                initialContentExit = slideOutVertically { it },
+                targetContentZIndex = -1f,
+            )
+        },
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding(),
         entryProvider = entryProvider {
-            entry<Destination.Home>(clazzContentKey = { it.label.toString() }) {
+            entry<Destination.Home> {
                 HomeScreen(
                     onNavigateToMoveList = { gameId, characterId ->
                         backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
                     }
                 )
             }
-            entry<Destination.Search>(clazzContentKey = { it.label.toString() }) {
+            entry<Destination.Search> {
                 PlaceholderScreen(label = "Search")
             }
-            entry<Destination.Saved>(clazzContentKey = { it.label.toString() }) {
+            entry<Destination.Saved> {
                 PlaceholderScreen(label = "Saved")
             }
-            entry<Destination.QuizOverview>(clazzContentKey = { it.label.toString() }) {
+            entry<Destination.QuizOverview> {
                 QuizOverviewScreen(
                     onNavigateToQuiz = { gameId ->
                         backStack.add(Destination.Quiz(gameId = gameId))
                     }
                 )
             }
-            entry<Destination.More>(clazzContentKey = { it.label.toString() }) {
+            entry<Destination.More> {
                 MoreScreen(
                     onNavigate = { moreItem ->
                         when (moreItem) {
@@ -260,22 +290,26 @@ internal fun OverlayContent(
 @Composable
 private fun BoxScope.AppBottomBar(
     backStack: NavBackStack<NavKey>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+    val top = backStack.lastOrNull() as? Destination
+    val topLevel = bottomBarItems.firstOrNull { it.destination == top }?.destination as? Destination
     AnimatedVisibility(
-        visible = (backStack.size == 1),
+        visible = topLevel != null,
         enter = slideInVertically { it },
         exit = slideOutVertically { it },
         modifier = modifier
             .align(Alignment.BottomCenter)
             .navigationBarsPadding(),
     ) {
-        BottomNavBarView(
-            currentRoot = backStack.first() as Destination.TopLevelDestination,
-            onTabClick = { destination ->
-                backStack.clear()
-                backStack.add(destination)
-            },
-        )
+        if (topLevel != null) {
+            BottomNavBarView(
+                currentRoot = topLevel,
+                onTabClick = { destination ->
+                    backStack.clear()
+                    backStack.add(destination)
+                },
+            )
+        }
     }
 }

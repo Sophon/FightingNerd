@@ -71,8 +71,8 @@ internal val bottomBarItems = listOf(
 
 @Composable
 internal fun BottomNavBarView(
-    currentRoot: Destination.TopLevelDestination,
-    onTabClick: (Destination.TopLevelDestination) -> Unit,
+    currentRoot: Destination,
+    onTabClick: (Destination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(
