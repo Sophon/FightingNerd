@@ -258,6 +258,8 @@ private fun Details(
             }
         }
 
+        //TODO: flow row of properties
+
         move.notes.takeIf { it.isNotEmpty() }?.let { noteList ->
             NotesSection(noteList)
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
