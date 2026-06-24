@@ -1,5 +1,6 @@
 package io.github.sophon.fightingnerd.feat.move.ui.composables
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,15 +16,21 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.move_list_field_damage
@@ -37,6 +44,7 @@ import io.github.sophon.fightingnerd.feat.move.model.Property
 import io.github.sophon.fightingnerd.feat.move.model.icon
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
+import io.github.sophon.fightingnerd.feat.move.ui.UiMove
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.VideoPlayer
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
@@ -48,8 +56,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun MoveItem(
-    uiMove: MoveListState.UiMove,
+    uiMove: UiMove,
     onMoveClick: () -> Unit,
+    isExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -88,9 +97,13 @@ internal fun MoveItem(
             )
         )
 
-        if (uiMove.isExpanded) {
+        if (uiMove.isExpandable()) {
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
-            Details(uiMove.move)
+            ExpansionIndicator(isExpanded = isExpanded)
+
+            if (isExpanded) {
+                Details(uiMove.move)
+            }
         }
     }
 }
@@ -193,6 +206,31 @@ private fun Properties(
 }
 
 @Composable
+private fun ExpansionIndicator(
+    isExpanded: Boolean,
+    modifier: Modifier = Modifier
+) {
+    val chevronFlip by animateFloatAsState(
+        targetValue = if (isExpanded) -1f else 1f,
+        label = "chevronFlip",
+    )
+
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.ExpandMore,
+            contentDescription = null,
+            tint = nerdColorPalette.textPrimary,
+            modifier = Modifier
+                .size(nerdDimensions.iconInline)
+                .graphicsLayer { scaleY = chevronFlip }
+        )
+    }
+}
+
+@Composable
 private fun Details(
     move: Move,
     modifier: Modifier = Modifier
@@ -200,8 +238,37 @@ private fun Details(
     Column(
         modifier = modifier,
     ) {
+        Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+
         move.urls.videoId?.let { videoUrl ->
             VideoPlayer(videoUrl)
+            Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+        }
+
+        move.notes.takeIf { it.isNotEmpty() }?.let { noteList ->
+            NotesSection(noteList)
+            Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+        }
+    }
+}
+
+@Composable
+private fun NotesSection(
+    noteList: List<String>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        horizontalAlignment = Alignment.Start,
+        modifier = modifier
+            .fillMaxWidth()
+    ) {
+        noteList.forEach { note ->
+            Text(
+                text = "· $note",
+                style = nerdTypography.bodyMedium,
+                color = nerdColorPalette.textPrimary,
+                textAlign = TextAlign.Start
+            )
         }
     }
 }
@@ -210,11 +277,24 @@ private fun Details(
 //region PREVIEW
 @Preview
 @Composable
-private fun ItemPreview() {
+private fun CollapsedItemPreview() {
     FightingNerdTheme {
         MoveItem(
             uiMove = MoveListState.PREVIEW.fullMoveList.values.last().toUiMove(),
             onMoveClick = {},
+            isExpanded = false,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ExpandedItemPreview() {
+    FightingNerdTheme {
+        MoveItem(
+            uiMove = MoveListState.PREVIEW.fullMoveList.values.last().toUiMove(),
+            onMoveClick = {},
+            isExpanded = true,
         )
     }
 }
