@@ -11,9 +11,9 @@ import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsVM
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
-import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizVM
@@ -40,9 +40,9 @@ internal fun featureModule() = module {
     viewModelOf(::MoreVM)
 
     singleOf(::GetAvailableFeaturesUseCase)
-    singleOf(::ToggleFeatureUseCase)
     singleOf(::SetThemeUseCase)
     singleOf(::SubscribeToThemeUseCase)
+    singleOf(::SaveFeatureConfigUseCase)
 
     viewModelOf(::FeatureSettingsVM)
     //endregion
