@@ -12,13 +12,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.core.ui.components.LoadingContent
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveTopBar
@@ -39,25 +38,13 @@ internal fun MoveListScreen(
         parameters = { parametersOf(gameId, characterId) }
     )
     val state by vm.state.collectAsStateWithLifecycle()
-
-    val filteredMoves by remember(
-        state.fullMoveList,
-        state.filterSheet.activeFilterSet,
-        state.filterSheet.activeSliderFilters,
-    ) {
-        derivedStateOf {
-            state.fullMoveList.values.applyFilters(
-                filterSet = (state.filterSheet.activeFilterSet + state.filterSheet.activeSliderFilters),
-                searchQuery = state.searchQuery,
-            )
-        }
-    }
+    val filteredMoves by vm.filteredMoves.collectAsStateWithLifecycle()
 
     Content(
         state = state,
         onExit = onExit,
         moveList = filteredMoves,
-        onMoveClick = { /*TODO*/ },
+        onMoveClick = vm::onMoveClick,
         searchQuery = state.searchQuery,
         onSearch = vm::onSearchInput,
         onFilterClick = vm::onDisplayFilter,
@@ -74,8 +61,8 @@ internal fun MoveListScreen(
 private fun Content(
     state: MoveListState,
     onExit: () -> Unit,
-    moveList: List<MoveListState.UiMove>,
-    onMoveClick: (id: String) -> Unit,
+    moveList: List<UiMove>,
+    onMoveClick: (moveId: String) -> Unit,
     searchQuery: String?,
     onSearch: (query: String?) -> Unit,
     onFilterClick: (Boolean) -> Unit,
@@ -110,6 +97,7 @@ private fun Content(
                 MoveList(
                     moveList = moveList,
                     onMoveClick = onMoveClick,
+                    expandedMoveId = state.expandedMoveId,
                 )
 
                 if (state.filterSheet.isVisible) {
@@ -130,8 +118,9 @@ private fun Content(
 
 @Composable
 private fun MoveList(
-    moveList: List<MoveListState.UiMove>,
-    onMoveClick: (id: String) -> Unit,
+    moveList: List<UiMove>,
+    expandedMoveId: String?,
+    onMoveClick: (moveId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val listState = rememberLazyListState()
@@ -146,11 +135,12 @@ private fun MoveList(
     ) {
         items(
             items = moveList,
-            key = { it.id },
-        ) { move ->
+            key = { it.move.id },
+        ) { uiMove ->
             MoveItem(
-                move = move,
-                onMoveClick = { onMoveClick(move.id) },
+                uiMove = uiMove,
+                onMoveClick = { onMoveClick(uiMove.move.id) },
+                isExpanded = (uiMove.move.id == expandedMoveId)
             )
         }
     }
@@ -161,12 +151,15 @@ private fun MoveList(
 @Composable
 @Preview
 private fun MoveListPreview() {
+    val moveList = MoveListState.PREVIEW.fullMoveList.values.map {
+        it.toUiMove()
+    }
     FightingNerdTheme {
         val state = MoveListState.PREVIEW
         Content(
             state = state,
             onExit = {},
-            moveList = state.fullMoveList.values.applyFilters(emptySet(), null),
+            moveList = moveList,
             onMoveClick = {},
             searchQuery = null,
             onFilterClick = {},
@@ -183,12 +176,15 @@ private fun MoveListPreview() {
 @Composable
 @Preview
 private fun MoveListSearchPreview() {
+    val moveList = MoveListState.PREVIEW.fullMoveList.values.map {
+        it.toUiMove()
+    }
     FightingNerdTheme {
         val state = MoveListState.PREVIEW
         Content(
             state = state,
             onExit = {},
-            moveList = state.fullMoveList.values.applyFilters(emptySet(), null),
+            moveList = moveList,
             onMoveClick = {},
             searchQuery = "",
             onFilterClick = {},
