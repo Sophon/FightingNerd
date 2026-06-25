@@ -110,7 +110,6 @@ internal class DiscordBotImpl(
             }
         } catch (e: Exception) {
             Napier.e(tag = TAG) { "💥 Login failed: ${e.message}" }
-            e.printStackTrace()
             throw e
         }
 
@@ -173,6 +172,7 @@ internal class DiscordBotImpl(
         }
     }
 
+    @Suppress("UnusedPrivateMember")
     private suspend fun createCommandsForTestServer() {
         val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
         val featureList = botFeatureRepo.getFeatures()

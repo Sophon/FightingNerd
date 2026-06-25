@@ -67,7 +67,6 @@ internal fun SliderFilter(
     onDraggingChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var isSliderDragging by remember { mutableStateOf(false) }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier

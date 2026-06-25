@@ -4,7 +4,6 @@ import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.usecase.DownloadMoveListUseCase
 import io.github.sophon.wikiwavu.domain.BASE_URL
 import io.github.sophon.wikiwavu.domain.CHAR_LIST_URL
 import io.github.sophon.wikiwavu.domain.LIMIT_MOVES

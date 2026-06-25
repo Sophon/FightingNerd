@@ -48,7 +48,7 @@ internal class DustLoopWikiClient(
                     characterList
                 }
             }
-            .mapError { it.toDomainError(TAG) }
+            .mapError { it.toDomainError() }
         return result
     }
 
@@ -65,7 +65,7 @@ internal class DustLoopWikiClient(
                     moveList
                 }
             }
-            .mapError { it.toDomainError(TAG) }
+            .mapError { it.toDomainError() }
         return result
     }
 

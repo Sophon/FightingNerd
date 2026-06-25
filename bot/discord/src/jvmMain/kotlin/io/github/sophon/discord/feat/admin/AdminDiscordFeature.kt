@@ -154,10 +154,6 @@ internal class AdminDiscordFeature(
             }
     }
 
-    private fun banList(source: Source): Result<BotOutput, BotError> {
-        TODO()
-    }
-
     private fun createReplyEmbed(adminResult: AdminResult): EmbedBuilder.() -> Unit = {
         adminResult.apply {
             title = "Feedback response"
