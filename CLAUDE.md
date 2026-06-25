@@ -74,6 +74,7 @@ Both platforms can use any of these:
 
 ## App
 KMP and CMP based. Currently targeting Android and iOS.
+On Play Store and Apple Store.
 - completely unified theme
   - `nerdTypography`, `nerdDimensions`, `nerdColorPalette`
   - we bind `nerdColorPalette` to Material 3 as close as possible as a fall-back solution; always prefer the `nerd-` stuff
@@ -88,7 +89,7 @@ KMP and CMP based. Currently targeting Android and iOS.
   - feature config requires confirm for that reason
 
 ## Bot
-Kord based.
+Kord based. Hosted on cloud via Fly.io (`fly.toml`)
 - data 
   - Wiki - stored in memory via `Map<>`
   - EWGF 
@@ -112,7 +113,35 @@ Kord based.
 ## Infrastructure
 - tests
   - all tests are inside root `build.gradle.kts`
-  - `unitTests` - runs all test classes
-  - `testCoverage` - what must be covered with unit tests
-    - mostly `core` utils, feature module usecases
-  - `hexagonal`
+  - all workflows for tests are inside `github/workflows/`
+  - `unitTests` (`test-unit.yml`) 
+    - runs all test classes
+    - `./gradlew unitTests --rerun-tasks`
+  - `testCoverage` (`test_coverage.yml`)
+    - what must be covered with unit tests
+      - mostly `core` utils, feature module usecases
+    - `./gradlew testCoverage --rerun-tasks`
+  - `hexagonal` (`test_arch_hex`)
+    - checks for `internal` and that public can only be inside `integration`
+    - `./gradlew testArchHexagonal --rerun-tasks`
+- static analysis
+  - done via detekt
+    - `./gradlew detekt`
+    - `github/workflows/detekt.yml`
+- releases
+  - we have release branches - `release_bot` or `release_app`
+  - when there's a new release:
+  1. switch to the release branch
+  2. merge and squash from `dev`
+  3. the commit will be the version number
+  4. apply tag with the version number
+  5. push to remote
+  6. trigger a workflow for release - `deploy-bot-immediate` or `deploy-bot-scheduled`
+  7. in other words, each commit in the release branch is a release
+  - the steps above are handled by `scripts/botRelease.sh` or `scripts/appRelease.sh`
+    - bot release takes version name (including the starting `v`) and then immediate or scheduled
+    - immediate creates a release immediately
+    - scheduled creates a release at 0200 UTC
+- each merge requests requires
+  - successful pass of all tests
+  - successful detekt
