@@ -176,7 +176,7 @@ internal val featureRegistryModule = module {
     single {
         when (val result = get<ConfigLoader>().loadConfig()) {
             is Result.Success -> result.data
-            is Result.Error -> throw IllegalStateException("Failed to load config: ${result.error}")
+            is Result.Error -> error("Failed to load config: ${result.error}")
         }
     }
     single<Config.AdminConfig> { get<Config>().adminConfig!! }
