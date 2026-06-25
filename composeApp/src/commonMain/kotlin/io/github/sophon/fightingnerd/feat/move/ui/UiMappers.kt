@@ -49,8 +49,8 @@ private fun Move.createCoreFields(): List<UiMove.Field> {
         add(UiMove.Field(Res.string.move_list_field_startup, startup))
         add(UiMove.Field(Res.string.move_list_field_guard, guard))
         add(UiMove.Field(Res.string.move_list_field_damage, damage))
-        add(UiMove.Field(Res.string.move_list_field_on_hit, onBlock))
-        add(UiMove.Field(Res.string.move_list_field_on_block, onHit))
+        add(UiMove.Field(Res.string.move_list_field_on_block, onBlock))
+        add(UiMove.Field(Res.string.move_list_field_on_hit, onHit))
         add(UiMove.Field(Res.string.move_list_field_on_counter, onCH))
     }
     return list
