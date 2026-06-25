@@ -7,6 +7,7 @@ object CoreFilters {
         val from: Int?,
         val to: Int?,
     ): Filter {
+        override val name: String = "Startup"
         override val predicate: (Move) -> Boolean = { move ->
             val value = move.startup?.firstIntOrNull()
             if (value == null) {
@@ -21,6 +22,7 @@ object CoreFilters {
         val from: Int?,
         val to: Int?,
     ): Filter {
+        override val name: String = "OnHit"
         override val predicate: (Move) -> Boolean = { move ->
             val value = move.onHit?.firstIntOrNull()
             if (value == null) {
@@ -35,6 +37,7 @@ object CoreFilters {
         val from: Int?,
         val to: Int?,
     ): Filter {
+        override val name: String = "OnBlock"
         override val predicate: (Move) -> Boolean = { move ->
             val value = move.onBlock?.firstIntOrNull()
             if (value == null) {
