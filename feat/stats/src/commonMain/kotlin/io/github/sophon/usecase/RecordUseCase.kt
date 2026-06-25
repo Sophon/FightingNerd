@@ -7,7 +7,7 @@ import io.github.sophon.integration.model.Command
 import io.github.sophon.integration.model.StatsError
 
 @ExcludeFromCoverage("TODO: cover with test")
-internal class RecordUseCase() {
+internal class RecordUseCase {
     fun invoke(
         command: Command,
         cache: MutableMap<Command, Long>,
