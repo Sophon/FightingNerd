@@ -37,7 +37,7 @@ sealed interface Destination : NavKey {
     data object FeatureSettings : Destination
 }
 
-internal val rootDestinations = listOf(
+internal val rootDestinations: List<Destination> = listOf(
     Destination.Home,
     Destination.QuizOverview,
     Destination.More,
