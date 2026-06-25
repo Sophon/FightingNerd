@@ -1,11 +1,12 @@
+import io.gitlab.arturbosch.detekt.extensions.DetektExtension
+
 plugins {
-    // this is necessary to avoid the plugins to be loaded multiple times
-    // in each subproject's classloader
     alias(libs.plugins.androidApplication) apply false
     alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.composeHotReload) apply false
     alias(libs.plugins.composeMultiplatform) apply false
     alias(libs.plugins.composeCompiler) apply false
+    alias(libs.plugins.detekt) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.androidLint) apply false
@@ -13,6 +14,26 @@ plugins {
 }
 
 subprojects {
+    apply(plugin = "io.gitlab.arturbosch.detekt")
+
+    configure<DetektExtension> {
+        buildUponDefaultConfig = true
+        config.setFrom(rootProject.files("config/detekt.yml"))
+        autoCorrect = false
+        source.setFrom(
+            files(
+                "src/commonMain/kotlin",
+                "src/androidMain/kotlin",
+                "src/iosMain/kotlin",
+                "src/jvmMain/kotlin",
+                "src/main/kotlin",
+                "src/commonTest/kotlin",
+                "src/androidUnitTest/kotlin",
+                "src/jvmTest/kotlin",
+            ).filter { it.exists() }
+        )
+    }
+
     tasks.withType<Test>().configureEach {
         val projectName = project.name
 
