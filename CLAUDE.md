@@ -2,6 +2,7 @@
 
 A KMP project for fighting game frame data. Targets Android, iOS and Discord - via a Discord bot.
 All data is sourced from open-source resources like fighting game wikis.
+This project uses Graphify for queryable knowledge graph. Use it to quickly gain overview.
 
 ## Structure
 Two important target modules:
