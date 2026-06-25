@@ -19,7 +19,7 @@ complexity:
 
 empty-blocks:
   EmptyFunctionBlock:
-    ignoreOverriddenFunctions: true
+    ignoreOverridden: true
 
 exceptions:
   TooGenericExceptionCaught:
