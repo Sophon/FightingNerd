@@ -165,15 +165,14 @@ private fun EmbedBuilder.createNotes(move: Move) {
 private fun EmbedBuilder.createDetails(move: Move) {
     val properties = move.sf6Properties ?: return
 
-    if (
-        properties.run {
-            DROH == null && DROB == null
-                    && DRcOH == null && DRcOB == null
-                    && driveDmgOnHit == null && driveDmgOnBlock == null
-                    && driveGain == null
-                    && superGainOnHit == null && superGainOnBlock == null
-        }
-    ) return
+    val hasDetails = properties.run {
+        DROH != null || DROB != null
+                || DRcOH != null || DRcOB != null
+                || driveDmgOnHit != null || driveDmgOnBlock != null
+                || driveGain != null
+                || superGainOnHit != null || superGainOnBlock != null
+    }
+    if (hasDetails.not()) return
 
     mandatoryField(
         name = "",
