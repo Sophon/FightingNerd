@@ -68,7 +68,7 @@ internal class MizuumiWikiClient(
                         characterList
                     }
                 }
-                .mapError { it.toDomainError(TAG) }
+                .mapError { it.toDomainError() }
         } else {
             cachedDownloadUseCase.invoke()
                 .map { map ->
@@ -103,7 +103,7 @@ internal class MizuumiWikiClient(
                         moveList
                     }
                 }
-                .mapError { it.toDomainError(TAG) }
+                .mapError { it.toDomainError() }
         }
         return result
     }

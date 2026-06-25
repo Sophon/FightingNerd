@@ -29,14 +29,10 @@ class CachedDownloadUseCase(
                     cachedData = it
                     it
                 }
-                .mapError { it.toDomainError(TAG) }
+                .mapError { it.toDomainError() }
     }
 
     fun clearCache() {
         cachedData = null
-    }
-
-    private companion object {
-        const val TAG = "DownloadOrFetchUseCase"
     }
 }

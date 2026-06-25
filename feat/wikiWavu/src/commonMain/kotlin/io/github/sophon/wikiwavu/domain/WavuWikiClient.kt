@@ -44,7 +44,7 @@ internal class WavuWikiClient(
                 Napier.i(tag = TAG) { "${game.id}: ${characterList.size} downloaded" }
                 characterList
             }
-            .mapError { it.toDomainError(TAG) }
+            .mapError { it.toDomainError() }
         return result
     }
 
@@ -57,7 +57,7 @@ internal class WavuWikiClient(
                 Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
                 moveList
             }
-            .mapError { it.toDomainError(TAG) }
+            .mapError { it.toDomainError() }
         return result
     }
 
