@@ -25,11 +25,6 @@ internal class QuizOverviewVM(
     }
 
 
-    fun startQuiz(index: Int) {
-        //TODO: navigate to quiz
-    }
-
-
     private fun loadWidgets() {
         viewModelScope.launch {
             loadEmptyWidgetsUseCase.invoke().collect { result ->

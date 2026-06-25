@@ -1,8 +1,14 @@
 package io.github.sophon.fightingnerd
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ContentTransform
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -39,8 +45,8 @@ import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.core.ui.OverlayService
+import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.core.ui.components.ToastSnackbar
 import io.github.sophon.fightingnerd.core.ui.components.ToastVisuals
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
@@ -52,8 +58,10 @@ import io.github.sophon.fightingnerd.feat.move.ui.MoveListScreen
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewScreen
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
+import io.github.sophon.fightingnerd.navigation.domain.topLevelOrder
 import io.github.sophon.fightingnerd.navigation.ui.BottomNavBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
+import io.github.sophon.fightingnerd.navigation.ui.bottomBarItems
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -143,7 +151,7 @@ private fun Content(
 @Composable
 private fun AppNavDisplay(
     backStack: NavBackStack<NavKey>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavDisplay(
         backStack = backStack,
@@ -152,6 +160,46 @@ private fun AppNavDisplay(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator(),
         ),
+        transitionSpec = {
+            val initial = initialState.key.toString()
+            val target = targetState.key.toString()
+            val from = bottomBarItems.indexOfFirst { it.destination::class.simpleName == initial }
+            val to = bottomBarItems.indexOfFirst { it.destination::class.simpleName == target }
+            val bothTopLevel = (from >= 0) && (to >= 0)
+            if (bothTopLevel) {
+                val goingForward = to > from
+                if (goingForward) {
+                    slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+                } else {
+                    slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+                }
+            } else {
+                slideInVertically { it } togetherWith ExitTransition.None
+            }
+        },
+        popTransitionSpec = {
+            val initial = initialState.key.toString()
+            val target = targetState.key.toString()
+            val from = bottomBarItems.indexOfFirst { it.destination::class.simpleName == initial }
+            val to = bottomBarItems.indexOfFirst { it.destination::class.simpleName == target }
+            val bothTopLevel = (from >= 0) && (to >= 0)
+            if (bothTopLevel) {
+                slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+            } else {
+                ContentTransform(
+                    targetContentEnter = EnterTransition.None,
+                    initialContentExit = slideOutVertically { it },
+                    targetContentZIndex = -1f,
+                )
+            }
+        },
+        predictivePopTransitionSpec = {
+            ContentTransform(
+                targetContentEnter = EnterTransition.None,
+                initialContentExit = slideOutVertically { it },
+                targetContentZIndex = -1f,
+            )
+        },
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding(),
@@ -181,7 +229,6 @@ private fun AppNavDisplay(
                     onNavigate = { moreItem ->
                         when (moreItem) {
                             MoreItem.FeatureSettings -> backStack.add(Destination.FeatureSettings)
-
 //                            MoreItem.Theme -> {/* no navigation */}
                         }
                     }
@@ -243,22 +290,26 @@ internal fun OverlayContent(
 @Composable
 private fun BoxScope.AppBottomBar(
     backStack: NavBackStack<NavKey>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+    val top = backStack.lastOrNull() as? Destination
+    val topLevel = bottomBarItems.firstOrNull { it.destination == top }?.destination as? Destination
     AnimatedVisibility(
-        visible = (backStack.size == 1),
+        visible = topLevel != null,
         enter = slideInVertically { it },
         exit = slideOutVertically { it },
         modifier = modifier
             .align(Alignment.BottomCenter)
             .navigationBarsPadding(),
     ) {
-        BottomNavBarView(
-            currentRoot = backStack.first() as Destination.TopLevelDestination,
-            onTabClick = { destination ->
-                backStack.clear()
-                backStack.add(destination)
-            },
-        )
+        if (topLevel != null) {
+            BottomNavBarView(
+                currentRoot = topLevel,
+                onTabClick = { destination ->
+                    backStack.clear()
+                    backStack.add(destination)
+                },
+            )
+        }
     }
 }

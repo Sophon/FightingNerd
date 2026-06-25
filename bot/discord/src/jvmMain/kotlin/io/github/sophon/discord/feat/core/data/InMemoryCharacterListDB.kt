@@ -2,20 +2,19 @@ package io.github.sophon.discord.feat.core.data
 
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Character
 
-internal class InMemoryCharacterListDB(private val game: Game): CharacterListDB {
+internal class InMemoryCharacterListDB: CharacterListDB {
     private var database: MutableMap<String, Character> = mutableMapOf()
     private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
 
     override suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<io.github.sophon.core.wiki.data.WikiError> {
         characterList.forEach { character ->
-            database.put(key = character.id, value = character)
+            database[character.id] = character
             character.aliasList.forEach { alias ->
-                charNameAliasMap.put(key = alias, value = character.id)
+                charNameAliasMap[alias] = character.id
             }
         }
         return Result.Success(Unit)

@@ -6,6 +6,7 @@ import io.github.aakira.napier.Napier
 
 private var koinInitialized = false
 
+@Suppress("FunctionNaming")
 fun MainViewController() = ComposeUIViewController {
     if (koinInitialized.not()) {
         Napier.base(DebugAntilog())

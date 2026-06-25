@@ -91,7 +91,7 @@ internal class MizuumiWikiDataSourceImpl(
                 parameter("tables", table)
                 parameter("limit", LIMIT_CHARACTERS)
                 parameter("format", "json")
-                parameter("fields", getCharacterFields(table))
+                parameter("fields", getCharacterFields())
             }
         }
     }
@@ -178,7 +178,7 @@ internal class MizuumiWikiDataSourceImpl(
     }
 
 
-    private fun getCharacterFields(table: String): String {
+    private fun getCharacterFields(): String {
         val allFields = listOf(
             "chara",
             "smartSteer",

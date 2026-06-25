@@ -176,7 +176,7 @@ internal val featureRegistryModule = module {
     single {
         when (val result = get<ConfigLoader>().loadConfig()) {
             is Result.Success -> result.data
-            is Result.Error -> throw IllegalStateException("Failed to load config: ${result.error}")
+            is Result.Error -> error("Failed to load config: ${result.error}")
         }
     }
     single<Config.AdminConfig> { get<Config>().adminConfig!! }
@@ -220,7 +220,7 @@ internal val featureRegistryModule = module {
     single<(Game) -> Pair<CharacterListDB, MoveListDB>> {
         return@single  { game ->
             val moveDB = InMemoryMoveListDB(game)
-            val characterDB = InMemoryCharacterListDB(game)
+            val characterDB = InMemoryCharacterListDB()
 
             characterDB to moveDB
         }

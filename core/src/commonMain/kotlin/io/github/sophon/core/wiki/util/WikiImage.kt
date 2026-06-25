@@ -54,5 +54,3 @@ suspend fun getWikiImageUrl(
 
     return Result.Success(allResults)
 }
-
-private const val TAG = "getImageUrl"

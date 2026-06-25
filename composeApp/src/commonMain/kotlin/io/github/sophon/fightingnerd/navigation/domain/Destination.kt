@@ -5,22 +5,20 @@ import io.github.sophon.core.wiki.model.Move
 import kotlinx.serialization.Serializable
 
 sealed interface Destination : NavKey {
-    sealed interface TopLevelDestination : Destination
+    @Serializable
+    data object Home : Destination
 
     @Serializable
-    data object Home : TopLevelDestination
+    data object Search : Destination
 
     @Serializable
-    data object Search : TopLevelDestination
+    data object Saved : Destination
 
     @Serializable
-    data object Saved : TopLevelDestination
+    data object QuizOverview : Destination
 
     @Serializable
-    data object QuizOverview: TopLevelDestination
-
-    @Serializable
-    data object More : TopLevelDestination
+    data object More : Destination
 
 
     @Serializable
@@ -38,3 +36,11 @@ sealed interface Destination : NavKey {
     @Serializable
     data object FeatureSettings : Destination
 }
+
+internal val topLevelOrder = listOf(
+    Destination.Home,
+    Destination.Search,
+    Destination.Saved,
+    Destination.QuizOverview,
+    Destination.More,
+)

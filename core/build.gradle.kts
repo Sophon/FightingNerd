@@ -86,16 +86,6 @@ kotlin {
             implementation(libs.junit)
             implementation(libs.kotlin.testJunit)
         }
-
-        getByName("androidDeviceTest") {
-            dependencies {
-                implementation(libs.androidx.runner)
-                implementation(libs.androidx.core)
-                implementation(libs.androidx.testExt.junit)
-                implementation(libs.junit)
-                implementation(libs.kotlin.testJunit)
-            }
-        }
     }
 }
 

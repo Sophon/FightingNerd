@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v12.1.3] - 2026-06-25
+- `Wavu` - fixed move-list commands (`heat`, `pc` etc) requiring ID instead of alias
+
 ## [v12.1.2] - 2026-06-24
 - `Wavu` - fixed the bot requiring non-clean input (ie `df1,2` instead of clean `df12`)
 

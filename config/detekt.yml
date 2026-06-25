@@ -1,0 +1,71 @@
+# Detekt config for FightingNerd.
+# Only rules that catch real bugs / architectural issues. Style preferences left to the IDE.
+# Anything not listed uses detekt 1.23 defaults (which are mostly bug-catchers).
+
+complexity:
+  LongMethod:
+    threshold: 150
+    excludes: ['**/*Test*/**']
+  LongParameterList:
+    functionThreshold: 16
+    constructorThreshold: 16
+    ignoreAnnotated: ['Composable']
+  CyclomaticComplexMethod:
+    threshold: 20
+  TooManyFunctions:
+    # File-level check treats util files unfairly; class/interface checks fire on
+    # legitimate domain shapes (Sql*DB, WikiClient). Hexagonal arch check covers
+    # the real structural concerns.
+    active: false
+
+empty-blocks:
+  EmptyFunctionBlock:
+    ignoreOverridden: true
+
+exceptions:
+  TooGenericExceptionCaught:
+    # We catch Exception at Result-wrapper boundaries by design.
+    active: false
+  SwallowedException:
+    # Same reasoning — typed-error boundary in HttpClientExt converts exceptions
+    # to Result.Error(DataError.X) by design.
+    active: false
+
+performance:
+  SpreadOperator:
+    # Micro-optimization that only matters in hot paths; rarely caught in error
+    # construction or DI setup.
+    active: false
+
+style:
+  WildcardImport:
+    active: false
+  ForbiddenComment:
+    active: false
+  NewLineAtEndOfFile:
+    active: false
+  LoopWithTooManyJumpStatements:
+    active: false
+  ReturnCount:
+    active: false
+  MaxLineLength:
+    active: false
+  MagicNumber:
+    active: false
+  UnusedParameter:
+    ignoreAnnotated: ['Preview']
+  UnusedPrivateMember:
+    ignoreAnnotated: ['Preview']
+  UnusedPrivateProperty:
+    ignoreAnnotated: ['Preview']
+
+naming:
+  FunctionNaming:
+    ignoreAnnotated: ['Composable']
+  TopLevelPropertyNaming:
+    constantPattern: '[A-Za-z][_A-Za-z0-9]*'
+  ConstructorParameterNaming:
+    # Wiki-sourced frame data uses domain-canonical names (DRcOH, DROB, CHstop).
+    active: false
+  MatchingDeclarationName:
+    active: false

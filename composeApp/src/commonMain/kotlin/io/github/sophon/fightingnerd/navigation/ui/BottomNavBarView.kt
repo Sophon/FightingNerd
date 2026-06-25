@@ -40,7 +40,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-private val bottomBarItems = listOf(
+internal val bottomBarItems = listOf(
     BottomBarItem(
         label = Res.string.bottom_bar_item_character_list,
         icon = FlexibleIcon.Vector(Icons.Default.GridView),
@@ -51,11 +51,11 @@ private val bottomBarItems = listOf(
 //        icon = FlexibleIcon.Vector(Icons.Default.Search),
 //        destination = Destination.Search,
 //    ),
-    BottomBarItem(
-        label = Res.string.bottom_bar_item_saved,
-        icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
-        destination = Destination.Saved,
-    ),
+//    BottomBarItem(
+//        label = Res.string.bottom_bar_item_saved,
+//        icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
+//        destination = Destination.Saved,
+//    ),
     BottomBarItem(
         label = Res.string.bottom_bar_item_quiz,
         icon = FlexibleIcon.Vector(Icons.Default.Quiz),
@@ -71,8 +71,8 @@ private val bottomBarItems = listOf(
 
 @Composable
 internal fun BottomNavBarView(
-    currentRoot: Destination.TopLevelDestination,
-    onTabClick: (Destination.TopLevelDestination) -> Unit,
+    currentRoot: Destination,
+    onTabClick: (Destination) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Box(

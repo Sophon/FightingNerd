@@ -43,7 +43,7 @@ internal data class BotOutput(
     ) {
         sealed class Action {
             class Query(val query: String): Action()
-            class Edit(): Action()
+            class Edit : Action()
             class Url(val url: String): Action()
             class Redirect(val channelId: String): Action()
         }

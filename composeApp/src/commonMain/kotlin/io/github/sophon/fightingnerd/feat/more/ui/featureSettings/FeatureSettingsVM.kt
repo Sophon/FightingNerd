@@ -8,7 +8,7 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
-import io.github.sophon.fightingnerd.feat.more.usecase.ToggleFeatureUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 internal class FeatureSettingsVM(
     private val overlayService: OverlayService,
     private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
-    private val toggleFeatureUseCase: ToggleFeatureUseCase,
+    private val saveFeatureConfigUseCase: SaveFeatureConfigUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(FeatureSettingsState())
     val state = _state.asStateFlow()
@@ -29,72 +29,50 @@ internal class FeatureSettingsVM(
 
 
     fun toggleFeature(featureIndex: Int, isEnabled: Boolean) {
-        val feature = state.value.featureList[featureIndex].run {
-            copy(
-                gameList = gameList.map { game -> game.copy(isEnabled = isEnabled) }
-            )
-        }
-
-        viewModelScope.launch {
-            toggleFeatureUseCase.invoke(
-                featureName = feature.featureName,
-                gameIdList = feature.gameList.map { it.id },
-                isEnabled = isEnabled,
-            )
-                .onSuccess {
-                    _state.update { state ->
-                        val updatedList = state.featureList.toMutableList().apply {
-                            set(featureIndex, feature)
-                        }
-                        state.copy(featureList = updatedList)
-                    }
-                }
-                .onError { error ->
-                    Napier.e(tag = TAG) { "toggleFeature: $error" }
-                    error::class.simpleName?.let { errorName ->
-                        overlayService.show(
-                            Toast(message = errorName, type = Toast.Type.ERROR)
-                        )
-                    }
-                }
+        _state.update { current ->
+            val updatedFeature = current.featureList[featureIndex].run {
+                copy(
+                    gameList = gameList.map { game -> game.copy(isEnabled = isEnabled) }
+                )
+            }
+            val updatedList = current.featureList.toMutableList().apply {
+                set(featureIndex, updatedFeature)
+            }
+            current.copy(featureList = updatedList)
         }
     }
 
     fun toggleGame(featureIndex: Int, gameIndex: Int, isEnabled: Boolean) {
-        val feature = state.value.featureList[featureIndex].run {
-            copy(
-                gameList = gameList.mapIndexed { index, game ->
-                    if (index == gameIndex) {
-                        game.copy(isEnabled = isEnabled)
-                    } else {
-                        game
-                    }
-                }
-            )
-        }
-        val game = feature.gameList[gameIndex]
-
-        viewModelScope.launch {
-            toggleFeatureUseCase.invoke(
-                featureName = feature.featureName,
-                gameId = game.id,
-                isEnabled = isEnabled,
-            )
-                .onSuccess {
-                    _state.update { state ->
-                        val updatedList = state.featureList.toMutableList().apply {
-                            set(featureIndex, feature)
+        _state.update { current ->
+            val updatedFeature = current.featureList[featureIndex].run {
+                copy(
+                    gameList = gameList.mapIndexed { index, game ->
+                        if (index == gameIndex) {
+                            game.copy(isEnabled = isEnabled)
+                        } else {
+                            game
                         }
-                        state.copy(featureList = updatedList)
                     }
+                )
+            }
+            val updatedList = current.featureList.toMutableList().apply {
+                set(featureIndex, updatedFeature)
+            }
+            current.copy(featureList = updatedList)
+        }
+    }
+
+    fun saveConfiguration() {
+        viewModelScope.launch {
+            saveFeatureConfigUseCase.invoke(featureList = state.value.featureList)
+                .onSuccess {
+                    overlayService.show(
+                        Toast(message = "Saved", type = Toast.Type.SUCCESS)
+                    )
                 }
                 .onError { error ->
-                    Napier.e(tag = TAG) { "toggleGame: $error" }
-                    error::class.simpleName?.let { errorName ->
-                        overlayService.show(
-                            Toast(message = errorName, type = Toast.Type.ERROR)
-                        )
-                    }
+                    Napier.e(tag = TAG) { "saveConfiguration: $error" }
+                    overlayService.show(Toast(message = error.name, type = Toast.Type.ERROR))
                 }
         }
     }

@@ -1,8 +1,19 @@
 # APP CHANGELOG
 
-## [v0.3.0] - TODO
+## [v0.4.0] - 2026-06-25
+- `Move`
+  - more fields after expanding
+
+## [v0.3.0] - 2026-06-24
+- `Move`
+  - expandable to show videos or images
 - `Quiz`
   - adjusted heights and paddings
+- `More`
+  - feature settings now require hitting Save
+  - features wipe their cache on disable
+- `Saved` - disabled
+- performance improvements for first-time loads
 
 ## [v0.2.0] - 2026-06-24
 - Quiz tab

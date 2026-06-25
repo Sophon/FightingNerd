@@ -46,7 +46,7 @@ internal class SuperComboWikiClient(
                     characterList
                 }
             }
-            .mapError { it.toDomainError(TAG) }
+            .mapError { it.toDomainError() }
         return result
     }
 
@@ -63,7 +63,7 @@ internal class SuperComboWikiClient(
                     moveList
                 }
             }
-            .mapError { it.toDomainError(TAG) }
+            .mapError { it.toDomainError() }
         return result
     }
 

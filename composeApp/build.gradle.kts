@@ -88,6 +88,8 @@ kotlin {
 
             implementation(libs.composemediaplayer)
 
+            implementation(libs.kotlinx.collections.immutable)
+
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
             implementation(project(":feat:wikiSupercombo"))
@@ -123,8 +125,20 @@ android {
     }
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
+            signingConfig = signingConfigs.getByName("debug") //TODO: replace with proper key
         }
+    }
+    lint {
+        abortOnError = true
+        warningsAsErrors = false
+        checkDependencies = true
+        checkReleaseBuilds = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

@@ -86,7 +86,7 @@ internal class HandleButtonInteractionUseCase(
     ): EmptyResult<BotError> {
         return routeCommandToFeatureUseCase.invoke(source, query)
             .map { botOutput ->
-                val uuid = Uuid.Companion.random()
+                val uuid = Uuid.random()
 
                 response.respond {
                     content = interaction.user.mention
@@ -127,6 +127,7 @@ internal class HandleButtonInteractionUseCase(
             }
     }
 
+    @Suppress("NestedBlockDepth")
     private suspend fun edit(
         messageId: String,
         message: Message?,
@@ -199,10 +200,5 @@ internal class HandleButtonInteractionUseCase(
         } catch (e: Exception) {
             Result.Error(BotError.Unknown(e.toString()))
         }
-    }
-
-
-    private companion object {
-        const val TAG = "HandleButtonInteractionUseCase"
     }
 }

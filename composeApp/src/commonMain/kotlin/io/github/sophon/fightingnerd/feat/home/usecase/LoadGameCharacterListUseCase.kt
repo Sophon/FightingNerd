@@ -4,11 +4,15 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.core.util.mapWikiError
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.withContext
 
 internal class LoadGameCharacterListUseCase(
     private val featureRepo: CoreFeatureRepo,
@@ -16,23 +20,25 @@ internal class LoadGameCharacterListUseCase(
     suspend fun invoke(
         gameWidget: HomeViewState.GameWidget,
     ): Result<HomeViewState.GameWidget, AppError> {
-        val wikiClient = featureRepo.getWikiClientFor(gameWidget.game)
-            ?: return Result.Error(AppError.WikiClientNotFound(gameWidget.game.id))
+        return withContext(Dispatchers.IO) {
+            val wikiClient = featureRepo.getWikiClientFor(gameWidget.game)
+                ?: return@withContext Result.Error(AppError.WikiClientNotFound(gameWidget.game.id))
 
-        val result = wikiClient.fetchCharacterList()
-            .mapWikiError()
-            .flatMap { cachedCharacterList ->
-                if (cachedCharacterList.isEmpty()) {
-                    refreshCharacterList(wikiClient)
-                } else {
-                    Result.Success(cachedCharacterList)
+            val result = wikiClient.fetchCharacterList()
+                .mapWikiError()
+                .flatMap { cachedCharacterList ->
+                    if (cachedCharacterList.isEmpty()) {
+                        refreshCharacterList(wikiClient)
+                    } else {
+                        Result.Success(cachedCharacterList)
+                    }
                 }
-            }
-            .map { characterList ->
-                gameWidget.updateWithCharacterList(characterList)
-            }
+                .map { characterList ->
+                    gameWidget.updateWithCharacterList(characterList)
+                }
 
-        return result
+            return@withContext result
+        }
     }
 
     private suspend fun refreshCharacterList(wikiClient: WikiClient): Result<List<Character>, AppError> {
@@ -55,7 +61,7 @@ internal class LoadGameCharacterListUseCase(
                     queryName = domainCharacter.remoteQueryId,
                     iconUrl = domainCharacter.images?.iconUrl,
                 )
-            },
+            }.toImmutableList(),
             isLoading = false,
         )
         return updatedWidget

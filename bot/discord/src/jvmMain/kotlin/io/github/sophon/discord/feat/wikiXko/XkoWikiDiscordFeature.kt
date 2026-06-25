@@ -107,7 +107,5 @@ internal class XkoWikiDiscordFeature(
 
     private companion object {
         private const val TAG = "XkoWikiDiscordFeature"
-        private const val KEY_CHAR_NAME = "character"
-        private const val KEY_MOVE = "move"
     }
 }
