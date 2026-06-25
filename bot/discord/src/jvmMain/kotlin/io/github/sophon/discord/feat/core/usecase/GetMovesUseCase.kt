@@ -1,6 +1,7 @@
 package io.github.sophon.discord.feat.core.usecase
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.wiki.model.Filter
@@ -15,7 +16,10 @@ internal class GetMovesUseCase {
         charName: String,
         filter: Filter,
     ): Result<List<Move>, BotError> {
-        return wiki.fetchMoveList(charName, filter)
+        return wiki.fetchCharacter(characterQuery = charName)
+            .flatMap { character ->
+                wiki.fetchMoveList(character.id, filter)
+            }
             .mapError { it.toDomainError() }
             .map { moveList ->
                 moveList.distinctBy { it.input }

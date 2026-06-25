@@ -76,9 +76,49 @@ class GetMovesUseCaseTest {
         //when
         val result = useCase.invoke(
             wiki = FakeWikiClient(
+                character = Character(
+                    id = charName,
+                    displayName = charName,
+                    remoteQueryId = charName,
+                    wikiUrl = "",
+                ),
                 moves = moves,
             ),
             charName = charName,
+            filter = Filter.None,
+        )
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `useCase resolves alias to character id before fetching moves`() = runTest {
+        //given
+        val alias = "kuni"
+        val characterId = "kunimitsu"
+        val useCase = GetMovesUseCase()
+        val moves = listOf(
+            createMove(
+                input = "1",
+                properties = Move.T8Properties(isHoming = true),
+            ),
+        )
+        val expected = Result.Success(moves)
+
+        //when
+        val result = useCase.invoke(
+            wiki = FakeWikiClient(
+                character = Character(
+                    id = characterId,
+                    displayName = characterId,
+                    remoteQueryId = characterId,
+                    wikiUrl = "",
+                    aliasList = listOf(alias),
+                ),
+                moves = moves,
+            ),
+            charName = alias,
             filter = Filter.None,
         )
 
@@ -106,12 +146,19 @@ class GetMovesUseCaseTest {
         private val moves: List<Move> = emptyList(),
     ): WikiClient {
         override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
-            return character?.let { Result.Success(it) }
-                ?: Result.Error(WikiError.UnknownCharacter(""))
+            val matched = character?.takeIf {
+                characterQuery == it.id || characterQuery in it.aliasList
+            }
+            return matched?.let { Result.Success(it) }
+                ?: Result.Error(WikiError.UnknownCharacter(characterQuery))
         }
 
         override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> {
-            return Result.Success(moves)
+            return if (characterQuery == character?.id) {
+                Result.Success(moves)
+            } else {
+                Result.Error(WikiError.UnknownCharacter(characterQuery))
+            }
         }
 
         override suspend fun fetchMove(

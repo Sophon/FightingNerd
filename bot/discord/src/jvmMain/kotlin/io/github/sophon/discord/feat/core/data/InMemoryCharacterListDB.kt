@@ -12,9 +12,9 @@ internal class InMemoryCharacterListDB: CharacterListDB {
 
     override suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<io.github.sophon.core.wiki.data.WikiError> {
         characterList.forEach { character ->
-            database.put(key = character.id, value = character)
+            database[character.id] = character
             character.aliasList.forEach { alias ->
-                charNameAliasMap.put(key = alias, value = character.id)
+                charNameAliasMap[alias] = character.id
             }
         }
         return Result.Success(Unit)
