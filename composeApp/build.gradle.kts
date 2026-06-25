@@ -134,6 +134,12 @@ android {
             signingConfig = signingConfigs.getByName("debug") //TODO: replace with proper key
         }
     }
+    lint {
+        abortOnError = true
+        warningsAsErrors = false
+        checkDependencies = true
+        checkReleaseBuilds = true
+    }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
