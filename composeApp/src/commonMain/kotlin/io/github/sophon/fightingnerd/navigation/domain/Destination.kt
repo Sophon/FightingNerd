@@ -37,10 +37,8 @@ sealed interface Destination : NavKey {
     data object FeatureSettings : Destination
 }
 
-internal val topLevelOrder = listOf(
+internal val rootDestinations = listOf(
     Destination.Home,
-    Destination.Search,
-    Destination.Saved,
     Destination.QuizOverview,
     Destination.More,
 )
