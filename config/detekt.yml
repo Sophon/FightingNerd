@@ -5,6 +5,7 @@
 complexity:
   LongMethod:
     threshold: 150
+    excludes: ['**/*Test*/**']
   LongParameterList:
     functionThreshold: 16
     constructorThreshold: 16
