@@ -23,7 +23,6 @@ class GetMovesUseCaseTest {
     fun `useCase handles basic moves`() = runTest {
         //given
         val charName = "jin"
-        val predicate: (Move) -> Boolean = { it.t8Properties?.isHoming == true }
         val useCase = GetMovesUseCase()
         val moves = listOf(
             createMove(
@@ -88,15 +87,6 @@ class GetMovesUseCaseTest {
     }
 
     //region Fakes and helpers
-    private fun createCharacter(name: String): Character {
-        return Character(
-            id = name,
-            displayName = name,
-            remoteQueryId = name,
-            wikiUrl = "",
-        )
-    }
-
     private fun createMove(
         input: String,
         properties: Move.T8Properties,
@@ -114,8 +104,6 @@ class GetMovesUseCaseTest {
     private class FakeWikiClient(
         private val character: Character? = null,
         private val moves: List<Move> = emptyList(),
-        private val characterResult: Result<Character, WikiError>? = null,
-        private val moveListResult: Result<List<Move>, WikiError>? = null
     ): WikiClient {
         override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
             return character?.let { Result.Success(it) }

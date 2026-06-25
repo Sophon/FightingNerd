@@ -58,7 +58,6 @@ internal class TrackerImpl(
                 .onError { Napier.e(tag = TAG) { it.toString() } }
         }
         scheduleDaily()
-//        scheduleDailyTest()
 
         return reports.asSharedFlow()
     }
@@ -100,23 +99,6 @@ internal class TrackerImpl(
         scheduler.start(
             initialDelay = delay,
             period = 24.hours,
-            task = {
-                statsTracker.finalizeDay()
-                    .mapError { it.toDomainError() }
-            }
-        ).onEach { result ->
-            result
-                .onSuccess { dailyReport ->
-                    reports.emit(dailyReport)
-                }
-                .onError { Napier.e(tag = TAG) { it.toString() } }
-        }.launchIn(scope)
-    }
-
-    private fun scheduleDailyTest() {
-        scheduler.start(
-            initialDelay = 1.minutes,
-            period = 1.hours,
             task = {
                 statsTracker.finalizeDay()
                     .mapError { it.toDomainError() }

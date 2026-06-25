@@ -220,7 +220,7 @@ internal val featureRegistryModule = module {
     single<(Game) -> Pair<CharacterListDB, MoveListDB>> {
         return@single  { game ->
             val moveDB = InMemoryMoveListDB(game)
-            val characterDB = InMemoryCharacterListDB(game)
+            val characterDB = InMemoryCharacterListDB()
 
             characterDB to moveDB
         }
