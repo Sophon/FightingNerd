@@ -91,6 +91,7 @@ internal fun String.createQueryName(): String {
         .joinToString("_")
 }
 
+@Suppress("CyclomaticComplexMethod")
 internal fun String.createAliases(): List<String> {
     val meltyAliases = when (this.lowercase()) {
         "akiha tohno" -> listOf("akiha", "ak")
