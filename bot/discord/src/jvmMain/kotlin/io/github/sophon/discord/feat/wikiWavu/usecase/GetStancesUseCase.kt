@@ -88,6 +88,7 @@ internal class GetStancesUseCase(
         stance: String,
     ): Result<List<Move>, BotError> {
         val filter = object : Filter {
+            override val name: String = "Stance"
             override val predicate: (Move) -> Boolean = { move ->
                 move.t8Properties?.stance.equals(stance, ignoreCase = true)
             }
