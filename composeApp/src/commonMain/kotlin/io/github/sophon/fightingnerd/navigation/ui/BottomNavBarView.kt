@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.outlined.MoreHoriz
@@ -28,10 +27,10 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_character_list
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_more
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_quiz
-import fightingnerd.composeapp.generated.resources.bottom_bar_item_saved
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
 import io.github.sophon.fightingnerd.navigation.domain.BottomBarItem
 import io.github.sophon.fightingnerd.navigation.domain.Destination
+import io.github.sophon.fightingnerd.navigation.domain.rootDestinations
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -40,33 +39,26 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-internal val bottomBarItems = listOf(
-    BottomBarItem(
-        label = Res.string.bottom_bar_item_character_list,
-        icon = FlexibleIcon.Vector(Icons.Default.GridView),
-        destination = Destination.Home,
-    ),
-//    BottomBarItem(
-//        label = Res.string.bottom_bar_item_search,
-//        icon = FlexibleIcon.Vector(Icons.Default.Search),
-//        destination = Destination.Search,
-//    ),
-//    BottomBarItem(
-//        label = Res.string.bottom_bar_item_saved,
-//        icon = FlexibleIcon.Vector(Icons.Default.Bookmark),
-//        destination = Destination.Saved,
-//    ),
-    BottomBarItem(
-        label = Res.string.bottom_bar_item_quiz,
-        icon = FlexibleIcon.Vector(Icons.Default.Quiz),
-        destination = Destination.QuizOverview,
-    ),
-    BottomBarItem(
-        label = Res.string.bottom_bar_item_more,
-        icon = FlexibleIcon.Vector(Icons.Outlined.MoreHoriz),
-        destination = Destination.More,
-    ),
-)
+internal val bottomBarItems: List<BottomBarItem> = rootDestinations.map { destination ->
+    when (destination) {
+        Destination.Home -> BottomBarItem(
+            label = Res.string.bottom_bar_item_character_list,
+            icon = FlexibleIcon.Vector(Icons.Default.GridView),
+            destination = destination,
+        )
+        Destination.QuizOverview -> BottomBarItem(
+            label = Res.string.bottom_bar_item_quiz,
+            icon = FlexibleIcon.Vector(Icons.Default.Quiz),
+            destination = destination,
+        )
+        Destination.More -> BottomBarItem(
+            label = Res.string.bottom_bar_item_more,
+            icon = FlexibleIcon.Vector(Icons.Outlined.MoreHoriz),
+            destination = destination,
+        )
+        else -> error("topLevelOrder contains $destination but BottomNavBarView has no mapping for it")
+    }
+}
 
 
 @Composable

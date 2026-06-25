@@ -6,6 +6,7 @@ import io.github.sophon.core.wiki.model.Move
 
 object BBFilters {
     object Invincible: Filter {
+        override val name: String = "Invincible"
         override val predicate: (Move) -> Boolean = { move ->
             val isFullyFromFrameOne = move.invulnerability.orEmpty()
                 .split(",")
@@ -38,6 +39,7 @@ object BBFilters {
 
 object GGFilters {
     object Invincible: Filter {
+        override val name: String = "Invincible"
         override val predicate: (Move) -> Boolean = { move ->
             move.invulnerability?.isNotBlank() == true
         }

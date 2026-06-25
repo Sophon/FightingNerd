@@ -132,7 +132,7 @@ private fun ChipSection(
                 onClick = { onFilterChipClick(filter) },
                 label = {
                     Text(
-                        text = filter::class.simpleName?.uppercase() ?: "UNKNOWN",
+                        text = filter.name.uppercase(),
                         style = nerdTypography.labelMedium,
                         color = if (isActive) nerdColorPalette.accent else nerdColorPalette.textPrimary,
                     )

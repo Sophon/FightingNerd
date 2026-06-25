@@ -58,7 +58,7 @@ import io.github.sophon.fightingnerd.feat.move.ui.MoveListScreen
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewScreen
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
-import io.github.sophon.fightingnerd.navigation.domain.topLevelOrder
+import io.github.sophon.fightingnerd.navigation.domain.rootDestinations
 import io.github.sophon.fightingnerd.navigation.ui.BottomNavBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
 import io.github.sophon.fightingnerd.navigation.ui.bottomBarItems
@@ -161,10 +161,8 @@ private fun AppNavDisplay(
             rememberViewModelStoreNavEntryDecorator(),
         ),
         transitionSpec = {
-            val initial = initialState.key.toString()
-            val target = targetState.key.toString()
-            val from = bottomBarItems.indexOfFirst { it.destination::class.simpleName == initial }
-            val to = bottomBarItems.indexOfFirst { it.destination::class.simpleName == target }
+            val from = rootDestinations.indexOfFirst { it.toString() == initialState.key }
+            val to = rootDestinations.indexOfFirst { it.toString() == targetState.key }
             val bothTopLevel = (from >= 0) && (to >= 0)
             if (bothTopLevel) {
                 val goingForward = to > from
@@ -178,10 +176,8 @@ private fun AppNavDisplay(
             }
         },
         popTransitionSpec = {
-            val initial = initialState.key.toString()
-            val target = targetState.key.toString()
-            val from = bottomBarItems.indexOfFirst { it.destination::class.simpleName == initial }
-            val to = bottomBarItems.indexOfFirst { it.destination::class.simpleName == target }
+            val from = rootDestinations.indexOfFirst { it.toString() == initialState.key }
+            val to = rootDestinations.indexOfFirst { it.toString() == targetState.key }
             val bothTopLevel = (from >= 0) && (to >= 0)
             if (bothTopLevel) {
                 slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
