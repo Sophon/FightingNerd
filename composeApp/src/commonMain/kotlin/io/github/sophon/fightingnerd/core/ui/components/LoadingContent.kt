@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-internal fun LoadingContent(modifier: Modifier = Modifier) {
+internal fun LoadingContent() {
     Box(Modifier.fillMaxSize()) {
         CircularLoader(Modifier.size(128.dp).align(Alignment.Center))
     }
