@@ -76,6 +76,12 @@ class GetMovesUseCaseTest {
         //when
         val result = useCase.invoke(
             wiki = FakeWikiClient(
+                character = Character(
+                    id = charName,
+                    displayName = charName,
+                    remoteQueryId = charName,
+                    wikiUrl = "",
+                ),
                 moves = moves,
             ),
             charName = charName,
