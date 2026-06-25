@@ -6,8 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
@@ -33,20 +33,12 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
-import fightingnerd.composeapp.generated.resources.Res
-import fightingnerd.composeapp.generated.resources.move_list_field_damage
-import fightingnerd.composeapp.generated.resources.move_list_field_guard
-import fightingnerd.composeapp.generated.resources.move_list_field_on_block
-import fightingnerd.composeapp.generated.resources.move_list_field_on_counter
-import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
-import fightingnerd.composeapp.generated.resources.move_list_field_startup
-import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.move.model.Property
 import io.github.sophon.fightingnerd.feat.move.model.icon
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
 import io.github.sophon.fightingnerd.feat.move.ui.UiMove
+import io.github.sophon.fightingnerd.feat.move.ui.toUiMove
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.VideoPlayer
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
@@ -55,6 +47,8 @@ import io.github.sophon.fightingnerd.theme.nerdTypography
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+
+private const val COUNT_MAX_PER_ROW = 3
 
 @Composable
 internal fun MoveItem(
@@ -84,29 +78,27 @@ internal fun MoveItem(
             propertySet = uiMove.propertySet,
         )
 
-        InfoFieldRow(
-            fields = listOf(
-                stringResource(Res.string.move_list_field_startup) to uiMove.move.startup,
-                stringResource(Res.string.move_list_field_guard) to uiMove.move.guard,
-                stringResource(Res.string.move_list_field_damage) to uiMove.move.damage,
-            )
-        )
-        Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
-
-        InfoFieldRow(
-            fields = listOf(
-                stringResource(Res.string.move_list_field_on_hit) to uiMove.move.onHit,
-                stringResource(Res.string.move_list_field_on_block) to uiMove.move.onBlock,
-                stringResource(Res.string.move_list_field_on_counter) to uiMove.move.onCH,
-            )
-        )
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(nerdDimensions.inlineGap),
+            maxItemsInEachRow = COUNT_MAX_PER_ROW,
+            verticalArrangement = Arrangement.spacedBy(nerdDimensions.componentPaddingTight),
+        ) {
+            uiMove.coreFields.forEach { field ->
+                FieldColumn(
+                    field = field,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
 
         if (isExpandable) {
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
             ExpansionIndicator(isExpanded = isExpanded)
 
             if (isExpanded) {
-                Details(uiMove.move)
+                Details(uiMove)
             }
         }
     }
@@ -147,45 +139,21 @@ private fun Header(
 
 @Composable
 private fun FieldColumn(
-    label: String,
+    field: UiMove.Field,
     modifier: Modifier = Modifier,
-    content: @Composable () -> Unit,
 ) {
     Column(modifier = modifier) {
-        Box(modifier = Modifier.defaultMinSize(minHeight = 24.dp)) {
-            content()
-        }
         Text(
-            text = label.uppercase(),
+            text = field.value ?: "-",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.defaultMinSize(minHeight = 24.dp),
+        )
+        Text(
+            text = stringResource(field.label).uppercase(),
             style = nerdTypography.labelMedium,
             color = nerdColorPalette.textSecondary,
         )
-    }
-}
-
-@Composable
-private fun InfoFieldRow(
-    fields: List<Pair<String, String?>>,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(nerdDimensions.inlineGapTight),
-    ) {
-        fields.forEach { (label, value) ->
-            FieldColumn(
-                label = label,
-                modifier = Modifier.weight(1f),
-            ) {
-                Text(
-                    text = value ?: "-",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface,
-                )
-            }
-        }
     }
 }
 
@@ -236,31 +204,47 @@ private fun ExpansionIndicator(
 
 @Composable
 private fun Details(
-    move: Move,
+    uiMove: UiMove,
     modifier: Modifier = Modifier
 ) {
     Column(
         modifier = modifier,
     ) {
-        move.urls.videoId?.let { videoUrl ->
+        uiMove.move.urls.videoId?.let { videoUrl ->
             VideoPlayer(videoUrl)
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
         }
 
         when {
-            move.urls.hitboxImageList.isNotEmpty() -> {
-                MoveImage(move.urls.hitboxImageList.first())
+            uiMove.move.urls.hitboxImageList.isNotEmpty() -> {
+                MoveImage(uiMove.move.urls.hitboxImageList.first())
                 Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
             }
-            move.urls.moveImageList.isNotEmpty() -> {
-                MoveImage(move.urls.moveImageList.first())
+            uiMove.move.urls.moveImageList.isNotEmpty() -> {
+                MoveImage(uiMove.move.urls.moveImageList.first())
                 Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
             }
         }
 
-        //TODO: flow row of properties
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(nerdDimensions.inlineGapTight),
+            maxItemsInEachRow = COUNT_MAX_PER_ROW,
+            verticalArrangement = Arrangement.spacedBy(nerdDimensions.componentPaddingTight),
+        ) {
+            uiMove.optionalFields.forEach { field ->
+                FieldColumn(
+                    field = field,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+        if (uiMove.optionalFields.isNotEmpty()) {
+            Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+        }
 
-        move.notes.takeIf { it.isNotEmpty() }?.let { noteList ->
+        uiMove.move.notes.takeIf { it.isNotEmpty() }?.let { noteList ->
             NotesSection(noteList)
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
         }

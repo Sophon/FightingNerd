@@ -17,7 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.core.ui.components.LoadingContent
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.toUiMove
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveTopBar
