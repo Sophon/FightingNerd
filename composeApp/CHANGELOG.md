@@ -1,5 +1,9 @@
 # APP CHANGELOG
 
+## [v0.4.0] - 2026-06-25
+- `Move`
+  - more fields after expanding
+
 ## [v0.3.0] - 2026-06-24
 - `Move`
   - expandable to show videos or images
