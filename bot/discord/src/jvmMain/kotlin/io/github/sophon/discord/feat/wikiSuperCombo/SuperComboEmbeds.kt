@@ -162,6 +162,7 @@ private fun EmbedBuilder.createNotes(move: Move) {
     )
 }
 
+@Suppress("CyclomaticComplexMethod")
 private fun EmbedBuilder.createDetails(move: Move) {
     val properties = move.sf6Properties ?: return
 
