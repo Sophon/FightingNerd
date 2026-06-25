@@ -40,11 +40,12 @@ object CoreFilters {
         override val name: String = "OnBlock"
         override val predicate: (Move) -> Boolean = { move ->
             val value = move.onBlock?.firstIntOrNull()
-            if (value == null) {
+            val isValid = if (value == null) {
                 false
             } else {
                 (from == null || value >= from) && (to == null || value <= to)
             }
+            isValid
         }
     }
 }
