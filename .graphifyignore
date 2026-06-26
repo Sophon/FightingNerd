@@ -1,0 +1,56 @@
+# Build outputs
+build/
+**/build/
+.gradle/
+.kotlin/
+out/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# System
+.DS_Store
+
+# Docs (excluded — code-only graph)
+*.md
+*.mdx
+CHANGELOG.md
+PRIVACY.md
+TERMS.md
+LICENSE.txt
+
+# Diagrams
+mermaid/
+
+# Images
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.gif
+*.webp
+*.xcf
+*.pdf
+
+# Generated
+composeApp/schemas/
+
+# iOS Xcode project metadata (keep .swift sources)
+iosApp/iosApp.xcodeproj/
+iosApp/Configuration/
+
+# Local config and runtime artifacts
+local.properties
+commandLog.json
+*.db
+*.db.version
+
+# CI/CD and config
+.github/
+*.yml
+*.yaml
+
+# Graphify's own output (don't recursively scan)
+graphify-out/
