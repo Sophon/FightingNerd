@@ -53,7 +53,7 @@ git pull origin dev
 echo ""
 echo -e "${CYAN}Snapshotting dev into app_release...${NC}"
 git checkout app_release
-git rm -rf . > /dev/null
+git rm -rf . --ignore-unmatch > /dev/null
 git checkout dev -- .
 git add .
 git commit -m "${VERSION}"
