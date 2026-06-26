@@ -1,0 +1,28 @@
+CREATE TABLE player (
+    discordId TEXT NOT NULL PRIMARY KEY,
+    polarisId TEXT NOT NULL UNIQUE,
+    name TEXT
+);
+
+getPlayerByDiscordId:
+SELECT *
+FROM player
+WHERE discordId = ?;
+
+getPlayerByPolarisId:
+SELECT *
+FROM player
+WHERE polarisId = ?;
+
+upsertPlayer:
+INSERT OR REPLACE INTO player (discordId, polarisId, name)
+VALUES (?, ?, ?);
+
+delete:
+DELETE FROM player
+WHERE discordId = ?;
+
+updatePolarisId:
+UPDATE player
+SET polarisId = ?
+WHERE discordId = ?;

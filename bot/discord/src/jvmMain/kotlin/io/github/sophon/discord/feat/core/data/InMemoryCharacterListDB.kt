@@ -1,0 +1,44 @@
+package io.github.sophon.discord.feat.core.data
+
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.model.Character
+
+internal class InMemoryCharacterListDB: CharacterListDB {
+    private var database: MutableMap<String, Character> = mutableMapOf()
+    private val charNameAliasMap: MutableMap<String, String> = mutableMapOf()
+
+    override suspend fun insertCharacterList(characterList: List<Character>): EmptyResult<io.github.sophon.core.wiki.data.WikiError> {
+        characterList.forEach { character ->
+            database[character.id] = character
+            character.aliasList.forEach { alias ->
+                charNameAliasMap[alias] = character.id
+            }
+        }
+        return Result.Success(Unit)
+    }
+
+    override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> {
+        return Result.Success(database.values.toList())
+    }
+
+    override suspend fun wipe(): EmptyResult<WikiError> {
+        database.clear()
+        return Result.Success(Unit)
+    }
+
+    override suspend fun fetchCharacterDataFor(characterQuery: String): Result<Character, WikiError> {
+        val characterId = if (database.containsKey(characterQuery)) {
+            characterQuery
+        } else {
+            charNameAliasMap[characterQuery]
+        }
+
+        val character: Character = database[characterId]
+            ?: return Result.Error(WikiError.UnknownCharacter(characterQuery))
+
+        return Result.Success(character)
+    }
+}

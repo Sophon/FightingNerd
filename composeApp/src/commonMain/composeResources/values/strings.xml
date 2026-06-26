@@ -1,0 +1,51 @@
+<!--WHERE - DESCRIPTION-->
+
+<resources>
+    <string name="bottom_bar_item_character_list">Data</string>
+    <string name="bottom_bar_item_search">Search</string>
+    <string name="bottom_bar_item_saved">Saved</string>
+    <string name="bottom_bar_item_quiz">Quiz</string>
+    <string name="bottom_bar_item_more">More</string>
+
+    <string name="move_list_search_hint">Search</string>
+    <string name="move_list_field_startup">Startup</string>
+    <string name="move_list_field_guard">Guard</string>
+    <string name="move_list_field_damage">Damage</string>
+    <string name="move_list_field_properties">Properties</string>
+    <string name="move_list_field_on_hit">On Hit</string>
+    <string name="move_list_field_on_block">On Block</string>
+    <string name="move_list_field_on_counter">On Counter</string>
+    <string name="move_list_field_label_recovery">Recovery</string>
+    <string name="move_list_field_label_invulnerability">Invulnerability</string>
+    <string name="move_list_field_label_chip">Chip</string>
+    <string name="move_list_field_label_stun">Stun</string>
+    <string name="move_list_field_label_rev_damage">Rev damage</string>
+    <string name="move_list_field_label_meter">Meter</string>
+    <string name="move_list_field_label_property">Property</string>
+    <string name="move_list_field_label_level">Level</string>
+    <string name="move_list_field_label_type">Type</string>
+    <string name="move_list_field_label_cancel">Cancel</string>
+    <string name="move_list_field_label_chi">Chi</string>
+    <string name="move_list_field_label_flow">Flow</string>
+    <string name="move_list_filter_button_clear">Clear</string>
+    <string name="move_list_filter_label_startup">Startup</string>
+    <string name="move_list_filter_label_on_block">On Block</string>
+    <string name="move_list_filter_label_on_hit">On Hit</string>
+    <string name="move_list_filter_min">Min</string>
+    <string name="move_list_filter_max">Max</string>
+
+    <string name="quiz_frame_dat_label_startup">Startup</string>
+    <string name="quiz_frame_dat_label_on_block">OB</string>
+    <string name="quiz_frame_dat_label_on_hit">OH</string>
+    <string name="quiz_frame_dat_label_counter">CH</string>
+
+    <string name="more_item_theme_select">Theme</string>
+    <string name="more_theme_dialog_title">Select theme</string>
+    <string name ="more_theme_dialog_default">Fighting Nerd</string>
+    <string name="more_theme_dialog_system">System</string>
+    <string name="more_theme_dialog_dark">Dark</string>
+    <string name="more_theme_dialog_light">Light</string>
+    <string name="more_item_feature_settings">Feature settings</string>
+    <string name="more_donate">Donate</string>
+    <string name="more_donate_dialog_title">Thanks! Pick method below: </string>
+</resources>

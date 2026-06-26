@@ -1,0 +1,79 @@
+{
+  "featureList": [
+    {
+      "name": "EWGF",
+      "isEnabled": true,
+      "supportedGames": []
+    },
+    {
+      "name": "Infil Glossary",
+      "isEnabled": true,
+      "supportedGames": []
+    },
+    {
+      "name": "Wavu Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "Tekken_8"
+      ]
+    },
+    {
+      "name": "SuperCombo Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "Street_Fighter_6",
+        "Mortal_Kombat_1",
+        "Avatar_Legends"
+      ]
+    },
+    {
+      "name": "2XKO Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "XKO"
+      ]
+    },
+    {
+      "name": "DreamCancel Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "The_King_of_Fighters_XV",
+        "Fatal_Fury:_City_of_the_Wolves"
+      ]
+    },
+    {
+      "name": "DustLoop Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "GGST",
+        "GBVSR",
+        "DBFZ",
+        "BBCF"
+      ]
+    },
+    {
+      "name": "Mizuumi Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "MBTL",
+        "UNI2",
+        "VSAV"
+      ]
+    }
+  ],
+  "adminConfig": {
+    "administratorIdList": [
+      "126041495038853120"
+    ],
+    "feedbackChannelIdList": [
+      "1118576752042713148"
+    ],
+    "adminServerId": "717398042562658344"
+  },
+  "statsConfig": {
+    "isEnabled": true,
+    "statsChannelIdList": [
+      "1480723668039503994"
+    ]
+  }
+}

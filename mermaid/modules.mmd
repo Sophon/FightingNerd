@@ -1,0 +1,112 @@
+graph LR
+    classDef green fill:green,color:#000
+    classDef grey fill:lightgrey,color:#000
+    classDef yellow fill:#FFEB3B,color:#000
+
+    subgraph Bots
+        discordBot[Discord bot]
+        twitchBot[Twitch bot]
+    end
+
+    subgraph "Mobile Clients"
+        android[Android]
+        iOS[iOS]
+    end
+
+    subgraph Features
+        glossaryInfil[Glossary Infil]
+        communityWiki[Community Wiki]
+        elo[Ranked stats]
+    end
+
+    subgraph Community Wiki
+        wikiWavu[Wavu + Tekken Docs]
+        supercombo[SuperCombo]
+        2xko[2XKO]
+        dustloop[Dustloop]
+        dreamcancel[DreamCancel]
+        mizuumi[Mizuumi]
+    end
+
+    subgraph Games
+        t8[Tekken 8]
+        sf6[Street Fighter 6]
+        mk1[Mortal Kombat 1]
+        ggst[Guilty Gear: Strive]
+        dbfz[Dragon Ball FighterZ]
+        gbvsr[Granblue Fantasy Versus: Rising]
+        kof15[King of Fighters XV]
+        cotw[Fatal Fury: City of the Wolves]
+        xko[2XKO]
+        melty[Melty Blood: Type Lumina]
+        bbcf[BlazBlue: Central Fiction]
+        uni2[Under Night In-Birth II Sys:Celes]
+        vsav[Vampire Savior]
+        avl[Avatar: Legends]
+    end
+
+    subgraph Ranked service
+        ewgf[EWGF]
+        cfn[CFN]
+    end
+
+    android -->|uses| communityWiki
+    iOS -->|uses| communityWiki
+
+    discordBot -->|uses| glossaryInfil
+    discordBot -->|uses| communityWiki
+    discordBot -->|uses| elo
+    twitchBot -->|uses| communityWiki
+
+    communityWiki --> wikiWavu
+    communityWiki --> supercombo
+    communityWiki --> 2xko
+    communityWiki --> dreamcancel
+    communityWiki --> dustloop
+    communityWiki --> mizuumi
+
+    elo --> ewgf
+    elo --> cfn
+
+    wikiWavu --> t8
+    supercombo --> sf6
+    supercombo --> mk1
+    supercombo --> avl
+    dustloop --> ggst
+    dustloop --> dbfz
+    dustloop --> gbvsr
+    dustloop --> bbcf
+    2xko --> xko
+    dreamcancel --> kof15
+    dreamcancel --> cotw
+    mizuumi --> melty
+    mizuumi --> uni2
+    mizuumi --> vsav
+
+
+    style discordBot fill:green,stroke:#2563EB, color:#fff
+    style android fill:yellow,stroke:green, color:#000
+    style iOS fill:yellow,stroke:green, color:#000
+    style glossaryInfil fill:green, color:#fff
+    style communityWiki fill:green, color:#fff
+    style wikiWavu fill:green, color:#fff
+    style supercombo fill:green, color:#fff
+    style dreamcancel fill:green, color:#fff
+    style dustloop fill:green, color:#fff
+    style mizuumi fill:green, color:#fff
+    style 2xko fill:green, color:#fff
+    style t8 fill:green, color:#fff
+    style sf6 fill:green, color:#fff
+    style xko fill:green, color:#fff
+    style kof15 fill:green, color:#fff
+    style cotw fill:green, color:#fff
+    style ggst fill:green, color:#fff
+    style mk1 fill:green, color:#fff
+    style dbfz fill:green, color:#fff
+    style gbvsr fill:green, color:#fff
+    style melty fill:green, color:#fff
+    style bbcf fill:green, color:#fff
+    style uni2 fill:green, color:#fff
+    style vsav fill:green, color:#fff
+    style ewgf fill:green, color:#fff
+    style avl fill:yellow, color:#000

@@ -1,0 +1,24 @@
+# fly.toml app configuration file generated for fightingnerd on 2025-11-17T19:14:04+01:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'fightingnerd'
+primary_region = 'fra'
+
+[build]
+
+[env]
+    ENV = "production"
+    BANLIST_DATABASE_PATH = "/data/banlist.db"
+    EWGF_DATABASE_PATH = "/data/playerlist.db"
+    COMMAND_LOG_PATH = "/data/commandLog.json"
+
+[[vm]]
+  memory = '1024mb'
+  cpu_kind = 'shared'
+  cpus = 1
+
+[mounts]
+source = "admin_data"
+destination = "/data"

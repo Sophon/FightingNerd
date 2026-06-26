@@ -1,0 +1,199 @@
+package io.github.sophon.fightingnerd.feat.move.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.fightingnerd.core.ui.components.LoadingContent
+import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
+import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
+import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveTopBar
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdDimensions
+import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.viewmodel.koinViewModel
+import org.koin.core.parameter.parametersOf
+
+@Composable
+internal fun MoveListScreen(
+    gameId: String,
+    characterId: String,
+    onExit: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val vm = koinViewModel<MoveListVM>(
+        parameters = { parametersOf(gameId, characterId) }
+    )
+    val state by vm.state.collectAsStateWithLifecycle()
+    val filteredMoves by vm.filteredMoves.collectAsStateWithLifecycle()
+
+    Content(
+        state = state,
+        onExit = onExit,
+        moveList = filteredMoves,
+        onMoveClick = vm::onMoveClick,
+        searchQuery = state.searchQuery,
+        onSearch = vm::onSearchInput,
+        onFilterClick = vm::onDisplayFilter,
+        onClearFilters = vm::onClearFilters,
+        onFilterChipClick = vm::toggleFilter,
+        onChangeStartup = vm::onChangeStartup,
+        onChangeOnBlock = vm::onChangeOnBlock,
+        onChangeOnHit = vm::onChangeOnHit,
+        modifier = modifier,
+    )
+}
+
+@Composable
+private fun Content(
+    state: MoveListState,
+    onExit: () -> Unit,
+    moveList: List<UiMove>,
+    onMoveClick: (moveId: String) -> Unit,
+    searchQuery: String?,
+    onSearch: (query: String?) -> Unit,
+    onFilterClick: (Boolean) -> Unit,
+    onFilterChipClick: (Filter) -> Unit,
+    onClearFilters: () -> Unit,
+    onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Scaffold(
+        topBar = {
+            MoveTopBar(
+                onExit = onExit,
+                characterName = state.character?.displayName.orEmpty(),
+                searchQuery = searchQuery,
+                onSearch = onSearch,
+                onDisplayFilterSheet = { onFilterClick(true) },
+            )
+        },
+        modifier = modifier,
+    ) { paddingValues ->
+        if (state.isLoading) {
+            LoadingContent()
+        } else {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .background(MaterialTheme.colorScheme.surface),
+            ) {
+                MoveList(
+                    moveList = moveList,
+                    onMoveClick = onMoveClick,
+                    expandedMoveId = state.expandedMoveId,
+                )
+
+                if (state.filterSheet.isVisible) {
+                    FilterBottomSheet(
+                        filterSheet = state.filterSheet,
+                        onClear = onClearFilters,
+                        onFilterChipClick = onFilterChipClick,
+                        onChangeStartup = onChangeStartup,
+                        onChangeOnBlock = onChangeOnBlock,
+                        onChangeOnHit = onChangeOnHit,
+                        onDismiss = { onFilterClick(false) },
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun MoveList(
+    moveList: List<UiMove>,
+    expandedMoveId: String?,
+    onMoveClick: (moveId: String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val listState = rememberLazyListState()
+    LaunchedEffect(moveList) {
+        listState.scrollToItem(0)
+    }
+    LazyColumn(
+        state = listState,
+        verticalArrangement = Arrangement.spacedBy(nerdDimensions.listRowPaddingVertical),
+        modifier = modifier
+            .padding(horizontal = nerdDimensions.screenPaddingHorizontal),
+    ) {
+        items(
+            items = moveList,
+            key = { it.move.id },
+        ) { uiMove ->
+            MoveItem(
+                uiMove = uiMove,
+                onMoveClick = { onMoveClick(uiMove.move.id) },
+                isExpanded = (uiMove.move.id == expandedMoveId)
+            )
+        }
+    }
+}
+
+
+//region PREVIEW
+@Composable
+@Preview
+private fun MoveListPreview() {
+    val moveList = MoveListState.PREVIEW.fullMoveList.values.map {
+        it.toUiMove()
+    }
+    FightingNerdTheme {
+        val state = MoveListState.PREVIEW
+        Content(
+            state = state,
+            onExit = {},
+            moveList = moveList,
+            onMoveClick = {},
+            searchQuery = null,
+            onFilterClick = {},
+            onFilterChipClick = {},
+            onChangeStartup = {},
+            onChangeOnBlock = {},
+            onChangeOnHit = {},
+            onClearFilters = {},
+            onSearch = {},
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun MoveListSearchPreview() {
+    val moveList = MoveListState.PREVIEW.fullMoveList.values.map {
+        it.toUiMove()
+    }
+    FightingNerdTheme {
+        val state = MoveListState.PREVIEW
+        Content(
+            state = state,
+            onExit = {},
+            moveList = moveList,
+            onMoveClick = {},
+            searchQuery = "",
+            onFilterClick = {},
+            onFilterChipClick = {},
+            onChangeStartup = {},
+            onChangeOnBlock = {},
+            onChangeOnHit = {},
+            onClearFilters = {},
+            onSearch = {},
+        )
+    }
+}
+//endregion

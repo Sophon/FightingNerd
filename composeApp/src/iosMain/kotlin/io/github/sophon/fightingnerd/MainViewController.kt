@@ -1,0 +1,18 @@
+package io.github.sophon.fightingnerd
+
+import androidx.compose.ui.window.ComposeUIViewController
+import io.github.aakira.napier.DebugAntilog
+import io.github.aakira.napier.Napier
+
+private var koinInitialized = false
+
+@Suppress("FunctionNaming")
+fun MainViewController() = ComposeUIViewController {
+    if (koinInitialized.not()) {
+        Napier.base(DebugAntilog())
+        initKoin()
+        koinInitialized = true
+    }
+
+    App()
+}

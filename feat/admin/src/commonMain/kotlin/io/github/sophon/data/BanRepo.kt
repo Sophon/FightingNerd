@@ -1,0 +1,31 @@
+package io.github.sophon.data
+
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.integration.model.AdminError
+import io.github.sophon.integration.model.Ban
+import kotlin.time.Duration
+
+internal interface BanRepo {
+    suspend fun ban(
+        offenderId: String,
+        duration: Duration,
+        authorId: String,
+        preventBotUsage: Boolean,
+    ): Result<Ban, AdminError.DatabaseError>
+
+    suspend fun getBanStatus(offenderId: String): Result<Ban?, AdminError.DatabaseError>
+
+    suspend fun getBanList(): Result<List<Ban>, AdminError.DatabaseError>
+
+    suspend fun unban(offenderId: String): EmptyResult<AdminError.DatabaseError>
+
+    suspend fun updatePenalty(
+        offenderId: String,
+        duration: Duration,
+        authorId: String,
+        preventBotUsage: Boolean,
+    ): Result<Ban, AdminError.DatabaseError>
+
+    suspend fun cleanExpiredBans(): EmptyResult<AdminError.DatabaseError>
+}
