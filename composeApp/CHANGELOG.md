@@ -1,5 +1,8 @@
 # APP CHANGELOG
 
+## [v1.0.0] - 2026-06-26
+- initial internal testing release
+
 ## [v0.4.0] - 2026-06-26
 - reduced apk size with obfuscation and minimization
 - `Move`
