@@ -101,3 +101,7 @@ lint/tmp/
 *.db-wal
 *.db.version
 
+# Graphify local artifacts (keep graph.json tracked for the merge driver)
+graphify-out/*
+!graphify-out/graph.json
+
