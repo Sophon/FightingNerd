@@ -2,6 +2,21 @@ import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val appVersionName: String = (project.properties["app.version.name"] as? String) ?: "1.0.0-dev"
+val appVersionCode: Int = (project.properties["app.version.code"] as? String)?.toInt() ?: 1
+
+val releaseKeystorePath: String = System.getenv("KEYSTORE_PATH").orEmpty()
+val releaseKeystorePassword: String = System.getenv("KEYSTORE_PASSWORD").orEmpty()
+val releaseKeyAlias: String = System.getenv("KEY_ALIAS").orEmpty()
+val releaseKeyPassword: String = System.getenv("KEY_PASSWORD").orEmpty()
+
+val hasReleaseSigning: Boolean = listOf(
+    releaseKeystorePath,
+    releaseKeystorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { it.isNotEmpty() }
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
@@ -12,8 +27,6 @@ plugins {
     alias(libs.plugins.buildkonfig)
     alias(libs.plugins.sqldelight)
 }
-
-val appVersionName = project.properties["app.version.name"] as String
 
 kotlin {
     androidTarget {
@@ -33,7 +46,7 @@ kotlin {
             binaryOption("bundleShortVersionString", appVersionName)
         }
     }
-    
+
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
@@ -116,6 +129,7 @@ android {
         applicationId = "io.github.sophon.fightingnerd"
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
+        versionCode = appVersionCode
         versionName = appVersionName
     }
     packaging {
@@ -123,6 +137,18 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = file(releaseKeystorePath)
+                storePassword = releaseKeystorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true
@@ -131,7 +157,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
             )
-            signingConfig = signingConfigs.getByName("debug") //TODO: replace with proper key
+            signingConfig = if (hasReleaseSigning) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
     lint {
@@ -143,6 +173,15 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    applicationVariants.all {
+        if (buildType.name == "release") {
+            outputs.all {
+                val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+                output.outputFileName = "FightingNerd-$appVersionName.apk"
+            }
+        }
     }
 }
 
