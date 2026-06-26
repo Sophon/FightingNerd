@@ -110,6 +110,10 @@ Kord based. Hosted on cloud via Fly.io (`fly.toml`)
   - for tag, the command is optional
     - if the first word following the tag is a command, use that command - same as slash
     - if the first word is not a command, use each feature's default command
+  - per-feature iteration outcomes:
+    - Success → return, done
+    - Error.UnknownMove → return (the feature's wiki matched the character but not the move; this is how we disambiguate when the same command name is registered by multiple wiki features)
+    - any other Error → continue to next feature
 
 ## Infrastructure
 - tests
