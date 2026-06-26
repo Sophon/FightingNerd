@@ -5,6 +5,7 @@ import io.github.sophon.core.wiki.model.Move
 
 object MBFilters {
     object Invincible: Filter {
+        override val name: String = "Invincible"
         override val predicate: (Move) -> Boolean = { move ->
             move.invulnerability.orEmpty().run {
                 isNotEmpty()
@@ -32,6 +33,7 @@ object MBFilters {
 
 object UniFilters {
     object Invincible: Filter {
+        override val name: String = "Invincible"
         override val predicate: (Move) -> Boolean = { it.invulnerability?.isNotEmpty() == true }
     }
 
@@ -44,6 +46,7 @@ object UniFilters {
 
 object VSAVFilters {
     object Invincible: Filter {
+        override val name: String = "Invincible"
         override val predicate: (Move) -> Boolean = { move ->
             move.invulnerability.orEmpty().run {
                 isNotEmpty() && isFullBodyInv()

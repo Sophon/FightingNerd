@@ -1,8 +1,10 @@
 # APP CHANGELOG
 
-## [v0.4.0] - 2026-06-25
+## [v0.4.0] - 2026-06-26
+- reduced apk size with obfuscation and minimization
 - `Move`
   - more fields after expanding
+- fixed navigation animations
 
 ## [v0.3.0] - 2026-06-24
 - `Move`
