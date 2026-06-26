@@ -49,7 +49,7 @@ internal class RouteCommandToFeatureUseCase(
         val result = useExplicitCommands(
             source,
             commandString,
-            query,
+            query.lowercase(),
         )
         return result
     }
