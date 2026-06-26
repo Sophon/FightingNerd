@@ -49,7 +49,7 @@ class RouteCommandToFeatureUseCaseTest {
             return when (command) {
                 Command.Fd -> {
                     val parts = query.split(" ")
-                    val charName = parts.firstOrNull()?.lowercase()
+                    val charName = parts.firstOrNull()
 
                     if (charName !in tekkenChars) {
                         Result.Error(BotError.UnknownCharacter(charName.orEmpty()))
@@ -60,7 +60,7 @@ class RouteCommandToFeatureUseCaseTest {
                     }
                 }
                 Command.Pc, Command.Heat, Command.Homing -> {
-                    val charName = query.lowercase()
+                    val charName = query
                     if (charName in tekkenChars) {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "Wavu ${command.name}: $query" }))
                     } else {
@@ -428,6 +428,19 @@ class RouteCommandToFeatureUseCaseTest {
         val query = "jin"
         // when
         val result = useCase.invoke(commandString, Source("", "", ""), query)
+        // then
+        assertThat(result).isInstanceOf(Result.Success::class)
+    }
+
+    @Test
+    fun `slash command invoke lowercases the query before routing to feature`() = runTest {
+        // given
+        val commandString = "fd"
+        val query = "JIN F21"
+
+        // when
+        val result = useCase.invoke(commandString, Source("", "", ""), query)
+
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
     }
