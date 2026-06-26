@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v12.1.4] - 2026-06-27
+- fixed slash commands requiring lowercase query
+
 ## [v12.1.3] - 2026-06-25
 - `Wavu` - fixed move-list commands (`heat`, `pc` etc) requiring ID instead of alias
 
