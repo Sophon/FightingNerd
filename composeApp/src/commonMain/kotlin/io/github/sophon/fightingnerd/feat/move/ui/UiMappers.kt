@@ -1,6 +1,14 @@
 package io.github.sophon.fightingnerd.feat.move.ui
 
 import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.compose_multiplatform
+import fightingnerd.composeapp.generated.resources.ic_tk_cs
+import fightingnerd.composeapp.generated.resources.ic_tk_floor
+import fightingnerd.composeapp.generated.resources.ic_tk_heat
+import fightingnerd.composeapp.generated.resources.ic_tk_homing
+import fightingnerd.composeapp.generated.resources.ic_tk_pc
+import fightingnerd.composeapp.generated.resources.ic_tk_throw
+import fightingnerd.composeapp.generated.resources.ic_tk_wall
 import fightingnerd.composeapp.generated.resources.move_list_field_damage
 import fightingnerd.composeapp.generated.resources.move_list_field_guard
 import fightingnerd.composeapp.generated.resources.move_list_field_label_cancel
@@ -21,6 +29,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
+import org.jetbrains.compose.resources.DrawableResource
 
 internal fun Move.toUiMove(): UiMove {
     val result = UiMove(
@@ -34,6 +43,8 @@ internal fun Move.toUiMove(): UiMove {
                 if (props.isPowerCrush) add(Property.PowerCrush)
                 if (props.isHighCrush) add(Property.HighCrush)
                 if (props.isLowCrush) add(Property.LowCrush)
+                if (props.hasWallInteraction) add(Property.Wall)
+                if (props.hasFloorInteraction) add(Property.Floor)
             }
             if (isThrow) { add(Property.Throw) }
         },
@@ -78,4 +89,18 @@ private fun Move.createOptionalFields(): List<UiMove.Field> {
     }
 
     return list
+}
+
+internal fun Property.icon(): DrawableResource {
+    return when (this) {
+        Property.Invincible -> Res.drawable.ic_tk_pc //TODO:
+        Property.PowerCrush -> Res.drawable.ic_tk_pc
+        Property.Homing -> Res.drawable.ic_tk_homing
+        Property.HighCrush -> Res.drawable.ic_tk_cs
+        Property.LowCrush -> Res.drawable.compose_multiplatform //TODO
+        Property.Heat -> Res.drawable.ic_tk_heat
+        Property.Throw -> Res.drawable.ic_tk_throw
+        Property.Wall -> Res.drawable.ic_tk_wall
+        Property.Floor -> Res.drawable.ic_tk_floor
+    }
 }
