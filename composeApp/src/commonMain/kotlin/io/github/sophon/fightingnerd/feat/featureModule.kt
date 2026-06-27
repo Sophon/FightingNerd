@@ -1,6 +1,7 @@
 package io.github.sophon.fightingnerd.feat
 
 import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
+import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
@@ -31,6 +32,7 @@ internal fun featureModule() = module {
 
     //region Home
     viewModelOf(::HomeVM)
+    singleOf(::CheckIfFirstLaunchUseCase)
     singleOf(::LoadEmptyWidgetsUseCase)
     singleOf(::LoadGameCharacterListUseCase)
     singleOf(::EnsureMoveListIsCached)
