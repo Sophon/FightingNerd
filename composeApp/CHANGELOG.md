@@ -2,6 +2,8 @@
 
 ## [v1.0.1] - TODO
 - added icon for jumping state
+- fixed the bug where toasts showed nonsensical content
+  - the cause is still unknown but with proper errors shown, we can narrow it down in the future
 
 ## [v1.0.0] - 2026-06-26
 - initial internal testing release
