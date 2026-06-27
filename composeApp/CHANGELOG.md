@@ -1,6 +1,7 @@
 # APP CHANGELOG
 
 ## [v1.0.0] (3) - TODO
+- only load `SF6`, `T8` and `GGST` on the first launch
 - added icon for jumping state
 - fixed the bug where toasts showed nonsensical content
   - the cause is still unknown but with proper errors shown, we can narrow it down in the future
