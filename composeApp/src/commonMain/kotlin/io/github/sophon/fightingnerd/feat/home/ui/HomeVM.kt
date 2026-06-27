@@ -21,10 +21,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
 import kotlinx.collections.immutable.toImmutableList
 
 internal class HomeVM(
     private val overlayService: OverlayService,
+    private val checkIfFirstLaunchUseCase: CheckIfFirstLaunchUseCase,
     private val loadEmptyWidgetsUseCase: LoadEmptyWidgetsUseCase,
     private val loadGameCharacterListUseCase: LoadGameCharacterListUseCase,
     private val ensureMoveListIsCached: EnsureMoveListIsCached,
@@ -63,6 +65,7 @@ internal class HomeVM(
 
     private fun loadWidgets() {
         viewModelScope.launch {
+            checkIfFirstLaunchUseCase.invoke()
             loadEmptyWidgetsUseCase.invoke().collect { result ->
                 result
                     .onSuccess { loadedWidgetList ->
