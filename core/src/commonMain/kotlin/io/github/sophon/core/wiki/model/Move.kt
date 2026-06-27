@@ -56,6 +56,8 @@ data class Move(
         val isPowerCrush: Boolean = false,
         val isHighCrush: Boolean = false,
         val isLowCrush: Boolean = false,
+        val hasWallInteraction: Boolean = false,
+        val hasFloorInteraction: Boolean = false,
     )
 
     @Serializable
