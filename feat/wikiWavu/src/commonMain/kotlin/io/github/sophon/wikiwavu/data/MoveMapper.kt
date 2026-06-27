@@ -292,6 +292,8 @@ private fun formProperties(
     val stance = input.getStance()
     val isHighCrush = notes.any { it.contains("cs") }
     val isLowCrush = notes.any { it.contains("js") }
+    val hasWallInteraction = notes.any { it.contains("balcony break", ignoreCase = true) }
+    val hasFloorInteraction = notes.any { it.contains("floor break", ignoreCase = true) }
 
     val properties = Move.T8Properties(
         isHeat = isHeat,
@@ -300,6 +302,8 @@ private fun formProperties(
         isPowerCrush = isPowerCrush,
         isHighCrush = isHighCrush,
         isLowCrush = isLowCrush,
+        hasWallInteraction = hasWallInteraction,
+        hasFloorInteraction = hasFloorInteraction,
     )
     return properties
 }
