@@ -183,7 +183,7 @@ private fun Properties(
             Image(
                 painter = painterResource(property.icon()),
                 contentDescription = property.name,
-                modifier = Modifier.size(nerdDimensions.iconInline),
+                modifier = Modifier.size(nerdDimensions.iconDefault),
             )
         }
     }
