@@ -6,6 +6,7 @@ import fightingnerd.composeapp.generated.resources.ic_tk_cs
 import fightingnerd.composeapp.generated.resources.ic_tk_floor
 import fightingnerd.composeapp.generated.resources.ic_tk_heat
 import fightingnerd.composeapp.generated.resources.ic_tk_homing
+import fightingnerd.composeapp.generated.resources.ic_tk_js
 import fightingnerd.composeapp.generated.resources.ic_tk_pc
 import fightingnerd.composeapp.generated.resources.ic_tk_throw
 import fightingnerd.composeapp.generated.resources.ic_tk_wall
@@ -97,7 +98,7 @@ internal fun Property.icon(): DrawableResource {
         Property.PowerCrush -> Res.drawable.ic_tk_pc
         Property.Homing -> Res.drawable.ic_tk_homing
         Property.HighCrush -> Res.drawable.ic_tk_cs
-        Property.LowCrush -> Res.drawable.compose_multiplatform //TODO
+        Property.LowCrush -> Res.drawable.ic_tk_js
         Property.Heat -> Res.drawable.ic_tk_heat
         Property.Throw -> Res.drawable.ic_tk_throw
         Property.Wall -> Res.drawable.ic_tk_wall
