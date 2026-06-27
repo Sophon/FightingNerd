@@ -1,11 +1,14 @@
 # APP CHANGELOG
 
-## [v1.0.1] - TODO
+## [v1.0.0] (3) - TODO
 - added icon for jumping state
 - fixed the bug where toasts showed nonsensical content
   - the cause is still unknown but with proper errors shown, we can narrow it down in the future
+- `Move`
+  - increased property icon size
+  - added move name if available
 
-## [v1.0.0] - 2026-06-26
+## [v1.0.0] - TODO
 - initial internal testing release
 
 ## [v0.4.0] - 2026-06-26
