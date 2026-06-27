@@ -75,6 +75,7 @@ internal fun MoveItem(
     ) {
         Header(
             input = uiMove.move.input,
+            name = uiMove.move.name,
             propertySet = uiMove.propertySet,
         )
 
@@ -107,6 +108,7 @@ internal fun MoveItem(
 @Composable
 private fun Header(
     input: String,
+    name: String?,
     propertySet: Set<Property>,
     modifier: Modifier = Modifier,
 ) {
@@ -127,6 +129,16 @@ private fun Header(
             Properties(
                 propertySet = propertySet
             )
+        }
+
+        if (name.isNullOrBlank().not()) {
+            Spacer(Modifier.height(nerdDimensions.componentGapTight))
+            Text(
+                text = name,
+                style = nerdTypography.labelSmall,
+                color = nerdColorPalette.textSecondary,
+            )
+            Spacer(Modifier.height(nerdDimensions.componentGapTight))
         }
 
         HorizontalDivider(
