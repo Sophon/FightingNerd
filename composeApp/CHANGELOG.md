@@ -1,5 +1,8 @@
 # APP CHANGELOG
 
+## [v1.0.1] - TODO
+- added icon for jumping state
+
 ## [v1.0.0] - 2026-06-26
 - initial internal testing release
 
