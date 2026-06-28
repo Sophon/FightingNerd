@@ -14,14 +14,11 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
-import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.feat.wikiDustLoop.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
-import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikidragdown.integration.DragDownFeatureInfo
@@ -35,7 +32,6 @@ internal class DragDownWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-    private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
@@ -126,7 +122,20 @@ internal class DragDownWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         val result = getMoveUseCase.invoke(wiki, query)
             .map { (character, move) ->
-                createMoveEmbedUseCase.invoke(game, character ,move, featureInfo)
+                val images = move.urls.hitboxImageList
+                    .takeIf { it.size >= 2 }
+                    ?.let {
+                        BotOutput.Images(
+                            title = move.input,
+                            titleUrl = move.urls.wikiUrl,
+                            urls = it,
+                        )
+                    }
+
+                BotOutput(
+                    primaryEmbedBuilder = dragDownMoveEmbed(character, move, featureInfo),
+                    images = images,
+                )
             }
         return result
     }
@@ -134,6 +143,5 @@ internal class DragDownWikiDiscordFeature(
 
     private companion object {
         const val TAG = "DragDownWikiDiscordFeature"
-        const val TEAL = 0x002893F0
     }
 }
