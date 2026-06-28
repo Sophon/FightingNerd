@@ -39,6 +39,7 @@ data class Move(
     val uni2Properties: Uni2Properties? = null,
     val vsavProperties: VSAVProperties? = null,
     val avlProperties: AVLProperties? = null,
+    val roa2Properties: Roa2Properties? = null,
 ) {
     @Serializable
     data class Urls(
@@ -230,4 +231,45 @@ data class Move(
         val chiDamage: String? = null,
         val flow: String? = null,
     )
+
+    @Serializable
+    data class Roa2Properties(
+        val mode: Mode? = null,
+        val caption: List<String>? = null,
+        val hitboxCaption: List<String>? = null,
+        val startupNotes: String? = null,
+        val totalActiveNotes: String? = null,
+        val endlagNotes: String? = null,
+        val cancelNotes: List<String>? = null,
+        val landingLag: String? = null,
+        val landingLagNotes: String? = null,
+        val iasa: String? = null,
+        val iasaNotes: String? = null,
+        val totalDuration: String? = null,
+        val totalDurationNotes: String? = null,
+        val ledgeGrabFrame: String? = null,
+        val ledgeGrabFrameNotes: String? = null,
+        val hitID: List<String>? = null,
+        val hitMoveID: List<String>? = null,
+        val hitName: List<String>? = null,
+        val hitActive: List<String>? = null,
+        val customShieldSafety: List<String>? = null,
+        val uniqueField: List<String>? = null,
+        val articleID: List<String>? = null,
+        val notes: String? = null,
+        val advNotes: String? = null,
+    ) {
+        enum class Mode {
+            Default,
+            Airborne,
+            Grounded,
+            Armor,
+            Regular,
+            Multihit,
+            Punch,
+            Grab,
+            Jab,
+            HitThrow,
+        }
+    }
 }
