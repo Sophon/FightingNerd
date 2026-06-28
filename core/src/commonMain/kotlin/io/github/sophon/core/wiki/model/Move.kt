@@ -267,7 +267,7 @@ data class Move(
             Regular,
             Multihit,
             Punch,
-            Grab,
+            Throw,
             Jab,
             HitThrow,
         }

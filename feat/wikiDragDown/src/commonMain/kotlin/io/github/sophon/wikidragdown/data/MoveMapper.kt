@@ -3,6 +3,7 @@ package io.github.sophon.wikidragdown.data
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.Move.Roa2Properties.Mode
+import io.github.sophon.wikidragdown.domain.WIKI_BASE_URL
 
 internal fun List<MoveResponseDto>.toDomain(
     character: Character,
@@ -43,6 +44,7 @@ internal fun MoveResponseDto.toDomain(
         urls = Move.Urls(
             hitboxImageList = hitboxImageList,
             moveImageList = moveImageList,
+            wikiUrl = WIKI_BASE_URL,
         ),
 
         roa2Properties = Move.Roa2Properties(
@@ -65,8 +67,8 @@ internal fun MoveResponseDto.toDomain(
             hitMoveID = hitMoveID,
             hitName = hitName,
             hitActive = hitActive,
-            customShieldSafety = customShieldSafety,
-            uniqueField = uniqueField,
+            customShieldSafety = customShieldSafety.filterOutJunk(),
+            uniqueField = uniqueField.filterOutJunk(),
             articleID = articleID,
             notes = notes,
             advNotes = advNotes,
@@ -75,6 +77,10 @@ internal fun MoveResponseDto.toDomain(
 
     return move
 }
+
+//private fun String?.createPrefix(): String {
+//    //
+//}
 
 private fun String.toType(): Mode {
     return when {
@@ -86,9 +92,13 @@ private fun String.toType(): Mode {
         this.startsWith("hit", ignoreCase = true) -> Mode.Multihit
         this.equals("punch", ignoreCase = true) -> Mode.Punch
         this.equals("hitgrab", ignoreCase = true) -> Mode.HitThrow
-        this.contains("grab", ignoreCase = true) -> Mode.Grab
-        this.contains("throw", ignoreCase = true) -> Mode.Grab
+        this.contains("grab", ignoreCase = true) -> Mode.Throw
+        this.contains("throw", ignoreCase = true) -> Mode.Throw
         this.contains("jab", ignoreCase = true) -> Mode.Jab
         else -> Mode.Default
     }
+}
+
+private fun List<String>?.filterOutJunk(): List<String>? {
+    return this?.filter { it.count() > 3 }
 }
