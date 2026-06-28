@@ -2,6 +2,7 @@ package io.github.sophon.discord.feat.wikiWavu.usecase
 
 import dev.kord.common.Color
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.FeatureInfo
@@ -15,6 +16,7 @@ import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.util.toButtons
+import kotlin.collections.map
 import kotlin.time.Duration.Companion.seconds
 
 //TODO: write unit tests
@@ -105,14 +107,16 @@ internal class GetStancesUseCase(
         wiki: WikiClient,
         charName: String,
     ): Result<List<String>, BotError> {
-        return wiki.fetchMoveList(charName)
-            .mapError { it.toDomainError() }
+        val result = wiki.fetchCharacter(characterQuery = charName)
+            .flatMap { character -> wiki.fetchMoveList(character.id) }
             .map { moveList ->
                 moveList
                     .filter { it.t8Properties?.stance?.isNotBlank() == true }
                     .map { it.t8Properties!!.stance!! }
                     .distinct()
             }
+            .mapError { it.toDomainError() }
+        return result
     }
 
 
