@@ -508,7 +508,8 @@ class MoveMapperTest {
                 isHeat = true,
                 isPowerCrush = false,
                 isHoming = false,
-                stance = null
+                stance = null,
+                hasWallInteraction = true,
             )
         )
 
@@ -593,26 +594,7 @@ class MoveMapperTest {
     @Test
     fun `toDomain should correctly parse while running move`() {
         // given
-        val moveDto = MoveDto(
-            id = "Armor King-f,f,F+2+4",
-            name = "Brilliant Brawler Kick",
-            input = "f,f,F+2+4",
-            parent = null,
-            target = "th(h)",
-            damage = "40 (45)",
-            startup = "i10",
-            recv = "FUFT",
-            tot = null,
-            crush = null,
-            block = "-5",
-            hit = "+10d",
-            ch = null,
-            notes = "<div class=\"plainlist\">\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-green balcony-break\"\n>Balcony Break</div>\n* Throw break 1+2\n* Input n,f,F+2+4 within 6 frames after dash startup (f,n,f) to execute \"blue spark\" (+5 damage).\n* i13 startup for Bluespark throw with buffered input\n* Opponent left FUFT\n* Armor King recovers FUFT\n* becomes Homing in heat\n* Partially restores remaining Heat Time\n </div>",
-            alias = "Shining Wizard",
-            image = null,
-            video = null,
-            alt = "wr2+4"
-        )
+        val moveDto = MoveSource.akSW
         val responseDto = MoveListResponseDto(
             cargoQuery = listOf(
                 MoveListResponseDto.Title(moveDto)
@@ -650,7 +632,9 @@ class MoveMapperTest {
                 isHeat = false,
                 isPowerCrush = false,
                 isHoming = true,
-                stance = null
+                stance = null,
+                hasWallInteraction = true,
+                hasFloorInteraction = false,
             )
         )
 
@@ -732,6 +716,26 @@ private object MoveSource {
         image = null,
         video = "File:t8-p2-king-f,f,f+2+4.mp4",
         alt = null,
+    )
+    val akSW = MoveDto(
+        id = "Armor King-f,f,F+2+4",
+        name = "Brilliant Brawler Kick",
+        input = "f,f,F+2+4",
+        parent = null,
+        target = "th(h)",
+        damage = "40 (45)",
+        startup = "i10",
+        recv = "FUFT",
+        tot = null,
+        crush = null,
+        block = "-5",
+        hit = "+10d",
+        ch = null,
+        notes = "<div class=\"plainlist\">\n* \n<div\n  style=\"display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;\"\n  class=\"movedata-icon border-green balcony-break\"\n>Balcony Break</div>\n* Throw break 1+2\n* Input n,f,F+2+4 within 6 frames after dash startup (f,n,f) to execute \"blue spark\" (+5 damage).\n* i13 startup for Bluespark throw with buffered input\n* Opponent left FUFT\n* Armor King recovers FUFT\n* becomes Homing in heat\n* Partially restores remaining Heat Time\n </div>",
+        alias = "Shining Wizard",
+        image = null,
+        video = null,
+        alt = "wr2+4"
     )
     val konvictKick = MoveDto(
         id = "King-f,F+4",

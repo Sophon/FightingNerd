@@ -83,6 +83,8 @@ internal fun SelectAllT8.toDomain(): Move {
                 isPowerCrush = (isPowerCrush == true),
                 isHighCrush = (isHighCrush == true),
                 isLowCrush = (isLowCrush == true),
+                hasWallInteraction = (hasWallInteraction == true),
+                hasFloorInteraction = (hasFloorInteraction == true),
             )
         },
     )

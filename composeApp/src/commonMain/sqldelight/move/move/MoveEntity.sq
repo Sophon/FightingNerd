@@ -51,7 +51,9 @@ CREATE TABLE t8_move_props (
     stance TEXT,
     isPowerCrush INTEGER AS Boolean NOT NULL,
     isHighCrush INTEGER AS Boolean NOT NULL,
-    isLowCrush INTEGER AS Boolean NOT NULL
+    isLowCrush INTEGER AS Boolean NOT NULL,
+    hasWallInteraction INTEGER AS Boolean NOT NULL,
+    hasFloorInteraction INTEGER AS Boolean NOT NULL
 );
 
 CREATE TABLE sf6_move_props (
@@ -217,8 +219,8 @@ CREATE TABLE avl_move_props (
 
 
 insertT8Props:
-INSERT OR IGNORE INTO t8_move_props(moveId, isHeat, isHoming, stance, isPowerCrush, isHighCrush, isLowCrush)
-VALUES (?, ?, ?, ?, ?, ?, ?);
+INSERT OR IGNORE INTO t8_move_props(moveId, isHeat, isHoming, stance, isPowerCrush, isHighCrush, isLowCrush, hasWallInteraction, hasFloorInteraction)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllT8:
 SELECT MoveEntity.*, t8_move_props.*

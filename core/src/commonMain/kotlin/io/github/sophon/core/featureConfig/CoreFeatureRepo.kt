@@ -12,10 +12,15 @@ class CoreFeatureRepo(
 ) {
     private var gameClients: LinkedHashMap<Game, WikiClient> = linkedMapOf()
     private var otherFeatures: List<Config.Feature> = emptyList()
+    private var enabledFeatureNames: Set<String> = emptySet()
 
     fun initialize(config: Config): EmptyResult<WikiError> {
         gameClients = buildGameClients(config)
         otherFeatures = loadNonGameFeatures(config)
+        enabledFeatureNames = config.featureList
+            .filter { it.isEnabled }
+            .map { it.name }
+            .toSet()
         return Result.Success(Unit)
     }
 
@@ -25,6 +30,10 @@ class CoreFeatureRepo(
 
     fun getOtherFeatures(): List<Config.Feature> {
         return otherFeatures
+    }
+
+    fun getEnabledFeatureNames(): Set<String> {
+        return enabledFeatureNames
     }
 
     fun getWikiClientFor(game: Game): WikiClient? {
