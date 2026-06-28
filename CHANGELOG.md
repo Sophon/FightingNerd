@@ -1,6 +1,7 @@
 # BOT CHANGELOG
 
 ## [v12.1.5] - 2026-06-28
+- `Discord` - fixed bug that bundled disabled features
 - `Mizuumi`
   - fixed broken character Wiki URL
   - fixed bad ID causing `fd` to be unusable
