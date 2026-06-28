@@ -73,6 +73,7 @@ kotlin {
         jvmMain {
             dependencies {
                 implementation(libs.ktor.cio)
+                implementation(libs.ktor.okhttp)
             }
         }
 

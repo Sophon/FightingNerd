@@ -16,6 +16,7 @@ import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
 import io.github.sophon.glossaryinfil.integration.infilModule
 import io.github.sophon.integration.statsModule
 import io.github.sophon.wikiSuperCombo.integration.superComboModule
+import io.github.sophon.wikidragdown.integration.dragDownModule
 import io.github.sophon.wikidustloop.integration.dustLoopModule
 import io.github.sophon.wikimizuumi.integration.mizuumiModule
 import io.github.sophon.wikiwavu.integration.wavuModule
@@ -49,6 +50,7 @@ internal fun initKoin(
         dreamCancelModule(),
         dustLoopModule(),
         mizuumiModule(),
+        dragDownModule(),
         ewgfModule(
             apiToken = System.getenv(ENV_API_EWGF).orEmpty()
         ),
