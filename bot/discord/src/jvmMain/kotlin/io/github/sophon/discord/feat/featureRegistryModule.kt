@@ -85,7 +85,7 @@ internal val featureRegistryModule = module {
     singleOf(::CreateRedirectButtonsUseCase)
     single {
         RefreshDataUseCase(
-            featureList = lazy { get<List<DiscordRegisteredFeature>>() },
+            featureRepo = lazy { get<BotFeatureRepo>() },
         )
     }
     //endregion
