@@ -113,5 +113,5 @@ private val STUB_MOVE: Move = Move(
     characterId = "armor-king",
     id = "stub",
     input = "stub",
-    urls = Move.Urls(),
+    urls = Move.Urls(wikiUrl = ""),
 )
