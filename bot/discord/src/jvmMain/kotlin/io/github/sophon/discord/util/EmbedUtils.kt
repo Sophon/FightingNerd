@@ -94,8 +94,9 @@ internal fun EmbedBuilder.featureFooter(featureInfo: FeatureInfo) {
 internal fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton> {
     return mapIndexed { index, move ->
         val query = "$charName ${move.input}"
+        val buttonNumber = (index + 1).toString()
         BotOutput.EmbedButton(
-            label = (index + 1).toString(),
+            label = buttonNumber,
             action = BotOutput.EmbedButton.Action.Query(query),
         )
     }
