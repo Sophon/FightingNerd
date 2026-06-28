@@ -167,7 +167,7 @@ internal val featureRegistryModule = module {
     singleOf(::LoadConfigurationUseCase)
     single {
         BindToDiscordFeaturesUseCase(
-            availableFeatures = getAll(),
+            allRegisteredFeatures = getAll(),
             coreFeatureRepo = get(),
             adminFeature = get(),
         )
