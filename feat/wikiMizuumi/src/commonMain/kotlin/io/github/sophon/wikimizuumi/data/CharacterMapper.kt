@@ -11,16 +11,17 @@ internal fun String.toDomain(
     gameId: String,
     imageUrlMap: Map<String, String>,
 ): Character {
-    val idName = this.cleanHtml().lowercase()
+    val idName = this.cleanHtml().lowercase().replace(" ", "_")
     val displayName = this.cleanHtml()
-    val queryName = this.createQueryName()
+    val queryName = this
     val game = Game.fromId(gameId)
+    val aliasList = this.createAliases()
 
     val char = Character(
         id = idName,
         displayName = displayName,
         remoteQueryId = queryName,
-        aliasList = idName.createAliases(),
+        aliasList = aliasList,
         wikiUrl = game?.wikiUrl ?: FEATURE_URL,
         images = Character.Images(
             iconUrl = imageUrlMap[idName]
