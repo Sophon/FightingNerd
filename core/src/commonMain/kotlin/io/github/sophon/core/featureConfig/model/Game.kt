@@ -120,7 +120,7 @@ enum class Game(
         id = "ROA2",
         displayName = "Rivals of Aether 2",
         iconUrl = "https://i.imgur.com/DzgFNiQ.png",
-        wikiUrl = "https://i.imgur.com/0xzxZF7.png",
+        wikiUrl = "https://dragdown.wiki/wiki/RoA2",
         wiki = WikiClientFeature.DragDown,
     );
 
