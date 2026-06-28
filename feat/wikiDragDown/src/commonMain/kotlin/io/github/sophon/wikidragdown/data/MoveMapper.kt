@@ -75,12 +75,10 @@ internal fun MoveResponseDto.toDomain(
         )
     )
 
+    //TODO: move prefix based on Mode
+
     return move
 }
-
-//private fun String?.createPrefix(): String {
-//    //
-//}
 
 private fun String.toType(): Mode {
     return when {
