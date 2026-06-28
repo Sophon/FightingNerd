@@ -1,6 +1,5 @@
 package io.github.sophon.wikidragdown.data
 
-import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.safeCall
@@ -8,15 +7,9 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidragdown.domain.BASE_URL
 import io.github.sophon.wikidragdown.domain.LIMIT_CHARACTERS
 import io.github.sophon.wikidragdown.domain.LIMIT_MOVES
-import io.github.sophon.wikidragdown.domain.WIKI_BASE_URL
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
-import io.ktor.client.request.head
 import io.ktor.client.request.parameter
-import io.ktor.http.HttpHeaders
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 
 internal interface DragDownDataSource {
     suspend fun downloadCharacterList(table: String): Result<List<CharacterResponseDto>, DataError.Remote>
@@ -28,11 +21,6 @@ internal interface DragDownDataSource {
 internal class DragDownDataSourceImpl(
     private val httpClient: HttpClient,
 ): DragDownDataSource {
-
-    private val redirectClient = httpClient.config {
-        followRedirects = false
-    }
-
     override suspend fun downloadCharacterList(
         table: String,
     ): Result<List<CharacterResponseDto>, DataError.Remote> {
@@ -85,35 +73,6 @@ internal class DragDownDataSourceImpl(
             buildImageUrl(fileName)
         }
         return Result.Success(urlMap)
-    }
-
-    private suspend fun resolveFileUrls(
-        fileNames: List<String>,
-    ): Result<Map<String, String>, DataError.Remote> {
-        val pairs = coroutineScope {
-            fileNames.map { fileName ->
-                async {
-                    val resolved = resolveOne(fileName)
-                    fileName to resolved
-                }
-            }.awaitAll()
-        }
-        val map = pairs.mapNotNull { (name, url) ->
-            if (url != null) name to url else null
-        }.toMap()
-        val result: Result<Map<String, String>, DataError.Remote> = Result.Success(map)
-        return result
-    }
-
-    private suspend fun resolveOne(fileName: String): String? {
-        return try {
-            val response = redirectClient.head("$WIKI_BASE_URL/Special:Redirect/file/$fileName")
-            val location = response.headers[HttpHeaders.Location]
-            location
-        } catch (e: Exception) {
-            Napier.w(tag = "DragDown") { "Failed to resolve $fileName: ${e.message}" }
-            null
-        }
     }
 
     private fun getCharacterFields(): String {
