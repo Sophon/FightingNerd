@@ -69,7 +69,7 @@ internal class DragDownWikiDiscordFeature(
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikiClientMap,
                     query = query,
-                    searchFun = ::searchMove,
+                    searchFun = { _, wiki, query -> searchMove(wiki, query) },
                 )
             }
 
@@ -79,12 +79,14 @@ internal class DragDownWikiDiscordFeature(
                 query = query,
                 action = ::searchCharacter,
             )
-            Command.FdGG -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.ROA2,
-                query = query,
-                action = ::searchMove,
-            )
+            Command.FdGG -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.ROA2,
+                    query = query,
+                    action = { _, wiki, query -> searchMove(wiki, query) },
+                )
+            }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -116,7 +118,6 @@ internal class DragDownWikiDiscordFeature(
     }
 
     private suspend fun searchMove(
-        game: Game,
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
