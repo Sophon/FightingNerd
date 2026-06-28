@@ -115,6 +115,13 @@ enum class Game(
         wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior",
         wiki = WikiClientFeature.Mizuumi,
         separateCharMoveDownload = false,
+    ),
+    ROA2(
+        id = "ROA2",
+        displayName = "Rivals of Aether 2",
+        iconUrl = "https://i.imgur.com/DzgFNiQ.png",
+        wikiUrl = "https://dragdown.wiki/wiki/RoA2",
+        wiki = WikiClientFeature.DragDown,
     );
 
     val shortDisplayName: String

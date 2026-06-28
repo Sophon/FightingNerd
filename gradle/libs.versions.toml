@@ -81,6 +81,7 @@ ktor-java = { module = "io.ktor:ktor-client-java", version.ref = "ktor"}
 ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor"}
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor"}
 ktor-slf = { module = "org.slf4j:slf4j-simple", version.ref = "slf"}
+ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
 
 # Koin
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }

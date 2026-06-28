@@ -9,4 +9,5 @@ enum class WikiClientFeature(
     Xko(id = "xko"),
     DustLoop("dustloop"),
     Mizuumi("mizuumi"),
+    DragDown("dragdown"),
 }

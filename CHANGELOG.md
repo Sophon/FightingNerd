@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v12.1.6] - 2026-06-29
+- fixed bug where `stance` didn't search for character aliases
+
 ## [v12.1.5] - 2026-06-28
 - `Discord` 
   - fixed bug that bundled disabled features
