@@ -10,7 +10,7 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
-fun dragdownModule() = module {
+fun dragDownModule() = module {
     singleOf(::DragDownDataSourceImpl).bind<DragDownDataSource>()
     singleOf(::DragDownWikiClient).bind<WikiClient>()
     single { DragDownFeatureInfo }
