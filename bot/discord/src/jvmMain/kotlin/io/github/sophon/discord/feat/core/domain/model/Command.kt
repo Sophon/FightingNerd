@@ -552,6 +552,34 @@ internal sealed class Command(
     object AliasVS : Command(name = "AliasVS", description = "VSAV character aliases")
     //endregion@
 
+    //region DragDown
+    object CharROA : Command(
+        name = "CharROA",
+        description = "ROA2 character data",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+            ),
+        ),
+    )
+
+    object FdROA : Command(
+        name = "FdROA",
+        description = "ROA2 frame data",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+            ),
+            Argument(
+                name = "move",
+                description = "Move",
+            ),
+        ),
+    )
+    //endregion
+
     //region EWGF
     object Ewgf : Command(
         name = "EWGF",
@@ -570,7 +598,6 @@ internal sealed class Command(
         )
     )
     //endregion
-
 
 
     data class Argument(

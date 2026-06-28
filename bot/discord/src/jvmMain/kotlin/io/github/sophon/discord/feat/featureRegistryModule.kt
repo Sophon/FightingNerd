@@ -58,6 +58,7 @@ import io.github.sophon.discord.feat.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.feat.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.StartGlossaryUseCase
+import io.github.sophon.discord.feat.wikiDragDown.DragDownWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.DustLoopWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
@@ -215,6 +216,7 @@ internal val featureRegistryModule = module {
     singleOf(::DreamCancelWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::DustLoopWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::MizuumiWikiDiscordFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::DragDownWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::EwgfDiscordFeature).bind<DiscordRegisteredFeature>()
 
     single<(Game) -> Pair<CharacterListDB, MoveListDB>> {

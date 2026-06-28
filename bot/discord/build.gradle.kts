@@ -30,6 +30,7 @@ kotlin {
             implementation(project(":feat:wikiDreamCancel"))
             implementation(project(":feat:wikiDustLoop"))
             implementation(project(":feat:wikiMizuumi"))
+            implementation(project(":feat:wikiDragDown"))
             implementation(project(":feat:ewgf"))
             implementation(project(":feat:stats"))
 
