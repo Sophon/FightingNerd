@@ -16,13 +16,14 @@ internal fun String.toDomain(
     val queryName = this
     val game = Game.fromId(gameId)
     val aliasList = this.createAliases()
+    val wikiUrl = game?.wikiUrl?.let { "${it}/${queryName.replace(" ", "_")}" }
 
     val char = Character(
         id = idName,
         displayName = displayName,
         remoteQueryId = queryName,
         aliasList = aliasList,
-        wikiUrl = game?.wikiUrl ?: FEATURE_URL,
+        wikiUrl = wikiUrl ?: FEATURE_URL,
         images = Character.Images(
             iconUrl = imageUrlMap[idName]
         )
@@ -152,7 +153,8 @@ internal fun String.createAliases(): List<String> {
 }
 
 internal fun String.formWikiUrl(gameId: String): String {
-    return Game.fromId(gameId)?.let { "${it.wikiUrl}/$this" } ?: ""
+    val url = Game.fromId(gameId)?.let { "${it.wikiUrl}/$this" } ?: ""
+    return url
 }
 
 internal fun String?.formatBulletPoints(): String? {
