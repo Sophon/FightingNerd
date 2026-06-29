@@ -44,7 +44,7 @@ internal fun MoveEntity.buildUrls(): Move.Urls {
         videoId = urlsVideoId,
         hitboxImageList = urlsHitboxImageList.toDomain(),
         moveImageList = urlsMoveImageList.toDomain(),
-        wikiUrl = urlsWikiUrl,
+        wikiUrl = urlsWikiUrl.orEmpty(),
     )
 }
 
@@ -71,7 +71,7 @@ internal fun SelectAllT8.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         t8Properties = if (moveId == null) {
             null
@@ -112,7 +112,7 @@ internal fun SelectAllSf6.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         sf6Properties = if (moveId == null) {
             null
@@ -172,7 +172,7 @@ internal fun SelectAllKof15.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         koF15Properties = if (moveId == null) {
             null
@@ -206,7 +206,7 @@ internal fun SelectAllCotw.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         cotwProperties = if (moveId == null) {
             null
@@ -240,7 +240,7 @@ internal fun SelectAllGgst.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         ggstProperties = if (moveId == null) {
             null
@@ -282,7 +282,7 @@ internal fun SelectAllDbfz.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         dbfzProperties = if (moveId == null) {
             null
@@ -324,7 +324,7 @@ internal fun SelectAllGbvsr.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         gbvsrProperties = if (moveId == null) {
             null
@@ -362,7 +362,7 @@ internal fun SelectAllMk.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         mkProperties = if (moveId == null) {
             null
@@ -402,7 +402,7 @@ internal fun SelectAllMb.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         mbProperties = if (moveId == null) {
             null
@@ -443,7 +443,7 @@ internal fun SelectAllBb.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         bbProperties = if (moveId == null) {
             null
@@ -492,7 +492,7 @@ internal fun SelectAllUni2.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         uni2Properties = if (moveId == null) {
             null
@@ -546,7 +546,7 @@ internal fun SelectAllVsav.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         vsavProperties = if (moveId == null) {
             null
@@ -586,7 +586,7 @@ internal fun SelectAllAvl.toDomain(): Move {
             videoId = urlsVideoId,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
-            wikiUrl = urlsWikiUrl,
+            wikiUrl = urlsWikiUrl.orEmpty(),
         ),
         avlProperties = if (moveId == null) {
             null
