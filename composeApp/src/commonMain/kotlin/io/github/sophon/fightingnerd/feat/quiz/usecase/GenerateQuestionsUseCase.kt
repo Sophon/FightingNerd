@@ -43,12 +43,14 @@ internal class GenerateQuestionsUseCase(
         character: Character,
         moveList: List<Move>
     ): Question {
+        val correct = this.copy(startup = this.startup?.trimFollowUps())
         val distractions = moveList
             .filter { move -> move.id != this.id }
+            .map { it.copy(startup = it.startup?.trimFollowUps()) }
             .shuffled()
             .take(COUNT_DISTRACTIONS)
 
-        val options = (distractions + this).shuffled()
+        val options = (distractions + correct).shuffled()
         val correctIndex = options.indexOfFirst { move -> move.id == this.id }
         val question = Question(
             characterName = character.displayName,
@@ -57,5 +59,11 @@ internal class GenerateQuestionsUseCase(
         )
 
         return question
+    }
+
+    private fun String.trimFollowUps(): String {
+        val cutIndex = indexOfAny(charArrayOf('(', ','))
+        val trimmed = if (cutIndex == -1) this else substring(0, cutIndex)
+        return trimmed.trimEnd()
     }
 }
