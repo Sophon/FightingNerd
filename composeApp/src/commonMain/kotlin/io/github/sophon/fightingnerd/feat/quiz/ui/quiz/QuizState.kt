@@ -27,6 +27,7 @@ internal data class QuizState(
                 onHit = "+18g",
                 urls = Move.Urls(
                     videoId = "T8-p2-armor_king-bad.3.mp4",
+                    wikiUrl = "",
                 ),
             ),
             Move(
