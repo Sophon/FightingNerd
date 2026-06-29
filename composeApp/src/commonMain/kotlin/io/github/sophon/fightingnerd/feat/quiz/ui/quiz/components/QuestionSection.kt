@@ -179,11 +179,6 @@ private fun Option(
             .padding(nerdDimensions.componentGap),
     ) {
         FrameData(
-            label = stringResource(Res.string.quiz_frame_dat_label_startup),
-            body = move.startup,
-            textColor = textColor,
-        )
-        FrameData(
             label = stringResource(Res.string.quiz_frame_dat_label_on_block),
             body = move.onBlock,
             textColor = textColor,
@@ -191,6 +186,11 @@ private fun Option(
         FrameData(
             label = stringResource(Res.string.quiz_frame_dat_label_on_hit),
             body = move.onHit,
+            textColor = textColor,
+        )
+        FrameData(
+            label = stringResource(Res.string.quiz_frame_dat_label_startup),
+            body = move.startup,
             textColor = textColor,
         )
         FrameData(
