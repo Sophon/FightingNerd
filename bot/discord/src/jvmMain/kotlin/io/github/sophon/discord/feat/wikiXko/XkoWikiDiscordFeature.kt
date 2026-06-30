@@ -59,23 +59,27 @@ internal class XkoWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        return when (command) {
+        val formattedQuery = query.lowercase()
+
+        val result = when (command) {
             Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikiClientMap,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
             Command.FdXko -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Xko,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        return result
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {

@@ -66,11 +66,13 @@ internal class SuperComboWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        return when (command) {
+        val formattedQuery = query.lowercase()
+
+        val result = when (command) {
             Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikiClientMap,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
@@ -78,27 +80,27 @@ internal class SuperComboWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.StreetFighter6,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchCharacter(wiki, query) }
             }
             Command.FdSF -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.StreetFighter6,
-                query = query,
+                query = formattedQuery,
             ) { _, wiki, query -> searchMove(wiki, query) }
 
             Command.CharMK -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.MK1,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchCharacter(wiki, query) }
             }
             Command.FdMK -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.MK1,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
@@ -106,19 +108,21 @@ internal class SuperComboWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.AVL,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchCharacter(wiki, query) }
             }
             Command.FdAV -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.AVL,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        return result
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
