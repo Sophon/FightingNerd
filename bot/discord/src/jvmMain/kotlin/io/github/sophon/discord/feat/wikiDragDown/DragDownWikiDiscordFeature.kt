@@ -64,11 +64,13 @@ internal class DragDownWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
+        val formattedQuery = query.lowercase()
+
         val result = when(command) {
             Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikiClientMap,
-                    query = query,
+                    query = formattedQuery,
                     searchFun = { _, wiki, query -> searchMove(wiki, query) },
                 )
             }
@@ -76,14 +78,14 @@ internal class DragDownWikiDiscordFeature(
             Command.CharROA -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.ROA2,
-                query = query,
+                query = formattedQuery,
                 action = ::searchCharacter,
             )
             Command.FdGG -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.ROA2,
-                    query = query,
+                    query = formattedQuery,
                     action = { _, wiki, query -> searchMove(wiki, query) },
                 )
             }

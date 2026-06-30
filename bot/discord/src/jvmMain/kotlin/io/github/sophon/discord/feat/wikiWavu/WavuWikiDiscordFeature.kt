@@ -81,11 +81,13 @@ internal class WavuWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        return when (command) {
+        val formattedQuery = query.lowercase()
+
+        val result = when (command) {
             Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikiClientMap,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
@@ -93,7 +95,7 @@ internal class WavuWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
@@ -101,28 +103,28 @@ internal class WavuWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchPowerCrushMoves(wiki, query) }
             }
             Command.Heat -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchHeatMoves(wiki, query) }
             }
             Command.Homing -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchHomingMoves(wiki, query) }
             }
             Command.ThrowTK -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchThrowMoves(wiki, query) }
             }
 
@@ -130,7 +132,7 @@ internal class WavuWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, _ -> getCharacterAliases(wiki) }
             }
 
@@ -138,19 +140,21 @@ internal class WavuWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> getStancesUseCase.invoke(featureInfo, wiki, query) }
             }
             Command.Strings -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchStringFollowupsUseCase.invoke(wiki, query, featureInfo) }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        return result
     }
 
 

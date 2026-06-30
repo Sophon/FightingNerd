@@ -83,11 +83,13 @@ internal class DustLoopWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        return when (command) {
+        val formattedQuery = query.lowercase()
+
+        val result = when (command) {
             Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikiClientMap,
-                    query = query,
+                    query = formattedQuery,
                     searchFun = ::searchMove,
                 )
             }
@@ -95,25 +97,25 @@ internal class DustLoopWikiDiscordFeature(
             Command.CharGG -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.GGST,
-                query = query,
+                query = formattedQuery,
                 action = ::searchCharacter,
             )
             Command.FdGG -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.GGST,
-                query = query,
+                query = formattedQuery,
                 action = ::searchMove,
             )
             Command.InvGG -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.GGST,
-                query = query,
+                query = formattedQuery,
                 action = ::searchInvincible,
             )
             Command.AliasGG -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.GGST,
-                query = query,
+                query = formattedQuery,
             ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
@@ -121,19 +123,19 @@ internal class DustLoopWikiDiscordFeature(
             Command.CharDB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.DBFZ,
-                query = query,
+                query = formattedQuery,
                 action = ::searchCharacter,
             )
             Command.FdDB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.DBFZ,
-                query = query,
+                query = formattedQuery,
                 action = ::searchMove,
             )
             Command.AliasDB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.DBFZ,
-                query = query,
+                query = formattedQuery,
             ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
@@ -141,44 +143,46 @@ internal class DustLoopWikiDiscordFeature(
             Command.CharGB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.GBVSR,
-                query = query,
+                query = formattedQuery,
                 action = ::searchCharacter,
             )
             Command.FdGB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.GBVSR,
-                query = query,
+                query = formattedQuery,
                 action = ::searchMove,
             )
 
             Command.CharBB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.BBCF,
-                query = query,
+                query = formattedQuery,
                 action = ::searchCharacter,
             )
             Command.FdBB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.BBCF,
-                query = query,
+                query = formattedQuery,
                 action = ::searchMove,
             )
             Command.AliasBB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.BBCF,
-                query = query,
+                query = formattedQuery,
             ) { _, wiki, _ ->
                 getCharacterAliases(wiki)
             }
             Command.InvBB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.BBCF,
-                query = query,
+                query = formattedQuery,
                 action = ::searchInvincible,
             )
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        return result
     }
 
 
