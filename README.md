@@ -49,6 +49,7 @@ graph LR
     dustloop[Dustloop]
     dreamcancel[DreamCancel]
     mizuumi[Mizuumi]
+    dragdown[DragDown]
   end
 
   subgraph Games
@@ -66,6 +67,7 @@ graph LR
     uni2[Under Night In-Birth II Sys:Celes]
     vsav[Vampire Savior]
     avl[Avatar: Legends]
+    roa[Rivals of Aether 2]
   end
 
   subgraph Ranked service
@@ -87,6 +89,7 @@ graph LR
   communityWiki --> dreamcancel
   communityWiki --> dustloop
   communityWiki --> mizuumi
+  communityWiki --> dragdown
 
   elo --> ewgf
   elo --> cfn
@@ -105,11 +108,12 @@ graph LR
   mizuumi --> melty
   mizuumi --> uni2
   mizuumi --> vsav
+  dragdown --> roa
 
 
   style discordBot fill:green,stroke:#2563EB, color:#fff
-  style android fill:yellow,stroke:green, color:#000
-  style iOS fill:yellow,stroke:green, color:#000
+  style android fill:green,stroke:green, color:#fff
+  style iOS fill:green,stroke:green, color:#fff
   style glossaryInfil fill:green, color:#fff
   style communityWiki fill:green, color:#fff
   style wikiWavu fill:green, color:#fff
@@ -117,6 +121,7 @@ graph LR
   style dreamcancel fill:green, color:#fff
   style dustloop fill:green, color:#fff
   style mizuumi fill:green, color:#fff
+  style dragdown fill:yellow, color:#000
   style 2xko fill:green, color:#fff
   style t8 fill:green, color:#fff
   style sf6 fill:green, color:#fff
@@ -133,6 +138,7 @@ graph LR
   style vsav fill:green, color:#fff
   style ewgf fill:green, color:#fff
   style avl fill:yellow, color:#000
+  style roa fill:yellow, color:#000
   ```
 
 # [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
