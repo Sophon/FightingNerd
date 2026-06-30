@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v12.1.7] - 2026-06-30
+- `EWGF` - fixed the query being lowercased
+
 ## [v12.1.6] - 2026-06-29
 - fixed bug where `stance` didn't search for character aliases
 

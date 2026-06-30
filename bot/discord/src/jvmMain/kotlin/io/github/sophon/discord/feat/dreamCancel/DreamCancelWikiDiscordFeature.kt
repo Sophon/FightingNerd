@@ -65,24 +65,26 @@ internal class DreamCancelWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        return when (command) {
+        val formattedQuery = query.lowercase()
+
+        val result = when (command) {
             Command.Fd -> fetchMoveInWikisUseCase.invoke(
                 wikis = wikiClientMap,
-                query = query,
+                query = formattedQuery,
                 searchFun = ::searchMove,
             )
 
             Command.FdKOF -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.KoFXV,
-                query = query,
+                query = formattedQuery,
                 action = ::searchMove,
             )
             Command.AliasKOF -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.KoFXV,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, _ ->
                     getCharacterAliases(wiki)
                 }
@@ -91,14 +93,14 @@ internal class DreamCancelWikiDiscordFeature(
             Command.FdCOTW -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.COTW,
-                query = query,
+                query = formattedQuery,
                 action = ::searchMove,
             )
             Command.AliasCOTW -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.COTW,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, _ ->
                     getCharacterAliases(wiki)
                 }
@@ -106,6 +108,8 @@ internal class DreamCancelWikiDiscordFeature(
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        return result
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {

@@ -1,5 +1,13 @@
 # APP CHANGELOG
 
+## [v1.0.0] (5) - TODO
+- 
+
+## [v1.0.0] (4) - 2026-06-29
+- `Quiz`
+  - hide following startups of mult-hit moves
+  - rearrange fields
+
 ## [v1.0.0] (3) - TODO
 - only load `SF6`, `T8` and `GGST` on the first launch
 - added icon for jumping state

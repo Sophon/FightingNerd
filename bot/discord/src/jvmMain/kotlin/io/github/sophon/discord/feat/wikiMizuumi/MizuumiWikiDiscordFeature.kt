@@ -72,11 +72,13 @@ internal class MizuumiWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        return when (command) {
+        val formattedQuery = query.lowercase()
+
+        val result = when (command) {
             Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikiClientMap,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
@@ -84,7 +86,7 @@ internal class MizuumiWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.MBTL,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query ->
                     searchMove(wiki, query)
                 }
@@ -93,7 +95,7 @@ internal class MizuumiWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.MBTL,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, _ ->
                     getCharacterAliases(wiki)
                 }
@@ -102,7 +104,7 @@ internal class MizuumiWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.MBTL,
-                    query = query,
+                    query = formattedQuery,
                 ) { game, wiki, query ->
                     createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
                 }
@@ -112,7 +114,7 @@ internal class MizuumiWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Uni2,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query ->
                     searchMove(wiki, query)
                 }
@@ -121,7 +123,7 @@ internal class MizuumiWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Uni2,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query ->
                     searchCharacter(wiki, query)
                 }
@@ -130,7 +132,7 @@ internal class MizuumiWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Uni2,
-                    query = query,
+                    query = formattedQuery,
                 ) { game, wiki, query ->
                     createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
                 }
@@ -140,7 +142,7 @@ internal class MizuumiWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.VSAV,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query ->
                     searchMove(wiki, query)
                 }
@@ -149,7 +151,7 @@ internal class MizuumiWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.VSAV,
-                    query = query,
+                    query = formattedQuery,
                 ) { game, wiki, query ->
                     createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
                 }
@@ -158,7 +160,7 @@ internal class MizuumiWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.VSAV,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, _ ->
                     getCharacterAliases(wiki)
                 }
@@ -166,6 +168,8 @@ internal class MizuumiWikiDiscordFeature(
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        return result
     }
 
 

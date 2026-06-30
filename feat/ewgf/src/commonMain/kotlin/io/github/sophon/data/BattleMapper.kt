@@ -13,7 +13,7 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 internal fun BattlesDto.toDomain(polarisId: String): List<Battle> {
-    return this.data.map { dto ->
+    val battleList = this.data.map { dto ->
         val isP1 = dto.p1TekkenId.equals(polarisId, ignoreCase = true)
 
         val player = Combatant(
@@ -49,6 +49,7 @@ internal fun BattlesDto.toDomain(polarisId: String): List<Battle> {
             stageId = dto.stageId,
         )
     }
+    return battleList
 }
 
 private fun String.toDomainRegion(): Region = when (this) {

@@ -16,7 +16,7 @@ internal class PlayerRepoImpl(
     private val queries = db.playerQueries
 
     override suspend fun getPlayer(discordId: String): Result<Player?, EwgfError.DatabaseError> {
-        return withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             try {
                 val player = queries.getPlayerByDiscordId(discordId)
                     .executeAsOneOrNull()
@@ -26,6 +26,7 @@ internal class PlayerRepoImpl(
                 Result.Error(EwgfError.DatabaseError(e.toString()))
             }
         }
+        return result
     }
 
     override suspend fun registerPlayer(player: Player): EmptyResult<EwgfError.DatabaseError> {
@@ -33,7 +34,7 @@ internal class PlayerRepoImpl(
             return Result.Error(EwgfError.DatabaseError("discord: null"))
         }
 
-        return withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             try {
                 queries.upsertPlayer(
                     discordId = player.discordId,
@@ -45,6 +46,7 @@ internal class PlayerRepoImpl(
                 Result.Error(EwgfError.DatabaseError(e.toString()))
             }
         }
+        return result
     }
 
     override suspend fun deletePlayer(discordId: String): EmptyResult<EwgfError.DatabaseError> {
@@ -62,7 +64,7 @@ internal class PlayerRepoImpl(
         discordId: String,
         polarisId: String
     ): EmptyResult<EwgfError.DatabaseError> {
-        return withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             try {
                 queries.updatePolarisId(discordId = discordId, polarisId = polarisId)
                 Result.Success(Unit)
@@ -70,5 +72,6 @@ internal class PlayerRepoImpl(
                 Result.Error(EwgfError.DatabaseError(e.toString()))
             }
         }
+        return result
     }
 }

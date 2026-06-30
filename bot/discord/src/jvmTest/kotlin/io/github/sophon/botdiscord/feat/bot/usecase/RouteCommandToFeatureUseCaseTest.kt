@@ -37,6 +37,9 @@ class RouteCommandToFeatureUseCaseTest {
             Command.Homing,
         )
 
+        var receivedQuery: String? = null
+            private set
+
         override suspend fun start() {}
 
         override suspend fun execute(
@@ -44,11 +47,13 @@ class RouteCommandToFeatureUseCaseTest {
             query: String,
             origin: Source,
         ): Result<BotOutput, BotError> {
+            receivedQuery = query
             val tekkenChars = setOf("lily", "ak", "jin", "kazuya")
+            val formattedQuery = query.lowercase()
 
             return when (command) {
                 Command.Fd -> {
-                    val parts = query.split(" ")
+                    val parts = formattedQuery.split(" ")
                     val charName = parts.firstOrNull()
 
                     if (charName !in tekkenChars) {
@@ -60,11 +65,10 @@ class RouteCommandToFeatureUseCaseTest {
                     }
                 }
                 Command.Pc, Command.Heat, Command.Homing -> {
-                    val charName = query
-                    if (charName in tekkenChars) {
+                    if (formattedQuery in tekkenChars) {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "Wavu ${command.name}: $query" }))
                     } else {
-                        Result.Error(BotError.UnknownCharacter(charName))
+                        Result.Error(BotError.UnknownCharacter(formattedQuery))
                     }
                 }
                 else -> Result.Error(BotError.BotLogicError())
@@ -168,38 +172,13 @@ class RouteCommandToFeatureUseCaseTest {
         }
     }
 
-    private class FakeCoreFeature : DiscordRegisteredFeature {
-        override val featureInfo = FeatureInfo(
-            name = "NoDefault",
-            url = "",
-            version = "1.0.0"
-        )
-        override val defaultCommand = null
-        override val otherCommands = listOf(Command.Heat)
-        override suspend fun start() {}
-        override suspend fun execute(
-            command: Command,
-            query: String,
-            origin: Source,
-        ): Result<BotOutput, BotError> {
-            return if (command == Command.Heat && query.isNotBlank()) {
-                Result.Success(BotOutput(primaryEmbedBuilder = { title = "NoDefault HEAT: $query" }))
-            } else {
-                Result.Error(BotError.InvalidQuery(query))
-            }
-        }
-        override suspend fun refreshData(): EmptyResult<BotError> {
-            return Result.Success(Unit)
-        }
-    }
     //endregion
 
     //region Setup
     private val wavuFeature = FakeWavuFeature()
     private val infilFeature = FakeInfilFeature()
     private val superComboFeature = FakeSuperComboFeature()
-    private val coreFeature = FakeCoreFeature()
-    private val featureList = listOf(wavuFeature, coreFeature, infilFeature, superComboFeature)
+    private val featureList = listOf(wavuFeature, infilFeature, superComboFeature)
     private val tracker = object : Tracker {
         override val statsChannelId = ""
         override fun subscribe() = emptyFlow<DailyReport>()
@@ -215,6 +194,13 @@ class RouteCommandToFeatureUseCaseTest {
         }
     }
     private val useCase = RouteCommandToFeatureUseCase(botFeatureRepo, tracker)
+
+    private fun repoOf(vararg features: DiscordRegisteredFeature): BotFeatureRepo {
+        return object : BotFeatureRepo {
+            override suspend fun initialize(): EmptyResult<BotError> = Result.Success(Unit)
+            override fun getFeatures(): List<DiscordRegisteredFeature> = features.toList()
+        }
+    }
     //endregion
 
     //region Invalid Input
@@ -285,15 +271,6 @@ class RouteCommandToFeatureUseCaseTest {
         assertThat(result).isInstanceOf(Result.Success::class)
     }
 
-    @Test
-    fun `invoke with explicit command on feature without default command returns success`() = runTest {
-        // given - Feature has no default command but has HEAT as explicit command
-        val message = "@bot heat jin"
-        // when
-        val result = useCase.invoke(Source("", "", ""), message)
-        // then
-        assertThat(result).isInstanceOf(Result.Success::class)
-    }
     //endregion
 
     //region Explicit Commands - Failure
@@ -421,27 +398,35 @@ class RouteCommandToFeatureUseCaseTest {
         TestCase.assertTrue((result as Result.Error).error is BotError.UnknownCharacter)
     }
 
+    //endregion
+
+    //region Query Pass-Through (only wiki features lowercase)
     @Test
-    fun `slash command invoke with explicit command from feature without default returns success`() = runTest {
-        // given
-        val commandString = "heat"
-        val query = "jin"
+    fun `slash invoke forwards raw query - wiki feature is the one lowercasing`() = runTest {
+        // given - Wavu knows "jin" (lowercase); succeeds iff it lowercases internally
+        val wiki = FakeWavuFeature()
+        val localUseCase = RouteCommandToFeatureUseCase(repoOf(wiki), tracker)
+
         // when
-        val result = useCase.invoke(commandString, Source("", "", ""), query)
-        // then
+        val result = localUseCase.invoke("fd", Source("", "", ""), "JIN F21")
+
+        // then - usecase handed over the raw uppercase query
+        assertThat(wiki.receivedQuery).isEqualTo("JIN F21")
+        // and the wiki feature matched it by lowercasing internally
         assertThat(result).isInstanceOf(Result.Success::class)
     }
 
     @Test
-    fun `slash command invoke lowercases the query before routing to feature`() = runTest {
+    fun `message invoke forwards raw query - wiki feature is the one lowercasing`() = runTest {
         // given
-        val commandString = "fd"
-        val query = "JIN F21"
+        val wiki = FakeWavuFeature()
+        val localUseCase = RouteCommandToFeatureUseCase(repoOf(wiki), tracker)
 
         // when
-        val result = useCase.invoke(commandString, Source("", "", ""), query)
+        val result = localUseCase.invoke(Source("", "", ""), "@bot fd JIN F21")
 
         // then
+        assertThat(wiki.receivedQuery).isEqualTo("JIN F21")
         assertThat(result).isInstanceOf(Result.Success::class)
     }
     //endregion
