@@ -24,6 +24,7 @@ internal const val URL_IMG_DISCORD = "https://i.imgur.com/HtuRwva.png"
 
 internal const val TIME_UPDATE_INTERVAL_H = 3
 internal const val TIME_AUTO_EDIT_EMBED_S = 20
+internal const val REQUEST_TIMEOUT_S = 45
 
 internal const val BUILD_KEY_ENV = "ENV"
 internal const val BUILD_VAL_PROD = "production"
@@ -35,3 +36,5 @@ internal const val ENV_API_EWGF = "ewgfApiKey"
 
 internal const val RNG_DONATION_PCT_COMMAND = 5
 internal const val RNG_DONATION_PCT_FEEDBACK = 20
+
+internal const val NUMBER_OF_CONCURRENT_REQUEST = 3
