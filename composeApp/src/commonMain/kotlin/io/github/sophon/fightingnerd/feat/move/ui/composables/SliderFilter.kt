@@ -109,34 +109,23 @@ private fun SliderSection(
     onDraggingChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val effectiveMin = value?.min ?: sliderMin
-    val effectiveMax = value?.max ?: sliderMax
-
     val rangeSliderState = remember(sliderMin, sliderMax) {
         RangeSliderState(
-            activeRangeStart = effectiveMin.toFloat(),
-            activeRangeEnd = effectiveMax.toFloat(),
+            activeRangeStart = sliderMin.toFloat(),
+            activeRangeEnd = sliderMax.toFloat(),
             valueRange = sliderMin.toFloat()..sliderMax.toFloat(),
         )
-    }
-    LaunchedEffect(effectiveMin, effectiveMax) {
-        rangeSliderState.activeRangeStart = effectiveMin.toFloat()
-        rangeSliderState.activeRangeEnd = effectiveMax.toFloat()
     }
 
     LaunchedEffect(rangeSliderState) {
         snapshotFlow { rangeSliderState.activeRangeStart to rangeSliderState.activeRangeEnd }
             .collect { (start, end) ->
-                val newMin = start.roundToInt()
-                val newMax = end.roundToInt()
-                if (newMin != effectiveMin || newMax != effectiveMax) {
-                    onChange(
-                        MoveListState.FilterSheet.MinMax(
-                            min = newMin,
-                            max = newMax,
-                        )
+                onChange(
+                    MoveListState.FilterSheet.MinMax(
+                        min = start.roundToInt(),
+                        max = end.roundToInt(),
                     )
-                }
+                )
             }
     }
 
