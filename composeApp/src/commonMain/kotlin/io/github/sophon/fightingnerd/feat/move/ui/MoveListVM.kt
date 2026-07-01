@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MAX
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
@@ -99,14 +100,16 @@ internal class MoveListVM(
     }
 
     fun onChangeOnHit(minMax: MoveListState.FilterSheet.MinMax?) {
+        val normalized = minMax.normalize(min = FRAME_MIN, max = FRAME_MAX)
         _state.update { state ->
-            state.copy(filterSheet = state.filterSheet.copy(onHit = minMax))
+            state.copy(filterSheet = state.filterSheet.copy(onHit = normalized))
         }
     }
 
     fun onChangeOnBlock(minMax: MoveListState.FilterSheet.MinMax?) {
+        val normalized = minMax.normalize(min = FRAME_MIN, max = FRAME_MAX)
         _state.update { state ->
-            state.copy(filterSheet = state.filterSheet.copy(onBlock = minMax))
+            state.copy(filterSheet = state.filterSheet.copy(onBlock = normalized))
         }
     }
 
@@ -151,10 +154,7 @@ internal class MoveListVM(
             }
     }
 
-    private fun MoveListState.FilterSheet.MinMax?.normalize(
-        min: Int,
-        max: Int,
-    ): MoveListState.FilterSheet.MinMax? {
+    private fun MoveListState.FilterSheet.MinMax?.normalize(min: Int, max: Int): MoveListState.FilterSheet.MinMax? {
         if (this == null) return null
         if (isValid.not()) return null
         val sliderMin = min - 1
@@ -166,6 +166,7 @@ internal class MoveListVM(
         } else {
             copy(min = newMin, max = newMax)
         }
+        Napier.d(tag = "SORRY") { "$normalized" }
         return normalized
     }
 
