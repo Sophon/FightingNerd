@@ -100,15 +100,15 @@ internal class MoveListVM(
     }
 
     fun onChangeOnHit(minMax: MoveListState.FilterSheet.MinMax?) {
-        val normalized = minMax.normalize(min = FRAME_MIN, max = FRAME_MAX)
         _state.update { state ->
+            val normalized = minMax.normalize(min = FRAME_MIN, max = FRAME_MAX)
             state.copy(filterSheet = state.filterSheet.copy(onHit = normalized))
         }
     }
 
     fun onChangeOnBlock(minMax: MoveListState.FilterSheet.MinMax?) {
-        val normalized = minMax.normalize(min = FRAME_MIN, max = FRAME_MAX)
         _state.update { state ->
+            val normalized = minMax.normalize(min = FRAME_MIN, max = FRAME_MAX)
             state.copy(filterSheet = state.filterSheet.copy(onBlock = normalized))
         }
     }
@@ -157,16 +157,19 @@ internal class MoveListVM(
     private fun MoveListState.FilterSheet.MinMax?.normalize(min: Int, max: Int): MoveListState.FilterSheet.MinMax? {
         if (this == null) return null
         if (isValid.not()) return null
+
         val sliderMin = min - 1
-        val sliderMax = max + 1
         val newMin = if (this.min != null && this.min <= sliderMin) null else this.min
+
+        val sliderMax = max + 1
         val newMax = if (this.max != null && this.max >= sliderMax) null else this.max
+
         val normalized = if (newMin == null && newMax == null) {
             null
         } else {
             copy(min = newMin, max = newMax)
         }
-        Napier.d(tag = "SORRY") { "$normalized" }
+
         return normalized
     }
 
