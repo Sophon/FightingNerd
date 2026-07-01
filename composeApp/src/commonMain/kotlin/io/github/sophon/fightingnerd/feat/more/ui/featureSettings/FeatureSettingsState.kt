@@ -3,13 +3,16 @@ package io.github.sophon.fightingnerd.feat.more.ui.featureSettings
 import io.github.sophon.fightingnerd.BuildKonfig
 
 internal data class FeatureSettingsState(
-    val featureList: List<UiFeatureSetting> = listOf(),
+    val currentFeatureList: List<UiFeatureSetting> = listOf(),
+    val updatedFeatureList: List<UiFeatureSetting> = listOf(),
 
     val appVersion: String = BuildKonfig.VERSION,
 
     val isLoading: Boolean = false,
     val isError: String? = null,
 ) {
+    val isChanged: Boolean get() = (currentFeatureList != updatedFeatureList)
+
     data class UiFeatureSetting(
         val featureName: String,
         val iconUrl: String,
@@ -27,7 +30,7 @@ internal data class FeatureSettingsState(
 
     companion object {
         internal val PREVIEW = FeatureSettingsState(
-            featureList = listOf(
+            currentFeatureList = listOf(
                 UiFeatureSetting(
                     featureName = "Wavu Wiki",
                     iconUrl = "",

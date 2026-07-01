@@ -2,6 +2,9 @@
 
 ## [v1.0.0] (5) - TODO
 - `Move` - fixed slider bugs
+- `More` 
+  - `Feature Settings` has text button instead of icon button
+  - `Feature Settings` has the button disabled without change
 
 ## [v1.0.0] (4) - 2026-06-29
 - `Quiz`
