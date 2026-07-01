@@ -1,7 +1,7 @@
 # APP CHANGELOG
 
 ## [v1.0.0] (5) - TODO
-- 
+- `Move` - fixed slider bugs
 
 ## [v1.0.0] (4) - 2026-06-29
 - `Quiz`
