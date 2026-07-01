@@ -8,11 +8,10 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MAX
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -29,6 +28,7 @@ internal class MoveListVM(
     private val overlayService: OverlayService,
     private val loadMoveListDataUseCase: LoadMoveListDataUseCase,
     private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
+    private val normalizeSliderUseCase: NormalizeSliderUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState(character = null))
     val state = _state
@@ -94,21 +94,24 @@ internal class MoveListVM(
 
     fun onChangeStartup(minMax: MoveListState.FilterSheet.MinMax?) {
         _state.update { state ->
-            val normalized = minMax.normalize(min = FRAME_MIN_STARTUP, max = FRAME_MAX)
+            val normalized = normalizeSliderUseCase.invoke(
+                newMinMax = minMax,
+                sliderMin = FRAME_MIN_STARTUP,
+            )
             state.copy(filterSheet = state.filterSheet.copy(startup = normalized))
         }
     }
 
     fun onChangeOnHit(minMax: MoveListState.FilterSheet.MinMax?) {
         _state.update { state ->
-            val normalized = minMax.normalize(min = FRAME_MIN, max = FRAME_MAX)
+            val normalized = normalizeSliderUseCase.invoke(newMinMax = minMax)
             state.copy(filterSheet = state.filterSheet.copy(onHit = normalized))
         }
     }
 
     fun onChangeOnBlock(minMax: MoveListState.FilterSheet.MinMax?) {
         _state.update { state ->
-            val normalized = minMax.normalize(min = FRAME_MIN, max = FRAME_MAX)
+            val normalized = normalizeSliderUseCase.invoke(newMinMax = minMax)
             state.copy(filterSheet = state.filterSheet.copy(onBlock = normalized))
         }
     }
@@ -152,25 +155,6 @@ internal class MoveListVM(
                 Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $error" }
                 overlayService.show(error)
             }
-    }
-
-    private fun MoveListState.FilterSheet.MinMax?.normalize(min: Int, max: Int): MoveListState.FilterSheet.MinMax? {
-        if (this == null) return null
-        if (isValid.not()) return null
-
-        val sliderMin = min - 1
-        val newMin = if (this.min != null && this.min <= sliderMin) null else this.min
-
-        val sliderMax = max + 1
-        val newMax = if (this.max != null && this.max >= sliderMax) null else this.max
-
-        val normalized = if (newMin == null && newMax == null) {
-            null
-        } else {
-            copy(min = newMin, max = newMax)
-        }
-
-        return normalized
     }
 
     private fun Collection<Move>.applyFilters(
