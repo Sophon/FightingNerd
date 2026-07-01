@@ -75,10 +75,14 @@ private fun Content(
             )
     ) {
         item {
-            Header(onExit = onExit, onSaveConfig = onSaveConfig)
+            Header(
+                isChanged = state.isChanged,
+                onExit = onExit,
+                onSaveConfig = onSaveConfig
+            )
         }
 
-        itemsIndexed(state.featureList) { featureIndex, feature ->
+        itemsIndexed(state.updatedFeatureList) { featureIndex, feature ->
             val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
             Column(
                 modifier = Modifier
@@ -110,6 +114,7 @@ private fun Content(
 
 @Composable
 private fun Header(
+    isChanged: Boolean,
     onExit: () -> Unit,
     onSaveConfig: () -> Unit,
     modifier: Modifier = Modifier
@@ -125,12 +130,13 @@ private fun Header(
             onClick = onSaveConfig,
             colors = ButtonDefaults.textButtonColors(
                 contentColor = nerdColorPalette.textPrimary,
+                disabledContentColor = nerdColorPalette.textDisabled,
             ),
+            enabled = isChanged,
         ) {
             Text(
                 text = stringResource(Res.string.more_feature_settings_btn_save).uppercase(),
                 style = nerdTypography.labelLarge,
-                color = nerdColorPalette.textPrimary,
             )
         }
     }
