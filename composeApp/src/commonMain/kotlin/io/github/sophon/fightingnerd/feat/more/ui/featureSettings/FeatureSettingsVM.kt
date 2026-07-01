@@ -40,7 +40,6 @@ internal class FeatureSettingsVM(
             }
             current.copy(updatedFeatureList = updatedList)
         }
-        Napier.d(tag = "SORRY") { "isChanged: ${state.value.isChanged}" }
     }
 
     fun toggleGame(featureIndex: Int, gameIndex: Int, isEnabled: Boolean) {
@@ -61,7 +60,6 @@ internal class FeatureSettingsVM(
             }
             current.copy(updatedFeatureList = updatedList)
         }
-        Napier.d(tag = "SORRY") { "isChanged: ${state.value.isChanged}" }
     }
 
     fun saveConfiguration() {
