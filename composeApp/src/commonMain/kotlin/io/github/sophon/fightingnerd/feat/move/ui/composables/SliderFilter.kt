@@ -129,6 +129,19 @@ private fun SliderSection(
             }
     }
 
+    LaunchedEffect(value) {
+        val targetMin = value?.min?.toFloat() ?: sliderMin.toFloat()
+        val targetMax = value?.max?.toFloat() ?: sliderMax.toFloat()
+
+        if (rangeSliderState.activeRangeStart.roundToInt() != targetMin.roundToInt()) {
+            rangeSliderState.activeRangeStart = targetMin
+        }
+
+        if (rangeSliderState.activeRangeEnd.roundToInt() != targetMax.roundToInt()) {
+            rangeSliderState.activeRangeEnd = targetMax
+        }
+    }
+
     val trackColor = if (value == null) nerdColorPalette.divider else nerdColorPalette.accent
     val trackColors = SliderDefaults.colors(
         activeTrackColor = trackColor,
