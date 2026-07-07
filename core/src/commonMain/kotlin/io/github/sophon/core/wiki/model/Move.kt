@@ -234,6 +234,7 @@ data class Move(
 
     @Serializable
     data class Roa2Properties(
+        val mode: String? = null,
         val caption: List<String>? = null,
         val hitboxCaption: List<String>? = null,
         val startupNotes: String? = null,

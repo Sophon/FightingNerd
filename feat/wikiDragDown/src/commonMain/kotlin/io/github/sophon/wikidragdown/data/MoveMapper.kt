@@ -60,6 +60,7 @@ internal fun MoveResponseDto.toDomain(
         urls = urls,
 
         roa2Properties = Move.Roa2Properties(
+            mode = mode.formMode(),
             caption = caption,
             hitboxCaption = hitboxCaption,
             startupNotes = startupNotes,
@@ -114,4 +115,10 @@ private fun List<String>?.filterOutJunk(): List<String>? {
 private fun formWikiUrl(character: Character): String {
     val url = "${WIKI_BASE_URL}/${character.remoteQueryId}"
     return url
+}
+
+private fun String?.formMode(): String? {
+    val exclusions = setOf("default", "regular", "grounded")
+    val mode = this?.takeIf { it.lowercase() !in exclusions }
+    return mode
 }
