@@ -116,7 +116,7 @@ internal class MoveMapperTest {
             active = "N/A",
             recovery = "N/A",
             name = dto.attack,
-            input = dto.attack.orEmpty().lowercase(),
+            input = "dspecialfadc",
             cancel = "Ledge Grab: 6",
             urls = Move.Urls(
                 wikiUrl = "https://dragdown.wiki/wiki",
