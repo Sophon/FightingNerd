@@ -270,6 +270,7 @@ data class Move(
             Throw,
             Jab,
             HitThrow,
+            FADC,
         }
     }
 }

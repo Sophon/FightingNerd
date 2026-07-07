@@ -19,7 +19,7 @@ internal fun MoveResponseDto.toDomain(
     character: Character,
     imageUrlMap: Map<String, String>,
 ): Move {
-    val id = "${character.id}_${this.attackID}"
+    val id = formId(character)
     val hitboxImageList = hitbox.orEmpty()
         .map { it.trim() }
         .filter { it.isNotEmpty() }
@@ -33,13 +33,16 @@ internal fun MoveResponseDto.toDomain(
     val move = Move(
         id = id,
         characterId = character.id,
-        input = attack.orEmpty(),
+        input = attack.orEmpty().lowercase(),
         name = attack,
 
         startup = startup,
         active = totalActive,
         recovery = endlag,
-        cancel = cancel?.joinToString(";"),
+        cancel = cancel
+            ?.filter { it.isNotBlank() }
+            ?.joinToString(";")
+            ?.ifEmpty { null },
 
         urls = Move.Urls(
             hitboxImageList = hitboxImageList,
@@ -80,6 +83,15 @@ internal fun MoveResponseDto.toDomain(
     return move
 }
 
+private fun MoveResponseDto.formId(character: Character): String {
+    val modifier = when (val modeEnum = mode.orEmpty().toType()) {
+        Mode.Default -> ""
+        else -> modeEnum.name.lowercase()
+    }
+    val id = "${character.id}_${this.attackID?.lowercase()}${modifier}"
+    return id
+}
+
 private fun String.toType(): Mode {
     return when {
         this.equals("airborne", ignoreCase = true) -> Mode.Airborne
@@ -93,6 +105,8 @@ private fun String.toType(): Mode {
         this.contains("grab", ignoreCase = true) -> Mode.Throw
         this.contains("throw", ignoreCase = true) -> Mode.Throw
         this.contains("jab", ignoreCase = true) -> Mode.Jab
+        this.contains("jab", ignoreCase = true) -> Mode.Jab
+        this.contains("fadc", ignoreCase = true) -> Mode.FADC
         else -> Mode.Default
     }
 }
