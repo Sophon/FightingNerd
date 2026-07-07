@@ -119,6 +119,9 @@ private fun formWikiUrl(character: Character): String {
 
 private fun String?.formMode(): String? {
     val exclusions = setOf("default", "regular", "grounded")
-    val mode = this?.takeIf { it.lowercase() !in exclusions }
-    return mode
+    val mode = this
+        ?.takeIf { it.lowercase() !in exclusions }
+        ?.replace(Regex("\\(.*?\\)"), "")
+        ?.replace(" ", "")
+    return mode?.lowercase()
 }

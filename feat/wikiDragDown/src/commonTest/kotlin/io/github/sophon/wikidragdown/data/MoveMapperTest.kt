@@ -75,6 +75,7 @@ internal class MoveMapperTest {
                 wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
             ),
             roa2Properties = Move.Roa2Properties(
+                mode = "emptyinhale",
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,
                 startupNotes = null,
@@ -126,6 +127,7 @@ internal class MoveMapperTest {
                 wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
             ),
             roa2Properties = Move.Roa2Properties(
+                mode = "divekick",
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,
                 startupNotes = null,
@@ -180,6 +182,7 @@ internal class MoveMapperTest {
                 "This move has a 36 frame [cooldown](https://dragdown.wiki/wiki/RoA2/System_Mechanics/Misc#Cooldowns) once endlag begins.",
             ),
             roa2Properties = Move.Roa2Properties(
+                mode = "fadc",
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,
                 startupNotes = null,
