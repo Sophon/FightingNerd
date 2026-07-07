@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wikidragdown.domain.WIKI_BASE_URL
 import kotlin.test.Test
 
 internal class MoveMapperTest {
@@ -11,16 +12,17 @@ internal class MoveMapperTest {
     fun `mapping handles basic move`() {
         // given
         val dto = MoveSource.olympiaBair
+        val character = CharacterSource.olympia
         val expected = Move(
             id = "olympia_bair",
-            characterId = CharacterSource.olympia.id,
+            characterId = character.id,
             startup = dto.startup,
             active = "6-17",
             recovery = dto.endlag,
             name = dto.attack,
             input = dto.attack.orEmpty().lowercase(),
             urls = Move.Urls(
-                wikiUrl = "https://dragdown.wiki/wiki",
+                wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
             ),
             roa2Properties = Move.Roa2Properties(
                 caption = dto.caption,
@@ -60,18 +62,20 @@ internal class MoveMapperTest {
     fun `mapping handles parentheses special`() {
         // given
         val dto = MoveSource.forsburnDSpecialEmptyInhale
+        val character = CharacterSource.forsburn
         val expected = Move(
             id = "forsburn_dspecialemptyinhale",
-            characterId = CharacterSource.forsburn.id,
+            characterId = character.id,
             startup = dto.startup,
             active = "N/A",
             recovery = "N/A",
             name = dto.attack,
             input = "dspecialemptyinhale",
             urls = Move.Urls(
-                wikiUrl = "https://dragdown.wiki/wiki",
+                wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
             ),
             roa2Properties = Move.Roa2Properties(
+                mode = "emptyinhale",
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,
                 startupNotes = null,
@@ -109,9 +113,10 @@ internal class MoveMapperTest {
     fun `mapping handles html formatting`() {
         // given
         val dto = MoveSource.rannoUspecialDivekick
+        val character = CharacterSource.ranno
         val expected = Move(
             id = "ranno_uspecialdivekick",
-            characterId = CharacterSource.ranno.id,
+            characterId = character.id,
             startup = dto.startup,
             active = dto.totalActive,
             recovery = dto.endlag,
@@ -119,9 +124,10 @@ internal class MoveMapperTest {
             input = "uspecialdivekick",
             cancel = "Double Jump & Wall Jump: 43+\nLedge Grab: 57+",
             urls = Move.Urls(
-                wikiUrl = "https://dragdown.wiki/wiki",
+                wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
             ),
             roa2Properties = Move.Roa2Properties(
+                mode = "divekick",
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,
                 startupNotes = null,
@@ -159,9 +165,10 @@ internal class MoveMapperTest {
     fun `mapping handles FADC special`() {
         // given
         val dto = MoveSource.olympiaDSpecialFADC
+        val character = CharacterSource.olympia
         val expected = Move(
             id = "olympia_dspecialfadc",
-            characterId = CharacterSource.olympia.id,
+            characterId = character.id,
             startup = dto.startup,
             active = "N/A",
             recovery = "N/A",
@@ -169,12 +176,13 @@ internal class MoveMapperTest {
             input = "dspecialfadc",
             cancel = "Ledge Grab: 6",
             urls = Move.Urls(
-                wikiUrl = "https://dragdown.wiki/wiki",
+                wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
             ),
             notes = listOf(
                 "This move has a 36 frame [cooldown](https://dragdown.wiki/wiki/RoA2/System_Mechanics/Misc#Cooldowns) once endlag begins.",
             ),
             roa2Properties = Move.Roa2Properties(
+                mode = "fadc",
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,
                 startupNotes = null,

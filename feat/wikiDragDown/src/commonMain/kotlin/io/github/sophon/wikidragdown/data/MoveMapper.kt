@@ -23,15 +23,24 @@ internal fun MoveResponseDto.toDomain(
 ): Move {
     val id = formId(character)
     val input = formInput()
-    val hitboxImageList = hitbox.orEmpty()
-        .map { it.trim() }
-        .filter { it.isNotEmpty() }
-        .mapNotNull { imageUrlMap[it] }
 
-    val moveImageList = image.orEmpty()
-        .map { it.trim() }
-        .filter { it.isNotEmpty() }
-        .mapNotNull { imageUrlMap[it] }
+    val urls = Move.Urls(
+        hitboxImageList = hitbox.orEmpty()
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .mapNotNull { imageUrlMap[it] },
+        moveImageList = image.orEmpty()
+            .map { it.trim() }
+            .filter { it.isNotEmpty() }
+            .mapNotNull { imageUrlMap[it] },
+        wikiUrl = formWikiUrl(character),
+    )
+    val notes = notes
+        ?.cleanHtml()
+        ?.split("\n")
+        ?.filter { it.isNotBlank() }
+        ?.mapNotNull { it.toClickable(WIKI_BASE_URL) }
+        .orEmpty()
 
     val move = Move(
         id = id,
@@ -47,20 +56,11 @@ internal fun MoveResponseDto.toDomain(
             ?.joinToString(";")
             .cleanHtmlOrNull()
             ?.ifEmpty { null },
-        notes = notes
-            ?.cleanHtml()
-            ?.split("\n")
-            ?.filter { it.isNotBlank() }
-            ?.mapNotNull { it.toClickable(WIKI_BASE_URL) }
-            .orEmpty(),
-
-        urls = Move.Urls(
-            hitboxImageList = hitboxImageList,
-            moveImageList = moveImageList,
-            wikiUrl = WIKI_BASE_URL,
-        ),
+        notes = notes,
+        urls = urls,
 
         roa2Properties = Move.Roa2Properties(
+            mode = mode.formMode(),
             caption = caption,
             hitboxCaption = hitboxCaption,
             startupNotes = startupNotes,
@@ -110,4 +110,18 @@ private fun MoveResponseDto.formId(character: Character): String {
 
 private fun List<String>?.filterOutJunk(): List<String>? {
     return this?.filter { it.count() > 3 }
+}
+
+private fun formWikiUrl(character: Character): String {
+    val url = "${WIKI_BASE_URL}/${character.remoteQueryId}"
+    return url
+}
+
+private fun String?.formMode(): String? {
+    val exclusions = setOf("default", "regular", "grounded")
+    val mode = this
+        ?.takeIf { it.lowercase() !in exclusions }
+        ?.replace(Regex("\\(.*?\\)"), "")
+        ?.replace(" ", "")
+    return mode?.lowercase()
 }
