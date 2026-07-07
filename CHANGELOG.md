@@ -1,5 +1,12 @@
 # BOT CHANGELOG
 
+## [v12.2.0] - 2026-07-07
+- set a timeout to wiki syncing
+- `DustLoop` - fixed a bug with malformed URLs
+- `DragDown`
+  - enabled
+  - supports Rivals of Aether 2
+
 ## [v12.1.7] - 2026-06-30
 - `EWGF` - fixed the query being lowercased
 

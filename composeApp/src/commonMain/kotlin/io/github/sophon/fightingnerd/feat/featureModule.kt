@@ -16,6 +16,7 @@ import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizVM
 import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
@@ -57,10 +58,12 @@ internal fun featureModule() = module {
             overlayService = get(),
             loadMoveListDataUseCase = get(),
             loadMoveFiltersUseCase = get(),
+            normalizeSliderUseCase = get(),
         )
     }
     singleOf(::LoadMoveListDataUseCase)
     singleOf(::LoadMoveFiltersUseCase)
+    singleOf(::NormalizeSliderUseCase)
     //endregion
 
     //region Quiz

@@ -234,7 +234,7 @@ data class Move(
 
     @Serializable
     data class Roa2Properties(
-        val mode: Mode? = null,
+        val mode: String? = null,
         val caption: List<String>? = null,
         val hitboxCaption: List<String>? = null,
         val startupNotes: String? = null,
@@ -258,18 +258,5 @@ data class Move(
         val articleID: List<String>? = null,
         val notes: String? = null,
         val advNotes: String? = null,
-    ) {
-        enum class Mode {
-            Default,
-            Airborne,
-            Grounded,
-            Armor,
-            Regular,
-            Multihit,
-            Punch,
-            Throw,
-            Jab,
-            HitThrow,
-        }
-    }
+    )
 }

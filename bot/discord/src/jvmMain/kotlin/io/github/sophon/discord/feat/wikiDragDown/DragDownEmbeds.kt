@@ -3,6 +3,7 @@ package io.github.sophon.discord.feat.wikiDragDown
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.util.capitalize
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.util.featureFooter
@@ -14,7 +15,7 @@ internal fun dragDownMoveEmbed(
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    title = move.input
+    title = move.input.formatTitle(move.roa2Properties?.mode)
     url = move.urls.wikiUrl
     description = "**${character.displayName}**"
     color = Color(TEAL)
@@ -41,7 +42,8 @@ internal fun dragDownMoveEmbed(
 
     optionalField(
         name = "Notes",
-        value = move.notes.joinToString(";") { "- $it"}
+        value = move.notes.joinToString(";") { "- $it"},
+        inline = false,
     )
 
     featureFooter(featureInfo)
@@ -56,9 +58,33 @@ internal fun dragDownCharacterEmbed(
     color = Color(TEAL)
     character.images?.iconUrl?.let { image = it }
 
-    //TODO: data
+    character.roa2Properties?.weight?.let { mandatoryField(name = "Weight", value = it) }
+    character.roa2Properties?.hitstunGravity?.let { mandatoryField(name = "Hitstun Gravity", value = it) }
+    character.roa2Properties?.fallSpeedMax?.let { mandatoryField(name = "Max Fall Spd", value = it) }
+
+    character.roa2Properties?.dashSpeed?.let { mandatoryField(name = "Max Fall Spd", value = it) }
+    character.roa2Properties?.dashFrames?.let { mandatoryField(name = "Dash Frames", value = it) }
+    character.roa2Properties?.frictionGround?.let { mandatoryField(name = "Ground friction", value = it) }
+
+    character.roa2Properties?.jumpSpeedHorizontalMax?.let { mandatoryField(name = "Horizontal Jump Spd", value = it) }
+    character.roa2Properties?.airSpeedHorizontalMax?.let { mandatoryField(name = "Horizontal Air Spd", value = it) }
+    character.roa2Properties?.airAcceleration?.let { mandatoryField(name = "Air Acc", value = it) }
+
+    character.roa2Properties?.shortHopSpeed?.let { mandatoryField(name = "Short Hop Height", value = it) }
+    character.roa2Properties?.fullHopSpeed?.let { mandatoryField(name = "Full Hop Height", value = it) }
+    character.roa2Properties?.doubleJumpSpeed?.let { mandatoryField(name = "Double Jump Spd", value = it) }
+
+
 
     featureFooter(featureInfo)
+}
+
+private fun String.formatTitle(mode: String?): String {
+    if (mode.isNullOrEmpty() || endsWith(mode).not()) return this
+
+    val base = removeSuffix(mode)
+    val formatted = "$base ${mode.capitalize()}"
+    return formatted
 }
 
 private const val TEAL = 0x002893F0

@@ -59,7 +59,7 @@ class MoveMapperTest {
     //endregion
 
     @Test
-    fun `formWikiUrl handles spaces in inputs`() {
+    fun `formWikiUrl handles spaces in name`() {
         // given
         val expected = "https://www.dustloop.com/w/BBCF/Platinum_the_Trinity#Magical_Bat"
         val dto = MoveSource.magicalBat
@@ -70,7 +70,20 @@ class MoveMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
-    
+
+    @Test
+    fun `formWikiUrl handles spaces in input`() {
+        // given
+        val expected = "https://www.dustloop.com/w/BBCF/Makoto_Nanaya#5D_Lv2"
+        val dto = MoveSource.dLv2
+
+        // when
+        val result = formMoveWikiUrl(bb, dto)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
     @Test
     fun `toDomain handles close input`() {
         // given
@@ -373,5 +386,40 @@ private object MoveSource {
         hitboxCaption = "Ground, frame 11\\Ground, frames 12-14",
         type = "drive",
         notes = "Counter Hit state for entire move; Reversal"
+    )
+
+    val dLv2 = MoveDto(
+        chara = "Makoto Nanaya",
+        name = null,
+        input = "5D Lv2",
+        damage = "850",
+        guard = "Mid",
+        startup = "17",
+        active = "3",
+        recovery = "31",
+        onBlock = "-15",
+        onODR = null,
+        attribute = "B",
+        invuln = null,
+        cancel = "SR",
+        p1 = "90",
+        p2 = "80",
+        starter = "Long",
+        level = "4",
+        blockstun = "18",
+        groundHit = "19",
+        airHit = "30",
+        groundCH = "Crumple 58",
+        airCH = "45",
+        blockstop = "12",
+        hitstop = "+0",
+        CHstop = "+5",
+        cancelTiming = null,
+        images = "BBCF_Makoto_Nanaya_5D.png",
+        caption = "&#32;",
+        hitboxes = "BBCF_Makoto_Nanaya_5D_Lv2_Hitbox.png",
+        hitboxCaption = "Level 2 Hitbox",
+        type = "drive",
+        notes = "Startup is fastest possible, can be extended by holding button past Lv3;Slowest possible startup is 29;On CH Crumple Duration 58F, Crumple Fall 81F;",
     )
 }

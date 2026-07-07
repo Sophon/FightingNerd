@@ -1,7 +1,12 @@
 # APP CHANGELOG
 
-## [v1.0.0] (5) - TODO
-- 
+## [v1.0.0] (5) - 2026-07-01
+- `Move` 
+  - fixed slider bugs
+  - clicking on search focuses the search bar
+- `Feature Settings` 
+  - replaced icon button with a text button
+  - Save button is disabled when no change was made
 
 ## [v1.0.0] (4) - 2026-06-29
 - `Quiz`

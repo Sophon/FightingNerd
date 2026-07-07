@@ -30,21 +30,21 @@ internal class FeatureSettingsVM(
 
     fun toggleFeature(featureIndex: Int, isEnabled: Boolean) {
         _state.update { current ->
-            val updatedFeature = current.featureList[featureIndex].run {
+            val updatedFeature = current.updatedFeatureList[featureIndex].run {
                 copy(
                     gameList = gameList.map { game -> game.copy(isEnabled = isEnabled) }
                 )
             }
-            val updatedList = current.featureList.toMutableList().apply {
+            val updatedList = current.updatedFeatureList.toMutableList().apply {
                 set(featureIndex, updatedFeature)
             }
-            current.copy(featureList = updatedList)
+            current.copy(updatedFeatureList = updatedList)
         }
     }
 
     fun toggleGame(featureIndex: Int, gameIndex: Int, isEnabled: Boolean) {
         _state.update { current ->
-            val updatedFeature = current.featureList[featureIndex].run {
+            val updatedFeature = current.updatedFeatureList[featureIndex].run {
                 copy(
                     gameList = gameList.mapIndexed { index, game ->
                         if (index == gameIndex) {
@@ -55,16 +55,16 @@ internal class FeatureSettingsVM(
                     }
                 )
             }
-            val updatedList = current.featureList.toMutableList().apply {
+            val updatedList = current.updatedFeatureList.toMutableList().apply {
                 set(featureIndex, updatedFeature)
             }
-            current.copy(featureList = updatedList)
+            current.copy(updatedFeatureList = updatedList)
         }
     }
 
     fun saveConfiguration() {
         viewModelScope.launch {
-            saveFeatureConfigUseCase.invoke(featureList = state.value.featureList)
+            saveFeatureConfigUseCase.invoke(featureList = state.value.updatedFeatureList)
                 .onSuccess {
                     overlayService.show(
                         Toast(message = "Saved", type = Toast.Type.SUCCESS)
@@ -82,7 +82,7 @@ internal class FeatureSettingsVM(
         viewModelScope.launch {
             getAvailableFeaturesUseCase.invoke()
                 .onSuccess { featureList ->
-                    _state.update { it.copy(featureList = featureList) }
+                    _state.update { it.copy(currentFeatureList = featureList, updatedFeatureList = featureList) }
                 }
                 .onError { error ->
                     Napier.e(tag = TAG) { error.toString() }

@@ -48,4 +48,5 @@
     <string name="more_item_feature_settings">Feature settings</string>
     <string name="more_donate">Donate</string>
     <string name="more_donate_dialog_title">Thanks! Pick method below: </string>
+    <string name="more_feature_settings_btn_save">Save</string>
 </resources>

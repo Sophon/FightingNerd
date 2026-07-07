@@ -5,9 +5,10 @@ import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.toClickable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikidustloop.util.toClickable
+import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
@@ -39,7 +40,7 @@ internal fun MoveDto.toDomain(
         charName = chara,
     )
 
-    return Move(
+    val move = Move(
         characterId = character.id,
         id = normalizedInput.formMoveId(chara),
         name = name?.cleanHtml(),
@@ -119,6 +120,8 @@ internal fun MoveDto.toDomain(
             type = type,
         )
     )
+
+    return move
 }
 
 internal fun String?.formMoveId(charName: String?): String {
@@ -140,18 +143,19 @@ internal fun String?.formNotes(): List<String> {
     return this
         ?.cleanHtml()
         ?.split(";")
-        ?.mapNotNull { it.trim().toClickable() }
+        ?.mapNotNull { it.trim().toClickable(WIKI_BASE_URL) }
         ?.filter { it.isNotBlank() }
         ?: emptyList()
 }
 
 internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
     val moveId = if (dto.name.isNullOrBlank()) {
-        dto.input
+        dto.input?.replace(" ", "_")
     } else {
         dto.name.replace(" ", "_")
     }
-    return "${dto.chara.formWikiUrl(gameId)}#${moveId}"
+    val url = "${dto.chara.formWikiUrl(gameId)}#${moveId}"
+    return url
 }
 
 internal fun formAliases(

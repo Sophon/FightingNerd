@@ -3,10 +3,11 @@ package io.github.sophon.wikidustloop.data
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.decodeHtmlEntities
+import io.github.sophon.core.util.toClickable
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidustloop.domain.BASE_URL
-import io.github.sophon.wikidustloop.util.toClickable
+import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
 
 /**
  * TODO: don't filter out junk characters
@@ -265,9 +266,10 @@ internal fun String?.createBBAliases(): List<String> {
 internal fun String?.formUmo(): List<String> {
     if (isNullOrBlank()) return listOf()
 
-    return orEmpty().split(",").mapNotNull {
-        it.trim().toClickable()
+    val umo = orEmpty().split(",").mapNotNull {
+        it.trim().toClickable(WIKI_BASE_URL)
     }
+    return umo
 }
 
 private fun List<CargoQueryItem>.filterAltModeCharacters(): List<CargoQueryItem> {
