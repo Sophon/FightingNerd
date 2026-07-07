@@ -149,11 +149,11 @@ internal fun String?.formNotes(): List<String> {
 
 internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
     val moveId = if (dto.name.isNullOrBlank()) {
-        dto.input
+        dto.input?.replace(" ", "_")
     } else {
         dto.name.replace(" ", "_")
     }
-    val url = "${dto.chara.formWikiUrl(gameId)}#${moveId}".replace(" ", "_")
+    val url = "${dto.chara.formWikiUrl(gameId)}#${moveId}"
     return url
 }
 
