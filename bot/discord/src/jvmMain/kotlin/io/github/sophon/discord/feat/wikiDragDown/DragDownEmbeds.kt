@@ -3,6 +3,7 @@ package io.github.sophon.discord.feat.wikiDragDown
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.util.capitalize
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.util.featureFooter
@@ -14,7 +15,7 @@ internal fun dragDownMoveEmbed(
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    title = move.input
+    title = move.input.formatTitle(move.roa2Properties?.mode)
     url = move.urls.wikiUrl
     description = "**${character.displayName}**"
     color = Color(TEAL)
@@ -63,7 +64,6 @@ internal fun dragDownCharacterEmbed(
 
     character.roa2Properties?.dashSpeed?.let { mandatoryField(name = "Max Fall Spd", value = it) }
     character.roa2Properties?.dashFrames?.let { mandatoryField(name = "Dash Frames", value = it) }
-//    character.roa2Properties?.dashAcceleration?.let { mandatoryField(name = "Dash Acc", value = it) } //useful?
     character.roa2Properties?.frictionGround?.let { mandatoryField(name = "Ground friction", value = it) }
 
     character.roa2Properties?.jumpSpeedHorizontalMax?.let { mandatoryField(name = "Horizontal Jump Spd", value = it) }
@@ -77,6 +77,14 @@ internal fun dragDownCharacterEmbed(
 
 
     featureFooter(featureInfo)
+}
+
+private fun String.formatTitle(mode: String?): String {
+    if (mode.isNullOrEmpty() || endsWith(mode).not()) return this
+
+    val base = removeSuffix(mode)
+    val formatted = "$base ${mode.capitalize()}"
+    return formatted
 }
 
 private const val TEAL = 0x002893F0
