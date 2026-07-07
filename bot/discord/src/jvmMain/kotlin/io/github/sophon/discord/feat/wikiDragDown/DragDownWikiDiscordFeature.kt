@@ -18,7 +18,6 @@ import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikidragdown.integration.DragDownFeatureInfo
@@ -32,7 +31,6 @@ internal class DragDownWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-    private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
@@ -75,12 +73,14 @@ internal class DragDownWikiDiscordFeature(
                 )
             }
 
-            Command.CharROA -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.ROA2,
-                query = formattedQuery,
-                action = ::searchCharacter,
-            )
+            Command.CharROA -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.ROA2,
+                    query = formattedQuery,
+                    action = { _, wiki, query -> searchCharacter(wiki, query)},
+                )
+            }
             Command.FdGG -> {
                 withWiki(
                     wikis = wikiClientMap,
@@ -102,19 +102,13 @@ internal class DragDownWikiDiscordFeature(
 
 
     private suspend fun searchCharacter(
-        game: Game,
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
         return getCharacterUseCase.invoke(wiki = wiki, charName = query)
-            .map { (character, fastestMoveList) ->
+            .map { (character, _) ->
                 BotOutput(
-                    primaryEmbedBuilder = createCharacterEmbedUseCase.invoke(
-                        game = game,
-                        character = character,
-                        fastestMoveList = fastestMoveList,
-                        featureInfo = featureInfo,
-                    )
+                    primaryEmbedBuilder = dragDownCharacterEmbed(character, featureInfo),
                 )
             }
     }

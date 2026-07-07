@@ -62,7 +62,7 @@
     },
     {
       "name": "DragDown Wiki",
-      "isEnabled": false,
+      "isEnabled": true,
       "supportedGames": [
         "ROA2"
       ]
