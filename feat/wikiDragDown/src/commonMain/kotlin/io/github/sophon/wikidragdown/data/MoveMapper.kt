@@ -1,5 +1,6 @@
 package io.github.sophon.wikidragdown.data
 
+import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikidragdown.domain.WIKI_BASE_URL
@@ -42,6 +43,7 @@ internal fun MoveResponseDto.toDomain(
         cancel = cancel
             ?.filter { it.isNotBlank() }
             ?.joinToString(";")
+            .cleanHtmlOrNull()
             ?.ifEmpty { null },
 
         urls = Move.Urls(
