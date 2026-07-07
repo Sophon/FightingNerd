@@ -234,7 +234,6 @@ data class Move(
 
     @Serializable
     data class Roa2Properties(
-        val mode: Mode? = null,
         val caption: List<String>? = null,
         val hitboxCaption: List<String>? = null,
         val startupNotes: String? = null,
@@ -258,28 +257,5 @@ data class Move(
         val articleID: List<String>? = null,
         val notes: String? = null,
         val advNotes: String? = null,
-    ) {
-        enum class Mode {
-            AirGem,
-            Airborne,
-            AirSlam,
-            Armor,
-            Cooldown,
-            Default,
-            FADC,
-            FullCharge,
-            GemDash,
-            GemLanding,
-            GemPop,
-            Grounded,
-            HitThrow,
-            Jab,
-            LandingSlam,
-            Multihit,
-            Punch,
-            Regular,
-            Throw,
-            ThrowGem,
-        }
-    }
+    )
 }
