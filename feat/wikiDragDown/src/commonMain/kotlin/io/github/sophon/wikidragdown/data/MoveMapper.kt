@@ -1,8 +1,10 @@
 package io.github.sophon.wikidragdown.data
 
+import io.github.sophon.core.util.cleanHtml
+import io.github.sophon.core.util.cleanHtmlOrNull
+import io.github.sophon.core.util.toClickable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.model.Move.Roa2Properties.Mode
 import io.github.sophon.wikidragdown.domain.WIKI_BASE_URL
 
 internal fun List<MoveResponseDto>.toDomain(
@@ -19,7 +21,8 @@ internal fun MoveResponseDto.toDomain(
     character: Character,
     imageUrlMap: Map<String, String>,
 ): Move {
-    val id = "${character.id}_${this.attackID}"
+    val id = formId(character)
+    val input = formInput()
     val hitboxImageList = hitbox.orEmpty()
         .map { it.trim() }
         .filter { it.isNotEmpty() }
@@ -33,13 +36,23 @@ internal fun MoveResponseDto.toDomain(
     val move = Move(
         id = id,
         characterId = character.id,
-        input = attack.orEmpty(),
+        input = input,
         name = attack,
 
         startup = startup,
         active = totalActive,
         recovery = endlag,
-        cancel = cancel?.joinToString(";"),
+        cancel = cancel
+            ?.filter { it.isNotBlank() }
+            ?.joinToString(";")
+            .cleanHtmlOrNull()
+            ?.ifEmpty { null },
+        notes = notes
+            ?.cleanHtml()
+            ?.split("\n")
+            ?.filter { it.isNotBlank() }
+            ?.mapNotNull { it.toClickable(WIKI_BASE_URL) }
+            .orEmpty(),
 
         urls = Move.Urls(
             hitboxImageList = hitboxImageList,
@@ -48,7 +61,6 @@ internal fun MoveResponseDto.toDomain(
         ),
 
         roa2Properties = Move.Roa2Properties(
-            mode = mode?.toType(),
             caption = caption,
             hitboxCaption = hitboxCaption,
             startupNotes = startupNotes,
@@ -70,31 +82,30 @@ internal fun MoveResponseDto.toDomain(
             customShieldSafety = customShieldSafety.filterOutJunk(),
             uniqueField = uniqueField.filterOutJunk(),
             articleID = articleID,
-            notes = notes,
             advNotes = advNotes,
         )
     )
 
-    //TODO: move prefix based on Mode
-
     return move
 }
 
-private fun String.toType(): Mode {
-    return when {
-        this.equals("airborne", ignoreCase = true) -> Mode.Airborne
-        this.equals("grounded", ignoreCase = true) -> Mode.Grounded
-        this.equals("armor", ignoreCase = true) -> Mode.Armor
-        this.equals("armored", ignoreCase = true) -> Mode.Armor
-        this.equals("regular", ignoreCase = true) -> Mode.Regular
-        this.startsWith("hit", ignoreCase = true) -> Mode.Multihit
-        this.equals("punch", ignoreCase = true) -> Mode.Punch
-        this.equals("hitgrab", ignoreCase = true) -> Mode.HitThrow
-        this.contains("grab", ignoreCase = true) -> Mode.Throw
-        this.contains("throw", ignoreCase = true) -> Mode.Throw
-        this.contains("jab", ignoreCase = true) -> Mode.Jab
-        else -> Mode.Default
+private fun MoveResponseDto.formInput(): String {
+    val isDefault = mode.equals("default", ignoreCase = true) || mode.equals("regular", ignoreCase = true)
+    val modifier = if (mode.isNullOrBlank() || isDefault) {
+        ""
+    } else {
+        mode
+            .replace(Regex("\\(.*?\\)"), "")
+            .replace(" ", "")
+            .lowercase()
     }
+    val id = "${this.attackID?.lowercase()}$modifier"
+    return id
+}
+
+private fun MoveResponseDto.formId(character: Character): String {
+    val id = "${character.id}_${this.formInput()}"
+    return id
 }
 
 private fun List<String>?.filterOutJunk(): List<String>? {
