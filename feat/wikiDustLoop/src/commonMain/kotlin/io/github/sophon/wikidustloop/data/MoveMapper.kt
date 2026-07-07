@@ -5,9 +5,10 @@ import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.toClickable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikidustloop.util.toClickable
+import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
@@ -142,7 +143,7 @@ internal fun String?.formNotes(): List<String> {
     return this
         ?.cleanHtml()
         ?.split(";")
-        ?.mapNotNull { it.trim().toClickable() }
+        ?.mapNotNull { it.trim().toClickable(WIKI_BASE_URL) }
         ?.filter { it.isNotBlank() }
         ?: emptyList()
 }

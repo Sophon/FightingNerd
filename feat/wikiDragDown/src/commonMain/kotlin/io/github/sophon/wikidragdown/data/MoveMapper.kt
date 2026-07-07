@@ -2,6 +2,7 @@ package io.github.sophon.wikidragdown.data
 
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
+import io.github.sophon.core.util.toClickable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikidragdown.domain.WIKI_BASE_URL
@@ -50,7 +51,7 @@ internal fun MoveResponseDto.toDomain(
             ?.cleanHtml()
             ?.split("\n")
             ?.filter { it.isNotBlank() }
-            ?.mapNotNull { it.toClickable() }
+            ?.mapNotNull { it.toClickable(WIKI_BASE_URL) }
             .orEmpty(),
 
         urls = Move.Urls(
@@ -109,23 +110,4 @@ private fun MoveResponseDto.formId(character: Character): String {
 
 private fun List<String>?.filterOutJunk(): List<String>? {
     return this?.filter { it.count() > 3 }
-}
-
-internal fun String?.toClickable(): String? {
-    if (this == null) return null
-
-    val regex = """\[\[(.*?)\]\]""".toRegex() // "text text [[match]] text [[match]] text.
-
-    val transformed = regex.replace(this) { matchResult ->
-        val content = matchResult.groupValues[1]
-        val fields = content.split("|")
-        val title = fields.lastOrNull() ?: ""
-        val partialUrl = fields.firstOrNull()
-            .orEmpty()
-            .replace(" ", "_")
-            .trim()
-        "[$title](${WIKI_BASE_URL}/$partialUrl)"
-    }
-
-    return transformed
 }
