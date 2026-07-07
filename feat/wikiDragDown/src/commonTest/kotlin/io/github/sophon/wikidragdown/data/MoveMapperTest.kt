@@ -106,6 +106,56 @@ internal class MoveMapperTest {
     }
 
     @Test
+    fun `mapping handles html formatting`() {
+        // given
+        val dto = MoveSource.rannoUspecialDivekick
+        val expected = Move(
+            id = "ranno_uspecialdivekick",
+            characterId = CharacterSource.ranno.id,
+            startup = dto.startup,
+            active = dto.totalActive,
+            recovery = dto.endlag,
+            name = dto.attack,
+            input = "uspecialdivekick",
+            cancel = "Double Jump & Wall Jump: 43+\nLedge Grab: 57+",
+            urls = Move.Urls(
+                wikiUrl = "https://dragdown.wiki/wiki",
+            ),
+            roa2Properties = Move.Roa2Properties(
+                caption = dto.caption,
+                hitboxCaption = dto.hitboxCaption,
+                startupNotes = null,
+                totalActiveNotes = null,
+                endlagNotes = null,
+                cancelNotes = dto.cancelNotes,
+                landingLag = dto.landingLag,
+                landingLagNotes = null,
+                iasa = dto.iasa,
+                iasaNotes = null,
+                totalDuration = dto.totalDuration,
+                totalDurationNotes = null,
+                ledgeGrabFrame = dto.ledgeGrabFrame,
+                ledgeGrabFrameNotes = null,
+                hitID = dto.hitID,
+                hitMoveID = dto.hitMoveID,
+                hitName = dto.hitName,
+                hitActive = dto.hitActive,
+                customShieldSafety = emptyList(),
+                uniqueField = emptyList(),
+                articleID = dto.articleID,
+                notes = null,
+                advNotes = null,
+            ),
+        )
+
+        // when
+        val result = dto.toDomain(CharacterSource.ranno, mapOf())
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `mapping handles FADC special`() {
         // given
         val dto = MoveSource.olympiaDSpecialFADC
@@ -120,6 +170,9 @@ internal class MoveMapperTest {
             cancel = "Ledge Grab: 6",
             urls = Move.Urls(
                 wikiUrl = "https://dragdown.wiki/wiki",
+            ),
+            notes = listOf(
+                "This move has a 36 frame [cooldown](https://dragdown.wiki/wiki/RoA2/System_Mechanics/Misc#Cooldowns) once endlag begins.",
             ),
             roa2Properties = Move.Roa2Properties(
                 caption = dto.caption,
@@ -143,7 +196,6 @@ internal class MoveMapperTest {
                 customShieldSafety = emptyList(),
                 uniqueField = emptyList(),
                 articleID = dto.articleID,
-                notes = dto.notes,
                 advNotes = null,
             ),
         )
@@ -227,6 +279,74 @@ private object MoveSource {
         notes = "This move has a 36 frame [[RoA2/System Mechanics/Misc#Cooldowns|cooldown]] once endlag begins.",
         advNotes = null,
     )
+    val rannoUspecialDivekick = MoveResponseDto(
+        chara = "Ranno",
+        attack = "Uspecial",
+        attackID = "Uspecial",
+        mode = "Divekick",
+        image = listOf("RoA2_Ranno_Uspecial_1.png"),
+        hitbox = listOf(
+            "RoA2_Ranno_Uspecial_Divekick_hb_0.png ",
+            " RoA2_Ranno_Uspecial_Divekick_hb_1.png ",
+            " RoA2_Ranno_Uspecial_Divekick_hb_2.png",
+        ),
+        caption = listOf(
+            "&#039;&#039;&#039;Divekick&#039;&#039;&#039;&lt;br&gt;&#039;&#039;Get Out of Jail Free&#039;&#039;",
+        ),
+        hitboxCaption = listOf(
+            "&#039;&#039;&#039;Divekick&#039;&#039;&#039;&lt;br&gt;Frame 9 ",
+            " &#039;&#039;&#039;Divekick&#039;&#039;&#039;&lt;br&gt;Frames 10-56 ",
+            " &#039;&#039;&#039;Divekick Landing Hit&#039;&#039;&#039;&lt;br&gt;Frame 1",
+        ),
+        startup = "9",
+        startupNotes = null,
+        totalActive = "9-56",
+        totalActiveNotes = null,
+        endlag = "10",
+        endlagNotes = null,
+        cancel = listOf(
+            "&lt",
+            "span class=&quot",
+            "mod-color--other mod-color-other&quot",
+            "&gt",
+            "Double Jump&lt",
+            "/span&gt",
+            " &amp",
+            " &lt",
+            "span class=&quot",
+            "mod-color--other mod-color-other&quot",
+            "&gt",
+            "Wall Jump&lt",
+            "/span&gt",
+            ": 43+&lt",
+            "br&gt",
+            "&lt",
+            "span class=&quot",
+            "mod-color--other mod-color-other&quot",
+            "&gt",
+            "Ledge Grab&lt",
+            "/span&gt",
+            ": 57+",
+        ),
+        cancelNotes = listOf(""),
+        landingLag = "32",
+        landingLagNotes = null,
+        iasa = null,
+        iasaNotes = null,
+        totalDuration = null,
+        totalDurationNotes = null,
+        ledgeGrabFrame = null,
+        ledgeGrabFrameNotes = null,
+        hitID = listOf("Divekick", "Divekick Landing"),
+        hitMoveID = listOf("Uspecial", "Uspecial"),
+        hitName = listOf("Divekick", "Landing Hit"),
+        hitActive = listOf("9-56", "...1"),
+        customShieldSafety = listOf("-", "-"),
+        uniqueField = listOf("-", "-"),
+        articleID = listOf(""),
+        notes = null,
+        advNotes = null,
+    )
     val forsburnDSpecialEmptyInhale = MoveResponseDto(
         chara = "Forsburn",
         attack = "Dspecial",
@@ -276,5 +396,11 @@ private object CharacterSource {
         displayName = "Forsburn",
         remoteQueryId = "Forsburn",
         wikiUrl = "https://dragdown.wiki/wiki/RoA2/Forsburn",
+    )
+    val ranno = Character(
+        id = "ranno",
+        displayName = "Ranno",
+        remoteQueryId = "Ranno",
+        wikiUrl = "https://dragdown.wiki/wiki/RoA2/Ranno",
     )
 }
