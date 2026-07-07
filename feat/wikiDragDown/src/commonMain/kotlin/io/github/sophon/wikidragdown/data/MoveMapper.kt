@@ -99,14 +99,24 @@ private fun String.toType(): Mode {
         this.equals("armor", ignoreCase = true) -> Mode.Armor
         this.equals("armored", ignoreCase = true) -> Mode.Armor
         this.equals("regular", ignoreCase = true) -> Mode.Regular
-        this.startsWith("hit", ignoreCase = true) -> Mode.Multihit
         this.equals("punch", ignoreCase = true) -> Mode.Punch
+        this.equals("cooldown", ignoreCase = true) -> Mode.Cooldown
         this.equals("hitgrab", ignoreCase = true) -> Mode.HitThrow
-        this.contains("grab", ignoreCase = true) -> Mode.Throw
-        this.contains("throw", ignoreCase = true) -> Mode.Throw
-        this.contains("jab", ignoreCase = true) -> Mode.Jab
+        this.startsWith("hit", ignoreCase = true) -> Mode.Multihit
         this.contains("jab", ignoreCase = true) -> Mode.Jab
         this.contains("fadc", ignoreCase = true) -> Mode.FADC
+        this.contains("airborne gem", ignoreCase = true) -> Mode.AirGem
+        this.contains("airslam gem", ignoreCase = true) -> Mode.AirGem
+        this.contains("landing slam", ignoreCase = true) -> Mode.LandingSlam
+        this.contains("air slam", ignoreCase = true) -> Mode.AirSlam
+        this.contains("airslam", ignoreCase = true) -> Mode.AirSlam
+        this.contains("gem landing", ignoreCase = true) -> Mode.GemLanding
+        this.contains("gem dash", ignoreCase = true) -> Mode.GemDash
+        this.contains("gem pop", ignoreCase = true) -> Mode.GemPop
+        this.contains("throw gem", ignoreCase = true) -> Mode.ThrowGem
+        this.equals("full charge", ignoreCase = true) -> Mode.FullCharge
+        this.contains("grab", ignoreCase = true) -> Mode.Throw
+        this.contains("throw", ignoreCase = true) -> Mode.Throw
         else -> Mode.Default
     }
 }

@@ -260,17 +260,26 @@ data class Move(
         val advNotes: String? = null,
     ) {
         enum class Mode {
-            Default,
+            AirGem,
             Airborne,
-            Grounded,
+            AirSlam,
             Armor,
-            Regular,
+            Cooldown,
+            Default,
+            FADC,
+            FullCharge,
+            GemDash,
+            GemLanding,
+            GemPop,
+            Grounded,
+            HitThrow,
+            Jab,
+            LandingSlam,
             Multihit,
             Punch,
+            Regular,
             Throw,
-            Jab,
-            HitThrow,
-            FADC,
+            ThrowGem,
         }
     }
 }
