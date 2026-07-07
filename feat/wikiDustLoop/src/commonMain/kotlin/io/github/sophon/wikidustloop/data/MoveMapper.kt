@@ -39,7 +39,7 @@ internal fun MoveDto.toDomain(
         charName = chara,
     )
 
-    return Move(
+    val move = Move(
         characterId = character.id,
         id = normalizedInput.formMoveId(chara),
         name = name?.cleanHtml(),
@@ -119,6 +119,8 @@ internal fun MoveDto.toDomain(
             type = type,
         )
     )
+
+    return move
 }
 
 internal fun String?.formMoveId(charName: String?): String {
@@ -151,7 +153,8 @@ internal fun formMoveWikiUrl(gameId: String, dto: MoveDto): String {
     } else {
         dto.name.replace(" ", "_")
     }
-    return "${dto.chara.formWikiUrl(gameId)}#${moveId}"
+    val url = "${dto.chara.formWikiUrl(gameId)}#${moveId}".replace(" ", "_")
+    return url
 }
 
 internal fun formAliases(
