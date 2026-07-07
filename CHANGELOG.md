@@ -2,7 +2,7 @@
 
 ## [v12.2.0] - TODO
 - set a timeout to wiki syncing
-- 
+- `DustLoop` - fixed a bug with malformed URLs
 
 ## [v12.1.7] - 2026-06-30
 - `EWGF` - fixed the query being lowercased
