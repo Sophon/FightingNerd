@@ -81,7 +81,8 @@ internal fun MoveResponseDto.toDomain(
 }
 
 private fun MoveResponseDto.formInput(): String {
-    val modifier = if (mode.isNullOrBlank() || mode.equals("default", ignoreCase = true)) {
+    val isDefault = mode.equals("default", ignoreCase = true) || mode.equals("regular", ignoreCase = true)
+    val modifier = if (mode.isNullOrBlank() || isDefault) {
         ""
     } else {
         mode

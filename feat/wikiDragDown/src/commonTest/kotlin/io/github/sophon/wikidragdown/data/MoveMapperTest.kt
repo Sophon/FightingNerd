@@ -57,6 +57,55 @@ internal class MoveMapperTest {
     }
 
     @Test
+    fun `mapping handles parentheses special`() {
+        // given
+        val dto = MoveSource.forsburnDSpecialEmptyInhale
+        val expected = Move(
+            id = "forsburn_dspecialemptyinhale",
+            characterId = CharacterSource.forsburn.id,
+            startup = dto.startup,
+            active = "N/A",
+            recovery = "N/A",
+            name = dto.attack,
+            input = "dspecialemptyinhale",
+            urls = Move.Urls(
+                wikiUrl = "https://dragdown.wiki/wiki",
+            ),
+            roa2Properties = Move.Roa2Properties(
+                caption = dto.caption,
+                hitboxCaption = dto.hitboxCaption,
+                startupNotes = null,
+                totalActiveNotes = null,
+                endlagNotes = null,
+                cancelNotes = dto.cancelNotes,
+                landingLag = null,
+                landingLagNotes = null,
+                iasa = dto.iasa,
+                iasaNotes = null,
+                totalDuration = dto.totalDuration,
+                totalDurationNotes = null,
+                ledgeGrabFrame = dto.ledgeGrabFrame,
+                ledgeGrabFrameNotes = null,
+                hitID = dto.hitID,
+                hitMoveID = dto.hitMoveID,
+                hitName = dto.hitName,
+                hitActive = dto.hitActive,
+                customShieldSafety = emptyList(),
+                uniqueField = emptyList(),
+                articleID = dto.articleID,
+                notes = null,
+                advNotes = null,
+            ),
+        )
+
+        // when
+        val result = dto.toDomain(CharacterSource.forsburn, mapOf())
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `mapping handles FADC special`() {
         // given
         val dto = MoveSource.olympiaDSpecialFADC
@@ -178,6 +227,41 @@ private object MoveSource {
         notes = "This move has a 36 frame [[RoA2/System Mechanics/Misc#Cooldowns|cooldown]] once endlag begins.",
         advNotes = null,
     )
+    val forsburnDSpecialEmptyInhale = MoveResponseDto(
+        chara = "Forsburn",
+        attack = "Dspecial",
+        attackID = "Dspecial",
+        mode = "Empty Inhale (Yippee!)",
+        image = listOf("RoA2_Forsburn_Dspecial_1.png"),
+        hitbox = listOf(""),
+        caption = listOf(""),
+        hitboxCaption = listOf(""),
+        startup = "8",
+        startupNotes = null,
+        totalActive = "N/A",
+        totalActiveNotes = null,
+        endlag = "N/A",
+        endlagNotes = null,
+        cancel = listOf(""),
+        cancelNotes = listOf(""),
+        landingLag = null,
+        landingLagNotes = null,
+        iasa = "14",
+        iasaNotes = null,
+        totalDuration = "23",
+        totalDurationNotes = null,
+        ledgeGrabFrame = "14",
+        ledgeGrabFrameNotes = null,
+        hitID = listOf(""),
+        hitMoveID = listOf(""),
+        hitName = listOf(""),
+        hitActive = listOf(""),
+        customShieldSafety = listOf(""),
+        uniqueField = listOf(""),
+        articleID = listOf(""),
+        notes = null,
+        advNotes = null,
+    )
 }
 
 private object CharacterSource {
@@ -186,5 +270,11 @@ private object CharacterSource {
         displayName = "Olympia",
         remoteQueryId = "Olympia",
         wikiUrl = "https://dragdown.wiki/wiki/RoA2/Olympia",
+    )
+    val forsburn = Character(
+        id = "forsburn",
+        displayName = "Forsburn",
+        remoteQueryId = "Forsburn",
+        wikiUrl = "https://dragdown.wiki/wiki/RoA2/Forsburn",
     )
 }
