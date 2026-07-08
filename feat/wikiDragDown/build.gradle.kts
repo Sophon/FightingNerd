@@ -68,7 +68,7 @@ android {
     }
 }
 
-val featureVersion = "1.0.0"
+val featureVersion = "1.1.0"
 buildkonfig {
     packageName = "io.github.sophon.wikidragdown"
 
