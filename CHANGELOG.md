@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v13.1.0] - TODO
+- `DragDown` - `specialsROA` command to list special moves
+
 ## [v13.0.0] - 2026-07-07
 - set a timeout to wiki syncing
 - `DustLoop` - fixed a bug with malformed URLs

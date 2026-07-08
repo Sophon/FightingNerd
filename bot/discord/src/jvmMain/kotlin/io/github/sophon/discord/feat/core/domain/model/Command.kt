@@ -578,6 +578,17 @@ internal sealed class Command(
             ),
         ),
     )
+
+    object SpecialROA : Command(
+        name = "SpecialROA",
+        description = "ROA2 special moves",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+            )
+        )
+    )
     //endregion
 
     //region EWGF
