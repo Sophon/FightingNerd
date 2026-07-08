@@ -38,6 +38,7 @@ internal class DragDownWikiDiscordFeature(
     override val featureInfo: FeatureInfo = dragDownFeatureInfo.featureInfo
     override val defaultCommand: Command = Command.Fd
     override val otherCommands: List<Command> = listOf(
+        Command.FdROA,
         Command.CharROA,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
@@ -81,7 +82,7 @@ internal class DragDownWikiDiscordFeature(
                     action = { _, wiki, query -> searchCharacter(wiki, query)},
                 )
             }
-            Command.FdGG -> {
+            Command.FdROA -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.ROA2,
