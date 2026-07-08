@@ -1,5 +1,6 @@
 package io.github.sophon.discord.feat.wikiDragDown
 
+import dev.kord.common.Color
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
@@ -8,23 +9,29 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
+import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.util.toButtons
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikidragdown.integration.DragDownFeatureInfo
+import io.github.sophon.wikidragdown.integration.DragDownFilters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import org.koin.core.component.KoinComponent
+import kotlin.time.Duration.Companion.seconds
 
 internal class DragDownWikiDiscordFeature(
     dragDownFeatureInfo: DragDownFeatureInfo,
@@ -32,6 +39,7 @@ internal class DragDownWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val getMovesUseCase: GetMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -40,6 +48,7 @@ internal class DragDownWikiDiscordFeature(
     override val otherCommands: List<Command> = listOf(
         Command.FdROA,
         Command.CharROA,
+        Command.SpecialROA,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -90,6 +99,14 @@ internal class DragDownWikiDiscordFeature(
                     action = { _, wiki, query -> searchMove(wiki, query) },
                 )
             }
+            Command.SpecialROA -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.ROA2,
+                    query = formattedQuery,
+                    action = { _, wiki, query -> searchSpecialMoves(wiki, query) }
+                )
+            }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -138,8 +155,33 @@ internal class DragDownWikiDiscordFeature(
         return result
     }
 
+    private suspend fun searchSpecialMoves(
+        wiki: WikiClient,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getMovesUseCase.invoke(
+            wiki = wiki,
+            charName = query,
+            filter = DragDownFilters.Specials,
+        ).map { moveList ->
+            BotOutput(
+                primaryEmbedBuilder = moveListEmbed(
+                    category = "${query.uppercase()} Specials",
+                    dataList = moveList.map { it.input },
+                    featureInfo = featureInfo,
+                    color = Color(TEAL),
+                ),
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveList.toButtons(charName = query),
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
+                ),
+            )
+        }
+    }
+
 
     private companion object {
         const val TAG = "DragDownWikiDiscordFeature"
+        const val TEAL = 0x002893F0 //TODO: refactor - each Discord client should have color param
     }
 }
