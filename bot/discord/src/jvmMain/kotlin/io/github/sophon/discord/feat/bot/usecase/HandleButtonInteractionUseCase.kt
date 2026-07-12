@@ -68,6 +68,7 @@ internal class HandleButtonInteractionUseCase(
                 edit(button.messageId, message, editableEmbedMap)
             }
             is DiscordButton.Redirect -> {
+                interaction.deferPublicMessageUpdate()
                 redirect(button.channelId, message)
             }
             else -> {
@@ -140,7 +141,6 @@ internal class HandleButtonInteractionUseCase(
                 message.apply {
                     val botOutput = editableEmbedMap[messageId]
                     botOutput?.mutableEmbedBuilder?.manualEditBuilder?.let { embedBuilder ->
-
                         edit {
                             embeds?.clear()
                             embed(embedBuilder)
