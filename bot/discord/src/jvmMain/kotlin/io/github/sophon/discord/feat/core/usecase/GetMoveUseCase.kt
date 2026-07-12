@@ -17,7 +17,7 @@ internal class GetMoveUseCase {
         query: String
     ): Result<Pair<Character, Move>, BotError> {
         val parsedQuery = query.parseQuery()
-            ?: return Result.Error(BotError.UnknownMove(query))
+            ?: return Result.Error(BotError.BotLogicError(query))
 
         val result = wiki.fetchCharacter(characterQuery = parsedQuery.characterQuery)
             .flatMap { character ->
