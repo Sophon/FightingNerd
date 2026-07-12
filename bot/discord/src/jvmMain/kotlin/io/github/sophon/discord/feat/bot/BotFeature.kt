@@ -28,7 +28,7 @@ internal class BotFeature(
     private val featureRegistry: FeatureRegistry by inject()
 
     override val featureInfo: FeatureInfo = getBotFeatureInfoUseCase.invoke()
-    override val defaultCommand = null
+    override val defaultCommand = Command.Join
     override val otherCommands = listOf(
         Command.Tip,
         Command.Repo,
@@ -37,7 +37,6 @@ internal class BotFeature(
         Command.Help,
         Command.Commands,
         Command.Examples,
-        Command.Join,
         Command.Modules,
         Command.Alias,
     )
