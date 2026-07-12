@@ -49,6 +49,13 @@
         "UNI2",
         "VSAV"
       ]
+    },
+    {
+      "name": "DragDown Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "ROA2"
+      ]
     }
   ]
 }
