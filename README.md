@@ -19,6 +19,20 @@ Frame data targeting Discord bot and mobile apps:
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/sophon)
 
 
+## Sample Usage
+
+### Frame Data
+
+- `fd` or game specific `fd`: `fdtk`, `fdsf`, `fdgg` etc.
+
+<details>
+<summary>Show example</summary>
+
+_Screenshot coming soon._
+
+</details>
+
+
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
 
 ```mermaid
@@ -142,7 +156,7 @@ graph LR
   style roa fill:green, color:#fff
   ```
 
-# [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
+## [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
 
 ### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
 - Twitch bot
