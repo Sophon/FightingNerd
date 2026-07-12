@@ -21,12 +21,26 @@ Frame data targeting Discord bot and mobile apps:
 
 ## Sample Usage
 
-### Frame Data
+All commands can be used in one of two ways:
+1. tag - `@bot [command] [query]`
+2. slash - `/command [query]`
 
+### Frame Data
+- **default command** - `@bot [character] [move]` is identical to `@bot fd [character] [move]` 
 - `fd` or game specific `fd`: `fdtk`, `fdsf`, `fdgg` etc.
 
 <details>
-<summary>Show example</summary>
+<summary>Example</summary>
+
+_Screenshot coming soon._
+
+</details>
+
+### Character data
+- game specific: `charGG`, `charSF`, `charAV` etc.
+
+<details>
+<summary>Example</summary>
 
 _Screenshot coming soon._
 
