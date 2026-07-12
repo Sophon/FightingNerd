@@ -49,7 +49,7 @@ internal class HandleButtonInteractionUseCase(
             interaction.message
         }
 
-        return when(val button = discordButtonBuilder.decodeToDomainModel(buttonId = interaction.componentId)) {
+        val result = when(val button = discordButtonBuilder.decodeToDomainModel(buttonId = interaction.componentId)) {
             is DiscordButton.Query -> {
                 val response = interaction.deferPublicResponse()
                 query(interaction, response, button.query, source, coroutineScope)
@@ -75,6 +75,7 @@ internal class HandleButtonInteractionUseCase(
                 Result.Error(BotError.BotLogicError("Invalid button action"))
             }
         }
+        return result
     }
 
 
@@ -134,7 +135,7 @@ internal class HandleButtonInteractionUseCase(
         message: Message?,
         editableEmbedMap: MutableMap<String, BotOutput>,
     ): EmptyResult<BotError> {
-        return try {
+        val result = try {
             if (message == null) {
                 Result.Error(BotError.BotLogicError("Button has no data"))
             } else {
@@ -164,13 +165,14 @@ internal class HandleButtonInteractionUseCase(
         } catch (e: Exception) {
             Result.Error(BotError.Unknown(e.toString()))
         }
+        return result
     }
 
     private suspend fun redirect(
         channelId: String,
         message: Message?,
     ): EmptyResult<BotError> {
-        return try {
+        val result = try {
             if (message == null) {
                 Result.Error(BotError.BotLogicError("Button has no data"))
             } else {
@@ -200,5 +202,6 @@ internal class HandleButtonInteractionUseCase(
         } catch (e: Exception) {
             Result.Error(BotError.Unknown(e.toString()))
         }
+        return result
     }
 }
