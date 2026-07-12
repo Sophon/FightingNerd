@@ -21,31 +21,51 @@ Frame data targeting Discord bot and mobile apps:
 
 ## Sample Usage
 
+All commands are case **insensitive** - uppercase or lowercase or anything in between is identical.
+
 All commands can be used in one of two ways:
 1. tag - `@bot [command] [query]`
 2. slash - `/command [query]`
 
-### Frame Data
-- **default command** - `@bot [character] [move]` is identical to `@bot fd [character] [move]` 
-- `fd` or game specific `fd`: `fdtk`, `fdsf`, `fdgg` etc.
+In the signatures below, `<param>` is required and `[param]` is optional.
 
-<details>
-<summary>Example</summary>
-
-<img width="1000" height="1716" alt="CleanShot 2026-07-12 at 19 30 53@2x" src="https://github.com/user-attachments/assets/231e1658-77bc-405d-a0d3-cae9722b53f2" />
-
-</details>
-
-### Character data
-- game specific: `charGG`, `charSF`, `charAV` etc.
-
-<details>
-<summary>Example</summary>
-
-<img width="820" height="924" alt="CleanShot 2026-07-12 at 19 31 42@2x" src="https://github.com/user-attachments/assets/95d53ac7-6ec1-458f-ad50-31b026e0bf4e" />
-
-</details>
-
+- **frame data** - `fd <character> <move>`
+  - `<move>` can be input or move name
+  - default command: `@bot <character> <move>` and `@bot fd <character> <move>` are identical
+  - game specific variants: `fdTK`, `fdSF`, `fdGG` etc.
+  - examples: `@bot ak f21` or `@bot ken 236pp` or `@bot sol fafnir`
+- **character data** - `char <game> <character>`
+  - game specific variants: `charGG`, `charSF`, `charAV` etc.
+  - examples: `@bot charsf akuma` or `@bot charroa olympia`
+- **game specific commands**
+  - Tekken 8
+    - `Heat <character>`, `Homing <character>`, `PC <character>`
+    - `Stance <character> [stance]`
+      - examples: `@bot stance steve` or `@bot stance king jgs`
+    - `Strings <character> <input>`
+      - examples: `@bot strings eddy u4`
+  - `Inv <character>` - invincible moves
+- **ELO**
+  - Tekken 8
+    - `EWGF [operation] [tekkenID]` - https://ewgf.gg/
+      - operations:
+        - `register` (or `+`), requires `<tekkenID>`: registers your Discord account
+          - example: `@bot ewgf + 3DgB8jQ82rJ4`
+        - (no operation): displays your last 50 matches
+          - example: `@bot ewgf`
+        - `unregister` (or `-`): deletes your Discord account from the database
+          - example: `@bot ewgf -`
+- **utility commands**
+  - `Alias` - displays character aliases for a game
+  - `Commands` - lists all available commands
+  - `Donate` - displays links to support the project
+  - `Examples` - displays example bot usage
+  - `Feedback <message>` - sends feedback or bug report to the author
+  - `Invite` - displays the invitation link
+  - `Join <steamURL> [password|name]` - creates a clickable link to join a Steam lobby
+    - default bot command: `@bot steam://joinlobby/...` or `@bot join steam://joinlobby/...` are identical
+  - `Modules` - displays all enabled modules, be it games or otherwise
+  - `Repo` - displays the GitHub link to the project
 
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
 
