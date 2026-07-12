@@ -32,7 +32,7 @@ All commands can be used in one of two ways:
 <details>
 <summary>Example</summary>
 
-_Screenshot coming soon._
+<img width="1000" height="1716" alt="CleanShot 2026-07-12 at 19 30 53@2x" src="https://github.com/user-attachments/assets/231e1658-77bc-405d-a0d3-cae9722b53f2" />
 
 </details>
 
@@ -42,7 +42,7 @@ _Screenshot coming soon._
 <details>
 <summary>Example</summary>
 
-_Screenshot coming soon._
+<img width="820" height="924" alt="CleanShot 2026-07-12 at 19 31 42@2x" src="https://github.com/user-attachments/assets/95d53ac7-6ec1-458f-ad50-31b026e0bf4e" />
 
 </details>
 
