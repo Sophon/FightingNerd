@@ -7,6 +7,7 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_REPO
+import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.feat.config.FeatureRegistry
@@ -50,6 +51,10 @@ internal class BotFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
+        if (query.startsWith(URL_STEAM_LOBBY, ignoreCase = true)) {
+            return createJoinEmbedButtonUseCase.invoke(origin, query)
+        }
+
         return when (command) {
             Command.Tip,
             Command.Donate,
