@@ -11,9 +11,8 @@ Frame data targeting Discord bot and mobile apps:
 - 🌐 multiplatform:
   - 🤖 Android
   - 🍏 iOS
-  - 💬 Discord
+  - 💬 Discord: [![Add Bot](https://img.shields.io/badge/Add_to_Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/discovery/applications/1438716136790429776)
 
-[![Add Bot](https://img.shields.io/badge/Add_to_Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/discovery/applications/1438716136790429776)
 
 [![ko-fi](https://img.shields.io/badge/Support_on_Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/sorryuken)
 
