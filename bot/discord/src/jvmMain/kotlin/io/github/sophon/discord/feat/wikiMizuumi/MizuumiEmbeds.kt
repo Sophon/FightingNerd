@@ -10,6 +10,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
 
 internal fun mizuumiMoveEmbed(
@@ -19,11 +20,7 @@ internal fun mizuumiMoveEmbed(
 ): EmbedBuilder.() -> Unit = {
     title = move.input
     url = move.urls.wikiUrl
-    description = when {
-        move.characterId.isBlank() -> "Move data"
-        move.name.isNullOrBlank() -> "**${move.characterId}**"
-        else -> "**${move.characterId}**: ${move.name}"
-    }
+    moveEmbedDescription(character, move)
     color = Color(TEAL)
     character.images?.iconUrl?.let { thumbnail { url = it } }
 

@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.feat.core.domain.model.Emoji
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.separator
 
@@ -19,11 +20,7 @@ internal fun superComboMoveEmbed(
 ): EmbedBuilder.() -> Unit = {
     title = move.input
     url = move.urls.wikiUrl
-    description = if (move.name.isNullOrBlank()) {
-        "**${character.displayName}**"
-    } else {
-        "**${character.displayName}**: ${move.name.orEmpty()}"
-    }
+    moveEmbedDescription(character, move)
     color = Color(WHITE)
     character.images?.iconUrl?.let { thumbnail { url = it } }
 
