@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v13.1.0] - TODO
+## [v13.1.0] - 2026-07-14
 - `DragDown` - `specialsROA` command to list special moves
 - `join` for steam lobbies does not require the command anymore
 - fixed timeout on redirect button
