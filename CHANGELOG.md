@@ -2,8 +2,9 @@
 
 ## [v13.1.0] - TODO
 - `DragDown` - `specialsROA` command to list special moves
-- fixed timeout on redirect button
 - `join` for steam lobbies does not require the command anymore
+- fixed timeout on redirect button
+- fixed character names in embeds
 
 ## [v13.0.0] - 2026-07-07
 - set a timeout to wiki syncing
