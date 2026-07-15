@@ -1,7 +1,8 @@
 # BOT CHANGELOG
 
-## [v13.1.0] - TODO
+## [14.0.0] - TODO
 - move-list embeds use the Character's display name
+- game-specific `fd` has autocomplete
 
 ## [v13.1.0] - 2026-07-14
 - `DragDown` - `specialsROA` command to list special moves
