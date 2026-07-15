@@ -1,6 +1,7 @@
 package io.github.sophon.discord.feat.wikiMizuumi
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.FeatureInfo
@@ -31,19 +32,21 @@ internal class CreateMizuumiInvEmbedUseCase {
             else -> Filter.None
         }
 
-        return wiki.fetchMoveList(charName, filter)
+        return wiki.fetchCharacter(characterQuery = charName)
+            .flatMap { character ->
+                wiki.fetchMoveList(character.id, filter)
+                    .map { moveList -> character to moveList.distinctBy { it.input } }
+            }
             .mapError { it.toDomainError() }
-            .map { moveList ->
-                moveList.distinctBy { it.input }
-            }.map { moveList ->
+            .map { (character, moveList) ->
                 val botOutput = BotOutput(
                     primaryEmbedBuilder = mizuumiMoveListEmbed(
                         featureInfo = featureInfo,
-                        category = "${charName.uppercase()} Inv",
+                        category = "${character.displayName.uppercase()} Inv",
                         moveList = moveList,
                     ),
                     buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = charName),
+                        buttonList = moveList.toButtons(charName = character.displayName),
                         duration = EMBED_BUTTON_DURATION_INF.seconds,
                     ),
                 )

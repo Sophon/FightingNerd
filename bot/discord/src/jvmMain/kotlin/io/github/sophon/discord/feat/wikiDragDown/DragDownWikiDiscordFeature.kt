@@ -163,16 +163,16 @@ internal class DragDownWikiDiscordFeature(
             wiki = wiki,
             charName = query,
             filter = DragDownFilters.Specials,
-        ).map { moveList ->
+        ).map { (character, moveList) ->
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
-                    category = "${query.uppercase()} Specials",
+                    category = "${character.displayName.uppercase()} Specials",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                     color = Color(TEAL),
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = query),
+                    buttonList = moveList.toButtons(charName = character.displayName),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )

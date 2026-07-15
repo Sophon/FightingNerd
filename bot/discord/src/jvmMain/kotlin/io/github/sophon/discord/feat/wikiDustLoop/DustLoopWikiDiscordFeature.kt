@@ -233,10 +233,10 @@ internal class DustLoopWikiDiscordFeature(
         charName: String,
     ): Result<BotOutput, BotError> {
         return fetchDustLoopInvincibleMovesUseCase.invoke(game, wiki, charName)
-            .map { moveList ->
+            .map { (character, moveList) ->
                 BotOutput(
                     primaryEmbedBuilder = dustLoopMoveListEmbedBuilder(
-                        charName = charName,
+                        charName = character.displayName,
                         category = "invincible",
                         moveList = moveList,
                         featureInfo = featureInfo,
