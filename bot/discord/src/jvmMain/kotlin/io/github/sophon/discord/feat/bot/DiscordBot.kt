@@ -4,8 +4,10 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ResumedEvent
+import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
 import dev.kord.core.event.interaction.ButtonInteractionCreateEvent
 import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
@@ -19,6 +21,7 @@ import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
+import io.github.sophon.discord.feat.bot.usecase.RouteAutocompleteToFeatureUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
@@ -41,6 +44,7 @@ internal class DiscordBotImpl(
     private val tracker: Tracker,
     private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
+    private val routeAutocompleteToFeatureUseCase: RouteAutocompleteToFeatureUseCase,
     private val resultToEmbedUseCase: ResultToEmbedUseCase,
     private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
@@ -98,6 +102,10 @@ internal class DiscordBotImpl(
                 }
         }
 
+        kord.on<AutoCompleteInteractionCreateEvent> {
+            safeRestCall(TAG) { handleAutocomplete() }
+        }
+
         //‼️ THIS SUSPENDS UNTIL LOGGED OUT
         try {
             kord.login {
@@ -149,6 +157,19 @@ internal class DiscordBotImpl(
         }
     }
 
+    private suspend fun AutoCompleteInteractionCreateEvent.handleAutocomplete() {
+        val commandString = interaction.command.rootName.lowercase()
+        val prefix = interaction.focusedOption.value
+
+        val suggestions = routeAutocompleteToFeatureUseCase.invoke(
+            commandString = commandString,
+            prefix = prefix,
+        )
+        interaction.suggestString {
+            suggestions.forEach { name -> choice(name, name) }
+        }
+    }
+
     private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
         val commandString = interaction.command.rootName
             .lowercase()
@@ -192,6 +213,7 @@ internal class DiscordBotImpl(
                         supportedCommand.argumentList.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
+                                autocomplete = argument.hasAutocomplete
                             }
                         }
                     }
@@ -241,6 +263,7 @@ internal class DiscordBotImpl(
                         command.argumentList.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
+                                autocomplete = argument.hasAutocomplete
                             }
                         }
                     }
