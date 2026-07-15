@@ -31,10 +31,10 @@ internal class SearchStringFollowupsUseCase(
             wiki = wiki,
             charName = charName,
             filter = TekkenFilters.Strings(startingMoveInput),
-        ).map { moveList ->
+        ).map { (character, moveList) ->
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
-                    category = "${query.uppercase()} Followups",
+                    category = "${character.displayName.uppercase()} ${startingMoveInput.uppercase()} Followups",
                     dataList = moveList.map {
                         "${it.input}: ${it.guard}"
                     },
@@ -42,7 +42,7 @@ internal class SearchStringFollowupsUseCase(
                     color = Color(BLUE),
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName),
+                    buttonList = moveList.toButtons(charName = character.displayName),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )

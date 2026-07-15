@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v13.1.0] - TODO
+- move-list embeds use the Character's display name
+
 ## [v13.1.0] - 2026-07-14
 - `DragDown` - `specialsROA` command to list special moves
 - `join` for steam lobbies does not require the command anymore

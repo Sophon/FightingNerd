@@ -176,26 +176,26 @@ internal class WavuWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMovesUseCase.invoke(
+        val result = getMovesUseCase.invoke(
             wiki = wiki,
             charName = query,
             filter = TekkenFilters.PowerCrush,
-        )
-            .map { moveList ->
-                BotOutput(
-                    primaryEmbedBuilder = moveListEmbed(
-                        category = "${query.uppercase()} Power Crush",
-                        dataList = moveList.map { it.input },
-                        featureInfo = featureInfo,
-                        color = Color(BLUE),
-                        emoji = Emoji.TK_PC,
-                    ),
-                    buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = query),
-                        duration = EMBED_BUTTON_DURATION_INF.seconds,
-                    ),
-                )
-            }
+        ).map { (character, moveList) ->
+            BotOutput(
+                primaryEmbedBuilder = moveListEmbed(
+                    category = "${character.displayName.uppercase()} Power Crush",
+                    dataList = moveList.map { it.input },
+                    featureInfo = featureInfo,
+                    color = Color(BLUE),
+                    emoji = Emoji.TK_PC,
+                ),
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveList.toButtons(charName = character.displayName),
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
+                ),
+            )
+        }
+        return result
     }
 
     private suspend fun searchHeatMoves(
@@ -206,17 +206,17 @@ internal class WavuWikiDiscordFeature(
             wiki = wiki,
             charName = query,
             filter = TekkenFilters.Heat,
-        ).map { moveList ->
+        ).map { (character, moveList) ->
                 BotOutput(
                     primaryEmbedBuilder = moveListEmbed(
-                        category = "${query.uppercase()} Heat",
+                        category = "${character.displayName.uppercase()} Heat",
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
                         color = Color(BLUE),
                         emoji = Emoji.TK_HEAT,
                     ),
                     buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = query),
+                        buttonList = moveList.toButtons(charName = character.displayName),
                         duration = EMBED_BUTTON_DURATION_INF.seconds,
                     ),
                 )
@@ -231,17 +231,17 @@ internal class WavuWikiDiscordFeature(
             wiki = wiki,
             charName = query,
             filter = TekkenFilters.Homing,
-        ).map { moveList ->
+        ).map { (character, moveList) ->
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
-                    category = "${query.uppercase()} Homing",
+                    category = "${character.displayName.uppercase()} Homing",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                     color = Color(BLUE),
                     emoji = Emoji.TK_HOMING,
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = query),
+                    buttonList = moveList.toButtons(charName = character.displayName),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )
@@ -256,17 +256,17 @@ internal class WavuWikiDiscordFeature(
             wiki = wiki,
             charName = query,
             filter = TekkenFilters.Throw,
-        ).map { moveList ->
+        ).map { (character, moveList) ->
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
-                    category = "${query.uppercase()} Throw",
+                    category = "${character.displayName.uppercase()} Throw",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                     color = Color(BLUE),
                     emoji = Emoji.THROW,
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = query),
+                    buttonList = moveList.toButtons(charName = character.displayName),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )
