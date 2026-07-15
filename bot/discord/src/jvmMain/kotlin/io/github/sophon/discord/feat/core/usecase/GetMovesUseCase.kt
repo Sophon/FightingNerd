@@ -4,6 +4,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Move
@@ -15,14 +16,13 @@ internal class GetMovesUseCase {
         wiki: WikiClient,
         charName: String,
         filter: Filter,
-    ): Result<List<Move>, BotError> {
-        return wiki.fetchCharacter(characterQuery = charName)
+    ): Result<Pair<Character, List<Move>>, BotError> {
+        val result = wiki.fetchCharacter(characterQuery = charName)
             .flatMap { character ->
                 wiki.fetchMoveList(character.id, filter)
+                    .map { moveList -> character to moveList.distinctBy { it.input } }
             }
             .mapError { it.toDomainError() }
-            .map { moveList ->
-                moveList.distinctBy { it.input }
-            }
+        return result
     }
 }
