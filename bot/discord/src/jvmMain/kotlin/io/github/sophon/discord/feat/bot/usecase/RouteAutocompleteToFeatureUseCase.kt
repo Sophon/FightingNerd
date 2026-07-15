@@ -16,7 +16,7 @@ internal class RouteAutocompleteToFeatureUseCase(
     suspend fun invoke(
         commandString: String,
         prefix: String,
-    ): List<String> {
+    ): List<AutocompleteChoice> {
         for (feature in featureList) {
             val wikiFeature = feature as? GameWikiDiscordFeature ?: continue
 
@@ -34,10 +34,10 @@ internal class RouteAutocompleteToFeatureUseCase(
         return emptyList()
     }
 
-    private fun List<Character>.filterByPrefix(prefix: String): List<String> {
+    private fun List<Character>.filterByPrefix(prefix: String): List<AutocompleteChoice> {
         val trimmed = prefix.trim()
         if (trimmed.isEmpty()) {
-            return this.take(COMMAND_MAX_SUGGESTIONS).map { it.displayName }
+            return this.take(COMMAND_MAX_SUGGESTIONS).map { it.toChoice() }
         }
         val startsWith = this.filter {
             it.displayName.startsWith(trimmed, ignoreCase = true)
@@ -47,8 +47,15 @@ internal class RouteAutocompleteToFeatureUseCase(
                 it.displayName.startsWith(trimmed, ignoreCase = true).not()
         }
         val combined = (startsWith + contains)
-            .map { it.displayName }
+            .map { it.toChoice() }
             .take(COMMAND_MAX_SUGGESTIONS)
         return combined
     }
+
+    private fun Character.toChoice(): AutocompleteChoice = AutocompleteChoice(name = displayName, value = id)
 }
+
+internal data class AutocompleteChoice(
+    val name: String,
+    val value: String,
+)

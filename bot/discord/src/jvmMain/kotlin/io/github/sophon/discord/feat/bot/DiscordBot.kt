@@ -166,7 +166,7 @@ internal class DiscordBotImpl(
             prefix = prefix,
         )
         interaction.suggestString {
-            suggestions.forEach { name -> choice(name, name) }
+            suggestions.forEach { choice(it.name, it.value) }
         }
     }
 
