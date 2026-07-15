@@ -127,6 +127,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -214,6 +215,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -248,6 +250,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -272,6 +275,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -289,6 +293,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -305,6 +310,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -324,6 +330,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -356,6 +363,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -392,6 +400,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -418,6 +427,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -454,6 +464,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -471,6 +482,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -497,6 +509,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -532,6 +545,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -571,6 +585,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -615,6 +630,7 @@ internal sealed class Command(
         val name: String,
         val description: String,
         val isRequired: Boolean = true,
+        val hasAutocomplete: Boolean = false,
     )
 
     companion object {
