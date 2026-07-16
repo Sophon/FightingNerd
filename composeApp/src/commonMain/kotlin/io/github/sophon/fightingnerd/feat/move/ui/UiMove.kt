@@ -18,6 +18,6 @@ internal data class UiMove(
     )
 
     fun isExpandable(): Boolean {
-        return move.notes.isNotEmpty() || move.urls.videoId.isNullOrEmpty().not()
+        return move.notes.isNotEmpty() || move.urls.videoId.isNullOrEmpty().not() || move.urls.hitboxImageList.isNotEmpty()
     }
 }
