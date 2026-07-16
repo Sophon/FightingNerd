@@ -17,15 +17,6 @@ internal data class UiMove(
         val value: String?,
     )
 
-    data class CoreFields(
-        val startup: Field,
-        val guard: Field,
-        val damage: Field,
-        val onBlock: Field,
-        val onHit: Field,
-        val onCH: Field,
-    )
-
     fun isExpandable(): Boolean {
         return move.notes.isNotEmpty() || move.urls.videoId.isNullOrEmpty().not()
     }
