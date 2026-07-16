@@ -195,9 +195,9 @@ internal class DustLoopWikiDiscordFeature(
 
     override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
         val game = when (command) {
-            Command.FdGG -> Game.GGST
+            Command.FdGG, Command.InvGG -> Game.GGST
             Command.FdDB -> Game.DBFZ
-            Command.FdBB -> Game.BBCF
+            Command.FdBB, Command.InvBB -> Game.BBCF
             Command.FdGB -> Game.GBVSR
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
         }
