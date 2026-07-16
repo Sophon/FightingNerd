@@ -2,6 +2,7 @@
 
 ## [v1.1.0] (6) - TODO
 - `DragDown` - enabled
+- fixed moves not being expandable with hitbox images
 
 ## [v1.0.0] (5) - 2026-07-01
 - `Move` 
