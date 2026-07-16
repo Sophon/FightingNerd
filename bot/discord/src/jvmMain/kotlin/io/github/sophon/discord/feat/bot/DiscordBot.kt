@@ -159,11 +159,11 @@ internal class DiscordBotImpl(
 
     private suspend fun AutoCompleteInteractionCreateEvent.handleAutocomplete() {
         val commandString = interaction.command.rootName.lowercase()
-        val prefix = interaction.focusedOption.value
+        val query = interaction.focusedOption.value
 
         val suggestions = routeAutocompleteToFeatureUseCase.invoke(
             commandString = commandString,
-            prefix = prefix,
+            query = query,
         )
         interaction.suggestString {
             suggestions.forEach { choice(it.name, it.value) }

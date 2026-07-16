@@ -37,12 +37,16 @@ internal class RouteAutocompleteToFeatureUseCase(
     private fun List<Character>.filterByQuery(query: String): List<AutocompleteChoice> {
         val trimmed = query.trim()
         if (trimmed.isEmpty()) {
-            return this.take(COMMAND_MAX_SUGGESTIONS).map { it.toChoice() }
+            return this
+                .takeIf { it.size <= COMMAND_MAX_SUGGESTIONS }
+                ?.map { it.toChoice() }
+                ?: emptyList()
         }
         val charsContaining = this.filter { it.displayName.contains(trimmed, ignoreCase = true) }
         val filteredChoices = charsContaining
             .map { it.toChoice() }
-            .take(COMMAND_MAX_SUGGESTIONS)
+            .takeIf { it.size <= COMMAND_MAX_SUGGESTIONS }
+            ?: emptyList()
         return filteredChoices
     }
 
