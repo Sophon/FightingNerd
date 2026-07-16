@@ -182,9 +182,9 @@ internal class MizuumiWikiDiscordFeature(
 
     override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
         val game = when (command) {
-            Command.FdMB -> Game.MBTL
-            Command.FdUNI -> Game.Uni2
-            Command.FdVS -> Game.VSAV
+            Command.FdMB, Command.InvMB -> Game.MBTL
+            Command.FdUNI, Command.InvUNI -> Game.Uni2
+            Command.FdVS, Command.InvVS -> Game.VSAV
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
         }
         val wiki = wikiClientMap[game]

@@ -100,6 +100,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -142,6 +143,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -152,6 +154,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -162,6 +165,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -172,6 +176,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "stance",
@@ -188,6 +193,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -198,6 +204,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
             Argument(
                 name = "move",
@@ -230,6 +237,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -240,6 +248,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -265,6 +274,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -353,6 +363,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -378,6 +389,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -390,6 +402,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -417,6 +430,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -443,6 +457,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -454,6 +469,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -498,6 +514,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -524,6 +541,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -534,6 +552,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -560,6 +579,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -574,6 +594,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -601,6 +622,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                hasAutocomplete = true,
             )
         )
     )

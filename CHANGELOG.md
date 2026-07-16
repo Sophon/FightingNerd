@@ -2,7 +2,7 @@
 
 ## [14.0.0] - TODO
 - move-list embeds use the Character's display name
-- game-specific `fd` has autocomplete
+- auto-complete for character queries
 
 ## [v13.1.0] - 2026-07-14
 - `DragDown` - `specialsROA` command to list special moves
