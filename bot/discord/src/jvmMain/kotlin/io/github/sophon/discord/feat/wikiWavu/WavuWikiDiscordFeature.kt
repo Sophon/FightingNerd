@@ -167,7 +167,12 @@ internal class WavuWikiDiscordFeature(
 
     override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
         val game = when (command) {
-            Command.FdTK -> Game.Tekken8
+            Command.FdTK,
+            Command.Heat,
+            Command.Homing,
+            Command.Pc,
+            Command.Stance,
+            Command.Strings -> Game.Tekken8
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
         }
         val wiki = wikiClientMap[game]
