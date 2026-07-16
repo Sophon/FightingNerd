@@ -15,7 +15,7 @@ internal class RouteAutocompleteToFeatureUseCase(
 
     suspend fun invoke(
         commandString: String,
-        prefix: String,
+        query: String,
     ): List<AutocompleteChoice> {
         for (feature in featureList) {
             val wikiFeature = feature as? GameWikiDiscordFeature ?: continue
@@ -27,29 +27,23 @@ internal class RouteAutocompleteToFeatureUseCase(
 
             val result = wikiFeature.getCharacterList(command)
             if (result is Result.Success) {
-                val filtered = result.data.filterByPrefix(prefix)
+                val filtered = result.data.filterByQuery(query)
                 return filtered
             }
         }
         return emptyList()
     }
 
-    private fun List<Character>.filterByPrefix(prefix: String): List<AutocompleteChoice> {
-        val trimmed = prefix.trim()
+    private fun List<Character>.filterByQuery(query: String): List<AutocompleteChoice> {
+        val trimmed = query.trim()
         if (trimmed.isEmpty()) {
             return this.take(COMMAND_MAX_SUGGESTIONS).map { it.toChoice() }
         }
-        val startsWith = this.filter {
-            it.displayName.startsWith(trimmed, ignoreCase = true)
-        }
-        val contains = this.filter {
-            it.displayName.contains(trimmed, ignoreCase = true) &&
-                it.displayName.startsWith(trimmed, ignoreCase = true).not()
-        }
-        val combined = (startsWith + contains)
+        val charsContaining = this.filter { it.displayName.contains(trimmed, ignoreCase = true) }
+        val filteredChoices = charsContaining
             .map { it.toChoice() }
             .take(COMMAND_MAX_SUGGESTIONS)
-        return combined
+        return filteredChoices
     }
 
     private fun Character.toChoice(): AutocompleteChoice = AutocompleteChoice(name = displayName, value = id)
