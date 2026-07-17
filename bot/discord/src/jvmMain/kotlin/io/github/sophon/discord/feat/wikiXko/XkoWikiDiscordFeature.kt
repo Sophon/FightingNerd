@@ -6,6 +6,8 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotError
@@ -14,7 +16,9 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
+import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
@@ -29,6 +33,8 @@ internal class XkoWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val getCharactersUseCase: GetCharactersUseCase,
+    private val getMovesUseCase: GetMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -86,6 +92,30 @@ internal class XkoWikiDiscordFeature(
         return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
+    override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
+        val game = when (command) {
+            Command.FdXko -> Game.Xko
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getCharactersUseCase.invoke(wiki)
+        return result
+    }
+
+    override suspend fun getMoveList(
+        command: Command,
+        characterId: String,
+    ): Result<List<Move>, BotError> {
+        val game = when (command) {
+            Command.FdXko -> Game.Xko
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        return result
+    }
 
     private suspend fun searchMove(
         wiki: WikiClient,

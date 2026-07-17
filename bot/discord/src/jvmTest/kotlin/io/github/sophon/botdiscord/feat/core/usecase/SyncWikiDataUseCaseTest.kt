@@ -265,7 +265,7 @@ class SyncWikiDataUseCaseTest {
 
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isInstanceOf(BotError.Unknown::class)
+        assertThat((result as Result.Error).error).isInstanceOf(BotError.DownloadError::class)
         assertThat(wiki.clearCacheCalls).isEqualTo(0)
         assertThat(wiki.cacheCharacterListCalls).isEmpty()
     }
@@ -455,7 +455,7 @@ class SyncWikiDataUseCaseTest {
 
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isInstanceOf(BotError.Unknown::class)
+        assertThat((result as Result.Error).error).isInstanceOf(BotError.DownloadError::class)
         assertThat(wiki1.clearCacheCalls).isEqualTo(1)
         assertThat(wiki2.clearCacheCalls).isEqualTo(0)
     }
@@ -480,7 +480,7 @@ class SyncWikiDataUseCaseTest {
 
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isInstanceOf(BotError.Unknown::class)
+        assertThat((result as Result.Error).error).isInstanceOf(BotError.DownloadError::class)
     }
 
     @Test
@@ -549,30 +549,6 @@ class SyncWikiDataUseCaseTest {
             "cacheCharacterList",
             "cacheMoveList"
         )
-    }
-
-    @Test
-    fun `invoke - different WikiError types are all converted to BotError`() = runTest {
-        // given
-        val testCases = listOf(
-            WikiError.DownloadError("download"),
-            WikiError.DatabaseError("database"),
-            WikiError.UnknownCharacter("unknown"),
-            WikiError.UnknownMove("move")
-        )
-
-        testCases.forEach { wikiError ->
-            val wiki = FakeWikiClient().apply {
-                downloadCharacterListResult = Result.Error(wikiError)
-            }
-
-            // when
-            val result = useCase.invoke(listOf(wiki))
-
-            // then
-            assertThat(result).isInstanceOf(Result.Error::class)
-            assertThat((result as Result.Error).error).isInstanceOf(BotError.Unknown::class)
-        }
     }
     //endregion
 }

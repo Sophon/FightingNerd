@@ -7,6 +7,8 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotError
@@ -17,7 +19,9 @@ import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
+import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
@@ -39,6 +43,8 @@ internal class DustLoopWikiDiscordFeature(
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
     private val fetchDustLoopInvincibleMovesUseCase: FetchDustLoopInvincibleMovesUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val getCharactersUseCase: GetCharactersUseCase,
+    private val getMovesUseCase: GetMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -190,6 +196,38 @@ internal class DustLoopWikiDiscordFeature(
         return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
+    override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
+        val game = when (command) {
+            Command.FdGG, Command.InvGG -> Game.GGST
+            Command.FdDB -> Game.DBFZ
+            Command.FdBB, Command.InvBB -> Game.BBCF
+            Command.FdGB -> Game.GBVSR
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getCharactersUseCase.invoke(wiki)
+        return result
+    }
+
+    override suspend fun getMoveList(
+        command: Command,
+        characterId: String,
+    ): Result<List<Move>, BotError> {
+        val game = when (command) {
+            Command.FdGG, Command.InvGG -> Game.GGST
+            Command.FdDB -> Game.DBFZ
+            Command.FdBB, Command.InvBB -> Game.BBCF
+            Command.FdGB -> Game.GBVSR
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        return result
+    }
+
+
     private suspend fun searchCharacter(
         game: Game,
         wiki: WikiClient,
@@ -233,10 +271,10 @@ internal class DustLoopWikiDiscordFeature(
         charName: String,
     ): Result<BotOutput, BotError> {
         return fetchDustLoopInvincibleMovesUseCase.invoke(game, wiki, charName)
-            .map { moveList ->
+            .map { (character, moveList) ->
                 BotOutput(
                     primaryEmbedBuilder = dustLoopMoveListEmbedBuilder(
-                        charName = charName,
+                        charName = character.displayName,
                         category = "invincible",
                         moveList = moveList,
                         featureInfo = featureInfo,

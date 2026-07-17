@@ -8,6 +8,8 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.feat.core.domain.Scheduler
@@ -19,6 +21,7 @@ import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
+import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
@@ -40,6 +43,7 @@ internal class DragDownWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val getMovesUseCase: GetMovesUseCase,
+    private val getCharactersUseCase: GetCharactersUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -118,6 +122,31 @@ internal class DragDownWikiDiscordFeature(
         return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
+    override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
+        val game = when (command) {
+            Command.FdROA -> Game.ROA2
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getCharactersUseCase.invoke(wiki)
+        return result
+    }
+
+    override suspend fun getMoveList(
+        command: Command,
+        characterId: String,
+    ): Result<List<Move>, BotError> {
+        val game = when (command) {
+            Command.FdROA -> Game.ROA2
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        return result
+    }
+
 
     private suspend fun searchCharacter(
         wiki: WikiClient,
@@ -161,18 +190,18 @@ internal class DragDownWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = query,
+            characterId = query,
             filter = DragDownFilters.Specials,
-        ).map { moveList ->
+        ).map { (character, moveList) ->
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
-                    category = "${query.uppercase()} Specials",
+                    category = "${character.displayName.uppercase()} Specials",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                     color = Color(TEAL),
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = query),
+                    buttonList = moveList.toButtons(charName = character.id),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )

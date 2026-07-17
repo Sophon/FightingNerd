@@ -4,9 +4,8 @@ import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
+import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
-import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
@@ -38,7 +37,8 @@ internal class CreateEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
 
-    suspend fun MessageCreateEvent.invoke(
+    suspend fun invoke(
+        message: Message,
         embedBuilder: EmbedBuilder.() -> Unit,
         coroutineScope: CoroutineScope,
         source: Source,
@@ -47,8 +47,8 @@ internal class CreateEmbedUseCase(
         buttons: BotOutput.ButtonSet? = null,
     ): Result<String, BotError> {
         return try {
-            val uuid = Uuid.Companion.random()
-            val message = message.channel.createMessage {
+            val uuid = Uuid.random()
+            val sentMessage = message.channel.createMessage {
                 messageReference = message.id
                 allowedMentions { repliedUser = false }
 
@@ -76,7 +76,7 @@ internal class CreateEmbedUseCase(
                     coroutineScope.launch {
                         delay(duration)
                         runCatching {
-                            message.edit { components = mutableListOf() }
+                            sentMessage.edit { components = mutableListOf() }
                         }.onFailure { error ->
                             Napier.e(tag = TAG) { "${source.serverName}: ${error.message}" }
                         }
@@ -85,7 +85,7 @@ internal class CreateEmbedUseCase(
             }
 
             if (rollChance(successPercentage = RNG_DONATION_PCT_COMMAND)) {
-                message.channel.createMessage {
+                sentMessage.channel.createMessage {
                     content = donationMessage()
                 }
             }
@@ -96,7 +96,8 @@ internal class CreateEmbedUseCase(
         }
     }
 
-    suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
+    suspend fun invoke(
+        interaction: GuildChatInputCommandInteraction,
         embedBuilder: EmbedBuilder.() -> Unit,
         coroutineScope: CoroutineScope,
         source: Source,

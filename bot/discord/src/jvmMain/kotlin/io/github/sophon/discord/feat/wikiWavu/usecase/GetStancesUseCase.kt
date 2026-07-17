@@ -6,6 +6,7 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Move
@@ -66,7 +67,7 @@ internal class GetStancesUseCase(
                 )
             }
         } else {
-            fetchMovesOfStance(wiki, charName, stance).map { moveList ->
+            fetchMovesOfStance(wiki, charName, stance).map { (character, moveList) ->
                 BotOutput(
                     primaryEmbedBuilder = moveListEmbed(
                         category = stance.uppercase(),
@@ -75,7 +76,7 @@ internal class GetStancesUseCase(
                         color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = charName),
+                        buttonList = moveList.toButtons(charName = character.id),
                         duration = EMBED_BUTTON_DURATION_INF.seconds,
                     )
                 )
@@ -88,7 +89,7 @@ internal class GetStancesUseCase(
         wiki: WikiClient,
         charName: String,
         stance: String,
-    ): Result<List<Move>, BotError> {
+    ): Result<Pair<Character, List<Move>>, BotError> {
         val filter = object : Filter {
             override val name: String = "Stance"
             override val predicate: (Move) -> Boolean = { move ->
@@ -98,7 +99,7 @@ internal class GetStancesUseCase(
 
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = charName,
+            characterId = charName,
             filter = filter,
         )
     }

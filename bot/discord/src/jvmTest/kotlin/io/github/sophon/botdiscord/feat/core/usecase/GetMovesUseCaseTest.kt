@@ -24,6 +24,12 @@ class GetMovesUseCaseTest {
         //given
         val charName = "jin"
         val useCase = GetMovesUseCase()
+        val character = Character(
+            id = charName,
+            displayName = charName,
+            remoteQueryId = charName,
+            wikiUrl = "",
+        )
         val moves = listOf(
             createMove(
                 input = "4",
@@ -51,7 +57,7 @@ class GetMovesUseCaseTest {
             ),
         )
         val expected = Result.Success(
-            listOf(
+            character to listOf(
                 createMove(
                     input = "4",
                     properties = Move.T8Properties(
@@ -76,15 +82,10 @@ class GetMovesUseCaseTest {
         //when
         val result = useCase.invoke(
             wiki = FakeWikiClient(
-                character = Character(
-                    id = charName,
-                    displayName = charName,
-                    remoteQueryId = charName,
-                    wikiUrl = "",
-                ),
+                character = character,
                 moves = moves,
             ),
-            charName = charName,
+            characterId = charName,
             filter = Filter.None,
         )
 
@@ -98,27 +99,28 @@ class GetMovesUseCaseTest {
         val alias = "kuni"
         val characterId = "kunimitsu"
         val useCase = GetMovesUseCase()
+        val character = Character(
+            id = characterId,
+            displayName = characterId,
+            remoteQueryId = characterId,
+            wikiUrl = "",
+            aliasList = listOf(alias),
+        )
         val moves = listOf(
             createMove(
                 input = "1",
                 properties = Move.T8Properties(isHoming = true),
             ),
         )
-        val expected = Result.Success(moves)
+        val expected = Result.Success(character to moves)
 
         //when
         val result = useCase.invoke(
             wiki = FakeWikiClient(
-                character = Character(
-                    id = characterId,
-                    displayName = characterId,
-                    remoteQueryId = characterId,
-                    wikiUrl = "",
-                    aliasList = listOf(alias),
-                ),
+                character = character,
                 moves = moves,
             ),
-            charName = alias,
+            characterId = alias,
             filter = Filter.None,
         )
 
