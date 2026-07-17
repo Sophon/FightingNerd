@@ -92,8 +92,7 @@ internal class HandleAutoCompleteEventUseCase(
         val charsContaining = this.filter { it.displayName.contains(trimmed, ignoreCase = true) }
         val filteredChoices = charsContaining
             .map { it.toChoice() }
-            .takeIf { it.size <= COMMAND_MAX_SUGGESTIONS }
-            ?: emptyList()
+            .take(COMMAND_MAX_SUGGESTIONS)
         return filteredChoices
     }
 
@@ -101,9 +100,8 @@ internal class HandleAutoCompleteEventUseCase(
         val trimmed = query.trim()
         if (trimmed.isEmpty()) {
             return this
-                .takeIf { it.size <= COMMAND_MAX_SUGGESTIONS }
-                ?.map { it.toChoice() }
-                ?: emptyList()
+                .take(COMMAND_MAX_SUGGESTIONS)
+                .map { it.toChoice() }
         }
         val movesContaining = this.filter { move ->
             move.input.contains(trimmed, ignoreCase = true) ||
