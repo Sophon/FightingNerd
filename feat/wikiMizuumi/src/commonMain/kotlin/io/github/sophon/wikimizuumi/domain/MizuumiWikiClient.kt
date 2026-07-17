@@ -49,7 +49,7 @@ internal class MizuumiWikiClient(
                         source.resolveCharacterImageUrlsFromMoveList(gameId = game.id, dto = dto)
                             .map { imageUrlMap ->
                                 dto.toDomainAll(
-                                    gameId = game.id,
+                                    game = game,
                                     imageUrlMap = imageUrlMap,
                                     hitboxUrlMap = hitboxUrlMap,
                                 )
@@ -93,12 +93,10 @@ internal class MizuumiWikiClient(
         } else {
             source.downloadMoveList(table = gameTables.moves, character = character)
                 .flatMap { dto ->
-                    source.resolveHitboxUrls(dto).map { imageUrlMap ->
-                        val moveList = dto.toDomain(
-                            character = character,
-                            gameId = game.id,
-                            imageUrlMap = imageUrlMap,
-                        )
+                    source.resolveHitboxUrls(dto).map { hitboxUrlMap ->
+                        val moveList = dto.cargoquery.map {
+                            it.title.toDomain(character = character, hitboxUrlMap = hitboxUrlMap)
+                        }
                         Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
                         moveList
                     }

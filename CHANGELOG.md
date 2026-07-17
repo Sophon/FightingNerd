@@ -3,6 +3,8 @@
 ## [14.0.0] - 2026-07-18
 - move-list embeds use the Character's display name
 - game specific `fd` - autocomplete
+- `Mizuumi` - fixed mapper bugs
+- memory DB stores move by ID, not by input
 
 ## [v13.1.0] - 2026-07-14
 - `DragDown` - `specialsROA` command to list special moves
