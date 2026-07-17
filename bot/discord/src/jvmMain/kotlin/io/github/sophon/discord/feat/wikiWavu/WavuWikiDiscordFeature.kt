@@ -210,7 +210,7 @@ internal class WavuWikiDiscordFeature(
                     emoji = Emoji.TK_PC,
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = character.displayName),
+                    buttonList = moveList.toButtons(charName = character.id),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )
@@ -236,7 +236,7 @@ internal class WavuWikiDiscordFeature(
                         emoji = Emoji.TK_HEAT,
                     ),
                     buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = character.displayName),
+                        buttonList = moveList.toButtons(charName = character.id),
                         duration = EMBED_BUTTON_DURATION_INF.seconds,
                     ),
                 )
@@ -261,7 +261,7 @@ internal class WavuWikiDiscordFeature(
                     emoji = Emoji.TK_HOMING,
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = character.displayName),
+                    buttonList = moveList.toButtons(charName = character.id),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )
@@ -286,7 +286,7 @@ internal class WavuWikiDiscordFeature(
                     emoji = Emoji.THROW,
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = character.displayName),
+                    buttonList = moveList.toButtons(charName = character.id),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )

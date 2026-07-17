@@ -14,12 +14,11 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 internal class CreateReplyEmbedUseCase {
-
     suspend fun invoke(
         message: Message,
         reply: BotOutput.Reply,
     ): Result<Message, BotError> {
-        return try {
+        val result = try {
             val channel = message.kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
             channel?.createMessage {
                 content = "<@${reply.target.id}>"
@@ -33,13 +32,14 @@ internal class CreateReplyEmbedUseCase {
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
         }
+        return result
     }
 
     suspend fun invoke(
         interaction: GuildChatInputCommandInteraction,
         reply: BotOutput.Reply,
     ): Result<PublicInteractionResponseBehavior, BotError> {
-        return try {
+        val result = try {
             val channel = interaction.kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
             channel?.createMessage {
                 content = "<@${reply.target.id}>"
@@ -53,5 +53,6 @@ internal class CreateReplyEmbedUseCase {
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
         }
+        return result
     }
 }
