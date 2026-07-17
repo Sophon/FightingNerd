@@ -24,10 +24,10 @@ import io.github.sophon.discord.feat.bot.usecase.CreateMutableEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.RouteAutocompleteToFeatureUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.config.BotFeatureRepoImpl
@@ -108,7 +108,6 @@ internal val featureRegistryModule = module {
     singleOf(::GetBotFeatureInfoUseCase)
     singleOf(::CreateJoinEmbedButtonUseCase)
     singleOf(::RouteCommandToFeatureUseCase)
-    singleOf(::RouteAutocompleteToFeatureUseCase)
     singleOf(::CreateErrorEmbedBuilderUseCase)
     singleOf(::CreatePlainMessageUseCase)
     singleOf(::CreateEmbedUseCase)
@@ -116,6 +115,7 @@ internal val featureRegistryModule = module {
     singleOf(::CreateReplyEmbedUseCase)
     singleOf(::ResultToEmbedUseCase)
     singleOf(::CreateMutableEmbedUseCase)
+    singleOf(::HandleAutoCompleteEventUseCase)
     singleOf(::HandleButtonInteractionUseCase)
     singleOf(::PostDailyReportEmbedUseCase)
     //endregion

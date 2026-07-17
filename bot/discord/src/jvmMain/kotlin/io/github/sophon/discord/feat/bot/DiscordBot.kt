@@ -4,7 +4,6 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
-import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ResumedEvent
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
@@ -18,10 +17,10 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.feat.admin.adminCommands
+import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.RouteAutocompleteToFeatureUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
@@ -44,7 +43,7 @@ internal class DiscordBotImpl(
     private val tracker: Tracker,
     private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
-    private val routeAutocompleteToFeatureUseCase: RouteAutocompleteToFeatureUseCase,
+    private val handleAutoCompleteEventUseCase: HandleAutoCompleteEventUseCase,
     private val resultToEmbedUseCase: ResultToEmbedUseCase,
     private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
@@ -103,7 +102,9 @@ internal class DiscordBotImpl(
         }
 
         kord.on<AutoCompleteInteractionCreateEvent> {
-            safeRestCall(TAG) { handleAutocomplete() }
+            safeRestCall(TAG) {
+                with(handleAutoCompleteEventUseCase) { invoke() }
+            }
         }
 
         //‼️ THIS SUSPENDS UNTIL LOGGED OUT
