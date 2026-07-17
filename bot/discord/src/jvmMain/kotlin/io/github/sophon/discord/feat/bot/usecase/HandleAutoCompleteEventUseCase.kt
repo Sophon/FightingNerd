@@ -4,10 +4,14 @@ import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.feat.bot.model.AutocompleteChoice
 import io.github.sophon.discord.feat.config.BotFeatureRepo
+import io.github.sophon.discord.feat.core.domain.model.Command
+import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
+import kotlin.collections.emptyList
 import kotlin.getValue
 
 internal class HandleAutoCompleteEventUseCase(
@@ -19,9 +23,18 @@ internal class HandleAutoCompleteEventUseCase(
 
     suspend fun invoke(interaction: AutoCompleteInteraction) {
         val commandString = interaction.command.rootName.lowercase()
+        val focusedArgumentName = interaction.command.options.entries
+            .firstOrNull { it.value.focused }
+            ?.key
+            .orEmpty()
         val query = interaction.focusedOption.value
 
-        val suggestions = routeToFeature(commandString = commandString, query = query)
+        val suggestions = routeToFeature(
+            commandString = commandString,
+            argumentName = focusedArgumentName,
+            query = query,
+            interaction = interaction,
+        )
         interaction.suggestString {
             suggestions.forEach { choice(it.name, it.value) }
         }
@@ -29,7 +42,9 @@ internal class HandleAutoCompleteEventUseCase(
 
     private suspend fun routeToFeature(
         commandString: String,
+        argumentName: String,
         query: String,
+        interaction: AutoCompleteInteraction,
     ): List<AutocompleteChoice> {
         for (feature in featureList) {
             val wikiFeature = feature as? GameWikiDiscordFeature ?: continue
@@ -39,10 +54,28 @@ internal class HandleAutoCompleteEventUseCase(
                 ?: (feature.defaultCommand?.takeIf { it.name.equals(commandString, ignoreCase = true) })
                 ?: continue
 
-            val result = wikiFeature.getCharacterList(command)
-            if (result is Result.Success) {
-                val filtered = result.data.filterByQuery(query)
-                return filtered
+            val focusedArg = command.argumentList
+                .firstOrNull { it.name.equals(argumentName, ignoreCase = true) }
+                ?: continue
+
+            when (focusedArg.autoCompleteType) {
+                AutoCompleteType.Character -> {
+                    val result = wikiFeature.getCharacterList(command)
+                    if (result is Result.Success) {
+                        val filtered = result.data.filterByQuery(query)
+                        return filtered
+                    }
+                }
+                AutoCompleteType.Move -> {
+                    val characterValue = command.readSibling(interaction, AutoCompleteType.Character)
+                    if (characterValue.isBlank()) return emptyList()
+                    val result = wikiFeature.getMoveList(command, characterValue)
+                    if (result is Result.Success) {
+                        val filtered = result.data.filterMovesByQuery(query)
+                        return filtered
+                    }
+                }
+                AutoCompleteType.None -> return emptyList()
             }
         }
         return emptyList()
@@ -64,5 +97,36 @@ internal class HandleAutoCompleteEventUseCase(
         return filteredChoices
     }
 
+    private fun List<Move>.filterMovesByQuery(query: String): List<AutocompleteChoice> {
+        val trimmed = query.trim()
+        if (trimmed.isEmpty()) {
+            return this
+                .takeIf { it.size <= COMMAND_MAX_SUGGESTIONS }
+                ?.map { it.toChoice() }
+                ?: emptyList()
+        }
+        val movesContaining = this.filter { move ->
+            move.input.contains(trimmed, ignoreCase = true) ||
+                move.name?.contains(trimmed, ignoreCase = true) == true ||
+                move.aliases.any { alias -> alias.contains(trimmed, ignoreCase = true) }
+        }
+        val filteredChoices = movesContaining
+            .map { it.toChoice() }
+            .takeIf { it.size <= COMMAND_MAX_SUGGESTIONS }
+            ?: emptyList()
+        return filteredChoices
+    }
+
+    private fun Command.readSibling(
+        interaction: AutoCompleteInteraction,
+        type: AutoCompleteType,
+    ): String {
+        val siblingArg = argumentList.firstOrNull { it.autoCompleteType == type }
+        val value = siblingArg?.let { interaction.command.strings[it.name] }.orEmpty()
+        return value
+    }
+
     private fun Character.toChoice(): AutocompleteChoice = AutocompleteChoice(name = displayName, value = id)
+
+    private fun Move.toChoice(): AutocompleteChoice = AutocompleteChoice(name = input, value = input)
 }
