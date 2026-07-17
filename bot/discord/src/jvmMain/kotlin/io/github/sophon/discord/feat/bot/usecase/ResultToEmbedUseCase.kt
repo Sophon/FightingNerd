@@ -1,7 +1,7 @@
 package io.github.sophon.discord.feat.bot.usecase
 
-import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.entity.Message
+import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
@@ -29,7 +29,8 @@ internal class ResultToEmbedUseCase(
     private val createMutableEmbedUseCase: CreateMutableEmbedUseCase,
 ) {
 
-    suspend fun MessageCreateEvent.invoke(
+    suspend fun invoke(
+        message: Message,
         source: Source,
         result: Result<BotOutput, BotError>,
         coroutineScope: CoroutineScope,
@@ -49,59 +50,52 @@ internal class ResultToEmbedUseCase(
 
         when {
             botOutput.primaryEmbedBuilder != null -> {
-                with (createEmbedUseCase) {
-                    invoke(
-                        embedBuilder = botOutput.primaryEmbedBuilder,
-                        coroutineScope = coroutineScope,
-                        source = source,
-                        imageList = botOutput.images,
-                        buttons = botOutput.buttons,
-                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
-                }
+                createEmbedUseCase.invoke(
+                    message = message,
+                    embedBuilder = botOutput.primaryEmbedBuilder,
+                    coroutineScope = coroutineScope,
+                    source = source,
+                    imageList = botOutput.images,
+                    buttons = botOutput.buttons,
+                ).onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.mutableEmbedBuilder != null -> {
-                with (createMutableEmbedUseCase) {
-                    invoke(
-                        mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
-                        coroutineScope = coroutineScope,
-                        buttons = botOutput.buttons,
-                        editAfter = TIME_AUTO_EDIT_EMBED_S.seconds, //TODO: DON'T ALWAYS AUTO EDIT
-                    )
-                        .onSuccess { uuid ->
-                            botOutput.buttons?.duration?.let { duration ->
-                                if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
-                                    editableEmbedMap[uuid] = botOutput
-                                    coroutineScope.launch {
-                                        delay(duration)
-                                        editableEmbedMap.remove(uuid)
-                                    }
+                createMutableEmbedUseCase.invoke(
+                    message = message,
+                    mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
+                    coroutineScope = coroutineScope,
+                    buttons = botOutput.buttons,
+                    editAfter = TIME_AUTO_EDIT_EMBED_S.seconds, //TODO: DON'T ALWAYS AUTO EDIT
+                )
+                    .onSuccess { uuid ->
+                        botOutput.buttons?.duration?.let { duration ->
+                            if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                                editableEmbedMap[uuid] = botOutput
+                                coroutineScope.launch {
+                                    delay(duration)
+                                    editableEmbedMap.remove(uuid)
                                 }
                             }
                         }
-                        .onError { Napier.e(tag = TAG) { "embed: $it" } }
-                }
+                    }
+                    .onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.plainText != null -> {
-                with(createPlainMessageUseCase) {
-                    invoke(botOutput.plainText).onError {
-                        Napier.e(tag = TAG) { "handleMessage: $it" }
-                    }
+                createPlainMessageUseCase.invoke(message, botOutput.plainText).onError {
+                    Napier.e(tag = TAG) { "handleMessage: $it" }
                 }
             }
             botOutput.feedback != null -> {
-                with (createFeedbackEmbedUseCase) {
-                    invoke(botOutput.feedback, botOutput.buttons)
-                }
+                createFeedbackEmbedUseCase.invoke(message, botOutput.feedback, botOutput.buttons)
             }
             botOutput.reply != null -> {
-                with (createReplyEmbedUseCase) {
-                    invoke(botOutput.reply)
-                }
+                createReplyEmbedUseCase.invoke(message, botOutput.reply)
             }
         }
     }
 
-    suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
+    suspend fun invoke(
+        interaction: GuildChatInputCommandInteraction,
         source: Source,
         result: Result<BotOutput, BotError>,
         coroutineScope: CoroutineScope,
@@ -118,54 +112,46 @@ internal class ResultToEmbedUseCase(
 
         when {
             botOutput.primaryEmbedBuilder != null -> {
-                with (createEmbedUseCase) {
-                    invoke(
-                        embedBuilder = botOutput.primaryEmbedBuilder,
-                        coroutineScope = coroutineScope,
-                        source = source,
-                        imageList = botOutput.images,
-                        buttons = botOutput.buttons,
-                    ).onError { Napier.e(tag = TAG) { "embed: $it" } }
-                }
+                createEmbedUseCase.invoke(
+                    interaction = interaction,
+                    embedBuilder = botOutput.primaryEmbedBuilder,
+                    coroutineScope = coroutineScope,
+                    source = source,
+                    imageList = botOutput.images,
+                    buttons = botOutput.buttons,
+                ).onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.mutableEmbedBuilder != null -> {
-                with (createMutableEmbedUseCase) {
-                    invoke(
-                        mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
-                        coroutineScope = coroutineScope,
-                        imageList = botOutput.images,
-                        buttons = botOutput.buttons,
-                    )
-                        .onSuccess { uuid ->
-                            botOutput.buttons?.duration?.let { duration ->
-                                if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
-                                    editableEmbedMap[uuid] = botOutput
-                                    coroutineScope.launch {
-                                        delay(duration)
-                                        editableEmbedMap.remove(uuid)
-                                    }
+                createMutableEmbedUseCase.invoke(
+                    interaction = interaction,
+                    mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
+                    coroutineScope = coroutineScope,
+                    imageList = botOutput.images,
+                    buttons = botOutput.buttons,
+                )
+                    .onSuccess { uuid ->
+                        botOutput.buttons?.duration?.let { duration ->
+                            if (duration != EMBED_BUTTON_DURATION_INF.seconds) {
+                                editableEmbedMap[uuid] = botOutput
+                                coroutineScope.launch {
+                                    delay(duration)
+                                    editableEmbedMap.remove(uuid)
                                 }
                             }
                         }
-                        .onError { Napier.e(tag = TAG) { "embed: $it" } }
-                }
+                    }
+                    .onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.plainText != null -> {
-                with(createPlainMessageUseCase) {
-                    invoke(botOutput.plainText).onError {
-                        Napier.e(tag = TAG) { "handleMessage: $it" }
-                    }
+                createPlainMessageUseCase.invoke(interaction, botOutput.plainText).onError {
+                    Napier.e(tag = TAG) { "handleMessage: $it" }
                 }
             }
             botOutput.feedback != null -> {
-                with (createFeedbackEmbedUseCase) {
-                    invoke(botOutput.feedback, botOutput.buttons)
-                }
+                createFeedbackEmbedUseCase.invoke(interaction, botOutput.feedback, botOutput.buttons)
             }
             botOutput.reply != null -> {
-                with (createReplyEmbedUseCase) {
-                    invoke(botOutput.reply)
-                }
+                createReplyEmbedUseCase.invoke(interaction, botOutput.reply)
             }
         }
     }

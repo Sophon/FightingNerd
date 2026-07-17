@@ -4,7 +4,6 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
-import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ResumedEvent
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
@@ -18,16 +17,14 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.feat.admin.adminCommands
+import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
+import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.RouteAutocompleteToFeatureUseCase
-import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.util.safeRestCall
-import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -43,9 +40,8 @@ internal class DiscordBotImpl(
     private val kord: Kord,
     private val tracker: Tracker,
     private val adminConfig: Config.AdminConfig,
-    private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
-    private val routeAutocompleteToFeatureUseCase: RouteAutocompleteToFeatureUseCase,
-    private val resultToEmbedUseCase: ResultToEmbedUseCase,
+    private val handleQueryUseCase: HandleQueryUseCase,
+    private val handleAutoCompleteEventUseCase: HandleAutoCompleteEventUseCase,
     private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
@@ -77,22 +73,20 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
-            safeRestCall(TAG) { handleCommand() }
+            handleQueryUseCase.invoke(
+                interaction = interaction,
+                editableEmbedMap = editableEmbedMap,
+            )
         }
 
         kord.on<MessageCreateEvent> {
-            // ignoring other bots, even ourselves
-            if (message.author?.isBot != false) return@on
-
-            // ignoring if someone replies with tag
-            val botId = kord.selfId
-            val botMention = "<@$botId>"
-            val botNicknameMention = "<@!$botId>"
-            if (botMention !in message.content && botNicknameMention !in message.content) {
-                return@on
+            safeRestCall(TAG) {
+                handleQueryUseCase.invoke(
+                    message = message,
+                    botId = kord.selfId,
+                    editableEmbedMap = editableEmbedMap,
+                )
             }
-
-            safeRestCall(TAG) { handleMessage() }
         }
 
         kord.on<ButtonInteractionCreateEvent> {
@@ -103,7 +97,9 @@ internal class DiscordBotImpl(
         }
 
         kord.on<AutoCompleteInteractionCreateEvent> {
-            safeRestCall(TAG) { handleAutocomplete() }
+            safeRestCall(TAG) {
+                handleAutoCompleteEventUseCase.invoke(interaction)
+            }
         }
 
         //‼️ THIS SUSPENDS UNTIL LOGGED OUT
@@ -135,62 +131,6 @@ internal class DiscordBotImpl(
         }
     } catch(e: Exception) {
         Napier.e(tag = TAG, throwable = e) { "Failed to delete old commands" }
-    }
-
-    private suspend fun MessageCreateEvent.handleMessage() {
-        if (kord.selfId !in message.mentionedUserIds) return
-
-        val source = Source(
-            username = message.author?.username.orEmpty(),
-            id = message.author?.id.toString(),
-            channelId = message.channelId.toString(),
-            serverName = message.getGuildOrNull()?.name.orEmpty(),
-        )
-
-        val result = routeCommandToFeatureUseCase.invoke(
-            source = source,
-            message = message.content,
-        )
-
-        with (resultToEmbedUseCase) {
-            invoke(source, result, coroutineScope, editableEmbedMap)
-        }
-    }
-
-    private suspend fun AutoCompleteInteractionCreateEvent.handleAutocomplete() {
-        val commandString = interaction.command.rootName.lowercase()
-        val query = interaction.focusedOption.value
-
-        val suggestions = routeAutocompleteToFeatureUseCase.invoke(
-            commandString = commandString,
-            query = query,
-        )
-        interaction.suggestString {
-            suggestions.forEach { choice(it.name, it.value) }
-        }
-    }
-
-    private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
-        val commandString = interaction.command.rootName
-            .lowercase()
-        val query = interaction.command.strings.values
-            .joinToString(" ")
-        val source = Source(
-            username = interaction.user.username,
-            id = interaction.user.data.id.toString(),
-            channelId = interaction.channelId.toString(),
-            serverName = interaction.getGuildOrNull()?.name.orEmpty(),
-        )
-
-        val result = routeCommandToFeatureUseCase.invoke(
-            source = source,
-            commandString = commandString,
-            query = query
-        )
-
-        with (resultToEmbedUseCase) {
-            invoke(source, result, coroutineScope, editableEmbedMap)
-        }
     }
 
     @Suppress("UnusedPrivateMember")

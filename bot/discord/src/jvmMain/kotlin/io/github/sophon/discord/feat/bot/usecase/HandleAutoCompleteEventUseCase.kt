@@ -1,19 +1,33 @@
 package io.github.sophon.discord.feat.bot.usecase
 
+import dev.kord.core.behavior.interaction.suggestString
+import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
+import io.github.sophon.discord.feat.bot.model.AutocompleteChoice
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
+import kotlin.getValue
 
-internal class RouteAutocompleteToFeatureUseCase(
+internal class HandleAutoCompleteEventUseCase(
     botFeatureRepo: BotFeatureRepo,
 ) {
     private val featureList by lazy {
         botFeatureRepo.getFeatures()
     }
 
-    suspend fun invoke(
+    suspend fun invoke(interaction: AutoCompleteInteraction) {
+        val commandString = interaction.command.rootName.lowercase()
+        val query = interaction.focusedOption.value
+
+        val suggestions = routeToFeature(commandString = commandString, query = query)
+        interaction.suggestString {
+            suggestions.forEach { choice(it.name, it.value) }
+        }
+    }
+
+    private suspend fun routeToFeature(
         commandString: String,
         query: String,
     ): List<AutocompleteChoice> {
@@ -52,8 +66,3 @@ internal class RouteAutocompleteToFeatureUseCase(
 
     private fun Character.toChoice(): AutocompleteChoice = AutocompleteChoice(name = displayName, value = id)
 }
-
-internal data class AutocompleteChoice(
-    val name: String,
-    val value: String,
-)
