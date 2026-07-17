@@ -24,6 +24,7 @@ import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.util.safeRestCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -153,7 +154,7 @@ internal class DiscordBotImpl(
                         supportedCommand.argumentList.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
-                                autocomplete = argument.hasAutocomplete
+                                autocomplete = (argument.autoCompleteType != AutoCompleteType.None)
                             }
                         }
                     }
@@ -179,7 +180,7 @@ internal class DiscordBotImpl(
                             supportedCommand.argumentList.forEach { argument ->
                                 string(name = argument.name, description = argument.description) {
                                     required = argument.isRequired
-                                    autocomplete = argument.hasAutocomplete
+                                    autocomplete = (argument.autoCompleteType != AutoCompleteType.None)
                                 }
                             }
                         }
@@ -204,7 +205,7 @@ internal class DiscordBotImpl(
                         command.argumentList.forEach { argument ->
                             string(name = argument.name, description = argument.description) {
                                 required = argument.isRequired
-                                autocomplete = argument.hasAutocomplete
+                                autocomplete = (argument.autoCompleteType != AutoCompleteType.None)
                             }
                         }
                     }

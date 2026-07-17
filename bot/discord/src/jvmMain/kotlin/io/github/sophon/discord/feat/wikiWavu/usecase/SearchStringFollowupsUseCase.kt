@@ -29,7 +29,7 @@ internal class SearchStringFollowupsUseCase(
         val startingMoveInput = parts.drop(1).joinToString()
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = charName,
+            characterId = charName,
             filter = TekkenFilters.Strings(startingMoveInput),
         ).map { (character, moveList) ->
             BotOutput(

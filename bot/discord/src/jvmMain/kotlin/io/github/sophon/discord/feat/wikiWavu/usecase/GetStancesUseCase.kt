@@ -99,7 +99,7 @@ internal class GetStancesUseCase(
 
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = charName,
+            characterId = charName,
             filter = filter,
         )
     }

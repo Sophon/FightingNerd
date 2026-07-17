@@ -8,6 +8,7 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.feat.core.domain.Scheduler
@@ -160,7 +161,6 @@ internal class WavuWikiDiscordFeature(
         return result
     }
 
-
     override suspend fun refreshData(): EmptyResult<BotError> {
         return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
@@ -181,6 +181,25 @@ internal class WavuWikiDiscordFeature(
         return result
     }
 
+    override suspend fun getMoveList(
+        command: Command,
+        characterId: String,
+    ): Result<List<Move>, BotError> {
+        val game = when (command) {
+            Command.FdTK,
+            Command.Heat,
+            Command.Homing,
+            Command.Pc,
+            Command.Stance,
+            Command.Strings -> Game.Tekken8
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        return result
+    }
+
 
     private suspend fun searchMove(
         wiki: WikiClient,
@@ -198,7 +217,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         val result = getMovesUseCase.invoke(
             wiki = wiki,
-            charName = query,
+            characterId = query,
             filter = TekkenFilters.PowerCrush,
         ).map { (character, moveList) ->
             BotOutput(
@@ -224,7 +243,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = query,
+            characterId = query,
             filter = TekkenFilters.Heat,
         ).map { (character, moveList) ->
                 BotOutput(
@@ -249,7 +268,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = query,
+            characterId = query,
             filter = TekkenFilters.Homing,
         ).map { (character, moveList) ->
             BotOutput(
@@ -274,7 +293,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = query,
+            characterId = query,
             filter = TekkenFilters.Throw,
         ).map { (character, moveList) ->
             BotOutput(
