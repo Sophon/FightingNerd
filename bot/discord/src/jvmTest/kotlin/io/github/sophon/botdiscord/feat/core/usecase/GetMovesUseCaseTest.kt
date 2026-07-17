@@ -85,7 +85,7 @@ class GetMovesUseCaseTest {
                 character = character,
                 moves = moves,
             ),
-            charName = charName,
+            characterId = charName,
             filter = Filter.None,
         )
 
@@ -120,7 +120,7 @@ class GetMovesUseCaseTest {
                 character = character,
                 moves = moves,
             ),
-            charName = alias,
+            characterId = alias,
             filter = Filter.None,
         )
 

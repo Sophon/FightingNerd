@@ -14,10 +14,10 @@ import io.github.sophon.discord.feat.core.domain.toDomainError
 internal class GetMovesUseCase {
     suspend fun invoke(
         wiki: WikiClient,
-        charName: String,
-        filter: Filter,
+        characterId: String,
+        filter: Filter = Filter.None,
     ): Result<Pair<Character, List<Move>>, BotError> {
-        val result = wiki.fetchCharacter(characterQuery = charName)
+        val result = wiki.fetchCharacter(characterQuery = characterId)
             .flatMap { character ->
                 wiki.fetchMoveList(character.id, filter)
                     .map { moveList -> character to moveList.distinctBy { it.input } }
