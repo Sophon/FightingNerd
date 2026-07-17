@@ -186,7 +186,7 @@ internal class DragDownWikiDiscordFeature(
                     color = Color(TEAL),
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = character.displayName),
+                    buttonList = moveList.toButtons(charName = character.id),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )
