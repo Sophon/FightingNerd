@@ -46,6 +46,8 @@ internal class HandleAutoCompleteEventUseCase(
         query: String,
         interaction: AutoCompleteInteraction,
     ): List<AutocompleteChoice> {
+        val trimmedQuery = query.trim()
+
         for (feature in featureList) {
             val wikiFeature = feature as? GameWikiDiscordFeature ?: continue
 
@@ -62,7 +64,7 @@ internal class HandleAutoCompleteEventUseCase(
                 AutoCompleteType.Character -> {
                     val result = wikiFeature.getCharacterList(command)
                     if (result is Result.Success) {
-                        val filtered = result.data.filterByQuery(query)
+                        val filtered = result.data.filterByQuery(trimmedQuery)
                         return filtered
                     }
                 }
@@ -71,7 +73,7 @@ internal class HandleAutoCompleteEventUseCase(
                     if (characterValue.isBlank()) return emptyList()
                     val result = wikiFeature.getMoveList(command, characterValue)
                     if (result is Result.Success) {
-                        val filtered = result.data.filterMovesByQuery(query)
+                        val filtered = result.data.filterMovesByQuery(trimmedQuery)
                         return filtered
                     }
                 }
@@ -82,37 +84,34 @@ internal class HandleAutoCompleteEventUseCase(
     }
 
     private fun List<Character>.filterByQuery(query: String): List<AutocompleteChoice> {
-        val trimmed = query.trim()
-        if (trimmed.isEmpty()) {
+        if (query.isEmpty()) {
             return this
                 .takeIf { it.size <= COMMAND_MAX_SUGGESTIONS }
                 ?.map { it.toChoice() }
                 ?: emptyList()
         }
-        val charsContaining = this.filter { it.displayName.contains(trimmed, ignoreCase = true) }
-        val filteredChoices = charsContaining
+        val matchingCharList = this.filter { it.displayName.contains(query, ignoreCase = true) }
+        val choiceList = matchingCharList
             .map { it.toChoice() }
             .take(COMMAND_MAX_SUGGESTIONS)
-        return filteredChoices
+        return choiceList
     }
 
     private fun List<Move>.filterMovesByQuery(query: String): List<AutocompleteChoice> {
-        val trimmed = query.trim()
-        if (trimmed.isEmpty()) {
+        if (query.isEmpty()) {
             return this
                 .take(COMMAND_MAX_SUGGESTIONS)
                 .map { it.toChoice() }
         }
-        val movesContaining = this.filter { move ->
-            move.input.contains(trimmed, ignoreCase = true) ||
-                move.name?.contains(trimmed, ignoreCase = true) == true ||
-                move.aliases.any { alias -> alias.contains(trimmed, ignoreCase = true) }
+        val matchingMoveList = this.filter { move ->
+            move.input.contains(query, ignoreCase = true) ||
+                move.name?.contains(query, ignoreCase = true) == true ||
+                move.aliases.any { alias -> alias.contains(query, ignoreCase = true) }
         }
-        val filteredChoices = movesContaining
+        val choiceList = matchingMoveList
             .map { it.toChoice() }
-            .takeIf { it.size <= COMMAND_MAX_SUGGESTIONS }
-            ?: emptyList()
-        return filteredChoices
+            .take(COMMAND_MAX_SUGGESTIONS)
+        return choiceList
     }
 
     private fun Command.readSibling(
