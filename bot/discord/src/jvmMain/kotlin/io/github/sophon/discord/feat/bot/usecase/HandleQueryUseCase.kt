@@ -1,18 +1,20 @@
 package io.github.sophon.discord.feat.bot.usecase
 
+import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
 import dev.kord.core.event.message.MessageCreateEvent
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 
-internal class HandleMessageUseCase(
+internal class HandleQueryUseCase(
     private val resultToEmbedUseCase: ResultToEmbedUseCase,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
     private val coroutineScope: CoroutineScope,
 ) {
+    //tag command
     suspend fun MessageCreateEvent.invoke(
         editableEmbedMap: MutableMap<String, BotOutput>,
-    )  {
+    ) {
         // ignoring other bots, even ourselves
         if (message.author?.isBot != false) return
 
@@ -25,6 +27,32 @@ internal class HandleMessageUseCase(
         }
 
         handleMessage(editableEmbedMap)
+    }
+
+    //slash command
+    suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
+        editableEmbedMap: MutableMap<String, BotOutput>,
+    ) {
+        val commandString = interaction.command.rootName
+            .lowercase()
+        val query = interaction.command.strings.values
+            .joinToString(" ")
+        val source = Source(
+            username = interaction.user.username,
+            id = interaction.user.data.id.toString(),
+            channelId = interaction.channelId.toString(),
+            serverName = interaction.getGuildOrNull()?.name.orEmpty(),
+        )
+
+        val result = routeCommandToFeatureUseCase.invoke(
+            source = source,
+            commandString = commandString,
+            query = query
+        )
+
+        with (resultToEmbedUseCase) {
+            invoke(source, result, coroutineScope, editableEmbedMap)
+        }
     }
 
     private suspend fun MessageCreateEvent.handleMessage(

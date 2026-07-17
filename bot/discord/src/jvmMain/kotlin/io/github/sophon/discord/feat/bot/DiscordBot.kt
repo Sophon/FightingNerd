@@ -19,15 +19,12 @@ import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
-import io.github.sophon.discord.feat.bot.usecase.HandleMessageUseCase
+import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.util.safeRestCall
-import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -43,9 +40,7 @@ internal class DiscordBotImpl(
     private val kord: Kord,
     private val tracker: Tracker,
     private val adminConfig: Config.AdminConfig,
-    private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
-    private val resultToEmbedUseCase: ResultToEmbedUseCase,
-    private val handleMessageUseCase: HandleMessageUseCase,
+    private val handleQueryUseCase: HandleQueryUseCase,
     private val handleAutoCompleteEventUseCase: HandleAutoCompleteEventUseCase,
     private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
@@ -78,12 +73,14 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
-            safeRestCall(TAG) { handleCommand() }
+            safeRestCall(TAG) {
+                with(handleQueryUseCase) { invoke(editableEmbedMap) }
+            }
         }
 
         kord.on<MessageCreateEvent> {
             safeRestCall(TAG) {
-                with(handleMessageUseCase) { invoke(editableEmbedMap) }
+                with(handleQueryUseCase) { invoke(editableEmbedMap) }
             }
         }
 
@@ -129,30 +126,6 @@ internal class DiscordBotImpl(
         }
     } catch(e: Exception) {
         Napier.e(tag = TAG, throwable = e) { "Failed to delete old commands" }
-    }
-
-    //TODO: to usecase?
-    private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
-        val commandString = interaction.command.rootName
-            .lowercase()
-        val query = interaction.command.strings.values
-            .joinToString(" ")
-        val source = Source(
-            username = interaction.user.username,
-            id = interaction.user.data.id.toString(),
-            channelId = interaction.channelId.toString(),
-            serverName = interaction.getGuildOrNull()?.name.orEmpty(),
-        )
-
-        val result = routeCommandToFeatureUseCase.invoke(
-            source = source,
-            commandString = commandString,
-            query = query
-        )
-
-        with (resultToEmbedUseCase) {
-            invoke(source, result, coroutineScope, editableEmbedMap)
-        }
     }
 
     @Suppress("UnusedPrivateMember")
