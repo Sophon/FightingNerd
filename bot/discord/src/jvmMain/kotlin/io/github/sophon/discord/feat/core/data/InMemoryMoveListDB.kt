@@ -30,7 +30,7 @@ internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
 
     override suspend fun hasMovesCachedFor(characterId: String): Result<Boolean, WikiError> {
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(characterId)) //TODO: this should be an exception
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId))
         val result = moveList.isNotEmpty()
         return Result.Success(result)
     }
@@ -40,7 +40,7 @@ internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
         moveQuery: String
     ): Result<Move, WikiError> {
         val moveList = database[characterId]
-            ?: return Result.Error(WikiError.UnknownCharacter(characterId)) //TODO: this should be an exception
+            ?: return Result.Error(WikiError.UnknownCharacter(characterId))
 
         val moveId = moveAliasMap[characterId]?.get(moveQuery) ?: moveQuery
 
@@ -57,24 +57,23 @@ internal class InMemoryMoveListDB(private val game: Game): MoveListDB {
     ): EmptyResult<WikiError> {
         if (game == null) return Result.Error(WikiError.DatabaseError("null game"))
 
-        val moveMap = moveList.associateBy { it.input }
+        val moveMap = moveList.associateBy { it.id }
         database[character.id] = moveMap
 
         val aliasMap = mutableMapOf<String, String>()
 
         moveList.forEach { move ->
-            val moveId = move.input
-            aliasMap[moveId] = moveId
+            aliasMap[move.input] = move.id
 
             move.aliases.forEach { alias ->
-                aliasMap[alias.replace(" ", "")] = moveId
+                aliasMap[alias.replace(" ", "")] = move.id
             }
 
             move.name
                 ?.lowercase()
                 ?.replace(" ", "")
                 ?.let { name ->
-                    aliasMap[name] = moveId
+                    aliasMap[name] = move.id
                 }
         }
 
