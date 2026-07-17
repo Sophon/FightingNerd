@@ -19,6 +19,7 @@ import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
+import io.github.sophon.discord.feat.bot.usecase.HandleMessageUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
@@ -43,8 +44,9 @@ internal class DiscordBotImpl(
     private val tracker: Tracker,
     private val adminConfig: Config.AdminConfig,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
-    private val handleAutoCompleteEventUseCase: HandleAutoCompleteEventUseCase,
     private val resultToEmbedUseCase: ResultToEmbedUseCase,
+    private val handleMessageUseCase: HandleMessageUseCase,
+    private val handleAutoCompleteEventUseCase: HandleAutoCompleteEventUseCase,
     private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
@@ -80,18 +82,9 @@ internal class DiscordBotImpl(
         }
 
         kord.on<MessageCreateEvent> {
-            // ignoring other bots, even ourselves
-            if (message.author?.isBot != false) return@on
-
-            // ignoring if someone replies with tag
-            val botId = kord.selfId
-            val botMention = "<@$botId>"
-            val botNicknameMention = "<@!$botId>"
-            if (botMention !in message.content && botNicknameMention !in message.content) {
-                return@on
+            safeRestCall(TAG) {
+                with(handleMessageUseCase) { invoke(editableEmbedMap) }
             }
-
-            safeRestCall(TAG) { handleMessage() }
         }
 
         kord.on<ButtonInteractionCreateEvent> {
@@ -138,39 +131,7 @@ internal class DiscordBotImpl(
         Napier.e(tag = TAG, throwable = e) { "Failed to delete old commands" }
     }
 
-    private suspend fun MessageCreateEvent.handleMessage() {
-        if (kord.selfId !in message.mentionedUserIds) return
-
-        val source = Source(
-            username = message.author?.username.orEmpty(),
-            id = message.author?.id.toString(),
-            channelId = message.channelId.toString(),
-            serverName = message.getGuildOrNull()?.name.orEmpty(),
-        )
-
-        val result = routeCommandToFeatureUseCase.invoke(
-            source = source,
-            message = message.content,
-        )
-
-        with (resultToEmbedUseCase) {
-            invoke(source, result, coroutineScope, editableEmbedMap)
-        }
-    }
-
-    private suspend fun AutoCompleteInteractionCreateEvent.handleAutocomplete() {
-        val commandString = interaction.command.rootName.lowercase()
-        val query = interaction.focusedOption.value
-
-        val suggestions = routeAutocompleteToFeatureUseCase.invoke(
-            commandString = commandString,
-            query = query,
-        )
-        interaction.suggestString {
-            suggestions.forEach { choice(it.name, it.value) }
-        }
-    }
-
+    //TODO: to usecase?
     private suspend fun GuildChatInputCommandInteractionCreateEvent.handleCommand() {
         val commandString = interaction.command.rootName
             .lowercase()
