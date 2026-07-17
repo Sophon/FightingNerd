@@ -59,7 +59,7 @@ internal class SyncWikiDataUseCase {
         return if (errors.isEmpty()) {
             Result.Success(Unit)
         } else {
-            Result.Error(BotError.Unknown("TODO: syncing"))
+            Result.Error(errors.first())
         }
     }
 
