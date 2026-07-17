@@ -179,6 +179,7 @@ internal class DiscordBotImpl(
                             supportedCommand.argumentList.forEach { argument ->
                                 string(name = argument.name, description = argument.description) {
                                     required = argument.isRequired
+                                    autocomplete = argument.hasAutocomplete
                                 }
                             }
                         }
