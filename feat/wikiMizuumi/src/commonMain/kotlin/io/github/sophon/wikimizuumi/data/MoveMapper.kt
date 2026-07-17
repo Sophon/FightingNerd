@@ -28,7 +28,7 @@ internal fun MoveListResponseDto.toDomainAll(
         }.toMap()
 }
 
-//MBVS
+//MBVS & VSAV
 internal fun MoveDto.toDomain(
     character: Character,
     hitboxUrlMap: Map<String, String>,
@@ -46,8 +46,8 @@ internal fun MoveDto.toDomain(
         input = normalizedInput,
         damage = damage?.cleanHtmlOrNull() ?: totaldmg,
         startup = startup?.cleanHtmlOrNull(),
-        onHit = onHit?.cleanHtmlOrNull() ?: advHit?.cleanHtmlOrNull(),
-        onBlock = frameAdv?.cleanHtmlOrNull() ?: advBlock?.cleanHtmlOrNull(),
+        onHit = advHit?.cleanHtmlOrNull(),
+        onBlock = advBlock?.cleanHtmlOrNull() ?: frameAdv?.cleanHtmlOrNull(),
         name = moveName,
         recovery = recovery?.cleanHtmlOrNull(),
         active = active?.cleanHtmlOrNull(),
@@ -82,6 +82,11 @@ internal fun MoveDto.toDomain(
         ),
         aliases = aliases,
     )
+
+    if (character.id == "felicia" && input == "2HK") {
+        val a = 3
+    }
+
     return move
 }
 
@@ -97,7 +102,6 @@ internal fun MoveListResponseDto.toDomain(
         }
 }
 
-//Uni
 internal fun MoveDto.toDomain(
     character: Character,
     imageUrlMap: Map<String, String>,
