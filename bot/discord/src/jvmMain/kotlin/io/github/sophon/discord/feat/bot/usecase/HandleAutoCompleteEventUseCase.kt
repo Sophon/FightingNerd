@@ -1,7 +1,7 @@
 package io.github.sophon.discord.feat.bot.usecase
 
 import dev.kord.core.behavior.interaction.suggestString
-import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
+import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
@@ -17,7 +17,7 @@ internal class HandleAutoCompleteEventUseCase(
         botFeatureRepo.getFeatures()
     }
 
-    suspend fun AutoCompleteInteractionCreateEvent.invoke() {
+    suspend fun invoke(interaction: AutoCompleteInteraction) {
         val commandString = interaction.command.rootName.lowercase()
         val query = interaction.focusedOption.value
 

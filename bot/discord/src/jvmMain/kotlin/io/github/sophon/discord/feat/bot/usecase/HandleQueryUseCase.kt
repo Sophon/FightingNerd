@@ -1,7 +1,8 @@
 package io.github.sophon.discord.feat.bot.usecase
 
-import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.entity.Message
+import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
@@ -12,25 +13,27 @@ internal class HandleQueryUseCase(
     private val coroutineScope: CoroutineScope,
 ) {
     //tag command
-    suspend fun MessageCreateEvent.invoke(
+    suspend fun invoke(
+        message: Message,
+        botId: Snowflake,
         editableEmbedMap: MutableMap<String, BotOutput>,
     ) {
         // ignoring other bots, even ourselves
         if (message.author?.isBot != false) return
 
         // ignoring if someone replies with tag
-        val botId = kord.selfId
         val botMention = "<@$botId>"
         val botNicknameMention = "<@!$botId>"
         if (botMention !in message.content && botNicknameMention !in message.content) {
             return
         }
 
-        handleMessage(editableEmbedMap)
+        handleMessage(message, botId, editableEmbedMap)
     }
 
     //slash command
-    suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
+    suspend fun invoke(
+        interaction: GuildChatInputCommandInteraction,
         editableEmbedMap: MutableMap<String, BotOutput>,
     ) {
         val commandString = interaction.command.rootName
@@ -50,15 +53,21 @@ internal class HandleQueryUseCase(
             query = query
         )
 
-        with (resultToEmbedUseCase) {
-            invoke(source, result, coroutineScope, editableEmbedMap)
-        }
+        resultToEmbedUseCase.invoke(
+            interaction = interaction,
+            source = source,
+            result = result,
+            coroutineScope = coroutineScope,
+            editableEmbedMap = editableEmbedMap,
+        )
     }
 
-    private suspend fun MessageCreateEvent.handleMessage(
+    private suspend fun handleMessage(
+        message: Message,
+        botId: Snowflake,
         editableEmbedMap: MutableMap<String, BotOutput>,
     ) {
-        if (kord.selfId !in message.mentionedUserIds) return
+        if (botId !in message.mentionedUserIds) return
 
         val source = Source(
             username = message.author?.username.orEmpty(),
@@ -72,8 +81,6 @@ internal class HandleQueryUseCase(
             message = message.content,
         )
 
-        with (resultToEmbedUseCase) {
-            invoke(source, result, coroutineScope, editableEmbedMap)
-        }
+        resultToEmbedUseCase.invoke(message, source, result, coroutineScope, editableEmbedMap)
     }
 }

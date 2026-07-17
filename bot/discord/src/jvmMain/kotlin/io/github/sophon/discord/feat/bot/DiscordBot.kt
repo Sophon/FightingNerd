@@ -73,14 +73,19 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
-            safeRestCall(TAG) {
-                with(handleQueryUseCase) { invoke(editableEmbedMap) }
-            }
+            handleQueryUseCase.invoke(
+                interaction = interaction,
+                editableEmbedMap = editableEmbedMap,
+            )
         }
 
         kord.on<MessageCreateEvent> {
             safeRestCall(TAG) {
-                with(handleQueryUseCase) { invoke(editableEmbedMap) }
+                handleQueryUseCase.invoke(
+                    message = message,
+                    botId = kord.selfId,
+                    editableEmbedMap = editableEmbedMap,
+                )
             }
         }
 
@@ -93,7 +98,7 @@ internal class DiscordBotImpl(
 
         kord.on<AutoCompleteInteractionCreateEvent> {
             safeRestCall(TAG) {
-                with(handleAutoCompleteEventUseCase) { invoke() }
+                handleAutoCompleteEventUseCase.invoke(interaction)
             }
         }
 
