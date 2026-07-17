@@ -133,6 +133,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -227,6 +228,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -264,6 +266,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -290,6 +293,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -308,6 +312,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -325,6 +330,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -345,6 +351,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -379,6 +386,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -418,6 +426,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -446,6 +455,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -485,6 +495,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -503,6 +514,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -531,6 +543,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -569,6 +582,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
@@ -611,6 +625,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                hasAutocomplete = true,
             ),
         ),
     )
