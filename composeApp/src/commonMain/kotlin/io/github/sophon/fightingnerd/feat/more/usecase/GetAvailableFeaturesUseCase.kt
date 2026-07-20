@@ -4,7 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.feat.more.KEY_PREFIX_FEATURE
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.io.IOException
 
 internal class GetAvailableFeaturesUseCase(
-    private val featureRepo: CoreFeatureRepo,
+    private val featureRepo: FeatureRepo,
     private val store: DataStore<Preferences>,
 ) {
     suspend fun invoke(): Result<List<UiFeatureSetting>, SettingsError> {

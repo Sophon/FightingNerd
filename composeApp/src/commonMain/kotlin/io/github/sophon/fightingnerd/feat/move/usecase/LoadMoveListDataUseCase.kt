@@ -5,7 +5,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
@@ -15,7 +15,7 @@ import kotlinx.coroutines.coroutineScope
 
 @ExcludeFromCoverage("plain client call")
 internal class LoadMoveListDataUseCase(
-    private val featureRepo: CoreFeatureRepo,
+    private val featureRepo: FeatureRepo,
 ) {
     suspend fun invoke(
         gameId: String,

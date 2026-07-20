@@ -7,14 +7,14 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.WikiClient
 
-class CoreFeatureRepo(
+internal class FeatureRepoImpl(
     private val coreWikiClientFactory: CoreWikiClientFactory,
-) {
+) : FeatureRepo {
     private var gameClients: LinkedHashMap<Game, WikiClient> = linkedMapOf()
     private var otherFeatures: List<Config.Feature> = emptyList()
     private var enabledFeatureNames: Set<String> = emptySet()
 
-    fun initialize(config: Config): EmptyResult<WikiError> {
+    override fun initialize(config: Config): EmptyResult<WikiError> {
         gameClients = buildGameClients(config)
         otherFeatures = loadNonGameFeatures(config)
         enabledFeatureNames = config.featureList
@@ -24,19 +24,19 @@ class CoreFeatureRepo(
         return Result.Success(Unit)
     }
 
-    fun getGameClients(): Map<Game, WikiClient> {
+    override fun getGameClients(): Map<Game, WikiClient> {
         return gameClients
     }
 
-    fun getOtherFeatures(): List<Config.Feature> {
+    override fun getOtherFeatures(): List<Config.Feature> {
         return otherFeatures
     }
 
-    fun getEnabledFeatureNames(): Set<String> {
+    override fun getEnabledFeatureNames(): Set<String> {
         return enabledFeatureNames
     }
 
-    fun getWikiClientFor(game: Game): WikiClient? {
+    override fun getWikiClientFor(game: Game): WikiClient? {
         return gameClients[game]
     }
 

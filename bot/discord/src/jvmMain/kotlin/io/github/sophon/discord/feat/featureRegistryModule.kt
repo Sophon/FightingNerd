@@ -173,7 +173,7 @@ internal val featureRegistryModule = module {
     single {
         BindToDiscordFeaturesUseCase(
             allRegisteredFeatures = getAll(),
-            coreFeatureRepo = get(),
+            featureRepo = get(),
             adminFeature = get(),
         )
     }
