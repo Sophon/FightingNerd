@@ -12,6 +12,7 @@ import dev.kord.core.entity.interaction.ButtonInteraction
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.KtorRequestException
 import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
@@ -31,6 +32,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
+@ExcludeFromCoverage("UI")
 internal class HandleButtonInteractionUseCase(
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
     private val discordButtonBuilder: DiscordButtonBuilder,

@@ -1,5 +1,6 @@
 package io.github.sophon.discord.feat.wikiDustLoop.usecase
 
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
@@ -12,6 +13,7 @@ import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilderDB
 import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilderGB
 import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilderGG
 
+@ExcludeFromCoverage("UI")
 internal class CreateMoveEmbedUseCase {
     fun invoke(
         game: Game,

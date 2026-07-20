@@ -9,6 +9,7 @@ import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_FEEDBACK
@@ -19,6 +20,7 @@ import io.github.sophon.discord.util.donationMessage
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
+@ExcludeFromCoverage("UI")
 internal class CreateFeedbackEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {

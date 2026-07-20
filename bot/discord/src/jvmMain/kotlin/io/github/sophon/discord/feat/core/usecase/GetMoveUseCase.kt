@@ -1,5 +1,6 @@
 package io.github.sophon.discord.feat.core.usecase
 
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
@@ -11,6 +12,7 @@ import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
 
+@ExcludeFromCoverage("plain client call")
 internal class GetMoveUseCase {
     suspend fun invoke(
         wiki: WikiClient,
