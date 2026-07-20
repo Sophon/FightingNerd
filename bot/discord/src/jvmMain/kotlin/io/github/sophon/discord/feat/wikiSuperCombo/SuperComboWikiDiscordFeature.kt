@@ -198,7 +198,7 @@ internal class SuperComboWikiDiscordFeature(
                     buttons = BotOutput.ButtonSet(
                         buttonList = listOf(
                             BotOutput.EmbedButton(
-                                label = "Details", action = BotOutput.EmbedButton.Action.Edit()
+                                label = "Details", action = BotOutput.EmbedButton.Action.Edit
                             ),
                         )
                     ),

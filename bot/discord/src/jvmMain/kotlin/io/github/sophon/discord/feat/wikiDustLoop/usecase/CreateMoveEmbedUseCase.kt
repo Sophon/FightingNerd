@@ -42,7 +42,7 @@ internal class CreateMoveEmbedUseCase {
                     buttons = BotOutput.ButtonSet(
                         buttonList = listOf(
                             BotOutput.EmbedButton(
-                                label = "Details", action = BotOutput.EmbedButton.Action.Edit()
+                                label = "Details", action = BotOutput.EmbedButton.Action.Edit,
                             ),
                         )
                     ),
@@ -70,7 +70,7 @@ internal class CreateMoveEmbedUseCase {
                     buttons = BotOutput.ButtonSet(
                         buttonList = listOf(
                             BotOutput.EmbedButton(
-                                label = "Details", action = BotOutput.EmbedButton.Action.Edit()
+                                label = "Details", action = BotOutput.EmbedButton.Action.Edit
                             ),
                         )
                     ),
