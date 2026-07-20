@@ -1,11 +1,13 @@
 package io.github.sophon.fightingnerd.feat.move.usecase
 
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.CoreFeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.core.model.AppError
 
+@ExcludeFromCoverage("plain client call")
 internal class LoadMoveFiltersUseCase(
     private val repo: CoreFeatureRepo
 ) {
