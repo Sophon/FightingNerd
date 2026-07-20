@@ -13,7 +13,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class EnsureMoveListIsCached(
+internal class EnsureMoveListIsCachedUseCase(
     private val featureRepo: FeatureRepo,
 ) {
     suspend fun invoke(

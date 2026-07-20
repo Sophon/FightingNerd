@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.feat
 
 import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
+import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCachedUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
@@ -35,7 +35,7 @@ internal fun featureModule() = module {
     singleOf(::CheckIfFirstLaunchUseCase)
     singleOf(::LoadEmptyWidgetsUseCase)
     singleOf(::LoadGameCharacterListUseCase)
-    singleOf(::EnsureMoveListIsCached)
+    singleOf(::EnsureMoveListIsCachedUseCase)
     //endregion
 
     //region More
