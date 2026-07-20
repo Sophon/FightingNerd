@@ -14,8 +14,8 @@ internal class LoadConfigurationUseCase(
     private val json: Json,
     private val fileManager: FileManager,
 ) {
-    fun invoke(): Result<Config, BotError> {
-        val result = fileManager.read(CONFIG_PATH)
+    fun invoke(configPath: String = CONFIG_PATH): Result<Config, BotError> {
+        val result = fileManager.read(configPath)
             .map { configText ->
                 val jsonConfig = json.decodeFromString<JsonConfig>(configText).apply {
                     Napier.d(tag = TAG) { this.toString() }
