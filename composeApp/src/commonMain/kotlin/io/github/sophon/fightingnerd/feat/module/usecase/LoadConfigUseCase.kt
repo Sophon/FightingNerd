@@ -2,6 +2,7 @@ package io.github.sophon.fightingnerd.feat.module.usecase
 
 import fightingnerd.composeapp.generated.resources.Res
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.featureConfig.model.Game
@@ -13,6 +14,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.MissingResourceException
 
+@ExcludeFromCoverage("TODO: find a way to mock RES")
 internal class LoadConfigUseCase(
     private val json: Json,
 ) {
