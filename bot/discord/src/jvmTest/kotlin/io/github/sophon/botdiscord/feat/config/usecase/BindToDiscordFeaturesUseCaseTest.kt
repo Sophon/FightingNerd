@@ -6,10 +6,12 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.none
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.core.featureConfig.CoreWikiClientFactory
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
@@ -218,8 +220,6 @@ internal class BindToDiscordFeaturesUseCaseTest {
         featureRepo = lazy { fakeBotFeatureRepo },
     )
 
-    // supportedGameList is kept empty on every feature so CoreFeatureRepo never has to
-    // resolve a WikiClient through CoreWikiClientFactory's Koin lookup
     private fun configOf(vararg features: Config.Feature): Config {
         val result = Config(
             featureList = features.toList(),
@@ -236,11 +236,18 @@ internal class BindToDiscordFeaturesUseCaseTest {
         return result
     }
 
-    private fun coreFeatureRepoFor(config: Config): CoreFeatureRepo {
-        val coreWikiClientFactory = CoreWikiClientFactory(dbFactory = { error("not used in test") })
-        val repo = CoreFeatureRepo(coreWikiClientFactory)
-        repo.initialize(config)
-        return repo
+    private fun coreFeatureRepoFor(config: Config): FeatureRepo {
+        val enabledNames = config.featureList
+            .filter { it.isEnabled }
+            .map { it.name }
+            .toSet()
+        return object : FeatureRepo {
+            override fun initialize(config: Config): EmptyResult<WikiError> = Result.Success(Unit)
+            override fun getGameClients(): Map<Game, WikiClient> = emptyMap()
+            override fun getOtherFeatures(): List<Config.Feature> = emptyList()
+            override fun getEnabledFeatureNames(): Set<String> = enabledNames
+            override fun getWikiClientFor(game: Game): WikiClient? = null
+        }
     }
     //endregion
 }
