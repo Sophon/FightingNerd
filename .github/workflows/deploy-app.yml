@@ -9,17 +9,22 @@ permissions:
   contents: write
 
 jobs:
-  deploy:
+  # ========== SETUP: version, tag, changelog ==========
+  setup:
     runs-on: ubuntu-latest
-
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      tag: ${{ steps.version.outputs.tag }}
+      version_name: ${{ steps.version.outputs.version_name }}
+      version_code: ${{ steps.version.outputs.version_code }}
+      changelog: ${{ steps.changelog.outputs.changes }}
     steps:
-      # ========== CHECKOUT & VERSION ==========
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Extract version from commit message
+      - name: Extract version from commit message and gradle.properties
         id: version
         run: |
           VERSION=$(git log -1 --pretty=%B | head -n 1 | tr -d '[:space:]')
@@ -27,8 +32,16 @@ jobs:
             echo "ERROR: Commit message '$VERSION' is not a valid version (expected vX.Y.Z)"
             exit 1
           fi
+          VERSION_NAME=$(grep "^app.version.name=" gradle.properties | cut -d= -f2)
+          VERSION_CODE=$(grep "^app.version.code=" gradle.properties | cut -d= -f2)
+          if [[ "v${VERSION_NAME}" != "$VERSION" ]]; then
+            echo "ERROR: gradle.properties app.version.name=${VERSION_NAME} does not match commit ${VERSION}"
+            exit 1
+          fi
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "tag=app-${VERSION}" >> $GITHUB_OUTPUT
+          echo "version_name=${VERSION_NAME}" >> $GITHUB_OUTPUT
+          echo "version_code=${VERSION_CODE}" >> $GITHUB_OUTPUT
 
       - name: Create and push tag
         run: |
@@ -37,7 +50,22 @@ jobs:
           git tag ${{ steps.version.outputs.tag }}
           git push origin ${{ steps.version.outputs.tag }}
 
-      # ========== BUILD SETUP ==========
+      - name: Extract changelog
+        uses: mindsers/changelog-reader-action@v2
+        id: changelog
+        with:
+          path: ./composeApp/CHANGELOG.md
+          version: ${{ steps.version.outputs.version }}
+        continue-on-error: true
+
+  # ========== ANDROID ==========
+  android:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Setup JDK 17
         uses: actions/setup-java@v4
         with:
@@ -54,7 +82,6 @@ jobs:
         run: |
           echo "${{ secrets.UPLOAD_KEYSTORE_BASE64 }}" | base64 -d > release.jks
 
-      # ========== BUILD ==========
       - name: Build AAB and APK
         env:
           KEYSTORE_PATH: ${{ github.workspace }}/release.jks
@@ -64,7 +91,6 @@ jobs:
         run: |
           ./gradlew :composeApp:bundleRelease :composeApp:assembleRelease
 
-      # ========== ARTIFACT BACKUP ==========
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
@@ -83,7 +109,6 @@ jobs:
           name: app-release-apk
           path: composeApp/build/outputs/apk/release/FightingNerd-*.apk
 
-      # ========== PLAY STORE UPLOAD ==========
       - name: Upload to Play Store (internal, draft)
         uses: r0adkll/upload-google-play@v1
         with:
@@ -94,22 +119,169 @@ jobs:
           track: internal
           status: draft
 
-      # ========== CHANGELOG & RELEASE ==========
-      - name: Extract changelog
-        uses: mindsers/changelog-reader-action@v2
-        id: changelog
+  # ========== iOS ==========
+  ios:
+    needs: setup
+    runs-on: macos-15
+    env:
+      VERSION_NAME: ${{ needs.setup.outputs.version_name }}
+      VERSION_CODE: ${{ needs.setup.outputs.version_code }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 17
+        uses: actions/setup-java@v4
         with:
-          path: ./composeApp/CHANGELOG.md
-          version: ${{ steps.version.outputs.version }}
-        continue-on-error: true
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Decode signing assets
+        env:
+          IOS_DIST_CERT_P12_BASE64: ${{ secrets.IOS_DIST_CERT_P12_BASE64 }}
+          IOS_PROVISIONING_PROFILE_BASE64: ${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}
+          APP_STORE_CONNECT_API_KEY_P8_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_P8_BASE64 }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+        run: |
+          mkdir -p $RUNNER_TEMP/signing
+          echo "$IOS_DIST_CERT_P12_BASE64" | base64 -d > $RUNNER_TEMP/signing/cert.p12
+          echo "$IOS_PROVISIONING_PROFILE_BASE64" | base64 -d > $RUNNER_TEMP/signing/profile.mobileprovision
+          mkdir -p ~/.appstoreconnect/private_keys
+          echo "$APP_STORE_CONNECT_API_KEY_P8_BASE64" | base64 -d > ~/.appstoreconnect/private_keys/AuthKey_${APP_STORE_CONNECT_API_KEY_ID}.p8
+
+      - name: Create temporary keychain and import certificate
+        env:
+          IOS_KEYCHAIN_PASSWORD: ${{ secrets.IOS_KEYCHAIN_PASSWORD }}
+          IOS_DIST_CERT_PASSWORD: ${{ secrets.IOS_DIST_CERT_PASSWORD }}
+        run: |
+          security create-keychain -p "$IOS_KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$IOS_KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings -t 3600 -l build.keychain
+          security import $RUNNER_TEMP/signing/cert.p12 -k build.keychain -P "$IOS_DIST_CERT_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+          security set-key-partition-list -S apple-tool:,apple: -s -k "$IOS_KEYCHAIN_PASSWORD" build.keychain
+
+      - name: Install provisioning profile
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          mkdir -p ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles
+          cp $RUNNER_TEMP/signing/profile.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/
+          cp $RUNNER_TEMP/signing/profile.mobileprovision ~/Library/Developer/Xcode/UserData/Provisioning\ Profiles/
+
+      - name: Extract provisioning profile name
+        id: profile
+        run: |
+          PROFILE_NAME=$(security cms -D -i $RUNNER_TEMP/signing/profile.mobileprovision | plutil -extract Name raw -)
+          echo "name=$PROFILE_NAME" >> $GITHUB_OUTPUT
+
+      - name: Create ExportOptions.plist
+        run: |
+          cat > $RUNNER_TEMP/ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store-connect</string>
+              <key>teamID</key>
+              <string>9W27GN3AUW</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>uploadSymbols</key>
+              <true/>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>io.github.sophon.fightingnerd</key>
+                  <string>${{ steps.profile.outputs.name }}</string>
+              </dict>
+          </dict>
+          </plist>
+          EOF
+
+      - name: Archive
+        run: |
+          xcodebuild archive \
+            -project iosApp/iosApp.xcodeproj \
+            -scheme iosApp \
+            -configuration Release \
+            -archivePath $RUNNER_TEMP/iosApp.xcarchive \
+            -destination "generic/platform=iOS" \
+            -allowProvisioningUpdates NO \
+            DEVELOPMENT_TEAM=9W27GN3AUW \
+            CODE_SIGN_STYLE=Manual \
+            PROVISIONING_PROFILE_SPECIFIER="${{ steps.profile.outputs.name }}" \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            MARKETING_VERSION=${{ env.VERSION_NAME }} \
+            CURRENT_PROJECT_VERSION=${{ env.VERSION_CODE }}
+
+      - name: Export IPA
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath $RUNNER_TEMP/iosApp.xcarchive \
+            -exportPath $RUNNER_TEMP/export \
+            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist
+
+      - name: Rename IPA
+        run: |
+          mv $RUNNER_TEMP/export/iosApp.ipa $RUNNER_TEMP/export/FightingNerd-v${{ env.VERSION_NAME }}.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-ipa
+          path: ${{ runner.temp }}/export/FightingNerd-v*.ipa
+
+      - name: Upload dSYMs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-dsyms
+          path: ${{ runner.temp }}/iosApp.xcarchive/dSYMs
+
+      - name: Upload to App Store Connect
+        env:
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        run: |
+          xcrun altool --upload-app \
+            -f $RUNNER_TEMP/export/FightingNerd-v${{ env.VERSION_NAME }}.ipa \
+            -t ios \
+            --apiKey $APP_STORE_CONNECT_API_KEY_ID \
+            --apiIssuer $APP_STORE_CONNECT_ISSUER_ID
+
+      - name: Clean up keychain
+        if: always()
+        run: |
+          security delete-keychain build.keychain || true
+
+  # ========== GITHUB RELEASE ==========
+  release:
+    needs: [setup, android, ios]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download APK
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release-apk
+          path: artifacts
+
+      - name: Download IPA
+        uses: actions/download-artifact@v4
+        with:
+          name: app-release-ipa
+          path: artifacts
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ steps.version.outputs.tag }}
-          name: App ${{ steps.version.outputs.version }}
-          body: ${{ steps.changelog.outputs.changes || 'No changelog entry found' }}
-          files: composeApp/build/outputs/apk/release/FightingNerd-*.apk
+          tag_name: ${{ needs.setup.outputs.tag }}
+          name: App ${{ needs.setup.outputs.version }}
+          body: ${{ needs.setup.outputs.changelog || 'No changelog entry found' }}
+          files: |
+            artifacts/FightingNerd-*.apk
+            artifacts/FightingNerd-*.ipa
           draft: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
