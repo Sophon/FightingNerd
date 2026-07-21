@@ -3,6 +3,7 @@
 ## [v14.1.0] - TODO
 - broaden test coverage GitHub task to also check bot and app
 - `Discord` - cover usecases with tests
+- `Compose` - cover usecases with tests
 
 ## [14.0.0] - 2026-07-18
 - move-list embeds use the Character's display name
