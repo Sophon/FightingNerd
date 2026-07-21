@@ -1,5 +1,6 @@
 package io.github.sophon.discord.feat.admin.usecase
 
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.integration.AdminTool
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
@@ -10,6 +11,7 @@ import io.github.sophon.integration.model.Source
 import io.github.sophon.integration.model.Ban
 import io.github.sophon.integration.util.toSource
 
+@ExcludeFromCoverage("plain client call")
 internal class BanUseCase(
     private val adminTool: AdminTool,
 ) {

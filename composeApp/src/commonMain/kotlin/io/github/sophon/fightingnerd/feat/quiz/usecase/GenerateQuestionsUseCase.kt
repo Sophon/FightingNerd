@@ -1,7 +1,7 @@
 package io.github.sophon.fightingnerd.feat.quiz.usecase
 
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
@@ -11,7 +11,7 @@ import io.github.sophon.fightingnerd.feat.quiz.COUNT_QUESTIONS
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
 
 internal class GenerateQuestionsUseCase(
-    private val repo: CoreFeatureRepo,
+    private val repo: FeatureRepo,
 ) {
     suspend fun invoke(gameId: String): Result<List<Question>, AppError> {
         val game = Game.fromId(gameId) ?: return Result.Error(AppError.GameNotFound(gameId))

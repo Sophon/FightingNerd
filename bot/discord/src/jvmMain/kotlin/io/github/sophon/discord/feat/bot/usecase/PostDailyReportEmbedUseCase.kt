@@ -5,8 +5,10 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.channel.TextChannel
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.integration.model.DailyReport
 
+@ExcludeFromCoverage("UI")
 internal class PostDailyReportEmbedUseCase(
     private val kord: Kord,
 ) {

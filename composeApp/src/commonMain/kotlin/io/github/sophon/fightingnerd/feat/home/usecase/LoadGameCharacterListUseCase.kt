@@ -3,7 +3,7 @@ package io.github.sophon.fightingnerd.feat.home.usecase
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.core.model.AppError
@@ -15,7 +15,7 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 internal class LoadGameCharacterListUseCase(
-    private val featureRepo: CoreFeatureRepo,
+    private val featureRepo: FeatureRepo,
 ) {
     suspend fun invoke(
         gameWidget: HomeViewState.GameWidget,

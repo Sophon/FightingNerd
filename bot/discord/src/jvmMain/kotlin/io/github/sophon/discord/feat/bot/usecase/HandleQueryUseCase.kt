@@ -3,10 +3,12 @@ package io.github.sophon.discord.feat.bot.usecase
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 
+@ExcludeFromCoverage("UI")
 internal class HandleQueryUseCase(
     private val resultToEmbedUseCase: ResultToEmbedUseCase,
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,

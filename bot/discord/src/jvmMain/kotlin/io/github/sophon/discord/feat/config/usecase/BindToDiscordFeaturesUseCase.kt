@@ -2,7 +2,7 @@ package io.github.sophon.discord.feat.config.usecase
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
@@ -14,16 +14,16 @@ import kotlin.collections.filterKeys
 
 internal class BindToDiscordFeaturesUseCase(
     private val allRegisteredFeatures: List<DiscordRegisteredFeature>, //all Koin-bound DiscordRegisteredFeatures - not all enabled features
-    private val coreFeatureRepo: CoreFeatureRepo,
+    private val featureRepo: FeatureRepo,
     private val adminFeature: AdminDiscordFeature,
 ) {
     fun invoke(config: Config): Result<List<DiscordRegisteredFeature>, BotError> {
-        val enabledNames = coreFeatureRepo.getEnabledFeatureNames()
+        val enabledNames = featureRepo.getEnabledFeatureNames()
         val enabledFeatures = allRegisteredFeatures.filter {
             it is BotFeature || it.featureInfo.name in enabledNames
         }
 
-        val gameClients: Map<Game, WikiClient> = coreFeatureRepo.getGameClients()
+        val gameClients: Map<Game, WikiClient> = featureRepo.getGameClients()
 
         enabledFeatures.forEach { feature ->
             if (feature is GameWikiDiscordFeature) {

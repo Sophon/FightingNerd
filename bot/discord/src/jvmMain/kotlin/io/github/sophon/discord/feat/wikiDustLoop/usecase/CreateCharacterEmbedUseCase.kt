@@ -1,6 +1,7 @@
 package io.github.sophon.discord.feat.wikiDustLoop.usecase
 
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
@@ -10,6 +11,7 @@ import io.github.sophon.discord.feat.wikiDustLoop.charEmbedBuilderDB
 import io.github.sophon.discord.feat.wikiDustLoop.charEmbedBuilderGB
 import io.github.sophon.discord.feat.wikiDustLoop.charEmbedBuilderGG
 
+@ExcludeFromCoverage("UI")
 internal class CreateCharacterEmbedUseCase {
     fun invoke(
         game: Game,

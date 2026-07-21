@@ -8,7 +8,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.feat.more.model.SettingsError
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
@@ -31,7 +31,7 @@ import kotlinx.coroutines.withContext
  */
 internal class SaveFeatureConfigUseCase(
     private val store: DataStore<Preferences>,
-    private val repo: CoreFeatureRepo,
+    private val repo: FeatureRepo,
 ) {
     suspend fun invoke(
         featureList: List<UiFeatureSetting>,
@@ -70,7 +70,7 @@ internal class SaveFeatureConfigUseCase(
         val result = mutableListOf<Pair<String, String>>()
         newConfig.forEach { feature ->
             feature.gameList.forEach { game ->
-                val wasEnabled = prefs[featureKey(feature.featureName, game.id)] ?: false
+                val wasEnabled = prefs[featureKey(feature.featureName, game.id)] ?: true
                 if (wasEnabled && game.isEnabled.not()) {
                     result.add(feature.featureName to game.id)
                 }

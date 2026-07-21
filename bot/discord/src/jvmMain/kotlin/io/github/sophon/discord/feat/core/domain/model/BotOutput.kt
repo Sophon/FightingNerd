@@ -42,10 +42,10 @@ internal data class BotOutput(
         val action: Action,
     ) {
         sealed class Action {
-            class Query(val query: String): Action()
-            class Edit : Action()
-            class Url(val url: String): Action()
-            class Redirect(val channelId: String): Action()
+            data class Query(val query: String): Action()
+            object Edit : Action()
+            data class Url(val url: String): Action()
+            data class Redirect(val channelId: String): Action()
         }
     }
 

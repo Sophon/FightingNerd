@@ -44,7 +44,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.core.ui.components.ToastSnackbar
@@ -106,7 +106,7 @@ internal fun App() {
 private fun rememberFeaturesLoaded(): Boolean {
     var isInitialized by remember { mutableStateOf(false) }
 
-    val featureRepo = koinInject<CoreFeatureRepo>()
+    val featureRepo = koinInject<FeatureRepo>()
     val loadConfigUseCase = koinInject<LoadConfigUseCase>()
     LaunchedEffect(Unit) {
         loadConfigUseCase.invoke()

@@ -8,7 +8,7 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
-import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
+import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCachedUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
 import kotlinx.coroutines.async
@@ -29,7 +29,7 @@ internal class HomeVM(
     private val checkIfFirstLaunchUseCase: CheckIfFirstLaunchUseCase,
     private val loadEmptyWidgetsUseCase: LoadEmptyWidgetsUseCase,
     private val loadGameCharacterListUseCase: LoadGameCharacterListUseCase,
-    private val ensureMoveListIsCached: EnsureMoveListIsCached,
+    private val ensureMoveListIsCachedUseCase: EnsureMoveListIsCachedUseCase,
 ): ViewModel() {
     private val moveListSemaphore = Semaphore(permits = MAX_PERMITS)
     private val _state = MutableStateFlow(HomeViewState())
@@ -126,7 +126,7 @@ internal class HomeVM(
             val deferredList = gameWidget.characterList.map { character ->
                 async {
                     moveListSemaphore.withPermit {
-                        val result = ensureMoveListIsCached.invoke(
+                        val result = ensureMoveListIsCachedUseCase.invoke(
                             game = gameWidget.game,
                             characterId = character.id,
                         )

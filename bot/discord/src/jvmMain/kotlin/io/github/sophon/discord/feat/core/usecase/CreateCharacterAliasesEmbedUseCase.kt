@@ -2,6 +2,7 @@ package io.github.sophon.discord.feat.core.usecase
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
@@ -15,6 +16,7 @@ import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 
+@ExcludeFromCoverage("UI")
 internal class CreateCharacterAliasesEmbedUseCase {
     suspend fun invoke(
         wiki: WikiClient,

@@ -36,7 +36,7 @@ internal class GetStancesUseCase(
             stance = queries.drop(1).joinToString(" ").uppercase()
         }
 
-        return if (stance.isBlank()) {
+        val botOutput = if (stance.isBlank()) {
             fetchStances(wiki, charName).map { stanceList ->
                 val buttons = mutableListOf<BotOutput.EmbedButton>()
                 var text = ""
@@ -82,6 +82,7 @@ internal class GetStancesUseCase(
                 )
             }
         }
+        return botOutput
     }
 
 

@@ -14,7 +14,7 @@ import io.github.sophon.discord.util.toButtons
 import io.github.sophon.wikiwavu.integration.model.TekkenFilters
 import kotlin.time.Duration.Companion.seconds
 
-internal class SearchStringFollowupsUseCase(
+internal class GetStringFollowupsUseCase(
     private val getMovesUseCase: GetMovesUseCase,
 ) {
     suspend fun invoke(
