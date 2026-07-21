@@ -226,7 +226,7 @@ jobs:
 
       - name: Rename IPA
         run: |
-          mv $RUNNER_TEMP/export/iosApp.ipa $RUNNER_TEMP/export/FightingNerd-v${{ env.VERSION_NAME }}.ipa
+            mv $RUNNER_TEMP/export/FightingNerd.ipa $RUNNER_TEMP/export/FightingNerd-v${{ env.VERSION_NAME }}.ipa
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
