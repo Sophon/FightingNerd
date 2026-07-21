@@ -3,7 +3,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 val appVersionName: String = (project.properties["app.version.name"] as? String) ?: "1.0.0-dev"
-val appVersionCode: Int = (project.properties["app.version.code"] as? String)?.toInt() ?: 1
+val appVersionCode: Int = System.getenv("APP_VERSION_CODE")?.toIntOrNull() ?: 1
 
 val releaseKeystorePath: String = System.getenv("KEYSTORE_PATH").orEmpty()
 val releaseKeystorePassword: String = System.getenv("KEYSTORE_PASSWORD").orEmpty()
