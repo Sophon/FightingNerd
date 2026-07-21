@@ -1,8 +1,9 @@
 # APP CHANGELOG
 
-## [v1.1.0] (6) - TODO
+## [v1.1.0] - 2026-07-21
 - `DragDown` - enabled
 - fixed moves not being expandable with hitbox images
+- auto bump version code
 
 ## [v1.0.0] (5) - 2026-07-01
 - `Move` 
