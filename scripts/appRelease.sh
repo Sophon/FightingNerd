@@ -39,7 +39,8 @@ echo -e "${YELLOW}     - Uploads AAB to Play Store internal track (draft)${NC}"
 echo -e "${YELLOW}     - Uploads IPA to App Store Connect (manual submit for review)${NC}"
 echo -e "${YELLOW}     - Creates GitHub Release App ${VERSION}${NC}"
 echo ""
-echo -e "${YELLOW}Reminder: gradle.properties should have app.version.name=${VERSION#v} and bumped app.version.code${NC}"
+echo -e "${YELLOW}Reminder: gradle.properties should have app.version.name=${VERSION#v}${NC}"
+echo -e "${YELLOW}Build number auto-increments per CI run (100 + run_number)${NC}"
 echo ""
 read -p "Type 'RELEASE' to confirm: " CONFIRM
 if [ "$CONFIRM" != "RELEASE" ]; then

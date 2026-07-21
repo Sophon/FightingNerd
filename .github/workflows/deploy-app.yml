@@ -33,11 +33,11 @@ jobs:
             exit 1
           fi
           VERSION_NAME=$(grep "^app.version.name=" gradle.properties | cut -d= -f2)
-          VERSION_CODE=$(grep "^app.version.code=" gradle.properties | cut -d= -f2)
           if [[ "v${VERSION_NAME}" != "$VERSION" ]]; then
             echo "ERROR: gradle.properties app.version.name=${VERSION_NAME} does not match commit ${VERSION}"
             exit 1
           fi
+          VERSION_CODE=$((100 + GITHUB_RUN_NUMBER))
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
           echo "tag=app-${VERSION}" >> $GITHUB_OUTPUT
           echo "version_name=${VERSION_NAME}" >> $GITHUB_OUTPUT
@@ -88,6 +88,7 @@ jobs:
           KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          APP_VERSION_CODE: ${{ needs.setup.outputs.version_code }}
         run: |
           ./gradlew :composeApp:bundleRelease :composeApp:assembleRelease
 
