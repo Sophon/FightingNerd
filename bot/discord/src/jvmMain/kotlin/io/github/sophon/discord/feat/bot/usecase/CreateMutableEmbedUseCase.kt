@@ -3,12 +3,13 @@ package io.github.sophon.discord.feat.bot.usecase
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
 import dev.kord.core.behavior.interaction.respondPublic
-import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.entity.Message
+import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
@@ -27,10 +28,12 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
+@ExcludeFromCoverage("UI")
 internal class CreateMutableEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
-    suspend fun MessageCreateEvent.invoke(
+    suspend fun invoke(
+        message: Message,
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
         buttons: BotOutput.ButtonSet? = null,
@@ -38,9 +41,9 @@ internal class CreateMutableEmbedUseCase(
         deleteAfter: Duration? = null,
     ): Result<String, BotError> {
         return try {
-            val uuid = Uuid.Companion.random()
+            val uuid = Uuid.random()
 
-            val message = message.channel.createMessage {
+            val sentMessage = message.channel.createMessage {
                 messageReference = message.id
                 allowedMentions { repliedUser = false }
 
@@ -57,7 +60,7 @@ internal class CreateMutableEmbedUseCase(
 
             coroutineScope.launch {
                 delay(editAfter)
-                message.edit {
+                sentMessage.edit {
                     components = mutableListOf()
                     mutableEmbedBuilder.autoEditBuilder?.let { builder ->
                         embed(builder)
@@ -68,7 +71,7 @@ internal class CreateMutableEmbedUseCase(
             deleteAfter?.let { duration ->
                 coroutineScope.launch {
                     delay(duration)
-                    message.delete()
+                    sentMessage.delete()
                 }
             }
 
@@ -78,7 +81,8 @@ internal class CreateMutableEmbedUseCase(
         }
     }
 
-    suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
+    suspend fun invoke(
+        interaction: GuildChatInputCommandInteraction,
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
         imageList: BotOutput.Images? = null,
@@ -87,7 +91,7 @@ internal class CreateMutableEmbedUseCase(
         deleteAfter: Duration? = null,
     ): Result<String, BotError> {
         return try {
-            val uuid = Uuid.Companion.random()
+            val uuid = Uuid.random()
 
             interaction.respondPublic {
                 embed(mutableEmbedBuilder.primaryBuilder)

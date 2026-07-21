@@ -170,3 +170,23 @@ fun String.firstIntOrNull(): Int? {
     val match = Regex("-?\\d+").find(this)
     return match?.value?.toIntOrNull()
 }
+
+//TODO: unit tests
+fun String?.toClickable(wikiBaseUrl: String): String? {
+    if (this == null) return null
+
+    val regex = """\[\[(.*?)\]\]""".toRegex() // "text text [[match]] text [[match]] text.
+
+    val transformed = regex.replace(this) { matchResult ->
+        val content = matchResult.groupValues[1]
+        val fields = content.split("|")
+        val title = fields.lastOrNull() ?: ""
+        val partialUrl = fields.firstOrNull()
+            .orEmpty()
+            .replace(" ", "_")
+            .trim()
+        "[$title](${wikiBaseUrl}/$partialUrl)"
+    }
+
+    return transformed
+}

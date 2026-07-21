@@ -24,7 +24,9 @@ import io.github.sophon.discord.feat.bot.usecase.CreateMutableEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
+import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
@@ -58,6 +60,7 @@ import io.github.sophon.discord.feat.infilGlossary.InfilGlossaryDiscordFeature
 import io.github.sophon.discord.feat.infilGlossary.usecase.GetInfilFeatureInfoUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.StartGlossaryUseCase
+import io.github.sophon.discord.feat.wikiDragDown.DragDownWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.DustLoopWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
@@ -68,7 +71,7 @@ import io.github.sophon.discord.feat.wikiSuperCombo.SuperComboWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.feat.wikiWavu.WavuWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
-import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCase
+import io.github.sophon.discord.feat.wikiWavu.usecase.GetStringFollowupsUseCase
 import io.github.sophon.discord.feat.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.wikiwavu.integration.data.FileReader
 import org.koin.core.module.dsl.singleOf
@@ -85,7 +88,7 @@ internal val featureRegistryModule = module {
     singleOf(::CreateRedirectButtonsUseCase)
     single {
         RefreshDataUseCase(
-            featureList = lazy { get<List<DiscordRegisteredFeature>>() },
+            featureRepo = lazy { get<BotFeatureRepo>() },
         )
     }
     //endregion
@@ -113,6 +116,8 @@ internal val featureRegistryModule = module {
     singleOf(::CreateReplyEmbedUseCase)
     singleOf(::ResultToEmbedUseCase)
     singleOf(::CreateMutableEmbedUseCase)
+    singleOf(::HandleQueryUseCase)
+    singleOf(::HandleAutoCompleteEventUseCase)
     singleOf(::HandleButtonInteractionUseCase)
     singleOf(::PostDailyReportEmbedUseCase)
     //endregion
@@ -139,7 +144,7 @@ internal val featureRegistryModule = module {
 
     //region Wavu
     singleOf(::FileReaderJVM).bind<FileReader>()
-    singleOf(::SearchStringFollowupsUseCase)
+    singleOf(::GetStringFollowupsUseCase)
     //endregion
 
     //region Mizuumi
@@ -167,8 +172,8 @@ internal val featureRegistryModule = module {
     singleOf(::LoadConfigurationUseCase)
     single {
         BindToDiscordFeaturesUseCase(
-            availableFeatures = getAll(),
-            coreFeatureRepo = get(),
+            allRegisteredFeatures = getAll(),
+            featureRepo = get(),
             adminFeature = get(),
         )
     }
@@ -215,6 +220,7 @@ internal val featureRegistryModule = module {
     singleOf(::DreamCancelWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::DustLoopWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::MizuumiWikiDiscordFeature).bind<DiscordRegisteredFeature>()
+    singleOf(::DragDownWikiDiscordFeature).bind<DiscordRegisteredFeature>()
     singleOf(::EwgfDiscordFeature).bind<DiscordRegisteredFeature>()
 
     single<(Game) -> Pair<CharacterListDB, MoveListDB>> {

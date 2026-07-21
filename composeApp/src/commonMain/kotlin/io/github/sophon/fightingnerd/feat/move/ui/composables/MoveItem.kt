@@ -35,9 +35,9 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.move.model.Property
-import io.github.sophon.fightingnerd.feat.move.model.icon
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
 import io.github.sophon.fightingnerd.feat.move.ui.UiMove
+import io.github.sophon.fightingnerd.feat.move.ui.icon
 import io.github.sophon.fightingnerd.feat.move.ui.toUiMove
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.VideoPlayer
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
@@ -75,6 +75,7 @@ internal fun MoveItem(
     ) {
         Header(
             input = uiMove.move.input,
+            name = uiMove.move.name,
             propertySet = uiMove.propertySet,
         )
 
@@ -107,6 +108,7 @@ internal fun MoveItem(
 @Composable
 private fun Header(
     input: String,
+    name: String?,
     propertySet: Set<Property>,
     modifier: Modifier = Modifier,
 ) {
@@ -127,6 +129,16 @@ private fun Header(
             Properties(
                 propertySet = propertySet
             )
+        }
+
+        if (name.isNullOrBlank().not()) {
+            Spacer(Modifier.height(nerdDimensions.componentGapTight))
+            Text(
+                text = name,
+                style = nerdTypography.labelSmall,
+                color = nerdColorPalette.textSecondary,
+            )
+            Spacer(Modifier.height(nerdDimensions.componentGapTight))
         }
 
         HorizontalDivider(
@@ -171,7 +183,7 @@ private fun Properties(
             Image(
                 painter = painterResource(property.icon()),
                 contentDescription = property.name,
-                modifier = Modifier.size(nerdDimensions.iconInline),
+                modifier = Modifier.size(nerdDimensions.iconDefault),
             )
         }
     }

@@ -8,6 +8,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
 
 internal fun xkoMoveEmbed(
@@ -16,11 +17,7 @@ internal fun xkoMoveEmbed(
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     title = "${move.characterId}: ${move.input.uppercase()}"
-    description = if (move.name.isNullOrBlank()) {
-        "**${character.displayName}**"
-    } else {
-        "**${character.displayName}**: ${move.name.orEmpty()}"
-    }
+    moveEmbedDescription(character, move)
 
     val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
         ?: emptyList()

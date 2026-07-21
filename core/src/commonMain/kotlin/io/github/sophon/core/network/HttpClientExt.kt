@@ -31,7 +31,7 @@ suspend inline fun <reified T> safeCall(
 }
 
 suspend inline fun <reified T> HttpResponse.toResult(): Result<T, DataError.Remote> {
-    return when (this.status.value) {
+    val result = when (this.status.value) {
         in 200..299 -> {
             try {
                 Result.Success(this.body<T>())
@@ -44,4 +44,5 @@ suspend inline fun <reified T> HttpResponse.toResult(): Result<T, DataError.Remo
         in 500..599 -> Result.Error(DataError.Remote.SERVER_ERROR)
         else -> Result.Error(DataError.Remote.UNKNOWN)
     }
+    return result
 }

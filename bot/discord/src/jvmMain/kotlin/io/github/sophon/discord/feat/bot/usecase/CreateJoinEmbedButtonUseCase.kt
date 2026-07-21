@@ -1,15 +1,18 @@
 package io.github.sophon.discord.feat.bot.usecase
 
 import dev.kord.common.Color
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_SCRIPT_LOBBY
+import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.integration.model.Source
 import kotlin.time.Duration.Companion.seconds
 
+@ExcludeFromCoverage("UI")
 internal class CreateJoinEmbedButtonUseCase {
     fun invoke(
         origin: Source,
@@ -24,7 +27,7 @@ internal class CreateJoinEmbedButtonUseCase {
             null
         }
 
-        if (steamLobbyUrl.startsWith("steam://joinlobby/").not())
+        if (steamLobbyUrl.startsWith(URL_STEAM_LOBBY, ignoreCase = true).not())
             return Result.Error(BotError.InvalidSteamLobbyUrl(steamLobbyUrl))
 
         val url = "$URL_SCRIPT_LOBBY?target=$steamLobbyUrl"

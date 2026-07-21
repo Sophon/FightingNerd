@@ -1,6 +1,34 @@
 # APP CHANGELOG
 
-## [v1.0.0] - 2026-06-26
+## [v1.1.0] (6) - TODO
+- `DragDown` - enabled
+- fixed moves not being expandable with hitbox images
+
+## [v1.0.0] (5) - 2026-07-01
+- `Move` 
+  - fixed slider bugs
+  - clicking on search focuses the search bar
+- `Feature Settings` 
+  - replaced icon button with a text button
+  - Save button is disabled when no change was made
+
+## [v1.0.0] (4) - 2026-06-29
+- `Quiz`
+  - hide following startups of mult-hit moves
+  - rearrange fields
+
+## [v1.0.0] (3) - TODO
+- only load `SF6`, `T8` and `GGST` on the first launch
+- added icon for jumping state
+- `Move`
+  - increased property icon size
+  - added move name if available
+- Bugs
+  - fixed the bug where toasts showed nonsensical content
+    - the cause is still unknown but with proper errors shown, we can narrow it down in the future
+  - created SQL destructive migration
+
+## [v1.0.0] - TODO
 - initial internal testing release
 
 ## [v0.4.0] - 2026-06-26

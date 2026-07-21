@@ -174,6 +174,8 @@ internal class SqlMoveDB(
             isPowerCrush = props.isPowerCrush,
             isHighCrush = props.isHighCrush,
             isLowCrush = props.isLowCrush,
+            hasWallInteraction = props.hasWallInteraction,
+            hasFloorInteraction = props.hasFloorInteraction,
         )
     }
 

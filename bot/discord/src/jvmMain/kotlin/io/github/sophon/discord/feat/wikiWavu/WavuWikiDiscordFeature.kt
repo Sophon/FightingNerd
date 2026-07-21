@@ -7,6 +7,8 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.feat.core.domain.Scheduler
@@ -19,11 +21,12 @@ import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
+import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
-import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCase
+import io.github.sophon.discord.feat.wikiWavu.usecase.GetStringFollowupsUseCase
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
@@ -42,8 +45,9 @@ internal class WavuWikiDiscordFeature(
     private val getMovesUseCase: GetMovesUseCase,
     private val getStancesUseCase: GetStancesUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
-    private val searchStringFollowupsUseCase: SearchStringFollowupsUseCase,
+    private val getStringFollowupsUseCase: GetStringFollowupsUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val getCharactersUseCase: GetCharactersUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -81,11 +85,13 @@ internal class WavuWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        return when (command) {
+        val formattedQuery = query.lowercase()
+
+        val result = when (command) {
             Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikiClientMap,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
@@ -93,7 +99,7 @@ internal class WavuWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
@@ -101,28 +107,28 @@ internal class WavuWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchPowerCrushMoves(wiki, query) }
             }
             Command.Heat -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchHeatMoves(wiki, query) }
             }
             Command.Homing -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchHomingMoves(wiki, query) }
             }
             Command.ThrowTK -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchThrowMoves(wiki, query) }
             }
 
@@ -130,7 +136,7 @@ internal class WavuWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, _ -> getCharacterAliases(wiki) }
             }
 
@@ -138,25 +144,62 @@ internal class WavuWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> getStancesUseCase.invoke(featureInfo, wiki, query) }
             }
             Command.Strings -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
-                    query = query,
-                ) { _, wiki, query -> searchStringFollowupsUseCase.invoke(wiki, query, featureInfo) }
+                    query = formattedQuery,
+                ) { _, wiki, query -> getStringFollowupsUseCase.invoke(wiki, query, featureInfo) }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
-    }
 
+        return result
+    }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
         return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
+
+    override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
+        val game = when (command) {
+            Command.FdTK,
+            Command.Heat,
+            Command.Homing,
+            Command.Pc,
+            Command.Stance,
+            Command.Strings -> Game.Tekken8
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getCharactersUseCase.invoke(wiki)
+        return result
+    }
+
+    override suspend fun getMoveList(
+        command: Command,
+        characterId: String,
+    ): Result<List<Move>, BotError> {
+        val game = when (command) {
+            Command.FdTK,
+            Command.Heat,
+            Command.Homing,
+            Command.Pc,
+            Command.Stance,
+            Command.Strings -> Game.Tekken8
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        return result
+    }
+
 
     private suspend fun searchMove(
         wiki: WikiClient,
@@ -172,26 +215,26 @@ internal class WavuWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMovesUseCase.invoke(
+        val result = getMovesUseCase.invoke(
             wiki = wiki,
-            charName = query,
+            characterId = query,
             filter = TekkenFilters.PowerCrush,
-        )
-            .map { moveList ->
-                BotOutput(
-                    primaryEmbedBuilder = moveListEmbed(
-                        category = "${query.uppercase()} Power Crush",
-                        dataList = moveList.map { it.input },
-                        featureInfo = featureInfo,
-                        color = Color(BLUE),
-                        emoji = Emoji.TK_PC,
-                    ),
-                    buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = query),
-                        duration = EMBED_BUTTON_DURATION_INF.seconds,
-                    ),
-                )
-            }
+        ).map { (character, moveList) ->
+            BotOutput(
+                primaryEmbedBuilder = moveListEmbed(
+                    category = "${character.displayName.uppercase()} Power Crush",
+                    dataList = moveList.map { it.input },
+                    featureInfo = featureInfo,
+                    color = Color(BLUE),
+                    emoji = Emoji.TK_PC,
+                ),
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveList.toButtons(charName = character.id),
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
+                ),
+            )
+        }
+        return result
     }
 
     private suspend fun searchHeatMoves(
@@ -200,19 +243,19 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = query,
+            characterId = query,
             filter = TekkenFilters.Heat,
-        ).map { moveList ->
+        ).map { (character, moveList) ->
                 BotOutput(
                     primaryEmbedBuilder = moveListEmbed(
-                        category = "${query.uppercase()} Heat",
+                        category = "${character.displayName.uppercase()} Heat",
                         dataList = moveList.map { it.input },
                         featureInfo = featureInfo,
                         color = Color(BLUE),
                         emoji = Emoji.TK_HEAT,
                     ),
                     buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = query),
+                        buttonList = moveList.toButtons(charName = character.id),
                         duration = EMBED_BUTTON_DURATION_INF.seconds,
                     ),
                 )
@@ -225,19 +268,19 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = query,
+            characterId = query,
             filter = TekkenFilters.Homing,
-        ).map { moveList ->
+        ).map { (character, moveList) ->
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
-                    category = "${query.uppercase()} Homing",
+                    category = "${character.displayName.uppercase()} Homing",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                     color = Color(BLUE),
                     emoji = Emoji.TK_HOMING,
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = query),
+                    buttonList = moveList.toButtons(charName = character.id),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )
@@ -250,19 +293,19 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = query,
+            characterId = query,
             filter = TekkenFilters.Throw,
-        ).map { moveList ->
+        ).map { (character, moveList) ->
             BotOutput(
                 primaryEmbedBuilder = moveListEmbed(
-                    category = "${query.uppercase()} Throw",
+                    category = "${character.displayName.uppercase()} Throw",
                     dataList = moveList.map { it.input },
                     featureInfo = featureInfo,
                     color = Color(BLUE),
                     emoji = Emoji.THROW,
                 ),
                 buttons = BotOutput.ButtonSet(
-                    buttonList = moveList.toButtons(charName = query),
+                    buttonList = moveList.toButtons(charName = character.id),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )

@@ -2,12 +2,10 @@ package io.github.sophon.wikimizuumi.data
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import kotlin.test.Test
 
 class MoveMapperTest {
-    val uni = Game.Uni2.id
     val character = Character(
         id = "",
         displayName = "",
@@ -57,9 +55,8 @@ class MoveMapperTest {
         
         // when
         val result = move.toDomain(
-            character,
-            imageUrlMap = emptyMap(),
-            gameId = uni,
+            character = character,
+            hitboxUrlMap = emptyMap(),
         )
 
         //then

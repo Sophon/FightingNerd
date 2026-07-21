@@ -2,9 +2,11 @@ package io.github.sophon.discord.feat.wikiWavu.usecase
 
 import dev.kord.common.Color
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Move
@@ -15,6 +17,7 @@ import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.util.toButtons
+import kotlin.collections.map
 import kotlin.time.Duration.Companion.seconds
 
 //TODO: write unit tests
@@ -33,7 +36,7 @@ internal class GetStancesUseCase(
             stance = queries.drop(1).joinToString(" ").uppercase()
         }
 
-        return if (stance.isBlank()) {
+        val botOutput = if (stance.isBlank()) {
             fetchStances(wiki, charName).map { stanceList ->
                 val buttons = mutableListOf<BotOutput.EmbedButton>()
                 var text = ""
@@ -64,7 +67,7 @@ internal class GetStancesUseCase(
                 )
             }
         } else {
-            fetchMovesOfStance(wiki, charName, stance).map { moveList ->
+            fetchMovesOfStance(wiki, charName, stance).map { (character, moveList) ->
                 BotOutput(
                     primaryEmbedBuilder = moveListEmbed(
                         category = stance.uppercase(),
@@ -73,12 +76,13 @@ internal class GetStancesUseCase(
                         color = Color(BLUE),
                     ),
                     buttons = BotOutput.ButtonSet(
-                        buttonList = moveList.toButtons(charName = charName),
+                        buttonList = moveList.toButtons(charName = character.id),
                         duration = EMBED_BUTTON_DURATION_INF.seconds,
                     )
                 )
             }
         }
+        return botOutput
     }
 
 
@@ -86,7 +90,7 @@ internal class GetStancesUseCase(
         wiki: WikiClient,
         charName: String,
         stance: String,
-    ): Result<List<Move>, BotError> {
+    ): Result<Pair<Character, List<Move>>, BotError> {
         val filter = object : Filter {
             override val name: String = "Stance"
             override val predicate: (Move) -> Boolean = { move ->
@@ -96,7 +100,7 @@ internal class GetStancesUseCase(
 
         return getMovesUseCase.invoke(
             wiki = wiki,
-            charName = charName,
+            characterId = charName,
             filter = filter,
         )
     }
@@ -105,14 +109,16 @@ internal class GetStancesUseCase(
         wiki: WikiClient,
         charName: String,
     ): Result<List<String>, BotError> {
-        return wiki.fetchMoveList(charName)
-            .mapError { it.toDomainError() }
+        val result = wiki.fetchCharacter(characterQuery = charName)
+            .flatMap { character -> wiki.fetchMoveList(character.id) }
             .map { moveList ->
                 moveList
                     .filter { it.t8Properties?.stance?.isNotBlank() == true }
                     .map { it.t8Properties!!.stance!! }
                     .distinct()
             }
+            .mapError { it.toDomainError() }
+        return result
     }
 
 

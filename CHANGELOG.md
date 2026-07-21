@@ -1,5 +1,43 @@
 # BOT CHANGELOG
 
+## [v14.1.0] - TODO
+- broaden test coverage GitHub task to also check bot and app
+- `Discord` - cover usecases with tests
+- `Compose` - cover usecases with tests
+
+## [14.0.0] - 2026-07-18
+- move-list embeds use the Character's display name
+- game specific `fd` - autocomplete
+- `Mizuumi` - fixed mapper bugs
+- memory DB stores move by ID, not by input
+
+## [v13.1.0] - 2026-07-14
+- `DragDown` - `specialsROA` command to list special moves
+- `join` for steam lobbies does not require the command anymore
+- fixed timeout on redirect button
+- fixed character names in embeds
+
+## [v13.0.0] - 2026-07-07
+- set a timeout to wiki syncing
+- `DustLoop` - fixed a bug with malformed URLs
+- `DragDown`
+  - enabled
+  - supports Rivals of Aether 2
+
+## [v12.1.7] - 2026-06-30
+- `EWGF` - fixed the query being lowercased
+
+## [v12.1.6] - 2026-06-29
+- fixed bug where `stance` didn't search for character aliases
+
+## [v12.1.5] - 2026-06-28
+- `Discord` 
+  - fixed bug that bundled disabled features
+  - fixed `refresh`
+- `Mizuumi`
+  - fixed broken character Wiki URL
+  - fixed bad ID causing `fd` to be unusable
+
 ## [v12.1.4] - 2026-06-27
 - fixed slash commands requiring lowercase query
 

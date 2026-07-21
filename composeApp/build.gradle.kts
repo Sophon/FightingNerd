@@ -110,6 +110,7 @@ kotlin {
             implementation(project(":feat:wikiDreamCancel"))
             implementation(project(":feat:wikiDustLoop"))
             implementation(project(":feat:wikiMizuumi"))
+            implementation(project(":feat:wikiDragDown"))
         }
 
         commonTest.dependencies {
@@ -213,10 +214,12 @@ sqldelight {
         create("CharacterDatabase") {
             packageName.set("io.github.sophon.fightingnerd.db.character")
             srcDirs.setFrom("src/commonMain/sqldelight/character")
+            verifyMigrations.set(false)
         }
         create("MoveDatabase") {
             packageName.set("io.github.sophon.fightingnerd.db.move")
             srcDirs.setFrom("src/commonMain/sqldelight/move")
+            verifyMigrations.set(false)
         }
     }
 }

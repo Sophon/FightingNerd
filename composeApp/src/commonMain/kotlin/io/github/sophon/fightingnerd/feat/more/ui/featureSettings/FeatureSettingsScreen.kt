@@ -11,21 +11,24 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Save
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.more_feature_settings_btn_save
 import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -72,21 +75,14 @@ private fun Content(
             )
     ) {
         item {
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth(),
-            ) {
-                TopBarButton(onClick = onExit)
-
-                TopBarButton(
-                    onClick = onSaveConfig,
-                    imageVector = Icons.Outlined.Save,
-                )
-            }
+            Header(
+                isChanged = state.isChanged,
+                onExit = onExit,
+                onSaveConfig = onSaveConfig
+            )
         }
 
-        itemsIndexed(state.featureList) { featureIndex, feature ->
+        itemsIndexed(state.updatedFeatureList) { featureIndex, feature ->
             val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
             Column(
                 modifier = Modifier
@@ -112,6 +108,36 @@ private fun Content(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun Header(
+    isChanged: Boolean,
+    onExit: () -> Unit,
+    onSaveConfig: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        TopBarButton(onClick = onExit)
+
+        TextButton(
+            onClick = onSaveConfig,
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = nerdColorPalette.textPrimary,
+                disabledContentColor = nerdColorPalette.textDisabled,
+            ),
+            enabled = isChanged,
+        ) {
+            Text(
+                text = stringResource(Res.string.more_feature_settings_btn_save).uppercase(),
+                style = nerdTypography.labelLarge,
+            )
         }
     }
 }

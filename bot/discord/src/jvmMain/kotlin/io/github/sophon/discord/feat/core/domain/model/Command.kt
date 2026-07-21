@@ -100,6 +100,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
@@ -127,10 +128,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -141,6 +144,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -151,6 +155,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -161,6 +166,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -171,6 +177,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "stance",
@@ -187,6 +194,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -197,6 +205,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
@@ -214,10 +223,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -228,6 +239,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -238,6 +250,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -248,10 +261,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -262,6 +277,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -272,10 +288,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -289,10 +307,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -305,10 +325,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -324,10 +346,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -346,6 +370,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -356,10 +381,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -370,6 +397,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -382,6 +410,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -392,10 +421,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -408,6 +439,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -418,10 +450,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -433,6 +467,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -444,6 +479,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -454,10 +490,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -471,10 +509,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -486,6 +526,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -497,10 +538,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -511,6 +554,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -521,6 +565,7 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
@@ -532,10 +577,12 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -546,11 +593,55 @@ internal sealed class Command(
             Argument(
                 name = "character",
                 description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
     )
     object AliasVS : Command(name = "AliasVS", description = "VSAV character aliases")
     //endregion@
+
+    //region DragDown
+    object CharROA : Command(
+        name = "CharROA",
+        description = "ROA2 character data",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
+            ),
+        ),
+    )
+
+    object FdROA : Command(
+        name = "FdROA",
+        description = "ROA2 frame data",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
+            ),
+            Argument(
+                name = "move",
+                description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
+            ),
+        ),
+    )
+
+    object SpecialROA : Command(
+        name = "SpecialROA",
+        description = "ROA2 special moves",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
+            )
+        )
+    )
+    //endregion
 
     //region EWGF
     object Ewgf : Command(
@@ -572,12 +663,18 @@ internal sealed class Command(
     //endregion
 
 
-
     data class Argument(
         val name: String,
         val description: String,
         val isRequired: Boolean = true,
-    )
+        val autoCompleteType: AutoCompleteType = AutoCompleteType.None,
+    ) {
+        enum class AutoCompleteType {
+            None,
+            Character,
+            Move,
+        }
+    }
 
     companion object {
         val entries: List<Command> by lazy {

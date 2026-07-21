@@ -2,16 +2,16 @@ package io.github.sophon.discord.feat.bot.usecase
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.util.truncate
-import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.util.mandatoryField
-import kotlin.time.Duration.Companion.seconds
 
+@ExcludeFromCoverage("UI")
 internal class CreateErrorEmbedBuilderUseCase {
     fun invoke(error: BotError): Pair<BotOutput.MutableEmbedBuilder, BotOutput.ButtonSet?> {
         return when (error) {
@@ -200,6 +200,5 @@ internal class CreateErrorEmbedBuilderUseCase {
         )
     }
 }
-
 
 private const val RED = 0x00FF0000

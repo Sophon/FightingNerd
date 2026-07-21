@@ -1,0 +1,45 @@
+{
+  "featureList": [
+    {
+      "name": "EWGF",
+      "isEnabled": true,
+      "supportedGames": []
+    },
+    {
+      "name": "Infil Glossary",
+      "isEnabled": true,
+      "supportedGames": []
+    },
+    {
+      "name": "Wavu Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "Tekken_8"
+      ]
+    },
+    {
+      "name": "SuperCombo Wiki",
+      "isEnabled": true,
+      "supportedGames": [
+        "Street_Fighter_6",
+        "Mortal_Kombat_1",
+        "Avatar_Legends"
+      ]
+    }
+  ],
+  "adminConfig": {
+    "administratorIdList": [
+      "administratorIdList"
+    ],
+    "feedbackChannelIdList": [
+      "feedbackChannelIdList"
+    ],
+    "adminServerId": "adminServerId"
+  },
+  "statsConfig": {
+    "isEnabled": true,
+    "statsChannelIdList": [
+      "statsChannelIdList"
+    ]
+  }
+}

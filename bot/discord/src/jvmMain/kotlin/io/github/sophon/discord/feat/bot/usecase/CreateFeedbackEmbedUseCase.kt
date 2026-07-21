@@ -6,10 +6,10 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.PublicInteractionResponseBehavior
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.TextChannel
-import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_FEEDBACK
@@ -20,17 +20,19 @@ import io.github.sophon.discord.util.donationMessage
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
+@ExcludeFromCoverage("UI")
 internal class CreateFeedbackEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
 
-    suspend fun MessageCreateEvent.invoke(
+    suspend fun invoke(
+        message: Message,
         feedback: BotOutput.Feedback,
         buttonSet: BotOutput.ButtonSet?,
     ): Result<Message, BotError> {
         return try {
             feedback.feedbackChannelList.forEach { channelId ->
-                val channel = kord.getChannelOf<TextChannel>(Snowflake(channelId))
+                val channel = message.kord.getChannelOf<TextChannel>(Snowflake(channelId))
 
                 channel?.createMessage {
                     embed(feedback.embedBuilder)
@@ -42,23 +44,24 @@ internal class CreateFeedbackEmbedUseCase(
                     }
                 }
             }
-            val message = message.channel.createMessage {
+            val sentMessage = message.channel.createMessage {
                 content = createResponseMessage()
             }
 
-            Result.Success(message)
+            Result.Success(sentMessage)
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
         }
     }
 
-    suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
+    suspend fun invoke(
+        interaction: GuildChatInputCommandInteraction,
         feedback: BotOutput.Feedback,
         buttonSet: BotOutput.ButtonSet?,
     ): Result<PublicInteractionResponseBehavior, BotError> {
         return try {
             feedback.feedbackChannelList.forEach { channelId ->
-                val channel = kord.getChannelOf<TextChannel>(Snowflake(channelId))
+                val channel = interaction.kord.getChannelOf<TextChannel>(Snowflake(channelId))
 
                 channel?.createMessage {
                     embed(feedback.embedBuilder)

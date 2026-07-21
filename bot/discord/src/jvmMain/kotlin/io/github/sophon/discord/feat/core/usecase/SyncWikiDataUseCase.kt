@@ -8,6 +8,8 @@ import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.discord.NUMBER_OF_CONCURRENT_REQUEST
+import io.github.sophon.discord.REQUEST_TIMEOUT_S
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -15,14 +17,22 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class SyncWikiDataUseCase {
     suspend fun invoke(wikiList: Collection<WikiClient>): EmptyResult<BotError> {
         val errors = mutableListOf<BotError>()
 
-        wikiList.forEach { wiki ->
-            val result = downloadCharacterList(wiki)
+        for (wiki in wikiList) {
+            val characterListResult = downloadCharacterList(wiki)
+            if (characterListResult == null) {
+                errors.add(BotError.DownloadError("wiki host unresponsive — skipping remaining games"))
+                break
+            }
+
+            val result = characterListResult
                 .flatMap { characterList ->
                     downloadMoveLists(wiki, characterList)
                 }
@@ -49,15 +59,18 @@ internal class SyncWikiDataUseCase {
         return if (errors.isEmpty()) {
             Result.Success(Unit)
         } else {
-            Result.Error(BotError.Unknown("TODO: syncing"))
+            Result.Error(errors.first())
         }
     }
 
     private suspend fun downloadCharacterList(
         wiki: WikiClient,
-    ): Result<List<Character>, BotError> {
-        return wiki.downloadCharacterList()
-            .mapError { it.toDomainError() }
+    ): Result<List<Character>, BotError>? {
+        val result = withTimeoutOrNull(REQUEST_TIMEOUT_S.seconds) {
+            wiki.downloadCharacterList()
+                .mapError { it.toDomainError() }
+        }
+        return result
     }
 
     private suspend fun cacheCharacterList(
@@ -78,9 +91,12 @@ internal class SyncWikiDataUseCase {
         characterList.asFlow()
             .flatMapMerge(concurrency = NUMBER_OF_CONCURRENT_REQUEST) { character ->
                 flow {
-                    val result = wiki.downloadMoveListFor(character)
-                        .map { moveList -> character to moveList }
-                        .mapError { it.toDomainError() }
+                    val timed = withTimeoutOrNull(REQUEST_TIMEOUT_S.seconds) {
+                        wiki.downloadMoveListFor(character)
+                            .map { moveList -> character to moveList }
+                            .mapError { it.toDomainError() }
+                    }
+                    val result = timed ?: Result.Error(BotError.DownloadError("move list timeout"))
                     emit(result)
                 }
             }
@@ -112,10 +128,5 @@ internal class SyncWikiDataUseCase {
 
     private fun List<Pair<Character, List<Move>>>.filterOutCharsWithNoMoves(): List<Pair<Character, List<Move>>> {
         return filter { it.second.isNotEmpty() }
-    }
-
-
-    private companion object Companion {
-        const val NUMBER_OF_CONCURRENT_REQUEST = 5
     }
 }

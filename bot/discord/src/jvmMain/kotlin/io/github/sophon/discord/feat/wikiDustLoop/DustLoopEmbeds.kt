@@ -11,6 +11,7 @@ import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.hitboxImages
 import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
 
 internal fun charEmbedBuilderGG(
@@ -356,11 +357,7 @@ private fun EmbedBuilder.generalInfoMove(
 ) {
     title = move.input
     url = move.urls.wikiUrl
-    description = if (move.name.isNullOrBlank()) {
-        "**${move.characterId}**"
-    } else {
-        "**${move.characterId}**: ${move.name.orEmpty()}"
-    }
+    moveEmbedDescription(character, move)
     this@generalInfoMove.color = Color(RED)
     character.images?.iconUrl?.let { thumbnail { url = it } }
 

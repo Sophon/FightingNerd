@@ -6,40 +6,43 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.PublicInteractionResponseBehavior
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.channel.MessageChannel
-import dev.kord.core.event.interaction.GuildChatInputCommandInteractionCreateEvent
-import dev.kord.core.event.message.MessageCreateEvent
+import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
+@ExcludeFromCoverage("UI")
 internal class CreateReplyEmbedUseCase {
-
-    suspend fun MessageCreateEvent.invoke(
+    suspend fun invoke(
+        message: Message,
         reply: BotOutput.Reply,
     ): Result<Message, BotError> {
-        return try {
-            val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
+        val result = try {
+            val channel = message.kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
             channel?.createMessage {
                 content = "<@${reply.target.id}>"
                 embed(reply.embedBuilder)
             }
-            val message = message.channel.createMessage {
+            val sentMessage = message.channel.createMessage {
                 content = if (channel == null) "Failed to send" else "Reply sent successfully!"
             }
 
-            Result.Success(message)
+            Result.Success(sentMessage)
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
         }
+        return result
     }
 
-    suspend fun GuildChatInputCommandInteractionCreateEvent.invoke(
+    suspend fun invoke(
+        interaction: GuildChatInputCommandInteraction,
         reply: BotOutput.Reply,
     ): Result<PublicInteractionResponseBehavior, BotError> {
-        return try {
-            val channel = kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
+        val result = try {
+            val channel = interaction.kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
             channel?.createMessage {
                 content = "<@${reply.target.id}>"
                 embed(reply.embedBuilder)
@@ -52,5 +55,6 @@ internal class CreateReplyEmbedUseCase {
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
         }
+        return result
     }
 }

@@ -12,6 +12,7 @@ import dev.kord.core.entity.interaction.ButtonInteraction
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.KtorRequestException
 import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
@@ -31,6 +32,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
+@ExcludeFromCoverage("UI")
 internal class HandleButtonInteractionUseCase(
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
     private val discordButtonBuilder: DiscordButtonBuilder,
@@ -49,7 +51,7 @@ internal class HandleButtonInteractionUseCase(
             interaction.message
         }
 
-        return when(val button = discordButtonBuilder.decodeToDomainModel(buttonId = interaction.componentId)) {
+        val result = when(val button = discordButtonBuilder.decodeToDomainModel(buttonId = interaction.componentId)) {
             is DiscordButton.Query -> {
                 val response = interaction.deferPublicResponse()
                 query(interaction, response, button.query, source, coroutineScope)
@@ -68,12 +70,14 @@ internal class HandleButtonInteractionUseCase(
                 edit(button.messageId, message, editableEmbedMap)
             }
             is DiscordButton.Redirect -> {
+                interaction.deferPublicMessageUpdate()
                 redirect(button.channelId, message)
             }
             else -> {
                 Result.Error(BotError.BotLogicError("Invalid button action"))
             }
         }
+        return result
     }
 
 
@@ -133,14 +137,13 @@ internal class HandleButtonInteractionUseCase(
         message: Message?,
         editableEmbedMap: MutableMap<String, BotOutput>,
     ): EmptyResult<BotError> {
-        return try {
+        val result = try {
             if (message == null) {
                 Result.Error(BotError.BotLogicError("Button has no data"))
             } else {
                 message.apply {
                     val botOutput = editableEmbedMap[messageId]
                     botOutput?.mutableEmbedBuilder?.manualEditBuilder?.let { embedBuilder ->
-
                         edit {
                             embeds?.clear()
                             embed(embedBuilder)
@@ -164,13 +167,14 @@ internal class HandleButtonInteractionUseCase(
         } catch (e: Exception) {
             Result.Error(BotError.Unknown(e.toString()))
         }
+        return result
     }
 
     private suspend fun redirect(
         channelId: String,
         message: Message?,
     ): EmptyResult<BotError> {
-        return try {
+        val result = try {
             if (message == null) {
                 Result.Error(BotError.BotLogicError("Button has no data"))
             } else {
@@ -200,5 +204,6 @@ internal class HandleButtonInteractionUseCase(
         } catch (e: Exception) {
             Result.Error(BotError.Unknown(e.toString()))
         }
+        return result
     }
 }

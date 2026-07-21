@@ -6,6 +6,8 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotError
@@ -15,7 +17,9 @@ import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
+import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
@@ -31,6 +35,8 @@ internal class SuperComboWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val getCharactersUseCase: GetCharactersUseCase,
+    private val getMovesUseCase: GetMovesUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -66,11 +72,13 @@ internal class SuperComboWikiDiscordFeature(
         query: String,
         origin: Source,
     ): Result<BotOutput, BotError> {
-        return when (command) {
+        val formattedQuery = query.lowercase()
+
+        val result = when (command) {
             Command.Fd -> {
                 fetchMoveInWikisUseCase.invoke(
                     wikis = wikiClientMap,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
@@ -78,27 +86,27 @@ internal class SuperComboWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.StreetFighter6,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchCharacter(wiki, query) }
             }
             Command.FdSF -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.StreetFighter6,
-                query = query,
+                query = formattedQuery,
             ) { _, wiki, query -> searchMove(wiki, query) }
 
             Command.CharMK -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.MK1,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchCharacter(wiki, query) }
             }
             Command.FdMK -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.MK1,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
@@ -106,23 +114,54 @@ internal class SuperComboWikiDiscordFeature(
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.AVL,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchCharacter(wiki, query) }
             }
             Command.FdAV -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.AVL,
-                    query = query,
+                    query = formattedQuery,
                 ) { _, wiki, query -> searchMove(wiki, query) }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
+
+        return result
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
         return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
+    }
+
+    override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
+        val game = when (command) {
+            Command.FdSF -> Game.StreetFighter6
+            Command.FdMK -> Game.MK1
+            Command.FdAV -> Game.AVL
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getCharactersUseCase.invoke(wiki)
+        return result
+    }
+
+    override suspend fun getMoveList(
+        command: Command,
+        characterId: String,
+    ): Result<List<Move>, BotError> {
+        val game = when (command) {
+            Command.FdSF -> Game.StreetFighter6
+            Command.FdMK -> Game.MK1
+            Command.FdAV -> Game.AVL
+            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
+        }
+        val wiki = wikiClientMap[game]
+            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        return result
     }
 
     private suspend fun searchCharacter(
@@ -159,7 +198,7 @@ internal class SuperComboWikiDiscordFeature(
                     buttons = BotOutput.ButtonSet(
                         buttonList = listOf(
                             BotOutput.EmbedButton(
-                                label = "Details", action = BotOutput.EmbedButton.Action.Edit()
+                                label = "Details", action = BotOutput.EmbedButton.Action.Edit
                             ),
                         )
                     ),

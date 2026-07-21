@@ -1,11 +1,13 @@
 package io.github.sophon.discord.feat.infilGlossary.usecase
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient
 import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 
+@ExcludeFromCoverage("plain client call")
 internal class SearchGlossaryUseCase(
     private val glossary: InfilGlossaryClient,
     private val startGlossaryUseCase: StartGlossaryUseCase,

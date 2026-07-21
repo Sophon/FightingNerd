@@ -11,12 +11,61 @@ Frame data targeting Discord bot and mobile apps:
 - 🌐 multiplatform:
   - 🤖 Android
   - 🍏 iOS
-  - 💬 Discord
+  - 💬 Discord: [![Add Bot](https://img.shields.io/badge/Add_to_Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/discovery/applications/1438716136790429776)
 
-[![Add Bot](https://img.shields.io/badge/Add_to_Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/oauth2/authorize?client_id=1438716136790429776&permissions=346112&integration_type=0&scope=applications.commands+bot)
 
 [![ko-fi](https://img.shields.io/badge/Support_on_Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/sorryuken)
 
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/sophon)
+
+
+## Sample Usage
+
+All commands are case **insensitive** - uppercase or lowercase or anything in between is identical.
+
+All commands can be used in one of two ways:
+1. tag - `@bot [command] [query]`
+2. slash - `/command [query]`
+
+In the signatures below, `<param>` is required and `[param]` is optional.
+
+- **frame data** - `fd <character> <move>`
+  - `<move>` can be input or move name
+  - default command: `@bot <character> <move>` and `@bot fd <character> <move>` are identical
+  - game specific variants: `fdTK`, `fdSF`, `fdGG` etc.
+  - examples: `@bot ak f21` or `@bot ken 236pp` or `@bot sol fafnir`
+- **character data** - `char <game> <character>`
+  - game specific variants: `charGG`, `charSF`, `charAV` etc.
+  - examples: `@bot charsf akuma` or `@bot charroa olympia`
+- **game specific commands**
+  - Tekken 8
+    - `Heat <character>`, `Homing <character>`, `PC <character>`
+    - `Stance <character> [stance]`
+      - examples: `@bot stance steve` or `@bot stance king jgs`
+    - `Strings <character> <input>`
+      - examples: `@bot strings eddy u4`
+  - `Inv <character>` - invincible moves
+- **ELO**
+  - Tekken 8
+    - `EWGF [operation] [tekkenID]` - https://ewgf.gg/
+      - operations:
+        - `register` (or `+`), requires `<tekkenID>`: registers your Discord account
+          - example: `@bot ewgf + 3DgB8jQ82rJ4`
+        - (no operation): displays your last 50 matches
+          - example: `@bot ewgf`
+        - `unregister` (or `-`): deletes your Discord account from the database
+          - example: `@bot ewgf -`
+- **utility commands**
+  - `Alias` - displays character aliases for a game
+  - `Commands` - lists all available commands
+  - `Donate` - displays links to support the project
+  - `Examples` - displays example bot usage
+  - `Feedback <message>` - sends feedback or bug report to the author
+  - `Invite` - displays the invitation link
+  - `Join <steamURL> [password|name]` - creates a clickable link to join a Steam lobby
+    - default bot command: `@bot steam://joinlobby/...` or `@bot join steam://joinlobby/...` are identical
+  - `Modules` - displays all enabled modules, be it games or otherwise
+  - `Repo` - displays the GitHub link to the project
 
 ### [CURRENT FEATURE MODULES](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
 
@@ -49,6 +98,7 @@ graph LR
     dustloop[Dustloop]
     dreamcancel[DreamCancel]
     mizuumi[Mizuumi]
+    dragdown[DragDown]
   end
 
   subgraph Games
@@ -66,6 +116,7 @@ graph LR
     uni2[Under Night In-Birth II Sys:Celes]
     vsav[Vampire Savior]
     avl[Avatar: Legends]
+    roa[Rivals of Aether 2]
   end
 
   subgraph Ranked service
@@ -87,6 +138,7 @@ graph LR
   communityWiki --> dreamcancel
   communityWiki --> dustloop
   communityWiki --> mizuumi
+  communityWiki --> dragdown
 
   elo --> ewgf
   elo --> cfn
@@ -105,11 +157,12 @@ graph LR
   mizuumi --> melty
   mizuumi --> uni2
   mizuumi --> vsav
+  dragdown --> roa
 
 
   style discordBot fill:green,stroke:#2563EB, color:#fff
-  style android fill:yellow,stroke:green, color:#000
-  style iOS fill:yellow,stroke:green, color:#000
+  style android fill:green,stroke:green, color:#fff
+  style iOS fill:green,stroke:green, color:#fff
   style glossaryInfil fill:green, color:#fff
   style communityWiki fill:green, color:#fff
   style wikiWavu fill:green, color:#fff
@@ -117,6 +170,7 @@ graph LR
   style dreamcancel fill:green, color:#fff
   style dustloop fill:green, color:#fff
   style mizuumi fill:green, color:#fff
+  style dragdown fill:green, color:#fff
   style 2xko fill:green, color:#fff
   style t8 fill:green, color:#fff
   style sf6 fill:green, color:#fff
@@ -133,9 +187,10 @@ graph LR
   style vsav fill:green, color:#fff
   style ewgf fill:green, color:#fff
   style avl fill:yellow, color:#000
+  style roa fill:green, color:#fff
   ```
 
-# [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
+## [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
 
 ### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
 - Twitch bot
