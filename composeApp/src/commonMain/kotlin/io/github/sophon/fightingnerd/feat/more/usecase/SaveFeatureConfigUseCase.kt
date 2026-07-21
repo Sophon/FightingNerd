@@ -70,7 +70,7 @@ internal class SaveFeatureConfigUseCase(
         val result = mutableListOf<Pair<String, String>>()
         newConfig.forEach { feature ->
             feature.gameList.forEach { game ->
-                val wasEnabled = prefs[featureKey(feature.featureName, game.id)] ?: false
+                val wasEnabled = prefs[featureKey(feature.featureName, game.id)] ?: true
                 if (wasEnabled && game.isEnabled.not()) {
                     result.add(feature.featureName to game.id)
                 }
