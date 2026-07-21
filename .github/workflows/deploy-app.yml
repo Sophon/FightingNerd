@@ -122,7 +122,7 @@ jobs:
   # ========== iOS ==========
   ios:
     needs: setup
-    runs-on: macos-15
+    runs-on: macos-26
     env:
       VERSION_NAME: ${{ needs.setup.outputs.version_name }}
       VERSION_CODE: ${{ needs.setup.outputs.version_code }}
