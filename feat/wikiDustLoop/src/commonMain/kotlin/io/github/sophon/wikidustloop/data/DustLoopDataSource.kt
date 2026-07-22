@@ -177,6 +177,17 @@ internal class DustLoopDataSourceImpl(
                     "icon"
                 )
             }
+            DustLoopTables.TABLE_MTFS_CHARACTERS -> {
+                listOf(
+                    "name",
+                    "prejump",
+                    "backdash",
+                    "team",
+                    "umo",
+                    "portrait",
+                    "icon"
+                )
+            }
             else -> emptyList()
         }
 
@@ -303,6 +314,31 @@ internal class DustLoopDataSourceImpl(
                     "hitboxes",
                     "hitboxCaption",
                     "type",
+                    "notes"
+                )
+            }
+            DustLoopTables.TABLE_MTFS_MOVE_LIST -> {
+                listOf(
+                    "chara",
+                    "name",
+                    "input",
+                    "simpleInput",
+                    "damage",
+                    "guard",
+                    "startup",
+                    "active",
+                    "recovery",
+                    "onBlock",
+                    "onHit",
+                    "level",
+                    "type",
+                    "prorate",
+                    "invuln",
+                    "untechAmount",
+                    "meterGain",
+                    "hitboxCaption",
+                    "images",
+                    "hitboxes",
                     "notes"
                 )
             }
