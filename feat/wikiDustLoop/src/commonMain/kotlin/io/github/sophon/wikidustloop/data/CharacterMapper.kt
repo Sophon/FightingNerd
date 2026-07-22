@@ -9,15 +9,6 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidustloop.domain.BASE_URL
 import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
 
-/**
- * TODO: don't filter out junk characters
- *  they are actually extra data we need to include to the root char
- *  1. create a list of every char
- *  2. if CHARACTER (something) exists
- *      1. see the differences between CHARACTER and CHARACTER (something)
- *      2. take the (something) version of the different field and transform it into String
- *      3. add to the root CHARACTER's Notes
- */
 internal fun CharacterListResponseDto.toDomain(
     imageUrlMap: Map<String, String>,
     gameId: String,
@@ -106,6 +97,11 @@ internal fun CharacterListResponseDto.toDomain(
                     preJump = dto.prejump?.cleanHtml(),
                     backDash = dto.backdash?.cleanHtml(),
                     forwardDash = dto.forwardDash?.cleanHtml(),
+                ),
+                mtfsProperties = Character.MTFSProperties(
+                    prejump = dto.prejump?.cleanHtml(),
+                    backdash = dto.backdash?.cleanHtml(),
+                    team = dto.team?.cleanHtml(),
                 ),
             )
 
