@@ -93,7 +93,7 @@ enum class Game(
         wiki = WikiClientFeature.DustLoop,
     ),
     MTFS(
-        id = "Tokon",
+        id = "MTFS",
         displayName = "Marvel Tokon: Fighting Souls",
         iconUrl = "https://imgur.com/Hps0M3O",
         wikiUrl = "https://www.dustloop.com/w/BBCF",
