@@ -118,7 +118,16 @@ internal fun MoveDto.toDomain(
             chStop = CHstop,
             cancelTiming = cancelTiming,
             type = type,
-        )
+        ),
+        mtfsProperties = Move.MTFSProperties(
+            simpleInput = simpleInput?.cleanHtml(),
+            type = type?.cleanHtml(),
+            level = level?.cleanHtml(),
+            prorate = prorate?.cleanHtml(),
+            meterGain = meterGain?.cleanHtml(),
+            untechAmount = untechAmount?.cleanHtml(),
+            hitboxCaption = hitboxCaption?.cleanHtml(),
+        ),
     )
 
     return move
