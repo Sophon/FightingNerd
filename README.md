@@ -117,6 +117,7 @@ graph LR
     vsav[Vampire Savior]
     avl[Avatar: Legends]
     roa[Rivals of Aether 2]
+    mtfs[Marvel Tokon: Fighting Spirit]
   end
 
   subgraph Ranked service
@@ -151,6 +152,7 @@ graph LR
   dustloop --> dbfz
   dustloop --> gbvsr
   dustloop --> bbcf
+  dustloop --> mtfs
   2xko --> xko
   dreamcancel --> kof15
   dreamcancel --> cotw
@@ -160,9 +162,9 @@ graph LR
   dragdown --> roa
 
 
-  style discordBot fill:green,stroke:#2563EB, color:#fff
-  style android fill:green,stroke:green, color:#fff
-  style iOS fill:green,stroke:green, color:#fff
+  style discordBot fill:green, color:#fff
+  style android fill:green, color:#fff
+  style iOS fill:green, color:#fff
   style glossaryInfil fill:green, color:#fff
   style communityWiki fill:green, color:#fff
   style wikiWavu fill:green, color:#fff
@@ -187,8 +189,9 @@ graph LR
   style vsav fill:green, color:#fff
   style ewgf fill:green, color:#fff
   style avl fill:yellow, color:#000
+  style mtfs fill:yellow, color:#000
   style roa fill:green, color:#fff
-  ```
+```
 
 ## [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
 
