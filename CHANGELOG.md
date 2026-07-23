@@ -2,8 +2,9 @@
 
 ## [v14.1.0] - TODO
 - broaden test coverage GitHub task to also check bot and app
-- `Discord` - cover usecases with tests
-- `Compose` - cover usecases with tests
+- `Discord`
+  - cover usecases with tests
+  - increased timeout window from 45s to 60s
 - `Wavu` - remove `ed` from Eddy's nicknames
   - clash with SF Ed
 - `DustLoop`
