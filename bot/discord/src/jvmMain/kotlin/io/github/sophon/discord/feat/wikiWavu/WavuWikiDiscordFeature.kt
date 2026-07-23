@@ -25,6 +25,8 @@ import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.feat.core.util.aggregateCharacters
+import io.github.sophon.discord.feat.core.util.firstMatchingWikiMoves
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStringFollowupsUseCase
 import io.github.sophon.discord.util.toButtons
@@ -188,6 +190,10 @@ internal class WavuWikiDiscordFeature(
         command: Command,
         characterId: String,
     ): Result<List<Move>, BotError> {
+        if (command == Command.Fd) {
+            val moves = firstMatchingWikiMoves(wikiClientMap, getMovesUseCase, characterId)
+            return moves
+        }
         val game = when (command) {
             Command.FdTK,
             Command.Heat,
