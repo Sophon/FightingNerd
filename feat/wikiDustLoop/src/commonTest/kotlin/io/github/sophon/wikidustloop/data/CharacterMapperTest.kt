@@ -285,6 +285,50 @@ class CharacterMapperTest {
         assertThat(result.aliasList).isEqualTo(expected)
     }
     //endregion
+
+    //region umo
+    @Test
+    fun `mapper formats regular umo`() {
+        //given
+        val char = CharacterSource.hellsing
+        val expected = listOf("Wolf Movement")
+
+        //when
+        val result = char.toDomain(emptyMap(), bb)
+
+        //then
+        assertThat(result.umo).isEqualTo(expected)
+    }
+
+    @Test
+    fun `mapper formats link umo`() {
+        //given
+        val char = CharacterSource.jam
+        val expected = listOf(
+            "[Bakushuu](https://www.dustloop.com/w/GGST/Jam_Kuradoberi#Bakushuu)",
+            "[Choujin](https://www.dustloop.com/w/GGST/Jam_Kuradoberi#Choujin)",
+        )
+
+        //when
+        val result = char.toDomain(emptyMap(), gg)
+
+        //then
+        assertThat(result.umo).isEqualTo(expected)
+    }
+
+    @Test
+    fun `mapper formats html umo`() {
+        //given
+        val char = CharacterSource.magneto
+        val expected = listOf("Free Flight", "Multi-dash")
+
+        //when
+        val result = char.toDomain(emptyMap(), mt)
+
+        //then
+        assertThat(result.umo).isEqualTo(expected)
+    }
+    //endregion
 }
 
 private object CharacterSource {
