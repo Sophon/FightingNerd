@@ -65,7 +65,7 @@ class MoveMapperTest {
         val dto = MoveSource.magicalBat
 
         // when
-        val result = formMoveWikiUrl(bb, dto)
+        val result = formMoveWikiUrl(bb, dto, character)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -78,7 +78,7 @@ class MoveMapperTest {
         val dto = MoveSource.dLv2
 
         // when
-        val result = formMoveWikiUrl(bb, dto)
+        val result = formMoveWikiUrl(bb, dto, character)
 
         //then
         assertThat(result).isEqualTo(expected)
