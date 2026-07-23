@@ -96,62 +96,84 @@ tasks.register("testCoverage") {
     val projectDir = layout.projectDirectory
 
     doLast {
-        // Automatically discover all feat modules
-        val featDir = projectDir.dir("feat").asFile
-        val featModules = featDir.listFiles()
-            ?.filter { it.isDirectory && !it.name.startsWith(".") }
-            ?.map { it.name }
-            ?: emptyList()
+        data class CoverageRoot(val label: String, val mainDir: File, val testDir: File)
 
-        if (featModules.isEmpty()) {
-            println("⚠️  No feature modules found in feat/ directory")
+        val roots = mutableListOf<CoverageRoot>()
+
+        // feat/* modules — auto-discover, commonMain/commonTest, same package root
+        val featDir = projectDir.dir("feat").asFile
+        featDir.listFiles()
+            ?.filter { it.isDirectory && it.name.startsWith(".").not() }
+            ?.forEach { module ->
+                roots.add(
+                    CoverageRoot(
+                        label = "feat/${module.name}",
+                        mainDir = File(module, "src/commonMain/kotlin"),
+                        testDir = File(module, "src/commonTest/kotlin"),
+                    )
+                )
+            }
+
+        // composeApp — commonMain/commonTest, same package root
+        roots.add(
+            CoverageRoot(
+                label = "composeApp",
+                mainDir = projectDir.dir("composeApp/src/commonMain/kotlin").asFile,
+                testDir = projectDir.dir("composeApp/src/commonTest/kotlin").asFile,
+            )
+        )
+
+        // bot/discord — jvmMain/jvmTest; main pkg root `discord`, test pkg root `botdiscord`
+        roots.add(
+            CoverageRoot(
+                label = "bot/discord",
+                mainDir = projectDir.dir("bot/discord/src/jvmMain/kotlin/io/github/sophon/discord").asFile,
+                testDir = projectDir.dir("bot/discord/src/jvmTest/kotlin/io/github/sophon/botdiscord").asFile,
+            )
+        )
+
+        if (roots.isEmpty()) {
+            println("⚠️  No coverage roots configured")
             return@doLast
         }
 
-        println("🔍 Scanning modules: ${featModules.joinToString(", ")}\n")
+        println("🔍 Scanning modules: ${roots.joinToString(", ") { it.label }}\n")
 
         val missingTests = mutableListOf<String>()
         var totalUseCases = 0
         var testedUseCases = 0
         var excludedCount = 0
 
-        featModules.forEach { module ->
-            val useCaseDir = projectDir.dir("feat/$module/src/commonMain/kotlin").asFile
-
-            if (!useCaseDir.exists()) {
-                println("⚠️  Warning: Module $module commonMain directory not found")
-                return@forEach
+        roots.forEach root@{ root ->
+            if (root.mainDir.exists().not()) {
+                println("⚠️  Warning: ${root.label} main dir not found at ${root.mainDir}")
+                return@root
             }
 
-            // Find all files in usecase directories
-            useCaseDir.walk()
+            root.mainDir.walk()
                 .filter { it.isFile && it.path.contains("/usecase/") && it.extension == "kt" }
-                .forEach { useCaseFile ->
+                .forEach useCase@{ useCaseFile ->
                     val useCaseName = useCaseFile.nameWithoutExtension
 
-                    // Check if file has @ExcludeFromCoverage annotation
                     val isExcluded = useCaseFile.readText().contains("@ExcludeFromCoverage")
 
                     if (isExcluded) {
                         excludedCount++
-                        println("⊘ ${module}: $useCaseName (excluded)")
-                        return@forEach
+                        println("⊘ ${root.label}: $useCaseName (excluded)")
+                        return@useCase
                     }
 
                     totalUseCases++
 
-                    // Expected test file name
                     val testFileName = useCaseName + "Test.kt"
+                    val relativePath = useCaseFile.relativeTo(root.mainDir)
+                    val testPath = File(root.testDir, "${relativePath.parent}/$testFileName")
 
-                    // Get the package path after kotlin/
-                    val relativePath = useCaseFile.relativeTo(useCaseDir)
-                    val testPath = projectDir.dir("feat/$module/src/commonTest/kotlin/${relativePath.parent}").file(testFileName).asFile
-
-                    if (!testPath.exists()) {
-                        missingTests.add("$module: $useCaseName -> Missing")
+                    if (testPath.exists().not()) {
+                        missingTests.add("${root.label}: $useCaseName -> Missing")
                     } else {
                         testedUseCases++
-                        println("✓ ${module}: $useCaseName")
+                        println("✓ ${root.label}: $useCaseName")
                     }
                 }
         }

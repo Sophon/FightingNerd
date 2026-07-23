@@ -4,14 +4,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.KEY_FIRST_TIME_HOME_INIT_DONE
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import kotlinx.coroutines.flow.first
 
 internal class CheckIfFirstLaunchUseCase(
-    private val featureRepo: CoreFeatureRepo,
+    private val featureRepo: FeatureRepo,
     private val store: DataStore<Preferences>,
 ) {
     internal suspend fun invoke() {

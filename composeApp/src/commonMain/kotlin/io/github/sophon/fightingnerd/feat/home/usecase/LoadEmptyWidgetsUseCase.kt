@@ -2,25 +2,22 @@ package io.github.sophon.fightingnerd.feat.home.usecase
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
-import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.fightingnerd.KEY_FIRST_TIME_HOME_INIT_DONE
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.io.IOException
 
+@ExcludeFromCoverage("UI")
 internal class LoadEmptyWidgetsUseCase(
-    private val featureRepo: CoreFeatureRepo,
+    private val featureRepo: FeatureRepo,
     private val store: DataStore<Preferences>,
 ) {
     fun invoke(): Flow<Result<List<HomeViewState.GameWidget>, AppError>> {

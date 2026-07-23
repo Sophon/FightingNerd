@@ -35,14 +35,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.more_donate
 import fightingnerd.composeapp.generated.resources.more_donate_dialog_title
-import fightingnerd.composeapp.generated.resources.more_theme_dialog_title
 import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.components.SingleSelectDialog
 import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
-import io.github.sophon.fightingnerd.theme.ThemeMode
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
@@ -65,8 +63,6 @@ internal fun MoreScreen(
     Content(
         state = state,
         onItemClick = vm::onItemClick,
-        onThemeItemClick = vm::onThemeDialog,
-        onThemeSelected = vm::onThemeSelect,
         onDonateClick = vm::onDonateClick,
         onSelectDonationMethod = vm::onDonateItemClick,
         modifier = modifier,
@@ -77,8 +73,6 @@ internal fun MoreScreen(
 private fun Content(
     state: MoreState,
     onItemClick: (MoreItem) -> Unit,
-    onThemeItemClick: (isDialogVisible: Boolean) -> Unit,
-    onThemeSelected: (ThemeMode) -> Unit,
     onDonateClick: (isVisible: Boolean) -> Unit,
     onSelectDonationMethod: (DonationMethod) -> Unit,
     modifier: Modifier = Modifier
@@ -104,16 +98,6 @@ private fun Content(
 
             Footer(
                 onDonateClick = { onDonateClick(true) }
-            )
-        }
-
-        if (state.themeSelectorDialog.isVisible) {
-            SingleSelectDialog(
-                title = stringResource(Res.string.more_theme_dialog_title),
-                items = state.themeSelectorDialog.themeModeLists,
-                selectedItem = state.themeSelectorDialog.selectedTheme,
-                onItemSelect = onThemeSelected,
-                onDismiss = { onThemeItemClick(false) },
             )
         }
 
@@ -222,9 +206,7 @@ private fun SettingsPreview() {
         Content(
             state = MoreState(),
             onItemClick = {},
-            onThemeItemClick = {},
             onDonateClick = {},
-            onThemeSelected = {},
             onSelectDonationMethod = {},
         )
     }

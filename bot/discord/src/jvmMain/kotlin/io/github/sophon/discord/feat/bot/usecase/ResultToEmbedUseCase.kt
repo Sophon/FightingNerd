@@ -3,6 +3,7 @@ package io.github.sophon.discord.feat.bot.usecase
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
@@ -20,6 +21,7 @@ import kotlin.time.Duration.Companion.seconds
  * TODO: we shouldn't be using embedBuilders here, we should receive the embed already
  * so extract the CreateErrorEmbedBuilderUseCase out
  */
+@ExcludeFromCoverage("UI")
 internal class ResultToEmbedUseCase(
     private val createErrorEmbedBuilderUseCase: CreateErrorEmbedBuilderUseCase,
     private val createPlainMessageUseCase: CreatePlainMessageUseCase,
@@ -28,7 +30,6 @@ internal class ResultToEmbedUseCase(
     private val createReplyEmbedUseCase: CreateReplyEmbedUseCase,
     private val createMutableEmbedUseCase: CreateMutableEmbedUseCase,
 ) {
-
     suspend fun invoke(
         message: Message,
         source: Source,

@@ -25,8 +25,10 @@ import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.feat.core.util.aggregateCharacters
+import io.github.sophon.discord.feat.core.util.firstMatchingWikiMoves
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
-import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCase
+import io.github.sophon.discord.feat.wikiWavu.usecase.GetStringFollowupsUseCase
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
@@ -45,7 +47,7 @@ internal class WavuWikiDiscordFeature(
     private val getMovesUseCase: GetMovesUseCase,
     private val getStancesUseCase: GetStancesUseCase,
     private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
-    private val searchStringFollowupsUseCase: SearchStringFollowupsUseCase,
+    private val getStringFollowupsUseCase: GetStringFollowupsUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val scheduler: Scheduler,
@@ -152,7 +154,7 @@ internal class WavuWikiDiscordFeature(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
                     query = formattedQuery,
-                ) { _, wiki, query -> searchStringFollowupsUseCase.invoke(wiki, query, featureInfo) }
+                ) { _, wiki, query -> getStringFollowupsUseCase.invoke(wiki, query, featureInfo) }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
@@ -181,10 +183,17 @@ internal class WavuWikiDiscordFeature(
         return result
     }
 
+    override suspend fun getAllCharacters() =
+        aggregateCharacters(wikiClientMap, getCharactersUseCase)
+
     override suspend fun getMoveList(
         command: Command,
         characterId: String,
     ): Result<List<Move>, BotError> {
+        if (command == Command.Fd) {
+            val moves = firstMatchingWikiMoves(wikiClientMap, getMovesUseCase, characterId)
+            return moves
+        }
         val game = when (command) {
             Command.FdTK,
             Command.Heat,

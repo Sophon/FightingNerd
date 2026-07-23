@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.feat
 
 import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCached
+import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCachedUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
@@ -14,7 +14,6 @@ import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSetting
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
-import io.github.sophon.fightingnerd.feat.more.usecase.SetThemeUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
@@ -36,14 +35,13 @@ internal fun featureModule() = module {
     singleOf(::CheckIfFirstLaunchUseCase)
     singleOf(::LoadEmptyWidgetsUseCase)
     singleOf(::LoadGameCharacterListUseCase)
-    singleOf(::EnsureMoveListIsCached)
+    singleOf(::EnsureMoveListIsCachedUseCase)
     //endregion
 
     //region More
     viewModelOf(::MoreVM)
 
     singleOf(::GetAvailableFeaturesUseCase)
-    singleOf(::SetThemeUseCase)
     singleOf(::SubscribeToThemeUseCase)
     singleOf(::SaveFeatureConfigUseCase)
 

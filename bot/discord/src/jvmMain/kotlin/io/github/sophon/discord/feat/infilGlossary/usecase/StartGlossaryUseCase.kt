@@ -1,10 +1,12 @@
 package io.github.sophon.discord.feat.infilGlossary.usecase
 
 import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient
 
+@ExcludeFromCoverage("plain client call")
 internal class StartGlossaryUseCase(
     private val glossary: InfilGlossaryClient,
 ) {

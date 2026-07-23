@@ -1,17 +1,15 @@
 package io.github.sophon.discord.feat.wikiDustLoop.usecase
 
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.feat.wikiDustLoop.moveDetailedEmbedBuilderBB
-import io.github.sophon.discord.feat.wikiDustLoop.moveDetailedEmbedBuilderGG
-import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilderBB
-import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilderDB
-import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilderGB
-import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilderGG
+import io.github.sophon.discord.feat.wikiDustLoop.detailedMoveEmbedBuilder
+import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilder
 
+@ExcludeFromCoverage("UI")
 internal class CreateMoveEmbedUseCase {
     fun invoke(
         game: Game,
@@ -30,17 +28,17 @@ internal class CreateMoveEmbedUseCase {
             }
 
         return when (game) {
-            Game.GGST -> {
+            Game.GGST, Game.BBCF, Game.MTFS -> {
                 BotOutput(
                     mutableEmbedBuilder = BotOutput.MutableEmbedBuilder(
-                        primaryBuilder = moveEmbedBuilderGG(character, move, featureInfo),
-                        manualEditBuilder = moveDetailedEmbedBuilderGG(character, move, featureInfo)
+                        primaryBuilder = moveEmbedBuilder(game, character, move, featureInfo),
+                        manualEditBuilder = detailedMoveEmbedBuilder(game, character, move, featureInfo)
                     ),
                     images = images,
                     buttons = BotOutput.ButtonSet(
                         buttonList = listOf(
                             BotOutput.EmbedButton(
-                                label = "Details", action = BotOutput.EmbedButton.Action.Edit()
+                                label = "Details", action = BotOutput.EmbedButton.Action.Edit,
                             ),
                         )
                     ),
@@ -48,30 +46,14 @@ internal class CreateMoveEmbedUseCase {
             }
             Game.DBFZ -> {
                 BotOutput(
-                    primaryEmbedBuilder = moveEmbedBuilderDB(character, move, featureInfo),
+                    primaryEmbedBuilder = moveEmbedBuilder(game, character, move, featureInfo),
                     images = images,
                 )
             }
             Game.GBVSR -> {
                 BotOutput(
-                    primaryEmbedBuilder = moveEmbedBuilderGB(character, move, featureInfo),
+                    primaryEmbedBuilder = moveEmbedBuilder(game, character, move, featureInfo),
                     images = images,
-                )
-            }
-            Game.BBCF -> {
-                BotOutput(
-                    mutableEmbedBuilder = BotOutput.MutableEmbedBuilder(
-                        primaryBuilder = moveEmbedBuilderBB(character, move, featureInfo),
-                        manualEditBuilder = moveDetailedEmbedBuilderBB(character, move, featureInfo)
-                    ),
-                    images = images,
-                    buttons = BotOutput.ButtonSet(
-                        buttonList = listOf(
-                            BotOutput.EmbedButton(
-                                label = "Details", action = BotOutput.EmbedButton.Action.Edit()
-                            ),
-                        )
-                    ),
                 )
             }
             else -> BotOutput(primaryEmbedBuilder = {})

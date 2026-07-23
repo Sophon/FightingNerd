@@ -71,7 +71,7 @@ import io.github.sophon.discord.feat.wikiSuperCombo.SuperComboWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiWavu.FileReaderJVM
 import io.github.sophon.discord.feat.wikiWavu.WavuWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
-import io.github.sophon.discord.feat.wikiWavu.usecase.SearchStringFollowupsUseCase
+import io.github.sophon.discord.feat.wikiWavu.usecase.GetStringFollowupsUseCase
 import io.github.sophon.discord.feat.wikiXko.XkoWikiDiscordFeature
 import io.github.sophon.wikiwavu.integration.data.FileReader
 import org.koin.core.module.dsl.singleOf
@@ -144,7 +144,7 @@ internal val featureRegistryModule = module {
 
     //region Wavu
     singleOf(::FileReaderJVM).bind<FileReader>()
-    singleOf(::SearchStringFollowupsUseCase)
+    singleOf(::GetStringFollowupsUseCase)
     //endregion
 
     //region Mizuumi
@@ -173,7 +173,7 @@ internal val featureRegistryModule = module {
     single {
         BindToDiscordFeaturesUseCase(
             allRegisteredFeatures = getAll(),
-            coreFeatureRepo = get(),
+            featureRepo = get(),
             adminFeature = get(),
         )
     }

@@ -9,6 +9,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
@@ -27,6 +28,7 @@ import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
+@ExcludeFromCoverage("UI")
 internal class CreateMutableEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
@@ -89,7 +91,7 @@ internal class CreateMutableEmbedUseCase(
         deleteAfter: Duration? = null,
     ): Result<String, BotError> {
         return try {
-            val uuid = Uuid.Companion.random()
+            val uuid = Uuid.random()
 
             interaction.respondPublic {
                 embed(mutableEmbedBuilder.primaryBuilder)

@@ -1,12 +1,14 @@
 package io.github.sophon.core
 
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepoImpl
 import io.github.sophon.core.featureConfig.CoreWikiClientFactory
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.network.HttpClientFactory
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import kotlinx.serialization.json.Json
 import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val coreModule = module {
@@ -15,7 +17,7 @@ val coreModule = module {
     single<Json> { Json { ignoreUnknownKeys = true; prettyPrint = true } }
 
     singleOf(::CoreWikiClientFactory)
-    singleOf(::CoreFeatureRepo)
+    singleOf(::FeatureRepoImpl).bind<FeatureRepo>()
 }
 
 expect fun httpClientEngine(): HttpClientEngine

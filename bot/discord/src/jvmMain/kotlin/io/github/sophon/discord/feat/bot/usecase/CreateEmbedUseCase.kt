@@ -12,11 +12,11 @@ import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
-import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
@@ -32,11 +32,11 @@ import kotlin.uuid.Uuid
 /**
  * USED FOR: general and error embeds
  */
+@ExcludeFromCoverage("UI")
 @OptIn(ExperimentalUuidApi::class)
 internal class CreateEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
-
     suspend fun invoke(
         message: Message,
         embedBuilder: EmbedBuilder.() -> Unit,
@@ -106,7 +106,7 @@ internal class CreateEmbedUseCase(
         isEphemeral: Boolean = false,
     ): Result<String, BotError> {
         return try {
-            val uuid = Uuid.Companion.random()
+            val uuid = Uuid.random()
 
             if (isEphemeral) {
                 interaction.respondEphemeral {

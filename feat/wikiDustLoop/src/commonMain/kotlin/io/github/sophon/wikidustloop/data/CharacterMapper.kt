@@ -9,15 +9,6 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidustloop.domain.BASE_URL
 import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
 
-/**
- * TODO: don't filter out junk characters
- *  they are actually extra data we need to include to the root char
- *  1. create a list of every char
- *  2. if CHARACTER (something) exists
- *      1. see the differences between CHARACTER and CHARACTER (something)
- *      2. take the (something) version of the different field and transform it into String
- *      3. add to the root CHARACTER's Notes
- */
 internal fun CharacterListResponseDto.toDomain(
     imageUrlMap: Map<String, String>,
     gameId: String,
@@ -25,96 +16,108 @@ internal fun CharacterListResponseDto.toDomain(
     val characterList = cargoQuery
         .filterAltModeCharacters()
         .map { query ->
-            val dto = query.title
-            val id = dto.name?.cleanHtml().formCharacterId()
-            val displayName = dto.name?.cleanHtml().orEmpty()
-            val queryName = dto.name
-                ?.cleanHtml()
-                .formCharacterQueryName(gameId)
-
-            val character = Character(
-                id = id,
-                displayName = displayName,
-                remoteQueryId = queryName,
-                wikiUrl = queryName.formWikiUrl(gameId),
-                aliasList = dto.name.createAliases(gameId, dto.aliases),
-                images = Character.Images(
-                    iconUrl = dto.icon.let { imageUrlMap[it] },
-                    bannerUrl = dto.portrait.let { imageUrlMap[it] },
-                ),
-                hp = dto.health?.cleanHtml(),
-                umo = dto.umo?.cleanHtml().formUmo(),
-                ggstProperties = Character.GGSTProperties(
-                    defense = dto.defense,
-                    guts = dto.guts,
-                    guardBalance = dto.guardBalance,
-                    prejump = dto.prejump,
-                    bwdDash = dto.backdash,
-                    bwdDashDuration = dto.backdashDuration,
-                    bwdDashInvulnerability = dto.backdashInvuln,
-                    bwdDashAirborne = dto.backdashAirborne,
-                    bwdDashDist = dto.backdashDistance,
-                    fwdDash = dto.forwardDash,
-                    jumpDuration = dto.jumpDuration,
-                    highJumpDuration = dto.highJumpDuration,
-                    jumpHeight = dto.jumpHeight,
-                    highJumpHeight = dto.highJumpHeight,
-                    earliestIAD = dto.earliestIad,
-                    adDuration = dto.adDuration,
-                    abdDuration = dto.abdDuration,
-                    adDist = dto.adDistance,
-                    abdDist = dto.abdDistance,
-                    movementTension = dto.movementTension,
-                    jumpTension = dto.jumpTension,
-                    airDashTension = dto.airDashTension,
-                    walkSpd = dto.walkSpeed,
-                    bwdWalkSpd = dto.backWalkSpeed,
-                    dashInitialSpd = dto.dashInitialSpeed,
-                    dashAcceleration = dto.dashAcceleration,
-                    dashFriction = dto.dashFriction,
-                    jumpGravity = dto.jumpGravity,
-                    highJumpGravity = dto.highJumpGravity,
-                    boostAttack = dto.boostAttack,
-                    boostDefense = dto.boostDefense,
-                ),
-                dbfzProperties = Character.DBFZProperties(
-                    kiMod = dto.kimod?.cleanHtml(),
-                ),
-                gbvsrProperties = Character.GBVSRProperties(
-                    jump = Character.GBVSRProperties.Jump(
-                        pre = dto.prejump,
-                        forwardDistance = dto.f_jump_distance?.toString(),
-                        superForwardDistance = dto.f_superjump_distance?.toString(),
-                        backDistance = dto.b_jump_distance?.toString(),
-                        superBackDistance = dto.b_superjump_distance?.toString(),
-                        gravity = dto.jumpGravity,
-                        superGravity = dto.superjump_gravity?.toString(),
-                        superHeight = dto.superjump_height?.toString(),
-                    ),
-                    backdash = dto.backdash?.cleanHtml(),
-                    walkSpeed = dto.walk_speed.toString(),
-                    walkSpeedBack = dto.backwalk_speed.toString(),
-                    dashInitial = dto.dash_initial_speed.toString(),
-                    dashAcceleration = dto.dash_acceleration,
-                    closeRange = Character.GBVSRProperties.CloseRange(
-                        l = dto.close_l_range?.toString(),
-                        m = dto.close_m_range?.toString(),
-                        h = dto.close_h_range?.toString(),
-                    )
-                ),
-                bbProperties = Character.BBProperties(
-                    preJump = dto.prejump?.cleanHtml(),
-                    backDash = dto.backdash?.cleanHtml(),
-                    forwardDash = dto.forwardDash?.cleanHtml(),
-                ),
-            )
-
-            character
+            query.title.toDomain(imageUrlMap, gameId)
         }
     return characterList
 }
 
-internal fun String?.formCharacterId(): String {
+internal fun CharacterDto.toDomain(
+    imageUrlMap: Map<String, String>,
+    gameId: String,
+): Character {
+    val dto = this
+    val id = dto.name?.cleanHtml().formCharacterId()
+    val displayName = dto.name?.cleanHtml().orEmpty()
+    val queryName = dto.name
+        ?.cleanHtml()
+        .formCharacterQueryName(gameId)
+
+    val character = Character(
+        id = id,
+        displayName = displayName,
+        remoteQueryId = queryName,
+        wikiUrl = queryName.formWikiUrl(gameId),
+        aliasList = dto.name.createAliases(gameId, dto.aliases),
+        images = Character.Images(
+            iconUrl = dto.icon.let { imageUrlMap[it] },
+            bannerUrl = dto.portrait.let { imageUrlMap[it] },
+        ),
+        hp = dto.health?.cleanHtml(),
+        umo = dto.umo.formUmo(),
+        ggstProperties = Character.GGSTProperties(
+            defense = dto.defense,
+            guts = dto.guts,
+            guardBalance = dto.guardBalance,
+            prejump = dto.prejump,
+            bwdDash = dto.backdash,
+            bwdDashDuration = dto.backdashDuration,
+            bwdDashInvulnerability = dto.backdashInvuln,
+            bwdDashAirborne = dto.backdashAirborne,
+            bwdDashDist = dto.backdashDistance,
+            fwdDash = dto.forwardDash,
+            jumpDuration = dto.jumpDuration,
+            highJumpDuration = dto.highJumpDuration,
+            jumpHeight = dto.jumpHeight,
+            highJumpHeight = dto.highJumpHeight,
+            earliestIAD = dto.earliestIad,
+            adDuration = dto.adDuration,
+            abdDuration = dto.abdDuration,
+            adDist = dto.adDistance,
+            abdDist = dto.abdDistance,
+            movementTension = dto.movementTension,
+            jumpTension = dto.jumpTension,
+            airDashTension = dto.airDashTension,
+            walkSpd = dto.walkSpeed,
+            bwdWalkSpd = dto.backWalkSpeed,
+            dashInitialSpd = dto.dashInitialSpeed,
+            dashAcceleration = dto.dashAcceleration,
+            dashFriction = dto.dashFriction,
+            jumpGravity = dto.jumpGravity,
+            highJumpGravity = dto.highJumpGravity,
+            boostAttack = dto.boostAttack,
+            boostDefense = dto.boostDefense,
+        ),
+        dbfzProperties = Character.DBFZProperties(
+            kiMod = dto.kimod?.cleanHtml(),
+        ),
+        gbvsrProperties = Character.GBVSRProperties(
+            jump = Character.GBVSRProperties.Jump(
+                pre = dto.prejump,
+                forwardDistance = dto.f_jump_distance?.toString(),
+                superForwardDistance = dto.f_superjump_distance?.toString(),
+                backDistance = dto.b_jump_distance?.toString(),
+                superBackDistance = dto.b_superjump_distance?.toString(),
+                gravity = dto.jumpGravity,
+                superGravity = dto.superjump_gravity?.toString(),
+                superHeight = dto.superjump_height?.toString(),
+            ),
+            backdash = dto.backdash?.cleanHtml(),
+            walkSpeed = dto.walk_speed.toString(),
+            walkSpeedBack = dto.backwalk_speed.toString(),
+            dashInitial = dto.dash_initial_speed.toString(),
+            dashAcceleration = dto.dash_acceleration,
+            closeRange = Character.GBVSRProperties.CloseRange(
+                l = dto.close_l_range?.toString(),
+                m = dto.close_m_range?.toString(),
+                h = dto.close_h_range?.toString(),
+            )
+        ),
+        bbProperties = Character.BBProperties(
+            preJump = dto.prejump?.cleanHtml(),
+            backDash = dto.backdash?.cleanHtml(),
+            forwardDash = dto.forwardDash?.cleanHtml(),
+        ),
+        mtfsProperties = Character.MTFSProperties(
+            prejump = dto.prejump?.cleanHtml(),
+            backdash = dto.backdash?.cleanHtml(),
+            team = dto.team?.cleanHtml(),
+        ),
+    )
+
+    return character
+}
+
+private fun String?.formCharacterId(): String {
     val charId = this
         .orEmpty()
         .replace(".", "")
@@ -127,7 +130,7 @@ internal fun String?.formCharacterId(): String {
     return charId
 }
 
-internal fun String?.formCharacterQueryName(gameId: String): String {
+private fun String?.formCharacterQueryName(gameId: String): String {
     val game = Game.fromId(gameId)
 
     val query = this
@@ -138,7 +141,7 @@ internal fun String?.formCharacterQueryName(gameId: String): String {
     return query
 }
 
-internal fun String?.formWikiUrl(gameId: String): String {
+private fun String?.formWikiUrl(gameId: String): String {
     val formatted = this.orEmpty()
         .replace(" ", "_")
         .decodeHtmlEntities()
@@ -149,7 +152,7 @@ internal fun String?.formWikiUrl(gameId: String): String {
     return url
 }
 
-internal fun String?.createAliases(
+private fun String?.createAliases(
     gameId: String,
     dtoAliases: String? = null
 ): List<String> {
@@ -206,7 +209,7 @@ private fun String?.createGGAliases(): List<String> {
     }.distinct()
 }
 
-internal fun String?.createBBAliases(): List<String> {
+private fun String?.createBBAliases(): List<String> {
     if (this.isNullOrBlank()) return emptyList()
 
     val bbCodeMap = mapOf(
@@ -263,13 +266,26 @@ internal fun String?.createBBAliases(): List<String> {
     }.distinct()
 }
 
-internal fun String?.formUmo(): List<String> {
+private fun String?.formUmo(): List<String> {
     if (isNullOrBlank()) return listOf()
 
-    val umo = orEmpty().split(",").mapNotNull {
-        it.trim().toClickable(WIKI_BASE_URL)
+    val parts = split(Regex(""",|<br\s*/?>""")).map { it.trim() }
+    val routed = parts.map { part ->
+        val item = when {
+            part.startsWith("<span") -> part.extractTooltipLabel()
+            part.startsWith("[[") -> part.toClickable(WIKI_BASE_URL).orEmpty()
+            else -> part
+        }
+        item
     }
-    return umo
+    val cleaned = routed.map { it.cleanHtml() }.filter { it.isNotBlank() }
+    return cleaned
+}
+
+private fun String.extractTooltipLabel(): String {
+    val regex = """<span class="tooltip">([^<]+)""".toRegex()
+    val label = regex.find(this)?.groupValues?.get(1).orEmpty()
+    return label
 }
 
 private fun List<CargoQueryItem>.filterAltModeCharacters(): List<CargoQueryItem> {

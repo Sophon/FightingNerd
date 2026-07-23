@@ -100,4 +100,7 @@ internal data class CharacterDto(
 
     //bb
     val health: String? = null,
+
+    //mtfs
+    val team: String? = null,
 )

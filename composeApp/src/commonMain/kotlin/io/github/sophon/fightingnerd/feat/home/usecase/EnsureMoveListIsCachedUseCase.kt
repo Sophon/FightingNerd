@@ -3,7 +3,7 @@ package io.github.sophon.fightingnerd.feat.home.usecase
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.WikiClient
@@ -13,8 +13,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class EnsureMoveListIsCached(
-    private val featureRepo: CoreFeatureRepo,
+internal class EnsureMoveListIsCachedUseCase(
+    private val featureRepo: FeatureRepo,
 ) {
     suspend fun invoke(
         game: Game,

@@ -5,7 +5,7 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.featureConfig.CoreFeatureRepo
+import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.discord.feat.config.usecase.BindToDiscordFeaturesUseCase
 import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
 import io.github.sophon.discord.feat.core.domain.model.BotError
@@ -18,7 +18,7 @@ internal interface BotFeatureRepo {
 }
 
 internal class BotFeatureRepoImpl(
-    private val coreFeatureRepo: CoreFeatureRepo,
+    private val featureRepo: FeatureRepo,
     private val loadConfigurationUseCase: LoadConfigurationUseCase,
     private val bindToDiscordFeaturesUseCase: BindToDiscordFeaturesUseCase,
 ): BotFeatureRepo {
@@ -27,7 +27,7 @@ internal class BotFeatureRepoImpl(
     override suspend fun initialize(): EmptyResult<BotError> {
         val result = loadConfigurationUseCase.invoke()
             .flatMap { config ->
-                coreFeatureRepo.initialize(config)
+                featureRepo.initialize(config)
                     .mapError { it.toDomainError() }
                     .flatMap {
                         bindToDiscordFeaturesUseCase.invoke(config)
