@@ -87,6 +87,7 @@ internal class DustLoopDataSourceImpl(
         return result
     }
 
+    @Suppress("detekt:LongMethod")
     private fun getCharacterFields(table: String): String {
         val allFields = when (table) {
             DustLoopTables.TABLE_DBFZ_CHARACTERS -> {
@@ -194,6 +195,7 @@ internal class DustLoopDataSourceImpl(
         return allFields.joinToString(",")
     }
 
+    @Suppress("detekt:LongMethod")
     private fun getMoveFields(table: String): String {
         val allFields = when (table) {
             DustLoopTables.TABLE_DBFZ_MOVE_LIST -> {
