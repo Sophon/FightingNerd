@@ -2,6 +2,7 @@
 
 ## [v14.1.0] - TODO
 - broaden test coverage GitHub task to also check bot and app
+- `fd` has global autocomplete for characters and moves
 - `Discord`
   - cover usecases with tests
   - increased timeout window from 45s to 60s
