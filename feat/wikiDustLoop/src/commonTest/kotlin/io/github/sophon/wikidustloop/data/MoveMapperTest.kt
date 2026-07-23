@@ -16,72 +16,82 @@ class MoveMapperTest {
         remoteQueryId = "",
         wikiUrl = "",
     )
+    val platinum = character.copy(wikiUrl = "https://www.dustloop.com/w/BBCF/Platinum_the_Trinity")
+    val makoto = character.copy(wikiUrl = "https://www.dustloop.com/w/BBCF/Makoto_Nanaya")
 
     //region Aliases
     @Test
-    fun `formAliases handles empty form input`() {
-        //given
-        val input = "fl[]"
-        val expectedAlias = listOf("f.l[]")
-
-        //when
-        val resultAlias = formAliases(gb, input, "")
-
-        //then
-        assertThat(resultAlias).isEqualTo(expectedAlias)
-    }
-    
-    @Test
     fun `formAliases handles gb variant inputs`() {
         // given
-        val input = "22m~l/m"
+        val dto = MoveSource.silence
         val expected = listOf("22m~l", "22m~m")
         
         // when
-        val result = formAliases(gb, input, "")
+        val result = dto.toDomain(gb, character, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expected)
     }
 
     @Test
     fun `formAliases handles release notation`() {
         // given
-        val input = "214]p["
+        val dto = MoveSource.mistFiner
         val expected = listOf("214p")
 
         // when
-        val result = formAliases(gg, input, "")
+        val result = dto.toDomain(gg, character, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toDomain handles Nago input aliases`() {
+        // given
+        val move1 = MoveSource.hLevel1
+        val expectedAlias1 = listOf("2h")
+        val move3 = MoveSource.sLevel3
+        val expectedAlias3 = listOf("2s3")
+        val moveB = MoveSource.hBr
+        val expectedAliasB = listOf("2hb")
+
+        // when
+        val result1 = move1.toDomain(gg, character, emptyMap())
+        val result3 = move3.toDomain(gg, character, emptyMap())
+        val resultB = moveB.toDomain(gg, character, emptyMap())
+
+        //then
+        assertThat(result1.aliases).isEqualTo(expectedAlias1)
+        assertThat(result3.aliases).isEqualTo(expectedAlias3)
+        assertThat(resultB.aliases).isEqualTo(expectedAliasB)
     }
     //endregion
 
     @Test
     fun `formWikiUrl handles spaces in name`() {
         // given
-        val expected = "https://www.dustloop.com/w/BBCF/Platinum_the_Trinity#Magical_Bat"
+        val expected = "${platinum.wikiUrl}#Magical_Bat"
         val dto = MoveSource.magicalBat
 
         // when
-        val result = formMoveWikiUrl(bb, dto)
+        val result = dto.toDomain(bb, platinum, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.urls.wikiUrl).isEqualTo(expected)
     }
 
     @Test
     fun `formWikiUrl handles spaces in input`() {
         // given
-        val expected = "https://www.dustloop.com/w/BBCF/Makoto_Nanaya#5D_Lv2"
+        val expected = "${makoto.wikiUrl}#5D_Lv2"
         val dto = MoveSource.dLv2
 
         // when
-        val result = formMoveWikiUrl(bb, dto)
+        val result = dto.toDomain(bb, makoto, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.urls.wikiUrl).isEqualTo(expected)
     }
 
     @Test
@@ -116,27 +126,6 @@ class MoveMapperTest {
         //then
         assertThat(result.input).isEqualTo(expectedInput)
         assertThat(result.aliases).isEqualTo(expectedAlias)
-    }
-
-    @Test
-    fun `toDomain handles Nago input aliases`() {
-        // given
-        val move1 = MoveSource.hLevel1
-        val expectedAlias1 = listOf("2h")
-        val move3 = MoveSource.sLevel3
-        val expectedAlias3 = listOf("2s3")
-        val moveB = MoveSource.hBr
-        val expectedAliasB = listOf("2hb")
-
-        // when
-        val result1 = move1.toDomain(gg, character, emptyMap())
-        val result3 = move3.toDomain(gg, character, emptyMap())
-        val resultB = moveB.toDomain(gg, character, emptyMap())
-
-        //then
-        assertThat(result1.aliases).isEqualTo(expectedAlias1)
-        assertThat(result3.aliases).isEqualTo(expectedAlias3)
-        assertThat(resultB.aliases).isEqualTo(expectedAliasB)
     }
 
     @Test
@@ -303,6 +292,35 @@ private object MoveSource {
         caption = "The no-fly zone",
         hitboxCaption = "&#32;",
     )
+    val mistFiner = MoveDto(
+        chara = "Johnny",
+        name = "Mist Finer (Upward)",
+        input = "214]P[",
+        damage = "36",
+        guard = "All",
+        startup = "7+5",
+        active = "2",
+        recovery = "30",
+        onBlock = "-15",
+        onHit = "KD +40",
+        level = "3",
+        counter = "Very Small",
+        images = "GGST Johnny 214P.png",
+        hitboxes = "GGST Johnny 214P Hitbox.png",
+        notes = "Hitstop: 3F",
+        type = "Special",
+        riscGain = "1400",
+        riscLoss = "2000",
+        wallDamage = "700",
+        inputTension = "150",
+        chipRatio = "25%",
+        OTGType = "Up",
+        prorate = "90%",
+        invuln = null,
+        cancel = null,
+        caption = "Ground",
+        hitboxCaption = "&#32;",
+    )
 
     val fhg = MoveDto(
         chara = "Narmaya",
@@ -352,7 +370,32 @@ private object MoveSource {
         type = "normal[k]",
         notes = null,
     )
-    
+    val silence = MoveDto(
+        chara = "Sandalphon",
+        name = "22M Silence",
+        input = "22M~L/M",
+        damage = "700",
+        guard = "All",
+        startup = "13",
+        active = "40",
+        recovery = "Total 43",
+        onBlock = "-6",
+        onHit = "Air Recovery +20",
+        onCH = "KD +33",
+        meter = null,
+        level = null,
+        invuln = null,
+        cooldown = null,
+        cls = "2",
+        images = "GBVSR_Sandalphon_22X-L.png",
+        caption = null,
+        hitboxes = "GBVSR_Sandalphon_22X-L_Hitbox.png",
+        hitboxCaption = null,
+        type = "special",
+        notes = null,
+    )
+
+
     val magicalBat = MoveDto(
         chara = "Platinum the Trinity",
         name = "Magical Bat",
@@ -387,7 +430,6 @@ private object MoveSource {
         type = "drive",
         notes = "Counter Hit state for entire move; Reversal"
     )
-
     val dLv2 = MoveDto(
         chara = "Makoto Nanaya",
         name = null,

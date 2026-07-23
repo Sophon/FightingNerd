@@ -67,6 +67,9 @@ internal class DustLoopWikiDiscordFeature(
 
         Command.CharGB,
         Command.FdGB,
+
+        Command.CharMT,
+        Command.FdMT,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -185,6 +188,19 @@ internal class DustLoopWikiDiscordFeature(
                 action = ::searchInvincible,
             )
 
+            Command.CharMT -> withWiki(
+                wikis = wikiClientMap,
+                game = Game.MTFS,
+                query = formattedQuery,
+                action = ::searchCharacter,
+            )
+            Command.FdMT -> withWiki(
+                wikis = wikiClientMap,
+                game = Game.MTFS,
+                query = formattedQuery,
+                action = ::searchMove,
+            )
+
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
 
@@ -202,6 +218,7 @@ internal class DustLoopWikiDiscordFeature(
             Command.FdDB -> Game.DBFZ
             Command.FdBB, Command.InvBB -> Game.BBCF
             Command.FdGB -> Game.GBVSR
+            Command.FdMT -> Game.MTFS
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
         }
         val wiki = wikiClientMap[game]
@@ -219,6 +236,7 @@ internal class DustLoopWikiDiscordFeature(
             Command.FdDB -> Game.DBFZ
             Command.FdBB, Command.InvBB -> Game.BBCF
             Command.FdGB -> Game.GBVSR
+            Command.FdMT -> Game.MTFS
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
         }
         val wiki = wikiClientMap[game]

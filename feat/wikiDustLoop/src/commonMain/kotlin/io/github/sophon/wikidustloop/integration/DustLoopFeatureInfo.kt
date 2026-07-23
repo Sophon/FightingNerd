@@ -17,6 +17,7 @@ object DustLoopFeatureInfo {
             Game.DBFZ,
             Game.GBVSR,
             Game.BBCF,
+            Game.MTFS,
         ),
         version = BuildKonfig.VERSION,
     )
