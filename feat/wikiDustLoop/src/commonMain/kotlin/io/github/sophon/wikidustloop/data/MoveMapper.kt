@@ -69,7 +69,7 @@ internal fun MoveDto.toDomain(
                 .orEmpty()
                 .split(";", "\\")
                 .mapNotNull { imageUrlMap.getOrElse(key = it, defaultValue = { null }) },
-            wikiUrl = formMoveWikiUrl(gameId, this, character),
+            wikiUrl = formMoveWikiUrl(this, character),
         ),
 
         ggstProperties = Move.GGSTProperties(
@@ -157,7 +157,7 @@ internal fun String?.formNotes(): List<String> {
         ?: emptyList()
 }
 
-internal fun formMoveWikiUrl(gameId: String, dto: MoveDto, character: Character): String {
+internal fun formMoveWikiUrl(dto: MoveDto, character: Character): String {
     val moveId = if (dto.name.isNullOrBlank()) {
         dto.input?.replace(" ", "_")
     } else {
