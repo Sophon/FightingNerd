@@ -35,210 +35,36 @@ internal fun charEmbedBuilder(
     featureFooter(featureInfo)
 }
 
-private fun EmbedBuilder.charDetailsGG(character: Character) {
-    val properties = character.ggstProperties
-
-    mandatoryField(
-        name = "⭐️ CORE",
-        value = buildList {
-            add("* **Defense →** ${properties?.defense}")
-            add("* **Guts →** ${properties?.guts}")
-            add("* **Guard balance →** ${properties?.guardBalance}")
-            add("* **Boost ATT | DEF** → ${properties?.boostAttack} | ${properties?.boostDefense}")
-        }.joinToString("\n"),
-    )
-
-    mandatoryField(
-        name = "👟 MOVEMENT",
-        value = buildList {
-            character.umo.takeIf { it.isNotEmpty() }?.let { umo ->
-                if (umo.size == 1) {
-                    add("* **Unique movement →** ${umo.first()}")
-                } else {
-                    add("* **Unique movement →** ")
-                    umo.forEach { add("   * $it") }
-                }
-            }
-            add("* **Backdash →** ${properties?.bwdDash}")
-            add("   * **Distance →** ${properties?.bwdDashDist}")
-            add("   * **Duration →** ${properties?.bwdDashDuration}")
-            add("   * **Invulnerability →** ${properties?.bwdDashInvulnerability}")
-            properties?.fwdDash?.let { add("* **Forward dash →** $it") }
-            add("* **Initial speed →** ${properties?.dashInitialSpd}")
-            properties?.dashAcceleration?.let { add("* **Acceleration →** $it") }
-            properties?.movementTension?.let { add("* **Tension →** $it") }
-            properties?.dashFriction?.let { add("* **Friction →** $it") }
-            add("* **Walk →** ← ${properties?.walkSpd} | ${properties?.bwdWalkSpd} →")
-        }.joinToString("\n"),
-    )
-
-    mandatoryField(
-        name = "🦘 JUMP",
-        value = buildList {
-            add("* **Prejump →** ${properties?.prejump}")
-            add("* **Height (high) →** ${properties?.jumpHeight} (${properties?.highJumpHeight})")
-            add("* **Duration (high) →** ${properties?.jumpDuration} (${properties?.highJumpDuration})")
-            add("* **Gravity (high) →** ${properties?.jumpGravity} (${properties?.highJumpGravity})")
-            properties?.jumpTension?.let { add("* **Tension →** $it") }
-        }.joinToString("\n"),
-    )
-
-    mandatoryField(
-        name = "💨 AIRDASH",
-        value = buildList {
-            add("* **IAD →** ${properties?.earliestIAD}")
-            add("* **Distance | Duration →** ${properties?.adDist} | ${properties?.adDuration}")
-            add("* **B Distance | Duration →** ${properties?.abdDist} | ${properties?.abdDuration}")
-            properties?.airDashTension?.let { add("* **Tension →** $it") }
-        }.joinToString("\n"),
-    )
-}
-
-private fun EmbedBuilder.charDetailsGB(character: Character) {
-    character.gbvsrProperties?.apply {
-        optionalField(name = "Prejump", value = jump?.pre)
-        optionalField(name = "Backdash", value = backdash)
-    }
-}
-
-private fun EmbedBuilder.charDetailsBB(character: Character) {
-    character.bbProperties?.apply {
-        mandatoryField(
-            name = "Dash",
-            value = "Forward: $forwardDash\n" +
-                    "Back: $backDash"
-        )
-
-        mandatoryField(name = "Prejump", value = preJump)
-    }
-}
-
-internal fun EmbedBuilder.charDetailsMT(character: Character) {
-    character.mtfsProperties?.apply {
-        optionalField(name = "Team", value = team)
-        optionalField(name = "Prejump", value = prejump)
-        optionalField(name = "Backdash", value = backdash)
-    }
-}
-
-internal fun moveEmbedBuilderGG(
+internal fun moveEmbedBuilder(
+    game: Game,
     character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     generalInfoMove(character, move, displayHitboxes = false)
-    generalPropertiesMove(move)
 
-    featureFooter(featureInfo)
-}
-
-internal fun moveDetailedEmbedBuilderGG(
-    character: Character,
-    move: Move,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    moveEmbedBuilderGG(character, move, featureInfo).invoke(this)
-
-    optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
-    optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
-    optionalField(name = "Cancel", value = move.cancel)
-    optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
-    optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
-    optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
-
-    hitboxImages(move.urls).invoke(this)
-
-    moveNotes(move)
-}
-
-internal fun moveEmbedBuilderDB(
-    character: Character,
-    move: Move,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    generalInfoMove(character, move)
-
-    mandatoryField(name = "Startup", value = move.startup)
-    mandatoryField(name = "Active", value = move.active)
-    mandatoryField(name = "OB", value = move.onBlock)
-    mandatoryField(name = "Guard", value = move.guard)
-
-    mandatoryField(name = "Invul", value = move.invulnerability)
-    mandatoryField(name = "Smash", value = move.dbfzProperties?.smash)
-
-    moveNotes(move)
-
-    featureFooter(featureInfo)
-}
-
-internal fun moveEmbedBuilderGB(
-    character: Character,
-    move: Move,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    generalInfoMove(character, move)
-    generalPropertiesMove(move)
-
-    optionalField(name = "Meter", value = move.gbvsrProperties?.meter)
-    optionalField(name = "LVL", value = move.gbvsrProperties?.level)
-    optionalField(name = "CD", value = move.gbvsrProperties?.cooldown)
-    optionalField(name = "CLS", value = move.gbvsrProperties?.cls)
-    optionalField(name = "Type", value = move.gbvsrProperties?.type)
-
-    moveNotes(move)
-
-    featureFooter(featureInfo)
-}
-
-internal fun moveEmbedBuilderBB(
-    character: Character,
-    move: Move,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    generalInfoMove(character, move, displayHitboxes = false)
-    generalPropertiesMove(move)
-
-    featureFooter(featureInfo)
-}
-
-internal fun moveDetailedEmbedBuilderBB(
-    character: Character,
-    move: Move,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    moveEmbedBuilderBB(character, move, featureInfo).invoke(this)
-
-    move.bbProperties?.apply {
-        if (p1 != null || p2 != null) {
-            mandatoryField(
-                name = "Prorate",
-                value = "$p1 - $p2"
-            )
-        }
-        optionalField(name = "OD", value = onODR)
-        optionalField(
-            name = "Hit",
-            value = "gnd; air; stp\n" +
-                    "$groundHit; $airHit; $hitstop"
-        )
-        optionalField(
-            name = "CH",
-            value = "gnd; air; stp\n" +
-                    "$groundCH; $airCH; $chStop"
-        )
-        optionalField(name = "Attribute", value = attribute)
-
-        if (blockstun != null || blockstop != null) {
-            optionalField(
-                name = "Block",
-                value = "stn: $blockstun | stp: $blockstop",
-            )
-        }
+    when (game) {
+        Game.DBFZ -> movePropertiesDB(move)
+        Game.GBVSR -> movePropertiesGB(move)
+        else -> generalPropertiesMove(move)
     }
 
-    hitboxImages(move.urls).invoke(this)
+    featureFooter(featureInfo)
+}
 
-    moveNotes(move)
+internal fun detailedMoveEmbedBuilder(
+    game: Game,
+    character: Character,
+    move: Move,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    moveEmbedBuilder(game, character, move, featureInfo).invoke(this)
+
+    when (game) {
+        Game.GGST -> moveDetailedEmbedBuilderGG(move)
+        Game.BBCF -> moveDetailedEmbedBuilderBB(move)
+        else -> {}
+    }
 }
 
 internal fun dustLoopMoveListEmbedBuilder(
@@ -324,6 +150,93 @@ private fun EmbedBuilder.generalPropertiesChar(
     )
 }
 
+private fun EmbedBuilder.charDetailsGG(character: Character) {
+    val properties = character.ggstProperties
+
+    mandatoryField(
+        name = "⭐️ CORE",
+        value = buildList {
+            add("* **Defense →** ${properties?.defense}")
+            add("* **Guts →** ${properties?.guts}")
+            add("* **Guard balance →** ${properties?.guardBalance}")
+            add("* **Boost ATT | DEF** → ${properties?.boostAttack} | ${properties?.boostDefense}")
+        }.joinToString("\n"),
+    )
+
+    mandatoryField(
+        name = "👟 MOVEMENT",
+        value = buildList {
+            character.umo.takeIf { it.isNotEmpty() }?.let { umo ->
+                if (umo.size == 1) {
+                    add("* **Unique movement →** ${umo.first()}")
+                } else {
+                    add("* **Unique movement →** ")
+                    umo.forEach { add("   * $it") }
+                }
+            }
+            add("* **Backdash →** ${properties?.bwdDash}")
+            add("   * **Distance →** ${properties?.bwdDashDist}")
+            add("   * **Duration →** ${properties?.bwdDashDuration}")
+            add("   * **Invulnerability →** ${properties?.bwdDashInvulnerability}")
+            properties?.fwdDash?.let { add("* **Forward dash →** $it") }
+            add("* **Initial speed →** ${properties?.dashInitialSpd}")
+            properties?.dashAcceleration?.let { add("* **Acceleration →** $it") }
+            properties?.movementTension?.let { add("* **Tension →** $it") }
+            properties?.dashFriction?.let { add("* **Friction →** $it") }
+            add("* **Walk →** ← ${properties?.walkSpd} | ${properties?.bwdWalkSpd} →")
+        }.joinToString("\n"),
+    )
+
+    mandatoryField(
+        name = "🦘 JUMP",
+        value = buildList {
+            add("* **Prejump →** ${properties?.prejump}")
+            add("* **Height (high) →** ${properties?.jumpHeight} (${properties?.highJumpHeight})")
+            add("* **Duration (high) →** ${properties?.jumpDuration} (${properties?.highJumpDuration})")
+            add("* **Gravity (high) →** ${properties?.jumpGravity} (${properties?.highJumpGravity})")
+            properties?.jumpTension?.let { add("* **Tension →** $it") }
+        }.joinToString("\n"),
+    )
+
+    mandatoryField(
+        name = "💨 AIRDASH",
+        value = buildList {
+            add("* **IAD →** ${properties?.earliestIAD}")
+            add("* **Distance | Duration →** ${properties?.adDist} | ${properties?.adDuration}")
+            add("* **B Distance | Duration →** ${properties?.abdDist} | ${properties?.abdDuration}")
+            properties?.airDashTension?.let { add("* **Tension →** $it") }
+        }.joinToString("\n"),
+    )
+}
+
+private fun EmbedBuilder.charDetailsGB(character: Character) {
+    character.gbvsrProperties?.apply {
+        optionalField(name = "Prejump", value = jump?.pre)
+        optionalField(name = "Backdash", value = backdash)
+    }
+}
+
+private fun EmbedBuilder.charDetailsBB(character: Character) {
+    character.bbProperties?.apply {
+        mandatoryField(
+            name = "Dash",
+            value = "Forward: $forwardDash\n" +
+                    "Back: $backDash"
+        )
+
+        mandatoryField(name = "Prejump", value = preJump)
+    }
+}
+
+private fun EmbedBuilder.charDetailsMT(character: Character) {
+    character.mtfsProperties?.apply {
+        optionalField(name = "Team", value = team)
+        optionalField(name = "Prejump", value = prejump)
+        optionalField(name = "Backdash", value = backdash)
+    }
+}
+
+
 private fun EmbedBuilder.generalInfoMove(
     character: Character,
     move: Move,
@@ -365,6 +278,77 @@ private fun EmbedBuilder.moveNotes(move: Move) = optionalField(
         .joinToString(separator = "") { note -> "* $note\n" },
     inline = false,
 )
+
+private fun EmbedBuilder.moveDetailedEmbedBuilderGG(move: Move) {
+    optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
+    optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
+    optionalField(name = "Cancel", value = move.cancel)
+    optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
+    optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
+    optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
+
+    hitboxImages(move.urls).invoke(this)
+
+    moveNotes(move)
+}
+
+private fun EmbedBuilder.moveDetailedEmbedBuilderBB(move: Move) {
+    move.bbProperties?.apply {
+        if (p1 != null || p2 != null) {
+            mandatoryField(
+                name = "Prorate",
+                value = "$p1 - $p2"
+            )
+        }
+        optionalField(name = "OD", value = onODR)
+        optionalField(
+            name = "Hit",
+            value = "gnd; air; stp\n" +
+                    "$groundHit; $airHit; $hitstop"
+        )
+        optionalField(
+            name = "CH",
+            value = "gnd; air; stp\n" +
+                    "$groundCH; $airCH; $chStop"
+        )
+        optionalField(name = "Attribute", value = attribute)
+
+        if (blockstun != null || blockstop != null) {
+            optionalField(
+                name = "Block",
+                value = "stn: $blockstun | stp: $blockstop",
+            )
+        }
+    }
+
+    hitboxImages(move.urls).invoke(this)
+
+    moveNotes(move)
+}
+
+private fun EmbedBuilder.movePropertiesDB(move: Move) {
+    mandatoryField(name = "Startup", value = move.startup)
+    mandatoryField(name = "Active", value = move.active)
+    mandatoryField(name = "OB", value = move.onBlock)
+    mandatoryField(name = "Guard", value = move.guard)
+
+    mandatoryField(name = "Invul", value = move.invulnerability)
+    mandatoryField(name = "Smash", value = move.dbfzProperties?.smash)
+
+    moveNotes(move)
+}
+
+private fun EmbedBuilder.movePropertiesGB(move: Move) {
+    generalPropertiesMove(move)
+
+    optionalField(name = "Meter", value = move.gbvsrProperties?.meter)
+    optionalField(name = "LVL", value = move.gbvsrProperties?.level)
+    optionalField(name = "CD", value = move.gbvsrProperties?.cooldown)
+    optionalField(name = "CLS", value = move.gbvsrProperties?.cls)
+    optionalField(name = "Type", value = move.gbvsrProperties?.type)
+
+    moveNotes(move)
+}
 
 
 private const val RED = 0x00950117
