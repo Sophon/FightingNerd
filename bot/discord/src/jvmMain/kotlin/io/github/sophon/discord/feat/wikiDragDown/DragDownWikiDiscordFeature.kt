@@ -133,6 +133,9 @@ internal class DragDownWikiDiscordFeature(
         return result
     }
 
+    override suspend fun getAllCharacters() =
+        aggregateCharacters(wikiClientMap, getCharactersUseCase)
+
     override suspend fun getMoveList(
         command: Command,
         characterId: String,

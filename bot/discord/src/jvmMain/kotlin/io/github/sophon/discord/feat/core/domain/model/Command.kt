@@ -105,6 +105,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
