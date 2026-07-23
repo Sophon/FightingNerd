@@ -20,6 +20,8 @@ import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.feat.core.util.aggregateCharacters
+import io.github.sophon.discord.feat.core.util.firstMatchingWikiMoves
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.xko.integration.XkoFeatureInfo
@@ -103,10 +105,17 @@ internal class XkoWikiDiscordFeature(
         return result
     }
 
+    override suspend fun getAllCharacters() =
+        aggregateCharacters(wikiClientMap, getCharactersUseCase)
+
     override suspend fun getMoveList(
         command: Command,
         characterId: String,
     ): Result<List<Move>, BotError> {
+        if (command == Command.Fd) {
+            val moves = firstMatchingWikiMoves(wikiClientMap, getMovesUseCase, characterId)
+            return moves
+        }
         val game = when (command) {
             Command.FdXko -> Game.Xko
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
