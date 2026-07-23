@@ -133,7 +133,7 @@ internal fun MoveDto.toDomain(
     return move
 }
 
-internal fun String?.formMoveId(charName: String?): String {
+private fun String?.formMoveId(charName: String?): String {
     val charNameId = charName.orEmpty()
         .replace("'", "")
         .replace(".", "")
@@ -148,7 +148,7 @@ internal fun String?.formMoveId(charName: String?): String {
     return "${charNameId}_$moveId"
 }
 
-internal fun String?.formNotes(): List<String> {
+private fun String?.formNotes(): List<String> {
     return this
         ?.cleanHtml()
         ?.split(";")
@@ -157,7 +157,7 @@ internal fun String?.formNotes(): List<String> {
         ?: emptyList()
 }
 
-internal fun formMoveWikiUrl(dto: MoveDto, character: Character): String {
+private fun formMoveWikiUrl(dto: MoveDto, character: Character): String {
     val moveId = if (dto.name.isNullOrBlank()) {
         dto.input?.replace(" ", "_")
     } else {
@@ -167,7 +167,7 @@ internal fun formMoveWikiUrl(dto: MoveDto, character: Character): String {
     return url
 }
 
-internal fun formAliases(
+private fun formAliases(
     gameId: String,
     input: String?,
     charName: String?,
@@ -186,7 +186,7 @@ internal fun formAliases(
     return aliases
 }
 
-internal fun String?.formNagoriyukiAliases(): List<String> {
+private fun String?.formNagoriyukiAliases(): List<String> {
     val result = when {
         this == null -> emptyList()
         contains("levelbr", ignoreCase = true) -> listOf(replace("levelbr", "b", ignoreCase = true).lowercase())
