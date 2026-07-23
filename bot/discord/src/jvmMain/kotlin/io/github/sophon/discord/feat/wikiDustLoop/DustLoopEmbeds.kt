@@ -3,6 +3,7 @@ package io.github.sophon.discord.feat.wikiDustLoop
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
@@ -14,16 +15,28 @@ import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
 
-internal fun charEmbedBuilderGG(
+internal fun charEmbedBuilder(
+    game: Game,
     character: Character,
     fastestMoveList: List<Move>,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     generalInfoChar(character)
+    generalPropertiesChar(character, fastestMoveList)
 
+    when (game) {
+        Game.GGST -> charDetailsGG(character)
+        Game.GBVSR -> charDetailsGB(character)
+        Game.BBCF -> charDetailsBB(character)
+        Game.MTFS -> charDetailsMT(character)
+        else -> {}
+    }
+
+    featureFooter(featureInfo)
+}
+
+private fun EmbedBuilder.charDetailsGG(character: Character) {
     val properties = character.ggstProperties
-
-    generalPropertiesChar(character, fastestMoveList, null)
 
     mandatoryField(
         name = "⭐️ CORE",
@@ -33,7 +46,6 @@ internal fun charEmbedBuilderGG(
             add("* **Guard balance →** ${properties?.guardBalance}")
             add("* **Boost ATT | DEF** → ${properties?.boostAttack} | ${properties?.boostDefense}")
         }.joinToString("\n"),
-        inline = false,
     )
 
     mandatoryField(
@@ -58,7 +70,6 @@ internal fun charEmbedBuilderGG(
             properties?.dashFriction?.let { add("* **Friction →** $it") }
             add("* **Walk →** ← ${properties?.walkSpd} | ${properties?.bwdWalkSpd} →")
         }.joinToString("\n"),
-        inline = false,
     )
 
     mandatoryField(
@@ -70,7 +81,6 @@ internal fun charEmbedBuilderGG(
             add("* **Gravity (high) →** ${properties?.jumpGravity} (${properties?.highJumpGravity})")
             properties?.jumpTension?.let { add("* **Tension →** $it") }
         }.joinToString("\n"),
-        inline = false,
     )
 
     mandatoryField(
@@ -81,59 +91,17 @@ internal fun charEmbedBuilderGG(
             add("* **B Distance | Duration →** ${properties?.abdDist} | ${properties?.abdDuration}")
             properties?.airDashTension?.let { add("* **Tension →** $it") }
         }.joinToString("\n"),
-        inline = false,
     )
-
-    featureFooter(featureInfo)
 }
 
-internal fun charEmbedBuilderDB(
-    character: Character,
-    fastestMoveList: List<Move>,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    generalInfoChar(character)
-    generalPropertiesChar(
-        character,
-        fastestMoveList,
-        character.umo,
-    )
-
-    featureFooter(featureInfo)
-}
-
-internal fun charEmbedBuilderGB(
-    character: Character,
-    fastestMoveList: List<Move>,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    generalInfoChar(character)
-    generalPropertiesChar(
-        character,
-        fastestMoveList,
-        character.umo,
-    )
-
+private fun EmbedBuilder.charDetailsGB(character: Character) {
     character.gbvsrProperties?.apply {
         optionalField(name = "Prejump", value = jump?.pre)
         optionalField(name = "Backdash", value = backdash)
     }
-
-    featureFooter(featureInfo)
 }
 
-internal fun charEmbedBuilderBB(
-    character: Character,
-    fastestMoveList: List<Move>,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    generalInfoChar(character)
-    generalPropertiesChar(
-        character,
-        fastestMoveList,
-        character.umo,
-    )
-
+private fun EmbedBuilder.charDetailsBB(character: Character) {
     character.bbProperties?.apply {
         mandatoryField(
             name = "Dash",
@@ -143,8 +111,14 @@ internal fun charEmbedBuilderBB(
 
         mandatoryField(name = "Prejump", value = preJump)
     }
+}
 
-    featureFooter(featureInfo)
+internal fun EmbedBuilder.charDetailsMT(character: Character) {
+    character.mtfsProperties?.apply {
+        optionalField(name = "Team", value = team)
+        optionalField(name = "Prejump", value = prejump)
+        optionalField(name = "Backdash", value = backdash)
+    }
 }
 
 internal fun moveEmbedBuilderGG(
@@ -322,7 +296,6 @@ private fun EmbedBuilder.generalInfoChar(character: Character) {
 private fun EmbedBuilder.generalPropertiesChar(
     character: Character,
     fastestMoveList: List<Move>,
-    umo: List<String>?,
 ) {
     mandatoryField(
         name = "",
@@ -335,10 +308,10 @@ private fun EmbedBuilder.generalPropertiesChar(
         value = character.hp,
     )
 
-    if (umo.isNullOrEmpty().not()) {
+    if (character.umo.isEmpty().not()) {
         optionalField(
             name = "UMO",
-            value = umo.joinToString(", "),
+            value = character.umo.joinToString(", "),
         )
     }
 
@@ -346,7 +319,8 @@ private fun EmbedBuilder.generalPropertiesChar(
     val startup = fastestMoveList.first().startup.orDash()
     mandatoryField(
         name = "Fastest normal",
-        value = "$startup: $moves"
+        value = "$startup: $moves",
+        inline = false,
     )
 }
 
