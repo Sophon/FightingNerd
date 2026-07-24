@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v14.2.0] - TODO
+## [v14.2.0] - 2026-07-25
 - `Dragdown` - fixed broken URLs
 - `DreamCancel` - character icons where possible
 - `DustLoop` - add redirect feedback button
