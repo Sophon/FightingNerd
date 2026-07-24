@@ -22,7 +22,7 @@ internal class MoveMapperTest {
             name = dto.attack,
             input = dto.attack.orEmpty().lowercase(),
             urls = Move.Urls(
-                wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
+                wikiUrl = "https://dragdown.wiki/wiki/RoA2/Olympia",
             ),
             roa2Properties = Move.Roa2Properties(
                 caption = dto.caption,
@@ -72,7 +72,7 @@ internal class MoveMapperTest {
             name = dto.attack,
             input = "dspecialemptyinhale",
             urls = Move.Urls(
-                wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
+                wikiUrl = "https://dragdown.wiki/wiki/RoA2/Forsburn",
             ),
             roa2Properties = Move.Roa2Properties(
                 mode = "emptyinhale",
@@ -124,7 +124,7 @@ internal class MoveMapperTest {
             input = "uspecialdivekick",
             cancel = "Double Jump & Wall Jump: 43+\nLedge Grab: 57+",
             urls = Move.Urls(
-                wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
+                wikiUrl = "https://dragdown.wiki/wiki/RoA2/Ranno",
             ),
             roa2Properties = Move.Roa2Properties(
                 mode = "divekick",
@@ -176,7 +176,7 @@ internal class MoveMapperTest {
             input = "dspecialfadc",
             cancel = "Ledge Grab: 6",
             urls = Move.Urls(
-                wikiUrl = "${WIKI_BASE_URL}/${character.remoteQueryId}",
+                wikiUrl = "https://dragdown.wiki/wiki/RoA2/Olympia",
             ),
             notes = listOf(
                 "This move has a 36 frame [cooldown](https://dragdown.wiki/wiki/RoA2/System_Mechanics/Misc#Cooldowns) once endlag begins.",
