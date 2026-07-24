@@ -165,7 +165,11 @@ internal class MizuumiWikiDataSourceImpl(
         dto: MoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
         val imageFileNames = dto.cargoquery
-            .map { buildMBTLIconFileName(it.title.chara) }
+            .flatMap {
+                val chara = it.title.chara
+                listOf(chara.substringBefore(" "), chara.substringAfterLast(" "))
+            }
+            .map { buildMBTLIconFileName(it) }
             .distinct()
         val result = getImageUrl(imageFileNames)
             .map { urlMap ->
@@ -174,8 +178,8 @@ internal class MizuumiWikiDataSourceImpl(
         return result
     }
 
-    private fun buildMBTLIconFileName(chara: String): String {
-        return MBTL_ICON_PREFIX + chara.substringBefore(" ").lowercase() + MBTL_ICON_SUFFIX
+    private fun buildMBTLIconFileName(token: String): String {
+        return MBTL_ICON_PREFIX + token.lowercase() + MBTL_ICON_SUFFIX
     }
 
     private fun stripMBTLIconFileName(filename: String): String {
