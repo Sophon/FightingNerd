@@ -12,11 +12,12 @@ import io.github.sophon.dreamcancel.domain.FEATURE_URL
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
     imageUrlMap: Map<String, String>,
+    characterImageUrlMap: Map<String, String>,
 ): Map<Character, List<Move>> {
-    val grouped = cargoQuery.groupBy { it.title.chara.toDomain(gameId).id }
+    val grouped = cargoQuery.groupBy { it.title.chara.toDomain(gameId, characterImageUrlMap).id }
 
     val result = grouped.map { (_, moveDtoList) ->
-        val character = moveDtoList.first().title.chara.toDomain(gameId)
+        val character = moveDtoList.first().title.chara.toDomain(gameId, characterImageUrlMap)
         val moveList = moveDtoList.map {
             it.title.toDomain(gameId, character, imageUrlMap)
         }

@@ -1,5 +1,12 @@
 # BOT CHANGELOG
 
+## [v14.2.0] - 2026-07-25
+- `Dragdown` - fixed broken URLs
+- `DreamCancel` - character icons where possible
+- `DustLoop` - add redirect feedback button
+- `Mizuumi` - `MBTL` character icons where possible
+- update Ko-Fi link
+
 ## [v14.1.0] - 2026-07-24
 - broaden test coverage GitHub task to also check bot and app
 - `fd` has global autocomplete for characters and moves

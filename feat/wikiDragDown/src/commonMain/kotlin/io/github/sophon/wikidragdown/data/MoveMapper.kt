@@ -33,7 +33,7 @@ internal fun MoveResponseDto.toDomain(
             .map { it.trim() }
             .filter { it.isNotEmpty() }
             .mapNotNull { imageUrlMap[it] },
-        wikiUrl = formWikiUrl(character),
+        wikiUrl = character.wikiUrl,
     )
     val notes = notes
         ?.cleanHtml()
@@ -110,11 +110,6 @@ private fun MoveResponseDto.formId(character: Character): String {
 
 private fun List<String>?.filterOutJunk(): List<String>? {
     return this?.filter { it.count() > 3 }
-}
-
-private fun formWikiUrl(character: Character): String {
-    val url = "${WIKI_BASE_URL}/${character.remoteQueryId}"
-    return url
 }
 
 private fun String?.formMode(): String? {
