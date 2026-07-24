@@ -153,12 +153,38 @@ internal class MizuumiWikiDataSourceImpl(
         dto: MoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
         val game = Game.fromId(gameId)
-
-        // MBTL has impossible to decipher filenames, ignore
-        if (game == Game.MBTL) {
-            return Result.Success(emptyMap())
+        val result = when (game) {
+            Game.MBTL -> resolveMBTLCharacterImageUrls(dto)
+            Game.VSAV -> resolveVsavCharacterImageUrls(dto)
+            else -> Result.Success(emptyMap())
         }
+        return result
+    }
 
+    private suspend fun resolveMBTLCharacterImageUrls(
+        dto: MoveListResponseDto,
+    ): Result<Map<String, String>, DataError.Remote> {
+        val imageFileNames = dto.cargoquery
+            .map { buildMBTLIconFileName(it.title.chara) }
+            .distinct()
+        val result = getImageUrl(imageFileNames)
+            .map { urlMap ->
+                urlMap.mapKeys { (filename, _) -> stripMBTLIconFileName(filename) }
+            }
+        return result
+    }
+
+    private fun buildMBTLIconFileName(chara: String): String {
+        return MBTL_ICON_PREFIX + chara.substringBefore(" ").lowercase() + MBTL_ICON_SUFFIX
+    }
+
+    private fun stripMBTLIconFileName(filename: String): String {
+        return filename.removePrefix(MBTL_ICON_PREFIX).removeSuffix(MBTL_ICON_SUFFIX)
+    }
+
+    private suspend fun resolveVsavCharacterImageUrls(
+        dto: MoveListResponseDto,
+    ): Result<Map<String, String>, DataError.Remote> {
         val prefix = "Vsav-nav-portrait-"
         val suffix = ".gif"
 
@@ -334,5 +360,7 @@ internal class MizuumiWikiDataSourceImpl(
         const val NO_MAX_PAGES = 10
         const val NO_MAX_MOVES = 500
         const val NO_MAX_CONCURRENT = 5
+        const val MBTL_ICON_PREFIX = "MBTL_"
+        const val MBTL_ICON_SUFFIX = "_icon.png"
     }
 }
