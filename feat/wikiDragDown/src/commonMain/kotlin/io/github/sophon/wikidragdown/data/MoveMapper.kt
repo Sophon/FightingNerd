@@ -33,7 +33,7 @@ internal fun MoveResponseDto.toDomain(
             .map { it.trim() }
             .filter { it.isNotEmpty() }
             .mapNotNull { imageUrlMap[it] },
-        wikiUrl = formWikiUrl(character),
+        wikiUrl = character.wikiUrl,
     )
     val notes = notes
         ?.cleanHtml()
