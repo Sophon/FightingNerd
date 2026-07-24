@@ -3,6 +3,7 @@
 ## [v14.2.0] - TODO
 - `Dragdown` - fixed broken URLs
 - `DreamCancel` - character icons where possible
+- `DustLoop` - add redirect feedback button
 - `Mizuumi` - `MBTL` character icons where possible
 
 ## [v14.1.0] - 2026-07-24
