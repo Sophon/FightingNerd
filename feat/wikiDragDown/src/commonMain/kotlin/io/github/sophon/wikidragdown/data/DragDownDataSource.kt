@@ -7,6 +7,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidragdown.domain.BASE_URL
 import io.github.sophon.wikidragdown.domain.LIMIT_CHARACTERS
 import io.github.sophon.wikidragdown.domain.LIMIT_MOVES
+import io.github.sophon.wikidragdown.util.formIcon
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -55,7 +56,7 @@ internal class DragDownDataSourceImpl(
         characters: List<CharacterResponseDto>,
     ): Result<Map<String, String>, DataError.Remote> {
         val urlMap = characters.associate { characterDto ->
-            val fileName = "RoA2_${characterDto.chara}_Portrait.png"
+            val fileName = characterDto.chara.formIcon()
             fileName to buildImageUrl(fileName)
         }
         return Result.Success(urlMap)
