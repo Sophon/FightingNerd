@@ -8,8 +8,8 @@ import kotlin.test.Test
 
 internal class CharacterMapperTest {
     val imageUrlMap = mapOf(
-        "ciel" to "https://mizuumi.wiki/images/f/fd/MBTL_Ciel_Art.png",
-        "akiha_tohno" to "https://mizuumi.wiki/images/8/8a/MBTL_Akiha_Art.png",
+        "ciel" to "https://mizuumi.wiki/images/1/18/MBTL_ciel_icon.png",
+        "akiha" to "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
     )
 
     @Test
@@ -23,7 +23,7 @@ internal class CharacterMapperTest {
             wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Ciel",
             aliasList = listOf("cl", "ci",),
             images = Character.Images(
-                iconUrl = "https://mizuumi.wiki/images/f/fd/MBTL_Ciel_Art.png",
+                iconUrl = "https://mizuumi.wiki/images/1/18/MBTL_ciel_icon.png",
             ),
         )
 
@@ -45,7 +45,7 @@ internal class CharacterMapperTest {
             wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Akiha_Tohno",
             aliasList = listOf("akiha", "ak",),
             images = Character.Images(
-                iconUrl = "https://mizuumi.wiki/images/8/8a/MBTL_Akiha_Art.png"
+                iconUrl = "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png"
             )
         )
 
@@ -54,5 +54,17 @@ internal class CharacterMapperTest {
 
         //then
         assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `mapper return game's icon if not found in image map`() {
+        // given
+        val name = "Shiki Tohno"
+
+        // when
+        val result = name.toDomain(Game.MBTL.id, imageUrlMap)
+
+        //then
+        assertThat(result.images?.iconUrl).isEqualTo(Game.MBTL.iconUrl)
     }
 }
