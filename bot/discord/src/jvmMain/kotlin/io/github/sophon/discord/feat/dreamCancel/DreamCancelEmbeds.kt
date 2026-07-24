@@ -29,9 +29,7 @@ internal fun dreamCancelMoveEmbed(
         .takeIf { it.size == 1 }
         ?.let { image = it.first() }
 
-    game.iconUrl.let {
-        thumbnail { url = it }
-    }
+    character.images?.iconUrl?.let { thumbnail { url = it } }
 
     mandatoryField(name = "Startup", value = move.startup)
     mandatoryField(name = "Hit", value = move.onHit)
