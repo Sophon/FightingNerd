@@ -31,10 +31,11 @@ internal class CharacterMapperTest {
     fun `toDomain handles characters with multi word names`() {
         // given
         val dto = DtoCharacterSource.reina
-        val expectedId = "reina"
+        val expectedId = "la_reina"
         val expectedDisplayName = "La Reina"
         val expectedRemoteQueryId = "La Reina"
         val expectedWikiUrl = "https://dragdown.wiki/wiki/RoA2/La_Reina"
+        val expectedAliases = listOf("reina")
 
         // when
         val result = dto.toDomain(emptyMap(), gameId)
@@ -44,6 +45,7 @@ internal class CharacterMapperTest {
         assertThat(result.displayName).isEqualTo(expectedDisplayName)
         assertThat(result.remoteQueryId).isEqualTo(expectedRemoteQueryId)
         assertThat(result.wikiUrl).isEqualTo(expectedWikiUrl)
+        assertThat(result.aliasList).isEqualTo(expectedAliases)
     }
 }
 

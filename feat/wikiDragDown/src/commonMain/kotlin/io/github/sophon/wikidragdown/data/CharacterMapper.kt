@@ -19,13 +19,15 @@ internal fun CharacterResponseDto.toDomain(
     gameId: String,
 ): Character {
     val dto = this
-    val id = dto.chara.formId()
+    val id = chara.replace(" ", "_").lowercase()
+    val aliases = chara.formAliases()
     val iconFilename = dto.chara.formIcon()
 
     val character = Character(
         id = id,
         displayName = dto.chara,
         remoteQueryId = dto.chara,
+        aliasList = aliases,
         wikiUrl = dto.chara.formWikiUrl(gameId),
         images = Character.Images(
             iconUrl = imageUrlMap[iconFilename],
@@ -78,11 +80,10 @@ private fun String.formWikiUrl(gameId: String): String {
     return url
 }
 
-private fun String.formId(): String {
+private fun String.formAliases(): List<String> {
     val id = this
         .lowercase()
         .split(" ")
         .takeLast(1)
-        .joinToString()
     return id
 }
