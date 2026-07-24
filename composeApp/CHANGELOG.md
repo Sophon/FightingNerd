@@ -4,6 +4,7 @@
 - `DragDown` - enabled
 - fixed moves not being expandable with hitbox images
 - auto bump version code
+- update Ko-Fi link
 
 ## [v1.0.0] (5) - 2026-07-01
 - `Move` 
