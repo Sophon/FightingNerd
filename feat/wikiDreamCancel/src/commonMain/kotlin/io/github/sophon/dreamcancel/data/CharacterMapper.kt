@@ -1,5 +1,6 @@
 package io.github.sophon.dreamcancel.data
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.util.removeAccents
@@ -17,6 +18,7 @@ internal fun String.toDomain(
         .lowercase()
     val displayName = this.cleanHtml()
     val queryName = this.createQueryName()
+    val iconUrl = Game.fromId(gameId)?.iconUrl
 
     val char = Character(
         id = idName,
@@ -24,6 +26,9 @@ internal fun String.toDomain(
         aliasList = displayName.createAliases(),
         remoteQueryId = queryName,
         wikiUrl = "$FEATURE_URL/$gameId/$queryName",
+        images = Character.Images(
+            iconUrl = iconUrl,
+        )
     )
 
     return char

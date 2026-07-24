@@ -76,18 +76,22 @@ internal class DreamCancelWikiDiscordFeature(
         val formattedQuery = query.lowercase()
 
         val result = when (command) {
-            Command.Fd -> fetchMoveInWikisUseCase.invoke(
-                wikis = wikiClientMap,
-                query = formattedQuery,
-                searchFun = ::searchMove,
-            )
+            Command.Fd -> {
+                fetchMoveInWikisUseCase.invoke(
+                    wikis = wikiClientMap,
+                    query = formattedQuery,
+                    searchFun = { _, wikiClient, query -> searchMove(wikiClient, query) },
+                )
+            }
 
-            Command.FdKOF -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.KoFXV,
-                query = formattedQuery,
-                action = ::searchMove,
-            )
+            Command.FdKOF -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.KoFXV,
+                    query = formattedQuery,
+                    action = { _, wikiClient, query -> searchMove(wikiClient, query)},
+                )
+            }
             Command.AliasKOF -> {
                 withWiki(
                     wikis = wikiClientMap,
@@ -98,12 +102,14 @@ internal class DreamCancelWikiDiscordFeature(
                 }
             }
 
-            Command.FdCOTW -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.COTW,
-                query = formattedQuery,
-                action = ::searchMove,
-            )
+            Command.FdCOTW -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.COTW,
+                    query = formattedQuery,
+                    action = { _, wikiClient, query -> searchMove(wikiClient, query) },
+                )
+            }
             Command.AliasCOTW -> {
                 withWiki(
                     wikis = wikiClientMap,
@@ -161,7 +167,6 @@ internal class DreamCancelWikiDiscordFeature(
 
 
     private suspend fun searchMove(
-        game: Game,
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
@@ -171,7 +176,7 @@ internal class DreamCancelWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    primaryEmbedBuilder = dreamCancelMoveEmbed(game, character, move, featureInfo),
+                    primaryEmbedBuilder = dreamCancelMoveEmbed(character = character, move = move, featureInfo = featureInfo),
                     images = if (images.size < 2) {
                         null
                     } else {
