@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v14.2.0] - TODO
+- `Dragdown` - fixed broken URLs
+
 ## [v14.1.0] - 2026-07-24
 - broaden test coverage GitHub task to also check bot and app
 - `fd` has global autocomplete for characters and moves
