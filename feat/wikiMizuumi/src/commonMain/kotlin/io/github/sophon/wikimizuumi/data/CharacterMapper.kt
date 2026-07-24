@@ -17,6 +17,7 @@ internal fun String.toDomain(
     val game = Game.fromId(gameId)
     val aliasList = this.createAliases()
     val wikiUrl = game?.wikiUrl?.let { "${it}/${queryName.replace(" ", "_")}" }
+    val iconKey = if (game == Game.MBTL) idName.substringBefore("_") else idName
 
     val char = Character(
         id = idName,
@@ -25,7 +26,7 @@ internal fun String.toDomain(
         aliasList = aliasList,
         wikiUrl = wikiUrl ?: FEATURE_URL,
         images = Character.Images(
-            iconUrl = imageUrlMap[idName]
+            iconUrl = imageUrlMap[iconKey] ?: Game.fromId(gameId)?.iconUrl
         )
     )
 
