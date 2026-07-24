@@ -7,6 +7,7 @@ internal fun String.formIcon(game: Game = Game.ROA2): String {
         Game.ROA2 -> "RoA2"
         else -> error("formIcon not configured for game: ${game.id}")
     }
-    val filename = "${prefix}_${this}_Portrait.png"
+    val normalized = this.replace(" ", "_")
+    val filename = "${prefix}_${normalized}_Portrait.png"
     return filename
 }
