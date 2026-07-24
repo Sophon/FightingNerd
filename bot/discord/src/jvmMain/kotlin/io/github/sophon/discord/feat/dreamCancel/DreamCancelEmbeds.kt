@@ -3,7 +3,6 @@ package io.github.sophon.discord.feat.dreamCancel
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.util.featureFooter
@@ -12,7 +11,6 @@ import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
 
 internal fun dreamCancelMoveEmbed(
-    game: Game,
     character: Character,
     move: Move,
     featureInfo: FeatureInfo,
