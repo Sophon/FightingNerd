@@ -40,7 +40,16 @@ internal class DreamCancelWikiClient(
         source.downloadData(gameTables.moves)
             .flatMap { dto ->
                 source.resolveHitboxUrls(dto)
-                    .map { imageUrlMap -> dto.toDomain(gameId = game.id, imageUrlMap = imageUrlMap) }
+                    .flatMap { hitboxUrlMap ->
+                        source.resolveCharacterImageUrls(gameId = game.id, dto = dto)
+                            .map { characterImageUrlMap ->
+                                dto.toDomain(
+                                    gameId = game.id,
+                                    imageUrlMap = hitboxUrlMap,
+                                    characterImageUrlMap = characterImageUrlMap,
+                                )
+                            }
+                    }
             }
     }
 
