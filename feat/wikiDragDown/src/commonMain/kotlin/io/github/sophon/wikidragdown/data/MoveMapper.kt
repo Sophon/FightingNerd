@@ -112,11 +112,6 @@ private fun List<String>?.filterOutJunk(): List<String>? {
     return this?.filter { it.count() > 3 }
 }
 
-private fun formWikiUrl(character: Character): String {
-    val url = "${WIKI_BASE_URL}/${character.remoteQueryId}"
-    return url
-}
-
 private fun String?.formMode(): String? {
     val exclusions = setOf("default", "regular", "grounded")
     val mode = this
