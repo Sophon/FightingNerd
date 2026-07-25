@@ -127,7 +127,7 @@ internal class HomeVM(
                                 updatedState
                             }
 
-                            downloadMoveList(gameWidget = loadedWidget, forceDownload = forceDownload)
+                            loadMoveList(gameWidget = loadedWidget, forceDownload = forceDownload)
                         }
                         .onError { error ->
                             Napier.e(tag = TAG) { error.toString() }
@@ -143,7 +143,7 @@ internal class HomeVM(
         }
     }
 
-    private suspend fun downloadMoveList(
+    private suspend fun loadMoveList(
         gameWidget: GameWidget,
         forceDownload: Boolean = false,
     ) {
