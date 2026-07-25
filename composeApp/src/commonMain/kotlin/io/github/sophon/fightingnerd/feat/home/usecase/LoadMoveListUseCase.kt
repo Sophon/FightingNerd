@@ -13,12 +13,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
-internal class EnsureMoveListIsCachedUseCase(
+internal class LoadMoveListUseCase(
     private val featureRepo: FeatureRepo,
 ) {
     suspend fun invoke(
         game: Game,
         characterId: String,
+        forceDownload: Boolean = false,
     ): EmptyResult<AppError> {
         return withContext(Dispatchers.IO) {
             val wikiClient = featureRepo.getWikiClientFor(game)
@@ -28,15 +29,19 @@ internal class EnsureMoveListIsCachedUseCase(
                 is Result.Error -> return@withContext Result.Error(AppError.WikiError(result.error.toString()))
             }
 
-            val result = wikiClient.checkHasCachedMoves(characterId = character.id)
-                .mapWikiError()
-                .flatMap { hasCachedMoveList ->
-                    if (hasCachedMoveList) {
-                        Result.Success(Unit)
-                    } else {
-                        refreshMoveList(character, wikiClient)
+            val result = if (forceDownload) {
+                refreshMoveList(character, wikiClient)
+            } else {
+                wikiClient.checkHasCachedMoves(characterId = character.id)
+                    .mapWikiError()
+                    .flatMap { hasCachedMoveList ->
+                        if (hasCachedMoveList) {
+                            Result.Success(Unit)
+                        } else {
+                            refreshMoveList(character, wikiClient)
+                        }
                     }
-                }
+            }
 
             return@withContext result
         }
