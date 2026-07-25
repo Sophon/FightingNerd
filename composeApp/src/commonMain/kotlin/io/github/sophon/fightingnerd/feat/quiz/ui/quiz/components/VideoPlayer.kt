@@ -39,7 +39,7 @@ internal fun VideoPlayer(
     LaunchedEffect(videoUrl) {
         playerState.loop = true
         playerState.volume = 0f
-        playerState.openUri(videoUrl, InitialPlayerState.PAUSE)
+        playerState.openUri(videoUrl, InitialPlayerState.PLAY)
     }
 
     Box(
