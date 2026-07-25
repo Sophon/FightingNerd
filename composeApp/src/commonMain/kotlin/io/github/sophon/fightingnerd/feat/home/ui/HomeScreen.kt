@@ -1,6 +1,8 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -26,24 +28,33 @@ internal fun HomeScreen(
         onCharacterClick = { gameId, characterId ->
             onNavigateToMoveList(gameId, characterId)
         },
+        onRefresh = vm::refresh,
         modifier = modifier,
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Content(
     state: HomeViewState,
     onExpandWidget: (Game) -> Unit,
     onCharacterClick: (gameId: String, characterId: String) -> Unit,
+    onRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    WidgetSection(
-        widgetList = state.gameWidgetList,
-        onExpandWidget = onExpandWidget,
-        onCharacterClick = onCharacterClick,
-        modifier = modifier
-            .padding(horizontal = nerdDimensions.screenPaddingHorizontal, vertical = nerdDimensions.screenPaddingVertical)
-    )
+    PullToRefreshBox(
+        isRefreshing = false,
+        onRefresh = onRefresh,
+        modifier = modifier,
+    ) {
+        WidgetSection(
+            widgetList = state.gameWidgetList,
+            onExpandWidget = onExpandWidget,
+            onCharacterClick = onCharacterClick,
+            modifier = Modifier
+                .padding(horizontal = nerdDimensions.screenPaddingHorizontal, vertical = nerdDimensions.screenPaddingVertical)
+        )
+    }
 }
 
 
@@ -56,6 +67,7 @@ private fun HomeScreenPreview() {
             state = HomeViewState.PREVIEW,
             onExpandWidget = {},
             onCharacterClick = {_, _ -> },
+            onRefresh = {},
         )
     }
 }
