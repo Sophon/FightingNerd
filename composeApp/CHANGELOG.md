@@ -1,14 +1,16 @@
 # APP CHANGELOG
 
-## [v1.1.0] - 2026-07-21
-- `DragDown` - enabled
+## [v1.2.0] - TODO
 - Quiz - auto-play videos
-- Home 
+- Home
   - swipe to refresh
   - refresh and success toasts
 - fixed moves not being expandable with hitbox images
 - update Ko-Fi link
 - auto bump version code
+
+## [v1.1.0] - 2026-07-21
+- `DragDown` - enabled
 
 ## [v1.0.0] (5) - 2026-07-01
 - `Move` 
