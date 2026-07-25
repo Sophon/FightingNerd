@@ -3,14 +3,18 @@ package io.github.sophon.fightingnerd.feat.home.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.core.ui.OverlayService
+import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -21,9 +25,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withPermit
-import io.github.sophon.core.architecture.Result
-import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
-import kotlinx.collections.immutable.toImmutableList
 
 internal class HomeVM(
     private val overlayService: OverlayService,
@@ -47,6 +48,9 @@ internal class HomeVM(
         val current = _state.value.gameWidgetList
         if (current.isEmpty()) return
 
+        overlayService.show(
+            Toast(message = "⏳", type = Toast.Type.INFO)
+        )
         widgetDataLoadingJob?.cancel()
         _state.update { state ->
             state.copy(gameWidgetList = current.map { it.copy(isLoading = true) }.toImmutableList())
@@ -127,7 +131,12 @@ internal class HomeVM(
                                 updatedState
                             }
 
-                            loadMoveList(gameWidget = loadedWidget, forceDownload = forceDownload)
+                            val allSucceeded = loadMoveList(gameWidget = loadedWidget, forceDownload = forceDownload)
+                            if (forceDownload && allSucceeded) {
+                                overlayService.show(
+                                    Toast(message = loadedWidget.game.displayName, type = Toast.Type.SUCCESS)
+                                )
+                            }
                         }
                         .onError { error ->
                             Napier.e(tag = TAG) { error.toString() }
@@ -146,8 +155,8 @@ internal class HomeVM(
     private suspend fun loadMoveList(
         gameWidget: GameWidget,
         forceDownload: Boolean = false,
-    ) {
-        coroutineScope {
+    ): Boolean {
+        return coroutineScope {
             val deferredList = gameWidget.characterList.map { character ->
                 async {
                     moveListSemaphore.withPermit {
@@ -167,22 +176,23 @@ internal class HomeVM(
             }
 
             val results = deferredList.awaitAll()
+            val allSucceeded = results.all { it.second }
             val cachedIds = results.filter { it.second }.map { it.first }
 
-            if (cachedIds.isEmpty()) {
-                return@coroutineScope
+            if (cachedIds.isNotEmpty()) {
+                _state.update { state ->
+                    val updatedGameWidgetList = state.gameWidgetList.map { widget ->
+                        if (widget.game == gameWidget.game) {
+                            widget.withUpdatedCharacters(characterIds = cachedIds)
+                        } else {
+                            widget
+                        }
+                    }
+                    return@update state.copy(gameWidgetList = updatedGameWidgetList.toImmutableList())
+                }
             }
 
-            _state.update { state ->
-                val updatedGameWidgetList = state.gameWidgetList.map { widget ->
-                    if (widget.game == gameWidget.game) {
-                        widget.withUpdatedCharacters(characterIds = cachedIds)
-                    } else {
-                        widget
-                    }
-                }
-                return@update state.copy(gameWidgetList = updatedGameWidgetList.toImmutableList())
-            }
+            return@coroutineScope allSucceeded
         }
     }
 
