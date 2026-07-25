@@ -8,9 +8,10 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
-import io.github.sophon.fightingnerd.feat.home.usecase.EnsureMoveListIsCachedUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -29,16 +30,31 @@ internal class HomeVM(
     private val checkIfFirstLaunchUseCase: CheckIfFirstLaunchUseCase,
     private val loadEmptyWidgetsUseCase: LoadEmptyWidgetsUseCase,
     private val loadGameCharacterListUseCase: LoadGameCharacterListUseCase,
-    private val ensureMoveListIsCachedUseCase: EnsureMoveListIsCachedUseCase,
+    private val loadMoveListUseCase: LoadMoveListUseCase,
 ): ViewModel() {
     private val moveListSemaphore = Semaphore(permits = MAX_PERMITS)
     private val _state = MutableStateFlow(HomeViewState())
     val state = _state.asStateFlow()
 
+    private var widgetDataLoadingJob: Job? = null
+
     init {
         loadWidgets()
     }
 
+
+    fun refresh() {
+        val current = _state.value.gameWidgetList
+        if (current.isEmpty()) return
+
+        widgetDataLoadingJob?.cancel()
+        _state.update { state ->
+            state.copy(gameWidgetList = current.map { it.copy(isLoading = true) }.toImmutableList())
+        }
+        widgetDataLoadingJob = viewModelScope.launch {
+            loadWidgetData(_state.value.gameWidgetList, forceDownload = true)
+        }
+    }
 
     fun onSavedClick() {
         //TODO:
@@ -79,7 +95,8 @@ internal class HomeVM(
 
                         _state.update { it.copy(gameWidgetList = merged.toImmutableList()) }
 
-                        loadWidgetData(added)
+                        widgetDataLoadingJob?.cancel()
+                        widgetDataLoadingJob = viewModelScope.launch { loadWidgetData(added) }
                     }
                     .onError { error ->
                         Napier.e(tag = TAG) { "loadWidgets(): $error" }
@@ -89,46 +106,55 @@ internal class HomeVM(
         }
     }
 
-    private fun loadWidgetData(widgetList: List<GameWidget>) {
-        widgetList.forEach { gameWidget ->
-            viewModelScope.launch {
-                loadGameCharacterListUseCase.invoke(gameWidget)
-                    .onSuccess { loadedWidget ->
-                        _state.update { state ->
-                            val updatedList = state.gameWidgetList.map { widget ->
-                                if (widget.game == loadedWidget.game) {
-                                    loadedWidget
-                                } else {
-                                    widget
+    private suspend fun loadWidgetData(
+        widgetList: List<GameWidget>,
+        forceDownload: Boolean = false,
+    ) {
+        coroutineScope {
+            widgetList.forEach { gameWidget ->
+                launch {
+                    loadGameCharacterListUseCase.invoke(gameWidget)
+                        .onSuccess { loadedWidget ->
+                            _state.update { state ->
+                                val updatedList = state.gameWidgetList.map { widget ->
+                                    if (widget.game == loadedWidget.game) {
+                                        loadedWidget
+                                    } else {
+                                        widget
+                                    }
                                 }
+                                val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
+                                updatedState
                             }
-                            val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
-                            updatedState
-                        }
 
-                        downloadMoveList(gameWidget = loadedWidget)
-                    }
-                    .onError { error ->
-                        Napier.e(tag = TAG) { error.toString() }
-                        overlayService.show(error)
-
-                        _state.update { state ->
-                            val updatedList = state.gameWidgetList.filterNot { it.game.id == gameWidget.game.id }
-                            state.copy(gameWidgetList = updatedList.toImmutableList())
+                            downloadMoveList(gameWidget = loadedWidget, forceDownload = forceDownload)
                         }
-                    }
+                        .onError { error ->
+                            Napier.e(tag = TAG) { error.toString() }
+                            overlayService.show(error)
+
+                            _state.update { state ->
+                                val updatedList = state.gameWidgetList.filterNot { it.game.id == gameWidget.game.id }
+                                state.copy(gameWidgetList = updatedList.toImmutableList())
+                            }
+                        }
+                }
             }
         }
     }
 
-    private suspend fun downloadMoveList(gameWidget: GameWidget) {
+    private suspend fun downloadMoveList(
+        gameWidget: GameWidget,
+        forceDownload: Boolean = false,
+    ) {
         coroutineScope {
             val deferredList = gameWidget.characterList.map { character ->
                 async {
                     moveListSemaphore.withPermit {
-                        val result = ensureMoveListIsCachedUseCase.invoke(
+                        val result = loadMoveListUseCase.invoke(
                             game = gameWidget.game,
                             characterId = character.id,
+                            forceDownload = forceDownload,
                         )
                         if (result is Result.Error) {
                             Napier.e(tag = TAG) { result.error.toString() }
