@@ -3,6 +3,9 @@
 ## [v1.1.0] - 2026-07-21
 - `DragDown` - enabled
 - Quiz - auto-play videos
+- Home 
+  - swipe to refresh
+  - refresh and success toasts
 - fixed moves not being expandable with hitbox images
 - update Ko-Fi link
 - auto bump version code
