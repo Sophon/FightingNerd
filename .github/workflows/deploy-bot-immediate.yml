@@ -70,7 +70,7 @@ jobs:
         uses: mindsers/changelog-reader-action@v2
         id: changelog
         with:
-          path: ./CHANGELOG.md
+          path: ./bot/discord/CHANGELOG.md
           version: ${{ steps.version.outputs.version }}
         continue-on-error: true  # Don't fail if version not found in changelog
 
