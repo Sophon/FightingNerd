@@ -79,6 +79,22 @@ class MoveInputUtilsTest {
         //then
         assertThat(result).isEqualTo(expectedAlias)
     }
+
+    @Test
+    fun `alias handles slash and cancel`() {
+        // given
+        val input = "[4]6S/H~K"
+        val expected = listOf(
+            "[4]6S~K",
+            "[4]6H~K",
+        )
+
+        // when
+        val result = input.create2dAliases(isPartial = false)
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region Normalize
