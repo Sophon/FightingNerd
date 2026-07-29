@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v14.2.1] - TODO
+## [v14.2.1] - 2026-07-30
 - fixed bug with partial OR inputs that have followups, ie `[4]6S/H~K`
 
 ## [v14.2.0] - 2026-07-25
