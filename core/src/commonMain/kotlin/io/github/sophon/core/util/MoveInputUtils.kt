@@ -33,28 +33,44 @@ fun String.splitOr(
     val parts = split(delimiter).map { it.trim() }
     if (parts.size < 2) return emptyList()
 
-    if (isPartial.not()) return parts
-
     val normalized = replace(" ", "")
     val splitParts = normalized.split(delimiter).map { it.trim() }
 
     val result = when {
         splitParts.isButtonVariants() -> splitParts.expandButtonVariants()
+        isPartial.not() -> parts
         else -> expandDirectionVariants(normalized, delimiter)
     }
 
     return result
 }
 
-private fun List<String>.isButtonVariants(): Boolean =
-    drop(1).all { part -> part.all { it.isLetter() } }
+private fun List<String>.isButtonVariants(): Boolean {
+    if (size < 2) return false
+    if (first().lastOrNull()?.isLetter() != true) return false
+    val restArePureButtons = drop(1).all { part ->
+        val leadingLetters = part.takeWhile { it.isLetter() }
+        val continuation = part.drop(leadingLetters.length)
+        leadingLetters.length == 1 &&
+            (continuation.isEmpty() || continuation.first().isLetterOrDigit().not())
+    }
+    return restArePureButtons
+}
 
 private fun List<String>.expandButtonVariants(): List<String> {
-    val sharedMotion = first().dropLastWhile { it.isLetter() }
-    return map { part ->
-        val button = part.takeLastWhile { it.isLetter() }
-        "$sharedMotion$button".lowercase()
+    val firstPart = first()
+    val firstButton = firstPart.takeLastWhile { it.isLetter() }
+    val motion = firstPart.dropLast(firstButton.length)
+
+    val lastPart = last()
+    val lastLeadingLetters = lastPart.takeWhile { it.isLetter() }
+    val continuation = lastPart.drop(lastLeadingLetters.length)
+
+    val expanded = mapIndexed { index, part ->
+        val button = if (index == 0) firstButton else part.takeWhile { it.isLetter() }
+        "$motion$button$continuation"
     }
+    return expanded
 }
 
 private fun expandDirectionVariants(
@@ -71,6 +87,10 @@ private fun expandDirectionVariants(
     }
 }
 
+/**
+ * partial: j5s1/j2s1
+ * not partial: 46s/h~k
+ */
 fun String.create2dAliases(
     isPartial: Boolean,
     delimiter: String = "/",
