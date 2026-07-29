@@ -66,6 +66,22 @@ class MoveMapperTest {
         assertThat(result3.aliases).isEqualTo(expectedAlias3)
         assertThat(resultB.aliases).isEqualTo(expectedAliasB)
     }
+
+    @Test
+    fun `formAliases handles cancel and OR`() {
+        // given
+        val move = MoveSource.split
+        val expected = listOf(
+            "[4]6s~k",
+            "[4]6h~k",
+        )
+
+        // when
+        val result = move.toDomain(gameId = gg, character = character, imageUrlMap = emptyMap()).aliases
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     @Test
@@ -292,6 +308,35 @@ private object MoveSource {
         caption = "The no-fly zone",
         hitboxCaption = "&#32;",
     )
+    val split = MoveDto(
+        chara = "May",
+        name = "Split",
+        input = "[4]6S/H~K",
+        damage = "",
+        guard = "",
+        startup = "",
+        active = "",
+        recovery = "Total 20",
+        onBlock = "",
+        onHit = "",
+        level = "",
+        counter = "",
+        images = "GGST May 46X-K.png",
+        hitboxes = "GGST May 46X-K_hitbox.png",
+        notes = "",
+        type = "special",
+        riscGain = "",
+        riscLoss = "",
+        wallDamage = "",
+        inputTension = "50",
+        chipRatio = "",
+        OTGType = "",
+        prorate = "",
+        invuln = "",
+        cancel = "",
+        caption = "Split",
+        hitboxCaption = "&#32;",
+    )
     val mistFiner = MoveDto(
         chara = "Johnny",
         name = "Mist Finer (Upward)",
@@ -394,7 +439,6 @@ private object MoveSource {
         type = "special",
         notes = null,
     )
-
 
     val magicalBat = MoveDto(
         chara = "Platinum the Trinity",
