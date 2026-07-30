@@ -73,6 +73,10 @@ internal class HandleButtonInteractionUseCase(
                 interaction.deferPublicMessageUpdate()
                 redirect(button.channelId, message)
             }
+            is DiscordButton.Text -> {
+                interaction.deferPublicResponse().respond { content = button.text }
+                Result.Success(Unit)
+            }
             else -> {
                 Result.Error(BotError.BotLogicError("Invalid button action"))
             }
