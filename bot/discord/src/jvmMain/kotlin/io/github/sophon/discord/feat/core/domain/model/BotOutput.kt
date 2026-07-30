@@ -46,6 +46,7 @@ internal data class BotOutput(
             object Edit : Action()
             data class Url(val url: String): Action()
             data class Redirect(val channelId: String): Action()
+            data class Text(val text: String): Action()
         }
     }
 
