@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v14.3.0] - TODO
+## [v14.3.0] - 2026-07-30
 - `Wavu` - video Embed button
 
 ## [v14.2.1] - 2026-07-30
