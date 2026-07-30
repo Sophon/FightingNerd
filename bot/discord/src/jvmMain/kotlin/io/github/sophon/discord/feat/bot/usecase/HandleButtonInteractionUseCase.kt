@@ -74,8 +74,8 @@ internal class HandleButtonInteractionUseCase(
                 redirect(button.channelId, message)
             }
             is DiscordButton.Text -> {
-                interaction.deferPublicResponse().respond { content = button.text }
-                Result.Success(Unit)
+                val response = interaction.deferPublicResponse()
+                text(interaction = interaction, response = response, text = button.text)
             }
             else -> {
                 Result.Error(BotError.BotLogicError("Invalid button action"))
@@ -209,5 +209,19 @@ internal class HandleButtonInteractionUseCase(
             Result.Error(BotError.Unknown(e.toString()))
         }
         return result
+    }
+
+    private suspend fun text(
+        interaction: ButtonInteraction,
+        response: DeferredPublicMessageInteractionResponseBehavior,
+        text: String,
+    ): EmptyResult<BotError> {
+        response.respond {
+            content = buildString {
+                appendLine(interaction.user.mention)
+                append(text)
+            }
+        }
+        return Result.Success(Unit)
     }
 }
