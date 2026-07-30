@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v14.3.1] - 2026-07-30
+- video Embed response tags the interacting user
+
 ## [v14.3.0] - 2026-07-30
 - `Wavu` - video Embed button
 
