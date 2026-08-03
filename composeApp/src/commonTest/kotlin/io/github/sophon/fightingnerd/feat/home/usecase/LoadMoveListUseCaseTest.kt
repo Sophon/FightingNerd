@@ -14,7 +14,7 @@ import io.github.sophon.fightingnerd.core.model.AppError
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
-internal class EnsureMoveListIsCachedUseCaseTest {
+internal class LoadMoveListUseCaseTest {
     private val testCharacter = Character(
         id = "kazuya",
         displayName = "Kazuya",
@@ -38,7 +38,7 @@ internal class EnsureMoveListIsCachedUseCaseTest {
             checkHasCachedMovesResult = Result.Success(true),
         )
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wikiClient))
-        val usecase = EnsureMoveListIsCachedUseCase(repo)
+        val usecase = LoadMoveListUseCase(repo)
 
         // when
         val result = usecase.invoke(game = Game.Tekken8, characterId = testCharacter.id)
@@ -58,7 +58,7 @@ internal class EnsureMoveListIsCachedUseCaseTest {
             downloadMoveListResult = Result.Success(testMoveList),
         )
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wikiClient))
-        val usecase = EnsureMoveListIsCachedUseCase(repo)
+        val usecase = LoadMoveListUseCase(repo)
 
         // when
         val result = usecase.invoke(game = Game.Tekken8, characterId = testCharacter.id)
@@ -72,10 +72,36 @@ internal class EnsureMoveListIsCachedUseCaseTest {
     }
 
     @Test
+    fun `usecase refreshes data when force download is true even when cached`() = runTest {
+        // given
+        val wikiClient = FakeWikiClient(
+            fetchCharacterResult = Result.Success(testCharacter),
+            checkHasCachedMovesResult = Result.Success(true),
+            downloadMoveListResult = Result.Success(testMoveList),
+        )
+        val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wikiClient))
+        val usecase = LoadMoveListUseCase(repo)
+
+        // when
+        val result = usecase.invoke(
+            game = Game.Tekken8,
+            characterId = testCharacter.id,
+            forceDownload = true,
+        )
+
+        // then
+        assertThat(result).isInstanceOf(Result.Success::class)
+        assertThat(wikiClient.downloadMoveListForCalled).isTrue()
+        assertThat(wikiClient.cacheMoveListCalled).isTrue()
+        assertThat(wikiClient.cachedCharacter).isEqualTo(testCharacter)
+        assertThat(wikiClient.cachedMoveList).isEqualTo(testMoveList)
+    }
+
+    @Test
     fun `usecase returns error when game does not exist`() = runTest {
         // given
         val repo = FakeFeatureRepo(gameClients = emptyMap())
-        val usecase = EnsureMoveListIsCachedUseCase(repo)
+        val usecase = LoadMoveListUseCase(repo)
 
         // when
         val result = usecase.invoke(game = Game.Tekken8, characterId = testCharacter.id)
@@ -93,7 +119,7 @@ internal class EnsureMoveListIsCachedUseCaseTest {
             fetchCharacterResult = Result.Error(fetchCharacterError),
         )
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wikiClient))
-        val usecase = EnsureMoveListIsCachedUseCase(repo)
+        val usecase = LoadMoveListUseCase(repo)
 
         // when
         val result = usecase.invoke(game = Game.Tekken8, characterId = testCharacter.id)

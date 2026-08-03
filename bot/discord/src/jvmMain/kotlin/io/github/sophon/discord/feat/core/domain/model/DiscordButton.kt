@@ -10,6 +10,8 @@ internal sealed class DiscordButton(
 
     class Redirect(val channelId: String): DiscordButton(key = KEY_REDIRECT, value = channelId)
 
+    class Text(val text: String): DiscordButton(key = KEY_TEXT, value = text)
+
 
     override fun toString(): String {
         return "$key:$value"
@@ -20,5 +22,6 @@ internal sealed class DiscordButton(
         const val KEY_QUERY = "query"
         const val KEY_EDIT = "edit"
         const val KEY_REDIRECT = "redirect"
+        const val KEY_TEXT = "text"
     }
 }

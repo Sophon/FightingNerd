@@ -22,6 +22,7 @@ data class Character(
     val bbProperties: BBProperties? = null,
     val uni2Properties: Uni2Properties? = null,
     val roa2Properties: Roa2Properties? = null,
+    val mtfsProperties: MTFSProperties? = null,
 ) {
     @Serializable
     data class Images(
@@ -119,6 +120,13 @@ data class Character(
             val h: String?,
         )
     }
+
+    @Serializable
+    data class MTFSProperties(
+        val prejump: String? = null,
+        val backdash: String? = null,
+        val team: String? = null,
+    )
 
     @Serializable
     data class MK1Properties(

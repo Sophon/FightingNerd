@@ -15,7 +15,7 @@ internal const val URL_REPO = "https://github.com/Sophon/FightingNerd"
 internal const val URL_IMG_GITHUB = "https://i.imgur.com/PdgcKV2.png"
 internal const val URL_IMG_FIGHTING_NERD = "https://i.imgur.com/TAgvOxX.png"
 
-internal const val URL_KOFI = "https://ko-fi.com/sorryuken"
+internal const val URL_KOFI = "https://ko-fi.com/sophon_"
 internal const val URL_BUY_ME_COFFEE = "https://buymeacoffee.com/sophon"
 internal const val URL_IMG_KOFI = "https://i.imgur.com/8MpFC8T.png"
 internal const val URL_TOPGG = "https://top.gg/bot/1438716136790429776"
@@ -25,7 +25,7 @@ internal const val URL_IMG_DISCORD = "https://i.imgur.com/HtuRwva.png"
 
 internal const val TIME_UPDATE_INTERVAL_H = 3
 internal const val TIME_AUTO_EDIT_EMBED_S = 20
-internal const val REQUEST_TIMEOUT_S = 45
+internal const val REQUEST_TIMEOUT_S = 60
 
 internal const val BUILD_KEY_ENV = "ENV"
 internal const val BUILD_VAL_PROD = "production"

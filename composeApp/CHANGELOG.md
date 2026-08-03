@@ -1,9 +1,18 @@
 # APP CHANGELOG
 
-## [v1.1.0] - 2026-07-21
-- `DragDown` - enabled
+## [v1.2.0] - 2026-07-22
+- Quiz - auto-play videos
+- Home
+  - swipe to refresh
+  - refresh and success toasts
+- More 
+  - temporarily removed the donation button
+  - will be handled by a platform-specific Donation handler
 - fixed moves not being expandable with hitbox images
 - auto bump version code
+
+## [v1.1.0] - 2026-07-21
+- `DragDown` - enabled
 
 ## [v1.0.0] (5) - 2026-07-01
 - `Move` 

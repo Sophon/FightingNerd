@@ -105,6 +105,7 @@ internal sealed class Command(
             Argument(
                 name = "move",
                 description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
             ),
         ),
     )
@@ -362,7 +363,7 @@ internal sealed class Command(
     )
     //endregion
 
-    //region DustLoop commands
+    //region DustLoop
     object CharGG : Command(
         name = "CharGG",
         description = "GG character data",
@@ -486,6 +487,34 @@ internal sealed class Command(
     object FdGB : Command(
         name = "FdGB",
         description = "GB frame data",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
+            ),
+            Argument(
+                name = "move",
+                description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
+            ),
+        ),
+    )
+
+    object CharMT : Command(
+        name = "CharMT",
+        description = "Marvel Tokon character data",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
+            ),
+        ),
+    )
+    object FdMT : Command(
+        name = "FdMT",
+        description = "Marvel Tokon frame data",
         argumentList = listOf(
             Argument(
                 name = "character",

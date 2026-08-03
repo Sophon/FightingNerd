@@ -11,9 +11,11 @@ import io.github.sophon.discord.feat.core.domain.model.DiscordButton
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Companion.KEY_EDIT
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Companion.KEY_QUERY
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Companion.KEY_REDIRECT
+import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Companion.KEY_TEXT
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Edit
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Query
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Redirect
+import io.github.sophon.discord.feat.core.domain.model.DiscordButton.Text
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -29,6 +31,7 @@ internal class DiscordButtonBuilder {
             KEY_QUERY -> Query(value)
             KEY_EDIT -> Edit(value)
             KEY_REDIRECT -> Redirect(value)
+            KEY_TEXT -> Text(value)
             else -> null
         }
     }
@@ -77,6 +80,11 @@ internal class DiscordButtonBuilder {
             }
             is BotOutput.EmbedButton.Action.Redirect -> {
                 val customId = Redirect(action.channelId).toString()
+                ButtonBuilder.InteractionButtonBuilder(ButtonStyle.Primary, customId)
+                    .apply { this.label = label }
+            }
+            is BotOutput.EmbedButton.Action.Text -> {
+                val customId = Text(action.text).toString()
                 ButtonBuilder.InteractionButtonBuilder(ButtonStyle.Primary, customId)
                     .apply { this.label = label }
             }

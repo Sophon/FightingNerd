@@ -1,9 +1,31 @@
 # BOT CHANGELOG
 
-## [v14.1.0] - TODO
+## [v14.3.1] - 2026-07-30
+- video Embed response tags the interacting user
+
+## [v14.3.0] - 2026-07-30
+- `Wavu` - video Embed button
+
+## [v14.2.1] - 2026-07-30
+- fixed bug with partial OR inputs that have followups, ie `[4]6S/H~K`
+
+## [v14.2.0] - 2026-07-25
+- `Dragdown` - fixed broken URLs
+- `DreamCancel` - character icons where possible
+- `DustLoop` - add redirect feedback button
+- `Mizuumi` - `MBTL` character icons where possible
+- update Ko-Fi link
+
+## [v14.1.0] - 2026-07-24
 - broaden test coverage GitHub task to also check bot and app
-- `Discord` - cover usecases with tests
-- `Compose` - cover usecases with tests
+- `fd` has global autocomplete for characters and moves
+- `Discord`
+  - cover usecases with tests
+  - increased timeout window from 45s to 60s
+- `Wavu` - remove `ed` from Eddy's nicknames
+  - clash with SF Ed
+- `DustLoop`
+  - enable `MTFS` - Marvel Tokon: Fighting Spirit
 
 ## [14.0.0] - 2026-07-18
 - move-list embeds use the Character's display name

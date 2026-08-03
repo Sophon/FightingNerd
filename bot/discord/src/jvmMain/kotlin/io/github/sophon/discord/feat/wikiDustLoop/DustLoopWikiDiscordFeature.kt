@@ -23,6 +23,8 @@ import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.feat.core.util.aggregateCharacters
+import io.github.sophon.discord.feat.core.util.firstMatchingWikiMoves
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.util.withWiki
@@ -67,6 +69,9 @@ internal class DustLoopWikiDiscordFeature(
 
         Command.CharGB,
         Command.FdGB,
+
+        Command.CharMT,
+        Command.FdMT,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -185,6 +190,19 @@ internal class DustLoopWikiDiscordFeature(
                 action = ::searchInvincible,
             )
 
+            Command.CharMT -> withWiki(
+                wikis = wikiClientMap,
+                game = Game.MTFS,
+                query = formattedQuery,
+                action = ::searchCharacter,
+            )
+            Command.FdMT -> withWiki(
+                wikis = wikiClientMap,
+                game = Game.MTFS,
+                query = formattedQuery,
+                action = ::searchMove,
+            )
+
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
 
@@ -202,6 +220,7 @@ internal class DustLoopWikiDiscordFeature(
             Command.FdDB -> Game.DBFZ
             Command.FdBB, Command.InvBB -> Game.BBCF
             Command.FdGB -> Game.GBVSR
+            Command.FdMT -> Game.MTFS
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
         }
         val wiki = wikiClientMap[game]
@@ -214,11 +233,16 @@ internal class DustLoopWikiDiscordFeature(
         command: Command,
         characterId: String,
     ): Result<List<Move>, BotError> {
+        if (command == Command.Fd) {
+            val moves = firstMatchingWikiMoves(wikiClientMap, getMovesUseCase, characterId)
+            return moves
+        }
         val game = when (command) {
             Command.FdGG, Command.InvGG -> Game.GGST
             Command.FdDB -> Game.DBFZ
             Command.FdBB, Command.InvBB -> Game.BBCF
             Command.FdGB -> Game.GBVSR
+            Command.FdMT -> Game.MTFS
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
         }
         val wiki = wikiClientMap[game]
@@ -226,6 +250,8 @@ internal class DustLoopWikiDiscordFeature(
         val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
         return result
     }
+
+    override suspend fun getAllCharacters(): Result<List<Pair<Game, Character>>, BotError> = aggregateCharacters(wikiClientMap, getCharactersUseCase)
 
 
     private suspend fun searchCharacter(

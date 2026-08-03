@@ -40,6 +40,7 @@ data class Move(
     val vsavProperties: VSAVProperties? = null,
     val avlProperties: AVLProperties? = null,
     val roa2Properties: Roa2Properties? = null,
+    val mtfsProperties: MTFSProperties? = null,
 ) {
     @Serializable
     data class Urls(
@@ -230,6 +231,17 @@ data class Move(
     data class AVLProperties(
         val chiDamage: String? = null,
         val flow: String? = null,
+    )
+
+    @Serializable
+    data class MTFSProperties(
+        val simpleInput: String? = null,
+        val type: String? = null,
+        val level: String? = null,
+        val prorate: String? = null,
+        val meterGain: String? = null,
+        val untechAmount: String? = null,
+        val hitboxCaption: String? = null,
     )
 
     @Serializable

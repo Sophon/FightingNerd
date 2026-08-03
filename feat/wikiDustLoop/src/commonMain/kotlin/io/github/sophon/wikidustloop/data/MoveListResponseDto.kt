@@ -70,4 +70,9 @@ internal data class MoveDto(
     val hitstop: String? = null,
     val CHstop: String? = null,
     val cancelTiming: String? = null,
+
+    //mtfs
+    val simpleInput: String? = null,
+    val untechAmount: String? = null,
+    val meterGain: String? = null,
 )

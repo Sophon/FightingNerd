@@ -22,6 +22,8 @@ import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
+import io.github.sophon.discord.feat.core.util.aggregateCharacters
+import io.github.sophon.discord.feat.core.util.firstMatchingWikiMoves
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.dreamcancel.integration.DreamCancelFeatureInfo
 import io.github.sophon.integration.model.Source
@@ -74,18 +76,22 @@ internal class DreamCancelWikiDiscordFeature(
         val formattedQuery = query.lowercase()
 
         val result = when (command) {
-            Command.Fd -> fetchMoveInWikisUseCase.invoke(
-                wikis = wikiClientMap,
-                query = formattedQuery,
-                searchFun = ::searchMove,
-            )
+            Command.Fd -> {
+                fetchMoveInWikisUseCase.invoke(
+                    wikis = wikiClientMap,
+                    query = formattedQuery,
+                    searchFun = { _, wikiClient, query -> searchMove(wikiClient, query) },
+                )
+            }
 
-            Command.FdKOF -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.KoFXV,
-                query = formattedQuery,
-                action = ::searchMove,
-            )
+            Command.FdKOF -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.KoFXV,
+                    query = formattedQuery,
+                    action = { _, wikiClient, query -> searchMove(wikiClient, query)},
+                )
+            }
             Command.AliasKOF -> {
                 withWiki(
                     wikis = wikiClientMap,
@@ -96,12 +102,14 @@ internal class DreamCancelWikiDiscordFeature(
                 }
             }
 
-            Command.FdCOTW -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.COTW,
-                query = formattedQuery,
-                action = ::searchMove,
-            )
+            Command.FdCOTW -> {
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.COTW,
+                    query = formattedQuery,
+                    action = { _, wikiClient, query -> searchMove(wikiClient, query) },
+                )
+            }
             Command.AliasCOTW -> {
                 withWiki(
                     wikis = wikiClientMap,
@@ -134,10 +142,17 @@ internal class DreamCancelWikiDiscordFeature(
         return result
     }
 
+    override suspend fun getAllCharacters() =
+        aggregateCharacters(wikiClientMap, getCharactersUseCase)
+
     override suspend fun getMoveList(
         command: Command,
         characterId: String,
     ): Result<List<Move>, BotError> {
+        if (command == Command.Fd) {
+            val moves = firstMatchingWikiMoves(wikiClientMap, getMovesUseCase, characterId)
+            return moves
+        }
         val game = when (command) {
             Command.FdKOF -> Game.KoFXV
             Command.FdCOTW -> Game.COTW
@@ -152,7 +167,6 @@ internal class DreamCancelWikiDiscordFeature(
 
 
     private suspend fun searchMove(
-        game: Game,
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
@@ -162,7 +176,7 @@ internal class DreamCancelWikiDiscordFeature(
                     ?: emptyList()
 
                 BotOutput(
-                    primaryEmbedBuilder = dreamCancelMoveEmbed(game, character, move, featureInfo),
+                    primaryEmbedBuilder = dreamCancelMoveEmbed(character = character, move = move, featureInfo = featureInfo),
                     images = if (images.size < 2) {
                         null
                     } else {

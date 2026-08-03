@@ -166,26 +166,27 @@ private fun Footer(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        Button(
-            onClick = onDonateClick,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = nerdColorPalette.accent,
-                contentColor = nerdColorPalette.textPrimary,
-            ),
-            modifier = modifier,
-        ) {
-            Icon(
-                imageVector = Icons.Default.Favorite,
-                contentDescription = null,
-                modifier = Modifier.size(nerdDimensions.iconDefault),
-            )
-            Spacer(Modifier.width(nerdDimensions.inlineGap))
-
-            Text(
-                text = stringResource(Res.string.more_donate),
-                style = nerdTypography.labelLarge,
-            )
-        }
+        //TODO: replace donation button with Donation Handler or something
+//        Button(
+//            onClick = onDonateClick,
+//            colors = ButtonDefaults.buttonColors(
+//                containerColor = nerdColorPalette.accent,
+//                contentColor = nerdColorPalette.textPrimary,
+//            ),
+//            modifier = modifier,
+//        ) {
+//            Icon(
+//                imageVector = Icons.Default.Favorite,
+//                contentDescription = null,
+//                modifier = Modifier.size(nerdDimensions.iconDefault),
+//            )
+//            Spacer(Modifier.width(nerdDimensions.inlineGap))
+//
+//            Text(
+//                text = stringResource(Res.string.more_donate),
+//                style = nerdTypography.labelLarge,
+//            )
+//        }
         Spacer(Modifier.height(nerdDimensions.componentPadding))
 
         Text(
