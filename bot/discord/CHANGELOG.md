@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v14.3.2] - TODO
+- fixed bug where the Embed would not render due to its button action being too long
+  - Discord requires length 1-100
+
 ## [v14.3.1] - 2026-07-30
 - video Embed response tags the interacting user
 
