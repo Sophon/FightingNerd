@@ -97,7 +97,7 @@ private fun Content(
             )
 
             Footer(
-                onDonateClick = { onDonateClick(true) }
+//                onDonateClick = { onDonateClick(true) }
             )
         }
 
@@ -158,7 +158,7 @@ private fun ItemSection(
 
 @Composable
 private fun Footer(
-    onDonateClick: () -> Unit,
+//    onDonateClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
