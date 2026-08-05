@@ -1,5 +1,8 @@
 # APP CHANGELOG
 
+## [v1.2.1] - TODO
+- `Dragdown` - updated character table
+
 ## [v1.2.0] - 2026-07-22
 - Quiz - auto-play videos
 - Home
