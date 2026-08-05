@@ -2,6 +2,7 @@
 
 ## [v14.3.3] - TODO
 - `Dragdown` - updated character table
+- `SuperCombo` - renamed field for `AVL` 
 
 ## [v14.3.2] - 2026-08-04
 - fixed bug where the Embed would not render due to its button action being too long

@@ -55,7 +55,10 @@ internal fun MoveDto.toDomain(
         active = active.takeIfNotTemplate()?.cleanHtml(),
         guard = guard.takeIfNotTemplate(),
         cancel = cancel.takeIfNotTemplate(),
-        invulnerability = invuln.takeIfNotTemplate()?.cleanHtml(),
+        invulnerability = invuln
+            .takeIfNotTemplate()
+            ?.cleanHtml()
+            ?.takeIf { it.isBlank().not() },
 
         aliases = aliasList,
 
@@ -115,7 +118,7 @@ internal fun MoveDto.toDomain(
                 .filterNot { it.takeIfNotTemplate() == null }
         ),
         avlProperties = Move.AVLProperties(
-            chiDamage = chiDamage,
+            chiDamage = flowDamage,
             flow = flow,
         )
     )
