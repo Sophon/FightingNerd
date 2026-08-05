@@ -115,7 +115,7 @@ internal fun MoveDto.toDomain(
                 .filterNot { it.takeIfNotTemplate() == null }
         ),
         avlProperties = Move.AVLProperties(
-            chiDamage = chiDamage,
+            chiDamage = flowDamage,
             flow = flow,
         )
     )
