@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v14.3.3] - TODO
+## [v14.3.3] - 2026-08-05
 - `Dragdown` - updated character table
 - `SuperCombo` - renamed field for `AVL` 
 
