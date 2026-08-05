@@ -16,6 +16,6 @@ internal object DragDownTables {
     }
 
 
-    internal const val TABLE_ROA2_CHARACTERS = "ROA2_CharacterData"
+    internal const val TABLE_ROA2_CHARACTERS = "CharacterData_RoA2"
     internal const val TABLE_ROA2_MOVE_LIST = "ROA2_MoveMode"
 }

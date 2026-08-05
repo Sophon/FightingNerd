@@ -228,7 +228,7 @@ internal class SuperComboDataSourceImpl(
                     "images",
                     "hitboxes",
                     "damage",
-                    "chiDamage",
+                    "flowDamage",
                     "startup",
                     "active",
                     "recovery",
