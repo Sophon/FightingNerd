@@ -55,7 +55,10 @@ internal fun MoveDto.toDomain(
         active = active.takeIfNotTemplate()?.cleanHtml(),
         guard = guard.takeIfNotTemplate(),
         cancel = cancel.takeIfNotTemplate(),
-        invulnerability = invuln.takeIfNotTemplate()?.cleanHtml(),
+        invulnerability = invuln
+            .takeIfNotTemplate()
+            ?.cleanHtml()
+            ?.takeIf { it.isBlank().not() },
 
         aliases = aliasList,
 
