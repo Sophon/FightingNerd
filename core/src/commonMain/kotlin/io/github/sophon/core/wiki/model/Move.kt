@@ -1,6 +1,7 @@
 package io.github.sophon.core.wiki.model
 
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmInline
 
 @Serializable
 data class Move(
@@ -272,3 +273,6 @@ data class Move(
         val advNotes: String? = null,
     )
 }
+
+@JvmInline
+value class MoveId(val value: String)
