@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
+import java.lang.management.ManagementFactory
 import kotlin.time.Duration.Companion.hours
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -259,11 +260,16 @@ internal class DiscordBotImpl(
             period = 1.hours,
             task = {
                 val runtime = Runtime.getRuntime()
-                val used = runtime.totalMemory() - runtime.freeMemory()
-                val committed = runtime.totalMemory()
-                val max = runtime.maxMemory()
+                val heapUsed = runtime.totalMemory() - runtime.freeMemory()
+                val heapCommitted = runtime.totalMemory()
+                val heapMax = runtime.maxMemory()
+
+                val nonHeap = ManagementFactory.getMemoryMXBean().nonHeapMemoryUsage
+                val nonHeapUsed = nonHeap.used
+                val nonHeapCommitted = nonHeap.committed
                 Napier.i(tag = TAG) {
-                    "Heap: used=${used / 1024 / 1024}MB committed=${committed / 1024 / 1024}MB max=${max / 1024 / 1024}MB"
+                    "Heap: used=${heapUsed / 1024 / 1024}MB committed=${heapCommitted / 1024 / 1024}MB max=${heapMax / 1024 / 1024}MB " +
+                            "NonHeap: used=${nonHeapUsed / 1024 / 1024}MB committed=${nonHeapCommitted / 1024 / 1024}MB"
                 }
             }
         ).launchIn(coroutineScope)
