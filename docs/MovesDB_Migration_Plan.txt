@@ -1,0 +1,505 @@
+================================================================================
+                     MovesDB Migration Plan
+================================================================================
+
+Migration of FightingNerd from per-client, in-memory / per-game caches to a
+unified per-wiki-module storage layer shared by app and bot.
+
+================================================================================
+1. DESIGN DECISIONS (LOCKED)
+================================================================================
+
+DOMAIN
+------
+- Move stays as one shared type in `core`, retaining the current shape:
+    - Common fields at root
+    - 15 nullable `*Properties` classes (T8Properties, SF6Properties, etc.)
+- Character stays as one shared type in `core`.
+- No wrapper types per game. No sealed hierarchies. No interfaces on Move.
+- Rationale: nullable `*Properties` pattern is not causing pain. Introducing
+  wrappers would force cross-game complexity (dispatch, sealed hierarchies,
+  aggregator module) that solves no real problem.
+
+NAMING & IDENTIFIERS
+--------------------
+- External wiki identifier for character/move: `remoteId` (used to build wiki
+  URLs and match against wiki responses).
+- Primary key for character and move: the ID we already form in Kotlin,
+  stored as `id TEXT PRIMARY KEY`. No autoincrement / DB-generated ID.
+    - Rationale: we already guarantee uniqueness of our formed IDs. Letting
+      the DB enforce it at insert time (via PK constraint) catches duplicate-
+      ID bugs loudly and immediately, which is the desired behavior.
+    - No `executeAsOne()` dance to fetch a generated ID for FK inserts.
+    - Performance difference vs autoincrement INTEGER PK is imperceptible at
+      our scale (thousands of moves per game).
+- Character-level game identifier: `game_id TEXT` column storing `Game.id`
+  string values from the existing `Game` enum in core.
+
+STORAGE PATTERN: CTI (CLASS TABLE INHERITANCE)
+----------------------------------------------
+- Reference: Martin Fowler, Patterns of Enterprise Application Architecture.
+- Applied to BOTH `character` and `move` entities.
+- Base `character` table with common fields (id, game_id, remote_id,
+  display_name, remote_query_id, wiki_url, aliases, hp, umo, images,
+  consecutive_failure_count).
+- Base `move` table with common fields.
+- One extension table per game PER ENTITY, where the game has entity-specific
+  fields:
+    - Character extensions only when the game has Character.*Properties
+      (see extension table matrix below).
+    - Move extensions for every game that has Move.*Properties.
+- Extension tables joined 1:1 to base via FK; extension row's PK is the
+  base row's FK.
+- FKs cascade parent -> child:
+    character delete -> character extension delete
+    character delete -> move delete -> move extension delete
+- `PRAGMA foreign_keys = ON` required on every connection.
+- Alternative considered and rejected: STI (single-table inheritance with
+  nullable columns for every variant) - current in-memory approach, not fit
+  for normalized persistence at 15+ variants.
+- Alternative considered and rejected: JSON blob column - loses queryability
+  of per-game fields.
+
+STORAGE SCOPE
+-------------
+- One SQLDelight database per wiki module.
+- Shared by both clients: bot passes JVM driver, app passes Android/iOS driver.
+- Bot never interacts with the DB directly - it provides the driver
+  implementation via Koin `parametersOf`; wiki module owns all DB access
+  internally.
+
+SEARCH
+------
+- All search is in-memory domain logic, not SQL.
+- DB stores. Domain filters, matches, ranks.
+- Rationale: search rules evolve (fuzzy matching, alias matching, partial name
+  matching); Kotlin composes better than SQL for this; movelists are already
+  in memory once loaded.
+
+ORPHANED CHARACTER EVICTION: FAILURE-COUNT EVICTION
+---------------------------------------------------
+- Also known as: strike-based eviction, negative acknowledgment threshold.
+- Add `consecutive_failure_count INTEGER NOT NULL DEFAULT 0` to `character`.
+- Increment ONLY on definitive absence signals (404, page-not-found).
+- DO NOT increment on: network timeout, HTTP 5xx, parse errors, empty responses.
+- Delete character when count reaches threshold (start: 5).
+- Any successful refresh resets count to 0 (naturally, via delete-then-insert).
+- No scheduled reconciliation flow. Eviction happens as a side effect of
+  user-driven refreshes.
+
+TRANSACTIONS
+------------
+- Atomic per unit. Per-character refresh = one transaction:
+    1. Delete character by id (cascades to moves + extension rows)
+    2. Insert fresh character (id already known, no executeAsOne needed)
+    3. Insert fresh moves (base row + extension row per move; all ids already
+       known from the formed-id scheme, no executeAsOne needed)
+- Never partial commits. Any partial network response = full failure, keep
+  existing cache untouched.
+
+CACHING
+-------
+- Always cache. No exposed `cache*` methods on the wiki module's public API.
+- Offline data is source of truth for clients.
+- Refresh may be an exposed control (user pull-to-refresh); caching decisions
+  are internal.
+
+WIKI MODULE PUBLIC SURFACE
+--------------------------
+Each wiki module exposes exactly:
+  1. FeatureInfo (game list, wiki URLs, id)
+  2. Koin module (registers the impl, accepts `SqlDriver` via `parametersOf`)
+  3. Models used by clients (filters; Character and Move come from core)
+  4. Repository interface (replacing current `WikiClient`)
+
+Everything else is `internal`:
+  - HTTP client(s), per game
+  - DTOs and mappers
+  - SQLDelight-generated Database class + queries
+  - Cache logic
+  - Failure-counter machinery
+
+DRIVER INJECTION
+----------------
+- Wiki module accepts `SqlDriver` via Koin `parametersOf`, not a `Database`.
+  Reason: `Database` is a SQLDelight-generated class internal to the module;
+  consumers should not need to import it.
+- Wiki module has only `commonMain` + `commonTest`. No platform source sets.
+- Platform-specific driver construction lives in the consumers:
+    - `composeApp` (KMP): extends existing `DatabaseDriverFactory` with one
+      factory method per wiki DB (`createWavuDriver()`, `createDustloopDriver()`,
+      etc.). Each `expect/actual` pair in androidMain/iosMain produces the
+      platform driver.
+    - `bot/discord` (JVM): constructs `JdbcSqliteDriver` per wiki DB, with
+      DB paths configured via env vars on Fly volume (e.g. WAVU_DATABASE_PATH,
+      DUSTLOOP_DATABASE_PATH).
+- Driver singletons registered under `named(WikiClientFeature.<X>.id)` for
+  identifier consistency with the existing wiki client qualifier pattern.
+
+WIKI MODULE INVENTORY
+---------------------
+  feat/wiki-wavu           -> Tekken 8
+  feat/wiki-supercombo     -> SF6, MK1, Avatar Legends
+  feat/wiki-xko            -> 2XKO
+  feat/wiki-dreamcancel    -> KOF XV, COTW (Fatal Fury: City of the Wolves)
+  feat/wiki-dustloop       -> GGST, GBVSR, DBFZ, BBCF, MTFS
+  feat/wiki-mizuumi        -> MBTL, UNI2, VSAV
+  feat/wiki-dragdown       -> RoA2
+
+Non-wiki bot features (out of scope): EWGF, Infil Glossary.
+
+CROSS-GAME SURFACES (CONFIRMED)
+-------------------------------
+All three are fan-out patterns over shared types. None need wrappers or
+sealed hierarchies.
+
+  1. Global character autocomplete: fan-out all wikis -> concat all
+     `List<Pair<Game, Character>>` -> filter by name -> take top N.
+  2. Move autocomplete after character picked: fan-out all wikis, first
+     non-empty character-owns-movelist wins -> filter moves in memory.
+  3. Command execution (`sol 236h` and similar): same pattern as #2.
+
+================================================================================
+2. TABLE SHAPES
+================================================================================
+
+Each wiki DB contains base tables (identical across modules; managed by
+discipline since SQLDelight does not support cross-DB schema sharing) plus
+per-game extension tables where applicable.
+
+BASE TABLES (in every wiki DB)
+------------------------------
+
+    CREATE TABLE character (
+        id TEXT NOT NULL PRIMARY KEY,
+        game_id TEXT NOT NULL,
+        remote_id TEXT NOT NULL,
+        remote_query_id TEXT NOT NULL,
+        wiki_url TEXT NOT NULL,
+        display_name TEXT NOT NULL,
+        aliases TEXT NOT NULL,               -- delimited list
+        hp TEXT,
+        umo TEXT NOT NULL,                   -- delimited list
+        images_icon_url TEXT,
+        images_banner_url TEXT,
+        consecutive_failure_count INTEGER NOT NULL DEFAULT 0
+    );
+
+    CREATE TABLE move (
+        id TEXT NOT NULL PRIMARY KEY,
+        character_id TEXT NOT NULL,
+        remote_id TEXT NOT NULL,
+        -- common Move fields: name, input, damage, startup, active, recovery,
+        -- on_block, on_hit, on_ch, guard, cancel, invulnerability, is_throw,
+        -- notes (delimited), aliases (delimited),
+        -- urls fields (flattened or delimited as appropriate)
+        FOREIGN KEY (character_id) REFERENCES character(id) ON DELETE CASCADE
+    );
+
+EXTENSION TABLES (per game, where applicable)
+---------------------------------------------
+
+    -- Character extension (only for games with Character.*Properties):
+    CREATE TABLE ggst_character (
+        character_id TEXT NOT NULL PRIMARY KEY,
+        -- columns matching Character.GGSTProperties fields
+        FOREIGN KEY (character_id) REFERENCES character(id) ON DELETE CASCADE
+    );
+
+    -- Move extension (for games with Move.*Properties):
+    CREATE TABLE ggst_move (
+        move_id TEXT NOT NULL PRIMARY KEY,
+        -- columns matching Move.GGSTProperties fields
+        FOREIGN KEY (move_id) REFERENCES move(id) ON DELETE CASCADE
+    );
+
+EXTENSION TABLE MATRIX (per wiki module)
+----------------------------------------
+
+    Wavu          -> tekken_move
+                     (Tekken 8 has no Character.*Properties)
+
+    SuperCombo    -> sf6_character, mk_character
+                  -> sf6_move, mk_move, avl_move
+                     (Avatar Legends has no Character.*Properties)
+
+    XKO           -> (no extensions - 2XKO has no properties classes yet)
+
+    DreamCancel   -> kof15_move, cotw_move
+                     (KOF XV and COTW have no Character.*Properties)
+
+    Dustloop      -> ggst_character, gbvsr_character, dbfz_character,
+                     bbcf_character, mtfs_character
+                  -> ggst_move, gbvsr_move, dbfz_move, bbcf_move, mtfs_move
+
+    Mizuumi       -> uni2_character
+                  -> mb_move, uni2_move, vsav_move
+                     (MBTL and VSAV have no Character.*Properties)
+
+    DragDown      -> roa2_character
+                  -> roa2_move
+
+WRITE-SIDE INVARIANT
+--------------------
+
+- If a game has a Character.*Properties, ALWAYS insert its `*_character`
+  extension row (even with all null fields) when persisting a character of
+  that game. Guarantees INNER JOIN semantics for reads.
+- Same rule for Move.*Properties -> `*_move` extension row.
+- Rationale: consistent presence is easier to reason about than optional
+  presence. LEFT JOIN complicates mappers; INNER JOIN is simpler.
+
+================================================================================
+3. STAGED MIGRATION
+================================================================================
+
+Ordered so the codebase stays compilable and shippable at every checkpoint.
+Each stage = one mergeable PR (or a small tight batch).
+
+--------------------------------------------------------------------------------
+STAGE 1 - CORE SCAFFOLDING
+--------------------------------------------------------------------------------
+
+Add to `core` without changing anything downstream:
+
+  - Value classes: MoveId, CharacterId (or keep primitive Long, decide during)
+  - RefreshError / WikiError sealed hierarchy adaptation (add definitive-
+    absence variant if not present, needed by failure-count logic)
+  - New repository interface(s) - see Stage 2 for exact shape once one wiki is
+    prototyped. Do not front-load an abstract base class until at least one
+    wiki proves the shared shape.
+  - Any shared plumbing types the refactor needs (FetchedCharacter wrapper,
+    RosterEntry-style DTOs) if they turn out common.
+
+Existing `WikiClient` interface stays untouched. Nothing consumes new types yet.
+
+Also in Stage 1:
+  - Add memory logging to bot startup (Runtime.totalMemory/freeMemory +
+    ManagementFactory nonHeap). Deploy to production. Collect 1-2 weeks of
+    baseline heap data before migration begins. Baseline needed to measure
+    real memory savings post-migration.
+
+Checkpoint: core builds. App + bot still work unchanged. Memory logging live.
+
+--------------------------------------------------------------------------------
+STAGE 2 - PILOT: ONE WIKI, ONE GAME, END-TO-END
+--------------------------------------------------------------------------------
+
+Pilot module: `feat/wiki-wavu` (single game, isolated blast radius, known well).
+
+Inside the module:
+
+  - SQLDelight setup: `WavuDatabase`, driver factory via `expect/actual` where
+    needed (or accept driver as a Koin param, which is the current bot/app
+    pattern).
+  - `.sq` files:
+      character.sq   (base character table + queries, incl. increment/reset
+                      failure count, delete by id)
+      move.sq        (base move table + queries, incl. select by character,
+                      insert, delete by character)
+      tekken_move.sq (Tekken move extension table + queries: insert, select
+                      join with move)
+      (No tekken_character.sq - Tekken has no Character.*Properties)
+    Note: Other wiki modules will additionally have `<game>_character.sq`
+    files where that game has Character.*Properties. See extension table
+    matrix in section 2.
+  - Domain-facing repository interface (per-game, internal to the wiki
+    module's integration surface): observe roster, observe moves, refresh
+    character, admin reset.
+  - Internal impl: HTTP client stays largely as-is, mapper produces
+    `List<Move>` with `t8Properties` populated. Cache-then-return flow.
+  - Failure-counter wiring:
+      - On successful character fetch: delete + reinsert (naturally resets
+        count).
+      - On definitive-absence response: increment counter; if reached
+        threshold, delete character (cascades).
+      - On network/parse/5xx failures: do not touch counter.
+  - Koin module: register new repository binding alongside existing
+    `WikiClient` binding. Both coexist.
+
+Old Wavu code remains untouched and still wired.
+
+Checkpoint: module compiles, unit tests for the new repo pass (fake HTTP
+client + in-memory SQLite -> assert observed data, cascade behavior, failure
+count behavior).
+
+--------------------------------------------------------------------------------
+STAGE 3 - MIGRATE ONE CLIENT SURFACE TO THE PILOT
+--------------------------------------------------------------------------------
+
+Pick the smallest Tekken-touching surface first: bot's Tekken `/tekken`
+command (or equivalent).
+
+  - Swap the command handler to consume the new repository interface.
+  - Trigger refresh from wherever the bot currently refreshes.
+  - Verify autocomplete, output formatting, error paths.
+
+Then repeat for the app's Tekken surfaces:
+  - Roster screen
+  - Character detail
+  - Move detail
+  - Quiz mode (if it touches Tekken)
+  - Refresh triggers
+
+Checkpoint: Tekken fully on new stack, both clients. Old Wavu repo unused.
+
+--------------------------------------------------------------------------------
+STAGE 4 - REMOVE OLD WAVU CODE
+--------------------------------------------------------------------------------
+
+  - Delete old Wavu repository impl, old DI bindings, old cache scaffolding.
+  - Confirm no dangling references.
+  - Ship a release (app-v* + bot-v*).
+
+Checkpoint: one full wiki module migrated end-to-end, released, working in
+production. Template proven.
+
+--------------------------------------------------------------------------------
+STAGE 5 - MIGRATE REMAINING WIKI MODULES
+--------------------------------------------------------------------------------
+
+Repeat Stages 2-4 per wiki module. Order by risk / familiarity:
+
+  1. feat/wiki-dragdown   (RoA2 - newest, smallest, well-known)
+  2. feat/wiki-dreamcancel (KOF XV + COTW - two games, similar shape)
+  3. feat/wiki-mizuumi    (MBTL + UNI2 + VSAV - three games)
+  4. feat/wiki-supercombo (SF6 + MK1 + AVL - three games)
+  5. feat/wiki-xko        (single game, minimal properties)
+  6. feat/wiki-dustloop   (five games - largest, most complex, save for last)
+
+For multi-game wiki modules, migrate ONE GAME AT A TIME within the module:
+  - Add extension table + integration for one game
+  - Migrate that game's client surfaces (bot commands + app screens)
+  - Delete that game's old code
+  - Move to next game in the same wiki module
+
+Never big-bang a multi-game wiki. Each game migration is its own PR /
+checkpoint.
+
+--------------------------------------------------------------------------------
+STAGE 6 - CROSS-GAME SURFACES AUDIT
+--------------------------------------------------------------------------------
+
+Once every wiki is on the new stack, re-verify the three cross-game surfaces:
+
+  1. Global character autocomplete
+  2. Global move autocomplete (character-first-hit)
+  3. Global command execution
+
+Each fans out over the new per-wiki repositories, concatenates or first-hits,
+filters in memory. Behavior should be identical to pre-migration.
+
+--------------------------------------------------------------------------------
+STAGE 7 - CLEANUP
+--------------------------------------------------------------------------------
+
+  - Delete `WikiClient` interface if fully unused (should be by now).
+  - Delete transitional shims, dual-repo Koin bindings, adapter classes.
+  - Confirm `testArchHexagonal` still passes for every module.
+  - Update architecture docs / README.
+  - Confirm bot deploy pipeline + app CI both still green.
+  - Collect post-migration memory metrics (1-2 weeks in production). Compare
+    against Stage 1 baseline. Decide whether to:
+      * Lower `-Xmx` in Dockerfile to reflect real usage
+      * Downsize Fly VM memory (only if measurements confirm safe margins)
+      * Leave everything as-is (extra headroom is fine)
+
+================================================================================
+4. RISK LOG
+================================================================================
+
+Schema drift between wiki modules
+  - Character.sq and Move.sq will be duplicated across modules.
+  - SQLDelight does not support cross-DB schema sharing.
+  - Mitigation: review discipline; any change to one propagates to all.
+  - Not worth engineering around at 7 wiki modules.
+
+Destructive DB replacement on app upgrade
+  - Existing users lose their cache on first launch of the new version.
+  - Cache repopulates as they use the app.
+  - Acceptable for wiki-cache data (no user data affected).
+
+Dual repos during Stages 3-5
+  - Old and new repos coexist per game during migration.
+  - Mitigation: clearly named Koin bindings; delete the old the moment the
+    last consumer switches.
+
+iOS SQLDelight driver wiring
+  - Each new wiki DB needs its own driver wiring on iOS side.
+  - Not new work per DB, but repeated across ~7 modules.
+  - Batch the `expect/actual` boilerplate in `DatabaseDriverFactory`.
+
+Fly.io volume + env var config
+  - Bot needs one DB path env var per wiki DB in `fly.toml`, all pointing
+    into the existing `/data` volume mount.
+  - Add during Stage 2 for the pilot; add remaining env vars as each wiki
+    migrates in Stage 5.
+
+Refresh triggers scattered across clients
+  - Bot and app trigger refresh differently today.
+  - Audit up front in Stage 1; Stage 3 hits all of them.
+
+Failure-counter threshold tuning
+  - Starting value 5 is a guess. May want to observe real behavior post-
+    migration and adjust per wiki (some wikis flakier than others).
+  - Constant per wiki module, not global.
+
+Definitive-absence signal detection
+  - Failure counter requires distinguishing 404 from 5xx / timeouts / parse
+    errors.
+  - Current `WikiError` may not carry this distinction.
+  - If not, extend `WikiError` variants in Stage 1.
+
+Bot deployment cadence
+  - Bot ships from `release_bot`; app ships from `app_release`.
+  - Stage 3 may split bot and app migration in time.
+  - Fine - they don't share runtime state, each has its own DB (per client's
+    injected driver).
+
+================================================================================
+5. NON-GOALS
+================================================================================
+
+Explicitly out of scope for this refactor:
+
+  - Sorting feature (comes after MovesDB)
+  - Web platform
+  - Tip IAP
+  - Hitbox image / move video storage changes
+  - Any UI redesign - screens should look identical pre/post migration
+  - EWGF, Infil Glossary bot features
+  - Cross-DB schema sharing (SQLDelight limitation, accepted)
+
+Keep the refactor a pure architectural change. Feature work resumes on top of
+the new foundation.
+
+================================================================================
+6. GLOSSARY
+================================================================================
+
+CTI (Class Table Inheritance)
+  Storage pattern where a base table holds shared fields and one extension
+  table per variant holds variant-specific fields, joined 1:1. Fowler, PoEAA.
+
+STI (Single Table Inheritance)
+  Storage pattern where one wide table holds all variants with nullable
+  columns for fields that don't apply to every variant. Current in-memory
+  pattern; not chosen for persistence.
+
+Failure-count eviction / Strike-based eviction
+  Eviction pattern where a per-entity counter increments on definitive
+  absence signals and the entity is removed when the counter reaches a
+  threshold. Any success resets the counter. Chosen for orphaned character
+  handling.
+
+remoteId
+  Stable external identifier for a character or move, matching the wiki's
+  own page identifier. Used to build wiki URLs and match wiki responses.
+  Distinct from the DB's autoincrement `id`.
+
+Fan-out
+  Cross-game query pattern: iterate every wiki module's repository, collect
+  results, concat or first-hit. Used for global character autocomplete,
+  global move autocomplete, and command execution.
+
+================================================================================
