@@ -243,7 +243,8 @@ internal fun helpEmbed(
         name = "**Basic syntax**",
         value = "`@bot [command] [queries]` or `/command [queries]`\n" +
                 "  - each individual query is **one single word without spaces**\n" +
-                "  - don't know the char's one-word name? `alias` - ie `aliastk`\n",
+                "  - tag is quicker, **slash has autocomplete**\n" +
+                "  - don't know the char's one-word name? `alias`\n",
         inline = false,
     )
 
@@ -264,7 +265,7 @@ internal fun helpEmbed(
 
     val chunks = when (bulletPoints.size) {
         in 0..5 -> listOf(bulletPoints)
-        in 5..EMBED_LIST_PER_COLUMN -> bulletPoints.chunked(5)
+        in 6..EMBED_LIST_PER_COLUMN -> bulletPoints.chunked(5)
         else -> bulletPoints.chunked(EMBED_LIST_PER_COLUMN)
     }
 
@@ -277,8 +278,8 @@ internal fun helpEmbed(
 
     mandatoryField(
         name = "",
-        value = "Feedback can be sent to the author via `feedback`.\n" +
-                "Bot also supports 12 other games, see `modules`.",
+        value = "Send feedback to author: `feedback`.\n" +
+                "Supported games and features: `modules`.",
         inline = false,
     )
 
