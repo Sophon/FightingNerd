@@ -4,6 +4,7 @@ import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
 import io.github.sophon.core.wiki.data.CharacterDbAdapter
 import io.github.sophon.core.wiki.data.MoveDbAdapter
+import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.data.WavuDB
