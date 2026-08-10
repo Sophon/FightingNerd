@@ -110,7 +110,10 @@ Each wiki module exposes exactly:
   1. FeatureInfo (game list, wiki URLs, id)
   2. Koin module (registers the impl, accepts `SqlDriver` via `parametersOf`)
   3. Models used by clients (filters; Character and Move come from core)
-  4. Repository interface (replacing current `WikiClient`)
+  4. `<Wiki>Client` interface (e.g. `WavuClient`) - the ONLY outward-facing
+     surface for consumers. Replaces the current `WikiClient` when the module
+     migrates. Per-entity repositories are INTERNAL and never leave the module;
+     `<Wiki>Client` owns them and mediates all consumer access.
 
 Everything else is `internal`:
   - HTTP client(s), per game
@@ -303,9 +306,13 @@ Inside the module:
     Note: Other wiki modules will additionally have `<game>_character.sq`
     files where that game has Character.*Properties. See extension table
     matrix in section 2.
-  - Domain-facing repository interface (per-game, internal to the wiki
-    module's integration surface): observe roster, observe moves, refresh
-    character, admin reset.
+  - Per-entity repository interfaces, both INTERNAL to the wiki module:
+    `<Wiki>CharacterRepo` and `<Wiki>MoveRepo`. Each operates on a single
+    entity (foundational project convention: one repo per data category).
+    Cross-entity flows (observe roster, observe moves for character, refresh
+    character, admin reset) live on the `<Wiki>Client` façade above, which
+    owns both repos and opens transactions on the generated `<Wiki>DB` when
+    a flow spans both tables.
   - Internal impl: HTTP client stays largely as-is, mapper produces
     `List<Move>` with `t8Properties` populated. Cache-then-return flow.
   - Failure-counter wiring:

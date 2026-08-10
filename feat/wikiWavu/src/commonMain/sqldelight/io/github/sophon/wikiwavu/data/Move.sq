@@ -1,0 +1,44 @@
+import kotlin.Boolean;
+
+CREATE TABLE MoveEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    characterId TEXT NOT NULL,
+    name TEXT,
+    input TEXT NOT NULL,
+    damage TEXT,
+    startup TEXT,
+    active TEXT,
+    recovery TEXT,
+    onBlock TEXT,
+    onHit TEXT,
+    onCH TEXT,
+    guard TEXT,
+    cancel TEXT,
+    invulnerability TEXT,
+    isThrow INTEGER AS Boolean NOT NULL DEFAULT 0,
+    notes TEXT NOT NULL,
+    aliases TEXT NOT NULL,
+    urlsWikiUrl TEXT,
+    urlsVideoId TEXT,
+    urlsHitboxImageList TEXT NOT NULL,
+    urlsMoveImageList TEXT NOT NULL,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertMove:
+INSERT OR REPLACE INTO MoveEntity(id, characterId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsHitboxImageList, urlsMoveImageList)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+
+deleteAll:
+DELETE FROM MoveEntity;
+
+deleteByCharacter:
+DELETE FROM MoveEntity
+WHERE characterId = ?;
+
+selectTekkenByCharacter:
+SELECT m.id, m.characterId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+       tm.isHeat, tm.isHoming, tm.stance, tm.isPowerCrush, tm.isHighCrush, tm.isLowCrush, tm.hasWallInteraction, tm.hasFloorInteraction
+FROM MoveEntity m
+INNER JOIN TekkenMoveEntity tm ON tm.moveId = m.id
+WHERE m.characterId = ?;
