@@ -3,17 +3,23 @@ package io.github.sophon.core.wiki.domain
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.CharacterRepo
 import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 
@@ -23,21 +29,52 @@ abstract class BaseWikiClient(
     override val featureInfo: FeatureInfo,
     private val characterDB: CharacterListDB,
     private val moveDB: MoveListDB,
+    private val characterRepo: CharacterRepo? = null, //TODO: non-null once migration complete
+    private val moveRepo: MoveRepo? = null, //TODO: non-null once migration complete
+    private val infoLogger: (String) -> Unit = {},
+    private val debugLogger: (String) -> Unit = {},
 ) : WikiClient {
     abstract override suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
     abstract override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError>
 
     override suspend fun refreshData(): EmptyResult<WikiError> {
         //TODO: handle per-request timeout and host-unresponsive short-circuit
-        TODO("Not yet implemented for ${this::class.simpleName}")
+        val characterRepo = requireCharacterRepo()
+        val moveRepo = requireMoveRepo()
+
+        val charResult = characterRepo.refreshCharacterList()
+        if (charResult is Result.Error) {
+            val error = Result.Error(charResult.error.toDomainError())
+            return error
+        }
+
+        val characterList = characterRepo.subscribeToCharacterList().first()
+        infoLogger("${game.id}: ${characterList.size} downloaded")
+
+        for (character in characterList) {
+            moveRepo.refreshMoveList(character)
+                .onSuccess { moveListSize ->
+                    debugLogger("${character.id} (${game.id}): $moveListSize moves downloaded")
+                }
+                .onError {
+                    val error = Result.Error(it.toDomainError())
+                    return error
+                }
+        }
+        val result = Result.Success(Unit)
+        return result
     }
 
     override fun subscribeToCharacterList(): Flow<List<Character>> {
-        TODO("Not yet implemented for ${this::class.simpleName}")
+        val repo = requireCharacterRepo()
+        val flow = repo.subscribeToCharacterList()
+        return flow
     }
 
     override fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>> {
-        TODO("Not yet implemented for ${this::class.simpleName}")
+        val repo = requireMoveRepo()
+        val flow = repo.subscribeToMoveList(characterId.value)
+        return flow
     }
 
     final override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
@@ -96,4 +133,20 @@ abstract class BaseWikiClient(
     }
 
     protected open suspend fun onClearCache() { /* no-op by default */ }
+
+    private fun requireCharacterRepo(): CharacterRepo {
+        val repo = characterRepo
+            ?: error("${this::class.simpleName} did not provide a CharacterRepo to BaseWikiClient")
+        return repo
+    }
+
+    private fun requireMoveRepo(): MoveRepo {
+        val repo = moveRepo
+            ?: error("${this::class.simpleName} did not provide a MoveRepo to BaseWikiClient")
+        return repo
+    }
+
+    private companion object {
+        const val TAG = "BaseWikiClient"
+    }
 }
