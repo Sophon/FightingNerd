@@ -91,9 +91,6 @@ fun mizuumiModule() = module {
         val gameQualifier = named("${WikiClientFeature.Mizuumi.id}:${game.id}")
         MizuumiWikiClient(
             game = game,
-            characterDB = params.get(),
-            moveDB = params.get(),
-            source = get(),
             dataCache = get(gameQualifier),
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),

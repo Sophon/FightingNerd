@@ -12,7 +12,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 internal class WavuCharacterDbAdapter(
     private val db: WavuDB,
     private val gameId: String,
@@ -60,8 +63,15 @@ internal class WavuCharacterDbAdapter(
     override fun transaction(block: () -> Unit) {
         db.transaction { block() }
     }
+
+    override fun getLastUpdateTimestamp(): Instant? {
+        val millis = queries.selectLastInsertedAt().executeAsOne().lastInsertedAt
+        val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
+        return timestamp
+    }
 }
 
+@OptIn(ExperimentalTime::class)
 internal class WavuMoveDbAdapter(
     private val db: WavuDB,
 ) : MoveDbAdapter {
@@ -131,5 +141,11 @@ internal class WavuMoveDbAdapter(
 
     override fun transaction(block: () -> Unit) {
         db.transaction { block() }
+    }
+
+    override fun getLastUpdateTimestamp(): Instant? {
+        val millis = moveQueries.selectLastInsertedAt().executeAsOne().lastInsertedAt
+        val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
+        return timestamp
     }
 }

@@ -76,9 +76,6 @@ fun dragDownModule() = module {
         val gameQualifier = named("${WikiClientFeature.DragDown.id}:${game.id}")
         DragDownWikiClient(
             game = game,
-            source = get(),
-            characterDB = params.get(),
-            moveDB = params.get(),
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),
         )

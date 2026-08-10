@@ -13,7 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 internal class DustLoopCharacterDbAdapter(
     private val db: DustLoopDB,
     private val gameId: String,
@@ -61,8 +64,15 @@ internal class DustLoopCharacterDbAdapter(
     override fun transaction(block: () -> Unit) {
         db.transaction { block() }
     }
+
+    override fun getLastUpdateTimestamp(): Instant? {
+        val millis = queries.selectLastInsertedAtForGame(gameId).executeAsOne().lastInsertedAt
+        val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
+        return timestamp
+    }
 }
 
+@OptIn(ExperimentalTime::class)
 internal class DustLoopMoveDbAdapter(
     private val db: DustLoopDB,
     private val game: Game,
@@ -225,5 +235,11 @@ internal class DustLoopMoveDbAdapter(
 
     override fun transaction(block: () -> Unit) {
         db.transaction { block() }
+    }
+
+    override fun getLastUpdateTimestamp(): Instant? {
+        val millis = queries.selectLastInsertedAtForGame(game.id).executeAsOne().lastInsertedAt
+        val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
+        return timestamp
     }
 }

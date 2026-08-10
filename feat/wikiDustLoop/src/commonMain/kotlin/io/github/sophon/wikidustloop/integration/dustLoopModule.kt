@@ -78,9 +78,6 @@ fun dustLoopModule() = module {
         val gameQualifier = named("${WikiClientFeature.DustLoop.id}:${game.id}")
         DustLoopWikiClient(
             game = game,
-            source = get(),
-            characterDB = params.get(),
-            moveDB = params.get(),
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),
         )

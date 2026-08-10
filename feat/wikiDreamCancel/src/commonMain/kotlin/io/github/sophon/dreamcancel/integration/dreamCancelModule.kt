@@ -83,10 +83,7 @@ fun dreamCancelModule() = module {
         val gameQualifier = named("${WikiClientFeature.DreamCancel.id}:${game.id}")
         DreamCancelWikiClient(
             game = game,
-            source = get(),
             dataCache = get(gameQualifier),
-            characterDB = params.get(),
-            moveDB = params.get(),
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),
         )

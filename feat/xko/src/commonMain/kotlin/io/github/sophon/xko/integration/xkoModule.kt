@@ -85,8 +85,6 @@ fun xkoModule() = module {
             game = game,
             source = get(),
             dataCache = get(gameQualifier),
-            characterDB = params.get(),
-            moveDB = params.get(),
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),
         )

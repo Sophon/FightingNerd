@@ -13,7 +13,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 internal class SuperComboCharacterDbAdapter(
     private val db: SuperComboDB,
     private val gameId: String,
@@ -61,8 +64,15 @@ internal class SuperComboCharacterDbAdapter(
     override fun transaction(block: () -> Unit) {
         db.transaction { block() }
     }
+
+    override fun getLastUpdateTimestamp(): Instant? {
+        val millis = queries.selectLastInsertedAtForGame(gameId).executeAsOne().lastInsertedAt
+        val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
+        return timestamp
+    }
 }
 
+@OptIn(ExperimentalTime::class)
 internal class SuperComboMoveDbAdapter(
     private val db: SuperComboDB,
     private val game: Game,
@@ -193,5 +203,11 @@ internal class SuperComboMoveDbAdapter(
 
     override fun transaction(block: () -> Unit) {
         db.transaction { block() }
+    }
+
+    override fun getLastUpdateTimestamp(): Instant? {
+        val millis = queries.selectLastInsertedAtForGame(game.id).executeAsOne().lastInsertedAt
+        val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
+        return timestamp
     }
 }

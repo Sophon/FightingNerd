@@ -75,9 +75,6 @@ fun wavuModule() = module {
     factory<WikiClient>(named(WikiClientFeature.Wavu.id)) { params ->
         WavuWikiClient(
             game = params.get(),
-            characterDB = params.get(),
-            moveDB = params.get(),
-            source = get(),
             characterRepo = get(named(WikiClientFeature.Wavu.id)) { params },
             moveRepo = get(named(WikiClientFeature.Wavu.id)) { params },
         )

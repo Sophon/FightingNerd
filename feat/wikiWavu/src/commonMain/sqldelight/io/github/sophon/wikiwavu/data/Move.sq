@@ -23,6 +23,7 @@ CREATE TABLE MoveEntity (
     urlsHitboxImageList TEXT NOT NULL,
     urlsMoveImageList TEXT NOT NULL,
     consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
+    insertedAt INTEGER NOT NULL DEFAULT (CAST(strftime('%s','now') AS INTEGER) * 1000),
     FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
 );
 
@@ -50,7 +51,12 @@ ON CONFLICT(id) DO UPDATE SET
     urlsVideoId = excluded.urlsVideoId,
     urlsHitboxImageList = excluded.urlsHitboxImageList,
     urlsMoveImageList = excluded.urlsMoveImageList,
-    consecutiveFailureCount = 0;
+    consecutiveFailureCount = 0,
+    insertedAt = CAST(strftime('%s','now') AS INTEGER) * 1000;
+
+selectLastInsertedAt:
+SELECT MAX(insertedAt) AS lastInsertedAt
+FROM MoveEntity;
 
 deleteAll:
 DELETE FROM MoveEntity;

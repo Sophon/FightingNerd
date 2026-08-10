@@ -78,9 +78,6 @@ fun superComboModule() = module {
         val gameQualifier = named("${WikiClientFeature.SuperCombo.id}:${game.id}")
         SuperComboWikiClient(
             game = game,
-            source = get(),
-            characterDB = params.get(),
-            moveDB = params.get(),
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),
         )
