@@ -72,6 +72,7 @@ internal class WavuWikiClient(
     }
 
     override suspend fun refreshData(): EmptyResult<WikiError> {
+        //TODO: handle per-request timeout and host-unresponsive short-circuit
         val charResult = characterRepo.refreshCharacterList()
         if (charResult is Result.Error) {
             val error = Result.Error(charResult.error.toDomainError())
