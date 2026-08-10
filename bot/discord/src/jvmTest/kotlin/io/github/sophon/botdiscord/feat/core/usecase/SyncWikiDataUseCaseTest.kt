@@ -2,8 +2,6 @@ package io.github.sophon.botdiscord.feat.core.usecase
 
 import assertk.assertThat
 import assertk.assertions.containsExactly
-import assertk.assertions.hasSize
-import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.architecture.EmptyResult
@@ -12,11 +10,14 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.Test
@@ -24,463 +25,37 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class SyncWikiDataUseCaseTest {
-    //region Test Setup
     private val useCase = SyncWikiDataUseCase()
-
-    private fun createTestCharacter(
-        id: String = "jin",
-        displayName: String = "Jin Kazama",
-        queryName: String = "jin"
-    ) = Character(
-        id = id,
-        displayName = displayName,
-        remoteQueryId = queryName,
-        wikiUrl = "https://wavu.wiki/t/Jin",
-        aliasList = listOf("jin", "kazama"),
-        images = null,
-        sf6Properties = null
-    )
-
-    private fun createTestMove(
-        characterId: String = "jin",
-        id: String = "1",
-        input: String = "1"
-    ) = Move(
-        characterId = characterId,
-        id = id,
-        input = input,
-        damage = "10",
-        startup = "i10",
-        guard = "h",
-        onBlock = "-1",
-        onHit = "+5",
-        onCH = null,
-        name = "Jab",
-        recovery = null,
-        notes = emptyList(),
-        aliases = emptyList(),
-        urls = Move.Urls(wikiUrl = "TODO"),
-        t8Properties = Move.T8Properties(
-            isHeat = false,
-            isHoming = false,
-            stance = null,
-            isPowerCrush = false,
-            isHighCrush = false,
-            isLowCrush = false
-        ),
-        sf6Properties = null
-    )
-
-    private class FakeWikiClient(
-        override val featureInfo: FeatureInfo = FeatureInfo(
-            name = "wavu",
-            url = "",
-            version = "",
-            supportedGameSet = setOf(),
-            iconUrl = "",
-        )
-    ) : WikiClient {
-        var downloadCharacterListResult: Result<List<Character>, WikiError>? = null
-        var cacheCharacterListResult: EmptyResult<WikiError>? = null
-        var downloadMoveListResults: Map<String, Result<List<Move>, WikiError>> = emptyMap()
-        var cacheMoveListResults: Map<String, EmptyResult<WikiError>> = emptyMap()
-        var clearCacheResult: EmptyResult<WikiError>? = null
-
-        val downloadCharacterListCallCount get() = _downloadCharacterListCallCount
-        val cacheCharacterListCalls get() = _cacheCharacterListCalls
-        val downloadMoveListCalls get() = _downloadMoveListCalls
-        val cacheMoveListCalls get() = _cacheMoveListCalls
-        val clearCacheCalls get() = _clearCacheCalls
-
-        private var _downloadCharacterListCallCount = 0
-        private val _cacheCharacterListCalls = mutableListOf<List<Character>>()
-        private val _downloadMoveListCalls = mutableListOf<String>()
-        private val _cacheMoveListCalls = mutableListOf<Pair<Character, List<Move>>>()
-        private var _clearCacheCalls = 0
-
-        override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
-            _downloadCharacterListCallCount++
-            return downloadCharacterListResult
-                ?: Result.Success(emptyList())
-        }
-
-        override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
-            _cacheCharacterListCalls.add(characterList)
-            return cacheCharacterListResult
-                ?: Result.Success(Unit)
-        }
-
-        override suspend fun downloadMoveListFor(
-            character: Character,
-        ): Result<List<Move>, WikiError> {
-            _downloadMoveListCalls.add(character.remoteQueryId)
-            return downloadMoveListResults[character.id]
-                ?: Result.Success(emptyList())
-        }
-
-        override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError> {
-            _cacheMoveListCalls.add(character to moveList)
-            return cacheMoveListResults[character.remoteQueryId]
-                ?: Result.Success(Unit)
-        }
-
-        override suspend fun clearCache(): EmptyResult<WikiError> {
-            _clearCacheCalls++
-            return clearCacheResult
-                ?: Result.Success(Unit)
-        }
-
-
-        override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = throw NotImplementedError("Not used in this use case")
-        override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> = throw NotImplementedError("Not used in this use case")
-        override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
-        override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> = throw NotImplementedError("Not used in this use case")
-        override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> = throw NotImplementedError("Not used in this use case")
-        override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = throw NotImplementedError("Not used in this use case")
-        override fun getFiltersFor(game: Game): Set<Filter> = return emptySet()
-    }
-    //endregion
 
     //region Success Scenarios
     @Test
-    fun `invoke - single wiki with single character and moves succeeds`() = runTest {
+    fun `invoke - single wiki refresh succeeds`() = runTest {
         // given
-        val character = createTestCharacter()
-        val moves = listOf(
-            createTestMove(characterId = "jin", id = "1", input = "1"),
-            createTestMove(characterId = "jin", id = "2", input = "2")
-        )
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(character))
-            downloadMoveListResults = mapOf("jin" to Result.Success(moves))
-        }
+        val wiki = FakeWikiClient(refreshDataResult = Result.Success(Unit))
 
         // when
         val result = useCase.invoke(listOf(wiki))
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
-        assertThat(wiki.downloadCharacterListCallCount).isEqualTo(1)
-        assertThat(wiki.clearCacheCalls).isEqualTo(1)
-        assertThat(wiki.cacheCharacterListCalls).hasSize(1)
-        assertThat(wiki.cacheCharacterListCalls.first()).containsExactly(character)
-        assertThat(wiki.cacheMoveListCalls).hasSize(1)
-        assertThat(wiki.cacheMoveListCalls.first()).isEqualTo(character to moves)
+        assertThat(wiki.refreshDataCallCount).isEqualTo(1)
     }
 
     @Test
-    fun `invoke - single wiki with multiple characters and moves succeeds`() = runTest {
+    fun `invoke - multiple wikis all refresh successfully`() = runTest {
         // given
-        val jin = createTestCharacter(id = "jin", displayName = "Jin", queryName = "jin")
-        val kazuya = createTestCharacter(id = "kazuya", displayName = "Kazuya", queryName = "kazuya")
-        val jinMoves = listOf(createTestMove(characterId = "jin", id = "1"))
-        val kazuyaMoves = listOf(createTestMove(characterId = "kazuya", id = "1"))
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(jin, kazuya))
-            downloadMoveListResults = mapOf(
-                "jin" to Result.Success(jinMoves),
-                "kazuya" to Result.Success(kazuyaMoves)
-            )
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Success::class)
-        assertThat(wiki.cacheCharacterListCalls.first()).containsExactly(jin, kazuya)
-        assertThat(wiki.cacheMoveListCalls).hasSize(2)
-        assertThat(wiki.downloadMoveListCalls).containsExactly("jin", "kazuya")
-    }
-
-    @Test
-    fun `invoke - multiple wikis all succeed`() = runTest {
-        // given
-        val character1 = createTestCharacter(id = "jin")
-        val character2 = createTestCharacter(id = "ryu")
-        val wiki1 = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(character1))
-            downloadMoveListResults = mapOf("jin" to Result.Success(listOf(createTestMove())))
-        }
-        val wiki2 = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(character2))
-            downloadMoveListResults = mapOf("ryu" to Result.Success(listOf(createTestMove(characterId = "ryu"))))
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki1, wiki2))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Success::class)
-        assertThat(wiki1.clearCacheCalls).isEqualTo(1)
-        assertThat(wiki2.clearCacheCalls).isEqualTo(1)
-    }
-
-    @Test
-    fun `invoke - empty character list succeeds`() = runTest {
-        // given
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(emptyList())
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf((Result.Success::class))
-        assertThat(wiki.clearCacheCalls).isEqualTo(1)
-        assertThat(wiki.cacheCharacterListCalls.first()).isEmpty()
-        assertThat(wiki.downloadMoveListCalls).isEmpty()
-        assertThat(wiki.cacheMoveListCalls).isEmpty()
-    }
-
-    @Test
-    fun `invoke - character with empty move list succeeds`() = runTest {
-        // given
-        val character = createTestCharacter()
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(character))
-            downloadMoveListResults = mapOf("jin" to Result.Success(emptyList()))
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Success::class)
-        assertThat(wiki.cacheMoveListCalls).isEmpty()
-    }
-    //endregion
-
-    //region Download Character List Failures
-    @Test
-    fun `invoke - downloadCharacterList fails does not clear cache`() = runTest {
-        // given
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Error(WikiError.DownloadError("Network error"))
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isInstanceOf(BotError.DownloadError::class)
-        assertThat(wiki.clearCacheCalls).isEqualTo(0)
-        assertThat(wiki.cacheCharacterListCalls).isEmpty()
-    }
-    //endregion
-
-    //region Download Move List Failures
-    @Test
-    fun `invoke - downloadMoveList fails for one character returns first error`() = runTest {
-        // given
-        val jin = createTestCharacter(id = "jin", queryName = "jin")
-        val kazuya = createTestCharacter(id = "kazuya", queryName = "kazuya")
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(jin, kazuya))
-            downloadMoveListResults = mapOf(
-                "jin" to Result.Error(WikiError.DownloadError("Failed to download jin moves")),
-                "kazuya" to Result.Success(listOf(createTestMove(characterId = "kazuya")))
-            )
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat(wiki.clearCacheCalls).isEqualTo(0)
-        assertThat(wiki.cacheCharacterListCalls).isEmpty()
-    }
-
-    @Test
-    fun `invoke - downloadMoveList fails for all characters returns error`() = runTest {
-        // given
-        val jin = createTestCharacter(id = "jin", queryName = "jin")
-        val kazuya = createTestCharacter(id = "kazuya", queryName = "kazuya")
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(jin, kazuya))
-            downloadMoveListResults = mapOf(
-                "jin" to Result.Error(WikiError.DownloadError("Failed")),
-                "kazuya" to Result.Error(WikiError.DownloadError("Failed"))
-            )
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat(wiki.clearCacheCalls).isEqualTo(0)
-    }
-
-    @Test
-    fun `invoke - downloadMoveList partial success still fails overall`() = runTest {
-        // given
-        val jin = createTestCharacter(id = "jin", queryName = "jin")
-        val kazuya = createTestCharacter(id = "kazuya", queryName = "kazuya")
-        val paul = createTestCharacter(id = "paul", queryName = "paul")
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(jin, kazuya, paul))
-            downloadMoveListResults = mapOf(
-                "jin" to Result.Success(listOf(createTestMove(characterId = "jin"))),
-                "kazuya" to Result.Error(WikiError.DownloadError("Failed")),
-                "paul" to Result.Success(listOf(createTestMove(characterId = "paul")))
-            )
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat(wiki.clearCacheCalls).isEqualTo(0)
-        assertThat(wiki.downloadMoveListCalls).hasSize(3)
-    }
-    //endregion
-
-    //region Clear Cache Failures
-    @Test
-    fun `invoke - clearCache fails stops execution and returns error`() = runTest {
-        // given
-        val character = createTestCharacter()
-        val moves = listOf(createTestMove())
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(character))
-            downloadMoveListResults = mapOf("jin" to Result.Success(moves))
-            clearCacheResult = Result.Error(WikiError.DatabaseError("Failed to clear cache"))
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat(wiki.clearCacheCalls).isEqualTo(1)
-        assertThat(wiki.cacheCharacterListCalls).isEmpty()
-        assertThat(wiki.cacheMoveListCalls).isEmpty()
-    }
-    //endregion
-
-    //region Cache Character List Failures
-    @Test
-    fun `invoke - cacheCharacterList fails after clearCache returns error`() = runTest {
-        // given
-        val character = createTestCharacter()
-        val moves = listOf(createTestMove())
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(character))
-            downloadMoveListResults = mapOf("jin" to Result.Success(moves))
-            cacheCharacterListResult = Result.Error(WikiError.DatabaseError("Failed to cache characters"))
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat(wiki.clearCacheCalls).isEqualTo(1)
-        assertThat(wiki.cacheCharacterListCalls).hasSize(1)
-        assertThat(wiki.cacheMoveListCalls).isEmpty()
-    }
-    //endregion
-
-    //region Cache Move List Failures
-    @Test
-    fun `invoke - cacheMoveList fails for one character returns error`() = runTest {
-        // given
-        val jin = createTestCharacter(id = "jin", queryName = "jin")
-        val kazuya = createTestCharacter(id = "kazuya", queryName = "kazuya")
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(jin, kazuya))
-            downloadMoveListResults = mapOf(
-                "jin" to Result.Success(listOf(createTestMove(characterId = "jin"))),
-                "kazuya" to Result.Success(listOf(createTestMove(characterId = "kazuya")))
-            )
-            cacheMoveListResults = mapOf(
-                "jin" to Result.Error(WikiError.DatabaseError("Failed to cache jin moves"))
-            )
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat(wiki.clearCacheCalls).isEqualTo(1)
-        assertThat(wiki.cacheCharacterListCalls).hasSize(1)
-    }
-
-    @Test
-    fun `invoke - cacheMoveList fails for all characters returns first error`() = runTest {
-        // given
-        val jin = createTestCharacter(id = "jin", queryName = "jin")
-        val kazuya = createTestCharacter(id = "kazuya", queryName = "kazuya")
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(jin, kazuya))
-            downloadMoveListResults = mapOf(
-                "jin" to Result.Success(listOf(createTestMove(characterId = "jin"))),
-                "kazuya" to Result.Success(listOf(createTestMove(characterId = "kazuya")))
-            )
-            cacheMoveListResults = mapOf(
-                "jin" to Result.Error(WikiError.DatabaseError("Failed")),
-                "kazuya" to Result.Error(WikiError.DatabaseError("Failed"))
-            )
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat(wiki.clearCacheCalls).isEqualTo(1)
-    }
-    //endregion
-
-    //region Multiple Wiki Scenarios
-    @Test
-    fun `invoke - first wiki succeeds second wiki fails returns error`() = runTest {
-        // given
-        val wiki1 = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(createTestCharacter()))
-            downloadMoveListResults = mapOf("jin" to Result.Success(listOf(createTestMove())))
-        }
-        val wiki2 = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Error(WikiError.DownloadError("Failed"))
-        }
-
-        // when
-        val result = useCase.invoke(listOf(wiki1, wiki2))
-
-        // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isInstanceOf(BotError.DownloadError::class)
-        assertThat(wiki1.clearCacheCalls).isEqualTo(1)
-        assertThat(wiki2.clearCacheCalls).isEqualTo(0)
-    }
-
-    @Test
-    fun `invoke - all wikis fail returns error with all failures`() = runTest {
-        // given
-        val wiki1 = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Error(WikiError.DownloadError("Wiki1 failed"))
-        }
-        val wiki2 = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Error(WikiError.DownloadError("Wiki2 failed"))
-        }
-        val wiki3 = FakeWikiClient().apply {
-            clearCacheResult = Result.Error(WikiError.DatabaseError("Wiki3 failed"))
-            downloadCharacterListResult = Result.Success(listOf(createTestCharacter()))
-            downloadMoveListResults = mapOf("jin" to Result.Success(listOf(createTestMove())))
-        }
+        val wiki1 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
+        val wiki2 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
+        val wiki3 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
 
         // when
         val result = useCase.invoke(listOf(wiki1, wiki2, wiki3))
 
         // then
-        assertThat(result).isInstanceOf(Result.Error::class)
-        assertThat((result as Result.Error).error).isInstanceOf(BotError.DownloadError::class)
+        assertThat(result).isInstanceOf(Result.Success::class)
+        assertThat(wiki1.refreshDataCallCount).isEqualTo(1)
+        assertThat(wiki2.refreshDataCallCount).isEqualTo(1)
+        assertThat(wiki3.refreshDataCallCount).isEqualTo(1)
     }
 
     @Test
@@ -496,59 +71,144 @@ class SyncWikiDataUseCaseTest {
     }
     //endregion
 
-    //region Edge Cases
+    //region Failure Scenarios
     @Test
-    fun `invoke - character with empty queryName uses empty string for download`() = runTest {
+    fun `invoke - single wiki refresh fails returns mapped error`() = runTest {
         // given
-        val character = createTestCharacter(queryName = "")
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(character))
-            downloadMoveListResults = mapOf("" to Result.Success(listOf(createTestMove(id = ""))))
-        }
+        val wiki = FakeWikiClient(
+            refreshDataResult = Result.Error(WikiError.DownloadError("Network error")),
+        )
 
         // when
         val result = useCase.invoke(listOf(wiki))
 
         // then
-        assertThat(result).isInstanceOf(Result.Success::class)
-        assertThat(wiki.downloadMoveListCalls).containsExactly("")
+        assertThat(result).isInstanceOf(Result.Error::class)
+        assertThat((result as Result.Error).error).isInstanceOf(BotError.DownloadError::class)
+        assertThat(wiki.refreshDataCallCount).isEqualTo(1)
     }
 
     @Test
-    fun `invoke - operations are performed in correct order`() = runTest {
+    fun `invoke - all wikis fail returns first error`() = runTest {
         // given
-        val character = createTestCharacter()
-        val moves = listOf(createTestMove())
-        val operationOrder = mutableListOf<String>()
-        val wiki = FakeWikiClient().apply {
-            downloadCharacterListResult = Result.Success(listOf(character)).also {
-                operationOrder.add("downloadCharacterList")
+        val wiki1 = FakeWikiClient(
+            refreshDataResult = Result.Error(WikiError.DownloadError("Wiki1 failed")),
+        )
+        val wiki2 = FakeWikiClient(
+            refreshDataResult = Result.Error(WikiError.DatabaseError("Wiki2 failed")),
+        )
+
+        // when
+        val result = useCase.invoke(listOf(wiki1, wiki2))
+
+        // then
+        assertThat(result).isInstanceOf(Result.Error::class)
+        assertThat((result as Result.Error).error).isInstanceOf(BotError.DownloadError::class)
+    }
+
+    @Test
+    fun `invoke - one wiki fails among many still refreshes all and returns error`() = runTest {
+        // given
+        val wiki1 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
+        val wiki2 = FakeWikiClient(
+            refreshDataResult = Result.Error(WikiError.DownloadError("Wiki2 failed")),
+        )
+        val wiki3 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
+
+        // when
+        val result = useCase.invoke(listOf(wiki1, wiki2, wiki3))
+
+        // then
+        assertThat(result).isInstanceOf(Result.Error::class)
+        assertThat((result as Result.Error).error).isInstanceOf(BotError.DownloadError::class)
+        assertThat(wiki1.refreshDataCallCount).isEqualTo(1)
+        assertThat(wiki2.refreshDataCallCount).isEqualTo(1)
+        assertThat(wiki3.refreshDataCallCount).isEqualTo(1)
+    }
+
+    @Test
+    fun `invoke - DatabaseError is mapped to Unknown BotError`() = runTest {
+        // given
+        val wiki = FakeWikiClient(
+            refreshDataResult = Result.Error(WikiError.DatabaseError("db down")),
+        )
+
+        // when
+        val result = useCase.invoke(listOf(wiki))
+
+        // then
+        assertThat(result).isInstanceOf(Result.Error::class)
+        assertThat((result as Result.Error).error).isInstanceOf(BotError.Unknown::class)
+    }
+    //endregion
+
+    //region Ordering
+    @Test
+    fun `invoke - refreshes wikis in order provided`() = runTest {
+        // given
+        val callOrder = mutableListOf<String>()
+        val wiki1 = object : WikiClient by FakeWikiClient() {
+            override suspend fun refreshData(): EmptyResult<WikiError> {
+                callOrder.add("wiki1")
+                return Result.Success(Unit)
             }
-            downloadMoveListResults = mapOf("jin" to Result.Success(moves).also {
-                operationOrder.add("downloadMoveList")
-            })
-            clearCacheResult = Result.Success(Unit).also {
-                operationOrder.add("clearCache")
+        }
+        val wiki2 = object : WikiClient by FakeWikiClient() {
+            override suspend fun refreshData(): EmptyResult<WikiError> {
+                callOrder.add("wiki2")
+                return Result.Success(Unit)
             }
-            cacheCharacterListResult = Result.Success(Unit).also {
-                operationOrder.add("cacheCharacterList")
+        }
+        val wiki3 = object : WikiClient by FakeWikiClient() {
+            override suspend fun refreshData(): EmptyResult<WikiError> {
+                callOrder.add("wiki3")
+                return Result.Success(Unit)
             }
-            cacheMoveListResults = mapOf("jin" to Result.Success(Unit).also {
-                operationOrder.add("cacheMoveList")
-            })
         }
 
         // when
-        useCase.invoke(listOf(wiki))
+        useCase.invoke(listOf(wiki1, wiki2, wiki3))
 
         // then
-        assertThat(operationOrder).containsExactly(
-            "downloadCharacterList",
-            "downloadMoveList",
-            "clearCache",
-            "cacheCharacterList",
-            "cacheMoveList"
+        assertThat(callOrder).containsExactly("wiki1", "wiki2", "wiki3")
+    }
+    //endregion
+
+
+    //region Test Setup
+    private class FakeWikiClient(
+        var refreshDataResult: EmptyResult<WikiError> = Result.Success(Unit),
+    ) : WikiClient {
+        override val featureInfo: FeatureInfo = FeatureInfo(
+            name = "wavu",
+            url = "",
+            version = "",
+            supportedGameSet = setOf(),
+            iconUrl = "",
         )
+
+        private var _refreshDataCallCount = 0
+        val refreshDataCallCount get() = _refreshDataCallCount
+
+        override suspend fun refreshData(): EmptyResult<WikiError> {
+            _refreshDataCallCount++
+            return refreshDataResult
+        }
+
+        override fun subscribeToCharacterList(): Flow<List<Character>> = emptyFlow()
+        override fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>> = emptyFlow()
+        override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun clearCache(): EmptyResult<WikiError> = throw NotImplementedError("Not used in this use case")
+        override fun getFiltersFor(game: Game): Set<Filter> = emptySet()
+        override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> = throw NotImplementedError("Not used in this use case")
     }
     //endregion
 }

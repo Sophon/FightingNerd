@@ -1,0 +1,9 @@
+CREATE TABLE COTWMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    revDamage TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertCOTWMove:
+INSERT OR REPLACE INTO COTWMoveEntity(moveId, revDamage)
+VALUES (?, ?);

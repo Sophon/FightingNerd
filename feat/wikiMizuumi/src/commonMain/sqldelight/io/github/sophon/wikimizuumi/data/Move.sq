@@ -1,0 +1,93 @@
+import kotlin.Boolean;
+
+CREATE TABLE MoveEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    characterId TEXT NOT NULL,
+    gameId TEXT NOT NULL,
+    name TEXT,
+    input TEXT NOT NULL,
+    damage TEXT,
+    startup TEXT,
+    active TEXT,
+    recovery TEXT,
+    onBlock TEXT,
+    onHit TEXT,
+    onCH TEXT,
+    guard TEXT,
+    cancel TEXT,
+    invulnerability TEXT,
+    isThrow INTEGER AS Boolean NOT NULL DEFAULT 0,
+    notes TEXT NOT NULL,
+    aliases TEXT NOT NULL,
+    urlsWikiUrl TEXT,
+    urlsVideoId TEXT,
+    urlsHitboxImageList TEXT NOT NULL,
+    urlsMoveImageList TEXT NOT NULL,
+    consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertMove:
+INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsHitboxImageList, urlsMoveImageList)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+    characterId = excluded.characterId,
+    gameId = excluded.gameId,
+    name = excluded.name,
+    input = excluded.input,
+    damage = excluded.damage,
+    startup = excluded.startup,
+    active = excluded.active,
+    recovery = excluded.recovery,
+    onBlock = excluded.onBlock,
+    onHit = excluded.onHit,
+    onCH = excluded.onCH,
+    guard = excluded.guard,
+    cancel = excluded.cancel,
+    invulnerability = excluded.invulnerability,
+    isThrow = excluded.isThrow,
+    notes = excluded.notes,
+    aliases = excluded.aliases,
+    urlsWikiUrl = excluded.urlsWikiUrl,
+    urlsVideoId = excluded.urlsVideoId,
+    urlsHitboxImageList = excluded.urlsHitboxImageList,
+    urlsMoveImageList = excluded.urlsMoveImageList,
+    consecutiveFailureCount = 0;
+
+deleteAllForGame:
+DELETE FROM MoveEntity
+WHERE gameId = ?;
+
+deleteByCharacter:
+DELETE FROM MoveEntity
+WHERE characterId = ?;
+
+incrementFailureCountForAbsent:
+UPDATE MoveEntity
+SET consecutiveFailureCount = consecutiveFailureCount + 1
+WHERE characterId = ? AND id NOT IN ?;
+
+deleteExceededThreshold:
+DELETE FROM MoveEntity
+WHERE characterId = ? AND consecutiveFailureCount >= ?;
+
+selectMBTLByCharacter:
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+       mm.inputInfo, mm.subtitle, mm.minDamage, mm.property, mm.cost, mm.attribute, mm.landing, mm.overall
+FROM MoveEntity m
+LEFT JOIN MBTLMoveEntity mm ON mm.moveId = m.id
+WHERE m.characterId = ?;
+
+selectUni2ByCharacter:
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+       um.inputInfo, um.subtitle, um.minDamage, um.type, um.cancelWindow, um.property, um.cost, um.attribute, um.landing, um.overall, um.assaultAdv, um.blockstun, um.groundHit, um.airHit, um.groundCH, um.airCH, um.hitstop, um.CHstop, um.proration, um.comboP1, um.comboP2
+FROM MoveEntity m
+LEFT JOIN Uni2MoveEntity um ON um.moveId = m.id
+WHERE m.characterId = ?;
+
+selectVSAVByCharacter:
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+       vm.inputInfo, vm.subtitle, vm.whiteDmg, vm.renda, vm.meter, vm.reaction, vm.curseTime
+FROM MoveEntity m
+LEFT JOIN VSAVMoveEntity vm ON vm.moveId = m.id
+WHERE m.characterId = ?;

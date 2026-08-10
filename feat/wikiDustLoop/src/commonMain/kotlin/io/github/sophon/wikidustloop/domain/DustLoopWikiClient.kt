@@ -7,7 +7,9 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.CharacterRepo
 import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
@@ -29,11 +31,17 @@ internal class DustLoopWikiClient(
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
     private val source: DustLoopDataSource,
+    characterRepo: CharacterRepo,
+    moveRepo: MoveRepo,
 ): BaseWikiClient(
     game = game,
     characterDB = characterDB,
     moveDB = moveDB,
     featureInfo = DustLoopFeatureInfo.featureInfo,
+    characterRepo = characterRepo,
+    moveRepo = moveRepo,
+    infoLogger = { Napier.i(tag = TAG) { it } },
+    debugLogger = { Napier.d(tag = TAG) { it } },
 ) {
     private val gameTables: QueryTable = DustLoopTables.getTable(game.id)
         ?: error("${game.id} not supported. Supported: $supportedGameSet")

@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 interface MoveRepo {
-    suspend fun refreshMoveList(character: Character): EmptyResult<DataError>
-    fun subscribeToMoveList(character: Character): Flow<List<Move>>
+    suspend fun refreshMoveList(character: Character): Result<Int, DataError>
+    fun subscribeToMoveList(characterId: String): Flow<List<Move>>
     suspend fun wipeData(): EmptyResult<DataError>
 }
 
@@ -20,26 +20,26 @@ class MoveRepoImpl(
     private val dbAdapter: MoveDbAdapter,
     private val remoteAdapter: MoveRemoteAdapter,
 ) : MoveRepo {
-    override suspend fun refreshMoveList(character: Character): EmptyResult<DataError> {
-        val moves = when (val remote = remoteAdapter.download(character)) {
+    override suspend fun refreshMoveList(character: Character): Result<Int, DataError> {
+        val moveList = when (val remote = remoteAdapter.download(character)) {
             is Result.Success -> remote.data
             is Result.Error -> {
                 return Result.Error(remote.error)
             }
         }
-        if (moves.isEmpty()) {
-            return Result.Success(Unit)
+        if (moveList.isEmpty()) {
+            return Result.Success(moveList.size)
         }
 
         val result = withContext(Dispatchers.IO) {
             try {
                 dbAdapter.transaction {
-                    val remoteMoveIds = moves.map { it.id }
-                    moves.forEach { move -> dbAdapter.insert(move) }
+                    val remoteMoveIds = moveList.map { it.id }
+                    moveList.forEach { move -> dbAdapter.insert(move) }
                     dbAdapter.incrementFailureCountForAbsent(characterId = character.id, remoteIds = remoteMoveIds)
                     dbAdapter.deleteExceededThreshold(characterId = character.id, threshold = FAILURE_COUNT_THRESHOLD)
                 }
-                Result.Success(Unit)
+                Result.Success(moveList.size)
             } catch (_: Exception) {
                 Result.Error(DataError.Local.UNKNOWN)
             }
@@ -47,8 +47,8 @@ class MoveRepoImpl(
         return result
     }
 
-    override fun subscribeToMoveList(character: Character): Flow<List<Move>> {
-        val flow = dbAdapter.selectMovesFlow(character.id)
+    override fun subscribeToMoveList(characterId: String): Flow<List<Move>> {
+        val flow = dbAdapter.selectMovesFlow(characterId)
         return flow
     }
 

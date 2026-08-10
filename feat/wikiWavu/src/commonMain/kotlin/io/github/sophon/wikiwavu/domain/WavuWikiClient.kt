@@ -6,7 +6,9 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.CharacterRepo
 import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
@@ -27,11 +29,18 @@ internal class WavuWikiClient(
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
     private val source: WavuWikiDataSource,
+    characterRepo: CharacterRepo,
+    moveRepo: MoveRepo,
 ): BaseWikiClient(
     game = game,
     characterDB = characterDB,
     moveDB = moveDB,
     featureInfo = WavuFeatureInfo.featureInfo,
+    characterRepo = characterRepo,
+    moveRepo = moveRepo,
+    infoLogger = { message ->
+        Napier.d(tag = TAG) { message }
+    }
 ) {
     private val gameTables: QueryTable = WavuTables.getTable(game.id)
         ?: error("${game.id} not supported. Supported: $supportedGameSet")

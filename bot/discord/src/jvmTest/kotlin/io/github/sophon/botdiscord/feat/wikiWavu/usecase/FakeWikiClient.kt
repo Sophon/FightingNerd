@@ -1,52 +1,38 @@
 package io.github.sophon.botdiscord.feat.wikiWavu.usecase
 
 import io.github.sophon.core.architecture.EmptyResult
-import io.github.sophon.core.featureConfig.model.FeatureInfo
-import io.github.sophon.core.wiki.model.WikiClient
-import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 
-internal class FakeWikiClient: WikiClient {
+@OptIn(ExperimentalTime::class)
+internal class FakeWikiClient : WikiClient {
     override val featureInfo: FeatureInfo = WavuFeatureInfo.featureInfo
 
-    override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
-        return when (characterQuery) {
-            JIN.id -> Result.Success(JIN)
-            LAW.id -> Result.Success(LAW)
-            else -> Result.Error(WikiError.UnknownCharacter(characterQuery))
-        }
+    override fun subscribeToCharacterList(): Flow<List<Character>> {
+        val characterList = listOf(JIN, LAW)
+        return flowOf(characterList)
     }
 
-    override suspend fun fetchMoveList(
-        characterQuery: String,
-        filter: Filter,
-    ): Result<List<Move>, WikiError> {
-        val moveList = when (characterQuery) {
+    override fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>> {
+        val moveList = when (characterId.value) {
             JIN.id -> createJinZenMoves() + createJinDvsMoves()
             LAW.id -> createLawMoves()
-            else -> return Result.Error(WikiError.UnknownCharacter(characterQuery))
+            else -> emptyList()
         }
-        return Result.Success(moveList.filter(filter.predicate))
+        return flowOf(moveList)
     }
-
-    override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> = Result.Success(emptyList())
-    override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> = Result.Success(Unit)
-    override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = Result.Success(emptyList())
-    override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError> = Result.Success(emptyList())
-    override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
-    override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError> = Result.Success(Unit)
-    override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> = Result.Error(WikiError.UnknownMove(moveQuery))
-    @OptIn(ExperimentalTime::class)
-    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = Result.Success(null)
-    override suspend fun clearCache(): EmptyResult<WikiError> = Result.Success(Unit)
-    override fun getFiltersFor(game: Game): Set<Filter> = emptySet()
 
     private fun createJinZenMoves(): List<Move> {
         return listOf(
@@ -99,4 +85,18 @@ internal class FakeWikiClient: WikiClient {
             wikiUrl = "",
         )
     }
+
+    override suspend fun refreshData(): EmptyResult<WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun clearCache(): EmptyResult<WikiError> = throw NotImplementedError("Not used in these tests")
+    override fun getFiltersFor(game: Game): Set<Filter> = emptySet()
+    override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> = throw NotImplementedError("Not used in these tests")
+    override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> = throw NotImplementedError("Not used in these tests")
 }

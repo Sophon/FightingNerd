@@ -1,5 +1,6 @@
 package io.github.sophon.wikiwavu.data.db
 
+import io.github.sophon.core.wiki.data.toDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikiwavu.data.CharacterEntity
 

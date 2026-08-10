@@ -1,0 +1,15 @@
+CREATE TABLE VSAVMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    inputInfo TEXT,
+    subtitle TEXT,
+    whiteDmg TEXT,
+    renda TEXT,
+    meter TEXT,
+    reaction TEXT,
+    curseTime TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertVSAVMove:
+INSERT OR REPLACE INTO VSAVMoveEntity(moveId, inputInfo, subtitle, whiteDmg, renda, meter, reaction, curseTime)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);

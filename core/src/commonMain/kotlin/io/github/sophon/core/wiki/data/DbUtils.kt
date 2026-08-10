@@ -1,11 +1,11 @@
-package io.github.sophon.wikiwavu.data.db
+package io.github.sophon.core.wiki.data
 
-internal fun List<String>.fromDomain(): String {
+fun List<String>.fromDomain(): String {
     val joined = joinToString(LIST_DELIMITER)
     return joined
 }
 
-internal fun String.toDomain(): List<String> {
+fun String.toDomain(): List<String> {
     if (isEmpty()) {
         return emptyList()
     }

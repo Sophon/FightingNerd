@@ -9,7 +9,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
+import kotlin.test.Test
 
 internal class GetStancesUseCaseTest {
     private val getMovesUseCase = GetMovesUseCase()
