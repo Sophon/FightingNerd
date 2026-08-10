@@ -4,7 +4,6 @@ import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.architecture.map
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
@@ -14,8 +13,6 @@ import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
-import kotlin.collections.emptyList
-import kotlin.getValue
 
 @ExcludeFromCoverage("UI")
 internal class HandleAutoCompleteEventUseCase(

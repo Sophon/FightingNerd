@@ -44,15 +44,16 @@ internal suspend fun aggregateCharacters(
 
 internal fun List<Character>.findMatching(query: String): Character? {
     val normalizedQuery = query.normalizeForMatch()
-    val byName = firstOrNull { it.displayName.normalizeForMatch() == normalizedQuery }
-    if (byName != null) {
-        return byName
-    }
 
-    val byAlias = firstOrNull { character ->
+    firstOrNull { it.id == normalizedQuery }?.let { return it }
+    firstOrNull {
+        it.displayName.normalizeForMatch() == normalizedQuery
+    }?.let { return it }
+    firstOrNull { character ->
         character.aliasList.any { it.normalizeForMatch() == normalizedQuery }
-    }
-    return byAlias
+    }?.let { return it }
+
+    return null
 }
 
 internal fun String.normalizeForMatch(): String {

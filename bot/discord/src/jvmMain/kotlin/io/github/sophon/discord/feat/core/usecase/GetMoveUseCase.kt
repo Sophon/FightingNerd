@@ -8,6 +8,7 @@ import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.util.findMatching
 import kotlinx.coroutines.flow.first
 
 @ExcludeFromCoverage("plain client call")
@@ -33,29 +34,22 @@ internal class GetMoveUseCase {
         return result
     }
 
-    private fun List<Character>.findMatching(query: String): Character? {
-        val normalizedQuery = query.normalizeForMatch()
-        val byName = firstOrNull { it.displayName.normalizeForMatch() == normalizedQuery }
-        if (byName != null) return byName
-
-        val byAlias = firstOrNull { character ->
-            character.aliasList.any { it.normalizeForMatch() == normalizedQuery }
-        }
-        return byAlias
-    }
-
     private fun List<Move>.findMatching(query: String): Move? {
         val normalizedQuery = query.normalizeForMatch()
-        val byInput = firstOrNull { it.input.normalizeForMatch() == normalizedQuery }
-        if (byInput != null) return byInput
-        val byAlias = firstOrNull { move ->
+
+        firstOrNull { it.id == normalizedQuery }
+            ?.let { return it }
+        firstOrNull { it.input.normalizeForMatch() == normalizedQuery }
+            ?.let { return it }
+        firstOrNull { move ->
             move.aliases.any { it.normalizeForMatch() == normalizedQuery }
-        }
-        if (byAlias != null) return byAlias
-        val byName = firstOrNull { move ->
+        }?.let { return it }
+
+        firstOrNull { move ->
             move.name?.normalizeForMatch() == normalizedQuery
-        }
-        return byName
+        }?.let { return it }
+
+        return null
     }
 
     private fun String.normalizeForMatch(): String {
