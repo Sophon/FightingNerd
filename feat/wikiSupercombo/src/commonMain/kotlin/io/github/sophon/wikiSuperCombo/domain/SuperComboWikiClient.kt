@@ -7,7 +7,9 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
+import io.github.sophon.core.wiki.data.CharacterRepo
 import io.github.sophon.core.wiki.data.MoveListDB
+import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.data.toDomainError
@@ -27,11 +29,17 @@ internal class SuperComboWikiClient(
     characterDB: CharacterListDB,
     moveDB: MoveListDB,
     private val source: SuperComboDataSource,
+    characterRepo: CharacterRepo,
+    moveRepo: MoveRepo,
 ): BaseWikiClient(
     game = game,
     characterDB = characterDB,
     moveDB = moveDB,
     featureInfo = SuperComboFeatureInfo.featureInfo,
+    characterRepo = characterRepo,
+    moveRepo = moveRepo,
+    infoLogger = { Napier.i(tag = TAG) { it } },
+    debugLogger = { Napier.d(tag = TAG) { it } },
 ) {
     private val gameTables: QueryTable = SuperComboTables.getTable(game.id)
         ?: error("${game.id} not supported. Supported: $supportedGameSet")
@@ -42,7 +50,6 @@ internal class SuperComboWikiClient(
             .flatMap { dto ->
                 source.resolveCharacterImageUrls(dto).map { imageUrlMap ->
                     val characterList = dto.toDomain(gameId = game.id, imageUrlMap = imageUrlMap)
-                    Napier.i(tag = TAG) { "${game.id}: ${characterList.size} downloaded" }
                     characterList
                 }
             }
@@ -59,7 +66,6 @@ internal class SuperComboWikiClient(
                         character = character,
                         imageUrlMap = imageUrlMap,
                     )
-                    Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
                     moveList
                 }
             }
@@ -76,7 +82,7 @@ internal class SuperComboWikiClient(
     }
 
 
-    private  companion object {
+    private companion object {
         const val TAG = "SuperComboWikiClient"
     }
 }
