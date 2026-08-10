@@ -98,6 +98,7 @@ internal class HandleAutoCompleteEventUseCase(
         } else {
             gameCharacterList.filter { (_, character) ->
                 character.displayName.contains(query, ignoreCase = true)
+                        || character.aliasList.contains(query)
             }
         }
         val choices = filtered
