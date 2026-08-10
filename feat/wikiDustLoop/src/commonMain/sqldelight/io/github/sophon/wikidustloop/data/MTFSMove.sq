@@ -1,0 +1,15 @@
+CREATE TABLE MTFSMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    simpleInput TEXT,
+    type TEXT,
+    level TEXT,
+    prorate TEXT,
+    meterGain TEXT,
+    untechAmount TEXT,
+    hitboxCaption TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertMTFSMove:
+INSERT OR REPLACE INTO MTFSMoveEntity(moveId, simpleInput, type, level, prorate, meterGain, untechAmount, hitboxCaption)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);

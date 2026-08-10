@@ -1,0 +1,17 @@
+CREATE TABLE GGSTMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    type TEXT,
+    riscGain TEXT,
+    riscLoss TEXT,
+    wallDamage TEXT,
+    inputTension TEXT,
+    chipRatio TEXT,
+    otgType TEXT,
+    prorate TEXT,
+    level TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertGGSTMove:
+INSERT OR REPLACE INTO GGSTMoveEntity(moveId, type, riscGain, riscLoss, wallDamage, inputTension, chipRatio, otgType, prorate, level)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
