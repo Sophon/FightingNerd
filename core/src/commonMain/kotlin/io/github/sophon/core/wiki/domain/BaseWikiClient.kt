@@ -9,9 +9,11 @@ import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
+import kotlinx.coroutines.flow.Flow
 import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
 
@@ -24,6 +26,18 @@ abstract class BaseWikiClient(
 ) : WikiClient {
     abstract override suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
     abstract override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError>
+
+    override suspend fun refreshData(): EmptyResult<WikiError> {
+        TODO("Not yet implemented for ${this::class.simpleName}")
+    }
+
+    override fun subscribeToCharacterList(): Flow<List<Character>> {
+        TODO("Not yet implemented for ${this::class.simpleName}")
+    }
+
+    override fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>> {
+        TODO("Not yet implemented for ${this::class.simpleName}")
+    }
 
     final override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> {
         val result = characterDB.insertCharacterList(characterList)
