@@ -14,9 +14,9 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.wikiwavu.data.CharacterListResponseDto
-import io.github.sophon.wikiwavu.data.MoveListResponseDto
-import io.github.sophon.wikiwavu.data.WavuWikiDataSource
+import io.github.sophon.wikiwavu.data.remote.CharacterListResponseDto
+import io.github.sophon.wikiwavu.data.remote.MoveListResponseDto
+import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSource
 import kotlinx.datetime.Instant
 
 class WavuWikiClientTest {

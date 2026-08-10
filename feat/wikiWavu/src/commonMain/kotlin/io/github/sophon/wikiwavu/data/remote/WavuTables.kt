@@ -1,4 +1,4 @@
-package io.github.sophon.wikiwavu.data
+package io.github.sophon.wikiwavu.data.remote
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.QueryTable

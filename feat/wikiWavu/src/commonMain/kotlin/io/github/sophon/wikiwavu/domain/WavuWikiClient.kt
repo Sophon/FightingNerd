@@ -14,9 +14,9 @@ import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikiwavu.data.WavuTables
-import io.github.sophon.wikiwavu.data.WavuWikiDataSource
-import io.github.sophon.wikiwavu.data.toDomain
+import io.github.sophon.wikiwavu.data.remote.WavuTables
+import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSource
+import io.github.sophon.wikiwavu.data.remote.toDomain
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import io.github.sophon.wikiwavu.integration.model.TekkenFilters
 import kotlin.time.ExperimentalTime

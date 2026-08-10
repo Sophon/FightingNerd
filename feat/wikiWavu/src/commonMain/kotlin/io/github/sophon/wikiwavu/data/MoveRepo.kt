@@ -7,8 +7,10 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikiwavu.data.db.persistMove
+import io.github.sophon.wikiwavu.data.db.fromDomain
 import io.github.sophon.wikiwavu.data.db.toDomain
+import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSource
+import io.github.sophon.wikiwavu.data.remote.toDomain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -32,40 +34,90 @@ internal class MoveRepoImpl(
         val remote = source.downloadMoveList(table = TABLE_T8_MOVE, character = character)
         val moves = when (remote) {
             is Result.Success -> remote.data.toDomain(character)
-            is Result.Error -> return Result.Error(remote.error)
+            is Result.Error -> {
+                return Result.Error(remote.error)
+            }
         }
-        return withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             try {
                 db.transaction {
                     moveQueries.deleteByCharacter(character.id)
                     moves.forEach { move ->
-                        persistMove(move, moveQueries, tekkenQueries)
+                        insert(move)
                     }
                 }
-                Result.Success(Unit)
+                val success: EmptyResult<DataError> = Result.Success(Unit)
+                success
             } catch (_: Exception) {
-                Result.Error(DataError.Local.UNKNOWN)
+                val error: EmptyResult<DataError> = Result.Error(DataError.Local.UNKNOWN)
+                error
             }
         }
+        return result
+    }
+
+
+    private fun insert(move: Move) {
+        moveQueries.insertMove(
+            id = move.id,
+            characterId = move.characterId,
+            name = move.name,
+            input = move.input,
+            damage = move.damage,
+            startup = move.startup,
+            active = move.active,
+            recovery = move.recovery,
+            onBlock = move.onBlock,
+            onHit = move.onHit,
+            onCH = move.onCH,
+            guard = move.guard,
+            cancel = move.cancel,
+            invulnerability = move.invulnerability,
+            isThrow = move.isThrow,
+            notes = move.notes.fromDomain(),
+            aliases = move.aliases.fromDomain(),
+            urlsWikiUrl = move.urls.wikiUrl,
+            urlsVideoId = move.urls.videoId,
+            urlsHitboxImageList = move.urls.hitboxImageList.fromDomain(),
+            urlsMoveImageList = move.urls.moveImageList.fromDomain(),
+        )
+        val t8 = move.t8Properties
+        tekkenQueries.insertTekkenMove(
+            moveId = move.id,
+            isHeat = t8?.isHeat ?: false,
+            isHoming = t8?.isHoming ?: false,
+            stance = t8?.stance,
+            isPowerCrush = t8?.isPowerCrush ?: false,
+            isHighCrush = t8?.isHighCrush ?: false,
+            isLowCrush = t8?.isLowCrush ?: false,
+            hasWallInteraction = t8?.hasWallInteraction ?: false,
+            hasFloorInteraction = t8?.hasFloorInteraction ?: false,
+        )
     }
 
     override fun subscribeToMoveList(character: Character): Flow<List<Move>> {
         val flow = moveQueries.selectTekkenByCharacter(character.id)
             .asFlow()
             .mapToList(Dispatchers.IO)
-            .map { rows -> rows.map { it.toDomain() } }
+            .map { rows ->
+                val moves = rows.map { it.toDomain() }
+                moves
+            }
         return flow
     }
 
     override suspend fun wipeData(): EmptyResult<DataError> {
-        return withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             try {
                 moveQueries.deleteAll()
-                Result.Success(Unit)
+                val success: EmptyResult<DataError> = Result.Success(Unit)
+                success
             } catch (_: Exception) {
-                Result.Error(DataError.Local.UNKNOWN)
+                val error: EmptyResult<DataError> = Result.Error(DataError.Local.UNKNOWN)
+                error
             }
         }
+        return result
     }
 
 

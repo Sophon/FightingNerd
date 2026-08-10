@@ -2,10 +2,9 @@ package io.github.sophon.wikiwavu.data.db
 
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikiwavu.data.CharacterEntity
-import io.github.sophon.wikiwavu.data.CharacterQueries
 
 internal fun CharacterEntity.toDomain(): Character {
-    return Character(
+    val character = Character(
         id = id,
         displayName = displayName,
         remoteQueryId = remoteQueryId,
@@ -18,19 +17,5 @@ internal fun CharacterEntity.toDomain(): Character {
         hp = hp,
         umo = umo.toDomain(),
     )
-}
-
-internal fun CharacterQueries.persist(character: Character, gameId: String) {
-    insertCharacter(
-        id = character.id,
-        gameId = gameId,
-        remoteQueryId = character.remoteQueryId,
-        wikiUrl = character.wikiUrl,
-        displayName = character.displayName,
-        aliases = character.aliasList.fromDomain(),
-        hp = character.hp,
-        umo = character.umo.fromDomain(),
-        imagesIconUrl = character.images?.iconUrl,
-        imagesBannerUrl = character.images?.bannerUrl,
-    )
+    return character
 }

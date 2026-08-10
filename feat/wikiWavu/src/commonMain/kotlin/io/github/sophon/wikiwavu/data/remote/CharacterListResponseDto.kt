@@ -1,4 +1,4 @@
-package io.github.sophon.wikiwavu.data
+package io.github.sophon.wikiwavu.data.remote
 
 import kotlinx.serialization.Serializable
 

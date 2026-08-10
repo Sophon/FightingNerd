@@ -7,9 +7,12 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.wikiwavu.data.db.persist
+import io.github.sophon.wikiwavu.data.db.fromDomain
 import io.github.sophon.wikiwavu.data.db.toDomain
+import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSource
+import io.github.sophon.wikiwavu.data.remote.toDomain
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -30,39 +33,65 @@ internal class CharacterRepoImpl(
         val remote = source.downloadCharacterList()
         val characters = when (remote) {
             is Result.Success -> remote.data.toDomain()
-            is Result.Error -> return Result.Error(remote.error)
+            is Result.Error -> {
+                return Result.Error(remote.error)
+            }
         }
-        return withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             try {
                 db.transaction {
                     queries.deleteAll()
                     characters.forEach { character ->
-                        queries.persist(character, gameId = Game.Tekken8.id)
+                        insert(character, gameId = Game.Tekken8.id)
                     }
                 }
-                Result.Success(Unit)
-            } catch (e: Exception) {
-                Result.Error(DataError.Local.UNKNOWN)
+                val success: EmptyResult<DataError> = Result.Success(Unit)
+                success
+            } catch (_: Exception) {
+                val error: EmptyResult<DataError> = Result.Error(DataError.Local.UNKNOWN)
+                error
             }
         }
+        return result
+    }
+
+    private fun insert(character: Character, gameId: String) {
+        queries.insertCharacter(
+            id = character.id,
+            gameId = gameId,
+            remoteQueryId = character.remoteQueryId,
+            wikiUrl = character.wikiUrl,
+            displayName = character.displayName,
+            aliases = character.aliasList.fromDomain(),
+            hp = character.hp,
+            umo = character.umo.fromDomain(),
+            imagesIconUrl = character.images?.iconUrl,
+            imagesBannerUrl = character.images?.bannerUrl,
+        )
     }
 
     override fun subscribeToCharacterList(): Flow<List<Character>> {
         val flow = queries.selectAll()
             .asFlow()
             .mapToList(Dispatchers.IO)
-            .map { rows -> rows.map { it.toDomain() } }
+            .map { rows ->
+                val characters = rows.map { it.toDomain() }
+                characters
+            }
         return flow
     }
 
     override suspend fun wipeData(): EmptyResult<DataError> {
-        return withContext(Dispatchers.IO) {
+        val result = withContext(Dispatchers.IO) {
             try {
                 queries.deleteAll()
-                Result.Success(Unit)
-            } catch (e: Exception) {
-                Result.Error(DataError.Local.UNKNOWN)
+                val success: EmptyResult<DataError> = Result.Success(Unit)
+                success
+            } catch (_: Exception) {
+                val error: EmptyResult<DataError> = Result.Error(DataError.Local.UNKNOWN)
+                error
             }
         }
+        return result
     }
 }

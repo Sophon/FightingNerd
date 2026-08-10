@@ -8,8 +8,8 @@ import io.github.sophon.wikiwavu.data.CharacterRepoImpl
 import io.github.sophon.wikiwavu.data.MoveRepo
 import io.github.sophon.wikiwavu.data.MoveRepoImpl
 import io.github.sophon.wikiwavu.data.WavuDB
-import io.github.sophon.wikiwavu.data.WavuWikiDataSource
-import io.github.sophon.wikiwavu.data.WavuWikiDataSourceImpl
+import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSource
+import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSourceImpl
 import io.github.sophon.wikiwavu.domain.WavuWikiClient
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named

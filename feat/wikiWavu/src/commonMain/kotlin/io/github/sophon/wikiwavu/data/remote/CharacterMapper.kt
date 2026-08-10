@@ -1,4 +1,4 @@
-package io.github.sophon.wikiwavu.data
+package io.github.sophon.wikiwavu.data.remote
 
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikiwavu.domain.MOVE_URL

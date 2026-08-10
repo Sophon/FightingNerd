@@ -1,14 +1,16 @@
 package io.github.sophon.wikiwavu.data.db
 
 internal fun List<String>.fromDomain(): String {
-    return joinToString(LIST_DELIMITER)
+    val joined = joinToString(LIST_DELIMITER)
+    return joined
 }
 
 internal fun String.toDomain(): List<String> {
     if (isEmpty()) {
         return emptyList()
     }
-    return split(LIST_DELIMITER)
+    val parts = split(LIST_DELIMITER)
+    return parts
 }
 
 private const val LIST_DELIMITER = ";"
