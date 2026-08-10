@@ -1,0 +1,48 @@
+CREATE TABLE CharacterEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    gameId TEXT NOT NULL,
+    remoteQueryId TEXT NOT NULL,
+    wikiUrl TEXT NOT NULL,
+    displayName TEXT NOT NULL,
+    aliases TEXT NOT NULL,
+    hp TEXT,
+    umo TEXT NOT NULL,
+    imagesIconUrl TEXT,
+    imagesBannerUrl TEXT,
+    consecutiveFailureCount INTEGER NOT NULL DEFAULT 0
+);
+
+insertCharacter:
+INSERT INTO CharacterEntity(id, gameId, remoteQueryId, wikiUrl, displayName, aliases, hp, umo, imagesIconUrl, imagesBannerUrl)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+    gameId = excluded.gameId,
+    remoteQueryId = excluded.remoteQueryId,
+    wikiUrl = excluded.wikiUrl,
+    displayName = excluded.displayName,
+    aliases = excluded.aliases,
+    hp = excluded.hp,
+    umo = excluded.umo,
+    imagesIconUrl = excluded.imagesIconUrl,
+    imagesBannerUrl = excluded.imagesBannerUrl,
+    consecutiveFailureCount = 0;
+
+selectAll:
+SELECT *
+FROM CharacterEntity;
+
+deleteAll:
+DELETE FROM CharacterEntity;
+
+deleteById:
+DELETE FROM CharacterEntity
+WHERE id = ?;
+
+incrementFailureCountForAbsent:
+UPDATE CharacterEntity
+SET consecutiveFailureCount = consecutiveFailureCount + 1
+WHERE id NOT IN ?;
+
+deleteExceededThreshold:
+DELETE FROM CharacterEntity
+WHERE consecutiveFailureCount >= ?;

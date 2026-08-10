@@ -1,4 +1,4 @@
-package io.github.sophon.wikiwavu.data
+package io.github.sophon.wikiwavu.data.remote
 
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull

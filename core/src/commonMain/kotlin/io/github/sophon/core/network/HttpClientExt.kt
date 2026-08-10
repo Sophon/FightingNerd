@@ -39,6 +39,7 @@ suspend inline fun <reified T> HttpResponse.toResult(): Result<T, DataError.Remo
                 Result.Error(DataError.Remote.SERIALIZATION_ERROR)
             }
         }
+        404 -> Result.Error(DataError.Remote.PAGE_NOT_FOUND)
         408 -> Result.Error(DataError.Remote.REQUEST_TIMEOUT)
         429 -> Result.Error(DataError.Remote.TOO_MANY_REQUESTS)
         in 500..599 -> Result.Error(DataError.Remote.SERVER_ERROR)
