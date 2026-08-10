@@ -11,6 +11,7 @@ import io.github.sophon.core.wiki.data.MoveDbAdapter
 import io.github.sophon.core.wiki.data.MoveRemoteAdapter
 import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.MoveRepoImpl
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.wikiwavu.data.WavuDB
 import io.github.sophon.wikiwavu.data.db.WavuCharacterDbAdapter
 import io.github.sophon.wikiwavu.data.db.WavuMoveDbAdapter
@@ -18,6 +19,7 @@ import io.github.sophon.wikiwavu.data.remote.WavuCharacterRemoteAdapter
 import io.github.sophon.wikiwavu.data.remote.WavuMoveRemoteAdapter
 import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSource
 import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSourceImpl
+import io.github.sophon.wikiwavu.domain.WavuWikiClient
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -27,9 +29,13 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 fun wavuModule() = module {
     singleOf(::WavuWikiDataSourceImpl).bind<WavuWikiDataSource>()
+    single { WavuFeatureInfo }
 
-    single<WavuDB>(named(WikiClientFeature.Wavu.id)) { params ->
-        WavuDB(driver = params.get<SqlDriver>())
+    single<WavuDB>(named(WikiClientFeature.Wavu.id)) {
+        val driver = get<SqlDriver>()
+        WavuDB.Schema.create(driver)
+        val db = WavuDB(driver = driver)
+        db
     }
 
     single<CharacterDbAdapter>(named(WikiClientFeature.Wavu.id)) { params ->
@@ -63,6 +69,17 @@ fun wavuModule() = module {
         MoveRepoImpl(
             dbAdapter = get(named(WikiClientFeature.Wavu.id)) { params },
             remoteAdapter = get(named(WikiClientFeature.Wavu.id)) { params },
+        )
+    }
+
+    factory<WikiClient>(named(WikiClientFeature.Wavu.id)) { params ->
+        WavuWikiClient(
+            game = params.get(),
+            characterDB = params.get(),
+            moveDB = params.get(),
+            source = get(),
+            characterRepo = get(named(WikiClientFeature.Wavu.id)) { params },
+            moveRepo = get(named(WikiClientFeature.Wavu.id)) { params },
         )
     }
 }

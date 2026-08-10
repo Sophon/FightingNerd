@@ -1,5 +1,7 @@
 package io.github.sophon.discord
 
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import dev.kord.core.Kord
 import io.github.aakira.napier.Napier
 import io.github.sophon.integration.adminModule
@@ -77,4 +79,6 @@ internal fun dcBotModule(kord: Kord) = module {
 
     singleOf(::FileManager)
     singleOf(::JsonReportRepo).bind<ReportRepo>()
+
+    single<SqlDriver> { JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY) }
 }
