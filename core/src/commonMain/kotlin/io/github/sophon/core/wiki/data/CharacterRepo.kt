@@ -8,13 +8,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 interface CharacterRepo {
     suspend fun refreshCharacterList(): EmptyResult<DataError>
     fun subscribeToCharacterList(): Flow<List<Character>>
     suspend fun wipeData(): EmptyResult<DataError>
+    suspend fun getLastUpdateTimestamp(): Result<Instant?, DataError>
 }
 
+@OptIn(ExperimentalTime::class)
 class CharacterRepoImpl(
     private val dbAdapter: CharacterDbAdapter,
     private val remoteAdapter: CharacterRemoteAdapter,
@@ -49,6 +54,18 @@ class CharacterRepoImpl(
     override fun subscribeToCharacterList(): Flow<List<Character>> {
         val flow = dbAdapter.selectAllFlow()
         return flow
+    }
+
+    override suspend fun getLastUpdateTimestamp(): Result<Instant?, DataError> {
+        val result = withContext(Dispatchers.IO) {
+            try {
+                val timestamp = dbAdapter.getLastUpdateTimestamp()
+                Result.Success(timestamp)
+            } catch (_: Exception) {
+                Result.Error(DataError.Local.UNKNOWN)
+            }
+        }
+        return result
     }
 
     override suspend fun wipeData(): EmptyResult<DataError> {
