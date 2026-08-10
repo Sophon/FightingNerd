@@ -35,17 +35,49 @@ internal class MoveRepoImpl(
         val moves = when (remote) {
             is Result.Success -> remote.data.toDomain(character)
             is Result.Error -> {
-                return Result.Error(remote.error)
+                val error: EmptyResult<DataError> = Result.Error(remote.error)
+                return error
             }
+        }
+        if (moves.isEmpty()) {
+            val empty: EmptyResult<DataError> = Result.Success(Unit)
+            return empty
         }
         val result = withContext(Dispatchers.IO) {
             try {
                 db.transaction {
-                    moveQueries.deleteByCharacter(character.id)
+                    val remoteMoveIds = moves.map { it.id }
                     moves.forEach { move ->
                         insert(move)
                     }
+                    moveQueries.incrementFailureCountForAbsent(character.id, remoteMoveIds)
+                    moveQueries.deleteExceededThreshold(character.id, FAILURE_COUNT_THRESHOLD)
                 }
+                val success: EmptyResult<DataError> = Result.Success(Unit)
+                success
+            } catch (_: Exception) {
+                val error: EmptyResult<DataError> = Result.Error(DataError.Local.UNKNOWN)
+                error
+            }
+        }
+        return result
+    }
+
+    override fun subscribeToMoveList(character: Character): Flow<List<Move>> {
+        val flow = moveQueries.selectTekkenByCharacter(character.id)
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+            .map { rows ->
+                val moves = rows.map { it.toDomain() }
+                moves
+            }
+        return flow
+    }
+
+    override suspend fun wipeData(): EmptyResult<DataError> {
+        val result = withContext(Dispatchers.IO) {
+            try {
+                moveQueries.deleteAll()
                 val success: EmptyResult<DataError> = Result.Success(Unit)
                 success
             } catch (_: Exception) {
@@ -95,33 +127,9 @@ internal class MoveRepoImpl(
         )
     }
 
-    override fun subscribeToMoveList(character: Character): Flow<List<Move>> {
-        val flow = moveQueries.selectTekkenByCharacter(character.id)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-            .map { rows ->
-                val moves = rows.map { it.toDomain() }
-                moves
-            }
-        return flow
-    }
-
-    override suspend fun wipeData(): EmptyResult<DataError> {
-        val result = withContext(Dispatchers.IO) {
-            try {
-                moveQueries.deleteAll()
-                val success: EmptyResult<DataError> = Result.Success(Unit)
-                success
-            } catch (_: Exception) {
-                val error: EmptyResult<DataError> = Result.Error(DataError.Local.UNKNOWN)
-                error
-            }
-        }
-        return result
-    }
-
 
     private companion object {
         const val TABLE_T8_MOVE = "Move"
+        const val FAILURE_COUNT_THRESHOLD = 5L
     }
 }

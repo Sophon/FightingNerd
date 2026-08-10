@@ -13,8 +13,19 @@ CREATE TABLE CharacterEntity (
 );
 
 insertCharacter:
-INSERT OR REPLACE INTO CharacterEntity(id, gameId, remoteQueryId, wikiUrl, displayName, aliases, hp, umo, imagesIconUrl, imagesBannerUrl)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO CharacterEntity(id, gameId, remoteQueryId, wikiUrl, displayName, aliases, hp, umo, imagesIconUrl, imagesBannerUrl)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+    gameId = excluded.gameId,
+    remoteQueryId = excluded.remoteQueryId,
+    wikiUrl = excluded.wikiUrl,
+    displayName = excluded.displayName,
+    aliases = excluded.aliases,
+    hp = excluded.hp,
+    umo = excluded.umo,
+    imagesIconUrl = excluded.imagesIconUrl,
+    imagesBannerUrl = excluded.imagesBannerUrl,
+    consecutiveFailureCount = 0;
 
 selectAll:
 SELECT *
@@ -27,12 +38,11 @@ deleteById:
 DELETE FROM CharacterEntity
 WHERE id = ?;
 
-incrementFailureCount:
+incrementFailureCountForAbsent:
 UPDATE CharacterEntity
 SET consecutiveFailureCount = consecutiveFailureCount + 1
-WHERE id = ?;
+WHERE id NOT IN ?;
 
-resetFailureCount:
-UPDATE CharacterEntity
-SET consecutiveFailureCount = 0
-WHERE id = ?;
+deleteExceededThreshold:
+DELETE FROM CharacterEntity
+WHERE consecutiveFailureCount >= ?;

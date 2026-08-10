@@ -22,12 +22,35 @@ CREATE TABLE MoveEntity (
     urlsVideoId TEXT,
     urlsHitboxImageList TEXT NOT NULL,
     urlsMoveImageList TEXT NOT NULL,
+    consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
     FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
 );
 
 insertMove:
-INSERT OR REPLACE INTO MoveEntity(id, characterId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsHitboxImageList, urlsMoveImageList)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO MoveEntity(id, characterId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsHitboxImageList, urlsMoveImageList)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT(id) DO UPDATE SET
+    characterId = excluded.characterId,
+    name = excluded.name,
+    input = excluded.input,
+    damage = excluded.damage,
+    startup = excluded.startup,
+    active = excluded.active,
+    recovery = excluded.recovery,
+    onBlock = excluded.onBlock,
+    onHit = excluded.onHit,
+    onCH = excluded.onCH,
+    guard = excluded.guard,
+    cancel = excluded.cancel,
+    invulnerability = excluded.invulnerability,
+    isThrow = excluded.isThrow,
+    notes = excluded.notes,
+    aliases = excluded.aliases,
+    urlsWikiUrl = excluded.urlsWikiUrl,
+    urlsVideoId = excluded.urlsVideoId,
+    urlsHitboxImageList = excluded.urlsHitboxImageList,
+    urlsMoveImageList = excluded.urlsMoveImageList,
+    consecutiveFailureCount = 0;
 
 deleteAll:
 DELETE FROM MoveEntity;
@@ -35,6 +58,15 @@ DELETE FROM MoveEntity;
 deleteByCharacter:
 DELETE FROM MoveEntity
 WHERE characterId = ?;
+
+incrementFailureCountForAbsent:
+UPDATE MoveEntity
+SET consecutiveFailureCount = consecutiveFailureCount + 1
+WHERE characterId = ? AND id NOT IN ?;
+
+deleteExceededThreshold:
+DELETE FROM MoveEntity
+WHERE characterId = ? AND consecutiveFailureCount >= ?;
 
 selectTekkenByCharacter:
 SELECT m.id, m.characterId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,

@@ -34,16 +34,23 @@ internal class CharacterRepoImpl(
         val characters = when (remote) {
             is Result.Success -> remote.data.toDomain()
             is Result.Error -> {
-                return Result.Error(remote.error)
+                val error: EmptyResult<DataError> = Result.Error(remote.error)
+                return error
             }
+        }
+        if (characters.isEmpty()) {
+            val empty: EmptyResult<DataError> = Result.Success(Unit)
+            return empty
         }
         val result = withContext(Dispatchers.IO) {
             try {
                 db.transaction {
-                    queries.deleteAll()
+                    val remoteIds = characters.map { it.id }
                     characters.forEach { character ->
                         insert(character, gameId = Game.Tekken8.id)
                     }
+                    queries.incrementFailureCountForAbsent(remoteIds)
+                    queries.deleteExceededThreshold(FAILURE_COUNT_THRESHOLD)
                 }
                 val success: EmptyResult<DataError> = Result.Success(Unit)
                 success
@@ -53,21 +60,6 @@ internal class CharacterRepoImpl(
             }
         }
         return result
-    }
-
-    private fun insert(character: Character, gameId: String) {
-        queries.insertCharacter(
-            id = character.id,
-            gameId = gameId,
-            remoteQueryId = character.remoteQueryId,
-            wikiUrl = character.wikiUrl,
-            displayName = character.displayName,
-            aliases = character.aliasList.fromDomain(),
-            hp = character.hp,
-            umo = character.umo.fromDomain(),
-            imagesIconUrl = character.images?.iconUrl,
-            imagesBannerUrl = character.images?.bannerUrl,
-        )
     }
 
     override fun subscribeToCharacterList(): Flow<List<Character>> {
@@ -93,5 +85,26 @@ internal class CharacterRepoImpl(
             }
         }
         return result
+    }
+
+
+    private fun insert(character: Character, gameId: String) {
+        queries.insertCharacter(
+            id = character.id,
+            gameId = gameId,
+            remoteQueryId = character.remoteQueryId,
+            wikiUrl = character.wikiUrl,
+            displayName = character.displayName,
+            aliases = character.aliasList.fromDomain(),
+            hp = character.hp,
+            umo = character.umo.fromDomain(),
+            imagesIconUrl = character.images?.iconUrl,
+            imagesBannerUrl = character.images?.bannerUrl,
+        )
+    }
+
+
+    private companion object {
+        const val FAILURE_COUNT_THRESHOLD = 5L
     }
 }

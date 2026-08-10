@@ -97,6 +97,7 @@ sqldelight {
     databases {
         create("WavuDB") {
             packageName.set("io.github.sophon.wikiwavu.data")
+            dialect(libs.sqldelight.dialect.sqlite)
         }
     }
 }
