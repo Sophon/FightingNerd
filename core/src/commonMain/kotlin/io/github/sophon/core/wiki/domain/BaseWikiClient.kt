@@ -28,6 +28,7 @@ abstract class BaseWikiClient(
     abstract override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError>
 
     override suspend fun refreshData(): EmptyResult<WikiError> {
+        //TODO: handle per-request timeout and host-unresponsive short-circuit
         TODO("Not yet implemented for ${this::class.simpleName}")
     }
 
