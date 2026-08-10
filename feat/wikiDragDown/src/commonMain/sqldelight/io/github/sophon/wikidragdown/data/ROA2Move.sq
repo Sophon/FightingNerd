@@ -1,0 +1,32 @@
+CREATE TABLE ROA2MoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    mode TEXT,
+    caption TEXT,
+    hitboxCaption TEXT,
+    startupNotes TEXT,
+    totalActiveNotes TEXT,
+    endlagNotes TEXT,
+    cancelNotes TEXT,
+    landingLag TEXT,
+    landingLagNotes TEXT,
+    iasa TEXT,
+    iasaNotes TEXT,
+    totalDuration TEXT,
+    totalDurationNotes TEXT,
+    ledgeGrabFrame TEXT,
+    ledgeGrabFrameNotes TEXT,
+    hitID TEXT,
+    hitMoveID TEXT,
+    hitName TEXT,
+    hitActive TEXT,
+    customShieldSafety TEXT,
+    uniqueField TEXT,
+    articleID TEXT,
+    roa2Notes TEXT,
+    advNotes TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertROA2Move:
+INSERT OR REPLACE INTO ROA2MoveEntity(moveId, mode, caption, hitboxCaption, startupNotes, totalActiveNotes, endlagNotes, cancelNotes, landingLag, landingLagNotes, iasa, iasaNotes, totalDuration, totalDurationNotes, ledgeGrabFrame, ledgeGrabFrameNotes, hitID, hitMoveID, hitName, hitActive, customShieldSafety, uniqueField, articleID, roa2Notes, advNotes)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
