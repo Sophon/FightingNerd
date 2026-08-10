@@ -32,7 +32,7 @@ fun wavuModule() = module {
     single { WavuFeatureInfo }
 
     single<WavuDB>(named(WikiClientFeature.Wavu.id)) {
-        val driver = get<SqlDriver>()
+        val driver = get<SqlDriver>(named(WikiClientFeature.Wavu.id))
         WavuDB.Schema.create(driver)
         val db = WavuDB(driver = driver)
         db
