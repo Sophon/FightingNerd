@@ -1,0 +1,16 @@
+CREATE TABLE MBTLMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    inputInfo TEXT,
+    subtitle TEXT,
+    minDamage TEXT,
+    property TEXT,
+    cost TEXT,
+    attribute TEXT,
+    landing TEXT,
+    overall TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertMBTLMove:
+INSERT OR REPLACE INTO MBTLMoveEntity(moveId, inputInfo, subtitle, minDamage, property, cost, attribute, landing, overall)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
