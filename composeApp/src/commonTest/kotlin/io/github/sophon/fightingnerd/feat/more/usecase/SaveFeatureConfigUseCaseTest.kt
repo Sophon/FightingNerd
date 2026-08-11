@@ -8,6 +8,8 @@ import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
+import io.github.sophon.fightingnerd.feat.FakeWikiClient
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,7 +41,7 @@ internal class SaveFeatureConfigUseCaseTest {
     @Test
     fun `usecase saves feature settings to the store`() = runTest {
         // given
-        val wavuClient = FakeWikiClient(featureName = "Wavu Wiki")
+        val wavuClient = FakeWikiClient(name = "Wavu Wiki")
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
         val usecase = SaveFeatureConfigUseCase(store, repo)
         val featureList = listOf(
@@ -70,7 +72,7 @@ internal class SaveFeatureConfigUseCaseTest {
     @Test
     fun `usecase clears cache for a game that becomes disabled`() = runTest {
         // given
-        val wavuClient = FakeWikiClient(featureName = "Wavu Wiki")
+        val wavuClient = FakeWikiClient(name = "Wavu Wiki")
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
         val usecase = SaveFeatureConfigUseCase(store, repo)
         store.edit { prefs -> prefs[featureKey("Wavu Wiki", Game.Tekken8.id)] = true }
@@ -95,7 +97,7 @@ internal class SaveFeatureConfigUseCaseTest {
     @Test
     fun `usecase clears cache for a game disabled without a prior stored preference`() = runTest {
         // given
-        val wavuClient = FakeWikiClient(featureName = "Wavu Wiki")
+        val wavuClient = FakeWikiClient(name = "Wavu Wiki")
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
         val usecase = SaveFeatureConfigUseCase(store, repo)
         val featureList = listOf(
@@ -119,7 +121,7 @@ internal class SaveFeatureConfigUseCaseTest {
     @Test
     fun `usecase does not clear cache for a game that stays disabled`() = runTest {
         // given
-        val wavuClient = FakeWikiClient(featureName = "Wavu Wiki")
+        val wavuClient = FakeWikiClient(name = "Wavu Wiki")
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
         val usecase = SaveFeatureConfigUseCase(store, repo)
         store.edit { prefs -> prefs[featureKey("Wavu Wiki", Game.Tekken8.id)] = false }

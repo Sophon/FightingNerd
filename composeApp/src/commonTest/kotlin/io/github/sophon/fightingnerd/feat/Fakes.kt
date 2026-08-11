@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.home.usecase
+package io.github.sophon.fightingnerd.feat
 
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
@@ -25,11 +25,15 @@ internal class FakeWikiClient(
     private val refreshResult: EmptyResult<WikiError> = Result.Success(Unit),
     private val subscribeToCharacterListResult: List<Character> = emptyList(),
     private val subscribeToMoveListResult: List<Move> = emptyList(),
+    private val clearCacheResult: EmptyResult<WikiError> = Result.Success(Unit),
 ) : WikiClient {
     var refreshCalled = false
         private set
+    var clearCacheCalled = false
+        private set
 
     override val featureInfo = FeatureInfo(name = name, url = "", version = "1.0.0")
+
     override suspend fun refreshData(): EmptyResult<WikiError> {
         refreshCalled = true
         return refreshResult
@@ -49,8 +53,12 @@ internal class FakeWikiClient(
         }
     }
 
+    override suspend fun clearCache(): EmptyResult<WikiError> {
+        clearCacheCalled = true
+        return clearCacheResult
+    }
+
     override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = error("not used")
-    override suspend fun clearCache(): EmptyResult<WikiError> = error("not used")
     override fun getFiltersFor(game: Game): Set<Filter> = error("not used")
 }
 

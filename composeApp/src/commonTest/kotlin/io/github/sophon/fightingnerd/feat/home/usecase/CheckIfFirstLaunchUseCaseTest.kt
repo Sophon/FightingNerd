@@ -7,6 +7,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.KEY_FIRST_TIME_HOME_INIT_DONE
+import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
+import io.github.sophon.fightingnerd.feat.FakeWikiClient
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
