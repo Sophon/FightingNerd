@@ -7,12 +7,13 @@ import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.util.findMatching
 import kotlinx.coroutines.flow.first
 
 internal class GetMovesUseCase {
     suspend fun invoke(
         wiki: WikiClient,
-        characterId: String,
+        characterQuery: String,
         filter: Filter = Filter.None,
     ): Result<Pair<Character, List<Move>>, BotError> {
         val characterList = wiki.subscribeToCharacterList().first()

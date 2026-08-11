@@ -68,7 +68,7 @@ internal suspend fun firstMatchingWikiMoves(
 ): Result<List<Move>, BotError> {
     var lastError: BotError? = null
     for (wiki in wikiClientMap.values) {
-        when (val result = getMovesUseCase.invoke(wiki = wiki, characterId = characterId)) {
+        when (val result = getMovesUseCase.invoke(wiki = wiki, characterQuery = characterId)) {
             is Result.Success -> {
                 val moveList = result.data.second
                 if (moveList.isNotEmpty()) {

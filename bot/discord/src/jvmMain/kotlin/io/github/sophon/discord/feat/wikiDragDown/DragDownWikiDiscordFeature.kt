@@ -152,7 +152,7 @@ internal class DragDownWikiDiscordFeature(
         }
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.BotLogicError(command.name, ""))
-        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki).map { (_, moveList) -> moveList }
         return result
     }
 
@@ -199,7 +199,7 @@ internal class DragDownWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            characterId = query,
+            characterQuery = query,
             filter = DragDownFilters.Specials,
         ).map { (character, moveList) ->
             BotOutput(

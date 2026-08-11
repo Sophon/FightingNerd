@@ -53,7 +53,7 @@ class GetMovesUseCaseTest {
                 characterList = listOf(character),
                 moveListByCharacterId = mapOf(character.id to moves),
             ),
-            characterId = charName,
+            characterQuery = charName,
             filter = Filter.None,
         )
 
@@ -79,7 +79,7 @@ class GetMovesUseCaseTest {
                 characterList = listOf(character),
                 moveListByCharacterId = mapOf(character.id to listOf(homingMove, nonHomingMove)),
             ),
-            characterId = charName,
+            characterQuery = charName,
             filter = homingOnly,
         )
 
@@ -98,7 +98,7 @@ class GetMovesUseCaseTest {
         // when
         val result = useCase.invoke(
             wiki = wiki,
-            characterId = "missing",
+            characterQuery = "missing",
             filter = Filter.None,
         )
 
