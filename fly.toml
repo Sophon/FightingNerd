@@ -15,7 +15,7 @@ primary_region = 'fra'
     COMMAND_LOG_PATH = "/data/commandLog.json"
 
 [[vm]]
-  memory = '1024mb'
+  memory = '768mb'
   cpu_kind = 'shared'
   cpus = 1
 

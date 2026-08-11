@@ -7,7 +7,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.domain.MOVE_URL
 import io.github.sophon.wikiwavu.domain.VIDEO_URL
-import io.github.sophon.wikiwavu.domain.cleanMoveInput
+import io.github.sophon.wikiwavu.integration.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(character: Character): List<Move> {
     val downloadedMoves = extractMoveDto()

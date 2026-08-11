@@ -15,9 +15,10 @@ import kotlinx.coroutines.flow.first
 internal class GetMoveUseCase {
     suspend fun invoke(
         wiki: WikiClient,
-        query: String
+        query: String,
+        sanitizeMoveInput: String.() -> String = { this },
     ): Result<Pair<Character, Move>, BotError> {
-        val parsedQuery = query.parseQuery()
+        val parsedQuery = query.parseQuery(sanitizeMoveInput)
             ?: return Result.Error(BotError.BotLogicError(query))
 
         val characterList = wiki.subscribeToCharacterList().first()
@@ -62,11 +63,11 @@ internal class GetMoveUseCase {
         val moveQuery: String,
     )
 
-    internal fun String.parseQuery(): ParsedQuery? {
+    internal fun String.parseQuery(sanitizeMoveInput: String.() -> String): ParsedQuery? {
         if (split(" ").size < 2) return null
 
         val charName = substringBefore(' ')
-        val move = dropFirstAndJoin(' ')
+        val move = dropFirstAndJoin(' ').sanitizeMoveInput()
 
         return ParsedQuery(charName, move)
     }

@@ -1,6 +1,6 @@
-package io.github.sophon.wikiwavu.domain
+package io.github.sophon.wikiwavu.integration
 
-internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
+fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
     var result = this.trim().lowercase()
 
     val motionInputs = listOf(

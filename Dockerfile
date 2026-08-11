@@ -33,4 +33,4 @@ RUN mkdir -p /app/res
 COPY res/config.json /app/res/config.json
 
 # Run the bot
-CMD ["java", "-Xms256m", "-Xmx450m", "-jar", "discord-bot.jar"]
+CMD ["java", "-Xms128m", "-Xmx300m", "-jar", "discord-bot.jar"]
