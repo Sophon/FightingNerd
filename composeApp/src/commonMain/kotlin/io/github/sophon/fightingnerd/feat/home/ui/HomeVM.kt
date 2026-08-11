@@ -51,20 +51,14 @@ internal class HomeVM(
 
 
     fun refresh() {
-        val current = _state.value.gameWidgetList
-        if (current.isEmpty()) return
+        if (_state.value.gameWidgetList.isEmpty()) return
 
         overlayService.show(
             Toast(message = "⏳", type = Toast.Type.INFO)
         )
         refreshJob?.cancel()
-        _state.update { state ->
-            state.copy(
-                gameWidgetList = current.map { it.copy(isLoading = true) }.toImmutableList()
-            )
-        }
         refreshJob = viewModelScope.launch {
-            refreshUseCase.invoke().collectLatest { error ->
+            refreshUseCase.invoke().collect { error ->
                 overlayService.show(error = error)
             }
         }
@@ -99,7 +93,6 @@ internal class HomeVM(
                         GameWidget(
                             game = game,
                             featureName = featureInfo.name,
-                            isLoading = true,
                         )
                     }.toImmutableList()
                     _state.update { it.copy(gameWidgetList = widgetList) }
@@ -125,7 +118,6 @@ internal class HomeVM(
                                     iconUrl = domainCharacter.images?.iconUrl,
                                 )
                             }.toImmutableList(),
-                            isLoading = false,
                         )
 
                         _state.update { state ->
