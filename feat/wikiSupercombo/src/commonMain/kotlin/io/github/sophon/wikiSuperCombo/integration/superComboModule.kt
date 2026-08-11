@@ -21,6 +21,7 @@ import io.github.sophon.wikiSuperCombo.data.remote.SuperComboCharacterRemoteAdap
 import io.github.sophon.wikiSuperCombo.data.remote.SuperComboMoveRemoteAdapter
 import io.github.sophon.wikiSuperCombo.domain.SuperComboWikiClient
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -32,8 +33,7 @@ fun superComboModule() = module {
     single { SuperComboFeatureInfo }
 
     single<SuperComboDB>(named(WikiClientFeature.SuperCombo.id)) {
-        val driver = get<SqlDriver>(named(WikiClientFeature.SuperCombo.id))
-        SuperComboDB.Schema.create(driver)
+        val driver = get<SqlDriver>(named(WikiClientFeature.SuperCombo.id)) { parametersOf(SuperComboDB.Schema) }
         val db = SuperComboDB(driver = driver)
         db
     }

@@ -22,6 +22,7 @@ import io.github.sophon.xko.data.remote.XkoDataCache
 import io.github.sophon.xko.data.remote.XkoMoveRemoteAdapter
 import io.github.sophon.xko.domain.XkoWikiClient
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -33,8 +34,7 @@ fun xkoModule() = module {
     single { XkoFeatureInfo }
 
     single<XkoDB>(named(WikiClientFeature.Xko.id)) {
-        val driver = get<SqlDriver>(named(WikiClientFeature.Xko.id))
-        XkoDB.Schema.create(driver)
+        val driver = get<SqlDriver>(named(WikiClientFeature.Xko.id)) { parametersOf(XkoDB.Schema) }
         val db = XkoDB(driver = driver)
         db
     }

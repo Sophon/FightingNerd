@@ -21,6 +21,7 @@ import io.github.sophon.wikidustloop.data.remote.DustLoopCharacterRemoteAdapter
 import io.github.sophon.wikidustloop.data.remote.DustLoopMoveRemoteAdapter
 import io.github.sophon.wikidustloop.domain.DustLoopWikiClient
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -32,8 +33,7 @@ fun dustLoopModule() = module {
     single { DustLoopFeatureInfo }
 
     single<DustLoopDB>(named(WikiClientFeature.DustLoop.id)) {
-        val driver = get<SqlDriver>(named(WikiClientFeature.DustLoop.id))
-        DustLoopDB.Schema.create(driver)
+        val driver = get<SqlDriver>(named(WikiClientFeature.DustLoop.id)) { parametersOf(DustLoopDB.Schema) }
         val db = DustLoopDB(driver = driver)
         db
     }

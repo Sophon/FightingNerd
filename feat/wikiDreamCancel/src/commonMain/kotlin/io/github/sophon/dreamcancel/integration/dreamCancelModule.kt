@@ -22,6 +22,7 @@ import io.github.sophon.dreamcancel.data.remote.DreamCancelDataCache
 import io.github.sophon.dreamcancel.data.remote.DreamCancelMoveRemoteAdapter
 import io.github.sophon.dreamcancel.domain.DreamCancelWikiClient
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -33,8 +34,7 @@ fun dreamCancelModule() = module {
     single { DreamCancelFeatureInfo }
 
     single<DreamCancelDB>(named(WikiClientFeature.DreamCancel.id)) {
-        val driver = get<SqlDriver>(named(WikiClientFeature.DreamCancel.id))
-        DreamCancelDB.Schema.create(driver)
+        val driver = get<SqlDriver>(named(WikiClientFeature.DreamCancel.id)) { parametersOf(DreamCancelDB.Schema) }
         val db = DreamCancelDB(driver = driver)
         db
     }

@@ -1,6 +1,8 @@
 package io.github.sophon.discord
 
+import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import dev.kord.core.Kord
 import io.github.sophon.core.featureConfig.model.WikiClientFeature
@@ -83,6 +85,11 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::JsonReportRepo).bind<ReportRepo>()
 
     WikiClientFeature.entries.forEach { feature ->
-        single<SqlDriver>(named(feature.id)) { JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY) }
+        single<SqlDriver>(named(feature.id)) { params ->
+            val schema = params.get<SqlSchema<QueryResult.Value<Unit>>>()
+            val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
+            schema.create(driver)
+            driver
+        }
     }
 }
