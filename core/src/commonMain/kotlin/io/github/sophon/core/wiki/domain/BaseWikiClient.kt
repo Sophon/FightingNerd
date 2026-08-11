@@ -44,7 +44,6 @@ abstract class BaseWikiClient(
             moveRepo.refreshMoveList(character)
                 .onSuccess { moveListSize ->
                     debugLogger("${character.id} (${game.id}): $moveListSize moves downloaded")
-                    debugLogger("SORRY: repo moves downloaded")
                 }
                 .onError {
                     val error = Result.Error(it.toDomainError())

@@ -87,7 +87,7 @@ android {
     }
 }
 
-val featureVersion = "2.4.0"
+val featureVersion = "3.0.0"
 buildkonfig {
     packageName = "io.github.sophon.wikiSuperCombo"
 

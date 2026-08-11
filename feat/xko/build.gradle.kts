@@ -84,7 +84,7 @@ android {
     }
 }
 
-val featureVersion = "1.3.0"
+val featureVersion = "2.0.0"
 buildkonfig {
     packageName = "io.github.sophon.xko"
 

@@ -36,6 +36,7 @@ internal const val URL_STEAM_LOBBY = "steam://joinlobby/"
 
 internal const val ENV_API_DISCORD = "discordBotApiKey"
 internal const val ENV_API_EWGF = "ewgfApiKey"
+internal const val ENV_WIKI_DATABASE_DIR = "WIKI_DATABASE_DIR"
 
 internal const val RNG_DONATION_PCT_COMMAND = 5
 internal const val RNG_DONATION_PCT_FEEDBACK = 20
