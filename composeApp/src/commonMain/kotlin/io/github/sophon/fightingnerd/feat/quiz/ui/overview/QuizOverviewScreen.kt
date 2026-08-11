@@ -33,7 +33,6 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
-import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
@@ -57,7 +56,7 @@ internal fun QuizOverviewScreen(
 
 @Composable
 private fun WidgetSection(
-    widgetList: List<GameWidget>,
+    widgetList: List<QuizOverviewState.GameWidget>,
     onPlay: (gameId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {

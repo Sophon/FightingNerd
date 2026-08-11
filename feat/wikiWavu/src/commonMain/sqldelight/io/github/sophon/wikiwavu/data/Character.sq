@@ -9,7 +9,8 @@ CREATE TABLE CharacterEntity (
     umo TEXT NOT NULL,
     imagesIconUrl TEXT,
     imagesBannerUrl TEXT,
-    consecutiveFailureCount INTEGER NOT NULL DEFAULT 0
+    consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
+    insertedAt INTEGER NOT NULL DEFAULT (CAST(strftime('%s','now') AS INTEGER) * 1000)
 );
 
 insertCharacter:
@@ -25,10 +26,15 @@ ON CONFLICT(id) DO UPDATE SET
     umo = excluded.umo,
     imagesIconUrl = excluded.imagesIconUrl,
     imagesBannerUrl = excluded.imagesBannerUrl,
-    consecutiveFailureCount = 0;
+    consecutiveFailureCount = 0,
+    insertedAt = CAST(strftime('%s','now') AS INTEGER) * 1000;
 
 selectAll:
 SELECT *
+FROM CharacterEntity;
+
+selectLastInsertedAt:
+SELECT MAX(insertedAt) AS lastInsertedAt
 FROM CharacterEntity;
 
 deleteAll:

@@ -22,6 +22,7 @@ import io.github.sophon.wikimizuumi.data.remote.MizuumiDataCache
 import io.github.sophon.wikimizuumi.data.remote.MizuumiMoveRemoteAdapter
 import io.github.sophon.wikimizuumi.domain.MizuumiWikiClient
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -33,8 +34,7 @@ fun mizuumiModule() = module {
     single { MizuumiFeatureInfo }
 
     single<MizuumiDB>(named(WikiClientFeature.Mizuumi.id)) {
-        val driver = get<SqlDriver>(named(WikiClientFeature.Mizuumi.id))
-        MizuumiDB.Schema.create(driver)
+        val driver = get<SqlDriver>(named(WikiClientFeature.Mizuumi.id)) { parametersOf(MizuumiDB.Schema) }
         val db = MizuumiDB(driver = driver)
         db
     }
@@ -91,9 +91,6 @@ fun mizuumiModule() = module {
         val gameQualifier = named("${WikiClientFeature.Mizuumi.id}:${game.id}")
         MizuumiWikiClient(
             game = game,
-            characterDB = params.get(),
-            moveDB = params.get(),
-            source = get(),
             dataCache = get(gameQualifier),
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),

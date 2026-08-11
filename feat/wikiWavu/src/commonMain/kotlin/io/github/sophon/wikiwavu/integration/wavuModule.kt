@@ -21,6 +21,7 @@ import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSource
 import io.github.sophon.wikiwavu.data.remote.WavuWikiDataSourceImpl
 import io.github.sophon.wikiwavu.domain.WavuWikiClient
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.parameter.parametersOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -32,8 +33,7 @@ fun wavuModule() = module {
     single { WavuFeatureInfo }
 
     single<WavuDB>(named(WikiClientFeature.Wavu.id)) {
-        val driver = get<SqlDriver>(named(WikiClientFeature.Wavu.id))
-        WavuDB.Schema.create(driver)
+        val driver = get<SqlDriver>(named(WikiClientFeature.Wavu.id)) { parametersOf(WavuDB.Schema) }
         val db = WavuDB(driver = driver)
         db
     }
@@ -75,9 +75,6 @@ fun wavuModule() = module {
     factory<WikiClient>(named(WikiClientFeature.Wavu.id)) { params ->
         WavuWikiClient(
             game = params.get(),
-            characterDB = params.get(),
-            moveDB = params.get(),
-            source = get(),
             characterRepo = get(named(WikiClientFeature.Wavu.id)) { params },
             moveRepo = get(named(WikiClientFeature.Wavu.id)) { params },
         )

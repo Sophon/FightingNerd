@@ -25,43 +25,16 @@ internal class XkoWikiClient(
     game: Game,
     @Suppress("unused") private val source: XkoWikiDataSource,
     private val dataCache: XkoDataCache,
-    characterDB: CharacterListDB,
-    moveDB: MoveListDB,
     characterRepo: CharacterRepo,
     moveRepo: MoveRepo,
 ): BaseWikiClient(
     game = game,
     featureInfo = XkoFeatureInfo.featureInfo,
-    characterDB = characterDB,
-    moveDB = moveDB,
     characterRepo = characterRepo,
     moveRepo = moveRepo,
     infoLogger = { Napier.i(tag = TAG) { it } },
     debugLogger = { Napier.d(tag = TAG) { it } },
 ) {
-    override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
-        val result = dataCache.getOrFetch()
-            .map { map ->
-                val characterList = map.keys.toList()
-                characterList
-            }
-            .mapError { it.toDomainError() }
-        return result
-    }
-
-    override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError> {
-        val result = dataCache.getOrFetch()
-            .map { map ->
-                val moveList = map
-                    .filterKeys { it.remoteQueryId == character.remoteQueryId }
-                    .values
-                    .flatten()
-                moveList
-            }
-            .mapError { it.toDomainError() }
-        return result
-    }
-
     override suspend fun onClearCache() {
         dataCache.clear()
     }

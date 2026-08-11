@@ -9,13 +9,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 interface MoveRepo {
     suspend fun refreshMoveList(character: Character): Result<Int, DataError>
     fun subscribeToMoveList(characterId: String): Flow<List<Move>>
     suspend fun wipeData(): EmptyResult<DataError>
+    suspend fun getLastUpdateTimestamp(): Result<Instant?, DataError>
 }
 
+@OptIn(ExperimentalTime::class)
 class MoveRepoImpl(
     private val dbAdapter: MoveDbAdapter,
     private val remoteAdapter: MoveRemoteAdapter,
@@ -50,6 +55,18 @@ class MoveRepoImpl(
     override fun subscribeToMoveList(characterId: String): Flow<List<Move>> {
         val flow = dbAdapter.selectMovesFlow(characterId)
         return flow
+    }
+
+    override suspend fun getLastUpdateTimestamp(): Result<Instant?, DataError> {
+        val result = withContext(Dispatchers.IO) {
+            try {
+                val timestamp = dbAdapter.getLastUpdateTimestamp()
+                Result.Success(timestamp)
+            } catch (_: Exception) {
+                Result.Error(DataError.Local.UNKNOWN)
+            }
+        }
+        return result
     }
 
     override suspend fun wipeData(): EmptyResult<DataError> {

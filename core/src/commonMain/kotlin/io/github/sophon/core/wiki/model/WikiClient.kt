@@ -20,22 +20,10 @@ interface WikiClient {
     suspend fun refreshData(): EmptyResult<WikiError>
     fun subscribeToCharacterList(): Flow<List<Character>>
     fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>>
+    //TODO: fun getMoveCountFor(characterId: CharacterId): Flow<Int> — cheap readiness check to replace subscribeToMoveList(id).map { it.isNotEmpty() } in HomeVM
 
     suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
     suspend fun clearCache(): EmptyResult<WikiError>
 
     fun getFiltersFor(game: Game): Set<Filter>
-
-
-    //old interface
-    suspend fun downloadCharacterList(): Result<List<Character>, WikiError>
-    suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError>
-    suspend fun fetchCharacterList(): Result<List<Character>, WikiError>
-    suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError>
-
-    suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError>
-    suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError>
-    suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError>
-    suspend fun fetchMoveList(characterQuery: String, filter: Filter = Filter.None): Result<List<Move>, WikiError>
-    suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError>
 }

@@ -5,16 +5,18 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
-import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -26,14 +28,14 @@ internal class MoveListVM(
     private val characterId: String,
 
     private val overlayService: OverlayService,
-    private val loadMoveListDataUseCase: LoadMoveListDataUseCase,
+    private val subscribeToMoveListUseCase: SubscribeToMoveListUseCase,
     private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
     private val normalizeSliderUseCase: NormalizeSliderUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState(character = null))
     val state = _state
         .onStart {
-            loadData()
+            subscribeToData()
         }
         .stateIn(
             scope = viewModelScope,
@@ -124,24 +126,25 @@ internal class MoveListVM(
     }
 
 
-    private fun loadData() {
+    private fun subscribeToData() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-            loadMoveListDataUseCase.invoke(gameId = gameId, characterId = characterId)
-                .onSuccess { (character, moveList) ->
-                    _state.update { state ->
-                        val fullMoveList = moveList.associateBy { it.id }
-                        state.copy(
-                            character = character,
-                            fullMoveList = fullMoveList,
-                        )
-                    }
+            subscribeToMoveListUseCase.invoke(gameId = gameId, characterId = CharacterId(characterId))
+                .collectLatest { result ->
+                    result
+                        .onSuccess { (character, moveList) ->
+                            _state.update { state ->
+                                val fullMoveList = moveList.associateBy { it.id }
+                                state.copy(
+                                    character = character,
+                                    fullMoveList = fullMoveList,
+                                )
+                            }
+                        }
+                        .onError { error ->
+                            Napier.e(tag = TAG) { "loadData: $error" }
+                            overlayService.show(error)
+                        }
                 }
-                .onError { error ->
-                    Napier.e(tag = TAG) { "loadData: $error" }
-                    overlayService.show(error)
-                }
-            _state.update { it.copy(isLoading = false) }
         }
     }
 
