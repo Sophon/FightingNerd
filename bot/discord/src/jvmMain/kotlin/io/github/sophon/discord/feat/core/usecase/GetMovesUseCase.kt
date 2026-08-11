@@ -17,8 +17,8 @@ internal class GetMovesUseCase {
         filter: Filter = Filter.None,
     ): Result<Pair<Character, List<Move>>, BotError> {
         val characterList = wiki.subscribeToCharacterList().first()
-        val character = characterList.firstOrNull { it.id == characterId }
-            ?: return Result.Error(BotError.UnknownCharacter(characterId))
+        val character = characterList.findMatching(characterQuery)
+            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
 
         val moveList = wiki.subscribeToMoveList(CharacterId(character.id)).first()
             .filter(filter.predicate)
