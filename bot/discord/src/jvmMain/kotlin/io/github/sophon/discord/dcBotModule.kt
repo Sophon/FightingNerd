@@ -1,6 +1,12 @@
 package io.github.sophon.discord
 
+import app.cash.sqldelight.db.QueryResult
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.db.SqlSchema
+import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import dev.kord.core.Kord
+import io.github.sophon.core.featureConfig.model.WikiClientFeature
+import org.koin.core.qualifier.named
 import io.github.aakira.napier.Napier
 import io.github.sophon.integration.adminModule
 import io.github.sophon.core.coreModule
@@ -30,6 +36,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import java.io.File
 
 internal fun initKoin(
     kord: Kord,
@@ -77,4 +84,28 @@ internal fun dcBotModule(kord: Kord) = module {
 
     singleOf(::FileManager)
     singleOf(::JsonReportRepo).bind<ReportRepo>()
+
+    WikiClientFeature.entries.forEach { feature ->
+        single<SqlDriver>(named(feature.id)) { params ->
+            val schema = params.get<SqlSchema<QueryResult.Value<Unit>>>()
+            val databaseDir = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { "." }
+            val databaseFile = File(databaseDir, "${feature.id}.db")
+            val versionFile = File(databaseDir, "${feature.id}.db.version")
+            databaseFile.parentFile?.mkdirs()
+
+            val savedVersion = versionFile.takeIf { it.exists() }?.readText()?.toLongOrNull() ?: 0L
+            if (savedVersion != schema.version) {
+                databaseFile.delete()
+                versionFile.delete()
+            }
+
+            val isNewDatabase = databaseFile.exists().not()
+            val driver = JdbcSqliteDriver("jdbc:sqlite:${databaseFile.absolutePath}")
+            if (isNewDatabase) {
+                schema.create(driver)
+                versionFile.writeText(schema.version.toString())
+            }
+            driver
+        }
+    }
 }

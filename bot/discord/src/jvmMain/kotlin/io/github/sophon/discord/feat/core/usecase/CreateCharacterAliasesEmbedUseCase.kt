@@ -4,17 +4,15 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.architecture.map
-import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.EMBED_LIST_MIN_COLUMN
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
+import kotlinx.coroutines.flow.first
 
 @ExcludeFromCoverage("UI")
 internal class CreateCharacterAliasesEmbedUseCase {
@@ -23,11 +21,12 @@ internal class CreateCharacterAliasesEmbedUseCase {
         featureInfo: FeatureInfo,
         colorCode: Int,
     ): Result<EmbedBuilder.() -> Unit, BotError> {
-        return wiki.fetchCharacterList()
-            .mapError { it.toDomainError() }
-            .map { characterList ->
+        val embed = wiki.subscribeToCharacterList()
+            .first()
+            .let { characterList ->
                 createAliasesEmbed(characterList, featureInfo, colorCode)
             }
+        return Result.Success(embed)
     }
 
     private fun createAliasesEmbed(

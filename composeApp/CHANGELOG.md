@@ -1,8 +1,9 @@
 # APP CHANGELOG
 
-## [v1.2.1] - TODO
+## [v2.0.0] - TODO
 - `Dragdown` - updated character table
 -`SuperCombo` - renamed field for `AVL`
+- migrate to Wiki owned SQL databases
 
 ## [v1.2.0] - 2026-07-22
 - Quiz - auto-play videos

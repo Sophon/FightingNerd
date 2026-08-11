@@ -22,8 +22,8 @@ import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.feat.core.util.aggregateCharacters
-import io.github.sophon.discord.feat.core.util.firstMatchingWikiMoves
+import io.github.sophon.discord.util.aggregateCharacters
+import io.github.sophon.discord.util.firstMatchingWikiMoves
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikimizuumi.integration.MizuumiFeatureInfo
@@ -217,7 +217,7 @@ internal class MizuumiWikiDiscordFeature(
         }
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.BotLogicError(command.name, ""))
-        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki).map { (_, moveList) -> moveList }
         return result
     }
 

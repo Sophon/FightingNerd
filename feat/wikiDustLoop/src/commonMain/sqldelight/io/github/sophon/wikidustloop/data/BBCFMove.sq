@@ -1,0 +1,24 @@
+CREATE TABLE BBCFMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    onODR TEXT,
+    attribute TEXT,
+    p1 TEXT,
+    p2 TEXT,
+    starter TEXT,
+    level TEXT,
+    blockstun TEXT,
+    groundHit TEXT,
+    airHit TEXT,
+    groundCH TEXT,
+    airCH TEXT,
+    blockstop TEXT,
+    hitstop TEXT,
+    chStop TEXT,
+    cancelTiming TEXT,
+    type TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertBBCFMove:
+INSERT OR REPLACE INTO BBCFMoveEntity(moveId, onODR, attribute, p1, p2, starter, level, blockstun, groundHit, airHit, groundCH, airCH, blockstop, hitstop, chStop, cancelTiming, type)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

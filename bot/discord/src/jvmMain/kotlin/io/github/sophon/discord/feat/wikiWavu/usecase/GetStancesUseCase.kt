@@ -2,22 +2,21 @@ package io.github.sophon.discord.feat.wikiWavu.usecase
 
 import dev.kord.common.Color
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
-import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.feat.core.domain.toDomainError
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
+import io.github.sophon.discord.util.findMatching
 import io.github.sophon.discord.util.toButtons
-import kotlin.collections.map
+import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.seconds
 
 //TODO: write unit tests
@@ -100,7 +99,7 @@ internal class GetStancesUseCase(
 
         return getMovesUseCase.invoke(
             wiki = wiki,
-            characterId = charName,
+            characterQuery = charName,
             filter = filter,
         )
     }
@@ -109,15 +108,16 @@ internal class GetStancesUseCase(
         wiki: WikiClient,
         charName: String,
     ): Result<List<String>, BotError> {
-        val result = wiki.fetchCharacter(characterQuery = charName)
-            .flatMap { character -> wiki.fetchMoveList(character.id) }
-            .map { moveList ->
-                moveList
-                    .filter { it.t8Properties?.stance?.isNotBlank() == true }
-                    .map { it.t8Properties!!.stance!! }
-                    .distinct()
-            }
-            .mapError { it.toDomainError() }
+        val characterList = wiki.subscribeToCharacterList().first()
+        val character = characterList.findMatching(charName)
+            ?: return Result.Error(BotError.UnknownCharacter(charName))
+
+        val moveList = wiki.subscribeToMoveList(CharacterId(character.id)).first()
+        val stanceList = moveList
+            .filter { it.t8Properties?.stance?.isNotBlank() == true }
+            .map { it.t8Properties!!.stance!! }
+            .distinct()
+        val result = Result.Success(stanceList)
         return result
     }
 

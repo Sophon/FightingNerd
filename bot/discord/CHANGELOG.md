@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v15.0.0] - 2026-08-11
+- periodic memory usage logging
+- `help` - tweaked command output
+- migrate to Wiki owned SQL databases
+
 ## [v14.3.3] - 2026-08-05
 - `Dragdown` - updated character table
 - `SuperCombo` - renamed field for `AVL` 

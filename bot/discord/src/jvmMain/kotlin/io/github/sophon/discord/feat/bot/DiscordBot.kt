@@ -22,6 +22,7 @@ import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
+import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
@@ -29,7 +30,10 @@ import io.github.sophon.discord.util.safeRestCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
+import java.lang.management.ManagementFactory
+import kotlin.time.Duration.Companion.hours
 import kotlin.uuid.ExperimentalUuidApi
 
 internal interface DiscordBot {
@@ -47,6 +51,7 @@ internal class DiscordBotImpl(
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
     private val botFeatureRepo: BotFeatureRepo,
+    private val scheduler: Scheduler,
 ): DiscordBot {
     private val editableEmbedMap = mutableMapOf<String, BotOutput>()
 
@@ -55,6 +60,7 @@ internal class DiscordBotImpl(
 
         startFeatures()
         startTracking()
+        startMemoryLogging()
         startKord()
 
         Napier.e(tag = TAG) { "❌ Bot session ended (this shouldn't happen)" }
@@ -247,6 +253,26 @@ internal class DiscordBotImpl(
                 )
             }
         }
+    }
+
+    private fun startMemoryLogging() {
+        scheduler.start(
+            period = 1.hours,
+            task = {
+                val runtime = Runtime.getRuntime()
+                val heapUsed = runtime.totalMemory() - runtime.freeMemory()
+                val heapCommitted = runtime.totalMemory()
+                val heapMax = runtime.maxMemory()
+
+                val nonHeap = ManagementFactory.getMemoryMXBean().nonHeapMemoryUsage
+                val nonHeapUsed = nonHeap.used
+                val nonHeapCommitted = nonHeap.committed
+                Napier.i(tag = TAG) {
+                    "Heap: used=${heapUsed / 1024 / 1024}MB committed=${heapCommitted / 1024 / 1024}MB max=${heapMax / 1024 / 1024}MB " +
+                            "NonHeap: used=${nonHeapUsed / 1024 / 1024}MB committed=${nonHeapCommitted / 1024 / 1024}MB"
+                }
+            }
+        ).launchIn(coroutineScope)
     }
 
 

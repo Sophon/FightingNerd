@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.buildkonfig)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -40,7 +41,22 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.kotlin.date.time)
 
+            implementation(libs.sqldelight.coroutines)
+            implementation(libs.sqldelight.primitive.adapters)
+
             api(libs.koin.core)
+        }
+
+        androidMain.dependencies {
+            implementation(libs.sqldelight.driver.android)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.sqldelight.driver.native)
+        }
+
+        jvmMain.dependencies {
+            implementation(libs.sqldelight.driver.sqlite)
         }
 
         commonTest.dependencies {
@@ -68,11 +84,20 @@ android {
     }
 }
 
-val featureVersion = "1.9.0"
+val featureVersion = "2.0.0"
 buildkonfig {
     packageName = "io.github.sophon.wikiwavu"
 
     defaultConfigs {
         buildConfigField(STRING, "VERSION", featureVersion)
+    }
+}
+
+sqldelight {
+    databases {
+        create("WavuDB") {
+            packageName.set("io.github.sophon.wikiwavu.data")
+            dialect(libs.sqldelight.dialect.sqlite)
+        }
     }
 }

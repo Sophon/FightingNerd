@@ -9,6 +9,7 @@ sealed interface DataError: Error {
 
     enum class Remote: DataError {
         UNKNOWN,
+        PAGE_NOT_FOUND,
         TOO_MANY_REQUESTS,
         REQUEST_TIMEOUT,
         NO_INTERNET,

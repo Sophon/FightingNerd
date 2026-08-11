@@ -8,6 +8,8 @@ import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
+import io.github.sophon.fightingnerd.feat.FakeWikiClient
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
@@ -37,8 +39,8 @@ internal class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `usecase returns a properly sorted games`() = runTest {
         // given
-        val wavuClient = FakeWikiClient(featureName = "Wavu Wiki")
-        val superComboClient = FakeWikiClient(featureName = "SuperCombo Wiki")
+        val wavuClient = FakeWikiClient(name = "Wavu Wiki")
+        val superComboClient = FakeWikiClient(name = "SuperCombo Wiki")
         val repo = FakeFeatureRepo(
             gameClients = mapOf(
                 Game.Tekken8 to wavuClient,
@@ -64,7 +66,7 @@ internal class GetAvailableFeaturesUseCaseTest {
     @Test
     fun `usecase reflects disabled preference from store`() = runTest {
         // given
-        val wavuClient = FakeWikiClient(featureName = "Wavu Wiki")
+        val wavuClient = FakeWikiClient(name = "Wavu Wiki")
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
         store.edit { prefs -> prefs[featureKey("Wavu Wiki", Game.Tekken8.id)] = false }
         val usecase = GetAvailableFeaturesUseCase(repo, store)
