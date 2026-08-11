@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v15.0.0] - TODO
+## [v15.0.0] - 2026-08-11
 - periodic memory usage logging
 - `help` - tweaked command output
 - migrate to Wiki owned SQL databases
