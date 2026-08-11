@@ -31,9 +31,6 @@ abstract class BaseWikiClient(
 ) : WikiClient {
     override suspend fun refreshData(): EmptyResult<WikiError> {
         //TODO: handle per-request timeout and host-unresponsive short-circuit
-        val characterRepo = requireCharacterRepo()
-        val moveRepo = requireMoveRepo()
-
         val charResult = characterRepo.refreshCharacterList()
         if (charResult is Result.Error) {
             val error = Result.Error(charResult.error.toDomainError())
@@ -41,12 +38,13 @@ abstract class BaseWikiClient(
         }
 
         val characterList = characterRepo.subscribeToCharacterList().first()
-        infoLogger("${game.id}: ${characterList.size} downloaded")
+        infoLogger("${game.id}: ${characterList.size} characters downloaded")
 
         for (character in characterList) {
             moveRepo.refreshMoveList(character)
                 .onSuccess { moveListSize ->
                     debugLogger("${character.id} (${game.id}): $moveListSize moves downloaded")
+                    debugLogger("SORRY: repo moves downloaded")
                 }
                 .onError {
                     val error = Result.Error(it.toDomainError())
@@ -58,15 +56,11 @@ abstract class BaseWikiClient(
     }
 
     override fun subscribeToCharacterList(): Flow<List<Character>> {
-        val repo = requireCharacterRepo()
-        val flow = repo.subscribeToCharacterList()
-        return flow
+        return characterRepo.subscribeToCharacterList()
     }
 
     override fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>> {
-        val repo = requireMoveRepo()
-        val flow = repo.subscribeToMoveList(characterId.value)
-        return flow
+        return moveRepo.subscribeToMoveList(characterId.value)
     }
 
     final override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> {
@@ -89,21 +83,4 @@ abstract class BaseWikiClient(
     }
 
     protected open suspend fun onClearCache() { /* no-op by default */ }
-
-    private fun requireCharacterRepo(): CharacterRepo {
-        val repo = characterRepo
-            ?: error("${this::class.simpleName} did not provide a CharacterRepo to BaseWikiClient")
-        return repo
-    }
-
-    private fun requireMoveRepo(): MoveRepo {
-        val repo = moveRepo
-            ?: error("${this::class.simpleName} did not provide a MoveRepo to BaseWikiClient")
-        return repo
-    }
-
-
-    private companion object {
-        const val TAG = "BaseWikiClient"
-    }
 }
