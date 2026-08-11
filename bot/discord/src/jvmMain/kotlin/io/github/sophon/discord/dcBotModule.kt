@@ -36,6 +36,7 @@ import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import java.io.File
 
 internal fun initKoin(
     kord: Kord,
@@ -87,8 +88,23 @@ internal fun dcBotModule(kord: Kord) = module {
     WikiClientFeature.entries.forEach { feature ->
         single<SqlDriver>(named(feature.id)) { params ->
             val schema = params.get<SqlSchema<QueryResult.Value<Unit>>>()
-            val driver = JdbcSqliteDriver(JdbcSqliteDriver.IN_MEMORY)
-            schema.create(driver)
+            val databaseDir = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { "." }
+            val databaseFile = File(databaseDir, "${feature.id}.db")
+            val versionFile = File(databaseDir, "${feature.id}.db.version")
+            databaseFile.parentFile?.mkdirs()
+
+            val savedVersion = versionFile.takeIf { it.exists() }?.readText()?.toLongOrNull() ?: 0L
+            if (savedVersion != schema.version) {
+                databaseFile.delete()
+                versionFile.delete()
+            }
+
+            val isNewDatabase = databaseFile.exists().not()
+            val driver = JdbcSqliteDriver("jdbc:sqlite:${databaseFile.absolutePath}")
+            if (isNewDatabase) {
+                schema.create(driver)
+                versionFile.writeText(schema.version.toString())
+            }
             driver
         }
     }
