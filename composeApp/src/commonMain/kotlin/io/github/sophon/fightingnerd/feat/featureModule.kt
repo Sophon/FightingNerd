@@ -2,9 +2,9 @@ package io.github.sophon.fightingnerd.feat
 
 import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.RefreshUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.MoreVM
@@ -34,8 +34,8 @@ internal fun featureModule() = module {
     viewModelOf(::HomeVM)
     singleOf(::CheckIfFirstLaunchUseCase)
     singleOf(::LoadEmptyWidgetsUseCase)
-    singleOf(::LoadGameCharacterListUseCase)
-    singleOf(::LoadMoveListUseCase)
+    singleOf(::SubscribeToCharacterListUseCase)
+    singleOf(::RefreshUseCase)
     //endregion
 
     //region More

@@ -20,6 +20,7 @@ interface WikiClient {
     suspend fun refreshData(): EmptyResult<WikiError>
     fun subscribeToCharacterList(): Flow<List<Character>>
     fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>>
+    //TODO: fun getMoveCountFor(characterId: CharacterId): Flow<Int> — cheap readiness check to replace subscribeToMoveList(id).map { it.isNotEmpty() } in HomeVM
 
     suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError>
     suspend fun clearCache(): EmptyResult<WikiError>
