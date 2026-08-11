@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v15.1.0] - 2026-08-11
+- `Wavu` - fixed move queries not being sanitized
+
 ## [v15.0.0] - 2026-08-11
 - periodic memory usage logging
 - `help` - tweaked command output
