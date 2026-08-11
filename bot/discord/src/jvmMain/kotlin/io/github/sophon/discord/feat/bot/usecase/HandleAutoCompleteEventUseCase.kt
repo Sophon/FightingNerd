@@ -4,6 +4,7 @@ import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
@@ -150,12 +151,11 @@ internal class HandleAutoCompleteEventUseCase(
 
             when (focusedArg.autoCompleteType) {
                 AutoCompleteType.Character -> {
-                    val result = wikiFeature.getCharacterList(command)
-                    if (result is Result.Success) {
+                    wikiFeature.getCharacterList(command).map { characterList ->
                         val filtered = if (query.isEmpty()) {
-                            result.data.map { it.toChoice() }
+                            characterList.map { it.toChoice() }
                         } else {
-                            result.data.filterByQuery(query)
+                            characterList.filterByQuery(query)
                         }
                         return filtered.take(COMMAND_MAX_SUGGESTIONS)
                     }
