@@ -152,8 +152,12 @@ internal class HandleAutoCompleteEventUseCase(
                 AutoCompleteType.Character -> {
                     val result = wikiFeature.getCharacterList(command)
                     if (result is Result.Success) {
-                        val filtered = result.data.filterByQuery(query)
-                        return filtered
+                        val filtered = if (query.isEmpty()) {
+                            result.data.map { it.toChoice() }
+                        } else {
+                            result.data.filterByQuery(query)
+                        }
+                        return filtered.take(COMMAND_MAX_SUGGESTIONS)
                     }
                 }
                 AutoCompleteType.Move -> {
