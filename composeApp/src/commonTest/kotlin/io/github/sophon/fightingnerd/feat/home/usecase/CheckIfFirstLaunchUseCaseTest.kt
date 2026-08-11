@@ -5,17 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.architecture.EmptyResult
-import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.FeatureRepo
-import io.github.sophon.core.featureConfig.model.Config
-import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.data.WikiError
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.KEY_FIRST_TIME_HOME_INIT_DONE
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -23,14 +13,12 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
-import kotlinx.datetime.Instant
 import okio.FileSystem
 import okio.Path.Companion.toPath
 import okio.SYSTEM
 import kotlin.random.Random
 import kotlin.test.AfterTest
 import kotlin.test.Test
-import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class CheckIfFirstLaunchUseCaseTest {
@@ -97,35 +85,4 @@ internal class CheckIfFirstLaunchUseCaseTest {
         // then
         assertThat(after).isEqualTo(expected)
     }
-
-
-    //region Test Doubles
-    private class FakeFeatureRepo(
-        private val gameClients: Map<Game, WikiClient> = emptyMap(),
-    ) : FeatureRepo {
-        override fun initialize(config: Config): EmptyResult<WikiError> = Result.Success(Unit)
-        override fun getGameClients(): Map<Game, WikiClient> = gameClients
-        override fun getOtherFeatures(): List<Config.Feature> = emptyList()
-        override fun getEnabledFeatureNames(): Set<String> = emptySet()
-        override fun getWikiClientFor(game: Game): WikiClient? = gameClients[game]
-    }
-
-    @OptIn(ExperimentalTime::class)
-    private class FakeWikiClient(name: String) : WikiClient {
-        override val featureInfo = FeatureInfo(name = name, url = "", version = "1.0.0")
-
-        override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> = error("not used")
-        override suspend fun cacheCharacterList(characterList: List<Character>): EmptyResult<WikiError> = error("not used")
-        override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = error("not used")
-        override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> = error("not used")
-        override suspend fun downloadMoveListFor(character: Character): Result<List<Move>, WikiError> = error("not used")
-        override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = error("not used")
-        override suspend fun cacheMoveList(character: Character, moveList: List<Move>): EmptyResult<WikiError> = error("not used")
-        override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> = error("not used")
-        override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> = error("not used")
-        override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = error("not used")
-        override suspend fun clearCache(): EmptyResult<WikiError> = error("not used")
-        override fun getFiltersFor(game: Game): Set<Filter> = error("not used")
-    }
-    //endregion
 }
