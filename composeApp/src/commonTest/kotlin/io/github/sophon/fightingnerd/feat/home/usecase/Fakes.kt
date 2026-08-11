@@ -8,80 +8,47 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
-import kotlinx.datetime.Instant
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 internal class FakeWikiClient(
-    private val fetchCharacterResult: Result<Character, WikiError> = Result.Success(
-        Character(id = "", displayName = "", remoteQueryId = "", wikiUrl = ""),
-    ),
-    private val fetchCharacterListResult: Result<List<Character>, WikiError> = Result.Success(emptyList()),
-    private val checkHasCachedMovesResult: Result<Boolean, WikiError> = Result.Success(true),
-    private val downloadCharacterListResult: Result<List<Character>, WikiError> = Result.Success(emptyList()),
-    private val downloadMoveListResult: Result<List<Move>, WikiError> = Result.Success(emptyList()),
-    private val cacheMoveListResult: EmptyResult<WikiError> = Result.Success(Unit),
-    private val cacheCharacterListResult: EmptyResult<WikiError> = Result.Success(Unit),
+    name: String = "",
+    private val refreshResult: EmptyResult<WikiError> = Result.Success(Unit),
+    private val subscribeToCharacterListResult: List<Character> = emptyList(),
+    private val subscribeToMoveListResult: List<Move> = emptyList(),
 ) : WikiClient {
-    var downloadMoveListForCalled = false
-        private set
-    var downloadCharacterListCalled = false
-        private set
-    var cacheCharacterListCalled = false
-        private set
-    var cacheMoveListCalled = false
-        private set
-    var cachedCharacterList: List<Character>? = null
-        private set
-    var cachedCharacter: Character? = null
-        private set
-    var cachedMoveList: List<Move>? = null
+    var refreshCalled = false
         private set
 
-    override val featureInfo = FeatureInfo(name = "Fake Wiki", url = "", version = "1.0.0")
-
-    override suspend fun downloadCharacterList(): Result<List<Character>, WikiError> {
-        downloadCharacterListCalled = true
-        return downloadCharacterListResult
+    override val featureInfo = FeatureInfo(name = name, url = "", version = "1.0.0")
+    override suspend fun refreshData(): EmptyResult<WikiError> {
+        refreshCalled = true
+        return refreshResult
     }
 
-    override suspend fun fetchCharacterList(): Result<List<Character>, WikiError> = fetchCharacterListResult
-
-    override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> = fetchCharacterResult
-
-    override suspend fun downloadMoveListFor(
-        character: Character,
-    ): Result<List<Move>, WikiError> {
-        downloadMoveListForCalled = true
-        return downloadMoveListResult
+    override fun subscribeToCharacterList(): Flow<List<Character>> {
+        return flow {
+            delay(3.seconds)
+            emit(subscribeToCharacterListResult)
+        }
     }
 
-    override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = checkHasCachedMovesResult
-
-    override suspend fun cacheCharacterList(
-        characterList: List<Character>,
-    ): EmptyResult<WikiError> {
-        cacheCharacterListCalled = true
-        cachedCharacterList = characterList
-        return cacheCharacterListResult
+    override fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>> {
+        return flow {
+            delay(3.seconds)
+            emit(subscribeToMoveListResult)
+        }
     }
 
-    override suspend fun cacheMoveList(
-        character: Character,
-        moveList: List<Move>,
-    ): EmptyResult<WikiError> {
-        cacheMoveListCalled = true
-        cachedCharacter = character
-        cachedMoveList = moveList
-        return cacheMoveListResult
-    }
-
-
-    override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> = error("not used")
-    override suspend fun fetchMove(characterId: String, moveQuery: String): Result<Move, WikiError> = error("not used")
     override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = error("not used")
     override suspend fun clearCache(): EmptyResult<WikiError> = error("not used")
     override fun getFiltersFor(game: Game): Set<Filter> = error("not used")
