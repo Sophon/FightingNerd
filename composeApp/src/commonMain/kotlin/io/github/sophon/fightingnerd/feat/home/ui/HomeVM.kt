@@ -108,7 +108,7 @@ internal class HomeVM(
         coroutineScope {
             widgets.forEach { gameWidget ->
                 launch {
-                    subscribeToCharacterListUseCase.invoke(gameWidget).collectLatest { characterList ->
+                    subscribeToCharacterListUseCase.invoke(gameWidget.game).collectLatest { characterList ->
                         val updatedWidget = gameWidget.copy(
                             characterList = characterList.map { domainCharacter ->
                                 GameWidget.Character(
