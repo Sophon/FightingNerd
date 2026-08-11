@@ -2,6 +2,7 @@
 
 ## [v15.1.0] - 2026-08-11
 - `Wavu` - fixed move queries not being sanitized
+- reduced memory settings for the Docker image and cloud setup
 
 ## [v15.0.0] - 2026-08-11
 - periodic memory usage logging
