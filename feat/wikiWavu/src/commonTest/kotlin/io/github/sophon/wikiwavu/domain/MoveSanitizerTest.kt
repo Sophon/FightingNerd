@@ -2,6 +2,7 @@ package io.github.sophon.wikiwavu.domain
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.github.sophon.wikiwavu.integration.cleanMoveInput
 import kotlin.test.Test
 
 class MoveSanitizerTest {

@@ -33,6 +33,7 @@ import io.github.sophon.discord.util.toButtons
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
+import io.github.sophon.wikiwavu.integration.cleanMoveInput
 import io.github.sophon.wikiwavu.integration.model.TekkenFilters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
@@ -214,7 +215,7 @@ internal class WavuWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMoveUseCase.invoke(wiki, query)
+        val result = getMoveUseCase.invoke(wiki, query, sanitizeMoveInput = { cleanMoveInput() })
             .map { (character, move) ->
                 val videoButtons = move.urls.videoId?.let { videoUrl ->
                     BotOutput.ButtonSet(
@@ -232,6 +233,7 @@ internal class WavuWikiDiscordFeature(
                     buttons = videoButtons,
                 )
             }
+        return result
     }
 
     private suspend fun searchPowerCrushMoves(
