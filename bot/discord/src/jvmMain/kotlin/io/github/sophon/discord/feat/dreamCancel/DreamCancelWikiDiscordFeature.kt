@@ -160,7 +160,7 @@ internal class DreamCancelWikiDiscordFeature(
         }
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.BotLogicError(command.name, ""))
-        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki)
+        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
             .map { (_, moveList) -> moveList }
         return result
     }

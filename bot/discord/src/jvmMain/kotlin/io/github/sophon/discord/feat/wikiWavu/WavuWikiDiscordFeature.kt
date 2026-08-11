@@ -205,7 +205,7 @@ internal class WavuWikiDiscordFeature(
         }
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.BotLogicError(command.name, ""))
-        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki).map { (_, moveList) -> moveList }
         return result
     }
 
@@ -240,7 +240,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         val result = getMovesUseCase.invoke(
             wiki = wiki,
-            characterId = query,
+            characterQuery = query,
             filter = TekkenFilters.PowerCrush,
         ).map { (character, moveList) ->
             BotOutput(
@@ -266,7 +266,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            characterId = query,
+            characterQuery = query,
             filter = TekkenFilters.Heat,
         ).map { (character, moveList) ->
                 BotOutput(
@@ -291,7 +291,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            characterId = query,
+            characterQuery = query,
             filter = TekkenFilters.Homing,
         ).map { (character, moveList) ->
             BotOutput(
@@ -316,7 +316,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         return getMovesUseCase.invoke(
             wiki = wiki,
-            characterId = query,
+            characterQuery = query,
             filter = TekkenFilters.Throw,
         ).map { (character, moveList) ->
             BotOutput(
