@@ -9,13 +9,13 @@ import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.MoreVM
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
-import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsVM
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizVM
 import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
@@ -54,12 +54,12 @@ internal fun featureModule() = module {
             gameId = gameId,
             characterId = characterId,
             overlayService = get(),
-            loadMoveListDataUseCase = get(),
+            subscribeToMoveListUseCase = get(),
             loadMoveFiltersUseCase = get(),
             normalizeSliderUseCase = get(),
         )
     }
-    singleOf(::LoadMoveListDataUseCase)
+    singleOf(::SubscribeToMoveListUseCase)
     singleOf(::LoadMoveFiltersUseCase)
     singleOf(::NormalizeSliderUseCase)
     //endregion
