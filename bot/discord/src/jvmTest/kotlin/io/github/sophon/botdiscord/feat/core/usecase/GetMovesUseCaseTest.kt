@@ -87,6 +87,40 @@ class GetMovesUseCaseTest {
         val (_, moves) = (result as Result.Success).data
         assertThat(moves).isEqualTo(listOf(homingMove))
     }
+
+    @Test
+    fun `useCase returns moves when query matches character alias`() = runTest {
+        // given
+        val charName = "jin"
+        val alias = "jim"
+        val character = createCharacter(charName, aliasList = listOf(alias))
+        val moves = listOf(
+            createMove(input = "4"),
+            createMove(input = "zen2"),
+            createMove(input = "zen2"), // duplicate — dropped by distinctBy
+            createMove(input = "zen3"),
+        )
+        val expected = Result.Success(
+            character to listOf(
+                createMove(input = "4"),
+                createMove(input = "zen2"),
+                createMove(input = "zen3"),
+            )
+        )
+
+        // when
+        val result = useCase.invoke(
+            wiki = FakeWikiClient(
+                characterList = listOf(character),
+                moveListByCharacterId = mapOf(character.id to moves),
+            ),
+            characterQuery = alias,
+            filter = Filter.None,
+        )
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region Failure Scenarios
@@ -109,12 +143,16 @@ class GetMovesUseCaseTest {
     //endregion
 
     //region Fakes and helpers
-    private fun createCharacter(id: String): Character {
+    private fun createCharacter(
+        id: String,
+        aliasList: List<String> = listOf(),
+    ): Character {
         return Character(
             id = id,
             displayName = id,
             remoteQueryId = id,
             wikiUrl = "",
+            aliasList = aliasList,
         )
     }
 
