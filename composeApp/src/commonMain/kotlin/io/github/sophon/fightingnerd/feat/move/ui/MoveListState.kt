@@ -14,7 +14,6 @@ internal data class MoveListState(
     val searchQuery: String? = null,
     val filterSheet: FilterSheet = FilterSheet(),
 
-    val isLoading: Boolean = false,
     val expandedMoveId: String? = null,
 ) {
     data class MoveDetail(

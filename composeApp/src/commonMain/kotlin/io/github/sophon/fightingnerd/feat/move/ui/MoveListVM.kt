@@ -128,8 +128,6 @@ internal class MoveListVM(
 
     private fun subscribeToData() {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-
             subscribeToMoveListUseCase.invoke(gameId = gameId, characterId = CharacterId(characterId))
                 .collectLatest { result ->
                     result
@@ -147,8 +145,6 @@ internal class MoveListVM(
                             overlayService.show(error)
                         }
                 }
-
-            _state.update { it.copy(isLoading = false) }
         }
     }
 
