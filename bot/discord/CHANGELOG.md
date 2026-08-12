@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v15.2.0] - TODO
+- JVM memory bump from 300 to 350MB
+
 ## [v15.1.0] - 2026-08-11
 - `Wavu` - fixed move queries not being sanitized
 - reduced memory settings for the Docker image and cloud setup
