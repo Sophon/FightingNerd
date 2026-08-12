@@ -2,6 +2,7 @@
 
 ## [v15.2.0] - TODO
 - JVM memory bump from 300 to 350MB
+- reduce memory logging frequency (1 - 3 hours)
 
 ## [v15.1.0] - 2026-08-11
 - `Wavu` - fixed move queries not being sanitized
