@@ -39,7 +39,7 @@ internal fun moveListEmbed(
 
         numberedMoves
             .toColumns()
-            .forEachIndexed { _, moveList ->
+            .forEach { moveList ->
                 val text = moveList.joinToString("\n")
                 mandatoryField(
                     name = "",
