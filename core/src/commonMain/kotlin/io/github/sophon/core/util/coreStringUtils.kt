@@ -190,3 +190,26 @@ fun String?.toClickable(wikiBaseUrl: String): String? {
 
     return transformed
 }
+
+fun List<String>.toColumns(): List<List<String>> {
+    val listSize = this.size
+    val minItemsPerColumn = 4
+    if (listSize <= minItemsPerColumn) {
+        return listOf(this)
+    }
+
+    var columns = 3
+    var final = Int.MAX_VALUE
+    do {
+        val itemsPerColumn = (listSize + columns - 1)/columns
+        if (itemsPerColumn >= minItemsPerColumn) {
+            final = itemsPerColumn
+            break
+        }
+        columns--
+    } while (columns > 1)
+
+    val chunks = this.chunked(final)
+    return chunks
+}
+
