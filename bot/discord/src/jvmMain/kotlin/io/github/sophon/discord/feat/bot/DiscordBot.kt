@@ -97,10 +97,12 @@ internal class DiscordBotImpl(
         }
 
         kord.on<ButtonInteractionCreateEvent> {
-            handleButtonInteractionUseCase.invoke(interaction, editableEmbedMap, coroutineScope)
-                .onError { error ->
-                    Napier.e(tag = TAG) { "${interaction.data.guildId} → Button interaction: $error" }
-                }
+            safeRestCall(TAG) {
+                handleButtonInteractionUseCase.invoke(interaction, editableEmbedMap, coroutineScope)
+                    .onError { error ->
+                        Napier.e(tag = TAG) { "${interaction.data.guildId} → Button interaction: $error" }
+                    }
+            }
         }
 
         kord.on<AutoCompleteInteractionCreateEvent> {
