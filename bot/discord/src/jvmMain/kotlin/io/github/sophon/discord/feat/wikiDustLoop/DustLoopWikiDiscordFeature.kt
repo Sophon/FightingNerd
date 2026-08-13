@@ -16,7 +16,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
-import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.feat.core.ui.aliasEmbed
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
@@ -40,7 +40,6 @@ internal class DustLoopWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-    private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
     private val fetchDustLoopInvincibleMovesUseCase: FetchDustLoopInvincibleMovesUseCase,
@@ -288,10 +287,17 @@ internal class DustLoopWikiDiscordFeature(
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, RED)
-            .map { embedBuilder ->
-                BotOutput(primaryEmbedBuilder = embedBuilder)
+        val result = getCharactersUseCase.invoke(wiki)
+            .map { characterList ->
+                BotOutput(
+                    primaryEmbedBuilder = aliasEmbed(
+                        characterList = characterList,
+                        featureInfo = featureInfo,
+                        colorCode = RED,
+                    )
+                )
             }
+        return result
     }
 
     private suspend fun searchInvincible(

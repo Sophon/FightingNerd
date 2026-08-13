@@ -821,4 +821,63 @@ class CoreStringUtilsTest {
         assertThat(result).isEqualTo(expected)
     }
     //endregion
+    
+    @Test
+    fun `toColumns generates three columns`() {
+        // given
+        val listOf25 = generateNumbers(25)
+        val listOf12 = generateNumbers(12)
+        val expected = 3
+
+        // when
+        val resultFor25 = listOf25.toColumns()
+        val resultFor12 = listOf12.toColumns()
+
+        //then
+        assertThat(resultFor25.size).isEqualTo(expected)
+        assertThat(resultFor12.size).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toColumns generates two columns`() {
+        // given
+        val listOf7 = generateNumbers(7)
+        val listOf8 = generateNumbers(8)
+        val expected = 2
+
+        // when
+        val resultFor7 = listOf7.toColumns()
+        val resultFor8 = listOf8.toColumns()
+
+        //then
+        assertThat(resultFor7.size).isEqualTo(expected)
+        assertThat(resultFor8.size).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toColumns generates one column`() {
+        // given
+        val listOf6 = generateNumbers(6)
+        val listOfNothing = emptyList<String>()
+        val expected = 1
+
+        // when
+        val resultFor6 = listOf6.toColumns()
+        val resultForNothing = listOfNothing.toColumns()
+
+        //then
+        assertThat(resultFor6.size).isEqualTo(expected)
+        assertThat(resultForNothing.size).isEqualTo(expected)
+    }
+
+
+    private fun generateNumbers(amount: Int): List<String> {
+        val list = buildList {
+            repeat(amount) { index ->
+                val num = index + 1
+                add("$num. $num")
+            }
+        }
+        return list
+    }
 }

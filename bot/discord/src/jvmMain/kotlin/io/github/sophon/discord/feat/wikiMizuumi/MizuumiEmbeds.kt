@@ -3,11 +3,10 @@ package io.github.sophon.discord.feat.wikiMizuumi
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
-import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.toColumns
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
@@ -73,20 +72,27 @@ internal fun mizuumiMoveListEmbed(
 ): EmbedBuilder.() -> Unit = {
     color = Color(TEAL)
 
-    val text = moveList
+    val formattedMoveList = moveList
         .mapIndexed { index, move ->
             "${index + 1}. **${move.input}** (${move.invulnerability})"
         }
-        .joinToString("\n")
 
-    text
-        .chunkByNewLines(delimiter = "\n", maxLength = EMBED_MAX_LENGTH)
-        .forEachIndexed { index, data ->
+    mandatoryField(
+        name = "$category moves",
+        value = "",
+        inline = false,
+    )
+
+    formattedMoveList
+        .toColumns()
+        .forEach { moveList ->
+            val text = moveList.joinToString("\n")
             mandatoryField(
-                name = if (index == 0) "$category moves" else "",
-                value = data,
+                name = "",
+                value = text,
             )
         }
+
 
     featureFooter(featureInfo)
 }

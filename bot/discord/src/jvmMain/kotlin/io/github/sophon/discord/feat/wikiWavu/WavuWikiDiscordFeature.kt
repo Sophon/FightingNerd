@@ -18,8 +18,8 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.Emoji
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
+import io.github.sophon.discord.feat.core.ui.aliasEmbed
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
-import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
@@ -47,7 +47,6 @@ internal class WavuWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val getMovesUseCase: GetMovesUseCase,
     private val getStancesUseCase: GetStancesUseCase,
-    private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val getStringFollowupsUseCase: GetStringFollowupsUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
@@ -338,12 +337,17 @@ internal class WavuWikiDiscordFeature(
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(
-            wiki = wiki,
-            featureInfo = featureInfo,
-            colorCode = BLUE,
-        )
-            .map { BotOutput(primaryEmbedBuilder = it) }
+        val result = getCharactersUseCase.invoke(wiki)
+            .map { characterList ->
+                BotOutput(
+                    primaryEmbedBuilder = aliasEmbed(
+                        characterList = characterList,
+                        featureInfo = featureInfo,
+                        colorCode = BLUE,
+                    )
+                )
+            }
+        return result
     }
 
 

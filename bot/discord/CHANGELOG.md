@@ -1,5 +1,11 @@
 # BOT CHANGELOG
 
+## [v15.2.0] - 2026-08-14
+- JVM memory bump from 300 to 350MB
+- reduce memory logging frequency (1 - 3 hours)
+- fixed column formatting
+- catch exceptions for button interactions
+
 ## [v15.1.0] - 2026-08-11
 - `Wavu` - fixed move queries not being sanitized
 - reduced memory settings for the Docker image and cloud setup
