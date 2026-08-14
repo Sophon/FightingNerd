@@ -9,9 +9,9 @@ Frame data targeting Discord bot and mobile apps:
   - 📘 glossary
   - 📚 [any community Wikis](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
 - 🌐 multiplatform:
-  - 🤖 Android
-  - 🍏 iOS
-  - 💬 Discord: [![Add Bot](https://img.shields.io/badge/Add_to_Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/discovery/applications/1438716136790429776)
+  - [![Play Store](https://img.shields.io/badge/Play_Store-01875F?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=io.github.sophon.fightingnerd)
+  - 🍏 iOS (awaiting approval)
+  -  [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/discovery/applications/1438716136790429776)
 
 
 [![ko-fi](https://img.shields.io/badge/Support_on_Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/sorryuken)
