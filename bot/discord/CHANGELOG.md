@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v15.3.0] - TODO
+- handle more Kord exceptions
+
 ## [v15.2.0] - 2026-08-14
 - JVM memory bump from 300 to 350MB
 - reduce memory logging frequency (1 - 3 hours)
