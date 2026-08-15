@@ -19,7 +19,11 @@ Frame data displayed in the app is fetched from public game wikis (see Third-Par
 ## Discord Bot
 
 ### General Usage
-When commands are used, no personal data is collected or stored. The bot:
+With `ewgf`, the user can **opt-in** to have their Discord ID and Tekken ID stored in a database.
+
+The user can opt-out any time they want with `unregister` - data will be deleted.
+
+With every other commands, no personal data is collected or stored. The bot:
 - receives the command
 - fetches the requested frame data
 - responds in the channel

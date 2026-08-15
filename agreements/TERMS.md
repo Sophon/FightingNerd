@@ -11,7 +11,7 @@ By using Fighting Nerd ("the Project"), you agree to these Terms of Service. If 
 The Project is a Discord bot and set of mobile apps that provide:
 - fighting game frame data and information
 - data from publicly available fighting game wikis
-- optional user registration to link Discord and Polaris IDs
+- optional user registration to link Discord and Tekken IDs
 
 ## Acceptable Use
 
