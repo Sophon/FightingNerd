@@ -20,6 +20,7 @@ import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCas
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizVM
 import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
+import io.github.sophon.fightingnerd.feat.quiz.usecase.SubscribeGameWidgetsUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -78,5 +79,6 @@ internal fun featureModule() = module {
     }
 
     singleOf(::GenerateQuestionsUseCase)
+    singleOf(::SubscribeGameWidgetsUseCase)
     //endregion
 }
