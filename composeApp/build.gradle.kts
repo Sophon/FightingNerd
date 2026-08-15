@@ -1,6 +1,7 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 val appVersionName: String = (project.properties["app.version.name"] as? String) ?: "1.0.0-dev"
 val appVersionCode: Int = System.getenv("APP_VERSION_CODE")?.toIntOrNull() ?: 1
@@ -16,6 +17,16 @@ val hasReleaseSigning: Boolean = listOf(
     releaseKeyAlias,
     releaseKeyPassword,
 ).all { it.isNotEmpty() }
+
+val revenueCatApiKey: String = run {
+    val fromLocal = rootProject.file("local.properties")
+        .takeIf { it.exists() }
+        ?.inputStream()
+        ?.use { Properties().apply { load(it) } }
+        ?.getProperty("REVENUECAT_API_KEY")
+    val resolved = fromLocal ?: System.getenv("REVENUECAT_API_KEY").orEmpty()
+    resolved
+}
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -102,6 +113,8 @@ kotlin {
             implementation(libs.composemediaplayer)
 
             implementation(libs.kotlinx.collections.immutable)
+
+            implementation(libs.revenuecat.purchases.core)
 
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
@@ -206,6 +219,7 @@ buildkonfig {
     packageName = "io.github.sophon.fightingnerd"
     defaultConfigs {
         buildConfigField(STRING, "VERSION", appVersionName)
+        buildConfigField(STRING, "REVENUECAT_API_KEY", revenueCatApiKey)
     }
 }
 
