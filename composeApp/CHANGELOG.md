@@ -1,12 +1,13 @@
 # APP CHANGELOG
 
-## [v2.0.0] - TODO
+## [v2.0.0] - 2026-08-15
 - `Dragdown` - updated character table
 -`SuperCombo` - renamed field for `AVL`
 - migrate to Wiki owned SQL databases
 - rework refresh logic
 - fixed Quiz crashes by filtering out characters with empty move list
 - replaced crouching state icon
+- `More` - Tips button for donations
 
 ## [v1.2.0] - 2026-07-22
 - Quiz - auto-play videos
