@@ -21,7 +21,11 @@ internal class GenerateQuestionsUseCase(
 
         val characterList = wiki.subscribeToCharacterList()
             .first()
-        //TODO: filter chars with non empty movelists
+            .filter { character ->
+                wiki.subscribeToMoveList(CharacterId(character.id))
+                    .first()
+                    .isNotEmpty()
+            }
 
         val allQuestions = mutableListOf<Question>()
         while (allQuestions.size < COUNT_QUESTIONS) {
