@@ -77,6 +77,7 @@ fun wavuModule() = module {
             game = params.get(),
             characterRepo = get(named(WikiClientFeature.Wavu.id)) { params },
             moveRepo = get(named(WikiClientFeature.Wavu.id)) { params },
+            scope = get(),
         )
     }
 }

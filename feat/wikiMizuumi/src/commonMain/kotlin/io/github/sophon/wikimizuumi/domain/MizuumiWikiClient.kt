@@ -11,6 +11,7 @@ import io.github.sophon.wikimizuumi.integration.MizuumiFeatureInfo
 import io.github.sophon.wikimizuumi.integration.model.MBFilters
 import io.github.sophon.wikimizuumi.integration.model.UniFilters
 import io.github.sophon.wikimizuumi.integration.model.VSAVFilters
+import kotlinx.coroutines.CoroutineScope
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -19,11 +20,13 @@ internal class MizuumiWikiClient(
     private val dataCache: MizuumiDataCache,
     characterRepo: CharacterRepo,
     moveRepo: MoveRepo,
+    scope: CoroutineScope,
 ): BaseWikiClient(
     game = game,
     featureInfo = MizuumiFeatureInfo.featureInfo,
     characterRepo = characterRepo,
     moveRepo = moveRepo,
+    scope = scope,
     infoLogger = { Napier.i(tag = TAG) { it } },
     debugLogger = { Napier.d(tag = TAG) { it } },
 ) {

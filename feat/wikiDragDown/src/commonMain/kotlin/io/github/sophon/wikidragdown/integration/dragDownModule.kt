@@ -78,6 +78,7 @@ fun dragDownModule() = module {
             game = game,
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),
+            scope = get(),
         )
     }
 }

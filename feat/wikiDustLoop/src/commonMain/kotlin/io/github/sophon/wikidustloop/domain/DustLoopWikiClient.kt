@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.wikidustloop.integration.DustLoopFeatureInfo
 import io.github.sophon.wikidustloop.integration.model.BBFilters
 import io.github.sophon.wikidustloop.integration.model.GGFilters
+import kotlinx.coroutines.CoroutineScope
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -16,11 +17,13 @@ internal class DustLoopWikiClient(
     game: Game,
     characterRepo: CharacterRepo,
     moveRepo: MoveRepo,
+    scope: CoroutineScope,
 ): BaseWikiClient(
     game = game,
     featureInfo = DustLoopFeatureInfo.featureInfo,
     characterRepo = characterRepo,
     moveRepo = moveRepo,
+    scope = scope,
     infoLogger = { Napier.i(tag = TAG) { it } },
     debugLogger = { Napier.d(tag = TAG) { it } },
 ) {
