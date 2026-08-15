@@ -1,8 +1,8 @@
 package io.github.sophon.fightingnerd.feat.move.ui
 
 import fightingnerd.composeapp.generated.resources.Res
-import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import fightingnerd.composeapp.generated.resources.ic_tk_cs
+import fightingnerd.composeapp.generated.resources.ic_tk_force_crouch
 import fightingnerd.composeapp.generated.resources.ic_tk_floor
 import fightingnerd.composeapp.generated.resources.ic_tk_heat
 import fightingnerd.composeapp.generated.resources.ic_tk_homing
@@ -94,7 +94,7 @@ private fun Move.createOptionalFields(): List<UiMove.Field> {
 
 internal fun Property.icon(): DrawableResource {
     return when (this) {
-        Property.Invincible -> Res.drawable.ic_tk_pc //TODO:
+        Property.Invincible -> Res.drawable.ic_tk_pc
         Property.PowerCrush -> Res.drawable.ic_tk_pc
         Property.Homing -> Res.drawable.ic_tk_homing
         Property.HighCrush -> Res.drawable.ic_tk_cs
