@@ -18,6 +18,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.xko.data.XkoWikiDataSource
 import io.github.sophon.xko.data.remote.XkoDataCache
 import io.github.sophon.xko.integration.XkoFeatureInfo
+import kotlinx.coroutines.CoroutineScope
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -27,11 +28,13 @@ internal class XkoWikiClient(
     private val dataCache: XkoDataCache,
     characterRepo: CharacterRepo,
     moveRepo: MoveRepo,
+    scope: CoroutineScope,
 ): BaseWikiClient(
     game = game,
     featureInfo = XkoFeatureInfo.featureInfo,
     characterRepo = characterRepo,
     moveRepo = moveRepo,
+    scope = scope,
     infoLogger = { Napier.i(tag = TAG) { it } },
     debugLogger = { Napier.d(tag = TAG) { it } },
 ) {
