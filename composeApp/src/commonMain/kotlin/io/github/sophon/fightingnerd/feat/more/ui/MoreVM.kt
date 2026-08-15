@@ -2,20 +2,15 @@ package io.github.sophon.fightingnerd.feat.more.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
-import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-internal class MoreVM(
-    private val openUrlUseCase: OpenUrlUseCase,
-): ViewModel() {
+internal class MoreVM : ViewModel() {
     private val _state = MutableStateFlow(MoreState())
     val state = _state.asStateFlow()
 
@@ -29,23 +24,5 @@ internal class MoreVM(
                 MoreItem.FeatureSettings -> _navEvent.send(item)
             }
         }
-    }
-
-    fun onDonateClick(isVisible: Boolean) {
-        _state.update {
-            it.copy(donationSelectorDialog = it.donationSelectorDialog.copy(isVisible = isVisible))
-        }
-    }
-
-    fun onDonateItemClick(method: DonationMethod) {
-        _state.update {
-            it.copy(donationSelectorDialog = it.donationSelectorDialog.copy(isVisible = false))
-        }
-        openUrlUseCase.invoke(url = method.url)
-    }
-
-
-    private companion object {
-        const val TAG = "MoreVM"
     }
 }
