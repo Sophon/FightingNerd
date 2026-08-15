@@ -8,11 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		4F7920783030C0470075F26C /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 4F7920773030C0470075F26C /* RevenueCat */; };
+		4F79207A3030CA9C0075F26C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F7920793030CA9C0075F26C /* StoreKit.framework */; };
 		4FDBF67E2FE5BC6E00AF83B0 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDBF67D2FE5BC6E00AF83B0 /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		14CC418499E9A50C4C3DFB65 /* FightingNerd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FightingNerd.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F7920793030CA9C0075F26C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4FDBF67D2FE5BC6E00AF83B0 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -47,6 +49,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F79207A3030CA9C0075F26C /* StoreKit.framework in Frameworks */,
 				4F7920783030C0470075F26C /* RevenueCat in Frameworks */,
 				4FDBF67E2FE5BC6E00AF83B0 /* libsqlite3.tbd in Frameworks */,
 			);
@@ -58,6 +61,7 @@
 		4FDBF67C2FE5BC6E00AF83B0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4F7920793030CA9C0075F26C /* StoreKit.framework */,
 				4FDBF67D2FE5BC6E00AF83B0 /* libsqlite3.tbd */,
 			);
 			name = Frameworks;
