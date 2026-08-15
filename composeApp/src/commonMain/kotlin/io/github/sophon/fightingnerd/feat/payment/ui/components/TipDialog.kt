@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -71,13 +72,15 @@ internal fun TipDialog(
                 when {
                     state.isLoading -> LoadingRow()
                     state.hasLoadError -> ErrorRow(onRetry = onRetry)
-                    else -> state.tipOptionList.forEach { option ->
-                        TipRow(
-                            tipOption = option,
-                            onClick = {
-                                onOptionSelected(option)
-                            },
-                        )
+                    else -> {
+                        state.tipOptionList.forEach { option ->
+                            TipRow(
+                                tipOption = option,
+                                onClick = {
+                                    onOptionSelected(option)
+                                },
+                            )
+                        }
                     }
                 }
             }
@@ -144,14 +147,31 @@ private fun TipRow(
                 vertical = nerdDimensions.inlineGapTight,
             ),
     ) {
-        Text(
-            text = "${tipOption.title} ${tipOption.formattedPrice}",
-            style = nerdTypography.titleMedium,
-            color = nerdColorPalette.textPrimary,
-            modifier = Modifier.padding(
-                horizontal = nerdDimensions.componentPadding,
-                vertical = nerdDimensions.componentPaddingTight,
-            ),
-        )
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Text(
+                text = tipOption.title,
+                style = nerdTypography.titleMedium,
+                color = nerdColorPalette.textPrimary,
+                modifier = Modifier
+                    .padding(
+                        horizontal = nerdDimensions.componentPadding,
+                        vertical = nerdDimensions.componentPaddingTight,
+                    )
+                    .weight(1f),
+            )
+
+            Text(
+                text = tipOption.formattedPrice,
+                style = nerdTypography.titleMedium,
+                color = nerdColorPalette.textPrimary,
+                modifier = Modifier.padding(
+                    horizontal = nerdDimensions.componentPadding,
+                    vertical = nerdDimensions.componentPaddingTight,
+                ),
+            )
+        }
     }
 }
