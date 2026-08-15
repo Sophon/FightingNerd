@@ -51,7 +51,7 @@
 
     <string name="payment_tip_dialog_title">Thanks!</string>
     <string name="payment_tip_dialog_description">Your support is not required but highly appreciated.</string>
-    <string name="payment_tip_thank_you">Thanks for the tip!</string>
+    <string name="payment_tip_thank_you">Happiness to you!</string>
     <string name="payment_tip_error_load">Couldn't load tip options</string>
     <string name="payment_tip_error_purchase">Purchase failed, please try again</string>
     <string name="payment_tip_retry">Retry</string>
