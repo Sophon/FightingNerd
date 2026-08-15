@@ -10,11 +10,9 @@ import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import io.github.sophon.fightingnerd.feat.quiz.model.QuizGameWidget
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class SubscribeToGamesWithDataUseCase(
@@ -34,12 +32,12 @@ internal class SubscribeToGamesWithDataUseCase(
             if (enabledPairs.isEmpty()) {
                 flowOf(emptyList())
             } else {
-                combine(enabledPairs.toCharacterFlows()) { characterListArray ->
+                combine(enabledPairs.toCharacterFlows()) { gameCharacterLists ->
                     val gameWidgetList = enabledPairs.mapIndexed { index, (game, wikiClient) ->
                         QuizGameWidget(
                             game = game,
                             featureName = wikiClient.featureInfo.name,
-                            isReady = characterListArray[index].isNotEmpty(),
+                            isReady = gameCharacterLists[index].isNotEmpty(),
                         )
                     }
                     gameWidgetList
@@ -52,16 +50,8 @@ internal class SubscribeToGamesWithDataUseCase(
 
     private fun List<Pair<Game, WikiClient>>.toCharacterFlows(): List<Flow<List<Character>>> {
         val characterFlows = map { (_, wikiClient) ->
-            channelFlow {
-                wikiClient
-                    .subscribeToCharacterList()
-                    .collect { characters ->
-                        send(characters)
-                        if (characters.isEmpty()) {
-                            launch { wikiClient.refreshData() }
-                        }
-                    }
-            }
+            wikiClient
+                .subscribeToCharacterList()
         }
         return characterFlows
     }
