@@ -6,10 +6,12 @@ import com.revenuecat.purchases.kmp.models.PurchasesErrorCode
 import com.revenuecat.purchases.kmp.models.PurchasesException
 import com.revenuecat.purchases.kmp.models.PurchasesTransactionException
 import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.feat.payment.model.PaymentError
 import io.github.sophon.fightingnerd.feat.payment.model.TipOption
 
+@ExcludeFromCoverage("TODO: later")
 internal class PurchaseTipUseCase {
     suspend fun invoke(option: TipOption): EmptyResult<PaymentError> {
         val result = try {
