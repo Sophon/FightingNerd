@@ -18,15 +18,20 @@ val hasReleaseSigning: Boolean = listOf(
     releaseKeyPassword,
 ).all { it.isNotEmpty() }
 
-val revenueCatApiKey: String = run {
-    val fromLocal = rootProject.file("local.properties")
-        .takeIf { it.exists() }
-        ?.inputStream()
-        ?.use { Properties().apply { load(it) } }
-        ?.getProperty("REVENUECAT_API_KEY")
-    val resolved = fromLocal ?: System.getenv("REVENUECAT_API_KEY").orEmpty()
-    resolved
+val localProperties: Properties = rootProject.file("local.properties")
+    .takeIf { it.exists() }
+    ?.inputStream()
+    ?.use { Properties().apply { load(it) } }
+    ?: Properties()
+
+fun readSecret(name: String): String {
+    val fromLocal = localProperties.getProperty(name)
+    val resolved = fromLocal ?: System.getenv(name).orEmpty()
+    return resolved
 }
+
+val revenueCatApiKeyAndroid: String = readSecret("REVENUECAT_API_KEY_ANDROID")
+val revenueCatApiKeyIos: String = readSecret("REVENUECAT_API_KEY_IOS")
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -219,7 +224,17 @@ buildkonfig {
     packageName = "io.github.sophon.fightingnerd"
     defaultConfigs {
         buildConfigField(STRING, "VERSION", appVersionName)
-        buildConfigField(STRING, "REVENUECAT_API_KEY", revenueCatApiKey)
+        buildConfigField(STRING, "REVENUECAT_API_KEY", "")
+    }
+    targetConfigs {
+        create("android") {
+            buildConfigField(STRING, "REVENUECAT_API_KEY", revenueCatApiKeyAndroid)
+        }
+        listOf("iosArm64", "iosSimulatorArm64").forEach { iosTarget ->
+            create(iosTarget) {
+                buildConfigField(STRING, "REVENUECAT_API_KEY", revenueCatApiKeyIos)
+            }
+        }
     }
 }
 
