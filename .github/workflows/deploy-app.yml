@@ -212,10 +212,6 @@ jobs:
             -configuration Release \
             -archivePath $RUNNER_TEMP/iosApp.xcarchive \
             -destination "generic/platform=iOS" \
-            DEVELOPMENT_TEAM=9W27GN3AUW \
-            CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="${{ steps.profile.outputs.name }}" \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
             MARKETING_VERSION=${{ env.VERSION_NAME }} \
             CURRENT_PROJECT_VERSION=${{ env.VERSION_CODE }}
 
