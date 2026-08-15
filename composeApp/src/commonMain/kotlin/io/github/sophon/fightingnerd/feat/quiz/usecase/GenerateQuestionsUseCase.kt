@@ -19,7 +19,9 @@ internal class GenerateQuestionsUseCase(
         val game = Game.fromId(gameId) ?: return Result.Error(AppError.GameNotFound(gameId))
         val wiki = repo.getWikiClientFor(game) ?: return Result.Error(AppError.WikiClientNotFound(gameId))
 
-        val characterList = wiki.subscribeToCharacterList().first()
+        val characterList = wiki.subscribeToCharacterList()
+            .first()
+        //TODO: filter chars with non empty movelists
 
         val allQuestions = mutableListOf<Question>()
         while (allQuestions.size < COUNT_QUESTIONS) {
