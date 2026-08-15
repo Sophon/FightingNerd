@@ -5,35 +5,50 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
+import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import kotlinx.datetime.Instant
 import kotlin.test.Test
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class GetCharacterUseCaseTest {
+    private val useCase = GetCharacterUseCase()
+
     //region Successful Character and Move Fetch
     @Test
     fun `invoke returns character with fastest normals`() = runTest {
+        // given
         val character = createCharacter("Ryu")
         val moves = listOf(
             createMove("5LP", startup = "4"),
             createMove("5MP", startup = "6"),
             createMove("2LP", startup = "4"),
-            createMove("236P", startup = "8") // special move, not a normal
+            createMove("236P", startup = "8"), // special move, not a normal
         )
-        val wikiClient = FakeWikiClient(character, moves)
-        val useCase = GetCharacterUseCase()
+        val wiki = FakeWikiClient(
+            characterList = listOf(character),
+            moveListByCharacterId = mapOf(character.id to moves),
+        )
 
-        val result = useCase.invoke(wikiClient, "Ryu")
+        // when
+        val result = useCase.invoke(wiki, "Ryu")
 
+        // then
         assertThat(result).isInstanceOf(Result.Success::class)
         val (char, fastestNormals) = (result as Result.Success).data
         assertThat(char.id).isEqualTo("Ryu")
@@ -44,50 +59,78 @@ class GetCharacterUseCaseTest {
 
     //region Character Fetch Failure
     @Test
-    fun `invoke returns error when character fetch fails`() = runTest {
-        val wikiClient = FakeWikiClient(
-            characterResult = Result.Error(WikiError.UnknownCharacter("Character not found"))
-        )
-        val useCase = GetCharacterUseCase()
+    fun `invoke returns error when character is not in character list`() = runTest {
+        // given
+        val wiki = FakeWikiClient(characterList = emptyList())
 
-        val result = useCase.invoke(wikiClient, "InvalidChar")
+        // when
+        val result = useCase.invoke(wiki, "InvalidChar")
 
+        // then
         assertThat(result).isInstanceOf(Result.Error::class)
+        assertThat((result as Result.Error).error).isInstanceOf(BotError.UnknownCharacter::class)
     }
     //endregion
 
-    //region Move List Fetch Failure
+    //region Character Matching Behavior
     @Test
-    fun `invoke returns error when move list fetch fails`() = runTest {
-        val character = createCharacter("Ryu")
-        val wikiClient = FakeWikiClient(
-            character,
-            moveListResult = Result.Error(WikiError.UnknownMove("Moves not found"))
+    fun `invoke matches character by alias`() = runTest {
+        // given
+        val character = createCharacter("kunimitsu", aliasList = listOf("kuni"))
+        val wiki = FakeWikiClient(
+            characterList = listOf(character),
+            moveListByCharacterId = mapOf(character.id to emptyList()),
         )
-        val useCase = GetCharacterUseCase()
 
-        val result = useCase.invoke(wikiClient, "Ryu")
+        // when
+        val result = useCase.invoke(wiki, "kuni")
 
-        assertThat(result).isInstanceOf(Result.Error::class)
+        // then
+        assertThat(result).isInstanceOf(Result.Success::class)
+        val (char, _) = (result as Result.Success).data
+        assertThat(char.id).isEqualTo("kunimitsu")
+    }
+
+    @Test
+    fun `invoke matches character by display name ignoring case and spaces`() = runTest {
+        // given
+        val character = createCharacter(name = "chunli", displayName = "Chun Li")
+        val wiki = FakeWikiClient(
+            characterList = listOf(character),
+            moveListByCharacterId = mapOf(character.id to emptyList()),
+        )
+
+        // when
+        val result = useCase.invoke(wiki, "CHUNLI")
+
+        // then
+        assertThat(result).isInstanceOf(Result.Success::class)
+        val (char, _) = (result as Result.Success).data
+        assertThat(char.id).isEqualTo("chunli")
     }
     //endregion
 
     //region Multiple Moves With Same Fastest Startup
     @Test
     fun `invoke returns all moves with same fastest startup`() = runTest {
+        // given
         val character = createCharacter("Ken")
         val moves = listOf(
             createMove("5LP", startup = "3"),
             createMove("5LK", startup = "3"),
             createMove("2LP", startup = "3"),
             createMove("5MP", startup = "5"),
-            createMove("2MK", startup = "6")
+            createMove("2MK", startup = "6"),
         )
-        val wikiClient = FakeWikiClient(character, moves)
-        val useCase = GetCharacterUseCase()
+        val wiki = FakeWikiClient(
+            characterList = listOf(character),
+            moveListByCharacterId = mapOf(character.id to moves),
+        )
 
-        val result = useCase.invoke(wikiClient, "Ken")
+        // when
+        val result = useCase.invoke(wiki, "Ken")
 
+        // then
         val (_, fastestNormals) = (result as Result.Success).data
         assertThat(fastestNormals).hasSize(3)
         assertThat(fastestNormals.all { it.startup == "3" }).isEqualTo(true)
@@ -97,17 +140,22 @@ class GetCharacterUseCaseTest {
     //region No Normals Found
     @Test
     fun `invoke returns empty list when no normals found`() = runTest {
+        // given
         val character = createCharacter("Ryu")
         val moves = listOf(
             createMove("236P", startup = "8"),  // special move
             createMove("623K", startup = "5"),  // special move
-            createMove("j5LP", startup = "4")   // 4 characters, not a normal
+            createMove("j5LP", startup = "4"),  // 4 characters, not a normal
         )
-        val wikiClient = FakeWikiClient(character, moves)
-        val useCase = GetCharacterUseCase()
+        val wiki = FakeWikiClient(
+            characterList = listOf(character),
+            moveListByCharacterId = mapOf(character.id to moves),
+        )
 
-        val result = useCase.invoke(wikiClient, "Ryu")
+        // when
+        val result = useCase.invoke(wiki, "Ryu")
 
+        // then
         val (_, fastestNormals) = (result as Result.Success).data
         assertThat(fastestNormals).isEmpty()
     }
@@ -115,20 +163,25 @@ class GetCharacterUseCaseTest {
 
     //region Filters Only Valid Normals
     @Test
-    fun `invoke filters only moves with length 3 starting with 5 or 2`() = runTest {
-        val character = createCharacter("Chun-Li")
+    fun `invoke filters only moves whose second char is not a digit`() = runTest {
+        // given
+        val character = createCharacter("Chun-Li", displayName = "Chun-Li")
         val moves = listOf(
-            createMove("5LP", startup = "4"),   // valid
-            createMove("2MK", startup = "5"),   // valid
-            createMove("6HP", startup = "6"),   // invalid: starts with 6
-            createMove("3MP", startup = "4"),   // invalid: starts with 3
-            createMove("236MP", startup = "2")    // invalid: starts with 2 but no button
+            createMove("5LP", startup = "4"),    // valid
+            createMove("2MK", startup = "5"),    // valid
+            createMove("6HP", startup = "6"),    // invalid: starts with 6
+            createMove("3MP", startup = "4"),    // invalid: starts with 3
+            createMove("236MP", startup = "2"),  // invalid: starts with 2 but second char is digit
         )
-        val wikiClient = FakeWikiClient(character, moves)
-        val useCase = GetCharacterUseCase()
+        val wiki = FakeWikiClient(
+            characterList = listOf(character),
+            moveListByCharacterId = mapOf(character.id to moves),
+        )
 
-        val result = useCase.invoke(wikiClient, "Chun-Li")
+        // when
+        val result = useCase.invoke(wiki, "Chun-Li")
 
+        // then
         val (_, fastestNormals) = (result as Result.Success).data
         assertThat(fastestNormals).hasSize(1)
         assertThat(fastestNormals.first().input).isEqualTo("5LP")
@@ -138,17 +191,22 @@ class GetCharacterUseCaseTest {
     //region Handles Non-Numeric Startup Values
     @Test
     fun `invoke handles non-numeric startup values gracefully`() = runTest {
+        // given
         val character = createCharacter("Guile")
         val moves = listOf(
             createMove("5LP", startup = "4"),
             createMove("5MP", startup = "invalid"),
-            createMove("2LP", startup = "5")
+            createMove("2LP", startup = "5"),
         )
-        val wikiClient = FakeWikiClient(character, moves)
-        val useCase = GetCharacterUseCase()
+        val wiki = FakeWikiClient(
+            characterList = listOf(character),
+            moveListByCharacterId = mapOf(character.id to moves),
+        )
 
-        val result = useCase.invoke(wikiClient, "Guile")
+        // when
+        val result = useCase.invoke(wiki, "Guile")
 
+        // then
         val (_, fastestNormals) = (result as Result.Success).data
         assertThat(fastestNormals).hasSize(1)
         assertThat(fastestNormals.first().input).isEqualTo("5LP")
@@ -156,59 +214,49 @@ class GetCharacterUseCaseTest {
     //endregion
 
     //region Test Helpers
-    private fun createCharacter(name: String): Character {
+    private fun createCharacter(
+        name: String,
+        displayName: String = name,
+        aliasList: List<String> = emptyList(),
+    ): Character {
         return Character(
             id = name,
-            displayName = name,
+            displayName = displayName,
             remoteQueryId = name,
             wikiUrl = "https://wiki.example.com/$name",
-            aliasList = emptyList()
+            aliasList = aliasList,
         )
     }
 
     private fun createMove(
         input: String,
-        startup: String? = null
+        startup: String? = null,
     ): Move {
         return Move(
             characterId = "TestChar",
             id = input,
             input = input,
             startup = startup,
-            urls = Move.Urls(
-                wikiUrl = "TODO"
-            ),
+            urls = Move.Urls(wikiUrl = "TODO"),
         )
     }
+
+    private class FakeWikiClient(
+        private val characterList: List<Character> = emptyList(),
+        private val moveListByCharacterId: Map<String, List<Move>> = emptyMap(),
+    ) : WikiClient {
+        override val featureInfo: FeatureInfo = WavuFeatureInfo.featureInfo
+
+        override fun subscribeToCharacterList(): Flow<List<Character>> = flowOf(characterList)
+        override fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>> {
+            val moves = moveListByCharacterId[characterId.value].orEmpty()
+            return flowOf(moves)
+        }
+
+        override suspend fun refreshData(): EmptyResult<WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = throw NotImplementedError("Not used in this use case")
+        override suspend fun clearCache(): EmptyResult<WikiError> = throw NotImplementedError("Not used in this use case")
+        override fun getFiltersFor(game: Game): Set<Filter> = emptySet()
+    }
     //endregion
-}
-
-private class FakeWikiClient(
-    private val character: Character? = null,
-    private val moves: List<Move> = emptyList(),
-    private val characterResult: Result<Character, WikiError>? = null,
-    private val moveListResult: Result<List<Move>, WikiError>? = null
-) : WikiClient {
-
-    override suspend fun fetchCharacter(characterQuery: String): Result<Character, WikiError> {
-        return characterResult ?: character?.let { Result.Success(it) }
-        ?: Result.Error(WikiError.UnknownCharacter("Character not found"))
-    }
-
-    override suspend fun fetchMoveList(characterQuery: String, filter: Filter): Result<List<Move>, WikiError> {
-        return moveListResult ?: Result.Success(moves)
-    }
-
-    // Stub implementations for other WikiClient methods
-    override suspend fun downloadCharacterList() = error("Not implemented")
-    override suspend fun cacheCharacterList(characterList: List<Character>) = error("Not implemented")
-    override suspend fun fetchCharacterList() = error("Not implemented")
-    override suspend fun downloadMoveListFor(character: Character) = error("Not implemented")
-    override suspend fun cacheMoveList(character: Character, moveList: List<Move>) = error("Not implemented")
-    override suspend fun fetchMove(characterId: String, moveQuery: String) = error("Not implemented")
-    override suspend fun getLastUpdateTimeStamp() = error("Not implemented")
-    override suspend fun clearCache() = error("Not implemented")
-    override suspend fun checkHasCachedMoves(characterId: String): Result<Boolean, WikiError> = Result.Success(true)
-    override val featureInfo: FeatureInfo = WavuFeatureInfo.featureInfo
-    override fun getFiltersFor(game: Game): Set<Filter> = emptySet()
 }

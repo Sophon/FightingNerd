@@ -39,6 +39,7 @@ kotlin {
             implementation(libs.kotlin.date.time)
             implementation(libs.kotlin.reflect)
             implementation(libs.ktor.java)
+            implementation(libs.sqldelight.driver.sqlite)
 
             api(libs.koin.core)
         }

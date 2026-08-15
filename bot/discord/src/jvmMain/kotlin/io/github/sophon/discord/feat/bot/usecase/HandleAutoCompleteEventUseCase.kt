@@ -14,8 +14,6 @@ import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
-import kotlin.collections.emptyList
-import kotlin.getValue
 
 @ExcludeFromCoverage("UI")
 internal class HandleAutoCompleteEventUseCase(
@@ -101,6 +99,7 @@ internal class HandleAutoCompleteEventUseCase(
         } else {
             gameCharacterList.filter { (_, character) ->
                 character.displayName.contains(query, ignoreCase = true)
+                        || character.aliasList.contains(query)
             }
         }
         val choices = filtered
@@ -152,10 +151,13 @@ internal class HandleAutoCompleteEventUseCase(
 
             when (focusedArg.autoCompleteType) {
                 AutoCompleteType.Character -> {
-                    val result = wikiFeature.getCharacterList(command)
-                    if (result is Result.Success) {
-                        val filtered = result.data.filterByQuery(query)
-                        return filtered
+                    wikiFeature.getCharacterList(command).map { characterList ->
+                        val filtered = if (query.isEmpty()) {
+                            characterList.map { it.toChoice() }
+                        } else {
+                            characterList.filterByQuery(query)
+                        }
+                        return filtered.take(COMMAND_MAX_SUGGESTIONS)
                     }
                 }
                 AutoCompleteType.Move -> {

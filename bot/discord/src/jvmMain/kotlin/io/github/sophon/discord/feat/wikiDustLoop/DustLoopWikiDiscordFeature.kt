@@ -16,17 +16,17 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
-import io.github.sophon.discord.feat.core.usecase.CreateCharacterAliasesEmbedUseCase
+import io.github.sophon.discord.feat.core.ui.aliasEmbed
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
-import io.github.sophon.discord.feat.core.util.aggregateCharacters
-import io.github.sophon.discord.feat.core.util.firstMatchingWikiMoves
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
+import io.github.sophon.discord.util.aggregateCharacters
+import io.github.sophon.discord.util.firstMatchingWikiMoves
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikidustloop.integration.DustLoopFeatureInfo
@@ -40,7 +40,6 @@ internal class DustLoopWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-    private val createCharacterAliasesEmbedUseCase: CreateCharacterAliasesEmbedUseCase,
     private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
     private val fetchDustLoopInvincibleMovesUseCase: FetchDustLoopInvincibleMovesUseCase,
@@ -247,11 +246,14 @@ internal class DustLoopWikiDiscordFeature(
         }
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.BotLogicError(command.name, ""))
-        val result = getMovesUseCase.invoke(characterId = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki).map { (_, moveList) -> moveList }
         return result
     }
 
-    override suspend fun getAllCharacters(): Result<List<Pair<Game, Character>>, BotError> = aggregateCharacters(wikiClientMap, getCharactersUseCase)
+    override suspend fun getAllCharacters(): Result<List<Pair<Game, Character>>, BotError> {
+        val result = aggregateCharacters(wikiClientMap, getCharactersUseCase)
+        return result
+    }
 
 
     private suspend fun searchCharacter(
@@ -285,10 +287,17 @@ internal class DustLoopWikiDiscordFeature(
     }
 
     private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        return createCharacterAliasesEmbedUseCase.invoke(wiki, featureInfo, RED)
-            .map { embedBuilder ->
-                BotOutput(primaryEmbedBuilder = embedBuilder)
+        val result = getCharactersUseCase.invoke(wiki)
+            .map { characterList ->
+                BotOutput(
+                    primaryEmbedBuilder = aliasEmbed(
+                        characterList = characterList,
+                        featureInfo = featureInfo,
+                        colorCode = RED,
+                    )
+                )
             }
+        return result
     }
 
     private suspend fun searchInvincible(

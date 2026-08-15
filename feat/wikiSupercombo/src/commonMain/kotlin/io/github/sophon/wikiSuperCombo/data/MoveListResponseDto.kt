@@ -65,7 +65,7 @@ internal data class MoveDto(
     val punish: String? = null,
 
     //AVL
-    val chiDamage: String? = null,
+    val flowDamage: String? = null,
     val onBlock: String? = null,
     val onHit: String? = null,
     val flow: String? = null,

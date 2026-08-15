@@ -17,42 +17,40 @@ internal data class HomeViewState(
         val featureName: String,
         val characterList: ImmutableList<Character> = persistentListOf(),
         val isExpanded: Boolean = false,
-        val isLoading: Boolean = true,
     ) {
+        val isLoading: Boolean
+            get() {
+                val loading = characterList.isEmpty()
+                return loading
+            }
+
         @Immutable
         internal data class Character(
             val id: String,
             val displayName: String,
             val queryName: String,
             val iconUrl: String? = null,
-            val isLoading: Boolean = true,
-        )
+            val hasMoves: Boolean = false,
+        ) {
+            val isLoading: Boolean
+                get() {
+                    val loading = hasMoves.not()
+                    return loading
+                }
+        }
 
         fun withUpdatedCharacter(
             characterId: String,
         ): GameWidget {
             val updatedCharacterList = characterList.map { character ->
                 if (character.id == characterId) {
-                    character.copy(isLoading = false)
+                    character.copy(hasMoves = true)
                 } else {
                     character
                 }
             }.toImmutableList()
-            return copy(characterList = updatedCharacterList)
-        }
-
-        fun withUpdatedCharacters(
-            characterIds: Collection<String>,
-        ): GameWidget {
-            val idSet = characterIds.toSet()
-            val updatedCharacterList = characterList.map { character ->
-                if (character.id in idSet) {
-                    character.copy(isLoading = false)
-                } else {
-                    character
-                }
-            }.toImmutableList()
-            return copy(characterList = updatedCharacterList)
+            val updated = copy(characterList = updatedCharacterList)
+            return updated
         }
     }
 
@@ -65,6 +63,7 @@ internal data class HomeViewState(
                     id = "char_$index",
                     displayName = name,
                     queryName = "",
+                    hasMoves = true,
                 )
             }.toImmutableList()
             return mocked
@@ -74,22 +73,21 @@ internal data class HomeViewState(
             game: Game,
             featureName: String,
             isExpanded: Boolean,
-            isLoading: Boolean,
         ): GameWidget {
-            return GameWidget(
+            val widget = GameWidget(
                 game = game,
                 featureName = featureName,
                 characterList = mockCharacters(),
                 isExpanded = isExpanded,
-                isLoading = isLoading,
             )
+            return widget
         }
 
         val PREVIEW = HomeViewState(
             gameWidgetList = persistentListOf(
-                mockWidget(Game.Tekken8, "Wavu Wiki", isExpanded = true, isLoading = false),
-                mockWidget(Game.StreetFighter6, "SuperCombo", isExpanded = false, isLoading = false),
-                mockWidget(Game.KoFXV, "Dream Cancel", isExpanded = false, isLoading = false),
+                mockWidget(Game.Tekken8, "Wavu Wiki", isExpanded = true),
+                mockWidget(Game.StreetFighter6, "SuperCombo", isExpanded = false),
+                mockWidget(Game.KoFXV, "Dream Cancel", isExpanded = false),
             )
         )
     }

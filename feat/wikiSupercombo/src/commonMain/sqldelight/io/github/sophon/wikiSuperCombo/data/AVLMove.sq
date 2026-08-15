@@ -1,0 +1,10 @@
+CREATE TABLE AVLMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    chiDamage TEXT,
+    flow TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertAVLMove:
+INSERT OR REPLACE INTO AVLMoveEntity(moveId, chiDamage, flow)
+VALUES (?, ?, ?);

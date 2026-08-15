@@ -5,7 +5,13 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikiwavu.domain.cleanMoveInput
+import io.github.sophon.wikiwavu.data.remote.MoveDto
+import io.github.sophon.wikiwavu.data.remote.MoveListResponseDto
+import io.github.sophon.wikiwavu.data.remote.ParentalProperties
+import io.github.sophon.wikiwavu.data.remote.formAliases
+import io.github.sophon.wikiwavu.data.remote.formCompleteDataFromParent
+import io.github.sophon.wikiwavu.data.remote.toDomain
+import io.github.sophon.wikiwavu.integration.cleanMoveInput
 import kotlin.test.Test
 
 class MoveMapperTest {

@@ -1,0 +1,18 @@
+import kotlin.Boolean;
+
+CREATE TABLE TekkenMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    isHeat INTEGER AS Boolean NOT NULL,
+    isHoming INTEGER AS Boolean NOT NULL,
+    stance TEXT,
+    isPowerCrush INTEGER AS Boolean NOT NULL,
+    isHighCrush INTEGER AS Boolean NOT NULL,
+    isLowCrush INTEGER AS Boolean NOT NULL,
+    hasWallInteraction INTEGER AS Boolean NOT NULL,
+    hasFloorInteraction INTEGER AS Boolean NOT NULL,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertTekkenMove:
+INSERT OR REPLACE INTO TekkenMoveEntity(moveId, isHeat, isHoming, stance, isPowerCrush, isHighCrush, isLowCrush, hasWallInteraction, hasFloorInteraction)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);

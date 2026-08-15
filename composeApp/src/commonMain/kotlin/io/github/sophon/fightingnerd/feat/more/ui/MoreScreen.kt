@@ -11,16 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -32,14 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import fightingnerd.composeapp.generated.resources.Res
-import fightingnerd.composeapp.generated.resources.more_donate
-import fightingnerd.composeapp.generated.resources.more_donate_dialog_title
 import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
-import io.github.sophon.fightingnerd.core.ui.components.SingleSelectDialog
-import io.github.sophon.fightingnerd.feat.more.model.DonationMethod
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
+import io.github.sophon.fightingnerd.feat.payment.ui.components.TipButton
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -63,8 +54,6 @@ internal fun MoreScreen(
     Content(
         state = state,
         onItemClick = vm::onItemClick,
-        onDonateClick = vm::onDonateClick,
-        onSelectDonationMethod = vm::onDonateItemClick,
         modifier = modifier,
     )
 }
@@ -73,9 +62,7 @@ internal fun MoreScreen(
 private fun Content(
     state: MoreState,
     onItemClick: (MoreItem) -> Unit,
-    onDonateClick: (isVisible: Boolean) -> Unit,
-    onSelectDonationMethod: (DonationMethod) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier
@@ -96,18 +83,7 @@ private fun Content(
                 onItemClick = onItemClick,
             )
 
-            Footer(
-                onDonateClick = { onDonateClick(true) }
-            )
-        }
-
-        if (state.donationSelectorDialog.isVisible) {
-            SingleSelectDialog(
-                title = stringResource(Res.string.more_donate_dialog_title),
-                items = state.donationSelectorDialog.methodList,
-                onItemSelect = onSelectDonationMethod,
-                onDismiss = { onDonateClick(false) },
-            )
+            Footer()
         }
     }
 }
@@ -158,35 +134,15 @@ private fun ItemSection(
 
 @Composable
 private fun Footer(
-    onDonateClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
             .fillMaxWidth()
     ) {
-        //TODO: replace donation button with Donation Handler or something
-//        Button(
-//            onClick = onDonateClick,
-//            colors = ButtonDefaults.buttonColors(
-//                containerColor = nerdColorPalette.accent,
-//                contentColor = nerdColorPalette.textPrimary,
-//            ),
-//            modifier = modifier,
-//        ) {
-//            Icon(
-//                imageVector = Icons.Default.Favorite,
-//                contentDescription = null,
-//                modifier = Modifier.size(nerdDimensions.iconDefault),
-//            )
-//            Spacer(Modifier.width(nerdDimensions.inlineGap))
-//
-//            Text(
-//                text = stringResource(Res.string.more_donate),
-//                style = nerdTypography.labelLarge,
-//            )
-//        }
+        TipButton()
+
         Spacer(Modifier.height(nerdDimensions.componentPadding))
 
         Text(
@@ -207,8 +163,6 @@ private fun SettingsPreview() {
         Content(
             state = MoreState(),
             onItemClick = {},
-            onDonateClick = {},
-            onSelectDonationMethod = {},
         )
     }
 }

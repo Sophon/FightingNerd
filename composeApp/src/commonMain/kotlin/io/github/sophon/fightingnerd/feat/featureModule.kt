@@ -1,24 +1,29 @@
 package io.github.sophon.fightingnerd.feat
 
 import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
+import io.github.sophon.fightingnerd.feat.home.usecase.CheckCharacterHasMovesUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadMoveListUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadEmptyWidgetsUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.LoadGameCharacterListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.RefreshUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.MoreVM
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
-import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveListDataUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsVM
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
+import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
+import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
+import io.github.sophon.fightingnerd.feat.payment.usecase.PurchaseTipUseCase
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizVM
 import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
+import io.github.sophon.fightingnerd.feat.quiz.usecase.SubscribeGameWidgetsUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -33,9 +38,10 @@ internal fun featureModule() = module {
     //region Home
     viewModelOf(::HomeVM)
     singleOf(::CheckIfFirstLaunchUseCase)
-    singleOf(::LoadEmptyWidgetsUseCase)
-    singleOf(::LoadGameCharacterListUseCase)
-    singleOf(::LoadMoveListUseCase)
+    singleOf(::SubscribeToGamesUseCase)
+    singleOf(::SubscribeToCharacterListUseCase)
+    singleOf(::RefreshUseCase)
+    singleOf(::CheckCharacterHasMovesUseCase)
     //endregion
 
     //region More
@@ -54,12 +60,12 @@ internal fun featureModule() = module {
             gameId = gameId,
             characterId = characterId,
             overlayService = get(),
-            loadMoveListDataUseCase = get(),
+            subscribeToMoveListUseCase = get(),
             loadMoveFiltersUseCase = get(),
             normalizeSliderUseCase = get(),
         )
     }
-    singleOf(::LoadMoveListDataUseCase)
+    singleOf(::SubscribeToMoveListUseCase)
     singleOf(::LoadMoveFiltersUseCase)
     singleOf(::NormalizeSliderUseCase)
     //endregion
@@ -76,5 +82,12 @@ internal fun featureModule() = module {
     }
 
     singleOf(::GenerateQuestionsUseCase)
+    singleOf(::SubscribeGameWidgetsUseCase)
+    //endregion
+
+    //region Payment
+    singleOf(::GetTipOptionsUseCase)
+    singleOf(::PurchaseTipUseCase)
+    viewModelOf(::TipVM)
     //endregion
 }

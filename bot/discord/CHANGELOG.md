@@ -1,5 +1,31 @@
 # BOT CHANGELOG
 
+## [v15.3.0] - TODO
+- handle more Kord exceptions
+
+## [v15.2.0] - 2026-08-14
+- JVM memory bump from 300 to 350MB
+- reduce memory logging frequency (1 - 3 hours)
+- fixed column formatting
+- catch exceptions for button interactions
+
+## [v15.1.0] - 2026-08-11
+- `Wavu` - fixed move queries not being sanitized
+- reduced memory settings for the Docker image and cloud setup
+
+## [v15.0.0] - 2026-08-11
+- periodic memory usage logging
+- `help` - tweaked command output
+- migrate to Wiki owned SQL databases
+
+## [v14.3.3] - 2026-08-05
+- `Dragdown` - updated character table
+- `SuperCombo` - renamed field for `AVL` 
+
+## [v14.3.2] - 2026-08-04
+- fixed bug where the Embed would not render due to its button action being too long
+  - Discord requires length 1-100
+
 ## [v14.3.1] - 2026-07-30
 - video Embed response tags the interacting user
 

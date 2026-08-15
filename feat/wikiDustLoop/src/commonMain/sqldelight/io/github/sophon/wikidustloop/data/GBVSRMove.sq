@@ -1,0 +1,13 @@
+CREATE TABLE GBVSRMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    meter TEXT,
+    level TEXT,
+    cooldown TEXT,
+    cls TEXT,
+    type TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertGBVSRMove:
+INSERT OR REPLACE INTO GBVSRMoveEntity(moveId, meter, level, cooldown, cls, type)
+VALUES (?, ?, ?, ?, ?, ?);

@@ -1,6 +1,7 @@
 package io.github.sophon.core.wiki.model
 
 import kotlinx.serialization.Serializable
+import kotlin.jvm.JvmInline
 
 @Serializable
 data class Character(
@@ -210,3 +211,6 @@ data class Character(
         val wallJumpSpeedX: String? = null,
     )
 }
+
+@JvmInline
+value class CharacterId(val value: String)

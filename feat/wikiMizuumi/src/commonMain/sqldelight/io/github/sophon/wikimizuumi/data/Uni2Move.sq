@@ -1,0 +1,29 @@
+CREATE TABLE Uni2MoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    inputInfo TEXT,
+    subtitle TEXT,
+    minDamage TEXT,
+    type TEXT,
+    cancelWindow TEXT,
+    property TEXT,
+    cost TEXT,
+    attribute TEXT,
+    landing TEXT,
+    overall TEXT,
+    assaultAdv TEXT,
+    blockstun TEXT,
+    groundHit TEXT,
+    airHit TEXT,
+    groundCH TEXT,
+    airCH TEXT,
+    hitstop TEXT,
+    CHstop TEXT,
+    proration TEXT,
+    comboP1 TEXT,
+    comboP2 TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertUni2Move:
+INSERT OR REPLACE INTO Uni2MoveEntity(moveId, inputInfo, subtitle, minDamage, type, cancelWindow, property, cost, attribute, landing, overall, assaultAdv, blockstun, groundHit, airHit, groundCH, airCH, hitstop, CHstop, proration, comboP1, comboP2)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

@@ -5,10 +5,10 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.orDash
+import io.github.sophon.core.util.toColumns
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.getLevel
-import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.hitboxImages
 import io.github.sophon.discord.util.mandatoryField
@@ -93,15 +93,19 @@ internal fun dustLoopMoveListEmbedBuilder(
             }
         }
 
+    mandatoryField(
+        name = "$charName $category moves",
+        value = "",
+        inline = false,
+    )
+
     formatted
-        .chunked(EMBED_LIST_PER_COLUMN)
-        .forEachIndexed { index, moveList ->
+        .toColumns()
+        .forEach { moveList ->
             val text = moveList.joinToString("\n")
-            val name = if (index == 0 ) "$charName $category moves" else "_"
             mandatoryField(
-                name = name,
+                name = "",
                 value = text,
-                inline = false,
             )
         }
 

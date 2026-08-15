@@ -1,0 +1,9 @@
+CREATE TABLE KoFXVMoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    stun TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertKoFXVMove:
+INSERT OR REPLACE INTO KoFXVMoveEntity(moveId, stun)
+VALUES (?, ?);

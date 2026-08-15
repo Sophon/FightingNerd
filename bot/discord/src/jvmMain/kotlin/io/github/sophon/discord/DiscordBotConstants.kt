@@ -5,6 +5,7 @@ internal const val BOT_NAME = "FightingNerd"
 internal const val CONFIG_FILE_NAME = "config.json"
 internal const val EMBED_MAX_LENGTH = 1_000
 internal const val EMBED_MAX_BUTTONS = 25
+internal const val EMBED_MAX_BUTTON_ACTION_LENGTH = 100
 internal const val EMBED_BUTTON_DURATION_DEFAULT_S = 15
 internal const val EMBED_BUTTON_DURATION_INF = 0
 internal const val EMBED_LIST_MIN_COLUMN = 10
@@ -35,6 +36,7 @@ internal const val URL_STEAM_LOBBY = "steam://joinlobby/"
 
 internal const val ENV_API_DISCORD = "discordBotApiKey"
 internal const val ENV_API_EWGF = "ewgfApiKey"
+internal const val ENV_WIKI_DATABASE_DIR = "WIKI_DATABASE_DIR"
 
 internal const val RNG_DONATION_PCT_COMMAND = 5
 internal const val RNG_DONATION_PCT_FEEDBACK = 20

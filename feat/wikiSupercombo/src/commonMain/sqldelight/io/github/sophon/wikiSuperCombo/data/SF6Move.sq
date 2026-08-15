@@ -1,0 +1,35 @@
+CREATE TABLE SF6MoveEntity (
+    moveId TEXT NOT NULL PRIMARY KEY,
+    type TEXT,
+    images TEXT,
+    chip TEXT,
+    dmgScaling TEXT,
+    total TEXT,
+    hitConfirm TEXT,
+    punishAdv TEXT,
+    perfParryAdv TEXT,
+    DRcOH TEXT,
+    DRcOB TEXT,
+    DROH TEXT,
+    DROB TEXT,
+    hitStun TEXT,
+    blockStun TEXT,
+    hitStop TEXT,
+    driveDmgOnBlock TEXT,
+    driveDmgOnHit TEXT,
+    driveGain TEXT,
+    superGainOnHit TEXT,
+    superGainOnBlock TEXT,
+    armor TEXT,
+    airborne TEXT,
+    jugStart TEXT,
+    jugIncrease TEXT,
+    jugLimit TEXT,
+    projectileSpeed TEXT,
+    attackRange TEXT,
+    FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
+);
+
+insertSF6Move:
+INSERT OR REPLACE INTO SF6MoveEntity(moveId, type, images, chip, dmgScaling, total, hitConfirm, punishAdv, perfParryAdv, DRcOH, DRcOB, DROH, DROB, hitStun, blockStun, hitStop, driveDmgOnBlock, driveDmgOnHit, driveGain, superGainOnHit, superGainOnBlock, armor, airborne, jugStart, jugIncrease, jugLimit, projectileSpeed, attackRange)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

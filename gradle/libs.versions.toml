@@ -33,6 +33,7 @@ ksp = "2.3.7"
 ktor = "3.5.0"
 multiplatform-nav3-ui = "1.1.1"
 napier = "2.7.1"
+revenuecat = "3.5.0"
 slf = "2.0.18"
 sqldelight = "2.3.2"
 turbine = "1.2.1"
@@ -57,6 +58,7 @@ sqldelight-driver-android = { module = "app.cash.sqldelight:android-driver", ver
 sqldelight-driver-native = { module = "app.cash.sqldelight:native-driver", version.ref = "sqldelight" }
 sqldelight-coroutines = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqldelight" }
 sqldelight-primitive-adapters = { module = "app.cash.sqldelight:primitive-adapters", version.ref = "sqldelight" }
+sqldelight-dialect-sqlite = { module = "app.cash.sqldelight:sqlite-3-24-dialect", version.ref = "sqldelight" }
 
 
 # Mobile
@@ -97,6 +99,9 @@ coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil-compose" }
 coil-core = { module = "io.coil-kt.coil3:coil", version.ref = "coil-compose" }
 coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil-compose" }
+
+# Payment
+revenuecat-purchases-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "revenuecat" }
 
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }
