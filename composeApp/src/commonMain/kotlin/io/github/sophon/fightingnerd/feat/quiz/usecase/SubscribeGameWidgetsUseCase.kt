@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class SubscribeToGamesWithDataUseCase(
+internal class SubscribeGameWidgetsUseCase(
     private val store: DataStore<Preferences>,
     private val featureRepo: FeatureRepo,
 ) {
@@ -50,8 +50,7 @@ internal class SubscribeToGamesWithDataUseCase(
 
     private fun List<Pair<Game, WikiClient>>.toCharacterFlows(): List<Flow<List<Character>>> {
         val characterFlows = map { (_, wikiClient) ->
-            wikiClient
-                .subscribeToCharacterList()
+            wikiClient.subscribeToCharacterList()
         }
         return characterFlows
     }
