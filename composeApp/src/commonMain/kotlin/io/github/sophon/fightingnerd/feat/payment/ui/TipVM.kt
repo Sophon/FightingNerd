@@ -3,12 +3,15 @@ package io.github.sophon.fightingnerd.feat.payment.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import fightingnerd.composeapp.generated.resources.Res
-import fightingnerd.composeapp.generated.resources.tip_error_purchase
-import fightingnerd.composeapp.generated.resources.tip_thank_you
+import fightingnerd.composeapp.generated.resources.payment_tip_error_purchase
+import fightingnerd.composeapp.generated.resources.payment_tip_thank_you
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
+import io.github.sophon.fightingnerd.feat.payment.model.PaymentError
 import io.github.sophon.fightingnerd.feat.payment.model.TipOption
-import io.github.sophon.fightingnerd.feat.payment.model.TipPurchaseResult
 import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.feat.payment.usecase.PurchaseTipUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,16 +21,18 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
 internal class TipVM(
-    private val getTipOptions: GetTipOptionsUseCase,
-    private val purchaseTip: PurchaseTipUseCase,
+    private val getTipOptionsUseCase: GetTipOptionsUseCase,
+    private val purchaseTipUseCase: PurchaseTipUseCase,
     private val overlay: OverlayService,
 ) : ViewModel() {
     private val _state = MutableStateFlow(TipState())
     val state = _state.asStateFlow()
 
+
     init {
         loadOptions()
     }
+
 
     fun onTipButtonClick() {
         _state.update { current ->
@@ -35,7 +40,7 @@ internal class TipVM(
             next
         }
         val current = _state.value
-        if (current.options.isEmpty() && current.isLoading.not()) {
+        if (current.tipOptionList.isEmpty() && current.isLoading.not()) {
             loadOptions()
         }
     }
@@ -51,12 +56,28 @@ internal class TipVM(
         loadOptions()
     }
 
-    fun onTipOptionSelected(option: TipOption) {
+    fun onTipOptionSelected(tipOption: TipOption) {
         viewModelScope.launch {
-            val result = purchaseTip(option)
-            handlePurchaseResult(result)
+            purchaseTipUseCase.invoke(tipOption)
+                .onSuccess {
+                    val message = getString(Res.string.payment_tip_thank_you)
+                    overlay.show(Toast(message = message, type = Toast.Type.SUCCESS))
+                }
+                .onError { error ->
+                    when (error) {
+                        PaymentError.UserCancelled -> Unit
+                        is PaymentError.Unknown,
+                        PaymentError.NoCurrentOffering -> {
+                            val message = getString(Res.string.payment_tip_error_purchase)
+                            overlay.show(Toast(message = message, type = Toast.Type.ERROR))
+                        }
+                    }
+                }
+
+            _state.update { it.copy(isDialogVisible = false) }
         }
     }
+
 
     private fun loadOptions() {
         viewModelScope.launch {
@@ -64,33 +85,18 @@ internal class TipVM(
                 val next = current.copy(isLoading = true, hasLoadError = false)
                 next
             }
-            val result = getTipOptions()
-            val loaded = result.getOrDefault(emptyList())
+            val result = getTipOptionsUseCase.invoke()
+            val loaded = when (result) {
+                is Result.Success -> result.data
+                is Result.Error -> emptyList()
+            }
             _state.update { current ->
                 val next = current.copy(
                     isLoading = false,
-                    options = loaded,
-                    hasLoadError = result.isFailure || loaded.isEmpty(),
+                    tipOptionList = loaded,
+                    hasLoadError = result is Result.Error || loaded.isEmpty(),
                 )
                 next
-            }
-        }
-    }
-
-    private suspend fun handlePurchaseResult(result: TipPurchaseResult) {
-        _state.update { current ->
-            val next = current.copy(isDialogVisible = false)
-            next
-        }
-        when (result) {
-            TipPurchaseResult.Success -> {
-                val message = getString(Res.string.tip_thank_you)
-                overlay.show(Toast(message = message, type = Toast.Type.SUCCESS))
-            }
-            TipPurchaseResult.UserCancelled -> Unit
-            is TipPurchaseResult.Error -> {
-                val message = getString(Res.string.tip_error_purchase)
-                overlay.show(Toast(message = message, type = Toast.Type.ERROR))
             }
         }
     }

@@ -5,22 +5,25 @@ import com.revenuecat.purchases.kmp.ktx.awaitPurchase
 import com.revenuecat.purchases.kmp.models.PurchasesErrorCode
 import com.revenuecat.purchases.kmp.models.PurchasesException
 import com.revenuecat.purchases.kmp.models.PurchasesTransactionException
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.fightingnerd.feat.payment.model.PaymentError
 import io.github.sophon.fightingnerd.feat.payment.model.TipOption
-import io.github.sophon.fightingnerd.feat.payment.model.TipPurchaseResult
 
 internal class PurchaseTipUseCase {
-    suspend operator fun invoke(option: TipOption): TipPurchaseResult {
+    suspend fun invoke(option: TipOption): EmptyResult<PaymentError> {
         val result = try {
             Purchases.sharedInstance.awaitPurchase(option.rcPackage)
-            TipPurchaseResult.Success
+            Result.Success(Unit)
         } catch (e: PurchasesTransactionException) {
-            if (e.code == PurchasesErrorCode.PurchaseCancelledError) {
-                TipPurchaseResult.UserCancelled
+            val error = if (e.code == PurchasesErrorCode.PurchaseCancelledError) {
+                PaymentError.UserCancelled
             } else {
-                TipPurchaseResult.Error(e.message)
+                PaymentError.Unknown(e.message)
             }
+            Result.Error(error)
         } catch (e: PurchasesException) {
-            TipPurchaseResult.Error(e.message)
+            Result.Error(PaymentError.Unknown(e.message))
         }
         return result
     }

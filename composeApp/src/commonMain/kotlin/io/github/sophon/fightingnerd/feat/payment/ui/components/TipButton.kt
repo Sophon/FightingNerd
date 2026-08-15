@@ -1,8 +1,10 @@
 package io.github.sophon.fightingnerd.feat.payment.ui.components
 
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
@@ -33,12 +35,17 @@ internal fun TipButton(modifier: Modifier = Modifier) {
             containerColor = nerdColorPalette.accent,
             contentColor = nerdColorPalette.textPrimary,
         ),
+        shape = RoundedCornerShape(nerdDimensions.cornerDefault),
+        contentPadding = PaddingValues(
+            horizontal = nerdDimensions.buttonPaddingHorizontal,
+            vertical = nerdDimensions.buttonPaddingVertical,
+        ),
         modifier = modifier,
     ) {
         Icon(
             imageVector = Icons.Default.Favorite,
             contentDescription = null,
-            modifier = Modifier.size(nerdDimensions.iconDefault),
+            modifier = Modifier.size(nerdDimensions.iconInline),
         )
         Spacer(Modifier.width(nerdDimensions.inlineGap))
         Text(
@@ -49,7 +56,6 @@ internal fun TipButton(modifier: Modifier = Modifier) {
 
     if (state.isDialogVisible) {
         TipDialog(
-            state = state,
             onOptionSelected = vm::onTipOptionSelected,
             onRetry = vm::onRetryLoad,
             onDismiss = vm::onDismissDialog,

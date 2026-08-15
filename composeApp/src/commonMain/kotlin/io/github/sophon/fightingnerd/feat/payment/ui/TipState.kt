@@ -4,7 +4,7 @@ import io.github.sophon.fightingnerd.feat.payment.model.TipOption
 
 internal data class TipState(
     val isDialogVisible: Boolean = false,
-    val options: List<TipOption> = emptyList(),
+    val tipOptionList: List<TipOption> = emptyList(),
     val isLoading: Boolean = false,
     val hasLoadError: Boolean = false,
 )

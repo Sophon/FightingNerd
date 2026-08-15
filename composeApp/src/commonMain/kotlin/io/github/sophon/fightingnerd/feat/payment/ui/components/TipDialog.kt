@@ -4,56 +4,76 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fightingnerd.composeapp.generated.resources.Res
-import fightingnerd.composeapp.generated.resources.more_donate_dialog_title
-import fightingnerd.composeapp.generated.resources.tip_error_load
-import fightingnerd.composeapp.generated.resources.tip_retry
+import fightingnerd.composeapp.generated.resources.payment_tip_dialog_description
+import fightingnerd.composeapp.generated.resources.payment_tip_dialog_title
+import fightingnerd.composeapp.generated.resources.payment_tip_error_load
+import fightingnerd.composeapp.generated.resources.payment_tip_retry
 import io.github.sophon.fightingnerd.feat.payment.model.TipOption
-import io.github.sophon.fightingnerd.feat.payment.ui.TipState
+import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
+import io.github.sophon.fightingnerd.theme.nerdColorPalette
+import io.github.sophon.fightingnerd.theme.nerdDimensions
+import io.github.sophon.fightingnerd.theme.nerdTypography
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun TipDialog(
-    state: TipState,
     onOptionSelected: (TipOption) -> Unit,
     onRetry: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val vm = koinViewModel<TipVM>()
+    val state by vm.state.collectAsStateWithLifecycle()
+
     Dialog(onDismissRequest = onDismiss) {
         Surface(
-            shape = RoundedCornerShape(32.dp),
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
+            shape = RoundedCornerShape(nerdDimensions.cornerExtra),
+            color = nerdColorPalette.surfaceHigh,
             modifier = modifier,
         ) {
-            Column(modifier = Modifier.padding(vertical = 16.dp)) {
+            Column(
+                modifier = Modifier.padding(vertical = nerdDimensions.componentPadding),
+            ) {
                 Text(
-                    text = stringResource(Res.string.more_donate_dialog_title),
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 8.dp),
+                    text = stringResource(Res.string.payment_tip_dialog_title).uppercase(),
+                    style = nerdTypography.headlineSmall,
+                    color = nerdColorPalette.textPrimary,
+                    modifier = Modifier.padding(horizontal = nerdDimensions.dialogPadding),
                 )
+                Spacer(Modifier.padding(vertical = nerdDimensions.componentGapTight))
+
+                Text(
+                    text = stringResource(Res.string.payment_tip_dialog_description),
+                    style = nerdTypography.bodyMedium,
+                    color = nerdColorPalette.textSecondary,
+                    modifier = Modifier.padding(horizontal = nerdDimensions.dialogPadding),
+                )
+                Spacer(Modifier.padding(vertical = nerdDimensions.componentGapTight))
 
                 when {
                     state.isLoading -> LoadingRow()
                     state.hasLoadError -> ErrorRow(onRetry = onRetry)
-                    else -> state.options.forEach { option ->
+                    else -> state.tipOptionList.forEach { option ->
                         TipRow(
-                            option = option,
+                            tipOption = option,
                             onClick = {
                                 onOptionSelected(option)
                             },
@@ -71,9 +91,9 @@ private fun LoadingRow() {
         contentAlignment = Alignment.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 32.dp),
+            .padding(vertical = nerdDimensions.sectionGap),
     ) {
-        CircularProgressIndicator()
+        CircularProgressIndicator(color = nerdColorPalette.accent)
     }
 }
 
@@ -81,42 +101,57 @@ private fun LoadingRow() {
 private fun ErrorRow(onRetry: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(nerdDimensions.componentGapTight),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 24.dp, vertical = 16.dp),
+            .padding(
+                horizontal = nerdDimensions.dialogPadding,
+                vertical = nerdDimensions.componentPadding,
+            ),
     ) {
         Text(
-            text = stringResource(Res.string.tip_error_load),
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface,
+            text = stringResource(Res.string.payment_tip_error_load),
+            style = nerdTypography.bodyLarge,
+            color = nerdColorPalette.textSecondary,
             textAlign = TextAlign.Center,
         )
-        TextButton(onClick = onRetry) {
-            Text(text = stringResource(Res.string.tip_retry))
+        TextButton(
+            onClick = onRetry,
+            colors = ButtonDefaults.textButtonColors(contentColor = nerdColorPalette.accent),
+        ) {
+            Text(
+                text = stringResource(Res.string.payment_tip_retry),
+                style = nerdTypography.labelLarge,
+            )
         }
     }
 }
 
 @Composable
 private fun TipRow(
-    option: TipOption,
+    tipOption: TipOption,
     onClick: () -> Unit,
 ) {
     Surface(
         onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.surfaceContainer,
-        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+        shape = RoundedCornerShape(nerdDimensions.cornerDefault),
+        color = nerdColorPalette.surface,
+        border = BorderStroke(nerdDimensions.strokeThin, nerdColorPalette.dividerSubtle),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
+            .padding(
+                horizontal = nerdDimensions.componentPadding,
+                vertical = nerdDimensions.inlineGapTight,
+            ),
     ) {
         Text(
-            text = option.formattedPrice,
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface,
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+            text = "${tipOption.title} ${tipOption.formattedPrice}",
+            style = nerdTypography.titleMedium,
+            color = nerdColorPalette.textPrimary,
+            modifier = Modifier.padding(
+                horizontal = nerdDimensions.componentPadding,
+                vertical = nerdDimensions.componentPaddingTight,
+            ),
         )
     }
 }

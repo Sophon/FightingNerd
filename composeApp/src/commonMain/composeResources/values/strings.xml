@@ -47,11 +47,12 @@
     <string name="more_theme_dialog_light">Light</string>
     <string name="more_item_feature_settings">Feature settings</string>
     <string name="more_donate">Tip the developer</string>
-    <string name="more_donate_dialog_title">Thanks! Pick an amount:</string>
     <string name="more_feature_settings_btn_save">Save</string>
 
-    <string name="tip_thank_you">Thanks for the tip!</string>
-    <string name="tip_error_load">Couldn\'t load tip options</string>
-    <string name="tip_error_purchase">Purchase failed, please try again</string>
-    <string name="tip_retry">Retry</string>
+    <string name="payment_tip_dialog_title">Thanks!</string>
+    <string name="payment_tip_dialog_description">Your support is not required but highly appreciated.</string>
+    <string name="payment_tip_thank_you">Thanks for the tip!</string>
+    <string name="payment_tip_error_load">Couldn't load tip options</string>
+    <string name="payment_tip_error_purchase">Purchase failed, please try again</string>
+    <string name="payment_tip_retry">Retry</string>
 </resources>
