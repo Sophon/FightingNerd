@@ -89,6 +89,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           APP_VERSION_CODE: ${{ needs.setup.outputs.version_code }}
+          REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY_ANDROID }}
         run: |
           ./gradlew :composeApp:bundleRelease :composeApp:assembleRelease
 
@@ -127,6 +128,7 @@ jobs:
     env:
       VERSION_NAME: ${{ needs.setup.outputs.version_name }}
       VERSION_CODE: ${{ needs.setup.outputs.version_code }}
+      REVENUECAT_API_KEY: ${{ secrets.REVENUECAT_API_KEY_IOS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
