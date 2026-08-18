@@ -259,7 +259,7 @@ internal class DiscordBotImpl(
 
     private fun startMemoryLogging() {
         scheduler.start(
-            period = 3.hours,
+            period = 2.hours,
             task = {
                 val runtime = Runtime.getRuntime()
                 val heapUsed = runtime.totalMemory() - runtime.freeMemory()
