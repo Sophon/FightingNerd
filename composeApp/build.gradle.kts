@@ -1,6 +1,7 @@
 import com.codingfeline.buildkonfig.compiler.FieldSpec.Type.STRING
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 val appVersionName: String = (project.properties["app.version.name"] as? String) ?: "1.0.0-dev"
 val appVersionCode: Int = System.getenv("APP_VERSION_CODE")?.toIntOrNull() ?: 1
@@ -16,6 +17,21 @@ val hasReleaseSigning: Boolean = listOf(
     releaseKeyAlias,
     releaseKeyPassword,
 ).all { it.isNotEmpty() }
+
+val localProperties: Properties = rootProject.file("local.properties")
+    .takeIf { it.exists() }
+    ?.inputStream()
+    ?.use { Properties().apply { load(it) } }
+    ?: Properties()
+
+fun readSecret(name: String): String {
+    val fromLocal = localProperties.getProperty(name)
+    val resolved = fromLocal ?: System.getenv(name).orEmpty()
+    return resolved
+}
+
+val revenueCatApiKeyAndroid: String = readSecret("REVENUECAT_API_KEY_ANDROID")
+val revenueCatApiKeyIos: String = readSecret("REVENUECAT_API_KEY_IOS")
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -102,6 +118,8 @@ kotlin {
             implementation(libs.composemediaplayer)
 
             implementation(libs.kotlinx.collections.immutable)
+
+            implementation(libs.revenuecat.purchases.core)
 
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
@@ -206,6 +224,17 @@ buildkonfig {
     packageName = "io.github.sophon.fightingnerd"
     defaultConfigs {
         buildConfigField(STRING, "VERSION", appVersionName)
+        buildConfigField(STRING, "REVENUECAT_API_KEY", "")
+    }
+    targetConfigs {
+        create("android") {
+            buildConfigField(STRING, "REVENUECAT_API_KEY", revenueCatApiKeyAndroid)
+        }
+        listOf("iosArm64", "iosSimulatorArm64").forEach { iosTarget ->
+            create(iosTarget) {
+                buildConfigField(STRING, "REVENUECAT_API_KEY", revenueCatApiKeyIos)
+            }
+        }
     }
 }
 

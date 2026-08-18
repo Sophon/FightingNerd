@@ -89,6 +89,7 @@ jobs:
           KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
           KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
           APP_VERSION_CODE: ${{ needs.setup.outputs.version_code }}
+          REVENUECAT_API_KEY_ANDROID: ${{ secrets.REVENUECAT_API_KEY_ANDROID }}
         run: |
           ./gradlew :composeApp:bundleRelease :composeApp:assembleRelease
 
@@ -127,6 +128,7 @@ jobs:
     env:
       VERSION_NAME: ${{ needs.setup.outputs.version_name }}
       VERSION_CODE: ${{ needs.setup.outputs.version_code }}
+      REVENUECAT_API_KEY_IOS: ${{ secrets.REVENUECAT_API_KEY_IOS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -210,10 +212,6 @@ jobs:
             -configuration Release \
             -archivePath $RUNNER_TEMP/iosApp.xcarchive \
             -destination "generic/platform=iOS" \
-            DEVELOPMENT_TEAM=9W27GN3AUW \
-            CODE_SIGN_STYLE=Manual \
-            PROVISIONING_PROFILE_SPECIFIER="${{ steps.profile.outputs.name }}" \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
             MARKETING_VERSION=${{ env.VERSION_NAME }} \
             CURRENT_PROJECT_VERSION=${{ env.VERSION_CODE }}
 

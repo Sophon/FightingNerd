@@ -33,6 +33,8 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
+import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
+import io.github.sophon.fightingnerd.feat.quiz.model.QuizGameWidget
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
@@ -48,7 +50,7 @@ internal fun QuizOverviewScreen(
     val state by vm.state.collectAsStateWithLifecycle()
 
     WidgetSection(
-        widgetList = state.gameWidgetList,
+        widgetList = state.quizGameWidgetList,
         onPlay = { gameId -> onNavigateToQuiz(gameId) },
         modifier = modifier,
     )
@@ -56,7 +58,7 @@ internal fun QuizOverviewScreen(
 
 @Composable
 private fun WidgetSection(
-    widgetList: List<QuizOverviewState.GameWidget>,
+    widgetList: List<QuizGameWidget>,
     onPlay: (gameId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -76,7 +78,8 @@ private fun WidgetSection(
                     WidgetHeader(
                         game = widget.game,
                         featureName = widget.featureName,
-                        onPlay = { onPlay(widget.game.id) }
+                        isReady = widget.isReady,
+                        onPlay = { onPlay(widget.game.id) },
                     )
                 }
 
@@ -92,6 +95,7 @@ private fun WidgetSection(
 private fun WidgetHeader(
     game: Game,
     featureName: String,
+    isReady: Boolean,
     onPlay: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -109,6 +113,7 @@ private fun WidgetHeader(
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = onPlay,
+                enabled = isReady,
             )
     ) {
         Row(
@@ -140,11 +145,18 @@ private fun WidgetHeader(
 
         Spacer(Modifier.width(nerdDimensions.inlineGap))
 
-        Icon(
-            imageVector = Icons.Outlined.PlayArrow,
-            contentDescription = null,
-            tint = nerdColorPalette.textPrimary,
-            modifier = Modifier.size(nerdDimensions.iconLarge)
-        )
+        if (isReady) {
+            Icon(
+                imageVector = Icons.Outlined.PlayArrow,
+                contentDescription = null,
+                tint = nerdColorPalette.textPrimary,
+                modifier = Modifier.size(nerdDimensions.iconLarge)
+            )
+        } else {
+            CircularLoader(
+                color = nerdColorPalette.textSecondary,
+                modifier = Modifier.size(nerdDimensions.iconLarge)
+            )
+        }
     }
 }

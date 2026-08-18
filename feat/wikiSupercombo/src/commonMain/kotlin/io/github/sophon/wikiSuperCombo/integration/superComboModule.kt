@@ -80,6 +80,7 @@ fun superComboModule() = module {
             game = game,
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),
+            scope = get(),
         )
     }
 }

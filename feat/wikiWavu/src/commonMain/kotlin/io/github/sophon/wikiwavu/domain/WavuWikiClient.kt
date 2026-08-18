@@ -8,6 +8,7 @@ import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import io.github.sophon.wikiwavu.integration.model.TekkenFilters
+import kotlinx.coroutines.CoroutineScope
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -15,11 +16,13 @@ internal class WavuWikiClient(
     game: Game,
     characterRepo: CharacterRepo,
     moveRepo: MoveRepo,
+    scope: CoroutineScope,
 ): BaseWikiClient(
     game = game,
     featureInfo = WavuFeatureInfo.featureInfo,
     characterRepo = characterRepo,
     moveRepo = moveRepo,
+    scope = scope,
     infoLogger = { message ->
         Napier.d(tag = TAG) { message }
     }

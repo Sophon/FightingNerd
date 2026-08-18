@@ -86,6 +86,7 @@ fun dreamCancelModule() = module {
             dataCache = get(gameQualifier),
             characterRepo = get(gameQualifier),
             moveRepo = get(gameQualifier),
+            scope = get(),
         )
     }
 }

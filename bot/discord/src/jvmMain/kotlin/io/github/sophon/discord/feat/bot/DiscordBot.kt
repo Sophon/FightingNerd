@@ -26,7 +26,7 @@ import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
-import io.github.sophon.discord.util.safeRestCall
+import io.github.sophon.discord.util.kordRestCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -87,7 +87,7 @@ internal class DiscordBotImpl(
         }
 
         kord.on<MessageCreateEvent> {
-            safeRestCall(TAG) {
+            kordRestCall(TAG) {
                 handleQueryUseCase.invoke(
                     message = message,
                     botId = kord.selfId,
@@ -97,7 +97,7 @@ internal class DiscordBotImpl(
         }
 
         kord.on<ButtonInteractionCreateEvent> {
-            safeRestCall(TAG) {
+            kordRestCall(TAG) {
                 handleButtonInteractionUseCase.invoke(interaction, editableEmbedMap, coroutineScope)
                     .onError { error ->
                         Napier.e(tag = TAG) { "${interaction.data.guildId} → Button interaction: $error" }
@@ -106,7 +106,7 @@ internal class DiscordBotImpl(
         }
 
         kord.on<AutoCompleteInteractionCreateEvent> {
-            safeRestCall(TAG) {
+            kordRestCall(TAG) {
                 handleAutoCompleteEventUseCase.invoke(interaction)
             }
         }
@@ -259,7 +259,7 @@ internal class DiscordBotImpl(
 
     private fun startMemoryLogging() {
         scheduler.start(
-            period = 3.hours,
+            period = 2.hours,
             task = {
                 val runtime = Runtime.getRuntime()
                 val heapUsed = runtime.totalMemory() - runtime.freeMemory()

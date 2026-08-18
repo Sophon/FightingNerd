@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4F7920783030C0470075F26C /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = 4F7920773030C0470075F26C /* RevenueCat */; };
+		4F79207A3030CA9C0075F26C /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F7920793030CA9C0075F26C /* StoreKit.framework */; };
 		4FDBF67E2FE5BC6E00AF83B0 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 4FDBF67D2FE5BC6E00AF83B0 /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		14CC418499E9A50C4C3DFB65 /* Fighting Nerd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Fighting Nerd.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		14CC418499E9A50C4C3DFB65 /* FightingNerd.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FightingNerd.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		4F7920793030CA9C0075F26C /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		4FDBF67D2FE5BC6E00AF83B0 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -46,6 +49,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F79207A3030CA9C0075F26C /* StoreKit.framework in Frameworks */,
+				4F7920783030C0470075F26C /* RevenueCat in Frameworks */,
 				4FDBF67E2FE5BC6E00AF83B0 /* libsqlite3.tbd in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,6 +61,7 @@
 		4FDBF67C2FE5BC6E00AF83B0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4F7920793030CA9C0075F26C /* StoreKit.framework */,
 				4FDBF67D2FE5BC6E00AF83B0 /* libsqlite3.tbd */,
 			);
 			name = Frameworks;
@@ -64,7 +70,7 @@
 		7F834BCE11DA3804BB2410EC /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				14CC418499E9A50C4C3DFB65 /* Fighting Nerd.app */,
+				14CC418499E9A50C4C3DFB65 /* FightingNerd.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,9 +106,10 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				4F7920773030C0470075F26C /* RevenueCat */,
 			);
 			productName = iosApp;
-			productReference = 14CC418499E9A50C4C3DFB65 /* Fighting Nerd.app */;
+			productReference = 14CC418499E9A50C4C3DFB65 /* FightingNerd.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -129,6 +136,9 @@
 			);
 			mainGroup = D82BB6BC6EDACC34A27602B4;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4F7920763030BFC80075F26C /* XCRemoteSwiftPackageReference "purchases-ios" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7F834BCE11DA3804BB2410EC /* Products */;
 			projectDirPath = "";
@@ -340,10 +350,10 @@
 				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "Apple Distribution";
+				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
+				DEVELOPMENT_TEAM = 9W27GN3AUW;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosApp/Info.plist;
@@ -356,6 +366,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PROVISIONING_PROFILE_SPECIFIER = "FightingNerd App Store";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -384,6 +395,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4F7920763030BFC80075F26C /* XCRemoteSwiftPackageReference "purchases-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.83.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4F7920773030C0470075F26C /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4F7920763030BFC80075F26C /* XCRemoteSwiftPackageReference "purchases-ios" */;
+			productName = RevenueCat;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 2528544D6E14D7E70C0C29DD /* Project object */;
 }
