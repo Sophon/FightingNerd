@@ -12,6 +12,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
@@ -183,7 +184,7 @@ class GetMovesUseCaseTest {
             return flowOf(moves)
         }
 
-        override suspend fun refreshData(): EmptyResult<WikiError> = throw NotImplementedError("Not used in this use case")
+        override fun refreshData(): Flow<RefreshEvent> = throw NotImplementedError("Not used in this use case")
         override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = throw NotImplementedError("Not used in this use case")
         override suspend fun clearCache(): EmptyResult<WikiError> = throw NotImplementedError("Not used in this use case")
         override fun getFiltersFor(game: Game): Set<Filter> = emptySet()

@@ -2,7 +2,7 @@ package io.github.sophon.discord.feat.core.usecase
 
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
@@ -12,8 +12,10 @@ internal class SyncWikiDataUseCase {
         val errors = mutableListOf<BotError>()
 
         for (wiki in wikiList) {
-            wiki.refreshData().onError {
-                errors.add(it.toDomainError())
+            wiki.refreshData().collect { event ->
+                if (event is RefreshEvent.Failed) {
+                    errors.add(event.error.toDomainError())
+                }
             }
         }
 
