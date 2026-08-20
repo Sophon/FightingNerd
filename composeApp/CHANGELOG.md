@@ -1,5 +1,8 @@
 # APP CHANGELOG
 
+## [v2.1.0] - 2026-08-20
+- `Wavu` - added T8
+
 ## [v2.0.0] - 2026-08-15
 - `Dragdown` - updated character table
 -`SuperCombo` - renamed field for `AVL`
