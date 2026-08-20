@@ -4,6 +4,7 @@
 - `Wavu` - added Bob
 - fixed search
 - Stability improvements for Move List screen
+- Toast events on refresh
 
 ## [v2.0.0] - 2026-08-15
 - `Dragdown` - updated character table
