@@ -15,12 +15,20 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.move_list_field_damage
+import fightingnerd.composeapp.generated.resources.move_list_field_guard
+import fightingnerd.composeapp.generated.resources.move_list_field_on_block
+import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
+import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveTopBar
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdDimensions
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -59,7 +67,7 @@ internal fun MoveListScreen(
 private fun Content(
     state: MoveListState,
     onExit: () -> Unit,
-    moveList: List<UiMove>,
+    moveList: ImmutableList<UiMove>,
     onMoveClick: (moveId: String) -> Unit,
     searchQuery: String?,
     onSearch: (query: String?) -> Unit,
@@ -112,7 +120,7 @@ private fun Content(
 
 @Composable
 private fun MoveList(
-    moveList: List<UiMove>,
+    moveList: ImmutableList<UiMove>,
     expandedMoveId: String?,
     onMoveClick: (moveId: String) -> Unit,
     modifier: Modifier = Modifier
@@ -142,18 +150,42 @@ private fun MoveList(
 
 
 //region PREVIEW
+private val previewMoves: ImmutableList<UiMove> = persistentListOf(
+    UiMove(
+        id = "nina-b12",
+        input = "b1,2",
+        name = "Dark Jab > Hell Stab",
+        coreFields = persistentListOf(
+            UiMove.Field(Res.string.move_list_field_startup, "i12"),
+            UiMove.Field(Res.string.move_list_field_guard, "h,m"),
+            UiMove.Field(Res.string.move_list_field_damage, "12,20"),
+            UiMove.Field(Res.string.move_list_field_on_block, "-12"),
+            UiMove.Field(Res.string.move_list_field_on_hit, "+8"),
+        ),
+        optionalFields = persistentListOf(),
+    ),
+    UiMove(
+        id = "nina-b1+2",
+        input = "b1+2",
+        name = "Blindside",
+        coreFields = persistentListOf(
+            UiMove.Field(Res.string.move_list_field_startup, "i16"),
+            UiMove.Field(Res.string.move_list_field_guard, "m"),
+            UiMove.Field(Res.string.move_list_field_on_block, "+0"),
+            UiMove.Field(Res.string.move_list_field_on_hit, "+4"),
+        ),
+        optionalFields = persistentListOf(),
+    ),
+)
+
 @Composable
 @Preview
 private fun MoveListPreview() {
-    val moveList = MoveListState.PREVIEW.fullMoveList.values.map {
-        it.toUiMove()
-    }
     FightingNerdTheme {
-        val state = MoveListState.PREVIEW
         Content(
-            state = state,
+            state = MoveListState.PREVIEW,
             onExit = {},
-            moveList = moveList,
+            moveList = previewMoves,
             onMoveClick = {},
             searchQuery = null,
             onFilterClick = {},
@@ -170,15 +202,11 @@ private fun MoveListPreview() {
 @Composable
 @Preview
 private fun MoveListSearchPreview() {
-    val moveList = MoveListState.PREVIEW.fullMoveList.values.map {
-        it.toUiMove()
-    }
     FightingNerdTheme {
-        val state = MoveListState.PREVIEW
         Content(
-            state = state,
+            state = MoveListState.PREVIEW,
             onExit = {},
-            moveList = moveList,
+            moveList = previewMoves,
             onMoveClick = {},
             searchQuery = "",
             onFilterClick = {},

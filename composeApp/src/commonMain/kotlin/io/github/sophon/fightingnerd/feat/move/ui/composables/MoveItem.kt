@@ -33,17 +33,23 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.move_list_field_damage
+import fightingnerd.composeapp.generated.resources.move_list_field_guard
+import fightingnerd.composeapp.generated.resources.move_list_field_on_block
+import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
+import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.move.model.Property
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
 import io.github.sophon.fightingnerd.feat.move.ui.UiMove
 import io.github.sophon.fightingnerd.feat.move.ui.icon
-import io.github.sophon.fightingnerd.feat.move.ui.toUiMove
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.VideoPlayer
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -304,12 +310,32 @@ private fun NotesSection(
 
 
 //region PREVIEW
+private val previewUiMove = UiMove(
+    id = "nina-hub1",
+    input = "H.ub1",
+    name = "Neck Hunter: Villain",
+    propertySet = persistentSetOf(Property.Heat, Property.Homing),
+    coreFields = persistentListOf(
+        UiMove.Field(Res.string.move_list_field_startup, "i24"),
+        UiMove.Field(Res.string.move_list_field_guard, "h"),
+        UiMove.Field(Res.string.move_list_field_damage, "25"),
+        UiMove.Field(Res.string.move_list_field_on_block, "+8"),
+        UiMove.Field(Res.string.move_list_field_on_hit, "+60a"),
+    ),
+    optionalFields = persistentListOf(),
+    notes = persistentListOf(
+        "Strong Aerial Tailspin",
+        "Homing",
+        "Consumes 150F of remaining Heat time",
+    ),
+)
+
 @Preview
 @Composable
 private fun CollapsedItemPreview() {
     FightingNerdTheme {
         MoveItem(
-            uiMove = MoveListState.PREVIEW.fullMoveList.values.last().toUiMove(),
+            uiMove = previewUiMove,
             onMoveClick = {},
             isExpanded = false,
         )
@@ -321,7 +347,7 @@ private fun CollapsedItemPreview() {
 private fun ExpandedItemPreview() {
     FightingNerdTheme {
         MoveItem(
-            uiMove = MoveListState.PREVIEW.fullMoveList.values.last().toUiMove(),
+            uiMove = previewUiMove,
             onMoveClick = {},
             isExpanded = true,
         )

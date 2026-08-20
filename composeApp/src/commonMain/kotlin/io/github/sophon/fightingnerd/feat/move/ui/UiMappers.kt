@@ -30,6 +30,10 @@ import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableSet
 import org.jetbrains.compose.resources.DrawableResource
 
 internal fun Move.toUiMove(): UiMove {
@@ -38,28 +42,33 @@ internal fun Move.toUiMove(): UiMove {
         input = input,
         name = name,
 
-        propertySet = buildSet {
-            invulnerability?.let { add(Property.Invincible) }
-            t8Properties?.let { props ->
-                if (props.isHeat) add(Property.Heat)
-                if (props.isHoming) add(Property.Homing)
-                if (props.isPowerCrush) add(Property.PowerCrush)
-                if (props.isHighCrush) add(Property.HighCrush)
-                if (props.isLowCrush) add(Property.LowCrush)
-                if (props.hasWallInteraction) add(Property.Wall)
-                if (props.hasFloorInteraction) add(Property.Floor)
-            }
-            if (isThrow) { add(Property.Throw) }
-        },
+        propertySet = buildPropertySet(),
         coreFields = createCoreFields(),
         optionalFields = createOptionalFields(),
-        notes = notes.map { it.stripMarkdownLinks() },
+        notes = notes.map { it.stripMarkdownLinks() }.toImmutableList(),
         urls = urls.toUiUrl(),
     )
     return result
 }
 
-private fun Move.createCoreFields(): List<UiMove.Field> {
+private fun Move.buildPropertySet(): ImmutableSet<Property> {
+    val propertySet = buildSet {
+        invulnerability?.let { add(Property.Invincible) }
+        t8Properties?.let { props ->
+            if (props.isHeat) add(Property.Heat)
+            if (props.isHoming) add(Property.Homing)
+            if (props.isPowerCrush) add(Property.PowerCrush)
+            if (props.isHighCrush) add(Property.HighCrush)
+            if (props.isLowCrush) add(Property.LowCrush)
+            if (props.hasWallInteraction) add(Property.Wall)
+            if (props.hasFloorInteraction) add(Property.Floor)
+        }
+        if (isThrow) { add(Property.Throw) }
+    }
+    return propertySet.toImmutableSet()
+}
+
+private fun Move.createCoreFields(): ImmutableList<UiMove.Field> {
     val list = buildList {
         add(UiMove.Field(Res.string.move_list_field_startup, startup))
         add(UiMove.Field(Res.string.move_list_field_guard, guard?.stripMarkdownLinks()))
@@ -68,10 +77,10 @@ private fun Move.createCoreFields(): List<UiMove.Field> {
         add(UiMove.Field(Res.string.move_list_field_on_hit, onHit?.stripMarkdownLinks()))
         add(UiMove.Field(Res.string.move_list_field_on_counter, onCH?.stripMarkdownLinks()))
     }
-    return list
+    return list.toImmutableList()
 }
 
-private fun Move.createOptionalFields(): List<UiMove.Field> {
+private fun Move.createOptionalFields(): ImmutableList<UiMove.Field> {
     val list = buildList {
         recovery?.let { add(UiMove.Field(Res.string.move_list_field_label_recovery, it)) }
         cancel?.let { add(UiMove.Field(Res.string.move_list_field_label_cancel, it)) }
@@ -92,7 +101,7 @@ private fun Move.createOptionalFields(): List<UiMove.Field> {
         vsavProperties?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }
     }
 
-    return list
+    return list.toImmutableList()
 }
 
 internal fun Property.icon(): DrawableResource {
@@ -112,8 +121,8 @@ internal fun Property.icon(): DrawableResource {
 private fun Move.Urls.toUiUrl(): UiMove.Urls {
     val url = UiMove.Urls(
         videoUrl = videoId,
-        hitboxImageList = hitboxImageList,
-        moveImageList = moveImageList,
+        hitboxImageList = hitboxImageList.toImmutableList(),
+        moveImageList = moveImageList.toImmutableList(),
     )
     return url
 }
