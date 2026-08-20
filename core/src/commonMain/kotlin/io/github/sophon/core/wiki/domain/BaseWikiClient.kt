@@ -14,13 +14,17 @@ import io.github.sophon.core.wiki.data.toDomainError
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -38,27 +42,27 @@ abstract class BaseWikiClient(
     private val debugLogger: (String) -> Unit = {},
 ) : WikiClient {
     private val refreshMutex = Mutex()
-    private var inflightRefresh: Deferred<EmptyResult<WikiError>>? = null
+    private var currentSession: RefreshSession? = null
 
-    final override suspend fun refreshData(): EmptyResult<WikiError> {
-        val deferred = refreshMutex.withLock {
-            inflightRefresh ?: scope.async {
-                try {
-                    performRefresh()
-                } finally {
-                    refreshMutex.withLock { inflightRefresh = null }
-                }
-            }.also { inflightRefresh = it }
+    final override fun refreshData(): Flow<RefreshEvent> {
+        val flow = flow {
+            val session = refreshMutex.withLock {
+                currentSession ?: startRefreshSession().also { currentSession = it }
+            }
+            val terminated = session.events.transformWhile { event ->
+                emit(event)
+                event !is RefreshEvent.Finished
+            }
+            emitAll(terminated)
         }
-        val result = deferred.await()
-        return result
+        return flow
     }
 
     override fun subscribeToCharacterList(): Flow<List<Character>> {
         val flow = characterRepo.subscribeToCharacterList()
             .onEach { list ->
                 if (list.isEmpty()) {
-                    scope.launch { refreshData() }
+                    refreshData().launchIn(scope)
                 }
             }
         return flow
@@ -90,28 +94,53 @@ abstract class BaseWikiClient(
     protected open suspend fun onClearCache() { /* no-op by default */ }
 
 
-    private suspend fun performRefresh(): EmptyResult<WikiError> {
+    private fun startRefreshSession(): RefreshSession {
+        val session = RefreshSession()
+        scope.launch {
+            try {
+                performRefresh(session)
+            } finally {
+                refreshMutex.withLock {
+                    if (currentSession === session) {
+                        currentSession = null
+                    }
+                }
+            }
+        }
+        return session
+    }
+
+    private suspend fun performRefresh(session: RefreshSession) {
         //TODO: handle per-request timeout and host-unresponsive short-circuit
         val charResult = characterRepo.refreshCharacterList()
         if (charResult is Result.Error) {
-            val error = Result.Error(charResult.error.toDomainError())
-            return error
+            session.events.emit(RefreshEvent.Failed(charResult.error.toDomainError()))
+            session.events.emit(RefreshEvent.Finished(successCount = 0))
+            return
         }
 
         val characterList = characterRepo.subscribeToCharacterList().first()
         infoLogger("${game.id}: ${characterList.size} characters downloaded")
 
+        var successCount = 0
         for (character in characterList) {
             moveRepo.refreshMoveList(character)
                 .onSuccess { moveListSize ->
                     debugLogger("${character.id} (${game.id}): $moveListSize moves downloaded")
+                    successCount++
                 }
-                .onError {
-                    val error = Result.Error(it.toDomainError())
-                    return error
+                .onError { moveError ->
+                    session.events.emit(RefreshEvent.Failed(moveError.toDomainError()))
                 }
         }
-        val result = Result.Success(Unit)
-        return result
+        session.events.emit(RefreshEvent.Finished(successCount))
+    }
+
+    private class RefreshSession {
+        val events = MutableSharedFlow<RefreshEvent>(replay = REPLAY_CAP)
+    }
+
+    private companion object {
+        private const val REPLAY_CAP = 128
     }
 }
