@@ -15,7 +15,7 @@ internal data class HomeViewState(
     data class GameWidget(
         val game: Game,
         val featureName: String,
-        val characterList: ImmutableList<Character> = persistentListOf(),
+        val characterList: ImmutableList<UiCharacter> = persistentListOf(),
         val isExpanded: Boolean = false,
     ) {
         val isLoading: Boolean
@@ -25,7 +25,7 @@ internal data class HomeViewState(
             }
 
         @Immutable
-        internal data class Character(
+        internal data class UiCharacter(
             val id: String,
             val displayName: String,
             val queryName: String,
@@ -56,10 +56,10 @@ internal data class HomeViewState(
 
 
     companion object {
-        private fun mockCharacters(): ImmutableList<GameWidget.Character> {
+        private fun mockCharacters(): ImmutableList<GameWidget.UiCharacter> {
             val names = listOf("Zuzana", "Eva", "Karolina", "Marcela", "Zdenka", "Hana")
             val mocked = names.mapIndexed { index, name ->
-                GameWidget.Character(
+                GameWidget.UiCharacter(
                     id = "char_$index",
                     displayName = name,
                     queryName = "",

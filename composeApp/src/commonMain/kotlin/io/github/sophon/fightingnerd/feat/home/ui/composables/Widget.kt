@@ -49,7 +49,7 @@ import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
-import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.Character
+import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.UiCharacter
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -184,7 +184,7 @@ private fun WidgetHeader(
 @Composable
 private fun CharacterMatrix(
     isExpanded: Boolean,
-    characterList: List<Character>,
+    characterList: List<UiCharacter>,
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -222,7 +222,7 @@ private fun CharacterMatrix(
 
 @Composable
 private fun CharacterPanel(
-    character: Character,
+    character: UiCharacter,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

@@ -111,7 +111,7 @@ internal class HomeVM(
                     subscribeToCharacterListUseCase.invoke(gameWidget.game).collectLatest { characterList ->
                         val updatedWidget = gameWidget.copy(
                             characterList = characterList.map { domainCharacter ->
-                                GameWidget.Character(
+                                GameWidget.UiCharacter(
                                     id = domainCharacter.id,
                                     displayName = domainCharacter.displayName,
                                     queryName = domainCharacter.remoteQueryId,
