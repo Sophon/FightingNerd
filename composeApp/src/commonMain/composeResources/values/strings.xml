@@ -1,6 +1,9 @@
 <!--WHERE - DESCRIPTION-->
 
 <resources>
+    <string name="home_refresh_refreshing">Refreshing...</string>
+    <string name="home_refresh_success">%1$s: %2$d chars refreshed</string>
+
     <string name="bottom_bar_item_character_list">Data</string>
     <string name="bottom_bar_item_search">Search</string>
     <string name="bottom_bar_item_saved">Saved</string>

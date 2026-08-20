@@ -2,6 +2,7 @@ package io.github.sophon.fightingnerd.feat.home.usecase
 
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.RefreshEvent
@@ -16,7 +17,7 @@ internal class RefreshUseCase(
     private val featureRepo: FeatureRepo,
     private val store: DataStore<Preferences>,
 ) {
-    fun invoke(): Flow<RefreshOutcome> {
+    fun invoke(): Flow<Result<RefreshReport, AppError>> {
         val flow = channelFlow {
             val preferences = store.data.first()
             val enabledGameClients = featureRepo.getGameClients()
@@ -28,10 +29,10 @@ internal class RefreshUseCase(
                     wikiClient.refreshData().collect { event ->
                         when (event) {
                             is RefreshEvent.Failed -> {
-                                send(RefreshOutcome.Failed(AppError.WikiError(event.error.toString())))
+                                send(Result.Error(AppError.WikiError(event.error.toString())))
                             }
                             is RefreshEvent.Finished -> {
-                                send(RefreshOutcome.Finished(game = game, successCount = event.successCount))
+                                send(Result.Success(RefreshReport(game = game, successCount = event.successCount)))
                             }
                         }
                     }
@@ -42,7 +43,7 @@ internal class RefreshUseCase(
     }
 }
 
-internal sealed interface RefreshOutcome {
-    data class Failed(val error: AppError) : RefreshOutcome
-    data class Finished(val game: Game, val successCount: Int) : RefreshOutcome
-}
+internal data class RefreshReport(
+    val game: Game,
+    val successCount: Int,
+)
