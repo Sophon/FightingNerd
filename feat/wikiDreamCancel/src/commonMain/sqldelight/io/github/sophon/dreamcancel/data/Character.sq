@@ -32,7 +32,8 @@ ON CONFLICT(id) DO UPDATE SET
 selectAllForGame:
 SELECT *
 FROM CharacterEntity
-WHERE gameId = ?;
+WHERE gameId = ?
+ORDER BY displayName COLLATE NOCASE;
 
 selectLastInsertedAtForGame:
 SELECT MAX(insertedAt) AS lastInsertedAt
