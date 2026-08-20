@@ -2,17 +2,20 @@ package io.github.sophon.fightingnerd.feat.home.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.home_refresh_refreshing
+import fightingnerd.composeapp.generated.resources.home_refresh_success
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
-import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckCharacterHasMovesUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -23,6 +26,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 
 internal class HomeVM(
     private val overlayService: OverlayService,
@@ -53,13 +57,31 @@ internal class HomeVM(
     fun refresh() {
         if (_state.value.gameWidgetList.isEmpty()) return
 
-        overlayService.show(
-            Toast(message = "⏳", type = Toast.Type.INFO)
-        )
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
-            refreshUseCase.invoke().collect { error ->
-                overlayService.show(error = error)
+            overlayService.show(
+                Toast(
+                    message = getString(Res.string.home_refresh_refreshing),
+                    type = Toast.Type.INFO,
+                )
+            )
+            refreshUseCase.invoke().collect { outcome ->
+                outcome
+                    .onSuccess { refreshReport ->
+                        overlayService.show(
+                            Toast(
+                                message = getString(
+                                    Res.string.home_refresh_success,
+                                    refreshReport.game.shortDisplayName,
+                                    refreshReport.successCount,
+                                ),
+                                type = Toast.Type.SUCCESS,
+                            )
+                        )
+                    }
+                    .onError { error ->
+                        overlayService.show(error = error)
+                    }
             }
         }
     }
@@ -111,7 +133,7 @@ internal class HomeVM(
                     subscribeToCharacterListUseCase.invoke(gameWidget.game).collectLatest { characterList ->
                         val updatedWidget = gameWidget.copy(
                             characterList = characterList.map { domainCharacter ->
-                                GameWidget.Character(
+                                GameWidget.UiCharacter(
                                     id = domainCharacter.id,
                                     displayName = domainCharacter.displayName,
                                     queryName = domainCharacter.remoteQueryId,

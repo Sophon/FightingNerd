@@ -6,8 +6,8 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import kotlinx.coroutines.flow.Flow
-import kotlinx.datetime.Instant
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 interface WikiClient {
@@ -16,8 +16,7 @@ interface WikiClient {
         return featureInfo.supportedGameSet
     }
 
-    //new interface
-    suspend fun refreshData(): EmptyResult<WikiError>
+    fun refreshData(): Flow<RefreshEvent>
     fun subscribeToCharacterList(): Flow<List<Character>>
     fun subscribeToMoveList(characterId: CharacterId): Flow<List<Move>>
     //TODO: fun getMoveCountFor(characterId: CharacterId): Flow<Int> — cheap readiness check to replace subscribeToMoveList(id).map { it.isNotEmpty() } in HomeVM

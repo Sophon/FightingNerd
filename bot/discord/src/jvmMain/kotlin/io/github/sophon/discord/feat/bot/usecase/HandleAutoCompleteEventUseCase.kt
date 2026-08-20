@@ -8,6 +8,7 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.feat.bot.model.AutocompleteChoice
 import io.github.sophon.discord.feat.config.BotFeatureRepo
@@ -195,11 +196,7 @@ internal class HandleAutoCompleteEventUseCase(
                 .take(COMMAND_MAX_SUGGESTIONS)
                 .map { it.toChoice() }
         }
-        val matchingMoveList = this.filter { move ->
-            move.input.contains(query, ignoreCase = true) ||
-                move.name?.contains(query, ignoreCase = true) == true ||
-                move.aliases.any { alias -> alias.contains(query, ignoreCase = true) }
-        }
+        val matchingMoveList = this.filterMatching(query)
         val choiceList = matchingMoveList
             .map { it.toChoice() }
             .take(COMMAND_MAX_SUGGESTIONS)

@@ -31,7 +31,8 @@ ON CONFLICT(id) DO UPDATE SET
 
 selectAll:
 SELECT *
-FROM CharacterEntity;
+FROM CharacterEntity
+ORDER BY displayName COLLATE NOCASE;
 
 selectLastInsertedAt:
 SELECT MAX(insertedAt) AS lastInsertedAt

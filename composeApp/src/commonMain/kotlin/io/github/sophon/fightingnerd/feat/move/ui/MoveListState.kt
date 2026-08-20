@@ -1,13 +1,13 @@
 package io.github.sophon.fightingnerd.feat.move.ui
 
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.CoreFilters
+import androidx.compose.runtime.Immutable
 import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.core.wiki.model.Move
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentSetOf
 
+@Immutable
 internal data class MoveListState(
-    val character: Character?,
-    val fullMoveList: Map<String, Move> = emptyMap(),
+    val character: MoveListCharacter? = null,
 
     val moveDetail: MoveDetail? = null,
 
@@ -16,116 +16,52 @@ internal data class MoveListState(
 
     val expandedMoveId: String? = null,
 ) {
-    data class MoveDetail(
-        val move: Move,
+    @Immutable
+    data class MoveListCharacter(
+        val displayName: String,
     )
 
+    @Immutable
+    data class MoveDetail(
+        val id: String,
+        val name: String?,
+    )
+
+    @Immutable
     data class FilterSheet(
         val isVisible: Boolean = false,
-        val filterSet: Set<Filter> = emptySet(),
+        val filterSet: ImmutableSet<Filter> = persistentSetOf(),
 
         val startup: MinMax? = null,
         val onHit: MinMax? = null,
         val onBlock: MinMax? = null,
 
-        val activeFilterSet: Set<Filter> = emptySet(),
+        val activeFilterSet: ImmutableSet<Filter> = persistentSetOf(),
     ) {
-        val activeSliderFilters: List<Filter>
-            get() {
-                return listOfNotNull(
-                    startup?.let { CoreFilters.Startup(it.min, it.max) },
-                    onHit?.let { CoreFilters.OnHit(it.min, it.max) },
-                    onBlock?.let { CoreFilters.OnBlock(it.min, it.max) },
-                )
-            }
+        val isFilterActive: Boolean get() {
+            return activeFilterSet.isNotEmpty()
+                    || (startup != null)
+                    || (onHit != null)
+                    || (onBlock != null)
+        }
 
+        @Immutable
         data class MinMax(
             val min: Int? = null,
             val max: Int? = null,
         ) {
             val isValid: Boolean
                 get() {
-                    return min == null || max == null || min <= max
+                    val result = min == null || max == null || min <= max
+                    return result
                 }
         }
     }
 
 
     companion object {
-        private val armorKingMoves = listOf(
-            Move(
-                characterId = "Armor King",
-                id = "armor_king-b12",
-                name = "Dark Jab > Hell Stab",
-                input = "b12",
-                damage = "12, 20",
-                startup = "i12~13 (i20~21)",
-                onBlock = "-12",
-                onHit = "+8",
-                onCH = "+11",
-                recovery = "30",
-                guard = "h, m",
-                notes = listOf(
-                    "Combo from 1st hit with 12F delay",
-                    "Transition to r30 BAD with F (-12/+8/+11)",
-                    "Move can be delayed by 10F",
-                    "Input can be delayed by 12F",
-                ),
-                urls = Move.Urls(
-                    wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-b+1,2",
-                ),
-                t8Properties = Move.T8Properties(),
-            ),
-            Move(
-                characterId = "Armor King",
-                id = "armor_king-b1+2",
-                name = "Blindside",
-                input = "b1+2",
-                damage = "0",
-                startup = "i16~17",
-                onBlock = "+0",
-                onHit = "+4",
-                onCH = "+15",
-                recovery = "r27",
-                guard = "m",
-                urls = Move.Urls(
-                    wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-b+1+2",
-                ),
-                t8Properties = Move.T8Properties(),
-            ),
-            Move(
-                characterId = "Armor King",
-                id = "armor_king-h.ub1",
-                name = "Neck Hunter: Villain",
-                input = "h.ub1",
-                damage = "25",
-                startup = "i24~25",
-                onBlock = "+8",
-                onHit = "+60a",
-                recovery = "r25",
-                guard = "h",
-                notes = listOf(
-                    "Strong Aerial Tailspin",
-                    "Homing",
-                    "Transition to r26 BAD with F (+8/+61a)",
-                    "Consumes 150F of remaining Heat time",
-                    "7 chip damage on block",
-                ),
-                urls = Move.Urls(
-                    wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-H.ub+1",
-                ),
-                t8Properties = Move.T8Properties(isHeat = true, isHoming = true),
-            ),
-        )
         val PREVIEW = MoveListState(
-            character = Character(
-                id = "id",
-                displayName = "Nina",
-                remoteQueryId = "",
-                wikiUrl = "",
-            ),
-            fullMoveList = armorKingMoves.associateBy { it.id },
-            moveDetail = null,
+            character = MoveListCharacter(displayName = "Nina"),
         )
 
         const val FRAME_MIN_STARTUP = 3

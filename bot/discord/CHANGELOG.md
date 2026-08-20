@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v15.4.0] - 2026-08-20
+- `Wavu` - added Bob
+- fixed search
+
 ## [v15.3.0] - 2026-08-18
 - handle more Kord exceptions
 - fixed slash commands displaying images

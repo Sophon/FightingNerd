@@ -6,8 +6,8 @@ import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.core.wiki.util.findMatching
 import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.discord.util.findMatching
 import kotlinx.coroutines.flow.first
 
 internal class GetMovesUseCase {
