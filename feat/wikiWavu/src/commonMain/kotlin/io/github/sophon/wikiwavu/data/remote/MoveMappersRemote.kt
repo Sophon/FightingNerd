@@ -67,6 +67,7 @@ internal fun MoveDto.toDomain(
 }
 
 
+//TODO: refactor the test and then privatize this
 /**
  * Kazuya's `112` is actually:
  *
@@ -261,7 +262,7 @@ private fun formProperties(
 
     val isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) }
     val isHoming = notes.any { it.contains("Homing", ignoreCase = true) }
-    val stance = input.getStance() ?: aliases.firstNotNullOfOrNull { it.getStance() }
+    val stance = input.getStance() ?: aliases.firstNotNullOfOrNull { it.getStance() } //TODO: this has flawed impl - what if there are multiple stances in the aliases?
     val isHighCrush = notes.any { it.contains("cs") }
     val isLowCrush = notes.any { it.contains("js") }
     val hasWallInteraction = notes.any { it.contains("balcony break", ignoreCase = true) }
