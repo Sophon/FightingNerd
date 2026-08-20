@@ -7,8 +7,8 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.core.wiki.util.findMatching
 import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.discord.util.findMatching
 import kotlinx.coroutines.flow.first
 
 @ExcludeFromCoverage("plain client call")
@@ -33,29 +33,6 @@ internal class GetMoveUseCase {
 
         val result = Result.Success(character to move)
         return result
-    }
-
-    private fun List<Move>.findMatching(query: String): Move? {
-        val normalizedQuery = query.normalizeForMatch()
-
-        firstOrNull { it.id == normalizedQuery }
-            ?.let { return it }
-        firstOrNull { it.input.normalizeForMatch() == normalizedQuery }
-            ?.let { return it }
-        firstOrNull { move ->
-            move.aliases.any { it.normalizeForMatch() == normalizedQuery }
-        }?.let { return it }
-
-        firstOrNull { move ->
-            move.name?.normalizeForMatch() == normalizedQuery
-        }?.let { return it }
-
-        return null
-    }
-
-    private fun String.normalizeForMatch(): String {
-        val normalized = replace(" ", "").lowercase()
-        return normalized
     }
 
     internal data class ParsedQuery(

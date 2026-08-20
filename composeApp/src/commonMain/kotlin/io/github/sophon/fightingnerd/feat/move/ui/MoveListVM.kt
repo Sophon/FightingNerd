@@ -8,6 +8,7 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
@@ -168,13 +169,7 @@ internal class MoveListVM(
             .filter { move ->
                 filterSet.all { it.predicate(move) }
             }
-            .filter { move ->
-                searchQuery?.let { query ->
-                    move.input.contains(query, ignoreCase = true)
-                            || move.aliases.any { it.contains(query, ignoreCase = true) }
-                            || (move.name?.contains(query, ignoreCase = true) == true)
-                } ?: true
-            }
+            .filterMatching(searchQuery)
             .map { move ->
                 val uiMove = move.toUiMove()
                 uiMove
