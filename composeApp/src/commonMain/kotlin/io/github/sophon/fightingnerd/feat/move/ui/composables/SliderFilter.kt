@@ -111,8 +111,8 @@ private fun SliderSection(
 ) {
     val rangeSliderState = remember(sliderMin, sliderMax) {
         RangeSliderState(
-            activeRangeStart = sliderMin.toFloat(),
-            activeRangeEnd = sliderMax.toFloat(),
+            activeRangeStart = value?.min?.toFloat() ?: sliderMin.toFloat(),
+            activeRangeEnd = value?.max?.toFloat() ?: sliderMax.toFloat(),
             valueRange = sliderMin.toFloat()..sliderMax.toFloat(),
         )
     }
