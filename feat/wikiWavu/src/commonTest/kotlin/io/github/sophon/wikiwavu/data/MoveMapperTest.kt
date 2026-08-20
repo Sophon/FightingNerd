@@ -8,10 +8,8 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.data.remote.MoveDto
 import io.github.sophon.wikiwavu.data.remote.MoveListResponseDto
 import io.github.sophon.wikiwavu.data.remote.ParentalProperties
-import io.github.sophon.wikiwavu.data.remote.formAliases
 import io.github.sophon.wikiwavu.data.remote.formCompleteDataFromParent
 import io.github.sophon.wikiwavu.data.remote.toDomain
-import io.github.sophon.wikiwavu.integration.cleanMoveInput
 import kotlin.test.Test
 
 class MoveMapperTest {
@@ -144,14 +142,14 @@ class MoveMapperTest {
     @Test
     fun `formAliases handles cd in input`() {
         // given
-        val input = "f,n,d,DF+4,4".cleanMoveInput()
-        val expected = listOf("cd44")
+        val move = MoveSource.whf
+        val expected = listOf("whf", "cd.2", "cd2", "cddf2",)
 
         // when
-        val result = input.formAliases(null, null)
+        val result = move.toDomain(character, emptyMap())
 
         //then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expected)
     }
 
     @Test
@@ -680,6 +678,34 @@ class MoveMapperTest {
         assertThat(result.isThrow).isEqualTo(expectedIsThrow)
     }
     //endregion
+
+    //region Properties from aliases
+    @Test
+    fun `Heat from aliases`() {
+        // given
+        val move = MoveSource.tempestBlaster
+        val expectedIsHeat = true
+
+        // when
+        val result = move.toDomain(character = character, movesById = emptyMap())
+
+        //then
+        assertThat(result.t8Properties?.isHeat).isEqualTo(expectedIsHeat)
+    }
+
+    @Test
+    fun `Stance from aliases`() {
+        // given
+        val move = MoveSource.manjiBackfistShredder
+        val expectedStance = "BT"
+
+        // when
+        val result = move.toDomain(character = character, movesById = emptyMap())
+
+        //then
+        assertThat(result.t8Properties?.stance).isEqualTo(expectedStance)
+    }
+    //endregion
 }
 
 private object MoveSource {
@@ -1043,4 +1069,44 @@ private object MoveSource {
         video = null,
         alt = "hFC.db+1+2",
     )
+    val tempestBlaster = MoveDto(
+        id = "Kazuya-DVK.f,n,d,df+3",
+        name = "Tempest Blaster",
+        input = "DVK.f,n,d,df+3",
+        parent = null,
+        target = "h,t",
+        damage = "30,20",
+        startup = "i18~27,i20~30",
+        recv = null,
+        tot = null,
+        crush = "js9~",
+        block = "-2~+8",
+        hit = "+0d",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* Consumes 180F of remaining Heat time\n* Extension available only on hit or block\n* Extension can be canceled with b\n* 16 chip damage on block\n&lt;/div&gt;",
+        alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* DVK.cd+3\n* H.f,n,d,df+3\n* H.cd+3\n\n&lt;/div&gt;",
+        image = null,
+        video = "File:t8-p2-kazuya-dvk.f,n,d,df+3.mp4",
+        alt = null,
+    ) //has Heat in alt inputs
+    val manjiBackfistShredder = MoveDto(
+        id = "Yoshimitsu-f+2,1",
+        name = "Manji Backfist Shredder",
+        input = ",1",
+        parent = "Yoshimitsu-f+2",
+        target = ",M",
+        damage = ",21",
+        startup = ",i26~27",
+        recv = "r32",
+        tot = "77",
+        crush = null,
+        block = "-12",
+        hit = "+17a (+10)",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-orange tornado&quot;\n&gt;Tornado&lt;/div&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-teal tip&quot;\n&gt;Weapon&lt;/div&gt;\n* Combo from 1st CH +66a (+50)&lt;/div&gt;",
+        alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* 1SS.f+2,1\n* f+2,1SS.1\n&lt;/div&gt;",
+        image = null,
+        video = "File:t8-p2-yoshimitsu-f+2,1.mp4",
+        alt = "BT.2,1",
+    ) //has Stance in alt inputs
 }
