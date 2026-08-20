@@ -95,7 +95,7 @@ enum class Game(
     MTFS(
         id = "MTFS",
         displayName = "Marvel Tokon: Fighting Souls",
-        iconUrl = "https://imgur.com/Hps0M3O",
+        iconUrl = "https://i.imgur.com/Hps0M3O.png",
         wikiUrl = "https://www.dustloop.com/w/MTFS",
         wiki = WikiClientFeature.DustLoop,
     ),

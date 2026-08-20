@@ -2,6 +2,7 @@
 
 ## [v2.1.0] - 2026-08-20
 - `Wavu` - added Bob
+- `DustLoop` - enable MTFS
 - fixed search
 - Stability improvements for Move List screen
 - Toast events on refresh
