@@ -10,6 +10,7 @@ import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckCharacterHasMovesUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.RefreshOutcome
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
@@ -54,12 +55,24 @@ internal class HomeVM(
         if (_state.value.gameWidgetList.isEmpty()) return
 
         overlayService.show(
-            Toast(message = "⏳", type = Toast.Type.INFO)
+            Toast(message = "Refreshing...", type = Toast.Type.INFO)
         )
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
-            refreshUseCase.invoke().collect { error ->
-                overlayService.show(error = error)
+            refreshUseCase.invoke().collect { outcome ->
+                when (outcome) {
+                    is RefreshOutcome.Failed -> {
+                        overlayService.show(error = outcome.error)
+                    }
+                    is RefreshOutcome.Finished -> {
+                        overlayService.show(
+                            Toast(
+                                message = "${outcome.game.shortDisplayName} — ${outcome.successCount} characters refreshed",
+                                type = Toast.Type.SUCCESS,
+                            )
+                        )
+                    }
+                }
             }
         }
     }

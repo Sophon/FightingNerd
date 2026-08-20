@@ -3,10 +3,11 @@ package io.github.sophon.fightingnerd.feat.home.usecase
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.edit
 import assertk.assertThat
+import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
+import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
 import io.github.sophon.fightingnerd.feat.FakeWikiClient
@@ -37,11 +38,11 @@ internal class RefreshUseCaseTest {
     }
 
     @Test
-    fun `usecase emits nothing when the enabled client refresh succeeds`() = runTest {
+    fun `usecase emits Finished with successCount when the enabled client refresh succeeds`() = runTest {
         // given
         val wikiClient = FakeWikiClient(
             name = "Wavu Wiki",
-            refreshResult = Result.Success(Unit),
+            refreshEvents = listOf(RefreshEvent.Finished(successCount = 5)),
         )
         val game = Game.Tekken8
         store.edit { prefs -> prefs[featureKey("Wavu Wiki", game.id)] = true }
@@ -49,7 +50,7 @@ internal class RefreshUseCaseTest {
             featureRepo = FakeFeatureRepo(mapOf(game to wikiClient)),
             store = store,
         )
-        val expectedEmissions = emptyList<AppError>()
+        val expectedEmissions = listOf(RefreshOutcome.Finished(game = game, successCount = 5))
         val expectedRefreshCalled = true
 
         // when
@@ -62,12 +63,15 @@ internal class RefreshUseCaseTest {
     }
 
     @Test
-    fun `usecase emits mapped error when the enabled client refresh fails`() = runTest {
+    fun `usecase emits Failed then Finished when the enabled client refresh fails`() = runTest {
         // given
         val wikiError = WikiError.UnknownCharacter("test")
         val wikiClient = FakeWikiClient(
             name = "Wavu Wiki",
-            refreshResult = Result.Error(wikiError),
+            refreshEvents = listOf(
+                RefreshEvent.Failed(wikiError),
+                RefreshEvent.Finished(successCount = 0),
+            ),
         )
         val game = Game.Tekken8
         store.edit { prefs -> prefs[featureKey("Wavu Wiki", game.id)] = true }
@@ -75,7 +79,10 @@ internal class RefreshUseCaseTest {
             featureRepo = FakeFeatureRepo(mapOf(game to wikiClient)),
             store = store,
         )
-        val expected = listOf(AppError.WikiError(wikiError.toString()))
+        val expected = listOf(
+            RefreshOutcome.Failed(AppError.WikiError(wikiError.toString())),
+            RefreshOutcome.Finished(game = game, successCount = 0),
+        )
 
         // when
         val emissions = usecase.invoke().toList()
@@ -105,16 +112,19 @@ internal class RefreshUseCaseTest {
     }
 
     @Test
-    fun `usecase emits errors only for enabled clients whose refresh fails`() = runTest {
+    fun `usecase emits per-game outcomes for all enabled clients`() = runTest {
         // given
         val failingError = WikiError.UnknownCharacter("bad")
         val failingClient = FakeWikiClient(
             name = "SuperCombo Wiki",
-            refreshResult = Result.Error(failingError),
+            refreshEvents = listOf(
+                RefreshEvent.Failed(failingError),
+                RefreshEvent.Finished(successCount = 0),
+            ),
         )
         val succeedingClient = FakeWikiClient(
             name = "Wavu Wiki",
-            refreshResult = Result.Success(Unit),
+            refreshEvents = listOf(RefreshEvent.Finished(successCount = 3)),
         )
         store.edit { prefs ->
             prefs[featureKey("SuperCombo Wiki", Game.StreetFighter6.id)] = true
@@ -129,12 +139,16 @@ internal class RefreshUseCaseTest {
             ),
             store = store,
         )
-        val expected = listOf(AppError.WikiError(failingError.toString()))
+        val expected = listOf(
+            RefreshOutcome.Finished(game = Game.Tekken8, successCount = 3),
+            RefreshOutcome.Failed(AppError.WikiError(failingError.toString())),
+            RefreshOutcome.Finished(game = Game.StreetFighter6, successCount = 0),
+        )
 
         // when
         val emissions = usecase.invoke().toList()
 
-        //then
-        assertThat(emissions).isEqualTo(expected)
+        //then — per-client order is preserved but launches interleave; assert set equality
+        assertThat(emissions).containsExactlyInAnyOrder(*expected.toTypedArray())
     }
 }
