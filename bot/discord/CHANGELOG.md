@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v15.4.0] - 2026-08-20
+- `Wavu` - added T8
+
 ## [v15.3.0] - 2026-08-18
 - handle more Kord exceptions
 - fixed slash commands displaying images
