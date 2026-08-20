@@ -196,7 +196,8 @@ internal class HandleAutoCompleteEventUseCase(
                 .map { it.toChoice() }
         }
         val matchingMoveList = this.filter { move ->
-            move.input.contains(query, ignoreCase = true) ||
+            move.id.equals(query, ignoreCase = true) ||
+            move.input.startsWith(query, ignoreCase = true) ||
                 move.name?.contains(query, ignoreCase = true) == true ||
                 move.aliases.any { alias -> alias.contains(query, ignoreCase = true) }
         }
