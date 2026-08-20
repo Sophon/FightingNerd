@@ -39,6 +39,7 @@ internal fun MoveTopBar(
     searchQuery: String?,
     onSearch: (query: String?) -> Unit,
     onDisplayFilterSheet: () -> Unit,
+    isFilterActive: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -73,6 +74,7 @@ internal fun MoveTopBar(
             searchQuery = searchQuery,
             onShowSearch = { onSearch("") },
             onDisplayFilterSheet = onDisplayFilterSheet,
+            isFilterActive = isFilterActive,
         )
     }
 }
@@ -134,6 +136,7 @@ private fun ButtonsRow(
     searchQuery: String?,
     onShowSearch: () -> Unit,
     onDisplayFilterSheet: () -> Unit,
+    isFilterActive: Boolean,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -154,7 +157,11 @@ private fun ButtonsRow(
             Icon(
                 imageVector = Icons.Outlined.FilterList,
                 contentDescription = "Filter moves",
-                tint = nerdColorPalette.textPrimary,
+                tint = if (isFilterActive) {
+                    nerdColorPalette.accent
+                } else {
+                    nerdColorPalette.textPrimary
+                },
             )
         }
     }

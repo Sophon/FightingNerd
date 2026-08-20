@@ -42,6 +42,7 @@ import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
 import io.github.sophon.wikiwavu.integration.model.TekkenFilters
+import kotlinx.collections.immutable.persistentSetOf
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
@@ -196,7 +197,7 @@ private fun FilterBottomSheetPreview() {
         FilterBottomSheet(
             filterSheet = MoveListState.FilterSheet(
                 isVisible = true,
-                filterSet = setOf(
+                filterSet = persistentSetOf(
                     TekkenFilters.Heat,
                     TekkenFilters.Homing,
                     TekkenFilters.PowerCrush
