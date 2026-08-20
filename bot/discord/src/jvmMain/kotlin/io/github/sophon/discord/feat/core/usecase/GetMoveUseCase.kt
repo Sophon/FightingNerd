@@ -35,29 +35,6 @@ internal class GetMoveUseCase {
         return result
     }
 
-    private fun List<Move>.findMatching(query: String): Move? {
-        val normalizedQuery = query.normalizeForMatch()
-
-        firstOrNull { it.id == normalizedQuery }
-            ?.let { return it }
-        firstOrNull { it.input.normalizeForMatch() == normalizedQuery }
-            ?.let { return it }
-        firstOrNull { move ->
-            move.aliases.any { it.normalizeForMatch() == normalizedQuery }
-        }?.let { return it }
-
-        firstOrNull { move ->
-            move.name?.normalizeForMatch() == normalizedQuery
-        }?.let { return it }
-
-        return null
-    }
-
-    private fun String.normalizeForMatch(): String {
-        val normalized = replace(" ", "").lowercase()
-        return normalized
-    }
-
     internal data class ParsedQuery(
         val characterQuery: String,
         val moveQuery: String,
