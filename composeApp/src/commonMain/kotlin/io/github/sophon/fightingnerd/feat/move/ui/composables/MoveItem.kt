@@ -74,8 +74,8 @@ internal fun MoveItem(
             .padding(nerdDimensions.componentPadding)
     ) {
         Header(
-            input = uiMove.move.input,
-            name = uiMove.move.name,
+            input = uiMove.input,
+            name = uiMove.name,
             propertySet = uiMove.propertySet,
         )
 
@@ -222,18 +222,18 @@ private fun Details(
     Column(
         modifier = modifier,
     ) {
-        uiMove.move.urls.videoId?.let { videoUrl ->
+        uiMove.urls.videoUrl?.let { videoUrl ->
             VideoPlayer(videoUrl)
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
         }
 
         when {
-            uiMove.move.urls.hitboxImageList.isNotEmpty() -> {
-                MoveImage(uiMove.move.urls.hitboxImageList.first())
+            uiMove.urls.hitboxImageList.isNotEmpty() -> {
+                MoveImage(uiMove.urls.hitboxImageList.first())
                 Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
             }
-            uiMove.move.urls.moveImageList.isNotEmpty() -> {
-                MoveImage(uiMove.move.urls.moveImageList.first())
+            uiMove.urls.moveImageList.isNotEmpty() -> {
+                MoveImage(uiMove.urls.moveImageList.first())
                 Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
             }
         }
@@ -256,7 +256,7 @@ private fun Details(
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
         }
 
-        uiMove.move.notes.takeIf { it.isNotEmpty() }?.let { noteList ->
+        uiMove.notes.takeIf { it.isNotEmpty() }?.let { noteList ->
             NotesSection(noteList)
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
         }

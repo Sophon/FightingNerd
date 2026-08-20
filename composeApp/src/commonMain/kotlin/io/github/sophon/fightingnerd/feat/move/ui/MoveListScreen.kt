@@ -129,12 +129,12 @@ private fun MoveList(
     ) {
         items(
             items = moveList,
-            key = { it.move.id },
+            key = { it.id },
         ) { uiMove ->
             MoveItem(
                 uiMove = uiMove,
-                onMoveClick = { onMoveClick(uiMove.move.id) },
-                isExpanded = (uiMove.move.id == expandedMoveId)
+                onMoveClick = { onMoveClick(uiMove.id) },
+                isExpanded = (uiMove.id == expandedMoveId)
             )
         }
     }

@@ -2,7 +2,6 @@ package io.github.sophon.fightingnerd.feat.move.ui
 
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.ic_tk_cs
-import fightingnerd.composeapp.generated.resources.ic_tk_force_crouch
 import fightingnerd.composeapp.generated.resources.ic_tk_floor
 import fightingnerd.composeapp.generated.resources.ic_tk_heat
 import fightingnerd.composeapp.generated.resources.ic_tk_homing
@@ -28,13 +27,16 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_counter
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
+import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
 import org.jetbrains.compose.resources.DrawableResource
 
 internal fun Move.toUiMove(): UiMove {
     val result = UiMove(
-        move = this,
+        id = id,
+        input = input,
+        name = name,
 
         propertySet = buildSet {
             invulnerability?.let { add(Property.Invincible) }
@@ -49,9 +51,10 @@ internal fun Move.toUiMove(): UiMove {
             }
             if (isThrow) { add(Property.Throw) }
         },
-
         coreFields = createCoreFields(),
         optionalFields = createOptionalFields(),
+        notes = notes.map { it.stripMarkdownLinks() },
+        urls = urls.toUiUrl(),
     )
     return result
 }
@@ -59,11 +62,11 @@ internal fun Move.toUiMove(): UiMove {
 private fun Move.createCoreFields(): List<UiMove.Field> {
     val list = buildList {
         add(UiMove.Field(Res.string.move_list_field_startup, startup))
-        add(UiMove.Field(Res.string.move_list_field_guard, guard))
-        add(UiMove.Field(Res.string.move_list_field_damage, damage))
-        add(UiMove.Field(Res.string.move_list_field_on_block, onBlock))
-        add(UiMove.Field(Res.string.move_list_field_on_hit, onHit))
-        add(UiMove.Field(Res.string.move_list_field_on_counter, onCH))
+        add(UiMove.Field(Res.string.move_list_field_guard, guard?.stripMarkdownLinks()))
+        add(UiMove.Field(Res.string.move_list_field_damage, damage?.stripMarkdownLinks()))
+        add(UiMove.Field(Res.string.move_list_field_on_block, onBlock?.stripMarkdownLinks()))
+        add(UiMove.Field(Res.string.move_list_field_on_hit, onHit?.stripMarkdownLinks()))
+        add(UiMove.Field(Res.string.move_list_field_on_counter, onCH?.stripMarkdownLinks()))
     }
     return list
 }
@@ -104,4 +107,13 @@ internal fun Property.icon(): DrawableResource {
         Property.Wall -> Res.drawable.ic_tk_wall
         Property.Floor -> Res.drawable.ic_tk_floor
     }
+}
+
+private fun Move.Urls.toUiUrl(): UiMove.Urls {
+    val url = UiMove.Urls(
+        videoUrl = videoId,
+        hitboxImageList = hitboxImageList,
+        moveImageList = moveImageList,
+    )
+    return url
 }
