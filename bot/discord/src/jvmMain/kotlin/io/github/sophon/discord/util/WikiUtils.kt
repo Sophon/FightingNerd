@@ -42,38 +42,6 @@ internal suspend fun aggregateCharacters(
     return result
 }
 
-internal fun List<Character>.findMatching(query: String): Character? {
-    val normalizedQuery = query.normalizeForMatch()
-
-    firstOrNull { it.id == normalizedQuery }?.let { return it }
-    firstOrNull {
-        it.displayName.normalizeForMatch() == normalizedQuery
-    }?.let { return it }
-    firstOrNull { character ->
-        character.aliasList.any { it.normalizeForMatch() == normalizedQuery }
-    }?.let { return it }
-
-    return null
-}
-
-fun List<Move>.findMatching(query: String): Move? {
-    val normalizedQuery = query.normalizeForMatch()
-
-    firstOrNull { it.id == normalizedQuery }
-        ?.let { return it }
-    firstOrNull { it.input.normalizeForMatch() == normalizedQuery }
-        ?.let { return it }
-    firstOrNull { move ->
-        move.aliases.any { it.normalizeForMatch() == normalizedQuery }
-    }?.let { return it }
-
-    firstOrNull { move ->
-        move.name?.normalizeForMatch() == normalizedQuery
-    }?.let { return it }
-
-    return null
-}
-
 internal suspend fun firstMatchingWikiMoves(
     wikiClientMap: Map<Game, WikiClient>,
     getMovesUseCase: GetMovesUseCase,
@@ -94,10 +62,4 @@ internal suspend fun firstMatchingWikiMoves(
     }
     val fallback: Result<List<Move>, BotError> = Result.Error(lastError ?: BotError.UnknownMove(characterId))
     return fallback
-}
-
-
-private fun String.normalizeForMatch(): String {
-    val normalized = replace(" ", "").lowercase()
-    return normalized
 }
