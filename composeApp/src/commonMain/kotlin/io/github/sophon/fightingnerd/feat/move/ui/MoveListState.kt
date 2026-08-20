@@ -38,6 +38,13 @@ internal data class MoveListState(
 
         val activeFilterSet: ImmutableSet<Filter> = persistentSetOf(),
     ) {
+        val isFilterActive: Boolean get() {
+            return activeFilterSet.isNotEmpty()
+                    || (startup != null)
+                    || (onHit != null)
+                    || (onBlock != null)
+        }
+
         @Immutable
         data class MinMax(
             val min: Int? = null,

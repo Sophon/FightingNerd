@@ -87,6 +87,7 @@ private fun Content(
                 searchQuery = searchQuery,
                 onSearch = onSearch,
                 onDisplayFilterSheet = { onFilterClick(true) },
+                isFilterActive = state.filterSheet.isFilterActive,
             )
         },
         modifier = modifier,
