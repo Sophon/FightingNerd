@@ -1,5 +1,11 @@
 # APP CHANGELOG
 
+## [v2.1.0] - 2026-08-20
+- `Wavu` - added Bob
+- fixed search
+- Stability improvements for Move List screen
+- Toast events on refresh
+
 ## [v2.0.0] - 2026-08-15
 - `Dragdown` - updated character table
 -`SuperCombo` - renamed field for `AVL`

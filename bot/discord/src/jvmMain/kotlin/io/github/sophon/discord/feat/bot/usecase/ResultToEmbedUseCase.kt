@@ -127,7 +127,6 @@ internal class ResultToEmbedUseCase(
                     interaction = interaction,
                     mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
                     coroutineScope = coroutineScope,
-                    imageList = botOutput.images,
                     buttons = botOutput.buttons,
                 )
                     .onSuccess { uuid ->

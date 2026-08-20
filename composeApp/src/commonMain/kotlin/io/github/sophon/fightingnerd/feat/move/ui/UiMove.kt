@@ -1,23 +1,39 @@
 package io.github.sophon.fightingnerd.feat.move.ui
 
-import io.github.sophon.core.wiki.model.Move
+import androidx.compose.runtime.Immutable
 import io.github.sophon.fightingnerd.feat.move.model.Property
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
 import org.jetbrains.compose.resources.StringResource
 
+@Immutable
 internal data class UiMove(
-    val move: Move,
+    val id: String,
+    val input: String,
+    val name: String?,
 
-    val propertySet: Set<Property> = emptySet(),
-
-    val coreFields: List<Field>,
-    val optionalFields: List<Field>,
+    val propertySet: ImmutableSet<Property> = persistentSetOf(),
+    val coreFields: ImmutableList<Field>,
+    val optionalFields: ImmutableList<Field>,
+    val notes: ImmutableList<String> = persistentListOf(),
+    val urls: Urls = Urls(),
 ) {
+    @Immutable
     data class Field(
         val label: StringResource,
         val value: String?,
     )
+    @Immutable
+    data class Urls(
+        val videoUrl: String? = null,
+        val hitboxImageList: ImmutableList<String> = persistentListOf(),
+        val moveImageList: ImmutableList<String> = persistentListOf(),
+    )
 
     fun isExpandable(): Boolean {
-        return move.notes.isNotEmpty() || move.urls.videoId.isNullOrEmpty().not() || move.urls.hitboxImageList.isNotEmpty()
+        val result = notes.isNotEmpty() || urls.videoUrl.isNullOrEmpty().not() || urls.hitboxImageList.isNotEmpty()
+        return result
     }
 }

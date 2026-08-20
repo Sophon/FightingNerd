@@ -1,7 +1,13 @@
 # BOT CHANGELOG
 
-## [v15.3.0] - TODO
+## [v15.4.0] - 2026-08-20
+- `Wavu` - added Bob
+- fixed search
+
+## [v15.3.0] - 2026-08-18
 - handle more Kord exceptions
+- fixed slash commands displaying images
+- set the memory logging from 3h to 2h
 
 ## [v15.2.0] - 2026-08-14
 - JVM memory bump from 300 to 350MB

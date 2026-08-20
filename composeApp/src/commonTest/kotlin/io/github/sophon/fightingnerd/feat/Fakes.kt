@@ -11,9 +11,11 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
@@ -22,7 +24,7 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 internal class FakeWikiClient(
     name: String = "",
-    private val refreshResult: EmptyResult<WikiError> = Result.Success(Unit),
+    private val refreshEvents: List<RefreshEvent> = listOf(RefreshEvent.Finished(successCount = 0)),
     private val subscribeToCharacterListResult: List<Character> = emptyList(),
     private val subscribeToMoveListResult: List<Move> = emptyList(),
     private val clearCacheResult: EmptyResult<WikiError> = Result.Success(Unit),
@@ -34,9 +36,9 @@ internal class FakeWikiClient(
 
     override val featureInfo = FeatureInfo(name = name, url = "", version = "1.0.0")
 
-    override suspend fun refreshData(): EmptyResult<WikiError> {
+    override fun refreshData(): Flow<RefreshEvent> {
         refreshCalled = true
-        return refreshResult
+        return refreshEvents.asFlow()
     }
 
     override fun subscribeToCharacterList(): Flow<List<Character>> {

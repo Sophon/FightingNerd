@@ -13,11 +13,14 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.Test
@@ -31,7 +34,7 @@ class SyncWikiDataUseCaseTest {
     @Test
     fun `invoke - single wiki refresh succeeds`() = runTest {
         // given
-        val wiki = FakeWikiClient(refreshDataResult = Result.Success(Unit))
+        val wiki = FakeWikiClient(refreshEvents = listOf(RefreshEvent.Finished(successCount = 0)))
 
         // when
         val result = useCase.invoke(listOf(wiki))
@@ -44,9 +47,9 @@ class SyncWikiDataUseCaseTest {
     @Test
     fun `invoke - multiple wikis all refresh successfully`() = runTest {
         // given
-        val wiki1 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
-        val wiki2 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
-        val wiki3 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
+        val wiki1 = FakeWikiClient(refreshEvents = listOf(RefreshEvent.Finished(successCount = 0)))
+        val wiki2 = FakeWikiClient(refreshEvents = listOf(RefreshEvent.Finished(successCount = 0)))
+        val wiki3 = FakeWikiClient(refreshEvents = listOf(RefreshEvent.Finished(successCount = 0)))
 
         // when
         val result = useCase.invoke(listOf(wiki1, wiki2, wiki3))
@@ -76,7 +79,10 @@ class SyncWikiDataUseCaseTest {
     fun `invoke - single wiki refresh fails returns mapped error`() = runTest {
         // given
         val wiki = FakeWikiClient(
-            refreshDataResult = Result.Error(WikiError.DownloadError("Network error")),
+            refreshEvents = listOf(
+                RefreshEvent.Failed(WikiError.DownloadError("Network error")),
+                RefreshEvent.Finished(successCount = 0),
+            ),
         )
 
         // when
@@ -92,10 +98,16 @@ class SyncWikiDataUseCaseTest {
     fun `invoke - all wikis fail returns first error`() = runTest {
         // given
         val wiki1 = FakeWikiClient(
-            refreshDataResult = Result.Error(WikiError.DownloadError("Wiki1 failed")),
+            refreshEvents = listOf(
+                RefreshEvent.Failed(WikiError.DownloadError("Wiki1 failed")),
+                RefreshEvent.Finished(successCount = 0),
+            ),
         )
         val wiki2 = FakeWikiClient(
-            refreshDataResult = Result.Error(WikiError.DatabaseError("Wiki2 failed")),
+            refreshEvents = listOf(
+                RefreshEvent.Failed(WikiError.DatabaseError("Wiki2 failed")),
+                RefreshEvent.Finished(successCount = 0),
+            ),
         )
 
         // when
@@ -109,11 +121,14 @@ class SyncWikiDataUseCaseTest {
     @Test
     fun `invoke - one wiki fails among many still refreshes all and returns error`() = runTest {
         // given
-        val wiki1 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
+        val wiki1 = FakeWikiClient(refreshEvents = listOf(RefreshEvent.Finished(successCount = 0)))
         val wiki2 = FakeWikiClient(
-            refreshDataResult = Result.Error(WikiError.DownloadError("Wiki2 failed")),
+            refreshEvents = listOf(
+                RefreshEvent.Failed(WikiError.DownloadError("Wiki2 failed")),
+                RefreshEvent.Finished(successCount = 0),
+            ),
         )
-        val wiki3 = FakeWikiClient(refreshDataResult = Result.Success(Unit))
+        val wiki3 = FakeWikiClient(refreshEvents = listOf(RefreshEvent.Finished(successCount = 0)))
 
         // when
         val result = useCase.invoke(listOf(wiki1, wiki2, wiki3))
@@ -130,7 +145,10 @@ class SyncWikiDataUseCaseTest {
     fun `invoke - DatabaseError is mapped to Unknown BotError`() = runTest {
         // given
         val wiki = FakeWikiClient(
-            refreshDataResult = Result.Error(WikiError.DatabaseError("db down")),
+            refreshEvents = listOf(
+                RefreshEvent.Failed(WikiError.DatabaseError("db down")),
+                RefreshEvent.Finished(successCount = 0),
+            ),
         )
 
         // when
@@ -148,21 +166,21 @@ class SyncWikiDataUseCaseTest {
         // given
         val callOrder = mutableListOf<String>()
         val wiki1 = object : WikiClient by FakeWikiClient() {
-            override suspend fun refreshData(): EmptyResult<WikiError> {
+            override fun refreshData(): Flow<RefreshEvent> = flow {
                 callOrder.add("wiki1")
-                return Result.Success(Unit)
+                emit(RefreshEvent.Finished(successCount = 0))
             }
         }
         val wiki2 = object : WikiClient by FakeWikiClient() {
-            override suspend fun refreshData(): EmptyResult<WikiError> {
+            override fun refreshData(): Flow<RefreshEvent> = flow {
                 callOrder.add("wiki2")
-                return Result.Success(Unit)
+                emit(RefreshEvent.Finished(successCount = 0))
             }
         }
         val wiki3 = object : WikiClient by FakeWikiClient() {
-            override suspend fun refreshData(): EmptyResult<WikiError> {
+            override fun refreshData(): Flow<RefreshEvent> = flow {
                 callOrder.add("wiki3")
-                return Result.Success(Unit)
+                emit(RefreshEvent.Finished(successCount = 0))
             }
         }
 
@@ -177,7 +195,7 @@ class SyncWikiDataUseCaseTest {
 
     //region Test Setup
     private class FakeWikiClient(
-        var refreshDataResult: EmptyResult<WikiError> = Result.Success(Unit),
+        var refreshEvents: List<RefreshEvent> = listOf(RefreshEvent.Finished(successCount = 0)),
     ) : WikiClient {
         override val featureInfo: FeatureInfo = FeatureInfo(
             name = "wavu",
@@ -190,9 +208,9 @@ class SyncWikiDataUseCaseTest {
         private var _refreshDataCallCount = 0
         val refreshDataCallCount get() = _refreshDataCallCount
 
-        override suspend fun refreshData(): EmptyResult<WikiError> {
+        override fun refreshData(): Flow<RefreshEvent> {
             _refreshDataCallCount++
-            return refreshDataResult
+            return refreshEvents.asFlow()
         }
 
         override fun subscribeToCharacterList(): Flow<List<Character>> = emptyFlow()

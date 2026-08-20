@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import kotlinx.coroutines.flow.Flow
@@ -86,7 +87,7 @@ internal class FakeWikiClient : WikiClient {
         )
     }
 
-    override suspend fun refreshData(): EmptyResult<WikiError> = throw NotImplementedError("Not used in these tests")
+    override fun refreshData(): Flow<RefreshEvent> = throw NotImplementedError("Not used in these tests")
     override suspend fun getLastUpdateTimeStamp(): Result<Instant?, WikiError> = throw NotImplementedError("Not used in these tests")
     override suspend fun clearCache(): EmptyResult<WikiError> = throw NotImplementedError("Not used in these tests")
     override fun getFiltersFor(game: Game): Set<Filter> = emptySet()

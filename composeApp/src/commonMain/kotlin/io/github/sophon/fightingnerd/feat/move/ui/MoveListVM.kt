@@ -6,18 +6,28 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.wiki.model.CharacterId
+import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.toImmutableSet
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -32,7 +42,9 @@ internal class MoveListVM(
     private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
     private val normalizeSliderUseCase: NormalizeSliderUseCase,
 ): ViewModel() {
-    private val _state = MutableStateFlow(MoveListState(character = null))
+    private val _state = MutableStateFlow(MoveListState())
+    private val _fullMoveList = MutableStateFlow<ImmutableMap<String, Move>>(persistentMapOf())
+
     val state = _state
         .onStart {
             subscribeToData()
@@ -40,21 +52,23 @@ internal class MoveListVM(
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = MoveListState(null),
+            initialValue = MoveListState(),
         )
-    val filteredMoves: StateFlow<List<UiMove>> = _state
-        .map { state ->
-            val filters = state.filterSheet.activeFilterSet + state.filterSheet.activeSliderFilters
-            state.fullMoveList.values.applyFilters(
-                filterSet = filters,
-                searchQuery = state.searchQuery,
-            )
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = emptyList(),
+    val filteredMoves: StateFlow<ImmutableList<UiMove>> = combine(
+        _state,
+        _fullMoveList,
+    ) { state, moveMap ->
+        val filters = state.filterSheet.activeFilterSet + state.filterSheet.buildSliderFilters()
+        val filtered = moveMap.values.applyFilters(
+            filterSet = filters,
+            searchQuery = state.searchQuery,
         )
+        filtered
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = persistentListOf(),
+    )
 
 
     init {
@@ -73,7 +87,7 @@ internal class MoveListVM(
     fun onClearFilters() {
         _state.update { state ->
             val resetFilterSheet = state.filterSheet.copy(
-                activeFilterSet = emptySet(),
+                activeFilterSet = persistentSetOf(),
                 startup = null,
                 onBlock = null,
                 onHit = null,
@@ -86,9 +100,9 @@ internal class MoveListVM(
         _state.update { state ->
             val current = state.filterSheet.activeFilterSet
             val newFilterSet = if (filter in current) {
-                current - filter
+                (current - filter).toImmutableSet()
             } else {
-                current + filter
+                (current + filter).toImmutableSet()
             }
             state.copy(filterSheet = state.filterSheet.copy(activeFilterSet = newFilterSet))
         }
@@ -132,11 +146,12 @@ internal class MoveListVM(
                 .collectLatest { result ->
                     result
                         .onSuccess { (character, moveList) ->
+                            _fullMoveList.value = moveList.associateBy { it.id }.toImmutableMap()
                             _state.update { state ->
-                                val fullMoveList = moveList.associateBy { it.id }
                                 state.copy(
-                                    character = character,
-                                    fullMoveList = fullMoveList,
+                                    character = MoveListState.MoveListCharacter(
+                                        displayName = character.displayName,
+                                    ),
                                 )
                             }
                         }
@@ -151,8 +166,10 @@ internal class MoveListVM(
     private fun loadMoveFiltersFor(gameId: String) {
         loadMoveFiltersUseCase.invoke(gameId)
             .onSuccess { filterSet ->
-                val filterSheet = state.value.filterSheet.copy(filterSet = filterSet)
-                _state.update { it.copy(filterSheet = filterSheet) }
+                val immutableFilterSet = filterSet.toImmutableSet()
+                _state.update {
+                    it.copy(filterSheet = it.filterSheet.copy(filterSet = immutableFilterSet))
+                }
             }
             .onError { error ->
                 Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $error" }
@@ -160,27 +177,31 @@ internal class MoveListVM(
             }
     }
 
+    private fun MoveListState.FilterSheet.buildSliderFilters(): List<Filter> {
+        val list = listOfNotNull(
+            startup?.let { CoreFilters.Startup(it.min, it.max) },
+            onHit?.let { CoreFilters.OnHit(it.min, it.max) },
+            onBlock?.let { CoreFilters.OnBlock(it.min, it.max) },
+        )
+        return list
+    }
+
     private fun Collection<Move>.applyFilters(
         filterSet: Set<Filter>,
         searchQuery: String?,
-    ): List<UiMove> {
+    ): ImmutableList<UiMove> {
         val filtered = this
             .filter { move ->
                 filterSet.all { it.predicate(move) }
             }
-            .filter { move ->
-                searchQuery?.let { query ->
-                    move.input.contains(query, ignoreCase = true)
-                            || move.aliases.any { it.contains(query, ignoreCase = true) }
-                            || (move.name?.contains(query, ignoreCase = true) == true)
-                } ?: true
-            }
+            .filterMatching(searchQuery)
             .map { move ->
                 val uiMove = move.toUiMove()
                 uiMove
             }
 
-        return filtered
+        val result = filtered.toImmutableList()
+        return result
     }
 
 
