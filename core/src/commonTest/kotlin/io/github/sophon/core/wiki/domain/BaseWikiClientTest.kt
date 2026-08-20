@@ -32,7 +32,6 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalCoroutinesApi::class, ExperimentalTime::class)
 class BaseWikiClientTest {
-
     @Test
     fun `all-success path emits Finished with count matching character list size`() = runTest(UnconfinedTestDispatcher()) {
         val characters = charactersOf("kazuya", "jin", "law")
@@ -55,9 +54,11 @@ class BaseWikiClientTest {
 
         val events = client.refreshData().toList()
 
-        assertThat(events).containsExactly(
-            RefreshEvent.Failed(WikiError.DownloadError(DataError.Remote.NO_INTERNET.toString())),
-            RefreshEvent.Finished(successCount = 0),
+
+        val summaries = events.map { it.toString() }
+        assertThat(summaries).containsExactly(
+            RefreshEvent.Failed(WikiError.DownloadError(DataError.Remote.NO_INTERNET.toString())).toString(),
+            RefreshEvent.Finished(successCount = 0).toString(),
         )
     }
 
@@ -78,11 +79,13 @@ class BaseWikiClientTest {
 
         val events = client.refreshData().toList()
 
-        val pageNotFound = RefreshEvent.Failed(WikiError.PageNotFound(DataError.Remote.PAGE_NOT_FOUND.toString()))
-        assertThat(events).containsExactly(
+        // WikiError variants aren't data classes → use toString comparison for value semantics.
+        val summaries = events.map { it.toString() }
+        val pageNotFound = RefreshEvent.Failed(WikiError.PageNotFound(DataError.Remote.PAGE_NOT_FOUND.toString())).toString()
+        assertThat(summaries).containsExactly(
             pageNotFound,
             pageNotFound,
-            RefreshEvent.Finished(successCount = 2),
+            RefreshEvent.Finished(successCount = 2).toString(),
         )
     }
 
