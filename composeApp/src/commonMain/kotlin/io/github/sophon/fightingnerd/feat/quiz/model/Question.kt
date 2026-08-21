@@ -1,5 +1,8 @@
 package io.github.sophon.fightingnerd.feat.quiz.model
 
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+
 data class Question(
     val characterName: String,
     val options: List<MoveOption>,
@@ -32,8 +35,8 @@ data class Question(
     ) {
         data class Urls(
             val videoUrl: String? = null,
-            val hitboxImageList: List<String> = listOf(),
-            val moveImageList: List<String> = listOf(),
+            val hitboxImageList: ImmutableList<String> = persistentListOf(),
+            val moveImageList: ImmutableList<String> = persistentListOf(),
         )
     }
 }
