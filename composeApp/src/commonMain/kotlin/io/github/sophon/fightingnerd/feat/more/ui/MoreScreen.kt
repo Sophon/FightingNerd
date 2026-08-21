@@ -35,6 +35,7 @@ import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
+import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
@@ -90,7 +91,7 @@ private fun Content(
 
 @Composable
 private fun ItemSection(
-    items: List<MoreItem>,
+    items: ImmutableList<MoreItem>,
     onItemClick: (MoreItem) -> Unit,
     modifier: Modifier = Modifier,
 ) {
