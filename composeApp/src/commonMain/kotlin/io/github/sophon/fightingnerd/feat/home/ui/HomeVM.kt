@@ -91,10 +91,15 @@ internal class HomeVM(
     fun onExpandWidget(game: Game) {
         _state.update { state ->
             val updatedList = state.gameWidgetList.map { widget ->
-                if (widget.game == game) {
-                    widget.copy(isExpanded = widget.isExpanded.not())
-                } else {
-                    widget.copy(isExpanded = false)
+                when {
+                    (widget.game == game) -> {
+                        widget.copy(isExpanded = widget.isExpanded.not())
+                    }
+                    widget.isExpanded -> {
+                        widget.copy(isExpanded = false)
+                    } else -> {
+                        widget
+                    }
                 }
             }
             val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
