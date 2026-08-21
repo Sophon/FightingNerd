@@ -16,6 +16,7 @@ import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
@@ -111,11 +112,16 @@ internal class HomeVM(
         subscribeToGamesUseCase.invoke().collectLatest { result ->
             result
                 .onSuccess { gameWikiPairList ->
+                    val existingByGame = _state.value.gameWidgetList.associateBy { it.game }
                     val widgetList = gameWikiPairList.map { (game, featureInfo) ->
-                        GameWidget(
+                        val existing = existingByGame[game]
+                        val widget = GameWidget(
                             game = game,
                             featureName = featureInfo.name,
+                            characterList = existing?.characterList ?: persistentListOf(),
+                            isExpanded = existing?.isExpanded ?: false,
                         )
+                        widget
                     }.toImmutableList()
                     _state.update { it.copy(gameWidgetList = widgetList) }
                     subscribeToCharacters(widgets = widgetList)
