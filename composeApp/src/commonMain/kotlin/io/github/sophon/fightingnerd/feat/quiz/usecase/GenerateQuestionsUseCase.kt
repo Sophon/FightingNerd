@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.feat.quiz.usecase
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
@@ -49,7 +50,9 @@ internal class GenerateQuestionsUseCase(
             .shuffled()
             .take(COUNT_DISTRACTIONS)
 
-        val options = (distractions + this).shuffled()
+        val options = (distractions + this)
+            .shuffled()
+            .map { it.toOption() }
         val correctIndex = options.indexOfFirst { move -> move.id == this.id }
         val question = Question(
             characterName = character.displayName,
@@ -58,5 +61,22 @@ internal class GenerateQuestionsUseCase(
         )
 
         return question
+    }
+
+    private fun Move.toOption(): Question.MoveOption {
+        val option = Question.MoveOption(
+            id = id,
+            input = input,
+            startup = startup,
+            onBlock = onBlock?.stripMarkdownLinks(),
+            onHit = onHit?.stripMarkdownLinks(),
+            onCH = onCH?.stripMarkdownLinks(),
+            urls = Question.MoveOption.Urls(
+                videoUrl = urls.videoId,
+                hitboxImageList = urls.hitboxImageList,
+                moveImageList = urls.moveImageList,
+            )
+        )
+        return option
     }
 }
