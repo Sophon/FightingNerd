@@ -32,6 +32,7 @@ import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_counter
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_block
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_hit
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_startup
+import fightingnerd.composeapp.generated.resources.quiz_frame_data_label_no_media
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizState
@@ -113,7 +114,7 @@ private fun Image(
 @Composable
 private fun NoMedia(modifier: Modifier = Modifier) {
     Text(
-        text = "No Media",
+        text = stringResource(Res.string.quiz_frame_data_label_no_media),
         color = nerdColorPalette.textSecondary,
         style = nerdTypography.titleLarge,
         modifier = modifier,
