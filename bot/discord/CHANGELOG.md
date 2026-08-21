@@ -1,7 +1,8 @@
 # BOT CHANGELOG
 
-## [v15.4.1] - TODO
+## [v15.4.1] - 2026-08-22
 - bot ignores tagged messages that don't start with the tag
+- promote mobile apps
 
 ## [v15.4.0] - 2026-08-20
 - `Wavu` - added Bob
