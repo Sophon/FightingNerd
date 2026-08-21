@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
@@ -137,21 +138,23 @@ internal class HomeVM(
             widgets.forEach { gameWidget ->
                 launch {
                     subscribeToCharacterListUseCase.invoke(gameWidget.game).collectLatest { characterList ->
-                        val updatedWidget = gameWidget.copy(
-                            characterList = characterList.map { domainCharacter ->
-                                GameWidget.UiCharacter(
-                                    id = domainCharacter.id,
-                                    displayName = domainCharacter.displayName,
-                                    queryName = domainCharacter.remoteQueryId,
-                                    iconUrl = domainCharacter.images?.iconUrl,
-                                )
-                            }.toImmutableList(),
-                        )
-
-                        _state.update { state ->
+                        val newState = _state.updateAndGet { state ->
                             val updatedList = state.gameWidgetList.map { widget ->
-                                if (widget.game == updatedWidget.game) {
-                                    updatedWidget
+                                if (widget.game == gameWidget.game) {
+                                    val existingCharsById = widget.characterList.associateBy { it.id }
+                                    val newCharList = characterList.map { domainCharacter ->
+                                        val existing = existingCharsById[domainCharacter.id]
+                                        val ui = GameWidget.UiCharacter(
+                                            id = domainCharacter.id,
+                                            displayName = domainCharacter.displayName,
+                                            queryName = domainCharacter.remoteQueryId,
+                                            iconUrl = domainCharacter.images?.iconUrl,
+                                            hasMoves = existing?.hasMoves ?: false,
+                                        )
+                                        ui
+                                    }.toImmutableList()
+                                    val merged = widget.copy(characterList = newCharList)
+                                    merged
                                 } else {
                                     widget
                                 }
@@ -160,6 +163,7 @@ internal class HomeVM(
                             updatedState
                         }
 
+                        val updatedWidget = newState.gameWidgetList.first { it.game == gameWidget.game }
                         checkForMoveList(gameWidget = updatedWidget)
                     }
                 }
