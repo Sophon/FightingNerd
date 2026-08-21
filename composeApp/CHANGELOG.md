@@ -1,10 +1,12 @@
 # APP CHANGELOG
 
 ## [v2.2.0] - TODO
-- image, video and note indicators for expansion
 - `Home` - don't collapse game widget after navigating back 
-- `Move` - image carousel
+- `Move`
+  - image carousel
+  - image, video and note indicators for expansion
 - `Quiz` - text indicator if media absent
+- further stability improvements
 
 ## [v2.1.0] - 2026-08-20
 - `Wavu` - added Bob
