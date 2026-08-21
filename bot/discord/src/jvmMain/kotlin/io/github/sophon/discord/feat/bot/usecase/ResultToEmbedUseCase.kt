@@ -1,5 +1,6 @@
 package io.github.sophon.discord.feat.bot.usecase
 
+import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import io.github.aakira.napier.Napier
@@ -7,7 +8,10 @@ import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
+import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
+import io.github.sophon.discord.RNG_DONATION_PCT_FEEDBACK
 import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
@@ -29,6 +33,7 @@ internal class ResultToEmbedUseCase(
     private val createFeedbackEmbedUseCase: CreateFeedbackEmbedUseCase,
     private val createReplyEmbedUseCase: CreateReplyEmbedUseCase,
     private val createMutableEmbedUseCase: CreateMutableEmbedUseCase,
+    private val createPromoEmbedUseCase: CreatePromoEmbedUseCase,
 ) {
     suspend fun invoke(
         message: Message,
@@ -93,10 +98,12 @@ internal class ResultToEmbedUseCase(
                 createReplyEmbedUseCase.invoke(message, botOutput.reply)
             }
         }
+
+        rollForPromo(feedback = botOutput.feedback, behavior = message.channel)
     }
 
     suspend fun invoke(
-        interaction: GuildChatInputCommandInteraction,
+        interaction: GuildChatInputCommandInteraction, //TODO: reduce to MessageChannelBehavior
         source: Source,
         result: Result<BotOutput, BotError>,
         coroutineScope: CoroutineScope,
@@ -153,6 +160,24 @@ internal class ResultToEmbedUseCase(
             botOutput.reply != null -> {
                 createReplyEmbedUseCase.invoke(interaction, botOutput.reply)
             }
+        }
+
+        rollForPromo(feedback = botOutput.feedback, behavior = interaction.channel)
+    }
+
+
+    private suspend fun rollForPromo(
+        feedback: BotOutput.Feedback?,
+        behavior: MessageChannelBehavior,
+    ) {
+        val chance = if (feedback != null) {
+            RNG_DONATION_PCT_FEEDBACK
+        } else {
+            RNG_DONATION_PCT_COMMAND
+        }
+
+        if (rollChance(chance)) {
+            createPromoEmbedUseCase.invoke(behavior)
         }
     }
 
