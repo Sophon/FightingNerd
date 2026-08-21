@@ -42,3 +42,5 @@ internal val rootDestinations: List<Destination> = listOf(
     Destination.QuizOverview,
     Destination.More,
 )
+
+internal val rootDestinationSet: Set<Destination> = rootDestinations.toHashSet()

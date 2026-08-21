@@ -58,10 +58,10 @@ import io.github.sophon.fightingnerd.feat.move.ui.MoveListScreen
 import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewScreen
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizScreen
 import io.github.sophon.fightingnerd.navigation.domain.Destination
+import io.github.sophon.fightingnerd.navigation.domain.rootDestinationSet
 import io.github.sophon.fightingnerd.navigation.domain.rootDestinations
 import io.github.sophon.fightingnerd.navigation.ui.BottomNavBarView
 import io.github.sophon.fightingnerd.navigation.ui.PlaceholderScreen
-import io.github.sophon.fightingnerd.navigation.ui.bottomBarItems
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -83,6 +83,21 @@ private val navConfig = SavedStateConfiguration {
     }
 }
 val LocalBottomBarPadding = compositionLocalOf { PaddingValues(0.dp) }
+
+private val rootDestinationIndex: Map<String, Int> =
+    rootDestinations.withIndex().associate { (index, destination) -> destination.toString() to index }
+
+private val forwardTransition: ContentTransform =
+    slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
+private val backTransition: ContentTransform =
+    slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
+private val pushUpTransition: ContentTransform =
+    slideInVertically { it } togetherWith ExitTransition.None
+private val popDownTransition: ContentTransform = ContentTransform(
+    targetContentEnter = EnterTransition.None,
+    initialContentExit = slideOutVertically { it },
+    targetContentZIndex = -1f,
+)
 
 @Composable
 internal fun App() {
@@ -127,10 +142,7 @@ private fun Content(
     val overlayService = koinInject<OverlayService>()
     val snackbarHostState = remember { SnackbarHostState() }
 
-    val botPaddingValues = PaddingValues(
-        bottom = 80.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    )
-    CompositionLocalProvider(LocalBottomBarPadding provides botPaddingValues) {
+    BottomBarPaddingProvider {
         Box(
             modifier = modifier
                 .fillMaxSize()
@@ -149,6 +161,15 @@ private fun Content(
 }
 
 @Composable
+private fun BottomBarPaddingProvider(content: @Composable () -> Unit) {
+    val bottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val botPaddingValues = remember(bottomInset) {
+        PaddingValues(bottom = 80.dp + bottomInset)
+    }
+    CompositionLocalProvider(LocalBottomBarPadding provides botPaddingValues, content = content)
+}
+
+@Composable
 private fun AppNavDisplay(
     backStack: NavBackStack<NavKey>,
     modifier: Modifier = Modifier,
@@ -161,41 +182,24 @@ private fun AppNavDisplay(
             rememberViewModelStoreNavEntryDecorator(),
         ),
         transitionSpec = {
-            val from = rootDestinations.indexOfFirst { it.toString() == initialState.key }
-            val to = rootDestinations.indexOfFirst { it.toString() == targetState.key }
+            val from = rootDestinationIndex[initialState.key] ?: -1
+            val to = rootDestinationIndex[targetState.key] ?: -1
             val bothTopLevel = (from >= 0) && (to >= 0)
-            if (bothTopLevel) {
-                val goingForward = to > from
-                if (goingForward) {
-                    slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
-                } else {
-                    slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
-                }
+            val spec = if (bothTopLevel) {
+                if (to > from) forwardTransition else backTransition
             } else {
-                slideInVertically { it } togetherWith ExitTransition.None
+                pushUpTransition
             }
+            spec
         },
         popTransitionSpec = {
-            val from = rootDestinations.indexOfFirst { it.toString() == initialState.key }
-            val to = rootDestinations.indexOfFirst { it.toString() == targetState.key }
+            val from = rootDestinationIndex[initialState.key] ?: -1
+            val to = rootDestinationIndex[targetState.key] ?: -1
             val bothTopLevel = (from >= 0) && (to >= 0)
-            if (bothTopLevel) {
-                slideInHorizontally { -it } togetherWith slideOutHorizontally { it }
-            } else {
-                ContentTransform(
-                    targetContentEnter = EnterTransition.None,
-                    initialContentExit = slideOutVertically { it },
-                    targetContentZIndex = -1f,
-                )
-            }
+            val spec = if (bothTopLevel) backTransition else popDownTransition
+            spec
         },
-        predictivePopTransitionSpec = {
-            ContentTransform(
-                targetContentEnter = EnterTransition.None,
-                initialContentExit = slideOutVertically { it },
-                targetContentZIndex = -1f,
-            )
-        },
+        predictivePopTransitionSpec = { popDownTransition },
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding(),
@@ -288,8 +292,10 @@ private fun BoxScope.AppBottomBar(
     backStack: NavBackStack<NavKey>,
     modifier: Modifier = Modifier,
 ) {
-    val top = backStack.lastOrNull() as? Destination
-    val topLevel = bottomBarItems.firstOrNull { it.destination == top }?.destination as? Destination
+    val topLevel = (backStack.lastOrNull() as? Destination)?.takeIf { it in rootDestinationSet }
+    val lastTopLevel = remember { mutableStateOf<Destination?>(topLevel) }
+    if (topLevel != null) lastTopLevel.value = topLevel
+
     AnimatedVisibility(
         visible = topLevel != null,
         enter = slideInVertically { it },
@@ -298,9 +304,10 @@ private fun BoxScope.AppBottomBar(
             .align(Alignment.BottomCenter)
             .navigationBarsPadding(),
     ) {
-        if (topLevel != null) {
+        val displayed = lastTopLevel.value
+        if (displayed != null) {
             BottomNavBarView(
-                currentRoot = topLevel,
+                currentRoot = displayed,
                 onTabClick = { destination ->
                     backStack.clear()
                     backStack.add(destination)

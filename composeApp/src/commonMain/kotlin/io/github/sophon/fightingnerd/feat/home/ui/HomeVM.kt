@@ -22,8 +22,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.updateAndGet
@@ -39,9 +40,11 @@ internal class HomeVM(
     private val refreshUseCase: RefreshUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
-    val state = channelFlow {
-        launch { subscribeToEnabledGames() }
-        _state.collect { send(it) }
+    val state = flow {
+        coroutineScope {
+            launch { subscribeToEnabledGames() }
+            emitAll(_state)
+        }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -91,10 +94,15 @@ internal class HomeVM(
     fun onExpandWidget(game: Game) {
         _state.update { state ->
             val updatedList = state.gameWidgetList.map { widget ->
-                if (widget.game == game) {
-                    widget.copy(isExpanded = widget.isExpanded.not())
-                } else {
-                    widget.copy(isExpanded = false)
+                when {
+                    (widget.game == game) -> {
+                        widget.copy(isExpanded = widget.isExpanded.not())
+                    }
+                    widget.isExpanded -> {
+                        widget.copy(isExpanded = false)
+                    } else -> {
+                        widget
+                    }
                 }
             }
             val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
