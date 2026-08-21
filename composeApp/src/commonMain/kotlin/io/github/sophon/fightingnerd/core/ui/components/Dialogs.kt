@@ -20,12 +20,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun <T> SingleSelectDialog(
     title: String,
-    items: List<T>,
+    items: ImmutableList<T>,
     onItemSelect: (T) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
@@ -142,7 +144,7 @@ private fun SingleSelectDialogPreview() {
     FightingNerdTheme {
         SingleSelectDialog(
             title = "Title",
-            items = PreviewEnum.entries,
+            items = PreviewEnum.entries.toImmutableList(),
             selectedItem = PreviewEnum.SecondItem,
             onItemSelect = {},
             onDismiss = {},

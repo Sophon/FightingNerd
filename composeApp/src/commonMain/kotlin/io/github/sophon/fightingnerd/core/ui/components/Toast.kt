@@ -27,7 +27,7 @@ import io.github.sophon.fightingnerd.theme.nerdTypography
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-internal fun ToastSnackbar(
+internal fun ToastSnackBar(
     toast: Toast,
     modifier: Modifier = Modifier,
 ) {
@@ -89,7 +89,7 @@ internal data class ToastVisuals(val toast: Toast) : SnackbarVisuals {
 @Composable
 private fun ToastSnackbarSuccessPreview() {
     FightingNerdTheme {
-        ToastSnackbar(
+        ToastSnackBar(
             toast = Toast(
                 message = "Profile saved",
                 type = Toast.Type.SUCCESS,
@@ -102,7 +102,7 @@ private fun ToastSnackbarSuccessPreview() {
 @Composable
 private fun ToastSnackbarInfoPreview() {
     FightingNerdTheme {
-        ToastSnackbar(
+        ToastSnackBar(
             toast = Toast(
                 message = "Profile saved",
                 type = Toast.Type.INFO,
@@ -115,7 +115,7 @@ private fun ToastSnackbarInfoPreview() {
 @Composable
 private fun ToastSnackbarWarningPreview() {
     FightingNerdTheme {
-        ToastSnackbar(
+        ToastSnackBar(
             toast = Toast(
                 message = "Connection unstable",
                 type = Toast.Type.WARNING,
@@ -128,7 +128,7 @@ private fun ToastSnackbarWarningPreview() {
 @Composable
 private fun ToastSnackbarErrorPreview() {
     FightingNerdTheme {
-        ToastSnackbar(
+        ToastSnackBar(
             toast = Toast(
                 message = "Failed to load move data",
                 type = Toast.Type.ERROR,

@@ -47,7 +47,7 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
-import io.github.sophon.fightingnerd.core.ui.components.ToastSnackbar
+import io.github.sophon.fightingnerd.core.ui.components.ToastSnackBar
 import io.github.sophon.fightingnerd.core.ui.components.ToastVisuals
 import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
@@ -274,7 +274,7 @@ internal fun OverlayContent(
                 .padding(bottomBarPadding),
         ) { snackbarData ->
             val visuals = snackbarData.visuals as ToastVisuals
-            ToastSnackbar(toast = visuals.toast)
+            ToastSnackBar(toast = visuals.toast)
         }
 
         currentDialog?.let { dialog ->
