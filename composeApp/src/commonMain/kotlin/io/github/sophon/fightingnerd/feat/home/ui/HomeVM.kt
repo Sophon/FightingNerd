@@ -16,15 +16,18 @@ import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.updateAndGet
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.getString
 
@@ -37,9 +40,11 @@ internal class HomeVM(
     private val refreshUseCase: RefreshUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
-    val state = channelFlow {
-        launch { subscribeToEnabledGames() }
-        _state.collect { send(it) }
+    val state = flow {
+        coroutineScope {
+            launch { subscribeToEnabledGames() }
+            emitAll(_state)
+        }
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
@@ -89,10 +94,15 @@ internal class HomeVM(
     fun onExpandWidget(game: Game) {
         _state.update { state ->
             val updatedList = state.gameWidgetList.map { widget ->
-                if (widget.game == game) {
-                    widget.copy(isExpanded = widget.isExpanded.not())
-                } else {
-                    widget.copy(isExpanded = false)
+                when {
+                    (widget.game == game) -> {
+                        widget.copy(isExpanded = widget.isExpanded.not())
+                    }
+                    widget.isExpanded -> {
+                        widget.copy(isExpanded = false)
+                    } else -> {
+                        widget
+                    }
                 }
             }
             val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
@@ -111,11 +121,16 @@ internal class HomeVM(
         subscribeToGamesUseCase.invoke().collectLatest { result ->
             result
                 .onSuccess { gameWikiPairList ->
+                    val existingByGame = _state.value.gameWidgetList.associateBy { it.game }
                     val widgetList = gameWikiPairList.map { (game, featureInfo) ->
-                        GameWidget(
+                        val existing = existingByGame[game]
+                        val widget = GameWidget(
                             game = game,
                             featureName = featureInfo.name,
+                            characterList = existing?.characterList ?: persistentListOf(),
+                            isExpanded = existing?.isExpanded ?: false,
                         )
+                        widget
                     }.toImmutableList()
                     _state.update { it.copy(gameWidgetList = widgetList) }
                     subscribeToCharacters(widgets = widgetList)
@@ -131,21 +146,23 @@ internal class HomeVM(
             widgets.forEach { gameWidget ->
                 launch {
                     subscribeToCharacterListUseCase.invoke(gameWidget.game).collectLatest { characterList ->
-                        val updatedWidget = gameWidget.copy(
-                            characterList = characterList.map { domainCharacter ->
-                                GameWidget.UiCharacter(
-                                    id = domainCharacter.id,
-                                    displayName = domainCharacter.displayName,
-                                    queryName = domainCharacter.remoteQueryId,
-                                    iconUrl = domainCharacter.images?.iconUrl,
-                                )
-                            }.toImmutableList(),
-                        )
-
-                        _state.update { state ->
+                        val newState = _state.updateAndGet { state ->
                             val updatedList = state.gameWidgetList.map { widget ->
-                                if (widget.game == updatedWidget.game) {
-                                    updatedWidget
+                                if (widget.game == gameWidget.game) {
+                                    val existingCharsById = widget.characterList.associateBy { it.id }
+                                    val newCharList = characterList.map { domainCharacter ->
+                                        val existing = existingCharsById[domainCharacter.id]
+                                        val ui = GameWidget.UiCharacter(
+                                            id = domainCharacter.id,
+                                            displayName = domainCharacter.displayName,
+                                            queryName = domainCharacter.remoteQueryId,
+                                            iconUrl = domainCharacter.images?.iconUrl,
+                                            hasMoves = existing?.hasMoves ?: false,
+                                        )
+                                        ui
+                                    }.toImmutableList()
+                                    val merged = widget.copy(characterList = newCharList)
+                                    merged
                                 } else {
                                     widget
                                 }
@@ -154,6 +171,7 @@ internal class HomeVM(
                             updatedState
                         }
 
+                        val updatedWidget = newState.gameWidgetList.first { it.game == gameWidget.game }
                         checkForMoveList(gameWidget = updatedWidget)
                     }
                 }

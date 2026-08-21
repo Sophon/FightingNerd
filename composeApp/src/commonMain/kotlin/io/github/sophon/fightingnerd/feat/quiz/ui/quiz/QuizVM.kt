@@ -10,6 +10,7 @@ import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.FinishDialog
 import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -59,9 +60,12 @@ internal class QuizVM(
         }
 
         _state.update { state ->
-            val updatedQuestionList = state.questionList.toMutableList().apply {
-                this[state.currentQuestionIndex] = currentQuestion.copy(answeredIndex = answerIndex)
-            }
+            val updatedQuestionList = state.questionList
+                .toMutableList()
+                .apply {
+                    this[state.currentQuestionIndex] = currentQuestion.copy(answeredIndex = answerIndex)
+                }
+                .toImmutableList()
             val isCorrect = (answerIndex == currentQuestion.correctIndex)
             val correct = state.correct + if (isCorrect) 1 else 0
             val incorrect = state.incorrect + if (isCorrect.not()) 1 else 0
@@ -86,7 +90,7 @@ internal class QuizVM(
 
             generateQuestionsUseCase.invoke(gameId = gameId)
                 .onSuccess { questionList ->
-                    _state.update { it.copy(questionList = questionList) }
+                    _state.update { it.copy(questionList = questionList.toImmutableList()) }
                 }
                 .onError { error ->
                     Napier.e(tag = TAG) { "loadMoveList: $error" }

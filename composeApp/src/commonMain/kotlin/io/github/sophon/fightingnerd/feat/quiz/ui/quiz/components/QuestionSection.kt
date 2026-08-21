@@ -14,9 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BrokenImage
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,7 +36,7 @@ import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_counter
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_block
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_hit
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_startup
-import io.github.sophon.core.wiki.model.Move
+import fightingnerd.composeapp.generated.resources.quiz_frame_data_label_no_media
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizState
@@ -65,9 +69,17 @@ internal fun QuestionSection(
         )
         Spacer(Modifier.height(nerdDimensions.componentPadding))
 
-        move.urls.videoId?.let { videoUrl ->
-            VideoPlayer(videoUrl = videoUrl)
-        } ?: Image(move.urls)
+        when {
+            (move.urls?.videoUrl != null) -> {
+                VideoPlayer(videoUrl = move.urls.videoUrl)
+            }
+            (move.urls?.hitboxImageList.orEmpty().isNotEmpty() || move.urls?.moveImageList.orEmpty().isNotEmpty()) -> {
+                Image(url = move.urls)
+            }
+            else -> {
+                NoMedia()
+            }
+        }
 
         Options(
             question = question,
@@ -79,11 +91,11 @@ internal fun QuestionSection(
 
 @Composable
 private fun Image(
-    url: Move.Urls,
+    url: Question.MoveOption.Urls?,
     modifier: Modifier = Modifier
 ) {
-    val image = url.hitboxImageList.firstOrNull()
-        ?: url.moveImageList.firstOrNull()
+    val image = url?.hitboxImageList?.firstOrNull()
+        ?: url?.moveImageList?.firstOrNull()
         ?: return
 
     Box(
@@ -101,6 +113,28 @@ private fun Image(
         )
     }
     Spacer(Modifier.height(nerdDimensions.componentPadding))
+}
+
+@Composable
+private fun NoMedia(modifier: Modifier = Modifier) {
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier,
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.BrokenImage,
+            contentDescription = null,
+            modifier = Modifier.size(nerdDimensions.iconLarge),
+        )
+        Spacer(Modifier.height(nerdDimensions.componentGap))
+
+        Text(
+            text = stringResource(Res.string.quiz_frame_data_label_no_media),
+            color = nerdColorPalette.textSecondary,
+            style = nerdTypography.titleMedium,
+        )
+    }
 }
 
 @Composable
@@ -144,7 +178,7 @@ private fun Options(
 
 @Composable
 private fun Option(
-    move: Move,
+    move: Question.MoveOption,
     isCorrect: Boolean,
     isWrong: Boolean,
     isEnabled: Boolean,

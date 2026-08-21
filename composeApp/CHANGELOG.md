@@ -1,10 +1,20 @@
 # APP CHANGELOG
 
+## [v2.2.0] - TODO
+- `Home` - don't collapse game widget after navigating back 
+- `Move`
+  - image carousel
+  - image, video and note indicators for expansion
+- `Quiz` - text indicator if media absent
+- further stability improvements
+
 ## [v2.1.0] - 2026-08-20
 - `Wavu` - added Bob
+- `DustLoop` - enable MTFS
 - fixed search
 - Stability improvements for Move List screen
 - Toast events on refresh
+- fixed formatting of moves
 
 ## [v2.0.0] - 2026-08-15
 - `Dragdown` - updated character table

@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -43,7 +44,7 @@ internal class MoveListVM(
     private val normalizeSliderUseCase: NormalizeSliderUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
-    private val _fullMoveList = MutableStateFlow<ImmutableMap<String, Move>>(persistentMapOf())
+    private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
 
     val state = _state
         .onStart {
@@ -54,12 +55,19 @@ internal class MoveListVM(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = MoveListState(),
         )
+
     val filteredMoves: StateFlow<ImmutableList<UiMove>> = combine(
-        _state,
+        _state.distinctUntilChanged { old, new ->
+            old.searchQuery == new.searchQuery
+                    && old.filterSheet.activeFilterSet == new.filterSheet.activeFilterSet
+                    && old.filterSheet.startup == new.filterSheet.startup
+                    && old.filterSheet.onHit == new.filterSheet.onHit
+                    && old.filterSheet.onBlock == new.filterSheet.onBlock
+        },
         _fullMoveList,
-    ) { state, moveMap ->
+    ) { state, cache ->
         val filters = state.filterSheet.activeFilterSet + state.filterSheet.buildSliderFilters()
-        val filtered = moveMap.values.applyFilters(
+        val filtered = cache.applyFilters(
             filterSet = filters,
             searchQuery = state.searchQuery,
         )
@@ -146,7 +154,17 @@ internal class MoveListVM(
                 .collectLatest { result ->
                     result
                         .onSuccess { (character, moveList) ->
-                            _fullMoveList.value = moveList.associateBy { it.id }.toImmutableMap()
+                            val movesById = moveList.associateBy { it.id }.toImmutableMap()
+                            val uiMovesById = moveList
+                                .associate { move ->
+                                    val uiMove = move.toUiMove()
+                                    move.id to uiMove
+                                }
+                                .toImmutableMap()
+                            _fullMoveList.value = MoveCache(
+                                movesById = movesById,
+                                uiMovesById = uiMovesById,
+                            )
                             _state.update { state ->
                                 state.copy(
                                     character = MoveListState.MoveListCharacter(
@@ -186,22 +204,29 @@ internal class MoveListVM(
         return list
     }
 
-    private fun Collection<Move>.applyFilters(
+    private fun MoveCache.applyFilters(
         filterSet: Set<Filter>,
         searchQuery: String?,
     ): ImmutableList<UiMove> {
-        val filtered = this
+        val filtered = movesById.values
             .filter { move ->
                 filterSet.all { it.predicate(move) }
             }
             .filterMatching(searchQuery)
-            .map { move ->
-                val uiMove = move.toUiMove()
-                uiMove
-            }
+            .mapNotNull { move -> uiMovesById[move.id] }
 
         val result = filtered.toImmutableList()
         return result
+    }
+
+
+    private data class MoveCache(
+        val movesById: ImmutableMap<String, Move>,
+        val uiMovesById: ImmutableMap<String, UiMove>,
+    ) {
+        companion object {
+            val EMPTY = MoveCache(persistentMapOf(), persistentMapOf())
+        }
     }
 
 

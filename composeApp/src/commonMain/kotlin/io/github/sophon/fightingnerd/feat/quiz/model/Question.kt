@@ -1,10 +1,11 @@
 package io.github.sophon.fightingnerd.feat.quiz.model
 
-import io.github.sophon.core.wiki.model.Move
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 data class Question(
     val characterName: String,
-    val options: List<Move>,
+    val options: ImmutableList<MoveOption>,
     val correctIndex: Int,
     val answeredIndex: Int? = null,
 ) {
@@ -14,15 +15,28 @@ data class Question(
     }
 
 
-    val correct: Move get() {
+    val correct: MoveOption get() {
         return options[correctIndex]
     }
 
-    val answered: Move? get() {
+    val answered: MoveOption? get() {
         return answeredIndex?.let { options[it] }
     }
 
-    val isCorrect: Boolean? get() {
-        return answeredIndex?.let { it == correctIndex }
+    data class MoveOption(
+        val id: String,
+        val input: String,
+        val startup: String?,
+        val onBlock: String?,
+        val onHit: String?,
+        val onCH: String? = null,
+
+        val urls: Urls? = null,
+    ) {
+        data class Urls(
+            val videoUrl: String? = null,
+            val hitboxImageList: ImmutableList<String> = persistentListOf(),
+            val moveImageList: ImmutableList<String> = persistentListOf(),
+        )
     }
 }

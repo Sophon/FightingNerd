@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.feat.quiz.usecase
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
@@ -10,6 +11,7 @@ import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_DISTRACTIONS
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_QUESTIONS
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.first
 
 internal class GenerateQuestionsUseCase(
@@ -49,7 +51,10 @@ internal class GenerateQuestionsUseCase(
             .shuffled()
             .take(COUNT_DISTRACTIONS)
 
-        val options = (distractions + this).shuffled()
+        val options = (distractions + this)
+            .shuffled()
+            .map { it.toOption() }
+            .toImmutableList()
         val correctIndex = options.indexOfFirst { move -> move.id == this.id }
         val question = Question(
             characterName = character.displayName,
@@ -58,5 +63,22 @@ internal class GenerateQuestionsUseCase(
         )
 
         return question
+    }
+
+    private fun Move.toOption(): Question.MoveOption {
+        val option = Question.MoveOption(
+            id = id,
+            input = input,
+            startup = startup,
+            onBlock = onBlock?.stripMarkdownLinks(),
+            onHit = onHit?.stripMarkdownLinks(),
+            onCH = onCH?.stripMarkdownLinks(),
+            urls = Question.MoveOption.Urls(
+                videoUrl = urls.videoId,
+                hitboxImageList = urls.hitboxImageList.toImmutableList(),
+                moveImageList = urls.moveImageList.toImmutableList(),
+            )
+        )
+        return option
     }
 }
