@@ -22,6 +22,7 @@ internal class HandleQueryUseCase(
     ) {
         // ignoring other bots, even ourselves
         if (message.author?.isBot != false) return
+        if (message.content.startsWith("<@").not()) return
 
         // ignoring if someone replies with tag
         val botMention = "<@$botId>"
