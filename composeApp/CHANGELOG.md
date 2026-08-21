@@ -2,6 +2,7 @@
 
 ## [v2.2.0] - TODO
 - image, video and note indicators for expansion
+- `Move` - image carousel
 
 ## [v2.1.0] - 2026-08-20
 - `Wavu` - added Bob

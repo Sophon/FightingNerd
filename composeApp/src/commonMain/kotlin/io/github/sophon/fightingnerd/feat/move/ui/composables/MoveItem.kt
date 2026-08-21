@@ -44,6 +44,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
+import io.github.sophon.fightingnerd.core.ui.components.ImageCarousel
 import io.github.sophon.fightingnerd.feat.move.model.Property
 import io.github.sophon.fightingnerd.feat.move.ui.UiMove
 import io.github.sophon.fightingnerd.feat.move.ui.icon
@@ -276,7 +277,10 @@ private fun Details(
 
         when {
             uiMove.urls.hitboxImageList.isNotEmpty() -> {
-                MoveImage(uiMove.urls.hitboxImageList.first())
+                ImageCarousel(
+                    imageList = uiMove.urls.hitboxImageList,
+                )
+
                 Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
             }
             uiMove.urls.moveImageList.isNotEmpty() -> {
@@ -351,7 +355,7 @@ private fun NotesSection(
 
 
 //region PREVIEW
-private val previewUiMove = UiMove(
+private val videoMove = UiMove(
     id = "nina-hub1",
     input = "H.ub1",
     name = "Neck Hunter: Villain",
@@ -366,7 +370,6 @@ private val previewUiMove = UiMove(
     optionalFields = persistentListOf(),
     urls = UiMove.Urls(
         videoUrl = "video",
-        moveImageList = persistentListOf("a", "b")
     ),
     notes = persistentListOf(
         "Strong Aerial Tailspin",
@@ -375,12 +378,32 @@ private val previewUiMove = UiMove(
     ),
 )
 
+private val imageMove = UiMove(
+    id = "nina-hub1",
+    input = "H.ub1",
+    name = "Neck Hunter: Villain",
+    coreFields = persistentListOf(
+        UiMove.Field(Res.string.move_list_field_startup, "i24"),
+        UiMove.Field(Res.string.move_list_field_guard, "h"),
+        UiMove.Field(Res.string.move_list_field_damage, "25"),
+        UiMove.Field(Res.string.move_list_field_on_block, "+8"),
+        UiMove.Field(Res.string.move_list_field_on_hit, "+60a"),
+    ),
+    optionalFields = persistentListOf(),
+    urls = UiMove.Urls(
+        hitboxImageList = persistentListOf("a", "b"),
+    ),
+    notes = persistentListOf(
+        "Something",
+    ),
+)
+
 @Preview
 @Composable
 private fun CollapsedItemPreview() {
     FightingNerdTheme {
         MoveItem(
-            uiMove = previewUiMove,
+            uiMove = videoMove,
             onMoveClick = {},
             isExpanded = false,
         )
@@ -389,10 +412,22 @@ private fun CollapsedItemPreview() {
 
 @Preview
 @Composable
-private fun ExpandedItemPreview() {
+private fun ExpandedVideoItemPreview() {
     FightingNerdTheme {
         MoveItem(
-            uiMove = previewUiMove,
+            uiMove = videoMove,
+            onMoveClick = {},
+            isExpanded = true,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ExpandedImageItemPreview() {
+    FightingNerdTheme {
+        MoveItem(
+            uiMove = imageMove,
             onMoveClick = {},
             isExpanded = true,
         )
