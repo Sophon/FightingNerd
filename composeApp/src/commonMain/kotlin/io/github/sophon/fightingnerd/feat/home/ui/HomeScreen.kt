@@ -25,9 +25,7 @@ internal fun HomeScreen(
     Content(
         state = state,
         onExpandWidget = vm::onExpandWidget,
-        onCharacterClick = { gameId, characterId ->
-            onNavigateToMoveList(gameId, characterId)
-        },
+        onCharacterClick = onNavigateToMoveList,
         onRefresh = vm::refresh,
         modifier = modifier,
     )
