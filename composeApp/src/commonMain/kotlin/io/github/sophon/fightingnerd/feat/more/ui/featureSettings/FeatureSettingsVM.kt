@@ -9,6 +9,7 @@ import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -35,9 +36,12 @@ internal class FeatureSettingsVM(
                     gameList = gameList.map { game -> game.copy(isEnabled = isEnabled) }
                 )
             }
-            val updatedList = current.updatedFeatureList.toMutableList().apply {
-                set(featureIndex, updatedFeature)
-            }
+            val updatedList = current.updatedFeatureList
+                .toMutableList()
+                .apply {
+                    set(featureIndex, updatedFeature)
+                }
+                .toImmutableList()
             current.copy(updatedFeatureList = updatedList)
         }
     }
@@ -55,9 +59,12 @@ internal class FeatureSettingsVM(
                     }
                 )
             }
-            val updatedList = current.updatedFeatureList.toMutableList().apply {
-                set(featureIndex, updatedFeature)
-            }
+            val updatedList = current.updatedFeatureList
+                .toMutableList()
+                .apply {
+                    set(featureIndex, updatedFeature)
+                }
+                .toImmutableList()
             current.copy(updatedFeatureList = updatedList)
         }
     }
@@ -82,7 +89,8 @@ internal class FeatureSettingsVM(
         viewModelScope.launch {
             getAvailableFeaturesUseCase.invoke()
                 .onSuccess { featureList ->
-                    _state.update { it.copy(currentFeatureList = featureList, updatedFeatureList = featureList) }
+                    val list = featureList.toImmutableList()
+                    _state.update { it.copy(currentFeatureList = list, updatedFeatureList = list) }
                 }
                 .onError { error ->
                     Napier.e(tag = TAG) { error.toString() }
