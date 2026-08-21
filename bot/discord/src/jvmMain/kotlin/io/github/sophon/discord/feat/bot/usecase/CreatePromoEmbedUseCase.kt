@@ -5,6 +5,7 @@ import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.embed
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.discord.URL_APP_STORE
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_KOFI
@@ -14,6 +15,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.util.mandatoryField
 import kotlin.uuid.ExperimentalUuidApi
 
+@ExcludeFromCoverage("UI")
 @OptIn(ExperimentalUuidApi::class)
 internal class CreatePromoEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
