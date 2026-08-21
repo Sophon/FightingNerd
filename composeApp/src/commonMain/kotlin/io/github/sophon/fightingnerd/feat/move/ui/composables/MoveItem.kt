@@ -15,9 +15,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Notes
 import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.Videocam
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +44,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
+import io.github.sophon.fightingnerd.core.ui.components.ImageCarousel
 import io.github.sophon.fightingnerd.feat.move.model.Property
 import io.github.sophon.fightingnerd.feat.move.ui.UiMove
 import io.github.sophon.fightingnerd.feat.move.ui.icon
@@ -48,6 +53,8 @@ import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import org.jetbrains.compose.resources.painterResource
@@ -102,7 +109,11 @@ internal fun MoveItem(
 
         if (isExpandable) {
             Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
-            ExpansionIndicator(isExpanded = isExpanded)
+            ExpansionIndicator(
+                isExpanded = isExpanded,
+                urls = uiMove.urls,
+                notes = uiMove.notes,
+            )
 
             if (isExpanded) {
                 Details(uiMove)
@@ -115,7 +126,7 @@ internal fun MoveItem(
 private fun Header(
     input: String,
     name: String?,
-    propertySet: Set<Property>,
+    propertySet: ImmutableSet<Property>,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -177,7 +188,7 @@ private fun FieldColumn(
 
 @Composable
 private fun Properties(
-    propertySet: Set<Property>,
+    propertySet: ImmutableSet<Property>,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -198,6 +209,8 @@ private fun Properties(
 @Composable
 private fun ExpansionIndicator(
     isExpanded: Boolean,
+    urls: UiMove.Urls,
+    notes: ImmutableList<String>,
     modifier: Modifier = Modifier
 ) {
     val chevronFlip by animateFloatAsState(
@@ -209,6 +222,36 @@ private fun ExpansionIndicator(
         horizontalArrangement = Arrangement.Center,
         modifier = modifier.fillMaxWidth(),
     ) {
+        Row {
+            if (urls.moveImageList.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Outlined.Image,
+                    contentDescription = null,
+                    tint = nerdColorPalette.textPrimary,
+                    modifier = Modifier.size(nerdDimensions.iconInline)
+                )
+            }
+
+            if (urls.videoUrl != null) {
+                Icon(
+                    imageVector = Icons.Outlined.Videocam,
+                    contentDescription = null,
+                    tint = nerdColorPalette.textPrimary,
+                    modifier = Modifier.size(nerdDimensions.iconInline)
+                )
+            }
+
+            if (notes.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.Notes,
+                    contentDescription = null,
+                    tint = nerdColorPalette.textPrimary,
+                    modifier = Modifier.size(nerdDimensions.iconInline)
+                )
+            }
+            Spacer(Modifier.width(nerdDimensions.inlineGap))
+        }
+
         Icon(
             imageVector = Icons.Outlined.ExpandMore,
             contentDescription = null,
@@ -235,7 +278,10 @@ private fun Details(
 
         when {
             uiMove.urls.hitboxImageList.isNotEmpty() -> {
-                MoveImage(uiMove.urls.hitboxImageList.first())
+                ImageCarousel(
+                    imageList = uiMove.urls.hitboxImageList,
+                )
+
                 Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
             }
             uiMove.urls.moveImageList.isNotEmpty() -> {
@@ -289,7 +335,7 @@ private fun MoveImage(
 
 @Composable
 private fun NotesSection(
-    noteList: List<String>,
+    noteList: ImmutableList<String>,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -310,7 +356,7 @@ private fun NotesSection(
 
 
 //region PREVIEW
-private val previewUiMove = UiMove(
+private val videoMove = UiMove(
     id = "nina-hub1",
     input = "H.ub1",
     name = "Neck Hunter: Villain",
@@ -323,10 +369,33 @@ private val previewUiMove = UiMove(
         UiMove.Field(Res.string.move_list_field_on_hit, "+60a"),
     ),
     optionalFields = persistentListOf(),
+    urls = UiMove.Urls(
+        videoUrl = "video",
+    ),
     notes = persistentListOf(
         "Strong Aerial Tailspin",
         "Homing",
         "Consumes 150F of remaining Heat time",
+    ),
+)
+
+private val imageMove = UiMove(
+    id = "nina-hub1",
+    input = "H.ub1",
+    name = "Neck Hunter: Villain",
+    coreFields = persistentListOf(
+        UiMove.Field(Res.string.move_list_field_startup, "i24"),
+        UiMove.Field(Res.string.move_list_field_guard, "h"),
+        UiMove.Field(Res.string.move_list_field_damage, "25"),
+        UiMove.Field(Res.string.move_list_field_on_block, "+8"),
+        UiMove.Field(Res.string.move_list_field_on_hit, "+60a"),
+    ),
+    optionalFields = persistentListOf(),
+    urls = UiMove.Urls(
+        hitboxImageList = persistentListOf("a", "b"),
+    ),
+    notes = persistentListOf(
+        "Something",
     ),
 )
 
@@ -335,7 +404,7 @@ private val previewUiMove = UiMove(
 private fun CollapsedItemPreview() {
     FightingNerdTheme {
         MoveItem(
-            uiMove = previewUiMove,
+            uiMove = videoMove,
             onMoveClick = {},
             isExpanded = false,
         )
@@ -344,10 +413,22 @@ private fun CollapsedItemPreview() {
 
 @Preview
 @Composable
-private fun ExpandedItemPreview() {
+private fun ExpandedVideoItemPreview() {
     FightingNerdTheme {
         MoveItem(
-            uiMove = previewUiMove,
+            uiMove = videoMove,
+            onMoveClick = {},
+            isExpanded = true,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ExpandedImageItemPreview() {
+    FightingNerdTheme {
+        MoveItem(
+            uiMove = imageMove,
             onMoveClick = {},
             isExpanded = true,
         )

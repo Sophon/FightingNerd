@@ -41,6 +41,7 @@
     <string name="quiz_frame_dat_label_on_block">OB</string>
     <string name="quiz_frame_dat_label_on_hit">OH</string>
     <string name="quiz_frame_dat_label_counter">CH</string>
+    <string name="quiz_frame_data_label_no_media">No Media</string>
 
     <string name="more_item_theme_select">Theme</string>
     <string name="more_theme_dialog_title">Select theme</string>

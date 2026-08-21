@@ -38,6 +38,7 @@ import io.github.sophon.fightingnerd.feat.quiz.model.QuizGameWidget
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
+import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -58,7 +59,7 @@ internal fun QuizOverviewScreen(
 
 @Composable
 private fun WidgetSection(
-    widgetList: List<QuizGameWidget>,
+    widgetList: ImmutableList<QuizGameWidget>,
     onPlay: (gameId: String) -> Unit,
     modifier: Modifier = Modifier
 ) {

@@ -75,7 +75,8 @@ internal fun TipDialog(
                     else -> {
                         state.tipOptionList.forEach { option ->
                             TipRow(
-                                tipOption = option,
+                                title = option.title,
+                                formattedPrice = option.formattedPrice,
                                 onClick = {
                                     onOptionSelected(option)
                                 },
@@ -132,7 +133,8 @@ private fun ErrorRow(onRetry: () -> Unit) {
 
 @Composable
 private fun TipRow(
-    tipOption: TipOption,
+    title: String,
+    formattedPrice: String,
     onClick: () -> Unit,
 ) {
     Surface(
@@ -152,7 +154,7 @@ private fun TipRow(
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                text = tipOption.title,
+                text = title,
                 style = nerdTypography.titleMedium,
                 color = nerdColorPalette.textPrimary,
                 modifier = Modifier
@@ -164,7 +166,7 @@ private fun TipRow(
             )
 
             Text(
-                text = tipOption.formattedPrice,
+                text = formattedPrice,
                 style = nerdTypography.titleMedium,
                 color = nerdColorPalette.textPrimary,
                 modifier = Modifier.padding(

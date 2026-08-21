@@ -1,10 +1,13 @@
 package io.github.sophon.fightingnerd.feat.quiz.ui.quiz
 
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 
 internal data class QuizState(
-    val enabledCharacterIdList: List<String> = emptyList(),
-    val questionList: List<Question> = emptyList(),
+    val enabledCharacterIdList: ImmutableList<String> = persistentListOf(),
+    val questionList: ImmutableList<Question> = persistentListOf(),
     val currentQuestionIndex: Int = 0,
     val correct: Int = 0,
     val incorrect: Int = 0,
@@ -49,12 +52,12 @@ internal data class QuizState(
         )
 
         val PREVIEW = QuizState(
-            enabledCharacterIdList = listOf("Armor King"),
-            questionList = listOf(
-                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 0, answeredIndex = 0),
-                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 1, answeredIndex = 3),
-                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 2, answeredIndex = 2),
-                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 3, answeredIndex = null),
+            enabledCharacterIdList = persistentListOf("Armor King"),
+            questionList = persistentListOf(
+                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 0, answeredIndex = 0),
+                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 1, answeredIndex = 3),
+                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 2, answeredIndex = 2),
+                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 3, answeredIndex = null),
             ),
             currentQuestionIndex = 3,
             correct = 2,

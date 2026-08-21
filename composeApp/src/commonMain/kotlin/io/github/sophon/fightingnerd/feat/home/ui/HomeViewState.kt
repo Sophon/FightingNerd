@@ -6,6 +6,7 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
+@Immutable
 internal data class HomeViewState(
     val gameWidgetList: ImmutableList<GameWidget> = persistentListOf(),
 

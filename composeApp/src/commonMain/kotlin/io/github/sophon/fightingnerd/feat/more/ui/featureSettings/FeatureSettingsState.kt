@@ -1,10 +1,12 @@
 package io.github.sophon.fightingnerd.feat.more.ui.featureSettings
 
 import io.github.sophon.fightingnerd.BuildKonfig
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 
 internal data class FeatureSettingsState(
-    val currentFeatureList: List<UiFeatureSetting> = listOf(),
-    val updatedFeatureList: List<UiFeatureSetting> = listOf(),
+    val currentFeatureList: ImmutableList<UiFeatureSetting> = persistentListOf(),
+    val updatedFeatureList: ImmutableList<UiFeatureSetting> = persistentListOf(),
 
     val appVersion: String = BuildKonfig.VERSION,
 
@@ -30,7 +32,7 @@ internal data class FeatureSettingsState(
 
     companion object {
         internal val PREVIEW = FeatureSettingsState(
-            currentFeatureList = listOf(
+            currentFeatureList = persistentListOf(
                 UiFeatureSetting(
                     featureName = "Wavu Wiki",
                     iconUrl = "",
