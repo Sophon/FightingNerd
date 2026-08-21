@@ -64,9 +64,17 @@ internal fun QuestionSection(
         )
         Spacer(Modifier.height(nerdDimensions.componentPadding))
 
-        move.urls?.videoUrl?.let { videoUrl ->
-            VideoPlayer(videoUrl = videoUrl)
-        } ?: Image(move.urls)
+        when {
+            (move.urls?.videoUrl != null) -> {
+                VideoPlayer(videoUrl = move.urls.videoUrl)
+            }
+            (move.urls?.hitboxImageList.orEmpty().isNotEmpty() || move.urls?.moveImageList.orEmpty().isNotEmpty()) -> {
+                Image(url = move.urls)
+            }
+            else -> {
+                NoMedia()
+            }
+        }
 
         Options(
             question = question,
@@ -100,6 +108,16 @@ private fun Image(
         )
     }
     Spacer(Modifier.height(nerdDimensions.componentPadding))
+}
+
+@Composable
+private fun NoMedia(modifier: Modifier = Modifier) {
+    Text(
+        text = "No Media",
+        color = nerdColorPalette.textSecondary,
+        style = nerdTypography.titleLarge,
+        modifier = modifier,
+    )
 }
 
 @Composable
