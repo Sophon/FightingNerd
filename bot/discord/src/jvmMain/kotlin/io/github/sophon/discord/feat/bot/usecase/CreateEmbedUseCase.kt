@@ -1,8 +1,8 @@
 package io.github.sophon.discord.feat.bot.usecase
 
+import dev.kord.common.Color
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
-import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
@@ -21,6 +21,7 @@ import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.util.donationMessage
+import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -92,6 +93,12 @@ internal class CreateEmbedUseCase(
 
             Result.Success(uuid.toString())
         } catch (e: RestRequestException) {
+            when (e.status.code) {
+                403 -> {
+                    createMissingPermissionsEmbed(message = message, errorMessage = e.message)
+                }
+                else -> {}
+            }
             Result.Error(BotError.Kord(e.toString()))
         }
     }
@@ -103,35 +110,20 @@ internal class CreateEmbedUseCase(
         source: Source,
         imageList: BotOutput.Images? = null,
         buttons: BotOutput.ButtonSet? = null,
-        isEphemeral: Boolean = false,
     ): Result<String, BotError> {
         return try {
             val uuid = Uuid.random()
 
-            if (isEphemeral) {
-                interaction.respondEphemeral {
-                    respond(
-                        uuid = uuid,
-                        primaryEmbed = embedBuilder,
-                        coroutineScope = coroutineScope,
-                        source = source,
-                        interaction = interaction,
-                        buttons = buttons,
-                        imageList = imageList,
-                    )
-                }
-            } else {
-                interaction.respondPublic {
-                    respond(
-                        uuid = uuid,
-                        primaryEmbed = embedBuilder,
-                        coroutineScope = coroutineScope,
-                        source = source,
-                        interaction = interaction,
-                        buttons = buttons,
-                        imageList = imageList,
-                    )
-                }
+            interaction.respondPublic {
+                respond(
+                    uuid = uuid,
+                    primaryEmbed = embedBuilder,
+                    coroutineScope = coroutineScope,
+                    source = source,
+                    interaction = interaction,
+                    buttons = buttons,
+                    imageList = imageList,
+                )
             }
 
             if (rollChance(successPercentage = RNG_DONATION_PCT_COMMAND)) {
@@ -142,6 +134,12 @@ internal class CreateEmbedUseCase(
 
             Result.Success(uuid.toString())
         } catch (e: RestRequestException) {
+            when (e.status.code) {
+                403 -> {
+                    createMissingPermissionsEmbed(interaction = interaction, errorMessage = e.message)
+                }
+                else -> {}
+            }
             Result.Error(BotError.Kord(e.toString()))
         }
     }
@@ -187,8 +185,30 @@ internal class CreateEmbedUseCase(
         }
     }
 
+    private suspend fun createMissingPermissionsEmbed(
+        message: Message? = null,
+        interaction: GuildChatInputCommandInteraction? = null,
+        errorMessage: String?,
+    ) {
+        val messageEmbed: EmbedBuilder.() -> Unit = {
+            title = "⚠️ Error"
+            color = Color(YELLOW)
+            mandatoryField(
+                name = "",
+                value = errorMessage,
+            )
+        }
+
+        message?.channel?.createMessage {
+            embed(messageEmbed)
+        } ?: interaction?.respondPublic {
+            embed(messageEmbed)
+        }
+    }
+
 
     private companion object {
         const val TAG = "CreateEmbedUseCase"
+        const val YELLOW = 0x00FFC107
     }
 }
