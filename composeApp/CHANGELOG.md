@@ -1,5 +1,8 @@
 # APP CHANGELOG
 
+## [v2.2.0] - TODO
+- image, video and note indicators for expansion
+
 ## [v2.1.0] - 2026-08-20
 - `Wavu` - added Bob
 - `DustLoop` - enable MTFS
