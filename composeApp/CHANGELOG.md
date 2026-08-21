@@ -2,6 +2,7 @@
 
 ## [v2.2.0] - TODO
 - image, video and note indicators for expansion
+- `Home` - don't collapse game widget after navigating back 
 - `Move` - image carousel
 
 ## [v2.1.0] - 2026-08-20
