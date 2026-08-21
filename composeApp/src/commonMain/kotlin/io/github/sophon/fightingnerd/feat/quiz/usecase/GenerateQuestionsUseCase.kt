@@ -54,6 +54,7 @@ internal class GenerateQuestionsUseCase(
         val options = (distractions + this)
             .shuffled()
             .map { it.toOption() }
+            .toImmutableList()
         val correctIndex = options.indexOfFirst { move -> move.id == this.id }
         val question = Question(
             characterName = character.displayName,

@@ -5,7 +5,7 @@ import kotlinx.collections.immutable.persistentListOf
 
 data class Question(
     val characterName: String,
-    val options: List<MoveOption>,
+    val options: ImmutableList<MoveOption>,
     val correctIndex: Int,
     val answeredIndex: Int? = null,
 ) {

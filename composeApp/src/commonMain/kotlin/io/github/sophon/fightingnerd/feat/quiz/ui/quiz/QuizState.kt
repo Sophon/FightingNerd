@@ -1,6 +1,7 @@
 package io.github.sophon.fightingnerd.feat.quiz.ui.quiz
 
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
+import kotlinx.collections.immutable.toImmutableList
 
 internal data class QuizState(
     val enabledCharacterIdList: List<String> = emptyList(),
@@ -51,10 +52,10 @@ internal data class QuizState(
         val PREVIEW = QuizState(
             enabledCharacterIdList = listOf("Armor King"),
             questionList = listOf(
-                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 0, answeredIndex = 0),
-                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 1, answeredIndex = 3),
-                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 2, answeredIndex = 2),
-                Question(characterName = "Armor King", options = armorKingMoves, correctIndex = 3, answeredIndex = null),
+                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 0, answeredIndex = 0),
+                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 1, answeredIndex = 3),
+                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 2, answeredIndex = 2),
+                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 3, answeredIndex = null),
             ),
             currentQuestionIndex = 3,
             correct = 2,
