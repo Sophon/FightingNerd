@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v15.4.1] - TODO
+- bot ignores tagged messages that don't start with the tag
+
 ## [v15.4.0] - 2026-08-20
 - `Wavu` - added Bob
 - fixed search
