@@ -126,5 +126,7 @@ internal fun donationMessage(): String {
     return "Enjoy the bot? Buy me a coffee:\n" +
             "- ☕️ <$URL_KOFI>\n" +
             "- ☕️ <$URL_BUY_ME_COFFEE>\n" +
-            "- ⭐️ rate me at: <$URL_TOPGG>"
+            "\nAlso available on phones:\n" +
+            "- 🤖 <https://play.google.com/store/apps/details?id=io.github.sophon.fightingnerd>\n" +
+            "- 🍏 <https://apps.apple.com/us/app/fighting-nerd/id6793185357>"
 }
