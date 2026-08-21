@@ -11,6 +11,7 @@ import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_DISTRACTIONS
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_QUESTIONS
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.first
 
 internal class GenerateQuestionsUseCase(
@@ -53,6 +54,7 @@ internal class GenerateQuestionsUseCase(
         val options = (distractions + this)
             .shuffled()
             .map { it.toOption() }
+            .toImmutableList()
         val correctIndex = options.indexOfFirst { move -> move.id == this.id }
         val question = Question(
             characterName = character.displayName,
@@ -73,8 +75,8 @@ internal class GenerateQuestionsUseCase(
             onCH = onCH?.stripMarkdownLinks(),
             urls = Question.MoveOption.Urls(
                 videoUrl = urls.videoId,
-                hitboxImageList = urls.hitboxImageList,
-                moveImageList = urls.moveImageList,
+                hitboxImageList = urls.hitboxImageList.toImmutableList(),
+                moveImageList = urls.moveImageList.toImmutableList(),
             )
         )
         return option

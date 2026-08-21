@@ -4,6 +4,7 @@
 - image, video and note indicators for expansion
 - `Home` - don't collapse game widget after navigating back 
 - `Move` - image carousel
+- `Quiz` - text indicator if media absent
 
 ## [v2.1.0] - 2026-08-20
 - `Wavu` - added Bob
