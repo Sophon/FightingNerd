@@ -32,7 +32,6 @@ import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_counter
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_block
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_hit
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_startup
-import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.quiz.model.Question
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizState
@@ -65,7 +64,7 @@ internal fun QuestionSection(
         )
         Spacer(Modifier.height(nerdDimensions.componentPadding))
 
-        move.urls.videoId?.let { videoUrl ->
+        move.urls?.videoUrl?.let { videoUrl ->
             VideoPlayer(videoUrl = videoUrl)
         } ?: Image(move.urls)
 
@@ -79,11 +78,11 @@ internal fun QuestionSection(
 
 @Composable
 private fun Image(
-    url: Move.Urls,
+    url: Question.MoveOption.Urls?,
     modifier: Modifier = Modifier
 ) {
-    val image = url.hitboxImageList.firstOrNull()
-        ?: url.moveImageList.firstOrNull()
+    val image = url?.hitboxImageList?.firstOrNull()
+        ?: url?.moveImageList?.firstOrNull()
         ?: return
 
     Box(
@@ -144,7 +143,7 @@ private fun Options(
 
 @Composable
 private fun Option(
-    move: Move,
+    move: Question.MoveOption,
     isCorrect: Boolean,
     isWrong: Boolean,
     isEnabled: Boolean,
