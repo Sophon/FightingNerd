@@ -54,6 +54,7 @@ import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import org.jetbrains.compose.resources.painterResource
@@ -125,7 +126,7 @@ internal fun MoveItem(
 private fun Header(
     input: String,
     name: String?,
-    propertySet: Set<Property>,
+    propertySet: ImmutableSet<Property>,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
@@ -187,7 +188,7 @@ private fun FieldColumn(
 
 @Composable
 private fun Properties(
-    propertySet: Set<Property>,
+    propertySet: ImmutableSet<Property>,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -334,7 +335,7 @@ private fun MoveImage(
 
 @Composable
 private fun NotesSection(
-    noteList: List<String>,
+    noteList: ImmutableList<String>,
     modifier: Modifier = Modifier
 ) {
     Column(

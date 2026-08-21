@@ -54,12 +54,13 @@ import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
+import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun WidgetSection(
-    widgetList: List<GameWidget>,
+    widgetList: ImmutableList<GameWidget>,
     onExpandWidget: (Game) -> Unit,
     onCharacterClick: (gameId: String, characterId: String) -> Unit,
     modifier: Modifier = Modifier
