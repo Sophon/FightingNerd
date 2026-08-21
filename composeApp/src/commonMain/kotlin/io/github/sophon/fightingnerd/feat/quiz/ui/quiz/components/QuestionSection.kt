@@ -14,9 +14,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BrokenImage
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -113,12 +117,24 @@ private fun Image(
 
 @Composable
 private fun NoMedia(modifier: Modifier = Modifier) {
-    Text(
-        text = stringResource(Res.string.quiz_frame_data_label_no_media),
-        color = nerdColorPalette.textSecondary,
-        style = nerdTypography.titleLarge,
+    Column(
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier,
-    )
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.BrokenImage,
+            contentDescription = null,
+            modifier = Modifier.size(nerdDimensions.iconLarge),
+        )
+        Spacer(Modifier.height(nerdDimensions.componentGap))
+
+        Text(
+            text = stringResource(Res.string.quiz_frame_data_label_no_media),
+            color = nerdColorPalette.textSecondary,
+            style = nerdTypography.titleMedium,
+        )
+    }
 }
 
 @Composable
