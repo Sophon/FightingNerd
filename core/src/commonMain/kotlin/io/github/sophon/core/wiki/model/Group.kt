@@ -5,7 +5,7 @@ interface Group {
     val predicate: (Move) -> Boolean
 }
 
-object OtherGroup: Group {
+object Default: Group {
     override val id: String = "Other"
     override val predicate: (Move) -> Boolean = { true }
 }

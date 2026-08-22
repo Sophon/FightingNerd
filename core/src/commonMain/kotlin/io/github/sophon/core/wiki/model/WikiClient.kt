@@ -28,5 +28,5 @@ interface WikiClient {
     fun getGroupsFor(
         game: Game,
         extras: List<String> = emptyList(),
-    ): List<Group> = listOf(OtherGroup)
+    ): List<Group> = listOf(Default)
 }
