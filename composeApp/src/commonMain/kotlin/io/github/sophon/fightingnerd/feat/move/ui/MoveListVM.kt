@@ -50,6 +50,7 @@ internal class MoveListVM(
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
     private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
+    private var groupList: ImmutableList<Group> = persistentListOf()
 
     val state = _state
         .onStart {
@@ -68,18 +69,10 @@ internal class MoveListVM(
                     && old.filterSheet.startup == new.filterSheet.startup
                     && old.filterSheet.onHit == new.filterSheet.onHit
                     && old.filterSheet.onBlock == new.filterSheet.onBlock
-                    && old.groupList == new.groupList
         },
         _fullMoveList,
-    ) { state, cache ->
-        val filters = state.filterSheet.activeFilterSet + state.filterSheet.buildSliderFilters()
-        val filtered = cache.applyFilters(
-            filterSet = filters,
-            searchQuery = state.searchQuery,
-            groupList = state.groupList,
-        )
-        filtered
-    }.stateIn(
+        ::processMoveListChange,
+    ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = persistentListOf(),
@@ -205,9 +198,31 @@ internal class MoveListVM(
 
     private fun loadMoveGroupsFor(gameId: String) {
         loadMoveGroupsUseCase.invoke(gameId)
-            .onSuccess { groupList ->
-                _state.update { it.copy(groupList = groupList.toImmutableList()) }
+            .onSuccess { list ->
+                groupList = list.toImmutableList()
             }
+    }
+
+    private fun processMoveListChange(
+        state: MoveListState,
+        cache: MoveCache,
+    ): ImmutableList<UiMove> {
+        val filters = state.filterSheet.activeFilterSet + state.filterSheet.buildSliderFilters()
+
+        val filtered = cache.applyFilters(
+            filterSet = filters,
+            searchQuery = state.searchQuery,
+        )
+
+        val (ordered, bookmarkList) = groupMovesUseCase.invoke(
+            moveList = filtered,
+            groupList = groupList,
+        )
+
+        _state.update { it.copy(bookmarkList = bookmarkList.toImmutableList()) }
+
+        val uiMoveList = ordered.mapNotNull { move -> cache.uiMovesById[move.id] }.toImmutableList()
+        return uiMoveList
     }
 
     private fun MoveListState.FilterSheet.buildSliderFilters(): List<Filter> {
@@ -222,20 +237,14 @@ internal class MoveListVM(
     private fun MoveCache.applyFilters(
         filterSet: Set<Filter>,
         searchQuery: String?,
-        groupList: List<Group>,
-    ): ImmutableList<UiMove> {
+    ): List<Move> {
         val filtered = movesById.values
             .filter { move ->
                 filterSet.all { it.predicate(move) }
             }
             .filterMatching(searchQuery)
 
-        val ordered = groupMovesUseCase.invoke(moveList = filtered, groupList = groupList)
-
-        val uiMoveList = ordered.mapNotNull { move -> uiMovesById[move.id] }
-
-        val result = uiMoveList.toImmutableList()
-        return result
+        return filtered
     }
 
 
