@@ -13,6 +13,7 @@ import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
 import kotlinx.collections.immutable.ImmutableList
@@ -41,6 +42,7 @@ internal class MoveListVM(
     private val overlayService: OverlayService,
     private val subscribeToMoveListUseCase: SubscribeToMoveListUseCase,
     private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
+    private val loadMoveGroupsUseCase: LoadMoveGroupsUseCase,
     private val normalizeSliderUseCase: NormalizeSliderUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
@@ -81,6 +83,7 @@ internal class MoveListVM(
 
     init {
         loadMoveFiltersFor(gameId)
+        loadMoveGroupsFor(gameId)
     }
 
 
@@ -192,6 +195,13 @@ internal class MoveListVM(
             .onError { error ->
                 Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $error" }
                 overlayService.show(error)
+            }
+    }
+
+    private fun loadMoveGroupsFor(gameId: String) {
+        loadMoveGroupsUseCase.invoke(gameId)
+            .onSuccess { groupList ->
+                _state.update { it.copy(groupList = groupList.toImmutableList()) }
             }
     }
 

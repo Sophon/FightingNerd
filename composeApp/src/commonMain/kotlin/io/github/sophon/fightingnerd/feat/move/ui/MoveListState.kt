@@ -2,7 +2,10 @@ package io.github.sophon.fightingnerd.feat.move.ui
 
 import androidx.compose.runtime.Immutable
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Group
+import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 
 @Immutable
@@ -15,6 +18,8 @@ internal data class MoveListState(
     val filterSheet: FilterSheet = FilterSheet(),
 
     val expandedMoveId: String? = null,
+
+    val groupList: ImmutableList<Group> = persistentListOf(),
 ) {
     @Immutable
     data class MoveListCharacter(
