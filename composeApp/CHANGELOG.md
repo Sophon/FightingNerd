@@ -1,6 +1,6 @@
 # APP CHANGELOG
 
-## [v2.2.0] - TODO
+## [v2.2.0] - 2026-08-22
 - `Home` - don't collapse game widget after navigating back 
 - `Move`
   - image carousel
