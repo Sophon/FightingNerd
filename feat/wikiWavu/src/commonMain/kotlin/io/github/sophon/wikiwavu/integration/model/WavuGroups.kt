@@ -1,5 +1,6 @@
 package io.github.sophon.wikiwavu.integration.model
 
+import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
 
@@ -90,7 +91,7 @@ object TekkenGroups {
 
     data class Stance(override val id: String): Group {
         override val predicate: (Move) -> Boolean = { move ->
-            move.t8Properties?.stance.equals(id, ignoreCase = true)
+            move.t8Properties?.stance.equalsIgnoreCase(id)
         }
     }
 
