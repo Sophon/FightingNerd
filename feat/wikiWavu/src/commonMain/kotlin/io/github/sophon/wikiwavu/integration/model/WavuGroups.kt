@@ -6,7 +6,9 @@ import io.github.sophon.core.wiki.model.Move
 object TekkenGroups {
     object Heat: Group {
         override val id: String = "Heat"
-        override val predicate: (Move) -> Boolean = { it.t8Properties?.isHeat == true }
+        override val predicate: (Move) -> Boolean = {
+            it.input.contains("H.", ignoreCase = true)
+        }
     }
 
     object Neutral: Group {

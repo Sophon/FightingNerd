@@ -7,7 +7,6 @@ import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Group
-import io.github.sophon.core.wiki.model.OtherGroup
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import io.github.sophon.wikiwavu.integration.model.TekkenFilters
 import io.github.sophon.wikiwavu.integration.model.TekkenGroups
@@ -62,7 +61,7 @@ internal class WavuWikiClient(
         )
         val stanceGroupList = extras.map { TekkenGroups.Stance(it) }
 
-        val groupList = genericGroupList + stanceGroupList + OtherGroup
+        val groupList = genericGroupList + stanceGroupList
         return groupList
     }
 
