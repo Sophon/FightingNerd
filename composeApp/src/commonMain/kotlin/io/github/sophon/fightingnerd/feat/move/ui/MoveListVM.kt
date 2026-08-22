@@ -8,11 +8,14 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
+import io.github.sophon.fightingnerd.feat.move.usecase.GroupMovesUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
 import kotlinx.collections.immutable.ImmutableList
@@ -41,10 +44,13 @@ internal class MoveListVM(
     private val overlayService: OverlayService,
     private val subscribeToMoveListUseCase: SubscribeToMoveListUseCase,
     private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
+    private val loadMoveGroupsUseCase: LoadMoveGroupsUseCase,
     private val normalizeSliderUseCase: NormalizeSliderUseCase,
+    private val groupMovesUseCase: GroupMovesUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
     private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
+    private var groupList: ImmutableList<Group> = persistentListOf()
 
     val state = _state
         .onStart {
@@ -65,14 +71,8 @@ internal class MoveListVM(
                     && old.filterSheet.onBlock == new.filterSheet.onBlock
         },
         _fullMoveList,
-    ) { state, cache ->
-        val filters = state.filterSheet.activeFilterSet + state.filterSheet.buildSliderFilters()
-        val filtered = cache.applyFilters(
-            filterSet = filters,
-            searchQuery = state.searchQuery,
-        )
-        filtered
-    }.stateIn(
+        ::processMoveListChange,
+    ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5_000),
         initialValue = persistentListOf(),
@@ -81,6 +81,7 @@ internal class MoveListVM(
 
     init {
         loadMoveFiltersFor(gameId)
+        loadMoveGroupsFor(gameId)
     }
 
 
@@ -147,6 +148,18 @@ internal class MoveListVM(
         }
     }
 
+    fun onBookmarkSwitch() {
+        _state.update { state ->
+            val new = state.bookmarks.isExpanded.not()
+            state.copy(bookmarks = state.bookmarks.copy(isExpanded = new)) }
+    }
+
+    fun onBookmarkClose() {
+        _state.update { state ->
+            state.copy(bookmarks = state.bookmarks.copy(isExpanded = false))
+        }
+    }
+
 
     private fun subscribeToData() {
         viewModelScope.launch {
@@ -195,6 +208,40 @@ internal class MoveListVM(
             }
     }
 
+    private fun loadMoveGroupsFor(gameId: String) {
+        loadMoveGroupsUseCase.invoke(gameId)
+            .onSuccess { list ->
+                groupList = list.toImmutableList()
+            }
+    }
+
+    private fun processMoveListChange(
+        state: MoveListState,
+        cache: MoveCache,
+    ): ImmutableList<UiMove> {
+        val filters = state.filterSheet.activeFilterSet + state.filterSheet.buildSliderFilters()
+
+        val filtered = cache.applyFilters(
+            filterSet = filters,
+            searchQuery = state.searchQuery,
+        )
+
+        val (ordered, bookmarkList) = groupMovesUseCase.invoke(
+            moveList = filtered,
+            groupList = groupList,
+        )
+
+        _state.update { state ->
+            state.copy(
+                bookmarks = state.bookmarks
+                    .copy(bookmarkList = bookmarkList.toImmutableList())
+            )
+        }
+
+        val uiMoveList = ordered.mapNotNull { move -> cache.uiMovesById[move.id] }.toImmutableList()
+        return uiMoveList
+    }
+
     private fun MoveListState.FilterSheet.buildSliderFilters(): List<Filter> {
         val list = listOfNotNull(
             startup?.let { CoreFilters.Startup(it.min, it.max) },
@@ -207,16 +254,14 @@ internal class MoveListVM(
     private fun MoveCache.applyFilters(
         filterSet: Set<Filter>,
         searchQuery: String?,
-    ): ImmutableList<UiMove> {
+    ): List<Move> {
         val filtered = movesById.values
             .filter { move ->
                 filterSet.all { it.predicate(move) }
             }
             .filterMatching(searchQuery)
-            .mapNotNull { move -> uiMovesById[move.id] }
 
-        val result = filtered.toImmutableList()
-        return result
+        return filtered
     }
 
 
