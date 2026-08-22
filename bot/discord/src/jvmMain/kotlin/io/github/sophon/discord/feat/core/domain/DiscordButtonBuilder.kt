@@ -43,9 +43,15 @@ internal class DiscordButtonBuilder {
         buttonList: List<BotOutput.EmbedButton>,
         uuid: Uuid? = null,
     ) {
+        val chunkSize = if (buttonList.size == 4) {
+            2
+        } else {
+            5
+        }
+
         buttonList
             .take(EMBED_MAX_BUTTONS)
-            .chunked(5)
+            .chunked(chunkSize)
             .forEach { rowButtons ->
                 val builtButtons = rowButtons.mapNotNull { button ->
                     createEmbedButton(button.action, button.label, uuid)

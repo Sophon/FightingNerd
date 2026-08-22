@@ -14,13 +14,10 @@ import dev.kord.rest.request.RestRequestException
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
-import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.util.donationMessage
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
@@ -85,12 +82,6 @@ internal class CreateEmbedUseCase(
                 }
             }
 
-            if (rollChance(successPercentage = RNG_DONATION_PCT_COMMAND)) {
-                sentMessage.channel.createMessage {
-                    content = donationMessage()
-                }
-            }
-
             Result.Success(uuid.toString())
         } catch (e: RestRequestException) {
             when (e.status.code) {
@@ -124,12 +115,6 @@ internal class CreateEmbedUseCase(
                     buttons = buttons,
                     imageList = imageList,
                 )
-            }
-
-            if (rollChance(successPercentage = RNG_DONATION_PCT_COMMAND)) {
-                interaction.channel.createMessage {
-                    content = donationMessage()
-                }
             }
 
             Result.Success(uuid.toString())

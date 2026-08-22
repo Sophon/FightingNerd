@@ -18,6 +18,8 @@ internal const val URL_IMG_FIGHTING_NERD = "https://i.imgur.com/TAgvOxX.png"
 
 internal const val URL_KOFI = "https://ko-fi.com/sophon_"
 internal const val URL_BUY_ME_COFFEE = "https://buymeacoffee.com/sophon"
+internal const val URL_APP_STORE = "https://apps.apple.com/us/app/fighting-nerd/id6793185357"
+internal const val URL_PLAY_STORE = "https://play.google.com/store/apps/details?id=io.github.sophon.fightingnerd"
 internal const val URL_IMG_KOFI = "https://i.imgur.com/8MpFC8T.png"
 internal const val URL_TOPGG = "https://top.gg/bot/1438716136790429776"
 

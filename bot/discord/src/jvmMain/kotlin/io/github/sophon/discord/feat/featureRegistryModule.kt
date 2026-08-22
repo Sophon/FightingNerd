@@ -22,6 +22,7 @@ import io.github.sophon.discord.feat.bot.usecase.CreateFeedbackEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateMutableEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreatePlainMessageUseCase
+import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
@@ -119,6 +120,7 @@ internal val featureRegistryModule = module {
     singleOf(::HandleAutoCompleteEventUseCase)
     singleOf(::HandleButtonInteractionUseCase)
     singleOf(::PostDailyReportEmbedUseCase)
+    singleOf(::CreatePromoEmbedUseCase)
     //endregion
 
     //region Generic

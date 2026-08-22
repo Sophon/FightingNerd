@@ -11,12 +11,9 @@ import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.util.rollChance
-import io.github.sophon.discord.RNG_DONATION_PCT_FEEDBACK
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.util.donationMessage
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -45,7 +42,7 @@ internal class CreateFeedbackEmbedUseCase(
                 }
             }
             val sentMessage = message.channel.createMessage {
-                content = createResponseMessage()
+                content = "Feedback sent successfully!"
             }
 
             Result.Success(sentMessage)
@@ -74,21 +71,12 @@ internal class CreateFeedbackEmbedUseCase(
                 }
             }
             val behavior = interaction.respondPublic {
-                content = createResponseMessage()
+                content = "Feedback sent successfully!"
             }
 
             Result.Success(behavior)
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
-        }
-    }
-
-
-    private fun createResponseMessage(): String {
-        return if (rollChance(successPercentage = RNG_DONATION_PCT_FEEDBACK)) {
-            "Feedback sent successfully!\n" + donationMessage()
-        } else {
-            "Feedback sent successfully!"
         }
     }
 }
