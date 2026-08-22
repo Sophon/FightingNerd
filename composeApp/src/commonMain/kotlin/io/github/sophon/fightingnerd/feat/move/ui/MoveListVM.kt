@@ -8,10 +8,12 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
+import io.github.sophon.fightingnerd.feat.move.usecase.GroupMovesUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
@@ -44,6 +46,7 @@ internal class MoveListVM(
     private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
     private val loadMoveGroupsUseCase: LoadMoveGroupsUseCase,
     private val normalizeSliderUseCase: NormalizeSliderUseCase,
+    private val groupMovesUseCase: GroupMovesUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
     private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
@@ -65,6 +68,7 @@ internal class MoveListVM(
                     && old.filterSheet.startup == new.filterSheet.startup
                     && old.filterSheet.onHit == new.filterSheet.onHit
                     && old.filterSheet.onBlock == new.filterSheet.onBlock
+                    && old.groupList == new.groupList
         },
         _fullMoveList,
     ) { state, cache ->
@@ -72,6 +76,7 @@ internal class MoveListVM(
         val filtered = cache.applyFilters(
             filterSet = filters,
             searchQuery = state.searchQuery,
+            groupList = state.groupList,
         )
         filtered
     }.stateIn(
@@ -217,15 +222,19 @@ internal class MoveListVM(
     private fun MoveCache.applyFilters(
         filterSet: Set<Filter>,
         searchQuery: String?,
+        groupList: List<Group>,
     ): ImmutableList<UiMove> {
         val filtered = movesById.values
             .filter { move ->
                 filterSet.all { it.predicate(move) }
             }
             .filterMatching(searchQuery)
-            .mapNotNull { move -> uiMovesById[move.id] }
 
-        val result = filtered.toImmutableList()
+        val ordered = groupMovesUseCase.invoke(moveList = filtered, groupList = groupList)
+
+        val uiMoveList = ordered.mapNotNull { move -> uiMovesById[move.id] }
+
+        val result = uiMoveList.toImmutableList()
         return result
     }
 
