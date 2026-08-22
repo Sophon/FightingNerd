@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v15.4.2] - 2026-08-22
+- `fly.io` has DB directory for persistent DB
+
 ## [v15.4.1] - 2026-08-22
 - bot ignores tagged messages that don't start with the tag
 - promote mobile apps
