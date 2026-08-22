@@ -36,7 +36,7 @@ internal class GetAvailableFeaturesUseCase(
                     UiFeatureSetting.UiGame(
                         displayName = game.displayName,
                         id = game.id,
-                        isEnabled = gameConfigMap[game.id] ?: true,
+                        isEnabled = gameConfigMap[game.id] ?: false,
                     )
                 },
             )
@@ -54,7 +54,7 @@ internal class GetAvailableFeaturesUseCase(
             val preferences = store.data.first()
             val flagMap = map.entries.associate { (gameId, featureName) ->
                 val key = booleanPreferencesKey("${KEY_PREFIX_FEATURE}_${featureName}_${gameId}")
-                gameId to (preferences[key] ?: true)
+                gameId to (preferences[key] ?: false)
             }
             Result.Success(flagMap)
         } catch (_: IOException) {

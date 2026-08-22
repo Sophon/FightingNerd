@@ -8,7 +8,7 @@ import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
 import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 
 internal class InMemoryGlossaryDB: GlossaryDB {
-    private var glossary = mutableMapOf<String, GlossaryItem>()
+    private val glossary = mutableMapOf<String, GlossaryItem>()
 
     override suspend fun fetchDataFor(query: String): Result<List<GlossaryItem>, GlossaryError> {
         if (glossary.isEmpty()) return Result.Error(GlossaryError.EMPTY_GLOSSARY)
@@ -24,7 +24,7 @@ internal class InMemoryGlossaryDB: GlossaryDB {
     }
 
     override suspend fun insertData(term: String, item: GlossaryItem): EmptyResult<GlossaryError> {
-        glossary.put(key = term, value = item)
+        glossary[term] = item
         return Result.Success(Unit)
     }
 }
