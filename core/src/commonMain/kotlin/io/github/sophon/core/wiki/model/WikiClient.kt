@@ -25,4 +25,5 @@ interface WikiClient {
     suspend fun clearCache(): EmptyResult<WikiError>
 
     fun getFiltersFor(game: Game): Set<Filter>
+    fun getGroupingFor(game: Game): List<Group> = listOf(OtherGroup)
 }
