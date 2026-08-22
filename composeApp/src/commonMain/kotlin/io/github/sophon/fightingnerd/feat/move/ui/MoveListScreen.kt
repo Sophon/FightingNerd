@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fightingnerd.composeapp.generated.resources.Res
@@ -22,6 +23,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.fightingnerd.feat.move.ui.composables.BookmarksButton
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveTopBar
@@ -59,6 +61,7 @@ internal fun MoveListScreen(
         onChangeStartup = vm::onChangeStartup,
         onChangeOnBlock = vm::onChangeOnBlock,
         onChangeOnHit = vm::onChangeOnHit,
+        onBookmarkSwitch = vm::onBookmarkSwitch,
         modifier = modifier,
     )
 }
@@ -77,6 +80,7 @@ private fun Content(
     onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onBookmarkSwitch: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -115,6 +119,15 @@ private fun Content(
                     onDismiss = { onFilterClick(false) },
                 )
             }
+
+            BookmarksButton(
+                bookmarks = state.bookmarks,
+                onBookmarkSwitch = onBookmarkSwitch,
+                onBookmarkClick = {},
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(nerdDimensions.componentGap)
+            )
         }
     }
 }
@@ -196,6 +209,7 @@ private fun MoveListPreview() {
             onChangeOnHit = {},
             onClearFilters = {},
             onSearch = {},
+            onBookmarkSwitch = {},
         )
     }
 }
@@ -217,6 +231,7 @@ private fun MoveListSearchPreview() {
             onChangeOnHit = {},
             onClearFilters = {},
             onSearch = {},
+            onBookmarkSwitch = {},
         )
     }
 }

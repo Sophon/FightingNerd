@@ -19,7 +19,7 @@ internal data class MoveListState(
 
     val expandedMoveId: String? = null,
 
-    val bookmarkList: ImmutableList<Bookmark> = persistentListOf(),
+    val bookmarks: Bookmarks = Bookmarks(),
 ) {
     @Immutable
     data class MoveListCharacter(
@@ -62,6 +62,12 @@ internal data class MoveListState(
                 }
         }
     }
+
+    @Immutable
+    data class Bookmarks(
+        val isExpanded: Boolean = false,
+        val bookmarkList: ImmutableList<Bookmark> = persistentListOf(),
+    )
 
 
     companion object {

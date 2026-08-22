@@ -148,6 +148,12 @@ internal class MoveListVM(
         }
     }
 
+    fun onBookmarkSwitch() {
+        _state.update { state ->
+            val new = state.bookmarks.isExpanded.not()
+            state.copy(bookmarks = state.bookmarks.copy(isExpanded = new)) }
+    }
+
 
     private fun subscribeToData() {
         viewModelScope.launch {
@@ -219,7 +225,12 @@ internal class MoveListVM(
             groupList = groupList,
         )
 
-        _state.update { it.copy(bookmarkList = bookmarkList.toImmutableList()) }
+        _state.update { state ->
+            state.copy(
+                bookmarks = state.bookmarks
+                    .copy(bookmarkList = bookmarkList.toImmutableList())
+            )
+        }
 
         val uiMoveList = ordered.mapNotNull { move -> cache.uiMovesById[move.id] }.toImmutableList()
         return uiMoveList
