@@ -1,5 +1,8 @@
 package io.github.sophon.fightingnerd.feat.move.ui.composables
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -48,23 +51,36 @@ internal fun BookmarksButton(
         modifier = modifier
             .padding(horizontal = nerdDimensions.componentGap),
     ) {
-        if (bookmarks.isExpanded) {
+        AnimatedVisibility(
+            visible = bookmarks.isExpanded,
+            enter = expandVertically(expandFrom = Alignment.Bottom),
+            exit = shrinkVertically(shrinkTowards = Alignment.Bottom),
+        ) {
             BookmarkList(
                 bookmarkList = bookmarks.bookmarkList,
                 onBookmarkClick = onBookmarkClick,
             )
         }
 
+        val shape = if (bookmarks.isExpanded) {
+            RoundedCornerShape(
+                bottomStart = nerdDimensions.cornerDefault,
+                bottomEnd = nerdDimensions.cornerDefault,
+            )
+        } else {
+            RoundedCornerShape(nerdDimensions.cornerDefault)
+        }
+
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .size(nerdDimensions.iconHeadline)
-                .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
+                .clip(shape)
                 .background(color = nerdColorPalette.surface)
                 .border(
                     width = nerdDimensions.strokeThin,
                     color = nerdColorPalette.dividerSubtle,
-                    shape = RoundedCornerShape(nerdDimensions.cornerDefault),
+                    shape = shape,
                 )
                 .clickable(onClick = onBookmarkSwitch),
         ) {
@@ -104,7 +120,7 @@ private fun BookmarkList(
     ) {
         bookmarkList.forEach { bookmark ->
             Text(
-                text = bookmark.id,
+                text = "${bookmark.id} •",
                 style = nerdTypography.bodyLarge,
                 color = nerdColorPalette.textPrimary,
                 textAlign = TextAlign.End,
