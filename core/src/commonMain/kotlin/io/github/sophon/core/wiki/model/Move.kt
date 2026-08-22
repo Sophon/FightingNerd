@@ -22,6 +22,8 @@ data class Move(
     val invulnerability: String? = null,
     val isThrow: Boolean = false,
 
+    //TODO: ideally, we'd have type here
+
     val notes: List<String> = listOf(),
     val aliases: List <String> = listOf(),
 
