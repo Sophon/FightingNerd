@@ -164,6 +164,7 @@ internal class SuperComboMoveDbAdapter(
                     moveId = move.id,
                     chiDamage = p?.chiDamage,
                     flow = p?.flow,
+                    type = p?.type,
                 )
             }
             else -> error("${game.id} is not supported by SuperCombo MoveDbAdapter")

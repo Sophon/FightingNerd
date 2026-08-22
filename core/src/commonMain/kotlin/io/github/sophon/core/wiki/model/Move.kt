@@ -234,6 +234,7 @@ data class Move(
     data class AVLProperties(
         val chiDamage: String? = null,
         val flow: String? = null,
+        val type: String? = null,
     )
 
     @Serializable
