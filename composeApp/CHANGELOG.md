@@ -1,5 +1,8 @@
 # APP CHANGELOG
 
+## [v2.3.0] - TODO
+- `Move` - bookmarks for quick navigation
+
 ## [v2.2.0] - 2026-08-22 
 - `Move`
   - image carousel
