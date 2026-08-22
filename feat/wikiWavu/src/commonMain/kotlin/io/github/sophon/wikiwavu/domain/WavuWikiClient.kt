@@ -55,6 +55,7 @@ internal class WavuWikiClient(
             TekkenGroups.DownBack,
             TekkenGroups.Back,
             TekkenGroups.Up,
+            TekkenGroups.UpBack,
             TekkenGroups.Motion,
             TekkenGroups.Crouch,
             TekkenGroups.WS,

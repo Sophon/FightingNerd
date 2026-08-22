@@ -46,6 +46,11 @@ object TekkenGroups {
         override val predicate: (Move) -> Boolean = { it.input.startsWithBeforeNumber("u") }
     }
 
+    object UpBack: Group {
+        override val id: String = "ub"
+        override val predicate: (Move) -> Boolean = { it.input.startsWithBeforeNumber("ub") }
+    }
+
     object Motion: Group {
         override val id: String = "Motion input"
         override val predicate: (Move) -> Boolean = { move ->
