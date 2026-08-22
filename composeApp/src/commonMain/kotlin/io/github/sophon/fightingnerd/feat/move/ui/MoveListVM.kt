@@ -154,6 +154,12 @@ internal class MoveListVM(
             state.copy(bookmarks = state.bookmarks.copy(isExpanded = new)) }
     }
 
+    fun onBookmarkClose() {
+        _state.update { state ->
+            state.copy(bookmarks = state.bookmarks.copy(isExpanded = false))
+        }
+    }
+
 
     private fun subscribeToData() {
         viewModelScope.launch {

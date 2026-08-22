@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +14,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -31,6 +35,7 @@ import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
@@ -62,6 +67,7 @@ internal fun MoveListScreen(
         onChangeOnBlock = vm::onChangeOnBlock,
         onChangeOnHit = vm::onChangeOnHit,
         onBookmarkSwitch = vm::onBookmarkSwitch,
+        onBookmarkClose = vm::onBookmarkClose,
         modifier = modifier,
     )
 }
@@ -81,8 +87,19 @@ private fun Content(
     onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onBookmarkSwitch: () -> Unit,
+    onBookmarkClose: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val listState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    val currentOnBookmarkClose by rememberUpdatedState(onBookmarkClose)
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.isScrollInProgress }
+            .collect { inProgress ->
+                if (inProgress) currentOnBookmarkClose()
+            }
+    }
+
     Scaffold(
         topBar = {
             MoveTopBar(
@@ -106,6 +123,7 @@ private fun Content(
                 moveList = moveList,
                 onMoveClick = onMoveClick,
                 expandedMoveId = state.expandedMoveId,
+                listState = listState,
             )
 
             if (state.filterSheet.isVisible) {
@@ -123,10 +141,13 @@ private fun Content(
             BookmarksButton(
                 bookmarks = state.bookmarks,
                 onBookmarkSwitch = onBookmarkSwitch,
-                onBookmarkClick = {},
+                onBookmarkClick = { index ->
+                    scope.launch { listState.animateScrollToItem(index) }
+                    onBookmarkClose()
+                },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(nerdDimensions.componentGap)
+                    .padding(bottom = nerdDimensions.componentGap)
             )
         }
     }
@@ -137,9 +158,9 @@ private fun MoveList(
     moveList: ImmutableList<UiMove>,
     expandedMoveId: String?,
     onMoveClick: (moveId: String) -> Unit,
+    listState: LazyListState,
     modifier: Modifier = Modifier
 ) {
-    val listState = rememberLazyListState()
     LaunchedEffect(moveList) {
         listState.scrollToItem(0)
     }
@@ -210,6 +231,7 @@ private fun MoveListPreview() {
             onClearFilters = {},
             onSearch = {},
             onBookmarkSwitch = {},
+            onBookmarkClose = {},
         )
     }
 }
@@ -232,6 +254,7 @@ private fun MoveListSearchPreview() {
             onClearFilters = {},
             onSearch = {},
             onBookmarkSwitch = {},
+            onBookmarkClose = {},
         )
     }
 }
