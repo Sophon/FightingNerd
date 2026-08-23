@@ -6,7 +6,9 @@ import io.github.sophon.core.wiki.data.CharacterRepo
 import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.wikidragdown.integration.DragDownFeatureInfo
+import io.github.sophon.wikidragdown.integration.model.RoaGroups
 import kotlinx.coroutines.CoroutineScope
 
 internal class DragDownWikiClient(
@@ -29,6 +31,25 @@ internal class DragDownWikiClient(
         }
 
         return emptySet()
+    }
+
+    override fun getGroupsFor(game: Game, extras: List<String>): List<Group> {
+        require(game in featureInfo.supportedGameSet) {
+            "${game.id} not supported. Supported: ${featureInfo.supportedGameSet}"
+        }
+
+        val groups = when (game) {
+            Game.ROA2 -> listOf(
+                RoaGroups.Normal,
+                RoaGroups.Strong,
+                RoaGroups.Aerial,
+                RoaGroups.Special,
+                RoaGroups.Throw
+            )
+            else -> emptyList()
+        }
+
+        return groups
     }
 
 

@@ -1,4 +1,4 @@
-package io.github.sophon.wikidragdown.integration
+package io.github.sophon.wikidragdown.integration.model
 
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
