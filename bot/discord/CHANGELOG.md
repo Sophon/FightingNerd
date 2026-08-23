@@ -1,5 +1,7 @@
 # BOT CHANGELOG
 
+## [v15.4.3] - 2026-08-24
+
 ## [v15.4.2] - 2026-08-22
 - `fly.io` has DB directory for persistent DB
 
