@@ -55,7 +55,7 @@ internal fun MoveDto.toDomain(
         cancel = cancel?.cleanHtml(),
         recovery = recovery?.cleanHtml(),
         guard = guard?.cleanHtml(),
-        invulnerability = invuln?.cleanHtml(),
+        invulnerability = invuln?.cleanHtml()?.ifBlank { null },
         aliases = aliases,
 
         notes = notes.formNotes(),
