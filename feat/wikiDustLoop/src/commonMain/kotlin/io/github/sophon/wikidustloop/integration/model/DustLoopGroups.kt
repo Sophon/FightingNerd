@@ -18,10 +18,8 @@ object GGSTGroups {
     object Universal: Group {
         override val id: String = "Universal"
         override val predicate: (Move) -> Boolean = {
-            it.input.equalsIgnoreCase("6d")
-                    || it.input.equalsIgnoreCase("4d")
-                    || it.input.equalsIgnoreCase("j6d")
-                    || it.input.equalsIgnoreCase("j4d")
+            it.input.equalsIgnoreCase("6d/4d")
+                    || it.input.equalsIgnoreCase("j6d/j4d")
         }
     }
 
