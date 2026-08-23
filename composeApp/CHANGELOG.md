@@ -2,6 +2,7 @@
 
 ## [v2.3.0] - TODO
 - `Move` - bookmarks for quick navigation
+- fixed wrong invulnerability property
 
 ## [v2.2.0] - 2026-08-22 
 - `Move`
