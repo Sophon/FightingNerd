@@ -1,12 +1,15 @@
 # APP CHANGELOG
 
-## [v2.2.0] - 2026-08-22
-- `Home` - don't collapse game widget after navigating back 
+## [v2.3.0] - TODO
+- `Move` - bookmarks for quick navigation
+- fixed wrong invulnerability property
+
+## [v2.2.0] - 2026-08-22 
 - `Move`
   - image carousel
   - image, video and note indicators for expansion
 - `Quiz` - text indicator if media absent
-- further stability improvements
+- further stability improvements and bugfixes
 
 ## [v2.1.0] - 2026-08-20
 - `Wavu` - added Bob

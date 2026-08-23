@@ -57,6 +57,8 @@ fun String.decodeHtmlEntities(): String {
 
 fun String?.orDash(): String = this?.takeUnless { it.isBlank() } ?: "-"
 
+fun String?.equalsIgnoreCase(other: String?): Boolean = this.equals(other, ignoreCase = true)
+
 fun String.cleanHtml(): String {
     return this
         .decodeHtmlEntities()

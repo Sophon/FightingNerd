@@ -6,10 +6,15 @@ import io.github.sophon.core.wiki.data.CharacterRepo
 import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.wikimizuumi.data.remote.MizuumiDataCache
 import io.github.sophon.wikimizuumi.integration.MizuumiFeatureInfo
 import io.github.sophon.wikimizuumi.integration.model.MBFilters
+import io.github.sophon.wikimizuumi.integration.model.MBGroups
+import io.github.sophon.wikimizuumi.integration.model.Normal
+import io.github.sophon.wikimizuumi.integration.model.Special
 import io.github.sophon.wikimizuumi.integration.model.UniFilters
+import io.github.sophon.wikimizuumi.integration.model.UniGroups
 import io.github.sophon.wikimizuumi.integration.model.VSAVFilters
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.ExperimentalTime
@@ -48,6 +53,34 @@ internal class MizuumiWikiClient(
         }
 
         return set
+    }
+
+    override fun getGroupsFor(game: Game, extras: List<String>): List<Group> {
+        require(game in supportedGameSet) {
+            "${game.id} not supported. Supported: $supportedGameSet"
+        }
+
+        val groups = when (game) {
+            Game.MBTL -> listOf(
+                Normal,
+                MBGroups.Universal,
+                Special,
+                MBGroups.Super,
+            )
+            Game.Uni2 -> listOf(
+                UniGroups.Normal,
+                UniGroups.Universal,
+                UniGroups.Special,
+                UniGroups.Super,
+            )
+            Game.VSAV -> listOf(
+                Normal,
+                Special,
+            )
+            else -> emptyList()
+        }
+
+        return groups
     }
 
 

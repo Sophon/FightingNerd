@@ -55,6 +55,8 @@ kotlin {
                 implementation(libs.napier)
 
                 api(libs.koin.core)
+
+                implementation(libs.sqldelight.coroutines)
             }
         }
 

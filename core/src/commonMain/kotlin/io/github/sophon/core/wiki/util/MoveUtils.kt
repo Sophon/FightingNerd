@@ -28,10 +28,10 @@ fun List<Move>.findMatching(query: String): Move? {
 fun List<Move>.filterMatching(query: String?): List<Move> {
     val filtered = this.filter { move ->
         query?.let { query ->
-            move.id.equals(query, ignoreCase = true) ||
-                    move.input.startsWith(query, ignoreCase = true) ||
-                    move.name?.contains(query, ignoreCase = true) == true ||
-                    move.aliases.any { alias -> alias.contains(query, ignoreCase = true) }
+            move.id.equals(query, ignoreCase = true)
+                    || move.input.contains(query, ignoreCase = true)
+                    || move.name.orEmpty().contains(query, ignoreCase = true)
+                    || move.aliases.any { alias -> alias.contains(query, ignoreCase = true) }
         } ?: true
     }
     return filtered

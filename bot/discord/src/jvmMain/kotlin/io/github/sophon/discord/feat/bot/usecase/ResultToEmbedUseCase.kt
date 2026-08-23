@@ -99,7 +99,9 @@ internal class ResultToEmbedUseCase(
             }
         }
 
-        rollForPromo(feedback = botOutput.feedback, behavior = message.channel)
+        if (result !is Result.Error) {
+            rollForPromo(feedback = botOutput.feedback, behavior = message.channel)
+        }
     }
 
     suspend fun invoke(
@@ -162,7 +164,9 @@ internal class ResultToEmbedUseCase(
             }
         }
 
-        rollForPromo(feedback = botOutput.feedback, behavior = interaction.channel)
+        if (result !is Result.Error) {
+            rollForPromo(feedback = botOutput.feedback, behavior = interaction.channel)
+        }
     }
 
 

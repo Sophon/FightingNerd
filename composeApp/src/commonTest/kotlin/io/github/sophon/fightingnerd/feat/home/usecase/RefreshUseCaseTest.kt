@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.edit
 import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEqualTo
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.RefreshEvent
@@ -50,7 +51,7 @@ internal class RefreshUseCaseTest {
             featureRepo = FakeFeatureRepo(mapOf(game to wikiClient)),
             store = store,
         )
-        val expectedEmissions = listOf(RefreshOutcome.Finished(game = game, successCount = 5))
+        val expectedEmissions = listOf(Result.Success(RefreshReport(game = game, successCount = 5)))
         val expectedRefreshCalled = true
 
         // when
@@ -80,8 +81,8 @@ internal class RefreshUseCaseTest {
             store = store,
         )
         val expected = listOf(
-            RefreshOutcome.Failed(AppError.WikiError(wikiError.toString())),
-            RefreshOutcome.Finished(game = game, successCount = 0),
+            Result.Error(AppError.WikiError(wikiError.toString())),
+            Result.Success(RefreshReport(game = game, successCount = 0)),
         )
 
         // when
@@ -140,9 +141,9 @@ internal class RefreshUseCaseTest {
             store = store,
         )
         val expected = listOf(
-            RefreshOutcome.Finished(game = Game.Tekken8, successCount = 3),
-            RefreshOutcome.Failed(AppError.WikiError(failingError.toString())),
-            RefreshOutcome.Finished(game = Game.StreetFighter6, successCount = 0),
+            Result.Success(RefreshReport(game = Game.Tekken8, successCount = 3)),
+            Result.Error(AppError.WikiError(failingError.toString())),
+            Result.Success(RefreshReport(game = Game.StreetFighter6, successCount = 0)),
         )
 
         // when

@@ -6,6 +6,9 @@ import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import dev.kord.core.Kord
 import io.github.sophon.core.featureConfig.model.WikiClientFeature
+import io.github.sophon.core.wiki.data.fingerprint
+import io.github.sophon.core.wiki.data.readStoredFingerprint
+import io.github.sophon.core.wiki.data.storeFingerprint
 import org.koin.core.qualifier.named
 import io.github.aakira.napier.Napier
 import io.github.sophon.integration.adminModule
@@ -90,22 +93,41 @@ internal fun dcBotModule(kord: Kord) = module {
             val schema = params.get<SqlSchema<QueryResult.Value<Unit>>>()
             val databaseDir = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { "." }
             val databaseFile = File(databaseDir, "${feature.id}.db")
-            val versionFile = File(databaseDir, "${feature.id}.db.version")
             databaseFile.parentFile?.mkdirs()
 
-            val savedVersion = versionFile.takeIf { it.exists() }?.readText()?.toLongOrNull() ?: 0L
-            if (savedVersion != schema.version) {
-                databaseFile.delete()
-                versionFile.delete()
-            }
+            // Clean up the legacy version file — fingerprint replaces it.
+            File(databaseDir, "${feature.id}.db.version").delete()
 
-            val isNewDatabase = databaseFile.exists().not()
-            val driver = JdbcSqliteDriver("jdbc:sqlite:${databaseFile.absolutePath}")
-            if (isNewDatabase) {
-                schema.create(driver)
-                versionFile.writeText(schema.version.toString())
-            }
-            driver
+            openFingerprintedDriver(schema, databaseFile)
         }
     }
+}
+
+private fun openFingerprintedDriver(
+    schema: SqlSchema<QueryResult.Value<Unit>>,
+    databaseFile: File,
+): SqlDriver {
+    val expected = schema.fingerprint()
+    val wasFresh = databaseFile.exists().not()
+
+    val driver = JdbcSqliteDriver("jdbc:sqlite:${databaseFile.absolutePath}")
+    if (wasFresh) {
+        schema.create(driver)
+        driver.storeFingerprint(expected)
+        return driver
+    }
+
+    val stored = try {
+        driver.readStoredFingerprint()
+    } catch (t: Throwable) {
+        null
+    }
+    if (stored == expected) return driver
+
+    driver.close()
+    databaseFile.delete()
+    val fresh = JdbcSqliteDriver("jdbc:sqlite:${databaseFile.absolutePath}")
+    schema.create(fresh)
+    fresh.storeFingerprint(expected)
+    return fresh
 }

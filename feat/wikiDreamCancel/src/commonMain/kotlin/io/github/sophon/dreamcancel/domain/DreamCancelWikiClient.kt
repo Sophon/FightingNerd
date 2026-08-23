@@ -6,8 +6,13 @@ import io.github.sophon.core.wiki.data.CharacterRepo
 import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.domain.BaseWikiClient
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.dreamcancel.data.remote.DreamCancelDataCache
+import io.github.sophon.dreamcancel.integration.COTWGroups
 import io.github.sophon.dreamcancel.integration.DreamCancelFeatureInfo
+import io.github.sophon.dreamcancel.integration.KofGroups
+import io.github.sophon.dreamcancel.integration.Normal
+import io.github.sophon.dreamcancel.integration.Special
 import kotlinx.coroutines.CoroutineScope
 import kotlin.time.ExperimentalTime
 
@@ -37,6 +42,34 @@ internal class DreamCancelWikiClient(
         }
 
         return emptySet()
+    }
+
+    override fun getGroupsFor(game: Game, extras: List<String>): List<Group> {
+        require(game in supportedGameSet) {
+            "${game.id} not supported. Supported: $supportedGameSet"
+        }
+
+        val groups = when (game) {
+            Game.KoFXV -> listOf(
+                Normal,
+                KofGroups.Rush,
+                KofGroups.Throw,
+                Special,
+                KofGroups.Climax
+            )
+            Game.COTW -> listOf(
+                Normal,
+                COTWGroups.Combination,
+                COTWGroups.Throw,
+                COTWGroups.Rev,
+                COTWGroups.FeintDodge,
+                Special,
+                COTWGroups.HiddenGear,
+            )
+            else -> emptyList()
+        }
+
+        return groups
     }
 
 
