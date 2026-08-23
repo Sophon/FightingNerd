@@ -1,6 +1,7 @@
 package io.github.sophon.wikimizuumi.integration.model
 
 import io.github.sophon.core.util.equalsIgnoreCase
+import io.github.sophon.core.util.isSpecial
 import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
 
@@ -82,12 +83,5 @@ private fun String.isNormal(): Boolean {
     if (length < 2) return false
     val hasNormalPrefix = this[0] in "52j6"
     val result = hasNormalPrefix && this[1].isLetter()
-    return result
-}
-
-private fun String.isSpecial(): Boolean {
-    if (startsWith("22")) return true
-    val pattern = Regex("""\d{3}(BC|[A-Za-z])""") //contains 3 numbers followed by a char
-    val result = pattern.containsMatchIn(this)
     return result
 }

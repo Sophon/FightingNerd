@@ -45,6 +45,42 @@ fun String.splitOr(
     return result
 }
 
+/**
+ * partial: j5s1/j2s1
+ * not partial: 46s/h~k
+ */
+fun String.create2dAliases(
+    isPartial: Boolean,
+    delimiter: String = "/",
+): List<String> {
+    val orAliases = this.splitOr(isPartial, delimiter)
+
+    val result = if (orAliases.isEmpty()) {
+        this.add2dAliases()
+    } else {
+        buildList {
+            addAll(orAliases)
+            addAll(orAliases.flatMap { it.add2dAliases() })
+        }.distinct()
+    }
+
+    return result
+}
+
+fun String.chargeAlias(): List<String> {
+    return if (contains("[4]")) {
+        listOf(replace("[4]", "4"))
+    } else emptyList()
+}
+
+fun String.isSpecial(): Boolean {
+    if (startsWith("22")) return true
+    val pattern = Regex("""\d{3}(BC|[A-Za-z])""") //contains 3 numbers followed by a char
+    val result = pattern.containsMatchIn(this)
+    return result
+}
+
+
 private fun List<String>.isButtonVariants(): Boolean {
     if (size < 2) return false
     if (first().lastOrNull()?.isLetter() != true) return false
@@ -52,7 +88,7 @@ private fun List<String>.isButtonVariants(): Boolean {
         val leadingLetters = part.takeWhile { it.isLetter() }
         val continuation = part.drop(leadingLetters.length)
         leadingLetters.length == 1 &&
-            (continuation.isEmpty() || continuation.first().isLetterOrDigit().not())
+                (continuation.isEmpty() || continuation.first().isLetterOrDigit().not())
     }
     return restArePureButtons
 }
@@ -87,28 +123,6 @@ private fun expandDirectionVariants(
     }
 }
 
-/**
- * partial: j5s1/j2s1
- * not partial: 46s/h~k
- */
-fun String.create2dAliases(
-    isPartial: Boolean,
-    delimiter: String = "/",
-): List<String> {
-    val orAliases = this.splitOr(isPartial, delimiter)
-
-    val result = if (orAliases.isEmpty()) {
-        this.add2dAliases()
-    } else {
-        buildList {
-            addAll(orAliases)
-            addAll(orAliases.flatMap { it.add2dAliases() })
-        }.distinct()
-    }
-
-    return result
-}
-
 private fun String.add2dAliases(
     aliasList: List<String> = listOf(),
 ): List<String> {
@@ -126,10 +140,4 @@ private fun String.add2dAliases(
         else -> aliasList
     }
     return result
-}
-
-fun String.chargeAlias(): List<String> {
-    return if (contains("[4]")) {
-        listOf(replace("[4]", "4"))
-    } else emptyList()
 }
