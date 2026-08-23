@@ -94,7 +94,7 @@ WHERE m.characterId = ?;
 
 selectAVLByCharacter:
 SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
-       am.chiDamage, am.flow
+       am.chiDamage, am.flow, am.type
 FROM MoveEntity m
 LEFT JOIN AVLMoveEntity am ON am.moveId = m.id
 WHERE m.characterId = ?;

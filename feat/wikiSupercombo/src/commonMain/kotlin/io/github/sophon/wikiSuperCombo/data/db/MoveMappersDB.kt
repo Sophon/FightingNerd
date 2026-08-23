@@ -130,6 +130,7 @@ internal fun SelectAVLByCharacter.toDomain(): Move {
         avlProperties = Move.AVLProperties(
             chiDamage = chiDamage,
             flow = flow,
+            type = type,
         ),
     )
     return move
