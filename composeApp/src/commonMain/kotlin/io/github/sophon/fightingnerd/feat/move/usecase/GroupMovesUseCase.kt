@@ -1,11 +1,9 @@
 package io.github.sophon.fightingnerd.feat.move.usecase
 
-import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Bookmark
 
-@ExcludeFromCoverage("TODO")
 internal class GroupMovesUseCase {
     fun invoke(
         moveList: List<Move>,
