@@ -31,7 +31,7 @@ import io.github.sophon.discord.util.toButtons
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikidragdown.integration.DragDownFeatureInfo
-import io.github.sophon.wikidragdown.integration.DragDownFilters
+import io.github.sophon.wikidragdown.integration.model.DragDownFilters
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

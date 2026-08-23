@@ -120,6 +120,7 @@ internal fun MoveDto.toDomain(
         avlProperties = Move.AVLProperties(
             chiDamage = flowDamage,
             flow = flow,
+            type = moveType,
         )
     )
     return move

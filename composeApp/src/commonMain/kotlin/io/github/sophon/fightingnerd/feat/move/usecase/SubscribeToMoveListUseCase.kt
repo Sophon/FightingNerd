@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.model.AppError
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.emptyFlow
 
 internal class SubscribeToMoveListUseCase(
@@ -28,7 +29,7 @@ internal class SubscribeToMoveListUseCase(
             val character = characterList.firstOrNull { it.id == characterId.value }
                 ?: return@combine Result.Error(AppError.WikiError("$characterId not found"))
             Result.Success(Pair(character, moveList))
-        }
+        }.distinctUntilChanged()
         return flow
     }
 }
