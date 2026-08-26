@@ -21,6 +21,7 @@ CREATE TABLE MoveEntity (
     aliases TEXT NOT NULL,
     urlsWikiUrl TEXT,
     urlsVideoId TEXT,
+    urlsVideoUrl TEXT,
     urlsHitboxImageList TEXT NOT NULL,
     urlsMoveImageList TEXT NOT NULL,
     consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
@@ -29,8 +30,8 @@ CREATE TABLE MoveEntity (
 );
 
 insertMove:
-INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsHitboxImageList, urlsMoveImageList)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsVideoUrl, urlsHitboxImageList, urlsMoveImageList)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(id) DO UPDATE SET
     characterId = excluded.characterId,
     gameId = excluded.gameId,
@@ -51,6 +52,7 @@ ON CONFLICT(id) DO UPDATE SET
     aliases = excluded.aliases,
     urlsWikiUrl = excluded.urlsWikiUrl,
     urlsVideoId = excluded.urlsVideoId,
+    urlsVideoUrl = excluded.urlsVideoUrl,
     urlsHitboxImageList = excluded.urlsHitboxImageList,
     urlsMoveImageList = excluded.urlsMoveImageList,
     consecutiveFailureCount = 0,
@@ -79,21 +81,21 @@ DELETE FROM MoveEntity
 WHERE characterId = ? AND consecutiveFailureCount >= ?;
 
 selectMBTLByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
        mm.inputInfo, mm.subtitle, mm.minDamage, mm.property, mm.cost, mm.attribute, mm.landing, mm.overall
 FROM MoveEntity m
 LEFT JOIN MBTLMoveEntity mm ON mm.moveId = m.id
 WHERE m.characterId = ?;
 
 selectUni2ByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
        um.inputInfo, um.subtitle, um.minDamage, um.type, um.cancelWindow, um.property, um.cost, um.attribute, um.landing, um.overall, um.assaultAdv, um.blockstun, um.groundHit, um.airHit, um.groundCH, um.airCH, um.hitstop, um.CHstop, um.proration, um.comboP1, um.comboP2
 FROM MoveEntity m
 LEFT JOIN Uni2MoveEntity um ON um.moveId = m.id
 WHERE m.characterId = ?;
 
 selectVSAVByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
        vm.inputInfo, vm.subtitle, vm.whiteDmg, vm.renda, vm.meter, vm.reaction, vm.curseTime
 FROM MoveEntity m
 LEFT JOIN VSAVMoveEntity vm ON vm.moveId = m.id

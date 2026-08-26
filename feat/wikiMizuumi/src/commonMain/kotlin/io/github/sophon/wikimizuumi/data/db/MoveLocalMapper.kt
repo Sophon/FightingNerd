@@ -28,6 +28,7 @@ internal fun SelectMBTLByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
@@ -67,6 +68,7 @@ internal fun SelectUni2ByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
@@ -119,6 +121,7 @@ internal fun SelectVSAVByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
