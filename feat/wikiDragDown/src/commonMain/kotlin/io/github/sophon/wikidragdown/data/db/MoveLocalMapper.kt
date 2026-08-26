@@ -25,7 +25,7 @@ internal fun SelectROA2ByCharacter.toDomain(): Move {
         aliases = aliases.toDomain(),
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
-            videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),

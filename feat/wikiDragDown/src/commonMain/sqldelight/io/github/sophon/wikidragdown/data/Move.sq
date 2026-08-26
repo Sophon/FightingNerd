@@ -20,7 +20,7 @@ CREATE TABLE MoveEntity (
     notes TEXT NOT NULL,
     aliases TEXT NOT NULL,
     urlsWikiUrl TEXT,
-    urlsVideoId TEXT,
+    urlsVideoUrl TEXT,
     urlsHitboxImageList TEXT NOT NULL,
     urlsMoveImageList TEXT NOT NULL,
     consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
@@ -29,7 +29,7 @@ CREATE TABLE MoveEntity (
 );
 
 insertMove:
-INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsHitboxImageList, urlsMoveImageList)
+INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoUrl, urlsHitboxImageList, urlsMoveImageList)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(id) DO UPDATE SET
     characterId = excluded.characterId,
@@ -50,7 +50,7 @@ ON CONFLICT(id) DO UPDATE SET
     notes = excluded.notes,
     aliases = excluded.aliases,
     urlsWikiUrl = excluded.urlsWikiUrl,
-    urlsVideoId = excluded.urlsVideoId,
+    urlsVideoUrl = excluded.urlsVideoUrl,
     urlsHitboxImageList = excluded.urlsHitboxImageList,
     urlsMoveImageList = excluded.urlsMoveImageList,
     consecutiveFailureCount = 0,
@@ -79,7 +79,7 @@ DELETE FROM MoveEntity
 WHERE characterId = ? AND consecutiveFailureCount >= ?;
 
 selectROA2ByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
        rm.mode, rm.caption, rm.hitboxCaption, rm.startupNotes, rm.totalActiveNotes, rm.endlagNotes, rm.cancelNotes, rm.landingLag, rm.landingLagNotes, rm.iasa, rm.iasaNotes, rm.totalDuration, rm.totalDurationNotes, rm.ledgeGrabFrame, rm.ledgeGrabFrameNotes, rm.hitID, rm.hitMoveID, rm.hitName, rm.hitActive, rm.customShieldSafety, rm.uniqueField, rm.articleID, rm.roa2Notes, rm.advNotes
 FROM MoveEntity m
 LEFT JOIN ROA2MoveEntity rm ON rm.moveId = m.id
