@@ -28,6 +28,7 @@ internal fun SelectSF6ByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
@@ -86,6 +87,7 @@ internal fun SelectMK1ByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
@@ -124,6 +126,7 @@ internal fun SelectAVLByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
