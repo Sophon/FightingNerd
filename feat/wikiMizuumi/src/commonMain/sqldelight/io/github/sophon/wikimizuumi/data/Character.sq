@@ -7,6 +7,7 @@ CREATE TABLE CharacterEntity (
     aliases TEXT NOT NULL,
     hp TEXT,
     umo TEXT NOT NULL,
+    imagesIconId TEXT,
     imagesIconUrl TEXT,
     imagesBannerUrl TEXT,
     consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,

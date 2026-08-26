@@ -1,4 +1,4 @@
-package io.github.sophon.wikimizuumi.data
+package io.github.sophon.wikimizuumi.data.remote
 
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result

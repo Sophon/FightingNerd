@@ -1,4 +1,4 @@
-package io.github.sophon.wikimizuumi.data
+package io.github.sophon.wikimizuumi.data.remote
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

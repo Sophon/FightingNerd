@@ -1,4 +1,4 @@
-package io.github.sophon.wikimizuumi.data
+package io.github.sophon.wikimizuumi.data.remote
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
@@ -21,6 +21,7 @@ internal fun String.toDomain(
         Game.MBTL -> listOf(idName.substringBefore("_"), idName.substringAfterLast("_"))
         else -> listOf(idName)
     }
+    val iconId = iconKeys.first { imageUrlMap.contains(it) }
     val iconUrl = iconKeys.firstNotNullOfOrNull { imageUrlMap[it] } ?: game?.iconUrl
 
     val char = Character(
@@ -30,7 +31,8 @@ internal fun String.toDomain(
         aliasList = aliasList,
         wikiUrl = wikiUrl ?: FEATURE_URL,
         images = Character.Images(
-            iconUrl = iconUrl
+            iconId = iconId,
+            iconUrl = iconUrl,
         )
     )
 
@@ -51,6 +53,7 @@ internal fun CharacterListResponseDto.toDomain(
             wikiUrl = dto.chara.formWikiUrl(gameId),
             aliasList = listOf(),
             images = Character.Images(
+                iconId = it.title.chara,
                 iconUrl = imageUrlMap[it.title.chara],
             ),
             hp = dto.health,
