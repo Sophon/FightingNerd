@@ -51,7 +51,8 @@ internal fun MoveDto.toDomain(
         aliases = aliases,
 
         urls = Move.Urls(
-            videoId = video.formVideoUrl(),
+            videoId = video,
+            videoUrl = video.formVideoUrl(),
             wikiUrl = formMoveWikiUrl(characterRemoteQueryId = character.remoteQueryId, moveId = id),
         ),
 
