@@ -168,10 +168,10 @@ private fun EmbedBuilder.charDetailsGG(character: Character) {
     mandatoryField(
         name = "⭐️ CORE",
         value = buildList {
-            add("* **Defense →** ${properties?.defense}")
-            add("* **Guts →** ${properties?.guts}")
-            add("* **Guard balance →** ${properties?.guardBalance}")
-            add("* **Boost ATT | DEF** → ${properties?.boostAttack} | ${properties?.boostDefense}")
+            add("* **Defense →** ${properties.defense}")
+            add("* **Guts →** ${properties.guts}")
+            add("* **Guard balance →** ${properties.guardBalance}")
+            add("* **Boost ATT | DEF** → ${properties.boostAttack} | ${properties.boostDefense}")
         }.joinToString("\n"),
     )
 
@@ -186,37 +186,37 @@ private fun EmbedBuilder.charDetailsGG(character: Character) {
                     umo.forEach { add("   * $it") }
                 }
             }
-            add("* **Backdash →** ${properties?.bwdDash}")
-            add("   * **Distance →** ${properties?.bwdDashDist}")
-            add("   * **Duration →** ${properties?.bwdDashDuration}")
-            add("   * **Invulnerability →** ${properties?.bwdDashInvulnerability}")
-            properties?.fwdDash?.let { add("* **Forward dash →** $it") }
-            add("* **Initial speed →** ${properties?.dashInitialSpd}")
-            properties?.dashAcceleration?.let { add("* **Acceleration →** $it") }
-            properties?.movementTension?.let { add("* **Tension →** $it") }
-            properties?.dashFriction?.let { add("* **Friction →** $it") }
-            add("* **Walk →** ← ${properties?.walkSpd} | ${properties?.bwdWalkSpd} →")
+            add("* **Backdash →** ${properties.bwdDash}")
+            add("   * **Distance →** ${properties.bwdDashDist}")
+            add("   * **Duration →** ${properties.bwdDashDuration}")
+            add("   * **Invulnerability →** ${properties.bwdDashInvulnerability}")
+            properties.fwdDash?.let { add("* **Forward dash →** $it") }
+            add("* **Initial speed →** ${properties.dashInitialSpd}")
+            properties.dashAcceleration?.let { add("* **Acceleration →** $it") }
+            properties.movementTension?.let { add("* **Tension →** $it") }
+            properties.dashFriction?.let { add("* **Friction →** $it") }
+            add("* **Walk →** ← ${properties.walkSpd} | ${properties.bwdWalkSpd} →")
         }.joinToString("\n"),
     )
 
     mandatoryField(
         name = "🦘 JUMP",
         value = buildList {
-            add("* **Prejump →** ${properties?.prejump}")
-            add("* **Height (high) →** ${properties?.jumpHeight} (${properties?.highJumpHeight})")
-            add("* **Duration (high) →** ${properties?.jumpDuration} (${properties?.highJumpDuration})")
-            add("* **Gravity (high) →** ${properties?.jumpGravity} (${properties?.highJumpGravity})")
-            properties?.jumpTension?.let { add("* **Tension →** $it") }
+            add("* **Prejump →** ${properties.prejump}")
+            add("* **Height (high) →** ${properties.jumpHeight} (${properties.highJumpHeight})")
+            add("* **Duration (high) →** ${properties.jumpDuration} (${properties.highJumpDuration})")
+            add("* **Gravity (high) →** ${properties.jumpGravity} (${properties.highJumpGravity})")
+            properties.jumpTension?.let { add("* **Tension →** $it") }
         }.joinToString("\n"),
     )
 
     mandatoryField(
         name = "💨 AIRDASH",
         value = buildList {
-            add("* **IAD →** ${properties?.earliestIAD}")
-            add("* **Distance | Duration →** ${properties?.adDist} | ${properties?.adDuration}")
-            add("* **B Distance | Duration →** ${properties?.abdDist} | ${properties?.abdDuration}")
-            properties?.airDashTension?.let { add("* **Tension →** $it") }
+            add("* **IAD →** ${properties.earliestIAD}")
+            add("* **Distance | Duration →** ${properties.adDist} | ${properties.adDuration}")
+            add("* **B Distance | Duration →** ${properties.abdDist} | ${properties.abdDuration}")
+            properties.airDashTension?.let { add("* **Tension →** $it") }
         }.joinToString("\n"),
     )
 }
