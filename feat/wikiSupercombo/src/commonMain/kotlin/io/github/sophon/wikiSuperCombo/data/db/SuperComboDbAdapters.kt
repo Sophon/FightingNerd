@@ -9,8 +9,11 @@ import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiSuperCombo.data.SuperComboDB
-import io.github.sophon.wikiSuperCombo.integration.MK1Properties
-import io.github.sophon.wikiSuperCombo.integration.SF6Properties
+import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
+import io.github.sophon.wikiSuperCombo.integration.model.MK1Properties
+import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -158,7 +161,7 @@ internal class SuperComboMoveDbAdapter(
     private fun insertProperties(move: Move) {
         when (game) {
             Game.StreetFighter6 -> {
-                val p = move.sf6Properties
+                val p = move.gameProperties as? SF6MoveProperties
                 sf6Queries.insertSF6Move(
                     moveId = move.id,
                     type = p?.type?.name,
@@ -191,7 +194,7 @@ internal class SuperComboMoveDbAdapter(
                 )
             }
             Game.MK1 -> {
-                val p = move.mkProperties
+                val p = move.gameProperties as? MKMoveProperties
                 mk1Queries.insertMK1Move(
                     moveId = move.id,
                     moveType = p?.moveType,
@@ -204,7 +207,7 @@ internal class SuperComboMoveDbAdapter(
                 )
             }
             Game.AVL -> {
-                val p = move.avlProperties
+                val p = move.gameProperties as? AVLProperties
                 avlQueries.insertAVLMove(
                     moveId = move.id,
                     chiDamage = p?.chiDamage,

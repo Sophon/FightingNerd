@@ -5,8 +5,8 @@ import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterGameProperties
 import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
-import io.github.sophon.wikiSuperCombo.integration.MK1Properties
-import io.github.sophon.wikiSuperCombo.integration.SF6Properties
+import io.github.sophon.wikiSuperCombo.integration.model.MK1Properties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
 import kotlin.collections.get
 
 internal fun CharacterListResponseDto.toDomain(

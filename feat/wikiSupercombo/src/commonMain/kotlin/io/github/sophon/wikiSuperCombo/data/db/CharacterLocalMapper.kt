@@ -4,8 +4,8 @@ import io.github.sophon.core.wiki.data.toDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikiSuperCombo.data.SelectMK1ForGame
 import io.github.sophon.wikiSuperCombo.data.SelectSF6ForGame
-import io.github.sophon.wikiSuperCombo.integration.MK1Properties
-import io.github.sophon.wikiSuperCombo.integration.SF6Properties
+import io.github.sophon.wikiSuperCombo.integration.model.MK1Properties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
 
 internal fun SelectSF6ForGame.toDomain(): Character {
     val character = Character(
