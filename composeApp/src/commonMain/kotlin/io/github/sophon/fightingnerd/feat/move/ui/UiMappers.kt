@@ -30,6 +30,11 @@ import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
+import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
+import io.github.sophon.wikiwavu.integration.model.T8Properties
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList
@@ -54,7 +59,7 @@ internal fun Move.toUiMove(): UiMove {
 private fun Move.buildPropertySet(): ImmutableSet<Property> {
     val propertySet = buildSet {
         invulnerability?.let { add(Property.Invincible) }
-        t8Properties?.let { props ->
+        (gameProperties as? T8Properties)?.let { props ->
             if (props.isHeat) add(Property.Heat)
             if (props.isHoming) add(Property.Homing)
             if (props.isPowerCrush) add(Property.PowerCrush)
@@ -86,16 +91,16 @@ private fun Move.createOptionalFields(): ImmutableList<UiMove.Field> {
         cancel?.let { add(UiMove.Field(Res.string.move_list_field_label_cancel, it)) }
         invulnerability?.let { add(UiMove.Field(Res.string.move_list_field_label_invulnerability, it)) }
 
-        sf6Properties?.chip?.let { add(UiMove.Field(Res.string.move_list_field_label_chip, it)) }
+        (gameProperties as? SF6MoveProperties)?.chip?.let { add(UiMove.Field(Res.string.move_list_field_label_chip, it)) }
 
         koF15Properties?.stun?.let { add(UiMove.Field(Res.string.move_list_field_label_stun, it)) }
         cotwProperties?.revDamage?.let { add(UiMove.Field(Res.string.move_list_field_label_rev_damage, it)) }
 
-        gbvsrProperties?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }
-        bbProperties?.level?.let { add(UiMove.Field(Res.string.move_list_field_label_level, it)) }
-        bbProperties?.type?.let { add(UiMove.Field(Res.string.move_list_field_label_type, it)) }
-        avlProperties?.chiDamage?.let { add(UiMove.Field(Res.string.move_list_field_label_chi, it)) }
-        avlProperties?.flow?.let { add(UiMove.Field(Res.string.move_list_field_label_flow, it)) }
+        (gameProperties as? GBVSRMoveProperties)?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }
+        (gameProperties as? BBMoveProperties)?.level?.let { add(UiMove.Field(Res.string.move_list_field_label_level, it)) }
+        (gameProperties as? BBMoveProperties)?.type?.let { add(UiMove.Field(Res.string.move_list_field_label_type, it)) }
+        (gameProperties as? AVLProperties)?.chiDamage?.let { add(UiMove.Field(Res.string.move_list_field_label_chi, it)) }
+        (gameProperties as? AVLProperties)?.flow?.let { add(UiMove.Field(Res.string.move_list_field_label_flow, it)) }
 
         mbProperties?.property?.let { add(UiMove.Field(Res.string.move_list_field_label_property, it)) }
         vsavProperties?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }
