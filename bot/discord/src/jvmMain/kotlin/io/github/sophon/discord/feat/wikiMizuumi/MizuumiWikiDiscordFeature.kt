@@ -187,7 +187,7 @@ internal class MizuumiWikiDiscordFeature(
     override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
         val game = when (command) {
             Command.FdMB, Command.InvMB -> Game.MBTL
-            Command.FdUNI, Command.InvUNI -> Game.Uni2
+            Command.FdUNI, Command.InvUNI, Command.CharUNI -> Game.Uni2
             Command.FdVS, Command.InvVS -> Game.VSAV
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
         }
