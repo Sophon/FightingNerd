@@ -23,6 +23,7 @@ internal class CharacterRemoteMapperTest {
             wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Ciel",
             aliasList = listOf("cl", "ci",),
             images = Character.Images(
+                iconId = "ciel",
                 iconUrl = "https://mizuumi.wiki/images/1/18/MBTL_ciel_icon.png",
             ),
         )
@@ -45,6 +46,7 @@ internal class CharacterRemoteMapperTest {
             wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Akiha_Tohno",
             aliasList = listOf("akiha", "ak",),
             images = Character.Images(
+                iconId = "akiha",
                 iconUrl = "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png"
             )
         )
