@@ -1,4 +1,4 @@
-package io.github.sophon.wikidustloop.data
+package io.github.sophon.wikidustloop.data.remote
 
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result

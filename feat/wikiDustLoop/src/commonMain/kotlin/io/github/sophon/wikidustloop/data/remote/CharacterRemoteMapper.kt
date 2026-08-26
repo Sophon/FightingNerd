@@ -1,4 +1,4 @@
-package io.github.sophon.wikidustloop.data
+package io.github.sophon.wikidustloop.data.remote
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
@@ -8,6 +8,7 @@ import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidustloop.domain.BASE_URL
 import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
+import kotlin.collections.get
 
 internal fun CharacterListResponseDto.toDomain(
     imageUrlMap: Map<String, String>,
@@ -39,6 +40,7 @@ internal fun CharacterDto.toDomain(
         wikiUrl = queryName.formWikiUrl(gameId),
         aliasList = dto.name.createAliases(gameId, dto.aliases),
         images = Character.Images(
+            iconId = dto.icon,
             iconUrl = dto.icon.let { imageUrlMap[it] },
             bannerUrl = dto.portrait.let { imageUrlMap[it] },
         ),

@@ -1,4 +1,4 @@
-package io.github.sophon.wikidustloop.data
+package io.github.sophon.wikidustloop.data.remote
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml

@@ -13,8 +13,8 @@ import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.MoveRepoImpl
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.wikidustloop.data.DustLoopDB
-import io.github.sophon.wikidustloop.data.DustLoopDataSource
-import io.github.sophon.wikidustloop.data.DustLoopDataSourceImpl
+import io.github.sophon.wikidustloop.data.remote.DustLoopDataSource
+import io.github.sophon.wikidustloop.data.remote.DustLoopDataSourceImpl
 import io.github.sophon.wikidustloop.data.db.DustLoopCharacterDbAdapter
 import io.github.sophon.wikidustloop.data.db.DustLoopMoveDbAdapter
 import io.github.sophon.wikidustloop.data.remote.DustLoopCharacterRemoteAdapter

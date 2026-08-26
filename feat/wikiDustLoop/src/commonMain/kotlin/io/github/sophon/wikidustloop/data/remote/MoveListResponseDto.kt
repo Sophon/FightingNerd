@@ -1,4 +1,4 @@
-package io.github.sophon.wikidustloop.data
+package io.github.sophon.wikidustloop.data.remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
