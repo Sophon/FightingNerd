@@ -64,7 +64,7 @@ internal fun CharacterListResponseDto.toDomain(
                 hp = charDto.hp,
                 gameProperties = gameProperties,
             )
-        }
+        }.filterOutKameos()
 
     return characterList
 }
@@ -90,3 +90,6 @@ private fun createWikiUrlFrom(gameId: String, name: String): String {
     return "$WIKI_BASE_URL/$gameId/$name"
 }
 
+private fun List<Character>.filterOutKameos(): List<Character> {
+    return filterNot { it.displayName.contains("(Kameo)") }
+}
