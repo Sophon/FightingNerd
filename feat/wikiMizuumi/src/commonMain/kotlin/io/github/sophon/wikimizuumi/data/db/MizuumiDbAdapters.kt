@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikimizuumi.data.MizuumiDB
+import io.github.sophon.wikimizuumi.integration.model.Uni2Properties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -19,14 +20,15 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 internal class MizuumiCharacterDbAdapter(
     private val db: MizuumiDB,
-    private val gameId: String,
+    private val game: Game,
 ) : CharacterDbAdapter {
     private val queries = db.characterQueries
+    private val uni2Queries = db.uni2CharacterQueries
 
     override fun insert(character: Character) {
         queries.insertCharacter(
             id = character.id,
-            gameId = gameId,
+            gameId = game.id,
             remoteQueryId = character.remoteQueryId,
             wikiUrl = character.wikiUrl,
             displayName = character.displayName,
@@ -36,29 +38,72 @@ internal class MizuumiCharacterDbAdapter(
             imagesIconUrl = character.images?.iconUrl,
             imagesBannerUrl = character.images?.bannerUrl,
         )
+        insertProperties(character)
+    }
+
+    private fun insertProperties(character: Character) {
+        when (game) {
+            Game.Uni2 -> {
+                val p = character.gameProperties as? Uni2Properties ?: return
+                uni2Queries.insertUni2Character(
+                    characterId = character.id,
+                    smartSteer = p.smartSteer,
+                    fWalkSpeed = p.fWalkSpeed,
+                    fWalkSpeedNote = p.fWalkSpeedNote,
+                    bWalkSpeed = p.bWalkSpeed,
+                    bWalkSpeedNote = p.bWalkSpeedNote,
+                    jumpStartup = p.jumpStartup,
+                    jumpDuration = p.jumpDuration,
+                    jumpDurationNote = p.jumpDurationNote,
+                    dashStartup = p.dashStartup,
+                    iDashSpeed = p.iDashSpeed,
+                    iDashSpeedNote = p.iDashSpeedNote,
+                    dashAccel = p.dashAccel,
+                    dashAccelNote = p.dashAccelNote,
+                    maxDashSpeed = p.maxDashSpeed,
+                    bDashStartup = p.bDashStartup,
+                    bDashDuration = p.bDashDuration,
+                    bDashDurationNote = p.bDashDurationNote,
+                    bDashDistance = p.bDashDistance,
+                    bDashDistanceNote = p.bDashDistanceNote,
+                    bDashFullInvulStart = p.bDashFullInvulStart,
+                    bDashFullInvulEnd = p.bDashFullInvulEnd,
+                    bDashThrowInvulStart = p.bDashThrowInvulStart,
+                    bDashThrowInvulEnd = p.bDashThrowInvulEnd,
+                    throwWidth = p.throwWidth,
+                    throwRange = p.throwRange,
+                    trait = p.trait,
+                    vorpalTrait = p.vorpalTrait,
+                )
+            }
+            else -> Unit
+        }
     }
 
     override fun selectAllFlow(): Flow<List<Character>> {
-        val flow = queries.selectAllForGame(gameId)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-            .map { rows ->
-                val characters = rows.map { it.toDomain() }
-                characters
-            }
+        val flow = when (game) {
+            Game.Uni2 -> queries.selectUni2ForGame(game.id)
+                .asFlow()
+                .mapToList(Dispatchers.IO)
+                .map { rows -> rows.map { it.toDomain() } }
+            else -> queries.selectAllForGame(game.id)
+                .asFlow()
+                .mapToList(Dispatchers.IO)
+                .map { rows -> rows.map { it.toDomain() } }
+        }
         return flow
     }
 
     override fun incrementFailureCountForAbsent(remoteIds: List<String>) {
-        queries.incrementFailureCountForAbsentInGame(gameId, remoteIds)
+        queries.incrementFailureCountForAbsentInGame(game.id, remoteIds)
     }
 
     override fun deleteExceededThreshold(threshold: Long) {
-        queries.deleteExceededThresholdForGame(gameId, threshold)
+        queries.deleteExceededThresholdForGame(game.id, threshold)
     }
 
     override fun deleteAll() {
-        queries.deleteAllForGame(gameId)
+        queries.deleteAllForGame(game.id)
     }
 
     override fun transaction(block: () -> Unit) {
@@ -66,7 +111,7 @@ internal class MizuumiCharacterDbAdapter(
     }
 
     override fun getLastUpdateTimestamp(): Instant? {
-        val millis = queries.selectLastInsertedAtForGame(gameId).executeAsOne().lastInsertedAt
+        val millis = queries.selectLastInsertedAtForGame(game.id).executeAsOne().lastInsertedAt
         val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
         return timestamp
     }
