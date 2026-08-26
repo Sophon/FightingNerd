@@ -1,0 +1,24 @@
+CREATE TABLE GBVSRCharacterEntity (
+    characterId TEXT NOT NULL PRIMARY KEY,
+    backdash TEXT,
+    walkSpeed TEXT,
+    walkSpeedBack TEXT,
+    dashInitial TEXT,
+    dashAcceleration TEXT,
+    jumpPre TEXT,
+    jumpForwardDistance TEXT,
+    jumpSuperForwardDistance TEXT,
+    jumpBackDistance TEXT,
+    jumpSuperBackDistance TEXT,
+    jumpGravity TEXT,
+    jumpSuperGravity TEXT,
+    jumpSuperHeight TEXT,
+    closeRangeL TEXT,
+    closeRangeM TEXT,
+    closeRangeH TEXT,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertGBVSRCharacter:
+INSERT OR REPLACE INTO GBVSRCharacterEntity(characterId, backdash, walkSpeed, walkSpeedBack, dashInitial, dashAcceleration, jumpPre, jumpForwardDistance, jumpSuperForwardDistance, jumpBackDistance, jumpSuperBackDistance, jumpGravity, jumpSuperGravity, jumpSuperHeight, closeRangeL, closeRangeM, closeRangeH)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

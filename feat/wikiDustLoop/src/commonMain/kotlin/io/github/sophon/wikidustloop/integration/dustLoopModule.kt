@@ -44,7 +44,7 @@ fun dustLoopModule() = module {
         single<CharacterDbAdapter>(gameQualifier) {
             DustLoopCharacterDbAdapter(
                 db = get(named(WikiClientFeature.DustLoop.id)),
-                gameId = game.id,
+                game = game,
             )
         }
         single<MoveDbAdapter>(gameQualifier) {

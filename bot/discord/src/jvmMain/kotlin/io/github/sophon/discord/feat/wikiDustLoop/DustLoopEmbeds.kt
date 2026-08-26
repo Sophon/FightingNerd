@@ -14,6 +14,10 @@ import io.github.sophon.discord.util.hitboxImages
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.wikidustloop.integration.model.BBProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
+import io.github.sophon.wikidustloop.integration.model.GGSTProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSProperties
 
 internal fun charEmbedBuilder(
     game: Game,
@@ -155,7 +159,7 @@ private fun EmbedBuilder.generalPropertiesChar(
 }
 
 private fun EmbedBuilder.charDetailsGG(character: Character) {
-    val properties = character.ggstProperties
+    val properties = (character.gameProperties as? GGSTProperties) ?: return
 
     mandatoryField(
         name = "⭐️ CORE",
@@ -214,30 +218,30 @@ private fun EmbedBuilder.charDetailsGG(character: Character) {
 }
 
 private fun EmbedBuilder.charDetailsGB(character: Character) {
-    character.gbvsrProperties?.apply {
-        optionalField(name = "Prejump", value = jump?.pre)
-        optionalField(name = "Backdash", value = backdash)
-    }
+    val properties = (character.gameProperties as? GBVSRProperties) ?: return
+
+    optionalField(name = "Prejump", value = properties.jump?.pre)
+    optionalField(name = "Backdash", value = properties.backdash)
 }
 
 private fun EmbedBuilder.charDetailsBB(character: Character) {
-    character.bbProperties?.apply {
-        mandatoryField(
-            name = "Dash",
-            value = "Forward: $forwardDash\n" +
-                    "Back: $backDash"
-        )
+    val properties = (character.gameProperties as? BBProperties) ?: return
 
-        mandatoryField(name = "Prejump", value = preJump)
-    }
+    mandatoryField(
+        name = "Dash",
+        value = "Forward: ${properties.forwardDash}\n" +
+                "Back: ${properties.backDash}"
+    )
+
+    mandatoryField(name = "Prejump", value = properties.preJump)
 }
 
 private fun EmbedBuilder.charDetailsMT(character: Character) {
-    character.mtfsProperties?.apply {
-        optionalField(name = "Team", value = team)
-        optionalField(name = "Prejump", value = prejump)
-        optionalField(name = "Backdash", value = backdash)
-    }
+    val properties = (character.gameProperties as? MTFSProperties) ?: return
+
+    optionalField(name = "Team", value = properties.team)
+    optionalField(name = "Prejump", value = properties.prejump)
+    optionalField(name = "Backdash", value = properties.backdash)
 }
 
 
