@@ -49,7 +49,7 @@ fun mizuumiModule() = module {
         single<CharacterDbAdapter>(gameQualifier) {
             MizuumiCharacterDbAdapter(
                 db = get(named(WikiClientFeature.Mizuumi.id)),
-                gameId = game.id,
+                game = game,
             )
         }
         single<MoveDbAdapter>(gameQualifier) {

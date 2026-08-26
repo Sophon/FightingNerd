@@ -5,6 +5,9 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiSuperCombo.data.SelectAVLByCharacter
 import io.github.sophon.wikiSuperCombo.data.SelectMK1ByCharacter
 import io.github.sophon.wikiSuperCombo.data.SelectSF6ByCharacter
+import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
+import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
 
 internal fun SelectSF6ByCharacter.toDomain(): Move {
     val move = Move(
@@ -32,8 +35,8 @@ internal fun SelectSF6ByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        sf6Properties = Move.SF6Properties(
-            type = type?.let { runCatching { Move.SF6Properties.Type.valueOf(it) }.getOrNull() },
+        gameProperties = SF6MoveProperties(
+            type = type?.let { runCatching { SF6MoveProperties.Type.valueOf(it) }.getOrNull() },
             images = images?.toDomain(),
             chip = chip,
             dmgScaling = dmgScaling,
@@ -91,7 +94,7 @@ internal fun SelectMK1ByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        mkProperties = Move.MKProperties(
+        gameProperties = MKMoveProperties(
             moveType = moveType,
             cost = cost.orEmpty().toDomain(),
             chip = chip,
@@ -130,7 +133,7 @@ internal fun SelectAVLByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        avlProperties = Move.AVLProperties(
+        gameProperties = AVLProperties(
             chiDamage = chiDamage,
             flow = flow,
             type = type,

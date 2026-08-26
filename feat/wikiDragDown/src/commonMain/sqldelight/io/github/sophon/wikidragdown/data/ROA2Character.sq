@@ -1,0 +1,42 @@
+CREATE TABLE ROA2CharacterEntity (
+    characterId TEXT NOT NULL PRIMARY KEY,
+    dacusSpeedMultiplier TEXT,
+    weight TEXT,
+    frictionGround TEXT,
+    frictionAir TEXT,
+    dashFrames TEXT,
+    dashSpeed TEXT,
+    dashAcceleration TEXT,
+    runSpeedMax TEXT,
+    runTurnAcceleration TEXT,
+    runTurnFrames TEXT,
+    walkAccelerationMax TEXT,
+    walkSpeedMax TEXT,
+    gravity TEXT,
+    hitstunGravity TEXT,
+    fallSpeedMax TEXT,
+    fastFallSpeed TEXT,
+    airAcceleration TEXT,
+    airSpeedHorizontalMax TEXT,
+    jumpSpeedHorizontalMax TEXT,
+    fullHopSpeed TEXT,
+    shortHopSpeed TEXT,
+    doubleJumpSpeed TEXT,
+    doubleJumpMaxHorizontalSpeed TEXT,
+    airDodgeSpeed TEXT,
+    airDodgeFriction TEXT,
+    rollSpeed TEXT,
+    shieldSizeMultiplier TEXT,
+    ledgeStandSpeed TEXT,
+    ledgeRollSpeed TEXT,
+    ledgeJumpMaxHorizontalAirSpeed TEXT,
+    getupRollSpeed TEXT,
+    techRollSpeed TEXT,
+    wallJumpSpeedY TEXT,
+    wallJumpSpeedX TEXT,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertROA2Character:
+INSERT OR REPLACE INTO ROA2CharacterEntity(characterId, dacusSpeedMultiplier, weight, frictionGround, frictionAir, dashFrames, dashSpeed, dashAcceleration, runSpeedMax, runTurnAcceleration, runTurnFrames, walkAccelerationMax, walkSpeedMax, gravity, hitstunGravity, fallSpeedMax, fastFallSpeed, airAcceleration, airSpeedHorizontalMax, jumpSpeedHorizontalMax, fullHopSpeed, shortHopSpeed, doubleJumpSpeed, doubleJumpMaxHorizontalSpeed, airDodgeSpeed, airDodgeFriction, rollSpeed, shieldSizeMultiplier, ledgeStandSpeed, ledgeRollSpeed, ledgeJumpMaxHorizontalAirSpeed, getupRollSpeed, techRollSpeed, wallJumpSpeedY, wallJumpSpeedX)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

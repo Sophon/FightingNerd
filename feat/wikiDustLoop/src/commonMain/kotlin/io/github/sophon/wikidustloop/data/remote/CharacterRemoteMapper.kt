@@ -8,6 +8,11 @@ import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidustloop.domain.BASE_URL
 import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
+import io.github.sophon.wikidustloop.integration.model.BBProperties
+import io.github.sophon.wikidustloop.integration.model.DBFZProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
+import io.github.sophon.wikidustloop.integration.model.GGSTProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSProperties
 import kotlin.collections.get
 
 internal fun CharacterListResponseDto.toDomain(
@@ -33,6 +38,88 @@ internal fun CharacterDto.toDomain(
         ?.cleanHtml()
         .formCharacterQueryName(gameId)
 
+    val gameProperties = when (Game.fromId(gameId)) {
+        Game.GGST -> {
+            GGSTProperties(
+                defense = dto.defense,
+                guts = dto.guts,
+                guardBalance = dto.guardBalance,
+                prejump = dto.prejump,
+                bwdDash = dto.backdash,
+                bwdDashDuration = dto.backdashDuration,
+                bwdDashInvulnerability = dto.backdashInvuln,
+                bwdDashAirborne = dto.backdashAirborne,
+                bwdDashDist = dto.backdashDistance,
+                fwdDash = dto.forwardDash,
+                jumpDuration = dto.jumpDuration,
+                highJumpDuration = dto.highJumpDuration,
+                jumpHeight = dto.jumpHeight,
+                highJumpHeight = dto.highJumpHeight,
+                earliestIAD = dto.earliestIad,
+                adDuration = dto.adDuration,
+                abdDuration = dto.abdDuration,
+                adDist = dto.adDistance,
+                abdDist = dto.abdDistance,
+                movementTension = dto.movementTension,
+                jumpTension = dto.jumpTension,
+                airDashTension = dto.airDashTension,
+                walkSpd = dto.walkSpeed,
+                bwdWalkSpd = dto.backWalkSpeed,
+                dashInitialSpd = dto.dashInitialSpeed,
+                dashAcceleration = dto.dashAcceleration,
+                dashFriction = dto.dashFriction,
+                jumpGravity = dto.jumpGravity,
+                highJumpGravity = dto.highJumpGravity,
+                boostAttack = dto.boostAttack,
+                boostDefense = dto.boostDefense,
+            )
+        }
+        Game.BBCF -> {
+            BBProperties(
+                preJump = dto.prejump?.cleanHtml(),
+                backDash = dto.backdash?.cleanHtml(),
+                forwardDash = dto.forwardDash?.cleanHtml(),
+            )
+        }
+        Game.MTFS -> {
+            MTFSProperties(
+                prejump = dto.prejump?.cleanHtml(),
+                backdash = dto.backdash?.cleanHtml(),
+                team = dto.team?.cleanHtml(),
+            )
+        }
+        Game.GBVSR -> {
+            GBVSRProperties(
+                jump = GBVSRProperties.Jump(
+                    pre = dto.prejump,
+                    forwardDistance = dto.f_jump_distance?.toString(),
+                    superForwardDistance = dto.f_superjump_distance?.toString(),
+                    backDistance = dto.b_jump_distance?.toString(),
+                    superBackDistance = dto.b_superjump_distance?.toString(),
+                    gravity = dto.jumpGravity,
+                    superGravity = dto.superjump_gravity?.toString(),
+                    superHeight = dto.superjump_height?.toString(),
+                ),
+                backdash = dto.backdash?.cleanHtml(),
+                walkSpeed = dto.walk_speed.toString(),
+                walkSpeedBack = dto.backwalk_speed.toString(),
+                dashInitial = dto.dash_initial_speed.toString(),
+                dashAcceleration = dto.dash_acceleration,
+                closeRange = GBVSRProperties.CloseRange(
+                    l = dto.close_l_range?.toString(),
+                    m = dto.close_m_range?.toString(),
+                    h = dto.close_h_range?.toString(),
+                )
+            )
+        }
+        Game.DBFZ -> {
+            DBFZProperties(
+                kiMod = dto.kimod?.cleanHtml(),
+            )
+        }
+        else -> null
+    }
+
     val character = Character(
         id = id,
         displayName = displayName,
@@ -46,74 +133,7 @@ internal fun CharacterDto.toDomain(
         ),
         hp = dto.health?.cleanHtml(),
         umo = dto.umo.formUmo(),
-        ggstProperties = Character.GGSTProperties(
-            defense = dto.defense,
-            guts = dto.guts,
-            guardBalance = dto.guardBalance,
-            prejump = dto.prejump,
-            bwdDash = dto.backdash,
-            bwdDashDuration = dto.backdashDuration,
-            bwdDashInvulnerability = dto.backdashInvuln,
-            bwdDashAirborne = dto.backdashAirborne,
-            bwdDashDist = dto.backdashDistance,
-            fwdDash = dto.forwardDash,
-            jumpDuration = dto.jumpDuration,
-            highJumpDuration = dto.highJumpDuration,
-            jumpHeight = dto.jumpHeight,
-            highJumpHeight = dto.highJumpHeight,
-            earliestIAD = dto.earliestIad,
-            adDuration = dto.adDuration,
-            abdDuration = dto.abdDuration,
-            adDist = dto.adDistance,
-            abdDist = dto.abdDistance,
-            movementTension = dto.movementTension,
-            jumpTension = dto.jumpTension,
-            airDashTension = dto.airDashTension,
-            walkSpd = dto.walkSpeed,
-            bwdWalkSpd = dto.backWalkSpeed,
-            dashInitialSpd = dto.dashInitialSpeed,
-            dashAcceleration = dto.dashAcceleration,
-            dashFriction = dto.dashFriction,
-            jumpGravity = dto.jumpGravity,
-            highJumpGravity = dto.highJumpGravity,
-            boostAttack = dto.boostAttack,
-            boostDefense = dto.boostDefense,
-        ),
-        dbfzProperties = Character.DBFZProperties(
-            kiMod = dto.kimod?.cleanHtml(),
-        ),
-        gbvsrProperties = Character.GBVSRProperties(
-            jump = Character.GBVSRProperties.Jump(
-                pre = dto.prejump,
-                forwardDistance = dto.f_jump_distance?.toString(),
-                superForwardDistance = dto.f_superjump_distance?.toString(),
-                backDistance = dto.b_jump_distance?.toString(),
-                superBackDistance = dto.b_superjump_distance?.toString(),
-                gravity = dto.jumpGravity,
-                superGravity = dto.superjump_gravity?.toString(),
-                superHeight = dto.superjump_height?.toString(),
-            ),
-            backdash = dto.backdash?.cleanHtml(),
-            walkSpeed = dto.walk_speed.toString(),
-            walkSpeedBack = dto.backwalk_speed.toString(),
-            dashInitial = dto.dash_initial_speed.toString(),
-            dashAcceleration = dto.dash_acceleration,
-            closeRange = Character.GBVSRProperties.CloseRange(
-                l = dto.close_l_range?.toString(),
-                m = dto.close_m_range?.toString(),
-                h = dto.close_h_range?.toString(),
-            )
-        ),
-        bbProperties = Character.BBProperties(
-            preJump = dto.prejump?.cleanHtml(),
-            backDash = dto.backdash?.cleanHtml(),
-            forwardDash = dto.forwardDash?.cleanHtml(),
-        ),
-        mtfsProperties = Character.MTFSProperties(
-            prejump = dto.prejump?.cleanHtml(),
-            backdash = dto.backdash?.cleanHtml(),
-            team = dto.team?.cleanHtml(),
-        ),
+        gameProperties = gameProperties,
     )
 
     return character

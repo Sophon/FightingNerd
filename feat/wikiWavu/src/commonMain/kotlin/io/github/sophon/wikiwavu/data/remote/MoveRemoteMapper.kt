@@ -8,6 +8,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.domain.MOVE_URL
 import io.github.sophon.wikiwavu.domain.VIDEO_URL
 import io.github.sophon.wikiwavu.integration.cleanMoveInput
+import io.github.sophon.wikiwavu.integration.model.T8Properties
 
 internal fun MoveListResponseDto.toDomain(character: Character): List<Move> {
     val downloadedMoves = extractMoveDto()
@@ -56,7 +57,7 @@ internal fun MoveDto.toDomain(
             wikiUrl = formMoveWikiUrl(characterRemoteQueryId = character.remoteQueryId, moveId = id),
         ),
 
-        t8Properties = formProperties(
+        gameProperties = formProperties(
             notes = unifiedNotes,
             crushes = cleanedCrushes,
             input = fullInput,
@@ -260,7 +261,7 @@ private fun formProperties(
     crushes: List<String>,
     input: String,
     aliases: List<String>,
-): Move.T8Properties {
+): T8Properties {
     val isHeat = notes.any { it.contains("Heat Engager", ignoreCase = true) }
             || notes.any { it.contains("Heat Smash", ignoreCase = true) }
             || input.contains("H.", ignoreCase = true)
@@ -274,7 +275,7 @@ private fun formProperties(
     val hasWallInteraction = notes.any { it.contains("balcony break", ignoreCase = true) }
     val hasFloorInteraction = notes.any { it.contains("floor break", ignoreCase = true) }
 
-    val properties = Move.T8Properties(
+    val properties = T8Properties(
         isHeat = isHeat,
         isHoming = isHoming,
         stance = stance,

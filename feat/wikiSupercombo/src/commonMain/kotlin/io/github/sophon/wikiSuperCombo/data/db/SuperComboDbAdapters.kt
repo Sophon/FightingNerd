@@ -9,6 +9,11 @@ import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiSuperCombo.data.SuperComboDB
+import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
+import io.github.sophon.wikiSuperCombo.integration.model.MK1Properties
+import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -19,14 +24,16 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 internal class SuperComboCharacterDbAdapter(
     private val db: SuperComboDB,
-    private val gameId: String,
+    private val game: Game,
 ) : CharacterDbAdapter {
     private val queries = db.characterQueries
+    private val sf6Queries = db.sF6CharacterQueries
+    private val mk1Queries = db.mK1CharacterQueries
 
     override fun insert(character: Character) {
         queries.insertCharacter(
             id = character.id,
-            gameId = gameId,
+            gameId = game.id,
             remoteQueryId = character.remoteQueryId,
             wikiUrl = character.wikiUrl,
             displayName = character.displayName,
@@ -36,29 +43,74 @@ internal class SuperComboCharacterDbAdapter(
             imagesIconUrl = character.images?.iconUrl,
             imagesBannerUrl = character.images?.bannerUrl,
         )
+        insertProperties(character)
+    }
+
+    private fun insertProperties(character: Character) {
+        when (game) {
+            Game.StreetFighter6 -> {
+                val p = character.gameProperties as? SF6Properties ?: return
+                sf6Queries.insertSF6Character(
+                    characterId = character.id,
+                    fwdWalkSpd = p.fwdWalkSpd,
+                    bwdWalkSpd = p.bwdWalkSpd,
+                    fwdDashSpd = p.fwdDashSpd,
+                    bwdDashSpd = p.bwdDashSpd,
+                    fwdDashDist = p.fwdDashDist,
+                    bwdDashDist = p.bwdDashDist,
+                    dRushMin = p.dRushMin,
+                    dRushBlock = p.dRushBlock,
+                    dRushMax = p.dRushMax,
+                    throwRange = p.throwRange,
+                    throwHurtbox = p.throwHurtbox,
+                    jumpSpd = p.jumpSpd,
+                    jumpApex = p.jumpApex,
+                    fwdJumpDist = p.fwdJumpDist,
+                    bwdJumpDist = p.bwdJumpDist,
+                )
+            }
+            Game.MK1 -> {
+                val p = character.gameProperties as? MK1Properties ?: return
+                mk1Queries.insertMK1Character(
+                    characterId = character.id,
+                    hpMod = p.hpMod,
+                    throwDmg = p.throwDmg,
+                )
+            }
+            Game.AVL -> Unit
+            else -> error("${game.id} is not supported by SuperCombo CharacterDbAdapter")
+        }
     }
 
     override fun selectAllFlow(): Flow<List<Character>> {
-        val flow = queries.selectAllForGame(gameId)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-            .map { rows ->
-                val characters = rows.map { it.toDomain() }
-                characters
-            }
+        val flow = when (game) {
+            Game.StreetFighter6 -> queries.selectSF6ForGame(game.id)
+                .asFlow()
+                .mapToList(Dispatchers.IO)
+                .map { rows -> rows.map { it.toDomain() } }
+            Game.MK1 -> queries.selectMK1ForGame(game.id)
+                .asFlow()
+                .mapToList(Dispatchers.IO)
+                .map { rows -> rows.map { it.toDomain() } }
+            Game.AVL -> queries.selectAllForGame(game.id)
+                .asFlow()
+                .mapToList(Dispatchers.IO)
+                .map { rows -> rows.map { it.toDomain() } }
+            else -> error("${game.id} is not supported by SuperCombo CharacterDbAdapter")
+        }
         return flow
     }
 
     override fun incrementFailureCountForAbsent(remoteIds: List<String>) {
-        queries.incrementFailureCountForAbsentInGame(gameId, remoteIds)
+        queries.incrementFailureCountForAbsentInGame(game.id, remoteIds)
     }
 
     override fun deleteExceededThreshold(threshold: Long) {
-        queries.deleteExceededThresholdForGame(gameId, threshold)
+        queries.deleteExceededThresholdForGame(game.id, threshold)
     }
 
     override fun deleteAll() {
-        queries.deleteAllForGame(gameId)
+        queries.deleteAllForGame(game.id)
     }
 
     override fun transaction(block: () -> Unit) {
@@ -66,7 +118,7 @@ internal class SuperComboCharacterDbAdapter(
     }
 
     override fun getLastUpdateTimestamp(): Instant? {
-        val millis = queries.selectLastInsertedAtForGame(gameId).executeAsOne().lastInsertedAt
+        val millis = queries.selectLastInsertedAtForGame(game.id).executeAsOne().lastInsertedAt
         val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
         return timestamp
     }
@@ -114,7 +166,7 @@ internal class SuperComboMoveDbAdapter(
     private fun insertProperties(move: Move) {
         when (game) {
             Game.StreetFighter6 -> {
-                val p = move.sf6Properties
+                val p = move.gameProperties as? SF6MoveProperties
                 sf6Queries.insertSF6Move(
                     moveId = move.id,
                     type = p?.type?.name,
@@ -147,7 +199,7 @@ internal class SuperComboMoveDbAdapter(
                 )
             }
             Game.MK1 -> {
-                val p = move.mkProperties
+                val p = move.gameProperties as? MKMoveProperties
                 mk1Queries.insertMK1Move(
                     moveId = move.id,
                     moveType = p?.moveType,
@@ -160,7 +212,7 @@ internal class SuperComboMoveDbAdapter(
                 )
             }
             Game.AVL -> {
-                val p = move.avlProperties
+                val p = move.gameProperties as? AVLProperties
                 avlQueries.insertAVLMove(
                     moveId = move.id,
                     chiDamage = p?.chiDamage,

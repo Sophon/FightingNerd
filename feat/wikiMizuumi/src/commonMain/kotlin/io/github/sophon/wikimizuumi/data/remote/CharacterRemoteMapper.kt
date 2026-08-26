@@ -6,6 +6,7 @@ import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.removeAccents
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikimizuumi.domain.FEATURE_URL
+import io.github.sophon.wikimizuumi.integration.model.Uni2Properties
 
 internal fun String.toDomain(
     gameId: String,
@@ -46,6 +47,41 @@ internal fun CharacterListResponseDto.toDomain(
     return cargoquery.map {
         val dto = it.title
 
+        val gameProperties = when (Game.fromId(gameId)) {
+            Game.Uni2 -> {
+                Uni2Properties(
+                    smartSteer = dto.smartSteer,
+                    fWalkSpeed = dto.fWalkSpeed?.cleanHtmlOrNull(),
+                    fWalkSpeedNote = dto.fWalkSpeedNote?.cleanHtmlOrNull(),
+                    bWalkSpeed = dto.bWalkSpeed?.cleanHtmlOrNull(),
+                    bWalkSpeedNote = dto.bWalkSpeedNote?.cleanHtmlOrNull(),
+                    jumpStartup = dto.jumpStartup?.cleanHtmlOrNull(),
+                    jumpDuration = dto.jumpDuration?.cleanHtmlOrNull(),
+                    jumpDurationNote = dto.jumpDurationNote?.cleanHtmlOrNull(),
+                    dashStartup = dto.dashStartup?.cleanHtmlOrNull(),
+                    iDashSpeed = dto.iDashSpeed?.cleanHtmlOrNull(),
+                    iDashSpeedNote = dto.iDashSpeedNote?.cleanHtmlOrNull(),
+                    dashAccel = dto.dashAccel?.cleanHtmlOrNull(),
+                    dashAccelNote = dto.dashAccelNote?.cleanHtmlOrNull(),
+                    maxDashSpeed = dto.maxDashSpeed?.cleanHtmlOrNull(),
+                    bDashStartup = dto.bDashStartup?.cleanHtmlOrNull(),
+                    bDashDuration = dto.bDashDuration?.cleanHtmlOrNull(),
+                    bDashDurationNote = dto.bDashDurationNote?.cleanHtmlOrNull(),
+                    bDashDistance = dto.bDashDistance?.cleanHtmlOrNull(),
+                    bDashDistanceNote = dto.bDashDistanceNote?.cleanHtmlOrNull(),
+                    bDashFullInvulStart = dto.bDashFullInvulStart?.cleanHtmlOrNull(),
+                    bDashFullInvulEnd = dto.bDashFullInvulEnd?.cleanHtmlOrNull(),
+                    bDashThrowInvulStart = dto.bDashThrowInvulStart?.cleanHtmlOrNull(),
+                    bDashThrowInvulEnd = dto.bDashThrowInvulEnd?.cleanHtmlOrNull(),
+                    throwWidth = dto.throwWidth?.cleanHtmlOrNull(),
+                    throwRange = dto.throwRange?.cleanHtmlOrNull(),
+                    trait = dto.trait?.cleanHtmlOrNull().formatBulletPoints(),
+                    vorpalTrait = dto.vorpalTrait?.cleanHtmlOrNull().formatBulletPoints(),
+                )
+            }
+            else -> null
+        }
+
         val character = Character(
             id = dto.chara.lowercase(),
             displayName = dto.chara,
@@ -57,49 +93,13 @@ internal fun CharacterListResponseDto.toDomain(
                 iconUrl = imageUrlMap[it.title.chara],
             ),
             hp = dto.health,
-            uni2Properties = Character.Uni2Properties(
-                smartSteer = dto.smartSteer,
-                fWalkSpeed = dto.fWalkSpeed?.cleanHtmlOrNull(),
-                fWalkSpeedNote = dto.fWalkSpeedNote?.cleanHtmlOrNull(),
-                bWalkSpeed = dto.bWalkSpeed?.cleanHtmlOrNull(),
-                bWalkSpeedNote = dto.bWalkSpeedNote?.cleanHtmlOrNull(),
-                jumpStartup = dto.jumpStartup?.cleanHtmlOrNull(),
-                jumpDuration = dto.jumpDuration?.cleanHtmlOrNull(),
-                jumpDurationNote = dto.jumpDurationNote?.cleanHtmlOrNull(),
-                dashStartup = dto.dashStartup?.cleanHtmlOrNull(),
-                iDashSpeed = dto.iDashSpeed?.cleanHtmlOrNull(),
-                iDashSpeedNote = dto.iDashSpeedNote?.cleanHtmlOrNull(),
-                dashAccel = dto.dashAccel?.cleanHtmlOrNull(),
-                dashAccelNote = dto.dashAccelNote?.cleanHtmlOrNull(),
-                maxDashSpeed = dto.maxDashSpeed?.cleanHtmlOrNull(),
-                bDashStartup = dto.bDashStartup?.cleanHtmlOrNull(),
-                bDashDuration = dto.bDashDuration?.cleanHtmlOrNull(),
-                bDashDurationNote = dto.bDashDurationNote?.cleanHtmlOrNull(),
-                bDashDistance = dto.bDashDistance?.cleanHtmlOrNull(),
-                bDashDistanceNote = dto.bDashDistanceNote?.cleanHtmlOrNull(),
-                bDashFullInvulStart = dto.bDashFullInvulStart?.cleanHtmlOrNull(),
-                bDashFullInvulEnd = dto.bDashFullInvulEnd?.cleanHtmlOrNull(),
-                bDashThrowInvulStart = dto.bDashThrowInvulStart?.cleanHtmlOrNull(),
-                bDashThrowInvulEnd = dto.bDashThrowInvulEnd?.cleanHtmlOrNull(),
-                throwWidth = dto.throwWidth?.cleanHtmlOrNull(),
-                throwRange = dto.throwRange?.cleanHtmlOrNull(),
-                trait = dto.trait?.cleanHtmlOrNull().formatBulletPoints(),
-                vorpalTrait = dto.vorpalTrait?.cleanHtmlOrNull().formatBulletPoints(),
-            ),
+            gameProperties = gameProperties,
         )
 
         character
     }
 }
 
-//TODO: this might be a core util
-internal fun String.createQueryName(): String {
-    return this
-        .cleanHtml()
-        .removeAccents()
-        .split(' ')
-        .joinToString("_")
-}
 
 @Suppress("CyclomaticComplexMethod")
 internal fun String.createAliases(): List<String> {

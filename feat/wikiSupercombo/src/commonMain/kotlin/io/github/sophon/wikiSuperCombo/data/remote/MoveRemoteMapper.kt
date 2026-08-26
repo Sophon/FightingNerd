@@ -7,6 +7,9 @@ import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
+import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
+import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
 import io.github.sophon.wikiSuperCombo.util.cleanMoveInput
 
 internal fun MoveListResponseDto.toDomain(
@@ -38,6 +41,57 @@ internal fun MoveDto.toDomain(
         .takeIfNotTemplate()
         ?.cleanHtml()
         .extractNotes()
+
+    val gameProperties = when (Game.fromId(gameId)) {
+        Game.StreetFighter6 -> {
+            SF6MoveProperties(
+                type = type,
+                images = images.takeIfNotTemplate()
+                    ?.split(",")
+                    ?.map { it.trim() },
+                chip = chip.takeIfNotTemplate(),
+                dmgScaling = dmgScaling.takeIfNotTemplate(),
+                total = total.takeIfNotTemplate(),
+                hitConfirm = hitconfirm.takeIfNotTemplate(),
+                punishAdv = punishAdv.takeIfNotTemplate()?.cleanHtml(),
+                perfParryAdv = perfParryAdv.takeIfNotTemplate()?.cleanHtml(),
+                DRcOH = DRcancelHit.takeIfNotTemplate()?.cleanHtml(),
+                DRcOB = DRcancelBlk.takeIfNotTemplate()?.cleanHtml(),
+                DROH = afterDRHit.takeIfNotTemplate()?.cleanHtml(),
+                DROB = afterDRBlk.takeIfNotTemplate()?.cleanHtml(),
+                hitStun = hitstun.takeIfNotTemplate()?.cleanHtml(),
+                blockStun = blockstun.takeIfNotTemplate()?.cleanHtml(),
+                hitStop = hitstop.takeIfNotTemplate()?.cleanHtml(),
+                driveDmgOnBlock = driveDmgBlk.takeIfNotTemplate(),
+                driveDmgOnHit = driveDmgHit.takeIfNotTemplate(),
+                driveGain = driveGain.takeIfNotTemplate(),
+                superGainOnHit = superGainHit.takeIfNotTemplate(),
+                superGainOnBlock = superGainBlk.takeIfNotTemplate(),
+                armor = armor.takeIfNotTemplate(),
+                jugStart = jugStart.takeIfNotTemplate()?.cleanHtml(),
+                jugIncrease = jugIncrease.takeIfNotTemplate()?.cleanHtml(),
+                jugLimit = jugLimit.takeIfNotTemplate(),
+                projectileSpeed = projSpeed.takeIfNotTemplate(),
+                attackRange = atkRange.takeIfNotTemplate(),
+            )
+        }
+        Game.MK1 -> {
+            MKMoveProperties(
+                moveType = moveType.takeIfNotTemplate(),
+                cost = moveType
+                    .split(",")
+                    .filterNot { it.takeIfNotTemplate() == null }
+            )
+        }
+        Game.AVL -> {
+            AVLProperties(
+                chiDamage = flowDamage,
+                flow = flow,
+                type = moveType,
+            )
+        }
+        else -> null
+    }
 
     val move = Move(
         characterId = character.id,
@@ -81,47 +135,7 @@ internal fun MoveDto.toDomain(
             )
         ),
 
-        sf6Properties = Move.SF6Properties(
-            type = type,
-            images = images.takeIfNotTemplate()
-                ?.split(",")
-                ?.map { it.trim() },
-            chip = chip.takeIfNotTemplate(),
-            dmgScaling = dmgScaling.takeIfNotTemplate(),
-            total = total.takeIfNotTemplate(),
-            hitConfirm = hitconfirm.takeIfNotTemplate(),
-            punishAdv = punishAdv.takeIfNotTemplate()?.cleanHtml(),
-            perfParryAdv = perfParryAdv.takeIfNotTemplate()?.cleanHtml(),
-            DRcOH = DRcancelHit.takeIfNotTemplate()?.cleanHtml(),
-            DRcOB = DRcancelBlk.takeIfNotTemplate()?.cleanHtml(),
-            DROH = afterDRHit.takeIfNotTemplate()?.cleanHtml(),
-            DROB = afterDRBlk.takeIfNotTemplate()?.cleanHtml(),
-            hitStun = hitstun.takeIfNotTemplate()?.cleanHtml(),
-            blockStun = blockstun.takeIfNotTemplate()?.cleanHtml(),
-            hitStop = hitstop.takeIfNotTemplate()?.cleanHtml(),
-            driveDmgOnBlock = driveDmgBlk.takeIfNotTemplate(),
-            driveDmgOnHit = driveDmgHit.takeIfNotTemplate(),
-            driveGain = driveGain.takeIfNotTemplate(),
-            superGainOnHit = superGainHit.takeIfNotTemplate(),
-            superGainOnBlock = superGainBlk.takeIfNotTemplate(),
-            armor = armor.takeIfNotTemplate(),
-            jugStart = jugStart.takeIfNotTemplate()?.cleanHtml(),
-            jugIncrease = jugIncrease.takeIfNotTemplate()?.cleanHtml(),
-            jugLimit = jugLimit.takeIfNotTemplate(),
-            projectileSpeed = projSpeed.takeIfNotTemplate(),
-            attackRange = atkRange.takeIfNotTemplate(),
-        ),
-        mkProperties = Move.MKProperties(
-            moveType = moveType.takeIfNotTemplate(),
-            cost = moveType
-                .split(",")
-                .filterNot { it.takeIfNotTemplate() == null }
-        ),
-        avlProperties = Move.AVLProperties(
-            chiDamage = flowDamage,
-            flow = flow,
-            type = moveType,
-        )
+        gameProperties = gameProperties,
     )
     return move
 }
@@ -137,15 +151,15 @@ private fun String?.extractNotes(): List<String> {
         ?: emptyList()
 }
 
-private fun MoveDto.getType(): Move.SF6Properties.Type? {
+private fun MoveDto.getType(): SF6MoveProperties.Type? {
     return when (moveType.lowercase()) {
-        "ground_normal" -> Move.SF6Properties.Type.GROUND_NORMAL
-        "air_normal" -> Move.SF6Properties.Type.AIR_NORMAL
-        "special" -> Move.SF6Properties.Type.SPECIAL
-        "super" -> Move.SF6Properties.Type.SUPER
-        "throw" -> Move.SF6Properties.Type.THROW
-        "drive" -> Move.SF6Properties.Type.DRIVE
-        "taunt" -> Move.SF6Properties.Type.TAUNT
+        "ground_normal" -> SF6MoveProperties.Type.GROUND_NORMAL
+        "air_normal" -> SF6MoveProperties.Type.AIR_NORMAL
+        "special" -> SF6MoveProperties.Type.SPECIAL
+        "super" -> SF6MoveProperties.Type.SUPER
+        "throw" -> SF6MoveProperties.Type.THROW
+        "drive" -> SF6MoveProperties.Type.DRIVE
+        "taunt" -> SF6MoveProperties.Type.TAUNT
         else -> null
     }
 }
@@ -182,10 +196,10 @@ internal fun formMoveWikiUrl(
 
 private fun MoveDto.formAliases(
     normalizedInput: String,
-    type: Move.SF6Properties.Type?
+    type: SF6MoveProperties.Type?
 ): List<String> {
     val motionAlias = when (type) {
-        Move.SF6Properties.Type.SUPER -> formSuperLevel(moveId, superGainHit)
+        SF6MoveProperties.Type.SUPER -> formSuperLevel(moveId, superGainHit)
         else -> this.input.formMotionInput()
     }?.lowercase()
     val aliases2d = normalizedInput.create2dAliases(isPartial = true)

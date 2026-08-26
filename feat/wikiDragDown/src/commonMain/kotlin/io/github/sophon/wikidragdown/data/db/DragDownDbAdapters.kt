@@ -8,6 +8,7 @@ import io.github.sophon.core.wiki.data.MoveDbAdapter
 import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wikidragdown.integration.model.Roa2Properties
 import io.github.sophon.wikidragdown.data.DragDownDB
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -19,14 +20,15 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 internal class DragDownCharacterDbAdapter(
     private val db: DragDownDB,
-    private val gameId: String,
+    private val game: Game,
 ) : CharacterDbAdapter {
     private val queries = db.characterQueries
+    private val roa2Queries = db.rOA2CharacterQueries
 
     override fun insert(character: Character) {
         queries.insertCharacter(
             id = character.id,
-            gameId = gameId,
+            gameId = game.id,
             remoteQueryId = character.remoteQueryId,
             wikiUrl = character.wikiUrl,
             displayName = character.displayName,
@@ -36,29 +38,76 @@ internal class DragDownCharacterDbAdapter(
             imagesIconUrl = character.images?.iconUrl,
             imagesBannerUrl = character.images?.bannerUrl,
         )
+        insertProperties(character)
+    }
+
+    private fun insertProperties(character: Character) {
+        when (game) {
+            Game.ROA2 -> {
+                val p = character.gameProperties as? Roa2Properties ?: return
+                roa2Queries.insertROA2Character(
+                    characterId = character.id,
+                    dacusSpeedMultiplier = p.dacusSpeedMultiplier,
+                    weight = p.weight,
+                    frictionGround = p.frictionGround,
+                    frictionAir = p.frictionAir,
+                    dashFrames = p.dashFrames,
+                    dashSpeed = p.dashSpeed,
+                    dashAcceleration = p.dashAcceleration,
+                    runSpeedMax = p.runSpeedMax,
+                    runTurnAcceleration = p.runTurnAcceleration,
+                    runTurnFrames = p.runTurnFrames,
+                    walkAccelerationMax = p.walkAccelerationMax,
+                    walkSpeedMax = p.walkSpeedMax,
+                    gravity = p.gravity,
+                    hitstunGravity = p.hitstunGravity,
+                    fallSpeedMax = p.fallSpeedMax,
+                    fastFallSpeed = p.fastFallSpeed,
+                    airAcceleration = p.airAcceleration,
+                    airSpeedHorizontalMax = p.airSpeedHorizontalMax,
+                    jumpSpeedHorizontalMax = p.jumpSpeedHorizontalMax,
+                    fullHopSpeed = p.fullHopSpeed,
+                    shortHopSpeed = p.shortHopSpeed,
+                    doubleJumpSpeed = p.doubleJumpSpeed,
+                    doubleJumpMaxHorizontalSpeed = p.doubleJumpMaxHorizontalSpeed,
+                    airDodgeSpeed = p.airDodgeSpeed,
+                    airDodgeFriction = p.airDodgeFriction,
+                    rollSpeed = p.rollSpeed,
+                    shieldSizeMultiplier = p.shieldSizeMultiplier,
+                    ledgeStandSpeed = p.ledgeStandSpeed,
+                    ledgeRollSpeed = p.ledgeRollSpeed,
+                    ledgeJumpMaxHorizontalAirSpeed = p.ledgeJumpMaxHorizontalAirSpeed,
+                    getupRollSpeed = p.getupRollSpeed,
+                    techRollSpeed = p.techRollSpeed,
+                    wallJumpSpeedY = p.wallJumpSpeedY,
+                    wallJumpSpeedX = p.wallJumpSpeedX,
+                )
+            }
+            else -> error("${game.id} is not supported by DragDown CharacterDbAdapter")
+        }
     }
 
     override fun selectAllFlow(): Flow<List<Character>> {
-        val flow = queries.selectAllForGame(gameId)
-            .asFlow()
-            .mapToList(Dispatchers.IO)
-            .map { rows ->
-                val characters = rows.map { it.toDomain() }
-                characters
-            }
+        val flow = when (game) {
+            Game.ROA2 -> queries.selectROA2ForGame(game.id)
+                .asFlow()
+                .mapToList(Dispatchers.IO)
+                .map { rows -> rows.map { it.toDomain() } }
+            else -> error("${game.id} is not supported by DragDown CharacterDbAdapter")
+        }
         return flow
     }
 
     override fun incrementFailureCountForAbsent(remoteIds: List<String>) {
-        queries.incrementFailureCountForAbsentInGame(gameId, remoteIds)
+        queries.incrementFailureCountForAbsentInGame(game.id, remoteIds)
     }
 
     override fun deleteExceededThreshold(threshold: Long) {
-        queries.deleteExceededThresholdForGame(gameId, threshold)
+        queries.deleteExceededThresholdForGame(game.id, threshold)
     }
 
     override fun deleteAll() {
-        queries.deleteAllForGame(gameId)
+        queries.deleteAllForGame(game.id)
     }
 
     override fun transaction(block: () -> Unit) {
@@ -66,7 +115,7 @@ internal class DragDownCharacterDbAdapter(
     }
 
     override fun getLastUpdateTimestamp(): Instant? {
-        val millis = queries.selectLastInsertedAtForGame(gameId).executeAsOne().lastInsertedAt
+        val millis = queries.selectLastInsertedAtForGame(game.id).executeAsOne().lastInsertedAt
         val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
         return timestamp
     }

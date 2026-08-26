@@ -1,0 +1,9 @@
+CREATE TABLE DBFZCharacterEntity (
+    characterId TEXT NOT NULL PRIMARY KEY,
+    kiMod TEXT,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertDBFZCharacter:
+INSERT OR REPLACE INTO DBFZCharacterEntity(characterId, kiMod)
+VALUES (?, ?);

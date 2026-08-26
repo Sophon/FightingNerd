@@ -3,7 +3,10 @@ package io.github.sophon.wikiSuperCombo.data.remote
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.CharacterGameProperties
 import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
+import io.github.sophon.wikiSuperCombo.integration.model.MK1Properties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
 import kotlin.collections.get
 
 internal fun CharacterListResponseDto.toDomain(
@@ -15,19 +18,16 @@ internal fun CharacterListResponseDto.toDomain(
     val characterList = cargoquery
         .map { dto ->
             val charDto = dto.title
-            val sf6Properties: Character.SF6Properties?
-            val mkProperties: Character.MK1Properties?
 
-            when (game) {
+            val gameProperties: CharacterGameProperties? = when (game) {
                 Game.MK1 -> {
-                    mkProperties = Character.MK1Properties(
+                    MK1Properties(
                         hpMod = charDto.hpmod,
                         throwDmg = charDto.throwdmg,
                     )
-                    sf6Properties = null
                 }
                 Game.StreetFighter6 -> {
-                    sf6Properties = Character.SF6Properties(
+                    SF6Properties(
                         fwdWalkSpd = charDto.fwdWalkSpd,
                         bwdWalkSpd = charDto.bwdWalkSpd,
                         fwdDashSpd = charDto.fwdDashSpd,
@@ -44,11 +44,9 @@ internal fun CharacterListResponseDto.toDomain(
                         fwdJumpDist = charDto.fwdJumpDist,
                         bwdJumpDist = charDto.bwdJumpDist,
                     )
-                    mkProperties = null
                 }
                 else -> {
-                    mkProperties = null
-                    sf6Properties = null
+                    null
                 }
             }
 
@@ -64,10 +62,9 @@ internal fun CharacterListResponseDto.toDomain(
                     bannerUrl = charDto.portrait.let { imageUrlMap[it] },
                 ),
                 hp = charDto.hp,
-                sf6Properties = sf6Properties,
-                mkProperties = mkProperties,
+                gameProperties = gameProperties,
             )
-        }
+        }.filterOutKameos()
 
     return characterList
 }
@@ -93,3 +90,6 @@ private fun createWikiUrlFrom(gameId: String, name: String): String {
     return "$WIKI_BASE_URL/$gameId/$name"
 }
 
+private fun List<Character>.filterOutKameos(): List<Character> {
+    return filterNot { it.displayName.contains("(Kameo)") }
+}
