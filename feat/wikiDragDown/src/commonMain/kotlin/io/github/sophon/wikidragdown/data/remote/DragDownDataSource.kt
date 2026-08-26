@@ -1,4 +1,4 @@
-package io.github.sophon.wikidragdown.data
+package io.github.sophon.wikidragdown.data.remote
 
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result

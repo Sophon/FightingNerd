@@ -1,10 +1,9 @@
-package io.github.sophon.wikidragdown.data
+package io.github.sophon.wikidragdown.data.remote
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikidragdown.domain.WIKI_BASE_URL
 import kotlin.test.Test
 
 internal class MoveMapperTest {

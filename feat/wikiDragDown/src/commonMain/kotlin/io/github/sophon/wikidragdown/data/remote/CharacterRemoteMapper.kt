@@ -1,4 +1,4 @@
-package io.github.sophon.wikidragdown.data
+package io.github.sophon.wikidragdown.data.remote
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
@@ -30,6 +30,7 @@ internal fun CharacterResponseDto.toDomain(
         aliasList = aliases,
         wikiUrl = dto.chara.formWikiUrl(gameId),
         images = Character.Images(
+            iconId = iconFilename,
             iconUrl = imageUrlMap[iconFilename],
         ),
         roa2Properties = Character.Roa2Properties(

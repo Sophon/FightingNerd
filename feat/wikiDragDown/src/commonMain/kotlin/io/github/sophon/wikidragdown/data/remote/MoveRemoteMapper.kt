@@ -1,4 +1,4 @@
-package io.github.sophon.wikidragdown.data
+package io.github.sophon.wikidragdown.data.remote
 
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull

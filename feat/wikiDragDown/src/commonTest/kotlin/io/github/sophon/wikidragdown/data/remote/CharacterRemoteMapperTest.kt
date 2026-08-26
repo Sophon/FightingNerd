@@ -1,4 +1,4 @@
-package io.github.sophon.wikidragdown.data
+package io.github.sophon.wikidragdown.data.remote
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
