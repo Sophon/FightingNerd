@@ -1,4 +1,4 @@
-package io.github.sophon.wikiSuperCombo.data
+package io.github.sophon.wikiSuperCombo.data.remote
 
 import assertk.assertThat
 import assertk.assertions.hasSize
@@ -6,7 +6,7 @@ import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.model.Character
 import kotlin.test.Test
 
-class CharacterMapperTest {
+class CharacterRemoteMapperTest {
     val gameId = "Street_Fighter_6"
 
     @Test

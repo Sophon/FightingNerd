@@ -1,4 +1,4 @@
-package io.github.sophon.wikiSuperCombo.data
+package io.github.sophon.wikiSuperCombo.data.remote
 
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result

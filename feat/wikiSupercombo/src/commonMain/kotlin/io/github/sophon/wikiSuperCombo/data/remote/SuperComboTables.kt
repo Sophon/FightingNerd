@@ -1,4 +1,4 @@
-package io.github.sophon.wikiSuperCombo.data
+package io.github.sophon.wikiSuperCombo.data.remote
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.QueryTable

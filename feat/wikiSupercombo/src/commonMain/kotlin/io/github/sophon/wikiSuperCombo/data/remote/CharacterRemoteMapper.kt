@@ -1,9 +1,10 @@
-package io.github.sophon.wikiSuperCombo.data
+package io.github.sophon.wikiSuperCombo.data.remote
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
+import kotlin.collections.get
 
 internal fun CharacterListResponseDto.toDomain(
     gameId: String,
@@ -58,6 +59,7 @@ internal fun CharacterListResponseDto.toDomain(
                 wikiUrl = createWikiUrlFrom(gameId, charDto.chara),
                 aliasList = charDto.chara.createAliases(addInitials = (game != Game.MK1)),
                 images = Character.Images(
+                    iconId = charDto.icon,
                     iconUrl = charDto.icon.let { imageUrlMap[it] },
                     bannerUrl = charDto.portrait.let { imageUrlMap[it] },
                 ),
@@ -66,7 +68,6 @@ internal fun CharacterListResponseDto.toDomain(
                 mkProperties = mkProperties,
             )
         }
-        .filterOutKameos()
 
     return characterList
 }
@@ -90,9 +91,5 @@ private fun String?.createId(): String {
 
 private fun createWikiUrlFrom(gameId: String, name: String): String {
     return "$WIKI_BASE_URL/$gameId/$name"
-}
-
-internal fun List<Character>.filterOutKameos(): List<Character> {
-    return filterNot { it.displayName.contains("(Kameo)") }
 }
 
