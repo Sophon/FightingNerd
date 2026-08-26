@@ -51,7 +51,7 @@ internal fun MoveDto.toDomain(
         aliases = aliases,
 
         urls = Move.Urls(
-            videoId = video,
+            videoId = video?.toStorageSafeFileName(),
             videoUrl = video.formVideoUrl(),
             wikiUrl = formMoveWikiUrl(characterRemoteQueryId = character.remoteQueryId, moveId = id),
         ),
@@ -222,6 +222,11 @@ private fun String.formAliases(alias: String?, alt: String?): List<String> {
 
 private fun String?.formVideoUrl(): String? {
     return this?.let { VIDEO_URL + it.urlEncode() }
+}
+
+private fun String.toStorageSafeFileName(): String {
+    val stripped = removePrefix("File:").replace(":", "_")
+    return stripped
 }
 
 private fun formMoveWikiUrl(characterRemoteQueryId: String, moveId: String): String {

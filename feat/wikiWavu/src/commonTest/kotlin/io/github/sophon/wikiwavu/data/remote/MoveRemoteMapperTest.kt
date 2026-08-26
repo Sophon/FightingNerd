@@ -550,7 +550,7 @@ class MoveRemoteMapperTest {
             ),
             aliases = listOf("baddb1+2"),
             urls = Move.Urls(
-                videoId = "File:t8-p2-armor_king-bad.db+1+2.mp4",
+                videoId = "t8-p2-armor_king-bad.db+1+2.mp4",
                 videoUrl = "https://wavu.wiki/t/Special:Redirect/file/File%3At8-p2-armor_king-bad.db%2B1%2B2.mp4",
                 wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-BAD.db+1+2",
             ),
