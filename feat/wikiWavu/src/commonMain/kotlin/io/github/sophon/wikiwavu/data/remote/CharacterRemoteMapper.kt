@@ -12,6 +12,7 @@ internal fun CharacterListResponseDto.toDomain(): List<Character> {
             wikiUrl = MOVE_URL + dto.wavuName.replace(" ", "_"),
             aliasList = dto.aliasList,
             images = Character.Images(
+                iconId = dto.images?.officialLargePng?.substringAfterLast('/'),
                 iconUrl = dto.images?.officialLargePng,
             )
         )
