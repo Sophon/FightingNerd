@@ -77,6 +77,7 @@ internal class SuperComboCharacterDbAdapter(
                     throwDmg = p.throwDmg,
                 )
             }
+            Game.AVL -> Unit
             else -> error("${game.id} is not supported by SuperCombo CharacterDbAdapter")
         }
     }
@@ -88,6 +89,10 @@ internal class SuperComboCharacterDbAdapter(
                 .mapToList(Dispatchers.IO)
                 .map { rows -> rows.map { it.toDomain() } }
             Game.MK1 -> queries.selectMK1ForGame(game.id)
+                .asFlow()
+                .mapToList(Dispatchers.IO)
+                .map { rows -> rows.map { it.toDomain() } }
+            Game.AVL -> queries.selectAllForGame(game.id)
                 .asFlow()
                 .mapToList(Dispatchers.IO)
                 .map { rows -> rows.map { it.toDomain() } }
