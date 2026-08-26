@@ -7,7 +7,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import kotlin.test.Test
 
-class MoveMapperTest {
+class MoveRemoteMapperTest {
     val character = Character(
         id = "",
         displayName = "",
@@ -523,26 +523,7 @@ class MoveMapperTest {
     @Test
     fun `toDomain should detect stance from input`() {
         // given
-        val moveDto = MoveDto(
-            id = "Armor King-BAD.db+1+2",
-            name = "Shadow Press",
-            input = "BAD.db+1+2",
-            parent = null,
-            target = "m,t",
-            damage = "18,15",
-            startup = "i14~17",
-            recv = "r43? FDFA",
-            tot = "60",
-            crush = "js14~34",
-            block = "-18c",
-            hit = "+0d",
-            ch = null,
-            notes = "<div class=\"plainlist\">\n* Transition into hit grab on grounded, airborne, and backturn hit\n* AK is left FDFA on whiff/block\n* Opponent is left FUFT on hit</div>",
-            alias = null,
-            image = null,
-            video = "File:t8-p2-armor_king-bad.db+1+2.mp4",
-            alt = null
-        )
+        val moveDto = MoveSource.shadowPress
         val responseDto = MoveListResponseDto(
             cargoQuery = listOf(
                 MoveListResponseDto.Title(moveDto)
@@ -569,6 +550,7 @@ class MoveMapperTest {
             ),
             aliases = listOf("baddb1+2"),
             urls = Move.Urls(
+                videoId = "File:t8-p2-armor_king-bad.db+1+2.mp4",
                 videoUrl = "https://wavu.wiki/t/Special:Redirect/file/File%3At8-p2-armor_king-bad.db%2B1%2B2.mp4",
                 wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-BAD.db+1+2",
             ),
@@ -704,6 +686,26 @@ class MoveMapperTest {
 }
 
 private object MoveSource {
+    val shadowPress = MoveDto(
+        id = "Armor King-BAD.db+1+2",
+        name = "Shadow Press",
+        input = "BAD.db+1+2",
+        parent = null,
+        target = "m,t",
+        damage = "18,15",
+        startup = "i14~17",
+        recv = "r43? FDFA",
+        tot = "60",
+        crush = "js14~34",
+        block = "-18c",
+        hit = "+0d",
+        ch = null,
+        notes = "<div class=\"plainlist\">\n* Transition into hit grab on grounded, airborne, and backturn hit\n* AK is left FDFA on whiff/block\n* Opponent is left FUFT on hit</div>",
+        alias = null,
+        image = null,
+        video = "File:t8-p2-armor_king-bad.db+1+2.mp4",
+        alt = null
+    )
     val matterhorn = MoveDto(
         id = "Lili-d+3+4",
         name = "Matterhorn Ascension",
