@@ -8,14 +8,18 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.toColumns
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.util.getLevel
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.hitboxImages
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.wikidustloop.integration.getLevel
+import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
 import io.github.sophon.wikidustloop.integration.model.BBProperties
+import io.github.sophon.wikidustloop.integration.model.DBFZMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
+import io.github.sophon.wikidustloop.integration.model.GGSTMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GGSTProperties
 import io.github.sophon.wikidustloop.integration.model.MTFSProperties
 
@@ -288,12 +292,14 @@ private fun EmbedBuilder.moveNotes(move: Move) = optionalField(
 )
 
 private fun EmbedBuilder.moveDetailedEmbedBuilderGG(move: Move) {
-    optionalField(name = "Risc gain", value = move.ggstProperties?.riscGain)
-    optionalField(name = "Risc loss", value = move.ggstProperties?.riscLoss)
+    val properties = (move.gameProperties as? GGSTMoveProperties) ?: return
+
+    optionalField(name = "Risc gain", value = properties.riscGain)
+    optionalField(name = "Risc loss", value = properties.riscLoss)
     optionalField(name = "Cancel", value = move.cancel)
-    optionalField(name = "Prorate", value = move.ggstProperties?.prorate)
-    optionalField(name = "Input tension", value = move.ggstProperties?.inputTension)
-    optionalField(name = "Chip", value = move.ggstProperties?.chipRatio)
+    optionalField(name = "Prorate", value = properties.prorate)
+    optionalField(name = "Input tension", value = properties.inputTension)
+    optionalField(name = "Chip", value = properties.chipRatio)
 
     hitboxImages(move.urls).invoke(this)
 
@@ -301,7 +307,7 @@ private fun EmbedBuilder.moveDetailedEmbedBuilderGG(move: Move) {
 }
 
 private fun EmbedBuilder.moveDetailedEmbedBuilderBB(move: Move) {
-    move.bbProperties?.apply {
+    (move.gameProperties as? BBMoveProperties)?.apply {
         if (p1 != null || p2 != null) {
             mandatoryField(
                 name = "Prorate",
@@ -341,7 +347,7 @@ private fun EmbedBuilder.movePropertiesDB(move: Move) {
     mandatoryField(name = "Guard", value = move.guard)
 
     mandatoryField(name = "Invul", value = move.invulnerability)
-    mandatoryField(name = "Smash", value = move.dbfzProperties?.smash)
+    mandatoryField(name = "Smash", value = (move.gameProperties as? DBFZMoveProperties)?.smash)
 
     moveNotes(move)
 }
@@ -349,11 +355,12 @@ private fun EmbedBuilder.movePropertiesDB(move: Move) {
 private fun EmbedBuilder.movePropertiesGB(move: Move) {
     generalPropertiesMove(move)
 
-    optionalField(name = "Meter", value = move.gbvsrProperties?.meter)
-    optionalField(name = "LVL", value = move.gbvsrProperties?.level)
-    optionalField(name = "CD", value = move.gbvsrProperties?.cooldown)
-    optionalField(name = "CLS", value = move.gbvsrProperties?.cls)
-    optionalField(name = "Type", value = move.gbvsrProperties?.type)
+    val properties = (move.gameProperties as? GBVSRMoveProperties) ?: return
+    optionalField(name = "Meter", value = properties.meter)
+    optionalField(name = "LVL", value = properties.level)
+    optionalField(name = "CD", value = properties.cooldown)
+    optionalField(name = "CLS", value = properties.cls)
+    optionalField(name = "Type", value = properties.type)
 
     moveNotes(move)
 }

@@ -7,12 +7,12 @@ import io.github.sophon.core.wiki.model.Move
 object GGSTGroups {
     object Normal: Group {
         override val id: String = "Normal"
-        override val predicate: (Move) -> Boolean = { it.ggstProperties?.type.isNormal() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? GGSTMoveProperties)?.type.isNormal() }
     }
 
     object Special: Group {
         override val id: String = "Special"
-        override val predicate: (Move) -> Boolean = { it.ggstProperties?.type.isSpecial() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? GGSTMoveProperties)?.type.isSpecial() }
     }
 
     object Universal: Group {
@@ -26,7 +26,7 @@ object GGSTGroups {
     object Super: Group {
         override val id: String = "Overdrive"
         override val predicate: (Move) -> Boolean = {
-            it.ggstProperties?.type.equalsIgnoreCase("super")
+            (it.gameProperties as? GGSTMoveProperties)?.type.equalsIgnoreCase("super")
         }
     }
 }
@@ -34,12 +34,12 @@ object GGSTGroups {
 object BBCFGroups {
     object Normal: Group {
         override val id: String = "Normal"
-        override val predicate: (Move) -> Boolean = { it.bbProperties?.type.isNormal() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? BBMoveProperties)?.type.isNormal() }
     }
 
     object Special: Group {
         override val id: String = "Special"
-        override val predicate: (Move) -> Boolean = { it.bbProperties?.type.isSpecial() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? BBMoveProperties)?.type.isSpecial() }
     }
 
     object Universal: Group {
@@ -59,21 +59,21 @@ object BBCFGroups {
     object Super: Group {
         override val id: String = "DD"
         override val predicate: (Move) -> Boolean = {
-            it.bbProperties?.type.equalsIgnoreCase("drive")
+            (it.gameProperties as? BBMoveProperties)?.type.equalsIgnoreCase("drive")
         }
     }
 
     object Exceed: Group {
         override val id: String = "Exceed"
         override val predicate: (Move) -> Boolean = {
-            it.bbProperties?.type.equalsIgnoreCase("exceed accel")
+            (it.gameProperties as? BBMoveProperties)?.type.equalsIgnoreCase("exceed accel")
         }
     }
 
     object Astral: Group {
         override val id: String = "Astral"
         override val predicate: (Move) -> Boolean = {
-            it.bbProperties?.type.equalsIgnoreCase("astral")
+            (it.gameProperties as? BBMoveProperties)?.type.equalsIgnoreCase("astral")
         }
     }
 }
@@ -81,25 +81,25 @@ object BBCFGroups {
 object DBFZGroups {
     object Normal: Group {
         override val id: String = "Normal"
-        override val predicate: (Move) -> Boolean = { it.dbfzProperties?.type.isNormal() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? DBFZMoveProperties)?.type.isNormal() }
     }
 
     object Special: Group {
         override val id: String = "Special"
-        override val predicate: (Move) -> Boolean = { it.dbfzProperties?.type.isSpecial() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? DBFZMoveProperties)?.type.isSpecial() }
     }
 
     object Assist: Group {
         override val id: String = "Assist"
         override val predicate: (Move) -> Boolean = {
-            it.dbfzProperties?.type.equalsIgnoreCase("assist")
+            (it.gameProperties as? DBFZMoveProperties)?.type.equalsIgnoreCase("assist")
         }
     }
 
     object Super: Group {
         override val id: String = "Super"
         override val predicate: (Move) -> Boolean = {
-            it.dbfzProperties?.type.equalsIgnoreCase("super")
+            (it.gameProperties as? DBFZMoveProperties)?.type.equalsIgnoreCase("super")
         }
     }
 }
@@ -107,12 +107,12 @@ object DBFZGroups {
 object GBVSRGroups {
     object Normal: Group {
         override val id: String = "Normal"
-        override val predicate: (Move) -> Boolean = { it.gbvsrProperties?.type.isNormal() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? GBVSRMoveProperties)?.type.isNormal() }
     }
 
     object Special: Group {
         override val id: String = "Special"
-        override val predicate: (Move) -> Boolean = { it.gbvsrProperties?.type.isSpecial() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? GBVSRMoveProperties)?.type.isSpecial() }
     }
 
     object Universal: Group {
@@ -134,14 +134,14 @@ object GBVSRGroups {
     object Unique: Group {
         override val id: String = "Unique"
         override val predicate: (Move) -> Boolean = {
-            it.gbvsrProperties?.type.equalsIgnoreCase("unique")
+            (it.gameProperties as? GBVSRMoveProperties)?.type.equalsIgnoreCase("unique")
         }
     }
 
     object Super: Group {
         override val id: String = "Skybound"
         override val predicate: (Move) -> Boolean = {
-            it.gbvsrProperties?.type.equalsIgnoreCase("super")
+            (it.gameProperties as? GBVSRMoveProperties)?.type.equalsIgnoreCase("super")
         }
     }
 }
@@ -149,39 +149,39 @@ object GBVSRGroups {
 object MTFSGroups {
     object Normal: Group {
         override val id: String = "Normal"
-        override val predicate: (Move) -> Boolean = { it.mtfsProperties?.type.isNormal() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? MTFSMoveProperties)?.type.isNormal() }
     }
 
     object Special: Group {
         override val id: String = "Special"
-        override val predicate: (Move) -> Boolean = { it.mtfsProperties?.type.isSpecial() }
+        override val predicate: (Move) -> Boolean = { (it.gameProperties as? MTFSMoveProperties)?.type.isSpecial() }
     }
 
     object Assist: Group {
         override val id: String = "Assist"
         override val predicate: (Move) -> Boolean = {
-            it.mtfsProperties?.type.equalsIgnoreCase("assist")
+            (it.gameProperties as? MTFSMoveProperties)?.type.equalsIgnoreCase("assist")
         }
     }
 
     object Super: Group {
         override val id: String = "Ultimate"
         override val predicate: (Move) -> Boolean = {
-            it.mtfsProperties?.type.equalsIgnoreCase("super")
+            (it.gameProperties as? MTFSMoveProperties)?.type.equalsIgnoreCase("super")
         }
     }
 
     object Unique: Group {
         override val id: String = "Unique"
         override val predicate: (Move) -> Boolean = {
-            it.mtfsProperties?.type.equalsIgnoreCase("unique")
+            (it.gameProperties as? MTFSMoveProperties)?.type.equalsIgnoreCase("unique")
         }
     }
 
     object Tokon: Group {
         override val id: String = "Tokon"
         override val predicate: (Move) -> Boolean = {
-            it.mtfsProperties?.type.equalsIgnoreCase("tokon")
+            (it.gameProperties as? MTFSMoveProperties)?.type.equalsIgnoreCase("tokon")
         }
     }
 }

@@ -9,10 +9,15 @@ import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikidustloop.data.DustLoopDB
+import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
 import io.github.sophon.wikidustloop.integration.model.BBProperties
+import io.github.sophon.wikidustloop.integration.model.DBFZMoveProperties
 import io.github.sophon.wikidustloop.integration.model.DBFZProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
+import io.github.sophon.wikidustloop.integration.model.GGSTMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GGSTProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSMoveProperties
 import io.github.sophon.wikidustloop.integration.model.MTFSProperties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -236,7 +241,7 @@ internal class DustLoopMoveDbAdapter(
     private fun insertProperties(move: Move) {
         when (game) {
             Game.GGST -> {
-                val p = move.ggstProperties
+                val p = move.gameProperties as? GGSTMoveProperties
                 ggstQueries.insertGGSTMove(
                     moveId = move.id,
                     type = p?.type,
@@ -251,7 +256,7 @@ internal class DustLoopMoveDbAdapter(
                 )
             }
             Game.DBFZ -> {
-                val p = move.dbfzProperties
+                val p = move.gameProperties as? DBFZMoveProperties
                 dbfzQueries.insertDBFZMove(
                     moveId = move.id,
                     attribute = p?.attribute,
@@ -266,7 +271,7 @@ internal class DustLoopMoveDbAdapter(
                 )
             }
             Game.GBVSR -> {
-                val p = move.gbvsrProperties
+                val p = move.gameProperties as? GBVSRMoveProperties
                 gbvsrQueries.insertGBVSRMove(
                     moveId = move.id,
                     meter = p?.meter,
@@ -277,7 +282,7 @@ internal class DustLoopMoveDbAdapter(
                 )
             }
             Game.BBCF -> {
-                val p = move.bbProperties
+                val p = move.gameProperties as? BBMoveProperties
                 bbcfQueries.insertBBCFMove(
                     moveId = move.id,
                     onODR = p?.onODR,
@@ -299,7 +304,7 @@ internal class DustLoopMoveDbAdapter(
                 )
             }
             Game.MTFS -> {
-                val p = move.mtfsProperties
+                val p = move.gameProperties as? MTFSMoveProperties
                 mtfsQueries.insertMTFSMove(
                     moveId = move.id,
                     simpleInput = p?.simpleInput,

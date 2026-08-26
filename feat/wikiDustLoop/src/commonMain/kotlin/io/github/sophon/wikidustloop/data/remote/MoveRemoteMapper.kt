@@ -9,6 +9,11 @@ import io.github.sophon.core.util.toClickable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
+import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
+import io.github.sophon.wikidustloop.integration.model.DBFZMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GGSTMoveProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSMoveProperties
 
 internal fun MoveListResponseDto.toDomain(
     gameId: String,
@@ -39,6 +44,76 @@ internal fun MoveDto.toDomain(
         input = normalizedInput,
         charName = chara,
     )
+
+    val gameProperties = when (Game.fromId(gameId)) {
+        Game.GGST -> {
+            GGSTMoveProperties(
+                type = type,
+                riscGain = riscGain,
+                riscLoss = riscLoss,
+                wallDamage = wallDamage,
+                inputTension = inputTension,
+                chipRatio = chipRatio,
+                otgType = OTGType,
+                prorate = prorate,
+                level = level,
+            )
+        }
+        Game.BBCF -> {
+            BBMoveProperties(
+                onODR = onODR,
+                attribute = attribute,
+                p1 = p1,
+                p2 = p2,
+                starter = starter,
+                level = level,
+                blockstun = blockstun,
+                groundHit = groundHit,
+                airHit = airHit,
+                groundCH = groundCH,
+                airCH = airCH,
+                blockstop = blockstop,
+                hitstop = hitstop,
+                chStop = CHstop,
+                cancelTiming = cancelTiming,
+                type = type,
+            )
+        }
+        Game.MTFS -> {
+            MTFSMoveProperties(
+                simpleInput = simpleInput?.cleanHtml(),
+                type = type?.cleanHtml(),
+                level = level?.cleanHtml(),
+                prorate = prorate?.cleanHtml(),
+                meterGain = meterGain?.cleanHtml(),
+                untechAmount = untechAmount?.cleanHtml(),
+                hitboxCaption = hitboxCaption?.cleanHtml(),
+            )
+        }
+        Game.GBVSR -> {
+            GBVSRMoveProperties(
+                meter = meter,
+                level = level,
+                cooldown = cooldown,
+                cls = cls,
+                type = type,
+            )
+        }
+        Game.DBFZ -> {
+            DBFZMoveProperties(
+                attribute = attribute,
+                smash = smash,
+                kiGain = kigain,
+                prorate = prorate,
+                blockStun = blockstun,
+                groundHit = groundHit,
+                airHit = airHit,
+                type = type,
+                level = level,
+            )
+        }
+        else -> null
+    }
 
     val move = Move(
         characterId = character.id,
@@ -72,62 +147,7 @@ internal fun MoveDto.toDomain(
             wikiUrl = formMoveWikiUrl(this, character),
         ),
 
-        ggstProperties = Move.GGSTProperties(
-            type = type,
-            riscGain = riscGain,
-            riscLoss = riscLoss,
-            wallDamage = wallDamage,
-            inputTension = inputTension,
-            chipRatio = chipRatio,
-            otgType = OTGType,
-            prorate = prorate,
-            level = level,
-        ),
-        dbfzProperties = Move.DBFZProperties(
-            attribute = attribute,
-            smash = smash,
-            kiGain = kigain,
-            prorate = prorate,
-            blockStun = blockstun,
-            groundHit = groundHit,
-            airHit = airHit,
-            type = type,
-            level = level,
-        ),
-        gbvsrProperties = Move.GBVSRProperties(
-            meter = meter,
-            level = level,
-            cooldown = cooldown,
-            cls = cls,
-            type = type,
-        ),
-        bbProperties = Move.BBProperties(
-            onODR = onODR,
-            attribute = attribute,
-            p1 = p1,
-            p2 = p2,
-            starter = starter,
-            level = level,
-            blockstun = blockstun,
-            groundHit = groundHit,
-            airHit = airHit,
-            groundCH = groundCH,
-            airCH = airCH,
-            blockstop = blockstop,
-            hitstop = hitstop,
-            chStop = CHstop,
-            cancelTiming = cancelTiming,
-            type = type,
-        ),
-        mtfsProperties = Move.MTFSProperties(
-            simpleInput = simpleInput?.cleanHtml(),
-            type = type?.cleanHtml(),
-            level = level?.cleanHtml(),
-            prorate = prorate?.cleanHtml(),
-            meterGain = meterGain?.cleanHtml(),
-            untechAmount = untechAmount?.cleanHtml(),
-            hitboxCaption = hitboxCaption?.cleanHtml(),
-        ),
+        gameProperties = gameProperties,
     )
 
     return move

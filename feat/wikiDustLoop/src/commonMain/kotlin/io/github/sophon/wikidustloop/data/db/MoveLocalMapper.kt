@@ -7,6 +7,11 @@ import io.github.sophon.wikidustloop.data.SelectDBFZByCharacter
 import io.github.sophon.wikidustloop.data.SelectGBVSRByCharacter
 import io.github.sophon.wikidustloop.data.SelectGGSTByCharacter
 import io.github.sophon.wikidustloop.data.SelectMTFSByCharacter
+import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
+import io.github.sophon.wikidustloop.integration.model.DBFZMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GGSTMoveProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSMoveProperties
 
 internal fun SelectGGSTByCharacter.toDomain(): Move {
     val move = Move(
@@ -34,7 +39,7 @@ internal fun SelectGGSTByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        ggstProperties = Move.GGSTProperties(
+        gameProperties = GGSTMoveProperties(
             type = type,
             riscGain = riscGain,
             riscLoss = riscLoss,
@@ -75,7 +80,7 @@ internal fun SelectDBFZByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        dbfzProperties = Move.DBFZProperties(
+        gameProperties = DBFZMoveProperties(
             attribute = attribute,
             smash = smash,
             kiGain = kiGain,
@@ -116,7 +121,7 @@ internal fun SelectGBVSRByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        gbvsrProperties = Move.GBVSRProperties(
+        gameProperties = GBVSRMoveProperties(
             meter = meter,
             level = level,
             cooldown = cooldown,
@@ -153,7 +158,7 @@ internal fun SelectBBCFByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        bbProperties = Move.BBProperties(
+        gameProperties = BBMoveProperties(
             onODR = onODR,
             attribute = attribute,
             p1 = p1,
@@ -201,7 +206,7 @@ internal fun SelectMTFSByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        mtfsProperties = Move.MTFSProperties(
+        gameProperties = MTFSMoveProperties(
             simpleInput = simpleInput,
             type = type,
             level = level,
