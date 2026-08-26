@@ -1,4 +1,4 @@
-package io.github.sophon.dreamcancel.data
+package io.github.sophon.dreamcancel.data.remote
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo

@@ -1,4 +1,4 @@
-package io.github.sophon.dreamcancel.data
+package io.github.sophon.dreamcancel.data.remote
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
@@ -20,6 +20,7 @@ internal fun String.toDomain(
     val displayName = this.cleanHtml()
     val queryName = this.createQueryName()
     val iconKeys = listOf(this.substringBefore(" "), this.substringAfterLast(" "))
+    val iconId = iconKeys.first { imageUrlMap.contains(it) }
     val iconUrl = iconKeys.firstNotNullOfOrNull { imageUrlMap[it] } ?: Game.fromId(gameId)?.iconUrl
 
     val char = Character(
@@ -29,6 +30,7 @@ internal fun String.toDomain(
         remoteQueryId = queryName,
         wikiUrl = "$FEATURE_URL/$gameId/$queryName",
         images = Character.Images(
+            iconId = iconId,
             iconUrl = iconUrl,
         )
     )

@@ -1,10 +1,10 @@
-package io.github.sophon.dreamcancel.data
+package io.github.sophon.dreamcancel.data.remote
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import kotlin.test.Test
 
-class CharacterMapperTest {
+class CharacterRemoteMapperTest {
     //region query name
     @Test
     fun `createQueryName handles names with spaces`() {
