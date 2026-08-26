@@ -20,7 +20,7 @@ internal fun String.toDomain(
     val displayName = this.cleanHtml()
     val queryName = this.createQueryName()
     val iconKeys = listOf(this.substringBefore(" "), this.substringAfterLast(" "))
-    val iconId = iconKeys.first { imageUrlMap.contains(it) }
+    val iconId = iconKeys.firstOrNull { imageUrlMap.contains(it) }
     val iconUrl = iconKeys.firstNotNullOfOrNull { imageUrlMap[it] } ?: Game.fromId(gameId)?.iconUrl
 
     val char = Character(
