@@ -2,6 +2,7 @@ package io.github.sophon.wikiwavu.data.db
 
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.CharacterDbAdapter
 import io.github.sophon.core.wiki.data.MoveDbAdapter
 import io.github.sophon.core.wiki.data.fromDomain
@@ -18,14 +19,14 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 internal class WavuCharacterDbAdapter(
     private val db: WavuDB,
-    private val gameId: String,
+    private val game: Game,
 ) : CharacterDbAdapter {
     private val queries = db.characterQueries
 
     override fun insert(character: Character) {
         queries.insertCharacter(
             id = character.id,
-            gameId = gameId,
+            gameId = game.id,
             remoteQueryId = character.remoteQueryId,
             wikiUrl = character.wikiUrl,
             displayName = character.displayName,
@@ -35,6 +36,14 @@ internal class WavuCharacterDbAdapter(
             imagesIconUrl = character.images?.iconUrl,
             imagesBannerUrl = character.images?.bannerUrl,
         )
+        insertProperties(character)
+    }
+
+    @Suppress("UnusedParameter")
+    private fun insertProperties(character: Character) {
+        when (game) {
+            else -> Unit
+        }
     }
 
     override fun selectAllFlow(): Flow<List<Character>> {
