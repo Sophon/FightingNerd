@@ -42,7 +42,7 @@ fun dragDownModule() = module {
         single<CharacterDbAdapter>(gameQualifier) {
             DragDownCharacterDbAdapter(
                 db = get(named(WikiClientFeature.DragDown.id)),
-                gameId = game.id,
+                game = game,
             )
         }
         single<MoveDbAdapter>(gameQualifier) {

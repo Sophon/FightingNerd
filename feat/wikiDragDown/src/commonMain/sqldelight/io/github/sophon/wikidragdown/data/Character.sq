@@ -36,6 +36,19 @@ FROM CharacterEntity
 WHERE gameId = ?
 ORDER BY displayName COLLATE NOCASE;
 
+selectROA2ForGame:
+SELECT c.id, c.gameId, c.remoteQueryId, c.wikiUrl, c.displayName, c.aliases, c.hp, c.umo, c.imagesIconId, c.imagesIconUrl, c.imagesBannerUrl,
+       rc.dacusSpeedMultiplier, rc.weight, rc.frictionGround, rc.frictionAir, rc.dashFrames, rc.dashSpeed, rc.dashAcceleration,
+       rc.runSpeedMax, rc.runTurnAcceleration, rc.runTurnFrames, rc.walkAccelerationMax, rc.walkSpeedMax,
+       rc.gravity, rc.hitstunGravity, rc.fallSpeedMax, rc.fastFallSpeed, rc.airAcceleration, rc.airSpeedHorizontalMax,
+       rc.jumpSpeedHorizontalMax, rc.fullHopSpeed, rc.shortHopSpeed, rc.doubleJumpSpeed, rc.doubleJumpMaxHorizontalSpeed,
+       rc.airDodgeSpeed, rc.airDodgeFriction, rc.rollSpeed, rc.shieldSizeMultiplier, rc.ledgeStandSpeed, rc.ledgeRollSpeed,
+       rc.ledgeJumpMaxHorizontalAirSpeed, rc.getupRollSpeed, rc.techRollSpeed, rc.wallJumpSpeedY, rc.wallJumpSpeedX
+FROM CharacterEntity c
+LEFT JOIN ROA2CharacterEntity rc ON rc.characterId = c.id
+WHERE c.gameId = ?
+ORDER BY c.displayName COLLATE NOCASE;
+
 selectLastInsertedAtForGame:
 SELECT MAX(insertedAt) AS lastInsertedAt
 FROM CharacterEntity
