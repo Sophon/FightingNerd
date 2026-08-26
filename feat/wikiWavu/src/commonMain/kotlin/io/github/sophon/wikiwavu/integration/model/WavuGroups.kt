@@ -90,8 +90,8 @@ object TekkenGroups {
     }
 
     data class Stance(override val id: String): Group {
-        override val predicate: (Move) -> Boolean = { move ->
-            move.t8Properties?.stance.equalsIgnoreCase(id)
+        override val predicate: (Move) -> Boolean = {
+            (it.gameProperties as? T8Properties)?.stance.equalsIgnoreCase(id)
         }
     }
 

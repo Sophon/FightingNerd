@@ -9,21 +9,21 @@ object TekkenFilters {
     object PowerCrush: Filter {
         override val name: String = "PowerCrush"
         override val predicate: (Move) -> Boolean = {
-            it.t8Properties?.isPowerCrush == true
+            (it.gameProperties as? T8Properties)?.isPowerCrush == true
         }
     }
 
     object Heat: Filter {
         override val name: String = "Heat"
         override val predicate: (Move) -> Boolean = {
-            it.t8Properties?.isHeat == true
+            (it.gameProperties as? T8Properties)?.isHeat == true
         }
     }
 
     object Homing: Filter {
         override val name: String = "Homing"
         override val predicate: (Move) -> Boolean = {
-            it.t8Properties?.isHoming == true
+            (it.gameProperties as? T8Properties)?.isHoming == true
         }
     }
 
@@ -36,22 +36,22 @@ object TekkenFilters {
 
     object Stance: Filter {
         override val name: String = "Stance"
-        override val predicate: (Move) -> Boolean = { move ->
-            move.t8Properties?.stance?.isNotBlank() == true
+        override val predicate: (Move) -> Boolean = {
+            (it.gameProperties as? T8Properties)?.stance?.isNotBlank() == true
         }
     }
 
     object HighCrush: Filter {
         override val name: String = "HighCrush"
-        override val predicate: (Move) -> Boolean = { move ->
-            move.t8Properties?.isHighCrush == true
+        override val predicate: (Move) -> Boolean = {
+            (it.gameProperties as? T8Properties)?.isHighCrush == true
         }
     }
 
     object LowCrush: Filter {
         override val name: String = "LowCrush"
-        override val predicate: (Move) -> Boolean = { move ->
-            move.t8Properties?.isLowCrush == true
+        override val predicate: (Move) -> Boolean = {
+            (it.gameProperties as? T8Properties)?.isLowCrush == true
         }
     }
 

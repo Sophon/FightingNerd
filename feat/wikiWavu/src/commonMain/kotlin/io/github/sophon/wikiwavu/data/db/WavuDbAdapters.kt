@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.data.WavuDB
+import io.github.sophon.wikiwavu.integration.model.T8Properties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -112,7 +113,7 @@ internal class WavuMoveDbAdapter(
             urlsHitboxImageList = move.urls.hitboxImageList.fromDomain(),
             urlsMoveImageList = move.urls.moveImageList.fromDomain(),
         )
-        val t8 = move.t8Properties
+        val t8 = move.gameProperties as? T8Properties
         tekkenQueries.insertTekkenMove(
             moveId = move.id,
             isHeat = t8?.isHeat ?: false,

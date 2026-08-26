@@ -3,6 +3,7 @@ package io.github.sophon.wikiwavu.data.db
 import io.github.sophon.core.wiki.data.toDomain
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiwavu.data.SelectTekkenByCharacter
+import io.github.sophon.wikiwavu.integration.model.T8Properties
 
 internal fun SelectTekkenByCharacter.toDomain(): Move {
     val move = Move(
@@ -30,7 +31,7 @@ internal fun SelectTekkenByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        t8Properties = Move.T8Properties(
+        gameProperties = T8Properties(
             isHeat = isHeat,
             isHoming = isHoming,
             stance = stance,
