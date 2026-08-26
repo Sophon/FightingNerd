@@ -216,7 +216,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         val result = getMoveUseCase.invoke(wiki, query, sanitizeMoveInput = { cleanMoveInput() })
             .map { (character, move) ->
-                val videoButtons = move.urls.videoId?.let { videoUrl ->
+                val videoButtons = move.urls.videoUrl?.let { videoUrl ->
                     BotOutput.ButtonSet(
                         buttonList = listOf(
                             BotOutput.EmbedButton(

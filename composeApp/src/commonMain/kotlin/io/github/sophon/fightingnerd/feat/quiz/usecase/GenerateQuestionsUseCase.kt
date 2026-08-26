@@ -74,7 +74,7 @@ internal class GenerateQuestionsUseCase(
             onHit = onHit?.stripMarkdownLinks(),
             onCH = onCH?.stripMarkdownLinks(),
             urls = Question.MoveOption.Urls(
-                videoUrl = urls.videoId,
+                videoUrl = urls.videoUrl,
                 hitboxImageList = urls.hitboxImageList.toImmutableList(),
                 moveImageList = urls.moveImageList.toImmutableList(),
             )

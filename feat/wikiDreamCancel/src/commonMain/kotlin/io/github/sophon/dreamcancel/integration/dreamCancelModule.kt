@@ -13,8 +13,8 @@ import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.MoveRepoImpl
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.dreamcancel.data.DreamCancelDB
-import io.github.sophon.dreamcancel.data.DreamCancelWikiDataSource
-import io.github.sophon.dreamcancel.data.DreamCancelWikiDataSourceImpl
+import io.github.sophon.dreamcancel.data.remote.DreamCancelWikiDataSource
+import io.github.sophon.dreamcancel.data.remote.DreamCancelWikiDataSourceImpl
 import io.github.sophon.dreamcancel.data.db.DreamCancelCharacterDbAdapter
 import io.github.sophon.dreamcancel.data.db.DreamCancelMoveDbAdapter
 import io.github.sophon.dreamcancel.data.remote.DreamCancelCharacterRemoteAdapter

@@ -120,7 +120,7 @@ internal fun Property.icon(): DrawableResource {
 
 private fun Move.Urls.toUiUrl(): UiMove.Urls {
     val url = UiMove.Urls(
-        videoUrl = videoId,
+        videoUrl = videoUrl,
         hitboxImageList = hitboxImageList.toImmutableList(),
         moveImageList = moveImageList.toImmutableList(),
     )

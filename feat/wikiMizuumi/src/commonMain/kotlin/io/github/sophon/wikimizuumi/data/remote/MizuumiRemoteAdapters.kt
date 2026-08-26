@@ -10,9 +10,6 @@ import io.github.sophon.core.wiki.data.MoveRemoteAdapter
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikimizuumi.data.MizuumiTables
-import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSource
-import io.github.sophon.wikimizuumi.data.toDomain
 
 internal class MizuumiCharacterRemoteAdapter(
     private val source: MizuumiWikiDataSource,

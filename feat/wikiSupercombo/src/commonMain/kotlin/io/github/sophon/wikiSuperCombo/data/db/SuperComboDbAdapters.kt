@@ -104,6 +104,7 @@ internal class SuperComboMoveDbAdapter(
             aliases = move.aliases.fromDomain(),
             urlsWikiUrl = move.urls.wikiUrl,
             urlsVideoId = move.urls.videoId,
+            urlsVideoUrl = move.urls.videoUrl,
             urlsHitboxImageList = move.urls.hitboxImageList.fromDomain(),
             urlsMoveImageList = move.urls.moveImageList.fromDomain(),
         )

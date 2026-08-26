@@ -27,6 +27,7 @@ data class Character(
 ) {
     @Serializable
     data class Images(
+        val iconId: String? = null,
         val iconUrl: String? = null,
         val bannerUrl: String? = null,
     )

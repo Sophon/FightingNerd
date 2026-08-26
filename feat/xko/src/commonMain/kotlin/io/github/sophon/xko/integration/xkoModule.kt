@@ -13,8 +13,8 @@ import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.MoveRepoImpl
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.xko.data.XkoDB
-import io.github.sophon.xko.data.XkoWikiDataSource
-import io.github.sophon.xko.data.XkoWikiDataSourceImpl
+import io.github.sophon.xko.data.remote.XkoWikiDataSource
+import io.github.sophon.xko.data.remote.XkoWikiDataSourceImpl
 import io.github.sophon.xko.data.db.XkoCharacterDbAdapter
 import io.github.sophon.xko.data.db.XkoMoveDbAdapter
 import io.github.sophon.xko.data.remote.XkoCharacterRemoteAdapter
