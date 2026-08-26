@@ -17,7 +17,7 @@ class CharacterRemoteMapperTest {
             chara = "Ken",
             name = "Ken",
             portrait = "SF6 Ken Portrait.png",
-            icon = "SF6 Ken Face.png",
+            icon = "SF6_Ken_Face.png",
             hp = "10000",
             throwRange = "0.8",
             throwHurtbox = "0.33",
@@ -44,7 +44,7 @@ class CharacterRemoteMapperTest {
             remoteQueryId = "Ken",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken",
             aliasList = emptyList(),
-            images = Character.Images(iconUrl = null, bannerUrl = null),
+            images = Character.Images(iconId = "SF6_Ken_Face.png", bannerUrl = null),
             sf6Properties = Character.SF6Properties(
                 fwdWalkSpd = "0.047",
                 bwdWalkSpd = "0.032",
@@ -158,7 +158,7 @@ class CharacterRemoteMapperTest {
             remoteQueryId = "C.Viper",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/C.Viper",
             aliasList = listOf("cv", "viper"),
-            images = Character.Images(iconUrl = null, bannerUrl = null),
+            images = Character.Images(iconId = "SF6 Cviper Face.png", bannerUrl = null),
             sf6Properties = Character.SF6Properties(
                 fwdWalkSpd = "0.0452",
                 bwdWalkSpd = "0.031",
@@ -184,7 +184,7 @@ class CharacterRemoteMapperTest {
             remoteQueryId = "Chun-Li",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Chun-Li",
             aliasList = listOf("cl", "chun", "li"),
-            images = Character.Images(iconUrl = null, bannerUrl = null),
+            images = Character.Images(iconId = "SF6 Chun-Li Face.png"),
             hp = "10000",
             sf6Properties = Character.SF6Properties(
                 fwdWalkSpd = "0.050",
@@ -210,7 +210,7 @@ class CharacterRemoteMapperTest {
             remoteQueryId = "Dee_Jay",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Dee_Jay",
             aliasList = listOf("dj", "dee", "jay"),
-            images = Character.Images(iconUrl = null, bannerUrl = null),
+            images = Character.Images(iconId = "SF6 Dee_Jay Face.png"),
             sf6Properties = Character.SF6Properties(
                 fwdWalkSpd = "0.043",
                 bwdWalkSpd = "0.032",
@@ -281,8 +281,9 @@ class CharacterRemoteMapperTest {
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken",
             aliasList = emptyList(),
             images = Character.Images(
+                iconId = "SF6 Ken Face.png",
                 iconUrl = "https://example.com/icon.png",
-                bannerUrl = "https://example.com/portrait.png"
+                bannerUrl = "https://example.com/portrait.png",
             ),
             sf6Properties = Character.SF6Properties(
                 fwdWalkSpd = "0.047",
