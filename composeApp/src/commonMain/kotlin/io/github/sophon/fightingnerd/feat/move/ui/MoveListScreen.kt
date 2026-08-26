@@ -69,6 +69,7 @@ internal fun MoveListScreen(
         onChangeOnHit = vm::onChangeOnHit,
         onBookmarkSwitch = vm::onBookmarkSwitch,
         onBookmarkClose = vm::onBookmarkClose,
+        onDownload = vm::onDownloadMedia,
         modifier = modifier,
     )
 }
@@ -89,6 +90,7 @@ private fun Content(
     onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onBookmarkSwitch: () -> Unit,
     onBookmarkClose: () -> Unit,
+    onDownload: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -110,6 +112,7 @@ private fun Content(
                 onSearch = onSearch,
                 onDisplayFilterSheet = { onFilterClick(true) },
                 isFilterActive = state.filterSheet.isFilterActive,
+                onDownload = onDownload,
             )
         },
         contentWindowInsets = WindowInsets(0),
@@ -234,6 +237,7 @@ private fun MoveListPreview() {
             onSearch = {},
             onBookmarkSwitch = {},
             onBookmarkClose = {},
+            onDownload = {},
         )
     }
 }
@@ -257,6 +261,7 @@ private fun MoveListSearchPreview() {
             onSearch = {},
             onBookmarkSwitch = {},
             onBookmarkClose = {},
+            onDownload = {},
         )
     }
 }

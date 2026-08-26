@@ -13,6 +13,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
+import io.github.sophon.fightingnerd.feat.move.usecase.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.GroupMovesUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
@@ -47,6 +48,7 @@ internal class MoveListVM(
     private val loadMoveGroupsUseCase: LoadMoveGroupsUseCase,
     private val normalizeSliderUseCase: NormalizeSliderUseCase,
     private val groupMovesUseCase: GroupMovesUseCase,
+    private val downloadMediaUseCase: DownloadMediaUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
     private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
@@ -157,6 +159,16 @@ internal class MoveListVM(
     fun onBookmarkClose() {
         _state.update { state ->
             state.copy(bookmarks = state.bookmarks.copy(isExpanded = false))
+        }
+    }
+
+    fun onDownloadMedia() {
+        viewModelScope.launch {
+            val moveList = _fullMoveList.value.movesById.values.toList()
+            downloadMediaUseCase.invoke(
+                gameId = gameId,
+                moveList = moveList,
+            )
         }
     }
 

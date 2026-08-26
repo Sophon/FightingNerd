@@ -14,6 +14,7 @@ import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCa
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
+import io.github.sophon.fightingnerd.feat.move.usecase.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.GroupMovesUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
@@ -67,6 +68,7 @@ internal fun featureModule() = module {
             loadMoveGroupsUseCase = get(),
             normalizeSliderUseCase = get(),
             groupMovesUseCase = get(),
+            downloadMediaUseCase = get(),
         )
     }
     singleOf(::SubscribeToMoveListUseCase)
@@ -74,6 +76,7 @@ internal fun featureModule() = module {
     singleOf(::NormalizeSliderUseCase)
     singleOf(::LoadMoveGroupsUseCase)
     singleOf(::GroupMovesUseCase)
+    singleOf(::DownloadMediaUseCase)
     //endregion
 
     //region Quiz

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
@@ -40,6 +41,7 @@ internal fun MoveTopBar(
     onSearch: (query: String?) -> Unit,
     onDisplayFilterSheet: () -> Unit,
     isFilterActive: Boolean,
+    onDownload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -75,6 +77,7 @@ internal fun MoveTopBar(
             onShowSearch = { onSearch("") },
             onDisplayFilterSheet = onDisplayFilterSheet,
             isFilterActive = isFilterActive,
+            onDownload = onDownload,
         )
     }
 }
@@ -137,6 +140,7 @@ private fun ButtonsRow(
     onShowSearch: () -> Unit,
     onDisplayFilterSheet: () -> Unit,
     isFilterActive: Boolean,
+    onDownload: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -162,6 +166,14 @@ private fun ButtonsRow(
                 } else {
                     nerdColorPalette.textPrimary
                 },
+            )
+        }
+
+        IconButton(onClick = onDownload) {
+            Icon(
+                imageVector = Icons.Outlined.Download,
+                contentDescription = "Download media",
+                tint = nerdColorPalette.textPrimary,
             )
         }
     }
