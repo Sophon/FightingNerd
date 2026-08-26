@@ -21,7 +21,7 @@ internal fun String.toDomain(
         Game.MBTL -> listOf(idName.substringBefore("_"), idName.substringAfterLast("_"))
         else -> listOf(idName)
     }
-    val iconId = iconKeys.first { imageUrlMap.contains(it) }
+    val iconId = iconKeys.firstOrNull { imageUrlMap.contains(it) }
     val iconUrl = iconKeys.firstNotNullOfOrNull { imageUrlMap[it] } ?: game?.iconUrl
 
     val char = Character(
