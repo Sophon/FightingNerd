@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
 import kotlin.test.Test
 
 class CharacterRemoteMapperTest {
@@ -45,7 +46,7 @@ class CharacterRemoteMapperTest {
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken",
             aliasList = emptyList(),
             images = Character.Images(iconId = "SF6_Ken_Face.png", bannerUrl = null),
-            sf6Properties = Character.SF6Properties(
+            gameProperties = SF6Properties(
                 fwdWalkSpd = "0.047",
                 bwdWalkSpd = "0.032",
                 fwdDashSpd = "19",
@@ -159,7 +160,7 @@ class CharacterRemoteMapperTest {
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/C.Viper",
             aliasList = listOf("cv", "viper"),
             images = Character.Images(iconId = "SF6 Cviper Face.png", bannerUrl = null),
-            sf6Properties = Character.SF6Properties(
+            gameProperties = SF6Properties(
                 fwdWalkSpd = "0.0452",
                 bwdWalkSpd = "0.031",
                 fwdDashSpd = "21",
@@ -186,7 +187,7 @@ class CharacterRemoteMapperTest {
             aliasList = listOf("cl", "chun", "li"),
             images = Character.Images(iconId = "SF6 Chun-Li Face.png"),
             hp = "10000",
-            sf6Properties = Character.SF6Properties(
+            gameProperties = SF6Properties(
                 fwdWalkSpd = "0.050",
                 bwdWalkSpd = "0.035",
                 fwdDashSpd = "19",
@@ -211,7 +212,7 @@ class CharacterRemoteMapperTest {
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Dee_Jay",
             aliasList = listOf("dj", "dee", "jay"),
             images = Character.Images(iconId = "SF6 Dee_Jay Face.png"),
-            sf6Properties = Character.SF6Properties(
+            gameProperties = SF6Properties(
                 fwdWalkSpd = "0.043",
                 bwdWalkSpd = "0.032",
                 fwdDashSpd = "19",
@@ -285,7 +286,7 @@ class CharacterRemoteMapperTest {
                 iconUrl = "https://example.com/icon.png",
                 bannerUrl = "https://example.com/portrait.png",
             ),
-            sf6Properties = Character.SF6Properties(
+            gameProperties = SF6Properties(
                 fwdWalkSpd = "0.047",
                 bwdWalkSpd = "0.032",
                 fwdDashSpd = "19",
