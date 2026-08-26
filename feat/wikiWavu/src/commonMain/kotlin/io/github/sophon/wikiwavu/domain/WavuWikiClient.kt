@@ -25,9 +25,8 @@ internal class WavuWikiClient(
     characterRepo = characterRepo,
     moveRepo = moveRepo,
     scope = scope,
-    infoLogger = { message ->
-        Napier.d(tag = TAG) { message }
-    }
+    infoLogger = { Napier.i(tag = TAG) { it } },
+    debugLogger = { Napier.d(tag = TAG) { it } },
 ) {
     override fun getFiltersFor(game: Game): Set<Filter> {
         require(game in supportedGameSet) {
