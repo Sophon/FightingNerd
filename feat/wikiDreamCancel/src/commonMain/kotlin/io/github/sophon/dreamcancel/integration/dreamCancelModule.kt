@@ -49,7 +49,7 @@ fun dreamCancelModule() = module {
         single<CharacterDbAdapter>(gameQualifier) {
             DreamCancelCharacterDbAdapter(
                 db = get(named(WikiClientFeature.DreamCancel.id)),
-                gameId = game.id,
+                game = game,
             )
         }
         single<MoveDbAdapter>(gameQualifier) {
