@@ -30,6 +30,7 @@ internal fun SelectGGSTByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
@@ -70,6 +71,7 @@ internal fun SelectDBFZByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
@@ -110,6 +112,7 @@ internal fun SelectGBVSRByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
@@ -146,6 +149,7 @@ internal fun SelectBBCFByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
@@ -193,6 +197,7 @@ internal fun SelectMTFSByCharacter.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),

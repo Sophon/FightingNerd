@@ -21,6 +21,7 @@ CREATE TABLE MoveEntity (
     aliases TEXT NOT NULL,
     urlsWikiUrl TEXT,
     urlsVideoId TEXT,
+    urlsVideoUrl TEXT,
     urlsHitboxImageList TEXT NOT NULL,
     urlsMoveImageList TEXT NOT NULL,
     consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
@@ -29,8 +30,8 @@ CREATE TABLE MoveEntity (
 );
 
 insertMove:
-INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsHitboxImageList, urlsMoveImageList)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsVideoUrl, urlsHitboxImageList, urlsMoveImageList)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(id) DO UPDATE SET
     characterId = excluded.characterId,
     gameId = excluded.gameId,
@@ -51,6 +52,7 @@ ON CONFLICT(id) DO UPDATE SET
     aliases = excluded.aliases,
     urlsWikiUrl = excluded.urlsWikiUrl,
     urlsVideoId = excluded.urlsVideoId,
+    urlsVideoUrl = excluded.urlsVideoUrl,
     urlsHitboxImageList = excluded.urlsHitboxImageList,
     urlsMoveImageList = excluded.urlsMoveImageList,
     consecutiveFailureCount = 0,
@@ -79,35 +81,35 @@ DELETE FROM MoveEntity
 WHERE characterId = ? AND consecutiveFailureCount >= ?;
 
 selectGGSTByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
        gm.type, gm.riscGain, gm.riscLoss, gm.wallDamage, gm.inputTension, gm.chipRatio, gm.otgType, gm.prorate, gm.level
 FROM MoveEntity m
 LEFT JOIN GGSTMoveEntity gm ON gm.moveId = m.id
 WHERE m.characterId = ?;
 
 selectDBFZByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
        dm.attribute, dm.smash, dm.kiGain, dm.prorate, dm.blockStun, dm.groundHit, dm.airHit, dm.type, dm.level
 FROM MoveEntity m
 LEFT JOIN DBFZMoveEntity dm ON dm.moveId = m.id
 WHERE m.characterId = ?;
 
 selectGBVSRByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
        gbm.meter, gbm.level, gbm.cooldown, gbm.cls, gbm.type
 FROM MoveEntity m
 LEFT JOIN GBVSRMoveEntity gbm ON gbm.moveId = m.id
 WHERE m.characterId = ?;
 
 selectBBCFByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
        bm.onODR, bm.attribute, bm.p1, bm.p2, bm.starter, bm.level, bm.blockstun, bm.groundHit, bm.airHit, bm.groundCH, bm.airCH, bm.blockstop, bm.hitstop, bm.chStop, bm.cancelTiming, bm.type
 FROM MoveEntity m
 LEFT JOIN BBCFMoveEntity bm ON bm.moveId = m.id
 WHERE m.characterId = ?;
 
 selectMTFSByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
        mtm.simpleInput, mtm.type, mtm.level, mtm.prorate, mtm.meterGain, mtm.untechAmount, mtm.hitboxCaption
 FROM MoveEntity m
 LEFT JOIN MTFSMoveEntity mtm ON mtm.moveId = m.id
