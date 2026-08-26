@@ -12,6 +12,8 @@ import io.github.sophon.core.wiki.data.storeFingerprint
 import io.github.sophon.fightingnerd.core.domain.UrlOpener
 import io.github.sophon.fightingnerd.core.domain.UrlOpenerAnd
 import io.github.sophon.fightingnerd.infrastructure.createDataStore
+import okio.Path
+import okio.Path.Companion.toOkioPath
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
@@ -22,6 +24,8 @@ internal actual val platformModule = module {
     single { createDataStore() }
 
     singleOf(::UrlOpenerAnd).bind<UrlOpener>()
+
+    single<Path> { androidContext().filesDir.toOkioPath() / "media" }
 
     WikiClientFeature.entries.forEach { feature ->
         single<SqlDriver>(named(feature.id)) { params ->
