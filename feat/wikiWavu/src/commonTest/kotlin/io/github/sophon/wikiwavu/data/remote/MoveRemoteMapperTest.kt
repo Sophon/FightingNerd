@@ -5,6 +5,7 @@ import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wikiwavu.integration.model.T8Properties
 import kotlin.test.Test
 
 class MoveRemoteMapperTest {
@@ -412,7 +413,7 @@ class MoveRemoteMapperTest {
             ),
             aliases = emptyList(),
             urls = Move.Urls(videoUrl = null, wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-1"),
-            t8Properties = Move.T8Properties(
+            gameProperties = T8Properties(
                 isHeat = false,
                 isPowerCrush = false,
                 isHoming = false,
@@ -503,7 +504,7 @@ class MoveRemoteMapperTest {
             ),
             aliases = emptyList(),
             urls = Move.Urls(videoUrl = null, wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f+2,1"),
-            t8Properties = Move.T8Properties(
+            gameProperties = T8Properties(
                 isHeat = true,
                 isPowerCrush = false,
                 isHoming = false,
@@ -554,7 +555,7 @@ class MoveRemoteMapperTest {
                 videoUrl = "https://wavu.wiki/t/Special:Redirect/file/File%3At8-p2-armor_king-bad.db%2B1%2B2.mp4",
                 wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-BAD.db+1+2",
             ),
-            t8Properties = Move.T8Properties(
+            gameProperties = T8Properties(
                 isHeat = false,
                 isPowerCrush = false,
                 isHoming = false,
@@ -609,7 +610,7 @@ class MoveRemoteMapperTest {
                 videoUrl = null,
                 wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f,f,F+2+4"
             ),
-            t8Properties = Move.T8Properties(
+            gameProperties = T8Properties(
                 isHeat = false,
                 isPowerCrush = false,
                 isHoming = true,
@@ -684,6 +685,9 @@ class MoveRemoteMapperTest {
     }
     //endregion
 }
+
+private val Move.t8Properties: T8Properties?
+    get() = gameProperties as? T8Properties
 
 private object MoveSource {
     val shadowPress = MoveDto(
