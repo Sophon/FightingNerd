@@ -50,7 +50,7 @@ private fun Content(
             onExpandWidget = onExpandWidget,
             onCharacterClick = onCharacterClick,
             modifier = Modifier
-                .padding(horizontal = nerdDimensions.screenPaddingHorizontal, vertical = nerdDimensions.screenPaddingVertical)
+                .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
         )
     }
 }
