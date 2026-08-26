@@ -48,7 +48,8 @@ data class Move(
     @Serializable
     data class Urls(
         val wikiUrl: String, //this is mandatory so images embed as one comment
-        val videoId: String? = null, //TODO: change to videoUrl
+//        val videoId: String? = null,
+        val videoUrl: String? = null, //TODO: change to videoUrl
         val hitboxImageList: List<String> = listOf(),
         val moveImageList: List<String> = listOf(),
     )
