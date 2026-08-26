@@ -6,8 +6,6 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.xko.data.XkoWikiDataSource
-import io.github.sophon.xko.data.toDomain
 
 /**
  * Xko returns all characters and their moves in a single remote call.

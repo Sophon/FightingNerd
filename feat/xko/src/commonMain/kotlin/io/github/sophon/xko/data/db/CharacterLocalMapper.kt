@@ -12,6 +12,7 @@ internal fun CharacterEntity.toDomain(): Character {
         wikiUrl = wikiUrl,
         aliasList = aliases.toDomain(),
         images = Character.Images(
+            iconId = imagesIconId,
             iconUrl = imagesIconUrl,
             bannerUrl = imagesBannerUrl,
         ),

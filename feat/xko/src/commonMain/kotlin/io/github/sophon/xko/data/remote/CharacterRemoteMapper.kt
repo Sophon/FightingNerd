@@ -1,4 +1,4 @@
-package io.github.sophon.xko.data
+package io.github.sophon.xko.data.remote
 
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.wiki.model.Character

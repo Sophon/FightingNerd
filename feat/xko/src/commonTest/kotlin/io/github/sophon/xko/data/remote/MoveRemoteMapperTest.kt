@@ -1,13 +1,14 @@
-package io.github.sophon.xko.data
+package io.github.sophon.xko.data.remote
 
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNotNull
 import io.github.sophon.core.wiki.model.Move
+import kotlin.collections.get
 import kotlin.test.Test
 
-class MoveMapperTest {
+class MoveRemoteMapperTest {
     @Test
     fun `toDomain should group moves by character and map correctly`() {
         // given

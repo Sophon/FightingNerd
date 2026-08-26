@@ -1,4 +1,4 @@
-package io.github.sophon.xko.data
+package io.github.sophon.xko.data.remote
 
 import io.github.sophon.core.util.create2dAliases
 import io.github.sophon.core.util.orDash

@@ -1,4 +1,4 @@
-package io.github.sophon.xko.data
+package io.github.sophon.xko.data.remote
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
