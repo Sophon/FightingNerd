@@ -36,6 +36,24 @@ FROM CharacterEntity
 WHERE gameId = ?
 ORDER BY displayName COLLATE NOCASE;
 
+selectSF6ForGame:
+SELECT c.id, c.gameId, c.remoteQueryId, c.wikiUrl, c.displayName, c.aliases, c.hp, c.umo, c.imagesIconId, c.imagesIconUrl, c.imagesBannerUrl,
+       sc.fwdWalkSpd, sc.bwdWalkSpd, sc.fwdDashSpd, sc.bwdDashSpd, sc.fwdDashDist, sc.bwdDashDist,
+       sc.dRushMin, sc.dRushBlock, sc.dRushMax,
+       sc.throwRange, sc.throwHurtbox, sc.jumpSpd, sc.jumpApex, sc.fwdJumpDist, sc.bwdJumpDist
+FROM CharacterEntity c
+LEFT JOIN SF6CharacterEntity sc ON sc.characterId = c.id
+WHERE c.gameId = ?
+ORDER BY c.displayName COLLATE NOCASE;
+
+selectMK1ForGame:
+SELECT c.id, c.gameId, c.remoteQueryId, c.wikiUrl, c.displayName, c.aliases, c.hp, c.umo, c.imagesIconId, c.imagesIconUrl, c.imagesBannerUrl,
+       mc.hpMod, mc.throwDmg
+FROM CharacterEntity c
+LEFT JOIN MK1CharacterEntity mc ON mc.characterId = c.id
+WHERE c.gameId = ?
+ORDER BY c.displayName COLLATE NOCASE;
+
 selectLastInsertedAtForGame:
 SELECT MAX(insertedAt) AS lastInsertedAt
 FROM CharacterEntity

@@ -18,7 +18,6 @@ data class Character(
     val gameProperties: CharacterGameProperties? = null,
 
     val ggstProperties: GGSTProperties? = null,
-    val mkProperties: MK1Properties? = null,
     val dbfzProperties: DBFZProperties? = null,
     val gbvsrProperties: GBVSRProperties? = null,
     val bbProperties: BBProperties? = null,
@@ -31,27 +30,6 @@ data class Character(
         val iconId: String? = null,
         val iconUrl: String? = null,
         val bannerUrl: String? = null,
-    )
-
-    @Serializable
-    data class SF6Properties(
-        val fwdWalkSpd: String?,
-        val bwdWalkSpd: String?,
-        val fwdDashSpd: String?,
-        val bwdDashSpd: String?,
-        val fwdDashDist: String?,
-        val bwdDashDist: String?,
-
-        val dRushMin: String?,
-        val dRushBlock: String?,
-        val dRushMax: String?,
-
-        val throwRange: String?,
-        val throwHurtbox: String?,
-        val jumpSpd: String?,
-        val jumpApex: String?,
-        val fwdJumpDist: String?,
-        val bwdJumpDist: String?,
     )
 
     @Serializable
@@ -129,12 +107,6 @@ data class Character(
         val prejump: String? = null,
         val backdash: String? = null,
         val team: String? = null,
-    )
-
-    @Serializable
-    data class MK1Properties(
-        val hpMod: String? = null,
-        val throwDmg: String? = null,
     )
 
     @Serializable

@@ -1,0 +1,23 @@
+CREATE TABLE SF6CharacterEntity (
+    characterId TEXT NOT NULL PRIMARY KEY,
+    fwdWalkSpd TEXT,
+    bwdWalkSpd TEXT,
+    fwdDashSpd TEXT,
+    bwdDashSpd TEXT,
+    fwdDashDist TEXT,
+    bwdDashDist TEXT,
+    dRushMin TEXT,
+    dRushBlock TEXT,
+    dRushMax TEXT,
+    throwRange TEXT,
+    throwHurtbox TEXT,
+    jumpSpd TEXT,
+    jumpApex TEXT,
+    fwdJumpDist TEXT,
+    bwdJumpDist TEXT,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertSF6Character:
+INSERT OR REPLACE INTO SF6CharacterEntity(characterId, fwdWalkSpd, bwdWalkSpd, fwdDashSpd, bwdDashSpd, fwdDashDist, bwdDashDist, dRushMin, dRushBlock, dRushMax, throwRange, throwHurtbox, jumpSpd, jumpApex, fwdJumpDist, bwdJumpDist)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

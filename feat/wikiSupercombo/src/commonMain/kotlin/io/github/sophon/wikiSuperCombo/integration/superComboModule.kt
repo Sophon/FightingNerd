@@ -44,7 +44,7 @@ fun superComboModule() = module {
         single<CharacterDbAdapter>(gameQualifier) {
             SuperComboCharacterDbAdapter(
                 db = get(named(WikiClientFeature.SuperCombo.id)),
-                gameId = game.id,
+                game = game,
             )
         }
         single<MoveDbAdapter>(gameQualifier) {
