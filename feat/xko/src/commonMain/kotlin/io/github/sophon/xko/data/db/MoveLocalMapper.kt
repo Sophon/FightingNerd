@@ -26,6 +26,7 @@ internal fun MoveEntity.toDomain(): Move {
         urls = Move.Urls(
             wikiUrl = urlsWikiUrl.orEmpty(),
             videoId = urlsVideoId,
+            videoUrl = urlsVideoUrl,
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
