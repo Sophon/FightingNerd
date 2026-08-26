@@ -15,7 +15,8 @@ data class Character(
     val hp: String? = null,
     val umo: List<String> = listOf(),
 
-    val sf6Properties: SF6Properties? = null,
+    val gameProperties: CharacterGameProperties? = null,
+
     val ggstProperties: GGSTProperties? = null,
     val mkProperties: MK1Properties? = null,
     val dbfzProperties: DBFZProperties? = null,
