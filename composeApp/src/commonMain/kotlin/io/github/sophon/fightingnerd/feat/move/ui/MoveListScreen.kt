@@ -28,7 +28,6 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.fightingnerd.core.ui.components.ProgressBar
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.feat.move.ui.composables.BookmarksButton
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
@@ -73,6 +72,7 @@ internal fun MoveListScreen(
         onBookmarkClose = vm::onBookmarkClose,
         onDownload = vm::onDownloadMedia,
         onWipe = vm::onWipeMedia,
+        onExpandCharacter = vm::onExpandCharacter,
         modifier = modifier,
     )
 }
@@ -95,6 +95,7 @@ private fun Content(
     onBookmarkClose: () -> Unit,
     onDownload: () -> Unit,
     onWipe: () -> Unit,
+    onExpandCharacter: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -112,6 +113,9 @@ private fun Content(
             MoveTopBar(
                 onExit = onExit,
                 characterName = state.character?.displayName.orEmpty(),
+                isCharacterExpanded = (state.character?.isExpanded == true),
+                canExpandCharacter = (state.character?.canExpand == true),
+                onExpandCharacter = onExpandCharacter,
                 searchQuery = searchQuery,
                 onSearch = onSearch,
                 onDisplayFilterSheet = { onFilterClick(true) },
@@ -245,6 +249,7 @@ private fun MoveListPreview() {
             onBookmarkClose = {},
             onDownload = {},
             onWipe = {},
+            onExpandCharacter = {},
         )
     }
 }
@@ -270,6 +275,7 @@ private fun MoveListSearchPreview() {
             onBookmarkClose = {},
             onDownload = {},
             onWipe = {},
+            onExpandCharacter = {},
         )
     }
 }
@@ -300,6 +306,7 @@ private fun MoveListDownloadPreview() {
             onBookmarkClose = {},
             onDownload = {},
             onWipe = {},
+            onExpandCharacter = {},
         )
     }
 }

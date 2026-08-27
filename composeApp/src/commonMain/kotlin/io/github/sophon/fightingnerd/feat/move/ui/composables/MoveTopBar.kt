@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.feat.move.ui.composables
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -10,9 +11,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
-import androidx.compose.material.icons.outlined.Delete
-import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.Downloading
+import androidx.compose.material.icons.outlined.ExpandLess
+import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
@@ -25,9 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
@@ -47,6 +46,9 @@ import org.jetbrains.compose.resources.stringResource
 internal fun MoveTopBar(
     onExit: () -> Unit,
     characterName: String,
+    canExpandCharacter: Boolean,
+    isCharacterExpanded: Boolean,
+    onExpandCharacter: () -> Unit,
     searchQuery: String?,
     onSearch: (query: String?) -> Unit,
     onDisplayFilterSheet: () -> Unit,
@@ -56,43 +58,60 @@ internal fun MoveTopBar(
     onWipe: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top,
         modifier = modifier
             .fillMaxWidth()
             .padding(
                 horizontal = nerdDimensions.screenPaddingHorizontal,
                 vertical = nerdDimensions.screenPaddingVertical,
-            )
+            ),
     ) {
-        TopBarButton(onClick = onExit)
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            TopBarButton(onClick = onExit)
 
-        if (searchQuery == null) {
-            Text(
-                text = characterName.uppercase(),
-                style = nerdTypography.displaySmall,
-                color = nerdColorPalette.textPrimary,
-                textAlign = TextAlign.Center,
-                modifier = Modifier.weight(1f),
-            )
-        } else {
-            SearchField(
-                query = searchQuery,
-                onQueryChange = onSearch,
-                modifier = Modifier.weight(1f),
+            if (searchQuery == null) {
+                Text(
+                    text = characterName.uppercase(),
+                    style = nerdTypography.displaySmall,
+                    color = nerdColorPalette.textPrimary,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
+                )
+            } else {
+                SearchField(
+                    query = searchQuery,
+                    onQueryChange = onSearch,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            ButtonsRow(
+                searchQuery = searchQuery,
+                onShowSearch = { onSearch("") },
+                onDisplayFilterSheet = onDisplayFilterSheet,
+                isFilterActive = isFilterActive,
+                mediaState = mediaState,
+                onDownload = onDownload,
+                onWipe = onWipe,
             )
         }
 
-        ButtonsRow(
-            searchQuery = searchQuery,
-            onShowSearch = { onSearch("") },
-            onDisplayFilterSheet = onDisplayFilterSheet,
-            isFilterActive = isFilterActive,
-            mediaState = mediaState,
-            onDownload = onDownload,
-            onWipe = onWipe,
-        )
+        if (canExpandCharacter) {
+            IconButton(
+                onClick = onExpandCharacter,
+                modifier = Modifier.size(nerdDimensions.iconInline)
+            ) {
+                Icon(
+                    imageVector = if (isCharacterExpanded) Icons.Outlined.ExpandLess else Icons.Outlined.ExpandMore,
+                    contentDescription = "Expand Char info"
+                )
+            }
+        }
     }
 }
 
