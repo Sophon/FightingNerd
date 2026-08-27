@@ -13,6 +13,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.core.wiki.util.getMediaCount
 import io.github.sophon.fightingnerd.core.ui.OverlayService
+import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.usecase.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.GroupMovesUseCase
@@ -20,6 +21,7 @@ import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.WipeMediaUseCase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
@@ -53,6 +55,7 @@ internal class MoveListVM(
     private val normalizeSliderUseCase: NormalizeSliderUseCase,
     private val groupMovesUseCase: GroupMovesUseCase,
     private val downloadMediaUseCase: DownloadMediaUseCase,
+    private val wipeMediaUseCase: WipeMediaUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
     private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
@@ -167,7 +170,7 @@ internal class MoveListVM(
     }
 
     fun onDownloadMedia() {
-        if (_state.value.downloadProgress != null) return
+        if (_state.value.mediaAvailability is MediaAvailability.Downloading) return
 
         val moveList = _fullMoveList.value.movesById.values.toList()
         downloadMediaUseCase.invoke(
@@ -176,17 +179,24 @@ internal class MoveListVM(
         )
             .onEach { downloadedCount ->
                 _state.update { state ->
-                    val newProgress = MoveListState.DownloadProgress(
+                    val newProgress = MediaAvailability.Downloading(
                         downloaded = downloadedCount,
                         total = state.mediaCount,
                     )
-                    state.copy(downloadProgress = newProgress)
+                    state.copy(mediaAvailability = newProgress)
                 }
             }
             .onCompletion {
-                _state.update { it.copy(downloadProgress = null) }
+                _state.update { it.copy(mediaAvailability = MediaAvailability.Downloaded) }
             }
             .launchIn(viewModelScope)
+    }
+
+    fun onWipeMedia() {
+        viewModelScope.launch {
+            wipeMediaUseCase.invoke(gameId = gameId)
+        }
+        _state.update { it.copy(mediaAvailability = MediaAvailability.NotDownloaded) }
     }
 
 

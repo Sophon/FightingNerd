@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.feat.move.ui
 import androidx.compose.runtime.Immutable
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.model.Bookmark
+import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
@@ -22,7 +23,7 @@ internal data class MoveListState(
 
     val bookmarks: Bookmarks = Bookmarks(),
 
-    val downloadProgress: DownloadProgress? = null,
+    val mediaAvailability: MediaAvailability = MediaAvailability.NotDownloaded,
 ) {
     @Immutable
     data class MoveListCharacter(
@@ -71,15 +72,6 @@ internal data class MoveListState(
         val isExpanded: Boolean = false,
         val bookmarkList: ImmutableList<Bookmark> = persistentListOf(),
     )
-
-    @Immutable
-    data class DownloadProgress(
-        val downloaded: Int,
-        val total: Int,
-    ) {
-        val fraction: Float
-            get() = if (total > 0) downloaded.toFloat() / total else 0f
-    }
 
 
     companion object {

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Search
@@ -22,12 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.move_list_search_hint
 import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
+import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
@@ -41,7 +45,9 @@ internal fun MoveTopBar(
     onSearch: (query: String?) -> Unit,
     onDisplayFilterSheet: () -> Unit,
     isFilterActive: Boolean,
+    mediaState: MediaAvailability,
     onDownload: () -> Unit,
+    onWipe: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -77,7 +83,9 @@ internal fun MoveTopBar(
             onShowSearch = { onSearch("") },
             onDisplayFilterSheet = onDisplayFilterSheet,
             isFilterActive = isFilterActive,
+            mediaState = mediaState,
             onDownload = onDownload,
+            onWipe = onWipe,
         )
     }
 }
@@ -140,7 +148,9 @@ private fun ButtonsRow(
     onShowSearch: () -> Unit,
     onDisplayFilterSheet: () -> Unit,
     isFilterActive: Boolean,
+    mediaState: MediaAvailability,
     onDownload: () -> Unit,
+    onWipe: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -169,12 +179,58 @@ private fun ButtonsRow(
             )
         }
 
-        IconButton(onClick = onDownload) {
-            Icon(
-                imageVector = Icons.Outlined.Download,
-                contentDescription = "Download media",
-                tint = nerdColorPalette.textPrimary,
-            )
+        MediaButton(
+            mediaState = mediaState,
+            onDownload = onDownload,
+            onWipe = onWipe,
+        )
+    }
+}
+
+@Composable
+private fun MediaButton(
+    mediaState: MediaAvailability,
+    onDownload: () -> Unit,
+    onWipe: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val onClick: () -> Unit
+    val imageVector: ImageVector
+    val isEnabled: Boolean
+    val tint: Color
+
+    when (mediaState) {
+        MediaAvailability.NotDownloaded -> {
+            onClick = onDownload
+            imageVector = Icons.Outlined.Download
+            isEnabled = true
+            tint = nerdColorPalette.textPrimary
         }
+
+        is MediaAvailability.Downloading -> {
+            onClick = {}
+            imageVector = Icons.Outlined.Download
+            isEnabled = false
+            tint = nerdColorPalette.textDisabled
+        }
+
+        MediaAvailability.Downloaded -> {
+            onClick = onWipe
+            imageVector = Icons.Outlined.Delete
+            isEnabled = true
+            tint = nerdColorPalette.textPrimary
+        }
+    }
+
+    IconButton(
+        onClick = onClick,
+        enabled = isEnabled,
+        modifier = modifier,
+    ) {
+        Icon(
+            imageVector = imageVector,
+            contentDescription = "Download media",
+            tint = tint,
+        )
     }
 }
