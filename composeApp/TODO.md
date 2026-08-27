@@ -3,7 +3,6 @@
 ## High prio
 
 - `Move` 
-  - character panel
   - FIX: Other bookmark
 - `More` - Feature settings confirmation dialog
 - `Quiz` - individual char quiz
