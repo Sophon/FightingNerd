@@ -35,7 +35,12 @@ internal class RouteCommandToFeatureUseCase(
             val (commandString, query) = formatQuery(fullQuery)
             useExplicitCommands(source, commandString, query)
         } else {
-            useDefaultCommands(source, fullQuery)
+            val intermediaryResult = useDefaultCommands(source, fullQuery)
+            if (intermediaryResult is Result.Error) {
+                extractCommand(source, fullQuery, originalResult = intermediaryResult)
+            } else {
+                intermediaryResult
+            }
         }
         return result
     }
@@ -168,5 +173,32 @@ internal class RouteCommandToFeatureUseCase(
 
         tracker.recordFailure()
         return Result.Error(BotError.InvalidCommand(fullQuery.split(" ").first()))
+    }
+
+    /**
+     * Should ONLY be called if the invocation is TAG-based **AND** on error.
+     *
+     * Tries to extract a command from anywhere in the query, then does a final pass
+     * via [useExplicitCommands] with that command and the remaining words as the query.
+     */
+    private suspend fun extractCommand(
+        source: Source,
+        fullQuery: String,
+        originalResult: Result<BotOutput, BotError>,
+    ): Result<BotOutput, BotError> {
+        val words = fullQuery.split(' ')
+        words.forEach { word ->
+            if (word.isCommand()) {
+                val reformulatedQuery = (words - word).joinToString(" ")
+                val result = useExplicitCommands(
+                    source = source,
+                    commandString = word,
+                    query = reformulatedQuery,
+                )
+                return result
+            }
+        }
+
+        return originalResult
     }
 }
