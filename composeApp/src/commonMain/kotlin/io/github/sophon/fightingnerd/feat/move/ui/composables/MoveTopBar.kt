@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Download
+import androidx.compose.material.icons.outlined.Downloading
 import androidx.compose.material.icons.outlined.FilterList
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.Icon
@@ -30,6 +31,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.move_list_search_hint
+import io.github.sophon.fightingnerd.core.ui.components.CircularProgressButton
 import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
@@ -194,43 +196,41 @@ private fun MediaButton(
     onWipe: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val onClick: () -> Unit
-    val imageVector: ImageVector
-    val isEnabled: Boolean
-    val tint: Color
-
     when (mediaState) {
         MediaAvailability.NotDownloaded -> {
-            onClick = onDownload
-            imageVector = Icons.Outlined.Download
-            isEnabled = true
-            tint = nerdColorPalette.textPrimary
+            IconButton(
+                onClick = onDownload,
+                enabled = true,
+                modifier = modifier,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Download,
+                    contentDescription = "Download media",
+                    tint = nerdColorPalette.textPrimary,
+                )
+            }
         }
 
         is MediaAvailability.Downloading -> {
-            onClick = {}
-            imageVector = Icons.Outlined.Download
-            isEnabled = false
-            tint = nerdColorPalette.textDisabled
+            CircularProgressButton(
+                progress = mediaState.fraction,
+                onClick = {},
+                imageVector = Icons.Outlined.Downloading,
+            )
         }
 
         MediaAvailability.Downloaded -> {
-            onClick = onWipe
-            imageVector = Icons.Outlined.Delete
-            isEnabled = true
-            tint = nerdColorPalette.textPrimary
+            IconButton(
+                onClick = onWipe,
+                enabled = true,
+                modifier = modifier,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Delete,
+                    contentDescription = "Download media",
+                    tint = nerdColorPalette.textPrimary
+                )
+            }
         }
-    }
-
-    IconButton(
-        onClick = onClick,
-        enabled = isEnabled,
-        modifier = modifier,
-    ) {
-        Icon(
-            imageVector = imageVector,
-            contentDescription = "Download media",
-            tint = tint,
-        )
     }
 }

@@ -160,15 +160,6 @@ private fun Content(
                     .align(Alignment.BottomEnd)
                     .padding(bottom = nerdDimensions.screenPaddingVertical)
             )
-
-            (state.mediaAvailability as? MediaAvailability.Downloading)?.let { progress ->
-                ProgressBar(
-                    progress = progress.fraction,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = nerdDimensions.screenPaddingVertical)
-                )
-            }
         }
     }
 }
