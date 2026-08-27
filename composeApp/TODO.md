@@ -6,7 +6,6 @@
   - character panel
   - FIX: Other bookmark
 - `More` - Feature settings confirmation dialog
-- `MediaLoader` - allow downloading media per game
 - `Quiz` - individual char quiz
 
 ## Low prio
