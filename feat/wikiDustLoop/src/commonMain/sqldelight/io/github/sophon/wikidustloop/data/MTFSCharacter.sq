@@ -1,0 +1,11 @@
+CREATE TABLE MTFSCharacterEntity (
+    characterId TEXT NOT NULL PRIMARY KEY,
+    prejump TEXT,
+    backdash TEXT,
+    team TEXT,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertMTFSCharacter:
+INSERT OR REPLACE INTO MTFSCharacterEntity(characterId, prejump, backdash, team)
+VALUES (?, ?, ?, ?);

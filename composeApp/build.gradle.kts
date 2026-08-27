@@ -121,6 +121,8 @@ kotlin {
 
             implementation(libs.revenuecat.purchases.core)
 
+            implementation(libs.okio)
+
             implementation(project(":core"))
             implementation(project(":feat:wikiWavu"))
             implementation(project(":feat:wikiSupercombo"))

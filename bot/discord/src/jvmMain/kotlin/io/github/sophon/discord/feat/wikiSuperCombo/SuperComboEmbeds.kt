@@ -12,6 +12,9 @@ import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.separator
+import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
 
 internal fun superComboMoveEmbed(
     character: Character,
@@ -72,7 +75,7 @@ internal fun superComboCharacterEmbed(
         thumbnail { url = iconUrl }
     }
 
-    character.sf6Properties?.let { properties ->
+    (character.gameProperties as? SF6Properties)?.let { properties ->
         val moves = fastestMoveList.joinToString(", ") { move ->
             move.input
         }
@@ -115,38 +118,42 @@ internal fun superComboCharacterEmbed(
 }
 
 private fun EmbedBuilder.sf6Fields(move: Move) {
-    optionalField(name = "JUG start", value = move.sf6Properties?.jugStart)
-    optionalField(name = "JUG limit", value = move.sf6Properties?.jugLimit)
-    optionalField(name = "JUG inc", value = move.sf6Properties?.jugIncrease)
+    val properties = (move.gameProperties as? SF6MoveProperties) ?: return
+    
+    optionalField(name = "JUG start", value = properties.jugStart)
+    optionalField(name = "JUG limit", value = properties.jugLimit)
+    optionalField(name = "JUG inc", value = properties.jugIncrease)
 
     optionalField(name = "Cancel", move.cancel)
-    optionalField(name = "Range", move.sf6Properties?.attackRange)
-    optionalField(name = "Proj spd", move.sf6Properties?.projectileSpeed)
+    optionalField(name = "Range", properties.attackRange)
+    optionalField(name = "Proj spd", properties.projectileSpeed)
 }
 
 private fun EmbedBuilder.mk1Fields(move: Move) {
+    val properties = (move.gameProperties as? MKMoveProperties) ?: return
+    
     optionalField(
         name = "Cost",
-        value = move.mkProperties?.cost?.joinToString("; ")
+        value = properties.cost.joinToString("; ")
     )
     optionalField(
         name = "Chip",
-        value = move.mkProperties?.chip,
+        value = properties.chip,
     )
     optionalField(
         name = "Flawless block",
-        value = move.mkProperties?.flawlessBlockAdv,
+        value = properties.flawlessBlockAdv,
     )
 
-    if (move.mkProperties?.hitCancelAdv != null || move.mkProperties?.blockCancelAdv != null) {
+    if (properties.hitCancelAdv != null || properties.blockCancelAdv != null) {
         optionalField(
             name = "Cancel hit | block",
-            value = "${move.mkProperties?.hitCancelAdv} | ${move.mkProperties?.blockCancelAdv}",
+            value = "${properties.hitCancelAdv} | ${properties.blockCancelAdv}",
         )
     }
     optionalField(
         name = "Punish",
-        value = move.mkProperties?.punish,
+        value = properties.punish,
     )
 }
 
@@ -161,7 +168,7 @@ private fun EmbedBuilder.createNotes(move: Move) {
 
 @Suppress("CyclomaticComplexMethod")
 private fun EmbedBuilder.createDetails(move: Move) {
-    val properties = move.sf6Properties ?: return
+    val properties = (move.gameProperties as? SF6MoveProperties) ?: return
 
     val hasDetails = properties.run {
         DROH != null || DROB != null

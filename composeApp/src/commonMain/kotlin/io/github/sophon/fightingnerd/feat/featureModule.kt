@@ -14,11 +14,14 @@ import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCa
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
+import io.github.sophon.fightingnerd.feat.move.usecase.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.GroupMovesUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToOfflineMediaAvailability
+import io.github.sophon.fightingnerd.feat.move.usecase.WipeMediaUseCase
 import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
 import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.feat.payment.usecase.PurchaseTipUseCase
@@ -67,6 +70,9 @@ internal fun featureModule() = module {
             loadMoveGroupsUseCase = get(),
             normalizeSliderUseCase = get(),
             groupMovesUseCase = get(),
+            downloadMediaUseCase = get(),
+            wipeMediaUseCase = get(),
+            subscribeToOfflineMediaAvailability = get(),
         )
     }
     singleOf(::SubscribeToMoveListUseCase)
@@ -74,6 +80,9 @@ internal fun featureModule() = module {
     singleOf(::NormalizeSliderUseCase)
     singleOf(::LoadMoveGroupsUseCase)
     singleOf(::GroupMovesUseCase)
+    singleOf(::DownloadMediaUseCase)
+    singleOf(::WipeMediaUseCase)
+    singleOf(::SubscribeToOfflineMediaAvailability)
     //endregion
 
     //region Quiz

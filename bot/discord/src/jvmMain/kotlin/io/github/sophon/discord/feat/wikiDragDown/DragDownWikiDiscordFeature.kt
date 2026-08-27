@@ -126,7 +126,7 @@ internal class DragDownWikiDiscordFeature(
 
     override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
         val game = when (command) {
-            Command.FdROA -> Game.ROA2
+            Command.FdROA, Command.CharROA -> Game.ROA2
             else -> return Result.Error(BotError.BotLogicError(command.name, ""))
         }
         val wiki = wikiClientMap[game]

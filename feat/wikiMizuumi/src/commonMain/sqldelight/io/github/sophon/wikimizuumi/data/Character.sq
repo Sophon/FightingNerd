@@ -7,6 +7,7 @@ CREATE TABLE CharacterEntity (
     aliases TEXT NOT NULL,
     hp TEXT,
     umo TEXT NOT NULL,
+    imagesIconId TEXT,
     imagesIconUrl TEXT,
     imagesBannerUrl TEXT,
     consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
@@ -34,6 +35,19 @@ SELECT *
 FROM CharacterEntity
 WHERE gameId = ?
 ORDER BY displayName COLLATE NOCASE;
+
+selectUni2ForGame:
+SELECT c.id, c.gameId, c.remoteQueryId, c.wikiUrl, c.displayName, c.aliases, c.hp, c.umo, c.imagesIconId, c.imagesIconUrl, c.imagesBannerUrl,
+       uc.smartSteer, uc.fWalkSpeed, uc.fWalkSpeedNote, uc.bWalkSpeed, uc.bWalkSpeedNote,
+       uc.jumpStartup, uc.jumpDuration, uc.jumpDurationNote,
+       uc.dashStartup, uc.iDashSpeed, uc.iDashSpeedNote, uc.dashAccel, uc.dashAccelNote, uc.maxDashSpeed,
+       uc.bDashStartup, uc.bDashDuration, uc.bDashDurationNote, uc.bDashDistance, uc.bDashDistanceNote,
+       uc.bDashFullInvulStart, uc.bDashFullInvulEnd, uc.bDashThrowInvulStart, uc.bDashThrowInvulEnd,
+       uc.throwWidth, uc.throwRange, uc.trait, uc.vorpalTrait
+FROM CharacterEntity c
+LEFT JOIN Uni2CharacterEntity uc ON uc.characterId = c.id
+WHERE c.gameId = ?
+ORDER BY c.displayName COLLATE NOCASE;
 
 selectLastInsertedAtForGame:
 SELECT MAX(insertedAt) AS lastInsertedAt

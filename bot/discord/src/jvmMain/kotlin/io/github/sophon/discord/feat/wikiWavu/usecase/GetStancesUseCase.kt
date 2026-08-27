@@ -16,6 +16,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.util.toButtons
+import io.github.sophon.wikiwavu.integration.model.T8Properties
 import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.seconds
 
@@ -93,7 +94,7 @@ internal class GetStancesUseCase(
         val filter = object : Filter {
             override val name: String = "Stance"
             override val predicate: (Move) -> Boolean = { move ->
-                move.t8Properties?.stance.equals(stance, ignoreCase = true)
+                (move.gameProperties as? T8Properties)?.stance.equals(stance, ignoreCase = true)
             }
         }
 
@@ -114,8 +115,8 @@ internal class GetStancesUseCase(
 
         val moveList = wiki.subscribeToMoveList(CharacterId(character.id)).first()
         val stanceList = moveList
-            .filter { it.t8Properties?.stance?.isNotBlank() == true }
-            .map { it.t8Properties!!.stance!! }
+            .filter { (it.gameProperties as? T8Properties)?.stance?.isNotBlank() == true }
+            .map { (it.gameProperties as T8Properties).stance!! }
             .distinct()
         val result = Result.Success(stanceList)
         return result

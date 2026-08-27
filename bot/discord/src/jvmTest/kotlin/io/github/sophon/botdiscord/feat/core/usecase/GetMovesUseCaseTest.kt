@@ -17,6 +17,7 @@ import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
+import io.github.sophon.wikiwavu.integration.model.T8Properties
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
@@ -67,8 +68,8 @@ class GetMovesUseCaseTest {
         // given
         val charName = "jin"
         val character = createCharacter(charName)
-        val homingMove = createMove(input = "4", properties = Move.T8Properties(isHoming = true))
-        val nonHomingMove = createMove(input = "1", properties = Move.T8Properties(isHoming = false))
+        val homingMove = createMove(input = "4", properties = T8Properties(isHoming = true))
+        val nonHomingMove = createMove(input = "1", properties = T8Properties(isHoming = false))
         val homingOnly = object : Filter {
             override val name: String = "homing"
             override val predicate: (Move) -> Boolean = { it.t8Properties?.isHoming == true }
@@ -159,7 +160,7 @@ class GetMovesUseCaseTest {
 
     private fun createMove(
         input: String,
-        properties: Move.T8Properties = Move.T8Properties(isHoming = true),
+        properties: T8Properties = T8Properties(isHoming = true),
     ): Move {
         return Move(
             characterId = "Test",
@@ -167,9 +168,12 @@ class GetMovesUseCaseTest {
             startup = "",
             input = input,
             urls = Move.Urls(wikiUrl = "TODO"),
-            t8Properties = properties,
+            gameProperties = properties,
         )
     }
+
+    private val Move.t8Properties: T8Properties?
+        get() = gameProperties as? T8Properties
 
     private class FakeWikiClient(
         private val characterList: List<Character> = emptyList(),

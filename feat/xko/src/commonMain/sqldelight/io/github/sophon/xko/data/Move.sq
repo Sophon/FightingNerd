@@ -21,6 +21,7 @@ CREATE TABLE MoveEntity (
     aliases TEXT NOT NULL,
     urlsWikiUrl TEXT,
     urlsVideoId TEXT,
+    urlsVideoUrl TEXT,
     urlsHitboxImageList TEXT NOT NULL,
     urlsMoveImageList TEXT NOT NULL,
     consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
@@ -29,8 +30,8 @@ CREATE TABLE MoveEntity (
 );
 
 insertMove:
-INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsHitboxImageList, urlsMoveImageList)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsVideoUrl, urlsHitboxImageList, urlsMoveImageList)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(id) DO UPDATE SET
     characterId = excluded.characterId,
     gameId = excluded.gameId,
@@ -51,6 +52,7 @@ ON CONFLICT(id) DO UPDATE SET
     aliases = excluded.aliases,
     urlsWikiUrl = excluded.urlsWikiUrl,
     urlsVideoId = excluded.urlsVideoId,
+    urlsVideoUrl = excluded.urlsVideoUrl,
     urlsHitboxImageList = excluded.urlsHitboxImageList,
     urlsMoveImageList = excluded.urlsMoveImageList,
     consecutiveFailureCount = 0,

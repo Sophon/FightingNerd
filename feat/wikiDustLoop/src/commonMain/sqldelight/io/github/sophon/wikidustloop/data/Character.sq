@@ -7,6 +7,7 @@ CREATE TABLE CharacterEntity (
     aliases TEXT NOT NULL,
     hp TEXT,
     umo TEXT NOT NULL,
+    imagesIconId TEXT,
     imagesIconUrl TEXT,
     imagesBannerUrl TEXT,
     consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
@@ -34,6 +35,53 @@ SELECT *
 FROM CharacterEntity
 WHERE gameId = ?
 ORDER BY displayName COLLATE NOCASE;
+
+selectGGSTForGame:
+SELECT c.id, c.gameId, c.remoteQueryId, c.wikiUrl, c.displayName, c.aliases, c.hp, c.umo, c.imagesIconId, c.imagesIconUrl, c.imagesBannerUrl,
+       gc.defense, gc.guts, gc.guardBalance, gc.prejump, gc.bwdDash, gc.bwdDashDuration, gc.bwdDashInvulnerability, gc.bwdDashAirborne, gc.bwdDashDist,
+       gc.fwdDash, gc.jumpDuration, gc.highJumpDuration, gc.jumpHeight, gc.highJumpHeight, gc.earliestIAD,
+       gc.adDuration, gc.abdDuration, gc.adDist, gc.abdDist, gc.movementTension, gc.jumpTension, gc.airDashTension,
+       gc.walkSpd, gc.bwdWalkSpd, gc.dashInitialSpd, gc.dashAcceleration, gc.dashFriction,
+       gc.jumpGravity, gc.highJumpGravity, gc.boostAttack, gc.boostDefense
+FROM CharacterEntity c
+LEFT JOIN GGSTCharacterEntity gc ON gc.characterId = c.id
+WHERE c.gameId = ?
+ORDER BY c.displayName COLLATE NOCASE;
+
+selectBBForGame:
+SELECT c.id, c.gameId, c.remoteQueryId, c.wikiUrl, c.displayName, c.aliases, c.hp, c.umo, c.imagesIconId, c.imagesIconUrl, c.imagesBannerUrl,
+       bc.preJump, bc.backDash, bc.forwardDash
+FROM CharacterEntity c
+LEFT JOIN BBCharacterEntity bc ON bc.characterId = c.id
+WHERE c.gameId = ?
+ORDER BY c.displayName COLLATE NOCASE;
+
+selectMTFSForGame:
+SELECT c.id, c.gameId, c.remoteQueryId, c.wikiUrl, c.displayName, c.aliases, c.hp, c.umo, c.imagesIconId, c.imagesIconUrl, c.imagesBannerUrl,
+       mc.prejump, mc.backdash, mc.team
+FROM CharacterEntity c
+LEFT JOIN MTFSCharacterEntity mc ON mc.characterId = c.id
+WHERE c.gameId = ?
+ORDER BY c.displayName COLLATE NOCASE;
+
+selectDBFZForGame:
+SELECT c.id, c.gameId, c.remoteQueryId, c.wikiUrl, c.displayName, c.aliases, c.hp, c.umo, c.imagesIconId, c.imagesIconUrl, c.imagesBannerUrl,
+       dc.kiMod
+FROM CharacterEntity c
+LEFT JOIN DBFZCharacterEntity dc ON dc.characterId = c.id
+WHERE c.gameId = ?
+ORDER BY c.displayName COLLATE NOCASE;
+
+selectGBVSRForGame:
+SELECT c.id, c.gameId, c.remoteQueryId, c.wikiUrl, c.displayName, c.aliases, c.hp, c.umo, c.imagesIconId, c.imagesIconUrl, c.imagesBannerUrl,
+       gvc.backdash, gvc.walkSpeed, gvc.walkSpeedBack, gvc.dashInitial, gvc.dashAcceleration,
+       gvc.jumpPre, gvc.jumpForwardDistance, gvc.jumpSuperForwardDistance, gvc.jumpBackDistance, gvc.jumpSuperBackDistance,
+       gvc.jumpGravity, gvc.jumpSuperGravity, gvc.jumpSuperHeight,
+       gvc.closeRangeL, gvc.closeRangeM, gvc.closeRangeH
+FROM CharacterEntity c
+LEFT JOIN GBVSRCharacterEntity gvc ON gvc.characterId = c.id
+WHERE c.gameId = ?
+ORDER BY c.displayName COLLATE NOCASE;
 
 selectLastInsertedAtForGame:
 SELECT MAX(insertedAt) AS lastInsertedAt

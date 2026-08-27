@@ -10,9 +10,6 @@ import io.github.sophon.core.wiki.data.MoveRemoteAdapter
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikidragdown.data.DragDownDataSource
-import io.github.sophon.wikidragdown.data.DragDownTables
-import io.github.sophon.wikidragdown.data.toDomain
 
 internal class DragDownCharacterRemoteAdapter(
     private val source: DragDownDataSource,

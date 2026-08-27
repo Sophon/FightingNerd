@@ -9,9 +9,6 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikimizuumi.data.MizuumiTables
-import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSource
-import io.github.sophon.wikimizuumi.data.toDomainAll
 
 /**
  * Mizuumi wikis (per game) can return character-and-moves in a single bulk call.
