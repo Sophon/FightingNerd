@@ -40,6 +40,9 @@ class RouteCommandToFeatureUseCaseTest {
         var receivedQuery: String? = null
             private set
 
+        var receivedCommand: Command? = null
+            private set
+
         override suspend fun start() {}
 
         override suspend fun execute(
@@ -48,6 +51,7 @@ class RouteCommandToFeatureUseCaseTest {
             origin: Source,
         ): Result<BotOutput, BotError> {
             receivedQuery = query
+            receivedCommand = command
             val tekkenChars = setOf("lily", "ak", "jin", "kazuya")
             val formattedQuery = query.lowercase()
 
@@ -450,6 +454,35 @@ class RouteCommandToFeatureUseCaseTest {
         val result = useCase.invoke(Source("", "", ""), message)
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
+    }
+    //endregion
+
+    //region Extract Command Fallback
+    @Test
+    fun `tag invoke retries with extracted command when default pass returns error`() = runTest {
+        // given
+        val message = "@bot jni homing"
+
+        // when
+        val result = useCase.invoke(Source("", "", ""), message)
+
+        // then
+        assertThat(wavuFeature.receivedCommand).isEqualTo(Command.Homing)
+        assertThat(wavuFeature.receivedQuery).isEqualTo("jni")
+        assertThat(result).isInstanceOf(Result.Error::class)
+    }
+
+    @Test
+    fun `tag invoke returns original error when query has no command word`() = runTest {
+        // given
+        val message = "@bot jni kazyua"
+
+        // when
+        val result = useCase.invoke(Source("", "", ""), message)
+
+        // then
+        assertThat(wavuFeature.receivedQuery).isEqualTo("jni kazyua")
+        assertThat(result).isInstanceOf(Result.Error::class)
     }
     //endregion
 }
