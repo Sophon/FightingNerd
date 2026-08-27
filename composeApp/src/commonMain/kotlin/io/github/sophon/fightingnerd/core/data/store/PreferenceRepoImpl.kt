@@ -38,8 +38,8 @@ internal class PreferenceRepoImpl(
                 preferences[KEY_THEME_MODE] = themeMode.name
             }
             Result.Success(Unit)
-        } catch (_: IOException) {
-            Result.Error(AppError.IOError)
+        } catch (e: IOException) {
+            Result.Error(AppError.IOError(e.message.orEmpty()))
         } catch (_: Exception) {
             Result.Error(AppError.Unknown)
         }

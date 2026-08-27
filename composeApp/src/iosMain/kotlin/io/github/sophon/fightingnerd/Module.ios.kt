@@ -12,15 +12,31 @@ import io.github.sophon.core.wiki.data.storeFingerprint
 import io.github.sophon.fightingnerd.core.domain.UrlOpener
 import io.github.sophon.fightingnerd.core.domain.UrlOpenerIos
 import io.github.sophon.fightingnerd.infrastructure.createDataStore
+import okio.Path
+import okio.Path.Companion.toPath
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import platform.Foundation.NSApplicationSupportDirectory
 import platform.Foundation.NSFileManager
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
+import platform.Foundation.NSUserDomainMask
 
 internal actual val platformModule = module {
     single { createDataStore() }
     singleOf(::UrlOpenerIos).bind<UrlOpener>()
+
+    single<Path> {
+        val dirs = NSSearchPathForDirectoriesInDomains(
+            NSApplicationSupportDirectory,
+            NSUserDomainMask,
+            true,
+        )
+        val supportPath = dirs.first() as String
+        val baseDir = supportPath.toPath() / "media"
+        baseDir
+    }
 
     WikiClientFeature.entries.forEach { feature ->
         single<SqlDriver>(named(feature.id)) { params ->

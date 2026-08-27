@@ -31,3 +31,19 @@ fun List<Move>.filterMatching(query: String?): List<Move> {
     }
     return filtered
 }
+
+fun List<Move>.getMediaCount(): Int {
+    var count = 0
+    forEach { count += it.getMediaCount() }
+    return count
+}
+
+fun Move.getMediaCount(): Int {
+    var count = 0
+    urls.apply {
+        if (videoUrl != null) count++
+        count += moveImageList.size
+        count += hitboxImageList.size
+    }
+    return count
+}

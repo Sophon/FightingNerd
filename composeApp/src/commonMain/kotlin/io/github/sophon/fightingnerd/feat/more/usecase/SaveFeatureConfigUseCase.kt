@@ -10,6 +10,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.fightingnerd.core.data.MediaRepo
 import io.github.sophon.fightingnerd.feat.more.model.SettingsError
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
@@ -31,7 +32,8 @@ import kotlinx.coroutines.withContext
  */
 internal class SaveFeatureConfigUseCase(
     private val store: DataStore<Preferences>,
-    private val repo: FeatureRepo,
+    private val featureRepo: FeatureRepo,
+    private val mediaRepo: MediaRepo,
 ) {
     suspend fun invoke(
         featureList: List<UiFeatureSetting>,
@@ -51,7 +53,7 @@ internal class SaveFeatureConfigUseCase(
                 Napier.w(tag = TAG) { "Unknown gameId in saved prefs: $gameId" }
                 continue
             }
-            val wikiClient = repo.getWikiClientFor(game)
+            val wikiClient = featureRepo.getWikiClientFor(game)
             if (wikiClient == null) {
                 Napier.w(tag = TAG) { "No WikiClient registered for game: $gameId" }
                 continue
@@ -60,6 +62,7 @@ internal class SaveFeatureConfigUseCase(
             wikiClient.clearCache().onError { error ->
                 Napier.w(tag = TAG) { "Wipe failed for $gameId, proceeding to disable anyway: $error" }
             }
+            mediaRepo.wipe(gameId = gameId)
         }
     }
 

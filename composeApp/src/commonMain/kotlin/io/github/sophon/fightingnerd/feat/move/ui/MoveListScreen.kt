@@ -28,6 +28,8 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.fightingnerd.core.ui.components.ProgressBar
+import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.feat.move.ui.composables.BookmarksButton
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
@@ -69,6 +71,8 @@ internal fun MoveListScreen(
         onChangeOnHit = vm::onChangeOnHit,
         onBookmarkSwitch = vm::onBookmarkSwitch,
         onBookmarkClose = vm::onBookmarkClose,
+        onDownload = vm::onDownloadMedia,
+        onWipe = vm::onWipeMedia,
         modifier = modifier,
     )
 }
@@ -89,6 +93,8 @@ private fun Content(
     onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onBookmarkSwitch: () -> Unit,
     onBookmarkClose: () -> Unit,
+    onDownload: () -> Unit,
+    onWipe: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
@@ -110,6 +116,9 @@ private fun Content(
                 onSearch = onSearch,
                 onDisplayFilterSheet = { onFilterClick(true) },
                 isFilterActive = state.filterSheet.isFilterActive,
+                mediaState = state.mediaAvailability,
+                onDownload = onDownload,
+                onWipe = onWipe,
             )
         },
         contentWindowInsets = WindowInsets(0),
@@ -149,7 +158,7 @@ private fun Content(
                 },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = nerdDimensions.componentGap)
+                    .padding(bottom = nerdDimensions.screenPaddingVertical)
             )
         }
     }
@@ -234,6 +243,8 @@ private fun MoveListPreview() {
             onSearch = {},
             onBookmarkSwitch = {},
             onBookmarkClose = {},
+            onDownload = {},
+            onWipe = {},
         )
     }
 }
@@ -243,7 +254,7 @@ private fun MoveListPreview() {
 private fun MoveListSearchPreview() {
     FightingNerdTheme {
         Content(
-            state = MoveListState.PREVIEW,
+            state = MoveListState.PREVIEW.copy(mediaAvailability = MediaAvailability.Downloaded),
             onExit = {},
             moveList = previewMoves,
             onMoveClick = {},
@@ -257,6 +268,38 @@ private fun MoveListSearchPreview() {
             onSearch = {},
             onBookmarkSwitch = {},
             onBookmarkClose = {},
+            onDownload = {},
+            onWipe = {},
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun MoveListDownloadPreview() {
+    FightingNerdTheme {
+        Content(
+            state = MoveListState.PREVIEW.copy(
+                mediaAvailability = MediaAvailability.Downloading(
+                    downloaded = 40,
+                    total = 100,
+                ),
+            ),
+            onExit = {},
+            moveList = previewMoves,
+            onMoveClick = {},
+            searchQuery = null,
+            onFilterClick = {},
+            onFilterChipClick = {},
+            onChangeStartup = {},
+            onChangeOnBlock = {},
+            onChangeOnHit = {},
+            onClearFilters = {},
+            onSearch = {},
+            onBookmarkSwitch = {},
+            onBookmarkClose = {},
+            onDownload = {},
+            onWipe = {},
         )
     }
 }
