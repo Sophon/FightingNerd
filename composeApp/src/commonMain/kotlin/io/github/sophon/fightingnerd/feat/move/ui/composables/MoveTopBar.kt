@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -30,6 +31,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.ic_media_delete
+import fightingnerd.composeapp.generated.resources.ic_media_download
 import fightingnerd.composeapp.generated.resources.move_list_search_hint
 import io.github.sophon.fightingnerd.core.ui.components.CircularProgressButton
 import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
@@ -37,6 +40,7 @@ import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
@@ -204,9 +208,10 @@ private fun MediaButton(
                 modifier = modifier,
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Download,
+                    painter = painterResource(Res.drawable.ic_media_download),
                     contentDescription = "Download media",
                     tint = nerdColorPalette.textPrimary,
+                    modifier = Modifier.size(nerdDimensions.iconInline)
                 )
             }
         }
@@ -226,9 +231,10 @@ private fun MediaButton(
                 modifier = modifier,
             ) {
                 Icon(
-                    imageVector = Icons.Outlined.Delete,
+                    painter = painterResource(Res.drawable.ic_media_delete),
                     contentDescription = "Download media",
-                    tint = nerdColorPalette.textPrimary
+                    tint = nerdColorPalette.textPrimary,
+                    modifier = Modifier.size(nerdDimensions.iconInline)
                 )
             }
         }
