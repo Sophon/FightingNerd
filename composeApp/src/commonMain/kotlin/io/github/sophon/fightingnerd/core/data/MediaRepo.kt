@@ -11,9 +11,10 @@ import okio.FileSystem
 import okio.Path
 
 internal interface MediaRepo {
-    suspend fun save(gameId: String, media: Move.Urls): EmptyResult<AppError>
+    suspend fun save(gameId: String, characterId: String, media: Move.Urls): EmptyResult<AppError>
     suspend fun wipe(gameId: String)
-    suspend fun getLink(gameId: String, media: Move.Urls): Result<List<String>, AppError>
+    suspend fun wipe(gameId: String, characterId: String)
+    suspend fun getLink(gameId: String, characterId: String, media: Move.Urls): Result<List<String>, AppError>
 }
 
 
@@ -24,14 +25,15 @@ internal class MediaRepoImpl(
 ) : MediaRepo {
     override suspend fun save(
         gameId: String,
+        characterId: String,
         media: Move.Urls,
     ): EmptyResult<AppError> {
         try {
-            val gameDir = baseDir / gameId
-            fs.createDirectories(gameDir)
+            val charDir = baseDir / gameId / characterId
+            fs.createDirectories(charDir)
             val urls = listOfNotNull(media.videoUrl) + media.hitboxImageList + media.moveImageList
             urls.forEach { url ->
-                val target = gameDir / url.substringAfterLast("/").substringAfterLast(":")
+                val target = charDir / url.substringAfterLast("/").substringAfterLast(":")
                 val bytes = http.get(url).readRawBytes()
                 fs.write(target) { write(bytes) }
             }
@@ -46,19 +48,28 @@ internal class MediaRepoImpl(
         fs.deleteRecursively(gameDir, mustExist = false)
     }
 
-    override suspend fun getLink(gameId: String, media: Move.Urls): Result<List<String>, AppError> {
+    override suspend fun wipe(gameId: String, characterId: String) {
+        val charDir = baseDir / gameId / characterId
+        fs.deleteRecursively(charDir, mustExist = false)
+    }
+
+    override suspend fun getLink(
+        gameId: String,
+        characterId: String,
+        media: Move.Urls,
+    ): Result<List<String>, AppError> {
         try {
-            val gameDir = baseDir / gameId
+            val charDir = baseDir / gameId / characterId
             val result = buildList {
                 val videoUrl = media.videoUrl
                 if (videoUrl != null) {
-                    val local = gameDir / videoUrl.substringAfterLast("/").substringAfterLast(":")
+                    val local = charDir / videoUrl.substringAfterLast("/").substringAfterLast(":")
                     val link = if (fs.exists(local)) "file://$local" else videoUrl
                     add(link)
                 }
                 val imageUrls = media.hitboxImageList + media.moveImageList
                 imageUrls.forEach { imageUrl ->
-                    val local = gameDir / imageUrl.substringAfterLast("/").substringAfterLast(":")
+                    val local = charDir / imageUrl.substringAfterLast("/").substringAfterLast(":")
                     val link = if (fs.exists(local)) "file://$local" else imageUrl
                     add(link)
                 }
