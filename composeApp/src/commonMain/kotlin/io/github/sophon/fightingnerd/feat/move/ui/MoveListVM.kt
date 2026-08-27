@@ -31,6 +31,7 @@ import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -200,6 +201,13 @@ internal class MoveListVM(
         }
     }
 
+    fun onExpandCharacter() {
+        _state.update { state ->
+            val newCharacterValue = state.character?.copy(isExpanded = state.character.isExpanded.not())
+            state.copy(character = newCharacterValue)
+        }
+    }
+
 
     private fun deriveAvailability(
         progress: Int?,
@@ -238,6 +246,9 @@ internal class MoveListVM(
                                 state.copy(
                                     character = MoveListState.MoveListCharacter(
                                         displayName = character.displayName,
+                                        hp = character.hp,
+                                        umo = character.umo.toPersistentList(),
+                                        characterProperties = character.gameProperties,
                                     ),
                                     mediaCount = moveList.getMediaCount(),
                                 )

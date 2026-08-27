@@ -1,6 +1,7 @@
 package io.github.sophon.fightingnerd.feat.move.ui
 
 import androidx.compose.runtime.Immutable
+import io.github.sophon.core.wiki.model.CharacterGameProperties
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.model.Bookmark
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
@@ -28,7 +29,15 @@ internal data class MoveListState(
     @Immutable
     data class MoveListCharacter(
         val displayName: String,
-    )
+        val hp: String? = null,
+        val umo: ImmutableList<String> = persistentListOf(),
+        val characterProperties: CharacterGameProperties? = null,
+        val isExpanded: Boolean = false,
+    ) {
+        val canExpand: Boolean get() {
+            return hp != null || umo.isNotEmpty() || characterProperties != null
+        }
+    }
 
     @Immutable
     data class MoveDetail(
