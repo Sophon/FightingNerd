@@ -21,7 +21,7 @@ import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
-import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToOfflineCharsUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToOfflineMediaAvailability
 import io.github.sophon.fightingnerd.feat.move.usecase.WipeMediaUseCase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
@@ -49,7 +49,7 @@ internal class MoveListVM(
     private val gameId: String,
     private val characterId: String,
 
-    subscribeToOfflineCharsUseCase: SubscribeToOfflineCharsUseCase,
+    subscribeToOfflineMediaAvailability: SubscribeToOfflineMediaAvailability,
 
     private val overlayService: OverlayService,
     private val subscribeToMoveListUseCase: SubscribeToMoveListUseCase,
@@ -67,7 +67,7 @@ internal class MoveListVM(
 
     val state: StateFlow<MoveListState> = combine(
         _state.onStart { subscribeToData() },
-        subscribeToOfflineCharsUseCase.invoke(gameId),
+        subscribeToOfflineMediaAvailability.invoke(gameId),
         _downloadProgress,
     ) { base, offlineChars, progress ->
         val availability = deriveAvailability(
