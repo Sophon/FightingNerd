@@ -6,9 +6,9 @@ import kotlinx.serialization.Serializable
 data class Move(
     val characterId: String,
     val id: String,
-    val name: String? = null,
-
     val input: String,
+
+    val name: String? = null,
     val damage: String? = null,
     val startup: String? = null,
     val onBlock: String? = null,
