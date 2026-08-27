@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import okio.FileSystem
+import okio.SYSTEM
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -32,6 +33,7 @@ internal fun coreModule() = module {
             fs = FileSystem.SYSTEM,
             baseDir = get(),
             http = get(),
+            store = get(),
         )
     }
 
