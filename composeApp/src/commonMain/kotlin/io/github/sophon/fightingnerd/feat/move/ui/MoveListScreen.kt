@@ -1,10 +1,16 @@
 package io.github.sophon.fightingnerd.feat.move.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -28,9 +34,9 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.fightingnerd.core.ui.components.ProgressBar
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.feat.move.ui.composables.BookmarksButton
+import io.github.sophon.fightingnerd.feat.move.ui.composables.CharacterInfoBox
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveTopBar
@@ -73,6 +79,8 @@ internal fun MoveListScreen(
         onBookmarkClose = vm::onBookmarkClose,
         onDownload = vm::onDownloadMedia,
         onWipe = vm::onWipeMedia,
+        onExpandCharacter = vm::onExpandCharacter,
+        onCollapseCharacter = vm::onCollapseCharacter,
         modifier = modifier,
     )
 }
@@ -95,15 +103,21 @@ private fun Content(
     onBookmarkClose: () -> Unit,
     onDownload: () -> Unit,
     onWipe: () -> Unit,
+    onExpandCharacter: () -> Unit,
+    onCollapseCharacter: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val listState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     val currentOnBookmarkClose by rememberUpdatedState(onBookmarkClose)
+    val currentOnCollapseCharacter by rememberUpdatedState(onCollapseCharacter)
     LaunchedEffect(listState) {
         snapshotFlow { listState.isScrollInProgress }
             .collect { inProgress ->
-                if (inProgress) currentOnBookmarkClose()
+                if (inProgress) {
+                    currentOnBookmarkClose()
+                    currentOnCollapseCharacter()
+                }
             }
     }
 
@@ -112,6 +126,9 @@ private fun Content(
             MoveTopBar(
                 onExit = onExit,
                 characterName = state.character?.displayName.orEmpty(),
+                isCharacterExpanded = (state.character?.isExpanded == true),
+                canExpandCharacter = (state.character?.canExpand == true),
+                onExpandCharacter = onExpandCharacter,
                 searchQuery = searchQuery,
                 onSearch = onSearch,
                 onDisplayFilterSheet = { onFilterClick(true) },
@@ -136,6 +153,24 @@ private fun Content(
                 expandedMoveId = state.expandedMoveId,
                 listState = listState,
             )
+
+            if (state.character?.canExpand == true) {
+                AnimatedVisibility(
+                    visible = state.character.isExpanded,
+                    enter = expandVertically(expandFrom = Alignment.Top) + fadeIn(),
+                    exit = shrinkVertically(shrinkTowards = Alignment.Top) + fadeOut(),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .fillMaxWidth()
+                        .padding(
+                            start = nerdDimensions.screenPaddingHorizontal,
+                            end = nerdDimensions.screenPaddingHorizontal,
+                            bottom = nerdDimensions.screenPaddingVertical,
+                        ),
+                ) {
+                    CharacterInfoBox(character = state.character)
+                }
+            }
 
             if (state.filterSheet.isVisible) {
                 FilterBottomSheet(
@@ -245,6 +280,8 @@ private fun MoveListPreview() {
             onBookmarkClose = {},
             onDownload = {},
             onWipe = {},
+            onExpandCharacter = {},
+            onCollapseCharacter = {},
         )
     }
 }
@@ -270,6 +307,8 @@ private fun MoveListSearchPreview() {
             onBookmarkClose = {},
             onDownload = {},
             onWipe = {},
+            onExpandCharacter = {},
+            onCollapseCharacter = {},
         )
     }
 }
@@ -300,6 +339,8 @@ private fun MoveListDownloadPreview() {
             onBookmarkClose = {},
             onDownload = {},
             onWipe = {},
+            onExpandCharacter = {},
+            onCollapseCharacter = {},
         )
     }
 }
