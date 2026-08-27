@@ -1,6 +1,5 @@
 CREATE TABLE GGSTMoveEntity (
     moveId TEXT NOT NULL PRIMARY KEY,
-    type TEXT,
     riscGain TEXT,
     riscLoss TEXT,
     wallDamage TEXT,
@@ -13,5 +12,5 @@ CREATE TABLE GGSTMoveEntity (
 );
 
 insertGGSTMove:
-INSERT OR REPLACE INTO GGSTMoveEntity(moveId, type, riscGain, riscLoss, wallDamage, inputTension, chipRatio, otgType, prorate, level)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO GGSTMoveEntity(moveId, riscGain, riscLoss, wallDamage, inputTension, chipRatio, otgType, prorate, level)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);

@@ -29,7 +29,10 @@ internal fun MoveDto.toDomain(
     character: Character,
     imageUrlMap: Map<String, String>,
 ): Move {
-    val type = getType()
+    val type = when (Game.fromId(gameId)) {
+        Game.StreetFighter6 -> getType()
+        else -> moveType.takeIfNotTemplate()
+    }
     val normalizedInput = input
         .cleanMoveInput()
         .normalize2dInputs()
@@ -45,7 +48,6 @@ internal fun MoveDto.toDomain(
     val gameProperties = when (Game.fromId(gameId)) {
         Game.StreetFighter6 -> {
             SF6MoveProperties(
-                type = type,
                 images = images.takeIfNotTemplate()
                     ?.split(",")
                     ?.map { it.trim() },
@@ -77,7 +79,6 @@ internal fun MoveDto.toDomain(
         }
         Game.MK1 -> {
             MKMoveProperties(
-                moveType = moveType.takeIfNotTemplate(),
                 cost = moveType
                     .split(",")
                     .filterNot { it.takeIfNotTemplate() == null }
@@ -87,7 +88,6 @@ internal fun MoveDto.toDomain(
             AVLProperties(
                 chiDamage = flowDamage,
                 flow = flow,
-                type = moveType,
             )
         }
         else -> null
@@ -113,6 +113,8 @@ internal fun MoveDto.toDomain(
             .takeIfNotTemplate()
             ?.cleanHtml()
             ?.takeIf { it.isBlank().not() },
+
+        type = type,
 
         aliases = aliasList,
 
@@ -151,17 +153,13 @@ private fun String?.extractNotes(): List<String> {
         ?: emptyList()
 }
 
-private fun MoveDto.getType(): SF6MoveProperties.Type? {
-    return when (moveType.lowercase()) {
-        "ground_normal" -> SF6MoveProperties.Type.GROUND_NORMAL
-        "air_normal" -> SF6MoveProperties.Type.AIR_NORMAL
-        "special" -> SF6MoveProperties.Type.SPECIAL
-        "super" -> SF6MoveProperties.Type.SUPER
-        "throw" -> SF6MoveProperties.Type.THROW
-        "drive" -> SF6MoveProperties.Type.DRIVE
-        "taunt" -> SF6MoveProperties.Type.TAUNT
+private fun MoveDto.getType(): String? {
+    val lower = moveType.lowercase()
+    val result = when (lower) {
+        "ground_normal", "air_normal", "special", "super", "throw", "drive", "taunt" -> lower
         else -> null
     }
+    return result
 }
 
 internal fun formMoveWikiUrl(
@@ -196,10 +194,10 @@ internal fun formMoveWikiUrl(
 
 private fun MoveDto.formAliases(
     normalizedInput: String,
-    type: SF6MoveProperties.Type?
+    type: String?
 ): List<String> {
     val motionAlias = when (type) {
-        SF6MoveProperties.Type.SUPER -> formSuperLevel(moveId, superGainHit)
+        "super" -> formSuperLevel(moveId, superGainHit)
         else -> this.input.formMotionInput()
     }?.lowercase()
     val aliases2d = normalizedInput.create2dAliases(isPartial = true)

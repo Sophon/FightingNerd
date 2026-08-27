@@ -98,7 +98,7 @@ private fun Move.createOptionalFields(): ImmutableList<UiMove.Field> {
 
         (gameProperties as? GBVSRMoveProperties)?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }
         (gameProperties as? BBMoveProperties)?.level?.let { add(UiMove.Field(Res.string.move_list_field_label_level, it)) }
-        (gameProperties as? BBMoveProperties)?.type?.let { add(UiMove.Field(Res.string.move_list_field_label_type, it)) }
+        type?.let { add(UiMove.Field(Res.string.move_list_field_label_type, it)) }
         (gameProperties as? AVLProperties)?.chiDamage?.let { add(UiMove.Field(Res.string.move_list_field_label_chi, it)) }
         (gameProperties as? AVLProperties)?.flow?.let { add(UiMove.Field(Res.string.move_list_field_label_flow, it)) }
 

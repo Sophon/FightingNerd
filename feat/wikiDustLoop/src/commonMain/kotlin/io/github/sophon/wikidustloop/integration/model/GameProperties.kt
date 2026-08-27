@@ -90,7 +90,6 @@ data class MTFSProperties(
 
 @Serializable
 data class GGSTMoveProperties(
-    val type: String? = null,
     val riscGain: String? = null,
     val riscLoss: String? = null,
     val wallDamage: String? = null,
@@ -119,7 +118,6 @@ data class BBMoveProperties(
     val hitstop: String? = null,
     val chStop: String? = null,
     val cancelTiming: String? = null,
-    val type: String? = null
 ): MoveGameProperties
 
 @Serializable
@@ -131,7 +129,6 @@ data class DBFZMoveProperties(
     val blockStun: String? = null,
     val groundHit: String? = null,
     val airHit: String? = null,
-    val type: String? = null,
     val level: String? = null,
 ): MoveGameProperties
 
@@ -141,13 +138,11 @@ data class GBVSRMoveProperties(
     val level: String? = null,
     val cooldown: String? = null,
     val cls: String? = null,
-    val type: String? = null,
 ): MoveGameProperties
 
 @Serializable
 data class MTFSMoveProperties(
     val simpleInput: String? = null,
-    val type: String? = null,
     val level: String? = null,
     val prorate: String? = null,
     val meterGain: String? = null,

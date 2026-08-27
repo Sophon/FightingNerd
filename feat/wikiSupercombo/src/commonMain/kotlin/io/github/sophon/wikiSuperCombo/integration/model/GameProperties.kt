@@ -34,7 +34,6 @@ data class MK1Properties(
 
 @Serializable
 data class SF6MoveProperties(
-    val type: Type? = null,
     val images: List<String>? = null,
     val chip: String? = null,
     val dmgScaling: String? = null,
@@ -61,28 +60,16 @@ data class SF6MoveProperties(
     val jugLimit: String? = null,
     val projectileSpeed: String? = null,
     val attackRange: String? = null,
-): MoveGameProperties {
-    enum class Type {
-        GROUND_NORMAL,
-        AIR_NORMAL,
-        SPECIAL,
-        SUPER,
-        THROW,
-        DRIVE,
-        TAUNT,
-    }
-}
+): MoveGameProperties
 
 @Serializable
 data class AVLProperties(
     val chiDamage: String? = null,
     val flow: String? = null,
-    val type: String? = null,
 ): MoveGameProperties
 
 @Serializable
 data class MKMoveProperties(
-    val moveType: String? = null,
     val cost: List<String> = listOf(),
     val chip: String? = null,
     val flawlessBlockAdv: String? = null,

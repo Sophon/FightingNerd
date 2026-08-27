@@ -23,6 +23,7 @@ internal fun SelectMBTLByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -63,6 +64,7 @@ internal fun SelectUni2ByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -76,7 +78,6 @@ internal fun SelectUni2ByCharacter.toDomain(): Move {
             inputInfo = inputInfo,
             subtitle = subtitle,
             minDamage = minDamage,
-            type = type,
             cancelWindow = cancelWindow,
             property = property_,
             cost = cost,
@@ -116,6 +117,7 @@ internal fun SelectVSAVByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
