@@ -16,6 +16,7 @@ internal fun CharacterListResponseDto.toDomain(
     val game = Game.fromId(gameId)
 
     val characterList = cargoquery
+        .filterOutIrrelevant()
         .map { dto ->
             val charDto = dto.title
 
@@ -64,7 +65,7 @@ internal fun CharacterListResponseDto.toDomain(
                 hp = charDto.hp,
                 gameProperties = gameProperties,
             )
-        }.filterOutKameos()
+        }
 
     return characterList
 }
@@ -90,6 +91,9 @@ private fun createWikiUrlFrom(gameId: String, name: String): String {
     return "$WIKI_BASE_URL/$gameId/$name"
 }
 
-private fun List<Character>.filterOutKameos(): List<Character> {
-    return filterNot { it.displayName.contains("(Kameo)") }
+private fun List<CargoQueryItem>.filterOutIrrelevant(): List<CargoQueryItem> {
+    val filtered = this
+        .filter { it.title.Character?.contains("(Kameo)") != true }
+        .filter { it.title.chara.contains("(").not() }
+    return filtered
 }
