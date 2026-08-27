@@ -1,5 +1,6 @@
 package io.github.sophon.fightingnerd.feat.move.usecase
 
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.getMediaCount
@@ -7,6 +8,7 @@ import io.github.sophon.fightingnerd.core.data.MediaRepo
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
+@ExcludeFromCoverage("TODO")
 internal class DownloadMediaUseCase(
     private val mediaRepo: MediaRepo,
 ) {
