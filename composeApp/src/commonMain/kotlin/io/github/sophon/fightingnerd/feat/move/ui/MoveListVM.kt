@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
@@ -208,6 +209,13 @@ internal class MoveListVM(
         }
     }
 
+    fun onCollapseCharacter() {
+        _state.update { state ->
+            val newCharacterValue = state.character?.copy(isExpanded = false)
+            state.copy(character = newCharacterValue)
+        }
+    }
+
 
     private fun deriveAvailability(
         progress: Int?,
@@ -247,7 +255,9 @@ internal class MoveListVM(
                                     character = MoveListState.MoveListCharacter(
                                         displayName = character.displayName,
                                         hp = character.hp,
-                                        umo = character.umo.toPersistentList(),
+                                        umo = character.umo
+                                            .map { it.stripMarkdownLinks() }
+                                            .toPersistentList(),
                                         characterProperties = character.gameProperties,
                                     ),
                                     mediaCount = moveList.getMediaCount(),
