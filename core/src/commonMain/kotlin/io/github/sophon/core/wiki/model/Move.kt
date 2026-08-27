@@ -1,15 +1,14 @@
 package io.github.sophon.core.wiki.model
 
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmInline
 
 @Serializable
 data class Move(
     val characterId: String,
     val id: String,
-    val name: String? = null,
-
     val input: String,
+
+    val name: String? = null,
     val damage: String? = null,
     val startup: String? = null,
     val onBlock: String? = null,
@@ -22,7 +21,7 @@ data class Move(
     val invulnerability: String? = null,
     val isThrow: Boolean = false,
 
-    //TODO: ideally, we'd have type here
+    val type: String? = null,
 
     val notes: List<String> = listOf(),
     val aliases: List <String> = listOf(),
@@ -74,7 +73,6 @@ data class Move(
         val inputInfo: String? = null,
         val subtitle: String? = null,
         val minDamage: String? = null,
-        val type: String? = null,
         val cancelWindow: String? = null,
         val property: String? = null,
         val cost: String? = null,

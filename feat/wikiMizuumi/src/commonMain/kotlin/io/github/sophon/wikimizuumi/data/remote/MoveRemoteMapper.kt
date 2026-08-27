@@ -52,6 +52,7 @@ internal fun MoveDto.toDomain(
         cancel = cancel?.cleanHtmlOrNull()?.formatCancel(),
         guard = guard?.cleanHtmlOrNull(),
         invulnerability = invul?.cleanHtmlOrNull()?.formPropertiesUrl(),
+        type = type?.cleanHtmlOrNull(),
         urls = Move.Urls(
             wikiUrl = character.wikiUrl,
             hitboxImageList = hitboxes
@@ -96,7 +97,6 @@ private fun MoveDto.toUni2Properties() = Move.Uni2Properties(
     inputInfo = inputInfo?.cleanHtmlOrNull(),
     subtitle = subtitle?.cleanHtmlOrNull(),
     minDamage = minDamage?.cleanHtmlOrNull(),
-    type = type?.cleanHtmlOrNull(),
     cancelWindow = cancelWindow?.cleanHtmlOrNull(),
     property = property?.cleanHtmlOrNull()?.formPropertiesUrl(),
     cost = cost?.cleanHtmlOrNull(),

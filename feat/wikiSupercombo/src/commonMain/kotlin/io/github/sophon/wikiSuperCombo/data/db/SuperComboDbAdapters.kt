@@ -152,6 +152,7 @@ internal class SuperComboMoveDbAdapter(
             cancel = move.cancel,
             invulnerability = move.invulnerability,
             isThrow = move.isThrow,
+            type = move.type,
             notes = move.notes.fromDomain(),
             aliases = move.aliases.fromDomain(),
             urlsWikiUrl = move.urls.wikiUrl,
@@ -169,7 +170,6 @@ internal class SuperComboMoveDbAdapter(
                 val p = move.gameProperties as? SF6MoveProperties
                 sf6Queries.insertSF6Move(
                     moveId = move.id,
-                    type = p?.type?.name,
                     images = p?.images?.fromDomain(),
                     chip = p?.chip,
                     dmgScaling = p?.dmgScaling,
@@ -202,7 +202,6 @@ internal class SuperComboMoveDbAdapter(
                 val p = move.gameProperties as? MKMoveProperties
                 mk1Queries.insertMK1Move(
                     moveId = move.id,
-                    moveType = p?.moveType,
                     cost = p?.cost.orEmpty().fromDomain(),
                     chip = p?.chip,
                     flawlessBlockAdv = p?.flawlessBlockAdv,
@@ -217,7 +216,6 @@ internal class SuperComboMoveDbAdapter(
                     moveId = move.id,
                     chiDamage = p?.chiDamage,
                     flow = p?.flow,
-                    type = p?.type,
                 )
             }
             else -> error("${game.id} is not supported by SuperCombo MoveDbAdapter")

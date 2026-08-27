@@ -44,7 +44,7 @@ object UniGroups {
     object Normal: Group {
         override val id: String = "Normal"
         override val predicate: (Move) -> Boolean = {
-            it.uni2Properties?.type.equalsIgnoreCase("normal")
+            it.type.equalsIgnoreCase("normal")
         }
     }
 
@@ -64,14 +64,14 @@ object UniGroups {
     object Special: Group {
         override val id: String = "Special"
         override val predicate: (Move) -> Boolean = {
-            it.uni2Properties?.type.equalsIgnoreCase("special")
+            it.type.equalsIgnoreCase("special")
         }
     }
 
     object Super: Group {
         override val id: String = "Super"
         override val predicate: (Move) -> Boolean = {
-            it.uni2Properties?.type.equalsIgnoreCase("super")
+            it.type.equalsIgnoreCase("super")
         }
     }
 }

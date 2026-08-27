@@ -360,7 +360,7 @@ private fun EmbedBuilder.movePropertiesGB(move: Move) {
     optionalField(name = "LVL", value = properties.level)
     optionalField(name = "CD", value = properties.cooldown)
     optionalField(name = "CLS", value = properties.cls)
-    optionalField(name = "Type", value = properties.type)
+    optionalField(name = "Type", value = move.type)
 
     moveNotes(move)
 }

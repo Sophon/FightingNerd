@@ -1,6 +1,5 @@
 CREATE TABLE SF6MoveEntity (
     moveId TEXT NOT NULL PRIMARY KEY,
-    type TEXT,
     images TEXT,
     chip TEXT,
     dmgScaling TEXT,
@@ -31,5 +30,5 @@ CREATE TABLE SF6MoveEntity (
 );
 
 insertSF6Move:
-INSERT OR REPLACE INTO SF6MoveEntity(moveId, type, images, chip, dmgScaling, total, hitConfirm, punishAdv, perfParryAdv, DRcOH, DRcOB, DROH, DROB, hitStun, blockStun, hitStop, driveDmgOnBlock, driveDmgOnHit, driveGain, superGainOnHit, superGainOnBlock, armor, airborne, jugStart, jugIncrease, jugLimit, projectileSpeed, attackRange)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO SF6MoveEntity(moveId, images, chip, dmgScaling, total, hitConfirm, punishAdv, perfParryAdv, DRcOH, DRcOB, DROH, DROB, hitStun, blockStun, hitStop, driveDmgOnBlock, driveDmgOnHit, driveGain, superGainOnHit, superGainOnBlock, armor, airborne, jugStart, jugIncrease, jugLimit, projectileSpeed, attackRange)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

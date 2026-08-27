@@ -30,6 +30,7 @@ internal fun SelectGGSTByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -40,7 +41,6 @@ internal fun SelectGGSTByCharacter.toDomain(): Move {
             moveImageList = urlsMoveImageList.toDomain(),
         ),
         gameProperties = GGSTMoveProperties(
-            type = type,
             riscGain = riscGain,
             riscLoss = riscLoss,
             wallDamage = wallDamage,
@@ -71,6 +71,7 @@ internal fun SelectDBFZByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -88,7 +89,6 @@ internal fun SelectDBFZByCharacter.toDomain(): Move {
             blockStun = blockStun,
             groundHit = groundHit,
             airHit = airHit,
-            type = type,
             level = level,
         ),
     )
@@ -112,6 +112,7 @@ internal fun SelectGBVSRByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -126,7 +127,6 @@ internal fun SelectGBVSRByCharacter.toDomain(): Move {
             level = level,
             cooldown = cooldown,
             cls = cls,
-            type = type,
         ),
     )
     return move
@@ -149,6 +149,7 @@ internal fun SelectBBCFByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -174,7 +175,6 @@ internal fun SelectBBCFByCharacter.toDomain(): Move {
             hitstop = hitstop,
             chStop = chStop,
             cancelTiming = cancelTiming,
-            type = type,
         ),
     )
     return move
@@ -197,6 +197,7 @@ internal fun SelectMTFSByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -208,7 +209,6 @@ internal fun SelectMTFSByCharacter.toDomain(): Move {
         ),
         gameProperties = MTFSMoveProperties(
             simpleInput = simpleInput,
-            type = type,
             level = level,
             prorate = prorate,
             meterGain = meterGain,

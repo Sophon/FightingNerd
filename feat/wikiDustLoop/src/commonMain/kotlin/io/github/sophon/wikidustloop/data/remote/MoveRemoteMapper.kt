@@ -48,7 +48,6 @@ internal fun MoveDto.toDomain(
     val gameProperties = when (Game.fromId(gameId)) {
         Game.GGST -> {
             GGSTMoveProperties(
-                type = type,
                 riscGain = riscGain,
                 riscLoss = riscLoss,
                 wallDamage = wallDamage,
@@ -76,13 +75,11 @@ internal fun MoveDto.toDomain(
                 hitstop = hitstop,
                 chStop = CHstop,
                 cancelTiming = cancelTiming,
-                type = type,
             )
         }
         Game.MTFS -> {
             MTFSMoveProperties(
                 simpleInput = simpleInput?.cleanHtml(),
-                type = type?.cleanHtml(),
                 level = level?.cleanHtml(),
                 prorate = prorate?.cleanHtml(),
                 meterGain = meterGain?.cleanHtml(),
@@ -96,7 +93,6 @@ internal fun MoveDto.toDomain(
                 level = level,
                 cooldown = cooldown,
                 cls = cls,
-                type = type,
             )
         }
         Game.DBFZ -> {
@@ -108,7 +104,6 @@ internal fun MoveDto.toDomain(
                 blockStun = blockstun,
                 groundHit = groundHit,
                 airHit = airHit,
-                type = type,
                 level = level,
             )
         }
@@ -131,6 +126,7 @@ internal fun MoveDto.toDomain(
         recovery = recovery?.cleanHtml(),
         guard = guard?.cleanHtml(),
         invulnerability = invuln?.cleanHtml()?.ifBlank { null },
+        type = type?.cleanHtml(),
         aliases = aliases,
 
         notes = notes.formNotes(),

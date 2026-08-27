@@ -1,6 +1,5 @@
 CREATE TABLE MK1MoveEntity (
     moveId TEXT NOT NULL PRIMARY KEY,
-    moveType TEXT,
     cost TEXT NOT NULL,
     chip TEXT,
     flawlessBlockAdv TEXT,
@@ -11,5 +10,5 @@ CREATE TABLE MK1MoveEntity (
 );
 
 insertMK1Move:
-INSERT OR REPLACE INTO MK1MoveEntity(moveId, moveType, cost, chip, flawlessBlockAdv, hitCancelAdv, blockCancelAdv, punish)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO MK1MoveEntity(moveId, cost, chip, flawlessBlockAdv, hitCancelAdv, blockCancelAdv, punish)
+VALUES (?, ?, ?, ?, ?, ?, ?);

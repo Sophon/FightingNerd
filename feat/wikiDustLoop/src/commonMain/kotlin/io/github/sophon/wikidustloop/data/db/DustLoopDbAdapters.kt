@@ -227,6 +227,7 @@ internal class DustLoopMoveDbAdapter(
             cancel = move.cancel,
             invulnerability = move.invulnerability,
             isThrow = move.isThrow,
+            type = move.type,
             notes = move.notes.fromDomain(),
             aliases = move.aliases.fromDomain(),
             urlsWikiUrl = move.urls.wikiUrl,
@@ -244,7 +245,6 @@ internal class DustLoopMoveDbAdapter(
                 val p = move.gameProperties as? GGSTMoveProperties
                 ggstQueries.insertGGSTMove(
                     moveId = move.id,
-                    type = p?.type,
                     riscGain = p?.riscGain,
                     riscLoss = p?.riscLoss,
                     wallDamage = p?.wallDamage,
@@ -266,7 +266,6 @@ internal class DustLoopMoveDbAdapter(
                     blockStun = p?.blockStun,
                     groundHit = p?.groundHit,
                     airHit = p?.airHit,
-                    type = p?.type,
                     level = p?.level,
                 )
             }
@@ -278,7 +277,6 @@ internal class DustLoopMoveDbAdapter(
                     level = p?.level,
                     cooldown = p?.cooldown,
                     cls = p?.cls,
-                    type = p?.type,
                 )
             }
             Game.BBCF -> {
@@ -300,7 +298,6 @@ internal class DustLoopMoveDbAdapter(
                     hitstop = p?.hitstop,
                     chStop = p?.chStop,
                     cancelTiming = p?.cancelTiming,
-                    type = p?.type,
                 )
             }
             Game.MTFS -> {
@@ -308,7 +305,6 @@ internal class DustLoopMoveDbAdapter(
                 mtfsQueries.insertMTFSMove(
                     moveId = move.id,
                     simpleInput = p?.simpleInput,
-                    type = p?.type,
                     level = p?.level,
                     prorate = p?.prorate,
                     meterGain = p?.meterGain,

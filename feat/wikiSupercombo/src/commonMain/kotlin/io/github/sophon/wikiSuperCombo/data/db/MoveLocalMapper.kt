@@ -26,6 +26,7 @@ internal fun SelectSF6ByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -36,7 +37,6 @@ internal fun SelectSF6ByCharacter.toDomain(): Move {
             moveImageList = urlsMoveImageList.toDomain(),
         ),
         gameProperties = SF6MoveProperties(
-            type = type?.let { runCatching { SF6MoveProperties.Type.valueOf(it) }.getOrNull() },
             images = images?.toDomain(),
             chip = chip,
             dmgScaling = dmgScaling,
@@ -85,6 +85,7 @@ internal fun SelectMK1ByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -95,7 +96,6 @@ internal fun SelectMK1ByCharacter.toDomain(): Move {
             moveImageList = urlsMoveImageList.toDomain(),
         ),
         gameProperties = MKMoveProperties(
-            moveType = moveType,
             cost = cost.orEmpty().toDomain(),
             chip = chip,
             flawlessBlockAdv = flawlessBlockAdv,
@@ -124,6 +124,7 @@ internal fun SelectAVLByCharacter.toDomain(): Move {
         cancel = cancel,
         invulnerability = invulnerability,
         isThrow = isThrow,
+        type = type,
         notes = notes.toDomain(),
         aliases = aliases.toDomain(),
         urls = Move.Urls(
@@ -136,7 +137,6 @@ internal fun SelectAVLByCharacter.toDomain(): Move {
         gameProperties = AVLProperties(
             chiDamage = chiDamage,
             flow = flow,
-            type = type,
         ),
     )
     return move
