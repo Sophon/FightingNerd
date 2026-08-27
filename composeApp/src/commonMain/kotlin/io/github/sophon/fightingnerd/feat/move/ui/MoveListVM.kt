@@ -21,6 +21,7 @@ import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToOfflineCharsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.WipeMediaUseCase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
@@ -48,6 +49,8 @@ internal class MoveListVM(
     private val gameId: String,
     private val characterId: String,
 
+    subscribeToOfflineCharsUseCase: SubscribeToOfflineCharsUseCase,
+
     private val overlayService: OverlayService,
     private val subscribeToMoveListUseCase: SubscribeToMoveListUseCase,
     private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
@@ -59,17 +62,25 @@ internal class MoveListVM(
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
     private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
+    private val _downloadProgress = MutableStateFlow<Int?>(null)
     private var groupList: ImmutableList<Group> = persistentListOf()
 
-    val state = _state
-        .onStart {
-            subscribeToData()
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = MoveListState(),
+    val state: StateFlow<MoveListState> = combine(
+        _state.onStart { subscribeToData() },
+        subscribeToOfflineCharsUseCase.invoke(gameId),
+        _downloadProgress,
+    ) { base, offlineChars, progress ->
+        val availability = deriveAvailability(
+            progress = progress,
+            offlineChars = offlineChars,
+            mediaCount = base.mediaCount,
         )
+        base.copy(mediaAvailability = availability)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = MoveListState(),
+    )
 
     val filteredMoves: StateFlow<ImmutableList<UiMove>> = combine(
         _state.distinctUntilChanged { old, new ->
@@ -170,7 +181,7 @@ internal class MoveListVM(
     }
 
     fun onDownloadMedia() {
-        if (_state.value.mediaAvailability is MediaAvailability.Downloading) return
+        if (_downloadProgress.value != null) return
 
         val moveList = _fullMoveList.value.movesById.values.toList()
         downloadMediaUseCase.invoke(
@@ -178,28 +189,33 @@ internal class MoveListVM(
             characterId = CharacterId(characterId),
             moveList = moveList,
         )
-            .onEach { downloadedCount ->
-                _state.update { state ->
-                    val newProgress = MediaAvailability.Downloading(
-                        downloaded = downloadedCount,
-                        total = state.mediaCount,
-                    )
-                    state.copy(mediaAvailability = newProgress)
-                }
-            }
-            .onCompletion {
-                _state.update { it.copy(mediaAvailability = MediaAvailability.Downloaded) }
-            }
+            .onEach { downloadedCount -> _downloadProgress.value = downloadedCount }
+            .onCompletion { _downloadProgress.value = null }
             .launchIn(viewModelScope)
     }
 
     fun onWipeMedia() {
         viewModelScope.launch {
-            wipeMediaUseCase.invoke(gameId = gameId, characterId = CharacterId( characterId))
+            wipeMediaUseCase.invoke(gameId = gameId, characterId = CharacterId(characterId))
         }
-        _state.update { it.copy(mediaAvailability = MediaAvailability.NotDownloaded) }
     }
 
+
+    private fun deriveAvailability(
+        progress: Int?,
+        offlineChars: Set<CharacterId>,
+        mediaCount: Int,
+    ): MediaAvailability {
+        val availability = when {
+            (progress != null) -> MediaAvailability.Downloading(
+                downloaded = progress,
+                total = mediaCount,
+            )
+            (CharacterId(characterId) in offlineChars) -> MediaAvailability.Downloaded
+            else -> MediaAvailability.NotDownloaded
+        }
+        return availability
+    }
 
     private fun subscribeToData() {
         viewModelScope.launch {

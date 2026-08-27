@@ -20,6 +20,7 @@ import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToOfflineCharsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.WipeMediaUseCase
 import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
 import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
@@ -71,6 +72,7 @@ internal fun featureModule() = module {
             groupMovesUseCase = get(),
             downloadMediaUseCase = get(),
             wipeMediaUseCase = get(),
+            subscribeToOfflineCharsUseCase = get(),
         )
     }
     singleOf(::SubscribeToMoveListUseCase)
@@ -80,6 +82,7 @@ internal fun featureModule() = module {
     singleOf(::GroupMovesUseCase)
     singleOf(::DownloadMediaUseCase)
     singleOf(::WipeMediaUseCase)
+    singleOf(::SubscribeToOfflineCharsUseCase)
     //endregion
 
     //region Quiz
