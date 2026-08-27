@@ -11,6 +11,7 @@ import kotlinx.collections.immutable.persistentSetOf
 @Immutable
 internal data class MoveListState(
     val character: MoveListCharacter? = null,
+    val mediaCount: Int = 0,
 
     val moveDetail: MoveDetail? = null,
 
@@ -20,6 +21,8 @@ internal data class MoveListState(
     val expandedMoveId: String? = null,
 
     val bookmarks: Bookmarks = Bookmarks(),
+
+    val downloadProgress: DownloadProgress? = null,
 ) {
     @Immutable
     data class MoveListCharacter(
@@ -68,6 +71,15 @@ internal data class MoveListState(
         val isExpanded: Boolean = false,
         val bookmarkList: ImmutableList<Bookmark> = persistentListOf(),
     )
+
+    @Immutable
+    data class DownloadProgress(
+        val downloaded: Int,
+        val total: Int,
+    ) {
+        val fraction: Float
+            get() = if (total > 0) downloaded.toFloat() / total else 0f
+    }
 
 
     companion object {

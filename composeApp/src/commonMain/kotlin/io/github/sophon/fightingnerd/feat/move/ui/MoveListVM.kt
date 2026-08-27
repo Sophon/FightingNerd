@@ -11,6 +11,7 @@ import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
+import io.github.sophon.core.wiki.util.getMediaCount
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.usecase.DownloadMediaUseCase
@@ -33,6 +34,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -163,13 +167,26 @@ internal class MoveListVM(
     }
 
     fun onDownloadMedia() {
-        viewModelScope.launch {
-            val moveList = _fullMoveList.value.movesById.values.toList()
-            downloadMediaUseCase.invoke(
-                gameId = gameId,
-                moveList = moveList,
-            )
-        }
+        if (_state.value.downloadProgress != null) return
+
+        val moveList = _fullMoveList.value.movesById.values.toList()
+        downloadMediaUseCase.invoke(
+            gameId = gameId,
+            moveList = moveList,
+        )
+            .onEach { downloadedCount ->
+                _state.update { state ->
+                    val newProgress = MoveListState.DownloadProgress(
+                        downloaded = downloadedCount,
+                        total = state.mediaCount,
+                    )
+                    state.copy(downloadProgress = newProgress)
+                }
+            }
+            .onCompletion {
+                _state.update { it.copy(downloadProgress = null) }
+            }
+            .launchIn(viewModelScope)
     }
 
 
@@ -195,6 +212,7 @@ internal class MoveListVM(
                                     character = MoveListState.MoveListCharacter(
                                         displayName = character.displayName,
                                     ),
+                                    mediaCount = moveList.getMediaCount(),
                                 )
                             }
                         }
