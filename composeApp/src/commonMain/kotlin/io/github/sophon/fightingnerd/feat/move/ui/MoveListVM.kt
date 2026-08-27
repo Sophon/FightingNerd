@@ -175,6 +175,7 @@ internal class MoveListVM(
         val moveList = _fullMoveList.value.movesById.values.toList()
         downloadMediaUseCase.invoke(
             gameId = gameId,
+            characterId = CharacterId(characterId),
             moveList = moveList,
         )
             .onEach { downloadedCount ->
@@ -194,7 +195,7 @@ internal class MoveListVM(
 
     fun onWipeMedia() {
         viewModelScope.launch {
-            wipeMediaUseCase.invoke(gameId = gameId)
+            wipeMediaUseCase.invoke(gameId = gameId, characterId = CharacterId( characterId))
         }
         _state.update { it.copy(mediaAvailability = MediaAvailability.NotDownloaded) }
     }

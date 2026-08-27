@@ -2,6 +2,7 @@ package io.github.sophon.fightingnerd.core.data
 
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.ktor.client.HttpClient
@@ -11,10 +12,10 @@ import okio.FileSystem
 import okio.Path
 
 internal interface MediaRepo {
-    suspend fun save(gameId: String, characterId: String, media: Move.Urls): EmptyResult<AppError>
+    suspend fun save(gameId: String, characterId: CharacterId, media: Move.Urls): EmptyResult<AppError>
     suspend fun wipe(gameId: String)
-    suspend fun wipe(gameId: String, characterId: String)
-    suspend fun getLink(gameId: String, characterId: String, media: Move.Urls): Result<List<String>, AppError>
+    suspend fun wipe(gameId: String, characterId: CharacterId)
+    suspend fun getLink(gameId: String, characterId: CharacterId, media: Move.Urls): Result<List<String>, AppError>
 }
 
 
@@ -25,11 +26,11 @@ internal class MediaRepoImpl(
 ) : MediaRepo {
     override suspend fun save(
         gameId: String,
-        characterId: String,
+        characterId: CharacterId,
         media: Move.Urls,
     ): EmptyResult<AppError> {
         try {
-            val charDir = baseDir / gameId / characterId
+            val charDir = baseDir / gameId / characterId.value
             fs.createDirectories(charDir)
             val urls = listOfNotNull(media.videoUrl) + media.hitboxImageList + media.moveImageList
             urls.forEach { url ->
@@ -48,18 +49,18 @@ internal class MediaRepoImpl(
         fs.deleteRecursively(gameDir, mustExist = false)
     }
 
-    override suspend fun wipe(gameId: String, characterId: String) {
-        val charDir = baseDir / gameId / characterId
+    override suspend fun wipe(gameId: String, characterId: CharacterId) {
+        val charDir = baseDir / gameId / characterId.value
         fs.deleteRecursively(charDir, mustExist = false)
     }
 
     override suspend fun getLink(
         gameId: String,
-        characterId: String,
+        characterId: CharacterId,
         media: Move.Urls,
     ): Result<List<String>, AppError> {
         try {
-            val charDir = baseDir / gameId / characterId
+            val charDir = baseDir / gameId / characterId.value
             val result = buildList {
                 val videoUrl = media.videoUrl
                 if (videoUrl != null) {
