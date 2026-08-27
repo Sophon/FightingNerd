@@ -28,6 +28,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_block
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Filter
+import io.github.sophon.fightingnerd.core.ui.components.ProgressBar
 import io.github.sophon.fightingnerd.feat.move.ui.composables.BookmarksButton
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet
 import io.github.sophon.fightingnerd.feat.move.ui.composables.MoveItem
@@ -152,8 +153,17 @@ private fun Content(
                 },
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(bottom = nerdDimensions.componentGap)
+                    .padding(bottom = nerdDimensions.screenPaddingVertical)
             )
+
+            state.downloadProgress?.let { progress ->
+                ProgressBar(
+                    progress = progress.fraction,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = nerdDimensions.screenPaddingVertical)
+                )
+            }
         }
     }
 }
@@ -252,6 +262,36 @@ private fun MoveListSearchPreview() {
             moveList = previewMoves,
             onMoveClick = {},
             searchQuery = "",
+            onFilterClick = {},
+            onFilterChipClick = {},
+            onChangeStartup = {},
+            onChangeOnBlock = {},
+            onChangeOnHit = {},
+            onClearFilters = {},
+            onSearch = {},
+            onBookmarkSwitch = {},
+            onBookmarkClose = {},
+            onDownload = {},
+        )
+    }
+}
+
+@Composable
+@Preview
+private fun MoveListDownloadPreview() {
+    FightingNerdTheme {
+        Content(
+            state = MoveListState.PREVIEW.copy(
+                mediaCount = 100,
+                downloadProgress = MoveListState.DownloadProgress(
+                    downloaded = 40,
+                    total = 100,
+                ),
+            ),
+            onExit = {},
+            moveList = previewMoves,
+            onMoveClick = {},
+            searchQuery = null,
             onFilterClick = {},
             onFilterChipClick = {},
             onChangeStartup = {},
