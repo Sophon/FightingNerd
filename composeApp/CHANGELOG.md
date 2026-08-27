@@ -1,6 +1,11 @@
 # APP CHANGELOG
 
-## [v2.3.0] - TODO
+## [v3.0.0] - TODO
+- remove insets
+- `Move` - can download all media for a char
+- fixed Kimberly
+
+## [v2.3.0] - 2026-08-23
 - `Move` - bookmarks for quick navigation
 - fixed wrong invulnerability property
 

@@ -12,6 +12,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
+import io.github.sophon.wikiwavu.integration.model.T8Properties
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.datetime.Instant
@@ -68,7 +69,7 @@ internal class FakeWikiClient : WikiClient {
             id = id,
             input = input,
             urls = Move.Urls(wikiUrl = ""),
-            t8Properties = stance?.let { Move.T8Properties(stance = it) },
+            gameProperties = stance?.let { T8Properties(stance = it) },
         )
     }
 

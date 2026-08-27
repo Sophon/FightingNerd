@@ -41,7 +41,7 @@ fun wavuModule() = module {
     single<CharacterDbAdapter>(named(WikiClientFeature.Wavu.id)) { params ->
         WavuCharacterDbAdapter(
             db = get(named(WikiClientFeature.Wavu.id)) { params },
-            gameId = Game.Tekken8.id,
+            game = Game.Tekken8,
         )
     }
     single<MoveDbAdapter>(named(WikiClientFeature.Wavu.id)) { params ->

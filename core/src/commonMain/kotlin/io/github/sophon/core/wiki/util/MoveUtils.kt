@@ -2,11 +2,6 @@ package io.github.sophon.core.wiki.util
 
 import io.github.sophon.core.wiki.model.Move
 
-fun Move.getLevel(): String? {
-    return ggstProperties?.level
-        ?: dbfzProperties?.level
-}
-
 fun List<Move>.findMatching(query: String): Move? {
     val normalizedQuery = query.normalizeForMatch()
 
@@ -35,4 +30,20 @@ fun List<Move>.filterMatching(query: String?): List<Move> {
         } ?: true
     }
     return filtered
+}
+
+fun List<Move>.getMediaCount(): Int {
+    var count = 0
+    forEach { count += it.getMediaCount() }
+    return count
+}
+
+fun Move.getMediaCount(): Int {
+    var count = 0
+    urls.apply {
+        if (videoUrl != null) count++
+        count += moveImageList.size
+        count += hitboxImageList.size
+    }
+    return count
 }

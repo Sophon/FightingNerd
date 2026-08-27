@@ -13,8 +13,8 @@ import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.MoveRepoImpl
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.wikiSuperCombo.data.SuperComboDB
-import io.github.sophon.wikiSuperCombo.data.SuperComboDataSource
-import io.github.sophon.wikiSuperCombo.data.SuperComboDataSourceImpl
+import io.github.sophon.wikiSuperCombo.data.remote.SuperComboDataSource
+import io.github.sophon.wikiSuperCombo.data.remote.SuperComboDataSourceImpl
 import io.github.sophon.wikiSuperCombo.data.db.SuperComboCharacterDbAdapter
 import io.github.sophon.wikiSuperCombo.data.db.SuperComboMoveDbAdapter
 import io.github.sophon.wikiSuperCombo.data.remote.SuperComboCharacterRemoteAdapter
@@ -44,7 +44,7 @@ fun superComboModule() = module {
         single<CharacterDbAdapter>(gameQualifier) {
             SuperComboCharacterDbAdapter(
                 db = get(named(WikiClientFeature.SuperCombo.id)),
-                gameId = game.id,
+                game = game,
             )
         }
         single<MoveDbAdapter>(gameQualifier) {

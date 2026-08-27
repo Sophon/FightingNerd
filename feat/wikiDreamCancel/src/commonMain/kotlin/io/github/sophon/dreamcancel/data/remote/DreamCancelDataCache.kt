@@ -9,9 +9,6 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.QueryTable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.dreamcancel.data.DreamCancelTables
-import io.github.sophon.dreamcancel.data.DreamCancelWikiDataSource
-import io.github.sophon.dreamcancel.data.toDomain
 
 /**
  * DreamCancel returns all characters and their moves in a single remote call.

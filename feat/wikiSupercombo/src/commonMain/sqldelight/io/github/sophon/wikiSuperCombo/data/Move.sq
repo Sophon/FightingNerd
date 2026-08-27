@@ -17,10 +17,12 @@ CREATE TABLE MoveEntity (
     cancel TEXT,
     invulnerability TEXT,
     isThrow INTEGER AS Boolean NOT NULL DEFAULT 0,
+    type TEXT,
     notes TEXT NOT NULL,
     aliases TEXT NOT NULL,
     urlsWikiUrl TEXT,
     urlsVideoId TEXT,
+    urlsVideoUrl TEXT,
     urlsHitboxImageList TEXT NOT NULL,
     urlsMoveImageList TEXT NOT NULL,
     consecutiveFailureCount INTEGER NOT NULL DEFAULT 0,
@@ -29,8 +31,8 @@ CREATE TABLE MoveEntity (
 );
 
 insertMove:
-INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, notes, aliases, urlsWikiUrl, urlsVideoId, urlsHitboxImageList, urlsMoveImageList)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO MoveEntity(id, characterId, gameId, name, input, damage, startup, active, recovery, onBlock, onHit, onCH, guard, cancel, invulnerability, isThrow, type, notes, aliases, urlsWikiUrl, urlsVideoId, urlsVideoUrl, urlsHitboxImageList, urlsMoveImageList)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT(id) DO UPDATE SET
     characterId = excluded.characterId,
     gameId = excluded.gameId,
@@ -47,10 +49,12 @@ ON CONFLICT(id) DO UPDATE SET
     cancel = excluded.cancel,
     invulnerability = excluded.invulnerability,
     isThrow = excluded.isThrow,
+    type = excluded.type,
     notes = excluded.notes,
     aliases = excluded.aliases,
     urlsWikiUrl = excluded.urlsWikiUrl,
     urlsVideoId = excluded.urlsVideoId,
+    urlsVideoUrl = excluded.urlsVideoUrl,
     urlsHitboxImageList = excluded.urlsHitboxImageList,
     urlsMoveImageList = excluded.urlsMoveImageList,
     consecutiveFailureCount = 0,
@@ -79,22 +83,22 @@ DELETE FROM MoveEntity
 WHERE characterId = ? AND consecutiveFailureCount >= ?;
 
 selectSF6ByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
-       sm.type, sm.images, sm.chip, sm.dmgScaling, sm.total, sm.hitConfirm, sm.punishAdv, sm.perfParryAdv, sm.DRcOH, sm.DRcOB, sm.DROH, sm.DROB, sm.hitStun, sm.blockStun, sm.hitStop, sm.driveDmgOnBlock, sm.driveDmgOnHit, sm.driveGain, sm.superGainOnHit, sm.superGainOnBlock, sm.armor, sm.airborne, sm.jugStart, sm.jugIncrease, sm.jugLimit, sm.projectileSpeed, sm.attackRange
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.type, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
+       sm.images, sm.chip, sm.dmgScaling, sm.total, sm.hitConfirm, sm.punishAdv, sm.perfParryAdv, sm.DRcOH, sm.DRcOB, sm.DROH, sm.DROB, sm.hitStun, sm.blockStun, sm.hitStop, sm.driveDmgOnBlock, sm.driveDmgOnHit, sm.driveGain, sm.superGainOnHit, sm.superGainOnBlock, sm.armor, sm.airborne, sm.jugStart, sm.jugIncrease, sm.jugLimit, sm.projectileSpeed, sm.attackRange
 FROM MoveEntity m
 LEFT JOIN SF6MoveEntity sm ON sm.moveId = m.id
 WHERE m.characterId = ?;
 
 selectMK1ByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
-       km.moveType, km.cost, km.chip, km.flawlessBlockAdv, km.hitCancelAdv, km.blockCancelAdv, km.punish
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.type, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
+       km.cost, km.chip, km.flawlessBlockAdv, km.hitCancelAdv, km.blockCancelAdv, km.punish
 FROM MoveEntity m
 LEFT JOIN MK1MoveEntity km ON km.moveId = m.id
 WHERE m.characterId = ?;
 
 selectAVLByCharacter:
-SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsHitboxImageList, m.urlsMoveImageList,
-       am.chiDamage, am.flow, am.type
+SELECT m.id, m.characterId, m.gameId, m.name, m.input, m.damage, m.startup, m.active, m.recovery, m.onBlock, m.onHit, m.onCH, m.guard, m.cancel, m.invulnerability, m.isThrow, m.type, m.notes, m.aliases, m.urlsWikiUrl, m.urlsVideoId, m.urlsVideoUrl, m.urlsHitboxImageList, m.urlsMoveImageList,
+       am.chiDamage, am.flow
 FROM MoveEntity m
 LEFT JOIN AVLMoveEntity am ON am.moveId = m.id
 WHERE m.characterId = ?;

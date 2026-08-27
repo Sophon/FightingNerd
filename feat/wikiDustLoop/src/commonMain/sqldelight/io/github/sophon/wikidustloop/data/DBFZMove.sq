@@ -7,11 +7,10 @@ CREATE TABLE DBFZMoveEntity (
     blockStun TEXT,
     groundHit TEXT,
     airHit TEXT,
-    type TEXT,
     level TEXT,
     FOREIGN KEY (moveId) REFERENCES MoveEntity(id) ON DELETE CASCADE
 );
 
 insertDBFZMove:
-INSERT OR REPLACE INTO DBFZMoveEntity(moveId, attribute, smash, kiGain, prorate, blockStun, groundHit, airHit, type, level)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT OR REPLACE INTO DBFZMoveEntity(moveId, attribute, smash, kiGain, prorate, blockStun, groundHit, airHit, level)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);

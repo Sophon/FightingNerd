@@ -12,6 +12,7 @@ import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wikiwavu.integration.model.T8Properties
 import kotlinx.coroutines.test.runTest
 import kotlinx.datetime.Instant
 import kotlin.test.BeforeTest
@@ -484,12 +485,15 @@ class FetchMovesWithPropertyUseCaseTest {
         notes = notes,
         aliases = listOf(),
         urls = Move.Urls(wikiUrl = ""),
-        t8Properties = Move.T8Properties(
+        gameProperties = T8Properties(
             isHeat = isHeat,
             isPowerCrush = isPowerCrush,
             isHoming = isHoming,
         ),
     )
+
+    private val Move.t8Properties: T8Properties?
+        get() = gameProperties as? T8Properties
 
     @OptIn(ExperimentalTime::class)
     private class MockMoveListDB : MoveListDB {

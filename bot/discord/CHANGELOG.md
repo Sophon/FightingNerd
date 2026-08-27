@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v15.5.0] - 2026-08-28
+- tagging attempts to extract command from query on error
+- `Supercombo` - fixed Kimberly
+
 ## [v15.4.3] - 2026-08-24
 - fixed promo embed showing on errors
 - autocomplete for moves uses contains instead of startsWith

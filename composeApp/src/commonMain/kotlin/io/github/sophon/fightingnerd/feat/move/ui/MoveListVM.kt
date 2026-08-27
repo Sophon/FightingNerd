@@ -11,13 +11,18 @@ import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
+import io.github.sophon.core.wiki.util.getMediaCount
 import io.github.sophon.fightingnerd.core.ui.OverlayService
+import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
+import io.github.sophon.fightingnerd.feat.move.usecase.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.GroupMovesUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
+import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToOfflineMediaAvailability
+import io.github.sophon.fightingnerd.feat.move.usecase.WipeMediaUseCase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
@@ -32,6 +37,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -41,26 +49,38 @@ internal class MoveListVM(
     private val gameId: String,
     private val characterId: String,
 
+    subscribeToOfflineMediaAvailability: SubscribeToOfflineMediaAvailability,
+
     private val overlayService: OverlayService,
     private val subscribeToMoveListUseCase: SubscribeToMoveListUseCase,
     private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
     private val loadMoveGroupsUseCase: LoadMoveGroupsUseCase,
     private val normalizeSliderUseCase: NormalizeSliderUseCase,
     private val groupMovesUseCase: GroupMovesUseCase,
+    private val downloadMediaUseCase: DownloadMediaUseCase,
+    private val wipeMediaUseCase: WipeMediaUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
     private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
+    private val _downloadProgress = MutableStateFlow<Int?>(null)
     private var groupList: ImmutableList<Group> = persistentListOf()
 
-    val state = _state
-        .onStart {
-            subscribeToData()
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = MoveListState(),
+    val state: StateFlow<MoveListState> = combine(
+        _state.onStart { subscribeToData() },
+        subscribeToOfflineMediaAvailability.invoke(gameId),
+        _downloadProgress,
+    ) { base, offlineChars, progress ->
+        val availability = deriveAvailability(
+            progress = progress,
+            offlineChars = offlineChars,
+            mediaCount = base.mediaCount,
         )
+        base.copy(mediaAvailability = availability)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = MoveListState(),
+    )
 
     val filteredMoves: StateFlow<ImmutableList<UiMove>> = combine(
         _state.distinctUntilChanged { old, new ->
@@ -160,6 +180,42 @@ internal class MoveListVM(
         }
     }
 
+    fun onDownloadMedia() {
+        if (_downloadProgress.value != null) return
+
+        val moveList = _fullMoveList.value.movesById.values.toList()
+        downloadMediaUseCase.invoke(
+            gameId = gameId,
+            characterId = CharacterId(characterId),
+            moveList = moveList,
+        )
+            .onEach { downloadedCount -> _downloadProgress.value = downloadedCount }
+            .onCompletion { _downloadProgress.value = null }
+            .launchIn(viewModelScope)
+    }
+
+    fun onWipeMedia() {
+        viewModelScope.launch {
+            wipeMediaUseCase.invoke(gameId = gameId, characterId = CharacterId(characterId))
+        }
+    }
+
+
+    private fun deriveAvailability(
+        progress: Int?,
+        offlineChars: Set<CharacterId>,
+        mediaCount: Int,
+    ): MediaAvailability {
+        val availability = when {
+            (progress != null) -> MediaAvailability.Downloading(
+                downloaded = progress,
+                total = mediaCount,
+            )
+            (CharacterId(characterId) in offlineChars) -> MediaAvailability.Downloaded
+            else -> MediaAvailability.NotDownloaded
+        }
+        return availability
+    }
 
     private fun subscribeToData() {
         viewModelScope.launch {
@@ -183,6 +239,7 @@ internal class MoveListVM(
                                     character = MoveListState.MoveListCharacter(
                                         displayName = character.displayName,
                                     ),
+                                    mediaCount = moveList.getMediaCount(),
                                 )
                             }
                         }

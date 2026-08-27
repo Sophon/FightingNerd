@@ -13,8 +13,8 @@ import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.MoveRepoImpl
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.wikidragdown.data.DragDownDB
-import io.github.sophon.wikidragdown.data.DragDownDataSource
-import io.github.sophon.wikidragdown.data.DragDownDataSourceImpl
+import io.github.sophon.wikidragdown.data.remote.DragDownDataSource
+import io.github.sophon.wikidragdown.data.remote.DragDownDataSourceImpl
 import io.github.sophon.wikidragdown.data.db.DragDownCharacterDbAdapter
 import io.github.sophon.wikidragdown.data.db.DragDownMoveDbAdapter
 import io.github.sophon.wikidragdown.data.remote.DragDownCharacterRemoteAdapter
@@ -42,7 +42,7 @@ fun dragDownModule() = module {
         single<CharacterDbAdapter>(gameQualifier) {
             DragDownCharacterDbAdapter(
                 db = get(named(WikiClientFeature.DragDown.id)),
-                gameId = game.id,
+                game = game,
             )
         }
         single<MoveDbAdapter>(gameQualifier) {

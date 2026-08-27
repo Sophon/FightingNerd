@@ -13,8 +13,8 @@ import io.github.sophon.core.wiki.data.MoveRepo
 import io.github.sophon.core.wiki.data.MoveRepoImpl
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.wikimizuumi.data.MizuumiDB
-import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSource
-import io.github.sophon.wikimizuumi.data.MizuumiWikiDataSourceImpl
+import io.github.sophon.wikimizuumi.data.remote.MizuumiWikiDataSource
+import io.github.sophon.wikimizuumi.data.remote.MizuumiWikiDataSourceImpl
 import io.github.sophon.wikimizuumi.data.db.MizuumiCharacterDbAdapter
 import io.github.sophon.wikimizuumi.data.db.MizuumiMoveDbAdapter
 import io.github.sophon.wikimizuumi.data.remote.MizuumiCharacterRemoteAdapter
@@ -49,7 +49,7 @@ fun mizuumiModule() = module {
         single<CharacterDbAdapter>(gameQualifier) {
             MizuumiCharacterDbAdapter(
                 db = get(named(WikiClientFeature.Mizuumi.id)),
-                gameId = game.id,
+                game = game,
             )
         }
         single<MoveDbAdapter>(gameQualifier) {

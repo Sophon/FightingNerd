@@ -11,6 +11,7 @@ import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.wikimizuumi.integration.model.Uni2Properties
 
 internal fun mizuumiMoveEmbed(
     character: Character,
@@ -127,7 +128,7 @@ internal fun mizuumiCharacterEmbed(
         },
     )
 
-    character.uni2Properties?.apply {
+    (character.gameProperties as? Uni2Properties)?.apply {
         optionalField(name = "Jump", value = "**$jumpStartup** ($jumpDuration)")
 
         val walkValue = buildString {
@@ -145,14 +146,14 @@ internal fun mizuumiCharacterEmbed(
         }
         optionalField(name = "bDash", value = bDashValue)
 
-        optionalField(name = "Vorpal", value = character.uni2Properties?.vorpalTrait)
-    }
+        optionalField(name = "Vorpal", value = vorpalTrait)
 
-    optionalField(
-        name = "Trait",
-        value = character.uni2Properties?.trait,
-        inline = false,
-    )
+        optionalField(
+            name = "Trait",
+            value = trait,
+            inline = false,
+        )
+    }
 
     featureFooter(featureInfo)
 }

@@ -1,0 +1,35 @@
+CREATE TABLE Uni2CharacterEntity (
+    characterId TEXT NOT NULL PRIMARY KEY,
+    smartSteer TEXT,
+    fWalkSpeed TEXT,
+    fWalkSpeedNote TEXT,
+    bWalkSpeed TEXT,
+    bWalkSpeedNote TEXT,
+    jumpStartup TEXT,
+    jumpDuration TEXT,
+    jumpDurationNote TEXT,
+    dashStartup TEXT,
+    iDashSpeed TEXT,
+    iDashSpeedNote TEXT,
+    dashAccel TEXT,
+    dashAccelNote TEXT,
+    maxDashSpeed TEXT,
+    bDashStartup TEXT,
+    bDashDuration TEXT,
+    bDashDurationNote TEXT,
+    bDashDistance TEXT,
+    bDashDistanceNote TEXT,
+    bDashFullInvulStart TEXT,
+    bDashFullInvulEnd TEXT,
+    bDashThrowInvulStart TEXT,
+    bDashThrowInvulEnd TEXT,
+    throwWidth TEXT,
+    throwRange TEXT,
+    trait TEXT,
+    vorpalTrait TEXT,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertUni2Character:
+INSERT OR REPLACE INTO Uni2CharacterEntity(characterId, smartSteer, fWalkSpeed, fWalkSpeedNote, bWalkSpeed, bWalkSpeedNote, jumpStartup, jumpDuration, jumpDurationNote, dashStartup, iDashSpeed, iDashSpeedNote, dashAccel, dashAccelNote, maxDashSpeed, bDashStartup, bDashDuration, bDashDurationNote, bDashDistance, bDashDistanceNote, bDashFullInvulStart, bDashFullInvulEnd, bDashThrowInvulStart, bDashThrowInvulEnd, throwWidth, throwRange, trait, vorpalTrait)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);

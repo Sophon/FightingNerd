@@ -1,0 +1,10 @@
+CREATE TABLE MK1CharacterEntity (
+    characterId TEXT NOT NULL PRIMARY KEY,
+    hpMod TEXT,
+    throwDmg TEXT,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertMK1Character:
+INSERT OR REPLACE INTO MK1CharacterEntity(characterId, hpMod, throwDmg)
+VALUES (?, ?, ?);

@@ -19,14 +19,14 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 internal class DreamCancelCharacterDbAdapter(
     private val db: DreamCancelDB,
-    private val gameId: String,
+    private val game: Game,
 ) : CharacterDbAdapter {
     private val queries = db.characterQueries
 
     override fun insert(character: Character) {
         queries.insertCharacter(
             id = character.id,
-            gameId = gameId,
+            gameId = game.id,
             remoteQueryId = character.remoteQueryId,
             wikiUrl = character.wikiUrl,
             displayName = character.displayName,
@@ -36,10 +36,18 @@ internal class DreamCancelCharacterDbAdapter(
             imagesIconUrl = character.images?.iconUrl,
             imagesBannerUrl = character.images?.bannerUrl,
         )
+        insertProperties(character)
+    }
+
+    @Suppress("UnusedParameter")
+    private fun insertProperties(character: Character) {
+        when (game) {
+            else -> Unit
+        }
     }
 
     override fun selectAllFlow(): Flow<List<Character>> {
-        val flow = queries.selectAllForGame(gameId)
+        val flow = queries.selectAllForGame(game.id)
             .asFlow()
             .mapToList(Dispatchers.IO)
             .map { rows ->
@@ -50,15 +58,15 @@ internal class DreamCancelCharacterDbAdapter(
     }
 
     override fun incrementFailureCountForAbsent(remoteIds: List<String>) {
-        queries.incrementFailureCountForAbsentInGame(gameId, remoteIds)
+        queries.incrementFailureCountForAbsentInGame(game.id, remoteIds)
     }
 
     override fun deleteExceededThreshold(threshold: Long) {
-        queries.deleteExceededThresholdForGame(gameId, threshold)
+        queries.deleteExceededThresholdForGame(game.id, threshold)
     }
 
     override fun deleteAll() {
-        queries.deleteAllForGame(gameId)
+        queries.deleteAllForGame(game.id)
     }
 
     override fun transaction(block: () -> Unit) {
@@ -66,7 +74,7 @@ internal class DreamCancelCharacterDbAdapter(
     }
 
     override fun getLastUpdateTimestamp(): Instant? {
-        val millis = queries.selectLastInsertedAtForGame(gameId).executeAsOne().lastInsertedAt
+        val millis = queries.selectLastInsertedAtForGame(game.id).executeAsOne().lastInsertedAt
         val timestamp = millis?.let { Instant.fromEpochMilliseconds(it) }
         return timestamp
     }
@@ -103,6 +111,7 @@ internal class DreamCancelMoveDbAdapter(
             aliases = move.aliases.fromDomain(),
             urlsWikiUrl = move.urls.wikiUrl,
             urlsVideoId = move.urls.videoId,
+            urlsVideoUrl = move.urls.videoUrl,
             urlsHitboxImageList = move.urls.hitboxImageList.fromDomain(),
             urlsMoveImageList = move.urls.moveImageList.fromDomain(),
         )

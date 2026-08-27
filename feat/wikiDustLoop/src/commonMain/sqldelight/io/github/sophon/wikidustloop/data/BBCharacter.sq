@@ -1,0 +1,11 @@
+CREATE TABLE BBCharacterEntity (
+    characterId TEXT NOT NULL PRIMARY KEY,
+    preJump TEXT,
+    backDash TEXT,
+    forwardDash TEXT,
+    FOREIGN KEY (characterId) REFERENCES CharacterEntity(id) ON DELETE CASCADE
+);
+
+insertBBCharacter:
+INSERT OR REPLACE INTO BBCharacterEntity(characterId, preJump, backDash, forwardDash)
+VALUES (?, ?, ?, ?);

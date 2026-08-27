@@ -33,6 +33,7 @@ ksp = "2.3.7"
 ktor = "3.5.0"
 multiplatform-nav3-ui = "1.1.1"
 napier = "2.7.1"
+okio = "3.18.1"
 revenuecat = "3.5.0"
 slf = "2.0.18"
 sqldelight = "2.3.2"
@@ -118,6 +119,7 @@ datastore = { module = "androidx.datastore:datastore-preferences-core", version.
 biometric = { module = "androidx.biometric:biometric", version.ref = "biometry" }
 kord = { module = "dev.kord:kord-core", version.ref = "kord"}
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
+okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 
 
 [plugins]
