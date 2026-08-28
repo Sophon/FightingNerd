@@ -24,7 +24,11 @@ internal interface MediaRepo {
     suspend fun save(gameId: String, characterId: CharacterId, media: Move.Urls): EmptyResult<AppError>
     suspend fun wipe(gameId: String)
     suspend fun wipe(gameId: String, characterId: CharacterId)
-    suspend fun getLink(gameId: String, characterId: CharacterId, media: Move.Urls): Result<List<String>, AppError>
+    suspend fun createUpdatedUrls(
+        gameId: String,
+        characterId: CharacterId,
+        media: Move.Urls,
+    ): Move.Urls
 }
 
 
@@ -55,7 +59,7 @@ internal class MediaRepoImpl(
             fs.createDirectories(charDir)
             val urls = listOfNotNull(media.videoUrl) + media.hitboxImageList + media.moveImageList
             urls.forEach { url ->
-                val target = charDir / url.substringAfterLast("/").substringAfterLast(":")
+                val target = charDir / toStorageFileName(url)
                 val bytes = http.get(url).readRawBytes()
                 fs.write(target) { write(bytes) }
             }
@@ -90,31 +94,35 @@ internal class MediaRepoImpl(
         }
     }
 
-    override suspend fun getLink(
+    override suspend fun createUpdatedUrls(
         gameId: String,
         characterId: CharacterId,
         media: Move.Urls,
-    ): Result<List<String>, AppError> {
-        try {
-            val charDir = baseDir / gameId / characterId.value
-            val result = buildList {
-                val videoUrl = media.videoUrl
-                if (videoUrl != null) {
-                    val local = charDir / videoUrl.substringAfterLast("/").substringAfterLast(":")
-                    val link = if (fs.exists(local)) "file://$local" else videoUrl
-                    add(link)
-                }
-                val imageUrls = media.hitboxImageList + media.moveImageList
-                imageUrls.forEach { imageUrl ->
-                    val local = charDir / imageUrl.substringAfterLast("/").substringAfterLast(":")
-                    val link = if (fs.exists(local)) "file://$local" else imageUrl
-                    add(link)
-                }
-            }
-            return Result.Success(result)
+    ): Move.Urls {
+        val charDir = baseDir / gameId / characterId.value
+        val updated = try {
+            media.copy(
+                videoUrl = media.videoUrl?.let { toLocalUrl(charDir, it) },
+                hitboxImageList = media.hitboxImageList.map { toLocalUrl(charDir, it) },
+                moveImageList = media.moveImageList.map { toLocalUrl(charDir, it) },
+            )
         } catch (e: Exception) {
-            return Result.Error(AppError.IOError(e.message.orEmpty()))
+            media
         }
+        return updated
+    }
+
+    private fun toLocalUrl(charDir: Path, url: String): String {
+        val local = charDir / toStorageFileName(url)
+        val link = if (fs.exists(local)) "file://$local" else url
+        return link
+    }
+
+    private fun toStorageFileName(url: String): String {
+        val name = url
+            .substringAfterLast("/")
+            .replace(Regex("[%:]"), "_")
+        return name
     }
 
 
