@@ -59,7 +59,7 @@ internal class MediaRepoImpl(
             fs.createDirectories(charDir)
             val urls = listOfNotNull(media.videoUrl) + media.hitboxImageList + media.moveImageList
             urls.forEach { url ->
-                val target = charDir / url.substringAfterLast("/").substringAfterLast(":")
+                val target = charDir / toStorageFileName(url)
                 val bytes = http.get(url).readRawBytes()
                 fs.write(target) { write(bytes) }
             }
@@ -113,9 +113,16 @@ internal class MediaRepoImpl(
     }
 
     private fun toLocalUrl(charDir: Path, url: String): String {
-        val local = charDir / url.substringAfterLast("/").substringAfterLast(":")
+        val local = charDir / toStorageFileName(url)
         val link = if (fs.exists(local)) "file://$local" else url
         return link
+    }
+
+    private fun toStorageFileName(url: String): String {
+        val name = url
+            .substringAfterLast("/")
+            .replace(Regex("[%:]"), "_")
+        return name
     }
 
 
