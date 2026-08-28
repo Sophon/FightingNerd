@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v15.5.1] - TODO
+- `Wavu` - stances are uppercase
+
 ## [v15.5.0] - 2026-08-28
 - tagging attempts to extract command from query on error
 - `Supercombo` - fixed Kimberly
