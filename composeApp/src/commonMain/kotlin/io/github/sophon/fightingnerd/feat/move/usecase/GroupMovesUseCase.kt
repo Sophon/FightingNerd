@@ -1,5 +1,6 @@
 package io.github.sophon.fightingnerd.feat.move.usecase
 
+import io.github.sophon.core.wiki.model.Default
 import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Bookmark
@@ -40,7 +41,9 @@ internal class GroupMovesUseCase {
                 nextStartingIndex += bucket.size
             }
         }
+
         orderedMoveList.addAll(other)
+        bookmarkList.add(Bookmark(Default.id, moveListIndex = nextStartingIndex))
 
         return orderedMoveList to bookmarkList
     }
