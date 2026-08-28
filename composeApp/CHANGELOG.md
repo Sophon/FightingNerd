@@ -1,6 +1,10 @@
 # APP CHANGELOG
 
-## [v3.0.0] - TODO
+## [v3.1.0] - 2026-08-29
+- fixed downloaded media not being used
+- Tekken characters have stances in bookmarks
+
+## [v3.0.0] - 2026-08-27
 - remove insets
 - `Move` 
   - can download all media for a char
