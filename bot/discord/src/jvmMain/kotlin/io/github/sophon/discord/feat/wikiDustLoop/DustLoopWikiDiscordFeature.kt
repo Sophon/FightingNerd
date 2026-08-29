@@ -26,7 +26,6 @@ import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.util.aggregateCharacters
-import io.github.sophon.discord.util.firstMatchingWikiMoves
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikidustloop.integration.DustLoopFeatureInfo
@@ -53,24 +52,19 @@ internal class DustLoopWikiDiscordFeature(
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
         Command.CharGG,
-        Command.FdGG,
         Command.InvGG,
         Command.AliasGG,
 
         Command.CharDB,
-        Command.FdDB,
         Command.AliasDB,
 
         Command.CharBB,
-        Command.FdBB,
         Command.AliasBB,
         Command.InvBB,
 
         Command.CharGB,
-        Command.FdGB,
 
         Command.CharMT,
-        Command.FdMT,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -92,16 +86,26 @@ internal class DustLoopWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
+        game: Game?,
     ): Result<BotOutput, BotError> {
         val formattedQuery = query.lowercase()
 
         val result = when (command) {
             Command.Fd -> {
-                fetchMoveInWikisUseCase.invoke(
-                    wikis = wikiClientMap,
-                    query = formattedQuery,
-                    searchFun = ::searchMove,
-                )
+                if (game != null) {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                        action = ::searchMove,
+                    )
+                } else {
+                    fetchMoveInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = ::searchMove,
+                    )
+                }
             }
 
             Command.CharGG -> withWiki(
@@ -109,12 +113,6 @@ internal class DustLoopWikiDiscordFeature(
                 game = Game.GGST,
                 query = formattedQuery,
                 action = ::searchCharacter,
-            )
-            Command.FdGG -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.GGST,
-                query = formattedQuery,
-                action = ::searchMove,
             )
             Command.InvGG -> withWiki(
                 wikis = wikiClientMap,
@@ -136,12 +134,6 @@ internal class DustLoopWikiDiscordFeature(
                 query = formattedQuery,
                 action = ::searchCharacter,
             )
-            Command.FdDB -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.DBFZ,
-                query = formattedQuery,
-                action = ::searchMove,
-            )
             Command.AliasDB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.DBFZ,
@@ -156,24 +148,12 @@ internal class DustLoopWikiDiscordFeature(
                 query = formattedQuery,
                 action = ::searchCharacter,
             )
-            Command.FdGB -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.GBVSR,
-                query = formattedQuery,
-                action = ::searchMove,
-            )
 
             Command.CharBB -> withWiki(
                 wikis = wikiClientMap,
                 game = Game.BBCF,
                 query = formattedQuery,
                 action = ::searchCharacter,
-            )
-            Command.FdBB -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.BBCF,
-                query = formattedQuery,
-                action = ::searchMove,
             )
             Command.AliasBB -> withWiki(
                 wikis = wikiClientMap,
@@ -194,12 +174,6 @@ internal class DustLoopWikiDiscordFeature(
                 game = Game.MTFS,
                 query = formattedQuery,
                 action = ::searchCharacter,
-            )
-            Command.FdMT -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.MTFS,
-                query = formattedQuery,
-                action = ::searchMove,
             )
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))

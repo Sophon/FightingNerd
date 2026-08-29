@@ -4,6 +4,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_REPO
@@ -49,6 +50,7 @@ internal class BotFeature(
         command: Command,
         query: String,
         origin: Source,
+        game: Game?,
     ): Result<BotOutput, BotError> {
         if (query.startsWith(URL_STEAM_LOBBY, ignoreCase = true)) {
             return createJoinEmbedButtonUseCase.invoke(origin, query)

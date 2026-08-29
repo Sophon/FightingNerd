@@ -8,6 +8,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
@@ -49,6 +50,7 @@ class RouteCommandToFeatureUseCaseTest {
             command: Command,
             query: String,
             origin: Source,
+            game: Game?,
         ): Result<BotOutput, BotError> {
             receivedQuery = query
             receivedCommand = command
@@ -99,6 +101,7 @@ class RouteCommandToFeatureUseCaseTest {
             command: Command,
             query: String,
             origin: Source,
+            game: Game?,
         ): Result<BotOutput, BotError> {
             val glossaryTerms = setOf(
                 "frame",
@@ -139,6 +142,7 @@ class RouteCommandToFeatureUseCaseTest {
             command: Command,
             query: String,
             origin: Source,
+            game: Game?,
         ): Result<BotOutput, BotError> {
             val sfChars = setOf(
                 "lily",

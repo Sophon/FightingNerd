@@ -23,7 +23,6 @@ import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.aggregateCharacters
-import io.github.sophon.discord.util.firstMatchingWikiMoves
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikimizuumi.integration.MizuumiFeatureInfo
@@ -47,13 +46,10 @@ internal class MizuumiWikiDiscordFeature(
     override val featureInfo = mizuumiFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        Command.FdMB,
         Command.AliasMB,
         Command.InvMB,
-        Command.FdUNI,
         Command.CharUNI,
         Command.InvUNI,
-        Command.FdVS,
         Command.InvVS,
         Command.AliasVS,
     )
@@ -78,26 +74,26 @@ internal class MizuumiWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
+        game: Game?,
     ): Result<BotOutput, BotError> {
         val formattedQuery = query.lowercase()
 
         val result = when (command) {
             Command.Fd -> {
-                fetchMoveInWikisUseCase.invoke(
-                    wikis = wikiClientMap,
-                    query = formattedQuery,
-                ) { _, wiki, query -> searchMove(wiki, query) }
-            }
-
-            Command.FdMB -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.MBTL,
-                    query = formattedQuery,
-                ) { _, wiki, query ->
-                    searchMove(wiki, query)
+                if (game != null) {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                    ) { _, wiki, query -> searchMove(wiki, query) }
+                } else {
+                    fetchMoveInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                    ) { _, wiki, query -> searchMove(wiki, query) }
                 }
             }
+
             Command.AliasMB -> {
                 withWiki(
                     wikis = wikiClientMap,
@@ -117,15 +113,6 @@ internal class MizuumiWikiDiscordFeature(
                 }
             }
 
-            Command.FdUNI -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.Uni2,
-                    query = formattedQuery,
-                ) { _, wiki, query ->
-                    searchMove(wiki, query)
-                }
-            }
             Command.CharUNI -> {
                 withWiki(
                     wikis = wikiClientMap,
@@ -145,15 +132,6 @@ internal class MizuumiWikiDiscordFeature(
                 }
             }
 
-            Command.FdVS -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.VSAV,
-                    query = formattedQuery,
-                ) { _, wiki, query ->
-                    searchMove(wiki, query)
-                }
-            }
             Command.InvVS -> {
                 withWiki(
                     wikis = wikiClientMap,

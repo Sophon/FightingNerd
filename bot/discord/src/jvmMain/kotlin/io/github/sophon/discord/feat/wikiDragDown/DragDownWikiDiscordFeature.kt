@@ -51,7 +51,6 @@ internal class DragDownWikiDiscordFeature(
     override val featureInfo: FeatureInfo = dragDownFeatureInfo.featureInfo
     override val defaultCommand: Command = Command.Fd
     override val otherCommands: List<Command> = listOf(
-        Command.FdROA,
         Command.CharROA,
         Command.SpecialROA,
     )
@@ -76,16 +75,26 @@ internal class DragDownWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
+        game: Game?,
     ): Result<BotOutput, BotError> {
         val formattedQuery = query.lowercase()
 
         val result = when(command) {
             Command.Fd -> {
-                fetchMoveInWikisUseCase.invoke(
-                    wikis = wikiClientMap,
-                    query = formattedQuery,
-                    searchFun = { _, wiki, query -> searchMove(wiki, query) },
-                )
+                if (game != null) {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                        action = { _, wiki, query -> searchMove(wiki, query) },
+                    )
+                } else {
+                    fetchMoveInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = { _, wiki, query -> searchMove(wiki, query) },
+                    )
+                }
             }
 
             Command.CharROA -> {
@@ -94,14 +103,6 @@ internal class DragDownWikiDiscordFeature(
                     game = Game.ROA2,
                     query = formattedQuery,
                     action = { _, wiki, query -> searchCharacter(wiki, query)},
-                )
-            }
-            Command.FdROA -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.ROA2,
-                    query = formattedQuery,
-                    action = { _, wiki, query -> searchMove(wiki, query) },
                 )
             }
             Command.SpecialROA -> {

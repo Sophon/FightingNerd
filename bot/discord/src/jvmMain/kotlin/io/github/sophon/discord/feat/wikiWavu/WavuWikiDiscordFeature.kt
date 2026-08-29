@@ -28,7 +28,6 @@ import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStringFollowupsUseCase
 import io.github.sophon.discord.util.aggregateCharacters
-import io.github.sophon.discord.util.firstMatchingWikiMoves
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
@@ -56,7 +55,6 @@ internal class WavuWikiDiscordFeature(
     override val featureInfo = wavuFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        Command.FdTK,
         Command.Pc,
         Command.Heat,
         Command.Homing,
@@ -86,23 +84,24 @@ internal class WavuWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
+        game: Game?,
     ): Result<BotOutput, BotError> {
         val formattedQuery = query.lowercase()
 
         val result = when (command) {
             Command.Fd -> {
-                fetchMoveInWikisUseCase.invoke(
-                    wikis = wikiClientMap,
-                    query = formattedQuery,
-                ) { _, wiki, query -> searchMove(wiki, query) }
-            }
-
-            Command.FdTK -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.Tekken8,
-                    query = formattedQuery,
-                ) { _, wiki, query -> searchMove(wiki, query) }
+                if (game != null) {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                    ) { _, wiki, query -> searchMove(wiki, query) }
+                } else {
+                    fetchMoveInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                    ) { _, wiki, query -> searchMove(wiki, query) }
+                }
             }
 
             Command.Pc -> {
