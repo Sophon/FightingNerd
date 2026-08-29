@@ -4,6 +4,8 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import io.github.sophon.core.architecture.ExcludeFromCoverage
+import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
@@ -41,8 +43,7 @@ internal class HandleQueryUseCase(
     ) {
         val commandString = interaction.command.rootName
             .lowercase()
-        val query = interaction.command.strings.values
-            .joinToString(" ")
+        val routing = extractSlashRouting(interaction.command.strings)
         val source = Source(
             username = interaction.user.username,
             id = interaction.user.data.id.toString(),
@@ -53,7 +54,9 @@ internal class HandleQueryUseCase(
         val result = routeCommandToFeatureUseCase.invoke(
             source = source,
             commandString = commandString,
-            query = query
+            query = routing.query,
+            featureHint = routing.featureName,
+            game = routing.game,
         )
 
         resultToEmbedUseCase.invoke(
@@ -64,6 +67,37 @@ internal class HandleQueryUseCase(
             editableEmbedMap = editableEmbedMap,
         )
     }
+
+    private fun extractSlashRouting(strings: Map<String, String>): SlashRouting {
+        val characterRaw = strings[SLASH_ARG_CHARACTER]
+        val encodedParts = characterRaw?.split(AUTOCOMPLETE_VALUE_DELIMITER, limit = 3)
+        if (encodedParts != null && encodedParts.size == 3) {
+            val (characterId, featureName, gameName) = encodedParts
+            val game = Game.entries.firstOrNull { it.name == gameName }
+            if (game != null) {
+                val restQuery = strings
+                    .filterKeys { it != SLASH_ARG_CHARACTER }
+                    .values
+                    .joinToString(" ") { it.substringBefore(AUTOCOMPLETE_VALUE_DELIMITER) }
+                val fullQuery = listOf(characterId, restQuery)
+                    .filter { it.isNotBlank() }
+                    .joinToString(" ")
+                val routing = SlashRouting(query = fullQuery, featureName = featureName, game = game)
+                return routing
+            }
+        }
+
+        val fallbackQuery = strings.values
+            .joinToString(" ") { it.substringBefore(AUTOCOMPLETE_VALUE_DELIMITER) }
+        val routing = SlashRouting(query = fallbackQuery, featureName = null, game = null)
+        return routing
+    }
+
+    private data class SlashRouting(
+        val query: String,
+        val featureName: String?,
+        val game: Game?,
+    )
 
     private suspend fun handleMessage(
         message: Message,
@@ -85,5 +119,9 @@ internal class HandleQueryUseCase(
         )
 
         resultToEmbedUseCase.invoke(message, source, result, coroutineScope, editableEmbedMap)
+    }
+
+    private companion object {
+        const val SLASH_ARG_CHARACTER = "character"
     }
 }

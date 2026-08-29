@@ -26,7 +26,6 @@ import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.aggregateCharacters
-import io.github.sophon.discord.util.firstMatchingWikiMoves
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
@@ -52,7 +51,6 @@ internal class DragDownWikiDiscordFeature(
     override val featureInfo: FeatureInfo = dragDownFeatureInfo.featureInfo
     override val defaultCommand: Command = Command.Fd
     override val otherCommands: List<Command> = listOf(
-        Command.FdROA,
         Command.CharROA,
         Command.SpecialROA,
     )
@@ -77,16 +75,26 @@ internal class DragDownWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
+        game: Game?,
     ): Result<BotOutput, BotError> {
         val formattedQuery = query.lowercase()
 
         val result = when(command) {
             Command.Fd -> {
-                fetchMoveInWikisUseCase.invoke(
-                    wikis = wikiClientMap,
-                    query = formattedQuery,
-                    searchFun = { _, wiki, query -> searchMove(wiki, query) },
-                )
+                if (game != null) {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                        action = { _, wiki, query -> searchMove(wiki, query) },
+                    )
+                } else {
+                    fetchMoveInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = { _, wiki, query -> searchMove(wiki, query) },
+                    )
+                }
             }
 
             Command.CharROA -> {
@@ -95,14 +103,6 @@ internal class DragDownWikiDiscordFeature(
                     game = Game.ROA2,
                     query = formattedQuery,
                     action = { _, wiki, query -> searchCharacter(wiki, query)},
-                )
-            }
-            Command.FdROA -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.ROA2,
-                    query = formattedQuery,
-                    action = { _, wiki, query -> searchMove(wiki, query) },
                 )
             }
             Command.SpecialROA -> {
@@ -124,35 +124,26 @@ internal class DragDownWikiDiscordFeature(
         return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
-    override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
-        val game = when (command) {
-            Command.FdROA, Command.CharROA -> Game.ROA2
-            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
-        }
+    override suspend fun getCharacterList(game: Game): Result<List<Character>, BotError> {
         val wiki = wikiClientMap[game]
-            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+            ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
         val result = getCharactersUseCase.invoke(wiki)
         return result
     }
 
-    override suspend fun getAllCharacters() =
-        aggregateCharacters(wikiClientMap, getCharactersUseCase)
+    override suspend fun getAllCharacters(): Result<List<Pair<Game, Character>>, BotError> {
+        val result = aggregateCharacters(wikiClientMap, getCharactersUseCase)
+        return result
+    }
 
     override suspend fun getMoveList(
-        command: Command,
+        game: Game,
         characterId: String,
     ): Result<List<Move>, BotError> {
-        if (command == Command.Fd) {
-            val moves = firstMatchingWikiMoves(wikiClientMap, getMovesUseCase, characterId)
-            return moves
-        }
-        val game = when (command) {
-            Command.FdROA -> Game.ROA2
-            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
-        }
         val wiki = wikiClientMap[game]
-            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
-        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+            ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
+        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
+            .map { (_, moveList) -> moveList }
         return result
     }
 

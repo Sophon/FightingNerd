@@ -115,7 +115,7 @@ internal class BindToDiscordFeaturesUseCaseTest {
         override val otherCommands = emptyList<Command>()
 
         override suspend fun start() {}
-        override suspend fun execute(command: Command, query: String, origin: Source): Result<BotOutput, BotError> =
+        override suspend fun execute(command: Command, query: String, origin: Source, game: Game?): Result<BotOutput, BotError> =
             Result.Error(BotError.BotLogicError())
         override suspend fun refreshData(): EmptyResult<BotError> = Result.Success(Unit)
     }
@@ -126,7 +126,7 @@ internal class BindToDiscordFeaturesUseCaseTest {
         override val otherCommands = emptyList<Command>()
 
         override suspend fun start() {}
-        override suspend fun execute(command: Command, query: String, origin: Source): Result<BotOutput, BotError> =
+        override suspend fun execute(command: Command, query: String, origin: Source, game: Game?): Result<BotOutput, BotError> =
             Result.Error(BotError.BotLogicError())
         override suspend fun refreshData(): EmptyResult<BotError> = Result.Success(Unit)
     }
@@ -137,7 +137,7 @@ internal class BindToDiscordFeaturesUseCaseTest {
         override val otherCommands = emptyList<Command>()
 
         override suspend fun start() {}
-        override suspend fun execute(command: Command, query: String, origin: Source): Result<BotOutput, BotError> =
+        override suspend fun execute(command: Command, query: String, origin: Source, game: Game?): Result<BotOutput, BotError> =
             Result.Error(BotError.BotLogicError())
         override suspend fun refreshData(): EmptyResult<BotError> = Result.Success(Unit)
     }
@@ -148,7 +148,7 @@ internal class BindToDiscordFeaturesUseCaseTest {
         override val otherCommands = emptyList<Command>()
 
         override suspend fun start() {}
-        override suspend fun execute(command: Command, query: String, origin: Source): Result<BotOutput, BotError> =
+        override suspend fun execute(command: Command, query: String, origin: Source, game: Game?): Result<BotOutput, BotError> =
             Result.Error(BotError.BotLogicError())
         override suspend fun refreshData(): EmptyResult<BotError> = Result.Success(Unit)
     }

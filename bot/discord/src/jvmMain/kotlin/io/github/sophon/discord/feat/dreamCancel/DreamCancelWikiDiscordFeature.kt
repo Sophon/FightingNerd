@@ -23,7 +23,6 @@ import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.aggregateCharacters
-import io.github.sophon.discord.util.firstMatchingWikiMoves
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.dreamcancel.integration.DreamCancelFeatureInfo
 import io.github.sophon.integration.model.Source
@@ -45,9 +44,7 @@ internal class DreamCancelWikiDiscordFeature(
     override val featureInfo: FeatureInfo = dreamCancelFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        Command.FdKOF,
         Command.AliasKOF,
-        Command.FdCOTW,
         Command.AliasCOTW,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
@@ -71,25 +68,25 @@ internal class DreamCancelWikiDiscordFeature(
         command: Command,
         query: String,
         origin: Source,
+        game: Game?,
     ): Result<BotOutput, BotError> {
         val formattedQuery = query.lowercase()
 
         val result = when (command) {
             Command.Fd -> {
-                fetchMoveInWikisUseCase.invoke(
-                    wikis = wikiClientMap,
-                    query = formattedQuery,
-                    searchFun = { _, wikiClient, query -> searchMove(wikiClient, query) },
-                )
-            }
-
-            Command.FdKOF -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.KoFXV,
-                    query = formattedQuery,
-                    action = { _, wikiClient, query -> searchMove(wikiClient, query)},
-                )
+                if (game != null) {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                    ) { _, wikiClient, query -> searchMove(wikiClient, query) }
+                } else {
+                    fetchMoveInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = { _, wikiClient, query -> searchMove(wikiClient, query) },
+                    )
+                }
             }
             Command.AliasKOF -> {
                 withWiki(
@@ -99,15 +96,6 @@ internal class DreamCancelWikiDiscordFeature(
                 ) { _, wiki, _ ->
                     getCharacterAliases(wiki)
                 }
-            }
-
-            Command.FdCOTW -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.COTW,
-                    query = formattedQuery,
-                    action = { _, wikiClient, query -> searchMove(wikiClient, query) },
-                )
             }
             Command.AliasCOTW -> {
                 withWiki(
@@ -129,36 +117,24 @@ internal class DreamCancelWikiDiscordFeature(
         return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
-    override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
-        val game = when (command) {
-            Command.FdKOF -> Game.KoFXV
-            Command.FdCOTW -> Game.COTW
-            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
-        }
+    override suspend fun getCharacterList(game: Game): Result<List<Character>, BotError> {
         val wiki = wikiClientMap[game]
-            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+            ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
         val result = getCharactersUseCase.invoke(wiki)
         return result
     }
 
-    override suspend fun getAllCharacters() =
-        aggregateCharacters(wikiClientMap, getCharactersUseCase)
+    override suspend fun getAllCharacters(): Result<List<Pair<Game, Character>>, BotError> {
+        val result = aggregateCharacters(wikiClientMap, getCharactersUseCase)
+        return result
+    }
 
     override suspend fun getMoveList(
-        command: Command,
+        game: Game,
         characterId: String,
     ): Result<List<Move>, BotError> {
-        if (command == Command.Fd) {
-            val moves = firstMatchingWikiMoves(wikiClientMap, getMovesUseCase, characterId)
-            return moves
-        }
-        val game = when (command) {
-            Command.FdKOF -> Game.KoFXV
-            Command.FdCOTW -> Game.COTW
-            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
-        }
         val wiki = wikiClientMap[game]
-            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+            ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
         val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
             .map { (_, moveList) -> moveList }
         return result

@@ -44,3 +44,5 @@ internal const val RNG_DONATION_PCT_COMMAND = 5
 internal const val RNG_DONATION_PCT_FEEDBACK = 20
 
 internal const val NUMBER_OF_CONCURRENT_REQUEST = 3
+
+internal const val AUTOCOMPLETE_VALUE_DELIMITER = "::"
