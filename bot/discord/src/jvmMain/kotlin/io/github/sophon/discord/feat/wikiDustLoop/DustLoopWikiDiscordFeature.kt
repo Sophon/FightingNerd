@@ -43,7 +43,6 @@ internal class DustLoopWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
-    private val fetchDustLoopInvincibleMovesUseCase: FetchDustLoopInvincibleMovesUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val fetchCharacterInWikisUseCase: FetchCharacterInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
