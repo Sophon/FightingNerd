@@ -2,6 +2,7 @@ package io.github.sophon.discord.feat.core.usecase
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
@@ -14,6 +15,7 @@ import io.github.sophon.discord.util.mandatoryField
 import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.seconds
 
+@ExcludeFromCoverage("UI")
 internal class CreateAliasOutputUseCase(
     getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
     featureRepo: FeatureRepo,
