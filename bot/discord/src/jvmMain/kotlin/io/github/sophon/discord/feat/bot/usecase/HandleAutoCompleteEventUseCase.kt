@@ -164,6 +164,7 @@ internal class HandleAutoCompleteEventUseCase(
                 AutoCompleteType.Move -> {
                     val characterValue = command.readSibling(interaction, AutoCompleteType.Character)
                     if (characterValue.isBlank()) return emptyList()
+
                     val result = wikiFeature.getMoveList(command, characterValue)
                     if (result is Result.Success) {
                         val filtered = result.data.filterMovesByQuery(query)
@@ -183,7 +184,11 @@ internal class HandleAutoCompleteEventUseCase(
                 ?.map { it.toChoice() }
                 ?: emptyList()
         }
-        val matchingCharList = this.filter { it.displayName.contains(query, ignoreCase = true) }
+
+        val matchingCharList = this.filter { character ->
+            character.displayName.contains(query, ignoreCase = true)
+                    || character.aliasList.contains(query)
+        }
         val choiceList = matchingCharList
             .map { it.toChoice() }
             .take(COMMAND_MAX_SUGGESTIONS)
@@ -196,6 +201,7 @@ internal class HandleAutoCompleteEventUseCase(
                 .take(COMMAND_MAX_SUGGESTIONS)
                 .map { it.toChoice() }
         }
+
         val matchingMoveList = this.filterMatching(query)
         val choiceList = matchingMoveList
             .map { it.toChoice() }
