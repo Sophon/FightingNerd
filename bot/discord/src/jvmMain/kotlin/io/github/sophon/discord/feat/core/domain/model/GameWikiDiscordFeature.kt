@@ -8,7 +8,7 @@ import io.github.sophon.core.wiki.model.WikiClient
 
 internal interface GameWikiDiscordFeature {
     fun registerWikiClients(wikiClientMap: Map<Game, WikiClient>)
-    suspend fun getCharacterList(command: Command): Result<List<Character>, BotError>
-    suspend fun getMoveList(command: Command, characterId: String): Result<List<Move>, BotError>
+    suspend fun getCharacterList(game: Game): Result<List<Character>, BotError>
+    suspend fun getMoveList(game: Game, characterId: String): Result<List<Move>, BotError>
     suspend fun getAllCharacters(): Result<List<Pair<Game, Character>>, BotError>
 }

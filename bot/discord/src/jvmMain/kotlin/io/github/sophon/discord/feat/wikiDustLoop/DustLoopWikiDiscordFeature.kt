@@ -213,40 +213,21 @@ internal class DustLoopWikiDiscordFeature(
         return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
     }
 
-    override suspend fun getCharacterList(command: Command): Result<List<Character>, BotError> {
-        val game = when (command) {
-            Command.FdGG, Command.InvGG -> Game.GGST
-            Command.FdDB -> Game.DBFZ
-            Command.FdBB, Command.InvBB -> Game.BBCF
-            Command.FdGB -> Game.GBVSR
-            Command.FdMT -> Game.MTFS
-            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
-        }
+    override suspend fun getCharacterList(game: Game): Result<List<Character>, BotError> {
         val wiki = wikiClientMap[game]
-            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
+            ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
         val result = getCharactersUseCase.invoke(wiki)
         return result
     }
 
     override suspend fun getMoveList(
-        command: Command,
+        game: Game,
         characterId: String,
     ): Result<List<Move>, BotError> {
-        if (command == Command.Fd) {
-            val moves = firstMatchingWikiMoves(wikiClientMap, getMovesUseCase, characterId)
-            return moves
-        }
-        val game = when (command) {
-            Command.FdGG, Command.InvGG -> Game.GGST
-            Command.FdDB -> Game.DBFZ
-            Command.FdBB, Command.InvBB -> Game.BBCF
-            Command.FdGB -> Game.GBVSR
-            Command.FdMT -> Game.MTFS
-            else -> return Result.Error(BotError.BotLogicError(command.name, ""))
-        }
         val wiki = wikiClientMap[game]
-            ?: return Result.Error(BotError.BotLogicError(command.name, ""))
-        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki).map { (_, moveList) -> moveList }
+            ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
+        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
+            .map { (_, moveList) -> moveList }
         return result
     }
 
