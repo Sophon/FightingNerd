@@ -4,6 +4,7 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import io.github.sophon.core.architecture.ExcludeFromCoverage
+import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +43,7 @@ internal class HandleQueryUseCase(
         val commandString = interaction.command.rootName
             .lowercase()
         val query = interaction.command.strings.values
-            .joinToString(" ")
+            .joinToString(" ") { it.substringBefore(AUTOCOMPLETE_VALUE_DELIMITER) }
         val source = Source(
             username = interaction.user.username,
             id = interaction.user.data.id.toString(),

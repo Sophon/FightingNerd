@@ -9,11 +9,13 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
+import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.feat.bot.model.AutocompleteChoice
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
+import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 
 @ExcludeFromCoverage("UI")
@@ -87,28 +89,31 @@ internal class HandleAutoCompleteEventUseCase(
     }
 
     private suspend fun globalFdCharacterChoices(query: String): List<AutocompleteChoice> {
-        val gameCharacterList = mutableListOf<Pair<Game, Character>>()
+        val gameCharacterList = mutableListOf<Triple<DiscordRegisteredFeature, Game, Character>>()
         for (feature in featureList) {
             val wikiFeature = (feature as? GameWikiDiscordFeature) ?: continue
             val result = wikiFeature.getAllCharacters()
             if (result is Result.Success) {
-                gameCharacterList += result.data
+                val pair = result.data.map { (game, character) ->
+                    Triple(feature, game, character)
+                }
+                gameCharacterList += pair
             }
         }
         val filtered = if (query.isEmpty()) {
             gameCharacterList
         } else {
-            gameCharacterList.filter { (_, character) ->
+            gameCharacterList.filter { (_, _, character) ->
                 character.displayName.contains(query, ignoreCase = true)
-                        || character.aliasList.contains(query)
+                        || character.aliasList.any { it.equals(query, ignoreCase = true) }
             }
         }
         val choices = filtered
             .take(COMMAND_MAX_SUGGESTIONS)
-            .map { (game, character) ->
+            .map { (feature, game, character) ->
                 AutocompleteChoice(
-                    name = "${character.displayName} (${game.name})",
-                    value = character.id,
+                    name = "${character.displayName} (${game.displayName})",
+                    value = "${character.id}$AUTOCOMPLETE_VALUE_DELIMITER${feature.featureInfo.name}",
                 )
             }
         return choices
@@ -121,6 +126,19 @@ internal class HandleAutoCompleteEventUseCase(
         val characterValue = Command.Fd.readSibling(interaction, AutoCompleteType.Character)
         if (characterValue.isBlank()) return emptyList()
 
+        val parts = characterValue.split(AUTOCOMPLETE_VALUE_DELIMITER, limit = 2)
+        if (parts.size == 2) {
+            val (characterId, featureTag) = parts
+            val feature = featureList.firstOrNull { it.featureInfo.name == featureTag }
+                ?: return emptyList()
+            val wikiFeature = (feature as? GameWikiDiscordFeature) ?: return emptyList()
+            val result = wikiFeature.getMoveList(Command.Fd, characterId)
+            val moves = (result as? Result.Success)?.data.orEmpty()
+            val filtered = moves.filterMovesByQuery(query)
+            return filtered
+        }
+
+        // fallback for manually-typed character values without the encoded feature tag
         for (feature in featureList) {
             val wikiFeature = (feature as? GameWikiDiscordFeature) ?: continue
             val result = wikiFeature.getMoveList(Command.Fd, characterValue)
@@ -187,7 +205,7 @@ internal class HandleAutoCompleteEventUseCase(
 
         val matchingCharList = this.filter { character ->
             character.displayName.contains(query, ignoreCase = true)
-                    || character.aliasList.contains(query)
+                    || character.aliasList.any { it.equals(query, ignoreCase = true) }
         }
         val choiceList = matchingCharList
             .map { it.toChoice() }
@@ -218,7 +236,11 @@ internal class HandleAutoCompleteEventUseCase(
         return value
     }
 
-    private fun Character.toChoice(): AutocompleteChoice = AutocompleteChoice(name = displayName, value = id)
+    private fun Character.toChoice(): AutocompleteChoice {
+        return AutocompleteChoice(name = displayName, value = id)
+    }
 
-    private fun Move.toChoice(): AutocompleteChoice = AutocompleteChoice(name = input, value = input)
+    private fun Move.toChoice(): AutocompleteChoice {
+        return AutocompleteChoice(name = input, value = input)
+    }
 }
