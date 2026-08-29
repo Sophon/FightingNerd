@@ -35,7 +35,7 @@ internal class HandleAutoCompleteEventUseCase(
 
         val suggestions = when (command) {
             Command.Fd -> {
-                routeGlobalFd(
+                routeFrameData(
                     argumentName = focusedArgumentName,
                     query = query.trim(),
                     interaction = interaction,
@@ -53,12 +53,13 @@ internal class HandleAutoCompleteEventUseCase(
 
             else -> emptyList()
         }
+
         interaction.suggestString {
             suggestions.forEach { choice(it.name, it.value) }
         }
     }
 
-    private suspend fun routeGlobalFd(
+    private suspend fun routeFrameData(
         argumentName: String,
         query: String,
         interaction: AutoCompleteInteraction,
@@ -70,7 +71,7 @@ internal class HandleAutoCompleteEventUseCase(
 
         val choices = when (focusedType) {
             AutoCompleteType.Character -> characterChoices(query)
-            AutoCompleteType.Move -> globalFdMoveChoices(query, interaction)
+            AutoCompleteType.Move -> moveChoices(query, interaction)
             AutoCompleteType.Game,
             AutoCompleteType.None -> emptyList()
         }
@@ -139,7 +140,16 @@ internal class HandleAutoCompleteEventUseCase(
         return choices
     }
 
-    private suspend fun globalFdMoveChoices(
+    private fun encodeCharacterValue(
+        characterId: String,
+        featureName: String,
+        game: Game,
+    ): String {
+        val encoded = "$characterId$AUTOCOMPLETE_VALUE_DELIMITER$featureName$AUTOCOMPLETE_VALUE_DELIMITER${game.name}"
+        return encoded
+    }
+
+    private suspend fun moveChoices(
         query: String,
         interaction: AutoCompleteInteraction,
     ): List<AutocompleteChoice> {
@@ -156,42 +166,6 @@ internal class HandleAutoCompleteEventUseCase(
         return filtered
     }
 
-    private fun List<Move>.filterMovesByQuery(query: String): List<AutocompleteChoice> {
-        if (query.isEmpty()) {
-            val choices = this
-                .take(COMMAND_MAX_SUGGESTIONS)
-                .map { it.toChoice() }
-            return choices
-        }
-
-        val matchingMoveList = this.filterMatching(query)
-        val choiceList = matchingMoveList
-            .map { it.toChoice() }
-            .take(COMMAND_MAX_SUGGESTIONS)
-        return choiceList
-    }
-
-    private fun Command.readSibling(
-        interaction: AutoCompleteInteraction,
-        type: AutoCompleteType,
-    ): String {
-        val siblingArg = argumentList.firstOrNull { it.autoCompleteType == type }
-        val value = siblingArg?.let { interaction.command.strings[it.name] }.orEmpty()
-        return value
-    }
-
-    private fun Move.toChoice(): AutocompleteChoice {
-        return AutocompleteChoice(name = input, value = input)
-    }
-
-    private fun encodeCharacterValue(
-        characterId: String,
-        featureName: String,
-        game: Game,
-    ): String {
-        val encoded = "$characterId$AUTOCOMPLETE_VALUE_DELIMITER$featureName$AUTOCOMPLETE_VALUE_DELIMITER${game.name}"
-        return encoded
-    }
 
     private fun gameChoices(query: String): List<AutocompleteChoice> {
         val games = featureList
@@ -224,9 +198,37 @@ internal class HandleAutoCompleteEventUseCase(
         return decoded
     }
 
-    private data class DecodedCharacterValue(
-        val characterId: String,
-        val featureName: String,
-        val game: Game,
-    )
+    private fun List<Move>.filterMovesByQuery(query: String): List<AutocompleteChoice> {
+        if (query.isEmpty()) {
+            val choices = this
+                .take(COMMAND_MAX_SUGGESTIONS)
+                .map { it.toChoice() }
+            return choices
+        }
+
+        val matchingMoveList = this.filterMatching(query)
+        val choiceList = matchingMoveList
+            .map { it.toChoice() }
+            .take(COMMAND_MAX_SUGGESTIONS)
+        return choiceList
+    }
+
+    private fun Command.readSibling(
+        interaction: AutoCompleteInteraction,
+        type: AutoCompleteType,
+    ): String {
+        val siblingArg = argumentList.firstOrNull { it.autoCompleteType == type }
+        val value = siblingArg?.let { interaction.command.strings[it.name] }.orEmpty()
+        return value
+    }
+
+    private fun Move.toChoice(): AutocompleteChoice {
+        return AutocompleteChoice(name = input, value = input)
+    }
 }
+
+private data class DecodedCharacterValue(
+    val characterId: String,
+    val featureName: String,
+    val game: Game,
+)
