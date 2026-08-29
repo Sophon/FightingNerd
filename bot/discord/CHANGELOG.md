@@ -1,7 +1,10 @@
 # BOT CHANGELOG
 
-## [v15.5.1] - TODO
+## [v16.0.0] - TODO
 - `Wavu` - stances are uppercase
+- all commands are now global
+  - removed game-specific `FD`, `Char`
+  - removed `Inv`
 
 ## [v15.5.0] - 2026-08-28
 - tagging attempts to extract command from query on error
