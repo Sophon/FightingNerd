@@ -34,18 +34,6 @@ internal sealed class Command(
             )
         )
     )
-    object Alias : Command(
-        name = "Alias",
-        description = "Shows alias commands for supported games",
-        argumentList = listOf(
-            Argument(
-                name = "game",
-                description = "Game",
-                isRequired = false,
-                autoCompleteType = Argument.AutoCompleteType.Game,
-            ),
-        )
-    )
     //endregion
 
     //region Admin commands
@@ -114,17 +102,6 @@ internal sealed class Command(
         ),
     )
 
-    object Gl: Command(
-        name = "Gl",
-        description = "Fighting-game glossary",
-        argumentList = listOf(
-            Argument(
-                name = "term",
-                description = "Term",
-            ),
-        )
-    )
-
     object Char : Command(
         name = "Char",
         description = "Character data",
@@ -135,6 +112,43 @@ internal sealed class Command(
                 autoCompleteType = Argument.AutoCompleteType.Character,
             ),
         ),
+    )
+
+    object Alias : Command(
+        name = "Alias",
+        description = "Shows alias commands for supported games",
+        argumentList = listOf(
+            Argument(
+                name = "game",
+                description = "Game",
+                isRequired = false,
+                autoCompleteType = Argument.AutoCompleteType.Game,
+            ),
+        )
+    )
+
+    //TODO: implement when there's time
+//    object Invincible : Command(
+//        name = "Invincible",
+//        description = "Shows invincible moves",
+//        argumentList = listOf(
+//            Argument(
+//                name = "character",
+//                description = "Character name",
+//                autoCompleteType = Argument.AutoCompleteType.Character,
+//            ),
+//        ),
+//    )
+
+    object Gl: Command(
+        name = "Gl",
+        description = "Fighting-game glossary",
+        argumentList = listOf(
+            Argument(
+                name = "term",
+                description = "Term",
+            ),
+        )
     )
 
     //region Wavu

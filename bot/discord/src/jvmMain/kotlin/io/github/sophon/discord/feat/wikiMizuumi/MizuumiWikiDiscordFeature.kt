@@ -37,7 +37,6 @@ internal class MizuumiWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
-    private val createMizuumiInvEmbedUseCase: CreateMizuumiInvEmbedUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val fetchCharacterInWikisUseCase: FetchCharacterInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
@@ -113,34 +112,6 @@ internal class MizuumiWikiDiscordFeature(
                     )
                 }
             }
-
-//            Command.InvMB -> {
-//                withWiki(
-//                    wikis = wikiClientMap,
-//                    game = Game.MBTL,
-//                    query = formattedQuery,
-//                ) { game, wiki, query ->
-//                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
-//                }
-//            }
-//            Command.InvUNI -> {
-//                withWiki(
-//                    wikis = wikiClientMap,
-//                    game = Game.Uni2,
-//                    query = formattedQuery,
-//                ) { game, wiki, query ->
-//                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
-//                }
-//            }
-//            Command.InvVS -> {
-//                withWiki(
-//                    wikis = wikiClientMap,
-//                    game = Game.VSAV,
-//                    query = formattedQuery,
-//                ) { game, wiki, query ->
-//                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
-//                }
-//            }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -220,8 +191,5 @@ internal class MizuumiWikiDiscordFeature(
 
     private companion object {
         const val TAG = "MizuumiWikiDiscordFeature"
-        const val KEY_CHAR_NAME = "character"
-        const val KEY_MOVE = "move"
-        const val TEAL = 0x0007A9F5
     }
 }

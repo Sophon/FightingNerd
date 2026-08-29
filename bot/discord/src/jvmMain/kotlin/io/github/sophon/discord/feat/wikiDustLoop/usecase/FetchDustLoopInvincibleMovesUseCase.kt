@@ -1,4 +1,4 @@
-package io.github.sophon.discord.feat.wikiDustLoop
+package io.github.sophon.discord.feat.wikiDustLoop.usecase
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game

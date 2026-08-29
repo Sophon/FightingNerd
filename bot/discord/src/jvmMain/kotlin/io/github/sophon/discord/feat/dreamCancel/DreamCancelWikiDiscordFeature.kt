@@ -154,6 +154,5 @@ internal class DreamCancelWikiDiscordFeature(
 
     private companion object {
         const val TAG = "DreamCancelWikiDiscordFeature"
-        const val BLUE = 0x009AB3F6
     }
 }

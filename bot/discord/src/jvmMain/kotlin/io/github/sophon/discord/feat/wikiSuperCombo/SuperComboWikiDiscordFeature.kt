@@ -200,7 +200,5 @@ internal class SuperComboWikiDiscordFeature(
 
     private companion object {
         const val TAG = "SuperComboWikiDiscordFeature"
-        const val KEY_CHAR_NAME = "character"
-        const val KEY_MOVE = "move"
     }
 }

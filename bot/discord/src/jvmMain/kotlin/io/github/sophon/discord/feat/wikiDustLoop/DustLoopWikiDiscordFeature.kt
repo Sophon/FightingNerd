@@ -26,6 +26,7 @@ import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
+import io.github.sophon.discord.feat.wikiDustLoop.usecase.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.util.aggregateCharacters
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
@@ -120,19 +121,6 @@ internal class DustLoopWikiDiscordFeature(
                 }
             }
 
-//            Command.InvGG -> withWiki(
-//                wikis = wikiClientMap,
-//                game = Game.GGST,
-//                query = formattedQuery,
-//                action = ::searchInvincible,
-//            )
-//            Command.InvBB -> withWiki(
-//                wikis = wikiClientMap,
-//                game = Game.BBCF,
-//                query = formattedQuery,
-//                action = ::searchInvincible,
-//            )
-
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
 
@@ -198,29 +186,8 @@ internal class DustLoopWikiDiscordFeature(
         return result
     }
 
-    private suspend fun searchInvincible(
-        game: Game,
-        wiki: WikiClient,
-        charName: String,
-    ): Result<BotOutput, BotError> {
-        return fetchDustLoopInvincibleMovesUseCase.invoke(game, wiki, charName)
-            .map { (character, moveList) ->
-                BotOutput(
-                    primaryEmbedBuilder = dustLoopMoveListEmbedBuilder(
-                        charName = character.displayName,
-                        category = "invincible",
-                        moveList = moveList,
-                        featureInfo = featureInfo,
-                    ),
-                )
-            }
-    }
-
 
     private companion object {
         const val TAG = "DustLoopWikiDiscordFeature"
-        const val KEY_CHAR_NAME = "character"
-        const val KEY_MOVE = "move"
-        const val RED = 0x00950117
     }
 }

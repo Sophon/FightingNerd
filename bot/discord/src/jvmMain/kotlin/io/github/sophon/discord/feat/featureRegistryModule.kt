@@ -64,7 +64,7 @@ import io.github.sophon.discord.feat.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.feat.wikiDragDown.DragDownWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.DustLoopWikiDiscordFeature
-import io.github.sophon.discord.feat.wikiDustLoop.FetchDustLoopInvincibleMovesUseCase
+import io.github.sophon.discord.feat.wikiDustLoop.usecase.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.feat.wikiMizuumi.CreateMizuumiInvEmbedUseCase
