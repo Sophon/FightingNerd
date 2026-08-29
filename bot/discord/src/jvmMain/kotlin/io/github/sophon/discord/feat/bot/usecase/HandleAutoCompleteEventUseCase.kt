@@ -60,6 +60,7 @@ internal class HandleAutoCompleteEventUseCase(
         val choices = when (focusedType) {
             AutoCompleteType.Character -> globalFdCharacterChoices(query)
             AutoCompleteType.Move -> globalFdMoveChoices(query, interaction)
+            AutoCompleteType.Game -> emptyList() //TODO: get all the games
             AutoCompleteType.None -> emptyList()
         }
         return choices

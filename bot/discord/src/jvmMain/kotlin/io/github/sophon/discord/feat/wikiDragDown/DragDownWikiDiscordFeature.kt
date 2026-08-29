@@ -50,10 +50,7 @@ internal class DragDownWikiDiscordFeature(
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
     override val featureInfo: FeatureInfo = dragDownFeatureInfo.featureInfo
     override val defaultCommand: Command = Command.Fd
-    override val otherCommands: List<Command> = listOf(
-        Command.CharROA,
-        Command.SpecialROA,
-    )
+    override val otherCommands: List<Command> = listOf(Command.SpecialROA)
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
 
@@ -97,14 +94,6 @@ internal class DragDownWikiDiscordFeature(
                 }
             }
 
-            Command.CharROA -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.ROA2,
-                    query = formattedQuery,
-                    action = { _, wiki, query -> searchCharacter(wiki, query)},
-                )
-            }
             Command.SpecialROA -> {
                 withWiki(
                     wikis = wikiClientMap,

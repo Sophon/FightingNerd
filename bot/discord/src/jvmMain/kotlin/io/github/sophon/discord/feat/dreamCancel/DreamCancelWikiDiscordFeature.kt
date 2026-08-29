@@ -16,7 +16,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
-import io.github.sophon.discord.feat.core.ui.aliasEmbed
+import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
@@ -38,14 +38,14 @@ internal class DreamCancelWikiDiscordFeature(
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val getMovesUseCase: GetMovesUseCase,
+    private val createAliasOutputUseCase: CreateAliasOutputUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
     override val featureInfo: FeatureInfo = dreamCancelFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        Command.AliasKOF,
-        Command.AliasCOTW,
+        Command.Alias,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -88,23 +88,9 @@ internal class DreamCancelWikiDiscordFeature(
                     )
                 }
             }
-            Command.AliasKOF -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.KoFXV,
-                    query = formattedQuery,
-                ) { _, wiki, _ ->
-                    getCharacterAliases(wiki)
-                }
-            }
-            Command.AliasCOTW -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.COTW,
-                    query = formattedQuery,
-                ) { _, wiki, _ ->
-                    getCharacterAliases(wiki)
-                }
+
+            Command.Alias -> {
+                createAliasOutputUseCase.invoke(gameId = query)
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
@@ -163,20 +149,6 @@ internal class DreamCancelWikiDiscordFeature(
                     }
                 )
             }
-    }
-
-    private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        val result = getCharactersUseCase.invoke(wiki)
-            .map { characterList ->
-                BotOutput(
-                    primaryEmbedBuilder = aliasEmbed(
-                        characterList = characterList,
-                        featureInfo = featureInfo,
-                        colorCode = BLUE,
-                    )
-                )
-            }
-        return result
     }
 
 

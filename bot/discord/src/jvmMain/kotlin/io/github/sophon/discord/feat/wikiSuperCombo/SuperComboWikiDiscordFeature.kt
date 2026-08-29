@@ -15,6 +15,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
+import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
@@ -38,15 +39,14 @@ internal class SuperComboWikiDiscordFeature(
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val getMovesUseCase: GetMovesUseCase,
+    private val createAliasOutputUseCase: CreateAliasOutputUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
     override val featureInfo = superComboFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        Command.CharSF,
-        Command.CharMK,
-        Command.CharAV,
+        Command.Alias,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -89,28 +89,18 @@ internal class SuperComboWikiDiscordFeature(
                 }
             }
 
-            Command.CharSF -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.StreetFighter6,
-                    query = formattedQuery,
-                ) { _, wiki, query -> searchCharacter(wiki, query) }
+            Command.Alias -> {
+                createAliasOutputUseCase.invoke(gameId = query)
             }
 
-            Command.CharMK -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.MK1,
-                    query = formattedQuery,
-                ) { _, wiki, query -> searchCharacter(wiki, query) }
-            }
+            Command.Char -> {
+//                withWiki(
+//                    wikis = wikiClientMap,
+//                    game = game,
+//                    query = formattedQuery,
+//                ) { _, wiki, query -> searchCharacter(wiki, query) }
 
-            Command.CharAV -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.AVL,
-                    query = formattedQuery,
-                ) { _, wiki, query -> searchCharacter(wiki, query) }
+                TODO()
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))

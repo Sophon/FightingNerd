@@ -15,7 +15,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
-import io.github.sophon.discord.feat.core.ui.aliasEmbed
+import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
@@ -40,18 +40,14 @@ internal class MizuumiWikiDiscordFeature(
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val getMovesUseCase: GetMovesUseCase,
+    private val createAliasOutputUseCase: CreateAliasOutputUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
     override val featureInfo = mizuumiFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        Command.AliasMB,
-        Command.InvMB,
-        Command.CharUNI,
-        Command.InvUNI,
-        Command.InvVS,
-        Command.AliasVS,
+        Command.Alias,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -94,62 +90,49 @@ internal class MizuumiWikiDiscordFeature(
                 }
             }
 
-            Command.AliasMB -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.MBTL,
-                    query = formattedQuery,
-                ) { _, wiki, _ ->
-                    getCharacterAliases(wiki)
-                }
-            }
-            Command.InvMB -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.MBTL,
-                    query = formattedQuery,
-                ) { game, wiki, query ->
-                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
-                }
+            Command.Alias -> {
+                createAliasOutputUseCase.invoke(gameId = query)
             }
 
-            Command.CharUNI -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.Uni2,
-                    query = formattedQuery,
-                ) { _, wiki, query ->
-                    searchCharacter(wiki, query)
-                }
-            }
-            Command.InvUNI -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.Uni2,
-                    query = formattedQuery,
-                ) { game, wiki, query ->
-                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
-                }
+            Command.Char -> {
+//                withWiki(
+//                    wikis = wikiClientMap,
+//                    game = game,
+//                    query = formattedQuery,
+//                ) { _, wiki, query ->
+//                    searchCharacter(wiki, query)
+//                }
+
+                TODO()
             }
 
-            Command.InvVS -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.VSAV,
-                    query = formattedQuery,
-                ) { game, wiki, query ->
-                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
-                }
-            }
-            Command.AliasVS -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.VSAV,
-                    query = formattedQuery,
-                ) { _, wiki, _ ->
-                    getCharacterAliases(wiki)
-                }
-            }
+//            Command.InvMB -> {
+//                withWiki(
+//                    wikis = wikiClientMap,
+//                    game = Game.MBTL,
+//                    query = formattedQuery,
+//                ) { game, wiki, query ->
+//                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+//                }
+//            }
+//            Command.InvUNI -> {
+//                withWiki(
+//                    wikis = wikiClientMap,
+//                    game = Game.Uni2,
+//                    query = formattedQuery,
+//                ) { game, wiki, query ->
+//                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+//                }
+//            }
+//            Command.InvVS -> {
+//                withWiki(
+//                    wikis = wikiClientMap,
+//                    game = Game.VSAV,
+//                    query = formattedQuery,
+//                ) { game, wiki, query ->
+//                    createMizuumiInvEmbedUseCase.invoke(game, wiki, featureInfo, query)
+//                }
+//            }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -224,22 +207,6 @@ internal class MizuumiWikiDiscordFeature(
                     )
                 )
             }
-    }
-
-    private suspend fun getCharacterAliases(
-        wiki: WikiClient,
-    ): Result<BotOutput, BotError> {
-        val result = getCharactersUseCase.invoke(wiki)
-            .map { characterList ->
-                BotOutput(
-                    primaryEmbedBuilder = aliasEmbed(
-                        characterList = characterList,
-                        featureInfo = featureInfo,
-                        colorCode = TEAL,
-                    )
-                )
-            }
-        return result
     }
 
 

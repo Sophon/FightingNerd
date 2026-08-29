@@ -10,7 +10,7 @@ import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
-import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.feat.config.FeatureRegistry
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
