@@ -39,8 +39,8 @@ internal sealed class Command(
         description = "Shows alias commands for supported games",
         argumentList = listOf(
             Argument(
-                name = "alias",
-                description = "Character aliases",
+                name = "game",
+                description = "Game",
                 isRequired = false,
                 autoCompleteType = Argument.AutoCompleteType.Game,
             ),
@@ -267,6 +267,10 @@ internal sealed class Command(
         val entries: List<Command> by lazy {
             Command::class.sealedSubclasses
                 .mapNotNull { it.objectInstance }
+        }
+
+        fun fromId(id: String): Command? {
+            return entries.find { it.name.equals(id, ignoreCase = true) }
         }
     }
 }

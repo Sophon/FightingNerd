@@ -19,6 +19,7 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
+import io.github.sophon.discord.feat.core.usecase.FetchCharacterInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
@@ -43,6 +44,7 @@ internal class DragDownWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val fetchCharacterInWikisUseCase: FetchCharacterInWikisUseCase,
     private val getMovesUseCase: GetMovesUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val scheduler: Scheduler,
@@ -50,7 +52,10 @@ internal class DragDownWikiDiscordFeature(
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
     override val featureInfo: FeatureInfo = dragDownFeatureInfo.featureInfo
     override val defaultCommand: Command = Command.Fd
-    override val otherCommands: List<Command> = listOf(Command.SpecialROA)
+    override val otherCommands: List<Command> = listOf(
+        Command.Char,
+        Command.SpecialROA,
+    )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
 
@@ -90,6 +95,23 @@ internal class DragDownWikiDiscordFeature(
                         wikis = wikiClientMap,
                         query = formattedQuery,
                         searchFun = { _, wiki, query -> searchMove(wiki, query) },
+                    )
+                }
+            }
+
+            Command.Char -> {
+                if (game == null) {
+                    fetchCharacterInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = { _, wiki, query -> searchCharacter(wiki, query)},
+                    )
+                } else {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                        action = { _, wiki, query -> searchCharacter(wiki, query) },
                     )
                 }
             }

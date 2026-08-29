@@ -44,6 +44,7 @@ import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.TrackerImpl
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
+import io.github.sophon.discord.feat.core.usecase.FetchCharacterInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
@@ -134,6 +135,7 @@ internal val featureRegistryModule = module {
     singleOf(::GetStancesUseCase)
     singleOf(::GetCharactersUseCase)
     singleOf(::FetchMoveInWikisUseCase)
+    singleOf(::FetchCharacterInWikisUseCase)
 
     singleOf(::Scheduler)
     //endregion

@@ -16,6 +16,7 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
+import io.github.sophon.discord.feat.core.usecase.FetchCharacterInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
@@ -37,6 +38,7 @@ internal class SuperComboWikiDiscordFeature(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val fetchCharacterInWikisUseCase: FetchCharacterInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val getMovesUseCase: GetMovesUseCase,
     private val createAliasOutputUseCase: CreateAliasOutputUseCase,
@@ -47,6 +49,7 @@ internal class SuperComboWikiDiscordFeature(
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
         Command.Alias,
+        Command.Char,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -94,13 +97,20 @@ internal class SuperComboWikiDiscordFeature(
             }
 
             Command.Char -> {
-//                withWiki(
-//                    wikis = wikiClientMap,
-//                    game = game,
-//                    query = formattedQuery,
-//                ) { _, wiki, query -> searchCharacter(wiki, query) }
-
-                TODO()
+                if (game == null) {
+                    fetchCharacterInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = { _, wiki, query -> searchCharacter(wiki, query) },
+                    )
+                } else {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                        action = { _, wiki, query -> searchCharacter(wiki, query) },
+                    )
+                }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))

@@ -17,6 +17,7 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
+import io.github.sophon.discord.feat.core.usecase.FetchCharacterInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
@@ -43,6 +44,7 @@ internal class DustLoopWikiDiscordFeature(
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
     private val fetchDustLoopInvincibleMovesUseCase: FetchDustLoopInvincibleMovesUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val fetchCharacterInWikisUseCase: FetchCharacterInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val getMovesUseCase: GetMovesUseCase,
     private val createAliasOutputUseCase: CreateAliasOutputUseCase,
@@ -53,6 +55,7 @@ internal class DustLoopWikiDiscordFeature(
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
         Command.Alias,
+        Command.Char,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -80,18 +83,18 @@ internal class DustLoopWikiDiscordFeature(
 
         val result = when (command) {
             Command.Fd -> {
-                if (game != null) {
+                if (game == null) {
+                    fetchMoveInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = ::searchMove,
+                    )
+                } else {
                     withWiki(
                         wikis = wikiClientMap,
                         game = game,
                         query = formattedQuery,
                         action = ::searchMove,
-                    )
-                } else {
-                    fetchMoveInWikisUseCase.invoke(
-                        wikis = wikiClientMap,
-                        query = formattedQuery,
-                        searchFun = ::searchMove,
                     )
                 }
             }
@@ -101,14 +104,20 @@ internal class DustLoopWikiDiscordFeature(
             }
 
             Command.Char -> {
-//                withWiki(
-//                    wikis = wikiClientMap,
-//                    game = game,
-//                    query = formattedQuery,
-//                    action = ::searchCharacter,
-//                )
-
-                TODO()
+                if (game == null) {
+                    fetchCharacterInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = ::searchCharacter,
+                    )
+                } else {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                        action = ::searchCharacter,
+                    )
+                }
             }
 
 //            Command.InvGG -> withWiki(
