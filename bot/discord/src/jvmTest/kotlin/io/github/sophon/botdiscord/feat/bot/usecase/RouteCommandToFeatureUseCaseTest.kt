@@ -8,6 +8,7 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
@@ -49,6 +50,7 @@ class RouteCommandToFeatureUseCaseTest {
             command: Command,
             query: String,
             origin: Source,
+            game: Game?,
         ): Result<BotOutput, BotError> {
             receivedQuery = query
             receivedCommand = command
@@ -99,6 +101,7 @@ class RouteCommandToFeatureUseCaseTest {
             command: Command,
             query: String,
             origin: Source,
+            game: Game?,
         ): Result<BotOutput, BotError> {
             val glossaryTerms = setOf(
                 "frame",
@@ -131,7 +134,7 @@ class RouteCommandToFeatureUseCaseTest {
             version = "1.0.0"
         )
         override val defaultCommand = Command.Fd
-        override val otherCommands = listOf(Command.CharSF)
+        override val otherCommands = listOf(Command.Char)
 
         override suspend fun start() {}
 
@@ -139,6 +142,7 @@ class RouteCommandToFeatureUseCaseTest {
             command: Command,
             query: String,
             origin: Source,
+            game: Game?,
         ): Result<BotOutput, BotError> {
             val sfChars = setOf(
                 "lily",
@@ -160,7 +164,7 @@ class RouteCommandToFeatureUseCaseTest {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "SuperCombo FD: $query" }))
                     }
                 }
-                Command.CharSF -> {
+                Command.Char -> {
                     if (query.lowercase() in sfChars) {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "SuperCombo CHARSF6: $query" }))
                     } else {
@@ -268,7 +272,7 @@ class RouteCommandToFeatureUseCaseTest {
     @Test
     fun `invoke with CHARSF6 explicit command and valid SF character returns success`() = runTest {
         // given
-        val message = "@bot charsf ken"
+        val message = "@bot char ken"
         // when
         val result = useCase.invoke(Source("", "", ""), message)
         // then

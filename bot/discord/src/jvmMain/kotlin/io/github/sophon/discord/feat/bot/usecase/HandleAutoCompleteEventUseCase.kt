@@ -4,16 +4,17 @@ import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.architecture.map
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
+import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.feat.bot.model.AutocompleteChoice
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
+import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 
 @ExcludeFromCoverage("UI")
@@ -25,50 +26,40 @@ internal class HandleAutoCompleteEventUseCase(
     }
 
     suspend fun invoke(interaction: AutoCompleteInteraction) {
-        val commandString = interaction.command.rootName.lowercase()
+        val command = Command.fromId(interaction.command.rootName)
         val focusedArgumentName = interaction.command.options.entries
             .firstOrNull { it.value.focused }
             ?.key
             .orEmpty()
         val query = interaction.focusedOption.value
 
-        val suggestions = routeToFeature(
-            commandString = commandString,
-            argumentName = focusedArgumentName,
-            query = query,
-            interaction = interaction,
-        )
+        val suggestions = when (command) {
+            Command.Fd -> {
+                routeFrameData(
+                    argumentName = focusedArgumentName,
+                    query = query.trim(),
+                    interaction = interaction,
+                )
+            }
+            Command.Alias -> {
+                routeAlias(
+                    argumentName = focusedArgumentName,
+                    query = query.trim(),
+                )
+            }
+            Command.Char -> {
+                characterChoices(query = query, requireData = true)
+            }
+
+            else -> emptyList()
+        }
+
         interaction.suggestString {
             suggestions.forEach { choice(it.name, it.value) }
         }
     }
 
-    private suspend fun routeToFeature(
-        commandString: String,
-        argumentName: String,
-        query: String,
-        interaction: AutoCompleteInteraction,
-    ): List<AutocompleteChoice> {
-        val trimmedQuery = query.trim()
-
-        val choices = if (commandString.equals(Command.Fd.name, ignoreCase = true)) {
-            routeGlobalFd(
-                argumentName = argumentName,
-                query = trimmedQuery,
-                interaction = interaction,
-            )
-        } else {
-            routeGameSpecificFd(
-                commandString = commandString,
-                argumentName = argumentName,
-                query = trimmedQuery,
-                interaction = interaction,
-            )
-        }
-        return choices
-    }
-
-    private suspend fun routeGlobalFd(
+    private suspend fun routeFrameData(
         argumentName: String,
         query: String,
         interaction: AutoCompleteInteraction,
@@ -79,123 +70,142 @@ internal class HandleAutoCompleteEventUseCase(
             ?: return emptyList()
 
         val choices = when (focusedType) {
-            AutoCompleteType.Character -> globalFdCharacterChoices(query)
-            AutoCompleteType.Move -> globalFdMoveChoices(query, interaction)
+            AutoCompleteType.Character -> characterChoices(query)
+            AutoCompleteType.Move -> moveChoices(query, interaction)
+            AutoCompleteType.Game,
             AutoCompleteType.None -> emptyList()
         }
         return choices
     }
 
-    private suspend fun globalFdCharacterChoices(query: String): List<AutocompleteChoice> {
-        val gameCharacterList = mutableListOf<Pair<Game, Character>>()
+    private fun routeAlias(
+        argumentName: String,
+        query: String,
+    ): List<AutocompleteChoice> {
+        val focusedType = Command.Alias.argumentList
+            .firstOrNull { it.name.equals(argumentName, ignoreCase = true) }
+            ?.autoCompleteType
+            ?: return emptyList()
+
+        val choices = when (focusedType) {
+            AutoCompleteType.Game -> gameChoices(query)
+            AutoCompleteType.Character,
+            AutoCompleteType.Move,
+            AutoCompleteType.None -> emptyList()
+        }
+        return choices
+    }
+
+    private suspend fun characterChoices(
+        query: String,
+        requireData: Boolean = false,
+    ): List<AutocompleteChoice> {
+        val gameCharacterList = mutableListOf<Triple<GameWikiDiscordFeature, Game, Character>>()
         for (feature in featureList) {
             val wikiFeature = (feature as? GameWikiDiscordFeature) ?: continue
+
+            if (requireData && (feature as? DiscordRegisteredFeature)?.otherCommands?.contains(Command.Char) != true) {
+                //if we require char data, the game must include the Char command
+                continue
+            }
+
             val result = wikiFeature.getAllCharacters()
             if (result is Result.Success) {
-                gameCharacterList += result.data
+                val triples = result.data.map { (game, character) ->
+                    Triple(wikiFeature, game, character)
+                }
+                gameCharacterList += triples
             }
         }
         val filtered = if (query.isEmpty()) {
             gameCharacterList
         } else {
-            gameCharacterList.filter { (_, character) ->
+            gameCharacterList.filter { (_, _, character) ->
                 character.displayName.contains(query, ignoreCase = true)
-                        || character.aliasList.contains(query)
+                        || character.aliasList.any { it.equals(query, ignoreCase = true) }
             }
         }
         val choices = filtered
             .take(COMMAND_MAX_SUGGESTIONS)
-            .map { (game, character) ->
+            .map { (feature, game, character) ->
                 AutocompleteChoice(
-                    name = "${character.displayName} (${game.name})",
-                    value = character.id,
+                    name = "${character.displayName} (${game.displayName})",
+                    value = encodeCharacterValue(
+                        characterId = character.id,
+                        featureName = (feature as DiscordRegisteredFeature).featureInfo.name,
+                        game = game,
+                    ),
                 )
             }
         return choices
     }
 
-    private suspend fun globalFdMoveChoices(
+    private fun encodeCharacterValue(
+        characterId: String,
+        featureName: String,
+        game: Game,
+    ): String {
+        val encoded = "$characterId$AUTOCOMPLETE_VALUE_DELIMITER$featureName$AUTOCOMPLETE_VALUE_DELIMITER${game.name}"
+        return encoded
+    }
+
+    private suspend fun moveChoices(
         query: String,
         interaction: AutoCompleteInteraction,
     ): List<AutocompleteChoice> {
         val characterValue = Command.Fd.readSibling(interaction, AutoCompleteType.Character)
         if (characterValue.isBlank()) return emptyList()
 
-        for (feature in featureList) {
-            val wikiFeature = (feature as? GameWikiDiscordFeature) ?: continue
-            val result = wikiFeature.getMoveList(Command.Fd, characterValue)
-            if (result is Result.Success && result.data.isNotEmpty()) {
-                val filtered = result.data.filterMovesByQuery(query)
-                return filtered
-            }
-        }
-        return emptyList()
+        val decoded = decodeCharacterValue(characterValue) ?: return emptyList()
+        val wikiFeature = featureList
+            .firstOrNull { it.featureInfo.name == decoded.featureName } as? GameWikiDiscordFeature
+            ?: return emptyList()
+        val result = wikiFeature.getMoveList(decoded.game, decoded.characterId)
+        val moves = (result as? Result.Success)?.data.orEmpty()
+        val filtered = moves.filterMovesByQuery(query)
+        return filtered
     }
 
-    private suspend fun routeGameSpecificFd(
-        commandString: String,
-        argumentName: String,
-        query: String,
-        interaction: AutoCompleteInteraction,
-    ): List<AutocompleteChoice> {
-        for (feature in featureList) {
-            val wikiFeature = (feature as? GameWikiDiscordFeature) ?: continue
 
-            val command = feature.otherCommands
-                .firstOrNull { it.name.equals(commandString, ignoreCase = true) }
-                ?: (feature.defaultCommand?.takeIf { it.name.equals(commandString, ignoreCase = true) })
-                ?: continue
-
-            val focusedArg = command.argumentList
-                .firstOrNull { it.name.equals(argumentName, ignoreCase = true) }
-                ?: continue
-
-            when (focusedArg.autoCompleteType) {
-                AutoCompleteType.Character -> {
-                    wikiFeature.getCharacterList(command).map { characterList ->
-                        val filtered = if (query.isEmpty()) {
-                            characterList.map { it.toChoice() }
-                        } else {
-                            characterList.filterByQuery(query)
-                        }
-                        return filtered.take(COMMAND_MAX_SUGGESTIONS)
-                    }
-                }
-                AutoCompleteType.Move -> {
-                    val characterValue = command.readSibling(interaction, AutoCompleteType.Character)
-                    if (characterValue.isBlank()) return emptyList()
-                    val result = wikiFeature.getMoveList(command, characterValue)
-                    if (result is Result.Success) {
-                        val filtered = result.data.filterMovesByQuery(query)
-                        return filtered
-                    }
-                }
-                AutoCompleteType.None -> return emptyList()
-            }
+    private fun gameChoices(query: String): List<AutocompleteChoice> {
+        val games = featureList
+            .filterIsInstance<GameWikiDiscordFeature>()
+            .flatMap { (it as DiscordRegisteredFeature).featureInfo.supportedGameSet }
+            .distinct()
+        val filtered = if (query.isEmpty()) {
+            games
+        } else {
+            games.filter { it.displayName.contains(query, ignoreCase = true) }
         }
-        return emptyList()
-    }
-
-    private fun List<Character>.filterByQuery(query: String): List<AutocompleteChoice> {
-        if (query.isEmpty()) {
-            return this
-                .takeIf { it.size <= COMMAND_MAX_SUGGESTIONS }
-                ?.map { it.toChoice() }
-                ?: emptyList()
-        }
-        val matchingCharList = this.filter { it.displayName.contains(query, ignoreCase = true) }
-        val choiceList = matchingCharList
-            .map { it.toChoice() }
+        val choices = filtered
             .take(COMMAND_MAX_SUGGESTIONS)
-        return choiceList
+            .map { game ->
+                AutocompleteChoice(name = game.displayName, value = game.name)
+            }
+        return choices
+    }
+
+    private fun decodeCharacterValue(value: String): DecodedCharacterValue? {
+        val parts = value.split(AUTOCOMPLETE_VALUE_DELIMITER, limit = 3)
+        if (parts.size != 3) return null
+        val (characterId, featureName, gameName) = parts
+        val game = Game.entries.firstOrNull { it.name == gameName } ?: return null
+        val decoded = DecodedCharacterValue(
+            characterId = characterId,
+            featureName = featureName,
+            game = game,
+        )
+        return decoded
     }
 
     private fun List<Move>.filterMovesByQuery(query: String): List<AutocompleteChoice> {
         if (query.isEmpty()) {
-            return this
+            val choices = this
                 .take(COMMAND_MAX_SUGGESTIONS)
                 .map { it.toChoice() }
+            return choices
         }
+
         val matchingMoveList = this.filterMatching(query)
         val choiceList = matchingMoveList
             .map { it.toChoice() }
@@ -212,7 +222,13 @@ internal class HandleAutoCompleteEventUseCase(
         return value
     }
 
-    private fun Character.toChoice(): AutocompleteChoice = AutocompleteChoice(name = displayName, value = id)
-
-    private fun Move.toChoice(): AutocompleteChoice = AutocompleteChoice(name = input, value = input)
+    private fun Move.toChoice(): AutocompleteChoice {
+        return AutocompleteChoice(name = input, value = input)
+    }
 }
+
+private data class DecodedCharacterValue(
+    val characterId: String,
+    val featureName: String,
+    val game: Game,
+)

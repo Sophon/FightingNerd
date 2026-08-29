@@ -1,4 +1,4 @@
-package io.github.sophon.discord.feat.bot.usecase
+package io.github.sophon.discord.feat.core.usecase
 
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.featureConfig.model.FeatureInfo

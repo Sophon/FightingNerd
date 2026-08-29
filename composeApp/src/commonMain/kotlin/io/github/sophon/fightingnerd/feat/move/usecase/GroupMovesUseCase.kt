@@ -1,8 +1,11 @@
 package io.github.sophon.fightingnerd.feat.move.usecase
 
+import io.github.sophon.core.wiki.model.Default
 import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Bookmark
+import io.github.sophon.wikiwavu.integration.model.T8Properties
+import io.github.sophon.wikiwavu.integration.model.TekkenGroups
 
 internal class GroupMovesUseCase {
     fun invoke(
@@ -13,6 +16,10 @@ internal class GroupMovesUseCase {
         val other = mutableListOf<Move>()
         val bookmarkList = mutableListOf<Bookmark>()
         var nextStartingIndex = 0
+        val groupList = combineWithStances(
+            moveList = moveList,
+            groupList = groupList,
+        )
 
         moveList.forEach { move ->
             val group = groupList.firstOrNull { group -> group.predicate(move) }
@@ -34,8 +41,31 @@ internal class GroupMovesUseCase {
                 nextStartingIndex += bucket.size
             }
         }
+
         orderedMoveList.addAll(other)
+        bookmarkList.add(Bookmark(Default.id, moveListIndex = nextStartingIndex))
 
         return orderedMoveList to bookmarkList
+    }
+
+    private fun combineWithStances(
+        moveList: List<Move>,
+        groupList: List<Group>,
+    ): List<Group> {
+        val stanceGroupList = moveList
+            .getStances()
+            .map { TekkenGroups.Stance(it) }
+
+        val groupListWithStances = groupList + stanceGroupList
+        return groupListWithStances
+    }
+
+    private fun List<Move>.getStances(): List<String> {
+        val stances = this
+            .mapNotNull {
+                (it.gameProperties as? T8Properties)?.stance?.uppercase()
+            }
+            .distinct()
+        return stances
     }
 }

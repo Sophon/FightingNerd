@@ -325,7 +325,7 @@ private fun String.getStance(): String? {
     val stance = take(3).takeIf {
         (length >= 4 && it.all { char -> char.isLetter() } && get(3) == '.' && it != "otg")
     }
-    return stance
+    return stance?.uppercase()
 }
 
 internal data class ParentalProperties(

@@ -206,7 +206,7 @@ class MoveRemoteMapperTest {
     fun `toDomain handles basic stance`() {
         //given
         val move = MoveSource.bad4
-        val expectedStance = "bad"
+        val expectedStance = "BAD"
 
         //when
         val result = move.toDomain(character, emptyMap())
@@ -559,7 +559,7 @@ class MoveRemoteMapperTest {
                 isHeat = false,
                 isPowerCrush = false,
                 isHoming = false,
-                stance = "bad",
+                stance = "BAD",
                 isLowCrush = true,
                 isHighCrush = false,
             )

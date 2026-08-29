@@ -1,6 +1,7 @@
 package io.github.sophon.discord.feat.bot.usecase
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.extractFirstWord
 import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.feat.config.BotFeatureRepo
@@ -49,11 +50,15 @@ internal class RouteCommandToFeatureUseCase(
         commandString: String,
         source: Source,
         query: String,
+        featureHint: String? = null,
+        game: Game? = null,
     ): Result<BotOutput, BotError> {
         val result = useExplicitCommands(
-            source,
-            commandString,
-            query,
+            source = source,
+            commandString = commandString,
+            query = query,
+            featureHint = featureHint,
+            game = game,
         )
         return result
     }
@@ -91,10 +96,18 @@ internal class RouteCommandToFeatureUseCase(
         source: Source,
         commandString: String,
         query: String,
+        featureHint: String? = null,
+        game: Game? = null,
     ): Result<BotOutput, BotError> {
         var result: Result<BotOutput, BotError> = Result.Error(BotError.InvalidQuery(query))
 
-        for (feature in featureList) {
+        val relevantFeatures = if (featureHint != null) {
+            featureList.filter { it.featureInfo.name == featureHint }
+        } else {
+            featureList
+        }
+
+        for (feature in relevantFeatures) {
             val explicitCommand = feature.otherCommands
                 .firstOrNull {
                     it.name.equals(commandString, ignoreCase = true)
@@ -113,6 +126,7 @@ internal class RouteCommandToFeatureUseCase(
                 command = commandToUse,
                 query = query,
                 origin = source,
+                game = game,
             )
 
             return when (result) {

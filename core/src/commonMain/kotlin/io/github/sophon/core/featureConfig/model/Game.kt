@@ -138,7 +138,7 @@ enum class Game(
 
     companion object {
         fun fromId(id: String): Game? {
-            return entries.find { it.id == id }
+            return entries.find { it.id.equals(id, ignoreCase = true) }
         }
 
         fun gamesFor(wiki: WikiClientFeature): List<Game> {
