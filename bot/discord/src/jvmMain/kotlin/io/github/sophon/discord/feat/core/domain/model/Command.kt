@@ -1,9 +1,5 @@
 package io.github.sophon.discord.feat.core.domain.model
 
-/**
- * Add registered feature commands HERE
- */
-
 internal sealed class Command(
     val name: String,
     val description: String,
@@ -37,10 +33,6 @@ internal sealed class Command(
                 isRequired = false,
             )
         )
-    )
-    object Alias : Command(
-        name = "Alias",
-        description = "Shows alias commands for supported games",
     )
     //endregion
 
@@ -95,7 +87,7 @@ internal sealed class Command(
 
     object Fd : Command(
         name = "Fd",
-        description = "Global frame data",
+        description = "Move frame data",
         argumentList = listOf(
             Argument(
                 name = "character",
@@ -110,6 +102,44 @@ internal sealed class Command(
         ),
     )
 
+    object Char : Command(
+        name = "Char",
+        description = "Character data",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
+            ),
+        ),
+    )
+
+    object Alias : Command(
+        name = "Alias",
+        description = "Shows alias commands for supported games",
+        argumentList = listOf(
+            Argument(
+                name = "game",
+                description = "Game",
+                isRequired = false,
+                autoCompleteType = Argument.AutoCompleteType.Game,
+            ),
+        )
+    )
+
+    //TODO: implement when there's time
+//    object Invincible : Command(
+//        name = "Invincible",
+//        description = "Shows invincible moves",
+//        argumentList = listOf(
+//            Argument(
+//                name = "character",
+//                description = "Character name",
+//                autoCompleteType = Argument.AutoCompleteType.Character,
+//            ),
+//        ),
+//    )
+
     object Gl: Command(
         name = "Gl",
         description = "Fighting-game glossary",
@@ -122,22 +152,6 @@ internal sealed class Command(
     )
 
     //region Wavu
-//    object FdTK : Command(
-//        name = "FdTK",
-//        description = "Tekken frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
     object Pc : Command(
         name = "Pc",
         description = "Tekken POWER CRUSH moves",
@@ -187,7 +201,6 @@ internal sealed class Command(
             ),
         ),
     )
-    object AliasTK : Command(name = "AliasTK", description = "Tekken character aliases")
     object ThrowTK : Command(
         name = "ThrowTK",
         description = "Tekken THROW moves",
@@ -216,449 +229,7 @@ internal sealed class Command(
     )
     //endregion
 
-    //region SuperCombo
-//    object FdSF : Command(
-//        name = "FdSF",
-//        description = "SF6 frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object CharSF : Command(
-        name = "CharSF",
-        description = "SF6 character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-    object CharMK : Command(
-        name = "CharMK",
-        description = "MK1 character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-//    object FdMK : Command(
-//        name = "FdMK",
-//        description = "MK1 frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object CharAV : Command(
-        name = "CharAV",
-        description = "AVL character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-//    object FdAV : Command(
-//        name = "FdAV",
-//        description = "AVL frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    //endregion
-
-    // region 2xko
-//    object FdXko : Command(
-//        name = "FdXko",
-//        description = "2XKO frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-
-    // DreamCancel
-//    object FdKOF : Command(
-//        name = "FdKOF",
-//        description = "KOF frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object AliasKOF : Command(
-        name = "AliasKOF",
-        description = "KOF character aliases",
-        argumentList = listOf(),
-    )
-//    object FdCOTW : Command(
-//        name = "FdCOTW",
-//        description = "COTW frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object AliasCOTW : Command(
-        name = "AliasCOTW",
-        description = "COTW character aliases",
-        argumentList = listOf(),
-    )
-    //endregion
-
-    //region DustLoop
-    object CharGG : Command(
-        name = "CharGG",
-        description = "GG character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-//    object FdGG : Command(
-//        name = "FdGG",
-//        description = "GG frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object InvGG : Command(
-        name = "InvGG",
-        description = "GG invincible moves",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-    object AliasGG : Command(name = "AliasGG", description = "GG character aliases")
-
-    object CharDB : Command(
-        name = "CharDB",
-        description = "DB character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-//    object FdDB : Command(
-//        name = "FdDB",
-//        description = "DB frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object AliasDB : Command(name = "AliasDB", description = "DB character aliases")
-
-    object CharBB : Command(
-        name = "CharBB",
-        description = "BB character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-//    object FdBB : Command(
-//        name = "FdBB",
-//        description = "BB frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object AliasBB : Command(name = "AliasBB", description = "BB character aliases")
-    object InvBB : Command(
-        name = "InvBB",
-        description = "BB invincible moves",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-
-    object CharGB : Command(
-        name = "CharGB",
-        description = "GB character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-//    object FdGB : Command(
-//        name = "FdGB",
-//        description = "GB frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-
-    object CharMT : Command(
-        name = "CharMT",
-        description = "Marvel Tokon character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-//    object FdMT : Command(
-//        name = "FdMT",
-//        description = "Marvel Tokon frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    //endregion
-
-    // region Mizuumi
-//    object FdMB : Command(
-//        name = "FdMB",
-//        description = "MBTL frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object AliasMB : Command(name = "AliasMB", description = "MBTL character aliases")
-    object InvMB : Command(
-        name = "InvMB",
-        description = "MBTL Invincible moves",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-
-//    object FdUNI : Command(
-//        name = "FdUNI",
-//        description = "Uni2 frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object CharUNI : Command(
-        name = "CharUNI",
-        description = "Uni2 character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-    object InvUNI : Command(
-        name = "InvUNI",
-        description = "UNI2 Invincible moves",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-
-//    object FdVS : Command(
-//        name = "FdVS",
-//        description = "VSAV frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-    object InvVS : Command(
-        name = "InvVS",
-        description = "VSAV Invincible moves",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-    object AliasVS : Command(name = "AliasVS", description = "VSAV character aliases")
-    //endregion@
-
     //region DragDown
-    object CharROA : Command(
-        name = "CharROA",
-        description = "ROA2 character data",
-        argumentList = listOf(
-            Argument(
-                name = "character",
-                description = "Character name",
-                autoCompleteType = Argument.AutoCompleteType.Character,
-            ),
-        ),
-    )
-
-//    object FdROA : Command(
-//        name = "FdROA",
-//        description = "ROA2 frame data",
-//        argumentList = listOf(
-//            Argument(
-//                name = "character",
-//                description = "Character name",
-//                autoCompleteType = Argument.AutoCompleteType.Character,
-//            ),
-//            Argument(
-//                name = "move",
-//                description = "Move",
-//                autoCompleteType = Argument.AutoCompleteType.Move,
-//            ),
-//        ),
-//    )
-
     object SpecialROA : Command(
         name = "SpecialROA",
         description = "ROA2 special moves",
@@ -702,6 +273,7 @@ internal sealed class Command(
             None,
             Character,
             Move,
+            Game,
         }
     }
 
@@ -709,6 +281,10 @@ internal sealed class Command(
         val entries: List<Command> by lazy {
             Command::class.sealedSubclasses
                 .mapNotNull { it.objectInstance }
+        }
+
+        fun fromId(id: String): Command? {
+            return entries.find { it.name.equals(id, ignoreCase = true) }
         }
     }
 }

@@ -24,7 +24,7 @@ import io.github.sophon.discord.feat.bot.usecase.CreateMutableEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateReplyEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.GetBotFeatureInfoUseCase
+import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
@@ -43,6 +43,8 @@ import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.TrackerImpl
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
+import io.github.sophon.discord.feat.core.usecase.FetchCharacterInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
@@ -62,7 +64,7 @@ import io.github.sophon.discord.feat.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.StartGlossaryUseCase
 import io.github.sophon.discord.feat.wikiDragDown.DragDownWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.DustLoopWikiDiscordFeature
-import io.github.sophon.discord.feat.wikiDustLoop.FetchDustLoopInvincibleMovesUseCase
+import io.github.sophon.discord.feat.wikiDustLoop.usecase.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
 import io.github.sophon.discord.feat.wikiMizuumi.CreateMizuumiInvEmbedUseCase
@@ -121,6 +123,7 @@ internal val featureRegistryModule = module {
     singleOf(::HandleButtonInteractionUseCase)
     singleOf(::PostDailyReportEmbedUseCase)
     singleOf(::CreatePromoEmbedUseCase)
+    singleOf(::CreateAliasOutputUseCase)
     //endregion
 
     //region Generic
@@ -132,6 +135,7 @@ internal val featureRegistryModule = module {
     singleOf(::GetStancesUseCase)
     singleOf(::GetCharactersUseCase)
     singleOf(::FetchMoveInWikisUseCase)
+    singleOf(::FetchCharacterInWikisUseCase)
 
     singleOf(::Scheduler)
     //endregion

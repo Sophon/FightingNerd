@@ -18,8 +18,8 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.Emoji
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
-import io.github.sophon.discord.feat.core.ui.aliasEmbed
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
+import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
@@ -49,17 +49,18 @@ internal class WavuWikiDiscordFeature(
     private val getStringFollowupsUseCase: GetStringFollowupsUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
+    private val createAliasOutputUseCase: CreateAliasOutputUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
     override val featureInfo = wavuFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
+        Command.Alias,
         Command.Pc,
         Command.Heat,
         Command.Homing,
         Command.Stance,
-        Command.AliasTK,
         Command.ThrowTK,
         Command.Strings,
     )
@@ -103,6 +104,9 @@ internal class WavuWikiDiscordFeature(
                     ) { _, wiki, query -> searchMove(wiki, query) }
                 }
             }
+            Command.Alias -> {
+                createAliasOutputUseCase.invoke(gameId = query)
+            }
 
             Command.Pc -> {
                 withWiki(
@@ -132,15 +136,6 @@ internal class WavuWikiDiscordFeature(
                     query = formattedQuery,
                 ) { _, wiki, query -> searchThrowMoves(wiki, query) }
             }
-
-            Command.AliasTK -> {
-                withWiki(
-                    wikis = wikiClientMap,
-                    game = Game.Tekken8,
-                    query = formattedQuery,
-                ) { _, wiki, _ -> getCharacterAliases(wiki) }
-            }
-
             Command.Stance -> {
                 withWiki(
                     wikis = wikiClientMap,
@@ -314,20 +309,6 @@ internal class WavuWikiDiscordFeature(
                 ),
             )
         }
-    }
-
-    private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        val result = getCharactersUseCase.invoke(wiki)
-            .map { characterList ->
-                BotOutput(
-                    primaryEmbedBuilder = aliasEmbed(
-                        characterList = characterList,
-                        featureInfo = featureInfo,
-                        colorCode = BLUE,
-                    )
-                )
-            }
-        return result
     }
 
 

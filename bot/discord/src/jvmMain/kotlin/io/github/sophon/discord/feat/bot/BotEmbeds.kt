@@ -242,9 +242,8 @@ internal fun helpEmbed(
     mandatoryField(
         name = "**Basic syntax**",
         value = "`@bot [command] [queries]` or `/command [queries]`\n" +
-                "  - each individual query is **one single word without spaces**\n" +
                 "  - tag is quicker, **slash has autocomplete**\n" +
-                "  - don't know the char's one-word name? `alias`\n",
+                "  - don't know the char's name? Use `alias`\n",
         inline = false,
     )
 
@@ -257,7 +256,7 @@ internal fun helpEmbed(
         "3. **stances** (Tekken) - `stance`\n" +
                 "  - has two variants, `stance char` and `stance char specificStance`\n" +
                 "  - `@bot stance ling` or `/stance lidia` - pressing a button shows all moves of that stance\n" +
-                "  - `@bot stance ak bad` or `/stance ak bad` - pressing a button shows frame data of the corresponding move",
+                "  - `@bot stance ak bad` or `/stance bob bal` - pressing a button shows frame data of the corresponding move",
         "4. **followups** (Tekken) - `strings` \n" +
                 "  - shows all the followups of a move\n" +
                 "  - `@bot strings kaz 1` or `/bot strings miary df1`"

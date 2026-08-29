@@ -16,7 +16,8 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
-import io.github.sophon.discord.feat.core.ui.aliasEmbed
+import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
+import io.github.sophon.discord.feat.core.usecase.FetchCharacterInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
@@ -25,6 +26,7 @@ import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
+import io.github.sophon.discord.feat.wikiDustLoop.usecase.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.util.aggregateCharacters
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
@@ -41,30 +43,19 @@ internal class DustLoopWikiDiscordFeature(
     private val getMoveUseCase: GetMoveUseCase,
     private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
-    private val fetchDustLoopInvincibleMovesUseCase: FetchDustLoopInvincibleMovesUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
+    private val fetchCharacterInWikisUseCase: FetchCharacterInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val getMovesUseCase: GetMovesUseCase,
+    private val createAliasOutputUseCase: CreateAliasOutputUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
     override val featureInfo: FeatureInfo = dustLoopFeatureInfo.featureInfo
     override val defaultCommand = Command.Fd
     override val otherCommands = listOf(
-        Command.CharGG,
-        Command.InvGG,
-        Command.AliasGG,
-
-        Command.CharDB,
-        Command.AliasDB,
-
-        Command.CharBB,
-        Command.AliasBB,
-        Command.InvBB,
-
-        Command.CharGB,
-
-        Command.CharMT,
+        Command.Alias,
+        Command.Char,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -92,89 +83,42 @@ internal class DustLoopWikiDiscordFeature(
 
         val result = when (command) {
             Command.Fd -> {
-                if (game != null) {
+                if (game == null) {
+                    fetchMoveInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = ::searchMove,
+                    )
+                } else {
                     withWiki(
                         wikis = wikiClientMap,
                         game = game,
                         query = formattedQuery,
                         action = ::searchMove,
                     )
-                } else {
-                    fetchMoveInWikisUseCase.invoke(
-                        wikis = wikiClientMap,
-                        query = formattedQuery,
-                        searchFun = ::searchMove,
-                    )
                 }
             }
 
-            Command.CharGG -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.GGST,
-                query = formattedQuery,
-                action = ::searchCharacter,
-            )
-            Command.InvGG -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.GGST,
-                query = formattedQuery,
-                action = ::searchInvincible,
-            )
-            Command.AliasGG -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.GGST,
-                query = formattedQuery,
-            ) { _, wiki, _ ->
-                getCharacterAliases(wiki)
+            Command.Alias -> {
+                createAliasOutputUseCase.invoke(gameId = query)
             }
 
-            Command.CharDB -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.DBFZ,
-                query = formattedQuery,
-                action = ::searchCharacter,
-            )
-            Command.AliasDB -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.DBFZ,
-                query = formattedQuery,
-            ) { _, wiki, _ ->
-                getCharacterAliases(wiki)
+            Command.Char -> {
+                if (game == null) {
+                    fetchCharacterInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = ::searchCharacter,
+                    )
+                } else {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                        action = ::searchCharacter,
+                    )
+                }
             }
-
-            Command.CharGB -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.GBVSR,
-                query = formattedQuery,
-                action = ::searchCharacter,
-            )
-
-            Command.CharBB -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.BBCF,
-                query = formattedQuery,
-                action = ::searchCharacter,
-            )
-            Command.AliasBB -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.BBCF,
-                query = formattedQuery,
-            ) { _, wiki, _ ->
-                getCharacterAliases(wiki)
-            }
-            Command.InvBB -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.BBCF,
-                query = formattedQuery,
-                action = ::searchInvincible,
-            )
-
-            Command.CharMT -> withWiki(
-                wikis = wikiClientMap,
-                game = Game.MTFS,
-                query = formattedQuery,
-                action = ::searchCharacter,
-            )
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -241,43 +185,8 @@ internal class DustLoopWikiDiscordFeature(
         return result
     }
 
-    private suspend fun getCharacterAliases(wiki: WikiClient): Result<BotOutput, BotError> {
-        val result = getCharactersUseCase.invoke(wiki)
-            .map { characterList ->
-                BotOutput(
-                    primaryEmbedBuilder = aliasEmbed(
-                        characterList = characterList,
-                        featureInfo = featureInfo,
-                        colorCode = RED,
-                    )
-                )
-            }
-        return result
-    }
-
-    private suspend fun searchInvincible(
-        game: Game,
-        wiki: WikiClient,
-        charName: String,
-    ): Result<BotOutput, BotError> {
-        return fetchDustLoopInvincibleMovesUseCase.invoke(game, wiki, charName)
-            .map { (character, moveList) ->
-                BotOutput(
-                    primaryEmbedBuilder = dustLoopMoveListEmbedBuilder(
-                        charName = character.displayName,
-                        category = "invincible",
-                        moveList = moveList,
-                        featureInfo = featureInfo,
-                    ),
-                )
-            }
-    }
-
 
     private companion object {
         const val TAG = "DustLoopWikiDiscordFeature"
-        const val KEY_CHAR_NAME = "character"
-        const val KEY_MOVE = "move"
-        const val RED = 0x00950117
     }
 }

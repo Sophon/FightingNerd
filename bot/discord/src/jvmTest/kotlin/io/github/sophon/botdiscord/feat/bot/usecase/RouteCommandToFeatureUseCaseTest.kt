@@ -134,7 +134,7 @@ class RouteCommandToFeatureUseCaseTest {
             version = "1.0.0"
         )
         override val defaultCommand = Command.Fd
-        override val otherCommands = listOf(Command.CharSF)
+        override val otherCommands = listOf(Command.Char)
 
         override suspend fun start() {}
 
@@ -164,7 +164,7 @@ class RouteCommandToFeatureUseCaseTest {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "SuperCombo FD: $query" }))
                     }
                 }
-                Command.CharSF -> {
+                Command.Char -> {
                     if (query.lowercase() in sfChars) {
                         Result.Success(BotOutput(primaryEmbedBuilder = { title = "SuperCombo CHARSF6: $query" }))
                     } else {
@@ -272,7 +272,7 @@ class RouteCommandToFeatureUseCaseTest {
     @Test
     fun `invoke with CHARSF6 explicit command and valid SF character returns success`() = runTest {
         // given
-        val message = "@bot charsf ken"
+        val message = "@bot char ken"
         // when
         val result = useCase.invoke(Source("", "", ""), message)
         // then
