@@ -2,6 +2,8 @@
 
 ## High prio
 
+- Error embed - buttons for `Alias` and `Fd`
+
 ## Low prio
 
 - `DragDown` - char embed should have the image as avatar, not main image
