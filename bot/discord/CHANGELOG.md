@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v16.2.1] - 2026-08-30
+- streamline error embeds further
+
 ## [v16.2.0] - 2026-08-30
 - error embeds reference slash commands
 
