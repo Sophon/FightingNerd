@@ -84,8 +84,12 @@ internal class HandleAutoCompleteEventUseCase(
     ): List<AutocompleteChoice> {
         val choices = featureList
             .filter {
-                if (command == null) true
-                else it.otherCommands.contains(command)
+                if (command == null) {
+                    true
+                }
+                else {
+                    (it.defaultCommand?.equals(command) == true) || it.otherCommands.contains(command)
+                }
             }
             .filterIsInstance<GameWikiDiscordFeature>()
             .flatMap { gameFeature ->
