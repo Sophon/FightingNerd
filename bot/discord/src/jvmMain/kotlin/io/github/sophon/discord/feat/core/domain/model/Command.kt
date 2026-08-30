@@ -121,7 +121,6 @@ internal sealed class Command(
             Argument(
                 name = "game",
                 description = "Game",
-                isRequired = false,
                 autoCompleteType = Argument.AutoCompleteType.Game,
             ),
         )
