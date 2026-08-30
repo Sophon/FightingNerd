@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v16.2.0] - 2026-08-30
+- error embeds reference slash commands
+
 ## [v16.1.0] - 2026-08-30
 - autocomplete
   - fixed bugs

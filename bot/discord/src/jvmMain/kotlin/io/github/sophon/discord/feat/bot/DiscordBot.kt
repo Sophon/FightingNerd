@@ -23,6 +23,7 @@ import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Scheduler
+import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
@@ -52,6 +53,7 @@ internal class DiscordBotImpl(
     private val coroutineScope: CoroutineScope,
     private val botFeatureRepo: BotFeatureRepo,
     private val scheduler: Scheduler,
+    private val commandRegistry: CommandRegistry,
 ): DiscordBot {
     private val editableEmbedMap = mutableMapOf<String, BotOutput>()
 
@@ -167,7 +169,9 @@ internal class DiscordBotImpl(
                         }
                     }
                 }
-        }.collect()
+        }.collect { registered ->
+            commandRegistry.put(registered.name, registered.id)
+        }
     }
 
     private suspend fun createGlobalCommands() {
@@ -193,7 +197,9 @@ internal class DiscordBotImpl(
                             }
                         }
                     }
-            }.collect()
+            }.collect { registered ->
+                commandRegistry.put(registered.name, registered.id)
+            }
         } catch (e: Exception) {
             Napier.e(tag = TAG) { "Failed to create global commands: ${e.message}" }
         }

@@ -18,6 +18,7 @@ import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.data.JsonReportRepo
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
+import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
 import io.github.sophon.integration.ewgfModule
@@ -82,6 +83,7 @@ internal fun dcBotModule(kord: Kord) = module {
     single { kord }
 
     singleOf(::DiscordButtonBuilder)
+    singleOf(::CommandRegistry)
 
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 
