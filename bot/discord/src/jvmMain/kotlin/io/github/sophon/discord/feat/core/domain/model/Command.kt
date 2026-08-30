@@ -121,7 +121,7 @@ internal sealed class Command(
             Argument(
                 name = "game",
                 description = "Game",
-                autoCompleteType = Argument.AutoCompleteType.Game,
+                autoCompleteType = Argument.AutoCompleteType.Other,
             ),
         )
     )
@@ -197,6 +197,7 @@ internal sealed class Command(
                 name = "stance",
                 description = "Stance",
                 isRequired = false,
+                autoCompleteType = Argument.AutoCompleteType.Other,
             ),
         ),
     )
@@ -269,10 +270,10 @@ internal sealed class Command(
         val autoCompleteType: AutoCompleteType = AutoCompleteType.None,
     ) {
         enum class AutoCompleteType {
-            None,
             Character,
             Move,
-            Game,
+            Other,
+            None,
         }
     }
 

@@ -42,6 +42,7 @@ internal class HandleAutoCompleteEventUseCase(
             Command.Pc -> getCharacterChoices(query, Command.Pc)
             Command.Heat -> getCharacterChoices(query, Command.Heat)
             Command.Homing -> getCharacterChoices(query, Command.Homing)
+            Command.Stance -> routeFocusedType(Command.Stance, focusedArgumentName, query, interaction)
 
             else -> emptyList()
         }.take(COMMAND_MAX_SUGGESTIONS)
@@ -63,9 +64,15 @@ internal class HandleAutoCompleteEventUseCase(
             ?: return emptyList()
 
         val choices = when (focusedType) {
-            AutoCompleteType.Character -> getCharacterChoices(query)
+            AutoCompleteType.Character -> getCharacterChoices(query, command)
             AutoCompleteType.Move -> getMoveChoices(query, interaction)
-            AutoCompleteType.Game -> getGameChoices(command, query)
+            AutoCompleteType.Other -> {
+                when (command) {
+                    Command.Alias -> getGameChoices(command, query)
+                    Command.Stance -> getStanceChoices(query, interaction)
+                    else -> emptyList()
+                }
+            }
             AutoCompleteType.None -> emptyList()
         }
         return choices
@@ -82,8 +89,10 @@ internal class HandleAutoCompleteEventUseCase(
             }
             .filterIsInstance<GameWikiDiscordFeature>()
             .flatMap { gameFeature ->
-                val result = gameFeature.getAllCharacters()
-                val pairs = (result as? Result.Success)?.data.orEmpty()
+                val pairs = when (val result = gameFeature.getAllCharacters()) {
+                    is Result.Success -> result.data
+                    is Result.Error -> emptyList()
+                }
                 val featureName = (gameFeature as? DiscordRegisteredFeature)
                     ?.featureInfo?.name.orEmpty()
                 val choices = pairs.toAutoCompleteChoices(
@@ -117,8 +126,10 @@ internal class HandleAutoCompleteEventUseCase(
         val wikiFeature = featureList
             .firstOrNull { it.featureInfo.name == decoded.featureName } as? GameWikiDiscordFeature
             ?: return emptyList()
-        val result = wikiFeature.getMoveList(decoded.game, decoded.characterId)
-        val moves = (result as? Result.Success)?.data.orEmpty()
+        val moves = when (val result = wikiFeature.getMoveList(decoded.game, decoded.characterId)) {
+            is Result.Success -> result.data
+            is Result.Error -> emptyList()
+        }
         val filtered = moves.filterMovesByQuery(query)
         return filtered
     }
@@ -141,6 +152,34 @@ internal class HandleAutoCompleteEventUseCase(
                     )
             }
 
+        return choices
+    }
+
+    private suspend fun getStanceChoices(
+        query: String,
+        interaction: AutoCompleteInteraction,
+    ): List<AutocompleteChoice> {
+        val characterValue = Command.Stance.readSibling(interaction, AutoCompleteType.Character)
+        if (characterValue.isBlank()) return emptyList()
+        val decoded = decodeCharacterValue(characterValue) ?: return emptyList()
+        val wikiFeature = featureList
+            .firstOrNull { it.featureInfo.name == decoded.featureName } as? GameWikiDiscordFeature
+            ?: return emptyList()
+
+        val stances = when (
+            val result = wikiFeature.getList(
+                command = Command.Stance,
+                characterId = decoded.characterId,
+            )
+        ) {
+            is Result.Success -> result.data
+            is Result.Error -> emptyList()
+        }
+        val choices = stances.toAutoCompleteChoices(
+            predicate = { if (query.isBlank()) true else it.contains(query, ignoreCase = true) },
+            toName = { it },
+            toValue = { it },
+        )
         return choices
     }
 
@@ -211,6 +250,7 @@ internal class HandleAutoCompleteEventUseCase(
     }
 }
 
+//data received after having chosen a character
 private data class DecodedCharacterValue(
     val characterId: String,
     val featureName: String,
