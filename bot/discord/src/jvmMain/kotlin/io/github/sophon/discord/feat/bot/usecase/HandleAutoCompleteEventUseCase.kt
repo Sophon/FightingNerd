@@ -137,7 +137,7 @@ internal class HandleAutoCompleteEventUseCase(
                     .toAutoCompleteChoices(
                         predicate = { it.displayName.contains(query, ignoreCase = true) },
                         toName = { it.displayName },
-                        toValue = { it.name }
+                        toValue = { it.id }
                     )
             }
 
