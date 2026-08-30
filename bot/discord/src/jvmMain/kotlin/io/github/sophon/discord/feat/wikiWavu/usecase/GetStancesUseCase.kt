@@ -85,6 +85,14 @@ internal class GetStancesUseCase(
         return botOutput
     }
 
+    suspend fun invoke(
+        wiki: WikiClient,
+        charName: String,
+    ): Result<List<String>, BotError> {
+        val result = fetchStances(wiki, charName)
+        return result
+    }
+
 
     private suspend fun fetchMovesOfStance(
         wiki: WikiClient,

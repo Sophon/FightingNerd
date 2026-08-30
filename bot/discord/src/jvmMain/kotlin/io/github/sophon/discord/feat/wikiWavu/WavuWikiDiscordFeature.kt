@@ -5,6 +5,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
@@ -181,6 +182,21 @@ internal class WavuWikiDiscordFeature(
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
         val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
             .map { (_, moveList) -> moveList }
+        return result
+    }
+
+    override suspend fun getList(
+        command: Command,
+        characterId: String,
+    ): Result<List<String>, BotError> {
+        val result = when (command) {
+            Command.Stance -> {
+                val wiki = wikiClientMap[Game.Tekken8] ?: return Result.Error(BotError.UnsupportedGame())
+                getStancesUseCase.invoke(wiki = wiki, charName = characterId)
+            }
+
+            else -> Result.Error(BotError.BotLogicError(command.name, characterId))
+        }
         return result
     }
 
