@@ -200,21 +200,25 @@ internal fun examplesEmbed(
 
     mandatoryField(
         name = "INPUT METHODS",
-        value = "1. **TAGGING**: `@bot [command] [optional query] ...`\n" +
-                "   - **`fd`** is the default command, no need to type it. Only type the game specific **`fd`** like **`fdsf`** with crossover characters\n" +
-                "   - **`fd`** has the following syntax: `[charName] [moveInput]`\n" +
-                "   - Examples:\n" +
-                "      - `@bot hisui 5b` (no command, defaults to **`fd`**)\n" +
-                "      - `@bot ak h.db21` (no command, defaults to **`fd`**)\n" +
-                "      - `@bot fdcotw mai f.a` (game specific **`fd`**)\n" +
-                "      - `@bot chargg baiken`\n\n" +
-                "2. **SLASH**: `/command [optional query] ...`\n" +
-                "   - the amount of queries can vary from zero to many\n" +
-                "   - Examples:\n" +
-                "      - `/aliasmb`\n" +
-                "      - `/fd nina df12`\n" +
-                "      -  `/stance leroy hrm`\n" +
-                "      - past the command, the syntax is identical to tagging",
+        value = "1. **SLASH** (has AUTOCOMPLETE): `/command [optional queries]`\n" +
+                "   - **FD** (frame data):\n" +
+                "      - `/alias game: Tekken_8`\n" +
+                "   - **Heat**, **PC**, **Homing**:\n" +
+                "      - `/heat character:nina`\n" +
+                "      - `/pc character:leroy`\n" +
+                "      - `/homing character:king`\n" +
+                "   - **Strings**:\n" +
+                "      - `/strings character:kazuya move:12`\n" +
+                "   - **Stance**:\n" +
+                "      - `/strings character:lidia\n" +
+                "      - `/strings character:lidia stance:hae`\n\n" +
+                "2. **TAGGING** (is faster): `@bot [command] [optional queries]`\n" +
+                "   - **`fd`** is the default command, no need to type it.\n" +
+                "   - **`fd`** syntax: `[charName] [moveInput]`\n" +
+                "      - `@bot hisui 5b` - no command, defaults to **`fd`**\n" +
+                "      - `@bot ak h.db21` - no command, defaults to **`fd`**\n" +
+                "      - `@bot fd sol 236h` - identical without **`fd`**" +
+                "      - `@bot char baiken` - **`char`** command",
         inline = false,
     )
 
