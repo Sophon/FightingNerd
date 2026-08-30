@@ -15,3 +15,13 @@ fun List<Character>.findMatching(query: String): Character? {
 
     return null
 }
+
+fun Character.isMatching(query: String): Boolean {
+    val normalizedQuery = query.normalizeForMatch()
+
+    if (id == normalizedQuery) return true
+    if (displayName.normalizeForMatch() == normalizedQuery) return true
+
+    val matchesAlias = aliasList.any { it.normalizeForMatch() == normalizedQuery }
+    return matchesAlias
+}

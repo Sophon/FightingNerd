@@ -8,6 +8,7 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
+import io.github.sophon.core.wiki.util.isMatching
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.feat.bot.model.AutocompleteChoice
@@ -49,6 +50,37 @@ internal class HandleAutoCompleteEventUseCase(
             }
             Command.Char -> {
                 characterChoices(query = query, requireData = true)
+            }
+
+            Command.Pc -> {
+                val choices = featureList
+                    .filter { it.otherCommands.contains(Command.Pc) }
+                    .filterIsInstance<GameWikiDiscordFeature>()
+                    .flatMap { gameFeature ->
+                        val result = gameFeature.getAllCharacters()
+                        val pairs = (result as? Result.Success)?.data.orEmpty()
+                        val featureName = (gameFeature as? DiscordRegisteredFeature)
+                            ?.featureInfo?.name.orEmpty()
+                        val choices = pairs.toAutoCompleteChoices(
+                            predicate = { (_, character) ->
+                                if (query.isBlank())
+                                    true
+                                else
+                                    character.isMatching(query)
+                            },
+                            toName = { (game, character) ->
+                                "${character.displayName} (${game.displayName})"
+                            },
+                            toValue = { (game, character) ->
+                                character.encodeCharacterValue(
+                                    featureName = featureName,
+                                    game = game,
+                                )
+                            }
+                        )
+                        choices
+                    }
+                choices
             }
 
             else -> emptyList()
@@ -130,23 +162,13 @@ internal class HandleAutoCompleteEventUseCase(
             .map { (feature, game, character) ->
                 AutocompleteChoice(
                     name = "${character.displayName} (${game.displayName})",
-                    value = encodeCharacterValue(
-                        characterId = character.id,
+                    value = character.encodeCharacterValue(
                         featureName = (feature as DiscordRegisteredFeature).featureInfo.name,
                         game = game,
                     ),
                 )
             }
         return choices
-    }
-
-    private fun encodeCharacterValue(
-        characterId: String,
-        featureName: String,
-        game: Game,
-    ): String {
-        val encoded = "$characterId$AUTOCOMPLETE_VALUE_DELIMITER$featureName$AUTOCOMPLETE_VALUE_DELIMITER${game.name}"
-        return encoded
     }
 
     private suspend fun moveChoices(
@@ -166,7 +188,6 @@ internal class HandleAutoCompleteEventUseCase(
         return filtered
     }
 
-
     private fun gameChoices(query: String): List<AutocompleteChoice> {
         val games = featureList
             .filterIsInstance<GameWikiDiscordFeature>()
@@ -183,6 +204,33 @@ internal class HandleAutoCompleteEventUseCase(
                 AutocompleteChoice(name = game.displayName, value = game.name)
             }
         return choices
+    }
+
+
+    private fun Character.encodeCharacterValue(
+        featureName: String,
+        game: Game,
+    ): String {
+        val id = this.id
+        val encoded = "$id$AUTOCOMPLETE_VALUE_DELIMITER$featureName$AUTOCOMPLETE_VALUE_DELIMITER${game.name}"
+        return encoded
+    }
+
+    private fun <T>List<T>.toAutoCompleteChoices(
+        predicate: (T) -> Boolean,
+        toName: (T) -> String,
+        toValue: (T) -> String,
+    ): List<AutocompleteChoice> {
+        val filtered = this
+            .filter(predicate)
+            .take(COMMAND_MAX_SUGGESTIONS)
+            .map {
+                AutocompleteChoice(
+                    name = toName(it),
+                    value = toValue(it),
+                )
+            }
+        return filtered
     }
 
     private fun decodeCharacterValue(value: String): DecodedCharacterValue? {
