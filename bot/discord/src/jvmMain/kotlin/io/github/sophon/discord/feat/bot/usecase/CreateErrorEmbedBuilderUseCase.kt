@@ -6,6 +6,7 @@ import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
+import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
@@ -47,19 +48,19 @@ internal class CreateErrorEmbedBuilderUseCase(
     private fun syntaxErrorEmbed(
         unknownCharacterError: BotError,
     ): BotOutput.MutableEmbedBuilder {
-        val errorDescription = unknownCharacterError
+        val errorText = unknownCharacterError
             .toString()
             .let { "**$it**" }
             .truncate(EMBED_MAX_LENGTH)
+        val errorDescription = createErrorDescription()
 
         val primaryBuilder: EmbedBuilder.() -> Unit ={
             title = "ERROR"
             color = Color(RED)
-
-            description = errorDescription
+            description = errorText
 
             mandatoryField(
-                name = "",
+                name = "SYNTAX:",
                 value = "1. `[character name]` `[move input]`\n" +
                         "   - `character name` →  __**NO SPACES**__\n" +
                         "   - `move input`\n" +
@@ -68,6 +69,12 @@ internal class CreateErrorEmbedBuilderUseCase(
                         "   - `move name` → can be multi-word, __**must match exactly**__\n" +
                         "   - not all games have move names\n" +
                         "   - `jin scourge`, `sol fafnir` etc."
+            )
+
+            mandatoryField(
+                name = "",
+                value = errorDescription,
+                inline = false,
             )
 
             footer {
@@ -81,22 +88,27 @@ internal class CreateErrorEmbedBuilderUseCase(
             description = errorDescription
         }
 
-        return BotOutput.MutableEmbedBuilder(primaryBuilder, leftOverBuilder)
+        return BotOutput.MutableEmbedBuilder(
+            primaryBuilder = primaryBuilder,
+            autoEditBuilder = leftOverBuilder,
+        )
     }
 
     private fun createQueryErrorEmbed(
         invalidQueryError: BotError.InvalidQuery,
     ): BotOutput.MutableEmbedBuilder {
-        val errorDescription = invalidQueryError
+        val errorText = invalidQueryError
             .toString()
             .let { "**$it**" }
             .truncate(EMBED_MAX_LENGTH)
+        val errorDescription = createErrorDescription()
 
         val primaryBuilder: EmbedBuilder.() -> Unit = {
             title = "ERROR"
             color = Color(RED)
-
             description = errorDescription
+
+            description = errorText
 
             mandatoryField(
                 name = "Command usage ⚙️".uppercase(),
@@ -106,36 +118,46 @@ internal class CreateErrorEmbedBuilderUseCase(
                         "- use `/help` to see available commands"
             )
 
+            mandatoryField(
+                name = "",
+                value = errorDescription,
+                inline = false,
+            )
+
             footer {
                 text = "Got something to say, nerd? Use `/feedback`"
                 icon = URL_IMG_FIGHTING_NERD
             }
         }
+
         val leftOverBuilder: EmbedBuilder.() -> Unit = {
             title = "ERROR"
             color = Color(RED)
             description = errorDescription
         }
 
-        return BotOutput.MutableEmbedBuilder(primaryBuilder, leftOverBuilder)
+        return BotOutput.MutableEmbedBuilder(
+            primaryBuilder = primaryBuilder,
+            autoEditBuilder = leftOverBuilder,
+        )
     }
 
     private fun createCommandErrorEmbed(
         error: BotError.InvalidCommand,
     ): BotOutput.MutableEmbedBuilder {
-        val errorDescription = error
+        val errorText = error
             .toString()
             .let { "**$it**" }
             .truncate(EMBED_MAX_LENGTH) + "\n Was **${error.command}** supposed to be a part of a character name?"
+        val errorDescription = createErrorDescription()
 
         val primaryBuilder: EmbedBuilder.() -> Unit = {
             title = "ERROR"
             color = Color(RED)
-
-            description = errorDescription
+            description = errorText
 
             mandatoryField(
-                name = "",
+                name = "SYNTAX:",
                 value = "If `${error.command}` was the start of a character name, **character names must be one word**\n" +
                         "- see game specific `/alias` (like `aliasTK` or `aliasBB`) for the full list",
                 inline = false,
@@ -149,6 +171,12 @@ internal class CreateErrorEmbedBuilderUseCase(
                         "- use `/help` to see available commands"
             )
 
+            mandatoryField(
+                name = "",
+                value = errorDescription,
+                inline = false,
+            )
+
             footer {
                 text = "Got something to say, nerd? Use `/feedback`"
                 icon = URL_IMG_FIGHTING_NERD
@@ -160,38 +188,27 @@ internal class CreateErrorEmbedBuilderUseCase(
             description = errorDescription
         }
 
-        return BotOutput.MutableEmbedBuilder(primaryBuilder, leftOverBuilder)
-    }
-
-    private fun examplesButton(): BotOutput.EmbedButton {
-        return BotOutput.EmbedButton(
-            label = "EXAMPLES",
-            action = BotOutput.EmbedButton.Action.Query("examples")
+        return BotOutput.MutableEmbedBuilder(
+            primaryBuilder = primaryBuilder,
+            autoEditBuilder = leftOverBuilder,
         )
     }
 
-    private fun commandsButton(): BotOutput.EmbedButton {
-        return BotOutput.EmbedButton(
-            label = "COMMANDS",
-            action = BotOutput.EmbedButton.Action.Query("commands")
-        )
+    private fun createErrorDescription(): String {
+        val text = "↓↓↓ **CLICK ONE OF THESE** ↓↓↓\n" +
+                "- ${mention(Command.Fd)}\n" +
+                "- ${mention(Command.Alias)}\n" +
+                "- ${mention(Command.Help)} | ${mention(Command.Examples)} | ${mention(Command.Commands)}"
+        return text
     }
 
-    private fun helpButton(): BotOutput.EmbedButton {
-        return BotOutput.EmbedButton(
-            label = "HELP",
-            action = BotOutput.EmbedButton.Action.Query("help")
-        )
-    }
-
-    private fun aliasButton(): BotOutput.EmbedButton {
-        val commandName = Command.Alias.name
-
-        return BotOutput.EmbedButton(
-            label = commandName.uppercase(),
-            action = BotOutput.EmbedButton.Action.Query(commandName),
-        )
+    private fun mention(command: Command): String {
+        val name = command.name.lowercase()
+        val commandId = commandRegistry[name]
+        val rendered = if (commandId != null) "</$name:${commandId.value}>" else "/$name"
+        return rendered
     }
 }
+
 
 private const val RED = 0x00FF0000
