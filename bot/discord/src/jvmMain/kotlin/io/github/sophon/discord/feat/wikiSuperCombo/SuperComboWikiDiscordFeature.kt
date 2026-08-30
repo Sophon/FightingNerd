@@ -146,6 +146,14 @@ internal class SuperComboWikiDiscordFeature(
         return result
     }
 
+    override suspend fun getList(
+        command: Command,
+        characterId: String,
+    ): Result<List<String>, BotError> {
+        return Result.Error(BotError.BotLogicError(command.name, characterId))
+    }
+
+
     private suspend fun searchCharacter(
         wiki: WikiClient,
         query: String,
