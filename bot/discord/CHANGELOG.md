@@ -1,6 +1,11 @@
 # BOT CHANGELOG
 
-## [v16.0.0] - TODO
+## [v16.1.0] - 2026-08-30
+- autocomplete
+  - fixed bugs
+  - expand to more commands
+
+## [v16.0.0] - 2026-08-30
 - `Wavu` - stances are uppercase
 - all commands are now global
   - removed game-specific `FD`, `Char`
