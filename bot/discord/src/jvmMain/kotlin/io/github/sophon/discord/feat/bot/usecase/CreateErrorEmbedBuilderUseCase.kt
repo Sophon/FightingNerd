@@ -12,27 +12,20 @@ import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.util.mandatoryField
 
 @ExcludeFromCoverage("UI")
-internal class CreateErrorEmbedBuilderUseCase {
-    fun invoke(error: BotError): Pair<BotOutput.MutableEmbedBuilder, BotOutput.ButtonSet?> {
-        return when (error) {
+internal class CreateErrorEmbedBuilderUseCase(
+    private val commandRegistry: CommandRegistry,
+) {
+    fun invoke(error: BotError): BotOutput.MutableEmbedBuilder {
+
+        val result = when (error) {
             is BotError.UnknownCharacter,
-            is BotError.UnknownMove,
-                -> {
-                syntaxErrorEmbed(error) to BotOutput.ButtonSet(buttonList = listOf(examplesButton(), commandsButton()))
-            }
+            is BotError.UnknownMove -> syntaxErrorEmbed(error)
+            is BotError.InvalidQuery -> createQueryErrorEmbed(error)
+            is BotError.InvalidCommand -> createCommandErrorEmbed(error)
 
-            is BotError.InvalidQuery -> {
-                createQueryErrorEmbed(error) to BotOutput.ButtonSet(buttonList = listOf(commandsButton(), helpButton()))
-            }
-
-            is BotError.InvalidCommand -> {
-                createCommandErrorEmbed(error) to BotOutput.ButtonSet(buttonList = listOf(aliasButton(), commandsButton()))
-            }
-
-            else -> {
-                createGenericError(error) to null
-            }
+            else -> createGenericError(error)
         }
+        return result
     }
 
     private fun createGenericError(error: BotError): BotOutput.MutableEmbedBuilder {
