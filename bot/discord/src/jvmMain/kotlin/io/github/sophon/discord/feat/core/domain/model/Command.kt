@@ -116,7 +116,7 @@ internal sealed class Command(
 
     object Alias : Command(
         name = "Alias",
-        description = "Shows alias commands for supported games",
+        description = "Show character aliases",
         argumentList = listOf(
             Argument(
                 name = "game",

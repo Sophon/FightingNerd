@@ -28,17 +28,17 @@ internal class CreateErrorEmbedBuilderUseCase(
 
         mandatoryField(
             name = "Frame Data",
-            value = mention(Command.Fd)
+            value = commandRegistry.mention(Command.Fd),
         )
 
         mandatoryField(
             name = "Character Names",
-            value = mention(Command.Alias),
+            value = commandRegistry.mention(Command.Alias),
         )
 
         mandatoryField(
             name = "Other",
-            value = "${mention(Command.Help)} | ${mention(Command.Examples)} | ${mention(Command.Commands)}",
+            value = "${commandRegistry.mention(Command.Help)} | ${commandRegistry.mention(Command.Examples)} | ${commandRegistry.mention(Command.Commands)}",
             inline = false,
         )
 
@@ -47,21 +47,6 @@ internal class CreateErrorEmbedBuilderUseCase(
             icon = URL_IMG_FIGHTING_NERD
         }
 
-    }
-
-    private fun createErrorPrompt(): String {
-        val text = "↓↓↓ **CLICK THESE FOR AUTOCOMPLETE** ↓↓↓\n" +
-                "- ${mention(Command.Fd)}\n" +
-                "- ${mention(Command.Alias)}\n" +
-                "- ${mention(Command.Help)} | ${mention(Command.Examples)} | ${mention(Command.Commands)}"
-        return text
-    }
-
-    private fun mention(command: Command): String {
-        val name = command.name.lowercase()
-        val commandId = commandRegistry[name]
-        val rendered = if (commandId != null) "</$name:${commandId.value}>" else "/$name"
-        return rendered
     }
 }
 
