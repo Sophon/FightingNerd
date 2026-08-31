@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v16.3.0] - 2026-09-01
+- streamline error embeds further
+
 ## [v16.2.1] - 2026-08-30
 - streamline error embeds further
 
