@@ -40,7 +40,6 @@ internal class BotFeature(
         Command.Help,
         Command.Commands,
         Command.Modules,
-        Command.Alias,
     )
 
     override suspend fun start() {
@@ -70,7 +69,6 @@ internal class BotFeature(
             Command.Commands -> createCommandsEmbed()
             Command.Join -> createJoinEmbedButtonUseCase.invoke(origin, query)
             Command.Modules -> createModulesEmbed()
-            Command.Alias -> createAliasEmbed()
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -123,29 +121,6 @@ internal class BotFeature(
                         )
                     ),
                 ),
-                duration = EMBED_BUTTON_DURATION_INF.seconds,
-            )
-        )
-
-        return Result.Success(result)
-    }
-
-    private fun createAliasEmbed(): Result<BotOutput, BotError> {
-        val commandList = Command.entries
-            .sortedBy { it.name }
-            .filterNot { it == Command.Alias }
-            .filter { it.name.startsWith("Alias") }
-        val buttonList = commandList.map { command ->
-            BotOutput.EmbedButton(
-                label = command.name,
-                action = BotOutput.EmbedButton.Action.Query(command.name)
-            )
-        }
-
-        val result = BotOutput(
-            primaryEmbedBuilder = aliasEmbed(commandList, featureInfo),
-            buttons = BotOutput.ButtonSet(
-                buttonList = buttonList,
                 duration = EMBED_BUTTON_DURATION_INF.seconds,
             )
         )

@@ -216,21 +216,4 @@ internal fun helpEmbed(
 }
 
 
-internal fun aliasEmbed(
-    commandList: List<Command>,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    mandatoryField(
-        name = "🥸 ALIAS",
-        value = buildString {
-            commandList.forEach { fdCommand ->
-                append("- `${fdCommand.name}`\n")
-            }
-        }.trimEnd(),
-    )
-
-    featureFooter(featureInfo)
-}
-
-
 private const val PURPLE = 0x00A020F0
