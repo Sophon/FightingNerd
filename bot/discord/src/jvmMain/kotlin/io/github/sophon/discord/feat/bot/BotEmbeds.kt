@@ -9,6 +9,7 @@ import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.feat.admin.adminCommands
+import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.featureFooter
@@ -81,6 +82,7 @@ internal fun modulesEmbed(
 
 internal fun commandsEmbed(
     commandList: List<Command>,
+    commandRegistry: CommandRegistry,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val fdCommands = commandList.filter {
@@ -104,6 +106,7 @@ internal fun commandsEmbed(
         Command.Stance,
         Command.ThrowTK,
         Command.Strings,
+        Command.SpecialROA,
     )
     val excludedFromOthers = buildSet {
         addAll(fdCommands)
@@ -118,70 +121,41 @@ internal fun commandsEmbed(
 
     val embedBuilder: EmbedBuilder.() -> Unit = {
         title = "⚙️ COMMANDS"
+        description = "Try clicking on the commands."
         color = Color(PURPLE)
 
         mandatoryField(
-            name = "📊 FRAME DATA",
-            value = buildString {
-                append("- `${Command.Fd.name}` (global)")
-                fdCommands
-                    .sortedBy { it.name }
-                    .forEach { fdCommand ->
-                        append("\n  - `${fdCommand.name}`")
-                    }
-                append("\n")
-            }.trimEnd(),
+            name = "Frame Data",
+            value = commandRegistry.mention(Command.Fd),
         )
 
         mandatoryField(
-            name = "🎭 CHARACTER DATA",
-            value = buildString {
-                charCommands
-                    .sortedBy { it.name }
-                    .forEach { charCommand ->
-                        append("- `${charCommand.name}`\n")
-                    }
-            }.trimEnd(),
+            name = "Character Data",
+            value = commandRegistry.mention(Command.Char),
         )
 
         mandatoryField(
-            name = "🥸 CHARACTER ALIASES",
-            value = buildString {
-                aliasCommands
-                    .sortedBy { it.name }
-                    .forEach { aliasCommand ->
-                        append("- `${aliasCommand.name}`\n")
-                    }
-            }
+            name = "Character Names",
+            value = "${commandRegistry.mention(Command.Alias)}: *${Command.Alias.description}*",
+            inline = false,
         )
 
         mandatoryField(
-            name = "🛡️ INVINCIBLE MOVES",
-            value = buildString {
-                invCommands
-                    .sortedBy { it.name }
-                    .forEach { command ->
-                        append("- `${command.name}`\n")
-                    }
-            }
-        )
-
-        mandatoryField(
-            name = "🎮 GAME SPECIFIC",
+            name = "Game Specific",
             value = buildString {
                 gameSpecificCommands
                     .sortedBy { it.name }
                     .forEach { command ->
-                        append("- `${command.name}`\n")
+                        append("- ${commandRegistry.mention(command)}: *${command.description}*\n")
                     }
             }
         )
 
         mandatoryField(
-            name = "🛠️ OTHER COMMANDS",
+            name = "Other",
             value = buildString {
                 otherCommands.forEach { command ->
-                    append("- `${command.name}`\n")
+                    append("- ${commandRegistry.mention(command)}: *${command.description}*\n")
                 }
             }.trimEnd(),
         )

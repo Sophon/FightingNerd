@@ -12,6 +12,7 @@ import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.feat.config.FeatureRegistry
+import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
@@ -25,6 +26,7 @@ import kotlin.time.Duration.Companion.seconds
 internal class BotFeature(
     getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
     private val createJoinEmbedButtonUseCase: CreateJoinEmbedButtonUseCase,
+    private val commandRegistry: CommandRegistry,
 ): DiscordRegisteredFeature, KoinComponent {
     private val featureRegistry: FeatureRegistry by inject()
 
@@ -116,10 +118,10 @@ internal class BotFeature(
     }
 
     private fun createCommandsEmbed(): Result<BotOutput, BotError> {
-        val commands = Command.entries.sortedBy { it.name }
+        val commandList = Command.entries.sortedBy { it.name }
 
         val result = BotOutput(
-            primaryEmbedBuilder = commandsEmbed(commands, featureInfo),
+            primaryEmbedBuilder = commandsEmbed(commandList, commandRegistry, featureInfo),
             buttons = BotOutput.ButtonSet(
                 buttonList = listOf(
                     BotOutput.EmbedButton(
