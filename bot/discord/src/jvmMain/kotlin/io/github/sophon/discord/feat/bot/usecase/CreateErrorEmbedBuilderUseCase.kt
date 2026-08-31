@@ -38,7 +38,7 @@ internal class CreateErrorEmbedBuilderUseCase(
 
         mandatoryField(
             name = "Other",
-            value = "${commandRegistry.mention(Command.Help)} | ${commandRegistry.mention(Command.Examples)} | ${commandRegistry.mention(Command.Commands)}",
+            value = "${commandRegistry.mention(Command.Help)} | ${commandRegistry.mention(Command.Commands)}",
             inline = false,
         )
 

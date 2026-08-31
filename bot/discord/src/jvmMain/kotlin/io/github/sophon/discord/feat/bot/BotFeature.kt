@@ -39,7 +39,6 @@ internal class BotFeature(
         Command.Donate,
         Command.Help,
         Command.Commands,
-        Command.Examples,
         Command.Modules,
         Command.Alias,
     )
@@ -69,7 +68,6 @@ internal class BotFeature(
             Command.Invite -> createInviteText()
             Command.Help -> createHelpEmbed()
             Command.Commands -> createCommandsEmbed()
-            Command.Examples -> createExamples()
             Command.Join -> createJoinEmbedButtonUseCase.invoke(origin, query)
             Command.Modules -> createModulesEmbed()
             Command.Alias -> createAliasEmbed()
@@ -85,19 +83,13 @@ internal class BotFeature(
 
     private fun createHelpEmbed(): Result<BotOutput, BotError> {
         val result = BotOutput(
-            primaryEmbedBuilder = helpEmbed(featureInfo),
+            primaryEmbedBuilder = helpEmbed(commandRegistry, featureInfo),
             buttons = BotOutput.ButtonSet(
                 buttonList = listOf(
                     BotOutput.EmbedButton(
                         label = "Commands",
                         action = BotOutput.EmbedButton.Action.Query(
                             Command.Commands.name
-                        ),
-                    ),
-                    BotOutput.EmbedButton(
-                        label = "Examples",
-                        action = BotOutput.EmbedButton.Action.Query(
-                            Command.Examples.name
                         ),
                     ),
                 ),
@@ -127,7 +119,7 @@ internal class BotFeature(
                     BotOutput.EmbedButton(
                         label = "Examples",
                         action = BotOutput.EmbedButton.Action.Query(
-                            Command.Examples.name
+                            Command.Help.name
                         )
                     ),
                 ),
@@ -174,24 +166,6 @@ internal class BotFeature(
         return Result.Success(BotOutput(plainText = text))
     }
 
-    private fun createExamples(): Result<BotOutput, BotError> {
-        val result = BotOutput(
-            primaryEmbedBuilder = examplesEmbed(featureInfo),
-            buttons = BotOutput.ButtonSet(
-                buttonList = listOf(
-                    BotOutput.EmbedButton(
-                        label = "Commands",
-                        action = BotOutput.EmbedButton.Action.Query(
-                            Command.Commands.name
-                        ),
-                    )
-                ),
-                duration = EMBED_BUTTON_DURATION_INF.seconds,
-            )
-        )
-
-        return Result.Success(result)
-    }
 
     private companion object Companion {
         const val TAG = "CoreDiscordFeature"
