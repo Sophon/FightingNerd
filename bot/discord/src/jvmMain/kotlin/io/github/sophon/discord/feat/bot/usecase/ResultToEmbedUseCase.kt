@@ -46,8 +46,7 @@ internal class ResultToEmbedUseCase(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
-                val embedBuilder = createErrorEmbedBuilderUseCase.invoke(result.error)
-                BotOutput(mutableEmbedBuilder = embedBuilder)
+                BotOutput(primaryEmbedBuilder = createErrorEmbedBuilderUseCase.invoke(result.error))
             }
         }
 
@@ -112,8 +111,7 @@ internal class ResultToEmbedUseCase(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
-                val errorEmbed = createErrorEmbedBuilderUseCase.invoke(result.error)
-                BotOutput(mutableEmbedBuilder = errorEmbed)
+                BotOutput(primaryEmbedBuilder = createErrorEmbedBuilderUseCase.invoke(result.error))
             }
         }
 

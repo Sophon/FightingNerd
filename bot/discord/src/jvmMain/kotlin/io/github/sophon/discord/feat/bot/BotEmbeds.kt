@@ -9,6 +9,7 @@ import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.feat.admin.adminCommands
+import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.util.featureFooter
@@ -81,6 +82,7 @@ internal fun modulesEmbed(
 
 internal fun commandsEmbed(
     commandList: List<Command>,
+    commandRegistry: CommandRegistry,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val fdCommands = commandList.filter {
@@ -104,6 +106,7 @@ internal fun commandsEmbed(
         Command.Stance,
         Command.ThrowTK,
         Command.Strings,
+        Command.SpecialROA,
     )
     val excludedFromOthers = buildSet {
         addAll(fdCommands)
@@ -118,70 +121,41 @@ internal fun commandsEmbed(
 
     val embedBuilder: EmbedBuilder.() -> Unit = {
         title = "⚙️ COMMANDS"
+        description = "Try clicking on the commands."
         color = Color(PURPLE)
 
         mandatoryField(
-            name = "📊 FRAME DATA",
-            value = buildString {
-                append("- `${Command.Fd.name}` (global)")
-                fdCommands
-                    .sortedBy { it.name }
-                    .forEach { fdCommand ->
-                        append("\n  - `${fdCommand.name}`")
-                    }
-                append("\n")
-            }.trimEnd(),
+            name = "Frame Data",
+            value = commandRegistry.mention(Command.Fd),
         )
 
         mandatoryField(
-            name = "🎭 CHARACTER DATA",
-            value = buildString {
-                charCommands
-                    .sortedBy { it.name }
-                    .forEach { charCommand ->
-                        append("- `${charCommand.name}`\n")
-                    }
-            }.trimEnd(),
+            name = "Character Data",
+            value = commandRegistry.mention(Command.Char),
         )
 
         mandatoryField(
-            name = "🥸 CHARACTER ALIASES",
-            value = buildString {
-                aliasCommands
-                    .sortedBy { it.name }
-                    .forEach { aliasCommand ->
-                        append("- `${aliasCommand.name}`\n")
-                    }
-            }
+            name = "Character Names",
+            value = "${commandRegistry.mention(Command.Alias)}: *${Command.Alias.description}*",
+            inline = false,
         )
 
         mandatoryField(
-            name = "🛡️ INVINCIBLE MOVES",
-            value = buildString {
-                invCommands
-                    .sortedBy { it.name }
-                    .forEach { command ->
-                        append("- `${command.name}`\n")
-                    }
-            }
-        )
-
-        mandatoryField(
-            name = "🎮 GAME SPECIFIC",
+            name = "Game Specific",
             value = buildString {
                 gameSpecificCommands
                     .sortedBy { it.name }
                     .forEach { command ->
-                        append("- `${command.name}`\n")
+                        append("- ${commandRegistry.mention(command)}: *${command.description}*\n")
                     }
             }
         )
 
         mandatoryField(
-            name = "🛠️ OTHER COMMANDS",
+            name = "Other",
             value = buildString {
                 otherCommands.forEach { command ->
-                    append("- `${command.name}`\n")
+                    append("- ${commandRegistry.mention(command)}: *${command.description}*\n")
                 }
             }.trimEnd(),
         )
@@ -192,114 +166,50 @@ internal fun commandsEmbed(
     return embedBuilder
 }
 
-internal fun examplesEmbed(
+internal fun helpEmbed(
+    commandRegistry: CommandRegistry,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     title = "EXAMPLES"
     color = Color(PURPLE)
 
     mandatoryField(
-        name = "INPUT METHODS",
-        value = "1. **SLASH** (has AUTOCOMPLETE): `/command [optional queries]`\n" +
-                "   - **FD** (frame data):\n" +
-                "      - `/alias game: Tekken_8`\n" +
-                "   - **Heat**, **PC**, **Homing**:\n" +
-                "      - `/heat character:nina`\n" +
-                "      - `/pc character:leroy`\n" +
-                "      - `/homing character:king`\n" +
-                "   - **Strings**:\n" +
-                "      - `/strings character:kazuya move:12`\n" +
-                "   - **Stance**:\n" +
-                "      - `/strings character:lidia\n" +
-                "      - `/strings character:lidia stance:hae`\n\n" +
-                "2. **TAGGING** (is faster): `@bot [command] [optional queries]`\n" +
-                "   - **`fd`** is the default command, no need to type it.\n" +
-                "   - **`fd`** syntax: `[charName] [moveInput]`\n" +
-                "      - `@bot hisui 5b` - no command, defaults to **`fd`**\n" +
-                "      - `@bot ak h.db21` - no command, defaults to **`fd`**\n" +
-                "      - `@bot fd sol 236h` - identical without **`fd`**" +
-                "      - `@bot char baiken` - **`char`** command",
-        inline = false,
+        name = "1. SLASH has **auto-complete**, TAG is faster.",
+        value = "- ${commandRegistry.mention(Command.Fd)} - *frame data*:\n" +
+                "   - `/fd character:Law move:df1`\n" +
+                "- ${commandRegistry.mention(Command.Heat)} | ${commandRegistry.mention(Command.Pc)} | ${commandRegistry.mention(Command.Homing)}:\n" +
+                "   - `/heat character:nina`\n" +
+                "   - `/pc character:leroy`\n" +
+                "   - `/homing character:king`\n" +
+                "- ${commandRegistry.mention(Command.Strings)}:\n" +
+                "   - `/strings character:jin move:12`\n" +
+                "- ${commandRegistry.mention(Command.Stance)}:\n" +
+                "   - `/stance character:jin`\n" +
+                "   - `/stance character:jin stance:zen`"
+    )
+
+    mandatoryField(
+        name = "2. **TAGGING**: `@bot [command] [optional queries]`",
+        value = "- **`fd`** is the default command, no need to type it.\n" +
+                "- **`fd`** syntax: `[charName] [moveInput]`\n" +
+                "   - `@bot hisui 5b` - no command, defaults to **`fd`**\n" +
+                "   - `@bot ak h.db21` - no command, defaults to **`fd`**\n" +
+                "   - `@bot fd sol 236h` - identical without **`fd`**" +
+                "   - `@bot char baiken` - **`char`** command\n" +
+                "- same commands as with slash",
     )
 
     mandatoryField(
         name = "QUERIES",
-        value = "- each individual query must be a __**single word without spaces**__\n" +
+        value = "- character names must be a __**single word without spaces**__\n" +
                 "- all queries are separated by a single space\n" +
-                "   - **wrong command?** Try **`help`** or **`commands`**\n" +
-                "   - **wrong name?** Try game specific **`alias`** → **`aliasgg`** or **`aliastk`**\n" +
+                "   - **wrong command?** Try ${commandRegistry.mention(Command.Help)} or ${commandRegistry.mention(Command.Commands)}\n" +
+                "   - **wrong name?** Try ${commandRegistry.mention(Command.Alias)}\n" +
                 "   - **wrong move?** western notation or numpad notation\n" +
-                "      - for Tekken, consider **`stance`** or **`pc`** or **`heat`**\n" +
+                "      - for Tekken, consider ${commandRegistry.mention(Command.Stance)}, ${commandRegistry.mention(Command.Strings)}, ${commandRegistry.mention(Command.Pc)} or ${commandRegistry.mention(Command.Heat)}\n" +
                 "      - check the Wiki to see the proper notation\n" +
-                "- some outputs have buttons, clicking those outputs the proper query"
-    )
-
-    featureFooter(featureInfo)
-}
-
-internal fun helpEmbed(
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    title = "HOW TO USE THE BOT"
-    color = Color(PURPLE)
-
-    mandatoryField(
-        name = "**Basic syntax**",
-        value = "`@bot [command] [queries]` or `/command [queries]`\n" +
-                "  - tag is quicker, **slash has autocomplete**\n" +
-                "  - don't know the char's name? Use `alias`\n",
+                "- some outputs have buttons, clicking those outputs the proper query",
         inline = false,
-    )
-
-    val bulletPoints = listOf(
-        "1. **frame data** - `fd` default command, no need to write `fd` when tagging\n" +
-                "  - `@bot jin df1` or `/fd feng bt.1`  or `@bot ak h.bad.32`",
-        "2. **list of moves** - `pc`, `homing`, `heat`, `throwtk` (Tekken), `inv`\n" +
-                "  - `@bot homing steve` or `/homing hwo` or `@bot invgg sol`\n" +
-                "  - pressing a button shows the frame data of the corresponding move",
-        "3. **stances** (Tekken) - `stance`\n" +
-                "  - has two variants, `stance char` and `stance char specificStance`\n" +
-                "  - `@bot stance ling` or `/stance lidia` - pressing a button shows all moves of that stance\n" +
-                "  - `@bot stance ak bad` or `/stance bob bal` - pressing a button shows frame data of the corresponding move",
-        "4. **followups** (Tekken) - `strings` \n" +
-                "  - shows all the followups of a move\n" +
-                "  - `@bot strings kaz 1` or `/bot strings miary df1`"
-    )
-
-    val chunks = when (bulletPoints.size) {
-        in 0..5 -> listOf(bulletPoints)
-        in 6..EMBED_LIST_PER_COLUMN -> bulletPoints.chunked(5)
-        else -> bulletPoints.chunked(EMBED_LIST_PER_COLUMN)
-    }
-
-    chunks.forEach { bulletPoints ->
-        mandatoryField(
-            name = "",
-            value = bulletPoints.joinToString("\n")
-        )
-    }
-
-    mandatoryField(
-        name = "",
-        value = "Send feedback to author: `feedback`.\n" +
-                "Supported games and features: `modules`.",
-        inline = false,
-    )
-
-    featureFooter(featureInfo)
-}
-
-internal fun aliasEmbed(
-    commandList: List<Command>,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    mandatoryField(
-        name = "🥸 ALIAS",
-        value = buildString {
-            commandList.forEach { fdCommand ->
-                append("- `${fdCommand.name}`\n")
-            }
-        }.trimEnd(),
     )
 
     featureFooter(featureInfo)
