@@ -172,9 +172,10 @@ internal fun helpEmbed(
 ): EmbedBuilder.() -> Unit = {
     title = "EXAMPLES"
     color = Color(PURPLE)
+    description = "SLASH has **auto-complete**, TAG is faster."
 
     mandatoryField(
-        name = "1. SLASH has **auto-complete**, TAG is faster.",
+        name = "1. **SLASH**: `/command [optional queries]`",
         value = "- ${commandRegistry.mention(Command.Fd)} - *frame data*:\n" +
                 "   - `/fd character:Law move:df1`\n" +
                 "- ${commandRegistry.mention(Command.Heat)} | ${commandRegistry.mention(Command.Pc)} | ${commandRegistry.mention(Command.Homing)}:\n" +
