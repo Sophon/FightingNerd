@@ -5,6 +5,7 @@ import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.filterMatching
@@ -250,7 +251,46 @@ internal class HandleAutoCompleteEventUseCase(
     }
 
     private fun Move.toChoice(): AutocompleteChoice {
-        return AutocompleteChoice(name = input, value = input)
+        val name = buildString {
+            append("$input ".padEnd(COLUMN_MAX_GAP_L, FILL_CHAR))
+            append(" ")
+
+            append(
+                "[ ${guard.orEmpty().replace(" ", "").uppercase()} ] "
+                    .padEnd(COLUMN_MAX_GAP_L, FILL_CHAR)
+            )
+
+            append(" [ ")
+            append("${startup.formatForAutoComplete()} | ")
+            append("${onBlock.formatForAutoComplete()} | ")
+            append("${onHit.formatForAutoComplete()} | ")
+            append("${onCH.formatForAutoComplete()} ] ")
+
+            if (name.isNullOrBlank().not()) {
+                repeat(5) { append("-") }
+                append(" $name")
+            }
+        }
+
+        return AutocompleteChoice(name = name, value = input)
+    }
+
+    private fun String?.formatForAutoComplete(): String {
+        val cleaned = this
+            ?.stripMarkdownLinks()
+            ?.substringBefore("(")
+            ?.substringBefore("~")
+            ?.substringBefore("-")
+            ?.trim().orEmpty()
+        val result = cleaned.ifBlank { "-" }
+        return result
+    }
+
+
+    private companion object {
+        const val COLUMN_MAX_GAP_L = 15
+        const val COLUMN_MAX_GAP_S = 13
+        const val FILL_CHAR = '_'
     }
 }
 
