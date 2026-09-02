@@ -53,7 +53,7 @@ internal class BotFeature(
         game: Game?,
     ): Result<BotOutput, BotError> {
         if (query.startsWith(URL_STEAM_LOBBY, ignoreCase = true)) {
-            return createJoinEmbedButtonUseCase.invoke(origin, query)
+            return createJoinEmbedButtonUseCase(origin, query)
         }
 
         return when (command) {
@@ -67,7 +67,7 @@ internal class BotFeature(
             Command.Invite -> createInviteText()
             Command.Help -> createHelpEmbed()
             Command.Commands -> createCommandsEmbed()
-            Command.Join -> createJoinEmbedButtonUseCase.invoke(origin, query)
+            Command.Join -> createJoinEmbedButtonUseCase(origin, query)
             Command.Modules -> createModulesEmbed()
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))

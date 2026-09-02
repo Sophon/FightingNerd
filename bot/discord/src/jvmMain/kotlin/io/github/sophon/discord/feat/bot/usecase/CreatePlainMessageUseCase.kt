@@ -13,7 +13,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 
 @ExcludeFromCoverage("UI")
 internal class CreatePlainMessageUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         text: String,
     ): Result<Message, BotError> {
@@ -29,7 +29,7 @@ internal class CreatePlainMessageUseCase {
         }
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         text: String,
     ): Result<PublicInteractionResponseBehavior, BotError> {

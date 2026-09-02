@@ -16,7 +16,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 @ExcludeFromCoverage("UI")
 internal class CreateReplyEmbedUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         reply: BotOutput.Reply,
     ): Result<Message, BotError> {
@@ -37,7 +37,7 @@ internal class CreateReplyEmbedUseCase {
         return result
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         reply: BotOutput.Reply,
     ): Result<PublicInteractionResponseBehavior, BotError> {

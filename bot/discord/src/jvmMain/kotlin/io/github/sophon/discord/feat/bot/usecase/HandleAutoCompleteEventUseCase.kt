@@ -27,7 +27,7 @@ internal class HandleAutoCompleteEventUseCase(
         botFeatureRepo.getFeatures()
     }
 
-    suspend fun invoke(interaction: AutoCompleteInteraction) {
+    suspend operator fun invoke(interaction: AutoCompleteInteraction) {
         val command = Command.fromId(interaction.command.rootName)
         val focusedArgumentName = interaction.command.options.entries
             .firstOrNull { it.value.focused }

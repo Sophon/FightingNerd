@@ -35,7 +35,7 @@ internal class ResultToEmbedUseCase(
     private val createMutableEmbedUseCase: CreateMutableEmbedUseCase,
     private val createPromoEmbedUseCase: CreatePromoEmbedUseCase,
 ) {
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         source: Source,
         result: Result<BotOutput, BotError>,
@@ -46,13 +46,13 @@ internal class ResultToEmbedUseCase(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
-                BotOutput(primaryEmbedBuilder = createErrorEmbedBuilderUseCase.invoke(result.error))
+                BotOutput(primaryEmbedBuilder = createErrorEmbedBuilderUseCase(result.error))
             }
         }
 
         when {
             botOutput.primaryEmbedBuilder != null -> {
-                createEmbedUseCase.invoke(
+                createEmbedUseCase(
                     message = message,
                     embedBuilder = botOutput.primaryEmbedBuilder,
                     coroutineScope = coroutineScope,
@@ -62,7 +62,7 @@ internal class ResultToEmbedUseCase(
                 ).onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.mutableEmbedBuilder != null -> {
-                createMutableEmbedUseCase.invoke(
+                createMutableEmbedUseCase(
                     message = message,
                     mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
                     coroutineScope = coroutineScope,
@@ -83,15 +83,15 @@ internal class ResultToEmbedUseCase(
                     .onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.plainText != null -> {
-                createPlainMessageUseCase.invoke(message, botOutput.plainText).onError {
+                createPlainMessageUseCase(message, botOutput.plainText).onError {
                     Napier.e(tag = TAG) { "handleMessage: $it" }
                 }
             }
             botOutput.feedback != null -> {
-                createFeedbackEmbedUseCase.invoke(message, botOutput.feedback, botOutput.buttons)
+                createFeedbackEmbedUseCase(message, botOutput.feedback, botOutput.buttons)
             }
             botOutput.reply != null -> {
-                createReplyEmbedUseCase.invoke(message, botOutput.reply)
+                createReplyEmbedUseCase(message, botOutput.reply)
             }
         }
 
@@ -100,7 +100,7 @@ internal class ResultToEmbedUseCase(
         }
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction, //TODO: reduce to MessageChannelBehavior
         source: Source,
         result: Result<BotOutput, BotError>,
@@ -111,13 +111,13 @@ internal class ResultToEmbedUseCase(
             is Result.Success -> result.data
             is Result.Error -> {
                 Napier.e(tag = TAG) { "${result.error} in ${source.serverName}" }
-                BotOutput(primaryEmbedBuilder = createErrorEmbedBuilderUseCase.invoke(result.error))
+                BotOutput(primaryEmbedBuilder = createErrorEmbedBuilderUseCase(result.error))
             }
         }
 
         when {
             botOutput.primaryEmbedBuilder != null -> {
-                createEmbedUseCase.invoke(
+                createEmbedUseCase(
                     interaction = interaction,
                     embedBuilder = botOutput.primaryEmbedBuilder,
                     coroutineScope = coroutineScope,
@@ -127,7 +127,7 @@ internal class ResultToEmbedUseCase(
                 ).onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.mutableEmbedBuilder != null -> {
-                createMutableEmbedUseCase.invoke(
+                createMutableEmbedUseCase(
                     interaction = interaction,
                     mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
                     coroutineScope = coroutineScope,
@@ -147,15 +147,15 @@ internal class ResultToEmbedUseCase(
                     .onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.plainText != null -> {
-                createPlainMessageUseCase.invoke(interaction, botOutput.plainText).onError {
+                createPlainMessageUseCase(interaction, botOutput.plainText).onError {
                     Napier.e(tag = TAG) { "handleMessage: $it" }
                 }
             }
             botOutput.feedback != null -> {
-                createFeedbackEmbedUseCase.invoke(interaction, botOutput.feedback, botOutput.buttons)
+                createFeedbackEmbedUseCase(interaction, botOutput.feedback, botOutput.buttons)
             }
             botOutput.reply != null -> {
-                createReplyEmbedUseCase.invoke(interaction, botOutput.reply)
+                createReplyEmbedUseCase(interaction, botOutput.reply)
             }
         }
 
@@ -176,7 +176,7 @@ internal class ResultToEmbedUseCase(
         }
 
         if (rollChance(chance)) {
-            createPromoEmbedUseCase.invoke(behavior)
+            createPromoEmbedUseCase(behavior)
         }
     }
 

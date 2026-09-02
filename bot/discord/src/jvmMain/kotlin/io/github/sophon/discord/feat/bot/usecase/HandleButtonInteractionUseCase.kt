@@ -37,7 +37,7 @@ internal class HandleButtonInteractionUseCase(
     private val routeCommandToFeatureUseCase: RouteCommandToFeatureUseCase,
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: ButtonInteraction,
         editableEmbedMap: MutableMap<String, BotOutput>,
         coroutineScope: CoroutineScope,
@@ -92,7 +92,7 @@ internal class HandleButtonInteractionUseCase(
         source: Source,
         coroutineScope: CoroutineScope,
     ): EmptyResult<BotError> {
-        return routeCommandToFeatureUseCase.invoke(source, query)
+        return routeCommandToFeatureUseCase(source, query)
             .map { botOutput ->
                 val uuid = Uuid.random()
 

@@ -12,7 +12,7 @@ import io.github.sophon.integration.model.DailyReport
 internal class PostDailyReportEmbedUseCase(
     private val kord: Kord,
 ) {
-    suspend fun invoke(
+    suspend operator fun invoke(
         statsChannelId: String,
         dailyReport: DailyReport,
     ) {

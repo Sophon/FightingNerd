@@ -82,7 +82,7 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
-            handleQueryUseCase.invoke(
+            handleQueryUseCase(
                 interaction = interaction,
                 editableEmbedMap = editableEmbedMap,
             )
@@ -90,7 +90,7 @@ internal class DiscordBotImpl(
 
         kord.on<MessageCreateEvent> {
             kordRestCall(TAG) {
-                handleQueryUseCase.invoke(
+                handleQueryUseCase(
                     message = message,
                     botId = kord.selfId,
                     editableEmbedMap = editableEmbedMap,
@@ -100,7 +100,7 @@ internal class DiscordBotImpl(
 
         kord.on<ButtonInteractionCreateEvent> {
             kordRestCall(TAG) {
-                handleButtonInteractionUseCase.invoke(interaction, editableEmbedMap, coroutineScope)
+                handleButtonInteractionUseCase(interaction, editableEmbedMap, coroutineScope)
                     .onError { error ->
                         Napier.e(tag = TAG) { "${interaction.data.guildId} → Button interaction: $error" }
                     }
@@ -109,7 +109,7 @@ internal class DiscordBotImpl(
 
         kord.on<AutoCompleteInteractionCreateEvent> {
             kordRestCall(TAG) {
-                handleAutoCompleteEventUseCase.invoke(interaction)
+                handleAutoCompleteEventUseCase(interaction)
             }
         }
 
@@ -255,7 +255,7 @@ internal class DiscordBotImpl(
     private fun startTracking() {
         coroutineScope.launch {
             tracker.subscribe().collectLatest { dailyReport ->
-                postDailyReportEmbedUseCase.invoke(
+                postDailyReportEmbedUseCase(
                     statsChannelId = tracker.statsChannelId,
                     dailyReport = dailyReport,
                 )

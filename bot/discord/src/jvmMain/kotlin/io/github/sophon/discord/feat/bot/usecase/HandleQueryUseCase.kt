@@ -17,7 +17,7 @@ internal class HandleQueryUseCase(
     private val coroutineScope: CoroutineScope,
 ) {
     //tag command
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         botId: Snowflake,
         editableEmbedMap: MutableMap<String, BotOutput>,
@@ -37,7 +37,7 @@ internal class HandleQueryUseCase(
     }
 
     //slash command
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         editableEmbedMap: MutableMap<String, BotOutput>,
     ) {
@@ -59,7 +59,7 @@ internal class HandleQueryUseCase(
             game = routing.game,
         )
 
-        resultToEmbedUseCase.invoke(
+        resultToEmbedUseCase(
             interaction = interaction,
             source = source,
             result = result,
@@ -113,12 +113,12 @@ internal class HandleQueryUseCase(
             serverName = message.getGuildOrNull()?.name.orEmpty(),
         )
 
-        val result = routeCommandToFeatureUseCase.invoke(
+        val result = routeCommandToFeatureUseCase(
             source = source,
             message = message.content,
         )
 
-        resultToEmbedUseCase.invoke(message, source, result, coroutineScope, editableEmbedMap)
+        resultToEmbedUseCase(message, source, result, coroutineScope, editableEmbedMap)
     }
 
     private companion object {

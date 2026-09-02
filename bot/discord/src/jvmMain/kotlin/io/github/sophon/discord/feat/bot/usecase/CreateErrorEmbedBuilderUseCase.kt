@@ -15,7 +15,7 @@ import io.github.sophon.discord.util.mandatoryField
 internal class CreateErrorEmbedBuilderUseCase(
     private val commandRegistry: CommandRegistry,
 ) {
-    fun invoke(error: BotError): EmbedBuilder.() -> Unit = {
+    operator fun invoke(error: BotError): EmbedBuilder.() -> Unit = {
         title = "ERROR"
         color = Color(RED)
         description = "**$error**".truncate(EMBED_MAX_LENGTH)

@@ -14,7 +14,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @ExcludeFromCoverage("UI")
 internal class CreateJoinEmbedButtonUseCase {
-    fun invoke(
+    operator fun invoke(
         origin: Source,
         query: String,
     ): Result<BotOutput, BotError> {

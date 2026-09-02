@@ -29,7 +29,7 @@ import kotlin.uuid.Uuid
 internal class CreateMutableEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
@@ -78,7 +78,7 @@ internal class CreateMutableEmbedUseCase(
         }
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,

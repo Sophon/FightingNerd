@@ -19,7 +19,7 @@ internal class RouteCommandToFeatureUseCase(
         botFeatureRepo.getFeatures()
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         source: Source,
         message: String
     ): Result<BotOutput, BotError> {
@@ -46,7 +46,7 @@ internal class RouteCommandToFeatureUseCase(
         return result
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         commandString: String,
         source: Source,
         query: String,

@@ -20,7 +20,7 @@ import kotlin.uuid.ExperimentalUuidApi
 internal class CreatePromoEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
-    suspend fun invoke(something: MessageChannelBehavior) {
+    suspend operator fun invoke(something: MessageChannelBehavior) {
         val botOutput = promoMessage()
         if (botOutput.primaryEmbedBuilder == null) return
         if (botOutput.buttons == null) return
