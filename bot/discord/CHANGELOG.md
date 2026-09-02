@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v16.4.0] - 2026-09-02
+- autocomplete formatting
+
 ## [v16.3.0] - 2026-09-01
 - streamline error embeds further
 
