@@ -70,12 +70,12 @@ subprojects {
 }
 
 // Aggregated test report task
-tasks.register<TestReport>("unitTests") {
+tasks.register<TestReport>("testUnit") {
     destinationDirectory.set(file("${layout.buildDirectory.get().asFile}/reports/allTests"))
 
-    testResults.from(subprojects.mapNotNull { subproject ->
-        subproject.tasks.findByName("jvmTest")?.let { task ->
-            (task as? Test)?.binaryResultsDirectory
+    testResults.from(subprojects.flatMap { subproject ->
+        listOf("jvmTest", "testDebugUnitTest").mapNotNull { taskName ->
+            (subproject.tasks.findByName(taskName) as? Test)?.binaryResultsDirectory
         }
     })
 

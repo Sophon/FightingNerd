@@ -118,7 +118,7 @@ Kord based. Hosted on cloud via Fly.io (`fly.toml`)
 - tests
   - all tests are inside root `build.gradle.kts`
   - all workflows for tests are inside `github/workflows/`
-  - `unitTests` (`test-unit.yml`) 
+  - `testUnit` (`test-unit.yml`) 
     - runs all test classes
     - `./gradlew unitTests --rerun-tasks`
   - `testCoverage` (`test_coverage.yml`)
