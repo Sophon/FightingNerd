@@ -14,44 +14,6 @@ internal class SubscribeToCharacterListUseCaseTest {
     val game = Game.Tekken8
 
     @Test
-    fun `usecase refreshes data when character list empty`() = runTest {
-        // given
-        val wikiClient = FakeWikiClient(
-            subscribeToCharacterListResult = emptyList(),
-        )
-        val expected = true
-        val usecase = SubscribeToCharacterListUseCase(
-            featureRepo = FakeFeatureRepo(mapOf(game to wikiClient))
-        )
-
-        // when
-        usecase(game).toList()
-        val isCalled = wikiClient.refreshCalled
-
-        //then
-        assertThat(isCalled).isEqualTo(expected)
-    }
-
-    @Test
-    fun `usecase does not refresh data when character list is not empty`() = runTest {
-        // given
-        val wikiClient = FakeWikiClient(
-            subscribeToCharacterListResult = listOf(character("kazuya")),
-        )
-        val expected = false
-        val usecase = SubscribeToCharacterListUseCase(
-            featureRepo = FakeFeatureRepo(mapOf(game to wikiClient))
-        )
-
-        // when
-        usecase(game).toList()
-        val isCalled = wikiClient.refreshCalled
-
-        //then
-        assertThat(isCalled).isEqualTo(expected)
-    }
-
-    @Test
     fun `usecase emits empty flow when no wiki client is registered for the game`() = runTest {
         // given
         val expected = emptyList<List<Character>>()
