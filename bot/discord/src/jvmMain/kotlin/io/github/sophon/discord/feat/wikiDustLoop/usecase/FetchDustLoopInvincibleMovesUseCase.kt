@@ -14,7 +14,7 @@ import io.github.sophon.wikidustloop.integration.model.GGFilters
 import kotlinx.coroutines.flow.first
 
 internal class FetchDustLoopInvincibleMovesUseCase {
-    operator suspend fun invoke(
+    suspend operator fun invoke(
         game: Game,
         wiki: WikiClient,
         charName: String,
