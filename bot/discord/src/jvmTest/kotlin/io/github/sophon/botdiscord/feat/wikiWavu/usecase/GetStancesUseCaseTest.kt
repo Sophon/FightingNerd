@@ -25,7 +25,7 @@ internal class GetStancesUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(wiki.featureInfo, wiki, "jin")
+        val result = usecase(wiki.featureInfo, wiki, "jin")
 
         //then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -42,7 +42,7 @@ internal class GetStancesUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(wiki.featureInfo, wiki, "jin zen")
+        val result = usecase(wiki.featureInfo, wiki, "jin zen")
 
         //then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -55,7 +55,7 @@ internal class GetStancesUseCaseTest {
         val expected = emptyList<BotOutput.EmbedButton>()
 
         // when
-        val result = usecase.invoke(wiki.featureInfo, wiki, "law")
+        val result = usecase(wiki.featureInfo, wiki, "law")
 
         //then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -68,7 +68,7 @@ internal class GetStancesUseCaseTest {
         val expected = BotError.UnknownCharacter::class
 
         // when
-        val result = usecase.invoke(wiki.featureInfo, wiki, "unknown")
+        val result = usecase(wiki.featureInfo, wiki, "unknown")
 
         //then
         assertThat(result).isInstanceOf(Result.Error::class)

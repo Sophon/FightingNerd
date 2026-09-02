@@ -19,7 +19,7 @@ class ParseQueryIntoOperationUseCaseTest {
         val expectedOp = EwgfOperations.Operation.Data
 
         // when
-        val result = usecase.invoke(query)
+        val result = usecase(query)
 
         //then
         assertThat(result).isInstanceOf(expectedResult)
@@ -34,7 +34,7 @@ class ParseQueryIntoOperationUseCaseTest {
         val expectedOp = EwgfOperations.Operation.Search("786351781168939038")
 
         // when
-        val result = usecase.invoke(query)
+        val result = usecase(query)
 
         //then
         assertThat(result).isInstanceOf(expectedResult)
@@ -48,7 +48,7 @@ class ParseQueryIntoOperationUseCaseTest {
         val expectedResult = Result.Error::class
 
         // when
-        val result = usecase.invoke(query)
+        val result = usecase(query)
 
         //then
         assertThat(result).isInstanceOf(expectedResult)

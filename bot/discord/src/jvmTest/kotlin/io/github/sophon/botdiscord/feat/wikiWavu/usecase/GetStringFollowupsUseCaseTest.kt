@@ -26,7 +26,7 @@ internal class GetStringFollowupsUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(wiki, "law 1", wiki.featureInfo)
+        val result = usecase(wiki, "law 1", wiki.featureInfo)
 
         //then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -41,7 +41,7 @@ internal class GetStringFollowupsUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(wiki, "jin df4", wiki.featureInfo)
+        val result = usecase(wiki, "jin df4", wiki.featureInfo)
 
         //then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -54,7 +54,7 @@ internal class GetStringFollowupsUseCaseTest {
         val expected = BotError.UnknownCharacter::class
 
         // when
-        val result = usecase.invoke(wiki, "unknown df4", wiki.featureInfo)
+        val result = usecase(wiki, "unknown df4", wiki.featureInfo)
 
         //then
         assertThat(result).isInstanceOf(Result.Error::class)

@@ -54,7 +54,7 @@ internal class BindToDiscordFeaturesUseCaseTest {
         val usecase = BindToDiscordFeaturesUseCase(allRegisteredFeatures, coreFeatureRepoFor(config), adminFeature)
 
         // when
-        val result = usecase.invoke(config)
+        val result = usecase(config)
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -79,7 +79,7 @@ internal class BindToDiscordFeaturesUseCaseTest {
         val usecase = BindToDiscordFeaturesUseCase(allRegisteredFeatures, coreFeatureRepoFor(config), adminFeature)
 
         // when
-        val result = usecase.invoke(config)
+        val result = usecase(config)
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)

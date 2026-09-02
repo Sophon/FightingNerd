@@ -44,7 +44,7 @@ class FetchDustLoopInvincibleMovesUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(Game.GGST, wiki, "charId")
+        val result = useCase(Game.GGST, wiki, "charId")
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
