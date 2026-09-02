@@ -14,7 +14,7 @@ internal class LoadConfigurationUseCase(
     private val json: Json,
     private val fileManager: FileManager,
 ) {
-    fun invoke(configPath: String = CONFIG_PATH): Result<Config, BotError> {
+    operator fun invoke(configPath: String = CONFIG_PATH): Result<Config, BotError> {
         val result = fileManager.read(configPath)
             .map { configText ->
                 val jsonConfig = json.decodeFromString<JsonConfig>(configText).apply {

@@ -43,7 +43,7 @@ internal class LoadConfigurationUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(TEST_CONFIG_PATH)
+        val result = usecase(TEST_CONFIG_PATH)
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -56,7 +56,7 @@ internal class LoadConfigurationUseCaseTest {
         val missingConfigPath = "src/jvmTest/kotlin/io/github/sophon/botdiscord/feat/config/usecase/missingConfig.json"
 
         // when
-        val result = usecase.invoke(missingConfigPath)
+        val result = usecase(missingConfigPath)
 
         // then
         assertThat(result).isInstanceOf(Result.Error::class)

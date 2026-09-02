@@ -17,7 +17,7 @@ internal class BindToDiscordFeaturesUseCase(
     private val featureRepo: FeatureRepo,
     private val adminFeature: AdminDiscordFeature,
 ) {
-    fun invoke(config: Config): Result<List<DiscordRegisteredFeature>, BotError> {
+    operator fun invoke(config: Config): Result<List<DiscordRegisteredFeature>, BotError> {
         val enabledNames = featureRepo.getEnabledFeatureNames()
         val enabledFeatures = allRegisteredFeatures.filter {
             it is BotFeature || it.featureInfo.name in enabledNames
