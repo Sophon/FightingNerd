@@ -76,7 +76,7 @@ internal class FakeFeatureRepo(
     override fun getEnabledFeatureNames(): Set<String> = emptySet()
 }
 
-internal class FakeMediaRepo(): MediaRepo {
+internal class FakeMediaRepo : MediaRepo {
     val wipedGameIdList = mutableListOf<String>()
 
     override suspend fun wipe(gameId: String) {
