@@ -24,7 +24,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Run tests
-        run: ./gradlew jvmTest
+        run: ./gradlew jvmTest testDebugUnitTest
 
       - name: Upload test results
         if: failure()
