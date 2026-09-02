@@ -8,7 +8,7 @@ import io.github.sophon.fightingnerd.core.data.MediaRepo
 internal class WipeMediaUseCase(
     private val mediaRepo: MediaRepo,
 ) {
-    suspend fun invoke(gameId: String, characterId: CharacterId) {
+    suspend operator fun invoke(gameId: String, characterId: CharacterId) {
         mediaRepo.wipe(gameId, characterId)
     }
 }

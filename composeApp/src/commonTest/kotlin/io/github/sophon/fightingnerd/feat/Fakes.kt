@@ -79,31 +79,13 @@ internal class FakeFeatureRepo(
 internal class FakeMediaRepo(): MediaRepo {
     val wipedGameIdList = mutableListOf<String>()
 
-    override fun subscribeToCharsWithOfflineMedia(gameId: String): Flow<Set<CharacterId>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun save(
-        gameId: String,
-        characterId: CharacterId,
-        media: Move.Urls,
-    ): EmptyResult<AppError> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun wipe(gameId: String) {
         wipedGameIdList.add(gameId)
     }
 
-    override suspend fun wipe(gameId: String, characterId: CharacterId) {
-        TODO("Not yet implemented")
-    }
+    override suspend fun createUpdatedUrls(gameId: String, characterId: CharacterId, media: Move.Urls): Move.Urls = media
 
-    override suspend fun createUpdatedUrls(
-        gameId: String,
-        characterId: CharacterId,
-        media: Move.Urls,
-    ): Move.Urls {
-        TODO("Not yet implemented")
-    }
+    override fun subscribeToCharsWithOfflineMedia(gameId: String): Flow<Set<CharacterId>> = error("not needed")
+    override suspend fun save(gameId: String, characterId: CharacterId, media: Move.Urls): EmptyResult<AppError> = error("not needed")
+    override suspend fun wipe(gameId: String, characterId: CharacterId): Unit = error("not needed")
 }

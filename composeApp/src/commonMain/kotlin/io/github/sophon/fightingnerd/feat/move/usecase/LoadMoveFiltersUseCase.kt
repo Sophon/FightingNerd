@@ -11,7 +11,7 @@ import io.github.sophon.fightingnerd.core.model.AppError
 internal class LoadMoveFiltersUseCase(
     private val repo: FeatureRepo,
 ) {
-    fun invoke(gameId: String): Result<Set<Filter>, AppError> {
+    operator fun invoke(gameId: String): Result<Set<Filter>, AppError> {
         val game = Game.fromId(gameId) ?: return Result.Error(AppError.GameNotFound(gameId))
         val wiki = repo.getWikiClientFor(game) ?: return Result.Error(AppError.WikiClientNotFound(gameId))
 

@@ -13,7 +13,7 @@ internal class DownloadMediaUseCase(
     private val mediaRepo: MediaRepo,
 ) {
     //should show errors and successful result
-    fun invoke(
+    operator fun invoke(
         gameId: String,
         characterId: CharacterId,
         moveList: List<Move>,

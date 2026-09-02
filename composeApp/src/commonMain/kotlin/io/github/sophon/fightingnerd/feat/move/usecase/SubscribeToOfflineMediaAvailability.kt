@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 internal class SubscribeToOfflineMediaAvailability(
     private val mediaRepo: MediaRepo,
 ) {
-    fun invoke(gameId: String): Flow<Set<CharacterId>> {
+    operator fun invoke(gameId: String): Flow<Set<CharacterId>> {
         val flow = mediaRepo.subscribeToCharsWithOfflineMedia(gameId)
         return flow
     }

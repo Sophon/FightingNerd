@@ -69,7 +69,7 @@ internal class MoveListVM(
 
     val state: StateFlow<MoveListState> = combine(
         _state.onStart { subscribeToData() },
-        subscribeToOfflineMediaAvailability.invoke(gameId),
+        subscribeToOfflineMediaAvailability(gameId),
         _downloadProgress,
     ) { base, offlineChars, progress ->
         val availability = deriveAvailability(
@@ -141,7 +141,7 @@ internal class MoveListVM(
 
     fun onChangeStartup(minMax: MoveListState.FilterSheet.MinMax?) {
         _state.update { state ->
-            val normalized = normalizeSliderUseCase.invoke(
+            val normalized = normalizeSliderUseCase(
                 newMinMax = minMax,
                 sliderMin = FRAME_MIN_STARTUP,
             )
@@ -151,14 +151,14 @@ internal class MoveListVM(
 
     fun onChangeOnHit(minMax: MoveListState.FilterSheet.MinMax?) {
         _state.update { state ->
-            val normalized = normalizeSliderUseCase.invoke(newMinMax = minMax)
+            val normalized = normalizeSliderUseCase(newMinMax = minMax)
             state.copy(filterSheet = state.filterSheet.copy(onHit = normalized))
         }
     }
 
     fun onChangeOnBlock(minMax: MoveListState.FilterSheet.MinMax?) {
         _state.update { state ->
-            val normalized = normalizeSliderUseCase.invoke(newMinMax = minMax)
+            val normalized = normalizeSliderUseCase(newMinMax = minMax)
             state.copy(filterSheet = state.filterSheet.copy(onBlock = normalized))
         }
     }
@@ -186,7 +186,7 @@ internal class MoveListVM(
         if (_downloadProgress.value != null) return
 
         val moveList = _fullMoveList.value.movesById.values.toList()
-        downloadMediaUseCase.invoke(
+        downloadMediaUseCase(
             gameId = gameId,
             characterId = CharacterId(characterId),
             moveList = moveList,
@@ -198,7 +198,7 @@ internal class MoveListVM(
 
     fun onWipeMedia() {
         viewModelScope.launch {
-            wipeMediaUseCase.invoke(gameId = gameId, characterId = CharacterId(characterId))
+            wipeMediaUseCase(gameId = gameId, characterId = CharacterId(characterId))
         }
     }
 
@@ -235,7 +235,7 @@ internal class MoveListVM(
 
     private fun subscribeToData() {
         viewModelScope.launch {
-            subscribeToMoveListUseCase.invoke(gameId = gameId, characterId = CharacterId(characterId))
+            subscribeToMoveListUseCase(gameId = gameId, characterId = CharacterId(characterId))
                 .collectLatest { result ->
                     result
                         .onSuccess { (character, moveList) ->
@@ -273,7 +273,7 @@ internal class MoveListVM(
     }
 
     private fun loadMoveFiltersFor(gameId: String) {
-        loadMoveFiltersUseCase.invoke(gameId)
+        loadMoveFiltersUseCase(gameId)
             .onSuccess { filterSet ->
                 val immutableFilterSet = filterSet.toImmutableSet()
                 _state.update {
@@ -287,7 +287,7 @@ internal class MoveListVM(
     }
 
     private fun loadMoveGroupsFor(gameId: String) {
-        loadMoveGroupsUseCase.invoke(gameId)
+        loadMoveGroupsUseCase(gameId)
             .onSuccess { list ->
                 groupList = list.toImmutableList()
             }
@@ -304,7 +304,7 @@ internal class MoveListVM(
             searchQuery = state.searchQuery,
         )
 
-        val (ordered, bookmarkList) = groupMovesUseCase.invoke(
+        val (ordered, bookmarkList) = groupMovesUseCase(
             moveList = filtered,
             groupList = groupList,
         )

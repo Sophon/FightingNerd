@@ -20,7 +20,7 @@ internal class NormalizeSliderUseCaseTest {
         val expected = MoveListState.FilterSheet.MinMax(min = null, max = (FRAME_MAX - 2))
 
         // when
-        val result = usecase.invoke(newMinMax = minMaxBelowMin)
+        val result = usecase(newMinMax = minMaxBelowMin)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -36,7 +36,7 @@ internal class NormalizeSliderUseCaseTest {
         val expected = MoveListState.FilterSheet.MinMax(min = (FRAME_MIN + 1), max = null)
 
         // when
-        val result = usecase.invoke(newMinMax = minMaxAboveMax)
+        val result = usecase(newMinMax = minMaxAboveMax)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -52,7 +52,7 @@ internal class NormalizeSliderUseCaseTest {
         val expected = null
 
         // when
-        val result = usecase.invoke(newMinMax = minMaxOutside)
+        val result = usecase(newMinMax = minMaxOutside)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -68,7 +68,7 @@ internal class NormalizeSliderUseCaseTest {
         val expected = null
 
         // when
-        val result = usecase.invoke(newMinMax = invalidMinMax)
+        val result = usecase(newMinMax = invalidMinMax)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -80,7 +80,7 @@ internal class NormalizeSliderUseCaseTest {
         val expected = null
 
         // when
-        val result = usecase.invoke(newMinMax = null)
+        val result = usecase(newMinMax = null)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -96,7 +96,7 @@ internal class NormalizeSliderUseCaseTest {
         val expected = minMaxWithinRange
 
         // when
-        val result = usecase.invoke(newMinMax = minMaxWithinRange)
+        val result = usecase(newMinMax = minMaxWithinRange)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -112,7 +112,7 @@ internal class NormalizeSliderUseCaseTest {
         val expected = minMaxAtBoundaries
 
         // when
-        val result = usecase.invoke(newMinMax = minMaxAtBoundaries)
+        val result = usecase(newMinMax = minMaxAtBoundaries)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -128,7 +128,7 @@ internal class NormalizeSliderUseCaseTest {
         val expected = null
 
         // when
-        val result = usecase.invoke(newMinMax = bothNull)
+        val result = usecase(newMinMax = bothNull)
 
         //then
         assertThat(result).isEqualTo(expected)

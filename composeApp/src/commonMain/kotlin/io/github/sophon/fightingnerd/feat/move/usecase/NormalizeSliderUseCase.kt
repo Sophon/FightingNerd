@@ -5,7 +5,7 @@ import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN
 
 internal class NormalizeSliderUseCase {
-    fun invoke(
+    operator fun invoke(
         newMinMax: MoveListState.FilterSheet.MinMax?,
         sliderMin: Int = FRAME_MIN,
         sliderMax: Int = FRAME_MAX,

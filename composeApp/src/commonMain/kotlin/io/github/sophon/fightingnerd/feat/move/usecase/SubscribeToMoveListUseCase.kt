@@ -19,7 +19,7 @@ internal class SubscribeToMoveListUseCase(
     private val featureRepo: FeatureRepo,
     private val mediaRepo: MediaRepo,
 ) {
-    fun invoke(
+    operator fun invoke(
         gameId: String,
         characterId: CharacterId,
     ): Flow<Result<Pair<Character, List<Move>>, AppError>> {

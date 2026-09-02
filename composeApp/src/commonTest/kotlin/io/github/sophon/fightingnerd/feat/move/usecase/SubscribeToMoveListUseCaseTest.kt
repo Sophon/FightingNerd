@@ -10,6 +10,7 @@ import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
+import io.github.sophon.fightingnerd.feat.FakeMediaRepo
 import io.github.sophon.fightingnerd.feat.FakeWikiClient
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.toList
@@ -35,12 +36,13 @@ internal class SubscribeToMoveListUseCaseTest {
         // given
         val wikiClient = FakeWikiClient()
         val usecase = SubscribeToMoveListUseCase(
-            featureRepo = FakeFeatureRepo(mapOf(game to wikiClient))
+            featureRepo = FakeFeatureRepo(mapOf(game to wikiClient)),
+            mediaRepo = FakeMediaRepo(),
         )
         val expected = emptyList<Result<Pair<Character, List<Move>>, AppError>>()
 
         // when
-        val emissions = usecase.invoke("unknown-game", characterId).toList()
+        val emissions = usecase("unknown-game", characterId).toList()
 
         //then
         assertThat(emissions).isEqualTo(expected)
@@ -50,12 +52,13 @@ internal class SubscribeToMoveListUseCaseTest {
     fun `usecase emits empty flow when no wiki client is registered for the game`() = runTest {
         // given
         val usecase = SubscribeToMoveListUseCase(
-            featureRepo = FakeFeatureRepo(gameClients = emptyMap())
+            featureRepo = FakeFeatureRepo(gameClients = emptyMap()),
+            mediaRepo = FakeMediaRepo(),
         )
         val expected = emptyList<Result<Pair<Character, List<Move>>, AppError>>()
 
         // when
-        val emissions = usecase.invoke(game.id, characterId).toList()
+        val emissions = usecase(game.id, characterId).toList()
 
         //then
         assertThat(emissions).isEqualTo(expected)
@@ -69,12 +72,13 @@ internal class SubscribeToMoveListUseCaseTest {
             subscribeToMoveListResult = moves,
         )
         val usecase = SubscribeToMoveListUseCase(
-            featureRepo = FakeFeatureRepo(mapOf(game to wikiClient))
+            featureRepo = FakeFeatureRepo(mapOf(game to wikiClient)),
+            mediaRepo = FakeMediaRepo(),
         )
         val expected = AppError.WikiError("$characterId not found")
 
         // when
-        val result = usecase.invoke(game.id, characterId).first()
+        val result = usecase(game.id, characterId).first()
 
         //then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -90,12 +94,13 @@ internal class SubscribeToMoveListUseCaseTest {
             subscribeToMoveListResult = moves,
         )
         val usecase = SubscribeToMoveListUseCase(
-            featureRepo = FakeFeatureRepo(mapOf(game to wikiClient))
+            featureRepo = FakeFeatureRepo(mapOf(game to wikiClient)),
+            mediaRepo = FakeMediaRepo(),
         )
         val expected = Pair(kazuya, moves)
 
         // when
-        val result = usecase.invoke(game.id, characterId).first()
+        val result = usecase(game.id, characterId).first()
 
         //then
         assertThat(result).isInstanceOf(Result.Success::class)

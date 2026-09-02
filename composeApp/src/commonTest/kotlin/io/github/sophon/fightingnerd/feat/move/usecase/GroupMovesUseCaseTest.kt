@@ -27,39 +27,37 @@ internal class GroupMovesUseCaseTest {
     private object TekkenMoves {
         val heat1 = Move(
             id = "armor king-BAD.3h.2",
-            characterId = "id",
+            characterId = "armor king",
             input = "BAD.3h.2",
             urls = Move.Urls(wikiUrl = ""),
-            t8Properties = Move.T8Properties(isHeat = true),
         )
         val heat2 = Move(
             id = "armor king-db2h.1",
-            characterId = "id",
+            characterId = "armor king",
             input = "db2h.1",
             urls = Move.Urls(wikiUrl = ""),
-            t8Properties = Move.T8Properties(isHeat = true),
         )
         val n1 = Move(
             id = "armor king-1",
-            characterId = "id",
+            characterId = "armor king",
             input = "1",
             urls = Move.Urls(wikiUrl = ""),
         )
         val n2 = Move(
             id = "armor king-2",
-            characterId = "id",
+            characterId = "armor king",
             input = "2",
             urls = Move.Urls(wikiUrl = ""),
         )
         val f = Move(
             id = "armor king-f21",
-            characterId = "id",
+            characterId = "armor king",
             input = "f21",
             urls = Move.Urls(wikiUrl = ""),
         )
         val motion = Move(
             id = "armor king-ff4",
-            characterId = "id",
+            characterId = "armor king",
             input = "ff4",
             urls = Move.Urls(wikiUrl = ""),
         )
@@ -73,39 +71,39 @@ internal class GroupMovesUseCaseTest {
     )
     private object GGMoves {
         val n1 = Move(
-            id = "",
-            characterId = "",
+            id = "sol-5k",
+            characterId = "sol",
             input = "5k",
             urls = Move.Urls(wikiUrl = ""),
-            ggstProperties = Move.GGSTProperties(type = "normal"),
+            type = "normal",
         )
         val fs = Move(
-            id = "",
-            characterId = "",
+            id = "sol-fs",
+            characterId = "sol",
             input = "fs",
             urls = Move.Urls(wikiUrl = ""),
-            ggstProperties = Move.GGSTProperties(type = "normal"),
+            type = "normal",
         )
         val u = Move(
-            id = "",
-            characterId = "",
+            id = "sol-6d",
+            characterId = "sol",
             input = "6d/4d",
             urls = Move.Urls(wikiUrl = ""),
-            ggstProperties = Move.GGSTProperties(type = "other"),
+            type = "other",
         )
         val sp = Move(
-            id = "",
-            characterId = "",
+            id = "sol-214p",
+            characterId = "sol",
             input = "214p",
             urls = Move.Urls(wikiUrl = ""),
-            ggstProperties = Move.GGSTProperties(type = "special"),
+            type = "special",
         )
         val overdrive = Move(
-            id = "",
-            characterId = "",
+            id = "sol-632146h",
+            characterId = "sol",
             input = "632146h",
             urls = Move.Urls(wikiUrl = ""),
-            ggstProperties = Move.GGSTProperties(type = "super"),
+            type = "super",
         )
     }
 
@@ -119,39 +117,39 @@ internal class GroupMovesUseCaseTest {
     )
     private object SFMoves {
         val n1 = Move(
-            id = "",
-            characterId = "",
+            id = "ryu-5lp",
+            characterId = "ryu",
             input = "5lp",
             urls = Move.Urls(wikiUrl = ""),
-            sf6Properties = Move.SF6Properties(type = Move.SF6Properties.Type.GROUND_NORMAL)
+            type = "ground_normal",
         )
         val n2 = Move(
-            id = "",
-            characterId = "",
+            id = "ryu-jmp",
+            characterId = "ryu",
             input = "jmp",
             urls = Move.Urls(wikiUrl = ""),
-            sf6Properties = Move.SF6Properties(type = Move.SF6Properties.Type.AIR_NORMAL)
+            type = "air_normal",
         )
         val dr = Move(
-            id = "",
-            characterId = "",
+            id = "ryu-6hphk",
+            characterId = "ryu",
             input = "6hphk",
             urls = Move.Urls(wikiUrl = ""),
-            sf6Properties = Move.SF6Properties(type = Move.SF6Properties.Type.DRIVE)
+            type = "drive",
         )
         val sp = Move(
-            id = "",
-            characterId = "",
+            id = "ryu-236mp",
+            characterId = "ryu",
             input = "236mp",
             urls = Move.Urls(wikiUrl = ""),
-            sf6Properties = Move.SF6Properties(type = Move.SF6Properties.Type.SPECIAL)
+            type = "special",
         )
         val superArt = Move(
-            id = "",
-            characterId = "",
+            id = "ryu-214214k",
+            characterId = "ryu",
             input = "214214k",
             urls = Move.Urls(wikiUrl = ""),
-            sf6Properties = Move.SF6Properties(type = Move.SF6Properties.Type.SUPER)
+            type = "super",
         )
     }
 
@@ -179,7 +177,7 @@ internal class GroupMovesUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(moveList, tekkenGroups)
+        val result = usecase(moveList, tekkenGroups)
 
         //then
         assertThat(result.first).isEqualTo(expected)
@@ -204,7 +202,7 @@ internal class GroupMovesUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(moveList, ggGroups)
+        val result = usecase(moveList, ggGroups)
 
         //then
         assertThat(result.first).isEqualTo(expected)
@@ -229,7 +227,7 @@ internal class GroupMovesUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(moveList, sfGroups)
+        val result = usecase(moveList, sfGroups)
 
         //then
         assertThat(result.first).isEqualTo(expected)

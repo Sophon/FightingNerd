@@ -8,7 +8,7 @@ import io.github.sophon.wikiwavu.integration.model.T8Properties
 import io.github.sophon.wikiwavu.integration.model.TekkenGroups
 
 internal class GroupMovesUseCase {
-    fun invoke(
+    operator fun invoke(
         moveList: List<Move>,
         groupList: List<Group>,
     ): Pair<List<Move>, List<Bookmark>> {
