@@ -17,7 +17,7 @@ import kotlin.time.Duration.Companion.seconds
 internal class GetStringFollowupsUseCase(
     private val getMovesUseCase: GetMovesUseCase,
 ) {
-    suspend fun invoke(
+    suspend operator fun invoke(
         wiki: WikiClient,
         query: String,
         featureInfo: FeatureInfo,

@@ -141,14 +141,14 @@ internal class WavuWikiDiscordFeature(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
                     query = formattedQuery,
-                ) { _, wiki, query -> getStancesUseCase.invoke(featureInfo, wiki, query) }
+                ) { _, wiki, query -> getStancesUseCase(featureInfo, wiki, query) }
             }
             Command.Strings -> {
                 withWiki(
                     wikis = wikiClientMap,
                     game = Game.Tekken8,
                     query = formattedQuery,
-                ) { _, wiki, query -> getStringFollowupsUseCase.invoke(wiki, query, featureInfo) }
+                ) { _, wiki, query -> getStringFollowupsUseCase(wiki, query, featureInfo) }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
@@ -191,7 +191,7 @@ internal class WavuWikiDiscordFeature(
         val result = when (command) {
             Command.Stance -> {
                 val wiki = wikiClientMap[Game.Tekken8] ?: return Result.Error(BotError.UnsupportedGame())
-                getStancesUseCase.invoke(wiki = wiki, charName = characterId)
+                getStancesUseCase(wiki = wiki, charName = characterId)
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, characterId))

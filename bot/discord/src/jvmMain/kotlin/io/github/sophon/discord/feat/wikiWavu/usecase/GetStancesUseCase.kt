@@ -24,7 +24,7 @@ import kotlin.time.Duration.Companion.seconds
 internal class GetStancesUseCase(
     private val getMovesUseCase: GetMovesUseCase,
 ) {
-    suspend fun invoke(
+    suspend operator fun invoke(
         featureInfo: FeatureInfo,
         wiki: WikiClient,
         query: String,
@@ -85,7 +85,7 @@ internal class GetStancesUseCase(
         return botOutput
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         wiki: WikiClient,
         charName: String,
     ): Result<List<String>, BotError> {
