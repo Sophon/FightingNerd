@@ -23,7 +23,7 @@ internal class QuizOverviewVM(
 
     private fun loadWidgets() {
         viewModelScope.launch {
-            subscribeGameWidgetsUseCase.invoke().collect { gameWidgetList ->
+            subscribeGameWidgetsUseCase().collect { gameWidgetList ->
                 _state.update { it.copy(quizGameWidgetList = gameWidgetList.toImmutableList()) }
             }
         }

@@ -40,7 +40,7 @@ internal class GenerateQuestionsUseCaseTest {
         val expectedCount = COUNT_QUESTIONS
 
         // when
-        val result = usecase.invoke(game.id)
+        val result = usecase(game.id)
 
         //then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -61,7 +61,7 @@ internal class GenerateQuestionsUseCaseTest {
         val expectedCount = (COUNT_DISTRACTIONS + 1)
 
         // when
-        val result = usecase.invoke(game.id)
+        val result = usecase(game.id)
 
         //then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -79,7 +79,7 @@ internal class GenerateQuestionsUseCaseTest {
         val expected = AppError.WikiClientNotFound(game.id)
 
         // when
-        val result = usecase.invoke(game.id)
+        val result = usecase(game.id)
 
         //then
         assertThat(result).isInstanceOf(Result.Error::class)

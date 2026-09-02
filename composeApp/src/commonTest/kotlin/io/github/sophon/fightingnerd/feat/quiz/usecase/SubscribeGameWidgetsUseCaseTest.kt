@@ -30,7 +30,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         val expected = emptyList<QuizGameWidget>()
 
         // when
-        val emission = usecase.invoke().first()
+        val emission = usecase().first()
 
         // then
         assertThat(emission).isEqualTo(expected)
@@ -47,7 +47,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         val expected = emptyList<QuizGameWidget>()
 
         // when
-        val emission = usecase.invoke().first()
+        val emission = usecase().first()
 
         // then
         assertThat(emission).isEqualTo(expected)
@@ -64,7 +64,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         val expected = emptyList<QuizGameWidget>()
 
         // when
-        val emission = usecase.invoke().first()
+        val emission = usecase().first()
 
         // then
         assertThat(emission).isEqualTo(expected)
@@ -86,7 +86,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         )
 
         // when
-        val emission = usecase.invoke().first()
+        val emission = usecase().first()
 
         // then
         assertThat(emission).isEqualTo(expected)
@@ -108,7 +108,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         )
 
         // when
-        val emission = usecase.invoke().first()
+        val emission = usecase().first()
 
         // then
         assertThat(emission).isEqualTo(expected)
@@ -139,7 +139,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         )
 
         // when
-        val emission = usecase.invoke().first()
+        val emission = usecase().first()
 
         // then
         assertThat(emission).isEqualTo(expected)
@@ -174,7 +174,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         )
 
         // when
-        val emission = usecase.invoke().first()
+        val emission = usecase().first()
 
         // then
         assertThat(emission).isEqualTo(expected)

@@ -19,7 +19,7 @@ internal class SubscribeGameWidgetsUseCase(
     private val store: DataStore<Preferences>,
     private val featureRepo: FeatureRepo,
 ) {
-    fun invoke(): Flow<List<QuizGameWidget>> {
+    operator fun invoke(): Flow<List<QuizGameWidget>> {
         val widgets = store.data.flatMapLatest { preferences ->
             val enabledPairs = featureRepo.getGameClients()
                 .filter { (game, wikiClient) ->

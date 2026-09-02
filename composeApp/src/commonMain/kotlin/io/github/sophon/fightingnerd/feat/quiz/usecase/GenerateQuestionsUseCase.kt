@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.first
 internal class GenerateQuestionsUseCase(
     private val repo: FeatureRepo,
 ) {
-    suspend fun invoke(gameId: String): Result<List<Question>, AppError> {
+    suspend operator fun invoke(gameId: String): Result<List<Question>, AppError> {
         val game = Game.fromId(gameId) ?: return Result.Error(AppError.GameNotFound(gameId))
         val wiki = repo.getWikiClientFor(game) ?: return Result.Error(AppError.WikiClientNotFound(gameId))
 

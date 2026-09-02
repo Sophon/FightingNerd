@@ -88,7 +88,7 @@ internal class QuizVM(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            generateQuestionsUseCase.invoke(gameId = gameId)
+            generateQuestionsUseCase(gameId = gameId)
                 .onSuccess { questionList ->
                     _state.update { it.copy(questionList = questionList.toImmutableList()) }
                 }
