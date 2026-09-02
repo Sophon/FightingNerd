@@ -12,7 +12,7 @@ import io.github.sophon.integration.model.Player
 internal class UpdatePlayerUseCase(
     private val client: EwgfClient,
 ) {
-    suspend fun invoke(player: Player): EmptyResult<BotError> {
+    suspend operator fun invoke(player: Player): EmptyResult<BotError> {
         return client.updatePolarisId(player)
             .mapError { it.toDomainError() }
     }

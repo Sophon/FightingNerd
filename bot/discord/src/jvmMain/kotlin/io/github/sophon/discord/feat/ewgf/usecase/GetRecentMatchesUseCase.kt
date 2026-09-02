@@ -12,7 +12,7 @@ import io.github.sophon.integration.model.BattleSet
 internal class GetRecentMatchesUseCase(
     private val client: EwgfClient,
 ) {
-    suspend fun invoke(discordId: String): Result<List<BattleSet>, BotError> {
+    suspend operator fun invoke(discordId: String): Result<List<BattleSet>, BotError> {
         return client.downloadBattleData(discordId)
             .mapError { it.toDomainError() }
     }

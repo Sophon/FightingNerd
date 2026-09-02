@@ -43,7 +43,7 @@ internal class EwgfDiscordFeature(
             Result.Error(BotError.BotLogicError(command.name, query))
         }
 
-        return parseQueryIntoOperationUseCase.invoke(query)
+        return parseQueryIntoOperationUseCase(query)
             .flatMap { operation ->
                 performOperation(
                     discordId = origin.id,
@@ -61,18 +61,18 @@ internal class EwgfDiscordFeature(
                 Result.Success(ewgfHelpEmbed(featureInfo))
             }
             is EwgfOperations.Operation.Register -> {
-                registerPlayerUseCase.invoke(
+                registerPlayerUseCase(
                     discordId = discordId,
                     polarisId = operation.polarisId,
                 ).map { successEmbed(operation, featureInfo) }
             }
             is EwgfOperations.Operation.Data -> {
-                getPlayerUseCase.invoke(discordId).map { data ->
+                getPlayerUseCase(discordId).map { data ->
                     recentSetsEmbed(data, featureInfo)
                 }
             }
             is EwgfOperations.Operation.Update -> {
-                updatePlayerUseCase.invoke(
+                updatePlayerUseCase(
                     player = Player(
                         discordId = discordId,
                         polarisId = operation.polarisId,
@@ -80,11 +80,11 @@ internal class EwgfDiscordFeature(
                 ).map { successEmbed(operation, featureInfo) }
             }
             is EwgfOperations.Operation.Unregister -> {
-                unregisterPlayerUseCase.invoke(discordId)
+                unregisterPlayerUseCase(discordId)
                     .map { successEmbed(operation, featureInfo) }
             }
             is EwgfOperations.Operation.Search -> {
-                getPlayerUseCase.invoke(operation.discordId).map { data ->
+                getPlayerUseCase(operation.discordId).map { data ->
                     recentSetsEmbed(data, featureInfo)
                 }
             }

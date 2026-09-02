@@ -5,7 +5,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.ewgf.EwgfOperations
 
 internal class ParseQueryIntoOperationUseCase {
-    fun invoke(query: String): Result<EwgfOperations.Operation, BotError> {
+    operator fun invoke(query: String): Result<EwgfOperations.Operation, BotError> {
         if (query.isBlank()) return Result.Success(EwgfOperations.Operation.Data)
         query.extractTag()?.let { discordId ->
             return Result.Success(EwgfOperations.Operation.Search(discordId))

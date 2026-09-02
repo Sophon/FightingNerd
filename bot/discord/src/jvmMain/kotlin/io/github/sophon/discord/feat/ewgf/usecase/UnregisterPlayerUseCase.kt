@@ -11,7 +11,7 @@ import io.github.sophon.discord.feat.core.domain.toDomainError
 internal class UnregisterPlayerUseCase(
     private val client: EwgfClient,
 ) {
-    suspend fun invoke(discordId: String): EmptyResult<BotError> {
+    suspend operator fun invoke(discordId: String): EmptyResult<BotError> {
         return client.deletePlayer(discordId)
             .mapError { it.toDomainError() }
     }
