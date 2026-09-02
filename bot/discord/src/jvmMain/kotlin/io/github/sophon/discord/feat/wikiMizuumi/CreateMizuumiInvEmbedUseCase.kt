@@ -18,7 +18,7 @@ import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.seconds
 
 internal class CreateMizuumiInvEmbedUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         game: Game,
         wiki: WikiClient,
         featureInfo: FeatureInfo,
