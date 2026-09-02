@@ -14,7 +14,7 @@ import io.github.sophon.integration.util.toSource
 internal class UnbanUseCase(
     private val adminTool: AdminTool,
 ) {
-    suspend fun invoke(origin: Source, query: String): Result<Source, BotError> {
+    suspend operator fun invoke(origin: Source, query: String): Result<Source, BotError> {
         val target = query.toSource()
             ?: return Result.Error(BotError.InvalidQuery(query))
 

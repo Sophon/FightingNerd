@@ -13,7 +13,7 @@ import io.github.sophon.integration.model.Source
 internal class ProcessFeedbackUseCase(
     private val adminTool: AdminTool,
 ) {
-    suspend fun invoke(origin: Source, message: String): Result<AdminResult, BotError> {
+    suspend operator fun invoke(origin: Source, message: String): Result<AdminResult, BotError> {
         return adminTool.processFeedback(
             origin = origin,
             feedback = message,

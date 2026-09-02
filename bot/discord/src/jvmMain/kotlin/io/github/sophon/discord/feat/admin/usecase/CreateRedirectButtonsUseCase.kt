@@ -6,7 +6,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 @ExcludeFromCoverage("UI")
 internal class CreateRedirectButtonsUseCase {
-    fun invoke(
+    operator fun invoke(
         featureList: List<FeatureInfo>
     ): BotOutput.ButtonSet {
         val buttonList = featureList

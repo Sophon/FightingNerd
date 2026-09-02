@@ -15,7 +15,7 @@ import io.github.sophon.integration.util.toSource
 internal class BanUseCase(
     private val adminTool: AdminTool,
 ) {
-    suspend fun invoke(origin: Source, query: String): Result<Pair<Ban, Source>, BotError> {
+    suspend operator fun invoke(origin: Source, query: String): Result<Pair<Ban, Source>, BotError> {
         val target = query.toSource()
             ?: return Result.Error(BotError.InvalidQuery(query))
 

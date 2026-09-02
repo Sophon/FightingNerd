@@ -93,14 +93,14 @@ internal class AdminDiscordFeature(
 
 
     private suspend fun syncBans(): EmptyResult<BotError> {
-        return startAdminToolsUseCase.invoke(adminConfig)
+        return startAdminToolsUseCase(adminConfig)
     }
 
     private suspend fun feedback(
         origin: Source,
         message: String,
     ): Result<BotOutput, BotError> {
-        return processFeedbackUseCase.invoke(origin, message)
+        return processFeedbackUseCase(origin, message)
             .map { adminResult ->
                 BotOutput(
                     feedback = BotOutput.Feedback(
@@ -108,13 +108,13 @@ internal class AdminDiscordFeature(
                         origin = origin,
                         feedbackChannelList = adminConfig.feedbackChannelIdList,
                     ),
-                    buttons = createRedirectButtonsUseCase.invoke(featureList)
+                    buttons = createRedirectButtonsUseCase(featureList)
                 )
             }
     }
 
     private fun reply(origin: Source, query: String): Result<BotOutput, BotError> {
-        return replyToFeedbackUseCase.invoke(origin, query)
+        return replyToFeedbackUseCase(origin, query)
             .map { adminResult ->
                 BotOutput(
                     reply = BotOutput.Reply(
@@ -129,7 +129,7 @@ internal class AdminDiscordFeature(
         origin: Source,
         query: String
     ): Result<BotOutput, BotError> {
-        return banUseCase.invoke(origin, query)
+        return banUseCase(origin, query)
             .map { pair ->
                 val (ban, target) = pair
                 BotOutput(
@@ -145,7 +145,7 @@ internal class AdminDiscordFeature(
         origin: Source,
         query: String
     ): Result<BotOutput, BotError> {
-        return unbanUseCase.invoke(origin, query)
+        return unbanUseCase(origin, query)
             .map { target ->
                 BotOutput(
                     reply = BotOutput.Reply(
@@ -192,7 +192,7 @@ internal class AdminDiscordFeature(
     }
 
     private suspend fun updateFeatureData(): Result<BotOutput, BotError> {
-        val result = refreshDataUseCase.invoke()
+        val result = refreshDataUseCase()
             .map {
                 BotOutput(plainText = "Refreshing data")
             }

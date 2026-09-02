@@ -10,7 +10,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 internal class RefreshDataUseCase(
     private val featureRepo: Lazy<BotFeatureRepo>,
 ) {
-    suspend fun invoke(): EmptyResult<BotError> {
+    suspend operator fun invoke(): EmptyResult<BotError> {
         featureRepo.value.getFeatures().forEach { feature ->
             feature.refreshData()
         }

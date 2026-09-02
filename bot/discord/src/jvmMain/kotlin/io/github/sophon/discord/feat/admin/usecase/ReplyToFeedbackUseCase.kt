@@ -14,7 +14,7 @@ import io.github.sophon.integration.util.toSourceAndMessage
 internal class ReplyToFeedbackUseCase(
     private val adminTool: AdminTool,
 ) {
-    fun invoke(origin: Source, query: String): Result<AdminResult, BotError> {
+    operator fun invoke(origin: Source, query: String): Result<AdminResult, BotError> {
         val (target, reply) = query.toSourceAndMessage()
             ?: return Result.Error(BotError.InvalidQuery(query))
 

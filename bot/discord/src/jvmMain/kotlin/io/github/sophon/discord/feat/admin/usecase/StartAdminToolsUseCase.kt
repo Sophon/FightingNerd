@@ -12,7 +12,7 @@ import io.github.sophon.discord.feat.core.domain.toDomainError
 internal class StartAdminToolsUseCase(
     private val adminTool: AdminTool,
 ) {
-    fun invoke(adminConfig: Config.AdminConfig): EmptyResult<BotError> {
+    operator fun invoke(adminConfig: Config.AdminConfig): EmptyResult<BotError> {
         return adminTool.init(adminConfig)
             .mapError { it.toDomainError() }
     }
