@@ -13,7 +13,7 @@ import io.github.sophon.fightingnerd.feat.payment.model.TipOption
 
 @ExcludeFromCoverage("TODO: later")
 internal class PurchaseTipUseCase {
-    suspend fun invoke(option: TipOption): EmptyResult<PaymentError> {
+    suspend operator fun invoke(option: TipOption): EmptyResult<PaymentError> {
         val result = try {
             Purchases.sharedInstance.awaitPurchase(option.rcPackage)
             Result.Success(Unit)

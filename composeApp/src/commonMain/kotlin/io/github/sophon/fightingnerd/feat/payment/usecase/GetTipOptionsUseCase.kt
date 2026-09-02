@@ -10,7 +10,7 @@ import io.github.sophon.fightingnerd.feat.payment.model.TipOption
 
 @ExcludeFromCoverage("TODO: later")
 internal class GetTipOptionsUseCase {
-    suspend fun invoke(): Result<List<TipOption>, PaymentError> {
+    suspend operator fun invoke(): Result<List<TipOption>, PaymentError> {
         val result = try {
             val offerings = Purchases.sharedInstance.awaitOfferings()
             val current = offerings.current

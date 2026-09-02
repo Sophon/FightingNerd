@@ -58,7 +58,7 @@ internal class TipVM(
 
     fun onTipOptionSelected(tipOption: TipOption) {
         viewModelScope.launch {
-            purchaseTipUseCase.invoke(tipOption)
+            purchaseTipUseCase(tipOption)
                 .onSuccess {
                     val message = getString(Res.string.payment_tip_thank_you)
                     overlay.show(Toast(message = message, type = Toast.Type.SUCCESS))
@@ -85,7 +85,7 @@ internal class TipVM(
                 val next = current.copy(isLoading = true, hasLoadError = false)
                 next
             }
-            val result = getTipOptionsUseCase.invoke()
+            val result = getTipOptionsUseCase()
             val loaded = when (result) {
                 is Result.Success -> result.data
                 is Result.Error -> emptyList()
