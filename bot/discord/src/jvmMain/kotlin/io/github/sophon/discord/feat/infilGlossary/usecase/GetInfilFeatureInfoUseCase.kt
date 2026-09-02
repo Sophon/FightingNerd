@@ -8,5 +8,5 @@ import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient
 internal class GetInfilFeatureInfoUseCase(
     private val glossary: InfilGlossaryClient,
 ) {
-    fun invoke(): FeatureInfo = glossary.getFeatureInfo()
+    operator fun invoke(): FeatureInfo = glossary.getFeatureInfo()
 }

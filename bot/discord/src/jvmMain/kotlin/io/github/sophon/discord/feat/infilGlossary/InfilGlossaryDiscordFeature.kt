@@ -19,14 +19,14 @@ internal class InfilGlossaryDiscordFeature(
     private val startGlossaryUseCase: StartGlossaryUseCase,
     private val searchGlossaryUseCase: SearchGlossaryUseCase,
 ): DiscordRegisteredFeature {
-    override val featureInfo = getInfilFeatureInfoUseCase.invoke()
+    override val featureInfo = getInfilFeatureInfoUseCase()
     override val defaultCommand = Command.Gl
     override val otherCommands = listOf<Command>()
 
     override suspend fun start() {
         Napier.d(tag = TAG) { "Starting: $featureInfo" }
 
-        startGlossaryUseCase.invoke()
+        startGlossaryUseCase()
     }
 
     override suspend fun execute(
@@ -47,7 +47,7 @@ internal class InfilGlossaryDiscordFeature(
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        val result = startGlossaryUseCase.invoke()
+        val result = startGlossaryUseCase()
         return result
     }
 
@@ -55,7 +55,7 @@ internal class InfilGlossaryDiscordFeature(
     private suspend fun searchTerm(
         query: String,
     ): Result<BotOutput, BotError> {
-        return searchGlossaryUseCase.invoke(query)
+        return searchGlossaryUseCase(query)
             .map { item ->
                 BotOutput(primaryEmbedBuilder = glossaryEmbed(item, featureInfo))
             }

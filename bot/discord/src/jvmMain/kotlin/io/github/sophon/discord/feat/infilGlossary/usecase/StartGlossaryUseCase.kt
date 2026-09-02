@@ -10,7 +10,7 @@ import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient
 internal class StartGlossaryUseCase(
     private val glossary: InfilGlossaryClient,
 ) {
-    suspend fun invoke(): EmptyResult<BotError> {
+    suspend operator fun invoke(): EmptyResult<BotError> {
         val result = glossary.downloadGlossary()
             .mapError { BotError.Unknown(it.toString()) }
         return result

@@ -12,7 +12,7 @@ internal class SearchGlossaryUseCase(
     private val glossary: InfilGlossaryClient,
     private val startGlossaryUseCase: StartGlossaryUseCase,
 ) {
-    suspend fun invoke(query: String): Result<GlossaryItem, BotError> {
+    suspend operator fun invoke(query: String): Result<GlossaryItem, BotError> {
         return when (val result = glossary.search(query)) {
             is Result.Success -> {
                 result.data
