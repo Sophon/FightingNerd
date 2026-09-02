@@ -47,7 +47,7 @@ class GetCharacterUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(wiki, "Ryu")
+        val result = useCase(wiki, "Ryu")
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -65,7 +65,7 @@ class GetCharacterUseCaseTest {
         val wiki = FakeWikiClient(characterList = emptyList())
 
         // when
-        val result = useCase.invoke(wiki, "InvalidChar")
+        val result = useCase(wiki, "InvalidChar")
 
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -84,7 +84,7 @@ class GetCharacterUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(wiki, "kuni")
+        val result = useCase(wiki, "kuni")
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -102,7 +102,7 @@ class GetCharacterUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(wiki, "CHUNLI")
+        val result = useCase(wiki, "CHUNLI")
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -129,7 +129,7 @@ class GetCharacterUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(wiki, "Ken")
+        val result = useCase(wiki, "Ken")
 
         // then
         val (_, fastestNormals) = (result as Result.Success).data
@@ -154,7 +154,7 @@ class GetCharacterUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(wiki, "Ryu")
+        val result = useCase(wiki, "Ryu")
 
         // then
         val (_, fastestNormals) = (result as Result.Success).data
@@ -180,7 +180,7 @@ class GetCharacterUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(wiki, "Chun-Li")
+        val result = useCase(wiki, "Chun-Li")
 
         // then
         val (_, fastestNormals) = (result as Result.Success).data
@@ -205,7 +205,7 @@ class GetCharacterUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(wiki, "Guile")
+        val result = useCase(wiki, "Guile")
 
         // then
         val (_, fastestNormals) = (result as Result.Success).data

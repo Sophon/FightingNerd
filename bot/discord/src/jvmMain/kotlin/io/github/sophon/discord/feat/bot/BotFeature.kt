@@ -30,7 +30,7 @@ internal class BotFeature(
 ): DiscordRegisteredFeature, KoinComponent {
     private val featureRegistry: FeatureRegistry by inject()
 
-    override val featureInfo: FeatureInfo = getBotFeatureInfoUseCase.invoke()
+    override val featureInfo: FeatureInfo = getBotFeatureInfoUseCase()
     override val defaultCommand = Command.Join
     override val otherCommands = listOf(
         Command.Tip,

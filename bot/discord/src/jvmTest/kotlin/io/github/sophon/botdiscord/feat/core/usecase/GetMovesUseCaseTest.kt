@@ -50,7 +50,7 @@ class GetMovesUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(
+        val result = useCase(
             wiki = FakeWikiClient(
                 characterList = listOf(character),
                 moveListByCharacterId = mapOf(character.id to moves),
@@ -76,7 +76,7 @@ class GetMovesUseCaseTest {
         }
 
         // when
-        val result = useCase.invoke(
+        val result = useCase(
             wiki = FakeWikiClient(
                 characterList = listOf(character),
                 moveListByCharacterId = mapOf(character.id to listOf(homingMove, nonHomingMove)),
@@ -111,7 +111,7 @@ class GetMovesUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(
+        val result = useCase(
             wiki = FakeWikiClient(
                 characterList = listOf(character),
                 moveListByCharacterId = mapOf(character.id to moves),
@@ -132,7 +132,7 @@ class GetMovesUseCaseTest {
         val wiki = FakeWikiClient(characterList = emptyList())
 
         // when
-        val result = useCase.invoke(
+        val result = useCase(
             wiki = wiki,
             characterQuery = "missing",
             filter = Filter.None,

@@ -27,7 +27,7 @@ internal class GetStringFollowupsUseCase(
         }
         val charName = parts.first()
         val startingMoveInput = parts.drop(1).joinToString()
-        return getMovesUseCase.invoke(
+        return getMovesUseCase(
             wiki = wiki,
             characterQuery = charName,
             filter = TekkenFilters.Strings(startingMoveInput),

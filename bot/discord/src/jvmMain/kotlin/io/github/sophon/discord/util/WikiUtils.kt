@@ -28,7 +28,7 @@ internal suspend fun aggregateCharacters(
     val aggregated = mutableListOf<Pair<Game, Character>>()
     var lastError: BotError? = null
     for ((game, wiki) in wikiClientMap) {
-        when (val result = getCharactersUseCase.invoke(wiki)) {
+        when (val result = getCharactersUseCase(wiki)) {
             is Result.Success -> aggregated += result.data.map { game to it }
             is Result.Error -> lastError = result.error
         }
@@ -49,7 +49,7 @@ internal suspend fun firstMatchingWikiMoves(
 ): Result<List<Move>, BotError> {
     var lastError: BotError? = null
     for (wiki in wikiClientMap.values) {
-        when (val result = getMovesUseCase.invoke(wiki = wiki, characterQuery = characterId)) {
+        when (val result = getMovesUseCase(wiki = wiki, characterQuery = characterId)) {
             is Result.Success -> {
                 val moveList = result.data.second
                 if (moveList.isNotEmpty()) {

@@ -84,7 +84,7 @@ internal class DustLoopWikiDiscordFeature(
         val result = when (command) {
             Command.Fd -> {
                 if (game == null) {
-                    fetchMoveInWikisUseCase.invoke(
+                    fetchMoveInWikisUseCase(
                         wikis = wikiClientMap,
                         query = formattedQuery,
                         searchFun = ::searchMove,
@@ -100,12 +100,12 @@ internal class DustLoopWikiDiscordFeature(
             }
 
             Command.Alias -> {
-                createAliasOutputUseCase.invoke(gameId = query)
+                createAliasOutputUseCase(gameId = query)
             }
 
             Command.Char -> {
                 if (game == null) {
-                    fetchCharacterInWikisUseCase.invoke(
+                    fetchCharacterInWikisUseCase(
                         wikis = wikiClientMap,
                         query = formattedQuery,
                         searchFun = ::searchCharacter,
@@ -128,13 +128,13 @@ internal class DustLoopWikiDiscordFeature(
 
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
+        return syncWikiDataUseCase(wikiList = wikiClientMap.values)
     }
 
     override suspend fun getCharacterList(game: Game): Result<List<Character>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getCharactersUseCase.invoke(wiki)
+        val result = getCharactersUseCase(wiki)
         return result
     }
 
@@ -144,7 +144,7 @@ internal class DustLoopWikiDiscordFeature(
     ): Result<List<Move>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
+        val result = getMovesUseCase(characterQuery = characterId, wiki = wiki)
             .map { (_, moveList) -> moveList }
         return result
     }
@@ -167,7 +167,7 @@ internal class DustLoopWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getCharacterUseCase.invoke(wiki = wiki, charName = query)
+        return getCharacterUseCase(wiki = wiki, charName = query)
             .map { (character, fastestMoveList) ->
                 BotOutput(
                     primaryEmbedBuilder = createCharacterEmbedUseCase.invoke(
@@ -185,7 +185,7 @@ internal class DustLoopWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        val result = getMoveUseCase.invoke(wiki, query)
+        val result = getMoveUseCase(wiki, query)
             .map { (character, move) ->
                 createMoveEmbedUseCase.invoke(game, character ,move, featureInfo)
             }

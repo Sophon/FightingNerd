@@ -37,7 +37,7 @@ class SyncWikiDataUseCaseTest {
         val wiki = FakeWikiClient(refreshEvents = listOf(RefreshEvent.Finished(successCount = 0)))
 
         // when
-        val result = useCase.invoke(listOf(wiki))
+        val result = useCase(listOf(wiki))
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -52,7 +52,7 @@ class SyncWikiDataUseCaseTest {
         val wiki3 = FakeWikiClient(refreshEvents = listOf(RefreshEvent.Finished(successCount = 0)))
 
         // when
-        val result = useCase.invoke(listOf(wiki1, wiki2, wiki3))
+        val result = useCase(listOf(wiki1, wiki2, wiki3))
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -67,7 +67,7 @@ class SyncWikiDataUseCaseTest {
         val emptyList = emptyList<WikiClient>()
 
         // when
-        val result = useCase.invoke(emptyList)
+        val result = useCase(emptyList)
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -86,7 +86,7 @@ class SyncWikiDataUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(listOf(wiki))
+        val result = useCase(listOf(wiki))
 
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -111,7 +111,7 @@ class SyncWikiDataUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(listOf(wiki1, wiki2))
+        val result = useCase(listOf(wiki1, wiki2))
 
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -131,7 +131,7 @@ class SyncWikiDataUseCaseTest {
         val wiki3 = FakeWikiClient(refreshEvents = listOf(RefreshEvent.Finished(successCount = 0)))
 
         // when
-        val result = useCase.invoke(listOf(wiki1, wiki2, wiki3))
+        val result = useCase(listOf(wiki1, wiki2, wiki3))
 
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -152,7 +152,7 @@ class SyncWikiDataUseCaseTest {
         )
 
         // when
-        val result = useCase.invoke(listOf(wiki))
+        val result = useCase(listOf(wiki))
 
         // then
         assertThat(result).isInstanceOf(Result.Error::class)
@@ -185,7 +185,7 @@ class SyncWikiDataUseCaseTest {
         }
 
         // when
-        useCase.invoke(listOf(wiki1, wiki2, wiki3))
+        useCase(listOf(wiki1, wiki2, wiki3))
 
         // then
         assertThat(callOrder).containsExactly("wiki1", "wiki2", "wiki3")

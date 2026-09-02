@@ -81,7 +81,7 @@ internal class DreamCancelWikiDiscordFeature(
                         query = formattedQuery,
                     ) { _, wikiClient, query -> searchMove(wikiClient, query) }
                 } else {
-                    fetchMoveInWikisUseCase.invoke(
+                    fetchMoveInWikisUseCase(
                         wikis = wikiClientMap,
                         query = formattedQuery,
                         searchFun = { _, wikiClient, query -> searchMove(wikiClient, query) },
@@ -90,7 +90,7 @@ internal class DreamCancelWikiDiscordFeature(
             }
 
             Command.Alias -> {
-                createAliasOutputUseCase.invoke(gameId = query)
+                createAliasOutputUseCase(gameId = query)
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
@@ -100,13 +100,13 @@ internal class DreamCancelWikiDiscordFeature(
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
+        return syncWikiDataUseCase(wikiList = wikiClientMap.values)
     }
 
     override suspend fun getCharacterList(game: Game): Result<List<Character>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getCharactersUseCase.invoke(wiki)
+        val result = getCharactersUseCase(wiki)
         return result
     }
 
@@ -121,7 +121,7 @@ internal class DreamCancelWikiDiscordFeature(
     ): Result<List<Move>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
+        val result = getMovesUseCase(characterQuery = characterId, wiki = wiki)
             .map { (_, moveList) -> moveList }
         return result
     }
@@ -138,7 +138,7 @@ internal class DreamCancelWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMoveUseCase.invoke(wiki, query)
+        return getMoveUseCase(wiki, query)
             .map { (character, move) ->
                 val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
                     ?: emptyList()

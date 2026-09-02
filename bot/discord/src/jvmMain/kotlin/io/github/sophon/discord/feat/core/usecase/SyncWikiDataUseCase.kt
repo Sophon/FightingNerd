@@ -8,7 +8,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
 
 internal class SyncWikiDataUseCase {
-    suspend fun invoke(wikiList: Collection<WikiClient>): EmptyResult<BotError> {
+    suspend operator fun invoke(wikiList: Collection<WikiClient>): EmptyResult<BotError> {
         val errors = mutableListOf<BotError>()
 
         for (wiki in wikiList) {

@@ -106,7 +106,7 @@ internal class GetStancesUseCase(
             }
         }
 
-        return getMovesUseCase.invoke(
+        return getMovesUseCase(
             wiki = wiki,
             characterQuery = charName,
             filter = filter,

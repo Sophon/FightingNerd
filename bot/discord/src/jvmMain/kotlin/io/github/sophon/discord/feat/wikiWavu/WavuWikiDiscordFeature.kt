@@ -98,14 +98,14 @@ internal class WavuWikiDiscordFeature(
                         query = formattedQuery,
                     ) { _, wiki, query -> searchMove(wiki, query) }
                 } else {
-                    fetchMoveInWikisUseCase.invoke(
+                    fetchMoveInWikisUseCase(
                         wikis = wikiClientMap,
                         query = formattedQuery,
                     ) { _, wiki, query -> searchMove(wiki, query) }
                 }
             }
             Command.Alias -> {
-                createAliasOutputUseCase.invoke(gameId = query)
+                createAliasOutputUseCase(gameId = query)
             }
 
             Command.Pc -> {
@@ -158,13 +158,13 @@ internal class WavuWikiDiscordFeature(
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
+        return syncWikiDataUseCase(wikiList = wikiClientMap.values)
     }
 
     override suspend fun getCharacterList(game: Game): Result<List<Character>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getCharactersUseCase.invoke(wiki)
+        val result = getCharactersUseCase(wiki)
         return result
     }
 
@@ -179,7 +179,7 @@ internal class WavuWikiDiscordFeature(
     ): Result<List<Move>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
+        val result = getMovesUseCase(characterQuery = characterId, wiki = wiki)
             .map { (_, moveList) -> moveList }
         return result
     }
@@ -204,7 +204,7 @@ internal class WavuWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        val result = getMoveUseCase.invoke(wiki, query, sanitizeMoveInput = { cleanMoveInput() })
+        val result = getMoveUseCase(wiki, query, sanitizeMoveInput = { cleanMoveInput() })
             .map { (character, move) ->
                 val videoButtons = move.urls.videoUrl?.let { videoUrl ->
                     BotOutput.ButtonSet(
@@ -229,7 +229,7 @@ internal class WavuWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        val result = getMovesUseCase.invoke(
+        val result = getMovesUseCase(
             wiki = wiki,
             characterQuery = query,
             filter = TekkenFilters.PowerCrush,
@@ -255,7 +255,7 @@ internal class WavuWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMovesUseCase.invoke(
+        return getMovesUseCase(
             wiki = wiki,
             characterQuery = query,
             filter = TekkenFilters.Heat,
@@ -280,7 +280,7 @@ internal class WavuWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMovesUseCase.invoke(
+        return getMovesUseCase(
             wiki = wiki,
             characterQuery = query,
             filter = TekkenFilters.Homing,
@@ -305,7 +305,7 @@ internal class WavuWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMovesUseCase.invoke(
+        return getMovesUseCase(
             wiki = wiki,
             characterQuery = query,
             filter = TekkenFilters.Throw,

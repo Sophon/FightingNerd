@@ -9,7 +9,7 @@ import io.github.sophon.discord.URL_REPO
 
 @ExcludeFromCoverage("plain client call")
 internal class GetBotFeatureInfoUseCase {
-    fun invoke(): FeatureInfo {
+    operator fun invoke(): FeatureInfo {
         return FeatureInfo(
             name = BOT_NAME,
             url = URL_REPO,

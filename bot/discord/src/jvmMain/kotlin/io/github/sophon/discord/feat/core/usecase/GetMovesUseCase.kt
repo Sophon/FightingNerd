@@ -11,7 +11,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import kotlinx.coroutines.flow.first
 
 internal class GetMovesUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         wiki: WikiClient,
         characterQuery: String,
         filter: Filter = Filter.None,

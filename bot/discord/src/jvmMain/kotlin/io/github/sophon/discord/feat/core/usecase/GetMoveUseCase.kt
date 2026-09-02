@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.first
 
 @ExcludeFromCoverage("plain client call")
 internal class GetMoveUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         wiki: WikiClient,
         query: String,
         sanitizeMoveInput: String.() -> String = { this },

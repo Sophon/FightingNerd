@@ -23,9 +23,9 @@ internal class CreateAliasOutputUseCase(
     private val featureClientMap by lazy {
         featureRepo.getGameClients()
     }
-    private val featureInfo = getBotFeatureInfoUseCase.invoke()
+    private val featureInfo = getBotFeatureInfoUseCase()
 
-    suspend fun invoke(gameId: String?): Result<BotOutput, BotError> {
+    suspend operator fun invoke(gameId: String?): Result<BotOutput, BotError> {
         if (gameId.isNullOrBlank())
             return Result.Success(promptForGameOutput())
 

@@ -91,7 +91,7 @@ internal class DragDownWikiDiscordFeature(
                         action = { _, wiki, query -> searchMove(wiki, query) },
                     )
                 } else {
-                    fetchMoveInWikisUseCase.invoke(
+                    fetchMoveInWikisUseCase(
                         wikis = wikiClientMap,
                         query = formattedQuery,
                         searchFun = { _, wiki, query -> searchMove(wiki, query) },
@@ -101,7 +101,7 @@ internal class DragDownWikiDiscordFeature(
 
             Command.Char -> {
                 if (game == null) {
-                    fetchCharacterInWikisUseCase.invoke(
+                    fetchCharacterInWikisUseCase(
                         wikis = wikiClientMap,
                         query = formattedQuery,
                         searchFun = { _, wiki, query -> searchCharacter(wiki, query)},
@@ -132,13 +132,13 @@ internal class DragDownWikiDiscordFeature(
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
+        return syncWikiDataUseCase(wikiList = wikiClientMap.values)
     }
 
     override suspend fun getCharacterList(game: Game): Result<List<Character>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getCharactersUseCase.invoke(wiki)
+        val result = getCharactersUseCase(wiki)
         return result
     }
 
@@ -153,7 +153,7 @@ internal class DragDownWikiDiscordFeature(
     ): Result<List<Move>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
+        val result = getMovesUseCase(characterQuery = characterId, wiki = wiki)
             .map { (_, moveList) -> moveList }
         return result
     }
@@ -170,7 +170,7 @@ internal class DragDownWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getCharacterUseCase.invoke(wiki = wiki, charName = query)
+        return getCharacterUseCase(wiki = wiki, charName = query)
             .map { (character, _) ->
                 BotOutput(
                     primaryEmbedBuilder = dragDownCharacterEmbed(character, featureInfo),
@@ -182,7 +182,7 @@ internal class DragDownWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        val result = getMoveUseCase.invoke(wiki, query)
+        val result = getMoveUseCase(wiki, query)
             .map { (character, move) ->
                 val images = move.urls.hitboxImageList
                     .takeIf { it.size >= 2 }
@@ -206,7 +206,7 @@ internal class DragDownWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMovesUseCase.invoke(
+        return getMovesUseCase(
             wiki = wiki,
             characterQuery = query,
             filter = DragDownFilters.Specials,

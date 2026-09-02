@@ -9,7 +9,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 @ExcludeFromCoverage("plain client call")
 internal class FetchMoveInWikisUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         wikis: Map<Game, WikiClient>,
         query: String,
         searchFun: suspend (Game, WikiClient, String) -> Result<BotOutput, BotError>,

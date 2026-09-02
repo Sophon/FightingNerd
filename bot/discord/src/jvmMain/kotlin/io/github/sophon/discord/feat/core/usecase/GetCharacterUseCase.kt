@@ -10,7 +10,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import kotlinx.coroutines.flow.first
 
 internal class GetCharacterUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         wiki: WikiClient,
         charName: String
     ): Result<Pair<Character, List<Move>>, BotError> {

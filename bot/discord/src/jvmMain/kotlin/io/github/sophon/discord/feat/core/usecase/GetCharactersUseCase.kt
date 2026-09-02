@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.first
 
 @ExcludeFromCoverage("plain client call")
 internal class GetCharactersUseCase {
-    suspend fun invoke(wiki: WikiClient): Result<List<Character>, BotError> {
+    suspend operator fun invoke(wiki: WikiClient): Result<List<Character>, BotError> {
         val characterList = wiki.subscribeToCharacterList().first()
         return Result.Success(characterList)
     }

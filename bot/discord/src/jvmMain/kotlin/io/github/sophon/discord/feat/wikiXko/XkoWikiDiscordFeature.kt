@@ -76,7 +76,7 @@ internal class XkoWikiDiscordFeature(
                         query = formattedQuery,
                     ) { _, wiki, query -> searchMove(wiki, query) }
                 } else {
-                    fetchMoveInWikisUseCase.invoke(
+                    fetchMoveInWikisUseCase(
                         wikis = wikiClientMap,
                         query = formattedQuery,
                     ) { _, wiki, query -> searchMove(wiki, query) }
@@ -89,13 +89,13 @@ internal class XkoWikiDiscordFeature(
     }
 
     override suspend fun refreshData(): EmptyResult<BotError> {
-        return syncWikiDataUseCase.invoke(wikiList = wikiClientMap.values)
+        return syncWikiDataUseCase(wikiList = wikiClientMap.values)
     }
 
     override suspend fun getCharacterList(game: Game): Result<List<Character>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getCharactersUseCase.invoke(wiki)
+        val result = getCharactersUseCase(wiki)
         return result
     }
 
@@ -110,7 +110,7 @@ internal class XkoWikiDiscordFeature(
     ): Result<List<Move>, BotError> {
         val wiki = wikiClientMap[game]
             ?: return Result.Error(BotError.UnsupportedGame(game.displayName))
-        val result = getMovesUseCase.invoke(characterQuery = characterId, wiki = wiki)
+        val result = getMovesUseCase(characterQuery = characterId, wiki = wiki)
             .map { (_, moveList) -> moveList }
         return result
     }
@@ -127,7 +127,7 @@ internal class XkoWikiDiscordFeature(
         wiki: WikiClient,
         query: String,
     ): Result<BotOutput, BotError> {
-        return getMoveUseCase.invoke(wiki, query)
+        return getMoveUseCase(wiki, query)
             .map { (character, move) ->
                 BotOutput(
                     primaryEmbedBuilder = xkoMoveEmbed(character, move, featureInfo),
