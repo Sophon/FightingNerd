@@ -35,7 +35,7 @@ internal class SaveFeatureConfigUseCase(
     private val featureRepo: FeatureRepo,
     private val mediaRepo: MediaRepo,
 ) {
-    suspend fun invoke(
+    suspend operator fun invoke(
         featureList: List<UiFeatureSetting>,
     ): EmptyResult<SettingsError> {
         return withContext(Dispatchers.IO) {

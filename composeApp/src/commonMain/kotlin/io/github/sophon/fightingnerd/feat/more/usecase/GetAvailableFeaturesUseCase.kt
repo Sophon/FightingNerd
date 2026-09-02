@@ -17,7 +17,7 @@ internal class GetAvailableFeaturesUseCase(
     private val featureRepo: FeatureRepo,
     private val store: DataStore<Preferences>,
 ) {
-    suspend fun invoke(): Result<List<UiFeatureSetting>, SettingsError> {
+    suspend operator fun invoke(): Result<List<UiFeatureSetting>, SettingsError> {
         val gameClients: Map<Game, WikiClient> = featureRepo.getGameClients()
         val grouped = gameClients.entries.groupBy { it.value.featureInfo.name }
 

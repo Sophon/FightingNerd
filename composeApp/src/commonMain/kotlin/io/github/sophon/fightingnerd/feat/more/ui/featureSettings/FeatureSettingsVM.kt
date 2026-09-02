@@ -71,7 +71,7 @@ internal class FeatureSettingsVM(
 
     fun saveConfiguration() {
         viewModelScope.launch {
-            saveFeatureConfigUseCase.invoke(featureList = state.value.updatedFeatureList)
+            saveFeatureConfigUseCase(featureList = state.value.updatedFeatureList)
                 .onSuccess {
                     overlayService.show(
                         Toast(message = "Saved", type = Toast.Type.SUCCESS)
@@ -87,7 +87,7 @@ internal class FeatureSettingsVM(
 
     private fun loadFeatures() {
         viewModelScope.launch {
-            getAvailableFeaturesUseCase.invoke()
+            getAvailableFeaturesUseCase()
                 .onSuccess { featureList ->
                     val list = featureList.toImmutableList()
                     _state.update { it.copy(currentFeatureList = list, updatedFeatureList = list) }

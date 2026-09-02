@@ -53,7 +53,7 @@ internal class GetAvailableFeaturesUseCaseTest {
         val expectedGameOrder = listOf(Game.Tekken8.id, Game.StreetFighter6.id, Game.MK1.id)
 
         // when
-        val result = usecase.invoke()
+        val result = usecase()
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -72,7 +72,7 @@ internal class GetAvailableFeaturesUseCaseTest {
         val usecase = GetAvailableFeaturesUseCase(repo, store)
 
         // when
-        val result = usecase.invoke()
+        val result = usecase()
 
         // then
         val list = (result as Result.Success).data
