@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.emptyFlow
 internal class SubscribeToCharacterListUseCase(
     private val featureRepo: FeatureRepo,
 ) {
-    fun invoke(game: Game): Flow<List<Character>> {
+    operator fun invoke(game: Game): Flow<List<Character>> {
         val wikiClient = featureRepo.getWikiClientFor(game)
             ?: return emptyFlow()
 

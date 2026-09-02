@@ -27,7 +27,7 @@ internal class CheckCharacterHasMovesUseCaseTest {
         val expected = emptyList<Boolean>()
 
         // when
-        val emissions = usecase.invoke(game, characterId).toList()
+        val emissions = usecase(game, characterId).toList()
 
         //then
         assertThat(emissions).isEqualTo(expected)
@@ -43,7 +43,7 @@ internal class CheckCharacterHasMovesUseCaseTest {
         val expected = true
 
         // when
-        val result = usecase.invoke(game, characterId).first()
+        val result = usecase(game, characterId).first()
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -59,7 +59,7 @@ internal class CheckCharacterHasMovesUseCaseTest {
         val expected = false
 
         // when
-        val result = usecase.invoke(game, characterId).first()
+        val result = usecase(game, characterId).first()
 
         //then
         assertThat(result).isEqualTo(expected)

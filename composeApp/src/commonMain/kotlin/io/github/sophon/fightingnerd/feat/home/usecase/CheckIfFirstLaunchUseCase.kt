@@ -14,7 +14,7 @@ internal class CheckIfFirstLaunchUseCase(
     private val featureRepo: FeatureRepo,
     private val store: DataStore<Preferences>,
 ) {
-    internal suspend fun invoke() {
+    suspend operator fun invoke() {
         val firstTimeFlagKey = booleanPreferencesKey(KEY_FIRST_TIME_HOME_INIT_DONE)
         val snapshot = store.data.first()
         if (snapshot[firstTimeFlagKey] == true) return

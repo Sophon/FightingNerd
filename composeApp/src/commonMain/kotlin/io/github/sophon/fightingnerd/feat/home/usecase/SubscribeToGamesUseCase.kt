@@ -19,7 +19,7 @@ internal class SubscribeToGamesUseCase(
     private val featureRepo: FeatureRepo,
     private val store: DataStore<Preferences>,
 ) {
-    fun invoke(): Flow<Result<List<Pair<Game, FeatureInfo>>, AppError>> {
+    operator fun invoke(): Flow<Result<List<Pair<Game, FeatureInfo>>, AppError>> {
         val flow = store.data
             .map { preferences ->
                 val enabledPairs = featureRepo.getGameClients()

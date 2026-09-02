@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 internal class CheckCharacterHasMovesUseCase(
     private val featureRepo: FeatureRepo,
 ) {
-    fun invoke(
+    operator fun invoke(
         game: Game,
         characterId: String,
     ): Flow<Boolean> {

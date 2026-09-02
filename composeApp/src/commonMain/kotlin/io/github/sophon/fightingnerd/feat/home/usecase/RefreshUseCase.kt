@@ -17,7 +17,7 @@ internal class RefreshUseCase(
     private val featureRepo: FeatureRepo,
     private val store: DataStore<Preferences>,
 ) {
-    fun invoke(): Flow<Result<RefreshReport, AppError>> {
+    operator fun invoke(): Flow<Result<RefreshReport, AppError>> {
         val flow = channelFlow {
             val preferences = store.data.first()
             val enabledGameClients = featureRepo.getGameClients()

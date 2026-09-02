@@ -70,7 +70,7 @@ internal class HomeVM(
                     type = Toast.Type.INFO,
                 )
             )
-            refreshUseCase.invoke().collect { outcome ->
+            refreshUseCase().collect { outcome ->
                 outcome
                     .onSuccess { refreshReport ->
                         overlayService.show(
@@ -113,12 +113,12 @@ internal class HomeVM(
 
     private fun firstTimeCheck() {
         viewModelScope.launch {
-            checkIfFirstLaunchUseCase.invoke()
+            checkIfFirstLaunchUseCase()
         }
     }
 
     private suspend fun subscribeToEnabledGames() {
-        subscribeToGamesUseCase.invoke().collectLatest { result ->
+        subscribeToGamesUseCase().collectLatest { result ->
             result
                 .onSuccess { gameWikiPairList ->
                     val existingByGame = _state.value.gameWidgetList.associateBy { it.game }
@@ -145,7 +145,7 @@ internal class HomeVM(
         coroutineScope {
             widgets.forEach { gameWidget ->
                 launch {
-                    subscribeToCharacterListUseCase.invoke(gameWidget.game).collectLatest { characterList ->
+                    subscribeToCharacterListUseCase(gameWidget.game).collectLatest { characterList ->
                         val newState = _state.updateAndGet { state ->
                             val updatedList = state.gameWidgetList.map { widget ->
                                 if (widget.game == gameWidget.game) {
@@ -183,7 +183,7 @@ internal class HomeVM(
         coroutineScope {
             gameWidget.characterList.forEach { character ->
                 launch {
-                    checkCharacterHasMovesUseCase.invoke(
+                    checkCharacterHasMovesUseCase(
                         game = gameWidget.game,
                         characterId = character.id,
                     ).collect { hasMoves ->

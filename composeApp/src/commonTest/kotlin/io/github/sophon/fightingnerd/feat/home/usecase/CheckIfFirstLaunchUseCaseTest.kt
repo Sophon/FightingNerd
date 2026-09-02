@@ -56,7 +56,7 @@ internal class CheckIfFirstLaunchUseCaseTest {
         val expectedMbtlSetting = false
 
         // when
-        usecase.invoke()
+        usecase()
         val snapshot = store.data.first()
         val firstLaunchFlag = snapshot[firstTimeFlagKey]
         val tekken8Setting = snapshot[featureKey("Wavu Wiki", Game.Tekken8.id)]
@@ -81,7 +81,7 @@ internal class CheckIfFirstLaunchUseCaseTest {
         val expected = store.data.first()
 
         // when
-        usecase.invoke()
+        usecase()
         val after = store.data.first()
 
         // then

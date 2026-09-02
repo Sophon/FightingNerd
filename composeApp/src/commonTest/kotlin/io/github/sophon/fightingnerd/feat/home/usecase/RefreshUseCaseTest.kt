@@ -55,7 +55,7 @@ internal class RefreshUseCaseTest {
         val expectedRefreshCalled = true
 
         // when
-        val emissions = usecase.invoke().toList()
+        val emissions = usecase().toList()
         val refreshCalled = wikiClient.refreshCalled
 
         //then
@@ -86,7 +86,7 @@ internal class RefreshUseCaseTest {
         )
 
         // when
-        val emissions = usecase.invoke().toList()
+        val emissions = usecase().toList()
 
         //then
         assertThat(emissions).isEqualTo(expected)
@@ -105,7 +105,7 @@ internal class RefreshUseCaseTest {
         val expectedRefreshCalled = false
 
         // when
-        usecase.invoke().toList()
+        usecase().toList()
         val refreshCalled = wikiClient.refreshCalled
 
         //then
@@ -147,7 +147,7 @@ internal class RefreshUseCaseTest {
         )
 
         // when
-        val emissions = usecase.invoke().toList()
+        val emissions = usecase().toList()
 
         //then — per-client order is preserved but launches interleave; assert set equality
         assertThat(emissions).containsExactlyInAnyOrder(*expected.toTypedArray())

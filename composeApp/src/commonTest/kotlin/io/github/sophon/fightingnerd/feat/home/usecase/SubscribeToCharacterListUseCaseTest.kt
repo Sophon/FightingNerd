@@ -25,7 +25,7 @@ internal class SubscribeToCharacterListUseCaseTest {
         )
 
         // when
-        usecase.invoke(game).toList()
+        usecase(game).toList()
         val isCalled = wikiClient.refreshCalled
 
         //then
@@ -44,7 +44,7 @@ internal class SubscribeToCharacterListUseCaseTest {
         )
 
         // when
-        usecase.invoke(game).toList()
+        usecase(game).toList()
         val isCalled = wikiClient.refreshCalled
 
         //then
@@ -60,7 +60,7 @@ internal class SubscribeToCharacterListUseCaseTest {
         )
 
         // when
-        val emissions = usecase.invoke(game).toList()
+        val emissions = usecase(game).toList()
 
         //then
         assertThat(emissions).isEqualTo(expected)
@@ -82,7 +82,7 @@ internal class SubscribeToCharacterListUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(game).toList()
+        val result = usecase(game).toList()
 
         //then
         assertThat(result).isEqualTo(expected)
