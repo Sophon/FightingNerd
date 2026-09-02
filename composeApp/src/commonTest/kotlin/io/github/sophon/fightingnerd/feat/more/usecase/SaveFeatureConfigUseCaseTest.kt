@@ -3,12 +3,14 @@ package io.github.sophon.fightingnerd.feat.more.usecase
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.edit
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.isFalse
 import assertk.assertions.isInstanceOf
 import assertk.assertions.isTrue
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
+import io.github.sophon.fightingnerd.feat.FakeMediaRepo
 import io.github.sophon.fightingnerd.feat.FakeWikiClient
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
@@ -42,8 +44,8 @@ internal class SaveFeatureConfigUseCaseTest {
     fun `usecase saves feature settings to the store`() = runTest {
         // given
         val wavuClient = FakeWikiClient(name = "Wavu Wiki")
-        val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
-        val usecase = SaveFeatureConfigUseCase(store, repo)
+        val featureRepo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
+        val usecase = SaveFeatureConfigUseCase(store, featureRepo, FakeMediaRepo())
         val featureList = listOf(
             UiFeatureSetting(
                 featureName = "Wavu Wiki",
@@ -60,7 +62,7 @@ internal class SaveFeatureConfigUseCaseTest {
         )
 
         // when
-        val result = usecase.invoke(featureList)
+        val result = usecase(featureList)
 
         // then
         assertThat(result).isInstanceOf(Result.Success::class)
@@ -74,7 +76,7 @@ internal class SaveFeatureConfigUseCaseTest {
         // given
         val wavuClient = FakeWikiClient(name = "Wavu Wiki")
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
-        val usecase = SaveFeatureConfigUseCase(store, repo)
+        val usecase = SaveFeatureConfigUseCase(store, repo, FakeMediaRepo())
         store.edit { prefs -> prefs[featureKey("Wavu Wiki", Game.Tekken8.id)] = true }
         val featureList = listOf(
             UiFeatureSetting(
@@ -88,7 +90,7 @@ internal class SaveFeatureConfigUseCaseTest {
         )
 
         // when
-        usecase.invoke(featureList)
+        usecase(featureList)
 
         // then
         assertThat(wavuClient.clearCacheCalled).isTrue()
@@ -99,7 +101,7 @@ internal class SaveFeatureConfigUseCaseTest {
         // given
         val wavuClient = FakeWikiClient(name = "Wavu Wiki")
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
-        val usecase = SaveFeatureConfigUseCase(store, repo)
+        val usecase = SaveFeatureConfigUseCase(store, repo, FakeMediaRepo())
         val featureList = listOf(
             UiFeatureSetting(
                 featureName = "Wavu Wiki",
@@ -112,10 +114,36 @@ internal class SaveFeatureConfigUseCaseTest {
         )
 
         // when
-        usecase.invoke(featureList)
+        usecase(featureList)
 
         // then
         assertThat(wavuClient.clearCacheCalled).isTrue()
+    }
+
+    @Test
+    fun `usecase wipes media for a game that becomes disabled`() = runTest {
+        // given
+        val wavuClient = FakeWikiClient(name = "Wavu Wiki")
+        val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
+        val mediaRepo = FakeMediaRepo()
+        val usecase = SaveFeatureConfigUseCase(store, repo, mediaRepo)
+        store.edit { prefs -> prefs[featureKey("Wavu Wiki", Game.Tekken8.id)] = true }
+        val featureList = listOf(
+            UiFeatureSetting(
+                featureName = "Wavu Wiki",
+                iconUrl = "",
+                version = "1.0.0",
+                gameList = listOf(
+                    UiFeatureSetting.UiGame(displayName = Game.Tekken8.displayName, id = Game.Tekken8.id, isEnabled = false),
+                ),
+            ),
+        )
+
+        // when
+        usecase(featureList)
+
+        // then
+        assertThat(mediaRepo.wipedGameIdList).contains(Game.Tekken8.id)
     }
 
     @Test
@@ -123,7 +151,7 @@ internal class SaveFeatureConfigUseCaseTest {
         // given
         val wavuClient = FakeWikiClient(name = "Wavu Wiki")
         val repo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to wavuClient))
-        val usecase = SaveFeatureConfigUseCase(store, repo)
+        val usecase = SaveFeatureConfigUseCase(store, repo, FakeMediaRepo())
         store.edit { prefs -> prefs[featureKey("Wavu Wiki", Game.Tekken8.id)] = false }
         val featureList = listOf(
             UiFeatureSetting(
@@ -137,7 +165,7 @@ internal class SaveFeatureConfigUseCaseTest {
         )
 
         // when
-        usecase.invoke(featureList)
+        usecase(featureList)
 
         // then
         assertThat(wavuClient.clearCacheCalled).isFalse()
