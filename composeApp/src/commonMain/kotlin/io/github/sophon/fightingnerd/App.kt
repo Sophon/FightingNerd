@@ -124,7 +124,7 @@ private fun rememberFeaturesLoaded(): Boolean {
     val featureRepo = koinInject<FeatureRepo>()
     val loadConfigUseCase = koinInject<LoadConfigUseCase>()
     LaunchedEffect(Unit) {
-        loadConfigUseCase.invoke()
+        loadConfigUseCase()
             .onSuccess { config ->
                 featureRepo.initialize(config)
                 isInitialized = true

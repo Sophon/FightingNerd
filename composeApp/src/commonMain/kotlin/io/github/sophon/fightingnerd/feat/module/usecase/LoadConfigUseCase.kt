@@ -18,7 +18,7 @@ import org.jetbrains.compose.resources.MissingResourceException
 internal class LoadConfigUseCase(
     private val json: Json,
 ) {
-    suspend fun invoke(): Result<Config, AppError> {
+    suspend operator fun invoke(): Result<Config, AppError> {
         val result = try {
             val configString = Res.readBytes(CONFIG_PATH).decodeToString()
             val jsonConfig = json.decodeFromString<JsonConfig>(configString).apply {
