@@ -10,7 +10,7 @@ import io.github.sophon.discord.feat.wikiDustLoop.charEmbedBuilder
 
 @ExcludeFromCoverage("UI")
 internal class CreateCharacterEmbedUseCase {
-    fun invoke(
+    operator fun invoke(
         game: Game,
         character: Character,
         fastestMoveList: List<Move>,

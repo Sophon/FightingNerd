@@ -170,7 +170,7 @@ internal class DustLoopWikiDiscordFeature(
         return getCharacterUseCase(wiki = wiki, charName = query)
             .map { (character, fastestMoveList) ->
                 BotOutput(
-                    primaryEmbedBuilder = createCharacterEmbedUseCase.invoke(
+                    primaryEmbedBuilder = createCharacterEmbedUseCase(
                         game = game,
                         character = character,
                         fastestMoveList = fastestMoveList,
@@ -187,7 +187,7 @@ internal class DustLoopWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         val result = getMoveUseCase(wiki, query)
             .map { (character, move) ->
-                createMoveEmbedUseCase.invoke(game, character ,move, featureInfo)
+                createMoveEmbedUseCase(game, character ,move, featureInfo)
             }
         return result
     }

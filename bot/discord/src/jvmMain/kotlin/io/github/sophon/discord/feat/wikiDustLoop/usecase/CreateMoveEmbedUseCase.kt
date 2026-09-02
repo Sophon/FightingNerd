@@ -11,7 +11,7 @@ import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilder
 
 @ExcludeFromCoverage("UI")
 internal class CreateMoveEmbedUseCase {
-    fun invoke(
+    operator fun invoke(
         game: Game,
         character: Character,
         move: Move,
