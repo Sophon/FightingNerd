@@ -5,7 +5,11 @@
 - `Move` 
   - sliders reset when setting the same value
   - for startup, set max to 14, then set min to 14, one should reset back to MIN/MAX
-- `More` - Feature settings confirmation dialog
+- `More` 
+  - Feature settings confirmation dialog
+  - Update settings
+    - frequency, last updated time, update individual games
+    - Media status?
 - `Quiz` - individual char quiz
 
 ## Low prio
@@ -13,8 +17,16 @@
 - first time launch tutorial dialog
   - can tell the user about Swipe-to-refresh
 - older games
-  - T7
-  - GG Xrd
+  - Wavu 
+    - T7
+  - DustLoop
+    - GG Xrd
+    - DNF Duel
+  - SuperCombo
+    - [UMvC3](https://wiki.supercombo.gg/w/Ultimate_Marvel_vs_Capcom_3)
+  - Mizuumi
+    - Pokemon CC
+    - SamSho
   - [Injustice 2](https://gist.github.com/taozenforce/401947902eaa1dd343bac4beb33f2a6a)
 
 ## Ideas
