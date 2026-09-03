@@ -3,6 +3,7 @@
 ## [v16.5.0] - 2026-09-03
 - wrap all Kord calls with try-catch
 - changed label from EXAMPLES to HELP for consistency
+- `Wavu` - alias/altInput fixes
 
 ## [v16.4.0] - 2026-09-02
 - autocomplete formatting
