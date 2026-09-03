@@ -16,6 +16,8 @@ import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.util.kordRestCall
+import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,10 +31,11 @@ import kotlin.uuid.Uuid
 internal class CreateMutableEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
+        source: Source,
         buttons: BotOutput.ButtonSet? = null,
         editAfter: Duration = TIME_AUTO_EDIT_EMBED_S.seconds,
         deleteAfter: Duration? = null,
@@ -57,10 +60,12 @@ internal class CreateMutableEmbedUseCase(
 
             coroutineScope.launch {
                 delay(editAfter)
-                sentMessage.edit {
-                    components = mutableListOf()
-                    mutableEmbedBuilder.autoEditBuilder?.let { builder ->
-                        embed(builder)
+                kordRestCall(TAG, source) {
+                    sentMessage.edit {
+                        components = mutableListOf()
+                        mutableEmbedBuilder.autoEditBuilder?.let { builder ->
+                            embed(builder)
+                        }
                     }
                 }
             }
@@ -68,7 +73,9 @@ internal class CreateMutableEmbedUseCase(
             deleteAfter?.let { duration ->
                 coroutineScope.launch {
                     delay(duration)
-                    sentMessage.delete()
+                    kordRestCall(TAG, source) {
+                        sentMessage.delete()
+                    }
                 }
             }
 
@@ -78,10 +85,11 @@ internal class CreateMutableEmbedUseCase(
         }
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
+        source: Source,
         imageList: BotOutput.Images? = null,
         buttons: BotOutput.ButtonSet? = null,
         editAfter: Duration = TIME_AUTO_EDIT_EMBED_S.seconds,
@@ -103,8 +111,10 @@ internal class CreateMutableEmbedUseCase(
                     if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                         coroutineScope.launch {
                             delay(buttons.duration)
-                            interaction.getOriginalInteractionResponse().edit {
-                                components = mutableListOf()
+                            kordRestCall(TAG, source) {
+                                interaction.getOriginalInteractionResponse().edit {
+                                    components = mutableListOf()
+                                }
                             }
                         }
                     }
@@ -121,10 +131,12 @@ internal class CreateMutableEmbedUseCase(
 
             coroutineScope.launch {
                 delay(editAfter)
-                interaction.getOriginalInteractionResponseOrNull()?.edit {
-                    components = mutableListOf()
-                    mutableEmbedBuilder.autoEditBuilder?.let { builder ->
-                        embeds = mutableListOf(EmbedBuilder().apply(builder))
+                kordRestCall(TAG, source) {
+                    interaction.getOriginalInteractionResponseOrNull()?.edit {
+                        components = mutableListOf()
+                        mutableEmbedBuilder.autoEditBuilder?.let { builder ->
+                            embeds = mutableListOf(EmbedBuilder().apply(builder))
+                        }
                     }
                 }
             }
@@ -132,7 +144,9 @@ internal class CreateMutableEmbedUseCase(
             deleteAfter?.let { duration ->
                 coroutineScope.launch {
                     delay(duration)
-                    interaction.getOriginalInteractionResponseOrNull()?.delete()
+                    kordRestCall(TAG, source) {
+                        interaction.getOriginalInteractionResponseOrNull()?.delete()
+                    }
                 }
             }
 
@@ -140,5 +154,10 @@ internal class CreateMutableEmbedUseCase(
         } catch (e: RestRequestException) {
             Result.Error(BotError.Kord(e.toString()))
         }
+    }
+
+
+    private companion object {
+        const val TAG = "CreateMutableEmbedUseCase"
     }
 }

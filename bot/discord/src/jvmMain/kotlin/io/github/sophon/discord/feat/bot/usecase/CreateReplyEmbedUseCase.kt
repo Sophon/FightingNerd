@@ -13,10 +13,11 @@ import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.integration.model.Source
 
 @ExcludeFromCoverage("UI")
 internal class CreateReplyEmbedUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         reply: BotOutput.Reply,
     ): Result<Message, BotError> {
@@ -37,7 +38,7 @@ internal class CreateReplyEmbedUseCase {
         return result
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         reply: BotOutput.Reply,
     ): Result<PublicInteractionResponseBehavior, BotError> {

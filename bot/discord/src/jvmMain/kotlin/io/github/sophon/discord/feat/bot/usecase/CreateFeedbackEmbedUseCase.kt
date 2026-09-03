@@ -22,7 +22,7 @@ internal class CreateFeedbackEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         feedback: BotOutput.Feedback,
         buttonSet: BotOutput.ButtonSet?,
@@ -51,7 +51,7 @@ internal class CreateFeedbackEmbedUseCase(
         }
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         feedback: BotOutput.Feedback,
         buttonSet: BotOutput.ButtonSet?,

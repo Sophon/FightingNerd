@@ -10,10 +10,11 @@ import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.integration.model.Source
 
 @ExcludeFromCoverage("UI")
 internal class CreatePlainMessageUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         text: String,
     ): Result<Message, BotError> {
@@ -29,7 +30,7 @@ internal class CreatePlainMessageUseCase {
         }
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         text: String,
     ): Result<PublicInteractionResponseBehavior, BotError> {
