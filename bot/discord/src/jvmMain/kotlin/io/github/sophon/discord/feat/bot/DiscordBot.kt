@@ -82,10 +82,12 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
-            handleQueryUseCase.invoke(
-                interaction = interaction,
-                editableEmbedMap = editableEmbedMap,
-            )
+            kordRestCall(TAG) {
+                handleQueryUseCase.invoke(
+                    interaction = interaction,
+                    editableEmbedMap = editableEmbedMap,
+                )
+            }
         }
 
         kord.on<MessageCreateEvent> {
