@@ -149,76 +149,70 @@ internal fun MoveDto.formCompleteDataFromParent(movesById: Map<String, MoveDto>)
 
 
 private fun String.formAliases(alias: String?, alt: String?): List<String> {
-    val cleanedAliases = alias
-        .cleanHtmlOrNull()
-        ?.replace("\n", "")
-        ?.replace("\\n", "")
-        ?.lowercase()
-    val cleanedAlts = alt
-        .cleanHtmlOrNull()
-        ?.replace("\n", "")
-        ?.replace("\\n", "")
-        ?.lowercase()
+    val expanded = alias.toAliases() + alt.toAliases() + toAliases()
 
-    val aliases: MutableList<String> = listOfNotNull(cleanedAliases, cleanedAlts)
-        .asSequence()
-        .flatMap { it.split("* ", " or ") }
-        .map {
-            it
-                .trim()
-                .cleanMoveInput(keepSpaces = true)
-        }
-        .filter { it.isNotEmpty() }
-        .flatMap { alias ->
-            if (alias.contains("cd.")) {
-                listOf(alias, alias.replace(".", ""))
-            } else {
-                listOf(alias)
-            }
-        }
-        .toMutableList()
-
-    when {
-        this.startsWith("cd.df#") -> {
-            aliases.add(this.replaceFirst("cd.df#", "cd#"))
-        }
-        this.startsWith("cd.df") -> {
-            aliases.add(this.replaceFirst("cd.df", "cd"))
-            aliases.add(this.replaceFirst("cd.df", "cd."))
-        }
-        this.startsWith("cd.") -> aliases.add(this.replace("cd.", "cd"))
-    }
-
-    if (this.contains(".") && this.split(".").first().length == 3) {
-        aliases.add(this.replace(".", ""))
-    }
-
-    if (this.startsWith("ss.")) {
-        aliases.add(this.replace("ss.", "ss"))
-    }
-
-    if (this.contains("h.", ignoreCase = true) && this.startsWith("h.", ignoreCase = true).not()) {
-        val heatless = this.replace("h.", "")
-        aliases.add("h.$heatless")
-    }
-
-    if (this == "h.2+3") {
-        aliases.addAll(listOf("hs", "heatsmash"))
-    }
-
-    if (this.contains("cd.", ignoreCase = true)) {
-        aliases.add(this.replace("cd.", "cd"))
-    }
-
-    if (this.startsWith("hfc", ignoreCase = true)) {
-        aliases.add(this.replace("hfc", "fc"))
-    }
-
-    val result = aliases
+    val result = expanded
         .distinct()
         .filterNot { it == this }
 
     return result
+}
+
+private fun String?.toAliases(): List<String> {
+    val cleaned = this
+        .cleanHtmlOrNull()
+        ?.replace("\n", "")
+        ?.replace("\\n", "")
+        ?.lowercase()
+        ?: return emptyList()
+
+    val entries = cleaned
+        .split("* ", " or ")
+        .map { it.trim().cleanMoveInput(keepSpaces = true) }
+        .filter { it.isNotEmpty() }
+
+    val expanded = entries.flatMap { it.expandVariants() }
+    return expanded
+}
+
+private fun String.expandVariants(): List<String> {
+    val variants = mutableListOf(this)
+
+    when {
+        startsWith("cd.df#") -> variants.add(replaceFirst("cd.df#", "cd#"))
+        startsWith("cd.df") -> {
+            variants.add(replaceFirst("cd.df", "cd"))
+            variants.add(replaceFirst("cd.df", "cd."))
+        }
+        startsWith("cd.") -> variants.add(replace("cd.", "cd"))
+    }
+
+    if (contains(".") && split(".").first().length == 3) {
+        variants.add(replace(".", ""))
+    }
+
+    if (startsWith("ss.")) {
+        variants.add(replace("ss.", "ss"))
+    }
+
+    if (contains("h.", ignoreCase = true) && startsWith("h.", ignoreCase = true).not()) {
+        val heatless = replace("h.", "")
+        variants.add("h.$heatless")
+    }
+
+    if (this == "h.2+3") {
+        variants.addAll(listOf("hs", "heatsmash"))
+    }
+
+    if (contains("cd.", ignoreCase = true)) {
+        variants.add(replace("cd.", "cd"))
+    }
+
+    if (startsWith("hfc", ignoreCase = true)) {
+        variants.add(replace("hfc", "fc"))
+    }
+
+    return variants
 }
 
 private fun String?.formVideoUrl(): String? {
