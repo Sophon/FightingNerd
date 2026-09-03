@@ -280,7 +280,6 @@ internal class HandleAutoCompleteEventUseCase(
             ?.stripMarkdownLinks()
             ?.substringBefore("(")
             ?.substringBefore("~")
-            ?.substringBefore("-")
             ?.trim().orEmpty()
         val result = cleaned.ifBlank { "-" }
         return result
