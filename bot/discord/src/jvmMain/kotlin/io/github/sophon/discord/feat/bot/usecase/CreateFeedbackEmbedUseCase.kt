@@ -14,6 +14,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.integration.model.Source
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -22,10 +23,11 @@ internal class CreateFeedbackEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         feedback: BotOutput.Feedback,
         buttonSet: BotOutput.ButtonSet?,
+        source: Source,
     ): Result<Message, BotError> {
         return try {
             feedback.feedbackChannelList.forEach { channelId ->
@@ -47,14 +49,15 @@ internal class CreateFeedbackEmbedUseCase(
 
             Result.Success(sentMessage)
         } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
         }
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         feedback: BotOutput.Feedback,
         buttonSet: BotOutput.ButtonSet?,
+        source: Source,
     ): Result<PublicInteractionResponseBehavior, BotError> {
         return try {
             feedback.feedbackChannelList.forEach { channelId ->
@@ -76,7 +79,7 @@ internal class CreateFeedbackEmbedUseCase(
 
             Result.Success(behavior)
         } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
         }
     }
 }

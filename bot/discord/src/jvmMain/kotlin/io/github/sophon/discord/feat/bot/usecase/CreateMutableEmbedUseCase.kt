@@ -16,6 +16,7 @@ import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -29,10 +30,11 @@ import kotlin.uuid.Uuid
 internal class CreateMutableEmbedUseCase(
     private val discordButtonBuilder: DiscordButtonBuilder,
 ) {
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
+        source: Source,
         buttons: BotOutput.ButtonSet? = null,
         editAfter: Duration = TIME_AUTO_EDIT_EMBED_S.seconds,
         deleteAfter: Duration? = null,
@@ -74,14 +76,15 @@ internal class CreateMutableEmbedUseCase(
 
             Result.Success(uuid.toString())
         } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
         }
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         mutableEmbedBuilder: BotOutput.MutableEmbedBuilder,
         coroutineScope: CoroutineScope,
+        source: Source,
         imageList: BotOutput.Images? = null,
         buttons: BotOutput.ButtonSet? = null,
         editAfter: Duration = TIME_AUTO_EDIT_EMBED_S.seconds,
@@ -138,7 +141,7 @@ internal class CreateMutableEmbedUseCase(
 
             Result.Success(uuid.toString())
         } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
         }
     }
 }

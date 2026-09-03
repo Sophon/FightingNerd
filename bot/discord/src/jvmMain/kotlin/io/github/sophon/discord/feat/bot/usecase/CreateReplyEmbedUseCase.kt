@@ -13,12 +13,14 @@ import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.integration.model.Source
 
 @ExcludeFromCoverage("UI")
 internal class CreateReplyEmbedUseCase {
-    suspend fun invoke(
+    suspend operator fun invoke(
         message: Message,
         reply: BotOutput.Reply,
+        source: Source,
     ): Result<Message, BotError> {
         val result = try {
             val channel = message.kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
@@ -32,14 +34,15 @@ internal class CreateReplyEmbedUseCase {
 
             Result.Success(sentMessage)
         } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
         }
         return result
     }
 
-    suspend fun invoke(
+    suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         reply: BotOutput.Reply,
+        source: Source,
     ): Result<PublicInteractionResponseBehavior, BotError> {
         val result = try {
             val channel = interaction.kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
@@ -53,7 +56,7 @@ internal class CreateReplyEmbedUseCase {
 
             Result.Success(behavior)
         } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
         }
         return result
     }

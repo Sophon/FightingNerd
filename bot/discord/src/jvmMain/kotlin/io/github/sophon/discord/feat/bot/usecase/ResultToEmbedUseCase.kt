@@ -62,10 +62,11 @@ internal class ResultToEmbedUseCase(
                 ).onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.mutableEmbedBuilder != null -> {
-                createMutableEmbedUseCase.invoke(
+                createMutableEmbedUseCase(
                     message = message,
                     mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
                     coroutineScope = coroutineScope,
+                    source = source,
                     buttons = botOutput.buttons,
                     editAfter = TIME_AUTO_EDIT_EMBED_S.seconds, //TODO: DON'T ALWAYS AUTO EDIT
                 )
@@ -83,15 +84,28 @@ internal class ResultToEmbedUseCase(
                     .onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.plainText != null -> {
-                createPlainMessageUseCase.invoke(message, botOutput.plainText).onError {
+                createPlainMessageUseCase(
+                    message = message,
+                    text = botOutput.plainText,
+                    source = source,
+                ).onError {
                     Napier.e(tag = TAG) { "handleMessage: $it" }
                 }
             }
             botOutput.feedback != null -> {
-                createFeedbackEmbedUseCase.invoke(message, botOutput.feedback, botOutput.buttons)
+                createFeedbackEmbedUseCase(
+                    message = message,
+                    feedback = botOutput.feedback,
+                    buttonSet = botOutput.buttons,
+                    source = source,
+                )
             }
             botOutput.reply != null -> {
-                createReplyEmbedUseCase.invoke(message, botOutput.reply)
+                createReplyEmbedUseCase(
+                    message = message,
+                    reply = botOutput.reply,
+                    source = source,
+                )
             }
         }
 
@@ -127,10 +141,11 @@ internal class ResultToEmbedUseCase(
                 ).onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.mutableEmbedBuilder != null -> {
-                createMutableEmbedUseCase.invoke(
+                createMutableEmbedUseCase(
                     interaction = interaction,
                     mutableEmbedBuilder = botOutput.mutableEmbedBuilder,
                     coroutineScope = coroutineScope,
+                    source = source,
                     buttons = botOutput.buttons,
                 )
                     .onSuccess { uuid ->
@@ -147,15 +162,28 @@ internal class ResultToEmbedUseCase(
                     .onError { Napier.e(tag = TAG) { "embed: $it" } }
             }
             botOutput.plainText != null -> {
-                createPlainMessageUseCase.invoke(interaction, botOutput.plainText).onError {
+                createPlainMessageUseCase(
+                    interaction = interaction,
+                    text = botOutput.plainText,
+                    source = source,
+                ).onError {
                     Napier.e(tag = TAG) { "handleMessage: $it" }
                 }
             }
             botOutput.feedback != null -> {
-                createFeedbackEmbedUseCase.invoke(interaction, botOutput.feedback, botOutput.buttons)
+                createFeedbackEmbedUseCase(
+                    interaction = interaction,
+                    feedback = botOutput.feedback,
+                    buttonSet = botOutput.buttons,
+                    source = source,
+                )
             }
             botOutput.reply != null -> {
-                createReplyEmbedUseCase.invoke(interaction, botOutput.reply)
+                createReplyEmbedUseCase(
+                    interaction = interaction,
+                    reply = botOutput.reply,
+                    source = source,
+                )
             }
         }
 

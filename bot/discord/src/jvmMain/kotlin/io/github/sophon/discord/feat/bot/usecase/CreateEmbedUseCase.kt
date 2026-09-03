@@ -90,7 +90,7 @@ internal class CreateEmbedUseCase(
                 }
                 else -> {}
             }
-            Result.Error(BotError.Kord(e.toString()))
+            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
         }
     }
 
@@ -125,9 +125,11 @@ internal class CreateEmbedUseCase(
                 }
                 else -> {}
             }
-            Result.Error(BotError.Kord(e.toString()))
+
+            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
         }
     }
+
 
     private fun InteractionResponseCreateBuilder.respond(
         uuid: Uuid,
