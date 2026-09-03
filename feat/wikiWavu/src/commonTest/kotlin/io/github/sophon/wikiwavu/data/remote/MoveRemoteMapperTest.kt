@@ -191,13 +191,26 @@ class MoveRemoteMapperTest {
     fun `formAliases with hFC`() {
         // given
         val move = MoveSource.yakouga
-        val expectedAlias = listOf("hfcdb1+2", "fc1+2")
+        val expectedAlias = listOf("hfcdb1+2", "fcdb1+2", "fc1+2")
 
         // when
         val result = move.toDomain(character, emptyMap())
 
         //then
         assertThat(result.aliases).isEqualTo(expectedAlias)
+    }
+
+    @Test
+    fun `formAliases also creates aliases from alt input`() {
+        // given
+        val move = MoveSource.unsd4
+        val expectedAliases = listOf("fn4", "wds.4", "wds4", "unsd4")
+
+        // when
+        val result = move.toDomain(character, emptyMap())
+
+        //then
+        assertThat(result.aliases).isEqualTo(expectedAliases)
     }
     //endregion
 
@@ -1110,4 +1123,24 @@ private object MoveSource {
         video = "File:t8-p2-yoshimitsu-f+2,1.mp4",
         alt = "BT.2,1",
     ) //has Stance in alt inputs
+    val unsd4 = MoveDto(
+        id = "Reina-UNS.d+4",
+        name = "Santei Gedan-Geri",
+        input = "UNS.d+4",
+        parent = null,
+        target = "L",
+        damage = "14",
+        startup = "i20",
+        recv = "r33",
+        tot = "53",
+        crush = "cs6~35",
+        block = "-12",
+        hit = "+3 SEN",
+        ch = "[[Reina_combos#Mini-combos|+13 SEN]]",
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* Transition to SEN on hit only\n* Transition to standing (+0/[[Reina_combos#Mini-combos|+10]]) on hit with B\n* WDS.4: Unbufferable. i22 effective startup\n&lt;/div&gt;",
+        alias = "f,n,4",
+        image = null,
+        video = null,
+        alt = "WDS.4",
+    )
 }
