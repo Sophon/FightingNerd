@@ -82,10 +82,12 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
-            handleQueryUseCase.invoke(
-                interaction = interaction,
-                editableEmbedMap = editableEmbedMap,
-            )
+            kordRestCall(TAG) {
+                handleQueryUseCase.invoke(
+                    interaction = interaction,
+                    editableEmbedMap = editableEmbedMap,
+                )
+            }
         }
 
         kord.on<MessageCreateEvent> {
@@ -255,10 +257,12 @@ internal class DiscordBotImpl(
     private fun startTracking() {
         coroutineScope.launch {
             tracker.subscribe().collectLatest { dailyReport ->
-                postDailyReportEmbedUseCase.invoke(
-                    statsChannelId = tracker.statsChannelId,
-                    dailyReport = dailyReport,
-                )
+                kordRestCall(TAG) {
+                    postDailyReportEmbedUseCase.invoke(
+                        statsChannelId = tracker.statsChannelId,
+                        dailyReport = dailyReport,
+                    )
+                }
             }
         }
     }
