@@ -4,7 +4,6 @@
 
 ## Low prio
 
-- `commands` has button named EXAMPLES, should be renamed to HELP
 - `DragDown` - char embed should have the image as avatar, not main image
 - `operator fun` for use case invokes
 - from : to frame data function
