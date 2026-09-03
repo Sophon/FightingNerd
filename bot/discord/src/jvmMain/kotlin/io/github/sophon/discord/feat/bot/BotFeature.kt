@@ -115,7 +115,7 @@ internal class BotFeature(
             buttons = BotOutput.ButtonSet(
                 buttonList = listOf(
                     BotOutput.EmbedButton(
-                        label = "Examples",
+                        label = "Help",
                         action = BotOutput.EmbedButton.Action.Query(
                             Command.Help.name
                         )
