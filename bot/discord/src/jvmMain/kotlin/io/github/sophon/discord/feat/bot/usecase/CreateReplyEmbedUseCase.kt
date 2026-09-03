@@ -20,7 +20,6 @@ internal class CreateReplyEmbedUseCase {
     suspend operator fun invoke(
         message: Message,
         reply: BotOutput.Reply,
-        source: Source,
     ): Result<Message, BotError> {
         val result = try {
             val channel = message.kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
@@ -34,7 +33,7 @@ internal class CreateReplyEmbedUseCase {
 
             Result.Success(sentMessage)
         } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
+            Result.Error(BotError.Kord(e.toString()))
         }
         return result
     }
@@ -42,7 +41,6 @@ internal class CreateReplyEmbedUseCase {
     suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         reply: BotOutput.Reply,
-        source: Source,
     ): Result<PublicInteractionResponseBehavior, BotError> {
         val result = try {
             val channel = interaction.kord.getChannelOf<MessageChannel>(Snowflake(reply.target.channelId))
@@ -56,7 +54,7 @@ internal class CreateReplyEmbedUseCase {
 
             Result.Success(behavior)
         } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
+            Result.Error(BotError.Kord(e.toString()))
         }
         return result
     }

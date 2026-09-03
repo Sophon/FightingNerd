@@ -11,13 +11,13 @@ import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.create.InteractionResponseCreateBuilder
 import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
-import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
+import io.github.sophon.discord.util.kordRestCall
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
@@ -73,10 +73,8 @@ internal class CreateEmbedUseCase(
                 if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                     coroutineScope.launch {
                         delay(duration)
-                        runCatching {
+                        kordRestCall(TAG, source) {
                             sentMessage.edit { components = mutableListOf() }
-                        }.onFailure { error ->
-                            Napier.e(tag = TAG) { "${source.serverName}: ${error.message}" }
                         }
                     }
                 }
@@ -152,12 +150,10 @@ internal class CreateEmbedUseCase(
             if (buttons.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                 coroutineScope.launch {
                     delay(buttons.duration)
-                    runCatching {
+                    kordRestCall(TAG, source) {
                         interaction.getOriginalInteractionResponse().edit {
                             components = mutableListOf()
                         }
-                    }.onFailure { error ->
-                        Napier.e(tag = TAG) { "${source.serverName}: ${error.message}" }
                     }
                 }
             }

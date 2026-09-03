@@ -87,7 +87,6 @@ internal class ResultToEmbedUseCase(
                 createPlainMessageUseCase(
                     message = message,
                     text = botOutput.plainText,
-                    source = source,
                 ).onError {
                     Napier.e(tag = TAG) { "handleMessage: $it" }
                 }
@@ -97,14 +96,12 @@ internal class ResultToEmbedUseCase(
                     message = message,
                     feedback = botOutput.feedback,
                     buttonSet = botOutput.buttons,
-                    source = source,
                 )
             }
             botOutput.reply != null -> {
                 createReplyEmbedUseCase(
                     message = message,
                     reply = botOutput.reply,
-                    source = source,
                 )
             }
         }
@@ -165,7 +162,6 @@ internal class ResultToEmbedUseCase(
                 createPlainMessageUseCase(
                     interaction = interaction,
                     text = botOutput.plainText,
-                    source = source,
                 ).onError {
                     Napier.e(tag = TAG) { "handleMessage: $it" }
                 }
@@ -175,14 +171,12 @@ internal class ResultToEmbedUseCase(
                     interaction = interaction,
                     feedback = botOutput.feedback,
                     buttonSet = botOutput.buttons,
-                    source = source,
                 )
             }
             botOutput.reply != null -> {
                 createReplyEmbedUseCase(
                     interaction = interaction,
                     reply = botOutput.reply,
-                    source = source,
                 )
             }
         }

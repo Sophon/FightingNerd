@@ -257,10 +257,12 @@ internal class DiscordBotImpl(
     private fun startTracking() {
         coroutineScope.launch {
             tracker.subscribe().collectLatest { dailyReport ->
-                postDailyReportEmbedUseCase.invoke(
-                    statsChannelId = tracker.statsChannelId,
-                    dailyReport = dailyReport,
-                )
+                kordRestCall(TAG) {
+                    postDailyReportEmbedUseCase.invoke(
+                        statsChannelId = tracker.statsChannelId,
+                        dailyReport = dailyReport,
+                    )
+                }
             }
         }
     }

@@ -22,6 +22,7 @@ import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton
+import io.github.sophon.discord.util.kordRestCall
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
@@ -111,8 +112,10 @@ internal class HandleButtonInteractionUseCase(
                             if (buttonSet.duration != EMBED_BUTTON_DURATION_INF.seconds) {
                                 coroutineScope.launch {
                                     delay(buttonSet.duration)
-                                    interaction.getOriginalInteractionResponse().edit {
-                                        components = mutableListOf()
+                                    kordRestCall(TAG, source) {
+                                        interaction.getOriginalInteractionResponse().edit {
+                                            components = mutableListOf()
+                                        }
                                     }
                                 }
                             }
@@ -223,5 +226,9 @@ internal class HandleButtonInteractionUseCase(
             }
         }
         return Result.Success(Unit)
+    }
+
+    private companion object {
+        const val TAG = "HandleButtonInteractionUseCase"
     }
 }

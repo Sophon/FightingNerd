@@ -17,7 +17,6 @@ internal class CreatePlainMessageUseCase {
     suspend operator fun invoke(
         message: Message,
         text: String,
-        source: Source,
     ): Result<Message, BotError> {
         return try {
             val sentMessage = message.channel.createMessage {
@@ -27,20 +26,19 @@ internal class CreatePlainMessageUseCase {
             }
             Result.Success(sentMessage)
         }  catch (e: RestRequestException) {
-            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
+            Result.Error(BotError.Kord(e.toString()))
         }
     }
 
     suspend operator fun invoke(
         interaction: GuildChatInputCommandInteraction,
         text: String,
-        source: Source,
     ): Result<PublicInteractionResponseBehavior, BotError> {
         return try {
             val behavior = interaction.respondPublic { content = text }
             Result.Success(behavior)
         } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord("${source.serverName}: ${e.toString()}"))
+            Result.Error(BotError.Kord(e.toString()))
         }
     }
 }
