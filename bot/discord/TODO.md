@@ -2,13 +2,14 @@
 
 ## High prio
 
+- `character` and maybe other params - shorten
+- `help` and `commands` - optional and mandatory parameters
 - Mizuumi
   - Pokemon CC
   - SamSho
 
 ## Low prio
 
-- `help` and `commands` - optional and mandatory parameters
 - `DragDown` - char embed should have the image as avatar, not main image
 - `operator fun` for use case invokes
 - from : to frame data function
