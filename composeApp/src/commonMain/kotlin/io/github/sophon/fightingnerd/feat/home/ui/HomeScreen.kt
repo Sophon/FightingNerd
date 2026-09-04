@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.fightingnerd.core.ui.components.CharacterMatrix
 import io.github.sophon.fightingnerd.core.ui.components.GameWidget
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -48,10 +49,21 @@ private fun Content(
         GameWidget(
             widgetList = state.gameWidgetList,
             onExpandWidget = onExpandWidget,
-            onCharacterClick = onCharacterClick,
             modifier = Modifier
                 .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
-        )
+        ) { gameId ->
+            state.gameWidgetList
+                .firstOrNull { it.game.id == gameId }
+                ?.let { gameWidget ->
+                    CharacterMatrix(
+                        isExpanded = gameWidget.isExpanded,
+                        characterList = gameWidget.characterList,
+                        onCharacterClick = { characterId ->
+                            onCharacterClick(gameId, characterId)
+                        },
+                    )
+                }
+        }
     }
 }
 
