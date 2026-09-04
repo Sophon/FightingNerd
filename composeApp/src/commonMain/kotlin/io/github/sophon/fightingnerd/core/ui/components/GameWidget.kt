@@ -18,7 +18,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -34,26 +37,23 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
-import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
-import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-/**
- * TODO: decouple from Character Matrix
- * we pass the character matrix from outside, we get Game parameter
- * we also probably want a Trailing button - needed for Quiz maybe
- */
 @Composable
 internal fun GameWidget(
-    widgetList: ImmutableList<GameWidget>,
+    gameFeatureList: ImmutableList<GameFeature>,
     onExpandWidget: (Game) -> Unit,
     modifier: Modifier = Modifier,
+    leadingIcon: ImageVector? = null,
+    onLeadingClick: () -> Unit = {},
     content: @Composable (gameId: String) -> Unit,
 ) {
     BoxWithConstraints(
@@ -62,27 +62,21 @@ internal fun GameWidget(
         LazyColumn(
             contentPadding = LocalBottomBarPadding.current,
         ) {
-            widgetList.forEach { widget ->
-                item(key = "header_${widget.game.id}") {
+            gameFeatureList.forEach { gameFeature ->
+                item(key = "header_${gameFeature.game.id}") {
                     WidgetHeader(
-                        game = widget.game,
-                        featureName = widget.featureName,
-                        isExpanded = widget.isExpanded,
+                        game = gameFeature.game,
+                        featureName = gameFeature.featureName,
+                        isExpanded = gameFeature.isExpanded,
                         onExpandClick = onExpandWidget,
-                        isLoading = widget.isLoading,
+                        isLoading = gameFeature.isLoading,
+                        leadingIcon = leadingIcon,
+                        onLeadingClick = onLeadingClick,
                     )
                 }
 
-                item(key = "content_${widget.game.id}") {
-//                    CharacterMatrix(
-//                        isExpanded = widget.isExpanded,
-//                        characterList = widget.characterList,
-//                        onCharacterClick = { characterId ->
-//                            onCharacterClick(widget.game.id, characterId)
-//                        }
-//                    )
-
-                    content(widget.game.id)
+                item(key = "content_${gameFeature.game.id}") {
+                    content(gameFeature.game.id)
                 }
 
                 item {
@@ -101,6 +95,8 @@ private fun WidgetHeader(
     onExpandClick: (Game) -> Unit,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
+    leadingIcon: ImageVector? = null,
+    onLeadingClick: () -> Unit = {},
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val shape = if (isExpanded) {
@@ -132,15 +128,31 @@ private fun WidgetHeader(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f),
         ) {
-            AsyncImage(
-                model = game.iconUrl,
-                contentDescription = featureName,
-                placeholder = painterResource(Res.drawable.compose_multiplatform),
-                error = painterResource(Res.drawable.compose_multiplatform),
-                modifier = Modifier
-                    .size(nerdDimensions.iconHeadline)
-                    .padding(nerdDimensions.inlineGapTight)
-            )
+            if (leadingIcon != null) {
+                IconButton(
+                    onClick = onLeadingClick,
+                    modifier = Modifier
+                        .size(nerdDimensions.iconHeadline)
+                        .padding(nerdDimensions.inlineGapTight)
+                ) {
+                    Icon(
+                        imageVector = leadingIcon,
+                        contentDescription = null,
+                        tint = nerdColorPalette.textPrimary,
+                        modifier = Modifier.size(nerdDimensions.iconLarge)
+                    )
+                }
+            } else {
+                AsyncImage(
+                    model = game.iconUrl,
+                    contentDescription = featureName,
+                    placeholder = painterResource(Res.drawable.compose_multiplatform),
+                    error = painterResource(Res.drawable.compose_multiplatform),
+                    modifier = Modifier
+                        .size(nerdDimensions.iconHeadline)
+                        .padding(nerdDimensions.inlineGapTight)
+                )
+            }
 
             Text(
                 text = game.shortDisplayName.uppercase(),
@@ -177,14 +189,69 @@ private fun WidgetHeader(
 
 
 //region PREVIEW
+internal object GameWidgets {
+    private fun mockCharacters(): ImmutableList<GameFeature.UiCharacter> {
+        val names = listOf("Zuzana", "Eva", "Karolina", "Marcela", "Zdenka", "Hana")
+        val mocked = names.mapIndexed { index, name ->
+            GameFeature.UiCharacter(
+                id = "char_$index",
+                displayName = name,
+                queryName = "",
+                hasMoves = true,
+            )
+        }.toImmutableList()
+        return mocked
+    }
+
+    private fun mockWidget(
+        game: Game,
+        featureName: String,
+        isExpanded: Boolean,
+    ): GameFeature {
+        val widget = GameFeature(
+            game = game,
+            featureName = featureName,
+            characterList = mockCharacters(),
+            isExpanded = isExpanded,
+        )
+        return widget
+    }
+
+    val PREVIEW: ImmutableList<GameFeature> = persistentListOf(
+        mockWidget(Game.Tekken8, "Wavu Wiki", isExpanded = true),
+        mockWidget(Game.StreetFighter6, "SuperCombo", isExpanded = false),
+        mockWidget(Game.KoFXV, "Dream Cancel", isExpanded = false),
+    )
+}
+
 @Preview
 @Composable
 private fun WidgetSectionPreview() {
     FightingNerdTheme {
-        val widgetList = HomeViewState.PREVIEW.gameWidgetList
+        val widgetList = GameWidgets.PREVIEW
         GameWidget(
-            widgetList = widgetList,
+            gameFeatureList = widgetList,
             onExpandWidget = {},
+        ) { gameId ->
+            val game = widgetList.first { it.game.id == gameId }
+            CharacterMatrix(
+                isExpanded = game.isExpanded,
+                characterList = game.characterList,
+                onCharacterClick = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun LeadingIconPreview() {
+    FightingNerdTheme {
+        val widgetList = GameWidgets.PREVIEW
+        GameWidget(
+            gameFeatureList = widgetList,
+            onExpandWidget = {},
+            leadingIcon = Icons.Outlined.PlayArrow,
         ) { gameId ->
             val game = widgetList.first { it.game.id == gameId }
             CharacterMatrix(

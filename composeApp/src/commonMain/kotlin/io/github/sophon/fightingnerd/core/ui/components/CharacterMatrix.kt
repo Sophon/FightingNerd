@@ -32,7 +32,6 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
-import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.UiCharacter
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
@@ -42,7 +41,7 @@ import org.jetbrains.compose.resources.painterResource
 @Composable
 internal fun CharacterMatrix(
     isExpanded: Boolean,
-    characterList: ImmutableList<UiCharacter>,
+    characterList: ImmutableList<GameFeature.UiCharacter>,
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -80,7 +79,7 @@ internal fun CharacterMatrix(
 
 @Composable
 private fun CharacterPanel(
-    character: UiCharacter,
+    character: GameFeature.UiCharacter,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

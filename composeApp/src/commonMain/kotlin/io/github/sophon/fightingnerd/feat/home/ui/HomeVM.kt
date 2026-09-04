@@ -10,7 +10,7 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
-import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
+import io.github.sophon.fightingnerd.core.ui.components.GameFeature
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckCharacterHasMovesUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.RefreshUseCase
@@ -60,7 +60,7 @@ internal class HomeVM(
 
 
     fun refresh() {
-        if (_state.value.gameWidgetList.isEmpty()) return
+        if (_state.value.gameFeatureList.isEmpty()) return
 
         refreshJob?.cancel()
         refreshJob = viewModelScope.launch {
@@ -93,7 +93,7 @@ internal class HomeVM(
 
     fun onExpandWidget(game: Game) {
         _state.update { state ->
-            val updatedList = state.gameWidgetList.map { widget ->
+            val updatedList = state.gameFeatureList.map { widget ->
                 when {
                     (widget.game == game) -> {
                         widget.copy(isExpanded = widget.isExpanded.not())
@@ -105,7 +105,7 @@ internal class HomeVM(
                     }
                 }
             }
-            val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
+            val updatedState = state.copy(gameFeatureList = updatedList.toImmutableList())
             updatedState
         }
     }
@@ -121,10 +121,10 @@ internal class HomeVM(
         subscribeToGamesUseCase.invoke().collectLatest { result ->
             result
                 .onSuccess { gameWikiPairList ->
-                    val existingByGame = _state.value.gameWidgetList.associateBy { it.game }
+                    val existingByGame = _state.value.gameFeatureList.associateBy { it.game }
                     val widgetList = gameWikiPairList.map { (game, featureInfo) ->
                         val existing = existingByGame[game]
-                        val widget = GameWidget(
+                        val widget = GameFeature(
                             game = game,
                             featureName = featureInfo.name,
                             characterList = existing?.characterList ?: persistentListOf(),
@@ -132,7 +132,7 @@ internal class HomeVM(
                         )
                         widget
                     }.toImmutableList()
-                    _state.update { it.copy(gameWidgetList = widgetList) }
+                    _state.update { it.copy(gameFeatureList = widgetList) }
                     subscribeToCharacters(widgets = widgetList)
                 }
                 .onError { error ->
@@ -141,18 +141,18 @@ internal class HomeVM(
         }
     }
 
-    private suspend fun subscribeToCharacters(widgets: List<GameWidget>) {
+    private suspend fun subscribeToCharacters(widgets: List<GameFeature>) {
         coroutineScope {
             widgets.forEach { gameWidget ->
                 launch {
                     subscribeToCharacterListUseCase.invoke(gameWidget.game).collectLatest { characterList ->
                         val newState = _state.updateAndGet { state ->
-                            val updatedList = state.gameWidgetList.map { widget ->
+                            val updatedList = state.gameFeatureList.map { widget ->
                                 if (widget.game == gameWidget.game) {
                                     val existingCharsById = widget.characterList.associateBy { it.id }
                                     val newCharList = characterList.map { domainCharacter ->
                                         val existing = existingCharsById[domainCharacter.id]
-                                        val ui = GameWidget.UiCharacter(
+                                        val ui = GameFeature.UiCharacter(
                                             id = domainCharacter.id,
                                             displayName = domainCharacter.displayName,
                                             queryName = domainCharacter.remoteQueryId,
@@ -167,11 +167,11 @@ internal class HomeVM(
                                     widget
                                 }
                             }
-                            val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
+                            val updatedState = state.copy(gameFeatureList = updatedList.toImmutableList())
                             updatedState
                         }
 
-                        val updatedWidget = newState.gameWidgetList.first { it.game == gameWidget.game }
+                        val updatedWidget = newState.gameFeatureList.first { it.game == gameWidget.game }
                         checkForMoveList(gameWidget = updatedWidget)
                     }
                 }
@@ -179,7 +179,7 @@ internal class HomeVM(
         }
     }
 
-    private suspend fun checkForMoveList(gameWidget: GameWidget) {
+    private suspend fun checkForMoveList(gameWidget: GameFeature) {
         coroutineScope {
             gameWidget.characterList.forEach { character ->
                 launch {
@@ -189,14 +189,14 @@ internal class HomeVM(
                     ).collect { hasMoves ->
                         if (hasMoves.not()) return@collect
                         _state.update { state ->
-                            val updatedList = state.gameWidgetList.map { widget ->
+                            val updatedList = state.gameFeatureList.map { widget ->
                                 if (widget.game == gameWidget.game) {
                                     widget.withUpdatedCharacter(characterId = character.id)
                                 } else {
                                     widget
                                 }
                             }
-                            val updatedState = state.copy(gameWidgetList = updatedList.toImmutableList())
+                            val updatedState = state.copy(gameFeatureList = updatedList.toImmutableList())
                             updatedState
                         }
                     }

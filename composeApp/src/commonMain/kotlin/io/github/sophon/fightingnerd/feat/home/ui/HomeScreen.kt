@@ -44,15 +44,16 @@ private fun Content(
     PullToRefreshBox(
         isRefreshing = false,
         onRefresh = onRefresh,
-        modifier = modifier,
+        modifier = modifier
+            .padding(
+                horizontal = nerdDimensions.screenPaddingHorizontal,
+            ),
     ) {
         GameWidget(
-            widgetList = state.gameWidgetList,
+            gameFeatureList = state.gameFeatureList,
             onExpandWidget = onExpandWidget,
-            modifier = Modifier
-                .padding(horizontal = nerdDimensions.screenPaddingHorizontal)
         ) { gameId ->
-            state.gameWidgetList
+            state.gameFeatureList
                 .firstOrNull { it.game.id == gameId }
                 ?.let { gameWidget ->
                     CharacterMatrix(
