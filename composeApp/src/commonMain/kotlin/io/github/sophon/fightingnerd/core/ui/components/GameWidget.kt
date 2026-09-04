@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.home.ui.composables
+package io.github.sophon.fightingnerd.core.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
@@ -46,7 +46,6 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
-import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget
 import io.github.sophon.fightingnerd.feat.home.ui.HomeViewState.GameWidget.UiCharacter
@@ -59,7 +58,7 @@ import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-internal fun WidgetSection(
+internal fun GameWidget(
     widgetList: ImmutableList<GameWidget>,
     onExpandWidget: (Game) -> Unit,
     onCharacterClick: (gameId: String, characterId: String) -> Unit,
@@ -185,7 +184,7 @@ private fun WidgetHeader(
 @Composable
 private fun CharacterMatrix(
     isExpanded: Boolean,
-    characterList: List<UiCharacter>,
+    characterList: ImmutableList<UiCharacter>,
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -287,7 +286,7 @@ private const val CHARACTER_CARD_HEIGHT = 144
 @Composable
 private fun WidgetSectionPreview() {
     FightingNerdTheme {
-        WidgetSection(
+        GameWidget(
             widgetList = HomeViewState.PREVIEW.gameWidgetList,
             onExpandWidget = {},
             onCharacterClick = {_, _ -> },

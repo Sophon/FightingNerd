@@ -8,7 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.fightingnerd.feat.home.ui.composables.WidgetSection
+import io.github.sophon.fightingnerd.core.ui.components.GameWidget
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -45,7 +45,7 @@ private fun Content(
         onRefresh = onRefresh,
         modifier = modifier,
     ) {
-        WidgetSection(
+        GameWidget(
             widgetList = state.gameWidgetList,
             onExpandWidget = onExpandWidget,
             onCharacterClick = onCharacterClick,
