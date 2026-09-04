@@ -44,11 +44,12 @@ import org.koin.core.parameter.parametersOf
 @Composable
 internal fun QuizScreen(
     gameId: String,
+    characterId: String?,
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val vm = koinViewModel<QuizVM>(
-        parameters = { parametersOf(gameId, onExit) }
+        parameters = { parametersOf(gameId, characterId, onExit) }
     )
     val state by vm.state.collectAsStateWithLifecycle()
 

@@ -44,7 +44,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun QuizOverviewScreen(
-    onNavigateToQuiz: (gameId: String) -> Unit,
+    onNavigateToQuiz: (gameId: String, characterId: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val vm = koinViewModel<QuizOverviewVM>()
@@ -52,7 +52,7 @@ internal fun QuizOverviewScreen(
 
     WidgetSection(
         widgetList = state.quizGameWidgetList,
-        onPlay = { gameId -> onNavigateToQuiz(gameId) },
+        onPlay = { gameId -> onNavigateToQuiz(gameId, null) },
         modifier = modifier,
     )
 }
