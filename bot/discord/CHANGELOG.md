@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v16.5.1] - 2026-09-04
+- fixed long autocomplete choice breaking the whole list
+
 ## [v16.5.0] - 2026-09-03
 - wrap all Kord calls with try-catch
 - changed label from EXAMPLES to HELP for consistency

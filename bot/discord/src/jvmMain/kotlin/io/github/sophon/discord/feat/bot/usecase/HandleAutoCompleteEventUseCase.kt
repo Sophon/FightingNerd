@@ -251,7 +251,7 @@ internal class HandleAutoCompleteEventUseCase(
     }
 
     private fun Move.toChoice(): AutocompleteChoice {
-        val name = buildString {
+        val rawName = buildString {
             append("$input ".padEnd(COLUMN_MAX_GAP_L, FILL_CHAR))
             append(" ")
 
@@ -271,8 +271,16 @@ internal class HandleAutoCompleteEventUseCase(
                 append(" $name")
             }
         }
+        val truncatedName = rawName.truncateForDiscord()
+        val truncatedValue = input.truncateForDiscord()
+        val choice = AutocompleteChoice(name = truncatedName, value = truncatedValue)
+        return choice
+    }
 
-        return AutocompleteChoice(name = name, value = input)
+    private fun String.truncateForDiscord(): String {
+        if (length <= DISCORD_CHOICE_MAX_LENGTH) return this
+        val truncated = take(DISCORD_CHOICE_MAX_LENGTH - ELLIPSIS.length) + ELLIPSIS
+        return truncated
     }
 
     private fun String?.formatForAutoComplete(): String {
@@ -290,6 +298,8 @@ internal class HandleAutoCompleteEventUseCase(
         const val COLUMN_MAX_GAP_L = 15
         const val COLUMN_MAX_GAP_S = 13
         const val FILL_CHAR = '_'
+        const val DISCORD_CHOICE_MAX_LENGTH = 100
+        const val ELLIPSIS = "..."
     }
 }
 
