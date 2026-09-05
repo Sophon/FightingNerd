@@ -2,9 +2,6 @@
 
 ## High prio
 
-- `Move` 
-  - sliders reset when setting the same value
-  - for startup, set max to 14, then set min to 14, one should reset back to MIN/MAX
 - `More` 
   - Feature settings confirmation dialog
   - Update settings
