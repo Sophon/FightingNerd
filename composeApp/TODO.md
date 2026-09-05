@@ -10,7 +10,6 @@
   - Update settings
     - frequency, last updated time, update individual games
     - Media status?
-- `Quiz` - individual char quiz
 
 ## Low prio
 
