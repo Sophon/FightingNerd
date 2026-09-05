@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandMore
 import androidx.compose.material.icons.outlined.PlayArrow
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
@@ -52,8 +50,7 @@ internal fun GameWidget(
     isLoading: Boolean,
     onExpandClick: () -> Unit,
     modifier: Modifier = Modifier,
-    leadingIcon: ImageVector? = null,
-    onLeadingClick: () -> Unit = {},
+    leadingAction: IconAction? = null,
     content: @Composable () -> Unit,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -63,8 +60,7 @@ internal fun GameWidget(
             isExpanded = isExpanded,
             isLoading = isLoading,
             onExpandClick = onExpandClick,
-            leadingIcon = leadingIcon,
-            onLeadingClick = onLeadingClick,
+            leadingAction = leadingAction,
         )
 
         AnimatedVisibility(
@@ -85,8 +81,7 @@ private fun WidgetHeader(
     onExpandClick: () -> Unit,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
-    leadingIcon: ImageVector? = null,
-    onLeadingClick: () -> Unit = {},
+    leadingAction: IconAction? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val shape = if (isExpanded) {
@@ -118,20 +113,13 @@ private fun WidgetHeader(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f),
         ) {
-            if (leadingIcon != null) {
-                IconButton(
-                    onClick = onLeadingClick,
+            if (leadingAction != null) {
+                IconActionButton(
+                    action = leadingAction,
                     modifier = Modifier
                         .size(nerdDimensions.iconHeadline)
                         .padding(nerdDimensions.inlineGapTight)
-                ) {
-                    Icon(
-                        imageVector = leadingIcon,
-                        contentDescription = null,
-                        tint = nerdColorPalette.textPrimary,
-                        modifier = Modifier.size(nerdDimensions.iconLarge)
-                    )
-                }
+                )
             } else {
                 AsyncImage(
                     model = iconUrl,
@@ -250,8 +238,34 @@ private fun GameWidgetLeadingIconPreview() {
             isExpanded = true,
             isLoading = false,
             onExpandClick = {},
-            leadingIcon = Icons.Outlined.PlayArrow,
-            onLeadingClick = {},
+            leadingAction = IconAction(
+                icon = Icons.Outlined.PlayArrow,
+                onClick = {},
+            ),
+        ) {
+            CharacterMatrix(
+                characterList = previewCharacters,
+                onCharacterClick = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun GameWidgetLeadingIconDisabledPreview() {
+    FightingNerdTheme {
+        GameWidget(
+            iconUrl = null,
+            title = "TEKKEN 8",
+            isExpanded = true,
+            isLoading = false,
+            onExpandClick = {},
+            leadingAction = IconAction(
+                icon = Icons.Outlined.PlayArrow,
+                onClick = {},
+                isEnabled = false,
+            ),
         ) {
             CharacterMatrix(
                 characterList = previewCharacters,

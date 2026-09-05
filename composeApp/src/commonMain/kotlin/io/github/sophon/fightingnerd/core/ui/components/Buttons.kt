@@ -3,6 +3,7 @@ package io.github.sophon.fightingnerd.core.ui.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Close
@@ -34,6 +35,36 @@ internal fun TopBarButton(
             imageVector = imageVector,
             contentDescription = null,
             tint = nerdColorPalette.textPrimary,
+        )
+    }
+}
+
+internal data class IconAction(
+    val icon: ImageVector,
+    val onClick: () -> Unit,
+    val isEnabled: Boolean = true,
+)
+
+@Composable
+internal fun IconActionButton(
+    action: IconAction,
+    modifier: Modifier = Modifier,
+) {
+    val tint = if (action.isEnabled) {
+        nerdColorPalette.textPrimary
+    } else {
+        nerdColorPalette.textSecondary
+    }
+    IconButton(
+        onClick = action.onClick,
+        enabled = action.isEnabled,
+        modifier = modifier,
+    ) {
+        Icon(
+            imageVector = action.icon,
+            contentDescription = null,
+            tint = tint,
+            modifier = Modifier.fillMaxSize(),
         )
     }
 }
