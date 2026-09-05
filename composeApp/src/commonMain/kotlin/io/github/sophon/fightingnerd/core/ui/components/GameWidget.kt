@@ -1,20 +1,22 @@
 package io.github.sophon.fightingnerd.core.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.ExpandMore
@@ -31,68 +33,56 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
-import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.collections.immutable.toImmutableList
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun GameWidget(
-    gameFeatureList: ImmutableList<GameFeature>,
-    onExpandWidget: (Game) -> Unit,
+    iconUrl: String?,
+    title: String,
+    isExpanded: Boolean,
+    isLoading: Boolean,
+    onExpandClick: () -> Unit,
     modifier: Modifier = Modifier,
     leadingIcon: ImageVector? = null,
     onLeadingClick: () -> Unit = {},
-    content: @Composable (gameId: String) -> Unit,
+    content: @Composable () -> Unit,
 ) {
-    BoxWithConstraints(
-        modifier = modifier.fillMaxSize(),
-    ) {
-        LazyColumn(
-            contentPadding = LocalBottomBarPadding.current,
+    Column(modifier = modifier.fillMaxWidth()) {
+        WidgetHeader(
+            iconUrl = iconUrl,
+            title = title,
+            isExpanded = isExpanded,
+            isLoading = isLoading,
+            onExpandClick = onExpandClick,
+            leadingIcon = leadingIcon,
+            onLeadingClick = onLeadingClick,
+        )
+
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = expandVertically() + fadeIn(),
+            exit = shrinkVertically() + fadeOut(),
         ) {
-            gameFeatureList.forEach { gameFeature ->
-                item(key = "header_${gameFeature.game.id}") {
-                    WidgetHeader(
-                        game = gameFeature.game,
-                        featureName = gameFeature.featureName,
-                        isExpanded = gameFeature.isExpanded,
-                        onExpandClick = onExpandWidget,
-                        isLoading = gameFeature.isLoading,
-                        leadingIcon = leadingIcon,
-                        onLeadingClick = onLeadingClick,
-                    )
-                }
-
-                item(key = "content_${gameFeature.game.id}") {
-                    content(gameFeature.game.id)
-                }
-
-                item {
-                    Spacer(Modifier.height(8.dp))
-                }
-            }
+            content()
         }
     }
 }
 
 @Composable
 private fun WidgetHeader(
-    game: Game,
-    featureName: String,
+    iconUrl: String?,
+    title: String,
     isExpanded: Boolean,
-    onExpandClick: (Game) -> Unit,
+    onExpandClick: () -> Unit,
     isLoading: Boolean,
     modifier: Modifier = Modifier,
     leadingIcon: ImageVector? = null,
@@ -116,7 +106,7 @@ private fun WidgetHeader(
             .clickable(
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = { onExpandClick(game) },
+                onClick = onExpandClick,
                 enabled = isLoading.not(),
             )
     ) {
@@ -144,8 +134,8 @@ private fun WidgetHeader(
                 }
             } else {
                 AsyncImage(
-                    model = game.iconUrl,
-                    contentDescription = featureName,
+                    model = iconUrl,
+                    contentDescription = title,
                     placeholder = painterResource(Res.drawable.compose_multiplatform),
                     error = painterResource(Res.drawable.compose_multiplatform),
                     modifier = Modifier
@@ -155,7 +145,7 @@ private fun WidgetHeader(
             }
 
             Text(
-                text = game.shortDisplayName.uppercase(),
+                text = title,
                 style = nerdTypography.headlineSmall,
                 color = nerdColorPalette.textPrimary,
                 maxLines = 1,
@@ -189,54 +179,28 @@ private fun WidgetHeader(
 
 
 //region PREVIEW
-internal object GameWidgets {
-    private fun mockCharacters(): ImmutableList<GameFeature.UiCharacter> {
-        val names = listOf("Zuzana", "Eva", "Karolina", "Marcela", "Zdenka", "Hana")
-        val mocked = names.mapIndexed { index, name ->
-            GameFeature.UiCharacter(
-                id = "char_$index",
-                displayName = name,
-                queryName = "",
-                hasMoves = true,
-            )
-        }.toImmutableList()
-        return mocked
-    }
-
-    private fun mockWidget(
-        game: Game,
-        featureName: String,
-        isExpanded: Boolean,
-    ): GameFeature {
-        val widget = GameFeature(
-            game = game,
-            featureName = featureName,
-            characterList = mockCharacters(),
-            isExpanded = isExpanded,
-        )
-        return widget
-    }
-
-    val PREVIEW: ImmutableList<GameFeature> = persistentListOf(
-        mockWidget(Game.Tekken8, "Wavu Wiki", isExpanded = true),
-        mockWidget(Game.StreetFighter6, "SuperCombo", isExpanded = false),
-        mockWidget(Game.KoFXV, "Dream Cancel", isExpanded = false),
-    )
-}
+private val previewCharacters = persistentListOf(
+    CharacterCard(id = "1", displayName = "Zuzana"),
+    CharacterCard(id = "2", displayName = "Eva"),
+    CharacterCard(id = "3", displayName = "Karolina"),
+    CharacterCard(id = "4", displayName = "Marcela"),
+    CharacterCard(id = "5", displayName = "Zdenka"),
+    CharacterCard(id = "6", displayName = "Hana"),
+)
 
 @Preview
 @Composable
-private fun WidgetSectionPreview() {
+private fun GameWidgetExpandedPreview() {
     FightingNerdTheme {
-        val widgetList = GameWidgets.PREVIEW
         GameWidget(
-            gameFeatureList = widgetList,
-            onExpandWidget = {},
-        ) { gameId ->
-            val game = widgetList.first { it.game.id == gameId }
+            iconUrl = null,
+            title = "TEKKEN 8",
+            isExpanded = true,
+            isLoading = false,
+            onExpandClick = {},
+        ) {
             CharacterMatrix(
-                isExpanded = game.isExpanded,
-                characterList = game.characterList,
+                characterList = previewCharacters,
                 onCharacterClick = {},
             )
         }
@@ -245,18 +209,52 @@ private fun WidgetSectionPreview() {
 
 @Preview
 @Composable
-private fun LeadingIconPreview() {
+private fun GameWidgetCollapsedPreview() {
     FightingNerdTheme {
-        val widgetList = GameWidgets.PREVIEW
         GameWidget(
-            gameFeatureList = widgetList,
-            onExpandWidget = {},
-            leadingIcon = Icons.Outlined.PlayArrow,
-        ) { gameId ->
-            val game = widgetList.first { it.game.id == gameId }
+            iconUrl = null,
+            title = "STREET FIGHTER 6",
+            isExpanded = false,
+            isLoading = false,
+            onExpandClick = {},
+        ) {
             CharacterMatrix(
-                isExpanded = game.isExpanded,
-                characterList = game.characterList,
+                characterList = previewCharacters,
+                onCharacterClick = {},
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun GameWidgetLoadingPreview() {
+    FightingNerdTheme {
+        GameWidget(
+            iconUrl = null,
+            title = "GUILTY GEAR STRIVE",
+            isExpanded = false,
+            isLoading = true,
+            onExpandClick = {},
+        ) {}
+    }
+}
+
+@Preview
+@Composable
+private fun GameWidgetLeadingIconPreview() {
+    FightingNerdTheme {
+        GameWidget(
+            iconUrl = null,
+            title = "TEKKEN 8",
+            isExpanded = true,
+            isLoading = false,
+            onExpandClick = {},
+            leadingIcon = Icons.Outlined.PlayArrow,
+            onLeadingClick = {},
+        ) {
+            CharacterMatrix(
+                characterList = previewCharacters,
                 onCharacterClick = {},
             )
         }

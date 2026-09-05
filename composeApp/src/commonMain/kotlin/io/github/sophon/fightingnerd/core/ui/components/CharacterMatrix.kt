@@ -1,10 +1,5 @@
 package io.github.sophon.fightingnerd.core.ui.components
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -22,6 +17,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,48 +34,49 @@ import io.github.sophon.fightingnerd.theme.nerdTypography
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.painterResource
 
+@Immutable
+internal data class CharacterCard(
+    val id: String,
+    val displayName: String,
+    val iconUrl: String? = null,
+    val isLoading: Boolean = false,
+)
+
 @Composable
 internal fun CharacterMatrix(
-    isExpanded: Boolean,
-    characterList: ImmutableList<GameFeature.UiCharacter>,
+    characterList: ImmutableList<CharacterCard>,
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    AnimatedVisibility(
-        visible = isExpanded,
-        enter = expandVertically() + fadeIn(),
-        exit = shrinkVertically() + fadeOut(),
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(
+            space = nerdDimensions.matrixGap,
+            alignment = Alignment.CenterHorizontally,
+        ),
+        verticalArrangement = Arrangement.spacedBy(nerdDimensions.matrixGap),
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(
+                RoundedCornerShape(
+                    bottomStart = nerdDimensions.cornerDefault,
+                    bottomEnd = nerdDimensions.cornerDefault,
+                ),
+            )
+            .background(color = nerdColorPalette.surface)
+            .padding(nerdDimensions.componentPaddingTight),
     ) {
-        FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(
-                space = nerdDimensions.matrixGap,
-                alignment = Alignment.CenterHorizontally,
-            ),
-            verticalArrangement = Arrangement.spacedBy(nerdDimensions.matrixGap),
-            modifier = modifier
-                .fillMaxWidth()
-                .clip(
-                    RoundedCornerShape(
-                        bottomStart = nerdDimensions.cornerDefault,
-                        bottomEnd = nerdDimensions.cornerDefault,
-                    ),
-                )
-                .background(color = nerdColorPalette.surface)
-                .padding(nerdDimensions.componentPaddingTight),
-        ) {
-            characterList.forEach { character ->
-                CharacterPanel(
-                    character = character,
-                    onClick = { onCharacterClick(character.id) },
-                )
-            }
+        characterList.forEach { character ->
+            CharacterPanel(
+                character = character,
+                onClick = { onCharacterClick(character.id) },
+            )
         }
     }
 }
 
 @Composable
 private fun CharacterPanel(
-    character: GameFeature.UiCharacter,
+    character: CharacterCard,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
