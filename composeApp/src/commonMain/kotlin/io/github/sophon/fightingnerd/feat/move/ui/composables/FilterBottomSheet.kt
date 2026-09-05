@@ -34,9 +34,6 @@ import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_filter_label_startup
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MAX
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -52,9 +49,7 @@ internal fun FilterBottomSheet(
     filterSheet: MoveListState.FilterSheet,
     onClear: () -> Unit,
     onFilterChipClick: (Filter) -> Unit,
-    onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
-    onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
-    onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeSlider: (MoveListState.FilterSheet.FrameSlider, MoveListState.FilterSheet.MinMax?) -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -102,9 +97,7 @@ internal fun FilterBottomSheet(
 
             MinMaxSection(
                 filterSheet = filterSheet,
-                onChangeStartup = onChangeStartup,
-                onChangeOnBlock = onChangeOnBlock,
-                onChangeOnHit = onChangeOnHit,
+                onChangeSlider = onChangeSlider,
                 onDraggingChange = { isSliderDragging = it },
             )
         }
@@ -146,9 +139,7 @@ private fun ChipSection(
 @Composable
 private fun MinMaxSection(
     filterSheet: MoveListState.FilterSheet,
-    onChangeStartup: (MoveListState.FilterSheet.MinMax?) -> Unit,
-    onChangeOnBlock: (MoveListState.FilterSheet.MinMax?) -> Unit,
-    onChangeOnHit: (MoveListState.FilterSheet.MinMax?) -> Unit,
+    onChangeSlider: (MoveListState.FilterSheet.FrameSlider, MoveListState.FilterSheet.MinMax?) -> Unit,
     onDraggingChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -156,36 +147,30 @@ private fun MinMaxSection(
         modifier = modifier
             .fillMaxWidth()
     ) {
-        SliderFilter(
-            label = stringResource(Res.string.move_list_filter_label_startup),
-            min = FRAME_MIN_STARTUP,
-            max = FRAME_MAX,
-            value = filterSheet.startup,
-            onChange = onChangeStartup,
-            onDraggingChange = onDraggingChange,
-        )
-        Spacer(Modifier.height(nerdDimensions.inlineGapTight))
-
-        SliderFilter(
-            label = stringResource(Res.string.move_list_filter_label_on_block),
-            min = FRAME_MIN,
-            max = FRAME_MAX,
-            value = filterSheet.onBlock,
-            onChange = onChangeOnBlock,
-            onDraggingChange = onDraggingChange,
-        )
-        Spacer(Modifier.height(nerdDimensions.inlineGapTight))
-
-        SliderFilter(
-            label = stringResource(Res.string.move_list_filter_label_on_hit),
-            min = FRAME_MIN,
-            max = FRAME_MAX,
-            value = filterSheet.onHit,
-            onChange = onChangeOnHit,
-            onDraggingChange = onDraggingChange,
-        )
-        Spacer(Modifier.height(nerdDimensions.inlineGapTight))
+        MoveListState.FilterSheet.FrameSlider.entries.forEach { type ->
+            val data = filterSheet.sliderData(type)
+            SliderFilter(
+                label = type.label(),
+                min = type.rawMin,
+                max = type.rawMax,
+                value = data.minMax,
+                thumbs = data.thumbs,
+                onChange = { onChangeSlider(type, it) },
+                onDraggingChange = onDraggingChange,
+            )
+            Spacer(Modifier.height(nerdDimensions.inlineGapTight))
+        }
     }
+}
+
+@Composable
+private fun MoveListState.FilterSheet.FrameSlider.label(): String = when (this) {
+    MoveListState.FilterSheet.FrameSlider.Startup ->
+        stringResource(Res.string.move_list_filter_label_startup)
+    MoveListState.FilterSheet.FrameSlider.OnHit ->
+        stringResource(Res.string.move_list_filter_label_on_hit)
+    MoveListState.FilterSheet.FrameSlider.OnBlock ->
+        stringResource(Res.string.move_list_filter_label_on_block)
 }
 
 
@@ -205,9 +190,7 @@ private fun FilterBottomSheetPreview() {
             ),
             onFilterChipClick = {},
             onDismiss = {},
-            onChangeStartup = {},
-            onChangeOnBlock = {},
-            onChangeOnHit = {},
+            onChangeSlider = { _, _ -> },
             onClear = {},
         )
     }

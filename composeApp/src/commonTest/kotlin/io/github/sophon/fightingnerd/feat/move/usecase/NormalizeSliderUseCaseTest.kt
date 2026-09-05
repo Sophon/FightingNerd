@@ -59,13 +59,13 @@ internal class NormalizeSliderUseCaseTest {
     }
 
     @Test
-    fun `invalid value returns null`() {
+    fun `invalid pair within bounds is preserved`() {
         // given
         val invalidMinMax = MoveListState.FilterSheet.MinMax(
             min = 5,
             max = 3,
         )
-        val expected = null
+        val expected = invalidMinMax
 
         // when
         val result = usecase.invoke(newMinMax = invalidMinMax)
