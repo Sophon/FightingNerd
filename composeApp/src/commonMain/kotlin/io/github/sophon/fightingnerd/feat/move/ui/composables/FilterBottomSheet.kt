@@ -160,7 +160,8 @@ private fun MinMaxSection(
             label = stringResource(Res.string.move_list_filter_label_startup),
             min = FRAME_MIN_STARTUP,
             max = FRAME_MAX,
-            value = filterSheet.startup,
+            value = filterSheet.startup.minMax,
+            thumbs = filterSheet.startup.thumbs,
             onChange = onChangeStartup,
             onDraggingChange = onDraggingChange,
         )
@@ -170,7 +171,8 @@ private fun MinMaxSection(
             label = stringResource(Res.string.move_list_filter_label_on_block),
             min = FRAME_MIN,
             max = FRAME_MAX,
-            value = filterSheet.onBlock,
+            value = filterSheet.onBlock.minMax,
+            thumbs = filterSheet.onBlock.thumbs,
             onChange = onChangeOnBlock,
             onDraggingChange = onDraggingChange,
         )
@@ -180,7 +182,8 @@ private fun MinMaxSection(
             label = stringResource(Res.string.move_list_filter_label_on_hit),
             min = FRAME_MIN,
             max = FRAME_MAX,
-            value = filterSheet.onHit,
+            value = filterSheet.onHit.minMax,
+            thumbs = filterSheet.onHit.thumbs,
             onChange = onChangeOnHit,
             onDraggingChange = onDraggingChange,
         )

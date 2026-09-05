@@ -50,17 +50,23 @@ internal data class MoveListState(
         val isVisible: Boolean = false,
         val filterSet: ImmutableSet<Filter> = persistentSetOf(),
 
-        val startup: MinMax? = null,
-        val onHit: MinMax? = null,
-        val onBlock: MinMax? = null,
+        val startup: SliderData = SliderData(
+            thumbs = (FRAME_MIN_STARTUP - 1) to (FRAME_MAX + 1),
+        ),
+        val onHit: SliderData = SliderData(
+            thumbs = (FRAME_MIN - 1) to (FRAME_MAX + 1),
+        ),
+        val onBlock: SliderData = SliderData(
+            thumbs = (FRAME_MIN - 1) to (FRAME_MAX + 1),
+        ),
 
         val activeFilterSet: ImmutableSet<Filter> = persistentSetOf(),
     ) {
         val isFilterActive: Boolean get() {
             return activeFilterSet.isNotEmpty()
-                    || (startup != null)
-                    || (onHit != null)
-                    || (onBlock != null)
+                    || (startup.minMax != null)
+                    || (onHit.minMax != null)
+                    || (onBlock.minMax != null)
         }
 
         @Immutable
@@ -74,6 +80,12 @@ internal data class MoveListState(
                     return result
                 }
         }
+
+        @Immutable
+        data class SliderData(
+            val minMax: MinMax? = null,
+            val thumbs: Pair<Int, Int>,
+        )
     }
 
     @Immutable

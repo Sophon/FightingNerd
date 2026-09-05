@@ -63,6 +63,7 @@ internal fun SliderFilter(
     min: Int,
     max: Int,
     value: MoveListState.FilterSheet.MinMax?,
+    thumbs: Pair<Int, Int>,
     onChange: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onDraggingChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
@@ -86,6 +87,7 @@ internal fun SliderFilter(
             sliderMin = sliderMin,
             sliderMax = sliderMax,
             value = value,
+            thumbs = thumbs,
             onChange = onChange,
             onDraggingChange = onDraggingChange,
         )
@@ -105,21 +107,25 @@ private fun SliderSection(
     sliderMin: Int,
     sliderMax: Int,
     value: MoveListState.FilterSheet.MinMax?,
+    thumbs: Pair<Int, Int>,
     onChange: (MoveListState.FilterSheet.MinMax?) -> Unit,
     onDraggingChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val rangeSliderState = remember(sliderMin, sliderMax) {
         RangeSliderState(
-            activeRangeStart = value?.min?.toFloat() ?: sliderMin.toFloat(),
-            activeRangeEnd = value?.max?.toFloat() ?: sliderMax.toFloat(),
+            activeRangeStart = thumbs.first.toFloat(),
+            activeRangeEnd = thumbs.second.toFloat(),
             valueRange = sliderMin.toFloat()..sliderMax.toFloat(),
         )
     }
 
+    var isDragging by remember { mutableStateOf(false) }
+
     LaunchedEffect(rangeSliderState) {
         snapshotFlow { rangeSliderState.activeRangeStart to rangeSliderState.activeRangeEnd }
             .collect { (start, end) ->
+                if (isDragging.not()) return@collect
                 onChange(
                     MoveListState.FilterSheet.MinMax(
                         min = start.roundToInt(),
@@ -129,20 +135,18 @@ private fun SliderSection(
             }
     }
 
-    LaunchedEffect(value) {
-        val targetMin = value?.min?.toFloat() ?: sliderMin.toFloat()
-        val targetMax = value?.max?.toFloat() ?: sliderMax.toFloat()
-
-        if (rangeSliderState.activeRangeStart.roundToInt() != targetMin.roundToInt()) {
-            rangeSliderState.activeRangeStart = targetMin
+    LaunchedEffect(thumbs) {
+        val (minPos, maxPos) = thumbs
+        if (rangeSliderState.activeRangeStart.roundToInt() != minPos) {
+            rangeSliderState.activeRangeStart = minPos.toFloat()
         }
-
-        if (rangeSliderState.activeRangeEnd.roundToInt() != targetMax.roundToInt()) {
-            rangeSliderState.activeRangeEnd = targetMax
+        if (rangeSliderState.activeRangeEnd.roundToInt() != maxPos) {
+            rangeSliderState.activeRangeEnd = maxPos.toFloat()
         }
     }
 
-    val trackColor = if (value == null) nerdColorPalette.divider else nerdColorPalette.accent
+    val isActive = value != null && value.isValid
+    val trackColor = if (isActive) nerdColorPalette.accent else nerdColorPalette.divider
     val trackColors = SliderDefaults.colors(
         activeTrackColor = trackColor,
         inactiveTrackColor = nerdColorPalette.dividerSubtle,
@@ -155,9 +159,15 @@ private fun SliderSection(
             endInteractionSource.interactions,
         ).collect { interaction ->
             when (interaction) {
-                is DragInteraction.Start -> onDraggingChange(true)
+                is DragInteraction.Start -> {
+                    isDragging = true
+                    onDraggingChange(true)
+                }
                 is DragInteraction.Stop,
-                is DragInteraction.Cancel -> onDraggingChange(false)
+                is DragInteraction.Cancel -> {
+                    isDragging = false
+                    onDraggingChange(false)
+                }
             }
         }
     }
@@ -165,8 +175,8 @@ private fun SliderSection(
         state = rangeSliderState,
         startInteractionSource = startInteractionSource,
         endInteractionSource = endInteractionSource,
-        startThumb = { CircleThumb(value?.min) },
-        endThumb = { CircleThumb(value?.max) },
+        startThumb = { CircleThumb(value?.min, isActive) },
+        endThumb = { CircleThumb(value?.max, isActive) },
         track = { sliderState ->
             SliderDefaults.Track(
                 rangeSliderState = sliderState,
@@ -182,9 +192,10 @@ private fun SliderSection(
 @Composable
 private fun CircleThumb(
     value: Int?,
+    isActive: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val color = if (value == null) nerdColorPalette.divider else nerdColorPalette.accent
+    val color = if (value != null && isActive) nerdColorPalette.accent else nerdColorPalette.divider
     Box(
         modifier = modifier
             .size(nerdDimensions.iconDefault)
@@ -309,6 +320,7 @@ private fun SliderPreview_NoInput() {
             min = 5,
             max = 40,
             value = null,
+            thumbs = 4 to 41,
             onChange = {},
             onDraggingChange = {},
         )
@@ -324,6 +336,7 @@ private fun SliderPreview_Adjusted() {
             min = 5,
             max = 40,
             value = MoveListState.FilterSheet.MinMax(min = 10, max = 25),
+            thumbs = 10 to 25,
             onChange = {},
             onDraggingChange = {},
         )
@@ -339,6 +352,7 @@ private fun SliderPreview_MinOnly() {
             min = 5,
             max = 40,
             value = MoveListState.FilterSheet.MinMax(min = 10, max = null),
+            thumbs = 10 to 41,
             onChange = {},
             onDraggingChange = {},
         )
