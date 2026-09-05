@@ -2,13 +2,17 @@ package io.github.sophon.fightingnerd.feat.move.ui
 
 import androidx.compose.runtime.Immutable
 import io.github.sophon.core.wiki.model.CharacterGameProperties
+import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.model.Bookmark
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.toPersistentMap
 
 @Immutable
 internal data class MoveListState(
@@ -50,23 +54,19 @@ internal data class MoveListState(
         val isVisible: Boolean = false,
         val filterSet: ImmutableSet<Filter> = persistentSetOf(),
 
-        val startup: SliderData = SliderData(
-            thumbs = (FRAME_MIN_STARTUP - 1) to (FRAME_MAX + 1),
-        ),
-        val onHit: SliderData = SliderData(
-            thumbs = (FRAME_MIN - 1) to (FRAME_MAX + 1),
-        ),
-        val onBlock: SliderData = SliderData(
-            thumbs = (FRAME_MIN - 1) to (FRAME_MAX + 1),
-        ),
+        val sliders: ImmutableMap<FrameSlider, SliderData> = FrameSlider.defaultSliders,
 
         val activeFilterSet: ImmutableSet<Filter> = persistentSetOf(),
     ) {
         val isFilterActive: Boolean get() {
-            return activeFilterSet.isNotEmpty()
-                    || (startup.minMax != null)
-                    || (onHit.minMax != null)
-                    || (onBlock.minMax != null)
+            return activeFilterSet.isNotEmpty() || sliders.values.any { it.minMax != null }
+        }
+
+        fun sliderData(type: FrameSlider): SliderData = sliders.getValue(type)
+
+        fun withSliderData(type: FrameSlider, data: SliderData): FilterSheet {
+            val newSliders = sliders.toPersistentMap().put(type, data)
+            return copy(sliders = newSliders)
         }
 
         @Immutable
@@ -86,6 +86,25 @@ internal data class MoveListState(
             val minMax: MinMax? = null,
             val thumbs: Pair<Int, Int>,
         )
+
+        enum class FrameSlider(
+            val rawMin: Int,
+            val rawMax: Int,
+            val toCoreFilter: (MinMax) -> Filter,
+        ) {
+            Startup(FRAME_MIN_STARTUP, FRAME_MAX, { CoreFilters.Startup(it.min, it.max) }),
+            OnHit(FRAME_MIN, FRAME_MAX, { CoreFilters.OnHit(it.min, it.max) }),
+            OnBlock(FRAME_MIN, FRAME_MAX, { CoreFilters.OnBlock(it.min, it.max) });
+
+            val sliderMin: Int get() = rawMin - 1
+            val sliderMax: Int get() = rawMax + 1
+
+            companion object {
+                val defaultSliders: ImmutableMap<FrameSlider, SliderData> =
+                    entries.associateWith { SliderData(thumbs = it.sliderMin to it.sliderMax) }
+                        .toImmutableMap()
+            }
+        }
     }
 
     @Immutable

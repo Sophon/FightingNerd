@@ -7,7 +7,6 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.CharacterId
-import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Group
 import io.github.sophon.core.wiki.model.Move
@@ -15,9 +14,6 @@ import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.core.wiki.util.getMediaCount
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MAX
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN_STARTUP
 import io.github.sophon.fightingnerd.feat.move.usecase.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.GroupMovesUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
@@ -88,11 +84,12 @@ internal class MoveListVM(
 
     val filteredMoves: StateFlow<ImmutableList<UiMove>> = combine(
         _state.distinctUntilChanged { old, new ->
+            val slidersEqual = MoveListState.FilterSheet.FrameSlider.entries.all { type ->
+                old.filterSheet.sliderData(type).minMax == new.filterSheet.sliderData(type).minMax
+            }
             old.searchQuery == new.searchQuery
                     && old.filterSheet.activeFilterSet == new.filterSheet.activeFilterSet
-                    && old.filterSheet.startup.minMax == new.filterSheet.startup.minMax
-                    && old.filterSheet.onHit.minMax == new.filterSheet.onHit.minMax
-                    && old.filterSheet.onBlock.minMax == new.filterSheet.onBlock.minMax
+                    && slidersEqual
         },
         _fullMoveList,
         ::processMoveListChange,
@@ -121,15 +118,7 @@ internal class MoveListVM(
         _state.update { state ->
             val resetFilterSheet = state.filterSheet.copy(
                 activeFilterSet = persistentSetOf(),
-                startup = MoveListState.FilterSheet.SliderData(
-                    thumbs = (FRAME_MIN_STARTUP - 1) to (FRAME_MAX + 1),
-                ),
-                onBlock = MoveListState.FilterSheet.SliderData(
-                    thumbs = (FRAME_MIN - 1) to (FRAME_MAX + 1),
-                ),
-                onHit = MoveListState.FilterSheet.SliderData(
-                    thumbs = (FRAME_MIN - 1) to (FRAME_MAX + 1),
-                ),
+                sliders = MoveListState.FilterSheet.FrameSlider.defaultSliders,
             )
             state.copy(filterSheet = resetFilterSheet)
         }
@@ -147,64 +136,29 @@ internal class MoveListVM(
         }
     }
 
-    fun onChangeStartup(minMax: MoveListState.FilterSheet.MinMax?) {
+    fun onChangeSlider(
+        type: MoveListState.FilterSheet.FrameSlider,
+        minMax: MoveListState.FilterSheet.MinMax?,
+    ) {
         _state.update { state ->
             val normalized = normalizeSliderUseCase(
                 newMinMax = minMax,
-                sliderMin = FRAME_MIN_STARTUP,
+                sliderMin = type.rawMin,
+                sliderMax = type.rawMax,
             )
-            Napier.d(tag = "SORRY") { normalized.toString() }
-            val prevData = state.filterSheet.startup
+            val prevData = state.filterSheet.sliderData(type)
             val newThumbs = computeSliderPositions(
                 new = normalized,
                 prev = prevData.minMax,
                 prevThumbs = prevData.thumbs,
-                sliderMin = FRAME_MIN_STARTUP - 1,
-                sliderMax = FRAME_MAX + 1,
+                sliderMin = type.sliderMin,
+                sliderMax = type.sliderMax,
             )
-            val newStartup = MoveListState.FilterSheet.SliderData(
+            val newData = MoveListState.FilterSheet.SliderData(
                 minMax = normalized,
                 thumbs = newThumbs,
             )
-            state.copy(filterSheet = state.filterSheet.copy(startup = newStartup))
-        }
-    }
-
-    fun onChangeOnHit(minMax: MoveListState.FilterSheet.MinMax?) {
-        _state.update { state ->
-            val normalized = normalizeSliderUseCase.invoke(newMinMax = minMax)
-            val prevData = state.filterSheet.onHit
-            val newThumbs = computeSliderPositions(
-                new = normalized,
-                prev = prevData.minMax,
-                prevThumbs = prevData.thumbs,
-                sliderMin = FRAME_MIN - 1,
-                sliderMax = FRAME_MAX + 1,
-            )
-            val newOnHit = MoveListState.FilterSheet.SliderData(
-                minMax = normalized,
-                thumbs = newThumbs,
-            )
-            state.copy(filterSheet = state.filterSheet.copy(onHit = newOnHit))
-        }
-    }
-
-    fun onChangeOnBlock(minMax: MoveListState.FilterSheet.MinMax?) {
-        _state.update { state ->
-            val normalized = normalizeSliderUseCase.invoke(newMinMax = minMax)
-            val prevData = state.filterSheet.onBlock
-            val newThumbs = computeSliderPositions(
-                new = normalized,
-                prev = prevData.minMax,
-                prevThumbs = prevData.thumbs,
-                sliderMin = FRAME_MIN - 1,
-                sliderMax = FRAME_MAX + 1,
-            )
-            val newOnBlock = MoveListState.FilterSheet.SliderData(
-                minMax = normalized,
-                thumbs = newThumbs,
-            )
-            state.copy(filterSheet = state.filterSheet.copy(onBlock = newOnBlock))
+            state.copy(filterSheet = state.filterSheet.withSliderData(type, newData))
         }
     }
 
@@ -366,11 +320,10 @@ internal class MoveListVM(
     }
 
     private fun MoveListState.FilterSheet.buildSliderFilters(): List<Filter> {
-        val list = listOfNotNull(
-            startup.minMax?.let { CoreFilters.Startup(it.min, it.max) },
-            onHit.minMax?.let { CoreFilters.OnHit(it.min, it.max) },
-            onBlock.minMax?.let { CoreFilters.OnBlock(it.min, it.max) },
-        )
+        val list = sliders.entries.mapNotNull { (type, data) ->
+            val minMax = data.minMax ?: return@mapNotNull null
+            type.toCoreFilter(minMax)
+        }
         return list
     }
 
