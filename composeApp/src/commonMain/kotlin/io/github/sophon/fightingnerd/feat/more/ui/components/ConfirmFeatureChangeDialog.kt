@@ -6,7 +6,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -71,6 +73,7 @@ internal fun ConfirmFeatureChangeDialog(
                 gameList = gameList,
                 modifier = Modifier.fillMaxWidth(),
             )
+            Spacer(Modifier.height(nerdDimensions.componentGap))
 
             Column(
                 verticalArrangement = Arrangement.spacedBy(nerdDimensions.componentGapTight),
@@ -82,6 +85,7 @@ internal fun ConfirmFeatureChangeDialog(
                         containerColor = nerdColorPalette.surfaceHigh,
                         contentColor = nerdColorPalette.textPrimary,
                     ),
+                    border = BorderStroke(nerdDimensions.strokeThin, nerdColorPalette.divider),
                     modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
@@ -89,7 +93,6 @@ internal fun ConfirmFeatureChangeDialog(
                         style = nerdTypography.labelLarge,
                     )
                 }
-
                 OutlinedButton(
                     onClick = onConfirm,
                     colors = ButtonDefaults.outlinedButtonColors(
@@ -128,7 +131,7 @@ private fun GameList(
     ) {
         items(items = gameList, key = { it.id }) { game ->
             Text(
-                text = "- ${game.displayName}",
+                text = "❌ ${game.displayName}",
                 style = nerdTypography.bodyMedium,
                 color = nerdColorPalette.textPrimary,
             )
