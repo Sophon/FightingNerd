@@ -7,10 +7,12 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.fightingnerd.core.ui.components.CharacterCard
 import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
 import io.github.sophon.fightingnerd.feat.FakeWikiClient
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import io.github.sophon.fightingnerd.feat.quiz.model.QuizGameWidget
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -82,7 +84,12 @@ internal class SubscribeGameWidgetsUseCaseTest {
             featureRepo = FakeFeatureRepo(gameClients = mapOf(Game.Tekken8 to client)),
         )
         val expected = listOf(
-            QuizGameWidget(game = Game.Tekken8, featureName = "Wavu Wiki", isReady = true),
+            QuizGameWidget(
+                game = Game.Tekken8,
+                featureName = "Wavu Wiki",
+                isReady = true,
+                characterList = persistentListOf(characterCard("kazuya")),
+            ),
         )
 
         // when
@@ -135,7 +142,12 @@ internal class SubscribeGameWidgetsUseCaseTest {
             ),
         )
         val expected = listOf(
-            QuizGameWidget(game = Game.Tekken8, featureName = "Wavu Wiki", isReady = true),
+            QuizGameWidget(
+                game = Game.Tekken8,
+                featureName = "Wavu Wiki",
+                isReady = true,
+                characterList = persistentListOf(characterCard("kazuya")),
+            ),
         )
 
         // when
@@ -169,7 +181,12 @@ internal class SubscribeGameWidgetsUseCaseTest {
             ),
         )
         val expected = listOf(
-            QuizGameWidget(game = Game.Tekken8, featureName = "Wavu Wiki", isReady = true),
+            QuizGameWidget(
+                game = Game.Tekken8,
+                featureName = "Wavu Wiki",
+                isReady = true,
+                characterList = persistentListOf(characterCard("kazuya")),
+            ),
             QuizGameWidget(game = Game.StreetFighter6, featureName = "SuperCombo", isReady = false),
         )
 
@@ -185,6 +202,12 @@ internal class SubscribeGameWidgetsUseCaseTest {
         displayName = id,
         remoteQueryId = id,
         wikiUrl = "",
+    )
+
+    private fun characterCard(id: String) = CharacterCard(
+        id = id,
+        displayName = id,
+        iconUrl = null,
     )
 
 
