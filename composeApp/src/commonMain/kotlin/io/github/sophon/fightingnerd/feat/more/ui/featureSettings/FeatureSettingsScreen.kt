@@ -45,10 +45,7 @@ internal fun FeatureSettingsScreen(
         onExit = onExit,
         onFeatureToggle = vm::toggleFeature,
         onGameToggle = vm::toggleGame,
-        onSaveConfig = {
-            vm.saveConfiguration()
-            onExit()
-        },
+        onSaveConfig = vm::displayConfirmationDialog,
         modifier = modifier,
     )
 }
@@ -62,11 +59,7 @@ private fun Content(
     onSaveConfig: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    LazyColumn(
-        verticalArrangement = Arrangement.spacedBy(
-            space = nerdDimensions.inlineGap,
-            alignment = Alignment.Top,
-        ),
+    Column(
         modifier = modifier
             .fillMaxWidth()
             .padding(
@@ -74,38 +67,44 @@ private fun Content(
                 vertical = nerdDimensions.screenPaddingVertical,
             )
     ) {
-        item {
-            Header(
-                isChanged = state.isChanged,
-                onExit = onExit,
-                onSaveConfig = onSaveConfig
-            )
-        }
+        Header(
+            isChanged = state.isChanged,
+            onExit = onExit,
+            onSaveConfig = onSaveConfig
+        )
 
-        itemsIndexed(state.updatedFeatureList) { featureIndex, feature ->
-            val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(shape)
-                    .background(nerdColorPalette.surface)
-            ) {
-                Toggle(
-                    title = feature.featureName,
-                    subtitle = feature.version,
-                    isEnabled = feature.isEnabled,
-                    isCategory = true,
-                    onToggle = { onFeatureToggle(featureIndex, it) },
-                )
-
-                feature.gameList.forEachIndexed { gameIndex, game ->
+        LazyColumn(
+            verticalArrangement = Arrangement.spacedBy(
+                space = nerdDimensions.inlineGap,
+                alignment = Alignment.Top,
+            ),
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            itemsIndexed(state.updatedFeatureList) { featureIndex, feature ->
+                val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(shape)
+                        .background(nerdColorPalette.surface)
+                ) {
                     Toggle(
-                        title = game.displayName,
-                        isEnabled = game.isEnabled,
-                        onToggle = {
-                            onGameToggle(featureIndex, gameIndex, it)
-                        },
+                        title = feature.featureName,
+                        subtitle = feature.version,
+                        isEnabled = feature.isEnabled,
+                        isCategory = true,
+                        onToggle = { onFeatureToggle(featureIndex, it) },
                     )
+
+                    feature.gameList.forEachIndexed { gameIndex, game ->
+                        Toggle(
+                            title = game.displayName,
+                            isEnabled = game.isEnabled,
+                            onToggle = {
+                                onGameToggle(featureIndex, gameIndex, it)
+                            },
+                        )
+                    }
                 }
             }
         }

@@ -10,6 +10,7 @@ import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.feat.more.KEY_PREFIX_FEATURE
 import io.github.sophon.fightingnerd.feat.more.model.SettingsError
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.first
 import kotlinx.io.IOException
 
@@ -26,19 +27,22 @@ internal class GetAvailableFeaturesUseCase(
             is Result.Error -> emptyMap()
         }
 
+        //TODO: do we really want to return Ui stuff????
         val list = grouped.map { (_, entries) ->
             val featureInfo = entries.first().value.featureInfo
             UiFeatureSetting(
                 featureName = featureInfo.name,
                 iconUrl = featureInfo.iconUrl.orEmpty(),
                 version = featureInfo.version,
-                gameList = entries.map { (game, _) ->
-                    UiFeatureSetting.UiGame(
-                        displayName = game.displayName,
-                        id = game.id,
-                        isEnabled = gameConfigMap[game.id] ?: false,
-                    )
-                },
+                gameList = entries
+                    .map { (game, _) ->
+                        UiFeatureSetting.UiGame(
+                            displayName = game.displayName,
+                            id = game.id,
+                            isEnabled = gameConfigMap[game.id] ?: false,
+                        )
+                    }
+                    .toImmutableList(),
             )
         }
 

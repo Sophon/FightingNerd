@@ -3,6 +3,7 @@
 ## [v3.2.0] - TODO
 - `Move` - bugfixes
 - `Quiz` - allows quiz for individual characters
+- `More` - confirmation dialog
 
 ## [v3.1.0] - 2026-08-29
 - fixed downloaded media not being used

@@ -3,7 +3,6 @@
 ## High prio
 
 - `More` 
-  - Feature settings confirmation dialog
   - Update settings
     - frequency, last updated time, update individual games
     - Media status?

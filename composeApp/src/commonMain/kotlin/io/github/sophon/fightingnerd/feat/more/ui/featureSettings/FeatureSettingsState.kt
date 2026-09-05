@@ -7,6 +7,7 @@ import kotlinx.collections.immutable.persistentListOf
 internal data class FeatureSettingsState(
     val currentFeatureList: ImmutableList<UiFeatureSetting> = persistentListOf(),
     val updatedFeatureList: ImmutableList<UiFeatureSetting> = persistentListOf(),
+    val gamesToBeDisabled: ImmutableList<UiFeatureSetting.UiGame> = persistentListOf(),
 
     val appVersion: String = BuildKonfig.VERSION,
 
@@ -19,7 +20,7 @@ internal data class FeatureSettingsState(
         val featureName: String,
         val iconUrl: String,
         val version: String,
-        val gameList: List<UiGame>,
+        val gameList: ImmutableList<UiGame>,
     ) {
         val isEnabled: Boolean get() = gameList.any { it.isEnabled }
 
@@ -37,7 +38,7 @@ internal data class FeatureSettingsState(
                     featureName = "Wavu Wiki",
                     iconUrl = "",
                     version = "1.0.0",
-                    gameList = listOf(
+                    gameList = persistentListOf(
                         UiFeatureSetting.UiGame(displayName = "Tekken 8", id = "T8", isEnabled = true),
                     ),
                 ),
@@ -45,7 +46,7 @@ internal data class FeatureSettingsState(
                     featureName = "SuperCombo",
                     iconUrl = "",
                     version = "1.0.9",
-                    gameList = listOf(
+                    gameList = persistentListOf(
                         UiFeatureSetting.UiGame(displayName = "Street Fighter 6", id = "SF6", isEnabled = true),
                         UiFeatureSetting.UiGame(displayName = "Mortal Kombat 1", id = "MK1", isEnabled = false),
                     ),
@@ -54,7 +55,7 @@ internal data class FeatureSettingsState(
                     featureName = "Dustloop",
                     iconUrl = "",
                     version = "2.1.0",
-                    gameList = listOf(
+                    gameList = persistentListOf(
                         UiFeatureSetting.UiGame(displayName = "Guilty Gear Strive", id = "GGST", isEnabled = true),
                         UiFeatureSetting.UiGame(displayName = "Granblue Fantasy Versus Rising", id = "GBVSR", isEnabled = true),
                         UiFeatureSetting.UiGame(displayName = "BlazBlue Central Fiction", id = "BBCF",  isEnabled = false),
