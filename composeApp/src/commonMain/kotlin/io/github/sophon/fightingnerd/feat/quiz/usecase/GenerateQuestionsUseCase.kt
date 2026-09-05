@@ -7,6 +7,7 @@ import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.core.model.AppError
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_DISTRACTIONS
 import io.github.sophon.fightingnerd.feat.quiz.COUNT_QUESTIONS
@@ -17,14 +18,28 @@ import kotlinx.coroutines.flow.first
 internal class GenerateQuestionsUseCase(
     private val repo: FeatureRepo,
 ) {
-    suspend fun invoke(gameId: String): Result<List<Question>, AppError> {
+    suspend operator fun invoke(
+        gameId: String,
+        characterId: String? = null,
+    ): Result<List<Question>, AppError> {
         val game = Game.fromId(gameId) ?: return Result.Error(AppError.GameNotFound(gameId))
-        val wiki = repo.getWikiClientFor(game) ?: return Result.Error(AppError.WikiClientNotFound(gameId))
+        val wikiClient = repo.getWikiClientFor(game) ?: return Result.Error(AppError.WikiClientNotFound(gameId))
 
-        val characterList = wiki.subscribeToCharacterList()
+        val result = if (characterId == null) {
+            generateQuestionsForCharacters(wikiClient)
+        } else {
+            generateQuestionsForCharacter(wikiClient, characterId)
+        }
+
+        return result
+    }
+
+
+    private suspend fun generateQuestionsForCharacters(wikiClient: WikiClient): Result<List<Question>, AppError> {
+        val characterList = wikiClient.subscribeToCharacterList()
             .first()
             .filter { character ->
-                wiki.subscribeToMoveList(CharacterId(character.id))
+                wikiClient.subscribeToMoveList(CharacterId(character.id))
                     .first()
                     .isNotEmpty()
             }
@@ -32,13 +47,36 @@ internal class GenerateQuestionsUseCase(
         val allQuestions = mutableListOf<Question>()
         while (allQuestions.size < COUNT_QUESTIONS) {
             val randomCharacter = characterList.random()
-            val moveList = wiki.subscribeToMoveList(CharacterId(randomCharacter.id)).first()
+            val moveList = wikiClient.subscribeToMoveList(CharacterId(randomCharacter.id)).first()
             val randomMove = moveList.random()
             val question = randomMove.generateQuestion(randomCharacter, moveList)
             allQuestions.add(question)
         }
 
         return Result.Success(allQuestions)
+    }
+
+    private suspend fun generateQuestionsForCharacter(
+        wikiClient: WikiClient,
+        characterId: String,
+    ): Result<List<Question>, AppError> {
+        val character = wikiClient.subscribeToCharacterList()
+            .first()
+            .firstOrNull { it.id == characterId }
+            ?: return Result.Error(AppError.Unknown)
+
+        val moveList = wikiClient.subscribeToMoveList(CharacterId(characterId)).first()
+        if (moveList.isEmpty()) return Result.Error(AppError.Unknown)
+
+        val allQuestions = mutableListOf<Question>()
+        while (allQuestions.size < COUNT_QUESTIONS) {
+            val randomMove = moveList.random()
+            val question = randomMove.generateQuestion(character, moveList)
+            allQuestions.add(question)
+        }
+
+        val result = Result.Success(allQuestions)
+        return result
     }
 
 

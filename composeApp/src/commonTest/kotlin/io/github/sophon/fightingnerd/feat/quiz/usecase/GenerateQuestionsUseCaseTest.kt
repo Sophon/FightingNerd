@@ -86,4 +86,85 @@ internal class GenerateQuestionsUseCaseTest {
         val actualError = (result as? Result.Error)?.error
         assertThat(actualError).isEqualTo(expected)
     }
+
+    @Test
+    fun `usecase for a character generates exactly ten questions`() = runTest {
+        // given
+        val game = Game.Tekken8
+        val wiki = FakeWikiClient(
+            subscribeToCharacterListResult = testCharacterList,
+            subscribeToMoveListResult = testMoveList,
+        )
+        val repo = FakeFeatureRepo(mapOf(game to wiki))
+        val usecase = GenerateQuestionsUseCase(repo)
+        val expectedCount = COUNT_QUESTIONS
+
+        // when
+        val result = usecase.invoke(game.id, characterId = "kazuya")
+
+        //then
+        assertThat(result).isInstanceOf(Result.Success::class)
+        val actualCount = (result as? Result.Success)?.data?.size
+        assertThat(actualCount).isEqualTo(expectedCount)
+    }
+
+    @Test
+    fun `usecase for a character generates questions with one correct and four distraction options`() = runTest {
+        // given
+        val game = Game.Tekken8
+        val wiki = FakeWikiClient(
+            subscribeToCharacterListResult = testCharacterList,
+            subscribeToMoveListResult = testMoveList,
+        )
+        val repo = FakeFeatureRepo(mapOf(game to wiki))
+        val usecase = GenerateQuestionsUseCase(repo)
+        val expectedCount = (COUNT_DISTRACTIONS + 1)
+
+        // when
+        val result = usecase.invoke(game.id, characterId = "kazuya")
+
+        //then
+        assertThat(result).isInstanceOf(Result.Success::class)
+        (result as? Result.Success)?.data?.forEach { question ->
+            assertThat(question.options.size).isEqualTo(expectedCount)
+        }
+    }
+
+    @Test
+    fun `usecase for a character returns error when game not found`() = runTest {
+        // given
+        val game = Game.Tekken8
+        val repo = FakeFeatureRepo(emptyMap())
+        val usecase = GenerateQuestionsUseCase(repo)
+        val expected = AppError.WikiClientNotFound(game.id)
+
+        // when
+        val result = usecase.invoke(game.id, characterId = "kazuya")
+
+        //then
+        assertThat(result).isInstanceOf(Result.Error::class)
+        val actualError = (result as? Result.Error)?.error
+        assertThat(actualError).isEqualTo(expected)
+    }
+
+    @Test
+    fun `usecase for a character returns error when character not in character list`() = runTest {
+        // given
+        val game = Game.Tekken8
+        val wiki = FakeWikiClient(
+            subscribeToCharacterListResult = testCharacterList,
+            subscribeToMoveListResult = testMoveList,
+        )
+        val repo = FakeFeatureRepo(mapOf(game to wiki))
+        val usecase = GenerateQuestionsUseCase(repo)
+        val expected = AppError.Unknown
+
+        // when
+        val result = usecase.invoke(game.id, characterId = "nonexistent")
+
+        //then
+        assertThat(result).isInstanceOf(Result.Error::class)
+        val actualError = (result as? Result.Error)?.error
+        assertThat(actualError).isEqualTo(expected)
+    }
 }

@@ -18,6 +18,7 @@ import kotlinx.coroutines.launch
 
 internal class QuizVM(
     private val gameId: String,
+    private val characterId: String?,
     private val onExit: () -> Unit,
 
     private val overlayService: OverlayService,
@@ -88,7 +89,7 @@ internal class QuizVM(
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
-            generateQuestionsUseCase.invoke(gameId = gameId)
+            generateQuestionsUseCase(gameId = gameId, characterId = characterId)
                 .onSuccess { questionList ->
                     _state.update { it.copy(questionList = questionList.toImmutableList()) }
                 }

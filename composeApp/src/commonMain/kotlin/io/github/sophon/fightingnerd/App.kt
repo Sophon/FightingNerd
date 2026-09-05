@@ -219,8 +219,8 @@ private fun AppNavDisplay(
             }
             entry<Destination.QuizOverview> {
                 QuizOverviewScreen(
-                    onNavigateToQuiz = { gameId ->
-                        backStack.add(Destination.Quiz(gameId = gameId))
+                    onNavigateToQuiz = { gameId, characterId ->
+                        backStack.add(Destination.Quiz(gameId = gameId, characterId = characterId))
                     }
                 )
             }
@@ -248,6 +248,7 @@ private fun AppNavDisplay(
             entry<Destination.Quiz> { destination ->
                 QuizScreen(
                     gameId = destination.gameId,
+                    characterId = destination.characterId,
                     onExit = { backStack.removeLastOrNull() },
                 )
             }
