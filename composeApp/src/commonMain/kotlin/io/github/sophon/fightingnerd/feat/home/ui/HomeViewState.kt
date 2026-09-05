@@ -2,7 +2,6 @@ package io.github.sophon.fightingnerd.feat.home.ui
 
 import androidx.compose.runtime.Immutable
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.fightingnerd.core.ui.components.GameFeature
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList

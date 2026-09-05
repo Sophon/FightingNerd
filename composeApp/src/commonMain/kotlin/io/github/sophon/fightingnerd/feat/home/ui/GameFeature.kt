@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.ui.components
+package io.github.sophon.fightingnerd.feat.home.ui
 
 import androidx.compose.runtime.Immutable
 import io.github.sophon.core.featureConfig.model.Game
