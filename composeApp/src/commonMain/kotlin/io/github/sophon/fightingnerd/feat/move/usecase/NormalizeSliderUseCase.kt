@@ -5,13 +5,12 @@ import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Companion.FRAME_MIN
 
 internal class NormalizeSliderUseCase {
-    fun invoke(
+    operator fun invoke(
         newMinMax: MoveListState.FilterSheet.MinMax?,
         sliderMin: Int = FRAME_MIN,
         sliderMax: Int = FRAME_MAX,
     ): MoveListState.FilterSheet.MinMax? {
         if (newMinMax == null) return null
-        if (newMinMax.isValid.not()) return null
 
         val sliderMin = sliderMin - 1
         val newMin = if (newMinMax.min != null && newMinMax.min <= sliderMin) {
