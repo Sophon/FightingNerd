@@ -45,10 +45,7 @@ internal fun FeatureSettingsScreen(
         onExit = onExit,
         onFeatureToggle = vm::toggleFeature,
         onGameToggle = vm::toggleGame,
-        onSaveConfig = {
-            vm.saveConfiguration()
-            onExit()
-        },
+        onSaveConfig = vm::displayConfirmationDialog,
         modifier = modifier,
     )
 }

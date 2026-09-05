@@ -5,11 +5,14 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.fightingnerd.core.ui.Dialog
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
+import io.github.sophon.fightingnerd.feat.more.ui.components.ConfirmFeatureChangeDialog
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,6 +26,8 @@ internal class FeatureSettingsVM(
     private val _state = MutableStateFlow(FeatureSettingsState())
     val state = _state.asStateFlow()
 
+    private var saveJob: Job? = null
+
 
     init {
         loadFeatures()
@@ -33,7 +38,9 @@ internal class FeatureSettingsVM(
         _state.update { current ->
             val updatedFeature = current.updatedFeatureList[featureIndex].run {
                 copy(
-                    gameList = gameList.map { game -> game.copy(isEnabled = isEnabled) }
+                    gameList = gameList
+                        .map { game -> game.copy(isEnabled = isEnabled) }
+                        .toImmutableList()
                 )
             }
             val updatedList = current.updatedFeatureList
@@ -49,15 +56,13 @@ internal class FeatureSettingsVM(
     fun toggleGame(featureIndex: Int, gameIndex: Int, isEnabled: Boolean) {
         _state.update { current ->
             val updatedFeature = current.updatedFeatureList[featureIndex].run {
-                copy(
-                    gameList = gameList.mapIndexed { index, game ->
-                        if (index == gameIndex) {
-                            game.copy(isEnabled = isEnabled)
-                        } else {
-                            game
-                        }
+                val updatedGameList = gameList
+                    .toMutableList()
+                    .apply {
+                        set(gameIndex, get(gameIndex).copy(isEnabled = isEnabled))
                     }
-                )
+                    .toImmutableList()
+                copy(gameList = updatedGameList)
             }
             val updatedList = current.updatedFeatureList
                 .toMutableList()
@@ -69,10 +74,35 @@ internal class FeatureSettingsVM(
         }
     }
 
-    fun saveConfiguration() {
-        viewModelScope.launch {
-            saveFeatureConfigUseCase.invoke(featureList = state.value.updatedFeatureList)
+    fun displayConfirmationDialog() {
+        if (saveJob?.isActive == true) return
+
+        //TODO: filter disabled only
+        val updatedGameList = _state.value.updatedFeatureList
+            .flatMap { it.gameList }
+            .toImmutableList()
+
+        overlayService.show(
+            Dialog { onDismiss ->
+                ConfirmFeatureChangeDialog(
+                    gameList = updatedGameList,
+                    onConfirm = {
+                        commitSave()
+                        onDismiss()
+                    },
+                    onDismiss = onDismiss,
+                )
+            }
+        )
+    }
+
+    private fun commitSave() {
+        if (saveJob?.isActive == true) return
+        saveJob = viewModelScope.launch {
+            val featureList = _state.value.updatedFeatureList
+            saveFeatureConfigUseCase.invoke(featureList = featureList)
                 .onSuccess {
+                    _state.update { it.copy(currentFeatureList = featureList) }
                     overlayService.show(
                         Toast(message = "Saved", type = Toast.Type.SUCCESS)
                     )
@@ -100,6 +130,6 @@ internal class FeatureSettingsVM(
 
 
     companion object {
-        private const val TAG = "SettingsVM"
+        private const val TAG = "FeatureSettingsVM"
     }
 }
