@@ -16,6 +16,7 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.components.CharacterMatrix
 import io.github.sophon.fightingnerd.core.ui.components.GameWidget
+import io.github.sophon.fightingnerd.core.ui.components.IconAction
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -56,8 +57,11 @@ private fun Content(
                     isExpanded = widget.isExpanded,
                     isLoading = widget.isReady.not(),
                     onExpandClick = { onExpandWidget(widget.game) },
-                    leadingIcon = Icons.Outlined.PlayArrow,
-                    onLeadingClick = { onNavigateToQuiz(widget.game.id, null) },
+                    leadingAction = IconAction(
+                        icon = Icons.Outlined.PlayArrow,
+                        onClick = { onNavigateToQuiz(widget.game.id, null) },
+                        isEnabled = widget.isPlayable,
+                    ),
                 ) {
                     CharacterMatrix(
                         characterList = widget.characterList,

@@ -9,6 +9,7 @@ internal data class QuizGameWidget(
     val game: Game,
     val featureName: String,
     val isReady: Boolean,
+    val isPlayable: Boolean = false,
     val isExpanded: Boolean = false,
     val characterList: ImmutableList<CharacterCard> = persistentListOf(),
 )

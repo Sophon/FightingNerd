@@ -7,6 +7,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.ui.components.CharacterCard
 import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
 import io.github.sophon.fightingnerd.feat.FakeWikiClient
@@ -78,6 +79,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         val client = FakeWikiClient(
             name = "Wavu Wiki",
             subscribeToCharacterListResult = listOf(character("kazuya")),
+            subscribeToMoveListResult = listOf(move("kazuya")),
         )
         val usecase = SubscribeGameWidgetsUseCase(
             store = fakeStore(featureKey("Wavu Wiki", Game.Tekken8.id) to true),
@@ -88,6 +90,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
                 game = Game.Tekken8,
                 featureName = "Wavu Wiki",
                 isReady = true,
+                isPlayable = true,
                 characterList = persistentListOf(characterCard("kazuya")),
             ),
         )
@@ -127,6 +130,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         val enabledClient = FakeWikiClient(
             name = "Wavu Wiki",
             subscribeToCharacterListResult = listOf(character("kazuya")),
+            subscribeToMoveListResult = listOf(move("kazuya")),
         )
         val disabledClient = FakeWikiClient(
             name = "SuperCombo",
@@ -146,6 +150,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
                 game = Game.Tekken8,
                 featureName = "Wavu Wiki",
                 isReady = true,
+                isPlayable = true,
                 characterList = persistentListOf(characterCard("kazuya")),
             ),
         )
@@ -163,6 +168,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
         val readyClient = FakeWikiClient(
             name = "Wavu Wiki",
             subscribeToCharacterListResult = listOf(character("kazuya")),
+            subscribeToMoveListResult = listOf(move("kazuya")),
         )
         val notReadyClient = FakeWikiClient(
             name = "SuperCombo",
@@ -185,6 +191,7 @@ internal class SubscribeGameWidgetsUseCaseTest {
                 game = Game.Tekken8,
                 featureName = "Wavu Wiki",
                 isReady = true,
+                isPlayable = true,
                 characterList = persistentListOf(characterCard("kazuya")),
             ),
             QuizGameWidget(game = Game.StreetFighter6, featureName = "SuperCombo", isReady = false),
@@ -208,6 +215,14 @@ internal class SubscribeGameWidgetsUseCaseTest {
         id = id,
         displayName = id,
         iconUrl = null,
+        isLoading = false,
+    )
+
+    private fun move(characterId: String) = Move(
+        characterId = characterId,
+        id = "$characterId-move",
+        input = "1",
+        urls = Move.Urls(wikiUrl = ""),
     )
 
 
