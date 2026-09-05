@@ -6,8 +6,11 @@ import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.fightingnerd.core.ui.components.CharacterCard
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import io.github.sophon.fightingnerd.feat.quiz.model.QuizGameWidget
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -34,10 +37,12 @@ internal class SubscribeGameWidgetsUseCase(
             } else {
                 combine(enabledPairs.toCharacterFlows()) { gameCharacterLists ->
                     val gameWidgetList = enabledPairs.mapIndexed { index, (game, wikiClient) ->
+                        val characters = gameCharacterLists[index]
                         QuizGameWidget(
                             game = game,
                             featureName = wikiClient.featureInfo.name,
-                            isReady = gameCharacterLists[index].isNotEmpty(),
+                            isReady = characters.isNotEmpty(),
+                            characterList = characters.toCharacterCards(),
                         )
                     }
                     gameWidgetList
@@ -53,5 +58,17 @@ internal class SubscribeGameWidgetsUseCase(
             wikiClient.subscribeToCharacterList()
         }
         return characterFlows
+    }
+
+    private fun List<Character>.toCharacterCards(): ImmutableList<CharacterCard> {
+        val cards = map { character ->
+            CharacterCard(
+                id = character.id,
+                displayName = character.displayName,
+                iconUrl = character.images?.iconUrl,
+            )
+        }.toImmutableList()
+
+        return cards
     }
 }
