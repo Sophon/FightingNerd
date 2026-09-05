@@ -7,6 +7,7 @@ import kotlinx.collections.immutable.persistentListOf
 internal data class FeatureSettingsState(
     val currentFeatureList: ImmutableList<UiFeatureSetting> = persistentListOf(),
     val updatedFeatureList: ImmutableList<UiFeatureSetting> = persistentListOf(),
+    val gamesToBeDisabled: ImmutableList<UiFeatureSetting.UiGame> = persistentListOf(),
 
     val appVersion: String = BuildKonfig.VERSION,
 

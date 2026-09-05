@@ -16,17 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.window.Dialog
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState
-import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsState.UiFeatureSetting
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
 import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun ConfirmFeatureChangeDialog(
-    gameList: ImmutableList<UiFeatureSetting.UiGame>,
+    gameList: ImmutableList<FeatureSettingsState.UiFeatureSetting.UiGame>,
     onConfirm: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
@@ -95,7 +95,11 @@ internal fun ConfirmFeatureChangeDialog(
 private fun ConfirmFeatureChangePreview() {
     FightingNerdTheme {
         ConfirmFeatureChangeDialog(
-            gameList = FeatureSettingsState.PREVIEW.currentFeatureList.first().gameList,
+            gameList = persistentListOf(
+                FeatureSettingsState.UiFeatureSetting.UiGame(displayName = "Tekken 8", id = "T8", isEnabled = false),
+                FeatureSettingsState.UiFeatureSetting.UiGame(displayName = "Street Fighter 6", id = "SF6", isEnabled = false),
+                FeatureSettingsState.UiFeatureSetting.UiGame(displayName = "Guilty Gear Strive", id = "GGST", isEnabled = false),
+            ),
             onConfirm = {},
             onDismiss = {},
         )

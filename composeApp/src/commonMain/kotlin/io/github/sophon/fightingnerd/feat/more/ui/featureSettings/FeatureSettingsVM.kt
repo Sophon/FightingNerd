@@ -11,6 +11,8 @@ import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.more.ui.components.ConfirmFeatureChangeDialog
 import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -49,7 +51,21 @@ internal class FeatureSettingsVM(
                     set(featureIndex, updatedFeature)
                 }
                 .toImmutableList()
-            current.copy(updatedFeatureList = updatedList)
+
+            val currentFeature = current.currentFeatureList[featureIndex]
+            val featureGameIds = currentFeature.gameList.map { it.id }.toSet()
+            val cleared = current.gamesToBeDisabled.filter { it.id !in featureGameIds }
+            val newlyDisabled = if (isEnabled) {
+                emptyList()
+            } else {
+                currentFeature.gameList.filter { it.isEnabled }
+            }
+            val updatedGamesToBeDisabled = (cleared + newlyDisabled).toImmutableList()
+
+            current.copy(
+                updatedFeatureList = updatedList,
+                gamesToBeDisabled = updatedGamesToBeDisabled,
+            )
         }
     }
 
@@ -70,30 +86,40 @@ internal class FeatureSettingsVM(
                     set(featureIndex, updatedFeature)
                 }
                 .toImmutableList()
-            current.copy(updatedFeatureList = updatedList)
+
+            val updatedGamesToBeDisabled = updateForGameToggle(
+                currentGamesToBeDisabled = current.gamesToBeDisabled,
+                currentGame = current.currentFeatureList[featureIndex].gameList[gameIndex],
+                becomesEnabled = isEnabled,
+            )
+
+            current.copy(
+                updatedFeatureList = updatedList,
+                gamesToBeDisabled = updatedGamesToBeDisabled,
+            )
         }
     }
 
     fun displayConfirmationDialog() {
         if (saveJob?.isActive == true) return
 
-        //TODO: filter disabled only
-        val updatedGameList = _state.value.updatedFeatureList
-            .flatMap { it.gameList }
-            .toImmutableList()
-
-        overlayService.show(
-            Dialog { onDismiss ->
-                ConfirmFeatureChangeDialog(
-                    gameList = updatedGameList,
-                    onConfirm = {
-                        commitSave()
-                        onDismiss()
-                    },
-                    onDismiss = onDismiss,
-                )
-            }
-        )
+        val gamesToBeDisabled = _state.value.gamesToBeDisabled
+        if (gamesToBeDisabled.isEmpty()) {
+            commitSave()
+        } else {
+            overlayService.show(
+                Dialog { onDismiss ->
+                    ConfirmFeatureChangeDialog(
+                        gameList = gamesToBeDisabled,
+                        onConfirm = {
+                            commitSave()
+                            onDismiss()
+                        },
+                        onDismiss = onDismiss,
+                    )
+                }
+            )
+        }
     }
 
     private fun commitSave() {
@@ -102,7 +128,12 @@ internal class FeatureSettingsVM(
             val featureList = _state.value.updatedFeatureList
             saveFeatureConfigUseCase.invoke(featureList = featureList)
                 .onSuccess {
-                    _state.update { it.copy(currentFeatureList = featureList) }
+                    _state.update {
+                        it.copy(
+                            currentFeatureList = featureList,
+                            gamesToBeDisabled = persistentListOf(),
+                        )
+                    }
                     overlayService.show(
                         Toast(message = "Saved", type = Toast.Type.SUCCESS)
                     )
@@ -113,7 +144,6 @@ internal class FeatureSettingsVM(
                 }
         }
     }
-
 
     private fun loadFeatures() {
         viewModelScope.launch {
@@ -126,6 +156,20 @@ internal class FeatureSettingsVM(
                     Napier.e(tag = TAG) { error.toString() }
                 }
         }
+    }
+
+    private fun updateForGameToggle(
+        currentGamesToBeDisabled: ImmutableList<FeatureSettingsState.UiFeatureSetting.UiGame>,
+        currentGame: FeatureSettingsState.UiFeatureSetting.UiGame,
+        becomesEnabled: Boolean,
+    ): ImmutableList<FeatureSettingsState.UiFeatureSetting.UiGame> {
+        val result = when {
+            becomesEnabled -> currentGamesToBeDisabled.filter { it.id != currentGame.id }
+            currentGame.isEnabled -> currentGamesToBeDisabled + currentGame
+            else -> currentGamesToBeDisabled
+        }.toImmutableList()
+
+        return result
     }
 
 
