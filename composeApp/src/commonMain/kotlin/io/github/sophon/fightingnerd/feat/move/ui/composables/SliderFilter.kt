@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -234,7 +235,7 @@ private fun NumericInputSection(
                 .size(nerdDimensions.iconLarge)
         ) {
             Icon(
-                imageVector = Icons.Outlined.Delete,
+                imageVector = Icons.Outlined.Close,
                 tint = nerdColorPalette.textPrimary,
                 contentDescription = null,
             )
