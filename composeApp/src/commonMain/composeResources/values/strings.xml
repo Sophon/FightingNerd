@@ -1,6 +1,9 @@
 <!--WHERE - DESCRIPTION-->
 
 <resources>
+    <string name="general_confirm">Confirm</string>
+    <string name="general_dismiss">Dismiss</string>
+
     <string name="home_refresh_refreshing">Refreshing...</string>
     <string name="home_refresh_success">%1$s: %2$d chars refreshed</string>
 
@@ -91,6 +94,9 @@
     <string name="more_item_feature_settings">Feature settings</string>
     <string name="more_donate">Tip the developer</string>
     <string name="more_feature_settings_btn_save">Save</string>
+    <string name="more_feature_settings_dialog_title">Are you sure?</string>
+    <string name="more_feature_settings_dialog_desc">Disabling a game wipes its offline data.</string>
+    <string name="more_feature_settings_dialog_btn_wipe">Confirm wipe</string>
 
     <string name="payment_tip_dialog_title">Thanks!</string>
     <string name="payment_tip_dialog_description">Your support is not required but highly appreciated.</string>
