@@ -1,6 +1,7 @@
 # APP CHANGELOG
 
 ## [v3.2.0] - TODO
+- `Move` - bugfixes
 - `Quiz` - allows quiz for individual characters
 
 ## [v3.1.0] - 2026-08-29
