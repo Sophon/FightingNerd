@@ -5,7 +5,7 @@ import io.github.sophon.core.wiki.model.MoveGameProperties
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SF6Properties(
+data class SFCharProperties(
     val fwdWalkSpd: String?,
     val bwdWalkSpd: String?,
     val fwdDashSpd: String?,
@@ -26,7 +26,7 @@ data class SF6Properties(
 ): CharacterGameProperties
 
 @Serializable
-data class MK1Properties(
+data class MKCharProperties(
     val hpMod: String? = null,
     val throwDmg: String? = null,
 ): CharacterGameProperties
@@ -63,7 +63,7 @@ data class SF6MoveProperties(
 ): MoveGameProperties
 
 @Serializable
-data class AVLProperties(
+data class AVLMoveProperties(
     val chiDamage: String? = null,
     val flow: String? = null,
 ): MoveGameProperties

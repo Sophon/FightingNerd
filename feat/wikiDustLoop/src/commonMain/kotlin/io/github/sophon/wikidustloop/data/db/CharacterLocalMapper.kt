@@ -8,11 +8,11 @@ import io.github.sophon.wikidustloop.data.SelectDBFZForGame
 import io.github.sophon.wikidustloop.data.SelectGBVSRForGame
 import io.github.sophon.wikidustloop.data.SelectGGSTForGame
 import io.github.sophon.wikidustloop.data.SelectMTFSForGame
-import io.github.sophon.wikidustloop.integration.model.BBProperties
-import io.github.sophon.wikidustloop.integration.model.DBFZProperties
-import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTProperties
-import io.github.sophon.wikidustloop.integration.model.MTFSProperties
+import io.github.sophon.wikidustloop.integration.model.BBCharProperties
+import io.github.sophon.wikidustloop.integration.model.DBFZCharProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRCharProperties
+import io.github.sophon.wikidustloop.integration.model.GGCharProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSCharProperties
 
 internal fun CharacterEntity.toDomain(): Character {
     val character = Character(
@@ -46,7 +46,7 @@ internal fun SelectGGSTForGame.toDomain(): Character {
         ),
         hp = hp,
         umo = umo.toDomain(),
-        gameProperties = GGSTProperties(
+        gameProperties = GGCharProperties(
             defense = defense,
             guts = guts,
             guardBalance = guardBalance,
@@ -97,7 +97,7 @@ internal fun SelectBBForGame.toDomain(): Character {
         ),
         hp = hp,
         umo = umo.toDomain(),
-        gameProperties = BBProperties(
+        gameProperties = BBCharProperties(
             preJump = preJump,
             backDash = backDash,
             forwardDash = forwardDash,
@@ -120,7 +120,7 @@ internal fun SelectMTFSForGame.toDomain(): Character {
         ),
         hp = hp,
         umo = umo.toDomain(),
-        gameProperties = MTFSProperties(
+        gameProperties = MTFSCharProperties(
             prejump = prejump,
             backdash = backdash,
             team = team,
@@ -143,7 +143,7 @@ internal fun SelectDBFZForGame.toDomain(): Character {
         ),
         hp = hp,
         umo = umo.toDomain(),
-        gameProperties = DBFZProperties(
+        gameProperties = DBFZCharProperties(
             kiMod = kiMod,
         ),
     )
@@ -164,8 +164,8 @@ internal fun SelectGBVSRForGame.toDomain(): Character {
         ),
         hp = hp,
         umo = umo.toDomain(),
-        gameProperties = GBVSRProperties(
-            jump = GBVSRProperties.Jump(
+        gameProperties = GBVSRCharProperties(
+            jump = GBVSRCharProperties.Jump(
                 pre = jumpPre,
                 forwardDistance = jumpForwardDistance,
                 superForwardDistance = jumpSuperForwardDistance,
@@ -180,7 +180,7 @@ internal fun SelectGBVSRForGame.toDomain(): Character {
             walkSpeedBack = walkSpeedBack,
             dashInitial = dashInitial,
             dashAcceleration = dashAcceleration,
-            closeRange = GBVSRProperties.CloseRange(
+            closeRange = GBVSRCharProperties.CloseRange(
                 l = closeRangeL,
                 m = closeRangeM,
                 h = closeRangeH,

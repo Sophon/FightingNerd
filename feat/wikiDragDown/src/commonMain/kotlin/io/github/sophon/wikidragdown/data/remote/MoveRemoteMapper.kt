@@ -6,6 +6,7 @@ import io.github.sophon.core.util.toClickable
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikidragdown.domain.WIKI_BASE_URL
+import io.github.sophon.wikidragdown.integration.model.Roa2MoveProperties
 
 internal fun List<MoveResponseDto>.toDomain(
     character: Character,
@@ -59,7 +60,7 @@ internal fun MoveResponseDto.toDomain(
         notes = notes,
         urls = urls,
 
-        roa2Properties = Move.Roa2Properties(
+        gameProperties = Roa2MoveProperties(
             mode = mode.formMode(),
             caption = caption,
             hitboxCaption = hitboxCaption,

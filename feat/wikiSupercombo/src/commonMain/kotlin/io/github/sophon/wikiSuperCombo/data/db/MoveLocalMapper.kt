@@ -5,7 +5,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiSuperCombo.data.SelectAVLByCharacter
 import io.github.sophon.wikiSuperCombo.data.SelectMK1ByCharacter
 import io.github.sophon.wikiSuperCombo.data.SelectSF6ByCharacter
-import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
+import io.github.sophon.wikiSuperCombo.integration.model.AVLMoveProperties
 import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
 import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
 
@@ -134,7 +134,7 @@ internal fun SelectAVLByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        gameProperties = AVLProperties(
+        gameProperties = AVLMoveProperties(
             chiDamage = chiDamage,
             flow = flow,
         ),

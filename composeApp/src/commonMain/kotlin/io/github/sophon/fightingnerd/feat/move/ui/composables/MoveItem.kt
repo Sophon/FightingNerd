@@ -43,7 +43,8 @@ import io.github.sophon.fightingnerd.core.ui.components.IconAction
 import io.github.sophon.fightingnerd.core.ui.components.IconActionButton
 import io.github.sophon.fightingnerd.core.ui.components.ImageCarousel
 import io.github.sophon.fightingnerd.feat.move.model.Property
-import io.github.sophon.fightingnerd.feat.move.ui.UiMove
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Field
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.UiMove
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.VideoPlayer
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
@@ -293,11 +294,11 @@ private val videoMove = UiMove(
     name = "Neck Hunter: Villain",
     propertySet = persistentSetOf(Property.Heat, Property.Homing),
     coreFields = persistentListOf(
-        UiMove.Field(Res.string.move_list_field_startup, "i24"),
-        UiMove.Field(Res.string.move_list_field_guard, "h"),
-        UiMove.Field(Res.string.move_list_field_damage, "25"),
-        UiMove.Field(Res.string.move_list_field_on_block, "+8"),
-        UiMove.Field(Res.string.move_list_field_on_hit, "+60a"),
+        Field(Res.string.move_list_field_startup, "i24"),
+        Field(Res.string.move_list_field_guard, "h"),
+        Field(Res.string.move_list_field_damage, "25"),
+        Field(Res.string.move_list_field_on_block, "+8"),
+        Field(Res.string.move_list_field_on_hit, "+60a"),
     ),
     optionalFields = persistentListOf(),
     urls = UiMove.Urls(
@@ -315,11 +316,11 @@ private val imageMove = UiMove(
     input = "H.ub1",
     name = "Neck Hunter: Villain",
     coreFields = persistentListOf(
-        UiMove.Field(Res.string.move_list_field_startup, "i24"),
-        UiMove.Field(Res.string.move_list_field_guard, "h"),
-        UiMove.Field(Res.string.move_list_field_damage, "25"),
-        UiMove.Field(Res.string.move_list_field_on_block, "+8"),
-        UiMove.Field(Res.string.move_list_field_on_hit, "+60a"),
+        Field(Res.string.move_list_field_startup, "i24"),
+        Field(Res.string.move_list_field_guard, "h"),
+        Field(Res.string.move_list_field_damage, "25"),
+        Field(Res.string.move_list_field_on_block, "+8"),
+        Field(Res.string.move_list_field_on_hit, "+60a"),
     ),
     optionalFields = persistentListOf(),
     urls = UiMove.Urls(

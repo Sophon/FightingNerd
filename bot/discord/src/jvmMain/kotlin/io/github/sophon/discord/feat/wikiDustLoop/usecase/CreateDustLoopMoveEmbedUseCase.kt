@@ -10,8 +10,8 @@ import io.github.sophon.discord.feat.wikiDustLoop.detailedMoveEmbedBuilder
 import io.github.sophon.discord.feat.wikiDustLoop.moveEmbedBuilder
 
 @ExcludeFromCoverage("UI")
-internal class CreateMoveEmbedUseCase {
-    fun invoke(
+internal class CreateDustLoopMoveEmbedUseCase {
+    operator fun invoke(
         game: Game,
         character: Character,
         move: Move,
@@ -27,7 +27,7 @@ internal class CreateMoveEmbedUseCase {
                 )
             }
 
-        return when (game) {
+        val result = when (game) {
             Game.GGST, Game.BBCF, Game.MTFS -> {
                 BotOutput(
                     mutableEmbedBuilder = BotOutput.MutableEmbedBuilder(
@@ -58,5 +58,6 @@ internal class CreateMoveEmbedUseCase {
             }
             else -> BotOutput(primaryEmbedBuilder = {})
         }
+        return result
     }
 }

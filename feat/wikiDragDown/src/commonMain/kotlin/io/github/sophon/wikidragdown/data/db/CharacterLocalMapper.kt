@@ -3,7 +3,7 @@ package io.github.sophon.wikidragdown.data.db
 import io.github.sophon.core.wiki.data.toDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidragdown.data.SelectROA2ForGame
-import io.github.sophon.wikidragdown.integration.model.Roa2Properties
+import io.github.sophon.wikidragdown.integration.model.Roa2CharProperties
 
 internal fun SelectROA2ForGame.toDomain(): Character {
     val character = Character(
@@ -19,7 +19,7 @@ internal fun SelectROA2ForGame.toDomain(): Character {
         ),
         hp = hp,
         umo = umo.toDomain(),
-        gameProperties = Roa2Properties(
+        gameProperties = Roa2CharProperties(
             dacusSpeedMultiplier = dacusSpeedMultiplier,
             weight = weight,
             frictionGround = frictionGround,

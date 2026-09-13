@@ -11,15 +11,15 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikidustloop.data.DustLoopDB
 import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
-import io.github.sophon.wikidustloop.integration.model.BBProperties
+import io.github.sophon.wikidustloop.integration.model.BBCharProperties
 import io.github.sophon.wikidustloop.integration.model.DBFZMoveProperties
-import io.github.sophon.wikidustloop.integration.model.DBFZProperties
+import io.github.sophon.wikidustloop.integration.model.DBFZCharProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
-import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTMoveProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRCharProperties
+import io.github.sophon.wikidustloop.integration.model.GGMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GGCharProperties
 import io.github.sophon.wikidustloop.integration.model.MTFSMoveProperties
-import io.github.sophon.wikidustloop.integration.model.MTFSProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSCharProperties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -58,7 +58,7 @@ internal class DustLoopCharacterDbAdapter(
     private fun insertProperties(character: Character) {
         when (game) {
             Game.GGST -> {
-                val p = character.gameProperties as? GGSTProperties ?: return
+                val p = character.gameProperties as? GGCharProperties ?: return
                 ggstQueries.insertGGSTCharacter(
                     characterId = character.id,
                     defense = p.defense,
@@ -95,7 +95,7 @@ internal class DustLoopCharacterDbAdapter(
                 )
             }
             Game.BBCF -> {
-                val p = character.gameProperties as? BBProperties ?: return
+                val p = character.gameProperties as? BBCharProperties ?: return
                 bbQueries.insertBBCharacter(
                     characterId = character.id,
                     preJump = p.preJump,
@@ -104,7 +104,7 @@ internal class DustLoopCharacterDbAdapter(
                 )
             }
             Game.MTFS -> {
-                val p = character.gameProperties as? MTFSProperties ?: return
+                val p = character.gameProperties as? MTFSCharProperties ?: return
                 mtfsQueries.insertMTFSCharacter(
                     characterId = character.id,
                     prejump = p.prejump,
@@ -113,14 +113,14 @@ internal class DustLoopCharacterDbAdapter(
                 )
             }
             Game.DBFZ -> {
-                val p = character.gameProperties as? DBFZProperties ?: return
+                val p = character.gameProperties as? DBFZCharProperties ?: return
                 dbfzQueries.insertDBFZCharacter(
                     characterId = character.id,
                     kiMod = p.kiMod,
                 )
             }
             Game.GBVSR -> {
-                val p = character.gameProperties as? GBVSRProperties ?: return
+                val p = character.gameProperties as? GBVSRCharProperties ?: return
                 gbvsrQueries.insertGBVSRCharacter(
                     characterId = character.id,
                     backdash = p.backdash,
@@ -243,7 +243,7 @@ internal class DustLoopMoveDbAdapter(
     private fun insertProperties(move: Move) {
         when (game) {
             Game.GGST -> {
-                val p = move.gameProperties as? GGSTMoveProperties
+                val p = move.gameProperties as? GGMoveProperties
                 ggstQueries.insertGGSTMove(
                     moveId = move.id,
                     riscGain = p?.riscGain,
