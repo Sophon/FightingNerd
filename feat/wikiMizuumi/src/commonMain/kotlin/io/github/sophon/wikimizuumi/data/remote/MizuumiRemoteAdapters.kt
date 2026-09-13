@@ -62,7 +62,7 @@ internal class MizuumiMoveRemoteAdapter(
                 .flatMap { dto ->
                     source.resolveHitboxUrls(dto).map { hitboxUrlMap ->
                         val moveList = dto.cargoquery.map {
-                            it.title.toDomain(character = character, hitboxUrlMap = hitboxUrlMap)
+                            it.title.toDomain(game = game, character = character, hitboxUrlMap = hitboxUrlMap)
                         }
                         moveList
                     }

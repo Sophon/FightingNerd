@@ -4,7 +4,7 @@ import io.github.sophon.core.wiki.data.toDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikimizuumi.data.CharacterEntity
 import io.github.sophon.wikimizuumi.data.SelectUni2ForGame
-import io.github.sophon.wikimizuumi.integration.model.Uni2Properties
+import io.github.sophon.wikimizuumi.integration.model.Uni2CharProperties
 
 internal fun CharacterEntity.toDomain(): Character {
     val character = Character(
@@ -38,7 +38,7 @@ internal fun SelectUni2ForGame.toDomain(): Character {
         ),
         hp = hp,
         umo = umo.toDomain(),
-        gameProperties = Uni2Properties(
+        gameProperties = Uni2CharProperties(
             smartSteer = smartSteer,
             fWalkSpeed = fWalkSpeed,
             fWalkSpeedNote = fWalkSpeedNote,

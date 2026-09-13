@@ -11,7 +11,10 @@ import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
-import io.github.sophon.wikimizuumi.integration.model.Uni2Properties
+import io.github.sophon.wikimizuumi.integration.model.MBTLMoveProperties
+import io.github.sophon.wikimizuumi.integration.model.Uni2MoveProperties
+import io.github.sophon.wikimizuumi.integration.model.Uni2CharProperties
+import io.github.sophon.wikimizuumi.integration.model.VSAVMoveProperties
 
 internal fun mizuumiMoveEmbed(
     character: Character,
@@ -42,20 +45,20 @@ internal fun mizuumiMoveEmbed(
     optionalField(name = "Damage", value = move.damage, escapeAsterisks = true)
     optionalField(name = "Invul", value = move.invulnerability)
 
-    move.mbProperties?.apply {
+    (move.gameProperties as? MBTLMoveProperties)?.apply {
         optionalField(name = "Attribute", value = attribute)
         optionalField(name = "Property", value = property)
-        optionalField(name = "Cost", value = move.mbProperties?.cost)
+        optionalField(name = "Cost", value = cost)
     }
 
-    move.uni2Properties?.apply {
+    (move.gameProperties as? Uni2MoveProperties)?.apply {
         optionalField(name = "Attribute", value = attribute)
         optionalField(name = "Property", value = property)
-        optionalField(name = "Cost", value = move.mbProperties?.cost)
+        optionalField(name = "Cost", value = cost)
         optionalField(name = "Ass advantage", value = assaultAdv)
     }
 
-    move.vsavProperties?.apply {
+    (move.gameProperties as? VSAVMoveProperties)?.apply {
         mandatoryField(name = "W-Dmg", value = whiteDmg)
         mandatoryField(name = "Renda", value = renda)
         mandatoryField(name = "Meter", value = meter)
@@ -128,7 +131,7 @@ internal fun mizuumiCharacterEmbed(
         },
     )
 
-    (character.gameProperties as? Uni2Properties)?.apply {
+    (character.gameProperties as? Uni2CharProperties)?.apply {
         optionalField(name = "Jump", value = "**$jumpStartup** ($jumpDuration)")
 
         val walkValue = buildString {

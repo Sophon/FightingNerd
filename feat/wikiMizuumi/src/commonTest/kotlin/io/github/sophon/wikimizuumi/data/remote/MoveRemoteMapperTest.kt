@@ -2,7 +2,9 @@ package io.github.sophon.wikimizuumi.data.remote
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.wikimizuumi.integration.model.MBTLMoveProperties
 import kotlin.test.Test
 
 class MoveMapperTest {
@@ -22,12 +24,13 @@ class MoveMapperTest {
 
         // when
         val result = move.toDomain(
+            game = Game.MBTL,
             character = MoveSource.ak,
             hitboxUrlMap = emptyMap(),
         )
 
         //then
-        assertThat(result.mbProperties?.property).isEqualTo(expectedUrl)
+        assertThat((result.gameProperties as? MBTLMoveProperties)?.property).isEqualTo(expectedUrl)
     }
 
     @Test
@@ -39,22 +42,23 @@ class MoveMapperTest {
                 "[SK](https://mizuumi.wiki/w/Melty_Blood/MBTL/Glossary#Soft_Knockdown_(SK))"
 
         // when
-        val result = move.toDomain(MoveSource.dn, emptyMap())
+        val result = move.toDomain(Game.MBTL, MoveSource.dn, emptyMap())
 
         //then
-        assertThat(result.mbProperties?.property).isEqualTo(expectedUrl)
+        assertThat((result.gameProperties as? MBTLMoveProperties)?.property).isEqualTo(expectedUrl)
     }
     //endregion
-    
+
     @Test
     fun `toDomain handles jump and charge`() {
         // given
         val move = MoveSource.lumenStellaAir
         val expectedInput = "j[4]6a"
         val expectedAlias = listOf("j.[4]6a", "j46a")
-        
+
         // when
         val result = move.toDomain(
+            game = Game.Uni2,
             character = character,
             hitboxUrlMap = emptyMap(),
         )

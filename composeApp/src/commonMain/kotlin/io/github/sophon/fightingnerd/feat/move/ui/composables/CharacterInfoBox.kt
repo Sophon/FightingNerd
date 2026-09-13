@@ -69,7 +69,7 @@ import io.github.sophon.wikidustloop.integration.model.DBFZProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
 import io.github.sophon.wikidustloop.integration.model.GGSTProperties
 import io.github.sophon.wikidustloop.integration.model.MTFSProperties
-import io.github.sophon.wikimizuumi.integration.model.Uni2Properties
+import io.github.sophon.wikimizuumi.integration.model.Uni2CharProperties
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.stringResource
@@ -114,7 +114,7 @@ internal fun CharacterInfoBox(
             is DBFZProperties -> DbfzRows(hp = character.hp, props = character.characterProperties)
             is GBVSRProperties -> GbvsrRows(hp = character.hp, umo = character.umo, props = character.characterProperties)
             is MTFSProperties -> MtfsRows(umo = character.umo, props = character.characterProperties)
-            is Uni2Properties -> Uni2Rows(hp = character.hp, umo = character.umo, props = character.characterProperties)
+            is Uni2CharProperties -> Uni2Rows(hp = character.hp, umo = character.umo, props = character.characterProperties)
             is Roa2Properties -> Roa2Rows(props = character.characterProperties)
             else -> FallbackRows(hp = character.hp, umo = character.umo)
         }
@@ -293,7 +293,7 @@ private fun MtfsRows(
 private fun Uni2Rows(
     hp: String?,
     umo: ImmutableList<String>,
-    props: Uni2Properties,
+    props: Uni2CharProperties,
 ) {
     val backdashValue = listOfNotNull(props.bDashDuration, props.bDashDurationNote)
         .joinToString(" ")

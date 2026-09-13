@@ -30,10 +30,14 @@ import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
+import io.github.sophon.dreamcancel.integration.model.COTWMoveProperties
+import io.github.sophon.dreamcancel.integration.model.KOF15MoveProperties
 import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
 import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
 import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
+import io.github.sophon.wikimizuumi.integration.model.MBTLMoveProperties
+import io.github.sophon.wikimizuumi.integration.model.VSAVMoveProperties
 import io.github.sophon.wikiwavu.integration.model.T8Properties
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
@@ -102,8 +106,8 @@ private fun Move.createOptionalFields(): ImmutableList<UiMove.Field> {
         (gameProperties as? AVLProperties)?.chiDamage?.let { add(UiMove.Field(Res.string.move_list_field_label_chi, it)) }
         (gameProperties as? AVLProperties)?.flow?.let { add(UiMove.Field(Res.string.move_list_field_label_flow, it)) }
 
-        mbProperties?.property?.let { add(UiMove.Field(Res.string.move_list_field_label_property, it)) }
-        vsavProperties?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }
+        (gameProperties as? MBTLMoveProperties)?.property?.let { add(UiMove.Field(Res.string.move_list_field_label_property, it)) }
+        (gameProperties as? VSAVMoveProperties)?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }
     }
 
     return list.toImmutableList()
