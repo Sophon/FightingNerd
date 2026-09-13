@@ -5,7 +5,7 @@ import io.github.sophon.core.wiki.model.MoveGameProperties
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Roa2Properties(
+data class Roa2CharProperties(
     val dacusSpeedMultiplier: String? = null,
     val weight: String? = null,
     val frictionGround: String? = null,

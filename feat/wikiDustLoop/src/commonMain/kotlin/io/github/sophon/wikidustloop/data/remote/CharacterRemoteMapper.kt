@@ -8,11 +8,11 @@ import io.github.sophon.core.util.urlEncode
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidustloop.domain.BASE_URL
 import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
-import io.github.sophon.wikidustloop.integration.model.BBProperties
-import io.github.sophon.wikidustloop.integration.model.DBFZProperties
-import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTProperties
-import io.github.sophon.wikidustloop.integration.model.MTFSProperties
+import io.github.sophon.wikidustloop.integration.model.BBCharProperties
+import io.github.sophon.wikidustloop.integration.model.DBFZCharProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRCharProperties
+import io.github.sophon.wikidustloop.integration.model.GGCharProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSCharProperties
 import kotlin.collections.get
 
 internal fun CharacterListResponseDto.toDomain(
@@ -40,7 +40,7 @@ internal fun CharacterDto.toDomain(
 
     val gameProperties = when (Game.fromId(gameId)) {
         Game.GGST -> {
-            GGSTProperties(
+            GGCharProperties(
                 defense = dto.defense,
                 guts = dto.guts,
                 guardBalance = dto.guardBalance,
@@ -75,22 +75,22 @@ internal fun CharacterDto.toDomain(
             )
         }
         Game.BBCF -> {
-            BBProperties(
+            BBCharProperties(
                 preJump = dto.prejump?.cleanHtml(),
                 backDash = dto.backdash?.cleanHtml(),
                 forwardDash = dto.forwardDash?.cleanHtml(),
             )
         }
         Game.MTFS -> {
-            MTFSProperties(
+            MTFSCharProperties(
                 prejump = dto.prejump?.cleanHtml(),
                 backdash = dto.backdash?.cleanHtml(),
                 team = dto.team?.cleanHtml(),
             )
         }
         Game.GBVSR -> {
-            GBVSRProperties(
-                jump = GBVSRProperties.Jump(
+            GBVSRCharProperties(
+                jump = GBVSRCharProperties.Jump(
                     pre = dto.prejump,
                     forwardDistance = dto.f_jump_distance?.toString(),
                     superForwardDistance = dto.f_superjump_distance?.toString(),
@@ -105,7 +105,7 @@ internal fun CharacterDto.toDomain(
                 walkSpeedBack = dto.backwalk_speed.toString(),
                 dashInitial = dto.dash_initial_speed.toString(),
                 dashAcceleration = dto.dash_acceleration,
-                closeRange = GBVSRProperties.CloseRange(
+                closeRange = GBVSRCharProperties.CloseRange(
                     l = dto.close_l_range?.toString(),
                     m = dto.close_m_range?.toString(),
                     h = dto.close_h_range?.toString(),
@@ -113,7 +113,7 @@ internal fun CharacterDto.toDomain(
             )
         }
         Game.DBFZ -> {
-            DBFZProperties(
+            DBFZCharProperties(
                 kiMod = dto.kimod?.cleanHtml(),
             )
         }

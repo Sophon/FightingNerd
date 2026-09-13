@@ -10,7 +10,7 @@ import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.wikidragdown.integration.model.Roa2MoveProperties
-import io.github.sophon.wikidragdown.integration.model.Roa2Properties
+import io.github.sophon.wikidragdown.integration.model.Roa2CharProperties
 
 internal fun dragDownMoveEmbed(
     character: Character,
@@ -61,7 +61,7 @@ internal fun dragDownCharacterEmbed(
     color = Color(TEAL)
     character.images?.iconUrl?.let { image = it }
 
-    (character.gameProperties as? Roa2Properties)?.apply {
+    (character.gameProperties as? Roa2CharProperties)?.apply {
         weight?.let { mandatoryField(name = "Weight", value = it) }
         hitstunGravity?.let { mandatoryField(name = "Hitstun Gravity", value = it) }
         fallSpeedMax?.let { mandatoryField(name = "Max Fall Spd", value = it) }

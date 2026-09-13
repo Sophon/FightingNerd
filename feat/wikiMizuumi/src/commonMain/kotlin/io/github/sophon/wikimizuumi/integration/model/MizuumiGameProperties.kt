@@ -35,6 +35,7 @@ data class Uni2CharProperties(
     val vorpalTrait: String? = null,
 ): CharacterGameProperties
 
+
 @Serializable
 data class MBTLMoveProperties(
     val inputInfo: String? = null,

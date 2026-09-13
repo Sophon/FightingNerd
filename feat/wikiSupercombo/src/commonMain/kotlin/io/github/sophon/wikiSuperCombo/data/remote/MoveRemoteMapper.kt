@@ -7,7 +7,7 @@ import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
-import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
+import io.github.sophon.wikiSuperCombo.integration.model.AVLMoveProperties
 import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
 import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
 import io.github.sophon.wikiSuperCombo.util.cleanMoveInput
@@ -85,7 +85,7 @@ internal fun MoveDto.toDomain(
             )
         }
         Game.AVL -> {
-            AVLProperties(
+            AVLMoveProperties(
                 chiDamage = flowDamage,
                 flow = flow,
             )

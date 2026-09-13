@@ -10,7 +10,7 @@ import io.github.sophon.wikidustloop.data.SelectMTFSByCharacter
 import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
 import io.github.sophon.wikidustloop.integration.model.DBFZMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GGMoveProperties
 import io.github.sophon.wikidustloop.integration.model.MTFSMoveProperties
 
 internal fun SelectGGSTByCharacter.toDomain(): Move {
@@ -40,7 +40,7 @@ internal fun SelectGGSTByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        gameProperties = GGSTMoveProperties(
+        gameProperties = GGMoveProperties(
             riscGain = riscGain,
             riscLoss = riscLoss,
             wallDamage = wallDamage,

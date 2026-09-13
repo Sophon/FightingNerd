@@ -61,14 +61,14 @@ import io.github.sophon.fightingnerd.feat.move.ui.MoveListState
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
-import io.github.sophon.wikiSuperCombo.integration.model.MK1Properties
-import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
-import io.github.sophon.wikidragdown.integration.model.Roa2Properties
-import io.github.sophon.wikidustloop.integration.model.BBProperties
-import io.github.sophon.wikidustloop.integration.model.DBFZProperties
-import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTProperties
-import io.github.sophon.wikidustloop.integration.model.MTFSProperties
+import io.github.sophon.wikiSuperCombo.integration.model.MKCharProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SFCharProperties
+import io.github.sophon.wikidragdown.integration.model.Roa2CharProperties
+import io.github.sophon.wikidustloop.integration.model.BBCharProperties
+import io.github.sophon.wikidustloop.integration.model.DBFZCharProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRCharProperties
+import io.github.sophon.wikidustloop.integration.model.GGCharProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSCharProperties
 import io.github.sophon.wikimizuumi.integration.model.Uni2CharProperties
 import kotlinx.collections.immutable.ImmutableList
 import org.jetbrains.compose.resources.StringResource
@@ -107,15 +107,15 @@ internal fun CharacterInfoBox(
             ),
     ) {
         when (character.characterProperties) {
-            is SF6Properties -> Sf6Rows(hp = character.hp, props = character.characterProperties)
-            is MK1Properties -> Mk1Rows(hp = character.hp, props = character.characterProperties)
-            is GGSTProperties -> GgstRows(umo = character.umo, props = character.characterProperties)
-            is BBProperties -> BbcfRows(hp = character.hp, umo = character.umo, props = character.characterProperties)
-            is DBFZProperties -> DbfzRows(hp = character.hp, props = character.characterProperties)
-            is GBVSRProperties -> GbvsrRows(hp = character.hp, umo = character.umo, props = character.characterProperties)
-            is MTFSProperties -> MtfsRows(umo = character.umo, props = character.characterProperties)
+            is SFCharProperties -> Sf6Rows(hp = character.hp, props = character.characterProperties)
+            is MKCharProperties -> Mk1Rows(hp = character.hp, props = character.characterProperties)
+            is GGCharProperties -> GgstRows(umo = character.umo, props = character.characterProperties)
+            is BBCharProperties -> BbcfRows(hp = character.hp, umo = character.umo, props = character.characterProperties)
+            is DBFZCharProperties -> DbfzRows(hp = character.hp, props = character.characterProperties)
+            is GBVSRCharProperties -> GbvsrRows(hp = character.hp, umo = character.umo, props = character.characterProperties)
+            is MTFSCharProperties -> MtfsRows(umo = character.umo, props = character.characterProperties)
             is Uni2CharProperties -> Uni2Rows(hp = character.hp, umo = character.umo, props = character.characterProperties)
-            is Roa2Properties -> Roa2Rows(props = character.characterProperties)
+            is Roa2CharProperties -> Roa2Rows(props = character.characterProperties)
             else -> FallbackRows(hp = character.hp, umo = character.umo)
         }
     }
@@ -180,7 +180,7 @@ private fun FallbackRows(
 @Composable
 private fun Sf6Rows(
     hp: String?,
-    props: SF6Properties,
+    props: SFCharProperties,
 ) {
     val cells = listOf(
         InfoCellData(Res.string.move_list_char_hp_life_points, hp),
@@ -200,7 +200,7 @@ private fun Sf6Rows(
 @Composable
 private fun Mk1Rows(
     hp: String?,
-    props: MK1Properties,
+    props: MKCharProperties,
 ) {
     val cells = listOf(
         InfoCellData(Res.string.move_list_char_hp, hp),
@@ -213,7 +213,7 @@ private fun Mk1Rows(
 @Composable
 private fun GgstRows(
     umo: ImmutableList<String>,
-    props: GGSTProperties,
+    props: GGCharProperties,
 ) {
     val backdashValue = listOfNotNull(props.bwdDashDuration, props.bwdDashInvulnerability)
         .joinToString("\n")
@@ -237,7 +237,7 @@ private fun GgstRows(
 private fun BbcfRows(
     hp: String?,
     umo: ImmutableList<String>,
-    props: BBProperties,
+    props: BBCharProperties,
 ) {
     val umoValue = umo.joinToString(", ").ifBlank { null }
     val cells = listOf(
@@ -252,7 +252,7 @@ private fun BbcfRows(
 @Composable
 private fun DbfzRows(
     hp: String?,
-    props: DBFZProperties,
+    props: DBFZCharProperties,
 ) {
     val cells = listOf(
         InfoCellData(Res.string.move_list_char_hp, hp),
@@ -265,7 +265,7 @@ private fun DbfzRows(
 private fun GbvsrRows(
     hp: String?,
     umo: ImmutableList<String>,
-    props: GBVSRProperties,
+    props: GBVSRCharProperties,
 ) {
     val umoValue = umo.joinToString(", ").ifBlank { null }
     val cells = listOf(
@@ -279,7 +279,7 @@ private fun GbvsrRows(
 @Composable
 private fun MtfsRows(
     umo: ImmutableList<String>,
-    props: MTFSProperties,
+    props: MTFSCharProperties,
 ) {
     val umoValue = umo.joinToString(", ").ifBlank { null }
     val cells = listOf(
@@ -310,7 +310,7 @@ private fun Uni2Rows(
 
 @Composable
 private fun Roa2Rows(
-    props: Roa2Properties,
+    props: Roa2CharProperties,
 ) {
     val cells = listOf(
         InfoCellData(Res.string.move_list_char_weight, props.weight),

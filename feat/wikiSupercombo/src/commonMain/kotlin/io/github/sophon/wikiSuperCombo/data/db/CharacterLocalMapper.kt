@@ -5,8 +5,8 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikiSuperCombo.data.CharacterEntity
 import io.github.sophon.wikiSuperCombo.data.SelectMK1ForGame
 import io.github.sophon.wikiSuperCombo.data.SelectSF6ForGame
-import io.github.sophon.wikiSuperCombo.integration.model.MK1Properties
-import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
+import io.github.sophon.wikiSuperCombo.integration.model.MKCharProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SFCharProperties
 
 internal fun SelectSF6ForGame.toDomain(): Character {
     val character = Character(
@@ -22,7 +22,7 @@ internal fun SelectSF6ForGame.toDomain(): Character {
         ),
         hp = hp,
         umo = umo.toDomain(),
-        gameProperties = SF6Properties(
+        gameProperties = SFCharProperties(
             fwdWalkSpd = fwdWalkSpd,
             bwdWalkSpd = bwdWalkSpd,
             fwdDashSpd = fwdDashSpd,
@@ -57,7 +57,7 @@ internal fun SelectMK1ForGame.toDomain(): Character {
         ),
         hp = hp,
         umo = umo.toDomain(),
-        gameProperties = MK1Properties(
+        gameProperties = MKCharProperties(
             hpMod = hpMod,
             throwDmg = throwDmg,
         ),

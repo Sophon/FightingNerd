@@ -32,7 +32,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
 import io.github.sophon.dreamcancel.integration.model.COTWMoveProperties
 import io.github.sophon.dreamcancel.integration.model.KOF15MoveProperties
-import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
+import io.github.sophon.wikiSuperCombo.integration.model.AVLMoveProperties
 import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
 import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
@@ -103,8 +103,8 @@ private fun Move.createOptionalFields(): ImmutableList<UiMove.Field> {
         (gameProperties as? GBVSRMoveProperties)?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }
         (gameProperties as? BBMoveProperties)?.level?.let { add(UiMove.Field(Res.string.move_list_field_label_level, it)) }
         type?.let { add(UiMove.Field(Res.string.move_list_field_label_type, it)) }
-        (gameProperties as? AVLProperties)?.chiDamage?.let { add(UiMove.Field(Res.string.move_list_field_label_chi, it)) }
-        (gameProperties as? AVLProperties)?.flow?.let { add(UiMove.Field(Res.string.move_list_field_label_flow, it)) }
+        (gameProperties as? AVLMoveProperties)?.chiDamage?.let { add(UiMove.Field(Res.string.move_list_field_label_chi, it)) }
+        (gameProperties as? AVLMoveProperties)?.flow?.let { add(UiMove.Field(Res.string.move_list_field_label_flow, it)) }
 
         (gameProperties as? MBTLMoveProperties)?.property?.let { add(UiMove.Field(Res.string.move_list_field_label_property, it)) }
         (gameProperties as? VSAVMoveProperties)?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }

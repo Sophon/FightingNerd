@@ -15,13 +15,13 @@ import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.wikidustloop.integration.getLevel
 import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
-import io.github.sophon.wikidustloop.integration.model.BBProperties
+import io.github.sophon.wikidustloop.integration.model.BBCharProperties
 import io.github.sophon.wikidustloop.integration.model.DBFZMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
-import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTMoveProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTProperties
-import io.github.sophon.wikidustloop.integration.model.MTFSProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRCharProperties
+import io.github.sophon.wikidustloop.integration.model.GGMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GGCharProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSCharProperties
 
 internal fun charEmbedBuilder(
     game: Game,
@@ -163,7 +163,7 @@ private fun EmbedBuilder.generalPropertiesChar(
 }
 
 private fun EmbedBuilder.charDetailsGG(character: Character) {
-    val properties = (character.gameProperties as? GGSTProperties) ?: return
+    val properties = (character.gameProperties as? GGCharProperties) ?: return
 
     mandatoryField(
         name = "⭐️ CORE",
@@ -222,14 +222,14 @@ private fun EmbedBuilder.charDetailsGG(character: Character) {
 }
 
 private fun EmbedBuilder.charDetailsGB(character: Character) {
-    val properties = (character.gameProperties as? GBVSRProperties) ?: return
+    val properties = (character.gameProperties as? GBVSRCharProperties) ?: return
 
     optionalField(name = "Prejump", value = properties.jump?.pre)
     optionalField(name = "Backdash", value = properties.backdash)
 }
 
 private fun EmbedBuilder.charDetailsBB(character: Character) {
-    val properties = (character.gameProperties as? BBProperties) ?: return
+    val properties = (character.gameProperties as? BBCharProperties) ?: return
 
     mandatoryField(
         name = "Dash",
@@ -241,7 +241,7 @@ private fun EmbedBuilder.charDetailsBB(character: Character) {
 }
 
 private fun EmbedBuilder.charDetailsMT(character: Character) {
-    val properties = (character.gameProperties as? MTFSProperties) ?: return
+    val properties = (character.gameProperties as? MTFSCharProperties) ?: return
 
     optionalField(name = "Team", value = properties.team)
     optionalField(name = "Prejump", value = properties.prejump)
@@ -292,7 +292,7 @@ private fun EmbedBuilder.moveNotes(move: Move) = optionalField(
 )
 
 private fun EmbedBuilder.moveDetailedEmbedBuilderGG(move: Move) {
-    val properties = (move.gameProperties as? GGSTMoveProperties) ?: return
+    val properties = (move.gameProperties as? GGMoveProperties) ?: return
 
     optionalField(name = "Risc gain", value = properties.riscGain)
     optionalField(name = "Risc loss", value = properties.riscLoss)

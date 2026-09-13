@@ -14,7 +14,7 @@ import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.separator
 import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
 import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
-import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
+import io.github.sophon.wikiSuperCombo.integration.model.SFCharProperties
 
 internal fun superComboMoveEmbed(
     character: Character,
@@ -75,7 +75,7 @@ internal fun superComboCharacterEmbed(
         thumbnail { url = iconUrl }
     }
 
-    (character.gameProperties as? SF6Properties)?.let { properties ->
+    (character.gameProperties as? SFCharProperties)?.let { properties ->
         val moves = fastestMoveList.joinToString(", ") { move ->
             move.input
         }
