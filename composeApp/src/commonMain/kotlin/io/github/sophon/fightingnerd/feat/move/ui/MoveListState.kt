@@ -6,6 +6,7 @@ import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.model.Bookmark
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
+import io.github.sophon.fightingnerd.feat.move.model.Property
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet
@@ -13,6 +14,7 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toPersistentMap
+import org.jetbrains.compose.resources.StringResource
 
 @Immutable
 internal data class MoveListState(
@@ -40,6 +42,36 @@ internal data class MoveListState(
     ) {
         val canExpand: Boolean get() {
             return hp != null || umo.isNotEmpty() || characterProperties != null
+        }
+    }
+
+    @Immutable
+    data class UiMove(
+        val id: String,
+        val input: String,
+        val name: String?,
+
+        val propertySet: ImmutableSet<Property> = persistentSetOf(),
+        val coreFields: ImmutableList<Field>,
+        val optionalFields: ImmutableList<Field>,
+        val notes: ImmutableList<String> = persistentListOf(),
+        val urls: Urls = Urls(),
+    ) {
+        @Immutable
+        data class Field(
+            val label: StringResource,
+            val value: String?,
+        )
+        @Immutable
+        data class Urls(
+            val videoUrl: String? = null,
+            val hitboxImageList: ImmutableList<String> = persistentListOf(),
+            val moveImageList: ImmutableList<String> = persistentListOf(),
+        )
+
+        fun isExpandable(): Boolean {
+            val result = notes.isNotEmpty() || urls.videoUrl.isNullOrEmpty().not() || urls.hitboxImageList.isNotEmpty()
+            return result
         }
     }
 

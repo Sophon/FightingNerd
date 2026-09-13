@@ -28,6 +28,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_counter
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.util.stripMarkdownLinks
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.UiMove
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.feat.move.model.Property
 import io.github.sophon.dreamcancel.integration.model.COTWMoveProperties

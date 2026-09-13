@@ -35,6 +35,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.UiMove
 import io.github.sophon.fightingnerd.feat.move.ui.composables.BookmarksButton
 import io.github.sophon.fightingnerd.feat.move.ui.composables.CharacterInfoBox
 import io.github.sophon.fightingnerd.feat.move.ui.composables.FilterBottomSheet

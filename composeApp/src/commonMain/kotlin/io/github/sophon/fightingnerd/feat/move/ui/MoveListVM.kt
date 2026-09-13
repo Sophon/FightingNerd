@@ -23,6 +23,7 @@ import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToOfflineMediaAvailability
 import io.github.sophon.fightingnerd.feat.move.usecase.WipeMediaUseCase
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.UiMove
 import io.github.sophon.fightingnerd.feat.review.SessionContext
 import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
 import kotlinx.collections.immutable.ImmutableList
