@@ -88,34 +88,34 @@ private fun Content(
             ),
     ) {
         Header(onExit)
-        Spacer(Modifier.height(nerdDimensions.componentGap))
+        Spacer(Modifier.height(nerdDimensions.sectionGap))
 
         Section(
             title = stringResource(Res.string.more_about_about_title),
             body = stringResource(Res.string.more_about_about_body)
         )
-        Spacer(Modifier.height(nerdDimensions.componentGap))
+        Spacer(Modifier.height(nerdDimensions.sectionGap))
 
         Section(
             title = stringResource(Res.string.more_about_name_title),
             body = stringResource(Res.string.more_about_name_body),
         )
-        Spacer(Modifier.height(nerdDimensions.componentGap))
+        Spacer(Modifier.height(nerdDimensions.sectionGap))
 
         Section(
             title = stringResource(Res.string.more_about_next_title),
             body = stringResource(Res.string.more_about_next_body),
         )
-        Spacer(Modifier.height(nerdDimensions.componentGap))
+        Spacer(Modifier.height(nerdDimensions.sectionGap))
 
         WikisSection(
             wikis = state.uiWikiList,
             onLinkClick = onLinkClick,
         )
-        Spacer(Modifier.height(nerdDimensions.componentGap))
+        Spacer(Modifier.height(nerdDimensions.sectionGap))
 
         LinksSection(links = state.links, onLinkClick = onLinkClick)
-        Spacer(Modifier.height(nerdDimensions.componentGap))
+        Spacer(Modifier.height(nerdDimensions.sectionGap))
     }
 }
 
