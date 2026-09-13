@@ -9,7 +9,7 @@ import io.github.sophon.core.util.toColumns
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.singleHitBoxImage
+import io.github.sophon.discord.util.embedImage
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
@@ -267,7 +267,7 @@ private fun EmbedBuilder.generalInfoMove(
     character.images?.iconUrl?.let { thumbnail { url = it } }
 
     if (displayHitboxes) {
-        singleHitBoxImage(move.urls).invoke(this)
+        embedImage(move.urls.hitboxImageList)
     }
 }
 
@@ -303,7 +303,7 @@ private fun EmbedBuilder.moveDetailedEmbedBuilderGG(move: Move) {
     optionalField(name = "Input tension", value = properties.inputTension)
     optionalField(name = "Chip", value = properties.chipRatio)
 
-    singleHitBoxImage(move.urls).invoke(this)
+    embedImage(move.urls.hitboxImageList)
 
     moveNotes(move)
 }
@@ -337,13 +337,13 @@ private fun EmbedBuilder.moveDetailedEmbedBuilderBB(move: Move) {
         }
     }
 
-    singleHitBoxImage(move.urls).invoke(this)
+    embedImage(move.urls.hitboxImageList)
 
     moveNotes(move)
 }
 
 private fun EmbedBuilder.genericDetailedEmbedBuilder(move: Move) {
-    singleHitBoxImage(move.urls).invoke(this)
+    embedImage(move.urls.hitboxImageList)
     moveNotes(move)
 }
 

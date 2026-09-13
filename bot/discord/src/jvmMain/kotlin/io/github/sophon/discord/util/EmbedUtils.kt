@@ -112,10 +112,15 @@ internal fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton>
     }
 }
 
-internal fun singleHitBoxImage(
-    urls: Move.Urls
-): EmbedBuilder.() -> Unit = {
-    val images = urls.hitboxImageList.takeIf { it.isNotEmpty() }
+/**
+ * Due to how Discord embedding works:
+ * 1. one image - part of embed
+ * 2. more images - separate post but with the same URL in the title ()
+ *
+ * Hence, this function should be no-op if there are multiple images.
+ */
+internal fun EmbedBuilder.embedImage(urls: List<String>) {
+    val images = urls.takeIf { it.isNotEmpty() }
         ?: emptyList()
     images
         .takeIf { it.size == 1 }
