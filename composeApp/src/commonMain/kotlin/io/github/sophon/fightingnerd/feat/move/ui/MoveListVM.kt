@@ -6,7 +6,6 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
-import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Group
@@ -34,7 +33,6 @@ import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -274,14 +272,7 @@ internal class MoveListVM(
                             )
                             _state.update { state ->
                                 state.copy(
-                                    character = MoveListState.MoveListCharacter(
-                                        displayName = character.displayName,
-                                        hp = character.hp,
-                                        umo = character.umo
-                                            .map { it.stripMarkdownLinks() }
-                                            .toPersistentList(),
-                                        characterProperties = character.gameProperties,
-                                    ),
+                                    character = character.toUiCharacter(),
                                     mediaCount = moveList.getMediaCount(),
                                 )
                             }

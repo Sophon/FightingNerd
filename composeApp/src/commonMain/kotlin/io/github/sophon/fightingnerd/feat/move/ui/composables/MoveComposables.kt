@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.SubcomposeAsyncImage
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.feat.move.model.Property
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.UiMove
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Field
 import io.github.sophon.fightingnerd.feat.move.ui.icon
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -29,7 +29,7 @@ import org.jetbrains.compose.resources.stringResource
 
 @Composable
 internal fun FieldColumn(
-    field: UiMove.Field,
+    field: Field,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {

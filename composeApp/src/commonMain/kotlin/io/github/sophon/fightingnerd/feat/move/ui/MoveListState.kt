@@ -1,7 +1,6 @@
 package io.github.sophon.fightingnerd.feat.move.ui
 
 import androidx.compose.runtime.Immutable
-import io.github.sophon.core.wiki.model.CharacterGameProperties
 import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.model.Bookmark
@@ -18,7 +17,7 @@ import org.jetbrains.compose.resources.StringResource
 
 @Immutable
 internal data class MoveListState(
-    val character: MoveListCharacter? = null,
+    val character: UiCharacter? = null,
     val mediaCount: Int = 0,
 
     val moveDetail: MoveDetail? = null,
@@ -33,17 +32,21 @@ internal data class MoveListState(
     val mediaAvailability: MediaAvailability = MediaAvailability.NotDownloaded,
 ) {
     @Immutable
-    data class MoveListCharacter(
+    data class UiCharacter(
         val displayName: String,
-        val hp: String? = null,
-        val umo: ImmutableList<String> = persistentListOf(),
-        val characterProperties: CharacterGameProperties? = null,
+        val propertyFields: ImmutableList<Field> = persistentListOf(),
         val isExpanded: Boolean = false,
     ) {
         val canExpand: Boolean get() {
-            return hp != null || umo.isNotEmpty() || characterProperties != null
+            return propertyFields.isNotEmpty()
         }
     }
+
+    @Immutable
+    data class Field(
+        val label: StringResource,
+        val value: String?,
+    )
 
     @Immutable
     data class UiMove(
@@ -57,11 +60,6 @@ internal data class MoveListState(
         val notes: ImmutableList<String> = persistentListOf(),
         val urls: Urls = Urls(),
     ) {
-        @Immutable
-        data class Field(
-            val label: StringResource,
-            val value: String?,
-        )
         @Immutable
         data class Urls(
             val videoUrl: String? = null,
@@ -148,7 +146,7 @@ internal data class MoveListState(
 
     companion object {
         val PREVIEW = MoveListState(
-            character = MoveListCharacter(displayName = "Nina"),
+            character = UiCharacter(displayName = "Nina"),
         )
 
         const val FRAME_MIN_STARTUP = 3

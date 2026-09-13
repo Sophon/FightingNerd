@@ -35,6 +35,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.Field
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.UiMove
 import io.github.sophon.fightingnerd.feat.move.ui.composables.BookmarksButton
 import io.github.sophon.fightingnerd.feat.move.ui.composables.CharacterInfoBox
@@ -261,11 +262,11 @@ private val previewMoves: ImmutableList<UiMove> = persistentListOf(
         input = "b1,2",
         name = "Dark Jab > Hell Stab",
         coreFields = persistentListOf(
-            UiMove.Field(Res.string.move_list_field_startup, "i12"),
-            UiMove.Field(Res.string.move_list_field_guard, "h,m"),
-            UiMove.Field(Res.string.move_list_field_damage, "12,20"),
-            UiMove.Field(Res.string.move_list_field_on_block, "-12"),
-            UiMove.Field(Res.string.move_list_field_on_hit, "+8"),
+            Field(Res.string.move_list_field_startup, "i12"),
+            Field(Res.string.move_list_field_guard, "h,m"),
+            Field(Res.string.move_list_field_damage, "12,20"),
+            Field(Res.string.move_list_field_on_block, "-12"),
+            Field(Res.string.move_list_field_on_hit, "+8"),
         ),
         optionalFields = persistentListOf(),
     ),
@@ -274,10 +275,10 @@ private val previewMoves: ImmutableList<UiMove> = persistentListOf(
         input = "b1+2",
         name = "Blindside",
         coreFields = persistentListOf(
-            UiMove.Field(Res.string.move_list_field_startup, "i16"),
-            UiMove.Field(Res.string.move_list_field_guard, "m"),
-            UiMove.Field(Res.string.move_list_field_on_block, "+0"),
-            UiMove.Field(Res.string.move_list_field_on_hit, "+4"),
+            Field(Res.string.move_list_field_startup, "i16"),
+            Field(Res.string.move_list_field_guard, "m"),
+            Field(Res.string.move_list_field_on_block, "+0"),
+            Field(Res.string.move_list_field_on_hit, "+4"),
         ),
         optionalFields = persistentListOf(),
     ),
