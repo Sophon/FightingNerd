@@ -72,7 +72,10 @@ internal fun detailedMoveEmbedBuilder(
     when (game) {
         Game.GGST -> moveDetailedEmbedBuilderGG(move)
         Game.BBCF -> moveDetailedEmbedBuilderBB(move)
-        else -> {}
+        else -> {
+            hitboxImages(move.urls).invoke(this)
+            moveNotes(move)
+        }
     }
 }
 
@@ -263,11 +266,7 @@ private fun EmbedBuilder.generalInfoMove(
     character.images?.iconUrl?.let { thumbnail { url = it } }
 
     if (displayHitboxes) {
-        val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-            ?: emptyList()
-        images
-            .takeIf { it.size == 1 }
-            ?.let { image = it.first() }
+        hitboxImages(move.urls).invoke(this)
     }
 }
 
