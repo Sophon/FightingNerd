@@ -29,8 +29,7 @@ import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesWithinRangeUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
-import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
-import io.github.sophon.discord.feat.wikiDustLoop.usecase.FetchDustLoopInvincibleMovesUseCase
+import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateDustLoopMoveEmbedUseCase
 import io.github.sophon.discord.util.aggregateCharacters
 import io.github.sophon.discord.util.toButtons
 import io.github.sophon.discord.util.withWiki
@@ -47,7 +46,7 @@ internal class DustLoopWikiDiscordFeature(
     private val syncWikiDataUseCase: SyncWikiDataUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-    private val createMoveEmbedUseCase: CreateMoveEmbedUseCase,
+    private val createDustLoopMoveEmbedUseCase: CreateDustLoopMoveEmbedUseCase,
     private val createCharacterEmbedUseCase: CreateCharacterEmbedUseCase,
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val fetchCharacterInWikisUseCase: FetchCharacterInWikisUseCase,
@@ -217,7 +216,7 @@ internal class DustLoopWikiDiscordFeature(
     ): Result<BotOutput, BotError> {
         val result = getMoveUseCase.invoke(wiki, query)
             .map { (character, move) ->
-                createMoveEmbedUseCase.invoke(game, character ,move, featureInfo)
+                createDustLoopMoveEmbedUseCase(game, character ,move, featureInfo)
             }
         return result
     }

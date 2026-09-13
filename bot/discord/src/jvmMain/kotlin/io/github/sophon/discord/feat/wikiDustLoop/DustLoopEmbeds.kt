@@ -9,7 +9,7 @@ import io.github.sophon.core.util.toColumns
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.hitboxImages
+import io.github.sophon.discord.util.singleHitBoxImage
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
@@ -50,7 +50,12 @@ internal fun moveEmbedBuilder(
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    generalInfoMove(character, move, displayHitboxes = (game == Game.GBVSR))
+    val displayImagesWithoutExpansion = when (game) {
+        Game.GBVSR -> true
+        else -> false
+    }
+
+    generalInfoMove(character, move, displayHitboxes = displayImagesWithoutExpansion)
 
     when (game) {
         Game.DBFZ -> movePropertiesDB(move)
@@ -72,10 +77,7 @@ internal fun detailedMoveEmbedBuilder(
     when (game) {
         Game.GGST -> moveDetailedEmbedBuilderGG(move)
         Game.BBCF -> moveDetailedEmbedBuilderBB(move)
-        else -> {
-            hitboxImages(move.urls).invoke(this)
-            moveNotes(move)
-        }
+        else -> genericDetailedEmbedBuilder(move)
     }
 }
 
@@ -253,7 +255,6 @@ private fun EmbedBuilder.charDetailsMT(character: Character) {
 }
 
 
-//displayHitboxes - only set to true if the move isn't split into basic/expanded
 private fun EmbedBuilder.generalInfoMove(
     character: Character,
     move: Move,
@@ -266,7 +267,7 @@ private fun EmbedBuilder.generalInfoMove(
     character.images?.iconUrl?.let { thumbnail { url = it } }
 
     if (displayHitboxes) {
-        hitboxImages(move.urls).invoke(this)
+        singleHitBoxImage(move.urls).invoke(this)
     }
 }
 
@@ -302,7 +303,7 @@ private fun EmbedBuilder.moveDetailedEmbedBuilderGG(move: Move) {
     optionalField(name = "Input tension", value = properties.inputTension)
     optionalField(name = "Chip", value = properties.chipRatio)
 
-    hitboxImages(move.urls).invoke(this)
+    singleHitBoxImage(move.urls).invoke(this)
 
     moveNotes(move)
 }
@@ -336,8 +337,13 @@ private fun EmbedBuilder.moveDetailedEmbedBuilderBB(move: Move) {
         }
     }
 
-    hitboxImages(move.urls).invoke(this)
+    singleHitBoxImage(move.urls).invoke(this)
 
+    moveNotes(move)
+}
+
+private fun EmbedBuilder.genericDetailedEmbedBuilder(move: Move) {
+    singleHitBoxImage(move.urls).invoke(this)
     moveNotes(move)
 }
 
