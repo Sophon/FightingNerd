@@ -97,8 +97,8 @@ private fun Move.createOptionalFields(): ImmutableList<UiMove.Field> {
 
         (gameProperties as? SF6MoveProperties)?.chip?.let { add(UiMove.Field(Res.string.move_list_field_label_chip, it)) }
 
-        koF15Properties?.stun?.let { add(UiMove.Field(Res.string.move_list_field_label_stun, it)) }
-        cotwProperties?.revDamage?.let { add(UiMove.Field(Res.string.move_list_field_label_rev_damage, it)) }
+        (gameProperties as? KOF15MoveProperties)?.stun?.let { add(UiMove.Field(Res.string.move_list_field_label_stun, it)) }
+        (gameProperties as? COTWMoveProperties)?.revDamage?.let { add(UiMove.Field(Res.string.move_list_field_label_rev_damage, it)) }
 
         (gameProperties as? GBVSRMoveProperties)?.meter?.let { add(UiMove.Field(Res.string.move_list_field_label_meter, it)) }
         (gameProperties as? BBMoveProperties)?.level?.let { add(UiMove.Field(Res.string.move_list_field_label_level, it)) }

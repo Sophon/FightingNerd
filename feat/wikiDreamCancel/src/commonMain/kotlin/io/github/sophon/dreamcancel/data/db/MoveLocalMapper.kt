@@ -4,6 +4,8 @@ import io.github.sophon.core.wiki.data.toDomain
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.dreamcancel.data.SelectCOTWByCharacter
 import io.github.sophon.dreamcancel.data.SelectKoFXVByCharacter
+import io.github.sophon.dreamcancel.integration.model.COTWMoveProperties
+import io.github.sophon.dreamcancel.integration.model.KOF15MoveProperties
 
 internal fun SelectKoFXVByCharacter.toDomain(): Move {
     val move = Move(
@@ -31,7 +33,7 @@ internal fun SelectKoFXVByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        koF15Properties = Move.KOF15Properties(
+        gameProperties = KOF15MoveProperties(
             stun = stun,
         ),
     )
@@ -64,7 +66,7 @@ internal fun SelectCOTWByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        cotwProperties = Move.COTWProperties(
+        gameProperties = COTWMoveProperties(
             revDamage = revDamage,
         ),
     )

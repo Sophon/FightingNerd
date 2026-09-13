@@ -9,6 +9,8 @@ import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.dreamcancel.integration.model.COTWMoveProperties
+import io.github.sophon.dreamcancel.integration.model.KOF15MoveProperties
 
 internal fun dreamCancelMoveEmbed(
     character: Character,
@@ -38,8 +40,8 @@ internal fun dreamCancelMoveEmbed(
 
     optionalField(name = "Damage", value = move.damage)
     optionalField(name = "Invul", value = move.invulnerability)
-    optionalField(name = "Stun", value = move.koF15Properties?.stun)
-    optionalField(name = "Rev dmg", value = move.cotwProperties?.revDamage)
+    optionalField(name = "Stun", value = (move.gameProperties as? KOF15MoveProperties)?.stun)
+    optionalField(name = "Rev dmg", value = (move.gameProperties as? COTWMoveProperties)?.revDamage)
 
     featureFooter(featureInfo)
 }

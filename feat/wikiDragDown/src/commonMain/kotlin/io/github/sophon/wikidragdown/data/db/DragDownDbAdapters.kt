@@ -9,8 +9,9 @@ import io.github.sophon.core.wiki.data.MoveDbAdapter
 import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.wikidragdown.integration.model.Roa2Properties
 import io.github.sophon.wikidragdown.data.DragDownDB
+import io.github.sophon.wikidragdown.integration.model.Roa2MoveProperties
+import io.github.sophon.wikidragdown.integration.model.Roa2Properties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -162,7 +163,7 @@ internal class DragDownMoveDbAdapter(
     private fun insertProperties(move: Move) {
         when (game) {
             Game.ROA2 -> {
-                val p = move.roa2Properties
+                val p = move.gameProperties as? Roa2MoveProperties
                 roa2Queries.insertROA2Move(
                     moveId = move.id,
                     mode = p?.mode,
