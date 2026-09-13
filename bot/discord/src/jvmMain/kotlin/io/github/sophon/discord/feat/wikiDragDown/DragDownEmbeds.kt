@@ -6,6 +6,7 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.capitalize
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.discord.util.embedImage
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
@@ -24,11 +25,7 @@ internal fun dragDownMoveEmbed(
     color = Color(TEAL)
     character.images?.iconUrl?.let { thumbnail { url = it } }
 
-    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-        ?: emptyList()
-    images
-        .takeIf { it.size == 1 }
-        ?.let { image = it.first() }
+    embedImage(move.urls.hitboxImageList)
 
     mandatoryField(name = "Startup", value = move.startup)
     mandatoryField(name = "Active", value = move.active)
