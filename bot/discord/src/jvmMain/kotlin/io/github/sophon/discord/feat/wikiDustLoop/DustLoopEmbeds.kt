@@ -22,6 +22,7 @@ import io.github.sophon.wikidustloop.integration.model.GBVSRCharProperties
 import io.github.sophon.wikidustloop.integration.model.GGMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GGCharProperties
 import io.github.sophon.wikidustloop.integration.model.MTFSCharProperties
+import kotlin.takeIf
 
 internal fun charEmbedBuilder(
     game: Game,
@@ -49,7 +50,7 @@ internal fun moveEmbedBuilder(
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    generalInfoMove(character, move, displayHitboxes = false)
+    generalInfoMove(character, move, displayHitboxes = (game == Game.GBVSR))
 
     when (game) {
         Game.DBFZ -> movePropertiesDB(move)
@@ -249,6 +250,7 @@ private fun EmbedBuilder.charDetailsMT(character: Character) {
 }
 
 
+//displayHitboxes - only set to true if the move isn't split into basic/expanded
 private fun EmbedBuilder.generalInfoMove(
     character: Character,
     move: Move,
