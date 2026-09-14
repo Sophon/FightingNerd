@@ -8,9 +8,9 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.util.toHumanReadableString
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
-import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.ManualRefreshUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SetUpdatePeriodUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToUpdatePeriodUseCase
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
