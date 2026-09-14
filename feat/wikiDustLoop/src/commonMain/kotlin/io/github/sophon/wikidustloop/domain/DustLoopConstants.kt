@@ -8,5 +8,5 @@ internal const val WIKI_BASE_URL = "https://www.dustloop.com/w"
 
 internal const val FEATURE_NAME = "DustLoop Wiki"
 internal const val FEATURE_URL = "https://www.dustloop.com/wiki/"
-internal const val FEATURE_IMG_URL = "https://i.imgur.com/ZQOriBI.png"
+internal const val FEATURE_IMG_URL = "https://www.dustloop.com/wiki/images/archive/3/30/20260601135625%21Dustloop_Wiki.png"
 internal const val FEATURE_FEEDBACK_DISCORD_ID = "578257299529924621"

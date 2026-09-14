@@ -10,4 +10,4 @@ internal const val LIMIT_MOVES = 200
 
 internal const val FEATURE_NAME = "SuperCombo Wiki"
 internal const val FEATURE_URL = "https://wiki.supercombo.gg/"
-internal const val FEATURE_IMG_URL = "https://i.imgur.com/aW5ys7q.png"
+internal const val FEATURE_IMG_URL = "https://wiki.supercombo.gg/srk_wordmark.png"
