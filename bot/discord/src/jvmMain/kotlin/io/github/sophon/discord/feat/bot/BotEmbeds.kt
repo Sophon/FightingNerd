@@ -108,12 +108,19 @@ internal fun commandsEmbed(
         Command.Strings,
         Command.SpecialROA,
     )
+    val rangeCommands = listOf(
+        Command.Startup,
+        Command.OnBlock,
+        Command.OnHit,
+        Command.OnCounter,
+    )
     val excludedFromOthers = buildSet {
         addAll(fdCommands)
         addAll(charCommands)
         addAll(aliasCommands)
         addAll(invCommands)
         addAll(gameSpecificCommands)
+        addAll(rangeCommands)
         add(Command.Fd)
         addAll(adminCommands)
     }
@@ -147,6 +154,17 @@ internal fun commandsEmbed(
                     .sortedBy { it.name }
                     .forEach { command ->
                         append("- ${commandRegistry.mention(command)}: *${command.description}*\n")
+                    }
+            }
+        )
+
+        mandatoryField(
+            name = "Range: moves within range",
+            value = buildString {
+                rangeCommands
+                    .sortedBy { it.name }
+                    .forEach { command ->
+                        append("- ${commandRegistry.mention(command)}\n")
                     }
             }
         )
@@ -186,7 +204,13 @@ internal fun helpEmbed(
                 "   - `/strings character:jin move:12`\n" +
                 "- ${commandRegistry.mention(Command.Stance)}:\n" +
                 "   - `/stance character:jin`\n" +
-                "   - `/stance character:jin stance:zen`"
+                "   - `/stance character:jin stance:zen`\n" +
+                "- ${commandRegistry.mention(Command.Startup)} | ${commandRegistry.mention(Command.OnBlock)} | " +
+                "${commandRegistry.mention(Command.OnHit)} | ${commandRegistry.mention(Command.OnCounter)}:\n" +
+                "   - `/startup character:ak value:13`\n" +
+                "   - `/onBlock character:alisa value:-10 bound:-inf`\n" +
+                "   - `/onHit character:lee value:5 bound:inf`\n",
+        inline = false,
     )
 
     mandatoryField(
@@ -195,7 +219,7 @@ internal fun helpEmbed(
                 "- **`fd`** syntax: `[charName] [moveInput]`\n" +
                 "   - `@bot hisui 5b` - no command, defaults to **`fd`**\n" +
                 "   - `@bot ak h.db21` - no command, defaults to **`fd`**\n" +
-                "   - `@bot fd sol 236h` - identical without **`fd`**" +
+                "   - `@bot fd sol 236h` - identical without **`fd`**\n" +
                 "   - `@bot char baiken` - **`char`** command\n" +
                 "- same commands as with slash",
     )
@@ -210,7 +234,6 @@ internal fun helpEmbed(
                 "      - for Tekken, consider ${commandRegistry.mention(Command.Stance)}, ${commandRegistry.mention(Command.Strings)}, ${commandRegistry.mention(Command.Pc)} or ${commandRegistry.mention(Command.Heat)}\n" +
                 "      - check the Wiki to see the proper notation\n" +
                 "- some outputs have buttons, clicking those outputs the proper query",
-        inline = false,
     )
 
     featureFooter(featureInfo)

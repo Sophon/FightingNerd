@@ -1,6 +1,14 @@
 # APP CHANGELOG
 
-## [v4.0.1] - TODO
+## [v5.0.0] - TODO
+- `Home` - full screen swipe to refresh
+- `Move` - can share a moves as images
+- `Changelog` - display changelog if release hasn't been seen
+- `Review` - occasionally prompt for review
+- `More` - About section
+- refactor the data refresh logic
+
+## [v4.0.1] - 2026-09-09
 - fixed updater on iOS
 
 ## [v4.0.0] - 2026-09-08

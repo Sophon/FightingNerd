@@ -35,6 +35,7 @@ ktor = "3.5.0"
 multiplatform-nav3-ui = "1.1.1"
 napier = "2.7.1"
 okio = "3.18.1"
+play-review = "2.0.2"
 revenuecat = "3.5.0"
 slf = "2.0.18"
 sqldelight = "2.3.2"
@@ -105,6 +106,9 @@ coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coil-compose" 
 
 # Payment
 revenuecat-purchases-core = { module = "com.revenuecat.purchases:purchases-kmp-core", version.ref = "revenuecat" }
+
+# Play
+play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "play-review" }
 
 # Testing
 junit = { module = "junit:junit", version.ref = "junit" }

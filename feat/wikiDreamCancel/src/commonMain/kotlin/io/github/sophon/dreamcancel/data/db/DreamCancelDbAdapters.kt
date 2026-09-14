@@ -10,6 +10,8 @@ import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.dreamcancel.data.DreamCancelDB
+import io.github.sophon.dreamcancel.integration.model.COTWMoveProperties
+import io.github.sophon.dreamcancel.integration.model.KOF15MoveProperties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -122,14 +124,14 @@ internal class DreamCancelMoveDbAdapter(
     private fun insertProperties(move: Move) {
         when (game) {
             Game.KoFXV -> {
-                val p = move.koF15Properties
+                val p = move.gameProperties as? KOF15MoveProperties
                 koFXVQueries.insertKoFXVMove(
                     moveId = move.id,
                     stun = p?.stun,
                 )
             }
             Game.COTW -> {
-                val p = move.cotwProperties
+                val p = move.gameProperties as? COTWMoveProperties
                 cotwQueries.insertCOTWMove(
                     moveId = move.id,
                     revDamage = p?.revDamage,

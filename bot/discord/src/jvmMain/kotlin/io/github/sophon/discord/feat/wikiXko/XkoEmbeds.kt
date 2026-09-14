@@ -6,6 +6,7 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.discord.util.embedImage
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
@@ -19,11 +20,7 @@ internal fun xkoMoveEmbed(
     title = "${move.characterId}: ${move.input.uppercase()}"
     moveEmbedDescription(character, move)
 
-    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-        ?: emptyList()
-    images
-        .takeIf { it.size == 1 }
-        ?.let { image = it.first() }
+    embedImage(move.urls.hitboxImageList)
 
     color = Color(GREEN)
 

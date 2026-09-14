@@ -1,6 +1,7 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -52,12 +53,12 @@ private fun Content(
     PullToRefreshBox(
         isRefreshing = false,
         onRefresh = onRefresh,
-        modifier = modifier
-            .padding(
-                horizontal = nerdDimensions.screenPaddingHorizontal,
-            ),
+        modifier = modifier.padding(
+            horizontal = nerdDimensions.screenPaddingHorizontal,
+        ),
     ) {
         LazyColumn(
+            modifier = Modifier.fillMaxSize(),
             contentPadding = LocalBottomBarPadding.current,
         ) {
             state.gameFeatureList.forEach { feature ->

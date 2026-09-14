@@ -12,7 +12,7 @@ import io.github.sophon.wikidustloop.domain.WIKI_BASE_URL
 import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
 import io.github.sophon.wikidustloop.integration.model.DBFZMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GGMoveProperties
 import io.github.sophon.wikidustloop.integration.model.MTFSMoveProperties
 
 internal fun MoveListResponseDto.toDomain(
@@ -47,7 +47,7 @@ internal fun MoveDto.toDomain(
 
     val gameProperties = when (Game.fromId(gameId)) {
         Game.GGST -> {
-            GGSTMoveProperties(
+            GGMoveProperties(
                 riscGain = riscGain,
                 riscLoss = riscLoss,
                 wallDamage = wallDamage,

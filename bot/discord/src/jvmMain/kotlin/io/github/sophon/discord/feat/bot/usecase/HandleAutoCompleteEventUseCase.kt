@@ -45,6 +45,11 @@ internal class HandleAutoCompleteEventUseCase(
             Command.Homing -> getCharacterChoices(query, Command.Homing)
             Command.Stance -> routeFocusedType(Command.Stance, focusedArgumentName, query, interaction)
 
+            Command.Startup -> getCharacterChoices(query, Command.Startup)
+            Command.OnBlock -> getCharacterChoices(query, Command.OnBlock)
+            Command.OnHit -> getCharacterChoices(query, Command.OnHit)
+            Command.OnCounter -> getCharacterChoices(query, Command.OnCounter)
+
             else -> emptyList()
         }.take(COMMAND_MAX_SUGGESTIONS)
 

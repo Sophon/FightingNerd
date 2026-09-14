@@ -7,7 +7,7 @@ import io.github.sophon.fightingnerd.core.domain.UrlOpener
 internal class OpenUrlUseCase(
     private val urlOpener: UrlOpener,
 ) {
-    fun invoke(url: String) {
+    operator fun invoke(url: String) {
         urlOpener.openUrl(url)
     }
 }

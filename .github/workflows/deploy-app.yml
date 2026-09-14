@@ -281,5 +281,6 @@ jobs:
             artifacts/FightingNerd-*.apk
             artifacts/FightingNerd-*.ipa
           draft: false
+          prerelease: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -10,7 +10,10 @@ import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikimizuumi.data.MizuumiDB
-import io.github.sophon.wikimizuumi.integration.model.Uni2Properties
+import io.github.sophon.wikimizuumi.integration.model.MBTLMoveProperties
+import io.github.sophon.wikimizuumi.integration.model.Uni2MoveProperties
+import io.github.sophon.wikimizuumi.integration.model.Uni2CharProperties
+import io.github.sophon.wikimizuumi.integration.model.VSAVMoveProperties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -45,7 +48,7 @@ internal class MizuumiCharacterDbAdapter(
     private fun insertProperties(character: Character) {
         when (game) {
             Game.Uni2 -> {
-                val p = character.gameProperties as? Uni2Properties ?: return
+                val p = character.gameProperties as? Uni2CharProperties ?: return
                 uni2Queries.insertUni2Character(
                     characterId = character.id,
                     smartSteer = p.smartSteer,
@@ -161,7 +164,7 @@ internal class MizuumiMoveDbAdapter(
     private fun insertProperties(move: Move) {
         when (game) {
             Game.MBTL -> {
-                val p = move.mbProperties
+                val p = move.gameProperties as? MBTLMoveProperties
                 mbtlQueries.insertMBTLMove(
                     moveId = move.id,
                     inputInfo = p?.inputInfo,
@@ -175,7 +178,7 @@ internal class MizuumiMoveDbAdapter(
                 )
             }
             Game.Uni2 -> {
-                val p = move.uni2Properties
+                val p = move.gameProperties as? Uni2MoveProperties
                 uni2Queries.insertUni2Move(
                     moveId = move.id,
                     inputInfo = p?.inputInfo,
@@ -201,7 +204,7 @@ internal class MizuumiMoveDbAdapter(
                 )
             }
             Game.VSAV -> {
-                val p = move.vsavProperties
+                val p = move.gameProperties as? VSAVMoveProperties
                 vsavQueries.insertVSAVMove(
                     moveId = move.id,
                     inputInfo = p?.inputInfo,

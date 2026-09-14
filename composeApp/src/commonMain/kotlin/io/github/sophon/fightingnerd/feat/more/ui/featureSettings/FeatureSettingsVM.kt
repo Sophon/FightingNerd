@@ -9,8 +9,8 @@ import io.github.sophon.fightingnerd.core.ui.Dialog
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.more.ui.components.ConfirmFeatureChangeDialog
-import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 
 internal class FeatureSettingsVM(
     private val overlayService: OverlayService,
-    private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
+    private val subscribeToAvailableFeaturesUseCase: SubscribeToAvailableFeaturesUseCase,
     private val saveFeatureConfigUseCase: SaveFeatureConfigUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(FeatureSettingsState())
@@ -148,7 +148,7 @@ internal class FeatureSettingsVM(
 
     private fun loadFeatures() {
         viewModelScope.launch {
-            getAvailableFeaturesUseCase.invoke().first()
+            subscribeToAvailableFeaturesUseCase.invoke().first()
                 .onSuccess { featureList ->
                     val list = featureList
                         .map { feature ->

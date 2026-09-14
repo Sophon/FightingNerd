@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
@@ -37,7 +38,6 @@ internal fun ImageCarousel(
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
             .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
             .background(nerdColorPalette.surface),
     ) {
@@ -114,7 +114,9 @@ private fun ImageCarouselPreview() {
                     "https://example.com/hitbox-2.png",
                     "https://example.com/hitbox-3.png",
                 ),
-                modifier = Modifier.padding(nerdDimensions.componentPadding),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(nerdDimensions.componentPadding),
             )
         }
     }

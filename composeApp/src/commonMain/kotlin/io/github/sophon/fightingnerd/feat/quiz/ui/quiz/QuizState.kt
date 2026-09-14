@@ -17,6 +17,15 @@ internal data class QuizState(
 ) {
     val isLastQuestion: Boolean get() = (currentQuestionIndex == questionList.lastIndex)
     val currentQuestion: Question? get() = questionList.getOrNull(currentQuestionIndex)
+    val correctAnswerPct: Int get() {
+        val total = correct + incorrect
+        val pct = if (total > 0) {
+            ((correct.toFloat() / total) * 100).toInt()
+        } else {
+            0
+        }
+        return pct
+    }
 
     companion object {
         private val armorKingMoves = listOf(

@@ -25,6 +25,7 @@ import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesWithinRangeUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.aggregateCharacters
 import io.github.sophon.discord.util.toButtons
@@ -47,6 +48,7 @@ internal class DragDownWikiDiscordFeature(
     private val fetchCharacterInWikisUseCase: FetchCharacterInWikisUseCase,
     private val getMovesUseCase: GetMovesUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
+    private val getMovesWithinRangeUseCase: GetMovesWithinRangeUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -55,6 +57,10 @@ internal class DragDownWikiDiscordFeature(
     override val otherCommands: List<Command> = listOf(
         Command.Char,
         Command.SpecialROA,
+        Command.Startup,
+        Command.OnBlock,
+        Command.OnHit,
+        Command.OnCounter,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -123,6 +129,25 @@ internal class DragDownWikiDiscordFeature(
                     query = formattedQuery,
                     action = { _, wiki, query -> searchSpecialMoves(wiki, query) }
                 )
+            }
+
+            Command.Startup,
+            Command.OnBlock,
+            Command.OnHit,
+            Command.OnCounter -> {
+                if (game != null) {
+                    withWiki(
+                        wikis = wikiClientMap,
+                        game = game,
+                        query = formattedQuery,
+                    ) { _, wiki, query -> searchRange(wiki, command, query) }
+                } else {
+                    fetchMoveInWikisUseCase.invoke(
+                        wikis = wikiClientMap,
+                        query = formattedQuery,
+                        searchFun = { _, wiki, query -> searchRange(wiki, command, query) },
+                    )
+                }
             }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
@@ -220,6 +245,34 @@ internal class DragDownWikiDiscordFeature(
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = character.id),
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
+                ),
+            )
+        }
+    }
+
+    private suspend fun searchRange(
+        wiki: WikiClient,
+        command: Command,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getMovesWithinRangeUseCase(wiki, command, query).map { moveRange ->
+            BotOutput(
+                primaryEmbedBuilder = moveListEmbed(
+                    moveRange = moveRange,
+                    featureInfo = featureInfo,
+                    color = Color(TEAL),
+                ) { move ->
+                    when (command) {
+                        Command.Startup -> "${move.input} (${move.startup})"
+                        Command.OnBlock -> "${move.input} (${move.onBlock})"
+                        Command.OnHit -> "${move.input} (${move.onHit})"
+                        Command.OnCounter -> "${move.input} (${move.onCH})"
+                        else -> null
+                    }
+                },
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveRange.moveList.toButtons(charName = moveRange.character.id),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )

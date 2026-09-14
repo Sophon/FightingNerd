@@ -5,7 +5,6 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
-import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
@@ -25,6 +24,7 @@ import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesWithinRangeUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStancesUseCase
 import io.github.sophon.discord.feat.wikiWavu.usecase.GetStringFollowupsUseCase
@@ -51,6 +51,7 @@ internal class WavuWikiDiscordFeature(
     private val fetchMoveInWikisUseCase: FetchMoveInWikisUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val createAliasOutputUseCase: CreateAliasOutputUseCase,
+    private val getMovesWithinRangeUseCase: GetMovesWithinRangeUseCase,
     private val scheduler: Scheduler,
     private val scope: CoroutineScope,
 ): DiscordRegisteredFeature, GameWikiDiscordFeature, KoinComponent {
@@ -64,6 +65,10 @@ internal class WavuWikiDiscordFeature(
         Command.Stance,
         Command.ThrowTK,
         Command.Strings,
+        Command.Startup,
+        Command.OnBlock,
+        Command.OnHit,
+        Command.OnCounter,
     )
     private var wikiClientMap: Map<Game, WikiClient> = emptyMap()
 
@@ -151,6 +156,16 @@ internal class WavuWikiDiscordFeature(
                     query = formattedQuery,
                 ) { _, wiki, query -> getStringFollowupsUseCase.invoke(wiki, query, featureInfo) }
             }
+
+            Command.Startup,
+            Command.OnBlock,
+            Command.OnHit,
+            Command.OnCounter ->
+                withWiki(
+                    wikis = wikiClientMap,
+                    game = Game.Tekken8,
+                    query = formattedQuery,
+                ) { _, wiki, query -> searchRange(wiki, command, query) }
 
             else -> Result.Error(BotError.BotLogicError(command.name, query))
         }
@@ -321,6 +336,35 @@ internal class WavuWikiDiscordFeature(
                 ),
                 buttons = BotOutput.ButtonSet(
                     buttonList = moveList.toButtons(charName = character.id),
+                    duration = EMBED_BUTTON_DURATION_INF.seconds,
+                ),
+            )
+        }
+    }
+
+    private suspend fun searchRange(
+        wiki: WikiClient,
+        command: Command,
+        query: String,
+    ): Result<BotOutput, BotError> {
+        return getMovesWithinRangeUseCase(wiki, command, query).map { moveRange ->
+
+            BotOutput(
+                primaryEmbedBuilder = moveListEmbed(
+                    moveRange = moveRange,
+                    featureInfo = featureInfo,
+                    color = Color(BLUE),
+                ) { move ->
+                    when (command) {
+                        Command.Startup -> "${move.input} (${move.startup})"
+                        Command.OnBlock -> "${move.input} (${move.onBlock})"
+                        Command.OnHit -> "${move.input} (${move.onHit})"
+                        Command.OnCounter -> "${move.input} (${move.onCH})"
+                        else -> null
+                    }
+                },
+                buttons = BotOutput.ButtonSet(
+                    buttonList = moveRange.moveList.toButtons(charName = moveRange.character.id),
                     duration = EMBED_BUTTON_DURATION_INF.seconds,
                 ),
             )

@@ -50,6 +50,7 @@ import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
+import io.github.sophon.discord.feat.core.usecase.GetMovesWithinRangeUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.dreamCancel.DreamCancelWikiDiscordFeature
 import io.github.sophon.discord.feat.ewgf.EwgfDiscordFeature
@@ -66,7 +67,7 @@ import io.github.sophon.discord.feat.wikiDragDown.DragDownWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.DustLoopWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
-import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
+import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateDustLoopMoveEmbedUseCase
 import io.github.sophon.discord.feat.wikiMizuumi.CreateMizuumiInvEmbedUseCase
 import io.github.sophon.discord.feat.wikiMizuumi.MizuumiWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiSuperCombo.SuperComboWikiDiscordFeature
@@ -136,12 +137,13 @@ internal val featureRegistryModule = module {
     singleOf(::GetCharactersUseCase)
     singleOf(::FetchMoveInWikisUseCase)
     singleOf(::FetchCharacterInWikisUseCase)
+    singleOf(::GetMovesWithinRangeUseCase)
 
     singleOf(::Scheduler)
     //endregion
 
     //region DustLoop
-    singleOf(::CreateMoveEmbedUseCase)
+    singleOf(::CreateDustLoopMoveEmbedUseCase)
     singleOf(::CreateCharacterEmbedUseCase)
     singleOf(::FetchDustLoopInvincibleMovesUseCase)
     //endregion

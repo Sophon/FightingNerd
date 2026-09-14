@@ -3,6 +3,7 @@ package io.github.sophon.wikidragdown.data.db
 import io.github.sophon.core.wiki.data.toDomain
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikidragdown.data.SelectROA2ByCharacter
+import io.github.sophon.wikidragdown.integration.model.Roa2MoveProperties
 
 internal fun SelectROA2ByCharacter.toDomain(): Move {
     val move = Move(
@@ -30,7 +31,7 @@ internal fun SelectROA2ByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        roa2Properties = Move.Roa2Properties(
+        gameProperties = Roa2MoveProperties(
             mode = mode,
             caption = caption?.toDomain(),
             hitboxCaption = hitboxCaption?.toDomain(),

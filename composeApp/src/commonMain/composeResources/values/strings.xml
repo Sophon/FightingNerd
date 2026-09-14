@@ -105,6 +105,31 @@
     <string name="more_updates_settings_auto_update_desc">Periodically fetch data from wikis.</string>
     <string name="more_updates_settings_period_label">Update period</string>
     <string name="more_updates_settings_last_updated">Last update: %1$s</string>
+    <string name="more_item_about">About the project</string>
+    <string name="more_about_about_title">What is Fighting Nerd</string>
+    <string name="more_about_about_body">The Fighting Nerd project started out as a Tekken Discord frame data bot, after the old one died. From the very beginning, I had two non-negotiables:
+
+    1. Must support multiple games
+    2. Must source data from community wikis
+
+Because of those factors, the project was highly modular from the very beginning. Kotlin was chosen because that's what I use in my job.
+All of this meant that a mobile client was the logical and natural evolution.</string>
+    <string name="more_about_name_title">Why Fighting Nerd</string>
+    <string name="more_about_name_body">The name was inspired by the Brazilian MMA gym, Fighting Nerds. Their philosophy is that fighting is a problem that needs to be solved and that one should fight smarter, not tougher.
+Since the project targets all fighting games and focuses on frame data, which is nerdy, the name is a perfect fit.
+The logo is a boxing glove with nerd glasses. Get it?</string>
+    <string name="more_about_next_title">What next</string>
+    <string name="more_about_next_body">The core platform is done. From here on, focus will be on adding games.</string>
+    <string name="more_about_wikis_title">Wikis</string>
+    <string name="more_about_wikis_body">All data is sourced from community wikis. This has certain implications:
+
+    - I don't maintain the data, the community does
+    - this project would not exist without wikis
+
+So check the wikis out:</string>
+    <string name="more_about_invite_links_title">Links</string>
+    <string name="more_about_invite_discord_label">Add Discord bot</string>
+    <string name="more_about_invite_github_label">Project repo</string>
 
     <string name="payment_tip_dialog_title">Thanks!</string>
     <string name="payment_tip_dialog_description">Your support is not required but highly appreciated.</string>

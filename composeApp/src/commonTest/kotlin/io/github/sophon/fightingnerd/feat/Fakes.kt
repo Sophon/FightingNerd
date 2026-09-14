@@ -1,5 +1,6 @@
 package io.github.sophon.fightingnerd.feat
 
+import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.FeatureRepo
@@ -14,9 +15,12 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.core.data.MediaRepo
+import io.github.sophon.fightingnerd.core.data.ReviewPolicyRepo
 import io.github.sophon.fightingnerd.core.model.AppError
+import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -87,4 +91,34 @@ internal class FakeFeatureRepo(
     override fun initialize(config: Config): EmptyResult<WikiError> = Result.Success(Unit)
     override fun getOtherFeatures(): List<Config.Feature> = emptyList()
     override fun getEnabledFeatureNames(): Set<String> = emptySet()
+}
+
+@OptIn(ExperimentalTime::class)
+internal class FakeReviewPolicyRepo(
+    initialTimestamp: Instant? = null,
+) : ReviewPolicyRepo {
+    private val timestampFlow = MutableStateFlow(initialTimestamp)
+
+    var savedTimestamp: Instant? = null
+        private set
+
+    override fun getInstallationTimestamp(): Flow<Instant?> = timestampFlow
+
+    override suspend fun saveInstallationTimestamp(timestamp: Instant): EmptyResult<DataError.Local> {
+        savedTimestamp = timestamp
+        timestampFlow.value = timestamp
+        return Result.Success(Unit)
+    }
+}
+
+internal class FakeReviewHandler(
+    private val result: EmptyResult<AppError> = Result.Success(Unit),
+) : ReviewHandler {
+    var requestCount = 0
+        private set
+
+    override suspend fun requestReview(): EmptyResult<AppError> {
+        requestCount++
+        return result
+    }
 }

@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.util.stripMarkdownLinks
+import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Group
@@ -22,6 +22,9 @@ import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
 import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToOfflineMediaAvailability
 import io.github.sophon.fightingnerd.feat.move.usecase.WipeMediaUseCase
+import io.github.sophon.fightingnerd.feat.move.ui.MoveListState.UiMove
+import io.github.sophon.fightingnerd.feat.review.SessionContext
+import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.persistentListOf
@@ -30,10 +33,10 @@ import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toImmutableSet
-import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -59,11 +62,15 @@ internal class MoveListVM(
     private val groupMovesUseCase: GroupMovesUseCase,
     private val downloadMediaUseCase: DownloadMediaUseCase,
     private val wipeMediaUseCase: WipeMediaUseCase,
+    private val requestReviewUseCase: RequestReviewUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
     private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
     private val _downloadProgress = MutableStateFlow<Int?>(null)
+    private val _pendingShareMoveId = MutableStateFlow<String?>(null)
+    val pendingShareMoveId: StateFlow<String?> = _pendingShareMoveId.asStateFlow()
     private var groupList: ImmutableList<Group> = persistentListOf()
+    private val screenStopWatch = ScreenStopWatch()
 
     val state: StateFlow<MoveListState> = combine(
         _state.onStart { subscribeToData() },
@@ -215,6 +222,20 @@ internal class MoveListVM(
         }
     }
 
+    fun onShare(moveId: String) {
+        _pendingShareMoveId.value = moveId
+    }
+
+    fun onSharedDone() {
+        _pendingShareMoveId.value = null
+    }
+
+    fun onScreenExit() {
+        val sessionDuration = screenStopWatch.elapsed()
+        val sessionContext = SessionContext.MoveList(duration = sessionDuration)
+        requestReviewUseCase(sessionContext)
+    }
+
 
     private fun deriveAvailability(
         progress: Int?,
@@ -251,14 +272,7 @@ internal class MoveListVM(
                             )
                             _state.update { state ->
                                 state.copy(
-                                    character = MoveListState.MoveListCharacter(
-                                        displayName = character.displayName,
-                                        hp = character.hp,
-                                        umo = character.umo
-                                            .map { it.stripMarkdownLinks() }
-                                            .toPersistentList(),
-                                        characterProperties = character.gameProperties,
-                                    ),
+                                    character = character.toUiCharacter(),
                                     mediaCount = moveList.getMediaCount(),
                                 )
                             }

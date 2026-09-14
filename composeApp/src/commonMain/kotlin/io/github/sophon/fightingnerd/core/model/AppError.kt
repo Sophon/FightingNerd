@@ -9,6 +9,7 @@ internal sealed class AppError(val errorMessage: String) : Error {
     internal data class WikiError(val error: String) : AppError(errorMessage = error)
     internal data class GameNotFound(val game: String): AppError(errorMessage = game)
     internal data class IOError(val error: String): AppError(errorMessage = error)
+    internal data class ReviewError(val error: String): AppError(errorMessage = error)
 
     internal data class Unknown(val error: String = "Unknown"): AppError(errorMessage = error)
 }

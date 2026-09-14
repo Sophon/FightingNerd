@@ -23,6 +23,7 @@ internal class MoreVM : ViewModel() {
             when (item) {
                 MoreItem.FeatureSettings -> _navEvent.send(item)
                 MoreItem.UpdatesSettings -> _navEvent.send(item)
+                MoreItem.About -> _navEvent.send(item)
             }
         }
     }

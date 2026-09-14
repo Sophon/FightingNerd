@@ -8,9 +8,9 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.util.toHumanReadableString
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
-import io.github.sophon.fightingnerd.feat.more.usecase.GetAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.ManualRefreshUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SetUpdatePeriodUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToUpdatePeriodUseCase
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 internal class UpdatesVM(
     private val overlayService: OverlayService,
-    private val getAvailableFeaturesUseCase: GetAvailableFeaturesUseCase,
+    private val subscribeToAvailableFeaturesUseCase: SubscribeToAvailableFeaturesUseCase,
     private val subscribeToUpdatePeriodUseCase: SubscribeToUpdatePeriodUseCase,
     private val setUpdatePeriodUseCase: SetUpdatePeriodUseCase,
     private val manualRefreshUseCase: ManualRefreshUseCase,
@@ -146,7 +146,7 @@ internal class UpdatesVM(
 
     private fun subscribeToFeatureList() {
         viewModelScope.launch {
-            getAvailableFeaturesUseCase.invoke().collect { result ->
+            subscribeToAvailableFeaturesUseCase.invoke().collect { result ->
                 result
                     .onSuccess { featureList ->
                         _state.update { current ->

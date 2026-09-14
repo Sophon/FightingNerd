@@ -24,7 +24,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import fightingnerd.composeapp.generated.resources.Res
-import fightingnerd.composeapp.generated.resources.general_confirm
 import fightingnerd.composeapp.generated.resources.general_dismiss
 import fightingnerd.composeapp.generated.resources.more_feature_settings_dialog_btn_wipe
 import fightingnerd.composeapp.generated.resources.more_feature_settings_dialog_desc

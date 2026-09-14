@@ -5,10 +5,13 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.discord.util.embedImage
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
+import io.github.sophon.dreamcancel.integration.model.COTWMoveProperties
+import io.github.sophon.dreamcancel.integration.model.KOF15MoveProperties
 
 internal fun dreamCancelMoveEmbed(
     character: Character,
@@ -20,12 +23,7 @@ internal fun dreamCancelMoveEmbed(
     moveEmbedDescription(character, move)
     color = Color(BLUE)
 
-    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-        ?: emptyList()
-
-    images
-        .takeIf { it.size == 1 }
-        ?.let { image = it.first() }
+    embedImage(move.urls.hitboxImageList)
 
     character.images?.iconUrl?.let { thumbnail { url = it } }
 
@@ -38,8 +36,8 @@ internal fun dreamCancelMoveEmbed(
 
     optionalField(name = "Damage", value = move.damage)
     optionalField(name = "Invul", value = move.invulnerability)
-    optionalField(name = "Stun", value = move.koF15Properties?.stun)
-    optionalField(name = "Rev dmg", value = move.cotwProperties?.revDamage)
+    optionalField(name = "Stun", value = (move.gameProperties as? KOF15MoveProperties)?.stun)
+    optionalField(name = "Rev dmg", value = (move.gameProperties as? COTWMoveProperties)?.revDamage)
 
     featureFooter(featureInfo)
 }

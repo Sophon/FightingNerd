@@ -48,4 +48,20 @@ object CoreFilters {
             isValid
         }
     }
+
+    data class OnCounter(
+        val from: Int?,
+        val to: Int?,
+    ): Filter {
+        override val name: String = "OnCH"
+        override val predicate: (Move) -> Boolean = { move ->
+            val value = move.onCH?.firstIntOrNull()
+            val isValid = if (value == null) {
+                false
+            } else {
+                (from == null || value >= from) && (to == null || value <= to)
+            }
+            isValid
+        }
+    }
 }

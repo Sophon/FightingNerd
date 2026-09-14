@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wikidragdown.integration.model.Roa2MoveProperties
 import kotlin.test.Test
 
 internal class MoveMapperTest {
@@ -23,7 +24,7 @@ internal class MoveMapperTest {
             urls = Move.Urls(
                 wikiUrl = "https://dragdown.wiki/wiki/RoA2/Olympia",
             ),
-            roa2Properties = Move.Roa2Properties(
+            gameProperties = Roa2MoveProperties(
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,
                 startupNotes = null,
@@ -73,7 +74,7 @@ internal class MoveMapperTest {
             urls = Move.Urls(
                 wikiUrl = "https://dragdown.wiki/wiki/RoA2/Forsburn",
             ),
-            roa2Properties = Move.Roa2Properties(
+            gameProperties = Roa2MoveProperties(
                 mode = "emptyinhale",
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,
@@ -125,7 +126,7 @@ internal class MoveMapperTest {
             urls = Move.Urls(
                 wikiUrl = "https://dragdown.wiki/wiki/RoA2/Ranno",
             ),
-            roa2Properties = Move.Roa2Properties(
+            gameProperties = Roa2MoveProperties(
                 mode = "divekick",
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,
@@ -180,7 +181,7 @@ internal class MoveMapperTest {
             notes = listOf(
                 "This move has a 36 frame [cooldown](https://dragdown.wiki/wiki/RoA2/System_Mechanics/Misc#Cooldowns) once endlag begins.",
             ),
-            roa2Properties = Move.Roa2Properties(
+            gameProperties = Roa2MoveProperties(
                 mode = "fadc",
                 caption = dto.caption,
                 hitboxCaption = dto.hitboxCaption,

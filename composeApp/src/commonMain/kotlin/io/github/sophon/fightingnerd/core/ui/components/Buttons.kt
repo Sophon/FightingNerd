@@ -49,9 +49,10 @@ internal data class IconAction(
 internal fun IconActionButton(
     action: IconAction,
     modifier: Modifier = Modifier,
+    tint: Color = nerdColorPalette.textPrimary,
 ) {
     val tint = if (action.isEnabled) {
-        nerdColorPalette.textPrimary
+        tint
     } else {
         nerdColorPalette.textSecondary
     }

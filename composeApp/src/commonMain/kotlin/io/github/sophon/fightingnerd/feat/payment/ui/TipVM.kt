@@ -10,10 +10,12 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
+import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
 import io.github.sophon.fightingnerd.feat.payment.model.PaymentError
 import io.github.sophon.fightingnerd.feat.payment.model.TipOption
 import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.feat.payment.usecase.PurchaseTipUseCase
+import io.github.sophon.fightingnerd.feat.review.SessionContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -23,6 +25,7 @@ import org.jetbrains.compose.resources.getString
 internal class TipVM(
     private val getTipOptionsUseCase: GetTipOptionsUseCase,
     private val purchaseTipUseCase: PurchaseTipUseCase,
+    private val requestReviewUseCase: RequestReviewUseCase,
     private val overlay: OverlayService,
 ) : ViewModel() {
     private val _state = MutableStateFlow(TipState())
@@ -62,6 +65,7 @@ internal class TipVM(
                 .onSuccess {
                     val message = getString(Res.string.payment_tip_thank_you)
                     overlay.show(Toast(message = message, type = Toast.Type.SUCCESS))
+                    requestReviewUseCase(SessionContext.Donation)
                 }
                 .onError { error ->
                     when (error) {

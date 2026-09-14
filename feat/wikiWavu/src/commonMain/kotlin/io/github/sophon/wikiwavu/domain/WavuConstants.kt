@@ -8,6 +8,6 @@ internal const val CHAR_LIST_URL = "https://raw.githubusercontent.com/Sophon/Fig
 
 internal const val FEATURE_NAME = "Wavu Wiki"
 internal const val FEATURE_URL = "https://wavu.wiki/"
-internal const val FEATURE_IMG_URL = "https://i.imgur.com/0cnTzNk.png"
+internal const val FEATURE_IMG_URL = "https://wavu.wiki/w/skins/Tekken/wavu-logo-v3.svg"
 internal const val FEATURE_FEEDBACK_DISCORD_ID = "1193118389825175582"
 internal const val FEATURE_FEEDBACK_DISCORD_ID_TEST = "1474888886189691093"

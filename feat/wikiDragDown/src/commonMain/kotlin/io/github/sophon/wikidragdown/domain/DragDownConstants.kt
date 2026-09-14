@@ -8,4 +8,4 @@ internal const val WIKI_BASE_URL = "https://dragdown.wiki/wiki"
 
 internal const val FEATURE_NAME = "DragDown Wiki"
 internal const val FEATURE_URL = "https://dragdown.wiki/wiki"
-internal const val FEATURE_IMG_URL = "https://i.imgur.com/0xzxZF7.png"
+internal const val FEATURE_IMG_URL = "https://static.wikitide.net/dragdownwiki/2/2b/Dd_color_symbol-square_bg.png"

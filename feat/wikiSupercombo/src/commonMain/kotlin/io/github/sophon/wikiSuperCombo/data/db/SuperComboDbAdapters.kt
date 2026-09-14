@@ -10,11 +10,11 @@ import io.github.sophon.core.wiki.data.fromDomain
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikiSuperCombo.data.SuperComboDB
-import io.github.sophon.wikiSuperCombo.integration.model.AVLProperties
-import io.github.sophon.wikiSuperCombo.integration.model.MK1Properties
+import io.github.sophon.wikiSuperCombo.integration.model.AVLMoveProperties
+import io.github.sophon.wikiSuperCombo.integration.model.MKCharProperties
 import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
 import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
-import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
+import io.github.sophon.wikiSuperCombo.integration.model.SFCharProperties
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -50,7 +50,7 @@ internal class SuperComboCharacterDbAdapter(
     private fun insertProperties(character: Character) {
         when (game) {
             Game.StreetFighter6 -> {
-                val p = character.gameProperties as? SF6Properties ?: return
+                val p = character.gameProperties as? SFCharProperties ?: return
                 sf6Queries.insertSF6Character(
                     characterId = character.id,
                     fwdWalkSpd = p.fwdWalkSpd,
@@ -71,7 +71,7 @@ internal class SuperComboCharacterDbAdapter(
                 )
             }
             Game.MK1 -> {
-                val p = character.gameProperties as? MK1Properties ?: return
+                val p = character.gameProperties as? MKCharProperties ?: return
                 mk1Queries.insertMK1Character(
                     characterId = character.id,
                     hpMod = p.hpMod,
@@ -212,7 +212,7 @@ internal class SuperComboMoveDbAdapter(
                 )
             }
             Game.AVL -> {
-                val p = move.gameProperties as? AVLProperties
+                val p = move.gameProperties as? AVLMoveProperties
                 avlQueries.insertAVLMove(
                     moveId = move.id,
                     chiDamage = p?.chiDamage,

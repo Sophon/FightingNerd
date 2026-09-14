@@ -5,6 +5,9 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wikimizuumi.data.SelectMBTLByCharacter
 import io.github.sophon.wikimizuumi.data.SelectUni2ByCharacter
 import io.github.sophon.wikimizuumi.data.SelectVSAVByCharacter
+import io.github.sophon.wikimizuumi.integration.model.MBTLMoveProperties
+import io.github.sophon.wikimizuumi.integration.model.Uni2MoveProperties
+import io.github.sophon.wikimizuumi.integration.model.VSAVMoveProperties
 
 internal fun SelectMBTLByCharacter.toDomain(): Move {
     val move = Move(
@@ -33,7 +36,7 @@ internal fun SelectMBTLByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        mbProperties = Move.MBProperties(
+        gameProperties = MBTLMoveProperties(
             inputInfo = inputInfo,
             subtitle = subtitle,
             minDamage = minDamage,
@@ -74,7 +77,7 @@ internal fun SelectUni2ByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        uni2Properties = Move.Uni2Properties(
+        gameProperties = Uni2MoveProperties(
             inputInfo = inputInfo,
             subtitle = subtitle,
             minDamage = minDamage,
@@ -127,7 +130,7 @@ internal fun SelectVSAVByCharacter.toDomain(): Move {
             hitboxImageList = urlsHitboxImageList.toDomain(),
             moveImageList = urlsMoveImageList.toDomain(),
         ),
-        vsavProperties = Move.VSAVProperties(
+        gameProperties = VSAVMoveProperties(
             inputInfo = inputInfo,
             subtitle = subtitle,
             whiteDmg = whiteDmg,

@@ -5,7 +5,9 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.toColumns
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.feat.core.domain.model.Emoji
+import io.github.sophon.discord.feat.core.domain.model.MoveRange
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 
@@ -29,6 +31,47 @@ internal fun moveListEmbed(
         val numberedMoves = dataList
             .mapIndexed { index, data ->
                 "${index + 1}. **${data}**"
+            }
+
+        mandatoryField(
+            name = "$formattedTitle moves",
+            value = "",
+            inline = false,
+        )
+
+        numberedMoves
+            .toColumns()
+            .forEach { moveList ->
+                val text = moveList.joinToString("\n")
+                mandatoryField(
+                    name = "",
+                    value = text,
+                )
+            }
+    }
+
+    featureFooter(featureInfo)
+}
+
+internal fun moveListEmbed(
+    moveRange: MoveRange,
+    featureInfo: FeatureInfo,
+    color: Color,
+    customFormatter: (Move) -> String? = { it.input },
+): EmbedBuilder.() -> Unit = {
+    this.color = color
+    val formattedTitle = "${moveRange.character.displayName} ${moveRange.rangeType.name} " +
+            "[${moveRange.formattedMin} ; ${moveRange.formattedMax}]"
+
+    if (moveRange.moveList.isEmpty()) {
+        mandatoryField(
+            name = "$formattedTitle moves",
+            value = "Nothing found 😔"
+        )
+    } else {
+        val numberedMoves = moveRange.moveList
+            .mapIndexed { index, move ->
+                "${index + 1}. **${customFormatter(move)}**"
             }
 
         mandatoryField(

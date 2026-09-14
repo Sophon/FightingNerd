@@ -1,0 +1,71 @@
+package io.github.sophon.wikidragdown.integration.model
+
+import io.github.sophon.core.wiki.model.CharacterGameProperties
+import io.github.sophon.core.wiki.model.MoveGameProperties
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Roa2CharProperties(
+    val dacusSpeedMultiplier: String? = null,
+    val weight: String? = null,
+    val frictionGround: String? = null,
+    val frictionAir: String? = null,
+    val dashFrames: String? = null,
+    val dashSpeed: String? = null,
+    val dashAcceleration: String? = null,
+    val runSpeedMax: String? = null,
+    val runTurnAcceleration: String? = null,
+    val runTurnFrames: String? = null,
+    val walkAccelerationMax: String? = null,
+    val walkSpeedMax: String? = null,
+    val gravity: String? = null,
+    val hitstunGravity: String? = null,
+    val fallSpeedMax: String? = null,
+    val fastFallSpeed: String? = null,
+    val airAcceleration: String? = null,
+    val airSpeedHorizontalMax: String? = null,
+    val jumpSpeedHorizontalMax: String? = null,
+    val fullHopSpeed: String? = null,
+    val shortHopSpeed: String? = null,
+    val doubleJumpSpeed: String? = null,
+    val doubleJumpMaxHorizontalSpeed: String? = null,
+    val airDodgeSpeed: String? = null,
+    val airDodgeFriction: String? = null,
+    val rollSpeed: String? = null,
+    val shieldSizeMultiplier: String? = null,
+    val ledgeStandSpeed: String? = null,
+    val ledgeRollSpeed: String? = null,
+    val ledgeJumpMaxHorizontalAirSpeed: String? = null,
+    val getupRollSpeed: String? = null,
+    val techRollSpeed: String? = null,
+    val wallJumpSpeedY: String? = null,
+    val wallJumpSpeedX: String? = null,
+): CharacterGameProperties
+
+@Serializable
+data class Roa2MoveProperties(
+    val mode: String? = null,
+    val caption: List<String>? = null,
+    val hitboxCaption: List<String>? = null,
+    val startupNotes: String? = null,
+    val totalActiveNotes: String? = null,
+    val endlagNotes: String? = null,
+    val cancelNotes: List<String>? = null,
+    val landingLag: String? = null,
+    val landingLagNotes: String? = null,
+    val iasa: String? = null,
+    val iasaNotes: String? = null,
+    val totalDuration: String? = null,
+    val totalDurationNotes: String? = null,
+    val ledgeGrabFrame: String? = null,
+    val ledgeGrabFrameNotes: String? = null,
+    val hitID: List<String>? = null,
+    val hitMoveID: List<String>? = null,
+    val hitName: List<String>? = null,
+    val hitActive: List<String>? = null,
+    val customShieldSafety: List<String>? = null,
+    val uniqueField: List<String>? = null,
+    val articleID: List<String>? = null,
+    val notes: String? = null,
+    val advNotes: String? = null,
+): MoveGameProperties

@@ -6,37 +6,36 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.capitalize
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.discord.util.embedImage
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.optionalField
-import io.github.sophon.wikidragdown.integration.model.Roa2Properties
+import io.github.sophon.wikidragdown.integration.model.Roa2MoveProperties
+import io.github.sophon.wikidragdown.integration.model.Roa2CharProperties
 
 internal fun dragDownMoveEmbed(
     character: Character,
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    title = move.input.formatTitle(move.roa2Properties?.mode)
+    val roa2 = move.gameProperties as? Roa2MoveProperties
+    title = move.input.formatTitle(roa2?.mode)
     url = move.urls.wikiUrl
     description = "**${character.displayName}**"
     color = Color(TEAL)
     character.images?.iconUrl?.let { thumbnail { url = it } }
 
-    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-        ?: emptyList()
-    images
-        .takeIf { it.size == 1 }
-        ?.let { image = it.first() }
+    embedImage(move.urls.hitboxImageList)
 
     mandatoryField(name = "Startup", value = move.startup)
     mandatoryField(name = "Active", value = move.active)
     mandatoryField(name = "Recovery", value = move.recovery)
-    mandatoryField(name = "Landing", value = move.roa2Properties?.landingLag)
-    mandatoryField(name = "IASA", value = move.roa2Properties?.iasa)
-    mandatoryField(name = "Ledge", value = move.roa2Properties?.ledgeGrabFrame)
+    mandatoryField(name = "Landing", value = roa2?.landingLag)
+    mandatoryField(name = "IASA", value = roa2?.iasa)
+    mandatoryField(name = "Ledge", value = roa2?.ledgeGrabFrame)
 
     optionalField(name = "Cancel", move.cancel)
-    move.roa2Properties?.uniqueField?.let { uniqueFields ->
+    roa2?.uniqueField?.let { uniqueFields ->
         val value = uniqueFields.joinToString(";") { "- $it"}
         optionalField(name = "Unique", value = value)
     }
@@ -59,7 +58,7 @@ internal fun dragDownCharacterEmbed(
     color = Color(TEAL)
     character.images?.iconUrl?.let { image = it }
 
-    (character.gameProperties as? Roa2Properties)?.apply {
+    (character.gameProperties as? Roa2CharProperties)?.apply {
         weight?.let { mandatoryField(name = "Weight", value = it) }
         hitstunGravity?.let { mandatoryField(name = "Hitstun Gravity", value = it) }
         fallSpeedMax?.let { mandatoryField(name = "Max Fall Spd", value = it) }

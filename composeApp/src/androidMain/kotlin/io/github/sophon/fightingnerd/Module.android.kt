@@ -11,12 +11,18 @@ import io.github.sophon.core.wiki.data.readStoredFingerprint
 import io.github.sophon.core.wiki.data.storeFingerprint
 import io.github.sophon.fightingnerd.core.domain.UrlOpener
 import io.github.sophon.fightingnerd.core.domain.UrlOpenerAnd
+import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandler
+import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandlerImpl
 import io.github.sophon.fightingnerd.feat.scheduler.Scheduler
 import io.github.sophon.fightingnerd.feat.scheduler.WorkManagerScheduler
+import io.github.sophon.fightingnerd.feat.share.ShareSheet
+import io.github.sophon.fightingnerd.feat.share.ShareSheetImpl
 import io.github.sophon.fightingnerd.infrastructure.createDataStore
 import okio.Path
 import okio.Path.Companion.toOkioPath
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.createdAtStart
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.bind
@@ -27,6 +33,11 @@ internal actual val platformModule = module {
 
     singleOf(::UrlOpenerAnd).bind<UrlOpener>()
     singleOf(::WorkManagerScheduler).bind<Scheduler>()
+    singleOf(::ShareSheetImpl).bind<ShareSheet>()
+    singleOf(::ReviewHandlerImpl) {
+        createdAtStart()
+        bind<ReviewHandler>()
+    }
 
     single<Path> { androidContext().filesDir.toOkioPath() / "media" }
 

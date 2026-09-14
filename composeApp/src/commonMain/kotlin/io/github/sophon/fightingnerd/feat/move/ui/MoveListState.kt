@@ -1,11 +1,11 @@
 package io.github.sophon.fightingnerd.feat.move.ui
 
 import androidx.compose.runtime.Immutable
-import io.github.sophon.core.wiki.model.CharacterGameProperties
 import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.fightingnerd.feat.move.model.Bookmark
 import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
+import io.github.sophon.fightingnerd.feat.move.model.Property
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet
@@ -13,10 +13,11 @@ import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.persistentSetOf
 import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.collections.immutable.toPersistentMap
+import org.jetbrains.compose.resources.StringResource
 
 @Immutable
 internal data class MoveListState(
-    val character: MoveListCharacter? = null,
+    val character: UiCharacter? = null,
     val mediaCount: Int = 0,
 
     val moveDetail: MoveDetail? = null,
@@ -31,15 +32,44 @@ internal data class MoveListState(
     val mediaAvailability: MediaAvailability = MediaAvailability.NotDownloaded,
 ) {
     @Immutable
-    data class MoveListCharacter(
+    data class UiCharacter(
         val displayName: String,
-        val hp: String? = null,
-        val umo: ImmutableList<String> = persistentListOf(),
-        val characterProperties: CharacterGameProperties? = null,
+        val propertyFields: ImmutableList<Field> = persistentListOf(),
         val isExpanded: Boolean = false,
     ) {
         val canExpand: Boolean get() {
-            return hp != null || umo.isNotEmpty() || characterProperties != null
+            return propertyFields.isNotEmpty()
+        }
+    }
+
+    @Immutable
+    data class Field(
+        val label: StringResource,
+        val value: String?,
+    )
+
+    @Immutable
+    data class UiMove(
+        val id: String,
+        val input: String,
+        val name: String?,
+
+        val propertySet: ImmutableSet<Property> = persistentSetOf(),
+        val coreFields: ImmutableList<Field>,
+        val optionalFields: ImmutableList<Field>,
+        val notes: ImmutableList<String> = persistentListOf(),
+        val urls: Urls = Urls(),
+    ) {
+        @Immutable
+        data class Urls(
+            val videoUrl: String? = null,
+            val hitboxImageList: ImmutableList<String> = persistentListOf(),
+            val moveImageList: ImmutableList<String> = persistentListOf(),
+        )
+
+        fun isExpandable(): Boolean {
+            val result = notes.isNotEmpty() || urls.videoUrl.isNullOrEmpty().not() || urls.hitboxImageList.isNotEmpty()
+            return result
         }
     }
 
@@ -116,7 +146,7 @@ internal data class MoveListState(
 
     companion object {
         val PREVIEW = MoveListState(
-            character = MoveListCharacter(displayName = "Nina"),
+            character = UiCharacter(displayName = "Nina"),
         )
 
         const val FRAME_MIN_STARTUP = 3
