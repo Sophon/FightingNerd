@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:name="io.github.sophon.fightingnerd.FightingNerdApplication"
-        android:theme="@android:style/Theme.Material.Light.NoActionBar">
+        android:theme="@style/AppTheme">
         <activity
             android:exported="true"
             android:name="io.github.sophon.fightingnerd.MainActivity">
