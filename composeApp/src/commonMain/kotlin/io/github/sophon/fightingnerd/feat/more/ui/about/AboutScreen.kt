@@ -4,10 +4,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -194,21 +194,20 @@ private fun WikisSection(
         )
         Spacer(Modifier.height(nerdDimensions.componentGapTight))
 
-        Row(
+        FlowRow(
             horizontalArrangement = Arrangement.spacedBy(
                 space = nerdDimensions.inlineGap,
                 alignment = Alignment.CenterHorizontally,
             ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(nerdDimensions.inlineGap),
+            modifier = Modifier.fillMaxWidth(),
         ) {
             val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
             wikis.forEach { link ->
                 AsyncImage(
                     model = link.iconUrl,
                     contentDescription = null,
-                    modifier = modifier
+                    modifier = Modifier
                         .size(nerdDimensions.iconHeadline)
                         .clip(shape)
                         .border(nerdDimensions.strokeThin, nerdColorPalette.dividerSubtle, shape)
