@@ -1,5 +1,6 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,7 @@ import io.github.sophon.fightingnerd.core.ui.components.CharacterCard
 import io.github.sophon.fightingnerd.core.ui.components.CharacterMatrix
 import io.github.sophon.fightingnerd.core.ui.components.GameWidget
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -58,7 +60,9 @@ private fun Content(
         ),
     ) {
         LazyColumn(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(nerdColorPalette.background),
             contentPadding = LocalBottomBarPadding.current,
         ) {
             state.gameFeatureList.forEach { feature ->

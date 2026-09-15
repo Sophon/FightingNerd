@@ -47,6 +47,7 @@ import io.github.sophon.fightingnerd.feat.share.ShareCaptureHost
 import io.github.sophon.fightingnerd.feat.share.ShareSheet
 import io.github.sophon.fightingnerd.infrastructure.toPngBytes
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
@@ -168,8 +169,8 @@ private fun Content(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
-                .background(MaterialTheme.colorScheme.surface),
+                .background(nerdColorPalette.background)
+                .padding(paddingValues),
         ) {
             MoveList(
                 moveList = moveList,
