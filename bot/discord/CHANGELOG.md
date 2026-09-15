@@ -1,6 +1,9 @@
 # BOT CHANGELOG
 
-## [v16.6.1] - TODO
+## [v16.6.1] - 2026-09-16
+- Kord snapshot version to fix ULong bug on Discord
+
+## [v16.6.1] - 2026-09-13
 - fixed `OnCounter` not using the right filter
 - tweak `help` and `commands` commands
 
