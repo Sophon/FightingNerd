@@ -9,19 +9,20 @@ import io.github.sophon.core.util.toColumns
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.hitboxImages
+import io.github.sophon.discord.util.embedImage
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
 import io.github.sophon.discord.util.optionalField
 import io.github.sophon.wikidustloop.integration.getLevel
 import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
-import io.github.sophon.wikidustloop.integration.model.BBProperties
+import io.github.sophon.wikidustloop.integration.model.BBCharProperties
 import io.github.sophon.wikidustloop.integration.model.DBFZMoveProperties
 import io.github.sophon.wikidustloop.integration.model.GBVSRMoveProperties
-import io.github.sophon.wikidustloop.integration.model.GBVSRProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTMoveProperties
-import io.github.sophon.wikidustloop.integration.model.GGSTProperties
-import io.github.sophon.wikidustloop.integration.model.MTFSProperties
+import io.github.sophon.wikidustloop.integration.model.GBVSRCharProperties
+import io.github.sophon.wikidustloop.integration.model.GGMoveProperties
+import io.github.sophon.wikidustloop.integration.model.GGCharProperties
+import io.github.sophon.wikidustloop.integration.model.MTFSCharProperties
+import kotlin.takeIf
 
 internal fun charEmbedBuilder(
     game: Game,
@@ -49,7 +50,12 @@ internal fun moveEmbedBuilder(
     move: Move,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
-    generalInfoMove(character, move, displayHitboxes = false)
+    val displayImagesWithoutExpansion = when (game) {
+        Game.GBVSR -> true
+        else -> false
+    }
+
+    generalInfoMove(character, move, displayHitboxes = displayImagesWithoutExpansion)
 
     when (game) {
         Game.DBFZ -> movePropertiesDB(move)
@@ -71,7 +77,7 @@ internal fun detailedMoveEmbedBuilder(
     when (game) {
         Game.GGST -> moveDetailedEmbedBuilderGG(move)
         Game.BBCF -> moveDetailedEmbedBuilderBB(move)
-        else -> {}
+        else -> genericDetailedEmbedBuilder(move)
     }
 }
 
@@ -163,7 +169,7 @@ private fun EmbedBuilder.generalPropertiesChar(
 }
 
 private fun EmbedBuilder.charDetailsGG(character: Character) {
-    val properties = (character.gameProperties as? GGSTProperties) ?: return
+    val properties = (character.gameProperties as? GGCharProperties) ?: return
 
     mandatoryField(
         name = "⭐️ CORE",
@@ -222,14 +228,14 @@ private fun EmbedBuilder.charDetailsGG(character: Character) {
 }
 
 private fun EmbedBuilder.charDetailsGB(character: Character) {
-    val properties = (character.gameProperties as? GBVSRProperties) ?: return
+    val properties = (character.gameProperties as? GBVSRCharProperties) ?: return
 
     optionalField(name = "Prejump", value = properties.jump?.pre)
     optionalField(name = "Backdash", value = properties.backdash)
 }
 
 private fun EmbedBuilder.charDetailsBB(character: Character) {
-    val properties = (character.gameProperties as? BBProperties) ?: return
+    val properties = (character.gameProperties as? BBCharProperties) ?: return
 
     mandatoryField(
         name = "Dash",
@@ -241,7 +247,7 @@ private fun EmbedBuilder.charDetailsBB(character: Character) {
 }
 
 private fun EmbedBuilder.charDetailsMT(character: Character) {
-    val properties = (character.gameProperties as? MTFSProperties) ?: return
+    val properties = (character.gameProperties as? MTFSCharProperties) ?: return
 
     optionalField(name = "Team", value = properties.team)
     optionalField(name = "Prejump", value = properties.prejump)
@@ -261,11 +267,7 @@ private fun EmbedBuilder.generalInfoMove(
     character.images?.iconUrl?.let { thumbnail { url = it } }
 
     if (displayHitboxes) {
-        val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-            ?: emptyList()
-        images
-            .takeIf { it.size == 1 }
-            ?.let { image = it.first() }
+        embedImage(move.urls.hitboxImageList)
     }
 }
 
@@ -292,7 +294,7 @@ private fun EmbedBuilder.moveNotes(move: Move) = optionalField(
 )
 
 private fun EmbedBuilder.moveDetailedEmbedBuilderGG(move: Move) {
-    val properties = (move.gameProperties as? GGSTMoveProperties) ?: return
+    val properties = (move.gameProperties as? GGMoveProperties) ?: return
 
     optionalField(name = "Risc gain", value = properties.riscGain)
     optionalField(name = "Risc loss", value = properties.riscLoss)
@@ -301,7 +303,7 @@ private fun EmbedBuilder.moveDetailedEmbedBuilderGG(move: Move) {
     optionalField(name = "Input tension", value = properties.inputTension)
     optionalField(name = "Chip", value = properties.chipRatio)
 
-    hitboxImages(move.urls).invoke(this)
+    embedImage(move.urls.hitboxImageList)
 
     moveNotes(move)
 }
@@ -335,8 +337,13 @@ private fun EmbedBuilder.moveDetailedEmbedBuilderBB(move: Move) {
         }
     }
 
-    hitboxImages(move.urls).invoke(this)
+    embedImage(move.urls.hitboxImageList)
 
+    moveNotes(move)
+}
+
+private fun EmbedBuilder.genericDetailedEmbedBuilder(move: Move) {
+    embedImage(move.urls.hitboxImageList)
     moveNotes(move)
 }
 

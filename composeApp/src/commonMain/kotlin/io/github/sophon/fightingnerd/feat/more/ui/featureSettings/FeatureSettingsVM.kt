@@ -9,8 +9,8 @@ import io.github.sophon.fightingnerd.core.ui.Dialog
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.feat.more.ui.components.ConfirmFeatureChangeDialog
-import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList

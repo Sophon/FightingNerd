@@ -11,7 +11,7 @@ import io.github.sophon.fightingnerd.feat.changelog.usecase.GetUnseenReleaseUseC
 import io.github.sophon.fightingnerd.feat.changelog.usecase.SaveReleaseAsSeenUseCase
 import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckCharacterHasMovesUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.PerformFirstTimeConfigUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
@@ -58,7 +58,7 @@ internal fun featureModule() = module {
 
     //region Home
     viewModelOf(::HomeVM)
-    singleOf(::CheckIfFirstLaunchUseCase)
+    singleOf(::PerformFirstTimeConfigUseCase)
     singleOf(::SubscribeToGamesUseCase)
     singleOf(::SubscribeToCharacterListUseCase)
     singleOf(::RefreshUseCase)

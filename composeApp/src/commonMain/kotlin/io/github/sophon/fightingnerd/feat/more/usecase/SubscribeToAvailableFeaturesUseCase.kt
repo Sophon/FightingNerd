@@ -52,6 +52,7 @@ internal class SubscribeToAvailableFeaturesUseCase(
                 FeatureSetting(
                     name = featureInfo.name,
                     iconUrl = featureInfo.iconUrl.orEmpty(),
+                    url = featureInfo.url,
                     version = featureInfo.version,
                     gameList = entries
                         .map { (game, _) ->

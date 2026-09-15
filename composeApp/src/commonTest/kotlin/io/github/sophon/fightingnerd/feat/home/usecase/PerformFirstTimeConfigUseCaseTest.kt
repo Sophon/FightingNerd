@@ -6,7 +6,8 @@ import androidx.datastore.preferences.core.edit
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.fightingnerd.KEY_FIRST_TIME_HOME_INIT_DONE
+import io.github.sophon.fightingnerd.KEY_HAS_LAUNCHED_BEFORE
+import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
 import io.github.sophon.fightingnerd.feat.FakeWikiClient
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
@@ -23,13 +24,13 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-internal class CheckIfFirstLaunchUseCaseTest {
+internal class PerformFirstTimeConfigUseCaseTest {
     private val storePath = "check_first_launch_test_${Random.nextInt()}.preferences_pb".toPath()
     private val store = PreferenceDataStoreFactory.createWithPath(
         scope = TestScope(UnconfinedTestDispatcher()),
         produceFile = { storePath },
     )
-    private val firstTimeFlagKey = booleanPreferencesKey(KEY_FIRST_TIME_HOME_INIT_DONE)
+    private val hasLaunchedBeforeKey = booleanPreferencesKey(KEY_HAS_LAUNCHED_BEFORE)
 
     @AfterTest
     fun cleanup() {
@@ -48,8 +49,8 @@ internal class CheckIfFirstLaunchUseCaseTest {
                 Game.MBTL to FakeWikiClient("Mizuumi Wiki"),
             ),
         )
-        val usecase = CheckIfFirstLaunchUseCase(featureRepo, store)
-        val expectedFirstLaunchFlag = true
+        val usecase = PerformFirstTimeConfigUseCase(featureRepo, store, RefreshUseCase(featureRepo, store))
+        val expectedHasLaunchedBefore = true
         val expectedTekken8Setting = true
         val expectedStreetFighter6Setting = true
         val expectedGgstSetting = true
@@ -58,14 +59,14 @@ internal class CheckIfFirstLaunchUseCaseTest {
         // when
         usecase.invoke()
         val snapshot = store.data.first()
-        val firstLaunchFlag = snapshot[firstTimeFlagKey]
+        val hasLaunchedBefore = snapshot[hasLaunchedBeforeKey]
         val tekken8Setting = snapshot[featureKey("Wavu Wiki", Game.Tekken8.id)]
         val streetFighter6Setting = snapshot[featureKey("SuperCombo Wiki", Game.StreetFighter6.id)]
         val ggstSetting = snapshot[featureKey("DustLoop Wiki", Game.GGST.id)]
         val mbtlSetting = snapshot[featureKey("Mizuumi Wiki", Game.MBTL.id)]
 
         // then
-        assertThat(firstLaunchFlag).isEqualTo(expectedFirstLaunchFlag)
+        assertThat(hasLaunchedBefore).isEqualTo(expectedHasLaunchedBefore)
         assertThat(tekken8Setting).isEqualTo(expectedTekken8Setting)
         assertThat(streetFighter6Setting).isEqualTo(expectedStreetFighter6Setting)
         assertThat(ggstSetting).isEqualTo(expectedGgstSetting)
@@ -76,8 +77,8 @@ internal class CheckIfFirstLaunchUseCaseTest {
     fun `usecase keeps preferences unchanged on successive launch`() = runTest {
         // given
         val featureRepo = FakeFeatureRepo()
-        val usecase = CheckIfFirstLaunchUseCase(featureRepo, store)
-        store.edit { prefs -> prefs[firstTimeFlagKey] = true }
+        val usecase = PerformFirstTimeConfigUseCase(featureRepo, store, RefreshUseCase(featureRepo, store))
+        store.edit { prefs -> prefs[hasLaunchedBeforeKey] = true }
         val expected = store.data.first()
 
         // when

@@ -8,4 +8,4 @@ internal const val LIMIT_MOVES = 500
 
 internal const val FEATURE_NAME = "Mizuumi Wiki"
 internal const val FEATURE_URL = "https://mizuumi.wiki"
-internal const val FEATURE_IMG_URL = "https://i.imgur.com/eZZHEfg.png"
+internal const val FEATURE_IMG_URL = "https://mizuumi.wiki/mizulogo.png?1fe5d"

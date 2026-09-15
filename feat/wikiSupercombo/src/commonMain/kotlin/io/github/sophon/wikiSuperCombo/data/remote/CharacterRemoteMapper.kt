@@ -5,8 +5,8 @@ import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.CharacterGameProperties
 import io.github.sophon.wikiSuperCombo.domain.WIKI_BASE_URL
-import io.github.sophon.wikiSuperCombo.integration.model.MK1Properties
-import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
+import io.github.sophon.wikiSuperCombo.integration.model.MKCharProperties
+import io.github.sophon.wikiSuperCombo.integration.model.SFCharProperties
 import kotlin.collections.get
 
 internal fun CharacterListResponseDto.toDomain(
@@ -22,13 +22,13 @@ internal fun CharacterListResponseDto.toDomain(
 
             val gameProperties: CharacterGameProperties? = when (game) {
                 Game.MK1 -> {
-                    MK1Properties(
+                    MKCharProperties(
                         hpMod = charDto.hpmod,
                         throwDmg = charDto.throwdmg,
                     )
                 }
                 Game.StreetFighter6 -> {
-                    SF6Properties(
+                    SFCharProperties(
                         fwdWalkSpd = charDto.fwdWalkSpd,
                         bwdWalkSpd = charDto.bwdWalkSpd,
                         fwdDashSpd = charDto.fwdDashSpd,

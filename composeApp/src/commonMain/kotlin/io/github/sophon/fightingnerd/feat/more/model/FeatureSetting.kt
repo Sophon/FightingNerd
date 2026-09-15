@@ -8,6 +8,7 @@ import kotlin.time.Instant
 internal data class FeatureSetting(
     val name: String,
     val iconUrl: String,
+    val url: String,
     val version: String,
     val gameList: ImmutableList<FeatureGame>,
 ) {

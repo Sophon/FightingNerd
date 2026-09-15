@@ -12,7 +12,7 @@ import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.CheckCharacterHasMovesUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.CheckIfFirstLaunchUseCase
+import io.github.sophon.fightingnerd.feat.home.usecase.PerformFirstTimeConfigUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
 import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
 import kotlinx.collections.immutable.persistentListOf
@@ -32,7 +32,7 @@ import org.jetbrains.compose.resources.getString
 
 internal class HomeVM(
     private val overlayService: OverlayService,
-    private val checkIfFirstLaunchUseCase: CheckIfFirstLaunchUseCase,
+    private val performFirstTimeConfigUseCase: PerformFirstTimeConfigUseCase,
     private val subscribeToGamesUseCase: SubscribeToGamesUseCase,
     private val subscribeToCharacterListUseCase: SubscribeToCharacterListUseCase,
     private val checkCharacterHasMovesUseCase: CheckCharacterHasMovesUseCase,
@@ -112,7 +112,7 @@ internal class HomeVM(
 
     private fun firstTimeCheck() {
         viewModelScope.launch {
-            checkIfFirstLaunchUseCase.invoke()
+            performFirstTimeConfigUseCase()
         }
     }
 

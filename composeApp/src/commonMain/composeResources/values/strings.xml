@@ -120,6 +120,13 @@ Since the project targets all fighting games and focuses on frame data, which is
 The logo is a boxing glove with nerd glasses. Get it?</string>
     <string name="more_about_next_title">What next</string>
     <string name="more_about_next_body">The core platform is done. From here on, focus will be on adding games.</string>
+    <string name="more_about_wikis_title">Wikis</string>
+    <string name="more_about_wikis_body">All data is sourced from community wikis. This has certain implications:
+
+    - I don't maintain the data, the community does
+    - this project would not exist without wikis
+
+So check the wikis out:</string>
     <string name="more_about_invite_links_title">Links</string>
     <string name="more_about_invite_discord_label">Add Discord bot</string>
     <string name="more_about_invite_github_label">Project repo</string>

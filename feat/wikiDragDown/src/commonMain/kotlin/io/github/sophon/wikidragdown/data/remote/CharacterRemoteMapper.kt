@@ -3,7 +3,7 @@ package io.github.sophon.wikidragdown.data.remote
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikidragdown.domain.BASE_URL
-import io.github.sophon.wikidragdown.integration.model.Roa2Properties
+import io.github.sophon.wikidragdown.integration.model.Roa2CharProperties
 import io.github.sophon.wikidragdown.util.formIcon
 
 internal fun List<CharacterResponseDto>.toDomain(
@@ -34,7 +34,7 @@ internal fun CharacterResponseDto.toDomain(
             iconId = iconFilename,
             iconUrl = imageUrlMap[iconFilename],
         ),
-        gameProperties = Roa2Properties(
+        gameProperties = Roa2CharProperties(
             dacusSpeedMultiplier = dto.dacusSpeedMultiplier?.toString(),
             weight = dto.weight?.toString(),
             frictionGround = dto.frictionGround?.toString(),

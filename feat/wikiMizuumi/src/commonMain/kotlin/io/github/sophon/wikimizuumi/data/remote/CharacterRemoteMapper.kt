@@ -3,10 +3,9 @@ package io.github.sophon.wikimizuumi.data.remote
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
-import io.github.sophon.core.util.removeAccents
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wikimizuumi.domain.FEATURE_URL
-import io.github.sophon.wikimizuumi.integration.model.Uni2Properties
+import io.github.sophon.wikimizuumi.integration.model.Uni2CharProperties
 
 internal fun String.toDomain(
     gameId: String,
@@ -49,7 +48,7 @@ internal fun CharacterListResponseDto.toDomain(
 
         val gameProperties = when (Game.fromId(gameId)) {
             Game.Uni2 -> {
-                Uni2Properties(
+                Uni2CharProperties(
                     smartSteer = dto.smartSteer,
                     fWalkSpeed = dto.fWalkSpeed?.cleanHtmlOrNull(),
                     fWalkSpeedNote = dto.fWalkSpeedNote?.cleanHtmlOrNull(),

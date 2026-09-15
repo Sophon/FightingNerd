@@ -6,25 +6,30 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.fightingnerd.KEY_FIRST_TIME_HOME_INIT_DONE
+import io.github.sophon.fightingnerd.KEY_HAS_LAUNCHED_BEFORE
+import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.more.util.featureKey
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 
-internal class CheckIfFirstLaunchUseCase(
+internal class PerformFirstTimeConfigUseCase(
     private val featureRepo: FeatureRepo,
     private val store: DataStore<Preferences>,
+    private val refreshUseCase: RefreshUseCase,
 ) {
-    internal suspend fun invoke() {
-        val firstTimeFlagKey = booleanPreferencesKey(KEY_FIRST_TIME_HOME_INIT_DONE)
+    internal suspend operator fun invoke() {
+        val hasLaunchedBeforeKey = booleanPreferencesKey(KEY_HAS_LAUNCHED_BEFORE)
         val snapshot = store.data.first()
-        if (snapshot[firstTimeFlagKey] == true) return
+        if (snapshot[hasLaunchedBeforeKey] == true) return
 
         store.edit { prefs ->
             featureRepo.getGameClients().forEach { (game, wikiClient) ->
                 prefs[featureKey(wikiClient.featureInfo.name, game.id)] = ENABLED_GAMES_FIRST_TIME.contains(game)
             }
-            prefs[firstTimeFlagKey] = true
+            prefs[hasLaunchedBeforeKey] = true
         }
+
+        refreshUseCase().collect()
     }
 
     private companion object {

@@ -67,7 +67,7 @@ import io.github.sophon.discord.feat.wikiDragDown.DragDownWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.DustLoopWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.FetchDustLoopInvincibleMovesUseCase
 import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateCharacterEmbedUseCase
-import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateMoveEmbedUseCase
+import io.github.sophon.discord.feat.wikiDustLoop.usecase.CreateDustLoopMoveEmbedUseCase
 import io.github.sophon.discord.feat.wikiMizuumi.CreateMizuumiInvEmbedUseCase
 import io.github.sophon.discord.feat.wikiMizuumi.MizuumiWikiDiscordFeature
 import io.github.sophon.discord.feat.wikiSuperCombo.SuperComboWikiDiscordFeature
@@ -143,7 +143,7 @@ internal val featureRegistryModule = module {
     //endregion
 
     //region DustLoop
-    singleOf(::CreateMoveEmbedUseCase)
+    singleOf(::CreateDustLoopMoveEmbedUseCase)
     singleOf(::CreateCharacterEmbedUseCase)
     singleOf(::FetchDustLoopInvincibleMovesUseCase)
     //endregion

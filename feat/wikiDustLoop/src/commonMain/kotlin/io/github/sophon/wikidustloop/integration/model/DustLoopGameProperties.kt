@@ -5,7 +5,7 @@ import io.github.sophon.core.wiki.model.MoveGameProperties
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class GGSTProperties(
+data class GGCharProperties(
     val defense: String?,
     val guts: String?,
     val guardBalance: String?,
@@ -40,19 +40,19 @@ data class GGSTProperties(
 ): CharacterGameProperties
 
 @Serializable
-data class BBProperties(
+data class BBCharProperties(
     val preJump: String? = null,
     val backDash: String? = null,
     val forwardDash: String? = null,
 ): CharacterGameProperties
 
 @Serializable
-data class DBFZProperties(
+data class DBFZCharProperties(
     val kiMod: String?,
 ): CharacterGameProperties
 
 @Serializable
-data class GBVSRProperties(
+data class GBVSRCharProperties(
     val jump: Jump?,
     val backdash: String?,
     val walkSpeed: String?,
@@ -82,14 +82,15 @@ data class GBVSRProperties(
 }
 
 @Serializable
-data class MTFSProperties(
+data class MTFSCharProperties(
     val prejump: String? = null,
     val backdash: String? = null,
     val team: String? = null,
 ): CharacterGameProperties
 
+
 @Serializable
-data class GGSTMoveProperties(
+data class GGMoveProperties(
     val riscGain: String? = null,
     val riscLoss: String? = null,
     val wallDamage: String? = null,
@@ -99,7 +100,6 @@ data class GGSTMoveProperties(
     val prorate: String? = null,
     val level: String? = null,
 ): MoveGameProperties
-
 
 @Serializable
 data class BBMoveProperties(

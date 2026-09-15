@@ -7,6 +7,7 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.feat.core.domain.model.Emoji
+import io.github.sophon.discord.util.embedImage
 import io.github.sophon.discord.util.featureFooter
 import io.github.sophon.discord.util.mandatoryField
 import io.github.sophon.discord.util.moveEmbedDescription
@@ -14,7 +15,7 @@ import io.github.sophon.discord.util.optionalField
 import io.github.sophon.discord.util.separator
 import io.github.sophon.wikiSuperCombo.integration.model.MKMoveProperties
 import io.github.sophon.wikiSuperCombo.integration.model.SF6MoveProperties
-import io.github.sophon.wikiSuperCombo.integration.model.SF6Properties
+import io.github.sophon.wikiSuperCombo.integration.model.SFCharProperties
 
 internal fun superComboMoveEmbed(
     character: Character,
@@ -47,11 +48,7 @@ internal fun superComboMoveDetailedEmbed(
 ): EmbedBuilder.() -> Unit = {
     superComboMoveEmbed(character, move, featureInfo).invoke(this)
 
-    val images = move.urls.hitboxImageList.takeIf { it.isNotEmpty() }
-        ?: emptyList()
-    images
-        .takeIf { it.size == 1 }
-        ?.let { image = it.first() }
+    embedImage(move.urls.hitboxImageList)
 
     sf6Fields(move)
     mk1Fields(move)
@@ -75,7 +72,7 @@ internal fun superComboCharacterEmbed(
         thumbnail { url = iconUrl }
     }
 
-    (character.gameProperties as? SF6Properties)?.let { properties ->
+    (character.gameProperties as? SFCharProperties)?.let { properties ->
         val moves = fastestMoveList.joinToString(", ") { move ->
             move.input
         }

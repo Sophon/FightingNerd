@@ -9,7 +9,11 @@ import io.github.sophon.core.util.normalize2dInputs
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.core.wiki.model.MoveGameProperties
 import io.github.sophon.wikimizuumi.domain.WIKI_BASE_URL
+import io.github.sophon.wikimizuumi.integration.model.MBTLMoveProperties
+import io.github.sophon.wikimizuumi.integration.model.Uni2MoveProperties
+import io.github.sophon.wikimizuumi.integration.model.VSAVMoveProperties
 
 internal fun MoveListResponseDto.toDomainAll(
     game: Game,
@@ -22,7 +26,7 @@ internal fun MoveListResponseDto.toDomainAll(
         .map { (charName, moveDtoList) ->
             val character = charName.toDomain(game.id, imageUrlMap)
             val moveList = moveDtoList.map {
-                it.title.toDomain(character, hitboxUrlMap)
+                it.title.toDomain(game, character, hitboxUrlMap)
             }
             character to moveList
         }.toMap()
@@ -30,6 +34,7 @@ internal fun MoveListResponseDto.toDomainAll(
 }
 
 internal fun MoveDto.toDomain(
+    game: Game,
     character: Character,
     hitboxUrlMap: Map<String, String>,
 ): Move {
@@ -64,15 +69,23 @@ internal fun MoveDto.toDomain(
                 .split(",")
                 .mapNotNull { hitboxUrlMap.getOrElse(key = it.trim(), defaultValue = { null }) },
         ),
-        mbProperties = toMbProperties(),
-        vsavProperties = toVsavProperties(),
-        uni2Properties = toUni2Properties(),
+        gameProperties = toGameProperties(game),
         aliases = normalizedInput.create2dAliases(isPartial = true) + normalizedInput.chargeAlias(),
     )
     return move
 }
 
-private fun MoveDto.toMbProperties() = Move.MBProperties(
+private fun MoveDto.toGameProperties(game: Game): MoveGameProperties? {
+    val properties = when (game) {
+        Game.MBTL -> toMbProperties()
+        Game.Uni2 -> toUni2Properties()
+        Game.VSAV -> toVsavProperties()
+        else -> null
+    }
+    return properties
+}
+
+private fun MoveDto.toMbProperties() = MBTLMoveProperties(
     inputInfo = inputInfo?.cleanHtmlOrNull(),
     subtitle = subtitle?.cleanHtmlOrNull(),
     minDamage = minDamage?.cleanHtmlOrNull(),
@@ -83,7 +96,7 @@ private fun MoveDto.toMbProperties() = Move.MBProperties(
     overall = overall?.cleanHtmlOrNull(),
 )
 
-private fun MoveDto.toVsavProperties() = Move.VSAVProperties(
+private fun MoveDto.toVsavProperties() = VSAVMoveProperties(
     inputInfo = inputInfo?.cleanHtmlOrNull(),
     subtitle = subtitle?.cleanHtmlOrNull(),
     whiteDmg = whitedmg?.cleanHtmlOrNull(),
@@ -93,7 +106,7 @@ private fun MoveDto.toVsavProperties() = Move.VSAVProperties(
     curseTime = cursetime?.cleanHtmlOrNull(),
 )
 
-private fun MoveDto.toUni2Properties() = Move.Uni2Properties(
+private fun MoveDto.toUni2Properties() = Uni2MoveProperties(
     inputInfo = inputInfo?.cleanHtmlOrNull(),
     subtitle = subtitle?.cleanHtmlOrNull(),
     minDamage = minDamage?.cleanHtmlOrNull(),

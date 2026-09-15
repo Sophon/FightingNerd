@@ -17,6 +17,7 @@ internal data class AboutState(
         Link.GitHub,
         Link.DiscordBot,
     ),
+    val uiWikiList: ImmutableList<UiWiki> = persistentListOf(),
 ) {
     enum class Link(
         val icon: DrawableResource,
@@ -34,4 +35,9 @@ internal data class AboutState(
             url = URL_DISCORD_INVITE,
         ),
     }
+
+    data class UiWiki(
+        val iconUrl: String,
+        val url: String,
+    )
 }
