@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v16.6.1] - 2026-09-16
+## [v16.6.2] - 2026-09-16
 - Kord snapshot version to fix ULong bug on Discord
 
 ## [v16.6.1] - 2026-09-13
