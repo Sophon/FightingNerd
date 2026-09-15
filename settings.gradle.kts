@@ -25,6 +25,11 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        // TODO: remove once Kord 0.19.0 is released to Maven Central
+        maven("https://central.sonatype.com/repository/maven-snapshots/") {
+            mavenContent { snapshotsOnly() }
+            content { includeGroup("dev.kord") }
+        }
     }
 }
 
