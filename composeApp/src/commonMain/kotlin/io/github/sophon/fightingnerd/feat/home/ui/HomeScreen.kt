@@ -1,18 +1,37 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.home_add_game_btn
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.core.ui.components.CharacterCard
@@ -21,14 +40,17 @@ import io.github.sophon.fightingnerd.core.ui.components.GameWidget
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
+import io.github.sophon.fightingnerd.theme.nerdTypography
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 internal fun HomeScreen(
     onNavigateToMoveList: (gameId: String, characterId: String) -> Unit,
+    onNavigateToFeatureSettings: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val vm = koinViewModel<HomeVM>()
@@ -38,6 +60,7 @@ internal fun HomeScreen(
         state = state,
         onExpandWidget = vm::onExpandWidget,
         onCharacterClick = onNavigateToMoveList,
+        onAddGameClick = onNavigateToFeatureSettings,
         onRefresh = vm::refresh,
         modifier = modifier,
     )
@@ -49,6 +72,7 @@ private fun Content(
     state: HomeViewState,
     onExpandWidget: (Game) -> Unit,
     onCharacterClick: (gameId: String, characterId: String) -> Unit,
+    onAddGameClick: () -> Unit,
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -85,6 +109,40 @@ private fun Content(
                 }
             }
         }
+
+        AnimatedVisibility(
+            visible = state.isAnyGameExpanded.not(),
+            enter = scaleIn() + fadeIn(),
+            exit = scaleOut() + fadeOut(),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(LocalBottomBarPadding.current)
+                .padding(horizontal = nerdDimensions.componentPadding),
+        ) {
+            AddGameButton(onClick = onAddGameClick)
+        }
+    }
+}
+
+@Composable
+private fun AddGameButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(nerdDimensions.iconHeadline)
+            .clip(CircleShape)
+            .background(nerdColorPalette.surfaceHigh)
+            .clickable(onClick = onClick),
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Add,
+            contentDescription = null,
+            tint = nerdColorPalette.accent,
+            modifier = Modifier.size(nerdDimensions.iconDefault),
+        )
     }
 }
 
@@ -110,6 +168,7 @@ private fun HomeScreenPreview() {
             state = HomeViewState.PREVIEW,
             onExpandWidget = {},
             onCharacterClick = {_, _ -> },
+            onAddGameClick = {},
             onRefresh = {},
         )
     }
