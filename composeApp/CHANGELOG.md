@@ -1,6 +1,9 @@
 # APP CHANGELOG
 
-## [v5.0.0] - TODO
+## [v5.1.0] - TODO
+- `Home` - Add Game button
+
+## [v5.0.0] - 2026-09-14
 - `Home` - full screen swipe to refresh
 - `Move` - can share a moves as images
 - `Changelog` - display changelog if release hasn't been seen
