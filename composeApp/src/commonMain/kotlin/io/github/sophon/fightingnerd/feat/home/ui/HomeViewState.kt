@@ -12,6 +12,11 @@ internal data class HomeViewState(
 
     val error: String? = null,
 ) {
+    val isAnyGameExpanded: Boolean get() {
+        val expanded = gameFeatureList.any { it.isExpanded }
+        return expanded
+    }
+
     companion object {
         private fun mockCharacters(): ImmutableList<GameFeature.UiCharacter> {
             val names = listOf("Zuzana", "Eva", "Karolina", "Marcela", "Zdenka", "Hana")

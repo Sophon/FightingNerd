@@ -1,5 +1,10 @@
 package io.github.sophon.fightingnerd.feat.home.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -7,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -104,15 +108,18 @@ private fun Content(
                     Spacer(Modifier.height(8.dp))
                 }
             }
+        }
 
-            item(key = "add_game_button") {
-                AddGameButton(
-                    onClick = onAddGameClick,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = nerdDimensions.componentPadding),
-                )
-            }
+        AnimatedVisibility(
+            visible = state.isAnyGameExpanded.not(),
+            enter = scaleIn() + fadeIn(),
+            exit = scaleOut() + fadeOut(),
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(LocalBottomBarPadding.current)
+                .padding(horizontal = nerdDimensions.componentPadding),
+        ) {
+            AddGameButton(onClick = onAddGameClick)
         }
     }
 }
@@ -122,31 +129,19 @@ private fun AddGameButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(nerdDimensions.componentGapTight),
-        modifier = modifier,
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier
+            .size(nerdDimensions.iconHeadline)
+            .clip(CircleShape)
+            .background(nerdColorPalette.surfaceHigh)
+            .clickable(onClick = onClick),
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(nerdDimensions.iconHeadline)
-                .clip(CircleShape)
-                .background(nerdColorPalette.surface)
-                .clickable(onClick = onClick),
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Add,
-                contentDescription = null,
-                tint = nerdColorPalette.accent,
-                modifier = Modifier.size(nerdDimensions.iconDefault),
-            )
-        }
-
-        Text(
-            text = stringResource(Res.string.home_add_game_btn),
-            style = nerdTypography.labelLarge,
-            color = nerdColorPalette.textSecondary,
+        Icon(
+            imageVector = Icons.Outlined.Add,
+            contentDescription = null,
+            tint = nerdColorPalette.accent,
+            modifier = Modifier.size(nerdDimensions.iconDefault),
         )
     }
 }
