@@ -2,7 +2,7 @@
 
 
 
-# FightingNerd
+# Fighting Nerd - FGC frame data
 
 Frame data targeting Discord bot and mobile apps:
 - 🧩 highly extensible
