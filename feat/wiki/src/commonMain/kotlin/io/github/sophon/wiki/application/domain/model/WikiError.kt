@@ -8,6 +8,7 @@ sealed class WikiError(private val name: String, vararg val inputs: String) : Er
     class DatabaseError(input: String) : WikiError("DatabaseError", input)
     class UnknownCharacter(input: String) : WikiError("UnknownCharacter", input)
     class UnknownMove(vararg inputs: String) : WikiError("UnknownMove", *inputs)
+    class InvalidConfig(vararg inputs: String) : WikiError("InvalidConfig", *inputs)
 
     override fun toString(): String {
         return "$name(${inputs.joinToString()})"

@@ -213,10 +213,14 @@ private fun configureWikiService(
     deleteCharacterListPort = characterStore,
 )
 
-private fun wikiConfig(vararg enabledGames: Game): WikiConfig = WikiConfig(
-    availableGameSet = availableGameSet,
-    enabledGameSet = enabledGames.toSet(),
-)
+private fun wikiConfig(vararg enabledGames: Game): WikiConfig {
+    val result = WikiConfig.create(
+        availableGameSet = availableGameSet,
+        enabledGameSet = enabledGames.toSet(),
+    )
+    val wikiConfig = (result as Result.Success).data
+    return wikiConfig
+}
 
 private class FakeWikiConfigPort(
     previousConfig: WikiConfig?,

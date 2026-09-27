@@ -35,31 +35,32 @@
 
 ## Current plan
 
-### Config
+### Test run
+- both hosts (app and bot) configure the wiki module from their JSON files
+  1. the host loads its JSON file
+  2. the host maps it into `WikiConfig` via `WikiConfig.create(...)`
+  3. the host calls `ConfigureWikiUseCase(wikiConfig)`
+  4. the in-memory adapter holds the config
+- nothing crashes; the host only ever sees a `WikiConfig` or a `WikiError`
 - the host owns the config; the wiki only receives it
   - app - available features from `modules.json` (compose resource), enabled/disabled from DataStore
   - bot - available features from `config.json` (file); everything available is enabled
-- the host reads its own sources and maps them into `WikiConfig`
-  - each host has its own mapper - host configs can differ, the wiki only ever sees `WikiConfig`
+- each host has its own mapper - host configs can differ, the wiki only ever sees `WikiConfig`
   - no JSON crosses into the wiki
-- use cases called before configuration wait for the config instead of failing (`filterNotNull().first()`)
-- any service that needs available / enabled games loads them through `LoadWikiConfigPort`
 
 ```kotlin
 // app - after its async config load
-val wikiConfig = availableFeatures.toWikiConfig(enabledGames = dataStoreEnabledGames)
-configureWikiUseCase(wikiConfig)
+val result = availableFeatures.toWikiConfig(enabledGames = dataStoreEnabledGames) // WikiConfig.create(...)
+    .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
 
 // bot - at startup
-val wikiConfig = botConfig.toWikiConfig() // everything available is enabled
-configureWikiUseCase(wikiConfig)
+val result = botConfig.toWikiConfig() // everything available is enabled
+    .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
 ```
 
-| `WikiClient` | wiki module |
-|---|---|
-| public methods | use cases |
-| method bodies | services |
-| private fields (enabled games, ...) | in-memory adapter behind a port |
+### Config
+- use cases called before configuration wait for the config instead of failing (`filterNotNull().first()`)
+- any service that needs available / enabled games loads them through `LoadWikiConfigPort`
 
 ### Enabling / disabling a wiki
 - app flow
@@ -67,7 +68,6 @@ configureWikiUseCase(wikiConfig)
   2. the app saves the choice to DataStore
   3. only if the save succeeded - the app calls `ConfigureWikiUseCase(newConfig)`
   4. the app wipes the disabled game's media (`MediaRepo` stays in the app)
-  - the diffing moves out of the app's `SaveFeatureConfigUseCase` - the wiki does it
 - the wiki reacts
   - enabled game - start a refresh in the module's scope, so it survives navigation
 - two stores (DataStore in the app, frame data in the wiki SQL DB) - no shared transaction
