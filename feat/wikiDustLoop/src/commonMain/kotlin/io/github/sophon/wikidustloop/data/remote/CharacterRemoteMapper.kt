@@ -20,7 +20,7 @@ internal fun CharacterListResponseDto.toDomain(
     gameId: String,
 ): List<Character> {
     val characterList = cargoQuery
-        .filterAltModeCharacters()
+        .filterAltModeCharacters(gameId)
         .map { query ->
             query.title.toDomain(imageUrlMap, gameId)
         }
@@ -310,7 +310,15 @@ private fun String.extractTooltipLabel(): String {
     return label
 }
 
-private fun List<CargoQueryItem>.filterAltModeCharacters(): List<CargoQueryItem> {
-    val filtered = this.filterNot { it.title.name.orEmpty().contains("(") }
+private fun List<CargoQueryItem>.filterAltModeCharacters(
+    gameId: String,
+): List<CargoQueryItem> {
+    val filtered = when (Game.fromId(gameId)) {
+        Game.GGST -> {
+            val filtered = this.filterNot { it.title.name.orEmpty().contains("(") }
+            filtered
+        }
+        else -> this
+    }
     return filtered
 }

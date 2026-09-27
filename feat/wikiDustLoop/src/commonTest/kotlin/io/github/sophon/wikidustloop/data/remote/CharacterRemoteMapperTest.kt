@@ -9,7 +9,8 @@ class CharacterMapperTest {
     val gg = Game.GGST.id
     val bb = Game.BBCF.id
     val mt = Game.MTFS.id
-    
+    val db = Game.DBFZ.id
+
     //region ID
     @Test
     fun `mapper forms ID from standard name`() {
@@ -329,6 +330,43 @@ class CharacterMapperTest {
         assertThat(result.umo).isEqualTo(expected)
     }
     //endregion
+
+    //region alt mode filter
+    @Test
+    fun `mapper filters out GGST character with parentheses`() {
+        //given
+        val characterList = CharacterListResponseDto(
+            cargoQuery = listOf(
+                CargoQueryItem(CharacterSource.aba),
+                CargoQueryItem(CharacterSource.abaJealousRage),
+            )
+        )
+        val expected = listOf("aba")
+
+        //when
+        val result = characterList.toDomain(emptyMap(), gg)
+
+        //then
+        assertThat(result.map { it.id }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `mapper keeps non-GGST character with parentheses`() {
+        //given
+        val characterList = CharacterListResponseDto(
+            cargoQuery = listOf(
+                CargoQueryItem(CharacterSource.gokuSuperSaiyan),
+            )
+        )
+        val expected = listOf("goku_(super_saiyan)")
+
+        //when
+        val result = characterList.toDomain(emptyMap(), db)
+
+        //then
+        assertThat(result.map { it.id }).isEqualTo(expected)
+    }
+    //endregion
 }
 
 private object CharacterSource {
@@ -417,6 +455,11 @@ private object CharacterSource {
         portrait = "GGST_A.B.A_Portrait.png",
         icon = "GGST_A.B.A_Icon.png",
         navImage = "GGST_A.B.A_Navigation_Icon.png",
+    )
+    val abaJealousRage = CharacterDto(
+        name = "A.B.A (Jealous Rage)",
+        portrait = "GGST_A.B.A_Portrait.png",
+        icon = "GGST_A.B.A_Icon.png",
     )
     val jacko = CharacterDto(
         name = "Jack-O",
@@ -610,5 +653,11 @@ private object CharacterSource {
         umo = "Extra air option<br>[[BBCF/Taokaka#Drive Moves|Dancing Edge]]<br/>[[BBCF/Taokaka#Crawl|Crawl]]",
         portrait = "BBCF_Taokaka_Portrait.png",
         icon = "BBCF_Taokaka_Icon.png",
+    )
+
+    val gokuSuperSaiyan = CharacterDto(
+        name = "Goku (Super Saiyan)",
+        portrait = "DBFZ_Goku_Super_Saiyan_Portrait.png",
+        icon = "DBFZ_Goku_Super_Saiyan_Icon.png",
     )
 }
