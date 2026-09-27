@@ -6,7 +6,7 @@ import io.github.sophon.core.wiki.model.Move
 import kotlinx.coroutines.flow.Flow
 
 internal interface LoadMoveListPort {
-    fun loadMoveList(
+    fun subscribe(
         game: Game,
         characterId: CharacterId,
     ): Flow<List<Move>>

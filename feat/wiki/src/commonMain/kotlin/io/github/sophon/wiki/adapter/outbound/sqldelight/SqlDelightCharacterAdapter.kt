@@ -14,18 +14,18 @@ internal class SqlDelightCharacterAdapter :
     SaveCharacterListPort,
     DeleteCharacterListPort {
 
-    override fun loadCharacterList(game: Game): Flow<List<Character>> {
+    override fun subscribe(game: Game): Flow<List<Character>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveCharacterList(
+    override suspend fun save(
         game: Game,
         characterList: List<Character>,
     ): EmptyResult<DataError.Local> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteCharacterList(game: Game): EmptyResult<DataError.Local> {
+    override suspend fun delete(game: Game): EmptyResult<DataError.Local> {
         TODO("Not yet implemented")
     }
 }

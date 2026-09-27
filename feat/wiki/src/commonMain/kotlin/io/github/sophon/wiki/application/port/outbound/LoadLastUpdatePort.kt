@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
 
 internal interface LoadLastUpdatePort {
-    fun loadLastUpdate(game: Game): Flow<Instant?>
+    fun subscribe(game: Game): Flow<Instant?>
 }

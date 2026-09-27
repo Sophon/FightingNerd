@@ -5,5 +5,5 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.featureConfig.model.Game
 
 internal interface DeleteMoveListPort {
-    suspend fun deleteMoveList(game: Game): EmptyResult<DataError.Local>
+    suspend fun delete(game: Game): EmptyResult<DataError.Local>
 }

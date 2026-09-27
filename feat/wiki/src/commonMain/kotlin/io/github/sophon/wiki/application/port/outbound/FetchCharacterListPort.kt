@@ -6,5 +6,5 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 
 internal interface FetchCharacterListPort {
-    suspend fun fetchCharacterList(game: Game): Result<List<Character>, DataError.Remote>
+    suspend fun fetch(game: Game): Result<List<Character>, DataError.Remote>
 }

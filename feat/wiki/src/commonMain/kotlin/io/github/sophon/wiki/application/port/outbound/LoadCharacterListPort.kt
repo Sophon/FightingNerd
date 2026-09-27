@@ -5,5 +5,5 @@ import io.github.sophon.core.wiki.model.Character
 import kotlinx.coroutines.flow.Flow
 
 internal interface LoadCharacterListPort {
-    fun loadCharacterList(game: Game): Flow<List<Character>>
+    fun subscribe(game: Game): Flow<List<Character>>
 }

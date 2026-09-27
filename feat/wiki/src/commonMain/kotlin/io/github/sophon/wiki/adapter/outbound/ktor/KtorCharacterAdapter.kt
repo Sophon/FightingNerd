@@ -7,7 +7,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.wiki.application.port.outbound.FetchCharacterListPort
 
 internal class KtorCharacterAdapter : FetchCharacterListPort {
-    override suspend fun fetchCharacterList(
+    override suspend fun fetch(
         game: Game,
     ): Result<List<Character>, DataError.Remote> {
         TODO("Not yet implemented")

@@ -19,14 +19,14 @@ internal class SqlDelightMoveAdapter :
     LoadLastUpdatePort,
     DeleteMoveListPort {
 
-    override fun loadMoveList(
+    override fun subscribe(
         game: Game,
         characterId: CharacterId,
     ): Flow<List<Move>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun saveMoveList(
+    override suspend fun save(
         game: Game,
         character: Character,
         moveList: List<Move>,
@@ -34,11 +34,11 @@ internal class SqlDelightMoveAdapter :
         TODO("Not yet implemented")
     }
 
-    override fun loadLastUpdate(game: Game): Flow<Instant?> {
+    override fun subscribe(game: Game): Flow<Instant?> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteMoveList(game: Game): EmptyResult<DataError.Local> {
+    override suspend fun delete(game: Game): EmptyResult<DataError.Local> {
         TODO("Not yet implemented")
     }
 }

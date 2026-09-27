@@ -8,7 +8,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wiki.application.port.outbound.FetchMoveListPort
 
 internal class KtorMoveAdapter : FetchMoveListPort {
-    override suspend fun fetchMoveList(
+    override suspend fun fetch(
         game: Game,
         character: Character,
     ): Result<List<Move>, DataError.Remote> {

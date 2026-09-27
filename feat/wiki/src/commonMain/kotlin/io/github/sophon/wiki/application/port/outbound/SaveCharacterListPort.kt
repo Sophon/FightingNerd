@@ -10,7 +10,7 @@ import io.github.sophon.core.wiki.model.Character
  * Atomic - the adapter owns the transaction.
  */
 internal interface SaveCharacterListPort {
-    suspend fun saveCharacterList(
+    suspend fun save(
         game: Game,
         characterList: List<Character>,
     ): EmptyResult<DataError.Local>

@@ -7,7 +7,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 
 internal interface FetchMoveListPort {
-    suspend fun fetchMoveList(
+    suspend fun fetch(
         game: Game,
         character: Character,
     ): Result<List<Move>, DataError.Remote>

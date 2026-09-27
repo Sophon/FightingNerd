@@ -11,7 +11,7 @@ import io.github.sophon.core.wiki.model.Move
  * Atomic - the adapter owns the transaction.
  */
 internal interface SaveMoveListPort {
-    suspend fun saveMoveList(
+    suspend fun save(
         game: Game,
         character: Character,
         moveList: List<Move>,
