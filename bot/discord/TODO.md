@@ -2,6 +2,9 @@
 
 ## High prio
 
+- BUG: `char` UNI - Trait and Vorpal not formatted 
+  - use formatLinks or something 
+  - use `char Ogre`
 - `character` and maybe other params - shorten
 - `help` and `commands` - optional and mandatory parameters
 - Mizuumi
