@@ -19,30 +19,30 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
-internal class ConfigureWikiServiceTest {
+val availableGameSet = setOf(Game.Tekken8, Game.StreetFighter6, Game.GGST)
 
+internal class ConfigureWikiServiceTest {
     @Test
-    fun `configure saves the config on the first call`() = runTest {
+    fun `saves the config on the first call`() = runTest {
         // given
-        val configPort = FakeWikiConfigPort(initialConfig = null)
+        val configPort = FakeWikiConfigPort(previousConfig = null)
         val service = configureWikiService(configPort = configPort)
         val newConfig = wikiConfig(Game.Tekken8)
-        val expected = newConfig
 
         // when
         service.invoke(newConfig)
 
         // then
-        assertThat(configPort.wikiConfig.value).isEqualTo(expected)
+        assertThat(configPort.wikiConfig.value).isEqualTo(newConfig)
     }
 
     @Test
-    fun `configure deletes nothing on the first call`() = runTest {
+    fun `nothing is deleted on the first call`() = runTest {
         // given
         val moveStore = FakeGameDataStore(storedGameSet = availableGameSet)
         val characterStore = FakeGameDataStore(storedGameSet = availableGameSet)
         val service = configureWikiService(
-            configPort = FakeWikiConfigPort(initialConfig = null),
+            configPort = FakeWikiConfigPort(previousConfig = null),
             moveStore = moveStore,
             characterStore = characterStore,
         )
@@ -57,12 +57,12 @@ internal class ConfigureWikiServiceTest {
     }
 
     @Test
-    fun `configure deletes moves and characters of a disabled game`() = runTest {
+    fun `disabling a game deletes moves and characters`() = runTest {
         // given
         val moveStore = FakeGameDataStore(storedGameSet = setOf(Game.Tekken8, Game.StreetFighter6))
         val characterStore = FakeGameDataStore(storedGameSet = setOf(Game.Tekken8, Game.StreetFighter6))
         val service = configureWikiService(
-            configPort = FakeWikiConfigPort(initialConfig = wikiConfig(Game.Tekken8, Game.StreetFighter6)),
+            configPort = FakeWikiConfigPort(previousConfig = wikiConfig(Game.Tekken8, Game.StreetFighter6)),
             moveStore = moveStore,
             characterStore = characterStore,
         )
@@ -77,12 +77,12 @@ internal class ConfigureWikiServiceTest {
     }
 
     @Test
-    fun `configure keeps the data of a newly enabled game`() = runTest {
+    fun `adding a game doesn't delete`() = runTest {
         // given
         val moveStore = FakeGameDataStore(storedGameSet = setOf(Game.Tekken8, Game.StreetFighter6))
         val characterStore = FakeGameDataStore(storedGameSet = setOf(Game.Tekken8, Game.StreetFighter6))
         val service = configureWikiService(
-            configPort = FakeWikiConfigPort(initialConfig = wikiConfig(Game.Tekken8)),
+            configPort = FakeWikiConfigPort(previousConfig = wikiConfig(Game.Tekken8)),
             moveStore = moveStore,
             characterStore = characterStore,
         )
@@ -97,10 +97,10 @@ internal class ConfigureWikiServiceTest {
     }
 
     @Test
-    fun `configure returns a database error when a delete fails`() = runTest {
+    fun `delete fail returns database error`() = runTest {
         // given
         val service = configureWikiService(
-            configPort = FakeWikiConfigPort(initialConfig = wikiConfig(Game.StreetFighter6)),
+            configPort = FakeWikiConfigPort(previousConfig = wikiConfig(Game.StreetFighter6)),
             moveStore = FakeGameDataStore(
                 storedGameSet = setOf(Game.StreetFighter6),
                 failingGameSet = setOf(Game.StreetFighter6),
@@ -117,9 +117,9 @@ internal class ConfigureWikiServiceTest {
     }
 
     @Test
-    fun `configure keeps the new config when a delete fails`() = runTest {
+    fun `new config is kept when a delete fails`() = runTest {
         // given
-        val configPort = FakeWikiConfigPort(initialConfig = wikiConfig(Game.Tekken8, Game.StreetFighter6))
+        val configPort = FakeWikiConfigPort(previousConfig = wikiConfig(Game.Tekken8, Game.StreetFighter6))
         val service = configureWikiService(
             configPort = configPort,
             moveStore = FakeGameDataStore(
@@ -139,7 +139,7 @@ internal class ConfigureWikiServiceTest {
     }
 
     @Test
-    fun `configure still deletes the other disabled games when a delete fails`() = runTest {
+    fun `other disabled games are deleted when a delete fails`() = runTest {
         // given
         val moveStore = FakeGameDataStore(
             storedGameSet = availableGameSet,
@@ -147,7 +147,7 @@ internal class ConfigureWikiServiceTest {
         )
         val characterStore = FakeGameDataStore(storedGameSet = availableGameSet)
         val service = configureWikiService(
-            configPort = FakeWikiConfigPort(initialConfig = wikiConfig(Game.Tekken8, Game.StreetFighter6, Game.GGST)),
+            configPort = FakeWikiConfigPort(previousConfig = wikiConfig(Game.Tekken8, Game.StreetFighter6, Game.GGST)),
             moveStore = moveStore,
             characterStore = characterStore,
         )
@@ -161,12 +161,12 @@ internal class ConfigureWikiServiceTest {
     }
 
     @Test
-    fun `configure returns the save error when saving fails`() = runTest {
+    fun `save fail returns the save error`() = runTest {
         // given
         val expected = Result.Error(WikiError.DatabaseError("UNKNOWN"))
         val service = configureWikiService(
             configPort = FakeWikiConfigPort(
-                initialConfig = wikiConfig(Game.Tekken8),
+                previousConfig = wikiConfig(Game.Tekken8),
                 saveResult = expected,
             ),
         )
@@ -179,13 +179,13 @@ internal class ConfigureWikiServiceTest {
     }
 
     @Test
-    fun `configure deletes nothing when saving fails`() = runTest {
+    fun `nothing is deleted when saving fails`() = runTest {
         // given
         val moveStore = FakeGameDataStore(storedGameSet = setOf(Game.Tekken8, Game.StreetFighter6))
         val characterStore = FakeGameDataStore(storedGameSet = setOf(Game.Tekken8, Game.StreetFighter6))
         val service = configureWikiService(
             configPort = FakeWikiConfigPort(
-                initialConfig = wikiConfig(Game.Tekken8, Game.StreetFighter6),
+                previousConfig = wikiConfig(Game.Tekken8, Game.StreetFighter6),
                 saveResult = Result.Error(WikiError.DatabaseError("UNKNOWN")),
             ),
             moveStore = moveStore,
@@ -219,10 +219,10 @@ private fun wikiConfig(vararg enabledGames: Game): WikiConfig = WikiConfig(
 )
 
 private class FakeWikiConfigPort(
-    initialConfig: WikiConfig?,
+    previousConfig: WikiConfig?,
     private val saveResult: EmptyResult<WikiError> = Result.Success(Unit),
 ) : LoadWikiConfigPort, SaveWikiConfigPort {
-    val wikiConfig = MutableStateFlow(initialConfig)
+    val wikiConfig = MutableStateFlow(previousConfig)
 
     override fun subscribe(): Flow<WikiConfig?> {
         return wikiConfig
@@ -257,4 +257,3 @@ private class FakeGameDataStore(
 }
 
 
-private val availableGameSet = setOf(Game.Tekken8, Game.StreetFighter6, Game.GGST)
