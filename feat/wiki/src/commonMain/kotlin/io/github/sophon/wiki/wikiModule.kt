@@ -2,6 +2,7 @@ package io.github.sophon.wiki
 
 import io.github.sophon.wiki.adapter.outbound.ktor.KtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.dragDown.DragDownKtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel.DreamCancelKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.dustLoop.DustLoopKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.mizuumi.MizuumiKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.superCombo.SuperComboKtorGameDataAdapter
@@ -66,6 +67,7 @@ fun wikiModule(): Module = module {
     singleOf(::SuperComboKtorGameDataAdapter)
     singleOf(::DragDownKtorGameDataAdapter)
     singleOf(::XkoKtorGameDataAdapter)
+    singleOf(::DreamCancelKtorGameDataAdapter)
     singleOf(::SqlDelightCharacterAdapter) {
         bind<LoadCharacterListPort>()
         bind<SaveCharacterMoveListPort>()

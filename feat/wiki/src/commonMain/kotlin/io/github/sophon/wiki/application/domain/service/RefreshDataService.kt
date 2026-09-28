@@ -12,6 +12,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wiki.application.domain.model.RefreshEvent
 import io.github.sophon.wiki.application.domain.model.WikiError
 import io.github.sophon.wiki.application.domain.model.toWikiError
+import io.github.sophon.wiki.application.domain.util.normalizeDreamCancel
 import io.github.sophon.wiki.application.domain.util.normalizeDustLoop
 import io.github.sophon.wiki.application.domain.util.normalizeMizuumi
 import io.github.sophon.wiki.application.domain.util.normalizeSuperCombo
@@ -93,6 +94,7 @@ internal class RefreshDataService(
             Game.GGST, Game.DBFZ, Game.GBVSR, Game.BBCF, Game.MTFS -> this.map { move -> move.normalizeDustLoop(game) }
             Game.StreetFighter6, Game.MK1, Game.AVL -> this.map { move -> move.normalizeSuperCombo() }
             Game.Xko -> this.map { move -> move.normalizeXko() }
+            Game.KoFXV, Game.COTW -> this.map { move -> move.normalizeDreamCancel() }
             else -> this
         }
         return normalizedList
