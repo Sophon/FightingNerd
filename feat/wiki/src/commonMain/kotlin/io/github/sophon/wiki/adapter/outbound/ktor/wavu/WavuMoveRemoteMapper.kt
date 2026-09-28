@@ -3,8 +3,8 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 
 internal fun WavuMoveListResponseDto.toDomain(character: Character): List<Move> {
@@ -25,11 +25,10 @@ private fun MoveDto.toDomain(
     val aliases = formAliases(alias, alt)
 
     val move = Move(
-        characterId = character.id,
-        id = id,
         name = name?.cleanHtml(),
 
         input = fullInput,
+        remoteId = id,
         damage = parentalProperties.damage,
         startup = parentalProperties.startup,
         recovery = recv,

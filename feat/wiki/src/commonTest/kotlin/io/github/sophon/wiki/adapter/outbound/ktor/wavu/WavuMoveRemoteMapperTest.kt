@@ -3,14 +3,15 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 import kotlin.test.Test
 
 class WavuMoveRemoteMapperTest {
     val ak = Character(
-        id = "armor_king",
+        id = CharacterId("Armor_King"),
         displayName = "Armor King",
         remoteQueryId = "Armor_King",
         wikiUrl = "https://wavu.wiki/t/Armor_King_movelist",
@@ -103,7 +104,7 @@ class WavuMoveRemoteMapperTest {
         val move = WavuMoveSource.matterhorn
         val expected = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4"
         val lili = Character(
-            id = "Lili",
+            id = CharacterId("Lili"),
             remoteQueryId = "Lili",
             displayName = "Lili",
             wikiUrl = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4",
@@ -230,8 +231,7 @@ class WavuMoveRemoteMapperTest {
             )
         )
         val expected = Move(
-            characterId = "armor_king",
-            id = "Armor King-1",
+            remoteId = "Armor King-1",
             name = "Jab",
             input = "1",
             damage = "5",
@@ -307,8 +307,7 @@ class WavuMoveRemoteMapperTest {
             )
         )
         val expected = Move(
-            characterId = "armor_king",
-            id = "Armor King-f+2,1",
+            remoteId = "Armor King-f+2,1",
             name = "Dark Elbow Hook",
             input = "f+2,1",
             damage = "12, 25",
@@ -353,8 +352,7 @@ class WavuMoveRemoteMapperTest {
             )
         )
         val expected = Move(
-            characterId = "armor_king",
-            id = "Armor King-BAD.db+1+2",
+            remoteId = "Armor King-BAD.db+1+2",
             name = "Shadow Press",
             input = "BAD.db+1+2",
             damage = "18,15",
@@ -400,8 +398,7 @@ class WavuMoveRemoteMapperTest {
             )
         )
         val expected = Move(
-            characterId = "armor_king",
-            id = "Armor King-f,f,F+2+4",
+            remoteId = "Armor King-f,f,F+2+4",
             name = "Brilliant Brawler Kick",
             input = "f,f,F+2+4",
             damage = "40 (45)",

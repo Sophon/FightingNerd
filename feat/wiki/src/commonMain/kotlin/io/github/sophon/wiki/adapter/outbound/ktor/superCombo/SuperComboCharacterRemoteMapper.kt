@@ -2,8 +2,9 @@ package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.createAliases
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.CharacterGameProperties
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
+import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.gameProperties.MKCharProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.SFCharProperties
 
@@ -26,7 +27,7 @@ private fun formCharacter(
     imageUrlMap: Map<String, String>,
 ): Character {
     val character = Character(
-        id = dto.Character.formId(),
+        id = CharacterId(dto.chara),
         displayName = (dto.name ?: dto.chara),
         remoteQueryId = dto.chara,
         wikiUrl = "$WIKI_BASE_URL/${game.id}/${dto.chara}",
@@ -70,22 +71,6 @@ private fun CharacterDto.toGameProperties(game: Game): CharacterGameProperties? 
         else -> null
     }
     return properties
-}
-
-/**
- * The page name is `Street Fighter 6/Chun-Li/Data` - the id is the character part: `chun_li`.
- */
-private fun String?.formId(): String {
-    if (this == null) return "NULL"
-
-    val characterId = split("/")
-        .dropLast(1)
-        .last()
-        .replace(".", "")
-        .replace("-", "_")
-        .split(" ")
-        .joinToString("_") { it.lowercase() }
-    return characterId
 }
 
 /**

@@ -1,7 +1,8 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.dragDown
 
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2CharProperties
 
 internal fun List<DragDownCharacterResponseDto>.toDomain(
@@ -27,7 +28,7 @@ private fun DragDownCharacterResponseDto.toDomain(
     val iconFileName = chara.formIconFileName()
 
     val character = Character(
-        id = chara.replace(" ", "_").lowercase(),
+        id = CharacterId(chara),
         displayName = chara,
         remoteQueryId = chara,
         aliasList = chara.formAliases(),

@@ -2,8 +2,9 @@ package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
+import io.github.sophon.wiki.application.domain.model.Move
 import kotlin.test.Test
 
 class XkoMoveRemoteMapperTest {
@@ -18,8 +19,6 @@ class XkoMoveRemoteMapperTest {
         val expected = listOf(
             XkoMoveSource.jinx to listOf(
                 Move(
-                    characterId = "jinx",
-                    id = "jinx_5M",
                     input = "5M",
                     damage = "55",
                     startup = "11",
@@ -37,8 +36,6 @@ class XkoMoveRemoteMapperTest {
             ),
             XkoMoveSource.darius to listOf(
                 Move(
-                    characterId = "darius",
-                    id = "darius_5M",
                     input = "5M",
                     damage = "65",
                     startup = "12",
@@ -71,8 +68,6 @@ class XkoMoveRemoteMapperTest {
             bucket = listOf(XkoMoveSource.jinx5MEmptyFields),
         )
         val expected = Move(
-            characterId = "jinx",
-            id = "jinx_5M",
             input = "5M",
             damage = null,
             startup = "11",
@@ -99,13 +94,13 @@ class XkoMoveRemoteMapperTest {
 
 private object XkoMoveSource {
     val jinx = Character(
-        id = "jinx",
+        id = CharacterId("Jinx"),
         displayName = "Jinx",
         remoteQueryId = "Jinx",
         wikiUrl = "https://wiki.play2xko.com/en-us/Jinx",
     )
     val darius = Character(
-        id = "darius",
+        id = CharacterId("Darius"),
         displayName = "Darius",
         remoteQueryId = "Darius",
         wikiUrl = "https://wiki.play2xko.com/en-us/Darius",

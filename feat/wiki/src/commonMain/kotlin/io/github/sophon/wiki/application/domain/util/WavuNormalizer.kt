@@ -1,6 +1,6 @@
 package io.github.sophon.wiki.application.domain.util
 
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 
 internal fun Move.normalizeT8(): Move {
@@ -14,7 +14,6 @@ internal fun Move.normalizeT8(): Move {
     )
 
     val normalized = copy(
-        id = id.formId(),
         input = normalizedInput,
         aliases = normalizedAliases,
         gameProperties = properties,
@@ -66,15 +65,6 @@ internal fun String.cleanMoveInput(keepSpaces: Boolean = false): String {
         .replace("heat.", "h.")
 
     return result
-}
-
-private fun String.formId(): String {
-    val formattedId = this
-        .split(' ')
-        .joinToString("_") { it.lowercase() }
-        .cleanMoveInput()
-
-    return formattedId
 }
 
 /**

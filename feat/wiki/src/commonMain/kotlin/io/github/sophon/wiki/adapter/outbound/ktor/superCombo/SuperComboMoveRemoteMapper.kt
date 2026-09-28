@@ -2,35 +2,42 @@ package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.adapter.outbound.ktor.findMoveIdPrefix
+import io.github.sophon.wiki.adapter.outbound.ktor.removeMoveIdPrefix
+import io.github.sophon.wiki.application.domain.model.Move
+import io.github.sophon.wiki.application.domain.model.MoveGameProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.AVLMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.MKMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.SF6MoveProperties
 
+/**
+ * One character's move list - the move ID prefix is that character's.
+ */
 internal fun SuperComboMoveListResponseDto.toDomain(
     game: Game,
-    character: Character,
     imageUrlMap: Map<String, String>,
 ): List<Move> {
-    val moveList = cargoQuery.map { query -> query.title.toDomain(game, character, imageUrlMap) }
+    val dtoList = cargoQuery.map { query -> query.title }
+    val moveIdPrefix = dtoList.map { dto -> dto.moveId }.findMoveIdPrefix()
+    val moveList = dtoList.map { dto -> dto.toDomain(game, moveIdPrefix, imageUrlMap) }
     return moveList
 }
 
 /**
  * Only cleaning - the input and the aliases are normalized by the service.
+ * The input comes from the move ID - the wiki's `input` doesn't tell versions apart (`mai_214hp` / `mai_214hp_flame`
+ * are both `214HP`), so it's kept as an alias.
  */
 private fun MoveDto.toDomain(
     game: Game,
-    character: Character,
+    moveIdPrefix: String,
     imageUrlMap: Map<String, String>,
 ): Move {
     val move = Move(
-        characterId = character.id,
-        id = moveId,
         name = name.ignoreImageNames(),
-        input = input,
+        input = moveId.removeMoveIdPrefix(moveIdPrefix),
+        remoteId = moveId,
+        aliases = listOfNotNull(input.takeIf { it.isNotBlank() }),
         damage = damage.takeIfNotTemplate()?.cleanHtml(),
         startup = startup.takeIfNotTemplate(),
         onBlock = (blockAdv ?: onBlock).takeIfNotTemplate()?.cleanHtml(),

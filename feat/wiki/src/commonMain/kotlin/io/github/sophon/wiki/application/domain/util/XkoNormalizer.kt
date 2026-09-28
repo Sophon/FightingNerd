@@ -1,17 +1,12 @@
 package io.github.sophon.wiki.application.domain.util
 
-import io.github.sophon.core.util.create2dAliases
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Move
 
-/**
- * The id is the character's id and the normalized input.
- */
 internal fun Move.normalizeXko(): Move {
     val normalizedInput = input.lowercase()
     val normalizedAliases = (aliases + normalizedInput.create2dAliases(isPartial = false).addExtraAliases(normalizedInput))
 
     val normalized = copy(
-        id = "${characterId}_$normalizedInput",
         input = normalizedInput,
         aliases = normalizedAliases,
     )

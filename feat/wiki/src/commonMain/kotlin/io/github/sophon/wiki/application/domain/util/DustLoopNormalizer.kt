@@ -1,19 +1,20 @@
 package io.github.sophon.wiki.application.domain.util
 
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.util.create2dAliases
-import io.github.sophon.core.util.normalize2dInputs
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.CharacterId
+import io.github.sophon.wiki.application.domain.model.Move
 
 /**
- * The id is the character's id and the normalized input.
+ * [characterId] is the normalized one - Nagoriyuki's moves get their own aliases.
  */
-internal fun Move.normalizeDustLoop(game: Game): Move {
+internal fun Move.normalizeDustLoop(
+    game: Game,
+    characterId: CharacterId,
+): Move {
     val normalizedInput = input.normalize2dInputs()
     val normalizedAliases = (aliases + normalizedInput.formAliases(game, characterId)).distinct()
 
     val normalized = copy(
-        id = "${characterId}_$normalizedInput",
         input = normalizedInput,
         aliases = normalizedAliases,
     )
@@ -22,10 +23,10 @@ internal fun Move.normalizeDustLoop(game: Game): Move {
 
 private fun String.formAliases(
     game: Game,
-    characterId: String,
+    characterId: CharacterId,
 ): List<String> {
     val aliases = when {
-        characterId == NAGORIYUKI_ID -> formNagoriyukiAliases()
+        characterId == nagoriyukiId -> formNagoriyukiAliases()
         game == Game.GBVSR -> createGbvsAliases()
         else -> create2dAliases(isPartial = false)
     }
@@ -82,4 +83,4 @@ private fun List<String>.addAliasForReleaseNotation(input: String): List<String>
 }
 
 
-private const val NAGORIYUKI_ID = "nagoriyuki"
+private val nagoriyukiId = CharacterId("nagoriyuki")

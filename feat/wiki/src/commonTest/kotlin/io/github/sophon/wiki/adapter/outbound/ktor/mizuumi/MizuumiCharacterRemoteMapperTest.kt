@@ -3,7 +3,8 @@ package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
 import kotlin.test.Test
 
 class MizuumiCharacterRemoteMapperTest {
@@ -17,7 +18,7 @@ class MizuumiCharacterRemoteMapperTest {
         //given
         val chara = "Ciel"
         val expected = Character(
-            id = "ciel",
+            id = CharacterId("Ciel"),
             displayName = "Ciel",
             remoteQueryId = "Ciel",
             wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Ciel",
@@ -36,11 +37,11 @@ class MizuumiCharacterRemoteMapperTest {
     }
 
     @Test
-    fun `multi-word chara is joined by underscore and uses the first name's icon`() {
+    fun `multi-word chara joins its wiki url by underscore and uses the first name's icon`() {
         //given
         val chara = "Akiha Tohno"
         val expected = Character(
-            id = "akiha_tohno",
+            id = CharacterId("Akiha Tohno"),
             displayName = "Akiha Tohno",
             remoteQueryId = "Akiha Tohno",
             wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Akiha_Tohno",

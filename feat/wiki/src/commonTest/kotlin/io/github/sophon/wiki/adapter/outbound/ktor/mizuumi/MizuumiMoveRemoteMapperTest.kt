@@ -3,8 +3,9 @@ package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.MBTLMoveProperties
 import kotlin.test.Test
 
@@ -42,23 +43,49 @@ class MizuumiMoveRemoteMapperTest {
 
     //region input
     @Test
-    fun `input keeps the wiki notation`() {
+    fun `input is the move ID without the character prefix`() {
+        //given
+        val moveList = listOf(MizuumiMoveSource.ak5bClose, MizuumiMoveSource.ak5bFar)
+        val expected = listOf("5b_close", "5b_far")
+
+        //when
+        val result = moveList.toMoveList(Game.Uni2, MizuumiMoveSource.akatsuki)
+
+        //then
+        assertThat(result.map { it.input }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move ID without the character prefix stays whole`() {
+        //given
+        val moveList = listOf(MizuumiMoveSource.le214hp, MizuumiMoveSource.le236hp, MizuumiMoveSource.tenraihaAnvil)
+        val expected = listOf("214HP", "236HP", "tenraiha_anvil")
+
+        //when
+        val result = moveList.toMoveList(Game.VSAV, MizuumiMoveSource.leiLei)
+
+        //then
+        assertThat(result.map { it.input }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `remote ID is the move ID`() {
         //given
         val move = MizuumiMoveSource.lumenStellaAir
-        val expected = "j[4]6A"
+        val expected = "va_j4_ic_6a"
 
         //when
         val result = move.toMove(Game.Uni2, MizuumiMoveSource.va)
 
         //then
-        assertThat(result.input).isEqualTo(expected)
+        assertThat(result.remoteId).isEqualTo(expected)
     }
 
     @Test
-    fun `no aliases are created`() {
+    fun `wiki input is kept as an alias`() {
         //given
         val move = MizuumiMoveSource.lumenStellaAir
-        val expected = emptyList<String>()
+        val expected = listOf("j[4]6A")
 
         //when
         val result = move.toMove(Game.Uni2, MizuumiMoveSource.va)
@@ -75,7 +102,7 @@ class MizuumiMoveRemoteMapperTest {
         val moveList = (movesOf(chara = "Akiha Tohno", idPrefix = "ak", count = 10)
                 + movesOf(chara = "Ciel", idPrefix = "ci", count = 10))
         val responseDto = MizuumiMoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
-        val expected = listOf("akiha_tohno" to 10, "ciel" to 10)
+        val expected = listOf(CharacterId("Akiha Tohno") to 10, CharacterId("Ciel") to 10)
 
         //when
         val result = responseDto.toDomainAll(Game.MBTL, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
@@ -91,7 +118,7 @@ class MizuumiMoveRemoteMapperTest {
         val moveList = (movesOf(chara = "Akiha Tohno", idPrefix = "ak", count = 10)
                 + movesOf(chara = "Ciel", idPrefix = "ci", count = 9))
         val responseDto = MizuumiMoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
-        val expected = listOf("akiha_tohno")
+        val expected = listOf(CharacterId("Akiha Tohno"))
 
         //when
         val result = responseDto.toDomainAll(Game.MBTL, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
@@ -105,12 +132,20 @@ class MizuumiMoveRemoteMapperTest {
 private val Move.mbtlProperties: MBTLMoveProperties?
     get() = gameProperties as? MBTLMoveProperties
 
+private fun List<MoveDto>.toMoveList(
+    game: Game,
+    character: Character,
+): List<Move> {
+    val responseDto = MizuumiMoveListResponseDto(cargoquery = map { dto -> Title(dto) })
+    val moveList = responseDto.toDomain(game, character, hitboxUrlMap = emptyMap())
+    return moveList
+}
+
 private fun MoveDto.toMove(
     game: Game,
     character: Character,
 ): Move {
-    val responseDto = MizuumiMoveListResponseDto(cargoquery = listOf(Title(this)))
-    val move = responseDto.toDomain(game, character, hitboxUrlMap = emptyMap()).single()
+    val move = listOf(this).toMoveList(game, character).single()
     return move
 }
 
@@ -133,23 +168,41 @@ private fun movesOf(
 
 private object MizuumiMoveSource {
     val ak = Character(
-        id = "akiha_tohno",
+        id = CharacterId("Akiha Tohno"),
         displayName = "Akiha Tohno",
         remoteQueryId = "Akiha Tohno",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Akiha_Tohno",
     )
     val dn = Character(
-        id = "dead_apostle_noel",
+        id = CharacterId("Dead Apostle Noel"),
         displayName = "Dead Apostle Noel",
         remoteQueryId = "Dead Apostle Noel",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Dead_Apostle_Noel",
     )
     val va = Character(
-        id = "vatista",
+        id = CharacterId("Vatista"),
         displayName = "Vatista",
         remoteQueryId = "Vatista",
         wikiUrl = "https://mizuumi.wiki/w/Under_Night_In-Birth/UNI2/Vatista",
     )
+    val akatsuki = Character(
+        id = CharacterId("Akatsuki"),
+        displayName = "Akatsuki",
+        remoteQueryId = "Akatsuki",
+        wikiUrl = "https://mizuumi.wiki/w/Under_Night_In-Birth/UNI2/Akatsuki",
+    )
+    val leiLei = Character(
+        id = CharacterId("Lei-Lei"),
+        displayName = "Lei-Lei",
+        remoteQueryId = "Lei-Lei",
+        wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior/Lei-Lei",
+    )
+
+    val ak5bClose = MoveDto(moveId = "ak_5b_close", chara = "Akatsuki", input = "5B")
+    val ak5bFar = MoveDto(moveId = "ak_5b_far", chara = "Akatsuki", input = "5B")
+    val le214hp = MoveDto(moveId = "LE_214HP", chara = "Lei-Lei", input = "214HP")
+    val le236hp = MoveDto(moveId = "LE_236HP", chara = "Lei-Lei", input = "236HP")
+    val tenraihaAnvil = MoveDto(moveId = "tenraiha_anvil", chara = "Lei-Lei", input = "LK,HK,MP,MP,8")
 
     val ak214a = MoveDto(
         moveId = "ak_214a",

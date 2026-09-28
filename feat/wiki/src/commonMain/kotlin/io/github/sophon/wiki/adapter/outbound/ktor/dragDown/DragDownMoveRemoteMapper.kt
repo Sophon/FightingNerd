@@ -3,8 +3,8 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dragDown
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.toClickable
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2MoveProperties
 
 internal fun List<DragDownMoveResponseDto>.toDomain(
@@ -25,9 +25,8 @@ private fun DragDownMoveResponseDto.toDomain(
     val input = formInput()
 
     val move = Move(
-        id = "${character.id}_$input",
-        characterId = character.id,
         input = input,
+        remoteId = attackID,
         name = attack,
         startup = startup,
         active = totalActive,

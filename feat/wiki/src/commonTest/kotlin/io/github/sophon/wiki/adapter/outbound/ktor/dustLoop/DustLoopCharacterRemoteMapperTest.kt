@@ -3,56 +3,18 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dustLoop
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
 import kotlin.test.Test
 
 class DustLoopCharacterRemoteMapperTest {
 
     //region id
     @Test
-    fun `standard name becomes the id`() {
-        //given
-        val dto = DustLoopCharacterSource.magneto
-        val expected = "magneto"
-
-        //when
-        val result = dto.toCharacter(Game.MTFS)
-
-        //then
-        assertThat(result.id).isEqualTo(expected)
-    }
-
-    @Test
-    fun `id joins words by underscore`() {
+    fun `id is the query name - the service normalizes it`() {
         //given
         val dto = DustLoopCharacterSource.jam
-        val expected = "jam_kuradoberi"
-
-        //when
-        val result = dto.toCharacter(Game.GGST)
-
-        //then
-        assertThat(result.id).isEqualTo(expected)
-    }
-
-    @Test
-    fun `id drops dots`() {
-        //given
-        val dto = DustLoopCharacterSource.aba
-        val expected = "aba"
-
-        //when
-        val result = dto.toCharacter(Game.GGST)
-
-        //then
-        assertThat(result.id).isEqualTo(expected)
-    }
-
-    @Test
-    fun `id drops hyphens`() {
-        //given
-        val dto = DustLoopCharacterSource.jacko
-        val expected = "jacko"
+        val expected = CharacterId("Jam Kuradoberi")
 
         //when
         val result = dto.toCharacter(Game.GGST)
@@ -338,26 +300,26 @@ class DustLoopCharacterRemoteMapperTest {
     fun `GGST alternate mode is dropped`() {
         //given
         val characterList = listOf(DustLoopCharacterSource.aba, DustLoopCharacterSource.abaJealousRage)
-        val expected = listOf("aba")
+        val expected = listOf("A.B.A")
 
         //when
         val result = characterList.toCharacterList(Game.GGST)
 
         //then
-        assertThat(result.map { it.id }).isEqualTo(expected)
+        assertThat(result.map { it.displayName }).isEqualTo(expected)
     }
 
     @Test
     fun `other games keep names with parentheses`() {
         //given
         val characterList = listOf(DustLoopCharacterSource.gokuSuperSaiyan)
-        val expected = listOf("goku_(super_saiyan)")
+        val expected = listOf("Goku (Super Saiyan)")
 
         //when
         val result = characterList.toCharacterList(Game.DBFZ)
 
         //then
-        assertThat(result.map { it.id }).isEqualTo(expected)
+        assertThat(result.map { it.displayName }).isEqualTo(expected)
     }
     //endregion
 }

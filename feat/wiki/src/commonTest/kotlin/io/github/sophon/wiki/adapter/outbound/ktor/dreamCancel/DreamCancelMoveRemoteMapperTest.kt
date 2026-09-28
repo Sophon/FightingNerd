@@ -3,7 +3,8 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.CharacterId
+import io.github.sophon.wiki.application.domain.model.Move
 import kotlin.test.Test
 
 class DreamCancelMoveRemoteMapperTest {
@@ -12,7 +13,7 @@ class DreamCancelMoveRemoteMapperTest {
     fun `bulk table is grouped into characters by chara`() {
         //given
         val responseDto = listOf(DreamCancelMoveSource.aurora, DreamCancelMoveSource.byeByeBoo).toResponseDto()
-        val expected = listOf("b_jenet" to 2)
+        val expected = listOf(CharacterId("B.Jenet") to 2)
 
         //when
         val result = responseDto.toDomainAll(Game.KoFXV, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
@@ -36,29 +37,42 @@ class DreamCancelMoveRemoteMapperTest {
 
     //region input
     @Test
-    fun `input keeps the wiki notation`() {
+    fun `input is the move ID without the character prefix`() {
         //given
-        val dto = DreamCancelMoveSource.byeByeBoo
-        val expected = "(close) 4/6C"
+        val dtoList = listOf(DreamCancelMoveSource.aurora, DreamCancelMoveSource.byeByeBoo)
+        val expected = listOf("236236k", "cthrow")
 
         //when
-        val result = dto.toMove()
+        val result = dtoList.toMoveList()
 
         //then
-        assertThat(result.input).isEqualTo(expected)
+        assertThat(result.map { it.input }).isEqualTo(expected)
     }
 
     @Test
-    fun `no aliases are created`() {
+    fun `remote ID is the move ID`() {
         //given
-        val dto = DreamCancelMoveSource.byeByeBoo
-        val expected = emptyList<String>()
+        val dtoList = listOf(DreamCancelMoveSource.aurora, DreamCancelMoveSource.byeByeBoo)
+        val expected = listOf("bjenet_236236k", "bjenet_cthrow")
 
         //when
-        val result = dto.toMove()
+        val result = dtoList.toMoveList()
 
         //then
-        assertThat(result.aliases).isEqualTo(expected)
+        assertThat(result.map { it.remoteId }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `wiki input is kept as an alias`() {
+        //given
+        val dtoList = listOf(DreamCancelMoveSource.aurora, DreamCancelMoveSource.byeByeBoo)
+        val expected = listOf(listOf("236236B/D"), listOf("(close) 4/6C"))
+
+        //when
+        val result = dtoList.toMoveList()
+
+        //then
+        assertThat(result.map { it.aliases }).isEqualTo(expected)
     }
     //endregion
 }
@@ -68,12 +82,18 @@ private fun List<MoveDto>.toResponseDto(): DreamCancelMoveListResponseDto {
     return responseDto
 }
 
-private fun MoveDto.toMove(): Move {
-    val (_, moveList) = listOf(this)
-        .toResponseDto()
+/**
+ * One character's moves - the bulk mapper groups them into that character.
+ */
+private fun List<MoveDto>.toMoveList(): List<Move> {
+    val (_, moveList) = toResponseDto()
         .toDomainAll(Game.KoFXV, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
         .single()
-    val move = moveList.single()
+    return moveList
+}
+
+private fun MoveDto.toMove(): Move {
+    val move = listOf(this).toMoveList().single()
     return move
 }
 

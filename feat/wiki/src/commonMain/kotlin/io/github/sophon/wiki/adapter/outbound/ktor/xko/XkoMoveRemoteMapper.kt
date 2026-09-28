@@ -1,8 +1,8 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
 import io.github.sophon.core.util.orDash
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Move
 
 /**
  * Bulk - the whole move bucket, grouped into characters by page.
@@ -13,21 +13,19 @@ internal fun XkoMoveListResponseDto.toDomainAll(): List<Pair<Character, List<Mov
         .groupBy { dto -> dto.pageName }
         .map { (pageName, dtoList) ->
             val character = pageName.toCharacter()
-            val moveList = dtoList.map { dto -> dto.toDomain(character) }
+            val moveList = dtoList.map { dto -> dto.toDomain() }
             character to moveList
         }
     return characterWithMovesList
 }
 
 /**
- * Only cleaning - the input, the id and the aliases are normalized by the service.
+ * Only cleaning - the input and the aliases are normalized by the service.
  */
-private fun MoveDto.toDomain(character: Character): Move {
+private fun MoveDto.toDomain(): Move {
     val cleanedInput = input.orDash()
 
     val move = Move(
-        characterId = character.id,
-        id = "${character.id}_$cleanedInput",
         input = cleanedInput,
         damage = damage?.ifEmpty { null },
         startup = startup,

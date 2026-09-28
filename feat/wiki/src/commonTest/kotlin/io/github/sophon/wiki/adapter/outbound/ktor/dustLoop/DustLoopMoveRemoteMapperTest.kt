@@ -2,9 +2,11 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dustLoop
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
+import io.github.sophon.wiki.application.domain.model.Move
 import kotlin.test.Test
 
 class DustLoopMoveRemoteMapperTest {
@@ -63,6 +65,18 @@ class DustLoopMoveRemoteMapperTest {
         //then
         assertThat(result.aliases).isEqualTo(expected)
     }
+
+    @Test
+    fun `remote ID is empty - DustLoop has no move ID`() {
+        //given
+        val dto = DustLoopMoveSource.closeSlash
+
+        //when
+        val result = dto.toMove(Game.GGST, DustLoopMoveSource.sol)
+
+        //then
+        assertThat(result.remoteId).isNull()
+    }
     //endregion
 
     @Test
@@ -98,19 +112,19 @@ private fun MoveDto.toMove(
 
 private object DustLoopMoveSource {
     val sol = Character(
-        id = "sol_badguy",
+        id = CharacterId("Sol Badguy"),
         displayName = "Sol Badguy",
         remoteQueryId = "Sol Badguy",
         wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy",
     )
     val platinum = Character(
-        id = "platinum_the_trinity",
+        id = CharacterId("Platinum the Trinity"),
         displayName = "Platinum the Trinity",
         remoteQueryId = "Platinum the Trinity",
         wikiUrl = "https://www.dustloop.com/w/BBCF/Platinum_the_Trinity",
     )
     val makoto = Character(
-        id = "makoto_nanaya",
+        id = CharacterId("Makoto Nanaya"),
         displayName = "Makoto Nanaya",
         remoteQueryId = "Makoto Nanaya",
         wikiUrl = "https://www.dustloop.com/w/BBCF/Makoto_Nanaya",

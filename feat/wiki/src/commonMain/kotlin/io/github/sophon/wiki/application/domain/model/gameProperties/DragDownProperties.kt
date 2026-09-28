@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.application.domain.model.gameProperties
 
-import io.github.sophon.core.wiki.model.CharacterGameProperties
-import io.github.sophon.core.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
+import io.github.sophon.wiki.application.domain.model.MoveGameProperties
 import kotlinx.serialization.Serializable
 
 @Serializable

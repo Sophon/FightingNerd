@@ -2,8 +2,9 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dragDown
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2MoveProperties
 import kotlin.test.Test
 
@@ -14,8 +15,7 @@ class DragDownMoveRemoteMapperTest {
         val dto = DragDownMoveSource.olympiaBair
         val character = DragDownCharacterSource.olympia
         val expected = Move(
-            id = "olympia_bair",
-            characterId = character.id,
+            remoteId = dto.attackID,
             startup = dto.startup,
             active = "6-17",
             recovery = dto.endlag,
@@ -64,8 +64,7 @@ class DragDownMoveRemoteMapperTest {
         val dto = DragDownMoveSource.forsburnDSpecialEmptyInhale
         val character = DragDownCharacterSource.forsburn
         val expected = Move(
-            id = "forsburn_dspecialemptyinhale",
-            characterId = character.id,
+            remoteId = dto.attackID,
             startup = dto.startup,
             active = "N/A",
             recovery = "N/A",
@@ -115,8 +114,7 @@ class DragDownMoveRemoteMapperTest {
         val dto = DragDownMoveSource.rannoUspecialDivekick
         val character = DragDownCharacterSource.ranno
         val expected = Move(
-            id = "ranno_uspecialdivekick",
-            characterId = character.id,
+            remoteId = dto.attackID,
             startup = dto.startup,
             active = dto.totalActive,
             recovery = dto.endlag,
@@ -167,8 +165,7 @@ class DragDownMoveRemoteMapperTest {
         val dto = DragDownMoveSource.olympiaDSpecialFADC
         val character = DragDownCharacterSource.olympia
         val expected = Move(
-            id = "olympia_dspecialfadc",
-            characterId = character.id,
+            remoteId = dto.attackID,
             startup = dto.startup,
             active = "N/A",
             recovery = "N/A",
@@ -399,19 +396,19 @@ private object DragDownMoveSource {
 
 private object DragDownCharacterSource {
     val olympia = Character(
-        id = "olympia",
+        id = CharacterId("Olympia"),
         displayName = "Olympia",
         remoteQueryId = "Olympia",
         wikiUrl = "https://dragdown.wiki/wiki/RoA2/Olympia",
     )
     val forsburn = Character(
-        id = "forsburn",
+        id = CharacterId("Forsburn"),
         displayName = "Forsburn",
         remoteQueryId = "Forsburn",
         wikiUrl = "https://dragdown.wiki/wiki/RoA2/Forsburn",
     )
     val ranno = Character(
-        id = "ranno",
+        id = CharacterId("Ranno"),
         displayName = "Ranno",
         remoteQueryId = "Ranno",
         wikiUrl = "https://dragdown.wiki/wiki/RoA2/Ranno",

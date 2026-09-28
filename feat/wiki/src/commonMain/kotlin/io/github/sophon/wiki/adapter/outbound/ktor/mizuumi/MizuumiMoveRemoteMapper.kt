@@ -3,10 +3,11 @@ package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.decodeHtmlEntities
-import io.github.sophon.core.util.orDash
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.adapter.outbound.ktor.findMoveIdPrefix
+import io.github.sophon.wiki.adapter.outbound.ktor.removeMoveIdPrefix
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Move
+import io.github.sophon.wiki.application.domain.model.MoveGameProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.MBTLMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMoveProperties
@@ -24,7 +25,9 @@ internal fun MizuumiMoveListResponseDto.toDomainAll(
         .filter { (_, moveTitleList) -> moveTitleList.size >= MIN_MOVES_PER_CHARACTER }
         .map { (chara, moveTitleList) ->
             val character = chara.toDomain(game, iconUrlMap)
-            val moveList = moveTitleList.map { moveTitle -> moveTitle.title.toDomain(game, character, hitboxUrlMap) }
+            val moveList = moveTitleList
+                .map { moveTitle -> moveTitle.title }
+                .toDomain(game, character, hitboxUrlMap)
             character to moveList
         }
     return characterWithMovesList
@@ -38,26 +41,40 @@ internal fun MizuumiMoveListResponseDto.toDomain(
     character: Character,
     hitboxUrlMap: Map<String, String>,
 ): List<Move> {
-    val moveList = cargoquery.map { moveTitle -> moveTitle.title.toDomain(game, character, hitboxUrlMap) }
+    val moveList = cargoquery
+        .map { moveTitle -> moveTitle.title }
+        .toDomain(game, character, hitboxUrlMap)
+    return moveList
+}
+
+/**
+ * One character's moves - the move ID prefix is that character's.
+ */
+private fun List<MoveDto>.toDomain(
+    game: Game,
+    character: Character,
+    hitboxUrlMap: Map<String, String>,
+): List<Move> {
+    val moveIdPrefix = map { dto -> dto.moveId }.findMoveIdPrefix()
+    val moveList = map { dto -> dto.toDomain(game, character, moveIdPrefix, hitboxUrlMap) }
     return moveList
 }
 
 /**
  * Only cleaning - input normalization and aliases are done by the service.
+ * The input comes from the move ID - the wiki's `input` doesn't tell versions apart (`ak_5b_close` / `ak_5b_far`
+ * are both `5B`), so it's kept as an alias.
  */
 private fun MoveDto.toDomain(
     game: Game,
     character: Character,
+    moveIdPrefix: String,
     hitboxUrlMap: Map<String, String>,
 ): Move {
-    val cleanedInput = input
-        .orDash()
-        .decodeHtmlEntities()
-
     val move = Move(
-        characterId = character.id,
-        id = moveId,
-        input = cleanedInput,
+        input = moveId.removeMoveIdPrefix(moveIdPrefix),
+        remoteId = moveId,
+        aliases = listOfNotNull(input?.decodeHtmlEntities()?.takeIf { it.isNotBlank() }),
         name = name?.cleanHtmlOrNull(),
         damage = (damage?.cleanHtmlOrNull() ?: totaldmg),
         startup = startup?.cleanHtmlOrNull(),

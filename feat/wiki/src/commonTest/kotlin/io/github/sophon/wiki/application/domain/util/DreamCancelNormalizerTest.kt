@@ -2,7 +2,7 @@ package io.github.sophon.wiki.application.domain.util
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Move
 import kotlin.test.Test
 
 class DreamCancelNormalizerTest {
@@ -11,7 +11,7 @@ class DreamCancelNormalizerTest {
     fun `button alternatives expand into aliases`() {
         //given
         val move = DreamCancelMoveSource.aurora
-        val expected = listOf("236236b", "236236d")
+        val expected = listOf("236236b/d", "236236b", "236236d")
 
         //when
         val result = move.normalizeDreamCancel()
@@ -21,32 +21,46 @@ class DreamCancelNormalizerTest {
     }
 
     @Test
-    fun `close input becomes c`() {
+    fun `close direction alternatives expand into close aliases`() {
         //given
         val move = DreamCancelMoveSource.byeByeBoo
-        val expected = "c4/6c"
+        val expected = listOf(
+            "cl4/6c",
+            "cl4c",
+            "cl6c",
+            "cl.4c",
+            "c.4c",
+            "c4c",
+            "cl.6c",
+            "c.6c",
+            "c6c",
+        )
 
         //when
         val result = move.normalizeDreamCancel()
 
         //then
-        assertThat(result.input).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expected)
     }
 
     @Test
-    fun `close direction alternatives expand into close aliases`() {
+    fun `close D and Blowback get different inputs`() {
         //given
-        val move = DreamCancelMoveSource.byeByeBoo
-        val expected = listOf(
-            "c4c",
-            "c6c",
-            "c.4c",
-            "cl4c",
-            "cl.4c",
-            "c.6c",
-            "cl6c",
-            "cl.6c",
-        )
+        val moveList = listOf(DreamCancelMoveSource.closeD, DreamCancelMoveSource.blowback)
+        val expected = listOf("cld", "cd")
+
+        //when
+        val result = moveList.map { move -> move.normalizeDreamCancel() }
+
+        //then
+        assertThat(result.map { it.input }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `close input gets the other close spellings as aliases`() {
+        //given
+        val move = DreamCancelMoveSource.closeD
+        val expected = listOf("cl.d", "c.d", "cd")
 
         //when
         val result = move.normalizeDreamCancel()
@@ -57,24 +71,27 @@ class DreamCancelNormalizerTest {
 }
 
 /**
- * Moves as the DreamCancel adapter maps them - wiki notation, no aliases yet.
+ * Moves as the DreamCancel adapter maps them - the input from the move ID, the wiki notation as the only alias.
  */
 private object DreamCancelMoveSource {
-    val aurora = bJenetMove(id = "bjenet_236236k", name = "Aurora", input = "236236B/D")
-    val byeByeBoo = bJenetMove(id = "bjenet_cthrow", name = "Bye-Bye Boo", input = "(close) 4/6C")
+    val aurora = dreamCancelMove(remoteId = "bjenet_236236k", input = "236236k", wikiInput = "236236B/D", name = "Aurora")
+    val byeByeBoo = dreamCancelMove(remoteId = "bjenet_cthrow", input = "cthrow", wikiInput = "(close) 4/6C", name = "Bye-Bye Boo")
+    val closeD = dreamCancelMove(remoteId = "kyo_cld", input = "cld", wikiInput = "c.D", name = "close D")
+    val blowback = dreamCancelMove(remoteId = "kyo_cd", input = "cd", wikiInput = "CD", name = "Blowback")
 }
 
-private fun bJenetMove(
-    id: String,
-    name: String,
+private fun dreamCancelMove(
+    remoteId: String,
     input: String,
+    wikiInput: String,
+    name: String,
 ): Move {
     val move = Move(
-        characterId = "b_jenet",
-        id = id,
-        name = name,
         input = input,
-        urls = Move.Urls(wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV/B.Jenet"),
+        remoteId = remoteId,
+        aliases = listOf(wikiInput),
+        name = name,
+        urls = Move.Urls(wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV"),
     )
     return move
 }

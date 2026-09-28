@@ -3,8 +3,9 @@ package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.CharacterGameProperties
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
+import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2CharProperties
 
 /**
@@ -14,14 +15,14 @@ internal fun String.toDomain(
     game: Game,
     iconUrlMap: Map<String, String>,
 ): Character {
-    val idName = this.cleanHtml().lowercase().replace(" ", "_")
+    val iconName = this.cleanHtml().lowercase().replace(" ", "_")
     val iconKeys = when (game) {
-        Game.MBTL -> listOf(idName.substringBefore("_"), idName.substringAfterLast("_"))
-        else -> listOf(idName)
+        Game.MBTL -> listOf(iconName.substringBefore("_"), iconName.substringAfterLast("_"))
+        else -> listOf(iconName)
     }
 
     val character = Character(
-        id = idName,
+        id = CharacterId(this),
         displayName = this.cleanHtml(),
         remoteQueryId = this,
         wikiUrl = "${game.wikiUrl}/${this.replace(" ", "_")}",
@@ -42,7 +43,7 @@ internal fun MizuumiCharacterListResponseDto.toDomain(
         val dto = characterTitle.title
 
         val character = Character(
-            id = dto.chara.lowercase(),
+            id = CharacterId(dto.chara),
             displayName = dto.chara,
             remoteQueryId = dto.chara,
             wikiUrl = "${game.wikiUrl}/${dto.chara}",
