@@ -12,6 +12,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wiki.application.domain.model.RefreshEvent
 import io.github.sophon.wiki.application.domain.model.WikiError
 import io.github.sophon.wiki.application.domain.model.toWikiError
+import io.github.sophon.wiki.application.domain.util.normalizeMizuumi
 import io.github.sophon.wiki.application.domain.util.normalizeT8
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
 import io.github.sophon.wiki.application.port.outbound.FetchGameDataPort
@@ -85,6 +86,7 @@ internal class RefreshDataService(
     ): List<Move> {
         val normalizedList = when (game) {
             Game.Tekken8 -> this.map { move -> move.normalizeT8() }
+            Game.MBTL, Game.Uni2, Game.VSAV -> this.map { move -> move.normalizeMizuumi() }
             else -> this
         }
         return normalizedList

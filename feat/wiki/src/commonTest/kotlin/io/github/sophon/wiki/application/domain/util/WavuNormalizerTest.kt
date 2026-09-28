@@ -13,7 +13,7 @@ class WavuNormalizerTest {
     @Test
     fun `id is lowercased with words joined by underscore`() {
         //given
-        val move = MoveSource.ffn2
+        val move = WavuMoveSource.ffn2
         val expected = "armor_king-ffn2"
 
         //when
@@ -26,7 +26,7 @@ class WavuNormalizerTest {
     @Test
     fun `id notation is cleaned`() {
         //given
-        val move = MoveSource.df2
+        val move = WavuMoveSource.df2
         val expected = "jack-8-df2"
 
         //when
@@ -41,7 +41,7 @@ class WavuNormalizerTest {
     @Test
     fun `input alone produces no aliases`() {
         //given
-        val move = MoveSource.konvictKick
+        val move = WavuMoveSource.konvictKick
         val expected = emptyList<String>()
 
         //when
@@ -54,7 +54,7 @@ class WavuNormalizerTest {
     @Test
     fun `multi-word alias keeps its space`() {
         //given
-        val move = MoveSource.shiningWizard
+        val move = WavuMoveSource.shiningWizard
         val expected = listOf("shining wizard")
 
         //when
@@ -67,7 +67,7 @@ class WavuNormalizerTest {
     @Test
     fun `aliases are lowercased`() {
         //given
-        val move = MoveSource.cancans
+        val move = WavuMoveSource.cancans
         val expected = listOf("can cans", "cancan")
 
         //when
@@ -80,7 +80,7 @@ class WavuNormalizerTest {
     @Test
     fun `crouch dash gets cd variants`() {
         //given
-        val move = MoveSource.whf
+        val move = WavuMoveSource.whf
         val expected = listOf("whf", "cd.2", "cd2", "cddf2")
 
         //when
@@ -93,7 +93,7 @@ class WavuNormalizerTest {
     @Test
     fun `just-frame crouch dash gets cd variants`() {
         //given
-        val move = MoveSource.ewhf
+        val move = WavuMoveSource.ewhf
         val expected = listOf("ewhf", "electric", "ecd2", "cd#2", "fndf#2", "cddf#2")
 
         //when
@@ -106,7 +106,7 @@ class WavuNormalizerTest {
     @Test
     fun `motion aliases are cleaned`() {
         //given
-        val move = MoveSource.wgk
+        val move = WavuMoveSource.wgk
         val expected = listOf(
             "cd.3",
             "cd3",
@@ -125,7 +125,7 @@ class WavuNormalizerTest {
     @Test
     fun `sidestep gets a dotless variant`() {
         //given
-        val move = MoveSource.ss4
+        val move = WavuMoveSource.ss4
         val expected = listOf("ss4")
 
         //when
@@ -138,7 +138,7 @@ class WavuNormalizerTest {
     @Test
     fun `heat smash gets its nicknames`() {
         //given
-        val move = MoveSource.heatSmash
+        val move = WavuMoveSource.heatSmash
         val expected = listOf("hs", "heatsmash")
 
         //when
@@ -151,7 +151,7 @@ class WavuNormalizerTest {
     @Test
     fun `hfc gets a fc variant`() {
         //given
-        val move = MoveSource.yakouga
+        val move = WavuMoveSource.yakouga
         val expected = listOf("hfcdb1+2", "fcdb1+2", "fc1+2")
 
         //when
@@ -164,7 +164,7 @@ class WavuNormalizerTest {
     @Test
     fun `three-letter stances get dotless variants`() {
         //given
-        val move = MoveSource.unsd4
+        val move = WavuMoveSource.unsd4
         val expected = listOf("fn4", "wds.4", "wds4", "unsd4")
 
         //when
@@ -179,7 +179,7 @@ class WavuNormalizerTest {
     @Test
     fun `stance is detected from input`() {
         //given
-        val move = MoveSource.bad4
+        val move = WavuMoveSource.bad4
         val expected = "BAD"
 
         //when
@@ -192,7 +192,7 @@ class WavuNormalizerTest {
     @Test
     fun `input without stance has none`() {
         //given
-        val move = MoveSource.matterhorn
+        val move = WavuMoveSource.matterhorn
 
         //when
         val result = move.normalizeT8()
@@ -204,7 +204,7 @@ class WavuNormalizerTest {
     @Test
     fun `otg is not a stance`() {
         //given
-        val move = MoveSource.stomp
+        val move = WavuMoveSource.stomp
 
         //when
         val result = move.normalizeT8()
@@ -216,7 +216,7 @@ class WavuNormalizerTest {
     @Test
     fun `backturn is a stance`() {
         //given
-        val move = MoveSource.moonsault
+        val move = WavuMoveSource.moonsault
         val expected = "BT"
 
         //when
@@ -229,7 +229,7 @@ class WavuNormalizerTest {
     @Test
     fun `stance is detected from aliases`() {
         //given
-        val move = MoveSource.manjiBackfistShredder
+        val move = WavuMoveSource.manjiBackfistShredder
         val expected = "BT"
 
         //when
@@ -244,7 +244,7 @@ class WavuNormalizerTest {
     @Test
     fun `heat is detected from aliases`() {
         //given
-        val move = MoveSource.tempestBlaster
+        val move = WavuMoveSource.tempestBlaster
         val expected = true
 
         //when
@@ -259,7 +259,7 @@ class WavuNormalizerTest {
     @Test
     fun `heat crouch dash input is cleaned`() {
         //given
-        val move = MoveSource.heatMist
+        val move = WavuMoveSource.heatMist
         val expectedInput = "h.cd.1+2"
         val expectedAliases = listOf("h.bad.f1+2", "h.cd1+2")
 
@@ -274,7 +274,7 @@ class WavuNormalizerTest {
     @Test
     fun `input assembled from parents is cleaned`() {
         //given
-        val move = MoveSource.secondStomp
+        val move = WavuMoveSource.secondStomp
         val expected = "otg.d44"
 
         //when
@@ -289,7 +289,7 @@ class WavuNormalizerTest {
     @Test
     fun `simple move only gets its id normalized`() {
         //given
-        val move = MoveSource.jab
+        val move = WavuMoveSource.jab
         val expected = move.copy(id = "armor_king-1")
 
         //when
@@ -302,7 +302,7 @@ class WavuNormalizerTest {
     @Test
     fun `heat engager note makes a heat move`() {
         //given
-        val move = MoveSource.darkElbowHook
+        val move = WavuMoveSource.darkElbowHook
         val expected = move.copy(
             id = "armor_king-f21",
             input = "f21",
@@ -322,7 +322,7 @@ class WavuNormalizerTest {
     @Test
     fun `stance move gets stance and dotless alias`() {
         //given
-        val move = MoveSource.shadowPress
+        val move = WavuMoveSource.shadowPress
         val expected = move.copy(
             id = "armor_king-bad.db1+2",
             input = "bad.db1+2",
@@ -343,7 +343,7 @@ class WavuNormalizerTest {
     @Test
     fun `running input becomes wr and drops the matching alias`() {
         //given
-        val move = MoveSource.akSW
+        val move = WavuMoveSource.akSW
         val expected = move.copy(
             id = "armor_king-wr2+4",
             input = "wr2+4",
@@ -365,7 +365,7 @@ private val Move.t8Properties: T8Properties?
 /**
  * Moves as the Wavu adapter maps them - raw notation, heat and stance not derived yet.
  */
-private object MoveSource {
+private object WavuMoveSource {
     val ffn2 = Move(
         characterId = "armor-king",
         id = "Armor King-f,f,n,2",

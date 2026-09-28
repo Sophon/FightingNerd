@@ -20,7 +20,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `no alias and no alt means no aliases`() {
         //given
-        val move = MoveSource.konvictKick
+        val move = WavuMoveSource.konvictKick
         val expected = emptyList<String>()
 
         //when
@@ -33,7 +33,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `multi-word alias stays one entry`() {
         //given
-        val move = MoveSource.shiningWizard
+        val move = WavuMoveSource.shiningWizard
         val expected = listOf("Shining Wizard")
 
         //when
@@ -46,7 +46,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `word containing or is not split`() {
         //given
-        val move = MoveSource.matterhorn
+        val move = WavuMoveSource.matterhorn
         val expected = listOf("Matterhorn")
 
         //when
@@ -59,7 +59,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `html alias list is split into entries`() {
         //given
-        val move = MoveSource.cancans
+        val move = WavuMoveSource.cancans
         val expected = listOf("Can Cans", "Cancan")
 
         //when
@@ -72,7 +72,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `aliases keep the wiki notation`() {
         //given
-        val move = MoveSource.whf
+        val move = WavuMoveSource.whf
         val expected = listOf("WHF", "f,n,d,df+2")
 
         //when
@@ -85,7 +85,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `alt entries follow alias entries`() {
         //given
-        val move = MoveSource.unsd4
+        val move = WavuMoveSource.unsd4
         val expected = listOf("f,n,4", "WDS.4")
 
         //when
@@ -100,7 +100,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `wiki url points to the move on the character movelist`() {
         //given
-        val move = MoveSource.matterhorn
+        val move = WavuMoveSource.matterhorn
         val expected = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4"
         val lili = Character(
             id = "Lili",
@@ -121,7 +121,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `html notes become lines with crushes appended`() {
         //given
-        val move = MoveSource.matterhorn
+        val move = WavuMoveSource.matterhorn
         val expected = listOf(
             "Tornado",
             "Evasive, can go under some mids and highs",
@@ -140,7 +140,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `child move is completed from its parent`() {
         // given
-        val moveList = listOf(MoveSource.stomp, MoveSource.secondStomp)
+        val moveList = listOf(WavuMoveSource.stomp, WavuMoveSource.secondStomp)
         val expectedInput = "OTG.d+4,4"
         val expectedStartup = "i19~21 (i18~21)"
         val expectedDamage = "18, 8"
@@ -346,7 +346,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `maps move with video`() {
         // given
-        val moveDto = MoveSource.shadowPress
+        val moveDto = WavuMoveSource.shadowPress
         val responseDto = MoveListResponseDto(
             cargoQuery = listOf(
                 MoveListResponseDto.Title(moveDto)
@@ -393,7 +393,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `maps running throw`() {
         // given
-        val moveDto = MoveSource.akSW
+        val moveDto = WavuMoveSource.akSW
         val responseDto = MoveListResponseDto(
             cargoQuery = listOf(
                 MoveListResponseDto.Title(moveDto)
@@ -444,7 +444,7 @@ class MoveRemoteMapperTest {
     @Test
     fun `detects throw`() {
         // given
-        val move = MoveSource.shiningWizard
+        val move = WavuMoveSource.shiningWizard
         val expected = true
 
         // when
@@ -467,7 +467,7 @@ private fun MoveDto.toMove(character: Character): Move {
     return move
 }
 
-private object MoveSource {
+private object WavuMoveSource {
     val konvictKick = MoveDto(
         id = "King-f,F+4",
         name = "Konvict Kick",

@@ -1,5 +1,7 @@
 package io.github.sophon.wiki
 
+import io.github.sophon.wiki.adapter.outbound.ktor.KtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.mizuumi.MizuumiKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.memory.InMemoryWikiConfigAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightCharacterAdapter
@@ -53,7 +55,9 @@ fun wikiModule(): Module = module {
         bind<LoadWikiConfigPort>()
         bind<SaveWikiConfigPort>()
     }
-    singleOf(::WavuKtorGameDataAdapter).bind<FetchGameDataPort>()
+    singleOf(::KtorGameDataAdapter).bind<FetchGameDataPort>()
+    singleOf(::WavuKtorGameDataAdapter)
+    singleOf(::MizuumiKtorGameDataAdapter)
     singleOf(::SqlDelightCharacterAdapter) {
         bind<LoadCharacterListPort>()
         bind<SaveCharacterMoveListPort>()

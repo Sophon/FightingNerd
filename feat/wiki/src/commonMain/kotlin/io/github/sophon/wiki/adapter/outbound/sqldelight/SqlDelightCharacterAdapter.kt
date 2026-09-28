@@ -19,7 +19,7 @@ internal class SqlDelightCharacterAdapter :
     DeleteCharacterListPort {
 
     override fun subscribe(game: Game): Flow<List<Character>> {
-        Napier.w(tag = TAG) { "subscribe(${game.id}) - not implemented" }
+//        Napier.w(tag = TAG) { "subscribe(${game.id}) - not implemented" }
         return flowOf(emptyList())
     }
 
@@ -28,12 +28,12 @@ internal class SqlDelightCharacterAdapter :
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<DataError.Local> {
-        Napier.w(tag = TAG) { "save(${game.id}, ${character.id}, ${moveList.size} moves) - not implemented" }
+//        Napier.w(tag = TAG) { "save(${game.id}, ${character.id}, ${moveList.size} moves) - not implemented" }
         return Result.Success(Unit)
     }
 
     override suspend fun delete(game: Game): EmptyResult<DataError.Local> {
-        Napier.w(tag = TAG) { "delete(${game.id}) - not implemented" }
+//        Napier.w(tag = TAG) { "delete(${game.id}) - not implemented" }
         return Result.Success(Unit)
     }
 
