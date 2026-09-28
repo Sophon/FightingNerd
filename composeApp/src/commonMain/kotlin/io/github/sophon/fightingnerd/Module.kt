@@ -4,6 +4,7 @@ import io.github.sophon.core.coreModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
 import io.github.sophon.fightingnerd.core.coreModule
 import io.github.sophon.fightingnerd.feat.featureModule
+import io.github.sophon.wiki.wikiModule
 import io.github.sophon.wikiSuperCombo.integration.superComboModule
 import io.github.sophon.wikidragdown.integration.dragDownModule
 import io.github.sophon.wikidustloop.integration.dustLoopModule
@@ -28,6 +29,7 @@ internal fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
         dustLoopModule(),
         mizuumiModule(),
         dragDownModule(),
+        wikiModule(),
 
         featureModule(),
         coreModule(),

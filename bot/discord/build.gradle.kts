@@ -34,6 +34,8 @@ kotlin {
             implementation(project(":feat:ewgf"))
             implementation(project(":feat:stats"))
 
+            implementation(project(":feat:wiki"))
+
             implementation(libs.napier)
             implementation(libs.kord)
             implementation(libs.kotlin.date.time)
