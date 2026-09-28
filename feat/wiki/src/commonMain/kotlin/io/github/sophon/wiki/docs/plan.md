@@ -13,6 +13,7 @@
   - ktor - REST requests from wikis
   - sql - store frame data of moves and characters
 - SQL
+  - entity relationships - [database.mmd](database.mmd)
   - one database for all wikis
   - common (character + move)
     - entity

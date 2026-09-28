@@ -1,0 +1,70 @@
+erDiagram
+    character ||--o{ move : "has"
+    character ||--o{ character_alias : "is found by"
+    character ||--o{ move_alias : "scopes"
+    move ||--o{ move_alias : "is found by"
+    character ||--o| game_character : "extends, one table per game"
+    move ||--o| game_move : "extends, one table per game"
+
+    character {
+        INTEGER id PK "surrogate, never leaves the adapter"
+        TEXT game UK "Game.id, UNIQUE (game, natural_id)"
+        TEXT natural_id UK "CharacterId, e.g. armor_king"
+        TEXT remote_query_id
+        TEXT display_name
+        TEXT wiki_url
+        TEXT icon_id
+        TEXT icon_url
+        TEXT banner_url
+        TEXT hp
+        TEXT umo "JSON string list"
+        INTEGER strike_count "deleted at 5"
+        INTEGER updated_at "epoch millis of the last save"
+    }
+    character_alias {
+        TEXT game PK "PRIMARY KEY (game, alias)"
+        TEXT alias PK "lowercased name or alias, first saved wins"
+        INTEGER character_id FK "ON DELETE CASCADE, indexed"
+    }
+    move {
+        INTEGER id PK "surrogate, never leaves the adapter"
+        INTEGER character_id FK, UK "ON DELETE CASCADE, UNIQUE (character_id, input) is also the FK index"
+        TEXT input UK "normalized, the move's identity"
+        INTEGER position "wiki order"
+        TEXT name
+        TEXT damage
+        TEXT startup
+        TEXT on_block
+        TEXT on_hit
+        TEXT on_ch
+        TEXT active
+        TEXT cancel
+        TEXT recovery
+        TEXT guard
+        TEXT invulnerability
+        TEXT type
+        INTEGER is_throw
+        TEXT notes "JSON string list"
+        TEXT wiki_url
+        TEXT video_id
+        TEXT video_url
+        TEXT hitbox_image_list "JSON string list"
+        TEXT move_image_list "JSON string list"
+        INTEGER strike_count "deleted at 5"
+    }
+    move_alias {
+        INTEGER character_id PK, FK "ON DELETE CASCADE, PRIMARY KEY (character_id, alias)"
+        TEXT alias PK "input or alias"
+        INTEGER move_id FK "ON DELETE CASCADE, indexed"
+        INTEGER is_input "input rows beat alias rows"
+    }
+    game_character {
+        INTEGER character_id PK, FK "ON DELETE CASCADE"
+        TEXT game_property_1
+        TEXT game_property_2
+    }
+    game_move {
+        INTEGER move_id PK, FK "ON DELETE CASCADE"
+        TEXT game_property_1
+        TEXT game_property_2
+    }
