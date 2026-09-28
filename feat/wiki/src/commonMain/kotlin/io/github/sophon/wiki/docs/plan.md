@@ -33,7 +33,7 @@
         - `PRAGMA foreign_keys = ON` per connection (set on the SqlDelight driver) - otherwise `REFERENCES` / `ON DELETE CASCADE` are ignored
         - index FK columns - `CREATE INDEX move_character_id ON move(character_id)`
         - upsert (`ON CONFLICT (...) DO UPDATE`), not `INSERT OR REPLACE` - replace deletes the row, changing its ID and cascading to moves
-        - one transaction per bulk write (wiki refresh) - all-or-nothing
+        - one transaction per character (the character + its moves) - a refresh failing midway keeps the characters already written
         - `NOT NULL` wherever the domain guarantees it
     - model
       - core fields are universal; game-specific fields go in `gameProperties`
@@ -124,8 +124,7 @@
   2. the app saves the choice to DataStore
   3. only if the save succeeded - the app calls `ConfigureWikiUseCase(newConfig)`
   4. the app wipes the disabled game's media (`MediaRepo` stays in the app)
-- the wiki reacts
-  - enabled game - start a refresh in the module's scope, so it survives navigation
+  5. the app collects `RefreshDataUseCase` in its app scope, so the refresh survives navigation - the wiki owns no scope
 - two stores (DataStore in the app, frame data in the wiki SQL DB) - no shared transaction
   - the same tradeoff the app has today - carry it over unchanged
   - invariant: enabled + corrupt/partial data is unacceptable; disabled + re-download is acceptable
@@ -138,15 +137,17 @@
   3. call use cases
 - constructors do no I/O
 - proactive work (periodic refresh, launch-time sync) is an explicit use case
-  - the host decides *when* (bot - schedule, app - launch)
+  - the host decides *when* (bot - schedule, app - launch) and in which scope
   - the module decides *what*
+- the wiki never stores a `CoroutineScope` - use cases are `suspend` or return a cold `Flow`, the caller owns the lifetime (structured concurrency)
 
 ### Statefulness
 - like a stateless BE - request in, read/write stores through ports, result out
 - stores
   - SQL DB - frame data
   - in-memory adapter - running config; rebuildable, the host's sources (JSON, DataStore) are the source of truth
-- short-lived coordination in memory - refresh in progress, so concurrent callers share one download
+- short-lived coordination in memory - a mutex runs overlapping refreshes one after another, so there are never two writers
+  - no sharing - a second caller downloads again once the first finishes
 - if memory ever holds something that exists nowhere else, the design has gone wrong
 - `Flow`-returning use cases stay stateless - SqlDelight's query `Flow` does the watching
 
