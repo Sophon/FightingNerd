@@ -1,11 +1,7 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 
 import io.github.sophon.core.featureConfig.model.Game
-
-internal data class CargoTable(
-    val name: String,
-    val fieldList: List<String>,
-)
+import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
 
 /**
  * Only separate games (`Game.separateCharMoveDownload`) have a character table.

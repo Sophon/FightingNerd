@@ -11,6 +11,7 @@ import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.util.getWikiImageUrl
+import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
 import io.github.sophon.wiki.application.port.outbound.FetchGameDataPort
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
