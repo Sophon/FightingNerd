@@ -1,7 +1,13 @@
 package io.github.sophon.wiki
 
-import io.github.sophon.wiki.adapter.outbound.ktor.KtorCharacterAdapter
-import io.github.sophon.wiki.adapter.outbound.ktor.KtorMoveAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.KtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.dragDown.DragDownKtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel.DreamCancelKtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.dustLoop.DustLoopKtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.mizuumi.MizuumiKtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.superCombo.SuperComboKtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.xko.XkoKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.memory.InMemoryWikiConfigAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightCharacterAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightMoveAdapter
@@ -23,14 +29,12 @@ import io.github.sophon.wiki.application.port.inbound.GetUpdateTimeStampUseCase
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
 import io.github.sophon.wiki.application.port.outbound.DeleteCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.DeleteMoveListPort
-import io.github.sophon.wiki.application.port.outbound.FetchCharacterListPort
-import io.github.sophon.wiki.application.port.outbound.FetchMoveListPort
+import io.github.sophon.wiki.application.port.outbound.FetchGameDataPort
 import io.github.sophon.wiki.application.port.outbound.LoadCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.LoadLastUpdatePort
 import io.github.sophon.wiki.application.port.outbound.LoadMoveListPort
 import io.github.sophon.wiki.application.port.outbound.LoadWikiConfigPort
-import io.github.sophon.wiki.application.port.outbound.SaveCharacterListPort
-import io.github.sophon.wiki.application.port.outbound.SaveMoveListPort
+import io.github.sophon.wiki.application.port.outbound.SaveCharacterMoveListPort
 import io.github.sophon.wiki.application.port.outbound.SaveWikiConfigPort
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -56,16 +60,21 @@ fun wikiModule(): Module = module {
         bind<LoadWikiConfigPort>()
         bind<SaveWikiConfigPort>()
     }
-    singleOf(::KtorCharacterAdapter).bind<FetchCharacterListPort>()
-    singleOf(::KtorMoveAdapter).bind<FetchMoveListPort>()
+    singleOf(::KtorGameDataAdapter).bind<FetchGameDataPort>()
+    singleOf(::WavuKtorGameDataAdapter)
+    singleOf(::MizuumiKtorGameDataAdapter)
+    singleOf(::DustLoopKtorGameDataAdapter)
+    singleOf(::SuperComboKtorGameDataAdapter)
+    singleOf(::DragDownKtorGameDataAdapter)
+    singleOf(::XkoKtorGameDataAdapter)
+    singleOf(::DreamCancelKtorGameDataAdapter)
     singleOf(::SqlDelightCharacterAdapter) {
         bind<LoadCharacterListPort>()
-        bind<SaveCharacterListPort>()
+        bind<SaveCharacterMoveListPort>()
         bind<DeleteCharacterListPort>()
     }
     singleOf(::SqlDelightMoveAdapter) {
         bind<LoadMoveListPort>()
-        bind<SaveMoveListPort>()
         bind<LoadLastUpdatePort>()
         bind<DeleteMoveListPort>()
     }

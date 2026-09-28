@@ -33,7 +33,7 @@
         - `PRAGMA foreign_keys = ON` per connection (set on the SqlDelight driver) - otherwise `REFERENCES` / `ON DELETE CASCADE` are ignored
         - index FK columns - `CREATE INDEX move_character_id ON move(character_id)`
         - upsert (`ON CONFLICT (...) DO UPDATE`), not `INSERT OR REPLACE` - replace deletes the row, changing its ID and cascading to moves
-        - one transaction per bulk write (wiki refresh) - all-or-nothing
+        - one transaction per character (the character + its moves) - a refresh failing midway keeps the characters already written
         - `NOT NULL` wherever the domain guarantees it
     - model
       - core fields are universal; game-specific fields go in `gameProperties`
@@ -87,8 +87,8 @@
 
 ## Plan
 
-1. design the interface - how the outside interacts with this module
-2. move what can be moved from `core` - mostly wiki stuff
+1. ~~design the interface - how the outside interacts with this module~~
+2. ~~move what can be moved from `core` - mostly wiki stuff~~
 3. move a single-game wiki module (`wavu`) to `wiki`
     - a big refactor - single SQL database
 4. move a multi-game wiki module (`dustloop`) to `wiki`
@@ -96,6 +96,10 @@
 6. extensive testing
 
 ## Current plan
+
+- SQL migration
+- full integration into bot
+- full integration into app
 
 ### Config
 - the host owns the config; the wiki only receives it
@@ -115,8 +119,7 @@
   2. the app saves the choice to DataStore
   3. only if the save succeeded - the app calls `ConfigureWikiUseCase(newConfig)`
   4. the app wipes the disabled game's media (`MediaRepo` stays in the app)
-- the wiki reacts
-  - enabled game - start a refresh in the module's scope, so it survives navigation
+  5. the app collects `RefreshDataUseCase` in its app scope, so the refresh survives navigation - the wiki owns no scope
 - two stores (DataStore in the app, frame data in the wiki SQL DB) - no shared transaction
   - the same tradeoff the app has today - carry it over unchanged
   - invariant: enabled + corrupt/partial data is unacceptable; disabled + re-download is acceptable
@@ -129,17 +132,46 @@
   3. call use cases
 - constructors do no I/O
 - proactive work (periodic refresh, launch-time sync) is an explicit use case
-  - the host decides *when* (bot - schedule, app - launch)
+  - the host decides *when* (bot - schedule, app - launch) and in which scope
   - the module decides *what*
+- the wiki never stores a `CoroutineScope` - use cases are `suspend` or return a cold `Flow`, the caller owns the lifetime (structured concurrency)
 
 ### Statefulness
 - like a stateless BE - request in, read/write stores through ports, result out
 - stores
   - SQL DB - frame data
   - in-memory adapter - running config; rebuildable, the host's sources (JSON, DataStore) are the source of truth
-- short-lived coordination in memory - refresh in progress, so concurrent callers share one download
+- short-lived coordination in memory - a mutex runs overlapping refreshes one after another, so there are never two writers
+  - no sharing - a second caller downloads again once the first finishes
 - if memory ever holds something that exists nowhere else, the design has gone wrong
 - `Flow`-returning use cases stay stateless - SqlDelight's query `Flow` does the watching
+
+### Refresh
+- one outbound port for downloads - `FetchGameDataPort.fetch(game): Flow<Result<Pair<Character, List<Move>>, DataError.Remote>>`
+  - each emission is one character with its complete move list
+  - cold `Flow` - the download runs while the service collects; `emit` suspends until the service has saved, so the next download waits for the write
+  - a failure of the whole game (character list, bulk download) is a single `Result.Error` emission
+- two remote shapes - `Game.separateCharMoveDownload`
+  - separate (`true`) - a character list endpoint, then a move query per character; each character is emitted as soon as its moves are in - Wavu, Uni2, DustLoop, SuperCombo, DragDown
+  - bulk (`false`) - one download of the whole move table, characters built from its `chara` / page column, emitted one by one after the download - MBTL, VSAV, KoFXV, COTW, 2XKO
+  - the shape never reaches the service
+- one Ktor adapter per wiki (`adapter/outbound/ktor/<wiki>/`)
+  - `KtorGameDataAdapter` routes by `Game.wiki` with an exhaustive `when` - a wiki without an adapter doesn't compile
+- save per emission - `SaveCharacterMoveListPort.save(game, character, moveList)`
+  - one transaction per character - the app can open a character as soon as its moves are saved
+  - bulk games - all characters become available together, after the one download
+  - the character's moves absent from the move list get a strike inside the save - the list is complete per character
+- deferred to the SQL stage - character strikes
+  - after a game's stream ends, strike the characters that weren't downloaded
+  - skip when nothing was downloaded
+- normalization - one normalizer per wiki in `application/domain/util/` - `normalizeT8`, `normalizeMizuumi`, `normalizeDustLoop(game)`, `normalizeSuperCombo`, `normalizeXko`, `normalizeDreamCancel`
+  - the mapper only cleans (HTML, entities, template placeholders); the input, its aliases and ids built from it are the normalizer's
+  - DragDown has none - RoA2's input is built from attack id + mode, there's no notation to normalize
+- logs
+  - debug per character when its download is done - `<character> (<game>): N moves downloaded`
+  - info per game after its stream ends - `<game>: X characters downloaded`
+  - warn - `download failed`, `save failed`
+- bot - `BotFeatureRepoImpl` runs `RefreshDataUseCase` on the legacy `Scheduler` once `ConfigureWikiUseCase` succeeds (HEX migration region)
 
 ### Findings
 - naming
@@ -147,6 +179,8 @@
   - `port/outbound` - `*Port`; the wiki's services call them, an adapter does the work
   - a port is not a use case - naming it `*UseCase` would suggest the outside may call it
   - the port names the capability, the method names the mode - `LoadXPort.subscribe()` / `get()`, `SaveXPort.save()`, `DeleteXPort.delete()`, `FetchXPort.fetch()`
+  - per-wiki adapter packages are the camelCase wiki name - `dustLoop`, `superCombo`
+  - per-wiki files, classes, tests and test fixtures carry the wiki prefix - `WavuMoveListResponseDto`, `MizuumiCharacterRemoteMapper`, `DustLoopMoveSource`
 - errors
   - the outside only ever sees `WikiError` - every use case returns it
   - ports may return `DataError`; services map it with `toWikiError()`
@@ -157,3 +191,13 @@
 - config is a dependency of the services, not an input of each use case call
   - use case parameters = what the caller wants, differs per call (`characterQuery`, `moveQuery`, ...)
   - config / DB / HTTP client = fixed for the whole run - never part of a use case signature
+
+### Open issues
+- DustLoop answers 429 (`TOO_MANY_REQUESTS`) - the legacy and the hex refresh hit it at once, and nothing retries
+  - candidate - retry with backoff on 429 in the shared `HttpClient` (`HttpRequestRetry`, honor `Retry-After`)
+- legacy gaps ported as-is - queried but never mapped
+  - SF6 `airborne`; MK1 `chip`, `flawlessBlockAdv`, `hitCancelAdv`, `blockCancelAdv`, `punish`
+  - DreamCancel `guard`, `cancel`, `invul`
+- 2XKO quirks ported as-is
+  - `j.` inputs get a `j..` alias - no `normalize2dInputs`
+  - a missing input puts `null` into the image and wiki urls

@@ -12,12 +12,17 @@ import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.feat.config.usecase.BindToDiscordFeaturesUseCase
 import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
+import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.toDomainError
+import io.github.sophon.wiki.application.domain.model.RefreshEvent
 import io.github.sophon.wiki.application.domain.model.WikiConfig
 import io.github.sophon.wiki.application.domain.model.WikiError
 import io.github.sophon.wiki.application.port.inbound.ConfigureWikiUseCase
+import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.launchIn
 
 internal interface BotFeatureRepo {
     suspend fun initialize(): EmptyResult<BotError>
@@ -29,18 +34,21 @@ internal class BotFeatureRepoImpl(
     private val loadConfigurationUseCase: LoadConfigurationUseCase,
     private val bindToDiscordFeaturesUseCase: BindToDiscordFeaturesUseCase,
 
-    //region HEX migration
+//    //region HEX migration
 //    private val configureWikiUseCase: ConfigureWikiUseCase,
-    //endregion
+//    private val refreshWikiDataUseCase: RefreshDataUseCase,
+//    private val scheduler: Scheduler,
+//    private val scope: CoroutineScope,
+//    //endregion
 ): BotFeatureRepo {
     private val featureList: MutableList<DiscordRegisteredFeature> = mutableListOf()
 
     override suspend fun initialize(): EmptyResult<BotError> {
         val result = loadConfigurationUseCase.invoke()
             .flatMap { config ->
-                //region HEX migration
+//                //region HEX migration
 //                bindHexagonalWiki(config)
-                //endregion
+//                //endregion
 
                 featureRepo.initialize(config)
                     .mapError { it.toDomainError() }
@@ -56,6 +64,10 @@ internal class BotFeatureRepoImpl(
                                 }
                             }
                             .map { }
+
+                        //region HEX migration
+//                        Result.Success(Unit)
+                        //endregion
                     }
             }
 
@@ -68,13 +80,26 @@ internal class BotFeatureRepoImpl(
     }
 
 
-    //region HEX migration
+//    //region HEX migration
 //    private suspend fun bindHexagonalWiki(config: Config) {
 //        config.toWikiConfig()
 //            .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
+//            .onSuccess { scheduleHexagonalWikiRefresh() }
 //            .onError { error ->
 //                Napier.e(tag = TAG) { "Hexagonal wiki configuration failed: $error" }
 //            }
+//    }
+//
+//    private fun scheduleHexagonalWikiRefresh() {
+//        scheduler.start {
+//            refreshWikiDataUseCase().collect { event ->
+//                when (event) {
+//                    is RefreshEvent.Failed -> Napier.e(tag = TAG) { "Hexagonal wiki refresh failed: ${event.error}" }
+//                    is RefreshEvent.Finished -> Napier.i(tag = TAG) { "Hexagonal wiki refresh finished: ${event.successCount} characters" }
+//                }
+//            }
+//        }
+//            .launchIn(scope)
 //    }
 //
 //    /**
@@ -92,7 +117,7 @@ internal class BotFeatureRepoImpl(
 //        )
 //        return result
 //    }
-    //endregion
+//    //endregion
 
 
     private companion object {
