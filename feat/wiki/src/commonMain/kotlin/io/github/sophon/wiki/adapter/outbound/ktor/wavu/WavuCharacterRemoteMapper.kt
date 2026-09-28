@@ -2,7 +2,7 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 
 import io.github.sophon.core.wiki.model.Character
 
-internal fun CharacterListResponseDto.toDomain(): List<Character> {
+internal fun WavuCharacterListResponseDto.toDomain(): List<Character> {
     return characters.map { dto ->
         Character(
             id = dto.id,

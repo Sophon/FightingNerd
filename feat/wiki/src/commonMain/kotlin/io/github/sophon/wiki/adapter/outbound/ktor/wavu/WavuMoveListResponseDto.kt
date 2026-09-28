@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class MoveListResponseDto(
+internal data class WavuMoveListResponseDto(
     @SerialName("cargoquery") val cargoQuery: List<Title>,
 ) {
     @Serializable

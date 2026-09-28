@@ -14,7 +14,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMovePro
 /**
  * Bulk - the whole move table, grouped into characters by `chara`.
  */
-internal fun MoveListResponseDto.toDomainAll(
+internal fun MizuumiMoveListResponseDto.toDomainAll(
     game: Game,
     iconUrlMap: Map<String, String>,
     hitboxUrlMap: Map<String, String>,
@@ -33,7 +33,7 @@ internal fun MoveListResponseDto.toDomainAll(
 /**
  * Separate - one character's move list.
  */
-internal fun MoveListResponseDto.toDomain(
+internal fun MizuumiMoveListResponseDto.toDomain(
     game: Game,
     character: Character,
     hitboxUrlMap: Map<String, String>,

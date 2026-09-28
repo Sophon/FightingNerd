@@ -3,7 +3,7 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class CharacterListResponseDto(
+internal data class WavuCharacterListResponseDto(
     val characters: List<CharacterDto>,
 )
 

@@ -8,7 +8,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 import kotlin.test.Test
 
-class MoveRemoteMapperTest {
+class WavuMoveRemoteMapperTest {
     val ak = Character(
         id = "armor_king",
         displayName = "Armor King",
@@ -224,9 +224,9 @@ class MoveRemoteMapperTest {
             video = null,
             alt = null
         )
-        val responseDto = MoveListResponseDto(
+        val responseDto = WavuMoveListResponseDto(
             cargoQuery = listOf(
-                MoveListResponseDto.Title(moveDto)
+                WavuMoveListResponseDto.Title(moveDto)
             )
         )
         val expected = Move(
@@ -300,10 +300,10 @@ class MoveRemoteMapperTest {
             video = null,
             alt = null
         )
-        val responseDto = MoveListResponseDto(
+        val responseDto = WavuMoveListResponseDto(
             cargoQuery = listOf(
-                MoveListResponseDto.Title(parentMove),
-                MoveListResponseDto.Title(childMove)
+                WavuMoveListResponseDto.Title(parentMove),
+                WavuMoveListResponseDto.Title(childMove)
             )
         )
         val expected = Move(
@@ -347,9 +347,9 @@ class MoveRemoteMapperTest {
     fun `maps move with video`() {
         // given
         val moveDto = WavuMoveSource.shadowPress
-        val responseDto = MoveListResponseDto(
+        val responseDto = WavuMoveListResponseDto(
             cargoQuery = listOf(
-                MoveListResponseDto.Title(moveDto)
+                WavuMoveListResponseDto.Title(moveDto)
             )
         )
         val expected = Move(
@@ -394,9 +394,9 @@ class MoveRemoteMapperTest {
     fun `maps running throw`() {
         // given
         val moveDto = WavuMoveSource.akSW
-        val responseDto = MoveListResponseDto(
+        val responseDto = WavuMoveListResponseDto(
             cargoQuery = listOf(
-                MoveListResponseDto.Title(moveDto)
+                WavuMoveListResponseDto.Title(moveDto)
             )
         )
         val expected = Move(
@@ -457,7 +457,7 @@ class MoveRemoteMapperTest {
 }
 
 private fun List<MoveDto>.toMoveList(character: Character): List<Move> {
-    val responseDto = MoveListResponseDto(cargoQuery = map { MoveListResponseDto.Title(it) })
+    val responseDto = WavuMoveListResponseDto(cargoQuery = map { WavuMoveListResponseDto.Title(it) })
     val moveList = responseDto.toDomain(character)
     return moveList
 }

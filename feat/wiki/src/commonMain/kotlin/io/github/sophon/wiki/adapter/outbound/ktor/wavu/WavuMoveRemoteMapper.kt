@@ -7,7 +7,7 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 
-internal fun MoveListResponseDto.toDomain(character: Character): List<Move> {
+internal fun WavuMoveListResponseDto.toDomain(character: Character): List<Move> {
     val downloadedMoves = cargoQuery.map { it.title }
     val movesById = downloadedMoves.associateBy { it.id }
     val moveList = downloadedMoves.map { it.toDomain(character, movesById) }

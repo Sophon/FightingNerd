@@ -3,7 +3,7 @@ package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class CharacterListResponseDto(
+internal data class MizuumiCharacterListResponseDto(
     val cargoquery: List<CharacterTitle>
 )
 

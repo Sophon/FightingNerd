@@ -79,7 +79,7 @@ internal class MizuumiKtorGameDataAdapter(
         val table = MizuumiTables.characterTableByGame[game]
             ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
 
-        val characterListResult = safeCall<CharacterListResponseDto> {
+        val characterListResult = safeCall<MizuumiCharacterListResponseDto> {
             httpClient.get(BASE_URL) {
                 parameter("action", "cargoquery")
                 parameter("tables", table.name)
@@ -103,7 +103,7 @@ internal class MizuumiKtorGameDataAdapter(
         val table = MizuumiTables.moveTableByGame[game]
             ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
 
-        val moveListResult = safeCall<MoveListResponseDto> {
+        val moveListResult = safeCall<MizuumiMoveListResponseDto> {
             httpClient.get(BASE_URL) {
                 parameter("action", "cargoquery")
                 parameter("tables", table.name)
@@ -142,13 +142,13 @@ internal class MizuumiKtorGameDataAdapter(
      */
     private suspend fun downloadMoveTable(
         table: CargoTable,
-    ): Result<MoveListResponseDto, DataError.Remote> {
+    ): Result<MizuumiMoveListResponseDto, DataError.Remote> {
         val pageResultList = (0 until MAX_PAGES)
             .asFlow()
             .flatMapMerge(concurrency = MAX_CONCURRENT_PAGES) { page ->
                 flow {
                     val offset = (page * LIMIT_MOVES)
-                    val pageResult = safeCall<MoveListResponseDto> {
+                    val pageResult = safeCall<MizuumiMoveListResponseDto> {
                         httpClient.get(BASE_URL) {
                             parameter("action", "cargoquery")
                             parameter("tables", table.name)
@@ -176,12 +176,12 @@ internal class MizuumiKtorGameDataAdapter(
             }
         }
 
-        val moveTable = MoveListResponseDto(cargoquery = moveTitleList)
+        val moveTable = MizuumiMoveListResponseDto(cargoquery = moveTitleList)
         return Result.Success(moveTable)
     }
 
     private suspend fun resolveHitboxUrls(
-        dto: MoveListResponseDto,
+        dto: MizuumiMoveListResponseDto,
     ): Result<Map<String, String>, DataError.Remote> {
         val fileNameList = dto.cargoquery
             .asSequence()

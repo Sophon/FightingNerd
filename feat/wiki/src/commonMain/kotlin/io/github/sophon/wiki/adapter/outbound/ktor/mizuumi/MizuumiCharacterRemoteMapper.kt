@@ -34,7 +34,7 @@ internal fun String.toDomain(
     return character
 }
 
-internal fun CharacterListResponseDto.toDomain(
+internal fun MizuumiCharacterListResponseDto.toDomain(
     game: Game,
     iconUrlMap: Map<String, String>,
 ): List<Character> {

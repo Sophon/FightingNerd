@@ -50,7 +50,7 @@ internal class WavuKtorGameDataAdapter(
         val url = characterListUrlByGame[game]
             ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
 
-        val characterListResult = safeCall<CharacterListResponseDto> {
+        val characterListResult = safeCall<WavuCharacterListResponseDto> {
             httpClient.get(url)
         }
             .map { dto -> dto.toDomain() }
@@ -64,7 +64,7 @@ internal class WavuKtorGameDataAdapter(
         val table = moveTableByGame[game]
             ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
 
-        val moveListResult = safeCall<MoveListResponseDto> {
+        val moveListResult = safeCall<WavuMoveListResponseDto> {
             httpClient.get(BASE_URL) {
                 parameter("action", "cargoquery")
                 parameter("tables", table)

@@ -8,7 +8,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.MBTLMoveProperties
 import kotlin.test.Test
 
-class MoveRemoteMapperTest {
+class MizuumiMoveRemoteMapperTest {
 
     //region property links
     @Test
@@ -74,7 +74,7 @@ class MoveRemoteMapperTest {
         //given
         val moveList = (movesOf(chara = "Akiha Tohno", idPrefix = "ak", count = 10)
                 + movesOf(chara = "Ciel", idPrefix = "ci", count = 10))
-        val responseDto = MoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
+        val responseDto = MizuumiMoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
         val expected = listOf("akiha_tohno" to 10, "ciel" to 10)
 
         //when
@@ -90,7 +90,7 @@ class MoveRemoteMapperTest {
         //given
         val moveList = (movesOf(chara = "Akiha Tohno", idPrefix = "ak", count = 10)
                 + movesOf(chara = "Ciel", idPrefix = "ci", count = 9))
-        val responseDto = MoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
+        val responseDto = MizuumiMoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
         val expected = listOf("akiha_tohno")
 
         //when
@@ -109,7 +109,7 @@ private fun MoveDto.toMove(
     game: Game,
     character: Character,
 ): Move {
-    val responseDto = MoveListResponseDto(cargoquery = listOf(Title(this)))
+    val responseDto = MizuumiMoveListResponseDto(cargoquery = listOf(Title(this)))
     val move = responseDto.toDomain(game, character, hitboxUrlMap = emptyMap()).single()
     return move
 }

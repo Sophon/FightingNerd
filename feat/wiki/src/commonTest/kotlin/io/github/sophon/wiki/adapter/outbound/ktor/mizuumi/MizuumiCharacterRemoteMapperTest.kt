@@ -6,7 +6,7 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import kotlin.test.Test
 
-class CharacterRemoteMapperTest {
+class MizuumiCharacterRemoteMapperTest {
     val iconUrlMap = mapOf(
         "ciel" to "https://mizuumi.wiki/images/1/18/MBTL_ciel_icon.png",
         "akiha" to "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
