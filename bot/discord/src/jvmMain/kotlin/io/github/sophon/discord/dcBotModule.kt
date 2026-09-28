@@ -30,6 +30,7 @@ import io.github.sophon.wikidragdown.integration.dragDownModule
 import io.github.sophon.wikidustloop.integration.dustLoopModule
 import io.github.sophon.wikimizuumi.integration.mizuumiModule
 import io.github.sophon.wikiwavu.integration.wavuModule
+import io.github.sophon.wiki.wikiModule
 import io.github.sophon.xko.integration.xkoModule
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -65,6 +66,7 @@ internal fun initKoin(
         ewgfModule(
             apiToken = System.getenv(ENV_API_EWGF).orEmpty()
         ),
+        wikiModule(),
 
         featureRegistryModule,
     )
