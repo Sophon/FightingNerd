@@ -97,30 +97,15 @@
 
 ## Current plan
 
-### Test run
-- both hosts (app and bot) configure the wiki module from their JSON files
-  1. the host loads its JSON file
-  2. the host maps it into `WikiConfig` via `WikiConfig.create(...)`
-  3. the host calls `ConfigureWikiUseCase(wikiConfig)`
-  4. the in-memory adapter holds the config
-- nothing crashes; the host only ever sees a `WikiConfig` or a `WikiError`
+### Config
 - the host owns the config; the wiki only receives it
   - app - available features from `modules.json` (compose resource), enabled/disabled from DataStore
   - bot - available features from `config.json` (file); everything available is enabled
+  - a feature disabled in the host's JSON is not available - its games are dropped entirely, same as the legacy `FeatureRepo`
 - each host has its own mapper - host configs can differ, the wiki only ever sees `WikiConfig`
   - no JSON crosses into the wiki
-
-```kotlin
-// app - after its async config load
-val result = availableFeatures.toWikiConfig(enabledGames = dataStoreEnabledGames) // WikiConfig.create(...)
-    .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
-
-// bot - at startup
-val result = botConfig.toWikiConfig() // everything available is enabled
-    .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
-```
-
-### Config
+- the host only ever sees a `WikiConfig` or a `WikiError`
+- app first launch - the default games are written to DataStore after the config is applied, so the app must call `ConfigureWikiUseCase` again once they're saved
 - use cases called before configuration wait for the config instead of failing (`filterNotNull().first()`)
 - any service that needs available / enabled games loads them through `LoadWikiConfigPort`
 
