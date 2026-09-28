@@ -1,10 +1,12 @@
 package io.github.sophon.wiki
 
 import io.github.sophon.wiki.adapter.outbound.ktor.KtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.dragDown.DragDownKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.dustLoop.DustLoopKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.mizuumi.MizuumiKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.superCombo.SuperComboKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorGameDataAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.xko.XkoKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.memory.InMemoryWikiConfigAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightCharacterAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightMoveAdapter
@@ -62,6 +64,8 @@ fun wikiModule(): Module = module {
     singleOf(::MizuumiKtorGameDataAdapter)
     singleOf(::DustLoopKtorGameDataAdapter)
     singleOf(::SuperComboKtorGameDataAdapter)
+    singleOf(::DragDownKtorGameDataAdapter)
+    singleOf(::XkoKtorGameDataAdapter)
     singleOf(::SqlDelightCharacterAdapter) {
         bind<LoadCharacterListPort>()
         bind<SaveCharacterMoveListPort>()
