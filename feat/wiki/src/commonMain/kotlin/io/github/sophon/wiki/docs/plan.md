@@ -87,8 +87,8 @@
 
 ## Plan
 
-1. design the interface - how the outside interacts with this module
-2. move what can be moved from `core` - mostly wiki stuff
+1. ~~design the interface - how the outside interacts with this module~~
+2. ~~move what can be moved from `core` - mostly wiki stuff~~
 3. move a single-game wiki module (`wavu`) to `wiki`
     - a big refactor - single SQL database
 4. move a multi-game wiki module (`dustloop`) to `wiki`
@@ -96,6 +96,15 @@
 6. extensive testing
 
 ## Current plan
+
+### Wavu migration
+
+- migrate Wavu wiki to Wiki module
+- test run 1:
+  1. client creates configuration only with Wavu wiki and T8
+  2. bot calls refresh data; app uses the same refresh policy as before
+  3. logs display downloaded chars and downloaded moves per char
+- test run 2 - all Discord functionality works
 
 ### Config
 - the host owns the config; the wiki only receives it
