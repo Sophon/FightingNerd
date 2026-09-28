@@ -1,7 +1,7 @@
 package io.github.sophon.wiki
 
-import io.github.sophon.wiki.adapter.outbound.ktor.KtorCharacterAdapter
-import io.github.sophon.wiki.adapter.outbound.ktor.KtorMoveAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorCharacterAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorMoveAdapter
 import io.github.sophon.wiki.adapter.outbound.memory.InMemoryWikiConfigAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightCharacterAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightMoveAdapter
@@ -56,8 +56,8 @@ fun wikiModule(): Module = module {
         bind<LoadWikiConfigPort>()
         bind<SaveWikiConfigPort>()
     }
-    singleOf(::KtorCharacterAdapter).bind<FetchCharacterListPort>()
-    singleOf(::KtorMoveAdapter).bind<FetchMoveListPort>()
+    singleOf(::WavuKtorCharacterAdapter).bind<FetchCharacterListPort>()
+    singleOf(::WavuKtorMoveAdapter).bind<FetchMoveListPort>()
     singleOf(::SqlDelightCharacterAdapter) {
         bind<LoadCharacterListPort>()
         bind<SaveCharacterListPort>()

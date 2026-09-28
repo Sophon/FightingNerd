@@ -11,9 +11,11 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wiki.application.domain.model.RefreshEvent
 import io.github.sophon.wiki.application.domain.model.WikiError
 import io.github.sophon.wiki.application.domain.model.toWikiError
+import io.github.sophon.wiki.application.domain.util.normalizeT8
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
 import io.github.sophon.wiki.application.port.outbound.FetchCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.FetchMoveListPort
@@ -88,6 +90,7 @@ internal class RefreshDataService(
         character: Character,
     ): EmptyResult<WikiError> {
         val moveListResult = fetchMoveListPort.fetch(game, character)
+            .map { moveList -> normalize(game, moveList) }
             .mapError { error -> error.toWikiError() }
             .flatMap { moveList ->
                 saveMoveListPort.save(game, character, moveList)
@@ -103,6 +106,17 @@ internal class RefreshDataService(
             .asEmptyDataResult()
 
         return moveListResult
+    }
+
+    private fun normalize(
+        game: Game,
+        moveList: List<Move>,
+    ): List<Move> {
+        val normalizedList = when (game) {
+            Game.Tekken8 -> moveList.map { move -> move.normalizeT8() }
+            else -> moveList
+        }
+        return normalizedList
     }
 
 
