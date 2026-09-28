@@ -47,9 +47,11 @@ internal class RefreshDataService(
 
                 var successCount = 0
                 for (game in gameSet) {
+                    var downloadCount = 0
                     fetchGameDataPort.fetch(game).collect { characterWithMovesResult ->
                         characterWithMovesResult
                             .onSuccess { (character, moveList) ->
+                                downloadCount++
                                 Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
                             }
                             .onError { error ->
@@ -62,6 +64,8 @@ internal class RefreshDataService(
                             .onSuccess { successCount++ }
                             .onError { error -> emit(RefreshEvent.Failed(error)) }
                     }
+
+                    Napier.i(tag = TAG) { "${game.id}: $downloadCount characters downloaded" }
                 }
 
                 emit(RefreshEvent.Finished(successCount))
