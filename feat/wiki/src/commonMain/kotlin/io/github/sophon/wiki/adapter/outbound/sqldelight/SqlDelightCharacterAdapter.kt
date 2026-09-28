@@ -6,15 +6,16 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.wiki.application.port.outbound.DeleteCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.LoadCharacterListPort
-import io.github.sophon.wiki.application.port.outbound.SaveCharacterListPort
+import io.github.sophon.wiki.application.port.outbound.SaveCharacterMoveListPort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 
 internal class SqlDelightCharacterAdapter :
     LoadCharacterListPort,
-    SaveCharacterListPort,
+    SaveCharacterMoveListPort,
     DeleteCharacterListPort {
 
     override fun subscribe(game: Game): Flow<List<Character>> {
@@ -24,9 +25,10 @@ internal class SqlDelightCharacterAdapter :
 
     override suspend fun save(
         game: Game,
-        characterList: List<Character>,
+        character: Character,
+        moveList: List<Move>,
     ): EmptyResult<DataError.Local> {
-        Napier.w(tag = TAG) { "save(${game.id}, ${characterList.size} characters) - not implemented" }
+        Napier.w(tag = TAG) { "save(${game.id}, ${character.id}, ${moveList.size} moves) - not implemented" }
         return Result.Success(Unit)
     }
 

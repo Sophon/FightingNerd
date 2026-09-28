@@ -97,14 +97,10 @@
 
 ## Current plan
 
-### Wavu migration
-
-- migrate Wavu wiki to Wiki module
-- test run 1:
-  1. client creates configuration only with Wavu wiki and T8
-  2. bot calls refresh data; app uses the same refresh policy as before
-  3. logs display downloaded chars and downloaded moves per char
-- test run 2 - all Discord functionality works
+- migrate all wikis to the Wiki module
+- only implement the remote adapters
+- check from logs the moves and chars download
+- test run - run from Discord bot
 
 ### Config
 - the host owns the config; the wiki only receives it

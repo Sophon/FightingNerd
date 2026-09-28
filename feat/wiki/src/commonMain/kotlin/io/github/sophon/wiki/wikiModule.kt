@@ -1,7 +1,6 @@
 package io.github.sophon.wiki
 
-import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorCharacterAdapter
-import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorMoveAdapter
+import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.memory.InMemoryWikiConfigAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightCharacterAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightMoveAdapter
@@ -23,14 +22,12 @@ import io.github.sophon.wiki.application.port.inbound.GetUpdateTimeStampUseCase
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
 import io.github.sophon.wiki.application.port.outbound.DeleteCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.DeleteMoveListPort
-import io.github.sophon.wiki.application.port.outbound.FetchCharacterListPort
-import io.github.sophon.wiki.application.port.outbound.FetchMoveListPort
+import io.github.sophon.wiki.application.port.outbound.FetchGameDataPort
 import io.github.sophon.wiki.application.port.outbound.LoadCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.LoadLastUpdatePort
 import io.github.sophon.wiki.application.port.outbound.LoadMoveListPort
 import io.github.sophon.wiki.application.port.outbound.LoadWikiConfigPort
-import io.github.sophon.wiki.application.port.outbound.SaveCharacterListPort
-import io.github.sophon.wiki.application.port.outbound.SaveMoveListPort
+import io.github.sophon.wiki.application.port.outbound.SaveCharacterMoveListPort
 import io.github.sophon.wiki.application.port.outbound.SaveWikiConfigPort
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -56,16 +53,14 @@ fun wikiModule(): Module = module {
         bind<LoadWikiConfigPort>()
         bind<SaveWikiConfigPort>()
     }
-    singleOf(::WavuKtorCharacterAdapter).bind<FetchCharacterListPort>()
-    singleOf(::WavuKtorMoveAdapter).bind<FetchMoveListPort>()
+    singleOf(::WavuKtorGameDataAdapter).bind<FetchGameDataPort>()
     singleOf(::SqlDelightCharacterAdapter) {
         bind<LoadCharacterListPort>()
-        bind<SaveCharacterListPort>()
+        bind<SaveCharacterMoveListPort>()
         bind<DeleteCharacterListPort>()
     }
     singleOf(::SqlDelightMoveAdapter) {
         bind<LoadMoveListPort>()
-        bind<SaveMoveListPort>()
         bind<LoadLastUpdatePort>()
         bind<DeleteMoveListPort>()
     }

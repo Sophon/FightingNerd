@@ -2,10 +2,7 @@ package io.github.sophon.wiki.application.domain.service
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.EmptyResult
-import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.architecture.asEmptyDataResult
 import io.github.sophon.core.architecture.flatMap
-import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
@@ -17,11 +14,9 @@ import io.github.sophon.wiki.application.domain.model.WikiError
 import io.github.sophon.wiki.application.domain.model.toWikiError
 import io.github.sophon.wiki.application.domain.util.normalizeT8
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
-import io.github.sophon.wiki.application.port.outbound.FetchCharacterListPort
-import io.github.sophon.wiki.application.port.outbound.FetchMoveListPort
+import io.github.sophon.wiki.application.port.outbound.FetchGameDataPort
 import io.github.sophon.wiki.application.port.outbound.LoadWikiConfigPort
-import io.github.sophon.wiki.application.port.outbound.SaveCharacterListPort
-import io.github.sophon.wiki.application.port.outbound.SaveMoveListPort
+import io.github.sophon.wiki.application.port.outbound.SaveCharacterMoveListPort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -31,10 +26,8 @@ import kotlinx.coroutines.sync.withLock
 
 internal class RefreshDataService(
     private val loadWikiConfigPort: LoadWikiConfigPort,
-    private val fetchCharacterListPort: FetchCharacterListPort,
-    private val saveCharacterListPort: SaveCharacterListPort,
-    private val fetchMoveListPort: FetchMoveListPort,
-    private val saveMoveListPort: SaveMoveListPort,
+    private val fetchGameDataPort: FetchGameDataPort,
+    private val saveCharacterMoveListPort: SaveCharacterMoveListPort,
 ) : RefreshDataUseCase {
     private val refreshMutex = Mutex()
 
@@ -49,15 +42,21 @@ internal class RefreshDataService(
 
                 var successCount = 0
                 for (game in gameSet) {
-                    refreshCharacterList(game)
-                        .onSuccess { characterList ->
-                            for (character in characterList) {
-                                refreshMoveList(game, character)
-                                    .onSuccess { successCount++ }
-                                    .onError { error -> emit(RefreshEvent.Failed(error)) }
+                    fetchGameDataPort.fetch(game).collect { characterWithMovesResult ->
+                        characterWithMovesResult
+                            .onSuccess { (character, moveList) ->
+                                Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
                             }
-                        }
-                        .onError { error -> emit(RefreshEvent.Failed(error)) }
+                            .onError { error ->
+                                Napier.w(tag = TAG) { "${game.id}: download failed - $error" }
+                            }
+                            .mapError { error -> error.toWikiError() }
+                            .flatMap { (character, moveList) ->
+                                saveCharacterMoveList(game, character, moveList.normalize(game))
+                            }
+                            .onSuccess { successCount++ }
+                            .onError { error -> emit(RefreshEvent.Failed(error)) }
+                    }
                 }
 
                 emit(RefreshEvent.Finished(successCount))
@@ -67,54 +66,26 @@ internal class RefreshDataService(
         return flow
     }
 
-    private suspend fun refreshCharacterList(game: Game): Result<List<Character>, WikiError> {
-        val characterListResult = fetchCharacterListPort.fetch(game)
-            .mapError { error -> error.toWikiError() }
-            .flatMap { characterList ->
-                saveCharacterListPort.save(game, characterList)
-                    .map { characterList }
-                    .mapError { error -> error.toWikiError() }
-            }
-            .onSuccess { characterList ->
-                Napier.i(tag = TAG) { "${game.id}: ${characterList.size} characters downloaded" }
-            }
-            .onError { error ->
-                Napier.e(tag = TAG) { "${game.id}: character refresh failed - $error" }
-            }
-
-        return characterListResult
-    }
-
-    private suspend fun refreshMoveList(
+    private suspend fun saveCharacterMoveList(
         game: Game,
         character: Character,
+        moveList: List<Move>,
     ): EmptyResult<WikiError> {
-        val moveListResult = fetchMoveListPort.fetch(game, character)
-            .map { moveList -> normalize(game, moveList) }
+        val saveResult = saveCharacterMoveListPort.save(game, character, moveList)
             .mapError { error -> error.toWikiError() }
-            .flatMap { moveList ->
-                saveMoveListPort.save(game, character, moveList)
-                    .map { moveList }
-                    .mapError { error -> error.toWikiError() }
-            }
-            .onSuccess { moveList ->
-                Napier.d(tag = TAG) { "${character.id} (${game.id}): ${moveList.size} moves downloaded" }
-            }
             .onError { error ->
-                Napier.w(tag = TAG) { "${character.id} (${game.id}): move refresh failed - $error" }
+                Napier.w(tag = TAG) { "${character.id} (${game.id}): save failed - $error" }
             }
-            .asEmptyDataResult()
 
-        return moveListResult
+        return saveResult
     }
 
-    private fun normalize(
+    private fun List<Move>.normalize(
         game: Game,
-        moveList: List<Move>,
     ): List<Move> {
         val normalizedList = when (game) {
-            Game.Tekken8 -> moveList.map { move -> move.normalizeT8() }
-            else -> moveList
+            Game.Tekken8 -> this.map { move -> move.normalizeT8() }
+            else -> this
         }
         return normalizedList
     }

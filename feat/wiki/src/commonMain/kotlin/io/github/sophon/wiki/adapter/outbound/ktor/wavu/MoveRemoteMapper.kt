@@ -153,7 +153,7 @@ private fun String?.toAliases(): List<String> {
 }
 
 private fun String?.formVideoUrl(): String? {
-    val videoUrl = this?.let { VIDEO_URL + it.urlEncode() }
+    val videoUrl = this?.let { URL_PREFIX_VIDEO + it.urlEncode() }
     return videoUrl
 }
 
@@ -164,7 +164,7 @@ private fun String.toStorageSafeFileName(): String {
 
 private fun formMoveWikiUrl(characterRemoteQueryId: String, moveId: String): String {
     val formattedCharacterName = characterRemoteQueryId.replace(" ", "_")
-    val wikiUrl = "${MOVE_URL}/${formattedCharacterName}_movelist#${moveId.replace(" ", "_")}"
+    val wikiUrl = "${URL_PREFIX_MOVE}/${formattedCharacterName}_movelist#${moveId.replace(" ", "_")}"
     return wikiUrl
 }
 
@@ -185,7 +185,7 @@ private fun String?.formatClickable(): String? {
     val formatted = replace(Regex("""\[\[([^|]+)\|([^\]]+)\]\]""")) { matchResult ->
         val description = matchResult.groupValues[2]
         val destination = matchResult.groupValues[1].replace(" ", "_")
-        "[$description]($MOVE_URL/$destination)"
+        "[$description]($URL_PREFIX_MOVE/$destination)"
     }
     return formatted
 }
