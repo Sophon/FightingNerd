@@ -135,6 +135,7 @@ kotlin {
             implementation(project(":feat:wikiDustLoop"))
             implementation(project(":feat:wikiMizuumi"))
             implementation(project(":feat:wikiDragDown"))
+            implementation(project(":feat:wiki"))
         }
 
         commonTest.dependencies {
