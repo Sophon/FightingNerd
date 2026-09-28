@@ -6,7 +6,7 @@ import kotlin.jvm.JvmInline
 
 @Serializable
 data class Character(
-    val id: String, //used for local queries
+    val id: CharacterId,
     val displayName: String,
     val remoteQueryId: String,
     val wikiUrl: String,
