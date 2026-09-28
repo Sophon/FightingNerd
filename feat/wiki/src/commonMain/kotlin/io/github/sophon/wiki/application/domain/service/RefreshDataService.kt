@@ -14,6 +14,7 @@ import io.github.sophon.wiki.application.domain.model.WikiError
 import io.github.sophon.wiki.application.domain.model.toWikiError
 import io.github.sophon.wiki.application.domain.util.normalizeDustLoop
 import io.github.sophon.wiki.application.domain.util.normalizeMizuumi
+import io.github.sophon.wiki.application.domain.util.normalizeSuperCombo
 import io.github.sophon.wiki.application.domain.util.normalizeT8
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
 import io.github.sophon.wiki.application.port.outbound.FetchGameDataPort
@@ -89,6 +90,7 @@ internal class RefreshDataService(
             Game.Tekken8 -> this.map { move -> move.normalizeT8() }
             Game.MBTL, Game.Uni2, Game.VSAV -> this.map { move -> move.normalizeMizuumi() }
             Game.GGST, Game.DBFZ, Game.GBVSR, Game.BBCF, Game.MTFS -> this.map { move -> move.normalizeDustLoop(game) }
+            Game.StreetFighter6, Game.MK1, Game.AVL -> this.map { move -> move.normalizeSuperCombo() }
             else -> this
         }
         return normalizedList
