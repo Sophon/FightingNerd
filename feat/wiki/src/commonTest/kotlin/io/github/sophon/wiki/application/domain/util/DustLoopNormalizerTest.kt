@@ -17,7 +17,7 @@ class DustLoopNormalizerTest {
         val expected = "cls"
 
         //when
-        val result = move.normalizeDustLoop(Game.GGST, DustLoopCharacterSource.solBadguy)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.solBadguy)
 
         //then
         assertThat(result.input).isEqualTo(expected)
@@ -30,7 +30,7 @@ class DustLoopNormalizerTest {
         val expected = "j6d/j4d"
 
         //when
-        val result = move.normalizeDustLoop(Game.GGST, DustLoopCharacterSource.solBadguy)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.solBadguy)
 
         //then
         assertThat(result.input).isEqualTo(expected)
@@ -45,7 +45,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("cl.s", "c.s", "cs")
 
         //when
-        val result = move.normalizeDustLoop(Game.GGST, DustLoopCharacterSource.solBadguy)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.solBadguy)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -58,7 +58,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("j6d", "j4d", "j.6d", "j.4d")
 
         //when
-        val result = move.normalizeDustLoop(Game.GGST, DustLoopCharacterSource.solBadguy)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.solBadguy)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -71,7 +71,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("[4]6s~k", "[4]6h~k")
 
         //when
-        val result = move.normalizeDustLoop(Game.GGST, DustLoopCharacterSource.may)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.may)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -84,7 +84,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("214p")
 
         //when
-        val result = move.normalizeDustLoop(Game.GGST, DustLoopCharacterSource.johnny)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.johnny)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -97,7 +97,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("2h")
 
         //when
-        val result = move.normalizeDustLoop(Game.GGST, DustLoopCharacterSource.nagoriyuki)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.nagoriyuki)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -110,7 +110,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("2s3")
 
         //when
-        val result = move.normalizeDustLoop(Game.GGST, DustLoopCharacterSource.nagoriyuki)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.nagoriyuki)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -123,7 +123,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("2hb")
 
         //when
-        val result = move.normalizeDustLoop(Game.GGST, DustLoopCharacterSource.nagoriyuki)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.nagoriyuki)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -136,7 +136,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("22m~l", "22m~m")
 
         //when
-        val result = move.normalizeDustLoop(Game.GBVSR, DustLoopCharacterSource.sandalphon)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.sandalphon)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -149,7 +149,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("f.h[k]", "k.fh")
 
         //when
-        val result = move.normalizeDustLoop(Game.GBVSR, DustLoopCharacterSource.narmaya)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.narmaya)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -162,7 +162,7 @@ class DustLoopNormalizerTest {
         val expected = listOf("f.h[g]", "g.fh")
 
         //when
-        val result = move.normalizeDustLoop(Game.GBVSR, DustLoopCharacterSource.narmaya)
+        val result = move.normalizeDustLoop(DustLoopCharacterSource.narmaya)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -171,12 +171,12 @@ class DustLoopNormalizerTest {
 }
 
 private object DustLoopCharacterSource {
-    val solBadguy = CharacterId("sol_badguy")
-    val may = CharacterId("may")
-    val johnny = CharacterId("johnny")
-    val nagoriyuki = CharacterId("nagoriyuki")
-    val sandalphon = CharacterId("sandalphon")
-    val narmaya = CharacterId("narmaya")
+    val solBadguy = CharacterId(Game.GGST, "sol_badguy")
+    val may = CharacterId(Game.GGST, "may")
+    val johnny = CharacterId(Game.GGST, "johnny")
+    val nagoriyuki = CharacterId(Game.GGST, "nagoriyuki")
+    val sandalphon = CharacterId(Game.GBVSR, "sandalphon")
+    val narmaya = CharacterId(Game.GBVSR, "narmaya")
 }
 
 /**

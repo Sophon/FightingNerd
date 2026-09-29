@@ -53,7 +53,7 @@ internal class WavuKtorGameDataAdapter(
         val characterListResult = safeCall<WavuCharacterListResponseDto> {
             httpClient.get(url)
         }
-            .map { dto -> dto.toDomain() }
+            .map { dto -> dto.toDomain(game) }
         return characterListResult
     }
 

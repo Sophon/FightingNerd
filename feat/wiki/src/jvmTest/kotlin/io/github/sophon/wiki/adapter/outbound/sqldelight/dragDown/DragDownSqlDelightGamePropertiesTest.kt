@@ -16,7 +16,7 @@ internal class DragDownSqlDelightGamePropertiesTest {
         val expected = listOf(clairen)
 
         // when
-        database.save(Game.ROA2, clairen)
+        database.save(clairen)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.ROA2).first()
@@ -30,10 +30,10 @@ internal class DragDownSqlDelightGamePropertiesTest {
         val expected = listOf(clairenJab)
 
         // when
-        database.save(Game.ROA2, clairen, expected)
+        database.save(clairen, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.ROA2, clairen.id).first()
+        val moveList = database.moveAdapter.subscribe(clairen.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 }

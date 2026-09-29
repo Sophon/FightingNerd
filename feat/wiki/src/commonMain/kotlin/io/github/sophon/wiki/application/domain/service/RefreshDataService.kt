@@ -57,7 +57,7 @@ internal class RefreshDataService(
                         characterWithMovesResult
                             .onSuccess { (character, moveList) ->
                                 downloadCount++
-                                Napier.d(tag = TAG) { "${character.id.value} (${game.id}): ${moveList.size} moves downloaded" }
+                                Napier.d(tag = TAG) { "${character.id.naturalId} (${game.id}): ${moveList.size} moves downloaded" }
                             }
                             .onError { error ->
                                 Napier.w(tag = TAG) { "${game.id}: download failed - $error" }
@@ -66,10 +66,10 @@ internal class RefreshDataService(
                             .flatMap { (character, moveList) ->
                                 val normalizedCharacter = character.normalize()
                                 val normalizedMoveList = moveList
-                                    .normalize(game, normalizedCharacter.id)
-                                    .dropDuplicateInputs(game, normalizedCharacter.id)
+                                    .normalize(normalizedCharacter.id)
+                                    .dropDuplicateInputs(normalizedCharacter.id)
                                 downloadedIdSet.add(normalizedCharacter.id)
-                                saveCharacterMoveList(game, normalizedCharacter, normalizedMoveList)
+                                saveCharacterMoveList(normalizedCharacter, normalizedMoveList)
                             }
                             .onSuccess { successCount++ }
                             .onError { error -> emit(RefreshEvent.Failed(error)) }
@@ -92,14 +92,13 @@ internal class RefreshDataService(
     }
 
     private suspend fun saveCharacterMoveList(
-        game: Game,
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<WikiError> {
-        val saveResult = saveCharacterMoveListPort.save(game, character, moveList)
+        val saveResult = saveCharacterMoveListPort.save(character, moveList)
             .mapError { error -> error.toWikiError() }
             .onError { error ->
-                Napier.w(tag = TAG) { "${character.id.value} (${game.id}): save failed - $error" }
+                Napier.w(tag = TAG) { "${character.id.naturalId} (${character.id.game.id}): save failed - $error" }
             }
 
         return saveResult
@@ -121,29 +120,23 @@ internal class RefreshDataService(
     /**
      * The first move in wiki order keeps the input; the rest are wiki errors or true duplicates.
      */
-    private fun List<Move>.dropDuplicateInputs(
-        game: Game,
-        characterId: CharacterId,
-    ): List<Move> {
+    private fun List<Move>.dropDuplicateInputs(characterId: CharacterId): List<Move> {
         val moveListByInput = this.groupBy { move -> move.input }
         val uniqueMoveList = moveListByInput.values.map { sameInputList -> sameInputList.first() }
         val droppedMoveList = moveListByInput.values.flatMap { sameInputList -> sameInputList.drop(1) }
 
         if (droppedMoveList.isNotEmpty()) {
             val droppedIdList = droppedMoveList.map { move -> move.remoteId ?: move.input }
-            Napier.w(tag = TAG) { "${characterId.value} (${game.id}): duplicate inputs dropped - $droppedIdList" }
+            Napier.w(tag = TAG) { "${characterId.naturalId} (${characterId.game.id}): duplicate inputs dropped - $droppedIdList" }
         }
         return uniqueMoveList
     }
 
-    private fun List<Move>.normalize(
-        game: Game,
-        characterId: CharacterId,
-    ): List<Move> {
-        val normalizedList = when (game) {
+    private fun List<Move>.normalize(characterId: CharacterId): List<Move> {
+        val normalizedList = when (characterId.game) {
             Game.Tekken8 -> this.map { move -> move.normalizeT8() }
             Game.MBTL, Game.Uni2, Game.VSAV -> this.map { move -> move.normalizeMizuumi() }
-            Game.GGST, Game.DBFZ, Game.GBVSR, Game.BBCF, Game.MTFS -> this.map { move -> move.normalizeDustLoop(game, characterId) }
+            Game.GGST, Game.DBFZ, Game.GBVSR, Game.BBCF, Game.MTFS -> this.map { move -> move.normalizeDustLoop(characterId) }
             Game.StreetFighter6, Game.MK1, Game.AVL -> this.map { move -> move.normalizeSuperCombo() }
             Game.Xko -> this.map { move -> move.normalizeXko() }
             Game.KoFXV, Game.COTW -> this.map { move -> move.normalizeDreamCancel() }

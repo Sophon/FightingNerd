@@ -43,18 +43,15 @@ internal class DreamCancelSqlDelightGameProperties(
 
     override fun loadCharacterProperties(game: Game): Map<Long, CharacterGameProperties> = emptyMap()
 
-    override fun loadMoveProperties(
-        game: Game,
-        characterId: CharacterId,
-    ): Map<Long, MoveGameProperties> {
-        val propertiesByMoveRowId: Map<Long, MoveGameProperties> = when (game) {
+    override fun loadMoveProperties(characterId: CharacterId): Map<Long, MoveGameProperties> {
+        val propertiesByMoveRowId: Map<Long, MoveGameProperties> = when (characterId.game) {
             Game.KoFXV -> database.kofxvMoveQueries
-                .selectByCharacter(game = game.id, natural_id = characterId.value)
+                .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
                 .executeAsList()
                 .associate { row -> row.move_id to row.toDomain() }
 
             Game.COTW -> database.cotwMoveQueries
-                .selectByCharacter(game = game.id, natural_id = characterId.value)
+                .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
                 .executeAsList()
                 .associate { row -> row.move_id to row.toDomain() }
 

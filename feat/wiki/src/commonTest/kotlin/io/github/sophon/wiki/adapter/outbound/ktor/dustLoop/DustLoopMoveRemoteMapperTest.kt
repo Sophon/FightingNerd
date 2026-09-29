@@ -112,19 +112,19 @@ private fun MoveDto.toMove(
 
 private object DustLoopMoveSource {
     val sol = Character(
-        id = CharacterId("Sol Badguy"),
+        id = CharacterId(Game.GGST, "Sol Badguy"),
         displayName = "Sol Badguy",
         remoteQueryId = "Sol Badguy",
         wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy",
     )
     val platinum = Character(
-        id = CharacterId("Platinum the Trinity"),
+        id = CharacterId(Game.BBCF, "Platinum the Trinity"),
         displayName = "Platinum the Trinity",
         remoteQueryId = "Platinum the Trinity",
         wikiUrl = "https://www.dustloop.com/w/BBCF/Platinum_the_Trinity",
     )
     val makoto = Character(
-        id = CharacterId("Makoto Nanaya"),
+        id = CharacterId(Game.BBCF, "Makoto Nanaya"),
         displayName = "Makoto Nanaya",
         remoteQueryId = "Makoto Nanaya",
         wikiUrl = "https://www.dustloop.com/w/BBCF/Makoto_Nanaya",

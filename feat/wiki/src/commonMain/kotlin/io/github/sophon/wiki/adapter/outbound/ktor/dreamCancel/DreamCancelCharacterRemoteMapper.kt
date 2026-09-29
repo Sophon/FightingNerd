@@ -19,7 +19,7 @@ internal fun String.toCharacter(
     val iconKeys = listOf(substringBefore(" "), substringAfterLast(" "))
 
     val character = Character(
-        id = CharacterId(queryName),
+        id = CharacterId(game, queryName),
         displayName = displayName,
         remoteQueryId = queryName,
         aliasList = displayName.createAliases(),

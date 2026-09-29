@@ -102,7 +102,7 @@ class MizuumiMoveRemoteMapperTest {
         val moveList = (movesOf(chara = "Akiha Tohno", idPrefix = "ak", count = 10)
                 + movesOf(chara = "Ciel", idPrefix = "ci", count = 10))
         val responseDto = MizuumiMoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
-        val expected = listOf(CharacterId("Akiha Tohno") to 10, CharacterId("Ciel") to 10)
+        val expected = listOf(CharacterId(Game.MBTL, "Akiha Tohno") to 10, CharacterId(Game.MBTL, "Ciel") to 10)
 
         //when
         val result = responseDto.toDomainAll(Game.MBTL, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
@@ -118,7 +118,7 @@ class MizuumiMoveRemoteMapperTest {
         val moveList = (movesOf(chara = "Akiha Tohno", idPrefix = "ak", count = 10)
                 + movesOf(chara = "Ciel", idPrefix = "ci", count = 9))
         val responseDto = MizuumiMoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
-        val expected = listOf(CharacterId("Akiha Tohno"))
+        val expected = listOf(CharacterId(Game.MBTL, "Akiha Tohno"))
 
         //when
         val result = responseDto.toDomainAll(Game.MBTL, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
@@ -168,31 +168,31 @@ private fun movesOf(
 
 private object MizuumiMoveSource {
     val ak = Character(
-        id = CharacterId("Akiha Tohno"),
+        id = CharacterId(Game.MBTL, "Akiha Tohno"),
         displayName = "Akiha Tohno",
         remoteQueryId = "Akiha Tohno",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Akiha_Tohno",
     )
     val dn = Character(
-        id = CharacterId("Dead Apostle Noel"),
+        id = CharacterId(Game.MBTL, "Dead Apostle Noel"),
         displayName = "Dead Apostle Noel",
         remoteQueryId = "Dead Apostle Noel",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Dead_Apostle_Noel",
     )
     val va = Character(
-        id = CharacterId("Vatista"),
+        id = CharacterId(Game.Uni2, "Vatista"),
         displayName = "Vatista",
         remoteQueryId = "Vatista",
         wikiUrl = "https://mizuumi.wiki/w/Under_Night_In-Birth/UNI2/Vatista",
     )
     val akatsuki = Character(
-        id = CharacterId("Akatsuki"),
+        id = CharacterId(Game.Uni2, "Akatsuki"),
         displayName = "Akatsuki",
         remoteQueryId = "Akatsuki",
         wikiUrl = "https://mizuumi.wiki/w/Under_Night_In-Birth/UNI2/Akatsuki",
     )
     val leiLei = Character(
-        id = CharacterId("Lei-Lei"),
+        id = CharacterId(Game.VSAV, "Lei-Lei"),
         displayName = "Lei-Lei",
         remoteQueryId = "Lei-Lei",
         wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior/Lei-Lei",

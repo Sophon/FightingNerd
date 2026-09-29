@@ -35,7 +35,10 @@
   - no migrations - a stale schema fingerprint (core's `SchemaFingerprint`) deletes the database, the next refresh downloads it again
   - opened on first use (`LazyWikiDB`), on `Dispatchers.IO` - not when Koin builds the adapters
 - identity
-  - `CharacterId` - the normalized `remoteQueryId` (`Armor King` → `armor_king`), stored as `natural_id`
+  - `CharacterId(game, naturalId)` - the character's natural key `(game, natural_id)`, so it's unique across games
+    - `naturalId` - the normalized `remoteQueryId` (`Armor King` → `armor_king`), unique only within its game
+    - a character lookup returns the game with it - `character.id.game`; anything taking a `CharacterId` needs no separate `Game`
+    - internal - never shown to the user
   - a move is identified by its complete input within its character - the wiki's own move ID is only `Move.remoteId`, for links
   - the `INTEGER` row IDs never leave the adapter
 

@@ -18,7 +18,7 @@ class MizuumiCharacterRemoteMapperTest {
         //given
         val chara = "Ciel"
         val expected = Character(
-            id = CharacterId("Ciel"),
+            id = CharacterId(Game.MBTL, "Ciel"),
             displayName = "Ciel",
             remoteQueryId = "Ciel",
             wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Ciel",
@@ -41,7 +41,7 @@ class MizuumiCharacterRemoteMapperTest {
         //given
         val chara = "Akiha Tohno"
         val expected = Character(
-            id = CharacterId("Akiha Tohno"),
+            id = CharacterId(Game.MBTL, "Akiha Tohno"),
             displayName = "Akiha Tohno",
             remoteQueryId = "Akiha Tohno",
             wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Akiha_Tohno",

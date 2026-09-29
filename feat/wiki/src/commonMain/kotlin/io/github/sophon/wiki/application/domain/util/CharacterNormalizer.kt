@@ -1,14 +1,13 @@
 package io.github.sophon.wiki.application.domain.util
 
 import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
 
 /**
- * The id is the lowercase `remoteQueryId` with spaces as `_` (`Armor King` → `armor_king`).
+ * The natural id is the lowercase `remoteQueryId` with spaces as `_` (`Armor King` → `armor_king`); the game stays.
  * The display name becomes a lowercase alias too; the display name itself stays for the UI.
  */
 internal fun Character.normalize(): Character {
-    val normalizedId = remoteQueryId
+    val normalizedNaturalId = remoteQueryId
         .trim()
         .replace(" ", "_")
         .lowercase()
@@ -18,7 +17,7 @@ internal fun Character.normalize(): Character {
         .distinct()
 
     val normalized = copy(
-        id = CharacterId(normalizedId),
+        id = id.copy(naturalId = normalizedNaturalId),
         aliasList = normalizedAliases,
     )
     return normalized

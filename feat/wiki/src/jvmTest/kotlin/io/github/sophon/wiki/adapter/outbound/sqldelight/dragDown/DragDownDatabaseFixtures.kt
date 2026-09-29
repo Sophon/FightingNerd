@@ -1,5 +1,6 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.dragDown
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -10,7 +11,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2MovePro
 // every property has a distinct value - a swapped column fails the round trip
 
 internal val clairen = Character(
-    id = CharacterId("clairen"),
+    id = CharacterId(Game.ROA2, "clairen"),
     displayName = "Clairen",
     remoteQueryId = "Clairen",
     wikiUrl = "https://dragdown.wiki/wiki/RoA2/Clairen",

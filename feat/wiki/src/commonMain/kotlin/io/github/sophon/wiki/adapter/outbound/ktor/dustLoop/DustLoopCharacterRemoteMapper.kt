@@ -31,7 +31,7 @@ private fun CharacterDto.toDomain(
     val queryName = name?.cleanHtml().formCharacterQueryName(game)
 
     val character = Character(
-        id = CharacterId(queryName),
+        id = CharacterId(game, queryName),
         displayName = name?.cleanHtml().orEmpty(),
         remoteQueryId = queryName,
         wikiUrl = queryName.formWikiUrl(game),

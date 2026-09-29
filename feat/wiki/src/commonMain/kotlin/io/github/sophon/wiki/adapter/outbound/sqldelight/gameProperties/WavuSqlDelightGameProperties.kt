@@ -43,12 +43,9 @@ internal class WavuSqlDelightGameProperties(
 
     override fun loadCharacterProperties(game: Game): Map<Long, CharacterGameProperties> = emptyMap()
 
-    override fun loadMoveProperties(
-        game: Game,
-        characterId: CharacterId,
-    ): Map<Long, MoveGameProperties> {
+    override fun loadMoveProperties(characterId: CharacterId): Map<Long, MoveGameProperties> {
         val propertiesByMoveRowId = database.tekken8MoveQueries
-            .selectByCharacter(game = game.id, natural_id = characterId.value)
+            .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
             .executeAsList()
             .associate { row -> row.move_id to row.toDomain() }
         return propertiesByMoveRowId

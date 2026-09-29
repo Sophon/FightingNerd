@@ -25,7 +25,7 @@ class DreamCancelCharacterRemoteMapperTest {
     fun `id is the query name - the service normalizes it`() {
         //given
         val chara = "B. Jenet"
-        val expected = CharacterId("B._Jenet")
+        val expected = CharacterId(Game.KoFXV, "B._Jenet")
 
         //when
         val result = chara.toCharacter(Game.KoFXV, iconUrlMap = emptyMap())

@@ -1,5 +1,6 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.superCombo
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -13,7 +14,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.SFCharPrope
 // every property has a distinct value - a swapped column fails the round trip
 
 internal val ryu = Character(
-    id = CharacterId("ryu"),
+    id = CharacterId(Game.StreetFighter6, "ryu"),
     displayName = "Ryu",
     remoteQueryId = "Ryu",
     wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu",
@@ -75,7 +76,7 @@ internal val ryuStandingMediumPunch = Move(
 )
 
 internal val liuKang = Character(
-    id = CharacterId("liu_kang"),
+    id = CharacterId(Game.MK1, "liu_kang"),
     displayName = "Liu Kang",
     remoteQueryId = "Liu Kang",
     wikiUrl = "https://wiki.supercombo.gg/w/Mortal_Kombat_1/Liu_Kang",
@@ -103,7 +104,7 @@ internal val liuKangBackOne = Move(
 )
 
 internal val aang = Character(
-    id = CharacterId("aang"),
+    id = CharacterId(Game.AVL, "aang"),
     displayName = "Aang",
     remoteQueryId = "Aang",
     wikiUrl = "https://wiki.supercombo.gg/w/Avatar_Legends/Aang",

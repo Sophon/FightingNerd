@@ -2,6 +2,7 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dragDown
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -396,19 +397,19 @@ private object DragDownMoveSource {
 
 private object DragDownCharacterSource {
     val olympia = Character(
-        id = CharacterId("Olympia"),
+        id = CharacterId(Game.ROA2, "Olympia"),
         displayName = "Olympia",
         remoteQueryId = "Olympia",
         wikiUrl = "https://dragdown.wiki/wiki/RoA2/Olympia",
     )
     val forsburn = Character(
-        id = CharacterId("Forsburn"),
+        id = CharacterId(Game.ROA2, "Forsburn"),
         displayName = "Forsburn",
         remoteQueryId = "Forsburn",
         wikiUrl = "https://dragdown.wiki/wiki/RoA2/Forsburn",
     )
     val ranno = Character(
-        id = CharacterId("Ranno"),
+        id = CharacterId(Game.ROA2, "Ranno"),
         displayName = "Ranno",
         remoteQueryId = "Ranno",
         wikiUrl = "https://dragdown.wiki/wiki/RoA2/Ranno",

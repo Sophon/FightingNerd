@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.application.domain.model
 
+import io.github.sophon.core.featureConfig.model.Game
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmInline
 
 @Serializable
 data class Character(
@@ -26,9 +26,13 @@ data class Character(
 }
 
 /**
- * The normalized `remoteQueryId` - lowercase, spaces as `_` (`Armor King` -> `armor_king`).
- * Unique within a game and stable across refreshes and wipes.
+ * A character in a game - crossovers (Mai in SF, KOF and COTW) are different characters.
+ * [naturalId] is the normalized `remoteQueryId` - lowercase, spaces as `_` (`Armor King` -> `armor_king`),
+ * unique only within [game].
+ * Stable across refreshes and wipes; never shown to the user.
  */
-@JvmInline
 @Serializable
-value class CharacterId(val value: String)
+data class CharacterId(
+    val game: Game,
+    val naturalId: String,
+)

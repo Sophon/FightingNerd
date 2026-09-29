@@ -41,11 +41,11 @@ internal class SqlDelightCharacterAdapter(
     }
 
     override suspend fun save(
-        game: Game,
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<DataError.Local> {
-        val result = runDatabaseWrite(TAG, "save(${game.id}, ${character.id.value})") {
+        val game = character.id.game
+        val result = runDatabaseWrite(TAG, "save(${game.id}, ${character.id.naturalId})") {
             database.transaction {
                 val characterRowId = upsertCharacter(game, character)
                 replaceCharacterAliasList(game, characterRowId, character.aliasList)
@@ -64,7 +64,7 @@ internal class SqlDelightCharacterAdapter(
             database.transaction {
                 database.characterQueries.strikeAbsent(
                     game = game.id,
-                    natural_id = downloadedIdSet.map { id -> id.value },
+                    natural_id = downloadedIdSet.map { id -> id.naturalId },
                 )
                 database.characterQueries.deleteStruck(game = game.id, strike_count = STRIKE_LIMIT)
             }
@@ -95,6 +95,7 @@ internal class SqlDelightCharacterAdapter(
                 .executeAsList()
                 .map { entity ->
                     entity.toDomain(
+                        game = game,
                         aliasList = aliasListByRowId[entity.id].orEmpty(),
                         gameProperties = propertiesByRowId[entity.id],
                     )
@@ -110,7 +111,7 @@ internal class SqlDelightCharacterAdapter(
     ): Long {
         database.characterQueries.upsert(
             game = game.id,
-            natural_id = character.id.value,
+            natural_id = character.id.naturalId,
             remote_query_id = character.remoteQueryId,
             display_name = character.displayName,
             wiki_url = character.wikiUrl,
@@ -124,7 +125,7 @@ internal class SqlDelightCharacterAdapter(
         // re-selected by natural key - no RETURNING before SQLite 3.35 (minSdk 30 ships 3.28),
         // and last_insert_rowid() isn't set by the update path
         val characterRowId = database.characterQueries
-            .selectId(game = game.id, natural_id = character.id.value)
+            .selectId(game = game.id, natural_id = character.id.naturalId)
             .executeAsOne()
 
         character.gameProperties?.let { properties ->

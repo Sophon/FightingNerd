@@ -28,15 +28,12 @@ internal class SqlDelightMoveAdapter(
     DeleteMoveListPort {
     private val database by wikiDatabase
 
-    override fun subscribe(
-        game: Game,
-        characterId: CharacterId,
-    ): Flow<List<Move>> {
+    override fun subscribe(characterId: CharacterId): Flow<List<Move>> {
         // the query is built inside the flow - the first use opens the database, which belongs on IO
         val flow = flow {
-            emitAll(database.moveQueries.selectByCharacter(game = game.id, natural_id = characterId.value).asFlow())
+            emitAll(database.moveQueries.selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId).asFlow())
         }
-            .map { loadMoveList(game, characterId) }
+            .map { loadMoveList(characterId) }
             .flowOn(Dispatchers.IO)
         return flow
     }
@@ -59,13 +56,10 @@ internal class SqlDelightMoveAdapter(
         return result
     }
 
-    private fun loadMoveList(
-        game: Game,
-        characterId: CharacterId,
-    ): List<Move> {
+    private fun loadMoveList(characterId: CharacterId): List<Move> {
         val moveList = database.transactionWithResult {
             val aliasListByRowId = database.moveAliasQueries
-                .selectAliasByCharacter(game = game.id, natural_id = characterId.value) { moveRowId, alias ->
+                .selectAliasByCharacter(game = characterId.game.id, natural_id = characterId.naturalId) { moveRowId, alias ->
                     moveRowId to alias
                 }
                 .executeAsList()
@@ -73,10 +67,10 @@ internal class SqlDelightMoveAdapter(
                     keySelector = { (moveRowId, _) -> moveRowId },
                     valueTransform = { (_, alias) -> alias },
                 )
-            val propertiesByRowId = gamePropertiesRouter.of(game).loadMoveProperties(game, characterId)
+            val propertiesByRowId = gamePropertiesRouter.of(characterId.game).loadMoveProperties(characterId)
 
             val loadedMoveList = database.moveQueries
-                .selectByCharacter(game = game.id, natural_id = characterId.value)
+                .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
                 .executeAsList()
                 .map { entity ->
                     entity.toDomain(

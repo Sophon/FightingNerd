@@ -128,23 +128,20 @@ internal class MizuumiSqlDelightGameProperties(
         return propertiesByCharacterRowId
     }
 
-    override fun loadMoveProperties(
-        game: Game,
-        characterId: CharacterId,
-    ): Map<Long, MoveGameProperties> {
-        val propertiesByMoveRowId: Map<Long, MoveGameProperties> = when (game) {
+    override fun loadMoveProperties(characterId: CharacterId): Map<Long, MoveGameProperties> {
+        val propertiesByMoveRowId: Map<Long, MoveGameProperties> = when (characterId.game) {
             Game.MBTL -> database.mbtlMoveQueries
-                .selectByCharacter(game = game.id, natural_id = characterId.value)
+                .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
                 .executeAsList()
                 .associate { row -> row.move_id to row.toDomain() }
 
             Game.Uni2 -> database.uni2MoveQueries
-                .selectByCharacter(game = game.id, natural_id = characterId.value)
+                .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
                 .executeAsList()
                 .associate { row -> row.move_id to row.toDomain() }
 
             Game.VSAV -> database.vsavMoveQueries
-                .selectByCharacter(game = game.id, natural_id = characterId.value)
+                .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
                 .executeAsList()
                 .associate { row -> row.move_id to row.toDomain() }
 

@@ -22,7 +22,7 @@ internal fun String.toDomain(
     }
 
     val character = Character(
-        id = CharacterId(this),
+        id = CharacterId(game, this),
         displayName = this.cleanHtml(),
         remoteQueryId = this,
         wikiUrl = "${game.wikiUrl}/${this.replace(" ", "_")}",
@@ -43,7 +43,7 @@ internal fun MizuumiCharacterListResponseDto.toDomain(
         val dto = characterTitle.title
 
         val character = Character(
-            id = CharacterId(dto.chara),
+            id = CharacterId(game, dto.chara),
             displayName = dto.chara,
             remoteQueryId = dto.chara,
             wikiUrl = "${game.wikiUrl}/${dto.chara}",

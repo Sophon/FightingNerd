@@ -88,7 +88,7 @@
   - the shape never reaches the service
 - one Ktor adapter per wiki (`adapter/outbound/ktor/<wiki>/`)
   - `KtorGameDataAdapter` routes by `Game.wiki` with an exhaustive `when` - a wiki without an adapter doesn't compile
-- save per emission - `SaveCharacterMoveListPort.save(game, character, moveList)`
+- save per emission - `SaveCharacterMoveListPort.save(character, moveList)` - the game comes from `character.id`
   - one transaction per character - the app can open a character as soon as its moves are saved
   - bulk games - all characters become available together, after the one download
   - the character's moves absent from the move list get a strike inside the save - the list is complete per character
@@ -96,7 +96,7 @@
   - after a game's stream ends, strike the characters that weren't downloaded
   - skip when nothing was downloaded
 - strikes are deleted at 5, both for characters and moves
-- normalization - one normalizer per wiki in `application/domain/util/` - `normalizeT8`, `normalizeMizuumi`, `normalizeDustLoop(game, characterId)`, `normalizeSuperCombo`, `normalizeXko`, `normalizeDreamCancel`
+- normalization - one normalizer per wiki in `application/domain/util/` - `normalizeT8`, `normalizeMizuumi`, `normalizeDustLoop(characterId)`, `normalizeSuperCombo`, `normalizeXko`, `normalizeDreamCancel`
   - the character first (`Character.normalize()`), then its moves with the normalized `CharacterId`
   - the mapper only cleans (HTML, entities, template placeholders); the input, its aliases and ids built from it are the normalizer's
   - DragDown has none - RoA2's input is built from attack id + mode, there's no notation to normalize

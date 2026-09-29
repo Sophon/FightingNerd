@@ -2,6 +2,7 @@ package io.github.sophon.wiki.application.domain.util
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import kotlin.test.Test
@@ -13,7 +14,7 @@ class CharacterNormalizerTest {
     fun `id is lowercase with spaces as underscores`() {
         //given
         val character = CharacterSource.armorKing
-        val expected = CharacterId("armor_king")
+        val expected = CharacterId(Game.Tekken8, "armor_king")
 
         //when
         val result = character.normalize()
@@ -26,7 +27,7 @@ class CharacterNormalizerTest {
     fun `id keeps hyphens`() {
         //given
         val character = CharacterSource.jack8
-        val expected = CharacterId("jack-8")
+        val expected = CharacterId(Game.Tekken8, "jack-8")
 
         //when
         val result = character.normalize()
@@ -92,7 +93,7 @@ private fun wavuCharacter(
     aliasList: List<String>,
 ): Character {
     val character = Character(
-        id = CharacterId(name),
+        id = CharacterId(Game.Tekken8, name),
         displayName = name,
         remoteQueryId = name,
         wikiUrl = "https://wavu.wiki/t/${name.replace(" ", "_")}_movelist",

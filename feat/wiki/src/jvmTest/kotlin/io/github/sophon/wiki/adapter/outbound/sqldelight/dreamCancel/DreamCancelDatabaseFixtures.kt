@@ -1,5 +1,6 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.dreamCancel
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -9,7 +10,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.KOF15MovePr
 // normalized, like the service hands them to the adapter
 
 internal val kyo = Character(
-    id = CharacterId("kyo_kusanagi"),
+    id = CharacterId(Game.KoFXV, "kyo_kusanagi"),
     displayName = "Kyo Kusanagi",
     remoteQueryId = "Kyo Kusanagi",
     wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV/Kyo_Kusanagi",
@@ -26,7 +27,7 @@ internal val kyoCloseC = Move(
 )
 
 internal val terry = Character(
-    id = CharacterId("terry_bogard"),
+    id = CharacterId(Game.COTW, "terry_bogard"),
     displayName = "Terry Bogard",
     remoteQueryId = "Terry Bogard",
     wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves/Terry_Bogard",

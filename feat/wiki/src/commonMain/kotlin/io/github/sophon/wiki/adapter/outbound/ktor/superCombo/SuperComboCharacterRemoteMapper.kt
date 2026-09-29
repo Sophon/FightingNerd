@@ -27,7 +27,7 @@ private fun formCharacter(
     imageUrlMap: Map<String, String>,
 ): Character {
     val character = Character(
-        id = CharacterId(dto.chara),
+        id = CharacterId(game, dto.chara),
         displayName = (dto.name ?: dto.chara),
         remoteQueryId = dto.chara,
         wikiUrl = "$WIKI_BASE_URL/${game.id}/${dto.chara}",

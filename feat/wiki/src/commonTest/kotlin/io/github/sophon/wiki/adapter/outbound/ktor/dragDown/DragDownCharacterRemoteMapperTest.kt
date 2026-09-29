@@ -14,7 +14,7 @@ class DragDownCharacterRemoteMapperTest {
     fun `id is the query name - the service normalizes it`() {
         //given
         val dto = DragDownCharacterDtoSource.reina
-        val expected = CharacterId("La Reina")
+        val expected = CharacterId(Game.ROA2, "La Reina")
 
         //when
         val result = dto.toCharacter()

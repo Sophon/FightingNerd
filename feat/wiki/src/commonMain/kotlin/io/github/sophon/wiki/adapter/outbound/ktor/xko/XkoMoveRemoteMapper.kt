@@ -1,5 +1,6 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.orDash
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.Move
@@ -7,12 +8,12 @@ import io.github.sophon.wiki.application.domain.model.Move
 /**
  * Bulk - the whole move bucket, grouped into characters by page.
  */
-internal fun XkoMoveListResponseDto.toDomainAll(): List<Pair<Character, List<Move>>> {
+internal fun XkoMoveListResponseDto.toDomainAll(game: Game): List<Pair<Character, List<Move>>> {
     val characterWithMovesList = bucket
         .filterNot { dto -> dto.pageName.isExcludedPage() }
         .groupBy { dto -> dto.pageName }
         .map { (pageName, dtoList) ->
-            val character = pageName.toCharacter()
+            val character = pageName.toCharacter(game)
             val moveList = dtoList.map { dto -> dto.toDomain() }
             character to moveList
         }

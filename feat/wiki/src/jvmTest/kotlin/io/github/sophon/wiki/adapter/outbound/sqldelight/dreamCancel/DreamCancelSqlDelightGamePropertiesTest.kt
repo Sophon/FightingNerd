@@ -2,7 +2,6 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight.dreamCancel
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.adapter.outbound.sqldelight.TestWikiDatabase
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
@@ -16,10 +15,10 @@ internal class DreamCancelSqlDelightGamePropertiesTest {
         val expected = listOf(kyoCloseC)
 
         // when
-        database.save(Game.KoFXV, kyo, expected)
+        database.save(kyo, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.KoFXV, kyo.id).first()
+        val moveList = database.moveAdapter.subscribe(kyo.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -30,10 +29,10 @@ internal class DreamCancelSqlDelightGamePropertiesTest {
         val expected = listOf(terryStandingC)
 
         // when
-        database.save(Game.COTW, terry, expected)
+        database.save(terry, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.COTW, terry.id).first()
+        val moveList = database.moveAdapter.subscribe(terry.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 }

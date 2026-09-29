@@ -1,5 +1,6 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.mizuumi
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -12,7 +13,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMovePro
 // every property has a distinct value - a swapped column fails the round trip
 
 internal val arcueid = Character(
-    id = CharacterId("arcueid_brunestud"),
+    id = CharacterId(Game.MBTL, "arcueid_brunestud"),
     displayName = "Arcueid Brunestud",
     remoteQueryId = "Arcueid Brunestud",
     wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Arcueid_Brunestud",
@@ -38,7 +39,7 @@ internal val arcueidStandingA = Move(
 )
 
 internal val hyde = Character(
-    id = CharacterId("hyde"),
+    id = CharacterId(Game.Uni2, "hyde"),
     displayName = "Hyde",
     remoteQueryId = "Hyde",
     wikiUrl = "https://mizuumi.wiki/w/Under_Night_In-Birth/UNI2/Hyde",
@@ -105,7 +106,7 @@ internal val hydeStandingA = Move(
 )
 
 internal val morrigan = Character(
-    id = CharacterId("morrigan"),
+    id = CharacterId(Game.VSAV, "morrigan"),
     displayName = "Morrigan",
     remoteQueryId = "Morrigan",
     wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior/Morrigan",

@@ -16,7 +16,7 @@ internal class SuperComboSqlDelightGamePropertiesTest {
         val expected = listOf(ryu)
 
         // when
-        database.save(Game.StreetFighter6, ryu)
+        database.save(ryu)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.StreetFighter6).first()
@@ -30,10 +30,10 @@ internal class SuperComboSqlDelightGamePropertiesTest {
         val expected = listOf(ryuStandingMediumPunch)
 
         // when
-        database.save(Game.StreetFighter6, ryu, expected)
+        database.save(ryu, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.StreetFighter6, ryu.id).first()
+        val moveList = database.moveAdapter.subscribe(ryu.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -44,7 +44,7 @@ internal class SuperComboSqlDelightGamePropertiesTest {
         val expected = listOf(liuKang)
 
         // when
-        database.save(Game.MK1, liuKang)
+        database.save(liuKang)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.MK1).first()
@@ -58,10 +58,10 @@ internal class SuperComboSqlDelightGamePropertiesTest {
         val expected = listOf(liuKangBackOne)
 
         // when
-        database.save(Game.MK1, liuKang, expected)
+        database.save(liuKang, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.MK1, liuKang.id).first()
+        val moveList = database.moveAdapter.subscribe(liuKang.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -72,10 +72,10 @@ internal class SuperComboSqlDelightGamePropertiesTest {
         val expected = listOf(aangStandingLight)
 
         // when
-        database.save(Game.AVL, aang, expected)
+        database.save(aang, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.AVL, aang.id).first()
+        val moveList = database.moveAdapter.subscribe(aang.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 }
