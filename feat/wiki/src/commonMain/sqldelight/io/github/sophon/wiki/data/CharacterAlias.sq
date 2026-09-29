@@ -1,0 +1,24 @@
+CREATE TABLE character_alias (
+    game TEXT NOT NULL,
+    alias TEXT NOT NULL,
+    character_id INTEGER NOT NULL REFERENCES character(id) ON DELETE CASCADE,
+    PRIMARY KEY (game, alias)
+);
+
+CREATE INDEX character_alias_character_id ON character_alias(character_id);
+
+-- the first character saved with an alias keeps it
+insert:
+INSERT INTO character_alias(game, alias, character_id)
+VALUES (?, ?, ?)
+ON CONFLICT (game, alias) DO NOTHING;
+
+selectAliasByGame:
+SELECT character_id, alias
+FROM character_alias
+WHERE game = ?
+ORDER BY rowid;
+
+deleteByCharacter:
+DELETE FROM character_alias
+WHERE character_id = ?;

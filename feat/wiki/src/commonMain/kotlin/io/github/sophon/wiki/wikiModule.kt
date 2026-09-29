@@ -9,8 +9,12 @@ import io.github.sophon.wiki.adapter.outbound.ktor.superCombo.SuperComboKtorGame
 import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.xko.XkoKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.memory.InMemoryWikiConfigAdapter
+import io.github.sophon.wiki.adapter.outbound.sqldelight.LazyWikiDB
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightCharacterAdapter
+import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightGamePropertiesRouter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightMoveAdapter
+import io.github.sophon.wiki.adapter.outbound.sqldelight.createWikiSqlDriver
+import io.github.sophon.wiki.adapter.outbound.sqldelight.wavu.WavuSqlDelightGameProperties
 import io.github.sophon.wiki.application.domain.service.ClearCacheService
 import io.github.sophon.wiki.application.domain.service.ConfigureWikiService
 import io.github.sophon.wiki.application.domain.service.GetCharacterListService
@@ -36,13 +40,19 @@ import io.github.sophon.wiki.application.port.outbound.LoadMoveListPort
 import io.github.sophon.wiki.application.port.outbound.LoadWikiConfigPort
 import io.github.sophon.wiki.application.port.outbound.SaveCharacterMoveListPort
 import io.github.sophon.wiki.application.port.outbound.SaveWikiConfigPort
+import io.github.sophon.wiki.application.port.outbound.StrikeCharacterListPort
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import kotlin.time.Clock
 
-fun wikiModule(): Module = module {
+/**
+ * [databaseDirectory] - where `wiki.db` lives; null for the platform's default database location.
+ */
+fun wikiModule(databaseDirectory: String? = null): Module = module {
 
     // region Use cases and Services
     singleOf(::ClearCacheService).bind<ClearCacheUseCase>()
@@ -68,9 +78,19 @@ fun wikiModule(): Module = module {
     singleOf(::DragDownKtorGameDataAdapter)
     singleOf(::XkoKtorGameDataAdapter)
     singleOf(::DreamCancelKtorGameDataAdapter)
-    singleOf(::SqlDelightCharacterAdapter) {
+    single { LazyWikiDB { createWikiSqlDriver(databaseDirectory) } }
+    singleOf(::SqlDelightGamePropertiesRouter)
+    singleOf(::WavuSqlDelightGameProperties)
+    single {
+        SqlDelightCharacterAdapter(
+            wikiDatabase = get(),
+            gamePropertiesRouter = get(),
+            clock = Clock.System,
+        )
+    } withOptions {
         bind<LoadCharacterListPort>()
         bind<SaveCharacterMoveListPort>()
+        bind<StrikeCharacterListPort>()
         bind<DeleteCharacterListPort>()
     }
     singleOf(::SqlDelightMoveAdapter) {

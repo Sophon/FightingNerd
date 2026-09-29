@@ -25,7 +25,7 @@
         - universal base table (`character` / `move`) + one `1:1` extension table per game (`tekken_move`, `ggst_move`, ...)
         - extension PK is also the FK to the base row, `ON DELETE CASCADE`
         - base upsert + extension write in the same transaction
-        - `last_insert_rowid()` is not set by the `DO UPDATE` path - re-select the ID by natural key, or `RETURNING id` (SQLite 3.35+)
+        - `last_insert_rowid()` is not set by the `DO UPDATE` path - re-select the ID by natural key; no `RETURNING id` - it needs SQLite 3.35, minSdk 30 ships 3.28
         - `INNER JOIN` silently drops rows without an extension row - either guarantee both are written, or `LEFT JOIN`
         - SQLite can't stop a move from getting another game's extension row - the per-game adapter write guarantees it
       - aliases in their own table, not a list column - composite PK doubles as the lookup index
@@ -36,10 +36,17 @@
         - upsert (`ON CONFLICT (...) DO UPDATE`), not `INSERT OR REPLACE` - replace deletes the row, changing its ID and cascading to moves
         - one transaction per character (the character + its moves) - a refresh failing midway keeps the characters already written
         - `NOT NULL` wherever the domain guarantees it
+      - driver - wiki-owned `expect`/`actual` per platform (`WikiSqlDriver`), foreign keys on
+        - `wikiModule(databaseDirectory)` - null for the platform default; the bot passes `WIKI_DATABASE_DIR`
+        - no migrations - a stale schema fingerprint (core's `SchemaFingerprint`) deletes the database, the next refresh downloads it again
+        - opened on first use (`LazyWikiDB`), on `Dispatchers.IO` - not when Koin builds the adapters
+      - identity
+        - `CharacterId` - the normalized `remoteQueryId` (`Armor King` → `armor_king`), stored as `natural_id`
+        - a move is identified by its complete input within its character - the wiki's own move ID is only `Move.remoteId`, for links
+        - the `INTEGER` row IDs never leave the adapter
     - model
       - core fields are universal; game-specific fields go in `gameProperties`
         - `CharacterGameProperties` / `MoveGameProperties` interfaces, each wiki provides its own implementations
-      - ID is an opaque handle (`CharacterId` / `MoveId`) - fine to pass between port calls, never persisted outside the DB (nav args, prefs, bot) - use the natural key there
       - normalization is business logic, done by the service
         - remote adapter maps DTO → model, service normalizes, SQL port receives the normalized model
         - service also normalizes user input before lookup
@@ -49,8 +56,9 @@
         - a single join returns empty for both
   - character
     - entity
-      - natural key - `UNIQUE (game, remote_query_id)`
+      - natural key - `UNIQUE (game, natural_id)`
       - `character_alias` - `game` duplicated on purpose; aliases are unique per game, and SQLite can't enforce `UNIQUE` across a join
+        - the first character saved with an alias keeps it
       - display name is stored as an alias on write - lookup is a single equality on a single column
       ```sql
       CREATE TABLE character_alias (
@@ -69,6 +77,8 @@
       - natural key - `UNIQUE (character_id, input)` - stance/situation is part of the input (`STA.df1`)
       - `move_alias` - `character_id` duplicated on purpose, same reason as `character_alias.game`
       - input is stored as an alias on write - lookup is a single equality on a single column
+        - rebuilt on every save - the inputs of all the character's moves first (`is_input`), so an input beats an alias, then the aliases in wiki order, so the first alias written wins
+      - duplicate inputs after normalizing - the service keeps the first move in wiki order and warns with the dropped `remoteId`s
       - search by game property (Heat) - join the game's extension table, e.g. `JOIN tekken_move ... WHERE is_heat = 1`
       ```sql
       CREATE TABLE move_alias (
@@ -162,10 +172,12 @@
   - one transaction per character - the app can open a character as soon as its moves are saved
   - bulk games - all characters become available together, after the one download
   - the character's moves absent from the move list get a strike inside the save - the list is complete per character
-- deferred to the SQL stage - character strikes
+- character strikes - `StrikeCharacterListPort.strike(game, downloadedIdSet)`
   - after a game's stream ends, strike the characters that weren't downloaded
   - skip when nothing was downloaded
-- normalization - one normalizer per wiki in `application/domain/util/` - `normalizeT8`, `normalizeMizuumi`, `normalizeDustLoop(game)`, `normalizeSuperCombo`, `normalizeXko`, `normalizeDreamCancel`
+- strikes are deleted at 5, both for characters and moves
+- normalization - one normalizer per wiki in `application/domain/util/` - `normalizeT8`, `normalizeMizuumi`, `normalizeDustLoop(game, characterId)`, `normalizeSuperCombo`, `normalizeXko`, `normalizeDreamCancel`
+  - the character first (`Character.normalize()`), then its moves with the normalized `CharacterId`
   - the mapper only cleans (HTML, entities, template placeholders); the input, its aliases and ids built from it are the normalizer's
   - DragDown has none - RoA2's input is built from attack id + mode, there's no notation to normalize
 - logs

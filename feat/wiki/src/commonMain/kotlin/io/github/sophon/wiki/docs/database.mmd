@@ -30,6 +30,7 @@ erDiagram
         INTEGER id PK "surrogate, never leaves the adapter"
         INTEGER character_id FK, UK "ON DELETE CASCADE, UNIQUE (character_id, input) is also the FK index"
         TEXT input UK "normalized, the move's identity"
+        TEXT remote_id "the wiki's own move ID, for links; null for DustLoop and 2XKO"
         INTEGER position "wiki order"
         TEXT name
         TEXT damage

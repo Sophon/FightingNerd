@@ -3,8 +3,8 @@ package io.github.sophon.wiki.application.port.outbound
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Move
 
 /**
  * Upserts the character and its move list; the character's moves absent from the move list get a strike.
