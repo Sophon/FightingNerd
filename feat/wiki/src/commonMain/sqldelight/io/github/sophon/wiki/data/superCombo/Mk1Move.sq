@@ -1,0 +1,32 @@
+import kotlin.String;
+import kotlin.collections.List;
+
+CREATE TABLE mk1_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    cost TEXT AS List<String> NOT NULL,
+    chip TEXT,
+    flawless_block_adv TEXT,
+    hit_cancel_adv TEXT,
+    block_cancel_adv TEXT,
+    punish TEXT
+);
+
+upsert:
+INSERT INTO mk1_move(move_id, cost, chip, flawless_block_adv, hit_cancel_adv, block_cancel_adv, punish)
+VALUES (?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    cost = excluded.cost,
+    chip = excluded.chip,
+    flawless_block_adv = excluded.flawless_block_adv,
+    hit_cancel_adv = excluded.hit_cancel_adv,
+    block_cancel_adv = excluded.block_cancel_adv,
+    punish = excluded.punish;
+
+selectByCharacter:
+SELECT *
+FROM mk1_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

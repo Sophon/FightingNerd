@@ -4,7 +4,8 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.util.removeAccents
-import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
 
 /**
  * DreamCancel has no character table - the character is built from the move table's `chara` column.
@@ -18,7 +19,7 @@ internal fun String.toCharacter(
     val iconKeys = listOf(substringBefore(" "), substringAfterLast(" "))
 
     val character = Character(
-        id = formCharacterId(),
+        id = CharacterId(queryName),
         displayName = displayName,
         remoteQueryId = queryName,
         aliasList = displayName.createAliases(),
@@ -39,14 +40,17 @@ internal fun String.createQueryName(): String {
     return queryName
 }
 
-private fun String.formCharacterId(): String {
-    val characterId = cleanHtml()
+/**
+ * `chara` spellings that differ only in accents, case, apostrophes or separators form the same key.
+ */
+internal fun String.formGroupingKey(): String {
+    val groupingKey = cleanHtml()
         .removeAccents()
         .replace("'", "")
-        .replace(idSeparatorRegex, "_")
+        .replace(groupingSeparatorRegex, "_")
         .lowercase()
-    return characterId
+    return groupingKey
 }
 
 
-private val idSeparatorRegex = Regex("[\\s._']+")
+private val groupingSeparatorRegex = Regex("[\\s._']+")

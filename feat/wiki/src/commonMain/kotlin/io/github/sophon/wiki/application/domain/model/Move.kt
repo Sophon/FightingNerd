@@ -1,13 +1,17 @@
 package io.github.sophon.wiki.application.domain.model
 
 import kotlinx.serialization.Serializable
-import kotlin.jvm.JvmInline
 
+/**
+ * Identified by its complete [input] within its character - a move is only ever reached through its character.
+ */
 @Serializable
 data class Move(
-    val characterId: CharacterId,
-    val id: MoveId,
     val input: String,
+    /**
+     * The wiki's own move ID, for links; null when the wiki has none.
+     */
+    val remoteId: String? = null,
 
     val name: String? = null,
     val damage: String? = null,
@@ -40,7 +44,3 @@ data class Move(
         val moveImageList: List<String> = listOf(),
     )
 }
-
-@JvmInline
-@Serializable
-value class MoveId(val value: String)

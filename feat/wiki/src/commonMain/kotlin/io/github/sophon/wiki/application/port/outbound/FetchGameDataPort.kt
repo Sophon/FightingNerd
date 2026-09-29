@@ -3,8 +3,8 @@ package io.github.sophon.wiki.application.port.outbound
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Move
 import kotlinx.coroutines.flow.Flow
 
 /**

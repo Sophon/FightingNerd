@@ -3,15 +3,17 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.decodeHtmlEntities
-import io.github.sophon.core.util.orDash
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.adapter.outbound.ktor.findMoveIdPrefix
+import io.github.sophon.wiki.adapter.outbound.ktor.removeMoveIdPrefix
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Move
+import io.github.sophon.wiki.application.domain.model.MoveGameProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.COTWMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.KOF15MoveProperties
 
 /**
- * Bulk - the whole move table, grouped into characters. `chara` spellings that form the same id are one character.
+ * Bulk - the whole move table, grouped into characters. `chara` spellings that form the same grouping key are one character.
+ * The move ID prefix is found per character.
  */
 internal fun DreamCancelMoveListResponseDto.toDomainAll(
     game: Game,
@@ -19,10 +21,12 @@ internal fun DreamCancelMoveListResponseDto.toDomainAll(
     hitboxUrlMap: Map<String, String>,
 ): List<Pair<Character, List<Move>>> {
     val characterWithMovesList = cargoQuery
-        .groupBy { query -> query.title.chara.toCharacter(game, iconUrlMap).id }
+        .groupBy { query -> query.title.chara.formGroupingKey() }
         .map { (_, queryList) ->
-            val character = queryList.first().title.chara.toCharacter(game, iconUrlMap)
-            val moveList = queryList.map { query -> query.title.toDomain(game, character, hitboxUrlMap) }
+            val dtoList = queryList.map { query -> query.title }
+            val character = dtoList.first().chara.toCharacter(game, iconUrlMap)
+            val moveIdPrefix = dtoList.map { dto -> dto.moveId }.findMoveIdPrefix()
+            val moveList = dtoList.map { dto -> dto.toDomain(game, moveIdPrefix, hitboxUrlMap) }
             character to moveList
         }
     return characterWithMovesList
@@ -30,20 +34,18 @@ internal fun DreamCancelMoveListResponseDto.toDomainAll(
 
 /**
  * Only cleaning - input normalization and aliases are done by the service.
+ * The input comes from the move ID - the wiki's `input` doesn't tell versions apart (`rock_214a` / `rock_214a_install`
+ * are both `214A`), so it's kept as an alias.
  */
 private fun MoveDto.toDomain(
     game: Game,
-    character: Character,
+    moveIdPrefix: String,
     hitboxUrlMap: Map<String, String>,
 ): Move {
-    val cleanedInput = input
-        .orDash()
-        .decodeHtmlEntities()
-
     val move = Move(
-        characterId = character.id,
-        id = moveId,
-        input = cleanedInput,
+        input = moveId.removeMoveIdPrefix(moveIdPrefix),
+        remoteId = moveId,
+        aliases = listOfNotNull(input?.decodeHtmlEntities()?.takeIf { it.isNotBlank() }),
         name = name?.cleanHtml(),
         damage = damage?.cleanHtml(),
         startup = startup?.cleanHtml(),

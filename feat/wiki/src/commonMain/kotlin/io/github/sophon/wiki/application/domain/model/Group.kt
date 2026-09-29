@@ -1,7 +1,5 @@
 package io.github.sophon.wiki.application.domain.model
 
-import io.github.sophon.core.wiki.model.Move
-
 interface Group {
     val id: String
     val predicate: (Move) -> Boolean

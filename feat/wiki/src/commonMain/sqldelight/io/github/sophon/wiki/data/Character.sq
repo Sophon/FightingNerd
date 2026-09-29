@@ -1,0 +1,65 @@
+import kotlin.String;
+import kotlin.collections.List;
+
+CREATE TABLE character (
+    id INTEGER PRIMARY KEY,
+    game TEXT NOT NULL,
+    natural_id TEXT NOT NULL,
+    remote_query_id TEXT NOT NULL,
+    display_name TEXT NOT NULL,
+    wiki_url TEXT NOT NULL,
+    icon_id TEXT,
+    icon_url TEXT,
+    banner_url TEXT,
+    hp TEXT,
+    umo TEXT AS List<String> NOT NULL,
+    strike_count INTEGER NOT NULL DEFAULT 0,
+    updated_at INTEGER NOT NULL,
+    UNIQUE (game, natural_id)
+);
+
+upsert:
+INSERT INTO character(game, natural_id, remote_query_id, display_name, wiki_url, icon_id, icon_url, banner_url, hp, umo, updated_at)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (game, natural_id) DO UPDATE SET
+    remote_query_id = excluded.remote_query_id,
+    display_name = excluded.display_name,
+    wiki_url = excluded.wiki_url,
+    icon_id = excluded.icon_id,
+    icon_url = excluded.icon_url,
+    banner_url = excluded.banner_url,
+    hp = excluded.hp,
+    umo = excluded.umo,
+    strike_count = 0,
+    updated_at = excluded.updated_at;
+
+selectId:
+SELECT id
+FROM character
+WHERE game = ? AND natural_id = ?;
+
+selectByGame:
+SELECT *
+FROM character
+WHERE game = ?
+ORDER BY display_name COLLATE NOCASE;
+
+selectLastUpdate:
+SELECT updated_at
+FROM character
+WHERE game = ?
+ORDER BY updated_at DESC
+LIMIT 1;
+
+strikeAbsent:
+UPDATE character
+SET strike_count = strike_count + 1
+WHERE game = ? AND natural_id NOT IN ?;
+
+deleteStruck:
+DELETE FROM character
+WHERE game = ? AND strike_count >= ?;
+
+deleteByGame:
+DELETE FROM character
+WHERE game = ?;

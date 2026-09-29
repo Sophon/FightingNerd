@@ -1,0 +1,35 @@
+import kotlin.Boolean;
+
+CREATE TABLE tekken8_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    is_heat INTEGER AS Boolean NOT NULL,
+    is_homing INTEGER AS Boolean NOT NULL,
+    stance TEXT,
+    is_power_crush INTEGER AS Boolean NOT NULL,
+    is_high_crush INTEGER AS Boolean NOT NULL,
+    is_low_crush INTEGER AS Boolean NOT NULL,
+    has_wall_interaction INTEGER AS Boolean NOT NULL,
+    has_floor_interaction INTEGER AS Boolean NOT NULL
+);
+
+upsert:
+INSERT INTO tekken8_move(move_id, is_heat, is_homing, stance, is_power_crush, is_high_crush, is_low_crush, has_wall_interaction, has_floor_interaction)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    is_heat = excluded.is_heat,
+    is_homing = excluded.is_homing,
+    stance = excluded.stance,
+    is_power_crush = excluded.is_power_crush,
+    is_high_crush = excluded.is_high_crush,
+    is_low_crush = excluded.is_low_crush,
+    has_wall_interaction = excluded.has_wall_interaction,
+    has_floor_interaction = excluded.has_floor_interaction;
+
+selectByCharacter:
+SELECT *
+FROM tekken8_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

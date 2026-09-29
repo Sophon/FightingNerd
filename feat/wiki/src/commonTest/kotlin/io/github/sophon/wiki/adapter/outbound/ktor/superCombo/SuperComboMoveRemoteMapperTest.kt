@@ -3,8 +3,7 @@ package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Move
 import kotlin.test.Test
 
 class SuperComboMoveRemoteMapperTest {
@@ -17,7 +16,7 @@ class SuperComboMoveRemoteMapperTest {
         val expected = "https://wiki.supercombo.gg/w/Street_Fighter_6/A.K.I.#2MP"
 
         //when
-        val result = dto.toMove(Game.StreetFighter6, SuperComboMoveSource.aki)
+        val result = dto.toMove(Game.StreetFighter6)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -30,7 +29,7 @@ class SuperComboMoveRemoteMapperTest {
         val expected = "https://wiki.supercombo.gg/w/Street_Fighter_6/Chun-Li#Senpu_Kick_(214P~MK)"
 
         //when
-        val result = dto.toMove(Game.StreetFighter6, SuperComboMoveSource.chunLi)
+        val result = dto.toMove(Game.StreetFighter6)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -43,7 +42,7 @@ class SuperComboMoveRemoteMapperTest {
         val expected = "https://wiki.supercombo.gg/w/Mortal_Kombat_1/Kung_Lao/Data#121"
 
         //when
-        val result = dto.toMove(Game.MK1, SuperComboMoveSource.kungLao)
+        val result = dto.toMove(Game.MK1)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -56,7 +55,7 @@ class SuperComboMoveRemoteMapperTest {
         val expected = ""
 
         //when
-        val result = dto.toMove(Game.StreetFighter6, SuperComboMoveSource.blanka)
+        val result = dto.toMove(Game.StreetFighter6)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -65,48 +64,125 @@ class SuperComboMoveRemoteMapperTest {
 
     //region input
     @Test
-    fun `input keeps the wiki notation`() {
+    fun `input is the move ID without the character prefix`() {
         //given
-        val dto = SuperComboMoveSource.hadoken
-        val expected = "236HP"
+        val moveList = listOf(SuperComboMoveSource.maiRyuuenbu, SuperComboMoveSource.maiRyuuenbuFlame)
+        val expected = listOf("214hp", "214hp_flame")
 
         //when
-        val result = dto.toMove(Game.StreetFighter6, SuperComboMoveSource.ken)
+        val result = moveList.toMoveList(Game.StreetFighter6)
 
         //then
-        assertThat(result.input).isEqualTo(expected)
+        assertThat(result.map { it.input }).isEqualTo(expected)
     }
 
     @Test
-    fun `no aliases are created`() {
+    fun `critical art keeps its marker in the input`() {
         //given
-        val dto = SuperComboMoveSource.hadoken
-        val expected = emptyList<String>()
+        val moveList = listOf(SuperComboMoveSource.alexFinalPrison, SuperComboMoveSource.alexFinalPrisonCa)
+        val expected = listOf("236236p", "236236p(ca)")
 
         //when
-        val result = dto.toMove(Game.StreetFighter6, SuperComboMoveSource.ken)
+        val result = moveList.toMoveList(Game.StreetFighter6)
 
         //then
-        assertThat(result.aliases).isEqualTo(expected)
+        assertThat(result.map { it.input }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move ID prefix is stripped regardless of case`() {
+        //given
+        val moveList = listOf(SuperComboMoveSource.jamieFreeflow, SuperComboMoveSource.jamieDriveRush)
+        val expected = listOf("236hp_dl2", "mpmk_66_drc")
+
+        //when
+        val result = moveList.toMoveList(Game.StreetFighter6)
+
+        //then
+        assertThat(result.map { it.input }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `remote ID is the move ID`() {
+        //given
+        val moveList = listOf(SuperComboMoveSource.maiRyuuenbu, SuperComboMoveSource.maiRyuuenbuFlame)
+        val expected = listOf("mai_214hp", "mai_214hp_flame")
+
+        //when
+        val result = moveList.toMoveList(Game.StreetFighter6)
+
+        //then
+        assertThat(result.map { it.remoteId }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `wiki input is kept as an alias`() {
+        //given
+        val moveList = listOf(SuperComboMoveSource.maiRyuuenbu, SuperComboMoveSource.maiRyuuenbuFlame)
+        val expected = listOf(listOf("214HP"), listOf("214HP"))
+
+        //when
+        val result = moveList.toMoveList(Game.StreetFighter6)
+
+        //then
+        assertThat(result.map { it.aliases }).isEqualTo(expected)
     }
     //endregion
 }
 
-private fun MoveDto.toMove(
-    game: Game,
-    character: Character,
-): Move {
-    val responseDto = SuperComboMoveListResponseDto(cargoQuery = listOf(SuperComboMoveListResponseDto.Title(this)))
-    val move = responseDto.toDomain(game, character, imageUrlMap = emptyMap()).single()
+private fun List<MoveDto>.toMoveList(game: Game): List<Move> {
+    val responseDto = SuperComboMoveListResponseDto(cargoQuery = map { dto -> SuperComboMoveListResponseDto.Title(dto) })
+    val moveList = responseDto.toDomain(game, imageUrlMap = emptyMap())
+    return moveList
+}
+
+private fun MoveDto.toMove(game: Game): Move {
+    val move = listOf(this).toMoveList(game).single()
     return move
 }
 
 private object SuperComboMoveSource {
-    val ken = superComboCharacter(id = "ken", name = "Ken", wikiPage = "Street_Fighter_6/Ken")
-    val aki = superComboCharacter(id = "aki", name = "A.K.I.", wikiPage = "Street_Fighter_6/A.K.I.")
-    val chunLi = superComboCharacter(id = "chun_li", name = "Chun-Li", wikiPage = "Street_Fighter_6/Chun-Li")
-    val blanka = superComboCharacter(id = "blanka", name = "Blanka", wikiPage = "Street_Fighter_6/Blanka")
-    val kungLao = superComboCharacter(id = "kung_lao", name = "Kung Lao", wikiPage = "Mortal_Kombat_1/Kung_Lao")
+    val maiRyuuenbu = MoveDto(
+        moveId = "mai_214hp",
+        moveType = "special",
+        chara = "Mai",
+        input = "214HP",
+        name = "HP Ryuuenbu",
+    )
+    val maiRyuuenbuFlame = MoveDto(
+        moveId = "mai_214hp_flame",
+        moveType = "special",
+        chara = "Mai",
+        input = "214HP",
+        name = "HP Ryuuenbu (Flame)",
+    )
+    val alexFinalPrison = MoveDto(
+        moveId = "alex_236236p",
+        moveType = "super",
+        chara = "Alex",
+        input = "236236P",
+        name = "The Final Prison",
+    )
+    val alexFinalPrisonCa = MoveDto(
+        moveId = "alex_236236p(ca)",
+        moveType = "super",
+        chara = "Alex",
+        input = "236236P",
+        name = "The Final Prison (CA)",
+    )
+    val jamieFreeflow = MoveDto(
+        moveId = "Jamie_236hp_dl2",
+        moveType = "special",
+        chara = "Jamie",
+        input = "236HP",
+        name = "HP Freeflow Strikes 1",
+    )
+    val jamieDriveRush = MoveDto(
+        moveId = "jamie_mpmk_66_drc",
+        moveType = "drive",
+        chara = "Jamie",
+        input = "MPMK~66",
+    )
 
     val akiCrMP = MoveDto(
         moveId = "aki_2mp",
@@ -127,42 +203,6 @@ private object SuperComboMoveSource {
         chara = "Kung Lao",
         input = "121",
         name = "Swollen Throat",
-    )
-    val hadoken = MoveDto(
-        moveId = "ken_236hp",
-        moveType = "special",
-        chara = "Ken",
-        input = "236HP",
-        name = "Hadoken",
-        images = "SF6_Ken_236hp.png",
-        hitboxes = "SF6_Ken_236hp_hitbox.png",
-        damage = "600",
-        chip = "150",
-        dmgScaling = null,
-        startup = "12",
-        active = "-",
-        recovery = "37",
-        total = "49",
-        guard = "LH",
-        cancel = "SA3",
-        hitconfirm = "4",
-        hitAdv = "-5",
-        blockAdv = "-11",
-        punishAdv = "-1",
-        perfParryAdv = "-27",
-        hitstun = "33",
-        blockstun = "27",
-        hitstop = "8",
-        driveDmgBlk = "2500",
-        driveDmgHit = "[2000]",
-        driveGain = "1000",
-        superGainHit = "600 (420)",
-        superGainBlk = "300 (150)",
-        jugStart = "1",
-        jugIncrease = "1",
-        jugLimit = "1",
-        projSpeed = "0.08",
-        notes = "1-hit projectile; puts airborne opponents into limited juggle state",
     )
     val rollingCannon = MoveDto(
         moveId = "blanka_xp",
@@ -194,18 +234,4 @@ private object SuperComboMoveSource {
         jugIncrease = "2 each",
         jugLimit = "99",
     )
-}
-
-private fun superComboCharacter(
-    id: String,
-    name: String,
-    wikiPage: String,
-): Character {
-    val character = Character(
-        id = id,
-        displayName = name,
-        remoteQueryId = name,
-        wikiUrl = "https://wiki.supercombo.gg/w/$wikiPage",
-    )
-    return character
 }

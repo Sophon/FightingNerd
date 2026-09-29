@@ -1,0 +1,94 @@
+import kotlin.String;
+import kotlin.collections.List;
+
+CREATE TABLE roa2_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    mode TEXT,
+    caption TEXT AS List<String>,
+    hitbox_caption TEXT AS List<String>,
+    startup_notes TEXT,
+    total_active_notes TEXT,
+    endlag_notes TEXT,
+    cancel_notes TEXT AS List<String>,
+    landing_lag TEXT,
+    landing_lag_notes TEXT,
+    iasa TEXT,
+    iasa_notes TEXT,
+    total_duration TEXT,
+    total_duration_notes TEXT,
+    ledge_grab_frame TEXT,
+    ledge_grab_frame_notes TEXT,
+    hit_id TEXT AS List<String>,
+    hit_move_id TEXT AS List<String>,
+    hit_name TEXT AS List<String>,
+    hit_active TEXT AS List<String>,
+    custom_shield_safety TEXT AS List<String>,
+    unique_field TEXT AS List<String>,
+    article_id TEXT AS List<String>,
+    notes TEXT,
+    adv_notes TEXT
+);
+
+upsert:
+INSERT INTO roa2_move(
+    move_id,
+    mode,
+    caption,
+    hitbox_caption,
+    startup_notes,
+    total_active_notes,
+    endlag_notes,
+    cancel_notes,
+    landing_lag,
+    landing_lag_notes,
+    iasa,
+    iasa_notes,
+    total_duration,
+    total_duration_notes,
+    ledge_grab_frame,
+    ledge_grab_frame_notes,
+    hit_id,
+    hit_move_id,
+    hit_name,
+    hit_active,
+    custom_shield_safety,
+    unique_field,
+    article_id,
+    notes,
+    adv_notes
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    mode = excluded.mode,
+    caption = excluded.caption,
+    hitbox_caption = excluded.hitbox_caption,
+    startup_notes = excluded.startup_notes,
+    total_active_notes = excluded.total_active_notes,
+    endlag_notes = excluded.endlag_notes,
+    cancel_notes = excluded.cancel_notes,
+    landing_lag = excluded.landing_lag,
+    landing_lag_notes = excluded.landing_lag_notes,
+    iasa = excluded.iasa,
+    iasa_notes = excluded.iasa_notes,
+    total_duration = excluded.total_duration,
+    total_duration_notes = excluded.total_duration_notes,
+    ledge_grab_frame = excluded.ledge_grab_frame,
+    ledge_grab_frame_notes = excluded.ledge_grab_frame_notes,
+    hit_id = excluded.hit_id,
+    hit_move_id = excluded.hit_move_id,
+    hit_name = excluded.hit_name,
+    hit_active = excluded.hit_active,
+    custom_shield_safety = excluded.custom_shield_safety,
+    unique_field = excluded.unique_field,
+    article_id = excluded.article_id,
+    notes = excluded.notes,
+    adv_notes = excluded.adv_notes;
+
+selectByCharacter:
+SELECT *
+FROM roa2_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

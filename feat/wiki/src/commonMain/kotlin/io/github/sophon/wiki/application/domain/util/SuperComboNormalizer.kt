@@ -1,16 +1,18 @@
 package io.github.sophon.wiki.application.domain.util
 
-import io.github.sophon.core.util.create2dAliases
-import io.github.sophon.core.util.normalize2dInputs
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.SF6MoveProperties
 
+/**
+ * The input comes from the move ID; the wiki's notation arrives as an alias and gets the same normalization,
+ * so `214LP~6P` still finds `a.k.i._214lp_6p`.
+ */
 internal fun Move.normalizeSuperCombo(): Move {
-    val normalizedInput = input
-        .cleanSuperComboInput()
-        .normalize2dInputs()
-        .replace("360+", "360")
-    val normalizedAliases = (aliases + formAliases(normalizedInput))
+    val normalizedInput = input.normalizeSuperComboInput()
+    val normalizedAliases = aliases
+        .flatMap { wikiInput -> formAliases(wikiInput) }
+        .filterNot { alias -> alias == normalizedInput }
+        .distinct()
 
     val normalized = copy(
         input = normalizedInput,
@@ -19,27 +21,36 @@ internal fun Move.normalizeSuperCombo(): Move {
     return normalized
 }
 
+private fun String.normalizeSuperComboInput(): String {
+    val normalized = cleanSuperComboInput()
+        .normalize2dInputs()
+        .replace("360+", "360")
+    return normalized
+}
+
 /**
- * The motion alias comes from the wiki notation (`236HP` → `qcfhp`), so it's formed from the input before normalization.
+ * The motion alias comes from the wiki notation (`236HP` → `qcfhp`), so it's formed before normalization.
  */
-private fun Move.formAliases(normalizedInput: String): List<String> {
+private fun Move.formAliases(wikiInput: String): List<String> {
+    val normalizedWikiInput = wikiInput.normalizeSuperComboInput()
     val motionAlias = when (type) {
         "super" -> formSuperLevel()
-        else -> input.formMotionInput()
+        else -> wikiInput.formMotionInput()
     }?.lowercase()
 
     val aliases = buildList {
+        add(normalizedWikiInput)
         motionAlias?.let { add(it) }
-        addAll(normalizedInput.create2dAliases(isPartial = true))
+        addAll(normalizedWikiInput.create2dAliases(isPartial = true))
     }
     return aliases
 }
 
 /**
- * The SF6 super level follows from its meter cost; critical arts (`(ca)`) get none.
+ * The SF6 super level follows from its meter cost; critical arts (`(ca)` in the move ID) get none.
  */
 private fun Move.formSuperLevel(): String? {
-    if (id.contains("(ca)", ignoreCase = true)) return null
+    if (remoteId.orEmpty().contains("(ca)", ignoreCase = true)) return null
     val superCost = (gameProperties as? SF6MoveProperties)?.superGainOnHit?.toIntOrNull() ?: return null
 
     val superLevel = when (superCost) {

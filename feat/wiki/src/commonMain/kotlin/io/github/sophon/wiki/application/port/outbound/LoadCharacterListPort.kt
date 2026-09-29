@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.application.port.outbound
 
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.wiki.application.domain.model.Character
 import kotlinx.coroutines.flow.Flow
 
 internal interface LoadCharacterListPort {

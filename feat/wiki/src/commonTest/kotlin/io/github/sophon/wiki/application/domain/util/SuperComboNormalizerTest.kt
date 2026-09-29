@@ -1,8 +1,9 @@
 package io.github.sophon.wiki.application.domain.util
 
 import assertk.assertThat
+import assertk.assertions.contains
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.SF6MoveProperties
 import kotlin.test.Test
 
@@ -10,10 +11,10 @@ class SuperComboNormalizerTest {
 
     //region input
     @Test
-    fun `spd input drops the plus`() {
+    fun `input from the move ID is lowercased`() {
         //given
-        val move = SuperComboMoveSource.screwPiledriver
-        val expected = "360hp"
+        val move = SuperComboMoveSource.aangThrow
+        val expected = "a+d"
 
         //when
         val result = move.normalizeSuperCombo()
@@ -23,10 +24,10 @@ class SuperComboNormalizerTest {
     }
 
     @Test
-    fun `or input keeps its slash`() {
+    fun `version suffix from the move ID survives normalization`() {
         //given
-        val move = SuperComboMoveSource.swiftThrust
-        val expected = "4/6mp"
+        val move = SuperComboMoveSource.ryuuenbuFlame
+        val expected = "214hp_flame"
 
         //when
         val result = move.normalizeSuperCombo()
@@ -38,7 +39,7 @@ class SuperComboNormalizerTest {
 
     //region aliases
     @Test
-    fun `motion input gets its motion alias`() {
+    fun `motion notation gets its motion alias`() {
         //given
         val move = SuperComboMoveSource.hadoken
         val expected = listOf("qcfhp")
@@ -51,7 +52,7 @@ class SuperComboNormalizerTest {
     }
 
     @Test
-    fun `crouching input gets its cr alias`() {
+    fun `crouching notation gets its cr alias`() {
         //given
         val move = SuperComboMoveSource.crHP
         val expected = listOf("crhp")
@@ -64,7 +65,7 @@ class SuperComboNormalizerTest {
     }
 
     @Test
-    fun `spd input gets its spd alias`() {
+    fun `spd notation drops the plus and gets its spd alias`() {
         //given
         val move = SuperComboMoveSource.screwPiledriver
         val expected = listOf("spdhp")
@@ -77,16 +78,29 @@ class SuperComboNormalizerTest {
     }
 
     @Test
-    fun `or input splits into aliases`() {
+    fun `or notation stays an alias and splits into aliases`() {
         //given
         val move = SuperComboMoveSource.swiftThrust
-        val expected = listOf("4mp", "6mp")
+        val expected = listOf("4/6mp", "4mp")
 
         //when
         val result = move.normalizeSuperCombo()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `wiki notation that differs from the input stays an alias`() {
+        //given
+        val move = SuperComboMoveSource.nightshadeChaser
+        val expected = "214lp~6p"
+
+        //when
+        val result = move.normalizeSuperCombo()
+
+        //then
+        assertThat(result.aliases).contains(expected)
     }
 
     @Test
@@ -105,8 +119,8 @@ class SuperComboNormalizerTest {
     @Test
     fun `critical art gets no super level`() {
         //given
-        val move = SuperComboMoveSource.shinryuReppa
-        val expected = emptyList<String>()
+        val move = SuperComboMoveSource.shinryuReppaCa
+        val expected = listOf("236236p")
 
         //when
         val result = move.normalizeSuperCombo()
@@ -118,28 +132,31 @@ class SuperComboNormalizerTest {
 }
 
 /**
- * Moves as the SuperCombo adapter maps them - wiki notation, no aliases yet.
+ * Moves as the SuperCombo adapter maps them - the input from the move ID, the wiki notation as the only alias.
  */
 private object SuperComboMoveSource {
-    val hadoken = superComboMove(characterId = "ken", id = "ken_236hp", input = "236HP", type = "special", superGain = "600 (420)")
-    val crHP = superComboMove(characterId = "ken", id = "ken_2hp", input = "2HP", type = "ground_normal", superGain = "1000 (700)")
-    val dragonlashFlame = superComboMove(characterId = "ken", id = "ken_214214k", input = "214214K", type = "super", superGain = "-10000")
-    val shinryuReppa = superComboMove(characterId = "ken", id = "ken_236236p(ca)", input = "236236P", type = "super", superGain = "-30000")
-    val screwPiledriver = superComboMove(characterId = "zangief", id = "zangief_360hp", input = "360+HP", type = "special", superGain = "4000 (2800)")
-    val swiftThrust = superComboMove(characterId = "chun_li", id = "Chun-Li_6mp", input = "4/6MP", type = "ground_normal", superGain = "500 (350)")
+    val hadoken = superComboMove(remoteId = "ken_236hp", input = "236hp", wikiInput = "236HP", type = "special", superGain = "600 (420)")
+    val crHP = superComboMove(remoteId = "ken_2hp", input = "2hp", wikiInput = "2HP", type = "ground_normal", superGain = "1000 (700)")
+    val dragonlashFlame = superComboMove(remoteId = "ken_214214k", input = "214214k", wikiInput = "214214K", type = "super", superGain = "-10000")
+    val shinryuReppaCa = superComboMove(remoteId = "ken_236236p(ca)", input = "236236p(ca)", wikiInput = "236236P", type = "super", superGain = "-30000")
+    val screwPiledriver = superComboMove(remoteId = "zangief_360hp", input = "360hp", wikiInput = "360+HP", type = "special", superGain = "4000 (2800)")
+    val swiftThrust = superComboMove(remoteId = "Chun-Li_6mp", input = "6mp", wikiInput = "4/6MP", type = "ground_normal", superGain = "500 (350)")
+    val nightshadeChaser = superComboMove(remoteId = "a.k.i._214lp_6p", input = "214lp_6p", wikiInput = "214LP~6P", type = "special", superGain = "600 (420)")
+    val ryuuenbuFlame = superComboMove(remoteId = "mai_214hp_flame", input = "214hp_flame", wikiInput = "214HP", type = "special", superGain = "600 (420)")
+    val aangThrow = superComboMove(remoteId = "Aang_A+D", input = "A+D", wikiInput = "A+D", type = "throw", superGain = "0")
 }
 
 private fun superComboMove(
-    characterId: String,
-    id: String,
+    remoteId: String,
     input: String,
+    wikiInput: String,
     type: String,
     superGain: String,
 ): Move {
     val move = Move(
-        characterId = characterId,
-        id = id,
         input = input,
+        remoteId = remoteId,
+        aliases = listOf(wikiInput),
         type = type,
         urls = Move.Urls(wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6"),
         gameProperties = SF6MoveProperties(superGainOnHit = superGain),

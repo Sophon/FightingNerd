@@ -5,8 +5,9 @@ import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.toClickable
 import io.github.sophon.core.util.urlEncode
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.CharacterGameProperties
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
+import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.gameProperties.BBCharProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.DBFZCharProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRCharProperties
@@ -30,7 +31,7 @@ private fun CharacterDto.toDomain(
     val queryName = name?.cleanHtml().formCharacterQueryName(game)
 
     val character = Character(
-        id = name?.cleanHtml().formCharacterId(),
+        id = CharacterId(queryName),
         displayName = name?.cleanHtml().orEmpty(),
         remoteQueryId = queryName,
         wikiUrl = queryName.formWikiUrl(game),
@@ -126,18 +127,6 @@ private fun CharacterDto.toGameProperties(game: Game): CharacterGameProperties? 
         else -> null
     }
     return properties
-}
-
-private fun String?.formCharacterId(): String {
-    val characterId = this
-        .orEmpty()
-        .replace(".", "")
-        .replace("?", "")
-        .replace("'", "")
-        .replace("-", "")
-        .split(" ")
-        .joinToString("_") { it.lowercase() }
-    return characterId
 }
 
 private fun String?.formCharacterQueryName(game: Game): String {

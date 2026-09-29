@@ -8,8 +8,8 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.network.safeCall
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
 import io.github.sophon.wiki.application.port.outbound.FetchGameDataPort

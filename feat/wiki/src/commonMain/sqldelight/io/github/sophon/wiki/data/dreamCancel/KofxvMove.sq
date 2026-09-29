@@ -1,0 +1,19 @@
+CREATE TABLE kofxv_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    stun TEXT
+);
+
+upsert:
+INSERT INTO kofxv_move(move_id, stun)
+VALUES (?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    stun = excluded.stun;
+
+selectByCharacter:
+SELECT *
+FROM kofxv_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

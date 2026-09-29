@@ -3,30 +3,18 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dragDown
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
 import kotlin.test.Test
 
 class DragDownCharacterRemoteMapperTest {
 
     //region id
     @Test
-    fun `id is the lowercase name`() {
-        //given
-        val dto = DragDownCharacterDtoSource.kragg
-        val expected = "kragg"
-
-        //when
-        val result = dto.toCharacter()
-
-        //then
-        assertThat(result.id).isEqualTo(expected)
-    }
-
-    @Test
-    fun `multi-word id joins words by underscore`() {
+    fun `id is the query name - the service normalizes it`() {
         //given
         val dto = DragDownCharacterDtoSource.reina
-        val expected = "la_reina"
+        val expected = CharacterId("La Reina")
 
         //when
         val result = dto.toCharacter()

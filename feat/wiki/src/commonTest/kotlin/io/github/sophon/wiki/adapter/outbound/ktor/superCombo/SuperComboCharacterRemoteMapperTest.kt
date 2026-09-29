@@ -3,7 +3,8 @@ package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.wiki.model.Character
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.gameProperties.SFCharProperties
 import kotlin.test.Test
 
@@ -14,7 +15,7 @@ class SuperComboCharacterRemoteMapperTest {
         //given
         val dto = SuperComboCharacterSource.ken
         val expected = Character(
-            id = "ken",
+            id = CharacterId("Ken"),
             displayName = "Ken",
             remoteQueryId = "Ken",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken",
@@ -48,11 +49,11 @@ class SuperComboCharacterRemoteMapperTest {
     }
 
     @Test
-    fun `dotted name drops the dot from the id`() {
+    fun `dotted name keeps the dot in the id`() {
         //given
         val dto = SuperComboCharacterSource.cViper
         val expected = Character(
-            id = "cviper",
+            id = CharacterId("C.Viper"),
             displayName = "C. Viper",
             remoteQueryId = "C.Viper",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/C.Viper",
@@ -86,11 +87,11 @@ class SuperComboCharacterRemoteMapperTest {
     }
 
     @Test
-    fun `hyphenated name joins the id by underscore`() {
+    fun `hyphenated name keeps the hyphen in the id`() {
         //given
         val dto = SuperComboCharacterSource.chunLi
         val expected = Character(
-            id = "chun_li",
+            id = CharacterId("Chun-Li"),
             displayName = "Chun-Li",
             remoteQueryId = "Chun-Li",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Chun-Li",
@@ -124,11 +125,11 @@ class SuperComboCharacterRemoteMapperTest {
     }
 
     @Test
-    fun `two-word name joins the id by underscore`() {
+    fun `two-word name keeps the wiki's underscore in the id`() {
         //given
         val dto = SuperComboCharacterSource.deeJay
         val expected = Character(
-            id = "dee_jay",
+            id = CharacterId("Dee_Jay"),
             displayName = "Dee Jay",
             remoteQueryId = "Dee_Jay",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Dee_Jay",

@@ -1,6 +1,5 @@
 package io.github.sophon.wiki.application.domain.model
 
-import io.github.sophon.core.wiki.model.CharacterGameProperties
 import kotlinx.serialization.Serializable
 import kotlin.jvm.JvmInline
 
@@ -26,6 +25,10 @@ data class Character(
     )
 }
 
+/**
+ * The normalized `remoteQueryId` - lowercase, spaces as `_` (`Armor King` -> `armor_king`).
+ * Unique within a game and stable across refreshes and wipes.
+ */
 @JvmInline
 @Serializable
 value class CharacterId(val value: String)

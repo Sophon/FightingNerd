@@ -4,9 +4,9 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.toClickable
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.core.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Move
+import io.github.sophon.wiki.application.domain.model.MoveGameProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.BBMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.DBFZMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRMoveProperties
@@ -23,7 +23,7 @@ internal fun DustLoopMoveListResponseDto.toDomain(
 }
 
 /**
- * Only cleaning - the input, the id and the aliases are normalized by the service.
+ * Only cleaning - the input and the aliases are normalized by the service.
  */
 private fun MoveDto.toDomain(
     game: Game,
@@ -33,8 +33,6 @@ private fun MoveDto.toDomain(
     val cleanedInput = input.orDash()
 
     val move = Move(
-        characterId = character.id,
-        id = "${character.id}_$cleanedInput",
         name = name?.cleanHtml(),
         input = cleanedInput,
         damage = damage?.cleanHtml(),
