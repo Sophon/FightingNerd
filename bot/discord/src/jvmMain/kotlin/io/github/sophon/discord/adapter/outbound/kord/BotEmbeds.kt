@@ -1,4 +1,4 @@
-package io.github.sophon.discord.feat.bot
+package io.github.sophon.discord.adapter.outbound.kord
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder

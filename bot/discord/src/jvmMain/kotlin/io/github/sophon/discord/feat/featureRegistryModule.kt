@@ -14,8 +14,8 @@ import io.github.sophon.discord.feat.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.feat.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.feat.bot.BotFeature
-import io.github.sophon.discord.feat.bot.DiscordBot
-import io.github.sophon.discord.feat.bot.DiscordBotImpl
+import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
+import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
 import io.github.sophon.discord.feat.bot.usecase.CreateEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateErrorEmbedBuilderUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateFeedbackEmbedUseCase
