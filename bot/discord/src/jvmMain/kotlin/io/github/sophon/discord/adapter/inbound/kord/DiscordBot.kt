@@ -16,6 +16,7 @@ import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
@@ -54,6 +55,8 @@ internal class DiscordBotImpl(
     private val botFeatureRepo: BotFeatureRepo,
     private val scheduler: Scheduler,
     private val commandRegistry: CommandRegistry,
+
+    private val startFeaturesUseCase: StartFeaturesUseCase,
 ): DiscordBot {
     private val editableEmbedMap = mutableMapOf<String, BotOutput>()
 
@@ -71,6 +74,8 @@ internal class DiscordBotImpl(
 
     private suspend fun startFeatures() {
         botFeatureRepo.initialize()
+
+        startFeaturesUseCase()
     }
 
     private suspend fun startKord() {
