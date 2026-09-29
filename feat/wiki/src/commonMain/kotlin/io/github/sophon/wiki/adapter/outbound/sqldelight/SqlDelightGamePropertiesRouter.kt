@@ -6,6 +6,7 @@ import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DragDown
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DreamCancelSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DustLoopSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.MizuumiSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.SqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.SuperComboSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.WavuSqlDelightGameProperties
 import io.github.sophon.wiki.application.domain.model.CharacterGameProperties

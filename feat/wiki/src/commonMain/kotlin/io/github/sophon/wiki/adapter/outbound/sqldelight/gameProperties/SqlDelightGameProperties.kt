@@ -1,4 +1,4 @@
-package io.github.sophon.wiki.adapter.outbound.sqldelight
+package io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
