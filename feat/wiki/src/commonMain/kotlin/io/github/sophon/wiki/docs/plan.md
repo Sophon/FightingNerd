@@ -134,3 +134,12 @@
 - 2XKO quirks ported as-is
   - `j.` inputs get a `j..` alias - no `normalize2dInputs`
   - a missing input puts `null` into the image and wiki urls
+- `Game` lives in `core` and its `wiki: WikiClientFeature` carries only an id - the wiki's name, url, version and logo are in each legacy module's `FeatureInfo`
+  - the wiki needs its own `Game` enum that carries that data
+  - until then the bot's Fd reply shows only the game, not the wiki
+- `GetCharacterListUseCase` returns every character of every enabled game - the bot pattern-matches the character query against all of them
+  - not ideal - to be optimized
+  - idea - pass the character query and let the wiki match it in SQL; the cost is that query pattern matching becomes a wiki responsibility
+- the bot cleans the move query itself, the wiki normalizes inputs on save - in theory both must normalize the same way
+  - ideally the wiki provides the normalizer and the bot uses it
+  - for now the bot keeps its own cleaning
