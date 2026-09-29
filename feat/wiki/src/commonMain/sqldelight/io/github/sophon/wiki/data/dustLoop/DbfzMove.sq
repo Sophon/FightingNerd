@@ -1,0 +1,33 @@
+CREATE TABLE dbfz_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    attribute TEXT,
+    smash TEXT,
+    ki_gain TEXT,
+    prorate TEXT,
+    block_stun TEXT,
+    ground_hit TEXT,
+    air_hit TEXT,
+    level TEXT
+);
+
+upsert:
+INSERT INTO dbfz_move(move_id, attribute, smash, ki_gain, prorate, block_stun, ground_hit, air_hit, level)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    attribute = excluded.attribute,
+    smash = excluded.smash,
+    ki_gain = excluded.ki_gain,
+    prorate = excluded.prorate,
+    block_stun = excluded.block_stun,
+    ground_hit = excluded.ground_hit,
+    air_hit = excluded.air_hit,
+    level = excluded.level;
+
+selectByCharacter:
+SELECT *
+FROM dbfz_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

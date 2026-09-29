@@ -1,0 +1,62 @@
+CREATE TABLE gbvsr_character (
+    character_id INTEGER PRIMARY KEY REFERENCES character(id) ON DELETE CASCADE,
+    jump_pre TEXT,
+    jump_forward_distance TEXT,
+    jump_super_forward_distance TEXT,
+    jump_back_distance TEXT,
+    jump_super_back_distance TEXT,
+    jump_gravity TEXT,
+    jump_super_gravity TEXT,
+    jump_super_height TEXT,
+    backdash TEXT,
+    walk_speed TEXT,
+    walk_speed_back TEXT,
+    dash_initial TEXT,
+    dash_acceleration TEXT,
+    close_range_l TEXT,
+    close_range_m TEXT,
+    close_range_h TEXT
+);
+
+upsert:
+INSERT INTO gbvsr_character(
+    character_id,
+    jump_pre,
+    jump_forward_distance,
+    jump_super_forward_distance,
+    jump_back_distance,
+    jump_super_back_distance,
+    jump_gravity,
+    jump_super_gravity,
+    jump_super_height,
+    backdash,
+    walk_speed,
+    walk_speed_back,
+    dash_initial,
+    dash_acceleration,
+    close_range_l,
+    close_range_m,
+    close_range_h
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (character_id) DO UPDATE SET
+    jump_pre = excluded.jump_pre,
+    jump_forward_distance = excluded.jump_forward_distance,
+    jump_super_forward_distance = excluded.jump_super_forward_distance,
+    jump_back_distance = excluded.jump_back_distance,
+    jump_super_back_distance = excluded.jump_super_back_distance,
+    jump_gravity = excluded.jump_gravity,
+    jump_super_gravity = excluded.jump_super_gravity,
+    jump_super_height = excluded.jump_super_height,
+    backdash = excluded.backdash,
+    walk_speed = excluded.walk_speed,
+    walk_speed_back = excluded.walk_speed_back,
+    dash_initial = excluded.dash_initial,
+    dash_acceleration = excluded.dash_acceleration,
+    close_range_l = excluded.close_range_l,
+    close_range_m = excluded.close_range_m,
+    close_range_h = excluded.close_range_h;
+
+selectAll:
+SELECT *
+FROM gbvsr_character;

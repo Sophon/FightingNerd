@@ -66,7 +66,9 @@ internal fun initKoin(
         ewgfModule(
             apiToken = System.getenv(ENV_API_EWGF).orEmpty()
         ),
-        wikiModule(),
+        wikiModule(
+            databaseDirectory = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { "." },
+        ),
 
         featureRegistryModule,
     )

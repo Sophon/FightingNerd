@@ -1,4 +1,4 @@
-package io.github.sophon.wiki.adapter.outbound.sqldelight.wavu
+package io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.featureConfig.model.Game

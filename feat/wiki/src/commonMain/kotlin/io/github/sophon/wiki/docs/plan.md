@@ -22,7 +22,10 @@
       - char : move is `1:n`
       - while technically possible, char : game is **not** `n:n` - crossovers (like Mai in SF, KOF and COTW) are considered different chars
       - game properties - class table inheritance
-        - universal base table (`character` / `move`) + one `1:1` extension table per game (`tekken_move`, `ggst_move`, ...)
+        - universal base table (`character` / `move`) + one `1:1` extension table per game (`tekken8_move`, `ggst_move`, ...)
+          - named after the `Game` entry - `street_fighter6_character`, `kofxv_move`; a game without properties has no table
+          - one `<Wiki>SqlDelightGameProperties` per wiki, `SqlDelightGamePropertiesRouter` routes by `Game.wiki`
+          - a column per property - lists are JSON string lists, nested classes are flattened into prefixed columns (`jump_pre`)
         - extension PK is also the FK to the base row, `ON DELETE CASCADE`
         - base upsert + extension write in the same transaction
         - `last_insert_rowid()` is not set by the `DO UPDATE` path - re-select the ID by natural key; no `RETURNING id` - it needs SQLite 3.35, minSdk 30 ships 3.28

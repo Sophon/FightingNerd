@@ -1,0 +1,31 @@
+CREATE TABLE vsav_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    input_info TEXT,
+    subtitle TEXT,
+    white_dmg TEXT,
+    renda TEXT,
+    meter TEXT,
+    reaction TEXT,
+    curse_time TEXT
+);
+
+upsert:
+INSERT INTO vsav_move(move_id, input_info, subtitle, white_dmg, renda, meter, reaction, curse_time)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    input_info = excluded.input_info,
+    subtitle = excluded.subtitle,
+    white_dmg = excluded.white_dmg,
+    renda = excluded.renda,
+    meter = excluded.meter,
+    reaction = excluded.reaction,
+    curse_time = excluded.curse_time;
+
+selectByCharacter:
+SELECT *
+FROM vsav_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

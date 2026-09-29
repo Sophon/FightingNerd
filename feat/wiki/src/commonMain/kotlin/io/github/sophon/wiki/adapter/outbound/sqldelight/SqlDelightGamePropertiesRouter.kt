@@ -2,7 +2,12 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.featureConfig.model.WikiClientFeature
-import io.github.sophon.wiki.adapter.outbound.sqldelight.wavu.WavuSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DragDownSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DreamCancelSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DustLoopSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.MizuumiSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.SuperComboSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.WavuSqlDelightGameProperties
 import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.MoveGameProperties
@@ -12,17 +17,21 @@ import io.github.sophon.wiki.application.domain.model.MoveGameProperties
  */
 internal class SqlDelightGamePropertiesRouter(
     private val wavuGameProperties: WavuSqlDelightGameProperties,
+    private val mizuumiGameProperties: MizuumiSqlDelightGameProperties,
+    private val dustLoopGameProperties: DustLoopSqlDelightGameProperties,
+    private val superComboGameProperties: SuperComboSqlDelightGameProperties,
+    private val dragDownGameProperties: DragDownSqlDelightGameProperties,
+    private val dreamCancelGameProperties: DreamCancelSqlDelightGameProperties,
 ) {
     fun of(game: Game): SqlDelightGameProperties {
         val gameProperties = when (game.wiki) {
             WikiClientFeature.Wavu -> wavuGameProperties
+            WikiClientFeature.Mizuumi -> mizuumiGameProperties
+            WikiClientFeature.DustLoop -> dustLoopGameProperties
+            WikiClientFeature.SuperCombo -> superComboGameProperties
+            WikiClientFeature.DragDown -> dragDownGameProperties
+            WikiClientFeature.DreamCancel -> dreamCancelGameProperties
             WikiClientFeature.Xko -> NoGameProperties
-            // TODO extension tables - after the Tekken 8 review
-            WikiClientFeature.Mizuumi,
-            WikiClientFeature.DustLoop,
-            WikiClientFeature.SuperCombo,
-            WikiClientFeature.DragDown,
-            WikiClientFeature.DreamCancel -> NoGameProperties
         }
         return gameProperties
     }

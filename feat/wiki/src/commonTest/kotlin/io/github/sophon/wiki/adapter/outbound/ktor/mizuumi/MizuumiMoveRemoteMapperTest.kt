@@ -22,7 +22,7 @@ class MizuumiMoveRemoteMapperTest {
         val result = move.toMove(Game.MBTL, MizuumiMoveSource.ak)
 
         //then
-        assertThat(result.mbtlProperties?.property).isEqualTo(expected)
+        assertThat(result.mbtlProperties?.mizuumiProperty).isEqualTo(expected)
     }
 
     @Test
@@ -37,7 +37,7 @@ class MizuumiMoveRemoteMapperTest {
         val result = move.toMove(Game.MBTL, MizuumiMoveSource.dn)
 
         //then
-        assertThat(result.mbtlProperties?.property).isEqualTo(expected)
+        assertThat(result.mbtlProperties?.mizuumiProperty).isEqualTo(expected)
     }
     //endregion
 

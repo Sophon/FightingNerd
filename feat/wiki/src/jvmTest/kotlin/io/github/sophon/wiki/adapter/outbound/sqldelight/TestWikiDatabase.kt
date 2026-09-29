@@ -6,7 +6,12 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.wiki.adapter.outbound.sqldelight.wavu.WavuSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DragDownSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DreamCancelSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DustLoopSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.MizuumiSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.SuperComboSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.WavuSqlDelightGameProperties
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.data.WikiDB
@@ -35,6 +40,11 @@ internal class TestWikiDatabase(clock: Clock = FakeClock()) {
     private val wikiDatabase = LazyWikiDB { driver }
     private val gamePropertiesRouter = SqlDelightGamePropertiesRouter(
         wavuGameProperties = WavuSqlDelightGameProperties(wikiDatabase),
+        mizuumiGameProperties = MizuumiSqlDelightGameProperties(wikiDatabase),
+        dustLoopGameProperties = DustLoopSqlDelightGameProperties(wikiDatabase),
+        superComboGameProperties = SuperComboSqlDelightGameProperties(wikiDatabase),
+        dragDownGameProperties = DragDownSqlDelightGameProperties(wikiDatabase),
+        dreamCancelGameProperties = DreamCancelSqlDelightGameProperties(wikiDatabase),
     )
 
     val characterAdapter = SqlDelightCharacterAdapter(wikiDatabase, gamePropertiesRouter, clock)

@@ -5,6 +5,9 @@ import app.cash.sqldelight.db.SqlDriver
 import io.github.sophon.wiki.data.Character
 import io.github.sophon.wiki.data.Move
 import io.github.sophon.wiki.data.WikiDB
+import io.github.sophon.wiki.data.dragDown.Roa2_move
+import io.github.sophon.wiki.data.superCombo.Mk1_move
+import io.github.sophon.wiki.data.superCombo.Street_fighter6_move
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
@@ -25,6 +28,24 @@ private fun createWikiDB(driver: SqlDriver): WikiDB {
             notesAdapter = StringListAdapter,
             hitbox_image_listAdapter = StringListAdapter,
             move_image_listAdapter = StringListAdapter,
+        ),
+        street_fighter6_moveAdapter = Street_fighter6_move.Adapter(
+            imagesAdapter = StringListAdapter,
+        ),
+        mk1_moveAdapter = Mk1_move.Adapter(
+            costAdapter = StringListAdapter,
+        ),
+        roa2_moveAdapter = Roa2_move.Adapter(
+            captionAdapter = StringListAdapter,
+            hitbox_captionAdapter = StringListAdapter,
+            cancel_notesAdapter = StringListAdapter,
+            hit_idAdapter = StringListAdapter,
+            hit_move_idAdapter = StringListAdapter,
+            hit_nameAdapter = StringListAdapter,
+            hit_activeAdapter = StringListAdapter,
+            custom_shield_safetyAdapter = StringListAdapter,
+            unique_fieldAdapter = StringListAdapter,
+            article_idAdapter = StringListAdapter,
         ),
     )
     return database

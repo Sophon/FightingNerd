@@ -14,7 +14,12 @@ import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightCharacterAdap
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightGamePropertiesRouter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightMoveAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.createWikiSqlDriver
-import io.github.sophon.wiki.adapter.outbound.sqldelight.wavu.WavuSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DragDownSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DreamCancelSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DustLoopSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.MizuumiSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.SuperComboSqlDelightGameProperties
+import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.WavuSqlDelightGameProperties
 import io.github.sophon.wiki.application.domain.service.ClearCacheService
 import io.github.sophon.wiki.application.domain.service.ConfigureWikiService
 import io.github.sophon.wiki.application.domain.service.GetCharacterListService
@@ -81,6 +86,11 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     single { LazyWikiDB { createWikiSqlDriver(databaseDirectory) } }
     singleOf(::SqlDelightGamePropertiesRouter)
     singleOf(::WavuSqlDelightGameProperties)
+    singleOf(::MizuumiSqlDelightGameProperties)
+    singleOf(::DustLoopSqlDelightGameProperties)
+    singleOf(::SuperComboSqlDelightGameProperties)
+    singleOf(::DragDownSqlDelightGameProperties)
+    singleOf(::DreamCancelSqlDelightGameProperties)
     single {
         SqlDelightCharacterAdapter(
             wikiDatabase = get(),
