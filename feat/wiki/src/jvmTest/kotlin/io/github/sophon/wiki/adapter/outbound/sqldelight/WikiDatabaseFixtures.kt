@@ -12,7 +12,7 @@ internal val jin = Character(
     displayName = "Jin",
     remoteQueryId = "Jin",
     wikiUrl = "https://wavu.wiki/t/Jin",
-    aliasList = listOf("jin", "kazama"),
+    aliasList = listOf("jim", "jin"),
 )
 
 internal val asuka = Character(
@@ -20,7 +20,7 @@ internal val asuka = Character(
     displayName = "Asuka",
     remoteQueryId = "Asuka",
     wikiUrl = "https://wavu.wiki/t/Asuka",
-    aliasList = listOf("asuka", "kazama"),
+    aliasList = listOf("oscar", "oskar", "aska", "asuka"),
 )
 
 internal val armorKing = Character(
@@ -28,7 +28,7 @@ internal val armorKing = Character(
     displayName = "Armor King",
     remoteQueryId = "Armor King",
     wikiUrl = "https://wavu.wiki/t/Armor_King",
-    aliasList = listOf("armor king", "ak"),
+    aliasList = listOf("ak", "aking", "armorking", "armor king"),
     images = Character.Images(
         iconUrl = "https://wavu.wiki/w/images/Armor_King_icon.png",
     ),

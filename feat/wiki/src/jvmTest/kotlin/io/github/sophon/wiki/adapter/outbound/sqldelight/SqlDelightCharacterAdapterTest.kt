@@ -47,7 +47,7 @@ internal class SqlDelightCharacterAdapterTest {
     fun `an alias taken in the game stays with the first character saved`() = runTest {
         // given
         val database = TestWikiDatabase()
-        val expected = listOf("asuka")
+        val expected = listOf("oscar", "oskar", "aska", "asuka")
 
         // when
         database.save(Game.Tekken8, jin)
