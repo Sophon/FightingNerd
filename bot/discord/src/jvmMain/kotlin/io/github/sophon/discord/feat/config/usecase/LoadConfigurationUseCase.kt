@@ -46,7 +46,7 @@ internal class LoadConfigurationUseCase(
 
 
     private companion object {
-        const val CONFIG_PATH = "res/config.json"
+        const val CONFIG_PATH = "res/discordConfig.json"
         const val TAG = "LoadConfigurationUseCase"
     }
 }

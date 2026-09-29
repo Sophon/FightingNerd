@@ -21,7 +21,7 @@ Both platforms can use any of these:
   - feature configuration
     - each module inside `feat/` is a feature that target can use
     - contains `CoreFeatureRepo` which is the source of truth for all enabled features; the json files are:
-      - bot: `~/res/config.json`
+      - bot: `~/res/discordConfig.json`
       - app: `~/composeApp/src/commonMain/composeResources/files/modules.json`
     - contains Wiki stuff
       - most feature modules are Wikis of fighting games - `DustLoop`, `SuperCombo`, `Wavu` etc

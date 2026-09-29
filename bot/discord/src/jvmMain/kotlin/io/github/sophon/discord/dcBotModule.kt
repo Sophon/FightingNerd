@@ -22,6 +22,7 @@ import io.github.sophon.discord.app.port.outbound.CheckFileExistsPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.CreateFilePort
 import io.github.sophon.discord.app.port.outbound.ReadFilePort
+import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
 import io.github.sophon.discord.app.port.outbound.WriteToFilePort
 import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
@@ -132,7 +133,10 @@ internal fun dcBotModule(kord: Kord) = module {
     //endregion
 
     //region Wiki
-    singleOf(::WikiAdapter).bind<ConfigureWikiPort>()
+    singleOf(::WikiAdapter) {
+        bind<ConfigureWikiPort>()
+        bind<RefreshWikiPort>()
+    }
     //endregion
 }
 

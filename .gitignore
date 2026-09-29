@@ -80,7 +80,7 @@ lint/tmp/
 # lint/reports/
 
 # Config files
-/feat/dcBot/config.json
+/feat/dcBot/discordConfig.json
 /config.json
 
 # Kotlin

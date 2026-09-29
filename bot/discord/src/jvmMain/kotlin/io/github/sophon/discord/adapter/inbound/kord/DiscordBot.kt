@@ -73,7 +73,7 @@ internal class DiscordBotImpl(
 
 
     private suspend fun startFeatures() {
-        botFeatureRepo.initialize()
+//        botFeatureRepo.initialize()
 
         startFeaturesUseCase()
     }
