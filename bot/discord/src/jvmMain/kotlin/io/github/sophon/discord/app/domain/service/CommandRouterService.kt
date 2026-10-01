@@ -12,8 +12,23 @@ internal class CommandRouterService(
     private val frameDataPort: FrameDataPort,
 ) {
     suspend operator fun invoke(userRequest: UserRequest): Result<BotResponse, BotError> {
-        val result = when (val command = resolveCommand(userRequest)) {
-            Command.Fd -> frameDataPort.getFrameData(userRequest.query)
+        val initialResult = route(
+            command = resolveCommand(userRequest),
+            query = userRequest.query,
+        )
+
+        val result = if ((userRequest.command == null) && (initialResult is Result.Error)) {
+            retryWithExtractedCommand(query = userRequest.query, originalResult = initialResult)
+        } else {
+            initialResult
+        }
+
+        return result
+    }
+
+    private suspend fun route(command: Command, query: String): Result<BotResponse, BotError> {
+        val result = when (command) {
+            Command.Fd -> frameDataPort.getFrameData(query)
 
             Command.Tip,
             Command.Donate,
@@ -46,6 +61,26 @@ internal class CommandRouterService(
             Command.Ewgf -> Result.Error(BotError.NotImplemented(command.name))
         }
 
+        return result
+    }
+
+    /**
+     * Only for requests without an explicit command. Finds the first command anywhere in the query
+     * and routes again with that command and the remaining words as the query.
+     */
+    private suspend fun retryWithExtractedCommand(
+        query: String,
+        originalResult: Result<BotResponse, BotError>,
+    ): Result<BotResponse, BotError> {
+        val wordList = query.split(' ')
+        val (commandWord, command) = wordList
+            .firstNotNullOfOrNull { word -> Command.fromId(word)?.let { word to it } }
+            ?: return originalResult
+
+        val result = route(
+            command = command,
+            query = (wordList - commandWord).joinToString(" "),
+        )
         return result
     }
 
