@@ -4,6 +4,7 @@ import io.github.sophon.core.architecture.Error
 
 sealed class BotError(private vararg val inputs: String) : Error {
     class InvalidCommand(val command: String): BotError(command)
+    class NotImplemented(command: String): BotError(command)
     class InvalidQuery(input: String) : BotError(input)
     class UnknownCharacter(input: String) : BotError(input)
     class UnknownMove(vararg inputs: String) : BotError(*inputs)

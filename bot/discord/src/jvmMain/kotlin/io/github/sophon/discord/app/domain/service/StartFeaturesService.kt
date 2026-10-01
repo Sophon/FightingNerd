@@ -6,7 +6,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.discord.app.domain.model.DiscordJsonConfig
+import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.app.port.outbound.ReadFilePort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
@@ -30,16 +30,16 @@ internal class StartFeaturesService(
         return result
     }
 
-    private fun loadConfig(): Result<DiscordJsonConfig, BotError> {
+    private fun loadConfig(): Result<DiscordConfig, BotError> {
         val result = readFilePort.read(CONFIG_PATH)
             .map { configText ->
-                json.decodeFromString<DiscordJsonConfig>(configText)
+                json.decodeFromString<DiscordConfig>(configText)
             }
         return result
     }
 
-    private suspend fun startWiki(discordJsonConfig: DiscordJsonConfig): EmptyResult<BotError> {
-        val result = configureWikiPort.configure(discordJsonConfig)
+    private suspend fun startWiki(discordConfig: DiscordConfig): EmptyResult<BotError> {
+        val result = configureWikiPort.configure(discordConfig)
             .onSuccess { refreshWikiPort.refresh() }
 
         return result

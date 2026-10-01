@@ -1,6 +1,6 @@
 package io.github.sophon.discord.feat.core.domain.model
 
-internal sealed class Command(
+sealed class Command(
     val name: String,
     val description: String,
     val argumentList: List<Argument> = listOf()

@@ -16,6 +16,10 @@ import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
+import io.github.sophon.discord.app.domain.model.Message
+import io.github.sophon.discord.app.domain.model.UserRequest
+import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
@@ -23,8 +27,8 @@ import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
-import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
+import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
@@ -57,6 +61,7 @@ internal class DiscordBotImpl(
     private val commandRegistry: CommandRegistry,
 
     private val startFeaturesUseCase: StartFeaturesUseCase,
+    private val processUserInputUseCase: ProcessUserInputUseCase,
 ): DiscordBot {
     private val editableEmbedMap = mutableMapOf<String, BotOutput>()
 
@@ -72,10 +77,13 @@ internal class DiscordBotImpl(
     }
 
 
-    private suspend fun startFeatures() {
+    private fun startFeatures() {
 //        botFeatureRepo.initialize()
 
-        startFeaturesUseCase()
+        coroutineScope.launch {
+            startFeaturesUseCase()
+                .onError { error -> Napier.e(tag = TAG) { "Feature start failed: $error" } }
+        }
     }
 
     private suspend fun startKord() {
@@ -87,21 +95,57 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
+//            kordRestCall(TAG) {
+//                handleQueryUseCase.invoke(
+//                    interaction = interaction,
+//                    editableEmbedMap = editableEmbedMap,
+//                )
+//            }
+
             kordRestCall(TAG) {
-                handleQueryUseCase.invoke(
-                    interaction = interaction,
+                val discordCommandInteraction = DiscordCommandInteraction(
+                    username = interaction.user.username,
+                    userId = interaction.user.id.toString(),
+                    channelId = interaction.channelId.toString(),
+                    command = interaction.command.rootName,
+                    argumentMap = interaction.command.strings,
+                    serverName = interaction.getGuildOrNull()?.name,
+                )
+                val response = processUserInputUseCase(
+                    discordCommandInteraction = discordCommandInteraction,
                     editableEmbedMap = editableEmbedMap,
                 )
+                Napier.d(tag = TAG) { response.toString() }
             }
         }
 
         kord.on<MessageCreateEvent> {
+//            kordRestCall(TAG) {
+//                handleQueryUseCase.invoke(
+//                    message = message,
+//                    botId = kord.selfId,
+//                    editableEmbedMap = editableEmbedMap,
+//                )
+//            }
+
             kordRestCall(TAG) {
-                handleQueryUseCase.invoke(
-                    message = message,
-                    botId = kord.selfId,
+                val userMessage = Message(
+                    serverName = message.getGuildOrNull()?.name.orEmpty(),
+                    channelId = message.channelId.toString(),
+                    author = Message.Author(
+                        id = message.author?.id?.toString().orEmpty(),
+                        username = message.author?.username.orEmpty(),
+                    ),
+                    // webhook messages have no author, treat them as bots
+                    isFromBot = (message.author?.isBot ?: true),
+                    content = message.content,
+                )
+                val response = processUserInputUseCase(
+                    message = userMessage,
+                    botId = kord.selfId.toString(),
                     editableEmbedMap = editableEmbedMap,
                 )
+                Napier.d(tag = TAG) { response.toString() }
             }
         }
 

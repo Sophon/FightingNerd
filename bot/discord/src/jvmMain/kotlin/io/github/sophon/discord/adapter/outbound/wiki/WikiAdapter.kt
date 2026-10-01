@@ -1,22 +1,34 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
 import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.mapError
-import io.github.sophon.discord.app.domain.model.DiscordJsonConfig
+import io.github.sophon.core.util.equalsIgnoreCase
+import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
+import io.github.sophon.discord.app.port.outbound.FrameDataPort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
 import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.CharacterId
+import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.port.inbound.ConfigureWikiUseCase
+import io.github.sophon.wiki.application.port.inbound.GetCharacterListUseCase
+import io.github.sophon.wiki.application.port.inbound.GetMoveListUseCase
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.first
 
 internal class WikiAdapter(
     private val configureWikiUseCase: ConfigureWikiUseCase,
     private val refreshDataUseCase: RefreshDataUseCase,
-): ConfigureWikiPort, RefreshWikiPort {
-    override suspend fun configure(discordJsonConfig: DiscordJsonConfig): EmptyResult<BotError> {
-        val result = discordJsonConfig.toWikiConfig()
+    private val getCharacterListUseCase: GetCharacterListUseCase,
+    private val getMoveListUseCase: GetMoveListUseCase,
+): ConfigureWikiPort, RefreshWikiPort, FrameDataPort {
+    override suspend fun configure(discordConfig: DiscordConfig): EmptyResult<BotError> {
+        val result = discordConfig.toWikiConfig()
             .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
             .mapError { it.toDomainError() }
         return result
@@ -24,5 +36,42 @@ internal class WikiAdapter(
 
     override suspend fun refresh() {
         refreshDataUseCase().collect()
+    }
+
+    override suspend fun getFrameData(query: String): Result<BotResponse, BotError> {
+        val characterQuery = query.split(" ").first()
+        val character = findCharacter(characterQuery)
+            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
+
+        val moveQuery = query.substringAfter(delimiter = " ", missingDelimiterValue = "")
+        val move = findMove(character.id, moveQuery)
+            ?: return Result.Error(BotError.UnknownMove(characterQuery, moveQuery))
+
+        val botResponse = move.toDomain(character)
+        return Result.Success(botResponse)
+    }
+
+
+    private suspend fun findCharacter(characterQuery: String): Character? {
+        val characterList = getCharacterListUseCase().first()
+        val character = characterList.firstOrNull { it.matches(characterQuery) }
+        return character
+    }
+
+    private suspend fun findMove(characterId: CharacterId, moveQuery: String): Move? {
+        val moveList = getMoveListUseCase(characterId = characterId).first()
+        val move = moveList.firstOrNull { it.matches(moveQuery) }
+        return move
+    }
+
+    private fun Character.matches(characterQuery: String): Boolean {
+        return id.naturalId.equalsIgnoreCase(characterQuery)
+                || aliasList.any { it.equalsIgnoreCase(characterQuery) }
+    }
+
+    private fun Move.matches(moveQuery: String): Boolean {
+        return input.equalsIgnoreCase(moveQuery)
+                || name.equalsIgnoreCase(moveQuery)
+                || aliases.any { it.equalsIgnoreCase(moveQuery) }
     }
 }

@@ -3,7 +3,7 @@ package io.github.sophon.discord.app.domain.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-internal data class DiscordJsonConfig(
+internal data class DiscordConfig(
     val featureList: List<Feature>,
     val adminConfig: AdminConfig,
     val statsConfig: StatsConfig,
