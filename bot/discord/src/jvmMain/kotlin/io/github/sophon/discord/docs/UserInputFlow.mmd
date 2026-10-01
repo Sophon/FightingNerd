@@ -1,0 +1,50 @@
+flowchart TD
+    subgraph Kord
+        user["User query"]
+    end
+
+    subgraph APPLICATION
+        process["Process user input"]
+        route{"Command router"}
+        command_p1["Command port 1"]
+        command_p2["Command port 2"]
+        command_p3["Command port 3"]
+        command_p4["Command port 4"]
+    end
+
+    subgraph ADAPTER
+        wiki_adp["Wiki"]
+        admin_adp["Admin"]
+        ewgf_adp["EWGF"]
+    end
+
+    subgraph FEATURES
+        wiki["Wiki"]
+        admin["Admin"]
+        ewgf["EWGF"]
+    end
+
+    user -->|Message| process -->|Command| route
+    route -->|"command 1"| command_p1 -->|query| wiki_adp
+    route -->|"command 2"| command_p2 -->|query| wiki_adp
+    route -->|"command 3"| command_p3 -->|query| admin_adp
+    route -->|"command 4"| command_p4 -->|query| ewgf_adp
+
+    wiki_adp -.- wiki
+    admin_adp -.- admin
+    ewgf_adp -.- ewgf
+
+    style Kord stroke:orange,stroke-dasharray:5 5,fill:none
+    style APPLICATION stroke:green,stroke-dasharray:5 5,fill:none
+    style ADAPTER stroke:blue,stroke-dasharray:5 5,fill:none
+    style FEATURES stroke-dasharray:5 5,fill:none
+
+    classDef kord stroke:orange
+    classDef application stroke:green
+    classDef adapter stroke:blue
+    classDef outboundPort stroke:green,stroke-dasharray:3 3
+
+    class user kord
+    class process,route application
+    class command_p1,command_p2,command_p3,command_p4 outboundPort
+    class wiki_adp,admin_adp,ewgf_adp adapter
