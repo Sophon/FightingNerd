@@ -13,6 +13,7 @@ import org.koin.core.qualifier.named
 import io.github.aakira.napier.Napier
 import io.github.sophon.integration.adminModule
 import io.github.sophon.core.coreModule
+import io.github.sophon.discord.adapter.inbound.kord.KordPoster
 import io.github.sophon.integration.data.ReportRepo
 import io.github.sophon.discord.adapter.outbound.file.FilesAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
@@ -31,7 +32,7 @@ import io.github.sophon.discord.app.port.outbound.WriteToFilePort
 import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.data.JsonReportRepo
-import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
+import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
@@ -122,6 +123,10 @@ internal fun dcBotModule(kord: Kord) = module {
             openFingerprintedDriver(schema, databaseFile)
         }
     }
+
+    //region Kord
+    singleOf(::KordPoster)
+    //endregion
 
     //region Services
     singleOf(::StartFeaturesService).bind<StartFeaturesUseCase>()

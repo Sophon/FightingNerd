@@ -11,7 +11,7 @@ import dev.kord.rest.builder.message.embed
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
+import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import kotlin.uuid.ExperimentalUuidApi

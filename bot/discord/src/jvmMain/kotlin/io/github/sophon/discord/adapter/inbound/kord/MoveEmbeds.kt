@@ -1,51 +1,53 @@
-package io.github.sophon.discord.feat.wikiWavu
+package io.github.sophon.discord.adapter.inbound.kord
 
-import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.featureConfig.model.FeatureInfo
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
+import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.feat.core.domain.model.Emoji
-import io.github.sophon.discord.adapter.inbound.kord.featureFooter
-import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
-import io.github.sophon.discord.adapter.inbound.kord.moveEmbedDescription
-import io.github.sophon.discord.adapter.inbound.kord.optionalField
 
-internal fun wavuMoveEmbed(
-    character: Character,
-    move: Move,
-    featureInfo: FeatureInfo,
+internal fun genericMoveEmbed(
+    move: BotResponse.MoveResponse
 ): EmbedBuilder.() -> Unit = {
     title = move.input
-    url = move.urls.wikiUrl
-    moveEmbedDescription(character, move)
-    color = Color(BLUE)
+    url = move.url
+    description = when {
+        move.characterName.isNotBlank() && move.moveName.isNullOrBlank().not() -> {
+            "**${move.characterName}**: ${move.moveName}"
+        }
+        move.characterName.isNotBlank() -> {
+            "**${move.characterName}**"
+        }
+        move.moveName.isNullOrBlank().not() -> {
+            move.moveName
+        }
+        else -> "Move data"
+    }
 
-    character.images?.iconUrl?.let { thumbnail { url = it } }
+    move.characterImageUrl?.let { thumbnail { url = it } }
 
-    mandatoryField(name = "Startup", value = move.startup)
-    mandatoryField(name = "Hit", value = move.onHit)
-    mandatoryField(name = "Block", value = move.onBlock)
-    mandatoryField(name = "CH", value = (move.onCH ?: move.onHit))
-    mandatoryField(name = "Level", value = move.guard)
+    move.primaryFields.forEach { field ->
+        mandatoryField(name = field.title, value = field.value)
+    }
+
+    if (move.isCollapsedByDefault.not()) {
+        move.secondaryFields.forEach { field ->
+            optionalField(name = field.title, value = field.value)
+        }
+    }
+
+    notesSection(move)
 
 
-    optionalField(name = "Recovery", value = move.recovery)
-    optionalField(name = "Damage", value = move.damage)
-
-    createNotes(move)
-
-    featureFooter(featureInfo)
+    featureFooter(dataSource = move.dataSource)
 }
 
 
-private fun EmbedBuilder.createNotes(move: Move) {
-    val aliasNote = if (move.aliases.isNotEmpty()) {
-        "Alt inputs: ${move.aliases.joinToString("; ")}"
+private fun EmbedBuilder.notesSection(move: BotResponse.MoveResponse) {
+    val aliasNote = if (move.aliasList.isNotEmpty()) {
+        "**ALIAS**: ${move.aliasList.joinToString("; ")}"
     } else null
 
     val allNotes = buildList {
-        addAll(move.notes.map { it })
+        addAll(move.noteList.map { it })
         aliasNote?.let { add(it) }
     }
 
@@ -83,5 +85,3 @@ private fun List<String>.emojify(): List<String> {
     }
 }
 
-
-private const val BLUE = 0x00095FB

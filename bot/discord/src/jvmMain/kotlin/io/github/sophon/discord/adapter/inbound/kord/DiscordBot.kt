@@ -15,7 +15,9 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.domain.model.Message
 import io.github.sophon.discord.app.domain.model.UserRequest
@@ -51,7 +53,6 @@ internal class DiscordBotImpl(
     private val kord: Kord,
     private val tracker: Tracker,
     private val adminConfig: Config.AdminConfig,
-    private val handleQueryUseCase: HandleQueryUseCase,
     private val handleAutoCompleteEventUseCase: HandleAutoCompleteEventUseCase,
     private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
@@ -60,6 +61,7 @@ internal class DiscordBotImpl(
     private val scheduler: Scheduler,
     private val commandRegistry: CommandRegistry,
 
+    private val kordPoster: KordPoster,
     private val startFeaturesUseCase: StartFeaturesUseCase,
     private val processUserInputUseCase: ProcessUserInputUseCase,
 ): DiscordBot {
@@ -95,13 +97,6 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
-//            kordRestCall(TAG) {
-//                handleQueryUseCase.invoke(
-//                    interaction = interaction,
-//                    editableEmbedMap = editableEmbedMap,
-//                )
-//            }
-
             kordRestCall(TAG) {
                 val discordCommandInteraction = DiscordCommandInteraction(
                     username = interaction.user.username,
@@ -111,23 +106,30 @@ internal class DiscordBotImpl(
                     argumentMap = interaction.command.strings,
                     serverName = interaction.getGuildOrNull()?.name,
                 )
-                val response = processUserInputUseCase(
+                processUserInputUseCase(
                     discordCommandInteraction = discordCommandInteraction,
                     editableEmbedMap = editableEmbedMap,
                 )
-                Napier.d(tag = TAG) { response.toString() }
+                    .onSuccess { response ->
+                        when (response) {
+                            is BotResponse.MoveResponse -> {
+                                kordPoster.post(
+                                    interaction = interaction,
+                                    embedBuilder = genericMoveEmbed(response),
+                                    imageList = response.hitboxImageList,
+                                    videoUrl = response.videoUrl,
+                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                            }
+                            else -> {}
+                        }
+                    }
+                    .onError {
+                        //TODO: post error embed
+                    }
             }
         }
 
         kord.on<MessageCreateEvent> {
-//            kordRestCall(TAG) {
-//                handleQueryUseCase.invoke(
-//                    message = message,
-//                    botId = kord.selfId,
-//                    editableEmbedMap = editableEmbedMap,
-//                )
-//            }
-
             kordRestCall(TAG) {
                 val userMessage = Message(
                     serverName = message.getGuildOrNull()?.name.orEmpty(),
@@ -140,12 +142,27 @@ internal class DiscordBotImpl(
                     isFromBot = (message.author?.isBot ?: true),
                     content = message.content,
                 )
-                val response = processUserInputUseCase(
+                processUserInputUseCase(
                     message = userMessage,
                     botId = kord.selfId.toString(),
                     editableEmbedMap = editableEmbedMap,
                 )
-                Napier.d(tag = TAG) { response.toString() }
+                    .onSuccess { response ->
+                        when (response) {
+                            is BotResponse.MoveResponse -> {
+                                kordPoster.post(
+                                    message = message,
+                                    embedBuilder = genericMoveEmbed(response),
+                                    imageList = response.hitboxImageList,
+                                    videoUrl = response.videoUrl,
+                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                            }
+                            else -> {}
+                        }
+                    }
+                    .onError {
+                        //TODO: post error embed
+                    }
             }
         }
 

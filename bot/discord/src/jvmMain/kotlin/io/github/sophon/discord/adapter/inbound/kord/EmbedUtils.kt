@@ -1,4 +1,4 @@
-package io.github.sophon.discord.util
+package io.github.sophon.discord.adapter.inbound.kord
 
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
@@ -9,6 +9,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_KOFI
+import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 internal fun EmbedBuilder.mandatoryField(
@@ -88,6 +89,14 @@ internal fun EmbedBuilder.featureFooter(featureInfo: FeatureInfo) {
         text = "${featureInfo.name}\n" +
                 "Ideas or errors? Use /feedback"
         icon = featureInfo.iconUrl
+    }
+}
+
+internal fun EmbedBuilder.featureFooter(dataSource: BotResponse.DataSource) {
+    footer {
+        text = "${dataSource.name}\n" +
+                "Ideas or errors? Use /feedback"
+        icon = dataSource.iconUrl
     }
 }
 

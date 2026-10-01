@@ -12,8 +12,8 @@ import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.featureFooter
+import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
 
 internal fun tipEmbed(
     featureInfo: FeatureInfo,

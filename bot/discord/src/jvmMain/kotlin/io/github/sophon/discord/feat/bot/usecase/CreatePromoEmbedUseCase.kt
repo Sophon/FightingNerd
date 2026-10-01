@@ -10,9 +10,9 @@ import io.github.sophon.discord.URL_APP_STORE
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_PLAY_STORE
-import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
+import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
 import kotlin.uuid.ExperimentalUuidApi
 
 @ExcludeFromCoverage("UI")

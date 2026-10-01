@@ -59,9 +59,9 @@ internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
         characterImageUrl = character.images?.iconUrl,
         primaryFields = listOf(
             BotResponse.MoveResponse.Field("Startup", startup.orDash()),
-            BotResponse.MoveResponse.Field("On Hit", onHit.orDash()),
-            BotResponse.MoveResponse.Field("On Block", onBlock.orDash()),
-            BotResponse.MoveResponse.Field("On Counter", onCH.orDash()),
+            BotResponse.MoveResponse.Field("Hit", onHit.orDash()),
+            BotResponse.MoveResponse.Field("Block", onBlock.orDash()),
+            BotResponse.MoveResponse.Field("Counter", onCH.orDash()),
             BotResponse.MoveResponse.Field("Damage", damage.orDash()),
         ),
         dataSource = BotResponse.DataSource(
@@ -70,16 +70,14 @@ internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
         ),
         isCollapsedByDefault = isCollapsedByDefault,
         secondaryFields = listOfNotNull(
+            guard?.let { BotResponse.MoveResponse.Field("Guard", it) },
             active?.let { BotResponse.MoveResponse.Field("Active", it) },
             cancel?.let { BotResponse.MoveResponse.Field("Cancel", it) },
             recovery?.let { BotResponse.MoveResponse.Field("Recovery", it) },
-            guard?.let { BotResponse.MoveResponse.Field("Guard", it) },
             invulnerability?.let { BotResponse.MoveResponse.Field("Invulnerability", it) },
-            aliases
-                .takeIf { it.isNotEmpty() }
-                ?.let { BotResponse.MoveResponse.Field("Aliases", it.joinToString(", ")) },
         ),
         noteList = notes,
+        aliasList = aliases,
         videoUrl = urls.videoUrl,
         hitboxImageList = urls.hitboxImageList,
     )

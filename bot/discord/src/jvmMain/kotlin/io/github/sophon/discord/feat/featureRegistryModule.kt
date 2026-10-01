@@ -16,6 +16,7 @@ import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.feat.bot.BotFeature
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
+import io.github.sophon.discord.adapter.inbound.kord.KordPoster
 import io.github.sophon.discord.feat.bot.usecase.CreateEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateErrorEmbedBuilderUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateFeedbackEmbedUseCase
@@ -98,6 +99,7 @@ internal val featureRegistryModule = module {
 
     //region CORE
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
+    singleOf(::KordPoster)
 
     single {
         TrackerImpl(
