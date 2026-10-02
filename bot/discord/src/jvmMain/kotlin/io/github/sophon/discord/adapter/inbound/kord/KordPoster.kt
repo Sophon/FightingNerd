@@ -3,6 +3,9 @@ package io.github.sophon.discord.adapter.inbound.kord
 import dev.kord.common.Color
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
+import dev.kord.core.behavior.edit
+import dev.kord.core.behavior.interaction.response.FollowupPermittingInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
@@ -17,9 +20,9 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
+import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -32,13 +35,13 @@ internal class KordPoster(
         message: Message,
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
-        videoUrl: String?,
+        buttonSet: BotResponse.ButtonSet?,
     ): EmptyResult<BotError> {
         val result = try {
             message.channel.createMessage {
                 messageReference = message.id
                 allowedMentions { repliedUser = false }
-                moveContent(embedBuilder = embedBuilder, imageList = imageList, videoUrl = videoUrl)
+                moveContent(embedBuilder = embedBuilder, imageList = imageList, buttonSet = buttonSet)
             }
 
             Result.Success(Unit)
@@ -61,11 +64,11 @@ internal class KordPoster(
         interaction: GuildChatInputCommandInteraction,
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
-        videoUrl: String?,
+        buttonSet: BotResponse.ButtonSet?,
     ): EmptyResult<BotError> {
         val result = try {
             interaction.respondPublic {
-                moveContent(embedBuilder = embedBuilder, imageList = imageList, videoUrl = videoUrl)
+                moveContent(embedBuilder = embedBuilder, imageList = imageList, buttonSet = buttonSet)
             }
 
             Result.Success(Unit)
@@ -84,15 +87,59 @@ internal class KordPoster(
         return result
     }
 
+    /**
+     * Replaces the message's embeds and buttons in place.
+     */
+    suspend fun edit(
+        message: Message,
+        embedBuilder: EmbedBuilder.() -> Unit,
+        imageList: List<String>,
+        buttonSet: BotResponse.ButtonSet?,
+    ): EmptyResult<BotError> {
+        val result = try {
+            message.edit {
+                embeds = mutableListOf()
+                components = mutableListOf()
+                moveContent(embedBuilder = embedBuilder, imageList = imageList, buttonSet = buttonSet)
+            }
+
+            Result.Success(Unit)
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    suspend fun postText(
+        response: FollowupPermittingInteractionResponseBehavior,
+        mention: String,
+        text: String,
+    ): EmptyResult<BotError> {
+        val result = try {
+            response.createPublicFollowup {
+                content = buildString {
+                    appendLine(mention)
+                    append(text)
+                }
+            }
+
+            Result.Success(Unit)
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
 
     /**
      * Image embeds share the primary embed's title and url, so Discord groups them under the same link.
-     * The video is a Text button - the URL is only posted on click, where Discord unfurls it into a player.
      */
     private fun MessageBuilder.moveContent(
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
-        videoUrl: String?,
+        buttonSet: BotResponse.ButtonSet?,
     ) {
         embed(embedBuilder)
 
@@ -105,17 +152,7 @@ internal class KordPoster(
             }
         }
 
-        videoUrl?.let { url ->
-            discordButtonBuilder.createEmbedButtons(
-                messageBuilder = this,
-                buttonList = listOf(
-                    BotOutput.EmbedButton(
-                        label = "Video",
-                        action = BotOutput.EmbedButton.Action.Text(url),
-                    ),
-                ),
-            )
-        }
+        buttonSet?.let { discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = it) }
     }
 
     private fun missingPermissionsEmbed(errorMessage: String?): EmbedBuilder.() -> Unit = {

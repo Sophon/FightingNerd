@@ -18,8 +18,10 @@ import io.github.sophon.integration.data.ReportRepo
 import io.github.sophon.discord.adapter.outbound.file.FilesAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.discord.app.domain.service.CommandRouterService
+import io.github.sophon.discord.app.domain.service.ProcessButtonEventService
 import io.github.sophon.discord.app.domain.service.ProcessUserInputService
 import io.github.sophon.discord.app.domain.service.StartFeaturesService
+import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.app.port.outbound.CheckFileExistsPort
@@ -131,6 +133,7 @@ internal fun dcBotModule(kord: Kord) = module {
     //region Services
     singleOf(::StartFeaturesService).bind<StartFeaturesUseCase>()
     singleOf(::ProcessUserInputService).bind<ProcessUserInputUseCase>()
+    singleOf(::ProcessButtonEventService).bind<ProcessButtonEventUseCase>()
     singleOf(::CommandRouterService)
     //endregion
 

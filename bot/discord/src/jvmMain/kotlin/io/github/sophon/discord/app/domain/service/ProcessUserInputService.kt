@@ -9,7 +9,6 @@ import io.github.sophon.discord.app.domain.model.Message
 import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 
 internal class ProcessUserInputService(
@@ -18,7 +17,6 @@ internal class ProcessUserInputService(
     override suspend fun invoke(
         message: Message,
         botId: String,
-        editableEmbedMap: MutableMap<String, BotOutput>,
     ): Result<BotResponse, BotError> {
         if (message.isValid(botId).not()) return Result.Success(BotResponse.Ignore)
 
@@ -51,7 +49,6 @@ internal class ProcessUserInputService(
 
     override suspend fun invoke(
         discordCommandInteraction: DiscordCommandInteraction,
-        editableEmbedMap: MutableMap<String, BotOutput>,
     ): Result<BotResponse, BotError> {
         val command = Command.fromId(discordCommandInteraction.command)
         val query = discordCommandInteraction.argumentMap.toQuery()

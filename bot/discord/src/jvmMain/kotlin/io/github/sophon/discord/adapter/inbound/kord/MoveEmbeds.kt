@@ -4,7 +4,18 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.feat.core.domain.model.Emoji
 
-internal fun primaryMoveEmbed(
+internal fun moveEmbed(
+    move: BotResponse.MoveResponse,
+): EmbedBuilder.() -> Unit {
+    val embedBuilder = if (move.forceExpand) {
+        detailedMoveEmbed(move)
+    } else {
+        coreMoveEmbed(move)
+    }
+    return embedBuilder
+}
+
+private fun coreMoveEmbed(
     move: BotResponse.MoveResponse
 ): EmbedBuilder.() -> Unit = {
     headerSection(move)
@@ -22,7 +33,7 @@ internal fun primaryMoveEmbed(
     featureFooter(dataSource = move.dataSource)
 }
 
-internal fun detailedMoveEmbed(
+private fun detailedMoveEmbed(
     move: BotResponse.MoveResponse,
 ): EmbedBuilder.() -> Unit = {
     headerSection(move)

@@ -36,7 +36,6 @@ sealed interface BotResponse {
 
     data class PlainText(
         val text: String,
-        val dataSource: DataSource,
         val buttonSet: ButtonSet? = null,
     ): BotResponse
 

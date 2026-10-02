@@ -27,7 +27,6 @@ import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
-import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
@@ -123,7 +122,6 @@ internal val featureRegistryModule = module {
     singleOf(::CreateMutableEmbedUseCase)
     singleOf(::HandleQueryUseCase)
     singleOf(::HandleAutoCompleteEventUseCase)
-    singleOf(::HandleButtonInteractionUseCase)
     singleOf(::PostDailyReportEmbedUseCase)
     singleOf(::CreatePromoEmbedUseCase)
     singleOf(::CreateAliasOutputUseCase)

@@ -5,7 +5,7 @@ flowchart TD
     end
 
     subgraph APPLICATION
-        edit["Edit embed"]
+        edit["Process button event"]
         frame_data_p["Frame data port"]
     end
 
@@ -18,8 +18,8 @@ flowchart TD
     end
 
 
-    bot --> |"1. MoveId (game, charId, input)"| edit --> |"2. MoveId"| frame_data_p --> wiki_adp --> |"3. GetCharacter(CharacterId), GetMove(CharacterId, input)"| wiki
-    wiki --> |"4. Character, Move"| wiki_adp --> frame_data_p --> |"5. MoveResponse"| edit --> |"6. MoveResponse (forceExpand)"| bot --> |"7. detailed embed, embedID"| poster
+    bot --> |"1. ButtonEvent.Expand(MoveId)"| edit --> |"2. MoveId"| frame_data_p --> wiki_adp --> |"3. GetCharacter(CharacterId), GetMove(CharacterId, input)"| wiki
+    wiki --> |"4. Character, Move"| wiki_adp --> frame_data_p --> |"5. MoveResponse"| edit --> |"6. MoveResponse (forceExpand, no Details)"| bot --> |"7. detailed embed, embedID"| poster
 
 
     style KORD stroke:orange,stroke-dasharray:5 5,fill:none

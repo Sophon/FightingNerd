@@ -6,8 +6,12 @@ import dev.kord.rest.builder.component.ButtonBuilder
 import dev.kord.rest.builder.message.MessageBuilder
 import dev.kord.rest.builder.message.actionRow
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.EMBED_MAX_BUTTON_ACTION_LENGTH
+import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.ButtonEvent
+import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton
 import kotlin.uuid.ExperimentalUuidApi
@@ -15,19 +19,26 @@ import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 internal class DiscordButtonBuilder {
-    fun decodeToDomainModel(buttonId: String): DiscordButton? {
-        val (key, value) = buttonId
-            .split(":", limit = 2)
-            .takeIf { it.size == 2 }
-            ?: return null
-
-        return when (key) {
-            DiscordButton.KEY_QUERY -> DiscordButton.Query(value)
-            DiscordButton.KEY_EDIT -> DiscordButton.Edit(value)
-            DiscordButton.KEY_REDIRECT -> DiscordButton.Redirect(value)
-            DiscordButton.KEY_TEXT -> DiscordButton.Text(value)
-            else -> null
+    fun createResponseButtons(
+        messageBuilder: MessageBuilder,
+        buttonSet: BotResponse.ButtonSet,
+    ) {
+        val builtButtonList = buttonSet.buttonList
+            .take(EMBED_MAX_BUTTONS)
+            .mapNotNull { button -> createEmbedButton(button.action, button.label) }
+        val chunkSize = if (builtButtonList.size == 4) {
+            2
+        } else {
+            5
         }
+
+        builtButtonList
+            .chunked(chunkSize)
+            .forEach { rowButtonList ->
+                messageBuilder.actionRow {
+                    rowButtonList.forEach { components.add(it) }
+                }
+            }
     }
 
     fun createEmbedButtons(
@@ -85,6 +96,37 @@ internal class DiscordButtonBuilder {
                 interactionButtonOrNull(customId, label)
             }
         }
+    }
+
+    private fun createEmbedButton(
+        action: BotResponse.EmbedButton.Action,
+        label: String,
+    ): ActionRowComponentBuilder? {
+        val buttonBuilder = when (action) {
+            is BotResponse.EmbedButton.Action.Query -> {
+                val customId = DiscordButton.Query(action.query).toString()
+                interactionButtonOrNull(customId, label)
+            }
+            // stateless buttons have no message map to edit from - Expand replaces it
+            is BotResponse.EmbedButton.Action.Edit -> null
+            is BotResponse.EmbedButton.Action.Url -> {
+                ButtonBuilder.LinkButtonBuilder(action.url)
+                    .apply { this.label = label }
+            }
+            is BotResponse.EmbedButton.Action.Redirect -> {
+                val customId = DiscordButton.Redirect(action.channelId).toString()
+                interactionButtonOrNull(customId, label)
+            }
+            is BotResponse.EmbedButton.Action.Text -> {
+                val customId = DiscordButton.Text(action.text).toString()
+                interactionButtonOrNull(customId, label)
+            }
+            is BotResponse.EmbedButton.Action.Expand -> {
+                val customId = DiscordButton.Expand(action.moveId).toString()
+                interactionButtonOrNull(customId, label)
+            }
+        }
+        return buttonBuilder
     }
 
     private fun interactionButtonOrNull(
