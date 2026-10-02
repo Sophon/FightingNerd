@@ -27,6 +27,47 @@ internal class SqlDelightMoveAdapterTest {
     }
 
     @Test
+    fun `a saved move is loaded by its input with aliases and game properties`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+        val expected = windHookFist
+
+        // when
+        database.save(jin, listOf(demonsPaw, windHookFist, electricWindHookFist))
+
+        // then
+        val move = database.moveAdapter.get(jin.id, windHookFist.input)
+        assertThat(move).isEqualTo(expected)
+    }
+
+    @Test
+    fun `an unknown input loads nothing`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+
+        // when
+        database.save(jin, listOf(demonsPaw))
+
+        // then
+        val move = database.moveAdapter.get(jin.id, windHookFist.input)
+        assertThat(move).isNull()
+    }
+
+    @Test
+    fun `an input is loaded only for its own character`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+
+        // when
+        database.save(jin, listOf(demonsPaw))
+        database.save(asuka)
+
+        // then
+        val move = database.moveAdapter.get(asuka.id, demonsPaw.input)
+        assertThat(move).isNull()
+    }
+
+    @Test
     fun `a move missing from four saves is kept`() = runTest {
         // given
         val database = TestWikiDatabase()

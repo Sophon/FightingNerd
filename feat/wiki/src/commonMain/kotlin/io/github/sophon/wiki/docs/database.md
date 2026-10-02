@@ -52,6 +52,10 @@
 - lookup is two queries - character first, then moves by char ID
   - distinguishes `UnknownCharacter` (try next feature) from `UnknownMove` (stop)
   - a single join returns empty for both
+- lookup by ID - `GetCharacterUseCase(characterId)`, then `GetMoveUseCase(characterId, input)`
+  - exact - a keyed select on the natural key, no alias or query matching; e.g. the bot's Details button
+  - same steps as the list loads - aliases and game properties load per character (per game for character properties), the one base row is picked by row ID
+  - a missing row is `null` from the port, the service maps it to `WikiError.UnknownCharacter` / `WikiError.UnknownMove`
 
 ## Character
 
@@ -71,6 +75,7 @@ CREATE TABLE character_alias (
 
 ### Model
 - match is exact (equality) on display name or alias, so the lookup is a key lookup in SQL - `findCharacter(game, name): Character?`
+- by ID - `LoadCharacterPort.get(characterId): Character?` over `selectByNaturalId`
 - lowercase normalization of display name, aliases and query input
 
 ## Move
@@ -94,4 +99,5 @@ CREATE TABLE move_alias (
 
 ### Model
 - lookup by input or alias - `findMove(characterId, input): Move?`
+- by ID - `LoadMovePort.get(characterId, input): Move?` over `selectByInput` - the complete input only, no alias
 - input variants (`d/f+1` vs `df1`) normalized by the service, both for the model and user input

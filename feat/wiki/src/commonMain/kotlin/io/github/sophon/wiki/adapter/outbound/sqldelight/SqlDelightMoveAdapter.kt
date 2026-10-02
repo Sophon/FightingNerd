@@ -10,6 +10,7 @@ import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.port.outbound.DeleteMoveListPort
 import io.github.sophon.wiki.application.port.outbound.LoadLastUpdatePort
 import io.github.sophon.wiki.application.port.outbound.LoadMoveListPort
+import io.github.sophon.wiki.application.port.outbound.LoadMovePort
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlin.getValue
 import kotlin.time.Instant
 
@@ -24,6 +26,7 @@ internal class SqlDelightMoveAdapter(
     wikiDatabase: LazyWikiDB,
     private val gamePropertiesRouter: SqlDelightGamePropertiesRouter,
 ) : LoadMoveListPort,
+    LoadMovePort,
     LoadLastUpdatePort,
     DeleteMoveListPort {
     private val database by wikiDatabase
@@ -36,6 +39,11 @@ internal class SqlDelightMoveAdapter(
             .map { loadMoveList(characterId) }
             .flowOn(Dispatchers.IO)
         return flow
+    }
+
+    override suspend fun get(characterId: CharacterId, input: String): Move? {
+        val move = withContext(Dispatchers.IO) { loadMove(characterId, input) }
+        return move
     }
 
     // here, not in SqlDelightCharacterAdapter - LoadCharacterListPort.subscribe(Game) differs only in the return type
@@ -81,6 +89,33 @@ internal class SqlDelightMoveAdapter(
             loadedMoveList
         }
         return moveList
+    }
+
+    private fun loadMove(characterId: CharacterId, input: String): Move? {
+        val move = database.transactionWithResult {
+            val aliasListByRowId = database.moveAliasQueries
+                .selectAliasByCharacter(game = characterId.game.id, natural_id = characterId.naturalId) { moveRowId, alias ->
+                    moveRowId to alias
+                }
+                .executeAsList()
+                .groupBy(
+                    keySelector = { (moveRowId, _) -> moveRowId },
+                    valueTransform = { (_, alias) -> alias },
+                )
+            val propertiesByRowId = gamePropertiesRouter.of(characterId.game).loadMoveProperties(characterId)
+
+            val loadedMove = database.moveQueries
+                .selectByInput(game = characterId.game.id, natural_id = characterId.naturalId, input = input)
+                .executeAsOneOrNull()
+                ?.let { entity ->
+                    entity.toDomain(
+                        aliases = aliasListByRowId[entity.id].orEmpty(),
+                        gameProperties = propertiesByRowId[entity.id],
+                    )
+                }
+            loadedMove
+        }
+        return move
     }
 
 

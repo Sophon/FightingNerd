@@ -44,6 +44,11 @@ FROM character
 WHERE game = ?
 ORDER BY display_name COLLATE NOCASE;
 
+selectByNaturalId:
+SELECT *
+FROM character
+WHERE game = ? AND natural_id = ?;
+
 selectLastUpdate:
 SELECT updated_at
 FROM character

@@ -23,25 +23,31 @@ import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.WavuSqlD
 import io.github.sophon.wiki.application.domain.service.ClearCacheService
 import io.github.sophon.wiki.application.domain.service.ConfigureWikiService
 import io.github.sophon.wiki.application.domain.service.GetCharacterListService
+import io.github.sophon.wiki.application.domain.service.GetCharacterService
 import io.github.sophon.wiki.application.domain.service.GetFiltersService
 import io.github.sophon.wiki.application.domain.service.GetGroupsService
 import io.github.sophon.wiki.application.domain.service.GetMoveListService
+import io.github.sophon.wiki.application.domain.service.GetMoveService
 import io.github.sophon.wiki.application.domain.service.GetUpdateTimeStampService
 import io.github.sophon.wiki.application.domain.service.RefreshDataService
 import io.github.sophon.wiki.application.port.inbound.ClearCacheUseCase
 import io.github.sophon.wiki.application.port.inbound.ConfigureWikiUseCase
 import io.github.sophon.wiki.application.port.inbound.GetCharacterListUseCase
+import io.github.sophon.wiki.application.port.inbound.GetCharacterUseCase
 import io.github.sophon.wiki.application.port.inbound.GetFiltersUseCase
 import io.github.sophon.wiki.application.port.inbound.GetGroupsUseCase
 import io.github.sophon.wiki.application.port.inbound.GetMoveListUseCase
+import io.github.sophon.wiki.application.port.inbound.GetMoveUseCase
 import io.github.sophon.wiki.application.port.inbound.GetUpdateTimeStampUseCase
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
 import io.github.sophon.wiki.application.port.outbound.DeleteCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.DeleteMoveListPort
 import io.github.sophon.wiki.application.port.outbound.FetchGameDataPort
 import io.github.sophon.wiki.application.port.outbound.LoadCharacterListPort
+import io.github.sophon.wiki.application.port.outbound.LoadCharacterPort
 import io.github.sophon.wiki.application.port.outbound.LoadLastUpdatePort
 import io.github.sophon.wiki.application.port.outbound.LoadMoveListPort
+import io.github.sophon.wiki.application.port.outbound.LoadMovePort
 import io.github.sophon.wiki.application.port.outbound.LoadWikiConfigPort
 import io.github.sophon.wiki.application.port.outbound.SaveCharacterMoveListPort
 import io.github.sophon.wiki.application.port.outbound.SaveWikiConfigPort
@@ -63,9 +69,11 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     singleOf(::ClearCacheService).bind<ClearCacheUseCase>()
     singleOf(::ConfigureWikiService).bind<ConfigureWikiUseCase>()
     singleOf(::GetCharacterListService).bind<GetCharacterListUseCase>()
+    singleOf(::GetCharacterService).bind<GetCharacterUseCase>()
     singleOf(::GetFiltersService).bind<GetFiltersUseCase>()
     singleOf(::GetGroupsService).bind<GetGroupsUseCase>()
     singleOf(::GetMoveListService).bind<GetMoveListUseCase>()
+    singleOf(::GetMoveService).bind<GetMoveUseCase>()
     singleOf(::GetUpdateTimeStampService).bind<GetUpdateTimeStampUseCase>()
     singleOf(::RefreshDataService).bind<RefreshDataUseCase>()
     //endregion
@@ -99,12 +107,14 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
         )
     } withOptions {
         bind<LoadCharacterListPort>()
+        bind<LoadCharacterPort>()
         bind<SaveCharacterMoveListPort>()
         bind<StrikeCharacterListPort>()
         bind<DeleteCharacterListPort>()
     }
     singleOf(::SqlDelightMoveAdapter) {
         bind<LoadMoveListPort>()
+        bind<LoadMovePort>()
         bind<LoadLastUpdatePort>()
         bind<DeleteMoveListPort>()
     }

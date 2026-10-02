@@ -10,6 +10,7 @@ import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.port.outbound.DeleteCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.LoadCharacterListPort
+import io.github.sophon.wiki.application.port.outbound.LoadCharacterPort
 import io.github.sophon.wiki.application.port.outbound.SaveCharacterMoveListPort
 import io.github.sophon.wiki.application.port.outbound.StrikeCharacterListPort
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlin.getValue
 import kotlin.time.Clock
 
@@ -27,6 +29,7 @@ internal class SqlDelightCharacterAdapter(
     private val gamePropertiesRouter: SqlDelightGamePropertiesRouter,
     private val clock: Clock,
 ) : LoadCharacterListPort,
+    LoadCharacterPort,
     SaveCharacterMoveListPort,
     StrikeCharacterListPort,
     DeleteCharacterListPort {
@@ -38,6 +41,11 @@ internal class SqlDelightCharacterAdapter(
             .map { loadCharacterList(game) }
             .flowOn(Dispatchers.IO)
         return flow
+    }
+
+    override suspend fun get(characterId: CharacterId): Character? {
+        val character = withContext(Dispatchers.IO) { loadCharacter(characterId) }
+        return character
     }
 
     override suspend fun save(
@@ -103,6 +111,33 @@ internal class SqlDelightCharacterAdapter(
             loadedCharacterList
         }
         return characterList
+    }
+
+    private fun loadCharacter(characterId: CharacterId): Character? {
+        val game = characterId.game
+        val character = database.transactionWithResult {
+            val aliasListByRowId = database.characterAliasQueries
+                .selectAliasByGame(game = game.id) { characterRowId, alias -> characterRowId to alias }
+                .executeAsList()
+                .groupBy(
+                    keySelector = { (characterRowId, _) -> characterRowId },
+                    valueTransform = { (_, alias) -> alias },
+                )
+            val propertiesByRowId = gamePropertiesRouter.of(game).loadCharacterProperties(game)
+
+            val loadedCharacter = database.characterQueries
+                .selectByNaturalId(game = game.id, natural_id = characterId.naturalId)
+                .executeAsOneOrNull()
+                ?.let { entity ->
+                    entity.toDomain(
+                        game = game,
+                        aliasList = aliasListByRowId[entity.id].orEmpty(),
+                        gameProperties = propertiesByRowId[entity.id],
+                    )
+                }
+            loadedCharacter
+        }
+        return character
     }
 
     private fun upsertCharacter(

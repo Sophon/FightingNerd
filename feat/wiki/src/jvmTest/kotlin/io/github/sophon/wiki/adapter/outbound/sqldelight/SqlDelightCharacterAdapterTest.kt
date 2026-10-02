@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import kotlinx.coroutines.flow.first
@@ -23,6 +24,34 @@ internal class SqlDelightCharacterAdapterTest {
         // then
         val characterList = database.characterAdapter.subscribe(Game.Tekken8).first()
         assertThat(characterList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a saved character is loaded by its ID with aliases`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+        val expected = armorKing
+
+        // when
+        database.save(jin)
+        database.save(armorKing)
+
+        // then
+        val character = database.characterAdapter.get(armorKing.id)
+        assertThat(character).isEqualTo(expected)
+    }
+
+    @Test
+    fun `an unknown character loads nothing`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+
+        // when
+        database.save(jin)
+
+        // then
+        val character = database.characterAdapter.get(armorKing.id)
+        assertThat(character).isNull()
     }
 
     @Test
