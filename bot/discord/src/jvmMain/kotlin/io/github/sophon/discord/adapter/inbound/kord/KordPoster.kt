@@ -35,13 +35,19 @@ internal class KordPoster(
         message: Message,
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
+        isExpanded: Boolean,
         buttonSet: BotResponse.ButtonSet?,
     ): EmptyResult<BotError> {
         val result = try {
             message.channel.createMessage {
                 messageReference = message.id
                 allowedMentions { repliedUser = false }
-                moveContent(embedBuilder = embedBuilder, imageList = imageList, buttonSet = buttonSet)
+                moveContent(
+                    embedBuilder = embedBuilder,
+                    imageList = imageList,
+                    isExpanded = isExpanded,
+                    buttonSet = buttonSet,
+                )
             }
 
             Result.Success(Unit)
@@ -64,11 +70,17 @@ internal class KordPoster(
         interaction: GuildChatInputCommandInteraction,
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
+        isExpanded: Boolean,
         buttonSet: BotResponse.ButtonSet?,
     ): EmptyResult<BotError> {
         val result = try {
             interaction.respondPublic {
-                moveContent(embedBuilder = embedBuilder, imageList = imageList, buttonSet = buttonSet)
+                moveContent(
+                    embedBuilder = embedBuilder,
+                    imageList = imageList,
+                    isExpanded = isExpanded,
+                    buttonSet = buttonSet,
+                )
             }
 
             Result.Success(Unit)
@@ -94,6 +106,7 @@ internal class KordPoster(
         message: Message,
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
+        isExpanded: Boolean,
         buttonSet: BotResponse.ButtonSet?,
     ): EmptyResult<BotError> {
         val result = try {
@@ -103,8 +116,8 @@ internal class KordPoster(
                 moveContent(
                     embedBuilder = embedBuilder,
                     imageList = imageList,
+                    isExpanded = isExpanded,
                     buttonSet = buttonSet,
-                    showImages = true,
                 )
             }
 
@@ -144,14 +157,14 @@ internal class KordPoster(
     private fun MessageBuilder.moveContent(
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
+        isExpanded: Boolean,
         buttonSet: BotResponse.ButtonSet?,
-        showImages: Boolean = false,
     ) {
         embed(embedBuilder)
 
         val primaryEmbed = EmbedBuilder().apply(embedBuilder)
 
-        if (showImages && imageList.size > 1) {
+        if (isExpanded && imageList.size >= 2) {
             imageList.forEach { imageUrl ->
                 embed {
                     title = primaryEmbed.title

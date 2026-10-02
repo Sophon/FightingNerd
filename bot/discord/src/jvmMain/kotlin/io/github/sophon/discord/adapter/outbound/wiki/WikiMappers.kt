@@ -23,7 +23,6 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.KOF15MovePr
 import io.github.sophon.wiki.application.domain.model.gameProperties.MBTLMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.MKMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2MoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.SF6MoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
@@ -149,7 +148,9 @@ private fun Move.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {
         is Uni2MoveProperties -> properties.toPrimaryFields(this)
         is VSAVMoveProperties -> properties.toPrimaryFields(this)
 
-        else -> listOf()
+        is KOF15MoveProperties -> properties.toPrimaryFields(this)
+
+        else -> (toDefaultPrimaryFields() + properties?.toPrimaryFields().orEmpty())
     }
     val fieldList = (coreFieldList + gameFieldList)
 
@@ -158,28 +159,20 @@ private fun Move.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {
 
 private fun Move.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = when (val properties = gameProperties) {
-        is T8Properties -> listOf()
-
         is GGMoveProperties -> properties.toSecondaryFields(this)
         is BBMoveProperties -> properties.toSecondaryFields(this)
         is GBVSRMoveProperties -> properties.toSecondaryFields(this)
-        is MTFSMoveProperties -> properties.toSecondaryFields(this)
 
-        is SF6MoveProperties -> properties.toSecondaryFields(this)
+        is SF6MoveProperties -> properties.toSecondaryFields()
         is AVLMoveProperties -> properties.toSecondaryFields(this)
-        is MKMoveProperties -> properties.toSecondaryFields(this)
 
-        is MBTLMoveProperties -> properties.toSecondaryFields()
-        is Uni2MoveProperties -> properties.toSecondaryFields()
-        is VSAVMoveProperties -> properties.toSecondaryFields()
-
-        else -> (toDefaultSecondaryFields() + properties?.toSecondaryFields().orEmpty())
+        else -> listOf()
     }
 
     return fieldList
 }
 
-private fun Move.toDefaultSecondaryFields(): List<BotResponse.MoveResponse.Field> {
+private fun Move.toDefaultPrimaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Guard", guard),
         fieldOf("Active", active),
@@ -191,14 +184,11 @@ private fun Move.toDefaultSecondaryFields(): List<BotResponse.MoveResponse.Field
     return fieldList
 }
 
-private fun MoveGameProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
+private fun MoveGameProperties.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = when (this) {
-        is DBFZMoveProperties -> toSecondaryFields()
+        is DBFZMoveProperties -> toPrimaryFields()
 
-        is KOF15MoveProperties -> toSecondaryFields()
-        is COTWMoveProperties -> toSecondaryFields()
-
-        is Roa2MoveProperties -> toSecondaryFields()
+        is COTWMoveProperties -> toPrimaryFields()
 
         else -> listOf()
     }
@@ -264,22 +254,16 @@ private fun BBMoveProperties.toSecondaryFields(move: Move): List<BotResponse.Mov
         fieldOf("Starter", starter),
         fieldOf("P1", p1),
         fieldOf("P2", p2),
-        fieldOf("On ODR", onODR),
-        fieldOf("Blockstun", blockstun),
         fieldOf("Ground hit", groundHit),
-        fieldOf("Air hit", airHit),
         fieldOf("Ground CH", groundCH),
+        fieldOf("Air hit", airHit),
         fieldOf("Air CH", airCH),
-        fieldOf("Blockstop", blockstop),
-        fieldOf("Hitstop", hitstop),
-        fieldOf("CH stop", chStop),
-        fieldOf("Cancel timing", cancelTiming),
     )
 
     return fieldList
 }
 
-private fun DBFZMoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
+private fun DBFZMoveProperties.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Level", level),
         fieldOf("Attribute", attribute),
@@ -318,18 +302,11 @@ private fun GBVSRMoveProperties.toSecondaryFields(move: Move): List<BotResponse.
 }
 
 private fun MTFSMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOf(
+    val fieldList = listOfNotNull(
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
         mandatoryFieldOf("Invul", move.invulnerability),
-    )
-
-    return fieldList
-}
-
-private fun MTFSMoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOfNotNull(
         fieldOf("Cancel", move.cancel),
         fieldOf("Simple input", simpleInput),
         fieldOf("Level", level),
@@ -355,35 +332,16 @@ private fun SF6MoveProperties.toPrimaryFields(move: Move): List<BotResponse.Move
     return fieldList
 }
 
-private fun SF6MoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
+private fun SF6MoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
-        fieldOf("Invul", move.invulnerability),
-        fieldOf("Chip", chip),
-        fieldOf("Damage scaling", dmgScaling),
-        fieldOf("Total", total),
-        fieldOf("Hit confirm", hitConfirm),
-        fieldOf("Punish", punishAdv),
         fieldOf("Perfect parry", perfParryAdv),
-        fieldOf("DRc on hit", DRcOH),
-        fieldOf("DRc on block", DRcOB),
-        fieldOf("DR on hit", DROH),
-        fieldOf("DR on block", DROB),
-        fieldOf("Hitstun", hitStun),
         fieldOf("Blockstun", blockStun),
         fieldOf("Hitstop", hitStop),
-        fieldOf("Drive damage on hit", driveDmgOnHit),
-        fieldOf("Drive damage on block", driveDmgOnBlock),
-        fieldOf("Drive gain", driveGain),
-        fieldOf("Super gain on hit", superGainOnHit),
-        fieldOf("Super gain on block", superGainOnBlock),
-        fieldOf("Armor", armor),
-        fieldOf("Airborne", airborne),
-        fieldOf("Juggle start", jugStart),
-        fieldOf("Juggle increase", jugIncrease),
-        fieldOf("Juggle limit", jugLimit),
-        fieldOf("Projectile speed", projectileSpeed),
-        fieldOf("Range", attackRange),
-        fieldOf("Images", images),
+        fieldOf("DRc OH", DRcOH),
+        fieldOf("DRc OB", DRcOB),
+        fieldOf("DR DMG OH", driveDmgOnHit),
+        fieldOf("DR DMG OB", driveDmgOnBlock),
+        fieldOf("JGL st | inc | lim", mergedValueOf(jugStart, jugIncrease, jugLimit)),
     )
 
     return fieldList
@@ -411,7 +369,7 @@ private fun AVLMoveProperties.toSecondaryFields(move: Move): List<BotResponse.Mo
 }
 
 private fun MKMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOf(
+    val fieldList = listOfNotNull(
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
         mandatoryFieldOf("Cancel", move.cancel),
@@ -419,13 +377,6 @@ private fun MKMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveR
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("OFB", flawlessBlockAdv),
         mandatoryFieldOf("Cost", cost),
-    )
-
-    return fieldList
-}
-
-private fun MKMoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOfNotNull(
         fieldOf("Invul", move.invulnerability),
         fieldOf("Hit cancel", hitCancelAdv),
         fieldOf("Block cancel", blockCancelAdv),
@@ -438,7 +389,7 @@ private fun MKMoveProperties.toSecondaryFields(move: Move): List<BotResponse.Mov
 
 //region Mizuumi
 private fun MBTLMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOf(
+    val fieldList = listOfNotNull(
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("Cancel", move.cancel),
         mandatoryFieldOf("Property", mizuumiProperty),
@@ -448,13 +399,6 @@ private fun MBTLMoveProperties.toPrimaryFields(move: Move): List<BotResponse.Mov
         mandatoryFieldOf("Recovery", move.recovery),
         mandatoryFieldOf("Overall", overall),
         mandatoryFieldOf("Invul", move.invulnerability),
-    )
-
-    return fieldList
-}
-
-private fun MBTLMoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOfNotNull(
         fieldOf("Input info", inputInfo),
         fieldOf("Subtitle", subtitle),
         fieldOf("Min damage", minDamage),
@@ -472,39 +416,14 @@ private fun Uni2MoveProperties.toPrimaryFields(move: Move): List<BotResponse.Mov
         mandatoryFieldOf("Cancel", move.cancel),
         mandatoryFieldOf("Attribute", attribute),
         mandatoryFieldOf("Invul", move.invulnerability),
-    )
-
-    return fieldList
-}
-
-private fun Uni2MoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOfNotNull(
-        fieldOf("Input info", inputInfo),
-        fieldOf("Subtitle", subtitle),
-        fieldOf("Min damage", minDamage),
-        fieldOf("Cancel window", cancelWindow),
-        fieldOf("Property", mizuumiProperty),
-        fieldOf("Cost", cost),
-        fieldOf("Landing", landing),
-        fieldOf("Overall", overall),
-        fieldOf("Assault", assaultAdv),
-        fieldOf("Blockstun", blockstun),
-        fieldOf("Ground hit", groundHit),
-        fieldOf("Air hit", airHit),
-        fieldOf("Ground CH", groundCH),
-        fieldOf("Air CH", airCH),
-        fieldOf("Hitstop", hitstop),
-        fieldOf("CH stop", CHstop),
-        fieldOf("Proration", proration),
-        fieldOf("Combo P1", comboP1),
-        fieldOf("Combo P2", comboP2),
+        mandatoryFieldOf("Property", mizuumiProperty),
     )
 
     return fieldList
 }
 
 private fun VSAVMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOf(
+    val fieldList = listOfNotNull(
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
         mandatoryFieldOf("Renda", renda),
@@ -513,16 +432,7 @@ private fun VSAVMoveProperties.toPrimaryFields(move: Move): List<BotResponse.Mov
         mandatoryFieldOf("Invul", move.invulnerability),
         mandatoryFieldOf("W-dmg", whiteDmg),
         mandatoryFieldOf("Gauge", meter),
-    )
-
-    return fieldList
-}
-
-private fun VSAVMoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOfNotNull(
-        fieldOf("Input info", inputInfo),
-        fieldOf("Subtitle", subtitle),
-        fieldOf("Reaction", reaction),
+        mandatoryFieldOf("Reaction", reaction),
         fieldOf("Curse time", curseTime),
     )
 
@@ -531,49 +441,22 @@ private fun VSAVMoveProperties.toSecondaryFields(): List<BotResponse.MoveRespons
 //endregion
 
 //region DreamCancel
-private fun KOF15MoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOfNotNull(
-        fieldOf("Stun", stun),
+private fun KOF15MoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
+    val fieldList = listOf(
+        mandatoryFieldOf("Guard", move.guard),
+        mandatoryFieldOf("Active", move.active),
+        mandatoryFieldOf("Cancel", move.cancel),
+        mandatoryFieldOf("Recovery", move.recovery),
+        mandatoryFieldOf("Invul", move.invulnerability),
+        mandatoryFieldOf("Stun", stun),
     )
 
     return fieldList
 }
 
-private fun COTWMoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
+private fun COTWMoveProperties.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("REV damage", revDamage),
-    )
-
-    return fieldList
-}
-//endregion
-
-//region DragDown
-private fun Roa2MoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
-    val fieldList = listOfNotNull(
-        fieldOf("Mode", mode),
-        fieldOf("Hitbox caption", hitboxCaption),
-        fieldOf("Startup notes", startupNotes),
-        fieldOf("Active notes", totalActiveNotes),
-        fieldOf("Endlag notes", endlagNotes),
-        fieldOf("Cancel notes", cancelNotes),
-        fieldOf("Landing lag", landingLag),
-        fieldOf("Landing lag notes", landingLagNotes),
-        fieldOf("IASA", iasa),
-        fieldOf("IASA notes", iasaNotes),
-        fieldOf("Total duration", totalDuration),
-        fieldOf("Total duration notes", totalDurationNotes),
-        fieldOf("Ledge grab frame", ledgeGrabFrame),
-        fieldOf("Ledge grab frame notes", ledgeGrabFrameNotes),
-        fieldOf("Hit ID", hitID),
-        fieldOf("Hit move ID", hitMoveID),
-        fieldOf("Hit name", hitName),
-        fieldOf("Hit active", hitActive),
-        fieldOf("Shield safety", customShieldSafety),
-        fieldOf("Unique", uniqueField),
-        fieldOf("Article ID", articleID),
-        fieldOf("Notes", notes),
-        fieldOf("Advanced notes", advNotes),
     )
 
     return fieldList
@@ -598,6 +481,15 @@ private fun fieldOf(title: String, value: String?): BotResponse.MoveResponse.Fie
         ?.let { BotResponse.MoveResponse.Field(title, it) }
 
     return field
+}
+
+/** `a | b | c` with blanks as dashes; null when every value is blank. */
+private fun mergedValueOf(vararg values: String?): String? {
+    val mergedValue = values
+        .takeIf { valueList -> valueList.any { !it.isNullOrBlank() } }
+        ?.joinToString(" | ") { it.orDash() }
+
+    return mergedValue
 }
 
 private fun fieldOf(title: String, valueList: List<String>?): BotResponse.MoveResponse.Field? {
