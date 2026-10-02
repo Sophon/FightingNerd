@@ -30,8 +30,10 @@ sealed interface BotResponse {
     }
 
     data class ListResponse(
+        val title: String,
         val values: List<String>,
-        val buttonSet: ButtonSet,
+        val dataSource: DataSource,
+        val buttonSet: ButtonSet? = null,
     ): BotResponse
 
     data class PlainText(
@@ -65,7 +67,7 @@ sealed interface BotResponse {
         val action: Action,
     ) {
         sealed class Action {
-            data class Query(val query: String): Action()
+            data class Query(val moveId: MoveId): Action()
             data object Edit : Action()
             data class Url(val url: String): Action()
             data class Redirect(val channelId: String): Action()

@@ -7,9 +7,12 @@ import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.domain.model.MoveType
+import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
 
 internal class CommandRouterService(
     private val frameDataPort: FrameDataPort,
+    private val getMovesOfTypePort: GetMovesOfTypePort,
 ) {
     suspend operator fun invoke(userRequest: UserRequest): Result<BotResponse, BotError> {
         val initialResult = route(
@@ -29,6 +32,10 @@ internal class CommandRouterService(
     private suspend fun route(command: Command, query: String): Result<BotResponse, BotError> {
         val result = when (command) {
             Command.Fd -> frameDataPort.getFrameData(query)
+
+            Command.Pc -> getMovesOfTypePort.getMovesOfType(characterQuery = query, moveType = MoveType.PC)
+            Command.Heat -> getMovesOfTypePort.getMovesOfType(characterQuery = query, moveType = MoveType.HEAT)
+            Command.Homing -> getMovesOfTypePort.getMovesOfType(characterQuery = query, moveType = MoveType.HOMING)
 
             Command.Tip,
             Command.Donate,
@@ -51,9 +58,6 @@ internal class CommandRouterService(
             Command.OnBlock,
             Command.OnCounter,
             Command.Gl,
-            Command.Pc,
-            Command.Heat,
-            Command.Homing,
             Command.Stance,
             Command.ThrowTK,
             Command.Strings,

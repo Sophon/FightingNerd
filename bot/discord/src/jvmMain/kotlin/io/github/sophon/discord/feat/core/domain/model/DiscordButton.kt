@@ -6,7 +6,9 @@ internal sealed class DiscordButton(
     private val key: String,
     private val value: String,
 ) {
-    class Query(val query: String): DiscordButton(key = KEY_QUERY, value = query)
+    class Query(val query: String): DiscordButton(key = KEY_QUERY, value = query) {
+        constructor(moveId: MoveId): this(query = moveId.toButtonValue())
+    }
 
     class Edit(val messageId: String): DiscordButton(key = KEY_EDIT, value = messageId)
 
@@ -14,13 +16,7 @@ internal sealed class DiscordButton(
 
     class Text(val text: String): DiscordButton(key = KEY_TEXT, value = text)
 
-    /**
-     * `input` goes last - it may contain the delimiter, so decoding splits with a limit.
-     */
-    class Expand(val moveId: MoveId): DiscordButton(
-        key = KEY_EXPAND,
-        value = listOf(moveId.game.name, moveId.characterId, moveId.input).joinToString(BUTTON_ID_DELIMITER),
-    )
+    class Expand(val moveId: MoveId): DiscordButton(key = KEY_EXPAND, value = moveId.toButtonValue())
 
 
     override fun toString(): String {
@@ -37,4 +33,14 @@ internal sealed class DiscordButton(
 
         const val BUTTON_ID_DELIMITER = ":"
     }
+}
+
+
+/**
+ * `input` goes last - it may contain the delimiter, so decoding splits with a limit.
+ */
+private fun MoveId.toButtonValue(): String {
+    val buttonValue = listOf(game.name, characterId, input).joinToString(DiscordButton.BUTTON_ID_DELIMITER)
+
+    return buttonValue
 }

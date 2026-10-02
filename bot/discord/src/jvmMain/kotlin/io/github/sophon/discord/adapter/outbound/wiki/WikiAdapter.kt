@@ -9,8 +9,10 @@ import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.app.domain.model.MoveId
+import io.github.sophon.discord.app.domain.model.MoveType
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
+import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.wiki.application.domain.model.Character
@@ -32,7 +34,7 @@ internal class WikiAdapter(
     private val getMoveListUseCase: GetMoveListUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-): ConfigureWikiPort, RefreshWikiPort, FrameDataPort {
+): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort {
     override suspend fun configure(discordConfig: DiscordConfig): EmptyResult<BotError> {
         val result = discordConfig.toWikiConfig()
             .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
@@ -66,6 +68,21 @@ internal class WikiAdapter(
             }
             .mapError { it.toDomainError() }
         return result
+    }
+
+    override suspend fun getMovesOfType(
+        characterQuery: String,
+        moveType: MoveType,
+    ): Result<BotResponse.ListResponse, BotError> {
+        val character = findCharacter(characterQuery)
+            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
+
+        val moveList = getMoveListUseCase(characterId = character.id)
+            .first()
+            .filter(moveType.toFilter().predicate)
+
+        val listResponse = moveList.toListResponse(character, moveType)
+        return Result.Success(listResponse)
     }
 
 

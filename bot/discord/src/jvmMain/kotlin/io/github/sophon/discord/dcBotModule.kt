@@ -28,6 +28,7 @@ import io.github.sophon.discord.app.port.outbound.CheckFileExistsPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.CreateFilePort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
+import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
 import io.github.sophon.discord.app.port.outbound.ReadFilePort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
 import io.github.sophon.discord.app.port.outbound.WriteToFilePort
@@ -151,6 +152,7 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<ConfigureWikiPort>()
         bind<RefreshWikiPort>()
         bind<FrameDataPort>()
+        bind<GetMovesOfTypePort>()
     }
     //endregion
 }

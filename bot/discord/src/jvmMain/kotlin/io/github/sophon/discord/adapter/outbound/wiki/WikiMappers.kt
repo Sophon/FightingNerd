@@ -4,13 +4,17 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.getGame
 import io.github.sophon.core.util.orDash
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.app.domain.model.MoveId
+import io.github.sophon.discord.app.domain.model.MoveType
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.wiki.application.domain.model.Character
+import io.github.sophon.wiki.application.domain.model.Filter
 import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.MoveGameProperties
+import io.github.sophon.wiki.application.domain.model.WavuFilters
 import io.github.sophon.wiki.application.domain.model.WikiConfig
 import io.github.sophon.wiki.application.domain.model.WikiError
 import io.github.sophon.wiki.application.domain.model.gameProperties.AVLMoveProperties
@@ -27,6 +31,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.SF6MoveProp
 import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMoveProperties
+import kotlin.time.Duration.Companion.seconds
 
 internal fun DiscordConfig.toWikiConfig(): Result<WikiConfig, WikiError> {
     val gameSet = this.featureList
@@ -83,10 +88,7 @@ internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
         moveName = name,
         characterImageUrl = character.images?.iconUrl,
         primaryFields = toPrimaryFields(),
-        dataSource = BotResponse.DataSource(
-            name = "${character.id.game.displayName} (${character.id.game.wiki.id})",
-            iconUrl = character.id.game.iconUrl, //TODO: should be wiki icon url
-        ),
+        dataSource = character.toDataSource(),
         isCollapsedByDefault = isCollapsedByDefault,
         secondaryFields = secondaryFields,
         noteList = notes,
@@ -96,6 +98,69 @@ internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
     )
 
     return moveResponse
+}
+
+internal fun MoveType.toFilter(): Filter {
+    val filter = when (this) {
+        MoveType.PC -> WavuFilters.PowerCrush
+        MoveType.HEAT -> WavuFilters.Heat
+        MoveType.HOMING -> WavuFilters.Homing
+    }
+
+    return filter
+}
+
+internal fun List<Move>.toListResponse(
+    character: Character,
+    moveType: MoveType,
+): BotResponse.ListResponse {
+    val buttonSet = mapIndexed { index, move ->
+        BotResponse.EmbedButton(
+            label = (index + 1).toString(),
+            action = BotResponse.EmbedButton.Action.Query(
+                moveId = MoveId(
+                    game = character.id.game,
+                    characterId = character.id.naturalId,
+                    input = move.input,
+                ),
+            ),
+        )
+    }
+        .takeIf { it.isNotEmpty() }
+        ?.let { buttonList ->
+            BotResponse.ButtonSet(
+                buttonList = buttonList,
+                duration = EMBED_BUTTON_DURATION_INF.seconds,
+            )
+        }
+
+    val listResponse = BotResponse.ListResponse(
+        title = "${character.displayName.uppercase()} ${moveType.toTitle()}",
+        values = map { it.input },
+        dataSource = character.toDataSource(),
+        buttonSet = buttonSet,
+    )
+
+    return listResponse
+}
+
+private fun MoveType.toTitle(): String {
+    val title = when (this) {
+        MoveType.PC -> "Power Crush"
+        MoveType.HEAT -> "Heat"
+        MoveType.HOMING -> "Homing"
+    }
+
+    return title
+}
+
+private fun Character.toDataSource(): BotResponse.DataSource {
+    val dataSource = BotResponse.DataSource(
+        name = "${id.game.displayName} (${id.game.wiki.id})",
+        iconUrl = id.game.iconUrl, //TODO: should be wiki icon url
+    )
+
+    return dataSource
 }
 
 private fun Move.toButtonList(

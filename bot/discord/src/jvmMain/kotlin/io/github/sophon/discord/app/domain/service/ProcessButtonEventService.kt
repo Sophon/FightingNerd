@@ -15,6 +15,7 @@ internal class ProcessButtonEventService(
     override suspend fun invoke(buttonEvent: ButtonEvent): Result<BotResponse, BotError> {
         val result: Result<BotResponse, BotError> = when (buttonEvent) {
             is ButtonEvent.Expand -> expand(buttonEvent.moveId)
+            is ButtonEvent.Query -> frameDataPort.getFrameData(buttonEvent.moveId)
             is ButtonEvent.Text -> Result.Success(BotResponse.PlainText(text = buttonEvent.text))
         }
         return result

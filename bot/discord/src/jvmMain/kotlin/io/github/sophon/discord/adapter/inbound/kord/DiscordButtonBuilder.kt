@@ -104,7 +104,7 @@ internal class DiscordButtonBuilder {
     ): ActionRowComponentBuilder? {
         val buttonBuilder = when (action) {
             is BotResponse.EmbedButton.Action.Query -> {
-                val customId = DiscordButton.Query(action.query).toString()
+                val customId = DiscordButton.Query(action.moveId).toString()
                 interactionButtonOrNull(customId, label)
             }
             // stateless buttons have no message map to edit from - Expand replaces it

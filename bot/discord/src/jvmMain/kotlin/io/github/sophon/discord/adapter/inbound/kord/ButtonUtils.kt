@@ -8,7 +8,8 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 
 /**
- * Null for a button the new API doesn't handle - including the legacy Query, Edit and Redirect buttons.
+ * Null for a button the new API doesn't handle - the legacy Edit and Redirect buttons,
+ * and legacy Query buttons, whose plain query doesn't decode into a [MoveId].
  */
 internal fun decodeToButtonEvent(buttonId: String): ButtonEvent? {
     val (key, value) = buttonId
@@ -17,20 +18,21 @@ internal fun decodeToButtonEvent(buttonId: String): ButtonEvent? {
         ?: return null
 
     val buttonEvent = when (key) {
-        DiscordButton.KEY_EXPAND -> decodeExpand(value)
+        DiscordButton.KEY_EXPAND -> decodeMoveId(value)?.let { moveId -> ButtonEvent.Expand(moveId) }
+        DiscordButton.KEY_QUERY -> decodeMoveId(value)?.let { moveId -> ButtonEvent.Query(moveId) }
         DiscordButton.KEY_TEXT -> ButtonEvent.Text(value)
         else -> null
     }
     return buttonEvent
 }
 
-private fun decodeExpand(value: String): ButtonEvent.Expand? {
+private fun decodeMoveId(value: String): MoveId? {
     val (gameName, characterId, input) = value
         .split(DiscordButton.BUTTON_ID_DELIMITER, limit = 3)
         .takeIf { it.size == 3 }
         ?: return null
     val game = Game.entries.firstOrNull { it.name == gameName } ?: return null
 
-    val buttonEvent = ButtonEvent.Expand(MoveId(game = game, characterId = characterId, input = input))
-    return buttonEvent
+    val moveId = MoveId(game = game, characterId = characterId, input = input)
+    return moveId
 }
