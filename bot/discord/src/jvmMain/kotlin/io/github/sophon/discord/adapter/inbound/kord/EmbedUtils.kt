@@ -2,6 +2,7 @@ package io.github.sophon.discord.adapter.inbound.kord
 
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
 import io.github.sophon.core.wiki.model.Character
@@ -78,7 +79,7 @@ internal fun EmbedBuilder.optionalField(
 
 internal fun EmbedBuilder.separator() {
     field {
-        name = "\u200B"
+        name = invisibleChar()
         value = ""
         inline = false
     }
@@ -136,6 +137,28 @@ internal fun EmbedBuilder.embedImage(urls: List<String>) {
         ?.let { image = it.first() }
 }
 
+internal fun EmbedBuilder.detailsBulletPoints(fields: List<BotResponse.MoveResponse.Field>) {
+    if (fields.isEmpty()) return
+
+    separator()
+
+    val columnSize = ((fields.size + DETAILS_COLUMN_COUNT - 1) / DETAILS_COLUMN_COUNT)
+
+    fields
+        .chunked(columnSize)
+        .forEach { column ->
+            val lines = column.joinToString(separator = "\n") { field ->
+                "- **${field.title}**: ${field.value}"
+            }
+
+            field {
+                this.name = invisibleChar()
+                this.value = lines.truncate(EMBED_MAX_LENGTH)
+                this.inline = true
+            }
+        }
+}
+
 internal fun donationMessage(): String {
     return "Enjoy the bot? Buy me a coffee:\n" +
             "- ☕️ <$URL_KOFI>\n" +
@@ -144,4 +167,7 @@ internal fun donationMessage(): String {
             "- 🤖 <https://play.google.com/store/apps/details?id=io.github.sophon.fightingnerd>\n" +
             "- 🍏 <https://apps.apple.com/us/app/fighting-nerd/id6793185357>"
 }
+
+
+private const val DETAILS_COLUMN_COUNT = 3
 

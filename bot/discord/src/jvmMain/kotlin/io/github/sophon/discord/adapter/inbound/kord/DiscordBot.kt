@@ -20,13 +20,11 @@ import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.domain.model.Message
-import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
-import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
@@ -115,7 +113,7 @@ internal class DiscordBotImpl(
                             is BotResponse.MoveResponse -> {
                                 kordPoster.post(
                                     interaction = interaction,
-                                    embedBuilder = genericMoveEmbed(response),
+                                    embedBuilder = primaryMoveEmbed(response),
                                     imageList = response.hitboxImageList,
                                     videoUrl = response.videoUrl,
                                 ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
@@ -152,7 +150,7 @@ internal class DiscordBotImpl(
                             is BotResponse.MoveResponse -> {
                                 kordPoster.post(
                                     message = message,
-                                    embedBuilder = genericMoveEmbed(response),
+                                    embedBuilder = primaryMoveEmbed(response),
                                     imageList = response.hitboxImageList,
                                     videoUrl = response.videoUrl,
                                 ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }

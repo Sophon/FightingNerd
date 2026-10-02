@@ -4,9 +4,39 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.feat.core.domain.model.Emoji
 
-internal fun genericMoveEmbed(
+internal fun primaryMoveEmbed(
     move: BotResponse.MoveResponse
 ): EmbedBuilder.() -> Unit = {
+    headerSection(move)
+
+    primaryFieldsSection(fields = move.primaryFields)
+
+    if (move.isCollapsedByDefault.not()) {
+        detailsBulletPoints(move.secondaryFields)
+    }
+
+    notesSection(move)
+
+    embedImage(urls = move.hitboxImageList)
+
+    featureFooter(dataSource = move.dataSource)
+}
+
+internal fun detailedMoveEmbed(
+    move: BotResponse.MoveResponse,
+): EmbedBuilder.() -> Unit = {
+    headerSection(move)
+
+    primaryFieldsSection(fields = move.primaryFields)
+    detailsBulletPoints(move.secondaryFields)
+    notesSection(move)
+    embedImage(urls = move.hitboxImageList)
+
+    featureFooter(dataSource = move.dataSource)
+}
+
+
+private fun EmbedBuilder.headerSection(move: BotResponse.MoveResponse) {
     title = move.input
     url = move.url
     description = when {
@@ -23,21 +53,12 @@ internal fun genericMoveEmbed(
     }
 
     move.characterImageUrl?.let { thumbnail { url = it } }
+}
 
-    move.primaryFields.forEach { field ->
+private fun EmbedBuilder.primaryFieldsSection(fields: List<BotResponse.MoveResponse.Field>) {
+    fields.forEach { field ->
         mandatoryField(name = field.title, value = field.value)
     }
-
-    if (move.isCollapsedByDefault.not()) {
-        move.secondaryFields.forEach { field ->
-            optionalField(name = field.title, value = field.value)
-        }
-    }
-
-    notesSection(move)
-
-
-    featureFooter(dataSource = move.dataSource)
 }
 
 
@@ -84,4 +105,3 @@ private fun List<String>.emojify(): List<String> {
         }
     }
 }
-
