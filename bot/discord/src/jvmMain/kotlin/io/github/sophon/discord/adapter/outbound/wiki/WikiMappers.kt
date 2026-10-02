@@ -6,6 +6,7 @@ import io.github.sophon.core.util.getGame
 import io.github.sophon.core.util.orDash
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.DiscordConfig
+import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.Move
@@ -24,6 +25,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.MKMovePrope
 import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2MoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.SF6MoveProperties
+import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMoveProperties
 
@@ -44,8 +46,8 @@ internal fun DiscordConfig.toWikiConfig(): Result<WikiConfig, WikiError> {
 
 internal fun WikiError.toDomainError(): BotError {
     val botError = when (this) {
-        is WikiError.UnknownCharacter,
-        is WikiError.UnknownMove -> BotError.BotLogicError(this.toString())
+        is WikiError.UnknownCharacter -> BotError.UnknownCharacter(inputs[0])
+        is WikiError.UnknownMove -> BotError.UnknownMove(*inputs)
 
         is WikiError.DownloadError,
         is WikiError.PageNotFound,
@@ -66,6 +68,14 @@ internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
         else -> false
     }
 
+    val secondaryFields = toSecondaryFields()
+    val buttonSet = toButtonList(
+        character = character,
+        hasDetails = (isCollapsedByDefault && secondaryFields.isNotEmpty()),
+    )
+        .takeIf { it.isNotEmpty() }
+        ?.let { buttonList -> BotResponse.ButtonSet(buttonList = buttonList) }
+
     val moveResponse = BotResponse.MoveResponse(
         input = input,
         url = urls.wikiUrl,
@@ -78,14 +88,40 @@ internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
             iconUrl = character.id.game.iconUrl, //TODO: should be wiki icon url
         ),
         isCollapsedByDefault = isCollapsedByDefault,
-        secondaryFields = toSecondaryFields(),
+        secondaryFields = secondaryFields,
         noteList = notes,
         aliasList = aliases,
-        videoUrl = urls.videoUrl,
         hitboxImageList = urls.hitboxImageList,
+        buttonSet = buttonSet,
     )
 
     return moveResponse
+}
+
+private fun Move.toButtonList(
+    character: Character,
+    hasDetails: Boolean,
+): List<BotResponse.EmbedButton> {
+    val detailsButton = if (hasDetails) {
+        BotResponse.EmbedButton(
+            label = "Details",
+            action = BotResponse.EmbedButton.Action.Expand(
+                moveId = MoveId(
+                    game = character.id.game,
+                    characterId = character.id.naturalId,
+                    input = input,
+                ),
+            ),
+        )
+    } else {
+        null
+    }
+    val videoButton = urls.videoUrl?.let { url ->
+        BotResponse.EmbedButton(label = "Video", action = BotResponse.EmbedButton.Action.Text(url))
+    }
+    val buttonList = listOfNotNull(detailsButton, videoButton)
+
+    return buttonList
 }
 
 private fun Move.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {

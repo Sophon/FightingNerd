@@ -18,8 +18,10 @@ sealed interface BotResponse {
         val secondaryFields: List<Field> = emptyList(),
         val aliasList: List<String> = emptyList(),
         val noteList: List<String> = emptyList(),
-        val videoUrl: String? = null,
         val hitboxImageList: List<String> = emptyList(),
+
+        val forceExpand: Boolean = false,
+        val buttonSet: ButtonSet? = null,
     ): BotResponse {
         data class Field(
             val title: String,
@@ -69,6 +71,7 @@ sealed interface BotResponse {
             data class Url(val url: String): Action()
             data class Redirect(val channelId: String): Action()
             data class Text(val text: String): Action()
+            data class Expand(val moveId: MoveId): Action()
         }
     }
 }

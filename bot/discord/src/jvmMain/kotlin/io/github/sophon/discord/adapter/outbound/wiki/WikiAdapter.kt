@@ -3,10 +3,12 @@ package io.github.sophon.discord.adapter.outbound.wiki
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.DiscordConfig
+import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
@@ -16,7 +18,9 @@ import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.port.inbound.ConfigureWikiUseCase
 import io.github.sophon.wiki.application.port.inbound.GetCharacterListUseCase
+import io.github.sophon.wiki.application.port.inbound.GetCharacterUseCase
 import io.github.sophon.wiki.application.port.inbound.GetMoveListUseCase
+import io.github.sophon.wiki.application.port.inbound.GetMoveUseCase
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
@@ -26,6 +30,8 @@ internal class WikiAdapter(
     private val refreshDataUseCase: RefreshDataUseCase,
     private val getCharacterListUseCase: GetCharacterListUseCase,
     private val getMoveListUseCase: GetMoveListUseCase,
+    private val getCharacterUseCase: GetCharacterUseCase,
+    private val getMoveUseCase: GetMoveUseCase,
 ): ConfigureWikiPort, RefreshWikiPort, FrameDataPort {
     override suspend fun configure(discordConfig: DiscordConfig): EmptyResult<BotError> {
         val result = discordConfig.toWikiConfig()
@@ -49,6 +55,17 @@ internal class WikiAdapter(
 
         val botResponse = move.toDomain(character)
         return Result.Success(botResponse)
+    }
+
+    override suspend fun getFrameData(moveId: MoveId): Result<BotResponse.MoveResponse, BotError> {
+        val characterId = CharacterId(game = moveId.game, naturalId = moveId.characterId)
+        val result = getCharacterUseCase(characterId)
+            .flatMap { character ->
+                val moveResponse = getMoveUseCase(characterId, moveId.input).map { it.toDomain(character) }
+                moveResponse
+            }
+            .mapError { it.toDomainError() }
+        return result
     }
 
 
