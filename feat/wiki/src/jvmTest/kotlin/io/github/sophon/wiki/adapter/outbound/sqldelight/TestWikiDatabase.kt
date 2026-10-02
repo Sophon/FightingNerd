@@ -5,7 +5,6 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DragDownSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DreamCancelSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DustLoopSqlDelightGameProperties
@@ -51,11 +50,10 @@ internal class TestWikiDatabase(clock: Clock = FakeClock()) {
     val moveAdapter = SqlDelightMoveAdapter(wikiDatabase, gamePropertiesRouter)
 
     suspend fun save(
-        game: Game,
         character: Character,
         moveList: List<Move> = emptyList(),
     ) {
-        val result = characterAdapter.save(game, character, moveList)
+        val result = characterAdapter.save(character, moveList)
         assertThat(result).isEqualTo(Result.Success(Unit))
     }
 

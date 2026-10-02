@@ -48,7 +48,7 @@ internal class XkoKtorGameDataAdapter(
                 parameter("format", "json")
             }
         }
-            .map { dto -> dto.toDomainAll() }
+            .map { dto -> dto.toDomainAll(game) }
         return gameDataResult
     }
 

@@ -1,5 +1,6 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -8,7 +9,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.T8Propertie
 // normalized, like the service hands them to the adapter
 
 internal val jin = Character(
-    id = CharacterId("jin"),
+    id = CharacterId(Game.Tekken8, "jin"),
     displayName = "Jin",
     remoteQueryId = "Jin",
     wikiUrl = "https://wavu.wiki/t/Jin",
@@ -16,7 +17,7 @@ internal val jin = Character(
 )
 
 internal val asuka = Character(
-    id = CharacterId("asuka"),
+    id = CharacterId(Game.Tekken8, "asuka"),
     displayName = "Asuka",
     remoteQueryId = "Asuka",
     wikiUrl = "https://wavu.wiki/t/Asuka",
@@ -24,7 +25,7 @@ internal val asuka = Character(
 )
 
 internal val armorKing = Character(
-    id = CharacterId("armor_king"),
+    id = CharacterId(Game.Tekken8, "armor_king"),
     displayName = "Armor King",
     remoteQueryId = "Armor King",
     wikiUrl = "https://wavu.wiki/t/Armor_King",
@@ -35,7 +36,7 @@ internal val armorKing = Character(
 )
 
 internal val solBadguy = Character(
-    id = CharacterId("sol_badguy"),
+    id = CharacterId(Game.GGST, "sol_badguy"),
     displayName = "Sol Badguy",
     remoteQueryId = "Sol Badguy",
     wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy",

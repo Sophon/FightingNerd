@@ -1,5 +1,6 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.dustLoop
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -18,7 +19,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSMovePro
 // every property has a distinct value - a swapped column fails the round trip
 
 internal val kyKiske = Character(
-    id = CharacterId("ky_kiske"),
+    id = CharacterId(Game.GGST, "ky_kiske"),
     displayName = "Ky Kiske",
     remoteQueryId = "Ky Kiske",
     wikiUrl = "https://www.dustloop.com/w/GGST/Ky_Kiske",
@@ -77,7 +78,7 @@ internal val kyFarSlash = Move(
 )
 
 internal val android18 = Character(
-    id = CharacterId("android_18"),
+    id = CharacterId(Game.DBFZ, "android_18"),
     displayName = "Android 18",
     remoteQueryId = "Android 18",
     wikiUrl = "https://www.dustloop.com/w/DBFZ/Android_18",
@@ -104,7 +105,7 @@ internal val android18StandingLight = Move(
 )
 
 internal val gran = Character(
-    id = CharacterId("gran"),
+    id = CharacterId(Game.GBVSR, "gran"),
     displayName = "Gran",
     remoteQueryId = "Gran",
     wikiUrl = "https://www.dustloop.com/w/GBVSR/Gran",
@@ -148,7 +149,7 @@ internal val granCloseMedium = Move(
 )
 
 internal val ragna = Character(
-    id = CharacterId("ragna_the_bloodedge"),
+    id = CharacterId(Game.BBCF, "ragna_the_bloodedge"),
     displayName = "Ragna the Bloodedge",
     remoteQueryId = "Ragna the Bloodedge",
     wikiUrl = "https://www.dustloop.com/w/BBCF/Ragna_the_Bloodedge",
@@ -186,7 +187,7 @@ internal val ragnaStandingB = Move(
 )
 
 internal val arizona = Character(
-    id = CharacterId("arizona"),
+    id = CharacterId(Game.MTFS, "arizona"),
     displayName = "Arizona",
     remoteQueryId = "Arizona",
     wikiUrl = "https://www.dustloop.com/w/MTFS/Arizona",

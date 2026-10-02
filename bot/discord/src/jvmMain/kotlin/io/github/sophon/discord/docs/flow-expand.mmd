@@ -1,0 +1,38 @@
+flowchart TD
+    subgraph KORD
+        bot["Bot"]
+        poster["Poster"]
+    end
+
+    subgraph APPLICATION
+        edit["Process button event"]
+        frame_data_p["Frame data port"]
+    end
+
+    subgraph ADAPTER
+        wiki_adp["Wiki"]
+    end
+
+    subgraph FEATURES
+        wiki["Wiki"]
+    end
+
+
+    bot --> |"1. ButtonEvent.Expand(MoveId)"| edit --> |"2. MoveId"| frame_data_p --> wiki_adp --> |"3. GetCharacter(CharacterId), GetMove(CharacterId, input)"| wiki
+    wiki --> |"4. Character, Move"| wiki_adp --> frame_data_p --> |"5. MoveResponse"| edit --> |"6. MoveResponse (forceExpand, no Details)"| bot --> |"7. detailed embed, embedID"| poster
+
+
+    style KORD stroke:orange,stroke-dasharray:5 5,fill:none
+    style APPLICATION stroke:green,stroke-dasharray:5 5,fill:none
+    style ADAPTER stroke:blue,stroke-dasharray:5 5,fill:none
+    style FEATURES stroke-dasharray:5 5,fill:none
+
+    classDef kord stroke:orange
+    classDef application stroke:green
+    classDef adapter stroke:blue
+    classDef outboundPort stroke:green,stroke-dasharray:3 3
+
+    class bot,poster kord
+    class edit application
+    class frame_data_p outboundPort
+    class wiki_adp adapter

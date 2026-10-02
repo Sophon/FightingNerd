@@ -15,7 +15,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.ui.moveListEmbed
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
-import io.github.sophon.discord.util.toButtons
+import io.github.sophon.discord.adapter.inbound.kord.toButtons
 import io.github.sophon.wikiwavu.integration.model.T8Properties
 import kotlinx.coroutines.flow.first
 import kotlin.time.Duration.Companion.seconds

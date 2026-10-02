@@ -1,11 +1,16 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.mapper
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.data.Character as CharacterEntity
 
+/**
+ * [game] is the one the rows were selected by - the `game` column holds its [Game.id].
+ */
 internal fun CharacterEntity.toDomain(
+    game: Game,
     aliasList: List<String>,
     gameProperties: CharacterGameProperties?,
 ): Character {
@@ -16,7 +21,7 @@ internal fun CharacterEntity.toDomain(
     )
 
     val character = Character(
-        id = CharacterId(natural_id),
+        id = CharacterId(game, natural_id),
         displayName = display_name,
         remoteQueryId = remote_query_id,
         wikiUrl = wiki_url,

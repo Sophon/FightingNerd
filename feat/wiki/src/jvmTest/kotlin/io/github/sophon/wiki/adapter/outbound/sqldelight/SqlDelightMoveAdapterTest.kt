@@ -19,25 +19,66 @@ internal class SqlDelightMoveAdapterTest {
         val expected = listOf(windHookFist, demonsPaw, midLeftPunch, spinningSidekick)
 
         // when
-        database.save(Game.Tekken8, jin, expected)
+        database.save(jin, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.Tekken8, jin.id).first()
+        val moveList = database.moveAdapter.subscribe(jin.id).first()
         assertThat(moveList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a saved move is loaded by its input with aliases and game properties`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+        val expected = windHookFist
+
+        // when
+        database.save(jin, listOf(demonsPaw, windHookFist, electricWindHookFist))
+
+        // then
+        val move = database.moveAdapter.get(jin.id, windHookFist.input)
+        assertThat(move).isEqualTo(expected)
+    }
+
+    @Test
+    fun `an unknown input loads nothing`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+
+        // when
+        database.save(jin, listOf(demonsPaw))
+
+        // then
+        val move = database.moveAdapter.get(jin.id, windHookFist.input)
+        assertThat(move).isNull()
+    }
+
+    @Test
+    fun `an input is loaded only for its own character`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+
+        // when
+        database.save(jin, listOf(demonsPaw))
+        database.save(asuka)
+
+        // then
+        val move = database.moveAdapter.get(asuka.id, demonsPaw.input)
+        assertThat(move).isNull()
     }
 
     @Test
     fun `a move missing from four saves is kept`() = runTest {
         // given
         val database = TestWikiDatabase()
-        database.save(Game.Tekken8, jin, listOf(midLeftPunch, spinningSidekick))
+        database.save(jin, listOf(midLeftPunch, spinningSidekick))
         val expected = listOf(midLeftPunch.input, spinningSidekick.input)
 
         // when
-        repeat(4) { database.save(Game.Tekken8, jin, listOf(midLeftPunch)) }
+        repeat(4) { database.save(jin, listOf(midLeftPunch)) }
 
         // then
-        val inputList = database.moveAdapter.subscribe(Game.Tekken8, jin.id).first().map { move -> move.input }
+        val inputList = database.moveAdapter.subscribe(jin.id).first().map { move -> move.input }
         assertThat(inputList).isEqualTo(expected)
     }
 
@@ -45,14 +86,14 @@ internal class SqlDelightMoveAdapterTest {
     fun `a move missing from five saves is deleted`() = runTest {
         // given
         val database = TestWikiDatabase()
-        database.save(Game.Tekken8, jin, listOf(midLeftPunch, spinningSidekick))
+        database.save(jin, listOf(midLeftPunch, spinningSidekick))
         val expected = listOf(midLeftPunch.input)
 
         // when
-        repeat(5) { database.save(Game.Tekken8, jin, listOf(midLeftPunch)) }
+        repeat(5) { database.save(jin, listOf(midLeftPunch)) }
 
         // then
-        val inputList = database.moveAdapter.subscribe(Game.Tekken8, jin.id).first().map { move -> move.input }
+        val inputList = database.moveAdapter.subscribe(jin.id).first().map { move -> move.input }
         assertThat(inputList).isEqualTo(expected)
     }
 
@@ -64,10 +105,10 @@ internal class SqlDelightMoveAdapterTest {
         val expected = listOf("sidekick")
 
         // when
-        database.save(Game.Tekken8, jin, listOf(sidekickAliasingMidLeftPunch, midLeftPunch))
+        database.save(jin, listOf(sidekickAliasingMidLeftPunch, midLeftPunch))
 
         // then
-        val loadedSidekick = database.moveAdapter.subscribe(Game.Tekken8, jin.id).first()
+        val loadedSidekick = database.moveAdapter.subscribe(jin.id).first()
             .single { move -> move.input == spinningSidekick.input }
         assertThat(loadedSidekick.aliases).isEqualTo(expected)
     }
@@ -79,10 +120,10 @@ internal class SqlDelightMoveAdapterTest {
         val expected = listOf("ewhf")
 
         // when
-        database.save(Game.Tekken8, jin, listOf(windHookFist, electricWindHookFist))
+        database.save(jin, listOf(windHookFist, electricWindHookFist))
 
         // then
-        val loadedElectric = database.moveAdapter.subscribe(Game.Tekken8, jin.id).first()
+        val loadedElectric = database.moveAdapter.subscribe(jin.id).first()
             .single { move -> move.input == electricWindHookFist.input }
         assertThat(loadedElectric.aliases).isEqualTo(expected)
     }
@@ -91,16 +132,16 @@ internal class SqlDelightMoveAdapterTest {
     fun `delete removes only that game's moves`() = runTest {
         // given
         val database = TestWikiDatabase()
-        database.save(Game.Tekken8, jin, listOf(demonsPaw))
-        database.save(Game.GGST, solBadguy, listOf(solFarSlash))
+        database.save(jin, listOf(demonsPaw))
+        database.save(solBadguy, listOf(solFarSlash))
         val expected = listOf(solFarSlash)
 
         // when
         database.moveAdapter.delete(Game.Tekken8)
 
         // then
-        val jinMoveList = database.moveAdapter.subscribe(Game.Tekken8, jin.id).first()
-        val solMoveList = database.moveAdapter.subscribe(Game.GGST, solBadguy.id).first()
+        val jinMoveList = database.moveAdapter.subscribe(jin.id).first()
+        val solMoveList = database.moveAdapter.subscribe(solBadguy.id).first()
         assertThat(jinMoveList).isEmpty()
         assertThat(solMoveList).isEqualTo(expected)
     }
@@ -125,11 +166,11 @@ internal class SqlDelightMoveAdapterTest {
         val expected = Instant.fromEpochMilliseconds(1_759_107_600_000)
 
         // when
-        database.save(Game.Tekken8, jin)
+        database.save(jin)
         clock.now = expected
-        database.save(Game.Tekken8, asuka)
+        database.save(asuka)
         clock.now = (expected + 1.hours)
-        database.save(Game.GGST, solBadguy)
+        database.save(solBadguy)
 
         // then
         val lastUpdate = database.moveAdapter.subscribe(Game.Tekken8).first()

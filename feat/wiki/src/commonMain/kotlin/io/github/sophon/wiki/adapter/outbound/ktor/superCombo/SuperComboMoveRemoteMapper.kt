@@ -51,10 +51,9 @@ private fun MoveDto.toDomain(
             ?.cleanHtml()
             ?.takeIf { it.isBlank().not() },
         type = toType(game),
-        notes = (notes ?: properties)
-            .takeIfNotTemplate()
-            ?.cleanHtml()
-            .extractNotes(),
+        notes = listOf(properties, notes)
+            .flatMap { it.takeIfNotTemplate()?.cleanHtml().extractNotes() }
+            .distinct(),
         urls = Move.Urls(
             moveImageList = images.toImageUrlList(imageUrlMap),
             hitboxImageList = hitboxes.toImageUrlList(imageUrlMap),

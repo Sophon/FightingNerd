@@ -17,7 +17,7 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(kyKiske)
 
         // when
-        database.save(Game.GGST, kyKiske)
+        database.save(kyKiske)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.GGST).first()
@@ -31,10 +31,10 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(kyFarSlash)
 
         // when
-        database.save(Game.GGST, kyKiske, expected)
+        database.save(kyKiske, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.GGST, kyKiske.id).first()
+        val moveList = database.moveAdapter.subscribe(kyKiske.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -45,7 +45,7 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(android18)
 
         // when
-        database.save(Game.DBFZ, android18)
+        database.save(android18)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.DBFZ).first()
@@ -59,10 +59,10 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(android18StandingLight)
 
         // when
-        database.save(Game.DBFZ, android18, expected)
+        database.save(android18, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.DBFZ, android18.id).first()
+        val moveList = database.moveAdapter.subscribe(android18.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -73,7 +73,7 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(gran)
 
         // when
-        database.save(Game.GBVSR, gran)
+        database.save(gran)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.GBVSR).first()
@@ -87,10 +87,10 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(granCloseMedium)
 
         // when
-        database.save(Game.GBVSR, gran, expected)
+        database.save(gran, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.GBVSR, gran.id).first()
+        val moveList = database.moveAdapter.subscribe(gran.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -101,7 +101,7 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(ragna)
 
         // when
-        database.save(Game.BBCF, ragna)
+        database.save(ragna)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.BBCF).first()
@@ -115,10 +115,10 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(ragnaStandingB)
 
         // when
-        database.save(Game.BBCF, ragna, expected)
+        database.save(ragna, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.BBCF, ragna.id).first()
+        val moveList = database.moveAdapter.subscribe(ragna.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -129,7 +129,7 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(arizona)
 
         // when
-        database.save(Game.MTFS, arizona)
+        database.save(arizona)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.MTFS).first()
@@ -143,10 +143,10 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(arizonaStandingA)
 
         // when
-        database.save(Game.MTFS, arizona, expected)
+        database.save(arizona, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.MTFS, arizona.id).first()
+        val moveList = database.moveAdapter.subscribe(arizona.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -160,8 +160,8 @@ internal class DustLoopSqlDelightGamePropertiesTest {
         val expected = listOf(patchedKyKiske)
 
         // when
-        database.save(Game.GGST, kyKiske)
-        database.save(Game.GGST, patchedKyKiske)
+        database.save(kyKiske)
+        database.save(patchedKyKiske)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.GGST).first()
@@ -172,7 +172,7 @@ internal class DustLoopSqlDelightGamePropertiesTest {
     fun `deleting a character deletes its character and move game properties`() = runTest {
         // given
         val database = TestWikiDatabase()
-        database.save(Game.GGST, kyKiske, listOf(kyFarSlash))
+        database.save(kyKiske, listOf(kyFarSlash))
         val expected = 0L
 
         // when

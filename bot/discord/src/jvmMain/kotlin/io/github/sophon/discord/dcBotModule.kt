@@ -13,11 +13,28 @@ import org.koin.core.qualifier.named
 import io.github.aakira.napier.Napier
 import io.github.sophon.integration.adminModule
 import io.github.sophon.core.coreModule
+import io.github.sophon.discord.adapter.inbound.kord.KordPoster
 import io.github.sophon.integration.data.ReportRepo
+import io.github.sophon.discord.adapter.outbound.file.FilesAdapter
+import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
+import io.github.sophon.discord.app.domain.service.CommandRouterService
+import io.github.sophon.discord.app.domain.service.ProcessButtonEventService
+import io.github.sophon.discord.app.domain.service.ProcessUserInputService
+import io.github.sophon.discord.app.domain.service.StartFeaturesService
+import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
+import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
+import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
+import io.github.sophon.discord.app.port.outbound.CheckFileExistsPort
+import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
+import io.github.sophon.discord.app.port.outbound.CreateFilePort
+import io.github.sophon.discord.app.port.outbound.FrameDataPort
+import io.github.sophon.discord.app.port.outbound.ReadFilePort
+import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
+import io.github.sophon.discord.app.port.outbound.WriteToFilePort
 import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.data.JsonReportRepo
-import io.github.sophon.discord.feat.core.domain.DiscordButtonBuilder
+import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
@@ -37,6 +54,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import org.koin.core.context.startKoin
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
@@ -107,6 +125,34 @@ internal fun dcBotModule(kord: Kord) = module {
             openFingerprintedDriver(schema, databaseFile)
         }
     }
+
+    //region Kord
+    singleOf(::KordPoster)
+    //endregion
+
+    //region Services
+    singleOf(::StartFeaturesService).bind<StartFeaturesUseCase>()
+    singleOf(::ProcessUserInputService).bind<ProcessUserInputUseCase>()
+    singleOf(::ProcessButtonEventService).bind<ProcessButtonEventUseCase>()
+    singleOf(::CommandRouterService)
+    //endregion
+
+    //region File operations
+    singleOf(::FilesAdapter) {
+        bind<ReadFilePort>()
+        bind<WriteToFilePort>()
+        bind<CheckFileExistsPort>()
+        bind<CreateFilePort>()
+    }
+    //endregion
+
+    //region Wiki
+    singleOf(::WikiAdapter) {
+        bind<ConfigureWikiPort>()
+        bind<RefreshWikiPort>()
+        bind<FrameDataPort>()
+    }
+    //endregion
 }
 
 private fun openFingerprintedDriver(

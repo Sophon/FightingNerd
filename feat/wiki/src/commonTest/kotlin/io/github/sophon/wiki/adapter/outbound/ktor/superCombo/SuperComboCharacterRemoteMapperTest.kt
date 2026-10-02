@@ -15,7 +15,7 @@ class SuperComboCharacterRemoteMapperTest {
         //given
         val dto = SuperComboCharacterSource.ken
         val expected = Character(
-            id = CharacterId("Ken"),
+            id = CharacterId(Game.StreetFighter6, "Ken"),
             displayName = "Ken",
             remoteQueryId = "Ken",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken",
@@ -53,7 +53,7 @@ class SuperComboCharacterRemoteMapperTest {
         //given
         val dto = SuperComboCharacterSource.cViper
         val expected = Character(
-            id = CharacterId("C.Viper"),
+            id = CharacterId(Game.StreetFighter6, "C.Viper"),
             displayName = "C. Viper",
             remoteQueryId = "C.Viper",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/C.Viper",
@@ -91,7 +91,7 @@ class SuperComboCharacterRemoteMapperTest {
         //given
         val dto = SuperComboCharacterSource.chunLi
         val expected = Character(
-            id = CharacterId("Chun-Li"),
+            id = CharacterId(Game.StreetFighter6, "Chun-Li"),
             displayName = "Chun-Li",
             remoteQueryId = "Chun-Li",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Chun-Li",
@@ -129,7 +129,7 @@ class SuperComboCharacterRemoteMapperTest {
         //given
         val dto = SuperComboCharacterSource.deeJay
         val expected = Character(
-            id = CharacterId("Dee_Jay"),
+            id = CharacterId(Game.StreetFighter6, "Dee_Jay"),
             displayName = "Dee Jay",
             remoteQueryId = "Dee_Jay",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Dee_Jay",

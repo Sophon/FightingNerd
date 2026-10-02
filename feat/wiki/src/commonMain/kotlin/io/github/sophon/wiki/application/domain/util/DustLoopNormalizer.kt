@@ -7,12 +7,9 @@ import io.github.sophon.wiki.application.domain.model.Move
 /**
  * [characterId] is the normalized one - Nagoriyuki's moves get their own aliases.
  */
-internal fun Move.normalizeDustLoop(
-    game: Game,
-    characterId: CharacterId,
-): Move {
+internal fun Move.normalizeDustLoop(characterId: CharacterId): Move {
     val normalizedInput = input.normalize2dInputs()
-    val normalizedAliases = (aliases + normalizedInput.formAliases(game, characterId)).distinct()
+    val normalizedAliases = (aliases + normalizedInput.formAliases(characterId)).distinct()
 
     val normalized = copy(
         input = normalizedInput,
@@ -21,13 +18,10 @@ internal fun Move.normalizeDustLoop(
     return normalized
 }
 
-private fun String.formAliases(
-    game: Game,
-    characterId: CharacterId,
-): List<String> {
+private fun String.formAliases(characterId: CharacterId): List<String> {
     val aliases = when {
         characterId == nagoriyukiId -> formNagoriyukiAliases()
-        game == Game.GBVSR -> createGbvsAliases()
+        characterId.game == Game.GBVSR -> createGbvsAliases()
         else -> create2dAliases(isPartial = false)
     }
         .addAliasForReleaseNotation(this)
@@ -83,4 +77,4 @@ private fun List<String>.addAliasForReleaseNotation(input: String): List<String>
 }
 
 
-private val nagoriyukiId = CharacterId("nagoriyuki")
+private val nagoriyukiId = CharacterId(Game.GGST, "nagoriyuki")

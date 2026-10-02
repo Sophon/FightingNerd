@@ -1,9 +1,10 @@
-package io.github.sophon.discord.feat.bot
+package io.github.sophon.discord.adapter.inbound.kord
 
 import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import dev.kord.core.entity.interaction.ButtonInteraction
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ResumedEvent
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
@@ -15,17 +16,21 @@ import dev.kord.gateway.PrivilegedIntent
 import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
+import io.github.sophon.discord.app.domain.model.Message
+import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
+import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
+import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
-import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
-import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
-import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
+import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
-import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.util.kordRestCall
 import kotlinx.coroutines.CoroutineScope
@@ -46,17 +51,18 @@ internal class DiscordBotImpl(
     private val kord: Kord,
     private val tracker: Tracker,
     private val adminConfig: Config.AdminConfig,
-    private val handleQueryUseCase: HandleQueryUseCase,
     private val handleAutoCompleteEventUseCase: HandleAutoCompleteEventUseCase,
-    private val handleButtonInteractionUseCase: HandleButtonInteractionUseCase,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
     private val botFeatureRepo: BotFeatureRepo,
     private val scheduler: Scheduler,
     private val commandRegistry: CommandRegistry,
-): DiscordBot {
-    private val editableEmbedMap = mutableMapOf<String, BotOutput>()
 
+    private val kordPoster: KordPoster,
+    private val startFeaturesUseCase: StartFeaturesUseCase,
+    private val processUserInputUseCase: ProcessUserInputUseCase,
+    private val processButtonEventUseCase: ProcessButtonEventUseCase,
+): DiscordBot {
     override suspend fun startSession() {
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
 
@@ -69,8 +75,13 @@ internal class DiscordBotImpl(
     }
 
 
-    private suspend fun startFeatures() {
-        botFeatureRepo.initialize()
+    private fun startFeatures() {
+//        botFeatureRepo.initialize()
+
+        coroutineScope.launch {
+            startFeaturesUseCase()
+                .onError { error -> Napier.e(tag = TAG) { "Feature start failed: $error" } }
+        }
     }
 
     private suspend fun startKord() {
@@ -83,30 +94,74 @@ internal class DiscordBotImpl(
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
             kordRestCall(TAG) {
-                handleQueryUseCase.invoke(
-                    interaction = interaction,
-                    editableEmbedMap = editableEmbedMap,
+                val discordCommandInteraction = DiscordCommandInteraction(
+                    username = interaction.user.username,
+                    userId = interaction.user.id.toString(),
+                    channelId = interaction.channelId.toString(),
+                    command = interaction.command.rootName,
+                    argumentMap = interaction.command.strings,
+                    serverName = interaction.getGuildOrNull()?.name,
                 )
+                processUserInputUseCase(discordCommandInteraction = discordCommandInteraction)
+                    .onSuccess { response ->
+                        when (response) {
+                            is BotResponse.MoveResponse -> {
+                                kordPoster.post(
+                                    interaction = interaction,
+                                    embedBuilder = moveEmbed(response),
+                                    imageList = response.hitboxImageList,
+                                    isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                    buttonSet = response.buttonSet,
+                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                            }
+                            else -> {}
+                        }
+                    }
+                    .onError {
+                        //TODO: post error embed
+                    }
             }
         }
 
         kord.on<MessageCreateEvent> {
             kordRestCall(TAG) {
-                handleQueryUseCase.invoke(
-                    message = message,
-                    botId = kord.selfId,
-                    editableEmbedMap = editableEmbedMap,
+                val userMessage = Message(
+                    serverName = message.getGuildOrNull()?.name.orEmpty(),
+                    channelId = message.channelId.toString(),
+                    author = Message.Author(
+                        id = message.author?.id?.toString().orEmpty(),
+                        username = message.author?.username.orEmpty(),
+                    ),
+                    // webhook messages have no author, treat them as bots
+                    isFromBot = (message.author?.isBot ?: true),
+                    content = message.content,
                 )
+                processUserInputUseCase(
+                    message = userMessage,
+                    botId = kord.selfId.toString(),
+                )
+                    .onSuccess { response ->
+                        when (response) {
+                            is BotResponse.MoveResponse -> {
+                                kordPoster.post(
+                                    message = message,
+                                    embedBuilder = moveEmbed(response),
+                                    imageList = response.hitboxImageList,
+                                    isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                    buttonSet = response.buttonSet,
+                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                            }
+                            else -> {}
+                        }
+                    }
+                    .onError {
+                        //TODO: post error embed
+                    }
             }
         }
 
         kord.on<ButtonInteractionCreateEvent> {
-            kordRestCall(TAG) {
-                handleButtonInteractionUseCase.invoke(interaction, editableEmbedMap, coroutineScope)
-                    .onError { error ->
-                        Napier.e(tag = TAG) { "${interaction.data.guildId} → Button interaction: $error" }
-                    }
-            }
+            processButtonEvent(interaction)
         }
 
         kord.on<AutoCompleteInteractionCreateEvent> {
@@ -131,6 +186,43 @@ internal class DiscordBotImpl(
         }
 
         Napier.e(tag = TAG) { "⚠️ Login ended (bot disconnected)" }
+    }
+
+    private suspend fun processButtonEvent(interaction: ButtonInteraction) {
+        kordRestCall(TAG) {
+            val buttonEvent = decodeToButtonEvent(buttonId = interaction.componentId)
+            if (buttonEvent == null) {
+                Napier.w(tag = TAG) { "Unknown button: ${interaction.componentId}" }
+                return@kordRestCall
+            }
+
+            val deferredResponse = interaction.deferPublicMessageUpdate()
+            processButtonEventUseCase(buttonEvent)
+                .onSuccess { response ->
+                    when (response) {
+                        is BotResponse.MoveResponse -> {
+                            kordPoster.edit(
+                                message = interaction.message,
+                                embedBuilder = moveEmbed(response),
+                                imageList = response.hitboxImageList,
+                                isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                buttonSet = response.buttonSet,
+                            ).onError { error -> Napier.e(tag = TAG) { "Edit failed: $error" } }
+                        }
+
+                        is BotResponse.PlainText -> {
+                            kordPoster.postText(
+                                response = deferredResponse,
+                                mention = interaction.user.mention,
+                                text = response.text,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+
+                        else -> {}
+                    }
+                }
+                .onError { error -> Napier.e(tag = TAG) { "Button event failed: $error" } }
+        }
     }
 
     private suspend fun cleanOldGuildCommands(kord: Kord) = try {

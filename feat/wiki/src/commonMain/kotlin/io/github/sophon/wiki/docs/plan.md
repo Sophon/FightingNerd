@@ -88,7 +88,7 @@
   - the shape never reaches the service
 - one Ktor adapter per wiki (`adapter/outbound/ktor/<wiki>/`)
   - `KtorGameDataAdapter` routes by `Game.wiki` with an exhaustive `when` - a wiki without an adapter doesn't compile
-- save per emission - `SaveCharacterMoveListPort.save(game, character, moveList)`
+- save per emission - `SaveCharacterMoveListPort.save(character, moveList)` - the game comes from `character.id`
   - one transaction per character - the app can open a character as soon as its moves are saved
   - bulk games - all characters become available together, after the one download
   - the character's moves absent from the move list get a strike inside the save - the list is complete per character
@@ -96,7 +96,7 @@
   - after a game's stream ends, strike the characters that weren't downloaded
   - skip when nothing was downloaded
 - strikes are deleted at 5, both for characters and moves
-- normalization - one normalizer per wiki in `application/domain/util/` - `normalizeT8`, `normalizeMizuumi`, `normalizeDustLoop(game, characterId)`, `normalizeSuperCombo`, `normalizeXko`, `normalizeDreamCancel`
+- normalization - one normalizer per wiki in `application/domain/util/` - `normalizeT8`, `normalizeMizuumi`, `normalizeDustLoop(characterId)`, `normalizeSuperCombo`, `normalizeXko`, `normalizeDreamCancel`
   - the character first (`Character.normalize()`), then its moves with the normalized `CharacterId`
   - the mapper only cleans (HTML, entities, template placeholders); the input, its aliases and ids built from it are the normalizer's
   - DragDown has none - RoA2's input is built from attack id + mode, there's no notation to normalize
@@ -134,3 +134,12 @@
 - 2XKO quirks ported as-is
   - `j.` inputs get a `j..` alias - no `normalize2dInputs`
   - a missing input puts `null` into the image and wiki urls
+- `Game` lives in `core` and its `wiki: WikiClientFeature` carries only an id - the wiki's name, url, version and logo are in each legacy module's `FeatureInfo`
+  - the wiki needs its own `Game` enum that carries that data
+  - until then the bot's Fd reply shows only the game, not the wiki
+- `GetCharacterListUseCase` returns every character of every enabled game - the bot pattern-matches the character query against all of them
+  - not ideal - to be optimized
+  - idea - pass the character query and let the wiki match it in SQL; the cost is that query pattern matching becomes a wiki responsibility
+- the bot cleans the move query itself, the wiki normalizes inputs on save - in theory both must normalize the same way
+  - ideally the wiki provides the normalizer and the bot uses it
+  - for now the bot keeps its own cleaning

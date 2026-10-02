@@ -2,7 +2,7 @@ package io.github.sophon.discord
 
 internal const val BOT_NAME = "FightingNerd"
 
-internal const val CONFIG_FILE_NAME = "config.json"
+internal const val CONFIG_FILE_NAME = "discordConfig.json"
 internal const val EMBED_MAX_LENGTH = 1_000
 internal const val EMBED_MAX_BUTTONS = 25
 internal const val EMBED_MAX_BUTTON_ACTION_LENGTH = 100

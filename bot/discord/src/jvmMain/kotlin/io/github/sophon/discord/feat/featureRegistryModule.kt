@@ -14,8 +14,9 @@ import io.github.sophon.discord.feat.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.feat.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.feat.bot.BotFeature
-import io.github.sophon.discord.feat.bot.DiscordBot
-import io.github.sophon.discord.feat.bot.DiscordBotImpl
+import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
+import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
+import io.github.sophon.discord.adapter.inbound.kord.KordPoster
 import io.github.sophon.discord.feat.bot.usecase.CreateEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateErrorEmbedBuilderUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateFeedbackEmbedUseCase
@@ -26,7 +27,6 @@ import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateReplyEmbedUseCase
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
-import io.github.sophon.discord.feat.bot.usecase.HandleButtonInteractionUseCase
 import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
@@ -98,6 +98,7 @@ internal val featureRegistryModule = module {
 
     //region CORE
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
+    singleOf(::KordPoster)
 
     single {
         TrackerImpl(
@@ -121,7 +122,6 @@ internal val featureRegistryModule = module {
     singleOf(::CreateMutableEmbedUseCase)
     singleOf(::HandleQueryUseCase)
     singleOf(::HandleAutoCompleteEventUseCase)
-    singleOf(::HandleButtonInteractionUseCase)
     singleOf(::PostDailyReportEmbedUseCase)
     singleOf(::CreatePromoEmbedUseCase)
     singleOf(::CreateAliasOutputUseCase)

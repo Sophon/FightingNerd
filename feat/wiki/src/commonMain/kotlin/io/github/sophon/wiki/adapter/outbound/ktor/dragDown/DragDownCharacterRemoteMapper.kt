@@ -28,7 +28,7 @@ private fun DragDownCharacterResponseDto.toDomain(
     val iconFileName = chara.formIconFileName()
 
     val character = Character(
-        id = CharacterId(chara),
+        id = CharacterId(game, chara),
         displayName = chara,
         remoteQueryId = chara,
         aliasList = chara.formAliases(),

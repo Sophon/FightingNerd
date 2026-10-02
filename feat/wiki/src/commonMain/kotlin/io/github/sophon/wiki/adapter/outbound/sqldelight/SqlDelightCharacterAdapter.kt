@@ -10,6 +10,7 @@ import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.port.outbound.DeleteCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.LoadCharacterListPort
+import io.github.sophon.wiki.application.port.outbound.LoadCharacterPort
 import io.github.sophon.wiki.application.port.outbound.SaveCharacterMoveListPort
 import io.github.sophon.wiki.application.port.outbound.StrikeCharacterListPort
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import kotlin.getValue
 import kotlin.time.Clock
 
@@ -27,6 +29,7 @@ internal class SqlDelightCharacterAdapter(
     private val gamePropertiesRouter: SqlDelightGamePropertiesRouter,
     private val clock: Clock,
 ) : LoadCharacterListPort,
+    LoadCharacterPort,
     SaveCharacterMoveListPort,
     StrikeCharacterListPort,
     DeleteCharacterListPort {
@@ -40,12 +43,17 @@ internal class SqlDelightCharacterAdapter(
         return flow
     }
 
+    override suspend fun get(characterId: CharacterId): Character? {
+        val character = withContext(Dispatchers.IO) { loadCharacter(characterId) }
+        return character
+    }
+
     override suspend fun save(
-        game: Game,
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<DataError.Local> {
-        val result = runDatabaseWrite(TAG, "save(${game.id}, ${character.id.value})") {
+        val game = character.id.game
+        val result = runDatabaseWrite(TAG, "save(${game.id}, ${character.id.naturalId})") {
             database.transaction {
                 val characterRowId = upsertCharacter(game, character)
                 replaceCharacterAliasList(game, characterRowId, character.aliasList)
@@ -64,7 +72,7 @@ internal class SqlDelightCharacterAdapter(
             database.transaction {
                 database.characterQueries.strikeAbsent(
                     game = game.id,
-                    natural_id = downloadedIdSet.map { id -> id.value },
+                    natural_id = downloadedIdSet.map { id -> id.naturalId },
                 )
                 database.characterQueries.deleteStruck(game = game.id, strike_count = STRIKE_LIMIT)
             }
@@ -95,6 +103,7 @@ internal class SqlDelightCharacterAdapter(
                 .executeAsList()
                 .map { entity ->
                     entity.toDomain(
+                        game = game,
                         aliasList = aliasListByRowId[entity.id].orEmpty(),
                         gameProperties = propertiesByRowId[entity.id],
                     )
@@ -104,13 +113,40 @@ internal class SqlDelightCharacterAdapter(
         return characterList
     }
 
+    private fun loadCharacter(characterId: CharacterId): Character? {
+        val game = characterId.game
+        val character = database.transactionWithResult {
+            val aliasListByRowId = database.characterAliasQueries
+                .selectAliasByGame(game = game.id) { characterRowId, alias -> characterRowId to alias }
+                .executeAsList()
+                .groupBy(
+                    keySelector = { (characterRowId, _) -> characterRowId },
+                    valueTransform = { (_, alias) -> alias },
+                )
+            val propertiesByRowId = gamePropertiesRouter.of(game).loadCharacterProperties(game)
+
+            val loadedCharacter = database.characterQueries
+                .selectByNaturalId(game = game.id, natural_id = characterId.naturalId)
+                .executeAsOneOrNull()
+                ?.let { entity ->
+                    entity.toDomain(
+                        game = game,
+                        aliasList = aliasListByRowId[entity.id].orEmpty(),
+                        gameProperties = propertiesByRowId[entity.id],
+                    )
+                }
+            loadedCharacter
+        }
+        return character
+    }
+
     private fun upsertCharacter(
         game: Game,
         character: Character,
     ): Long {
         database.characterQueries.upsert(
             game = game.id,
-            natural_id = character.id.value,
+            natural_id = character.id.naturalId,
             remote_query_id = character.remoteQueryId,
             display_name = character.displayName,
             wiki_url = character.wikiUrl,
@@ -124,7 +160,7 @@ internal class SqlDelightCharacterAdapter(
         // re-selected by natural key - no RETURNING before SQLite 3.35 (minSdk 30 ships 3.28),
         // and last_insert_rowid() isn't set by the update path
         val characterRowId = database.characterQueries
-            .selectId(game = game.id, natural_id = character.id.value)
+            .selectId(game = game.id, natural_id = character.id.naturalId)
             .executeAsOne()
 
         character.gameProperties?.let { properties ->

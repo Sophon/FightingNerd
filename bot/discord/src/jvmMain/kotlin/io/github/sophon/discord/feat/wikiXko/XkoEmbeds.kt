@@ -6,11 +6,11 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.discord.util.embedImage
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
-import io.github.sophon.discord.util.moveEmbedDescription
-import io.github.sophon.discord.util.optionalField
+import io.github.sophon.discord.adapter.inbound.kord.embedImage
+import io.github.sophon.discord.adapter.inbound.kord.featureFooter
+import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.moveEmbedDescription
+import io.github.sophon.discord.adapter.inbound.kord.optionalField
 
 internal fun xkoMoveEmbed(
     character: Character,

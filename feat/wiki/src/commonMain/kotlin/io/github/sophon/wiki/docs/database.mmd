@@ -8,8 +8,8 @@ erDiagram
 
     character {
         INTEGER id PK "surrogate, never leaves the adapter"
-        TEXT game UK "Game.id, UNIQUE (game, natural_id)"
-        TEXT natural_id UK "CharacterId, e.g. armor_king"
+        TEXT game UK "Game.id, UNIQUE (game, natural_id) = CharacterId, keyed lookup selectByNaturalId"
+        TEXT natural_id UK "CharacterId.naturalId, e.g. armor_king"
         TEXT remote_query_id
         TEXT display_name
         TEXT wiki_url
@@ -29,7 +29,7 @@ erDiagram
     move {
         INTEGER id PK "surrogate, never leaves the adapter"
         INTEGER character_id FK, UK "ON DELETE CASCADE, UNIQUE (character_id, input) is also the FK index"
-        TEXT input UK "normalized, the move's identity"
+        TEXT input UK "normalized, the move's identity, keyed lookup selectByInput"
         TEXT remote_id "the wiki's own move ID, for links; null for DustLoop and 2XKO"
         INTEGER position "wiki order"
         TEXT name

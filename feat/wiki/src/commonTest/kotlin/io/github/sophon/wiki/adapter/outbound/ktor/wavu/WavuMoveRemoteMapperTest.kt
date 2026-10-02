@@ -3,6 +3,7 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -11,7 +12,7 @@ import kotlin.test.Test
 
 class WavuMoveRemoteMapperTest {
     val ak = Character(
-        id = CharacterId("Armor_King"),
+        id = CharacterId(Game.Tekken8, "Armor_King"),
         displayName = "Armor King",
         remoteQueryId = "Armor_King",
         wikiUrl = "https://wavu.wiki/t/Armor_King_movelist",
@@ -104,7 +105,7 @@ class WavuMoveRemoteMapperTest {
         val move = WavuMoveSource.matterhorn
         val expected = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4"
         val lili = Character(
-            id = CharacterId("Lili"),
+            id = CharacterId(Game.Tekken8, "Lili"),
             remoteQueryId = "Lili",
             displayName = "Lili",
             wikiUrl = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4",

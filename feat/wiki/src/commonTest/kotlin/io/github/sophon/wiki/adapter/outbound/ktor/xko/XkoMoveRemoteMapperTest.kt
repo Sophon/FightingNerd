@@ -2,6 +2,7 @@ package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -54,7 +55,7 @@ class XkoMoveRemoteMapperTest {
         )
 
         //when
-        val result = responseDto.toDomainAll()
+        val result = responseDto.toDomainAll(Game.Xko)
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -85,7 +86,7 @@ class XkoMoveRemoteMapperTest {
         )
 
         //when
-        val result = responseDto.toDomainAll().single().second.single()
+        val result = responseDto.toDomainAll(Game.Xko).single().second.single()
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -94,13 +95,13 @@ class XkoMoveRemoteMapperTest {
 
 private object XkoMoveSource {
     val jinx = Character(
-        id = CharacterId("Jinx"),
+        id = CharacterId(Game.Xko, "Jinx"),
         displayName = "Jinx",
         remoteQueryId = "Jinx",
         wikiUrl = "https://wiki.play2xko.com/en-us/Jinx",
     )
     val darius = Character(
-        id = CharacterId("Darius"),
+        id = CharacterId(Game.Xko, "Darius"),
         displayName = "Darius",
         remoteQueryId = "Darius",
         wikiUrl = "https://wiki.play2xko.com/en-us/Darius",

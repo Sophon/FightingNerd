@@ -13,7 +13,7 @@ class DreamCancelMoveRemoteMapperTest {
     fun `bulk table is grouped into characters by chara`() {
         //given
         val responseDto = listOf(DreamCancelMoveSource.aurora, DreamCancelMoveSource.byeByeBoo).toResponseDto()
-        val expected = listOf(CharacterId("B.Jenet") to 2)
+        val expected = listOf(CharacterId(Game.KoFXV, "B.Jenet") to 2)
 
         //when
         val result = responseDto.toDomainAll(Game.KoFXV, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())

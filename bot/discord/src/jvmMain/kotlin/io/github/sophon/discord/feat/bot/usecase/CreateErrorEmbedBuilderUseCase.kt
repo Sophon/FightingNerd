@@ -9,7 +9,7 @@ import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.Command
-import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
 
 @ExcludeFromCoverage("UI")
 internal class CreateErrorEmbedBuilderUseCase(

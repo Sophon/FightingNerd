@@ -41,7 +41,7 @@ internal class RefreshDataServiceTest {
 
         // then
         val savedRemoteIdList = store.savedMoveListById
-            .getValue(CharacterId("yoshimitsu"))
+            .getValue(CharacterId(Game.Tekken8, "yoshimitsu"))
             .map { move -> move.remoteId }
         assertThat(savedRemoteIdList).isEqualTo(expected)
     }
@@ -57,7 +57,9 @@ internal class RefreshDataServiceTest {
             ),
             store = store,
         )
-        val expected = listOf(Game.Tekken8 to setOf(CharacterId("armor_king"), CharacterId("yoshimitsu")))
+        val expected = listOf(
+            Game.Tekken8 to setOf(CharacterId(Game.Tekken8, "armor_king"), CharacterId(Game.Tekken8, "yoshimitsu")),
+        )
 
         // when
         service.invoke().toList()
@@ -112,14 +114,14 @@ private fun refreshDataService(
 // raw, like the Wavu adapter maps them - the service normalizes
 
 private val yoshimitsu = Character(
-    id = CharacterId("Yoshimitsu"),
+    id = CharacterId(Game.Tekken8, "Yoshimitsu"),
     displayName = "Yoshimitsu",
     remoteQueryId = "Yoshimitsu",
     wikiUrl = "https://wavu.wiki/t/Yoshimitsu",
 )
 
 private val armorKing = Character(
-    id = CharacterId("Armor King"),
+    id = CharacterId(Game.Tekken8, "Armor King"),
     displayName = "Armor King",
     remoteQueryId = "Armor King",
     wikiUrl = "https://wavu.wiki/t/Armor_King",
@@ -177,7 +179,6 @@ private class FakeCharacterMoveListStore(
     val strikeCallList = mutableListOf<Pair<Game, Set<CharacterId>>>()
 
     override suspend fun save(
-        game: Game,
         character: Character,
         moveList: List<Move>,
     ): EmptyResult<DataError.Local> {

@@ -2,8 +2,9 @@ package io.github.sophon.discord.feat.core.domain.model
 
 import io.github.sophon.core.architecture.Error
 
-internal sealed class BotError(private vararg val inputs: String) : Error {
+sealed class BotError(private vararg val inputs: String) : Error {
     class InvalidCommand(val command: String): BotError(command)
+    class NotImplemented(command: String): BotError(command)
     class InvalidQuery(input: String) : BotError(input)
     class UnknownCharacter(input: String) : BotError(input)
     class UnknownMove(vararg inputs: String) : BotError(*inputs)
@@ -15,6 +16,8 @@ internal sealed class BotError(private vararg val inputs: String) : Error {
     class InvalidSteamLobbyUrl(steamLobbyUrl: String): BotError(steamLobbyUrl)
     class SyntaxError(input: String): BotError(input)
     class PlayerNotRegistered : BotError()
+
+    class WikiError(error: String): BotError(error)
 
     class FileError(vararg errors: String) : BotError(*errors)
     class DatabaseError : BotError()

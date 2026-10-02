@@ -16,10 +16,10 @@ internal class MizuumiSqlDelightGamePropertiesTest {
         val expected = listOf(arcueidStandingA)
 
         // when
-        database.save(Game.MBTL, arcueid, expected)
+        database.save(arcueid, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.MBTL, arcueid.id).first()
+        val moveList = database.moveAdapter.subscribe(arcueid.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -30,7 +30,7 @@ internal class MizuumiSqlDelightGamePropertiesTest {
         val expected = listOf(hyde)
 
         // when
-        database.save(Game.Uni2, hyde)
+        database.save(hyde)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.Uni2).first()
@@ -44,10 +44,10 @@ internal class MizuumiSqlDelightGamePropertiesTest {
         val expected = listOf(hydeStandingA)
 
         // when
-        database.save(Game.Uni2, hyde, expected)
+        database.save(hyde, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.Uni2, hyde.id).first()
+        val moveList = database.moveAdapter.subscribe(hyde.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 
@@ -58,10 +58,10 @@ internal class MizuumiSqlDelightGamePropertiesTest {
         val expected = listOf(morriganStandingJab)
 
         // when
-        database.save(Game.VSAV, morrigan, expected)
+        database.save(morrigan, expected)
 
         // then
-        val moveList = database.moveAdapter.subscribe(Game.VSAV, morrigan.id).first()
+        val moveList = database.moveAdapter.subscribe(morrigan.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
 }

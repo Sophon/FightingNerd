@@ -54,8 +54,5 @@ private object NoGameProperties : SqlDelightGameProperties {
 
     override fun loadCharacterProperties(game: Game): Map<Long, CharacterGameProperties> = emptyMap()
 
-    override fun loadMoveProperties(
-        game: Game,
-        characterId: CharacterId,
-    ): Map<Long, MoveGameProperties> = emptyMap()
+    override fun loadMoveProperties(characterId: CharacterId): Map<Long, MoveGameProperties> = emptyMap()
 }

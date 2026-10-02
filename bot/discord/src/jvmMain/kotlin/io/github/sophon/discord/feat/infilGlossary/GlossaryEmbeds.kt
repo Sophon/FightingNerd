@@ -5,8 +5,8 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.chunkByNewLines
 import io.github.sophon.discord.EMBED_MAX_LENGTH
-import io.github.sophon.discord.util.featureFooter
-import io.github.sophon.discord.util.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.featureFooter
+import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
 import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 
 internal fun glossaryEmbed(

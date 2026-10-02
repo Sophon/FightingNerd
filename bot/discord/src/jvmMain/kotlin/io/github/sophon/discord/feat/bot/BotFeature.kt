@@ -9,6 +9,10 @@ import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.URL_STEAM_LOBBY
+import io.github.sophon.discord.adapter.outbound.kord.commandsEmbed
+import io.github.sophon.discord.adapter.outbound.kord.helpEmbed
+import io.github.sophon.discord.adapter.outbound.kord.modulesEmbed
+import io.github.sophon.discord.adapter.outbound.kord.tipEmbed
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.feat.config.FeatureRegistry
@@ -17,7 +21,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.util.donationMessage
+import io.github.sophon.discord.adapter.inbound.kord.donationMessage
 import io.github.sophon.integration.model.Source
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject

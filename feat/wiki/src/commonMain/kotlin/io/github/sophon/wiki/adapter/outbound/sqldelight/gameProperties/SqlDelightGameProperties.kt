@@ -28,8 +28,5 @@ internal interface SqlDelightGameProperties {
     /**
      * Keyed by the `move` row ID.
      */
-    fun loadMoveProperties(
-        game: Game,
-        characterId: CharacterId,
-    ): Map<Long, MoveGameProperties>
+    fun loadMoveProperties(characterId: CharacterId): Map<Long, MoveGameProperties>
 }

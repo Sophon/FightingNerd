@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import kotlinx.coroutines.flow.first
@@ -18,11 +19,39 @@ internal class SqlDelightCharacterAdapterTest {
         val expected = listOf(armorKing)
 
         // when
-        database.save(Game.Tekken8, armorKing)
+        database.save(armorKing)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.Tekken8).first()
         assertThat(characterList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a saved character is loaded by its ID with aliases`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+        val expected = armorKing
+
+        // when
+        database.save(jin)
+        database.save(armorKing)
+
+        // then
+        val character = database.characterAdapter.get(armorKing.id)
+        assertThat(character).isEqualTo(expected)
+    }
+
+    @Test
+    fun `an unknown character loads nothing`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+
+        // when
+        database.save(jin)
+
+        // then
+        val character = database.characterAdapter.get(armorKing.id)
+        assertThat(character).isNull()
     }
 
     @Test
@@ -35,8 +64,8 @@ internal class SqlDelightCharacterAdapterTest {
         val expected = listOf(updatedArmorKing)
 
         // when
-        database.save(Game.Tekken8, armorKing)
-        database.save(Game.Tekken8, updatedArmorKing)
+        database.save(armorKing)
+        database.save(updatedArmorKing)
 
         // then
         val characterList = database.characterAdapter.subscribe(Game.Tekken8).first()
@@ -50,8 +79,8 @@ internal class SqlDelightCharacterAdapterTest {
         val expected = listOf("oscar", "oskar", "aska", "asuka")
 
         // when
-        database.save(Game.Tekken8, jin)
-        database.save(Game.Tekken8, asuka)
+        database.save(jin)
+        database.save(asuka)
 
         // then
         val loadedAsuka = database.characterAdapter.subscribe(Game.Tekken8).first()
@@ -63,8 +92,8 @@ internal class SqlDelightCharacterAdapterTest {
     fun `a character missing from four refreshes is kept`() = runTest {
         // given
         val database = TestWikiDatabase()
-        database.save(Game.Tekken8, asuka)
-        database.save(Game.Tekken8, jin)
+        database.save(asuka)
+        database.save(jin)
 
         // when
         repeat(4) { database.characterAdapter.strike(Game.Tekken8, setOf(jin.id)) }
@@ -78,8 +107,8 @@ internal class SqlDelightCharacterAdapterTest {
     fun `a character missing from five refreshes is deleted`() = runTest {
         // given
         val database = TestWikiDatabase()
-        database.save(Game.Tekken8, asuka)
-        database.save(Game.Tekken8, jin)
+        database.save(asuka)
+        database.save(jin)
 
         // when
         repeat(5) { database.characterAdapter.strike(Game.Tekken8, setOf(jin.id)) }
@@ -93,12 +122,12 @@ internal class SqlDelightCharacterAdapterTest {
     fun `saving a character clears its strikes`() = runTest {
         // given
         val database = TestWikiDatabase()
-        database.save(Game.Tekken8, asuka)
-        database.save(Game.Tekken8, jin)
+        database.save(asuka)
+        database.save(jin)
         repeat(4) { database.characterAdapter.strike(Game.Tekken8, setOf(jin.id)) }
 
         // when
-        database.save(Game.Tekken8, asuka)
+        database.save(asuka)
         repeat(4) { database.characterAdapter.strike(Game.Tekken8, setOf(jin.id)) }
 
         // then
@@ -110,8 +139,8 @@ internal class SqlDelightCharacterAdapterTest {
     fun `delete removes only that game's characters`() = runTest {
         // given
         val database = TestWikiDatabase()
-        database.save(Game.Tekken8, jin)
-        database.save(Game.GGST, solBadguy)
+        database.save(jin)
+        database.save(solBadguy)
 
         // when
         database.characterAdapter.delete(Game.Tekken8)
@@ -127,7 +156,7 @@ internal class SqlDelightCharacterAdapterTest {
     fun `deleting a character deletes its aliases, moves and game properties`() = runTest {
         // given
         val database = TestWikiDatabase()
-        database.save(Game.Tekken8, jin, listOf(demonsPaw, windHookFist))
+        database.save(jin, listOf(demonsPaw, windHookFist))
         val expected = 0L
 
         // when

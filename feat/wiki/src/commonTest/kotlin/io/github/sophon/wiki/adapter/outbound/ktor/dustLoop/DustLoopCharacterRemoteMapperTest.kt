@@ -14,7 +14,7 @@ class DustLoopCharacterRemoteMapperTest {
     fun `id is the query name - the service normalizes it`() {
         //given
         val dto = DustLoopCharacterSource.jam
-        val expected = CharacterId("Jam Kuradoberi")
+        val expected = CharacterId(Game.GGST, "Jam Kuradoberi")
 
         //when
         val result = dto.toCharacter(Game.GGST)

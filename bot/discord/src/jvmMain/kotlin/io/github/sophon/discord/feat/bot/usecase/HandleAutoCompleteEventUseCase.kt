@@ -12,7 +12,7 @@ import io.github.sophon.core.wiki.util.filterMatching
 import io.github.sophon.core.wiki.util.isApprox
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
-import io.github.sophon.discord.feat.bot.model.AutocompleteChoice
+import io.github.sophon.discord.app.domain.model.AutocompleteChoice
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
