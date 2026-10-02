@@ -19,6 +19,7 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.ButtonEvent
 import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.domain.model.Message
 import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
@@ -31,7 +32,7 @@ import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
-import io.github.sophon.discord.feat.core.domain.model.Command.Argument.AutoCompleteType
+import io.github.sophon.discord.app.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.util.kordRestCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -114,6 +115,15 @@ internal class DiscordBotImpl(
                                     buttonSet = response.buttonSet,
                                 ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                             }
+                            is BotResponse.ListResponse -> {
+                                kordPoster.post(
+                                    interaction = interaction,
+                                    embedBuilder = moveListEmbed(response),
+                                    imageList = emptyList(),
+                                    isExpanded = false,
+                                    buttonSet = response.buttonSet,
+                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                            }
                             else -> {}
                         }
                     }
@@ -148,6 +158,15 @@ internal class DiscordBotImpl(
                                     embedBuilder = moveEmbed(response),
                                     imageList = response.hitboxImageList,
                                     isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                    buttonSet = response.buttonSet,
+                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                            }
+                            is BotResponse.ListResponse -> {
+                                kordPoster.post(
+                                    message = message,
+                                    embedBuilder = moveListEmbed(response),
+                                    imageList = emptyList(),
+                                    isExpanded = false,
                                     buttonSet = response.buttonSet,
                                 ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                             }
@@ -199,26 +218,64 @@ internal class DiscordBotImpl(
             val deferredResponse = interaction.deferPublicMessageUpdate()
             processButtonEventUseCase(buttonEvent)
                 .onSuccess { response ->
-                    when (response) {
-                        is BotResponse.MoveResponse -> {
-                            kordPoster.edit(
-                                message = interaction.message,
-                                embedBuilder = moveEmbed(response),
-                                imageList = response.hitboxImageList,
-                                isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
-                                buttonSet = response.buttonSet,
-                            ).onError { error -> Napier.e(tag = TAG) { "Edit failed: $error" } }
+                    when (buttonEvent) {
+                        is ButtonEvent.Expand -> {
+                            if (response is BotResponse.MoveResponse) {
+                                kordPoster.edit(
+                                    message = interaction.message,
+                                    embedBuilder = moveEmbed(response),
+                                    imageList = response.hitboxImageList,
+                                    isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                    buttonSet = response.buttonSet,
+                                ).onError { error -> Napier.e(tag = TAG) { "Edit failed: $error" } }
+                            }
                         }
 
-                        is BotResponse.PlainText -> {
-                            kordPoster.postText(
-                                response = deferredResponse,
-                                mention = interaction.user.mention,
-                                text = response.text,
-                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        is ButtonEvent.Query -> {
+                            if (response is BotResponse.MoveResponse) {
+                                kordPoster.post(
+                                    message = interaction.message,
+                                    embedBuilder = moveEmbed(response),
+                                    imageList = response.hitboxImageList,
+                                    isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                    buttonSet = response.buttonSet,
+                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                            }
                         }
 
-                        else -> {}
+                        is ButtonEvent.Command -> {
+                            when (response) {
+                                is BotResponse.MoveResponse -> {
+                                    kordPoster.post(
+                                        message = interaction.message,
+                                        embedBuilder = moveEmbed(response),
+                                        imageList = response.hitboxImageList,
+                                        isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                        buttonSet = response.buttonSet,
+                                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                                }
+                                is BotResponse.ListResponse -> {
+                                    kordPoster.post(
+                                        message = interaction.message,
+                                        embedBuilder = moveListEmbed(response),
+                                        imageList = emptyList(),
+                                        isExpanded = false,
+                                        buttonSet = response.buttonSet,
+                                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                                }
+                                else -> {}
+                            }
+                        }
+
+                        is ButtonEvent.Text -> {
+                            if (response is BotResponse.PlainText) {
+                                kordPoster.postText(
+                                    response = deferredResponse,
+                                    mention = interaction.user.mention,
+                                    text = response.text,
+                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                            }
+                        }
                     }
                 }
                 .onError { error -> Napier.e(tag = TAG) { "Button event failed: $error" } }

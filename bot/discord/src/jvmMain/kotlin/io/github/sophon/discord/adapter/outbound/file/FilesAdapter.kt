@@ -6,7 +6,7 @@ import io.github.sophon.discord.app.port.outbound.CheckFileExistsPort
 import io.github.sophon.discord.app.port.outbound.CreateFilePort
 import io.github.sophon.discord.app.port.outbound.ReadFilePort
 import io.github.sophon.discord.app.port.outbound.WriteToFilePort
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import java.io.File
 
 internal class FilesAdapter: ReadFilePort, WriteToFilePort, CheckFileExistsPort, CreateFilePort {

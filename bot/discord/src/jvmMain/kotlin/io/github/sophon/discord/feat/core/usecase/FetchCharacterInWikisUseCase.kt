@@ -4,7 +4,7 @@ import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.WikiClient
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 @ExcludeFromCoverage("plain client call")

@@ -6,8 +6,8 @@ import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.CoreFilters
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.core.wiki.util.findMatching
-import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.discord.feat.core.domain.model.Command
+import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.MoveRange
 import kotlinx.coroutines.flow.first
 

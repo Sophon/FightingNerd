@@ -1,8 +1,46 @@
 package io.github.sophon.discord.adapter.inbound.kord
 
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.util.invisibleChar
+import io.github.sophon.core.util.toColumns
 import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.feat.core.domain.model.Emoji
+import io.github.sophon.discord.app.domain.model.Emoji
+
+internal fun moveListEmbed(
+    listResponse: BotResponse.ListResponse,
+): EmbedBuilder.() -> Unit = {
+    if (listResponse.values.isEmpty()) {
+        mandatoryField(
+            name = listResponse.title,
+            value = "Nothing found 😔",
+        )
+    } else {
+        val numberedValues = listResponse.values
+            .mapIndexed { index, value ->
+                "${index + 1}. **$value**"
+            }
+
+        mandatoryField(
+            name = listResponse.title,
+            value = invisibleChar
+
+            ,
+            inline = false,
+        )
+
+        numberedValues
+            .toColumns()
+            .forEach { column ->
+                val text = column.joinToString("\n")
+                mandatoryField(
+                    name = "",
+                    value = text,
+                )
+            }
+    }
+
+    featureFooter(dataSource = listResponse.dataSource)
+}
 
 internal fun moveEmbed(
     move: BotResponse.MoveResponse,
@@ -44,7 +82,6 @@ private fun detailedMoveEmbed(
     featureFooter(dataSource = move.dataSource)
 }
 
-
 private fun EmbedBuilder.headerSection(move: BotResponse.MoveResponse) {
     title = move.input
     url = move.url
@@ -70,7 +107,6 @@ private fun EmbedBuilder.primaryFieldsSection(fields: List<BotResponse.MoveRespo
     }
 }
 
-
 private fun EmbedBuilder.notesSection(move: BotResponse.MoveResponse) {
     val aliasNote = if (move.aliasList.isNotEmpty()) {
         "**ALIAS**: ${move.aliasList.joinToString("; ")}"
@@ -89,6 +125,7 @@ private fun EmbedBuilder.notesSection(move: BotResponse.MoveResponse) {
         inline = false,
     )
 }
+
 
 private fun List<String>.emojify(): List<String> {
     return buildList {

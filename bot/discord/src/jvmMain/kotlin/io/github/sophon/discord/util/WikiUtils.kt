@@ -5,7 +5,7 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase

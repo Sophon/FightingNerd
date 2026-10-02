@@ -22,7 +22,7 @@ import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)

@@ -13,7 +13,7 @@ import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
 import io.github.sophon.discord.RNG_DONATION_PCT_FEEDBACK
 import io.github.sophon.discord.TIME_AUTO_EDIT_EMBED_S
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope

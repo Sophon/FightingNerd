@@ -4,6 +4,8 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.integration.model.Source
 
 internal interface DiscordRegisteredFeature {
