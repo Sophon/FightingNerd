@@ -94,8 +94,11 @@ private fun Move.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {
         mandatoryFieldOf("Hit", onHit),
         mandatoryFieldOf("Block", onBlock),
         mandatoryFieldOf("Counter", onCH),
+        mandatoryFieldOf("Damage", damage),
     )
     val gameFieldList = when (val properties = gameProperties) {
+        is T8Properties -> properties.toPrimaryFields(this)
+
         is GGMoveProperties -> properties.toPrimaryFields(this)
         is BBMoveProperties -> properties.toPrimaryFields(this)
         is GBVSRMoveProperties -> properties.toPrimaryFields(this)
@@ -109,7 +112,7 @@ private fun Move.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {
         is Uni2MoveProperties -> properties.toPrimaryFields(this)
         is VSAVMoveProperties -> properties.toPrimaryFields(this)
 
-        else -> listOf(mandatoryFieldOf("Damage", damage))
+        else -> listOf()
     }
     val fieldList = (coreFieldList + gameFieldList)
 
@@ -118,6 +121,8 @@ private fun Move.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {
 
 private fun Move.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = when (val properties = gameProperties) {
+        is T8Properties -> listOf()
+
         is GGMoveProperties -> properties.toSecondaryFields(this)
         is BBMoveProperties -> properties.toSecondaryFields(this)
         is GBVSRMoveProperties -> properties.toSecondaryFields(this)
@@ -164,10 +169,20 @@ private fun MoveGameProperties.toSecondaryFields(): List<BotResponse.MoveRespons
     return fieldList
 }
 
+//region Wavu
+private fun T8Properties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
+    val fieldList = listOf(
+        mandatoryFieldOf("Guard", move.guard),
+        mandatoryFieldOf("Recovery", move.recovery),
+    )
+
+    return fieldList
+}
+//endregion
+
 //region DustLoop
 private fun GGMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOf(
-        mandatoryFieldOf("Damage", move.damage),
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
@@ -195,7 +210,6 @@ private fun GGMoveProperties.toSecondaryFields(move: Move): List<BotResponse.Mov
 
 private fun BBMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOf(
-        mandatoryFieldOf("Damage", move.damage),
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
@@ -245,7 +259,6 @@ private fun DBFZMoveProperties.toSecondaryFields(): List<BotResponse.MoveRespons
 
 private fun GBVSRMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOf(
-        mandatoryFieldOf("Damage", move.damage),
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
@@ -269,7 +282,6 @@ private fun GBVSRMoveProperties.toSecondaryFields(move: Move): List<BotResponse.
 
 private fun MTFSMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOf(
-        mandatoryFieldOf("Damage", move.damage),
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
@@ -300,7 +312,6 @@ private fun SF6MoveProperties.toPrimaryFields(move: Move): List<BotResponse.Move
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
         mandatoryFieldOf("Cancel", move.cancel),
-        mandatoryFieldOf("Damage", move.damage),
         mandatoryFieldOf("Guard", move.guard),
     )
 
@@ -343,7 +354,6 @@ private fun SF6MoveProperties.toSecondaryFields(move: Move): List<BotResponse.Mo
 
 private fun AVLMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOf(
-        mandatoryFieldOf("Damage", move.damage),
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
         mandatoryFieldOf("Guard", move.guard),
@@ -368,7 +378,6 @@ private fun MKMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveR
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
         mandatoryFieldOf("Cancel", move.cancel),
-        mandatoryFieldOf("Damage", move.damage),
         mandatoryFieldOf("Chip", chip),
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("OFB", flawlessBlockAdv),
@@ -393,7 +402,6 @@ private fun MKMoveProperties.toSecondaryFields(move: Move): List<BotResponse.Mov
 //region Mizuumi
 private fun MBTLMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOf(
-        mandatoryFieldOf("Damage", move.damage),
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("Cancel", move.cancel),
         mandatoryFieldOf("Property", mizuumiProperty),
@@ -421,7 +429,6 @@ private fun MBTLMoveProperties.toSecondaryFields(): List<BotResponse.MoveRespons
 
 private fun Uni2MoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOf(
-        mandatoryFieldOf("Damage", move.damage),
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("Active", move.active),
         mandatoryFieldOf("Recovery", move.recovery),
@@ -467,7 +474,6 @@ private fun VSAVMoveProperties.toPrimaryFields(move: Move): List<BotResponse.Mov
         mandatoryFieldOf("Guard", move.guard),
         mandatoryFieldOf("Cancel", move.cancel),
         mandatoryFieldOf("Invul", move.invulnerability),
-        mandatoryFieldOf("Total Damage", move.damage),
         mandatoryFieldOf("W-dmg", whiteDmg),
         mandatoryFieldOf("Gauge", meter),
     )
