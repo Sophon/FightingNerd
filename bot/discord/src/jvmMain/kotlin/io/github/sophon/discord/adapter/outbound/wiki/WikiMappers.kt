@@ -7,6 +7,7 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.DiscordConfig
+import io.github.sophon.discord.app.domain.model.Emoji
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.app.domain.model.MoveType
 import io.github.sophon.discord.app.domain.model.BotError
@@ -135,7 +136,7 @@ internal fun List<Move>.toListResponse(
         }
 
     val listResponse = BotResponse.ListResponse(
-        title = "${character.displayName.uppercase()} ${moveType.toTitle()}",
+        title = "${moveType.toEmoji()}${character.displayName.uppercase()} ${moveType.toTitle()} moves",
         values = map { it.input },
         dataSource = character.toDataSource(),
         buttonSet = buttonSet,
@@ -152,6 +153,16 @@ private fun MoveType.toTitle(): String {
     }
 
     return title
+}
+
+private fun MoveType.toEmoji(): Emoji {
+    val emoji = when (this) {
+        MoveType.PC -> Emoji.TK_PC
+        MoveType.HEAT -> Emoji.TK_HEAT
+        MoveType.HOMING -> Emoji.TK_HOMING
+    }
+
+    return emoji
 }
 
 private fun Character.toDataSource(): BotResponse.DataSource {
