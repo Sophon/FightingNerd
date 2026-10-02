@@ -12,5 +12,5 @@ internal interface GetMovesOfTypePort {
 
     suspend fun getStanceMoves(characterQuery: String, stanceQuery: String): Result<BotResponse.ListResponse, BotError>
 
-    //TODO: strings
+    suspend fun getMovesStartingWith(characterQuery: String, prefix: String): Result<BotResponse.ListResponse, BotError>
 }

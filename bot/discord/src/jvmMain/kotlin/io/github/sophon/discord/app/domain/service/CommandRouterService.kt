@@ -45,6 +45,11 @@ internal class CommandRouterService(
                     getMovesOfTypePort.getStanceMoves(characterQuery = characterQuery, stanceQuery = stanceQuery)
                 }
             }
+            Command.Strings -> {
+                val characterQuery = query.substringBefore(' ')
+                val startingQuery = query.substringAfter(' ', missingDelimiterValue = "").trim()
+                getMovesOfTypePort.getMovesStartingWith(characterQuery, startingQuery)
+            }
 
             Command.Tip,
             Command.Donate,
@@ -68,7 +73,6 @@ internal class CommandRouterService(
             Command.OnCounter,
             Command.Gl,
             Command.ThrowTK,
-            Command.Strings,
             Command.SpecialROA,
             Command.Ewgf -> Result.Error(BotError.NotImplemented(command.name))
         }

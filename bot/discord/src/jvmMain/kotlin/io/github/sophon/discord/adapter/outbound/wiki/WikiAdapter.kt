@@ -119,6 +119,27 @@ internal class WikiAdapter(
         return Result.Success(listResponse)
     }
 
+    override suspend fun getMovesStartingWith(
+        characterQuery: String,
+        prefix: String,
+    ): Result<BotResponse.ListResponse, BotError> {
+        val character = findCharacter(characterQuery)
+            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
+
+        val moveList = getMoveListUseCase(characterId = character.id)
+            .first()
+            .filter { move ->
+                val isFollowedByPlus = (move.input.getOrNull(prefix.length) == '+')
+                move.input.startsWith(prefix, ignoreCase = true) && isFollowedByPlus.not()
+            }
+
+        val listResponse = moveList.toListResponse(
+            character = character,
+            moveType = "${character.displayName} followups to $prefix",
+        )
+        return Result.Success(listResponse)
+    }
+
 
     private suspend fun findCharacter(characterQuery: String): Character? {
         val characterList = getCharacterListUseCase().first()
