@@ -11,7 +11,7 @@ import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.app.port.outbound.ReadFilePort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import kotlinx.serialization.json.Json
 
 internal class StartFeaturesService(

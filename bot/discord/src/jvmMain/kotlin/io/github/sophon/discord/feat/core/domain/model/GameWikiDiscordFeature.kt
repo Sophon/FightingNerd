@@ -5,6 +5,8 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.WikiClient
+import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.Command
 
 internal interface GameWikiDiscordFeature {
     fun registerWikiClients(wikiClientMap: Map<Game, WikiClient>)

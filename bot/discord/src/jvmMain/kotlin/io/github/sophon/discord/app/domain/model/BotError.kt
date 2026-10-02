@@ -1,4 +1,4 @@
-package io.github.sophon.discord.feat.core.domain.model
+package io.github.sophon.discord.app.domain.model
 
 import io.github.sophon.core.architecture.Error
 

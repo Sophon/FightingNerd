@@ -7,7 +7,7 @@ import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.bot.BotFeature
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 import kotlin.collections.filterKeys

@@ -14,7 +14,7 @@ import io.github.sophon.core.wiki.model.Filter
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.wikiwavu.integration.WavuFeatureInfo
 import io.github.sophon.wikiwavu.integration.model.T8Properties

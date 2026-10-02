@@ -7,8 +7,8 @@ import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
-import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.discord.feat.core.domain.model.Command
+import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
 
 @ExcludeFromCoverage("UI")

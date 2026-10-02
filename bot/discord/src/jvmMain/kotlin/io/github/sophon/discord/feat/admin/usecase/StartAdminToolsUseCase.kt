@@ -5,7 +5,7 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.Config
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
 
 @ExcludeFromCoverage("plain client call")

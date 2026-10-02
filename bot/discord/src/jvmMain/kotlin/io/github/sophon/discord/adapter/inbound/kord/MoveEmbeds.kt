@@ -2,7 +2,7 @@ package io.github.sophon.discord.adapter.inbound.kord
 
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.feat.core.domain.model.Emoji
+import io.github.sophon.discord.app.domain.model.Emoji
 
 internal fun moveEmbed(
     move: BotResponse.MoveResponse,

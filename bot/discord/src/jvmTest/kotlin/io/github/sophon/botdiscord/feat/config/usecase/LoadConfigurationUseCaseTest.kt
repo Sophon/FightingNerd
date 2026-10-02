@@ -8,7 +8,7 @@ import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
 import io.github.sophon.discord.feat.core.data.FileManager
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import kotlinx.serialization.json.Json
 import org.junit.Test
 

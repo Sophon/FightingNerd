@@ -9,8 +9,7 @@ import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.integration.model.Source
+import io.github.sophon.discord.app.domain.model.BotError
 
 @ExcludeFromCoverage("UI")
 internal class CreatePlainMessageUseCase {

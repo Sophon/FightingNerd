@@ -1,28 +1,16 @@
 package io.github.sophon.discord.feat.config
 
-import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.EmptyResult
-import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
-import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.FeatureRepo
-import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.feat.config.usecase.BindToDiscordFeaturesUseCase
 import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
-import io.github.sophon.discord.feat.core.domain.Scheduler
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.toDomainError
-import io.github.sophon.wiki.application.domain.model.RefreshEvent
-import io.github.sophon.wiki.application.domain.model.WikiConfig
-import io.github.sophon.wiki.application.domain.model.WikiError
-import io.github.sophon.wiki.application.port.inbound.ConfigureWikiUseCase
-import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.launchIn
 
 internal interface BotFeatureRepo {
     suspend fun initialize(): EmptyResult<BotError>

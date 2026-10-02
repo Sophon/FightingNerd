@@ -8,8 +8,8 @@ import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.domain.model.Message
 import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
-import io.github.sophon.discord.feat.core.domain.model.BotError
-import io.github.sophon.discord.feat.core.domain.model.Command
+import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.Command
 
 internal class ProcessUserInputService(
     private val commandRouterService: CommandRouterService,

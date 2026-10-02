@@ -7,7 +7,7 @@ import io.github.sophon.discord.app.domain.model.ButtonEvent
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
-import io.github.sophon.discord.feat.core.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotError
 
 internal class ProcessButtonEventService(
     private val frameDataPort: FrameDataPort,
