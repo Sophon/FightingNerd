@@ -118,20 +118,20 @@ private fun Move.toPrimaryFields(): List<BotResponse.MoveResponse.Field> {
 
 private fun Move.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = when (val properties = gameProperties) {
-        is GGMoveProperties -> properties.toFields(this)
-        is BBMoveProperties -> properties.toFields(this)
-        is GBVSRMoveProperties -> properties.toFields(this)
-        is MTFSMoveProperties -> properties.toFields(this)
+        is GGMoveProperties -> properties.toSecondaryFields(this)
+        is BBMoveProperties -> properties.toSecondaryFields(this)
+        is GBVSRMoveProperties -> properties.toSecondaryFields(this)
+        is MTFSMoveProperties -> properties.toSecondaryFields(this)
 
-        is SF6MoveProperties -> properties.toFields(this)
-        is AVLMoveProperties -> properties.toFields(this)
-        is MKMoveProperties -> properties.toFields(this)
+        is SF6MoveProperties -> properties.toSecondaryFields(this)
+        is AVLMoveProperties -> properties.toSecondaryFields(this)
+        is MKMoveProperties -> properties.toSecondaryFields(this)
 
-        is MBTLMoveProperties -> properties.toFields()
-        is Uni2MoveProperties -> properties.toFields()
-        is VSAVMoveProperties -> properties.toFields()
+        is MBTLMoveProperties -> properties.toSecondaryFields()
+        is Uni2MoveProperties -> properties.toSecondaryFields()
+        is VSAVMoveProperties -> properties.toSecondaryFields()
 
-        else -> (toDefaultSecondaryFields() + properties?.toFields().orEmpty())
+        else -> (toDefaultSecondaryFields() + properties?.toSecondaryFields().orEmpty())
     }
 
     return fieldList
@@ -149,14 +149,14 @@ private fun Move.toDefaultSecondaryFields(): List<BotResponse.MoveResponse.Field
     return fieldList
 }
 
-private fun MoveGameProperties.toFields(): List<BotResponse.MoveResponse.Field> {
+private fun MoveGameProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = when (this) {
-        is DBFZMoveProperties -> toFields()
+        is DBFZMoveProperties -> toSecondaryFields()
 
-        is KOF15MoveProperties -> toFields()
-        is COTWMoveProperties -> toFields()
+        is KOF15MoveProperties -> toSecondaryFields()
+        is COTWMoveProperties -> toSecondaryFields()
 
-        is Roa2MoveProperties -> toFields()
+        is Roa2MoveProperties -> toSecondaryFields()
 
         else -> listOf()
     }
@@ -177,7 +177,7 @@ private fun GGMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveR
     return fieldList
 }
 
-private fun GGMoveProperties.toFields(move: Move): List<BotResponse.MoveResponse.Field> {
+private fun GGMoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Cancel", move.cancel),
         fieldOf("Level", level),
@@ -206,7 +206,7 @@ private fun BBMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveR
     return fieldList
 }
 
-private fun BBMoveProperties.toFields(move: Move): List<BotResponse.MoveResponse.Field> {
+private fun BBMoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Cancel", move.cancel),
         fieldOf("Level", level),
@@ -228,7 +228,7 @@ private fun BBMoveProperties.toFields(move: Move): List<BotResponse.MoveResponse
     return fieldList
 }
 
-private fun DBFZMoveProperties.toFields(): List<BotResponse.MoveResponse.Field> {
+private fun DBFZMoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Level", level),
         fieldOf("Attribute", attribute),
@@ -255,7 +255,7 @@ private fun GBVSRMoveProperties.toPrimaryFields(move: Move): List<BotResponse.Mo
     return fieldList
 }
 
-private fun GBVSRMoveProperties.toFields(move: Move): List<BotResponse.MoveResponse.Field> {
+private fun GBVSRMoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Cancel", move.cancel),
         fieldOf("Level", level),
@@ -279,7 +279,7 @@ private fun MTFSMoveProperties.toPrimaryFields(move: Move): List<BotResponse.Mov
     return fieldList
 }
 
-private fun MTFSMoveProperties.toFields(move: Move): List<BotResponse.MoveResponse.Field> {
+private fun MTFSMoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Cancel", move.cancel),
         fieldOf("Simple input", simpleInput),
@@ -307,7 +307,7 @@ private fun SF6MoveProperties.toPrimaryFields(move: Move): List<BotResponse.Move
     return fieldList
 }
 
-private fun SF6MoveProperties.toFields(move: Move): List<BotResponse.MoveResponse.Field> {
+private fun SF6MoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Invul", move.invulnerability),
         fieldOf("Chip", chip),
@@ -353,7 +353,7 @@ private fun AVLMoveProperties.toPrimaryFields(move: Move): List<BotResponse.Move
     return fieldList
 }
 
-private fun AVLMoveProperties.toFields(move: Move): List<BotResponse.MoveResponse.Field> {
+private fun AVLMoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Cancel", move.cancel),
         fieldOf("Invul", move.invulnerability),
@@ -378,7 +378,7 @@ private fun MKMoveProperties.toPrimaryFields(move: Move): List<BotResponse.MoveR
     return fieldList
 }
 
-private fun MKMoveProperties.toFields(move: Move): List<BotResponse.MoveResponse.Field> {
+private fun MKMoveProperties.toSecondaryFields(move: Move): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Invul", move.invulnerability),
         fieldOf("Hit cancel", hitCancelAdv),
@@ -408,7 +408,7 @@ private fun MBTLMoveProperties.toPrimaryFields(move: Move): List<BotResponse.Mov
     return fieldList
 }
 
-private fun MBTLMoveProperties.toFields(): List<BotResponse.MoveResponse.Field> {
+private fun MBTLMoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Input info", inputInfo),
         fieldOf("Subtitle", subtitle),
@@ -433,7 +433,7 @@ private fun Uni2MoveProperties.toPrimaryFields(move: Move): List<BotResponse.Mov
     return fieldList
 }
 
-private fun Uni2MoveProperties.toFields(): List<BotResponse.MoveResponse.Field> {
+private fun Uni2MoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Input info", inputInfo),
         fieldOf("Subtitle", subtitle),
@@ -475,7 +475,7 @@ private fun VSAVMoveProperties.toPrimaryFields(move: Move): List<BotResponse.Mov
     return fieldList
 }
 
-private fun VSAVMoveProperties.toFields(): List<BotResponse.MoveResponse.Field> {
+private fun VSAVMoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Input info", inputInfo),
         fieldOf("Subtitle", subtitle),
@@ -488,7 +488,7 @@ private fun VSAVMoveProperties.toFields(): List<BotResponse.MoveResponse.Field> 
 //endregion
 
 //region DreamCancel
-private fun KOF15MoveProperties.toFields(): List<BotResponse.MoveResponse.Field> {
+private fun KOF15MoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Stun", stun),
     )
@@ -496,7 +496,7 @@ private fun KOF15MoveProperties.toFields(): List<BotResponse.MoveResponse.Field>
     return fieldList
 }
 
-private fun COTWMoveProperties.toFields(): List<BotResponse.MoveResponse.Field> {
+private fun COTWMoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("REV damage", revDamage),
     )
@@ -506,7 +506,7 @@ private fun COTWMoveProperties.toFields(): List<BotResponse.MoveResponse.Field> 
 //endregion
 
 //region DragDown
-private fun Roa2MoveProperties.toFields(): List<BotResponse.MoveResponse.Field> {
+private fun Roa2MoveProperties.toSecondaryFields(): List<BotResponse.MoveResponse.Field> {
     val fieldList = listOfNotNull(
         fieldOf("Mode", mode),
         fieldOf("Hitbox caption", hitboxCaption),
