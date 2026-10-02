@@ -7,4 +7,10 @@ import io.github.sophon.discord.app.domain.model.MoveType
 
 internal interface GetMovesOfTypePort {
     suspend fun getMovesOfType(characterQuery: String, moveType: MoveType): Result<BotResponse.ListResponse, BotError>
+
+    suspend fun getStances(characterQuery: String): Result<BotResponse.ListResponse, BotError>
+
+    suspend fun getStanceMoves(characterQuery: String, stanceQuery: String): Result<BotResponse.ListResponse, BotError>
+
+    //TODO: strings
 }

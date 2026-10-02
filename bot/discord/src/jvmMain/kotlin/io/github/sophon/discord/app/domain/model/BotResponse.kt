@@ -73,6 +73,10 @@ sealed interface BotResponse {
             data class Redirect(val channelId: String): Action()
             data class Text(val text: String): Action()
             data class Expand(val moveId: MoveId): Action()
+            data class Command(
+                val command: io.github.sophon.discord.app.domain.model.Command,
+                val query: String,
+            ): Action()
         }
     }
 }

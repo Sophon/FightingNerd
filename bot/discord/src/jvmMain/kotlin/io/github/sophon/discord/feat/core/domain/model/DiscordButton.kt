@@ -1,5 +1,6 @@
 package io.github.sophon.discord.feat.core.domain.model
 
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.MoveId
 
 internal sealed class DiscordButton(
@@ -18,6 +19,11 @@ internal sealed class DiscordButton(
 
     class Expand(val moveId: MoveId): DiscordButton(key = KEY_EXPAND, value = moveId.toButtonValue())
 
+    class Command(
+        command: io.github.sophon.discord.app.domain.model.Command,
+        query: String,
+    ): DiscordButton(key = KEY_COMMAND, value = command.toButtonValue(query))
+
 
     override fun toString(): String {
         return "$key$BUTTON_ID_DELIMITER$value"
@@ -30,6 +36,7 @@ internal sealed class DiscordButton(
         const val KEY_REDIRECT = "redirect"
         const val KEY_TEXT = "text"
         const val KEY_EXPAND = "expand"
+        const val KEY_COMMAND = "command"
 
         const val BUTTON_ID_DELIMITER = ":"
     }
@@ -41,6 +48,15 @@ internal sealed class DiscordButton(
  */
 private fun MoveId.toButtonValue(): String {
     val buttonValue = listOf(game.name, characterId, input).joinToString(DiscordButton.BUTTON_ID_DELIMITER)
+
+    return buttonValue
+}
+
+/**
+ * `query` goes last - it may contain the delimiter, so decoding splits with a limit.
+ */
+private fun Command.toButtonValue(query: String): String {
+    val buttonValue = listOf(name, query).joinToString(DiscordButton.BUTTON_ID_DELIMITER)
 
     return buttonValue
 }

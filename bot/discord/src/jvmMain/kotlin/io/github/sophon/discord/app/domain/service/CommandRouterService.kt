@@ -29,13 +29,22 @@ internal class CommandRouterService(
         return result
     }
 
-    private suspend fun route(command: Command, query: String): Result<BotResponse, BotError> {
+    suspend fun route(command: Command, query: String): Result<BotResponse, BotError> {
         val result = when (command) {
             Command.Fd -> frameDataPort.getFrameData(query)
 
             Command.Pc -> getMovesOfTypePort.getMovesOfType(characterQuery = query, moveType = MoveType.PC)
             Command.Heat -> getMovesOfTypePort.getMovesOfType(characterQuery = query, moveType = MoveType.HEAT)
             Command.Homing -> getMovesOfTypePort.getMovesOfType(characterQuery = query, moveType = MoveType.HOMING)
+            Command.Stance -> {
+                val characterQuery = query.substringBefore(' ')
+                val stanceQuery = query.substringAfter(' ', missingDelimiterValue = "").trim()
+                if (stanceQuery.isEmpty()) {
+                    getMovesOfTypePort.getStances(characterQuery = characterQuery)
+                } else {
+                    getMovesOfTypePort.getStanceMoves(characterQuery = characterQuery, stanceQuery = stanceQuery)
+                }
+            }
 
             Command.Tip,
             Command.Donate,
@@ -58,7 +67,6 @@ internal class CommandRouterService(
             Command.OnBlock,
             Command.OnCounter,
             Command.Gl,
-            Command.Stance,
             Command.ThrowTK,
             Command.Strings,
             Command.SpecialROA,

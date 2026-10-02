@@ -6,6 +6,7 @@ import io.github.sophon.core.util.getGame
 import io.github.sophon.core.util.orDash
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.app.domain.model.Emoji
 import io.github.sophon.discord.app.domain.model.MoveId
@@ -138,6 +139,70 @@ internal fun List<Move>.toListResponse(
     val listResponse = BotResponse.ListResponse(
         title = "${moveType.toEmoji()}${character.displayName.uppercase()} ${moveType.toTitle()} moves",
         values = map { it.input },
+        dataSource = character.toDataSource(),
+        buttonSet = buttonSet,
+    )
+
+    return listResponse
+}
+
+internal fun List<Move>.toListResponse(
+    character: Character,
+    moveType: String,
+): BotResponse.ListResponse {
+    val buttonSet = mapIndexed { index, move ->
+        BotResponse.EmbedButton(
+            label = (index + 1).toString(),
+            action = BotResponse.EmbedButton.Action.Query(
+                moveId = MoveId(
+                    game = character.id.game,
+                    characterId = character.id.naturalId,
+                    input = move.input,
+                ),
+            ),
+        )
+    }
+        .takeIf { it.isNotEmpty() }
+        ?.let { buttonList ->
+            BotResponse.ButtonSet(
+                buttonList = buttonList,
+                duration = EMBED_BUTTON_DURATION_INF.seconds,
+            )
+        }
+
+    val listResponse = BotResponse.ListResponse(
+        title = "$moveType moves",
+        values = map { it.input },
+        dataSource = character.toDataSource(),
+        buttonSet = buttonSet,
+    )
+
+    return listResponse
+}
+
+internal fun Set<String>.toListResponse(
+    character: Character,
+): BotResponse.ListResponse {
+    val buttonSet = mapIndexed { index, stance ->
+        BotResponse.EmbedButton(
+            label = (index + 1).toString(),
+            action = BotResponse.EmbedButton.Action.Command(
+                command = Command.Stance,
+                query = "${character.id.naturalId} $stance",
+            ),
+        )
+    }
+        .takeIf { it.isNotEmpty() }
+        ?.let { buttonList ->
+            BotResponse.ButtonSet(
+                buttonList = buttonList,
+                duration = EMBED_BUTTON_DURATION_INF.seconds,
+            )
+        }
+
+    val listResponse = BotResponse.ListResponse(
+        title = "${character.displayName.uppercase()} stances",
+        values = toList(),
         dataSource = character.toDataSource(),
         buttonSet = buttonSet,
     )

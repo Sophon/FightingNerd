@@ -2,6 +2,7 @@ package io.github.sophon.discord.adapter.inbound.kord
 
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.app.domain.model.ButtonEvent
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton
 import kotlin.collections.component1
@@ -21,8 +22,20 @@ internal fun decodeToButtonEvent(buttonId: String): ButtonEvent? {
         DiscordButton.KEY_EXPAND -> decodeMoveId(value)?.let { moveId -> ButtonEvent.Expand(moveId) }
         DiscordButton.KEY_QUERY -> decodeMoveId(value)?.let { moveId -> ButtonEvent.Query(moveId) }
         DiscordButton.KEY_TEXT -> ButtonEvent.Text(value)
+        DiscordButton.KEY_COMMAND -> decodeCommand(value)
         else -> null
     }
+    return buttonEvent
+}
+
+private fun decodeCommand(value: String): ButtonEvent.Command? {
+    val (commandName, query) = value
+        .split(DiscordButton.BUTTON_ID_DELIMITER, limit = 2)
+        .takeIf { it.size == 2 }
+        ?: return null
+    val command = Command.fromId(commandName) ?: return null
+
+    val buttonEvent = ButtonEvent.Command(command = command, query = query)
     return buttonEvent
 }
 

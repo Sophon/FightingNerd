@@ -125,6 +125,10 @@ internal class DiscordButtonBuilder {
                 val customId = DiscordButton.Expand(action.moveId).toString()
                 interactionButtonOrNull(customId, label)
             }
+            is BotResponse.EmbedButton.Action.Command -> {
+                val customId = DiscordButton.Command(action.command, action.query).toString()
+                interactionButtonOrNull(customId, label)
+            }
         }
         return buttonBuilder
     }

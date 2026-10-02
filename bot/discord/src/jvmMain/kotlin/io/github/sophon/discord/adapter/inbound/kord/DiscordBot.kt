@@ -243,6 +243,30 @@ internal class DiscordBotImpl(
                             }
                         }
 
+                        is ButtonEvent.Command -> {
+                            when (response) {
+                                is BotResponse.MoveResponse -> {
+                                    kordPoster.post(
+                                        message = interaction.message,
+                                        embedBuilder = moveEmbed(response),
+                                        imageList = response.hitboxImageList,
+                                        isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                        buttonSet = response.buttonSet,
+                                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                                }
+                                is BotResponse.ListResponse -> {
+                                    kordPoster.post(
+                                        message = interaction.message,
+                                        embedBuilder = moveListEmbed(response),
+                                        imageList = emptyList(),
+                                        isExpanded = false,
+                                        buttonSet = response.buttonSet,
+                                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                                }
+                                else -> {}
+                            }
+                        }
+
                         is ButtonEvent.Text -> {
                             if (response is BotResponse.PlainText) {
                                 kordPoster.postText(

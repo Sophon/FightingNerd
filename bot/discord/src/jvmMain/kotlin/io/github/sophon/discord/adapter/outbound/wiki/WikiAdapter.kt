@@ -18,6 +18,7 @@ import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
+import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 import io.github.sophon.wiki.application.port.inbound.ConfigureWikiUseCase
 import io.github.sophon.wiki.application.port.inbound.GetCharacterListUseCase
 import io.github.sophon.wiki.application.port.inbound.GetCharacterUseCase
@@ -82,6 +83,39 @@ internal class WikiAdapter(
             .filter(moveType.toFilter().predicate)
 
         val listResponse = moveList.toListResponse(character, moveType)
+        return Result.Success(listResponse)
+    }
+
+    override suspend fun getStances(characterQuery: String): Result<BotResponse.ListResponse, BotError> {
+        val character = findCharacter(characterQuery)
+            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
+
+        val stances = getMoveListUseCase(characterId = character.id)
+            .first()
+            .mapNotNull { move ->
+                (move.gameProperties as? T8Properties)?.stance
+            }
+            .toSet()
+
+        val listResponse = stances.toListResponse(character)
+        return Result.Success(listResponse)
+    }
+
+    override suspend fun getStanceMoves(
+        characterQuery: String,
+        stanceQuery: String,
+    ): Result<BotResponse.ListResponse, BotError> {
+        val character = findCharacter(characterQuery)
+            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
+
+        val moveList = getMoveListUseCase(characterId = character.id)
+            .first()
+            .filter { move ->
+                val stance = (move.gameProperties as? T8Properties)?.stance
+                stance?.equalsIgnoreCase(stanceQuery) == true
+            }
+
+        val listResponse = moveList.toListResponse(character = character, moveType = stanceQuery)
         return Result.Success(listResponse)
     }
 

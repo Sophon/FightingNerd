@@ -11,12 +11,14 @@ import io.github.sophon.discord.app.domain.model.BotError
 
 internal class ProcessButtonEventService(
     private val frameDataPort: FrameDataPort,
+    private val commandRouterService: CommandRouterService,
 ): ProcessButtonEventUseCase {
     override suspend fun invoke(buttonEvent: ButtonEvent): Result<BotResponse, BotError> {
         val result: Result<BotResponse, BotError> = when (buttonEvent) {
             is ButtonEvent.Expand -> expand(buttonEvent.moveId)
             is ButtonEvent.Query -> frameDataPort.getFrameData(buttonEvent.moveId)
             is ButtonEvent.Text -> Result.Success(BotResponse.PlainText(text = buttonEvent.text))
+            is ButtonEvent.Command -> commandRouterService.route(buttonEvent.command, buttonEvent.query)
         }
         return result
     }
