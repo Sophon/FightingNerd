@@ -61,9 +61,10 @@ internal fun WikiError.toDomainError(): BotError {
 internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
     val isCollapsedByDefault: Boolean = when (character.id.game) {
         Game.GGST,
-        Game.StreetFighter6,
         Game.BBCF,
-        Game.GBVSR -> true
+        Game.GBVSR,
+        Game.AVL,
+        Game.StreetFighter6 -> true
 
         else -> false
     }

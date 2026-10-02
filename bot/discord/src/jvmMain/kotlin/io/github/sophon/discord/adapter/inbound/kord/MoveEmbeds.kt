@@ -24,11 +24,9 @@ private fun coreMoveEmbed(
 
     if (move.isCollapsedByDefault.not()) {
         detailsBulletPoints(move.secondaryFields)
+        notesSection(move)
+        embedImage(urls = move.hitboxImageList)
     }
-
-    notesSection(move)
-
-    embedImage(urls = move.hitboxImageList)
 
     featureFooter(dataSource = move.dataSource)
 }

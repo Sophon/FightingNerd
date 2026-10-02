@@ -100,7 +100,12 @@ internal class KordPoster(
             message.edit {
                 embeds = mutableListOf()
                 components = mutableListOf()
-                moveContent(embedBuilder = embedBuilder, imageList = imageList, buttonSet = buttonSet)
+                moveContent(
+                    embedBuilder = embedBuilder,
+                    imageList = imageList,
+                    buttonSet = buttonSet,
+                    showImages = true,
+                )
             }
 
             Result.Success(Unit)
@@ -140,15 +145,19 @@ internal class KordPoster(
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
         buttonSet: BotResponse.ButtonSet?,
+        showImages: Boolean = false,
     ) {
         embed(embedBuilder)
 
         val primaryEmbed = EmbedBuilder().apply(embedBuilder)
-        imageList.forEach { imageUrl ->
-            embed {
-                title = primaryEmbed.title
-                url = primaryEmbed.url
-                image = imageUrl
+
+        if (showImages && imageList.size > 1) {
+            imageList.forEach { imageUrl ->
+                embed {
+                    title = primaryEmbed.title
+                    url = primaryEmbed.url
+                    image = imageUrl
+                }
             }
         }
 
