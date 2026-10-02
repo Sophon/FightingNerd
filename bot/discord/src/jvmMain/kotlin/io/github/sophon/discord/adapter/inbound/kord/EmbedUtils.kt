@@ -79,7 +79,7 @@ internal fun EmbedBuilder.optionalField(
 
 internal fun EmbedBuilder.separator() {
     field {
-        name = invisibleChar()
+        name = invisibleChar
         value = ""
         inline = false
     }
@@ -152,7 +152,7 @@ internal fun EmbedBuilder.detailsBulletPoints(fields: List<BotResponse.MoveRespo
             }
 
             field {
-                this.name = invisibleChar()
+                this.name = invisibleChar
                 this.value = lines.truncate(EMBED_MAX_LENGTH)
                 this.inline = true
             }

@@ -216,5 +216,4 @@ fun List<String>.toColumns(): List<List<String>> {
 }
 
 //Zero Width Space
-fun invisibleChar(): String = "\u200B"
-
+const val invisibleChar = "\u200B"
