@@ -8,6 +8,7 @@ import io.github.sophon.discord.app.port.outbound.CharactersPort
 
 internal interface CharacterService {
     suspend fun findCharacter(characterQuery: String): Result<BotResponse.CharacterResponse, BotError>
+    suspend fun getCharacters(): List<BotResponse.CharacterResponse>
 }
 
 internal class CharacterServiceImpl(
@@ -24,6 +25,11 @@ internal class CharacterServiceImpl(
         }
 
         return result
+    }
+
+    override suspend fun getCharacters(): List<BotResponse.CharacterResponse> {
+        val characterList = charactersPort.getCharacters()
+        return characterList
     }
 }
 

@@ -41,6 +41,8 @@ import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.data.JsonReportRepo
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
+import io.github.sophon.discord.app.domain.service.ProduceAutoCompleteService
+import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
@@ -143,6 +145,7 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::CommandRouterService)
     singleOf(::CharacterServiceImpl).bind<CharacterService>()
     singleOf(::MoveServiceImpl).bind<MoveService>()
+    singleOf(::ProduceAutoCompleteService).bind<ProduceAutoCompleteUseCase>()
     //endregion
 
     //region File operations
