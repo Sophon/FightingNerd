@@ -46,7 +46,7 @@ internal fun moveEmbed(
     move: BotResponse.MoveResponse,
 ): EmbedBuilder.() -> Unit {
     val embedBuilder = if (move.forceExpand) {
-        detailedMoveEmbed(move)
+        expandedMoveEmbed(move)
     } else {
         coreMoveEmbed(move)
     }
@@ -69,7 +69,7 @@ private fun coreMoveEmbed(
     featureFooter(dataSource = move.dataSource)
 }
 
-private fun detailedMoveEmbed(
+private fun expandedMoveEmbed(
     move: BotResponse.MoveResponse,
 ): EmbedBuilder.() -> Unit = {
     headerSection(move)
