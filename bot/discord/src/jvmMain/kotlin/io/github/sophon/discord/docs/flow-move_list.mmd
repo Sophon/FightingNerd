@@ -1,0 +1,70 @@
+flowchart TD
+    subgraph P1["Phase 1: list creation"]
+        subgraph P1_KORD["KORD"]
+            p1_in_listener["Input listener"]
+        end
+
+        subgraph P1_APPLICATION["APPLICATION"]
+            p1_cmd_process["Process user input"]
+            p1_fd_port["FD port"]
+            p1_cmd_rout{"Command router"}
+            p1_fd_svc["Char/Move service"]
+        end
+
+        subgraph P1_ADAPTER["ADAPTER"]
+            p1_wiki_adp["Wiki adapter"]
+        end
+
+        subgraph P1_FEATURES["FEATURES"]
+            p1_wiki["Wiki"]
+        end
+    end
+
+    subgraph P2["Phase 2: button press"]
+        subgraph P2_KORD["KORD"]
+            p2_btn_listener["Button listener"]
+        end
+
+        subgraph P2_APPLICATION["APPLICATION"]
+            p2_btn_svc["Process button event"]
+            p2_fd_port["FD port"]
+            p2_cmd_rout{"Command router"}
+            p2_fd_svc["Char/Move service"]
+        end
+
+        subgraph P2_ADAPTER["ADAPTER"]
+            p2_wiki_adp["Wiki adapter"]
+        end
+
+        subgraph P2_FEATURES["FEATURES"]
+            p2_wiki["Wiki"]
+        end
+    end
+
+    p1_in_listener --> |"1. user query"| p1_cmd_process
+    p1_cmd_process --> |"2. command, query"| p1_cmd_rout --> |"3. query"| p1_fd_svc --> p1_fd_port
+    p1_fd_port --- p1_wiki_adp --- p1_wiki
+    p1_fd_port --> |"4. response"| p1_fd_svc --> p1_cmd_rout --> p1_cmd_process --> p1_in_listener
+
+    p2_btn_listener --> |"1. button event"| p2_btn_svc --> |"2. command"| p2_cmd_rout --> |"3. button query"| p2_fd_svc --> p2_fd_port
+    p2_fd_port --- p2_wiki_adp --- p2_wiki
+    p2_fd_port --> |"4. response"| p2_fd_svc --> p2_cmd_rout --> p2_btn_svc --> p2_btn_listener
+
+    style P1_KORD stroke:orange,stroke-dasharray:5 5,fill:none
+    style P1_APPLICATION stroke:green,stroke-dasharray:5 5,fill:none
+    style P1_ADAPTER stroke:blue,stroke-dasharray:5 5,fill:none
+    style P1_FEATURES stroke-dasharray:5 5,fill:none
+    style P2_KORD stroke:orange,stroke-dasharray:5 5,fill:none
+    style P2_APPLICATION stroke:green,stroke-dasharray:5 5,fill:none
+    style P2_ADAPTER stroke:blue,stroke-dasharray:5 5,fill:none
+    style P2_FEATURES stroke-dasharray:5 5,fill:none
+
+    classDef kord stroke:orange
+    classDef application stroke:green
+    classDef adapter stroke:blue
+    classDef outboundPort stroke:green,stroke-dasharray:3 3
+
+    class p1_in_listener,p2_btn_listener kord
+    class p1_cmd_process,p1_cmd_rout,p1_fd_svc,p2_btn_svc,p2_cmd_rout,p2_fd_svc application
+    class p1_fd_port,p2_fd_port outboundPort
+    class p1_wiki_adp,p2_wiki_adp adapter
