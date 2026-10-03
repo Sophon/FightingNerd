@@ -27,6 +27,8 @@ internal interface MoveService {
     suspend fun findStanceOrMove(query: String): Result<BotResponse.ListResponse, BotError>
 
     suspend fun findStrings(query: String): Result<BotResponse.ListResponse, BotError>
+
+    suspend fun getMoves(characterId: CharacterId): Result<List<BotResponse.MoveResponse>, BotError>
 }
 
 
@@ -102,6 +104,11 @@ internal class MoveServiceImpl(
                     }
                 listResponse
             }
+        return result
+    }
+
+    override suspend fun getMoves(characterId: CharacterId): Result<List<BotResponse.MoveResponse>, BotError> {
+        val result = frameDataPort.getMoves(characterId)
         return result
     }
 

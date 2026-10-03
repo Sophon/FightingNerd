@@ -197,6 +197,7 @@ internal class DiscordBotImpl(
                     commandString = interaction.command.rootName,
                     argument = focusedArgumentName,
                     query = query,
+                    argumentMap = interaction.command.strings,
                 ).take(COMMAND_MAX_SUGGESTIONS)
 
                 interaction.suggestString {

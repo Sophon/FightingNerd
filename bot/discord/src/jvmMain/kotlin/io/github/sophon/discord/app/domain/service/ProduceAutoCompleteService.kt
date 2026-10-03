@@ -1,12 +1,14 @@
 package io.github.sophon.discord.app.domain.service
 
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
-import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.app.domain.model.AutocompleteChoice
 import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.CharacterId
 import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 
 /**
@@ -20,18 +22,44 @@ internal class ProduceAutoCompleteService(
         commandString: String,
         argument: String,
         query: String,
+        argumentMap: Map<String, String>,
     ): List<AutocompleteChoice> {
-        val command = Command.fromId(commandString)
-
-        val suggestions: List<AutocompleteChoice> = when (command) {
-            Command.Char -> getCharacterChoices(query)
-
-            else -> emptyList()
-        }
-
+        val command = Command.fromId(commandString) ?: return emptyList()
+        val suggestions = routeFocusedType(
+            command = command,
+            argumentName = argument,
+            query = query,
+            argumentMap = argumentMap,
+        )
         return suggestions
     }
 
+    private suspend fun routeFocusedType(
+        command: Command,
+        argumentName: String,
+        query: String,
+        argumentMap: Map<String, String>,
+    ): List<AutocompleteChoice> {
+        val focusedType = command.argumentList
+            .firstOrNull { it.name.equals(argumentName, ignoreCase = true) }
+            ?.autoCompleteType
+            ?: return emptyList()
+
+        val choices = when (focusedType) {
+            AutoCompleteType.Character -> getCharacterChoices(query)
+            AutoCompleteType.Move -> getMoveChoices(command, query, argumentMap)
+            AutoCompleteType.Other -> {
+                when (command) {
+                    Command.Alias -> getGameChoices(query)
+                    Command.Stance -> getStanceChoices(command, query, argumentMap)
+                    else -> emptyList()
+                }
+            }
+
+            AutoCompleteType.None -> emptyList()
+        }
+        return choices
+    }
 
     private suspend fun getCharacterChoices(query: String): List<AutocompleteChoice> {
         val choiceList = characterService.getCharacters()
@@ -40,11 +68,68 @@ internal class ProduceAutoCompleteService(
         return choiceList
     }
 
+    private suspend fun getMoveChoices(
+        command: Command,
+        query: String,
+        argumentMap: Map<String, String>,
+    ): List<AutocompleteChoice> {
+        val choiceList = getSiblingCharacterMoves(command, argumentMap)
+            .filter { query.isBlank() || it.isApprox(query) }
+            .map { it.toChoice() }
+        return choiceList
+    }
+
+    private suspend fun getStanceChoices(
+        command: Command,
+        query: String,
+        argumentMap: Map<String, String>,
+    ): List<AutocompleteChoice> {
+        val choiceList = getSiblingCharacterMoves(command, argumentMap)
+            .mapNotNull { it.stance }
+            .distinct()
+            .filter { query.isBlank() || it.contains(query, ignoreCase = true) }
+            .map { AutocompleteChoice(name = it, value = it) }
+        return choiceList
+    }
+
+    // only games that actually have characters loaded
+    private suspend fun getGameChoices(query: String): List<AutocompleteChoice> {
+        val choiceList = characterService.getCharacters()
+            .map { it.game }
+            .distinct()
+            .filter { it.displayName.contains(query, ignoreCase = true) }
+            .map { AutocompleteChoice(name = it.displayName, value = it.id) }
+        return choiceList
+    }
+
+    // the character argument was already chosen via autocomplete, its value is encoded
+    private suspend fun getSiblingCharacterMoves(
+        command: Command,
+        argumentMap: Map<String, String>,
+    ): List<BotResponse.MoveResponse> {
+        val characterValue = command.readSibling(argumentMap, type = AutoCompleteType.Character)
+        val characterId = decodeCharacterValue(characterValue) ?: return emptyList()
+
+        val moveList = when (val result = moveService.getMoves(characterId)) {
+            is Result.Success -> result.data
+            is Result.Error -> emptyList()
+        }
+        return moveList
+    }
+
+
     private fun BotResponse.CharacterResponse.isApprox(query: String): Boolean {
         val normalizedQuery = query.normalizeForMatch()
         val isApprox = (id == normalizedQuery)
                 || displayName.normalizeForMatch().contains(normalizedQuery)
                 || aliasList.any { it.normalizeForMatch().contains(normalizedQuery) }
+        return isApprox
+    }
+
+    private fun BotResponse.MoveResponse.isApprox(query: String): Boolean {
+        val isApprox = input.contains(query, ignoreCase = true)
+                || moveName.orEmpty().contains(query, ignoreCase = true)
+                || aliasList.any { it.contains(query, ignoreCase = true) }
         return isApprox
     }
 
@@ -96,14 +181,29 @@ internal class ProduceAutoCompleteService(
         val result = cleaned.ifBlank { "-" }
         return result
     }
+
+    private fun Command.readSibling(
+        argumentMap: Map<String, String>,
+        type: AutoCompleteType,
+    ): String {
+        val siblingArg = argumentList.firstOrNull { it.autoCompleteType == type }
+        val value = siblingArg?.let { argumentMap[it.name] }.orEmpty()
+        return value
+    }
+
+    // inverse of CharacterResponse.toChoice's value - `id::GAME`
+    private fun decodeCharacterValue(value: String): CharacterId? {
+        val parts = value.split(AUTOCOMPLETE_VALUE_DELIMITER, limit = 2)
+        if (parts.size != 2) return null
+        val (characterId, gameName) = parts
+        val game = Game.entries.firstOrNull { it.name == gameName } ?: return null
+        val decoded = CharacterId(
+            game = game,
+            characterId = characterId,
+        )
+        return decoded
+    }
 }
-
-
-//data received after having chosen a character
-private data class DecodedCharacterValue(
-    val characterId: String,
-    val game: Game,
-)
 
 
 private const val COLUMN_MAX_GAP_L = 15
