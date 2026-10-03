@@ -9,6 +9,10 @@ import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
 import io.github.sophon.discord.app.domain.model.BotError
 
+/**
+ * - expand: [flow-expand.mmd](../../../docs/flow-expand.mmd)
+ * - move list: [flow-move_list.mmd](../../../docs/flow-move_list.mmd)
+ */
 internal class ProcessButtonEventService(
     private val frameDataPort: FrameDataPort,
     private val commandRouterService: CommandRouterService,

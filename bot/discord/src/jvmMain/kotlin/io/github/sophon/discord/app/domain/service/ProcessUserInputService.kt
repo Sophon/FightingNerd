@@ -11,6 +11,9 @@ import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.Command
 
+/**
+ * - flow: [flow-user_input.mmd](../../../docs/flow-user_input.mmd)
+ */
 internal class ProcessUserInputService(
     private val commandRouterService: CommandRouterService,
 ): ProcessUserInputUseCase {
