@@ -101,7 +101,7 @@ private fun EmbedBuilder.headerSection(move: BotResponse.MoveResponse) {
     move.characterImageUrl?.let { thumbnail { url = it } }
 }
 
-private fun EmbedBuilder.primaryFieldsSection(fields: List<BotResponse.MoveResponse.Field>) {
+private fun EmbedBuilder.primaryFieldsSection(fields: List<BotResponse.Field>) {
     fields.forEach { field ->
         mandatoryField(name = field.title, value = field.value)
     }
