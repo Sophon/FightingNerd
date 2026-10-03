@@ -22,6 +22,7 @@ import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.ButtonEvent
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.domain.model.Message
@@ -56,7 +57,6 @@ internal class DiscordBotImpl(
     private val adminConfig: Config.AdminConfig,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
-    private val botFeatureRepo: BotFeatureRepo,
     private val scheduler: Scheduler,
     private val commandRegistry: CommandRegistry,
 
@@ -314,11 +314,8 @@ internal class DiscordBotImpl(
     @Suppress("UnusedPrivateMember")
     private suspend fun createCommandsForTestServer() {
         val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
-        val featureList = botFeatureRepo.getFeatures()
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
-            featureList
-                .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
-                .distinctBy { it.name.lowercase() }
+            Command.entries
                 .forEach { supportedCommand ->
                     input(
                         name = supportedCommand.name.lowercase(),
@@ -343,11 +340,8 @@ internal class DiscordBotImpl(
 
     private suspend fun createGlobalCommands() {
         try {
-            val featureList = botFeatureRepo.getFeatures()
             kord.createGlobalApplicationCommands {
-                featureList
-                    .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
-                    .distinctBy { it.name.lowercase() }
+                Command.entries
                     .filter { supportedCommand ->
                         adminCommands.contains(supportedCommand).not()
                     }
