@@ -1,5 +1,6 @@
 package io.github.sophon.discord.adapter.inbound.kord.ui
 
+import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.invisibleChar
@@ -49,7 +50,10 @@ internal fun aliasEmbed(
 
     characterList
         .firstOrNull()
-        ?.let { character -> featureFooter(character.dataSource) }
+        ?.let { character ->
+            color = Color(character.dataSource.color)
+            featureFooter(character.dataSource)
+        }
 }
 
 internal fun aliasGamePromptEmbed(

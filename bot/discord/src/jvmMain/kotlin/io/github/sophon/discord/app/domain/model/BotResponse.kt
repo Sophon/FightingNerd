@@ -87,6 +87,7 @@ sealed interface BotResponse {
     data class DataSource(
         val name: String,
         val iconUrl: String,
+        val color: Int,
     )
 
     data class Field(

@@ -38,6 +38,7 @@ internal fun Character.toDataSource(): BotResponse.DataSource {
     val dataSource = BotResponse.DataSource(
         name = "${id.game.displayName} (${id.game.wiki.displayName})",
         iconUrl = id.game.wiki.iconUrl,
+        color = id.game.wiki.color,
     )
 
     return dataSource

@@ -1,5 +1,6 @@
 package io.github.sophon.discord.adapter.inbound.kord.ui
 
+import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.toColumns
@@ -9,6 +10,8 @@ import io.github.sophon.discord.app.domain.model.Emoji
 internal fun moveListEmbed(
     listResponse: BotResponse.ListResponse,
 ): EmbedBuilder.() -> Unit = {
+    color = Color(listResponse.dataSource.color)
+
     if (listResponse.values.isEmpty()) {
         mandatoryField(
             name = listResponse.title,
@@ -56,6 +59,7 @@ internal fun moveEmbed(
 private fun coreMoveEmbed(
     move: BotResponse.MoveResponse
 ): EmbedBuilder.() -> Unit = {
+    color = Color(move.dataSource.color)
     headerSection(move)
 
     primaryFieldsSection(fields = move.primaryFields)
@@ -72,6 +76,7 @@ private fun coreMoveEmbed(
 private fun expandedMoveEmbed(
     move: BotResponse.MoveResponse,
 ): EmbedBuilder.() -> Unit = {
+    color = Color(move.dataSource.color)
     headerSection(move)
 
     primaryFieldsSection(fields = move.primaryFields)
