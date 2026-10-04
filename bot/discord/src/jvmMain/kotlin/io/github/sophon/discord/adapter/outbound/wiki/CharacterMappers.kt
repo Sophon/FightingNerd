@@ -28,8 +28,8 @@ internal fun CharacterId.toWikiCharacterId(): WikiCharacterId {
 
 internal fun Character.toDataSource(): BotResponse.DataSource {
     val dataSource = BotResponse.DataSource(
-        name = "${id.game.displayName} (${id.game.wiki.id})",
-        iconUrl = id.game.iconUrl, //TODO: should be wiki icon url
+        name = "${id.game.displayName} (${id.game.wiki.displayName})",
+        iconUrl = id.game.wiki.iconUrl,
     )
 
     return dataSource
