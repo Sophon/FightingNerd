@@ -12,7 +12,7 @@ import io.github.sophon.core.wiki.data.fingerprint
 import io.github.sophon.core.wiki.data.readStoredFingerprint
 import io.github.sophon.core.wiki.data.storeFingerprint
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
-import io.github.sophon.discord.adapter.inbound.kord.KordPoster
+import io.github.sophon.discord.adapter.inbound.kord.KordResponder
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.discord.app.domain.service.CharacterService
@@ -119,7 +119,7 @@ internal fun dcBotModule(kord: Kord) = module {
     }
 
     //region Kord
-    singleOf(::KordPoster)
+    singleOf(::KordResponder)
     //endregion
 
     //region Services

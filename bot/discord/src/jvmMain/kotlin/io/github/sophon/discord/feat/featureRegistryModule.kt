@@ -7,7 +7,7 @@ import io.github.sophon.core.wiki.data.CharacterListDB
 import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
-import io.github.sophon.discord.adapter.inbound.kord.KordPoster
+import io.github.sophon.discord.adapter.inbound.kord.KordResponder
 import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
@@ -67,7 +67,7 @@ internal val featureRegistryModule = module {
 
     //region CORE
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
-    singleOf(::KordPoster)
+    singleOf(::KordResponder)
 
     single {
         TrackerImpl(
