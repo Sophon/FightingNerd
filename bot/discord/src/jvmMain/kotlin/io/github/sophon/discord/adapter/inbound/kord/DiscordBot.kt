@@ -175,6 +175,12 @@ internal class DiscordBotImpl(
                                 coreResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is BotResponse.ModulesResponse -> {
+                            kordPoster.post(
+                                message = message,
+                                modulesResponse = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         is BotResponse.PlainText -> {
                             kordPoster.post(
                                 message = message,
@@ -228,6 +234,12 @@ internal class DiscordBotImpl(
                             kordPoster.post(
                                 interaction = interaction,
                                 coreResponse = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.ModulesResponse -> {
+                            kordPoster.post(
+                                interaction = interaction,
+                                modulesResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.PlainText -> {
@@ -308,6 +320,12 @@ internal class DiscordBotImpl(
                                     kordPoster.post(
                                         message = interaction.message,
                                         coreResponse = response,
+                                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                                }
+                                is BotResponse.ModulesResponse -> {
+                                    kordPoster.post(
+                                        message = interaction.message,
+                                        modulesResponse = response,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
                                 else -> {}

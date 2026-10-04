@@ -24,6 +24,7 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.commandsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
@@ -133,6 +134,34 @@ internal class KordPoster(
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = coreResponse.buttonSet,
+        )
+        return result
+    }
+
+    suspend fun post(
+        message: Message,
+        modulesResponse: BotResponse.ModulesResponse,
+    ): EmptyResult<BotError> {
+        val result = post(
+            message = message,
+            embedBuilder = modulesEmbed(modulesResponse, getBotFeatureInfoUseCase.invoke()),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = null,
+        )
+        return result
+    }
+
+    suspend fun post(
+        interaction: GuildChatInputCommandInteraction,
+        modulesResponse: BotResponse.ModulesResponse,
+    ): EmptyResult<BotError> {
+        val result = post(
+            interaction = interaction,
+            embedBuilder = modulesEmbed(modulesResponse, getBotFeatureInfoUseCase.invoke()),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = null,
         )
         return result
     }

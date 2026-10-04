@@ -1,6 +1,7 @@
 package io.github.sophon.discord.app.domain.service
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_REPO
@@ -10,10 +11,13 @@ import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.MoveType
+import io.github.sophon.discord.app.port.outbound.LoadConfigPort
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import kotlin.time.Duration.Companion.seconds
 
 internal class CommandRouterService(
     private val moveService: MoveService,
+    private val loadConfigPort: LoadConfigPort,
 ) {
     suspend operator fun invoke(userRequest: UserRequest): Result<BotResponse, BotError> {
         val initialResult = route(
@@ -57,7 +61,8 @@ internal class CommandRouterService(
             Command.Repo -> Result.Success(BotResponse.PlainText(text = "Contribute to FightingNerd: $URL_REPO"))
             Command.Invite -> Result.Success(BotResponse.PlainText(text = "FightingNerd bot invite: $URL_INVITE"))
 
-            Command.Modules,
+            Command.Modules -> createModulesResponse()
+
             Command.Join,
             Command.Feedback,
             Command.Reply,
@@ -120,6 +125,29 @@ internal class CommandRouterService(
             ),
         )
         return Result.Success(response)
+    }
+
+    /**
+     * Enabled wikis with their enabled games, in config order.
+     */
+    private fun createModulesResponse(): Result<BotResponse, BotError> {
+        val result = loadConfigPort.load()
+            .map { discordConfig ->
+                val moduleList = discordConfig.featureList
+                    .filter { it.isEnabled }
+                    .flatMap { it.supportedGames }
+                    .mapNotNull { gameId -> Game.fromId(gameId) }
+                    .groupBy { it.wiki }
+                    .map { (wiki, gameList) ->
+                        BotResponse.ModulesResponse.Module(
+                            name = wiki.displayName,
+                            url = wiki.url,
+                            gameList = gameList.map { it.displayName },
+                        )
+                    }
+                BotResponse.ModulesResponse(moduleList = moduleList)
+            }
+        return result
     }
 
     private fun resolveCommand(userRequest: UserRequest): Command {

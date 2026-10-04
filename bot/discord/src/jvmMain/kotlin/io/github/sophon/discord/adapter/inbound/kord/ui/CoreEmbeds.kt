@@ -12,6 +12,7 @@ import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
@@ -102,6 +103,49 @@ internal fun modulesEmbed(
                     }
                     "$name:\n$games"
                 }
+            },
+        )
+    }
+
+    mandatoryField(
+        name = "🫶 OTHER LINKS",
+        value = buildString {
+            appendLine("- **[DONATE]($URL_KOFI)**")
+            appendLine("- **[INVITE]($URL_INVITE)**")
+            appendLine("- **[Repo]($URL_REPO)**")
+        },
+        inline = false,
+    )
+
+    featureFooter(featureInfo)
+}
+
+internal fun modulesEmbed(
+    modulesResponse: BotResponse.ModulesResponse,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    title = "FightingNerd bot by @phd_cunnilingus"
+    color = Color(PURPLE)
+
+    val moduleList = modulesResponse.moduleList
+    val chunks: List<List<BotResponse.ModulesResponse.Module>> = when (moduleList.size) {
+        in 1..5 -> {
+            listOf(moduleList)
+        }
+        in 5..EMBED_LIST_PER_COLUMN -> {
+            moduleList.chunked(5)
+        } else ->
+            moduleList.chunked(EMBED_LIST_PER_COLUMN)
+    }
+
+    chunks.forEachIndexed { index, moduleChunk ->
+        mandatoryField(
+            name = if (index == 0) "🧩 FEATURE MODULES" else "_",
+            value = moduleChunk.joinToString("\n") { module ->
+                val games = module.gameList.joinToString("\n") { game ->
+                    "  - $game"
+                }
+                "- **[${module.name}](${module.url})**:\n$games"
             },
         )
     }

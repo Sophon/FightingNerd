@@ -62,6 +62,16 @@ sealed interface BotResponse {
         }
     }
 
+    data class ModulesResponse(
+        val moduleList: List<Module>,
+    ): BotResponse {
+        data class Module(
+            val name: String,
+            val url: String,
+            val gameList: List<String>,
+        )
+    }
+
 
     data class DataSource(
         val name: String,
