@@ -12,7 +12,9 @@ import io.github.sophon.discord.app.domain.model.Command.Argument.AutoCompleteTy
 import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 
 /**
- * flow: [flow_autocomplete.mmd](../../../docs/flow_autocomplete.mmd)
+ * flow: [flow-autocomplete.mmd](../../../docs/flow-autocomplete.mmd)
+ *
+ * logic: [flow-autocomplete.mmd](../../../docs/logic-autocomplete.mmd)
  */
 internal class ProduceAutoCompleteService(
     private val characterService: CharacterService,
@@ -33,6 +35,7 @@ internal class ProduceAutoCompleteService(
         )
         return suggestions
     }
+
 
     private suspend fun routeFocusedType(
         command: Command,

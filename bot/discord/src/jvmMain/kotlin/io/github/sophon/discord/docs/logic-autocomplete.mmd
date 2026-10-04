@@ -1,0 +1,35 @@
+flowchart TD
+    subgraph DISCORD
+        user["User"]
+        kord["Kord"]
+    end
+    subgraph SERVICE
+        char_svc["Character service"]
+        move_svc["Move service"]
+        invoke
+        arg_rout{"Arg router"}
+        char_choices["Char choices"]
+        move_choices["Move choices"]
+        other_choices["Other choices"]
+    end
+
+    user --> |"1. command or query"| kord --> |"2. command, args, query"| invoke --> arg_rout
+    arg_rout --> |"3. field, query"| char_choices --> |"4."| char_svc
+    arg_rout --> |"3. arg map, query"| move_choices --> |"4. CharacterID, move query"| move_svc
+    arg_rout --> other_choices
+
+    char_svc --> |"5. filtered chars"| char_choices --> |"6. filtered char options"| arg_rout --> invoke
+    move_svc --> |"5. filtered moves"| move_choices --> |"6. filtered move options"| arg_rout
+    invoke --> |"6. options"| kord --> user
+
+
+    style DISCORD stroke:orange,stroke-dasharray:5 5,fill:none
+    style SERVICE stroke:green,stroke-dasharray:5 5,fill:none
+
+    classDef kord stroke:orange
+    classDef application stroke:green
+    classDef function stroke:purple
+
+    class kord kord
+    class char_svc,move_svc application
+    class invoke,arg_rout,char_choices,move_choices,other_choices function
