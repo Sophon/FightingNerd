@@ -1,6 +1,7 @@
 package io.github.sophon.discord.adapter.inbound.kord.ui
 
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.toColumns
 import io.github.sophon.discord.app.domain.model.BotResponse
@@ -49,4 +50,27 @@ internal fun aliasEmbed(
     characterList
         .firstOrNull()
         ?.let { character -> featureFooter(character.dataSource) }
+}
+
+internal fun aliasGamePromptEmbed(
+    gameList: List<String>,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    val numberedGames = gameList
+        .mapIndexed { index, game -> "${index + 1}. **$game**" }
+        .joinToString("\n")
+
+    mandatoryField(
+        name = "🥸 Character aliases",
+        value = "Please select the game from the options below.",
+        inline = false,
+    )
+
+    mandatoryField(
+        name = "",
+        value = numberedGames,
+        inline = false,
+    )
+
+    featureFooter(featureInfo)
 }

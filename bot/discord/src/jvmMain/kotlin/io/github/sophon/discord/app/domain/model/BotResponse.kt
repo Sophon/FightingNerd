@@ -35,9 +35,16 @@ sealed interface BotResponse {
         val propertyList: List<Field> = emptyList(),
     )
 
-    data class AliasResponse(
-        val characterList: List<CharacterResponse>,
-    ): BotResponse
+    sealed interface AliasResponse: BotResponse {
+        data class CharacterAliases(
+            val characterList: List<CharacterResponse>,
+        ): AliasResponse
+
+        data class GamePrompt(
+            val gameList: List<String>,
+            val buttonSet: ButtonSet,
+        ): AliasResponse
+    }
 
     data class ListResponse(
         val title: String,

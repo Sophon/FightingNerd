@@ -6,10 +6,15 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.toColumns
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.discord.app.domain.model.Emoji
-import io.github.sophon.discord.feat.core.domain.model.MoveRange
+import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
+import io.github.sophon.discord.URL_INVITE
+import io.github.sophon.discord.URL_KOFI
+import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.adapter.inbound.kord.ui.featureFooter
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
+import io.github.sophon.discord.app.domain.model.Emoji
+import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
+import io.github.sophon.discord.feat.core.domain.model.MoveRange
 
 internal fun moveListEmbed(
     category: String,
@@ -127,3 +132,53 @@ internal fun aliasEmbed(
 
     featureFooter(featureInfo)
 }
+
+internal fun modulesEmbed(
+    featureList: List<DiscordRegisteredFeature>,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    title = "FightingNerd bot by @phd_cunnilingus"
+    color = Color(PURPLE)
+
+    val chunks: List<List<DiscordRegisteredFeature>> = when (featureList.size) {
+        in 1..5 -> {
+            listOf(featureList)
+        }
+        in 5..EMBED_LIST_PER_COLUMN -> {
+            featureList.chunked(5)
+        } else ->
+            featureList.chunked(EMBED_LIST_PER_COLUMN)
+    }
+
+    chunks.forEachIndexed { index, featureList ->
+        mandatoryField(
+            name = if (index == 0) "🧩 FEATURE MODULES" else "_",
+            value = featureList.joinToString("\n") { feature ->
+                val info = feature.featureInfo
+                val name = "- **[${info.name}](${info.url})** (${info.version})"
+                if (info.supportedGameSet.isEmpty()) {
+                    name
+                } else {
+                    val games = info.supportedGameSet.joinToString("\n") { game ->
+                        "  - ${game.name}"
+                    }
+                    "$name:\n$games"
+                }
+            },
+        )
+    }
+
+    mandatoryField(
+        name = "🫶 OTHER LINKS",
+        value = buildString {
+            appendLine("- **[DONATE]($URL_KOFI)**")
+            appendLine("- **[INVITE]($URL_INVITE)**")
+            appendLine("- **[Repo]($URL_REPO)**")
+        },
+        inline = false,
+    )
+
+    featureFooter(featureInfo)
+}
+
+private const val PURPLE = 0x00A020F0

@@ -165,19 +165,15 @@ internal class CommandRouterService(
             if (gameCharacterList.isEmpty()) {
                 Result.Error(BotError.UnsupportedGame(gameQuery))
             } else {
-                Result.Success(BotResponse.AliasResponse(characterList = gameCharacterList))
+                Result.Success(BotResponse.AliasResponse.CharacterAliases(characterList = gameCharacterList))
             }
         }
         return result
     }
 
     private fun createGamePromptResponse(gameList: List<Game>): BotResponse {
-        val numberedGames = gameList
-            .mapIndexed { index, game -> "${index + 1}. ${game.displayName}" }
-            .joinToString("\n")
-
-        val response = BotResponse.PlainText(
-            text = "Please select the game from the options below.\n$numberedGames",
+        val response = BotResponse.AliasResponse.GamePrompt(
+            gameList = gameList.map { it.displayName },
             buttonSet = BotResponse.ButtonSet(
                 buttonList = gameList.mapIndexed { index, game ->
                     BotResponse.EmbedButton(

@@ -16,8 +16,6 @@ import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
-import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
-import kotlin.collections.chunked
 
 internal fun errorEmbed(
     error: BotError,
@@ -67,54 +65,6 @@ internal fun tipEmbed(
         value = "I don't drink coffee but feel free to support the server costs!\n" +
                 "- ${URL_KOFI}\n" +
                 "- ${URL_BUY_ME_COFFEE}\n"
-    )
-
-    featureFooter(featureInfo)
-}
-
-internal fun modulesEmbed(
-    featureList: List<DiscordRegisteredFeature>,
-    featureInfo: FeatureInfo,
-): EmbedBuilder.() -> Unit = {
-    title = "FightingNerd bot by @phd_cunnilingus"
-    color = Color(PURPLE)
-
-    val chunks: List<List<DiscordRegisteredFeature>> = when (featureList.size) {
-        in 1..5 -> {
-            listOf(featureList)
-        }
-        in 5..EMBED_LIST_PER_COLUMN -> {
-            featureList.chunked(5)
-        } else ->
-            featureList.chunked(EMBED_LIST_PER_COLUMN)
-    }
-
-    chunks.forEachIndexed { index, featureList ->
-        mandatoryField(
-            name = if (index == 0) "🧩 FEATURE MODULES" else "_",
-            value = featureList.joinToString("\n") { feature ->
-                val info = feature.featureInfo
-                val name = "- **[${info.name}](${info.url})** (${info.version})"
-                if (info.supportedGameSet.isEmpty()) {
-                    name
-                } else {
-                    val games = info.supportedGameSet.joinToString("\n") { game ->
-                        "  - ${game.name}"
-                    }
-                    "$name:\n$games"
-                }
-            },
-        )
-    }
-
-    mandatoryField(
-        name = "🫶 OTHER LINKS",
-        value = buildString {
-            appendLine("- **[DONATE]($URL_KOFI)**")
-            appendLine("- **[INVITE]($URL_INVITE)**")
-            appendLine("- **[Repo]($URL_REPO)**")
-        },
-        inline = false,
     )
 
     featureFooter(featureInfo)
