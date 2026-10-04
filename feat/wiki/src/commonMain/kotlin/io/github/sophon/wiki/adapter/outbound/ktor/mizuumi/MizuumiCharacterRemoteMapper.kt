@@ -1,12 +1,12 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2CharProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 /**
  * Bulk games have no character table - the character is built from the move table's `chara` column.

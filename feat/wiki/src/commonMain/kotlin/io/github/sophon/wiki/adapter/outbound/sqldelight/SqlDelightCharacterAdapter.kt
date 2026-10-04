@@ -3,11 +3,11 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight
 import app.cash.sqldelight.coroutines.asFlow
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.adapter.outbound.sqldelight.mapper.toDomain
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import io.github.sophon.wiki.application.port.outbound.DeleteCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.LoadCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.LoadCharacterPort

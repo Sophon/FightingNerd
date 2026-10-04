@@ -1,8 +1,8 @@
 package io.github.sophon.wiki.application.domain.util
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 /**
  * [characterId] is the normalized one - Nagoriyuki's moves get their own aliases.

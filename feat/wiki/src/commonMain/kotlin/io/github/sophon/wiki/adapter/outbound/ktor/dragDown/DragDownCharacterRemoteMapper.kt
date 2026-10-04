@@ -1,9 +1,9 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.dragDown
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2CharProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 internal fun List<DragDownCharacterResponseDto>.toDomain(
     game: Game,

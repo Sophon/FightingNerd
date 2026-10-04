@@ -7,13 +7,13 @@ import assertk.assertions.isInstanceOf
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.RefreshEvent
 import io.github.sophon.wiki.application.domain.model.WikiConfig
 import io.github.sophon.wiki.application.domain.model.WikiError
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import io.github.sophon.wiki.application.port.outbound.FetchGameDataPort
 import io.github.sophon.wiki.application.port.outbound.LoadWikiConfigPort
 import io.github.sophon.wiki.application.port.outbound.SaveCharacterMoveListPort

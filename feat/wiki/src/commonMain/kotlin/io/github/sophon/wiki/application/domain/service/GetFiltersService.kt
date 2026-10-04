@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.application.domain.service
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Filter
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import io.github.sophon.wiki.application.port.inbound.GetFiltersUseCase
 
 internal class GetFiltersService : GetFiltersUseCase {

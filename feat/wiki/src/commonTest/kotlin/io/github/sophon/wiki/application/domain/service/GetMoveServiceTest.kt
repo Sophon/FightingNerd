@@ -5,10 +5,10 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import assertk.assertions.prop
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.WikiError
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import io.github.sophon.wiki.application.port.outbound.LoadMovePort
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test

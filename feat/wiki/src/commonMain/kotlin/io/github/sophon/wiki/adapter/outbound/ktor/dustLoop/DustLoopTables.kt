@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.dustLoop
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 internal object DustLoopTables {
     val characterTableByGame = mapOf(

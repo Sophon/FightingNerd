@@ -1,11 +1,11 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.dreamCancel
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.gameProperties.COTWMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.KOF15MoveProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 // normalized, like the service hands them to the adapter
 

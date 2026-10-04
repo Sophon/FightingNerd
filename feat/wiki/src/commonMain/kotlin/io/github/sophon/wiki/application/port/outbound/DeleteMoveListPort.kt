@@ -2,7 +2,7 @@ package io.github.sophon.wiki.application.port.outbound
 
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
-import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 internal interface DeleteMoveListPort {
     suspend fun delete(game: Game): EmptyResult<DataError.Local>

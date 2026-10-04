@@ -1,6 +1,5 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.wiki.adapter.outbound.ktor.findMoveIdPrefix
@@ -10,6 +9,7 @@ import io.github.sophon.wiki.application.domain.model.Move
 import io.github.sophon.wiki.application.domain.model.MoveGameProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.COTWMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.KOF15MoveProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 /**
  * Bulk - the whole move table, grouped into characters. `chara` spellings that form the same grouping key are one character.

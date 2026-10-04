@@ -1,6 +1,5 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.dustLoop
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.toClickable
@@ -12,6 +11,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.DBFZMovePro
 import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.GGMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSMoveProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 internal fun DustLoopMoveListResponseDto.toDomain(
     game: Game,

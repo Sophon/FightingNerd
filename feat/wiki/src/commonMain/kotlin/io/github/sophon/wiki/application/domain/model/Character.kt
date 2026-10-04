@@ -1,6 +1,6 @@
 package io.github.sophon.wiki.application.domain.model
 
-import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import kotlinx.serialization.Serializable
 
 @Serializable
