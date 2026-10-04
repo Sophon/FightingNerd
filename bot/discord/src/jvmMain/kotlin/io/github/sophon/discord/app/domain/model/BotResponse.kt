@@ -51,6 +51,17 @@ sealed interface BotResponse {
 
     data object Ignore: BotResponse
 
+    data class CoreResponse(
+        val type: Type,
+        val buttonSet: ButtonSet? = null,
+    ): BotResponse {
+        enum class Type {
+            Tip,
+            Help,
+            Commands,
+        }
+    }
+
 
     data class DataSource(
         val name: String,

@@ -20,12 +20,17 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
+import io.github.sophon.discord.adapter.inbound.kord.ui.commandsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
+import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -34,6 +39,7 @@ internal class KordPoster(
     private val createPromoEmbedUseCase: CreatePromoEmbedUseCase,
     private val discordButtonBuilder: DiscordButtonBuilder,
     private val commandRegistry: CommandRegistry,
+    private val getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
 ) {
     suspend fun post(
         message: Message,
@@ -99,6 +105,70 @@ internal class KordPoster(
         }
 
         result.onSuccess { rollForPromo(interaction.channel) }
+
+        return result
+    }
+
+    suspend fun post(
+        message: Message,
+        coreResponse: BotResponse.CoreResponse,
+    ): EmptyResult<BotError> {
+        val result = post(
+            message = message,
+            embedBuilder = coreEmbed(coreResponse.type),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = coreResponse.buttonSet,
+        )
+        return result
+    }
+
+    suspend fun post(
+        interaction: GuildChatInputCommandInteraction,
+        coreResponse: BotResponse.CoreResponse,
+    ): EmptyResult<BotError> {
+        val result = post(
+            interaction = interaction,
+            embedBuilder = coreEmbed(coreResponse.type),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = coreResponse.buttonSet,
+        )
+        return result
+    }
+
+    suspend fun post(
+        message: Message,
+        plainText: BotResponse.PlainText,
+    ): EmptyResult<BotError> {
+        val result = try {
+            message.channel.createMessage {
+                messageReference = message.id
+                allowedMentions { repliedUser = false }
+                textContent(plainText)
+            }
+
+            Result.Success(Unit)
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    suspend fun post(
+        interaction: GuildChatInputCommandInteraction,
+        plainText: BotResponse.PlainText,
+    ): EmptyResult<BotError> {
+        val result = try {
+            interaction.respondPublic {
+                textContent(plainText)
+            }
+
+            Result.Success(Unit)
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
 
         return result
     }
@@ -215,6 +285,25 @@ internal class KordPoster(
         }
 
         buttonSet?.let { discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = it) }
+    }
+
+    private fun MessageBuilder.textContent(plainText: BotResponse.PlainText) {
+        content = plainText.text
+        plainText.buttonSet?.let { discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = it) }
+    }
+
+    private fun coreEmbed(type: BotResponse.CoreResponse.Type): EmbedBuilder.() -> Unit {
+        val featureInfo = getBotFeatureInfoUseCase.invoke()
+        val embedBuilder = when (type) {
+            BotResponse.CoreResponse.Type.Tip -> tipEmbed(featureInfo)
+            BotResponse.CoreResponse.Type.Help -> helpEmbed(commandRegistry, featureInfo)
+            BotResponse.CoreResponse.Type.Commands -> commandsEmbed(
+                commandList = Command.entries.sortedBy { it.name },
+                commandRegistry = commandRegistry,
+                featureInfo = featureInfo,
+            )
+        }
+        return embedBuilder
     }
 
     private fun missingPermissionsEmbed(errorMessage: String?): EmbedBuilder.() -> Unit = {

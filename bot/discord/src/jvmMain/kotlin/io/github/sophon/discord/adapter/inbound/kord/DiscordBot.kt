@@ -169,6 +169,18 @@ internal class DiscordBotImpl(
                                 buttonSet = response.buttonSet,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is BotResponse.CoreResponse -> {
+                            kordPoster.post(
+                                message = message,
+                                coreResponse = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.PlainText -> {
+                            kordPoster.post(
+                                message = message,
+                                plainText = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         else -> {}
                     }
                 }
@@ -210,6 +222,18 @@ internal class DiscordBotImpl(
                                 imageList = emptyList(),
                                 isExpanded = false,
                                 buttonSet = response.buttonSet,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.CoreResponse -> {
+                            kordPoster.post(
+                                interaction = interaction,
+                                coreResponse = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.PlainText -> {
+                            kordPoster.post(
+                                interaction = interaction,
+                                plainText = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         else -> {}
@@ -278,6 +302,12 @@ internal class DiscordBotImpl(
                                         imageList = emptyList(),
                                         isExpanded = false,
                                         buttonSet = response.buttonSet,
+                                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                                }
+                                is BotResponse.CoreResponse -> {
+                                    kordPoster.post(
+                                        message = interaction.message,
+                                        coreResponse = response,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
                                 else -> {}

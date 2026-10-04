@@ -1,12 +1,16 @@
 package io.github.sophon.discord.app.domain.service
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
+import io.github.sophon.discord.URL_INVITE
+import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.MoveType
+import kotlin.time.Duration.Companion.seconds
 
 internal class CommandRouterService(
     private val moveService: MoveService,
@@ -37,12 +41,23 @@ internal class CommandRouterService(
             Command.Strings -> moveService.findStrings(query)
 
             Command.Tip,
-            Command.Donate,
-            Command.Repo,
-            Command.Invite,
-            Command.Help,
+            Command.Donate -> Result.Success(BotResponse.CoreResponse(type = BotResponse.CoreResponse.Type.Tip))
+            Command.Help -> {
+                createLinkedCoreResponse(
+                    type = BotResponse.CoreResponse.Type.Help,
+                    linkedCommand = Command.Commands,
+                )
+            }
+            Command.Commands -> {
+                createLinkedCoreResponse(
+                    type = BotResponse.CoreResponse.Type.Commands,
+                    linkedCommand = Command.Help,
+                )
+            }
+            Command.Repo -> Result.Success(BotResponse.PlainText(text = "Contribute to FightingNerd: $URL_REPO"))
+            Command.Invite -> Result.Success(BotResponse.PlainText(text = "FightingNerd bot invite: $URL_INVITE"))
+
             Command.Modules,
-            Command.Commands,
             Command.Join,
             Command.Feedback,
             Command.Reply,
@@ -83,6 +98,28 @@ internal class CommandRouterService(
             query = (wordList - commandWord).joinToString(" "),
         )
         return result
+    }
+
+    /**
+     * Help and Commands point at each other with a button.
+     */
+    private fun createLinkedCoreResponse(
+        type: BotResponse.CoreResponse.Type,
+        linkedCommand: Command,
+    ): Result<BotResponse, BotError> {
+        val response = BotResponse.CoreResponse(
+            type = type,
+            buttonSet = BotResponse.ButtonSet(
+                buttonList = listOf(
+                    BotResponse.EmbedButton(
+                        label = linkedCommand.name,
+                        action = BotResponse.EmbedButton.Action.Command(command = linkedCommand, query = ""),
+                    ),
+                ),
+                duration = EMBED_BUTTON_DURATION_INF.seconds,
+            ),
+        )
+        return Result.Success(response)
     }
 
     private fun resolveCommand(userRequest: UserRequest): Command {
