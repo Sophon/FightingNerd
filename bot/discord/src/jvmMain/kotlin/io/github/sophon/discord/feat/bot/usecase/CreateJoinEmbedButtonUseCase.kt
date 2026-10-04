@@ -6,9 +6,9 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_SCRIPT_LOBBY
 import io.github.sophon.discord.URL_STEAM_LOBBY
+import io.github.sophon.discord.adapter.inbound.kord.ui.optionalField
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.adapter.inbound.kord.ui.optionalField
 import io.github.sophon.integration.model.Source
 import kotlin.time.Duration.Companion.seconds
 

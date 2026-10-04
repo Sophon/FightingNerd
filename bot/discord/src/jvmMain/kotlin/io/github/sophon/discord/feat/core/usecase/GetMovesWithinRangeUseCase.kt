@@ -1,5 +1,6 @@
 package io.github.sophon.discord.feat.core.usecase
 
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.core.wiki.model.CharacterId
@@ -11,6 +12,8 @@ import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.MoveRange
 import kotlinx.coroutines.flow.first
 
+@ExcludeFromCoverage("Deprecated")
+@Deprecated("Use hexagonal tools")
 internal class GetMovesWithinRangeUseCase {
     suspend operator fun invoke(
         wiki: WikiClient,

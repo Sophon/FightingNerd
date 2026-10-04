@@ -24,16 +24,8 @@ kotlin {
             implementation(project(":core"))
             implementation(project(":feat:admin"))
             implementation(project(":feat:glossaryInfil"))
-            implementation(project(":feat:wikiWavu"))
-            implementation(project(":feat:wikiSupercombo"))
-            implementation(project(":feat:xko"))
-            implementation(project(":feat:wikiDreamCancel"))
-            implementation(project(":feat:wikiDustLoop"))
-            implementation(project(":feat:wikiMizuumi"))
-            implementation(project(":feat:wikiDragDown"))
             implementation(project(":feat:ewgf"))
             implementation(project(":feat:stats"))
-
             implementation(project(":feat:wiki"))
 
             implementation(libs.napier)

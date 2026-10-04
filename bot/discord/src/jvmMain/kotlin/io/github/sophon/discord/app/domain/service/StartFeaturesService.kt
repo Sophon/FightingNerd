@@ -4,12 +4,12 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
-import io.github.sophon.discord.app.port.outbound.LoadConfigPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
+import io.github.sophon.discord.app.port.outbound.LoadConfigPort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
-import io.github.sophon.discord.app.domain.model.BotError
 
 internal class StartFeaturesService(
     private val loadConfigPort: LoadConfigPort,

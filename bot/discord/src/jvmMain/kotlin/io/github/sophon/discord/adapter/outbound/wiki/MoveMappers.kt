@@ -23,7 +23,6 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.T8Propertie
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMoveProperties
 import io.github.sophon.wiki.application.domain.model.wiki.Game
-import kotlin.collections.orEmpty
 
 internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
     val isCollapsedByDefault: Boolean = when (character.id.game) {

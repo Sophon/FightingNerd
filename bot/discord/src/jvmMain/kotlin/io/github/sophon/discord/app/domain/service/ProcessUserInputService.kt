@@ -3,13 +3,13 @@ package io.github.sophon.discord.app.domain.service
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.domain.model.Message
 import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.Command
 
 /**
  * - flow: [flow-user_input.mmd](../../../docs/flow-user_input.mmd)

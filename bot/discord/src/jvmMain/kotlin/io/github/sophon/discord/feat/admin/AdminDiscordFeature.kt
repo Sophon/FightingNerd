@@ -11,6 +11,10 @@ import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.toFormattedString
+import io.github.sophon.discord.adapter.inbound.kord.ui.featureFooter
+import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
+import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.feat.admin.usecase.BanUseCase
 import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
 import io.github.sophon.discord.feat.admin.usecase.ProcessFeedbackUseCase
@@ -20,12 +24,8 @@ import io.github.sophon.discord.feat.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Scheduler
-import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.adapter.inbound.kord.ui.featureFooter
-import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.integration.AdminFeatureInfo
 import io.github.sophon.integration.model.AdminResult
 import io.github.sophon.integration.model.Ban

@@ -7,8 +7,8 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.ewgf.usecase.GetRecentMatchesUseCase
 import io.github.sophon.discord.feat.ewgf.usecase.ParseQueryIntoOperationUseCase
@@ -16,8 +16,8 @@ import io.github.sophon.discord.feat.ewgf.usecase.RegisterPlayerUseCase
 import io.github.sophon.discord.feat.ewgf.usecase.UnregisterPlayerUseCase
 import io.github.sophon.discord.feat.ewgf.usecase.UpdatePlayerUseCase
 import io.github.sophon.integration.EwgfFeatureInfo
-import io.github.sophon.integration.model.Source
 import io.github.sophon.integration.model.Player
+import io.github.sophon.integration.model.Source
 
 internal class EwgfDiscordFeature(
     ewgfFeatureInfo: EwgfFeatureInfo,

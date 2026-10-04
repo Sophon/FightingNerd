@@ -3,8 +3,8 @@ package io.github.sophon.discord.feat.core.data
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.removeWhiteSpace
-import io.github.sophon.glossaryinfil.integration.model.GlossaryError
 import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
+import io.github.sophon.glossaryinfil.integration.model.GlossaryError
 import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
 
 internal class InMemoryGlossaryDB: GlossaryDB {

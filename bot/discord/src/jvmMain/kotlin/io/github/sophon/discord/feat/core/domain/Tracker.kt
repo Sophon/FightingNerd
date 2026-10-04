@@ -1,7 +1,6 @@
 package io.github.sophon.discord.feat.core.domain
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.integration.StatsTracker
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
@@ -9,6 +8,7 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.integration.StatsFeatureInfo
+import io.github.sophon.integration.StatsTracker
 import io.github.sophon.integration.model.DailyReport
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow

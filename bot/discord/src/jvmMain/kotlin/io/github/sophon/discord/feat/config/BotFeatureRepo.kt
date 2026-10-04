@@ -6,9 +6,9 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.FeatureRepo
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.config.usecase.BindToDiscordFeaturesUseCase
 import io.github.sophon.discord.feat.config.usecase.LoadConfigurationUseCase
-import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.toDomainError
 

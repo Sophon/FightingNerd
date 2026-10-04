@@ -12,7 +12,6 @@ import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.adapter.inbound.kord.ui.commandsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.donationMessage
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
-import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.Command

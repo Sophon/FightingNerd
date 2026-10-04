@@ -1,10 +1,10 @@
 package io.github.sophon.discord.app.port.inbound
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.domain.model.Message
-import io.github.sophon.discord.app.domain.model.BotError
 
 internal interface ProcessUserInputUseCase {
     suspend operator fun invoke(
