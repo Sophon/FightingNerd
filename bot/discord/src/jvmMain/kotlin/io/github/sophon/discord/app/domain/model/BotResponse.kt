@@ -35,6 +35,10 @@ sealed interface BotResponse {
         val propertyList: List<Field> = emptyList(),
     )
 
+    data class AliasResponse(
+        val characterList: List<CharacterResponse>,
+    ): BotResponse
+
     data class ListResponse(
         val title: String,
         val values: List<String>,
