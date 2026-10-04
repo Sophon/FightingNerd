@@ -17,19 +17,11 @@ import io.github.sophon.discord.feat.admin.usecase.ReplyToFeedbackUseCase
 import io.github.sophon.discord.feat.admin.usecase.StartAdminToolsUseCase
 import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.feat.bot.BotFeature
-import io.github.sophon.discord.feat.bot.usecase.CreateEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.CreateErrorEmbedBuilderUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateFeedbackEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
-import io.github.sophon.discord.feat.bot.usecase.CreateMutableEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.CreatePlainMessageUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateReplyEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
-import io.github.sophon.discord.feat.bot.usecase.HandleQueryUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.ResultToEmbedUseCase
-import io.github.sophon.discord.feat.bot.usecase.RouteCommandToFeatureUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.config.BotFeatureRepoImpl
 import io.github.sophon.discord.feat.config.ConfigLoader
@@ -42,16 +34,8 @@ import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.feat.core.domain.TrackerImpl
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.feat.core.usecase.CreateAliasOutputUseCase
-import io.github.sophon.discord.feat.core.usecase.FetchCharacterInWikisUseCase
-import io.github.sophon.discord.feat.core.usecase.FetchMoveInWikisUseCase
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
-import io.github.sophon.discord.feat.core.usecase.GetCharacterUseCase
-import io.github.sophon.discord.feat.core.usecase.GetCharactersUseCase
-import io.github.sophon.discord.feat.core.usecase.GetMoveUseCase
-import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesWithinRangeUseCase
-import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.feat.ewgf.EwgfDiscordFeature
 import io.github.sophon.discord.feat.ewgf.usecase.GetRecentMatchesUseCase
 import io.github.sophon.discord.feat.ewgf.usecase.ParseQueryIntoOperationUseCase
@@ -97,30 +81,13 @@ internal val featureRegistryModule = module {
 
     singleOf(::GetBotFeatureInfoUseCase)
     singleOf(::CreateJoinEmbedButtonUseCase)
-    singleOf(::RouteCommandToFeatureUseCase)
-    singleOf(::CreateErrorEmbedBuilderUseCase)
-    singleOf(::CreatePlainMessageUseCase)
-    singleOf(::CreateEmbedUseCase)
     singleOf(::CreateFeedbackEmbedUseCase)
     singleOf(::CreateReplyEmbedUseCase)
-    singleOf(::ResultToEmbedUseCase)
-    singleOf(::CreateMutableEmbedUseCase)
-    singleOf(::HandleQueryUseCase)
-    singleOf(::HandleAutoCompleteEventUseCase)
     singleOf(::PostDailyReportEmbedUseCase)
     singleOf(::CreatePromoEmbedUseCase)
-    singleOf(::CreateAliasOutputUseCase)
     //endregion
 
     //region Generic
-    singleOf(::SyncWikiDataUseCase)
-    singleOf(::GetMoveUseCase)
-    singleOf(::GetCharacterUseCase)
-    singleOf(::GetMoveUseCase)
-    singleOf(::GetMovesUseCase)
-    singleOf(::GetCharactersUseCase)
-    singleOf(::FetchMoveInWikisUseCase)
-    singleOf(::FetchCharacterInWikisUseCase)
     singleOf(::GetMovesWithinRangeUseCase)
 
     singleOf(::Scheduler)
