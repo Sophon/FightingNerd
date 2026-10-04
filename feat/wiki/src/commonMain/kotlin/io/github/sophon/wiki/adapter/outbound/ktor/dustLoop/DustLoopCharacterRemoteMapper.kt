@@ -109,9 +109,9 @@ private fun CharacterDto.toGameProperties(game: Game): CharacterGameProperties? 
                 superHeight = superjump_height?.toString(),
             ),
             backdash = backdash?.cleanHtml(),
-            walkSpeed = walk_speed.toString(),
-            walkSpeedBack = backwalk_speed.toString(),
-            dashInitial = dash_initial_speed.toString(),
+            walkSpeed = walk_speed?.toString(),
+            walkSpeedBack = backwalk_speed?.toString(),
+            dashInitial = dash_initial_speed?.toString(),
             dashAcceleration = dash_acceleration,
             closeRange = GBVSRCharProperties.CloseRange(
                 l = close_l_range?.toString(),
