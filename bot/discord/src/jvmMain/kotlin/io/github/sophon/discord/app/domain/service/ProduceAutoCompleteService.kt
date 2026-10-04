@@ -49,7 +49,7 @@ internal class ProduceAutoCompleteService(
             ?: return emptyList()
 
         val choices = when (focusedType) {
-            AutoCompleteType.Character -> getCharacterChoices(query)
+            AutoCompleteType.Character -> getCharacterChoices(command, query)
             AutoCompleteType.Move -> getMoveChoices(command, query, argumentMap)
             AutoCompleteType.Other -> {
                 when (command) {
@@ -64,8 +64,11 @@ internal class ProduceAutoCompleteService(
         return choices
     }
 
-    private suspend fun getCharacterChoices(query: String): List<AutocompleteChoice> {
+    // /char only shows characters that have properties to display
+    private suspend fun getCharacterChoices(command: Command, query: String): List<AutocompleteChoice> {
+        val requireProperties = (command == Command.Char)
         val choiceList = characterService.getCharacters()
+            .filter { requireProperties.not() || it.propertyList.isNotEmpty() }
             .filter { query.isBlank() || it.isApprox(query) }
             .map { it.toChoice() }
         return choiceList
