@@ -10,7 +10,18 @@ import io.github.sophon.discord.app.domain.model.BotResponse
 internal fun characterEmbed(
     character: BotResponse.CharacterResponse,
 ): EmbedBuilder.() -> Unit = {
-    //TODO
+    color = Color(character.dataSource.color)
+    title = character.displayName
+    url = character.url
+    if (character.aliasList.isNotEmpty()) {
+        description = "Aliases: ${character.aliasList.joinToString(", ")}"
+    }
+
+    character.propertyList.forEach { field ->
+        mandatoryField(name = field.title, value = field.value)
+    }
+
+    featureFooter(dataSource = character.dataSource)
 }
 
 internal fun aliasEmbed(

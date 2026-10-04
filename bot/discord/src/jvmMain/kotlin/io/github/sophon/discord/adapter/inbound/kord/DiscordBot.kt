@@ -22,6 +22,7 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
+import io.github.sophon.discord.adapter.inbound.kord.ui.characterEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.moveEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.moveListEmbed
 import io.github.sophon.discord.app.domain.model.BotResponse
@@ -169,6 +170,15 @@ internal class DiscordBotImpl(
                                 buttonSet = response.buttonSet,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is BotResponse.CharacterResponse -> {
+                            kordPoster.post(
+                                message = message,
+                                embedBuilder = characterEmbed(response),
+                                imageList = emptyList(),
+                                isExpanded = false,
+                                buttonSet = null,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         is BotResponse.CoreResponse -> {
                             kordPoster.post(
                                 message = message,
@@ -234,6 +244,15 @@ internal class DiscordBotImpl(
                                 imageList = emptyList(),
                                 isExpanded = false,
                                 buttonSet = response.buttonSet,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.CharacterResponse -> {
+                            kordPoster.post(
+                                interaction = interaction,
+                                embedBuilder = characterEmbed(response),
+                                imageList = emptyList(),
+                                isExpanded = false,
+                                buttonSet = null,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.CoreResponse -> {
@@ -326,6 +345,15 @@ internal class DiscordBotImpl(
                                         imageList = emptyList(),
                                         isExpanded = false,
                                         buttonSet = response.buttonSet,
+                                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                                }
+                                is BotResponse.CharacterResponse -> {
+                                    kordPoster.post(
+                                        message = interaction.message,
+                                        embedBuilder = characterEmbed(response),
+                                        imageList = emptyList(),
+                                        isExpanded = false,
+                                        buttonSet = null,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
                                 is BotResponse.CoreResponse -> {
