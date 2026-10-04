@@ -1,6 +1,6 @@
 package io.github.sophon.discord.app.domain.model
 
-import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 /**
  * Exact identity of a move - [characterId] is unique within [game], [input] is unique within the character.

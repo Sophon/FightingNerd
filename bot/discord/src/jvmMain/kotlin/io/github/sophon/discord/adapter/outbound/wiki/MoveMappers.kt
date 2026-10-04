@@ -1,6 +1,5 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.orDash
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.MoveId
@@ -24,6 +23,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.SF6MoveProp
 import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMoveProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import kotlin.collections.orEmpty
 
 internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {

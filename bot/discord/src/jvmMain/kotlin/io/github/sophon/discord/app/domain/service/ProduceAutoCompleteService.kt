@@ -1,7 +1,6 @@
 package io.github.sophon.discord.app.domain.service
 
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.app.domain.model.AutocompleteChoice
@@ -10,6 +9,7 @@ import io.github.sophon.discord.app.domain.model.CharacterId
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 /**
  * flow: [flow-autocomplete.mmd](../../../docs/flow-autocomplete.mmd)

@@ -1,10 +1,10 @@
 package io.github.sophon.discord.adapter.inbound.kord
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.app.domain.model.ButtonEvent
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import kotlin.collections.component1
 import kotlin.collections.component2
 

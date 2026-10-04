@@ -6,7 +6,6 @@ import dev.kord.rest.builder.component.ButtonBuilder
 import dev.kord.rest.builder.message.MessageBuilder
 import dev.kord.rest.builder.message.actionRow
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.EMBED_MAX_BUTTON_ACTION_LENGTH
 import io.github.sophon.discord.app.domain.model.BotResponse
