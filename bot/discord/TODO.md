@@ -19,6 +19,11 @@
   - `character: ; min: ; max: `
   - `inf` value
   - do it for startup, ob, oh, och
+- local `*.db` files into `db/` instead of project root
+  - change env fallbacks: ewgf, admin, wiki (`dcBotModule` x2, `"."` -> `"db"`)
+  - ewgf + admin driver factories need `parentFile?.mkdirs()`
+  - move existing local db files into `db/`
+  - prod/fly unaffected - uses env vars
 
 ## Ideas
 
