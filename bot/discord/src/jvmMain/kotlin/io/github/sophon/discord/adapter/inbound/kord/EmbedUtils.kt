@@ -137,7 +137,7 @@ internal fun EmbedBuilder.embedImage(urls: List<String>) {
         ?.let { image = it.first() }
 }
 
-internal fun EmbedBuilder.detailsBulletPoints(fields: List<BotResponse.MoveResponse.Field>) {
+internal fun EmbedBuilder.detailsBulletPoints(fields: List<BotResponse.Field>) {
     if (fields.isEmpty()) return
 
     separator()

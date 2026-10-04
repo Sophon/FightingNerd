@@ -1,5 +1,6 @@
 package io.github.sophon.discord.app.domain.model
 
+import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_DEFAULT_S
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -19,15 +20,20 @@ sealed interface BotResponse {
         val aliasList: List<String> = emptyList(),
         val noteList: List<String> = emptyList(),
         val hitboxImageList: List<String> = emptyList(),
+        val stance: String? = null,
 
         val forceExpand: Boolean = false,
         val buttonSet: ButtonSet? = null,
-    ): BotResponse {
-        data class Field(
-            val title: String,
-            val value: String,
-        )
-    }
+    ): BotResponse
+
+    data class CharacterResponse(
+        val id: String,
+        val game: Game,
+        val displayName: String,
+        val dataSource: DataSource,
+        val aliasList: List<String> = emptyList(),
+        val propertyList: List<Field> = emptyList(),
+    )
 
     data class ListResponse(
         val title: String,
@@ -49,6 +55,11 @@ sealed interface BotResponse {
     data class DataSource(
         val name: String,
         val iconUrl: String,
+    )
+
+    data class Field(
+        val title: String,
+        val value: String,
     )
 
     data class Images(

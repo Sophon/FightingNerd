@@ -46,7 +46,7 @@ internal fun moveEmbed(
     move: BotResponse.MoveResponse,
 ): EmbedBuilder.() -> Unit {
     val embedBuilder = if (move.forceExpand) {
-        detailedMoveEmbed(move)
+        expandedMoveEmbed(move)
     } else {
         coreMoveEmbed(move)
     }
@@ -69,7 +69,7 @@ private fun coreMoveEmbed(
     featureFooter(dataSource = move.dataSource)
 }
 
-private fun detailedMoveEmbed(
+private fun expandedMoveEmbed(
     move: BotResponse.MoveResponse,
 ): EmbedBuilder.() -> Unit = {
     headerSection(move)
@@ -101,7 +101,7 @@ private fun EmbedBuilder.headerSection(move: BotResponse.MoveResponse) {
     move.characterImageUrl?.let { thumbnail { url = it } }
 }
 
-private fun EmbedBuilder.primaryFieldsSection(fields: List<BotResponse.MoveResponse.Field>) {
+private fun EmbedBuilder.primaryFieldsSection(fields: List<BotResponse.Field>) {
     fields.forEach { field ->
         mandatoryField(name = field.title, value = field.value)
     }

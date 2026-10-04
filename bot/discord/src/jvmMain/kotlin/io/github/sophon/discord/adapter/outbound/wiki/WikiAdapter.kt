@@ -5,20 +5,18 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
-import io.github.sophon.core.util.equalsIgnoreCase
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.CharacterId
 import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.app.domain.model.MoveType
+import io.github.sophon.discord.app.port.outbound.CharactersPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
 import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
+import io.github.sophon.wiki.application.domain.model.Filter
 import io.github.sophon.wiki.application.port.inbound.ConfigureWikiUseCase
 import io.github.sophon.wiki.application.port.inbound.GetCharacterListUseCase
 import io.github.sophon.wiki.application.port.inbound.GetCharacterUseCase
@@ -27,6 +25,7 @@ import io.github.sophon.wiki.application.port.inbound.GetMoveUseCase
 import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
+import io.github.sophon.wiki.application.domain.model.CharacterId as WikiCharacterId
 
 internal class WikiAdapter(
     private val configureWikiUseCase: ConfigureWikiUseCase,
@@ -35,7 +34,7 @@ internal class WikiAdapter(
     private val getMoveListUseCase: GetMoveListUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort {
+): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort, CharactersPort {
     override suspend fun configure(discordConfig: DiscordConfig): EmptyResult<BotError> {
         val result = discordConfig.toWikiConfig()
             .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
@@ -47,21 +46,13 @@ internal class WikiAdapter(
         refreshDataUseCase().collect()
     }
 
-    override suspend fun getFrameData(query: String): Result<BotResponse, BotError> {
-        val characterQuery = query.split(" ").first()
-        val character = findCharacter(characterQuery)
-            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
-
-        val moveQuery = query.substringAfter(delimiter = " ", missingDelimiterValue = "")
-        val move = findMove(character.id, moveQuery)
-            ?: return Result.Error(BotError.UnknownMove(characterQuery, moveQuery))
-
-        val botResponse = move.toDomain(character)
-        return Result.Success(botResponse)
+    override suspend fun getMoves(characterId: CharacterId): Result<List<BotResponse.MoveResponse>, BotError> {
+        val result = getMoveResponses(characterId = characterId, filter = Filter.None)
+        return result
     }
 
     override suspend fun getFrameData(moveId: MoveId): Result<BotResponse.MoveResponse, BotError> {
-        val characterId = CharacterId(game = moveId.game, naturalId = moveId.characterId)
+        val characterId = WikiCharacterId(game = moveId.game, naturalId = moveId.characterId)
         val result = getCharacterUseCase(characterId)
             .flatMap { character ->
                 val moveResponse = getMoveUseCase(characterId, moveId.input).map { it.toDomain(character) }
@@ -72,95 +63,35 @@ internal class WikiAdapter(
     }
 
     override suspend fun getMovesOfType(
-        characterQuery: String,
+        characterId: CharacterId,
         moveType: MoveType,
-    ): Result<BotResponse.ListResponse, BotError> {
-        val character = findCharacter(characterQuery)
-            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
-
-        val moveList = getMoveListUseCase(characterId = character.id)
-            .first()
-            .filter(moveType.toFilter().predicate)
-
-        val listResponse = moveList.toListResponse(character, moveType)
-        return Result.Success(listResponse)
+    ): Result<List<BotResponse.MoveResponse>, BotError> {
+        val result = getMoveResponses(characterId = characterId, filter = moveType.toFilter())
+        return result
     }
 
-    override suspend fun getStances(characterQuery: String): Result<BotResponse.ListResponse, BotError> {
-        val character = findCharacter(characterQuery)
-            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
-
-        val stances = getMoveListUseCase(characterId = character.id)
+    override suspend fun getCharacters(): List<BotResponse.CharacterResponse> {
+        val characterList = getCharacterListUseCase()
             .first()
-            .mapNotNull { move ->
-                (move.gameProperties as? T8Properties)?.stance
+            .map { it.toDomain() }
+        return characterList
+    }
+
+
+    private suspend fun getMoveResponses(
+        characterId: CharacterId,
+        filter: Filter,
+    ): Result<List<BotResponse.MoveResponse>, BotError> {
+        val wikiCharacterId = characterId.toWikiCharacterId()
+        val result = getCharacterUseCase(wikiCharacterId)
+            .map { character ->
+                val moveList = getMoveListUseCase(characterId = wikiCharacterId)
+                    .first()
+                    .filter(filter.predicate)
+                    .map { it.toDomain(character) }
+                moveList
             }
-            .toSet()
-
-        val listResponse = stances.toListResponse(character)
-        return Result.Success(listResponse)
-    }
-
-    override suspend fun getStanceMoves(
-        characterQuery: String,
-        stanceQuery: String,
-    ): Result<BotResponse.ListResponse, BotError> {
-        val character = findCharacter(characterQuery)
-            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
-
-        val moveList = getMoveListUseCase(characterId = character.id)
-            .first()
-            .filter { move ->
-                val stance = (move.gameProperties as? T8Properties)?.stance
-                stance?.equalsIgnoreCase(stanceQuery) == true
-            }
-
-        val listResponse = moveList.toListResponse(character = character, moveType = stanceQuery)
-        return Result.Success(listResponse)
-    }
-
-    override suspend fun getMovesStartingWith(
-        characterQuery: String,
-        prefix: String,
-    ): Result<BotResponse.ListResponse, BotError> {
-        val character = findCharacter(characterQuery)
-            ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
-
-        val moveList = getMoveListUseCase(characterId = character.id)
-            .first()
-            .filter { move ->
-                val isFollowedByPlus = (move.input.getOrNull(prefix.length) == '+')
-                move.input.startsWith(prefix, ignoreCase = true) && isFollowedByPlus.not()
-            }
-
-        val listResponse = moveList.toListResponse(
-            character = character,
-            moveType = "${character.displayName} followups to $prefix",
-        )
-        return Result.Success(listResponse)
-    }
-
-
-    private suspend fun findCharacter(characterQuery: String): Character? {
-        val characterList = getCharacterListUseCase().first()
-        val character = characterList.firstOrNull { it.matches(characterQuery) }
-        return character
-    }
-
-    private suspend fun findMove(characterId: CharacterId, moveQuery: String): Move? {
-        val moveList = getMoveListUseCase(characterId = characterId).first()
-        val move = moveList.firstOrNull { it.matches(moveQuery) }
-        return move
-    }
-
-    private fun Character.matches(characterQuery: String): Boolean {
-        return id.naturalId.equalsIgnoreCase(characterQuery)
-                || aliasList.any { it.equalsIgnoreCase(characterQuery) }
-    }
-
-    private fun Move.matches(moveQuery: String): Boolean {
-        return input.equalsIgnoreCase(moveQuery)
-                || name.equalsIgnoreCase(moveQuery)
-                || aliases.any { it.equalsIgnoreCase(moveQuery) }
+            .mapError { it.toDomainError() }
+        return result
     }
 }

@@ -11,6 +11,9 @@ import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.Command
 
+/**
+ * - flow: [flow-user_input.mmd](../../../docs/flow-user_input.mmd)
+ */
 internal class ProcessUserInputService(
     private val commandRouterService: CommandRouterService,
 ): ProcessUserInputUseCase {
@@ -90,7 +93,7 @@ internal class ProcessUserInputService(
         // character goes first, the wiki resolves the character before the move
         val orderedValueList = (listOfNotNull(get(ARG_CHARACTER)) + filterKeys { it != ARG_CHARACTER }.values)
         val query = orderedValueList
-            // autocomplete values are encoded as `value::feature::game`, only the value is the query
+            // autocomplete values are encoded as `value::game`, only the value is the query
             .map { it.substringBefore(AUTOCOMPLETE_VALUE_DELIMITER) }
             .filter { it.isNotBlank() }
             .joinToString(" ")

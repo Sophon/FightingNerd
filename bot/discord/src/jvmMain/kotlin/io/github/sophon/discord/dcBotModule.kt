@@ -17,13 +17,18 @@ import io.github.sophon.discord.adapter.inbound.kord.KordPoster
 import io.github.sophon.integration.data.ReportRepo
 import io.github.sophon.discord.adapter.outbound.file.FilesAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
+import io.github.sophon.discord.app.domain.service.CharacterService
+import io.github.sophon.discord.app.domain.service.CharacterServiceImpl
 import io.github.sophon.discord.app.domain.service.CommandRouterService
+import io.github.sophon.discord.app.domain.service.MoveService
+import io.github.sophon.discord.app.domain.service.MoveServiceImpl
 import io.github.sophon.discord.app.domain.service.ProcessButtonEventService
 import io.github.sophon.discord.app.domain.service.ProcessUserInputService
 import io.github.sophon.discord.app.domain.service.StartFeaturesService
 import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
+import io.github.sophon.discord.app.port.outbound.CharactersPort
 import io.github.sophon.discord.app.port.outbound.CheckFileExistsPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.CreateFilePort
@@ -36,6 +41,8 @@ import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.data.JsonReportRepo
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
+import io.github.sophon.discord.app.domain.service.ProduceAutoCompleteService
+import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
@@ -136,6 +143,9 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::ProcessUserInputService).bind<ProcessUserInputUseCase>()
     singleOf(::ProcessButtonEventService).bind<ProcessButtonEventUseCase>()
     singleOf(::CommandRouterService)
+    singleOf(::CharacterServiceImpl).bind<CharacterService>()
+    singleOf(::MoveServiceImpl).bind<MoveService>()
+    singleOf(::ProduceAutoCompleteService).bind<ProduceAutoCompleteUseCase>()
     //endregion
 
     //region File operations
@@ -153,6 +163,7 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<RefreshWikiPort>()
         bind<FrameDataPort>()
         bind<GetMovesOfTypePort>()
+        bind<CharactersPort>()
     }
     //endregion
 }

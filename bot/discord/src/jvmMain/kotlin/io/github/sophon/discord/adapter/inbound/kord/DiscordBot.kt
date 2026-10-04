@@ -4,6 +4,7 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
+import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.entity.interaction.ButtonInteraction
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ResumedEvent
@@ -18,21 +19,23 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.ButtonEvent
+import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.app.domain.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.domain.model.Message
 import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
+import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.feat.admin.adminCommands
-import io.github.sophon.discord.feat.bot.usecase.HandleAutoCompleteEventUseCase
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.Tracker
-import io.github.sophon.discord.app.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.util.kordRestCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
@@ -52,10 +55,8 @@ internal class DiscordBotImpl(
     private val kord: Kord,
     private val tracker: Tracker,
     private val adminConfig: Config.AdminConfig,
-    private val handleAutoCompleteEventUseCase: HandleAutoCompleteEventUseCase,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
-    private val botFeatureRepo: BotFeatureRepo,
     private val scheduler: Scheduler,
     private val commandRegistry: CommandRegistry,
 
@@ -63,6 +64,7 @@ internal class DiscordBotImpl(
     private val startFeaturesUseCase: StartFeaturesUseCase,
     private val processUserInputUseCase: ProcessUserInputUseCase,
     private val processButtonEventUseCase: ProcessButtonEventUseCase,
+    private val produceAutoCompleteUseCase: ProduceAutoCompleteUseCase,
 ): DiscordBot {
     override suspend fun startSession() {
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
@@ -185,7 +187,22 @@ internal class DiscordBotImpl(
 
         kord.on<AutoCompleteInteractionCreateEvent> {
             kordRestCall(TAG) {
-                handleAutoCompleteEventUseCase.invoke(interaction)
+                val focusedArgumentName = interaction.command.options.entries
+                    .firstOrNull { it.value.focused }
+                    ?.key
+                    .orEmpty()
+                val query = interaction.focusedOption.value.trim()
+
+                val choices = produceAutoCompleteUseCase(
+                    commandString = interaction.command.rootName,
+                    argument = focusedArgumentName,
+                    query = query,
+                    argumentMap = interaction.command.strings,
+                ).take(COMMAND_MAX_SUGGESTIONS)
+
+                interaction.suggestString {
+                    choices.forEach { choice(it.name, it.value) }
+                }
             }
         }
 
@@ -298,11 +315,8 @@ internal class DiscordBotImpl(
     @Suppress("UnusedPrivateMember")
     private suspend fun createCommandsForTestServer() {
         val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
-        val featureList = botFeatureRepo.getFeatures()
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
-            featureList
-                .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
-                .distinctBy { it.name.lowercase() }
+            Command.entries
                 .forEach { supportedCommand ->
                     input(
                         name = supportedCommand.name.lowercase(),
@@ -327,11 +341,8 @@ internal class DiscordBotImpl(
 
     private suspend fun createGlobalCommands() {
         try {
-            val featureList = botFeatureRepo.getFeatures()
             kord.createGlobalApplicationCommands {
-                featureList
-                    .flatMap { feature -> feature.otherCommands + listOfNotNull(feature.defaultCommand) }
-                    .distinctBy { it.name.lowercase() }
+                Command.entries
                     .filter { supportedCommand ->
                         adminCommands.contains(supportedCommand).not()
                     }
