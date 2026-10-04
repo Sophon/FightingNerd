@@ -77,7 +77,7 @@ internal fun initKoin(
             apiToken = System.getenv(ENV_API_EWGF).orEmpty()
         ),
         wikiModule(
-            databaseDirectory = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { "." },
+            databaseDirectory = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { LOCAL_DATABASE_DIR },
         ),
 
         featureRegistryModule,
@@ -107,7 +107,7 @@ internal fun dcBotModule(kord: Kord) = module {
     WikiClientFeature.entries.forEach { feature ->
         single<SqlDriver>(named(feature.id)) { params ->
             val schema = params.get<SqlSchema<QueryResult.Value<Unit>>>()
-            val databaseDir = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { "." }
+            val databaseDir = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { LOCAL_DATABASE_DIR }
             val databaseFile = File(databaseDir, "${feature.id}.db")
             databaseFile.parentFile?.mkdirs()
 

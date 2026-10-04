@@ -8,7 +8,7 @@ import java.io.File
 import java.util.Properties
 
 internal actual fun Scope.createWikiSqlDriver(databaseDirectory: String?): SqlDriver {
-    val databaseFile = File(databaseDirectory ?: ".", WIKI_DATABASE_NAME)
+    val databaseFile = File(databaseDirectory ?: "db", WIKI_DATABASE_NAME)
     databaseFile.parentFile?.mkdirs()
 
     val driver = openFingerprintedDriver(

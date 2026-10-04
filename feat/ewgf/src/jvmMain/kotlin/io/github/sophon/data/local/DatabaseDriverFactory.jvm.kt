@@ -11,6 +11,7 @@ internal actual class DatabaseDriverFactory(
     actual fun createDriver(): SqlDriver {
         val databaseFile = File(databasePath)
         val versionFile = File("$databasePath.version")
+        databaseFile.parentFile?.mkdirs()
 
         val currentSchemaVersion = 3
         val savedVersion = versionFile.takeIf { it.exists() }?.readText()?.toIntOrNull() ?: 0
@@ -34,8 +35,8 @@ internal actual class DatabaseDriverFactory(
     companion object {
         fun getDatabasePath(): String {
             // Fly.io: /data/playerlist.db
-            // Local: playerlist.db (in working directory)
-            return System.getenv("EWGF_DATABASE_PATH") ?: "playerlist.db"
+            // Local: db/playerlist.db (in working directory)
+            return System.getenv("EWGF_DATABASE_PATH") ?: "db/playerlist.db"
         }
     }
 }
