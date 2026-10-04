@@ -9,6 +9,7 @@ internal actual class DatabaseDriverFactory(private val databasePath: String) {
     actual fun createDriver(): SqlDriver {
         val databaseFile = File(databasePath)
         val versionFile = File("$databasePath.version")
+        databaseFile.parentFile?.mkdirs()
 
         val currentSchemaVersion = 2 // Increment when schema changes
         val savedVersion = versionFile.takeIf { it.exists() }?.readText()?.toIntOrNull() ?: 0
@@ -32,8 +33,8 @@ internal actual class DatabaseDriverFactory(private val databasePath: String) {
     companion object {
         fun getDatabasePath(): String {
             // Fly.io: /data/banlist.db
-            // Local: banlist.db (in working directory)
-            return System.getenv("BANLIST_DATABASE_PATH") ?: "banlist.db"
+            // Local: db/banlist.db (in working directory)
+            return System.getenv("BANLIST_DATABASE_PATH") ?: "db/banlist.db"
         }
     }
 }
