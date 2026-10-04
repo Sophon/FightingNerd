@@ -45,6 +45,8 @@ internal class CommandRouterService(
             Command.Stance -> moveService.findStanceOrMove(query)
             Command.Strings -> moveService.findStrings(query)
 
+            Command.Char -> characterService.findCharacter(characterQuery = query, requireProperties = true)
+
             Command.Tip,
             Command.Donate -> Result.Success(BotResponse.CoreResponse(type = BotResponse.CoreResponse.Type.Tip))
             Command.Help -> {
@@ -72,7 +74,6 @@ internal class CommandRouterService(
             Command.Unban,
             Command.Banlist,
             Command.Refresh,
-            Command.Char,
             Command.Startup,
             Command.OnHit,
             Command.OnBlock,

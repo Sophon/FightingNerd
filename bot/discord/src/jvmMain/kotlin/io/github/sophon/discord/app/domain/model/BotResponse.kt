@@ -30,10 +30,11 @@ sealed interface BotResponse {
         val id: String,
         val game: Game,
         val displayName: String,
+        val url: String,
         val dataSource: DataSource,
         val aliasList: List<String> = emptyList(),
         val propertyList: List<Field> = emptyList(),
-    )
+    ): BotResponse
 
     sealed interface AliasResponse: BotResponse {
         data class CharacterAliases(

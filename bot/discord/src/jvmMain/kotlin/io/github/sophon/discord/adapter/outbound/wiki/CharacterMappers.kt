@@ -17,6 +17,7 @@ internal fun Character.toDomain(): BotResponse.CharacterResponse {
         id = id.naturalId,
         game = id.game,
         displayName = displayName,
+        url = wikiUrl,
         dataSource = toDataSource(),
         aliasList = aliasList,
         propertyList = toPropertyList(),
