@@ -130,8 +130,11 @@ internal class DiscordBotImpl(
                             else -> {}
                         }
                     }
-                    .onError {
-                        //TODO: post error embed
+                    .onError { botError ->
+                        kordPoster.post(
+                            interaction = interaction,
+                            botError = botError,
+                        ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                     }
             }
         }
@@ -176,8 +179,11 @@ internal class DiscordBotImpl(
                             else -> {}
                         }
                     }
-                    .onError {
-                        //TODO: post error embed
+                    .onError { botError ->
+                        kordPoster.post(
+                            message = message,
+                            botError = botError,
+                        ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                     }
             }
         }

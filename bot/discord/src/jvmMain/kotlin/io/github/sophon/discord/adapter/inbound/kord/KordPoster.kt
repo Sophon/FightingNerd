@@ -20,9 +20,12 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
+import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -30,6 +33,7 @@ import kotlin.uuid.ExperimentalUuidApi
 internal class KordPoster(
     private val createPromoEmbedUseCase: CreatePromoEmbedUseCase,
     private val discordButtonBuilder: DiscordButtonBuilder,
+    private val commandRegistry: CommandRegistry,
 ) {
     suspend fun post(
         message: Message,
@@ -95,6 +99,42 @@ internal class KordPoster(
         }
 
         result.onSuccess { rollForPromo(interaction.channel) }
+
+        return result
+    }
+
+    suspend fun post(
+        message: Message,
+        botError: BotError,
+    ): EmptyResult<BotError> {
+        val result = try {
+            message.channel.createMessage {
+                messageReference = message.id
+                allowedMentions { repliedUser = false }
+                embed(errorEmbed(error = botError, commandRegistry = commandRegistry))
+            }
+
+            Result.Success(Unit)
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    suspend fun post(
+        interaction: GuildChatInputCommandInteraction,
+        botError: BotError,
+    ): EmptyResult<BotError> {
+        val result = try {
+            interaction.respondPublic {
+                embed(errorEmbed(error = botError, commandRegistry = commandRegistry))
+            }
+
+            Result.Success(Unit)
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
 
         return result
     }
