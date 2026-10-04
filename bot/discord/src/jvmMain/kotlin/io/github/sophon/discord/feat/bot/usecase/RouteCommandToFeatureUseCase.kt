@@ -4,9 +4,9 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.extractFirstWord
 import io.github.sophon.core.util.normalizeWhiteSpace
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.Tracker
-import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.util.removeTag
 import io.github.sophon.integration.model.Source

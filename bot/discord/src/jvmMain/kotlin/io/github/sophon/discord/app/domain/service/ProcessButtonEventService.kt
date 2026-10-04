@@ -2,12 +2,12 @@ package io.github.sophon.discord.app.domain.service
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.ButtonEvent
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
-import io.github.sophon.discord.app.domain.model.BotError
 
 /**
  * - expand: [flow-expand.mmd](../../../docs/flow-expand.mmd)

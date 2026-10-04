@@ -4,9 +4,9 @@ import dev.kord.common.Color
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
+import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.FollowupPermittingInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.createPublicFollowup
-import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -28,10 +28,10 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
-import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import kotlin.uuid.ExperimentalUuidApi

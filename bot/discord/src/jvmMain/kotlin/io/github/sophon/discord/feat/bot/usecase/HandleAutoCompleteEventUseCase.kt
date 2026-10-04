@@ -13,9 +13,9 @@ import io.github.sophon.core.wiki.util.isApprox
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.app.domain.model.AutocompleteChoice
-import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.Command.Argument.AutoCompleteType
+import io.github.sophon.discord.feat.config.BotFeatureRepo
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 

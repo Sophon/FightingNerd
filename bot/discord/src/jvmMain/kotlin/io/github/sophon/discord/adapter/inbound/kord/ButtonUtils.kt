@@ -5,8 +5,6 @@ import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton
 import io.github.sophon.wiki.application.domain.model.wiki.Game
-import kotlin.collections.component1
-import kotlin.collections.component2
 
 /**
  * Null for a button the new API doesn't handle - the legacy Edit and Redirect buttons,

@@ -5,9 +5,9 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.util.getGame
+import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.config.data.JsonConfig
 import io.github.sophon.discord.feat.core.data.FileManager
-import io.github.sophon.discord.app.domain.model.BotError
 import kotlinx.serialization.json.Json
 
 internal class LoadConfigurationUseCase(

@@ -5,16 +5,14 @@ import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import dev.kord.core.Kord
+import io.github.aakira.napier.Napier
+import io.github.sophon.core.coreModule
 import io.github.sophon.core.featureConfig.model.WikiClientFeature
 import io.github.sophon.core.wiki.data.fingerprint
 import io.github.sophon.core.wiki.data.readStoredFingerprint
 import io.github.sophon.core.wiki.data.storeFingerprint
-import org.koin.core.qualifier.named
-import io.github.aakira.napier.Napier
-import io.github.sophon.integration.adminModule
-import io.github.sophon.core.coreModule
+import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.adapter.inbound.kord.KordPoster
-import io.github.sophon.integration.data.ReportRepo
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.discord.app.domain.service.CharacterService
@@ -24,9 +22,11 @@ import io.github.sophon.discord.app.domain.service.MoveService
 import io.github.sophon.discord.app.domain.service.MoveServiceImpl
 import io.github.sophon.discord.app.domain.service.ProcessButtonEventService
 import io.github.sophon.discord.app.domain.service.ProcessUserInputService
+import io.github.sophon.discord.app.domain.service.ProduceAutoCompleteService
 import io.github.sophon.discord.app.domain.service.StartFeaturesService
 import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
+import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.app.port.outbound.CharactersPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
@@ -38,23 +38,15 @@ import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
 import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.data.JsonReportRepo
-import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
-import io.github.sophon.discord.app.domain.service.ProduceAutoCompleteService
-import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
-import io.github.sophon.dreamcancel.integration.dreamCancelModule
-import io.github.sophon.integration.ewgfModule
 import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
 import io.github.sophon.glossaryinfil.integration.infilModule
+import io.github.sophon.integration.adminModule
+import io.github.sophon.integration.data.ReportRepo
+import io.github.sophon.integration.ewgfModule
 import io.github.sophon.integration.statsModule
-import io.github.sophon.wikiSuperCombo.integration.superComboModule
-import io.github.sophon.wikidragdown.integration.dragDownModule
-import io.github.sophon.wikidustloop.integration.dustLoopModule
-import io.github.sophon.wikimizuumi.integration.mizuumiModule
-import io.github.sophon.wikiwavu.integration.wavuModule
 import io.github.sophon.wiki.wikiModule
-import io.github.sophon.xko.integration.xkoModule
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -62,6 +54,7 @@ import kotlinx.coroutines.SupervisorJob
 import org.koin.core.context.startKoin
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.qualifier.named
 import org.koin.dsl.KoinAppDeclaration
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -80,13 +73,6 @@ internal fun initKoin(
         statsModule(),
 
         infilModule,
-        wavuModule(),
-        superComboModule(),
-        xkoModule(),
-        dreamCancelModule(),
-        dustLoopModule(),
-        mizuumiModule(),
-        dragDownModule(),
         ewgfModule(
             apiToken = System.getenv(ENV_API_EWGF).orEmpty()
         ),
