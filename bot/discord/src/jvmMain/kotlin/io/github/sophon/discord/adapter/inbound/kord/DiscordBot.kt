@@ -5,7 +5,9 @@ import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.interaction.suggestString
+import dev.kord.core.entity.interaction.AutoCompleteInteraction
 import dev.kord.core.entity.interaction.ButtonInteraction
+import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ResumedEvent
 import dev.kord.core.event.interaction.AutoCompleteInteractionCreateEvent
@@ -97,95 +99,11 @@ internal class DiscordBotImpl(
         monitorGatewayHealth()
 
         kord.on<GuildChatInputCommandInteractionCreateEvent> {
-            kordRestCall(TAG) {
-                val discordCommandInteraction = DiscordCommandInteraction(
-                    username = interaction.user.username,
-                    userId = interaction.user.id.toString(),
-                    channelId = interaction.channelId.toString(),
-                    command = interaction.command.rootName,
-                    argumentMap = interaction.command.strings,
-                    serverName = interaction.getGuildOrNull()?.name,
-                )
-                processUserInputUseCase(discordCommandInteraction = discordCommandInteraction)
-                    .onSuccess { response ->
-                        when (response) {
-                            is BotResponse.MoveResponse -> {
-                                kordPoster.post(
-                                    interaction = interaction,
-                                    embedBuilder = moveEmbed(response),
-                                    imageList = response.hitboxImageList,
-                                    isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
-                                    buttonSet = response.buttonSet,
-                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
-                            }
-                            is BotResponse.ListResponse -> {
-                                kordPoster.post(
-                                    interaction = interaction,
-                                    embedBuilder = moveListEmbed(response),
-                                    imageList = emptyList(),
-                                    isExpanded = false,
-                                    buttonSet = response.buttonSet,
-                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
-                            }
-                            else -> {}
-                        }
-                    }
-                    .onError { botError ->
-                        kordPoster.post(
-                            interaction = interaction,
-                            botError = botError,
-                        ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
-                    }
-            }
+            processInteraction(interaction)
         }
 
         kord.on<MessageCreateEvent> {
-            kordRestCall(TAG) {
-                val userMessage = Message(
-                    serverName = message.getGuildOrNull()?.name.orEmpty(),
-                    channelId = message.channelId.toString(),
-                    author = Message.Author(
-                        id = message.author?.id?.toString().orEmpty(),
-                        username = message.author?.username.orEmpty(),
-                    ),
-                    // webhook messages have no author, treat them as bots
-                    isFromBot = (message.author?.isBot ?: true),
-                    content = message.content,
-                )
-                processUserInputUseCase(
-                    message = userMessage,
-                    botId = kord.selfId.toString(),
-                )
-                    .onSuccess { response ->
-                        when (response) {
-                            is BotResponse.MoveResponse -> {
-                                kordPoster.post(
-                                    message = message,
-                                    embedBuilder = moveEmbed(response),
-                                    imageList = response.hitboxImageList,
-                                    isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
-                                    buttonSet = response.buttonSet,
-                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
-                            }
-                            is BotResponse.ListResponse -> {
-                                kordPoster.post(
-                                    message = message,
-                                    embedBuilder = moveListEmbed(response),
-                                    imageList = emptyList(),
-                                    isExpanded = false,
-                                    buttonSet = response.buttonSet,
-                                ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
-                            }
-                            else -> {}
-                        }
-                    }
-                    .onError { botError ->
-                        kordPoster.post(
-                            message = message,
-                            botError = botError,
-                        ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
-                    }
-            }
+            processMessage(message)
         }
 
         kord.on<ButtonInteractionCreateEvent> {
@@ -193,24 +111,7 @@ internal class DiscordBotImpl(
         }
 
         kord.on<AutoCompleteInteractionCreateEvent> {
-            kordRestCall(TAG) {
-                val focusedArgumentName = interaction.command.options.entries
-                    .firstOrNull { it.value.focused }
-                    ?.key
-                    .orEmpty()
-                val query = interaction.focusedOption.value.trim()
-
-                val choices = produceAutoCompleteUseCase(
-                    commandString = interaction.command.rootName,
-                    argument = focusedArgumentName,
-                    query = query,
-                    argumentMap = interaction.command.strings,
-                ).take(COMMAND_MAX_SUGGESTIONS)
-
-                interaction.suggestString {
-                    choices.forEach { choice(it.name, it.value) }
-                }
-            }
+            processAutoComplete(interaction)
         }
 
         //‼️ THIS SUSPENDS UNTIL LOGGED OUT
@@ -229,6 +130,98 @@ internal class DiscordBotImpl(
         }
 
         Napier.e(tag = TAG) { "⚠️ Login ended (bot disconnected)" }
+    }
+
+    private suspend fun processMessage(message: dev.kord.core.entity.Message) {
+        kordRestCall(TAG) {
+            val userMessage = Message(
+                serverName = message.getGuildOrNull()?.name.orEmpty(),
+                channelId = message.channelId.toString(),
+                author = Message.Author(
+                    id = message.author?.id?.toString().orEmpty(),
+                    username = message.author?.username.orEmpty(),
+                ),
+                // webhook messages have no author, treat them as bots
+                isFromBot = (message.author?.isBot ?: true),
+                content = message.content,
+            )
+            processUserInputUseCase(
+                message = userMessage,
+                botId = kord.selfId.toString(),
+            )
+                .onSuccess { response ->
+                    when (response) {
+                        is BotResponse.MoveResponse -> {
+                            kordPoster.post(
+                                message = message,
+                                embedBuilder = moveEmbed(response),
+                                imageList = response.hitboxImageList,
+                                isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                buttonSet = response.buttonSet,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.ListResponse -> {
+                            kordPoster.post(
+                                message = message,
+                                embedBuilder = moveListEmbed(response),
+                                imageList = emptyList(),
+                                isExpanded = false,
+                                buttonSet = response.buttonSet,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        else -> {}
+                    }
+                }
+                .onError { botError ->
+                    kordPoster.post(
+                        message = message,
+                        botError = botError,
+                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                }
+        }
+    }
+
+    private suspend fun processInteraction(interaction: GuildChatInputCommandInteraction) {
+        kordRestCall(TAG) {
+            val discordCommandInteraction = DiscordCommandInteraction(
+                username = interaction.user.username,
+                userId = interaction.user.id.toString(),
+                channelId = interaction.channelId.toString(),
+                command = interaction.command.rootName,
+                argumentMap = interaction.command.strings,
+                serverName = interaction.getGuildOrNull()?.name,
+            )
+            processUserInputUseCase(discordCommandInteraction = discordCommandInteraction)
+                .onSuccess { response ->
+                    when (response) {
+                        is BotResponse.MoveResponse -> {
+                            kordPoster.post(
+                                interaction = interaction,
+                                embedBuilder = moveEmbed(response),
+                                imageList = response.hitboxImageList,
+                                isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                buttonSet = response.buttonSet,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.ListResponse -> {
+                            kordPoster.post(
+                                interaction = interaction,
+                                embedBuilder = moveListEmbed(response),
+                                imageList = emptyList(),
+                                isExpanded = false,
+                                buttonSet = response.buttonSet,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        else -> {}
+                    }
+                }
+                .onError { botError ->
+                    kordPoster.post(
+                        interaction = interaction,
+                        botError = botError,
+                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                }
+        }
     }
 
     private suspend fun processButtonEvent(interaction: ButtonInteraction) {
@@ -303,6 +296,27 @@ internal class DiscordBotImpl(
                     }
                 }
                 .onError { error -> Napier.e(tag = TAG) { "Button event failed: $error" } }
+        }
+    }
+
+    private suspend fun processAutoComplete(interaction: AutoCompleteInteraction) {
+        kordRestCall(TAG) {
+            val focusedArgumentName = interaction.command.options.entries
+                .firstOrNull { it.value.focused }
+                ?.key
+                .orEmpty()
+            val query = interaction.focusedOption.value.trim()
+
+            val choices = produceAutoCompleteUseCase(
+                commandString = interaction.command.rootName,
+                argument = focusedArgumentName,
+                query = query,
+                argumentMap = interaction.command.strings,
+            ).take(COMMAND_MAX_SUGGESTIONS)
+
+            interaction.suggestString {
+                choices.forEach { choice(it.name, it.value) }
+            }
         }
     }
 
