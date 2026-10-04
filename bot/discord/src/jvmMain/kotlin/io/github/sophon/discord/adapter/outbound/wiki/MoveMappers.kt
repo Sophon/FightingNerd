@@ -1,6 +1,5 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
-import io.github.sophon.core.util.orDash
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.app.domain.model.MoveType
@@ -439,39 +438,3 @@ private fun COTWMoveProperties.toPrimaryFields(): List<BotResponse.Field> {
     return fieldList
 }
 //endregion
-
-
-private fun mandatoryFieldOf(title: String, value: String?): BotResponse.Field{
-    val field = BotResponse.Field(title, value.orDash())
-
-    return field
-}
-
-private fun mandatoryFieldOf(title: String, valueList: List<String>?): BotResponse.Field{
-    val field = mandatoryFieldOf(title, valueList?.joinToString(", "))
-
-    return field
-}
-
-private fun fieldOf(title: String, value: String?): BotResponse.Field? {
-    val field = value
-        ?.takeIf { it.isNotBlank() }
-        ?.let { BotResponse.Field(title, it) }
-
-    return field
-}
-
-/** `a | b | c` with blanks as dashes; null when every value is blank. */
-private fun mergedValueOf(vararg values: String?): String? {
-    val mergedValue = values
-        .takeIf { valueList -> valueList.any { !it.isNullOrBlank() } }
-        ?.joinToString(" | ") { it.orDash() }
-
-    return mergedValue
-}
-
-private fun fieldOf(title: String, valueList: List<String>?): BotResponse.Field? {
-    val field = fieldOf(title, valueList?.joinToString(", "))
-
-    return field
-}

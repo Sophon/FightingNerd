@@ -7,7 +7,10 @@ import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.port.outbound.CharactersPort
 
 internal interface CharacterService {
-    suspend fun findCharacter(characterQuery: String): Result<BotResponse.CharacterResponse, BotError>
+    suspend fun findCharacter(
+        characterQuery: String,
+        requireProperties: Boolean = false,
+    ): Result<BotResponse.CharacterResponse, BotError>
     suspend fun getCharacters(): List<BotResponse.CharacterResponse>
 }
 
@@ -16,8 +19,11 @@ internal class CharacterServiceImpl(
 ): CharacterService {
     override suspend fun findCharacter(
         characterQuery: String,
+        requireProperties: Boolean,
     ): Result<BotResponse.CharacterResponse, BotError> {
-        val character = charactersPort.getCharacters().firstOrNull { it.matches(characterQuery) }
+        val character = getCharacters()
+            .filter { requireProperties.not() || it.propertyList.isNotEmpty() }
+            .firstOrNull { it.matches(characterQuery) }
         val result = if (character != null) {
             Result.Success(character)
         } else {

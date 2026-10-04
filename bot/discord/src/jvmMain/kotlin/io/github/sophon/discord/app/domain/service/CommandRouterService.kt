@@ -17,6 +17,7 @@ import kotlin.time.Duration.Companion.seconds
 
 internal class CommandRouterService(
     private val moveService: MoveService,
+    private val characterService: CharacterService,
     private val loadConfigPort: LoadConfigPort,
 ) {
     suspend operator fun invoke(userRequest: UserRequest): Result<BotResponse, BotError> {
@@ -44,6 +45,8 @@ internal class CommandRouterService(
             Command.Stance -> moveService.findStanceOrMove(query)
             Command.Strings -> moveService.findStrings(query)
 
+            Command.Char -> characterService.findCharacter(characterQuery = query, requireProperties = true)
+
             Command.Tip,
             Command.Donate -> Result.Success(BotResponse.CoreResponse(type = BotResponse.CoreResponse.Type.Tip))
             Command.Help -> {
@@ -62,6 +65,7 @@ internal class CommandRouterService(
             Command.Invite -> Result.Success(BotResponse.PlainText(text = "FightingNerd bot invite: $URL_INVITE"))
 
             Command.Modules -> createModulesResponse()
+            Command.Alias -> createAliasResponse(gameQuery = query)
 
             Command.Join,
             Command.Feedback,
@@ -70,8 +74,6 @@ internal class CommandRouterService(
             Command.Unban,
             Command.Banlist,
             Command.Refresh,
-            Command.Char,
-            Command.Alias,
             Command.Startup,
             Command.OnHit,
             Command.OnBlock,
@@ -148,6 +150,42 @@ internal class CommandRouterService(
                 BotResponse.ModulesResponse(moduleList = moduleList)
             }
         return result
+    }
+
+    /**
+     * Blank query prompts with a button per game that has characters.
+     */
+    private suspend fun createAliasResponse(gameQuery: String): Result<BotResponse, BotError> {
+        val characterList = characterService.getCharacters()
+
+        val result = if (gameQuery.isBlank()) {
+            Result.Success(createGamePromptResponse(gameList = characterList.map { it.game }.distinct()))
+        } else {
+            val game = Game.fromId(gameQuery)
+            val gameCharacterList = characterList.filter { it.game == game }
+            if (gameCharacterList.isEmpty()) {
+                Result.Error(BotError.UnsupportedGame(gameQuery))
+            } else {
+                Result.Success(BotResponse.AliasResponse.CharacterAliases(characterList = gameCharacterList))
+            }
+        }
+        return result
+    }
+
+    private fun createGamePromptResponse(gameList: List<Game>): BotResponse {
+        val response = BotResponse.AliasResponse.GamePrompt(
+            gameList = gameList.map { it.displayName },
+            buttonSet = BotResponse.ButtonSet(
+                buttonList = gameList.mapIndexed { index, game ->
+                    BotResponse.EmbedButton(
+                        label = (index + 1).toString(),
+                        action = BotResponse.EmbedButton.Action.Command(command = Command.Alias, query = game.id),
+                    )
+                },
+                duration = EMBED_BUTTON_DURATION_INF.seconds,
+            ),
+        )
+        return response
     }
 
     private fun resolveCommand(userRequest: UserRequest): Command {

@@ -20,6 +20,8 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
+import io.github.sophon.discord.adapter.inbound.kord.ui.aliasEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.aliasGamePromptEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.commandsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
@@ -162,6 +164,34 @@ internal class KordPoster(
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
+        )
+        return result
+    }
+
+    suspend fun post(
+        message: Message,
+        aliasResponse: BotResponse.AliasResponse,
+    ): EmptyResult<BotError> {
+        val result = post(
+            message = message,
+            embedBuilder = aliasResponseEmbed(aliasResponse),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = (aliasResponse as? BotResponse.AliasResponse.GamePrompt)?.buttonSet,
+        )
+        return result
+    }
+
+    suspend fun post(
+        interaction: GuildChatInputCommandInteraction,
+        aliasResponse: BotResponse.AliasResponse,
+    ): EmptyResult<BotError> {
+        val result = post(
+            interaction = interaction,
+            embedBuilder = aliasResponseEmbed(aliasResponse),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = (aliasResponse as? BotResponse.AliasResponse.GamePrompt)?.buttonSet,
         )
         return result
     }
@@ -330,6 +360,17 @@ internal class KordPoster(
                 commandList = Command.entries.sortedBy { it.name },
                 commandRegistry = commandRegistry,
                 featureInfo = featureInfo,
+            )
+        }
+        return embedBuilder
+    }
+
+    private fun aliasResponseEmbed(aliasResponse: BotResponse.AliasResponse): EmbedBuilder.() -> Unit {
+        val embedBuilder = when (aliasResponse) {
+            is BotResponse.AliasResponse.CharacterAliases -> aliasEmbed(aliasResponse.characterList)
+            is BotResponse.AliasResponse.GamePrompt -> aliasGamePromptEmbed(
+                gameList = aliasResponse.gameList,
+                featureInfo = getBotFeatureInfoUseCase.invoke(),
             )
         }
         return embedBuilder
