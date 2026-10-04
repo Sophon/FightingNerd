@@ -8,8 +8,8 @@ import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.app.domain.model.Emoji
 import io.github.sophon.discord.feat.core.domain.model.MoveRange
-import io.github.sophon.discord.adapter.inbound.kord.featureFooter
-import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.ui.featureFooter
+import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 
 internal fun moveListEmbed(
     category: String,
