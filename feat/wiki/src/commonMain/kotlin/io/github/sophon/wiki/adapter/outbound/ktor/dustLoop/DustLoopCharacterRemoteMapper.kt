@@ -1,6 +1,5 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.dustLoop
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.toClickable
@@ -13,6 +12,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.DBFZCharPro
 import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRCharProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.GGCharProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSCharProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 internal fun DustLoopCharacterListResponseDto.toDomain(
     game: Game,

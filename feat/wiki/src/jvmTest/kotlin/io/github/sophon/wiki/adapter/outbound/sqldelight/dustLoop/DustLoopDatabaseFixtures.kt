@@ -1,6 +1,5 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.dustLoop
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.Move
@@ -14,6 +13,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.GGCharPrope
 import io.github.sophon.wiki.application.domain.model.gameProperties.GGMoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSCharProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSMoveProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 // normalized, like the service hands them to the adapter
 // every property has a distinct value - a swapped column fails the round trip

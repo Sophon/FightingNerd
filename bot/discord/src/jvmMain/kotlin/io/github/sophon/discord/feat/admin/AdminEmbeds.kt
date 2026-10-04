@@ -3,8 +3,8 @@ package io.github.sophon.discord.feat.admin
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
-import io.github.sophon.discord.adapter.inbound.kord.featureFooter
-import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.ui.featureFooter
+import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.integration.model.AdminResult
 
 internal  fun createFeedbackEmbed(

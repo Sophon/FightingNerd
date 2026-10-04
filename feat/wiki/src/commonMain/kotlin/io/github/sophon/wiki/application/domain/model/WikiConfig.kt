@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.application.domain.model
 
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 @ConsistentCopyVisibility
 data class WikiConfig private constructor(

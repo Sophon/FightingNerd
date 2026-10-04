@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 /**
  * Only separate games (`Game.separateCharMoveDownload`) have a character table.

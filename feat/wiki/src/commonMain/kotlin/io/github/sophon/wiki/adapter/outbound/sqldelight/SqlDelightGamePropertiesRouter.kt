@@ -1,7 +1,5 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight
 
-import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.core.featureConfig.model.WikiClientFeature
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DragDownSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DreamCancelSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DustLoopSqlDelightGameProperties
@@ -12,6 +10,8 @@ import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.WavuSqlD
 import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.MoveGameProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.application.domain.model.wiki.Wiki
 
 /**
  * Routes each game to its wiki's extension tables - a wiki without them doesn't compile.
@@ -26,13 +26,13 @@ internal class SqlDelightGamePropertiesRouter(
 ) {
     fun of(game: Game): SqlDelightGameProperties {
         val gameProperties = when (game.wiki) {
-            WikiClientFeature.Wavu -> wavuGameProperties
-            WikiClientFeature.Mizuumi -> mizuumiGameProperties
-            WikiClientFeature.DustLoop -> dustLoopGameProperties
-            WikiClientFeature.SuperCombo -> superComboGameProperties
-            WikiClientFeature.DragDown -> dragDownGameProperties
-            WikiClientFeature.DreamCancel -> dreamCancelGameProperties
-            WikiClientFeature.Xko -> NoGameProperties
+            Wiki.Wavu -> wavuGameProperties
+            Wiki.Mizuumi -> mizuumiGameProperties
+            Wiki.DustLoop -> dustLoopGameProperties
+            Wiki.SuperCombo -> superComboGameProperties
+            Wiki.DragDown -> dragDownGameProperties
+            Wiki.DreamCancel -> dreamCancelGameProperties
+            Wiki.Xko -> NoGameProperties
         }
         return gameProperties
     }

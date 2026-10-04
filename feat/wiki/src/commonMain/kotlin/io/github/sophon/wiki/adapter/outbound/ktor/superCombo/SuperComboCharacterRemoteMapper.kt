@@ -1,12 +1,12 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.util.createAliases
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.gameProperties.MKCharProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.SFCharProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 internal fun SuperComboCharacterListResponseDto.toDomain(
     game: Game,

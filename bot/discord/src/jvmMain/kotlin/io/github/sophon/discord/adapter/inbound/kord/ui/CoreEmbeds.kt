@@ -1,19 +1,59 @@
-package io.github.sophon.discord.adapter.outbound.kord
+package io.github.sophon.discord.adapter.inbound.kord.ui
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
+import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
+import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
+import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.feat.admin.adminCommands
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
-import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
-import io.github.sophon.discord.adapter.inbound.kord.featureFooter
-import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
+import kotlin.collections.chunked
+
+internal fun errorEmbed(
+    error: BotError,
+    commandRegistry: CommandRegistry,
+): EmbedBuilder.() -> Unit = {
+    title = "ERROR"
+    color = Color(RED)
+    description = "**$error**".truncate(EMBED_MAX_LENGTH)
+
+    mandatoryField(
+        name = "↓↓↓ **CLICK THESE** ↓↓↓",
+        value = "Slash commands have **auto complete**.",
+        inline = false,
+    )
+
+    mandatoryField(
+        name = "Frame Data",
+        value = commandRegistry.mention(Command.Fd),
+    )
+
+    mandatoryField(
+        name = "Character Names",
+        value = commandRegistry.mention(Command.Alias),
+    )
+
+    mandatoryField(
+        name = "Other",
+        value = "${commandRegistry.mention(Command.Help)} | ${commandRegistry.mention(Command.Commands)}",
+        inline = false,
+    )
+
+    footer {
+        text = "Got something to say, nerd? Use `/feedback`"
+        icon = URL_IMG_FIGHTING_NERD
+    }
+}
 
 internal fun tipEmbed(
     featureInfo: FeatureInfo,
@@ -63,6 +103,49 @@ internal fun modulesEmbed(
                     }
                     "$name:\n$games"
                 }
+            },
+        )
+    }
+
+    mandatoryField(
+        name = "🫶 OTHER LINKS",
+        value = buildString {
+            appendLine("- **[DONATE]($URL_KOFI)**")
+            appendLine("- **[INVITE]($URL_INVITE)**")
+            appendLine("- **[Repo]($URL_REPO)**")
+        },
+        inline = false,
+    )
+
+    featureFooter(featureInfo)
+}
+
+internal fun modulesEmbed(
+    modulesResponse: BotResponse.ModulesResponse,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit = {
+    title = "FightingNerd bot by @phd_cunnilingus"
+    color = Color(PURPLE)
+
+    val moduleList = modulesResponse.moduleList
+    val chunks: List<List<BotResponse.ModulesResponse.Module>> = when (moduleList.size) {
+        in 1..5 -> {
+            listOf(moduleList)
+        }
+        in 5..EMBED_LIST_PER_COLUMN -> {
+            moduleList.chunked(5)
+        } else ->
+            moduleList.chunked(EMBED_LIST_PER_COLUMN)
+    }
+
+    chunks.forEachIndexed { index, moduleChunk ->
+        mandatoryField(
+            name = if (index == 0) "🧩 FEATURE MODULES" else "_",
+            value = moduleChunk.joinToString("\n") { module ->
+                val games = module.gameList.joinToString("\n") { game ->
+                    "  - $game"
+                }
+                "- **[${module.name}](${module.url})**:\n$games"
             },
         )
     }
@@ -241,3 +324,4 @@ internal fun helpEmbed(
 
 
 private const val PURPLE = 0x00A020F0
+private const val RED = 0x00FF0000

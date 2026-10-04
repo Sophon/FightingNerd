@@ -6,10 +6,10 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.capitalize
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.discord.adapter.inbound.kord.embedImage
-import io.github.sophon.discord.adapter.inbound.kord.featureFooter
-import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
-import io.github.sophon.discord.adapter.inbound.kord.optionalField
+import io.github.sophon.discord.adapter.inbound.kord.ui.embedImage
+import io.github.sophon.discord.adapter.inbound.kord.ui.featureFooter
+import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.ui.optionalField
 import io.github.sophon.wikidragdown.integration.model.Roa2MoveProperties
 import io.github.sophon.wikidragdown.integration.model.Roa2CharProperties
 

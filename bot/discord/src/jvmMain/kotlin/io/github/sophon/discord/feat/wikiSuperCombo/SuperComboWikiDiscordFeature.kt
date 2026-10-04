@@ -28,7 +28,7 @@ import io.github.sophon.discord.feat.core.usecase.GetMovesUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesWithinRangeUseCase
 import io.github.sophon.discord.feat.core.usecase.SyncWikiDataUseCase
 import io.github.sophon.discord.util.aggregateCharacters
-import io.github.sophon.discord.adapter.inbound.kord.toButtons
+import io.github.sophon.discord.adapter.inbound.kord.ui.toButtons
 import io.github.sophon.discord.util.withWiki
 import io.github.sophon.integration.model.Source
 import io.github.sophon.wikiSuperCombo.integration.SuperComboFeatureInfo

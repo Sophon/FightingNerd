@@ -15,7 +15,7 @@ import io.github.sophon.integration.adminModule
 import io.github.sophon.core.coreModule
 import io.github.sophon.discord.adapter.inbound.kord.KordPoster
 import io.github.sophon.integration.data.ReportRepo
-import io.github.sophon.discord.adapter.outbound.file.FilesAdapter
+import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.discord.app.domain.service.CharacterService
 import io.github.sophon.discord.app.domain.service.CharacterServiceImpl
@@ -29,14 +29,12 @@ import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.app.port.outbound.CharactersPort
-import io.github.sophon.discord.app.port.outbound.CheckFileExistsPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
-import io.github.sophon.discord.app.port.outbound.CreateFilePort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
 import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
+import io.github.sophon.discord.app.port.outbound.LoadConfigPort
 import io.github.sophon.discord.app.port.outbound.ReadFilePort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
-import io.github.sophon.discord.app.port.outbound.WriteToFilePort
 import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.data.JsonReportRepo
@@ -148,12 +146,10 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::ProduceAutoCompleteService).bind<ProduceAutoCompleteUseCase>()
     //endregion
 
-    //region File operations
-    singleOf(::FilesAdapter) {
+    //region Config
+    singleOf(::ConfigAdapter) {
         bind<ReadFilePort>()
-        bind<WriteToFilePort>()
-        bind<CheckFileExistsPort>()
-        bind<CreateFilePort>()
+        bind<LoadConfigPort>()
     }
     //endregion
 

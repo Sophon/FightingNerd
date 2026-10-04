@@ -1,4 +1,4 @@
-package io.github.sophon.discord.adapter.inbound.kord
+package io.github.sophon.discord.adapter.inbound.kord.ui
 
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.invisibleChar

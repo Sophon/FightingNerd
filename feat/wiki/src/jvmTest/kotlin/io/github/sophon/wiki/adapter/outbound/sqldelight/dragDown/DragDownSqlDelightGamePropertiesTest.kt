@@ -2,8 +2,8 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight.dragDown
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.adapter.outbound.sqldelight.TestWikiDatabase
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test

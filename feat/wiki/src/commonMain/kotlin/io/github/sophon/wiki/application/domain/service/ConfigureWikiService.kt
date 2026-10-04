@@ -7,10 +7,10 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.WikiConfig
 import io.github.sophon.wiki.application.domain.model.WikiError
 import io.github.sophon.wiki.application.domain.model.toWikiError
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import io.github.sophon.wiki.application.port.inbound.ConfigureWikiUseCase
 import io.github.sophon.wiki.application.port.outbound.DeleteCharacterListPort
 import io.github.sophon.wiki.application.port.outbound.DeleteMoveListPort

@@ -1,7 +1,6 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.adapter.outbound.sqldelight.LazyWikiDB
 import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
 import io.github.sophon.wiki.application.domain.model.CharacterId
@@ -10,6 +9,7 @@ import io.github.sophon.wiki.application.domain.model.gameProperties.MBTLMovePro
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2CharProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
 import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMoveProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import io.github.sophon.wiki.data.mizuumi.Mbtl_move
 import io.github.sophon.wiki.data.mizuumi.Uni2_character
 import io.github.sophon.wiki.data.mizuumi.Uni2_move

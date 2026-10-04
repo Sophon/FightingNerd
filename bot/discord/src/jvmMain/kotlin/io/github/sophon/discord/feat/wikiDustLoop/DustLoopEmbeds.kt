@@ -8,11 +8,11 @@ import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.toColumns
 import io.github.sophon.core.wiki.model.Character
 import io.github.sophon.core.wiki.model.Move
-import io.github.sophon.discord.adapter.inbound.kord.featureFooter
-import io.github.sophon.discord.adapter.inbound.kord.embedImage
-import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
-import io.github.sophon.discord.adapter.inbound.kord.moveEmbedDescription
-import io.github.sophon.discord.adapter.inbound.kord.optionalField
+import io.github.sophon.discord.adapter.inbound.kord.ui.featureFooter
+import io.github.sophon.discord.adapter.inbound.kord.ui.embedImage
+import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.ui.moveEmbedDescription
+import io.github.sophon.discord.adapter.inbound.kord.ui.optionalField
 import io.github.sophon.wikidustloop.integration.getLevel
 import io.github.sophon.wikidustloop.integration.model.BBMoveProperties
 import io.github.sophon.wikidustloop.integration.model.BBCharProperties

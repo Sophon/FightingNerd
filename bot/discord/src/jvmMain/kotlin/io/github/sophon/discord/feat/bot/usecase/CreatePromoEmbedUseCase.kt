@@ -12,7 +12,7 @@ import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_PLAY_STORE
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import kotlin.uuid.ExperimentalUuidApi
 
 @ExcludeFromCoverage("UI")

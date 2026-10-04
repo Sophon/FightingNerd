@@ -18,7 +18,7 @@ import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.util.kordRestCall
-import io.github.sophon.discord.adapter.inbound.kord.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay

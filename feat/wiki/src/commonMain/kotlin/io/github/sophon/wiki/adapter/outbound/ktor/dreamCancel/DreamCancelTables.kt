@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel
 
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 internal object DreamCancelTables {
     val moveTableByGame = mapOf(

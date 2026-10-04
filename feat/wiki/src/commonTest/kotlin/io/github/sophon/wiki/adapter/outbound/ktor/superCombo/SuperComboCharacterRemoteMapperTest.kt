@@ -2,10 +2,10 @@ package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Character
 import io.github.sophon.wiki.application.domain.model.CharacterId
 import io.github.sophon.wiki.application.domain.model.gameProperties.SFCharProperties
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import kotlin.test.Test
 
 class SuperComboCharacterRemoteMapperTest {

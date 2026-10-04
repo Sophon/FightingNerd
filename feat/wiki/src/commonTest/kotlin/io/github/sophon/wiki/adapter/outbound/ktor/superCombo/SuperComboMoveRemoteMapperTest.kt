@@ -2,8 +2,8 @@ package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.wiki.application.domain.model.Move
+import io.github.sophon.wiki.application.domain.model.wiki.Game
 import kotlin.test.Test
 
 class SuperComboMoveRemoteMapperTest {
