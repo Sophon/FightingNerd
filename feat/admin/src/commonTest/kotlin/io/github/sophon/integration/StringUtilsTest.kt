@@ -2,7 +2,7 @@ package io.github.sophon.integration
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.app.model.Source
+import io.github.sophon.model.Source
 import io.github.sophon.app.util.toSource
 import io.github.sophon.app.util.toSourceAndMessage
 import kotlin.test.Test

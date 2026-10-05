@@ -2,7 +2,7 @@ package io.github.sophon.adapter.outbound.sqldelight
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.admin.data.AdminDatabase
-import io.github.sophon.app.model.Ban
+import io.github.sophon.model.Ban
 import io.github.sophon.app.outboundPorts.BanPort
 import io.github.sophon.app.outboundPorts.ClearExpiredBansPort
 import io.github.sophon.core.architecture.DataError

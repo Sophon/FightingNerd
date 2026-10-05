@@ -1,4 +1,4 @@
-package io.github.sophon.app.model
+package io.github.sophon.model
 
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days

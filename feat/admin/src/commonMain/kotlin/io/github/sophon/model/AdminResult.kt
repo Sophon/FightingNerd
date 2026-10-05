@@ -1,4 +1,4 @@
-package io.github.sophon.app.model
+package io.github.sophon.model
 
 data class AdminResult(
     val source: Source,

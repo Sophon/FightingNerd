@@ -1,6 +1,6 @@
 package io.github.sophon.app.outboundPorts
 
-import io.github.sophon.app.model.Ban
+import io.github.sophon.model.Ban
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
 

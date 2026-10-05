@@ -1,6 +1,6 @@
 package io.github.sophon.app.util
 
-import io.github.sophon.app.model.Source
+import io.github.sophon.model.Source
 
 fun String.toSourceAndMessage(): Pair<Source, String>? {
     val queryFields = this.split(" ")

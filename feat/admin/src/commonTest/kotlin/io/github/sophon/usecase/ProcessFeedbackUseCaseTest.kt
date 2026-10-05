@@ -6,10 +6,10 @@ import assertk.assertions.isInstanceOf
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Config
-import io.github.sophon.app.model.AdminError
-import io.github.sophon.app.model.AdminResult
-import io.github.sophon.app.model.Ban
-import io.github.sophon.app.model.Source
+import io.github.sophon.model.AdminError
+import io.github.sophon.model.AdminResult
+import io.github.sophon.model.Ban
+import io.github.sophon.model.Source
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.time.Duration

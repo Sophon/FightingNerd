@@ -1,7 +1,7 @@
 package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.app.model.AdminError
+import io.github.sophon.model.AdminError
 import io.github.sophon.inboundPorts.ConfigureAdminToolUseCase
 import io.github.sophon.app.outboundPorts.AdminListPort
 import io.github.sophon.core.architecture.EmptyResult

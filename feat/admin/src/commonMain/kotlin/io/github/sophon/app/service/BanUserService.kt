@@ -1,9 +1,9 @@
 package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.app.model.AdminError
-import io.github.sophon.app.model.Ban
-import io.github.sophon.app.model.BanRequest
+import io.github.sophon.model.AdminError
+import io.github.sophon.model.Ban
+import io.github.sophon.model.BanRequest
 import io.github.sophon.inboundPorts.BanUserUseCase
 import io.github.sophon.app.outboundPorts.BanPort
 import io.github.sophon.app.outboundPorts.AdminListPort
