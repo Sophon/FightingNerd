@@ -8,7 +8,7 @@ import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.data.BanRepo
-import io.github.sophon.integration.AdminFeatureInfo
+import io.github.sophon.AdminFeatureInfo
 import io.github.sophon.integration.AdminTool
 import io.github.sophon.app.domain.model.AdminError
 import io.github.sophon.app.domain.model.AdminResult

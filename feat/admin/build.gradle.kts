@@ -46,7 +46,7 @@ kotlin {
     }
 }
 
-val featureVersion = "1.1.0"
+val featureVersion = "2.0.0"
 buildkonfig {
     packageName = "io.github.sophon.admin"
 
