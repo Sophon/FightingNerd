@@ -1,12 +1,15 @@
 package io.github.sophon.discord.app.service
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.BotResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.MoveType
 import io.github.sophon.discord.app.model.UserRequest
+import io.github.sophon.discord.app.outPort.StatsPort
 
 internal class CommandRouterService(
     private val moveService: MoveService,
@@ -14,24 +17,28 @@ internal class CommandRouterService(
     private val coreBotService: CoreBotService,
     private val banService: BanService,
     private val adminService: AdminService,
+    private val statsPort: StatsPort,
 ) {
     suspend operator fun invoke(userRequest: UserRequest): Result<BotResponse, BotError> {
+        val initialCommand = resolveCommand(userRequest)
         val initialResult = invoke(
-            command = resolveCommand(userRequest),
+            command = initialCommand,
             query = userRequest.query,
             source = userRequest.source,
         )
 
-        val result = if ((userRequest.command == null) && (initialResult is Result.Error)) {
+        val (command, result) = if ((userRequest.command == null) && (initialResult is Result.Error)) {
             retryWithExtractedCommand(
                 query = userRequest.query,
                 source = userRequest.source,
+                originalCommand = initialCommand,
                 originalResult = initialResult,
             )
         } else {
-            initialResult
+            (initialCommand to initialResult)
         }
 
+        recordUsage(command = command, result = result)
         return result
     }
 
@@ -101,18 +108,29 @@ internal class CommandRouterService(
     private suspend fun retryWithExtractedCommand(
         query: String,
         source: UserRequest.Source,
+        originalCommand: Command,
         originalResult: Result<BotResponse, BotError>,
-    ): Result<BotResponse, BotError> {
+    ): Pair<Command, Result<BotResponse, BotError>> {
         val wordList = query.split(' ')
         val (commandWord, command) = wordList
             .firstNotNullOfOrNull { word -> Command.fromId(word)?.let { word to it } }
-            ?: return originalResult
+            ?: return (originalCommand to originalResult)
 
         val result = invoke(
             command = command,
             query = (wordList - commandWord).joinToString(" "),
             source = source,
         )
-        return result
+        val routed = (command to result)
+        return routed
+    }
+
+    private suspend fun recordUsage(
+        command: Command,
+        result: Result<BotResponse, BotError>,
+    ) {
+        result
+            .onSuccess { response -> statsPort.register(command = command, game = response.game) }
+            .onError { statsPort.registerFailure() }
     }
 }

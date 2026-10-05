@@ -228,6 +228,7 @@ internal class MoveServiceImpl(
             }
 
         val listResponse = BotResponse.ListResponse(
+            game = character.game,
             title = "${moveType.toEmoji()}${character.displayName.uppercase()} ${moveType.toTitle()} moves",
             values = map { it.input },
             dataSource = character.dataSource,
@@ -262,6 +263,7 @@ internal class MoveServiceImpl(
             }
 
         val listResponse = BotResponse.ListResponse(
+            game = character.game,
             title = "$moveType moves",
             values = map { it.input },
             dataSource = character.dataSource,
@@ -292,6 +294,7 @@ internal class MoveServiceImpl(
             }
 
         val listResponse = BotResponse.ListResponse(
+            game = character.game,
             title = "${character.displayName.uppercase()} stances",
             values = toList(),
             dataSource = character.dataSource,

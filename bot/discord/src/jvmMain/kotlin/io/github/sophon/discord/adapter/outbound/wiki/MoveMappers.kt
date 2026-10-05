@@ -44,6 +44,7 @@ internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
         ?.let { buttonList -> BotResponse.ButtonSet(buttonList = buttonList) }
 
     val moveResponse = BotResponse.MoveResponse(
+        game = character.id.game,
         input = input,
         url = urls.wikiUrl,
         characterName = character.displayName,

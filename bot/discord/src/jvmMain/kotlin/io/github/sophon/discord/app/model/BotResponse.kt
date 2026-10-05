@@ -8,8 +8,10 @@ import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant
 
 sealed interface BotResponse {
+    val game: Game? get() = null
 
     data class MoveResponse(
+        override val game: Game,
         val input: String,
         val url: String?,
         val characterName: String,
@@ -30,7 +32,7 @@ sealed interface BotResponse {
 
     data class CharacterResponse(
         val id: String,
-        val game: Game,
+        override val game: Game,
         val displayName: String,
         val url: String,
         val dataSource: DataSource,
@@ -41,7 +43,9 @@ sealed interface BotResponse {
     sealed interface AliasResponse: BotResponse {
         data class CharacterAliases(
             val characterList: List<CharacterResponse>,
-        ): AliasResponse
+        ): AliasResponse {
+            override val game: Game? get() = characterList.firstOrNull()?.game
+        }
 
         data class GamePrompt(
             val gameList: List<String>,
@@ -50,6 +54,7 @@ sealed interface BotResponse {
     }
 
     data class ListResponse(
+        override val game: Game,
         val title: String,
         val values: List<String>,
         val dataSource: DataSource,
