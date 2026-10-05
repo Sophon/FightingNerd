@@ -7,7 +7,7 @@ import io.github.sophon.discord.feat.core.domain.model.DiscordButton
 import io.github.sophon.wiki.application.domain.model.wiki.Game
 
 /**
- * Null for a button the new API doesn't handle - the legacy Edit and Redirect buttons,
+ * Null for a button the new API doesn't handle - the legacy Edit buttons,
  * and legacy Query buttons, whose plain query doesn't decode into a [MoveId].
  */
 internal fun decodeToButtonEvent(buttonId: String): ButtonEvent? {
@@ -20,6 +20,7 @@ internal fun decodeToButtonEvent(buttonId: String): ButtonEvent? {
         DiscordButton.KEY_EXPAND -> decodeMoveId(value)?.let { moveId -> ButtonEvent.Expand(moveId) }
         DiscordButton.KEY_QUERY -> decodeMoveId(value)?.let { moveId -> ButtonEvent.Query(moveId) }
         DiscordButton.KEY_TEXT -> ButtonEvent.Text(value)
+        DiscordButton.KEY_REDIRECT -> ButtonEvent.Forward(value)
         DiscordButton.KEY_COMMAND -> decodeCommand(value)
         else -> null
     }

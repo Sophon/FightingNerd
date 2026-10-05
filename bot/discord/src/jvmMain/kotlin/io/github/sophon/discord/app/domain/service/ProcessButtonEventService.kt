@@ -22,6 +22,7 @@ internal class ProcessButtonEventService(
             is ButtonEvent.Expand -> expand(buttonEvent.moveId)
             is ButtonEvent.Query -> frameDataPort.getFrameData(buttonEvent.moveId)
             is ButtonEvent.Text -> Result.Success(BotResponse.PlainText(text = buttonEvent.text))
+            is ButtonEvent.Forward -> Result.Success(BotResponse.Redirect(channelId = buttonEvent.channelId))
             is ButtonEvent.Command -> {
                 commandRouterService(
                     command = buttonEvent.command,

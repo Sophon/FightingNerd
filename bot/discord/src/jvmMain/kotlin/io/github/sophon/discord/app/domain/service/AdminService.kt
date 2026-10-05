@@ -3,13 +3,17 @@ package io.github.sophon.discord.app.domain.service
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
+import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.app.port.outbound.AdminPort
 import io.github.sophon.discord.app.port.outbound.BanPort
 import io.github.sophon.discord.app.port.outbound.LoadConfigPort
+import io.github.sophon.wiki.application.domain.model.wiki.Game
+import kotlin.time.Duration.Companion.seconds
 
 internal interface AdminService {
     fun isAdmin(userId: String): Result<Boolean, BotError>
@@ -77,12 +81,38 @@ internal class AdminServiceImpl(
                                 author = author,
                                 message = message,
                                 feedbackChannelIdList = discordConfig.adminConfig.feedbackChannelIdList,
+                                buttonSet = createForwardButtonSet(discordConfig.featureList),
                             )
                         }
                 }
                 feedbackResult
             }
         return result
+    }
+
+    private fun createForwardButtonSet(featureList: List<DiscordConfig.Feature>): BotResponse.ButtonSet {
+        val buttonList = featureList
+            .asSequence()
+            .filter { it.isEnabled }
+            .flatMap { it.supportedGames }
+            .mapNotNull { gameId -> Game.fromId(gameId) }
+            .map { it.wiki }
+            .distinct()
+            .mapNotNull { wiki ->
+                wiki.feedbackDiscordChannelId?.let { channelId ->
+                    BotResponse.EmbedButton(
+                        label = wiki.displayName,
+                        action = BotResponse.EmbedButton.Action.Redirect(channelId),
+                    )
+                }
+            }
+            .toList()
+
+        val buttonSet = BotResponse.ButtonSet(
+            buttonList = buttonList,
+            duration = EMBED_BUTTON_DURATION_INF.seconds,
+        )
+        return buttonSet
     }
 
     private fun createReply(

@@ -113,12 +113,15 @@ sealed interface BotResponse {
         val author: UserRequest.Source,
         val message: String,
         val feedbackChannelIdList: List<String>,
+        val buttonSet: ButtonSet,
     ): BotResponse
 
     data class Reply(
         val recipient: UserRequest.Source,
         val message: String,
     ): BotResponse
+
+    data class Redirect(val channelId: String): BotResponse
 
 
     data class DataSource(
