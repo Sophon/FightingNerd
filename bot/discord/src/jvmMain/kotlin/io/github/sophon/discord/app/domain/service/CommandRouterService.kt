@@ -5,6 +5,7 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_REPO
+import io.github.sophon.discord.URL_SCRIPT_LOBBY
 import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
@@ -24,10 +25,15 @@ internal class CommandRouterService(
         val initialResult = route(
             command = resolveCommand(userRequest),
             query = userRequest.query,
+            source = userRequest.source,
         )
 
         val result = if ((userRequest.command == null) && (initialResult is Result.Error)) {
-            retryWithExtractedCommand(query = userRequest.query, originalResult = initialResult)
+            retryWithExtractedCommand(
+                query = userRequest.query,
+                source = userRequest.source,
+                originalResult = initialResult,
+            )
         } else {
             initialResult
         }
@@ -35,7 +41,11 @@ internal class CommandRouterService(
         return result
     }
 
-    suspend fun route(command: Command, query: String): Result<BotResponse, BotError> {
+    suspend fun route(
+        command: Command,
+        query: String,
+        source: UserRequest.Source?,
+    ): Result<BotResponse, BotError> {
         val result = when (command) {
             Command.Fd -> moveService.findFrameData(query)
 
@@ -67,7 +77,8 @@ internal class CommandRouterService(
             Command.Modules -> createModulesResponse()
             Command.Alias -> createAliasResponse(gameQuery = query)
 
-            Command.Join,
+            Command.Join -> createSteamLobbyResponse(query = query, source = source)
+
             Command.Feedback,
             Command.Reply,
             Command.Ban,
@@ -93,6 +104,7 @@ internal class CommandRouterService(
      */
     private suspend fun retryWithExtractedCommand(
         query: String,
+        source: UserRequest.Source,
         originalResult: Result<BotResponse, BotError>,
     ): Result<BotResponse, BotError> {
         val wordList = query.split(' ')
@@ -103,6 +115,7 @@ internal class CommandRouterService(
         val result = route(
             command = command,
             query = (wordList - commandWord).joinToString(" "),
+            source = source,
         )
         return result
     }
@@ -186,6 +199,44 @@ internal class CommandRouterService(
             ),
         )
         return response
+    }
+
+    /**
+     * Query is `[steamLobbyUrl] [password] [lobbyName]`; the lobby name can have spaces.
+     * Button paths have no [source] to name the host.
+     */
+    private fun createSteamLobbyResponse(
+        query: String,
+        source: UserRequest.Source?,
+    ): Result<BotResponse, BotError> {
+        val parts = query.split(" ")
+        val steamLobbyUrl = parts[0]
+
+        val result = when {
+            (source == null) -> Result.Error(BotError.BotLogicError(Command.Join.name, query))
+            (steamLobbyUrl.startsWith(URL_STEAM_LOBBY, ignoreCase = true).not()) -> {
+                Result.Error(BotError.InvalidSteamLobbyUrl(steamLobbyUrl))
+            }
+            else -> {
+                val joinUrl = "$URL_SCRIPT_LOBBY?target=$steamLobbyUrl"
+                val response = BotResponse.SteamLobby(
+                    hostName = source.username,
+                    lobbyName = parts.drop(2).joinToString(" ").ifBlank { null },
+                    password = parts.getOrNull(1),
+                    buttonSet = BotResponse.ButtonSet(
+                        buttonList = listOf(
+                            BotResponse.EmbedButton(
+                                label = "🎮 JOIN",
+                                action = BotResponse.EmbedButton.Action.Url(joinUrl),
+                            ),
+                        ),
+                        duration = EMBED_BUTTON_DURATION_INF.seconds,
+                    ),
+                )
+                Result.Success(response)
+            }
+        }
+        return result
     }
 
     private fun resolveCommand(userRequest: UserRequest): Command {
