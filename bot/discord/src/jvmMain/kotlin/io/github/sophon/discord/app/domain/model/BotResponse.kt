@@ -84,6 +84,13 @@ sealed interface BotResponse {
         )
     }
 
+    data class SteamLobby(
+        val hostName: String,
+        val lobbyName: String?,
+        val password: String?,
+        val buttonSet: ButtonSet,
+    ): BotResponse
+
 
     data class DataSource(
         val name: String,

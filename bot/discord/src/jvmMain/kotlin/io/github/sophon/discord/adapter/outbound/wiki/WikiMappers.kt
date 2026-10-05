@@ -3,6 +3,9 @@ package io.github.sophon.discord.adapter.outbound.wiki
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.DiscordConfig
+import io.github.sophon.discord.app.domain.model.FrameRange
+import io.github.sophon.wiki.application.domain.model.CoreFilters
+import io.github.sophon.wiki.application.domain.model.Filter
 import io.github.sophon.wiki.application.domain.model.WikiConfig
 import io.github.sophon.wiki.application.domain.model.WikiError
 import io.github.sophon.wiki.application.domain.model.wiki.Game
@@ -34,4 +37,15 @@ internal fun WikiError.toDomainError(): BotError {
     }
 
     return botError
+}
+
+internal fun FrameRange.toFilter(): Filter {
+    val filter = when (type) {
+        FrameRange.Type.STARTUP -> CoreFilters.Startup(from = from, to = to)
+        FrameRange.Type.ON_HIT -> CoreFilters.OnHit(from = from, to = to)
+        FrameRange.Type.ON_BLOCK -> CoreFilters.OnBlock(from = from, to = to)
+        FrameRange.Type.ON_COUNTER -> CoreFilters.OnCounter(from = from, to = to)
+    }
+
+    return filter
 }

@@ -64,7 +64,7 @@ internal class DiscordBotImpl(
     private val scheduler: Scheduler,
     private val commandRegistry: CommandRegistry,
 
-    private val kordPoster: KordPoster,
+    private val kordResponder: KordResponder,
     private val startFeaturesUseCase: StartFeaturesUseCase,
     private val processUserInputUseCase: ProcessUserInputUseCase,
     private val processButtonEventUseCase: ProcessButtonEventUseCase,
@@ -153,7 +153,7 @@ internal class DiscordBotImpl(
                 .onSuccess { response ->
                     when (response) {
                         is BotResponse.MoveResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 message = message,
                                 embedBuilder = moveEmbed(response),
                                 imageList = response.hitboxImageList,
@@ -162,7 +162,7 @@ internal class DiscordBotImpl(
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.ListResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 message = message,
                                 embedBuilder = moveListEmbed(response),
                                 imageList = emptyList(),
@@ -171,7 +171,7 @@ internal class DiscordBotImpl(
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.CharacterResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 message = message,
                                 embedBuilder = characterEmbed(response),
                                 imageList = emptyList(),
@@ -180,25 +180,31 @@ internal class DiscordBotImpl(
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.CoreResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 message = message,
                                 coreResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.ModulesResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 message = message,
                                 modulesResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.AliasResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 message = message,
                                 aliasResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is BotResponse.SteamLobby -> {
+                            kordResponder.respond(
+                                message = message,
+                                steamLobby = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         is BotResponse.PlainText -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 message = message,
                                 plainText = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
@@ -207,7 +213,7 @@ internal class DiscordBotImpl(
                     }
                 }
                 .onError { botError ->
-                    kordPoster.post(
+                    kordResponder.respond(
                         message = message,
                         botError = botError,
                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
@@ -229,7 +235,7 @@ internal class DiscordBotImpl(
                 .onSuccess { response ->
                     when (response) {
                         is BotResponse.MoveResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 interaction = interaction,
                                 embedBuilder = moveEmbed(response),
                                 imageList = response.hitboxImageList,
@@ -238,7 +244,7 @@ internal class DiscordBotImpl(
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.ListResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 interaction = interaction,
                                 embedBuilder = moveListEmbed(response),
                                 imageList = emptyList(),
@@ -247,7 +253,7 @@ internal class DiscordBotImpl(
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.CharacterResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 interaction = interaction,
                                 embedBuilder = characterEmbed(response),
                                 imageList = emptyList(),
@@ -256,25 +262,31 @@ internal class DiscordBotImpl(
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.CoreResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 interaction = interaction,
                                 coreResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.ModulesResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 interaction = interaction,
                                 modulesResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.AliasResponse -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 interaction = interaction,
                                 aliasResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is BotResponse.SteamLobby -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                steamLobby = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         is BotResponse.PlainText -> {
-                            kordPoster.post(
+                            kordResponder.respond(
                                 interaction = interaction,
                                 plainText = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
@@ -283,7 +295,7 @@ internal class DiscordBotImpl(
                     }
                 }
                 .onError { botError ->
-                    kordPoster.post(
+                    kordResponder.respond(
                         interaction = interaction,
                         botError = botError,
                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
@@ -305,7 +317,7 @@ internal class DiscordBotImpl(
                     when (buttonEvent) {
                         is ButtonEvent.Expand -> {
                             if (response is BotResponse.MoveResponse) {
-                                kordPoster.edit(
+                                kordResponder.edit(
                                     message = interaction.message,
                                     embedBuilder = moveEmbed(response),
                                     imageList = response.hitboxImageList,
@@ -317,7 +329,7 @@ internal class DiscordBotImpl(
 
                         is ButtonEvent.Query -> {
                             if (response is BotResponse.MoveResponse) {
-                                kordPoster.post(
+                                kordResponder.respond(
                                     message = interaction.message,
                                     embedBuilder = moveEmbed(response),
                                     imageList = response.hitboxImageList,
@@ -330,7 +342,7 @@ internal class DiscordBotImpl(
                         is ButtonEvent.Command -> {
                             when (response) {
                                 is BotResponse.MoveResponse -> {
-                                    kordPoster.post(
+                                    kordResponder.respond(
                                         message = interaction.message,
                                         embedBuilder = moveEmbed(response),
                                         imageList = response.hitboxImageList,
@@ -339,7 +351,7 @@ internal class DiscordBotImpl(
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
                                 is BotResponse.ListResponse -> {
-                                    kordPoster.post(
+                                    kordResponder.respond(
                                         message = interaction.message,
                                         embedBuilder = moveListEmbed(response),
                                         imageList = emptyList(),
@@ -348,7 +360,7 @@ internal class DiscordBotImpl(
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
                                 is BotResponse.CharacterResponse -> {
-                                    kordPoster.post(
+                                    kordResponder.respond(
                                         message = interaction.message,
                                         embedBuilder = characterEmbed(response),
                                         imageList = emptyList(),
@@ -357,19 +369,19 @@ internal class DiscordBotImpl(
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
                                 is BotResponse.CoreResponse -> {
-                                    kordPoster.post(
+                                    kordResponder.respond(
                                         message = interaction.message,
                                         coreResponse = response,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
                                 is BotResponse.ModulesResponse -> {
-                                    kordPoster.post(
+                                    kordResponder.respond(
                                         message = interaction.message,
                                         modulesResponse = response,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
                                 is BotResponse.AliasResponse -> {
-                                    kordPoster.post(
+                                    kordResponder.respond(
                                         message = interaction.message,
                                         aliasResponse = response,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
@@ -380,7 +392,7 @@ internal class DiscordBotImpl(
 
                         is ButtonEvent.Text -> {
                             if (response is BotResponse.PlainText) {
-                                kordPoster.postText(
+                                kordResponder.respondText(
                                     response = deferredResponse,
                                     mention = interaction.user.mention,
                                     text = response.text,

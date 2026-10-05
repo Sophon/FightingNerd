@@ -12,12 +12,14 @@ import io.github.sophon.core.wiki.data.fingerprint
 import io.github.sophon.core.wiki.data.readStoredFingerprint
 import io.github.sophon.core.wiki.data.storeFingerprint
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
-import io.github.sophon.discord.adapter.inbound.kord.KordPoster
+import io.github.sophon.discord.adapter.inbound.kord.KordResponder
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.discord.app.domain.service.CharacterService
 import io.github.sophon.discord.app.domain.service.CharacterServiceImpl
 import io.github.sophon.discord.app.domain.service.CommandRouterService
+import io.github.sophon.discord.app.domain.service.CoreBotService
+import io.github.sophon.discord.app.domain.service.CoreBotServiceImpl
 import io.github.sophon.discord.app.domain.service.MoveService
 import io.github.sophon.discord.app.domain.service.MoveServiceImpl
 import io.github.sophon.discord.app.domain.service.ProcessButtonEventService
@@ -31,6 +33,7 @@ import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.app.port.outbound.CharactersPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
+import io.github.sophon.discord.app.port.outbound.GetMovesInRangePort
 import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
 import io.github.sophon.discord.app.port.outbound.LoadConfigPort
 import io.github.sophon.discord.app.port.outbound.ReadFilePort
@@ -119,7 +122,7 @@ internal fun dcBotModule(kord: Kord) = module {
     }
 
     //region Kord
-    singleOf(::KordPoster)
+    singleOf(::KordResponder)
     //endregion
 
     //region Services
@@ -128,6 +131,7 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::ProcessButtonEventService).bind<ProcessButtonEventUseCase>()
     singleOf(::CommandRouterService)
     singleOf(::CharacterServiceImpl).bind<CharacterService>()
+    singleOf(::CoreBotServiceImpl).bind<CoreBotService>()
     singleOf(::MoveServiceImpl).bind<MoveService>()
     singleOf(::ProduceAutoCompleteService).bind<ProduceAutoCompleteUseCase>()
     //endregion
@@ -145,6 +149,7 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<RefreshWikiPort>()
         bind<FrameDataPort>()
         bind<GetMovesOfTypePort>()
+        bind<GetMovesInRangePort>()
         bind<CharactersPort>()
     }
     //endregion

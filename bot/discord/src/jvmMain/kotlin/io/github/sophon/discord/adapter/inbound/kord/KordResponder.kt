@@ -27,6 +27,7 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.steamLobbyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
@@ -38,13 +39,13 @@ import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
 @ExcludeFromCoverage("UI")
-internal class KordPoster(
+internal class KordResponder(
     private val createPromoEmbedUseCase: CreatePromoEmbedUseCase,
     private val discordButtonBuilder: DiscordButtonBuilder,
     private val commandRegistry: CommandRegistry,
     private val getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
 ) {
-    suspend fun post(
+    suspend fun respond(
         message: Message,
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
@@ -79,7 +80,7 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         embedBuilder: EmbedBuilder.() -> Unit,
         imageList: List<String>,
@@ -112,11 +113,11 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         message: Message,
         coreResponse: BotResponse.CoreResponse,
     ): EmptyResult<BotError> {
-        val result = post(
+        val result = respond(
             message = message,
             embedBuilder = coreEmbed(coreResponse.type),
             imageList = emptyList(),
@@ -126,11 +127,11 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         coreResponse: BotResponse.CoreResponse,
     ): EmptyResult<BotError> {
-        val result = post(
+        val result = respond(
             interaction = interaction,
             embedBuilder = coreEmbed(coreResponse.type),
             imageList = emptyList(),
@@ -140,11 +141,11 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         message: Message,
         modulesResponse: BotResponse.ModulesResponse,
     ): EmptyResult<BotError> {
-        val result = post(
+        val result = respond(
             message = message,
             embedBuilder = modulesEmbed(modulesResponse, getBotFeatureInfoUseCase.invoke()),
             imageList = emptyList(),
@@ -154,11 +155,11 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         modulesResponse: BotResponse.ModulesResponse,
     ): EmptyResult<BotError> {
-        val result = post(
+        val result = respond(
             interaction = interaction,
             embedBuilder = modulesEmbed(modulesResponse, getBotFeatureInfoUseCase.invoke()),
             imageList = emptyList(),
@@ -168,11 +169,39 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
+        message: Message,
+        steamLobby: BotResponse.SteamLobby,
+    ): EmptyResult<BotError> {
+        val result = respond(
+            message = message,
+            embedBuilder = steamLobbyEmbed(steamLobby),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = steamLobby.buttonSet,
+        )
+        return result
+    }
+
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        steamLobby: BotResponse.SteamLobby,
+    ): EmptyResult<BotError> {
+        val result = respond(
+            interaction = interaction,
+            embedBuilder = steamLobbyEmbed(steamLobby),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = steamLobby.buttonSet,
+        )
+        return result
+    }
+
+    suspend fun respond(
         message: Message,
         aliasResponse: BotResponse.AliasResponse,
     ): EmptyResult<BotError> {
-        val result = post(
+        val result = respond(
             message = message,
             embedBuilder = aliasResponseEmbed(aliasResponse),
             imageList = emptyList(),
@@ -182,11 +211,11 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         aliasResponse: BotResponse.AliasResponse,
     ): EmptyResult<BotError> {
-        val result = post(
+        val result = respond(
             interaction = interaction,
             embedBuilder = aliasResponseEmbed(aliasResponse),
             imageList = emptyList(),
@@ -196,7 +225,7 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         message: Message,
         plainText: BotResponse.PlainText,
     ): EmptyResult<BotError> {
@@ -215,7 +244,7 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         plainText: BotResponse.PlainText,
     ): EmptyResult<BotError> {
@@ -232,7 +261,7 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         message: Message,
         botError: BotError,
     ): EmptyResult<BotError> {
@@ -251,7 +280,7 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun post(
+    suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         botError: BotError,
     ): EmptyResult<BotError> {
@@ -298,7 +327,7 @@ internal class KordPoster(
         return result
     }
 
-    suspend fun postText(
+    suspend fun respondText(
         response: FollowupPermittingInteractionResponseBehavior,
         mention: String,
         text: String,
