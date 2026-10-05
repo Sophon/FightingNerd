@@ -18,6 +18,8 @@ import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.discord.app.domain.service.CharacterService
 import io.github.sophon.discord.app.domain.service.CharacterServiceImpl
 import io.github.sophon.discord.app.domain.service.CommandRouterService
+import io.github.sophon.discord.app.domain.service.CoreBotService
+import io.github.sophon.discord.app.domain.service.CoreBotServiceImpl
 import io.github.sophon.discord.app.domain.service.MoveService
 import io.github.sophon.discord.app.domain.service.MoveServiceImpl
 import io.github.sophon.discord.app.domain.service.ProcessButtonEventService
@@ -128,6 +130,7 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::ProcessButtonEventService).bind<ProcessButtonEventUseCase>()
     singleOf(::CommandRouterService)
     singleOf(::CharacterServiceImpl).bind<CharacterService>()
+    singleOf(::CoreBotServiceImpl).bind<CoreBotService>()
     singleOf(::MoveServiceImpl).bind<MoveService>()
     singleOf(::ProduceAutoCompleteService).bind<ProduceAutoCompleteUseCase>()
     //endregion
