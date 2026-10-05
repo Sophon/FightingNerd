@@ -10,6 +10,7 @@ import io.github.sophon.discord.app.model.ButtonEvent
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.MoveId
 import io.github.sophon.discord.inPort.ProcessButtonEventUseCase
+import io.github.sophon.discord.app.outPort.ForwardPort
 import io.github.sophon.discord.app.outPort.FrameDataPort
 import io.github.sophon.discord.app.outPort.StatsPort
 
@@ -21,6 +22,7 @@ internal class ProcessButtonEventService(
     private val frameDataPort: FrameDataPort,
     private val commandRouterService: CommandRouterService,
     private val statsPort: StatsPort,
+    private val forwardPort: ForwardPort,
 ): ProcessButtonEventUseCase {
     override suspend fun invoke(buttonEvent: ButtonEvent): Result<BotResponse, BotError> {
         val result: Result<BotResponse, BotError> = when (buttonEvent) {
@@ -31,7 +33,14 @@ internal class ProcessButtonEventService(
                 queryResult
             }
             is ButtonEvent.Text -> Result.Success(BotResponse.PlainText(text = buttonEvent.text))
-            is ButtonEvent.Forward -> Result.Success(BotResponse.Redirect(channelId = buttonEvent.channelId))
+            is ButtonEvent.Forward -> {
+                val forwardResult = forwardPort.forward(
+                    sourceChannelId = buttonEvent.sourceChannelId,
+                    sourceMessageId = buttonEvent.sourceMessageId,
+                    targetChannelId = buttonEvent.targetChannelId,
+                ).map { BotResponse.Redirect(channelId = buttonEvent.targetChannelId) }
+                forwardResult
+            }
             is ButtonEvent.Command -> {
                 val commandResult = commandRouterService(
                     command = buttonEvent.command,

@@ -7,7 +7,11 @@ sealed interface ButtonEvent {
 
     data class Text(val text: String): ButtonEvent
 
-    data class Forward(val channelId: String): ButtonEvent
+    data class Forward(
+        val sourceChannelId: String,
+        val sourceMessageId: String,
+        val targetChannelId: String,
+    ): ButtonEvent
 
     data class Command(
         val command: io.github.sophon.discord.app.model.Command,

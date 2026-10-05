@@ -348,7 +348,11 @@ internal class DiscordBotImpl(
     @Suppress("CyclomaticComplexMethod")
     private suspend fun processButtonEvent(interaction: ButtonInteraction) {
         kordRestCall(TAG) {
-            val buttonEvent = decodeToButtonEvent(buttonId = interaction.componentId)
+            val buttonEvent = decodeToButtonEvent(
+                buttonId = interaction.componentId,
+                sourceChannelId = interaction.message.channelId.toString(),
+                sourceMessageId = interaction.message.id.toString(),
+            )
             if (buttonEvent == null) {
                 Napier.w(tag = TAG) { "Unknown button: ${interaction.componentId}" }
                 return@kordRestCall
@@ -443,14 +447,8 @@ internal class DiscordBotImpl(
                             }
                         }
 
-                        is ButtonEvent.Forward -> {
-                            if (response is BotResponse.Redirect) {
-                                kordResponder.redirect(
-                                    message = interaction.message,
-                                    channelId = response.channelId,
-                                ).onError { error -> Napier.e(tag = TAG) { "Redirect failed: $error" } }
-                            }
-                        }
+                        // already posted by the service
+                        is ButtonEvent.Forward -> {}
                     }
                 }
                 .onError { error -> Napier.e(tag = TAG) { "Button event failed: $error" } }

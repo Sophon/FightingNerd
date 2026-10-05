@@ -16,7 +16,7 @@ import io.github.sophon.discord.adapter.inbound.kord.KordResponder
 import io.github.sophon.discord.adapter.outbound.admin.AdminAdapter
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.inbound.scheduler.DailyReportScheduler
-import io.github.sophon.discord.adapter.outbound.kord.KordReportAdapter
+import io.github.sophon.discord.adapter.outbound.kord.KordPostAdapter
 import io.github.sophon.discord.adapter.outbound.stats.StatsAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.discord.app.service.AdminService
@@ -36,6 +36,7 @@ import io.github.sophon.discord.app.service.ProduceAutoCompleteService
 import io.github.sophon.discord.app.service.StartFeaturesService
 import io.github.sophon.discord.app.service.PostDailyReportService
 import io.github.sophon.discord.inPort.PostDailyReportUseCase
+import io.github.sophon.discord.app.outPort.ForwardPort
 import io.github.sophon.discord.app.outPort.PostReportPort
 import io.github.sophon.discord.app.outPort.StatsPort
 import io.github.sophon.discord.inPort.ProcessButtonEventUseCase
@@ -181,7 +182,10 @@ internal fun dcBotModule(kord: Kord) = module {
 
     //region Stats
     singleOf(::StatsAdapter).bind<StatsPort>()
-    singleOf(::KordReportAdapter).bind<PostReportPort>()
+    singleOf(::KordPostAdapter) {
+        bind<PostReportPort>()
+        bind<ForwardPort>()
+    }
     singleOf(::DailyReportScheduler)
     //endregion
 
