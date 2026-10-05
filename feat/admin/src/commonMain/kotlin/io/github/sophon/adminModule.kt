@@ -6,10 +6,12 @@ import io.github.sophon.adapter.outbound.sqldelight.SqlDelightAdapter
 import io.github.sophon.app.service.BanUserService
 import io.github.sophon.app.service.ConfigureAdminToolService
 import io.github.sophon.app.service.IsUserAdminService
+import io.github.sophon.app.service.IsUserBannedService
 import io.github.sophon.app.service.UnbanUserService
 import io.github.sophon.inboundPorts.BanUserUseCase
 import io.github.sophon.inboundPorts.ConfigureAdminToolUseCase
 import io.github.sophon.inboundPorts.IsUserAdminUseCase
+import io.github.sophon.inboundPorts.IsUserBannedUseCase
 import io.github.sophon.inboundPorts.UnbanUserUseCase
 import io.github.sophon.app.outboundPorts.AdminListPort
 import io.github.sophon.app.outboundPorts.BanPort
@@ -31,6 +33,7 @@ fun adminModule() = module {
     singleOf(::IsUserAdminService).bind<IsUserAdminUseCase>()
     single { BanUserService(adminListPort = get(), banPort = get(), clock = Clock.System) }.bind<BanUserUseCase>()
     singleOf(::UnbanUserService).bind<UnbanUserUseCase>()
+    single { IsUserBannedService(banPort = get(), clock = Clock.System) }.bind<IsUserBannedUseCase>()
 
     single { SqlDelightAdapter(driverFactory = get(), clock = Clock.System) } withOptions {
         bind<BanPort>()

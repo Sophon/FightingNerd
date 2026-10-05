@@ -8,10 +8,12 @@ import io.github.sophon.app.outboundPorts.ClearExpiredBansPort
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.app.util.toBoolean
 import io.github.sophon.app.util.toLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.time.Clock
+import kotlin.time.Instant
 
 internal class SqlDelightAdapter(
     driverFactory: DatabaseDriverFactory,
@@ -51,6 +53,19 @@ internal class SqlDelightAdapter(
         return result
     }
 
+    override suspend fun getBan(offenderId: String): Result<Ban?, DataError> {
+        val result = withContext(Dispatchers.IO) {
+            try {
+                val ban = queries.getBan(offenderId, ::toBan).executeAsOneOrNull()
+                Result.Success(ban)
+            } catch (e: Exception) {
+                Napier.e(throwable = e, tag = TAG) { "getBan($offenderId) failed" }
+                Result.Error(DataError.Local.UNKNOWN)
+            }
+        }
+        return result
+    }
+
     override suspend fun clear(): EmptyResult<DataError> {
         val result = withContext(Dispatchers.IO) {
             try {
@@ -62,6 +77,24 @@ internal class SqlDelightAdapter(
             }
         }
         return result
+    }
+
+
+    private fun toBan(
+        offenderId: String,
+        bannedAt: Long,
+        expiresAt: Long,
+        authorId: String,
+        preventBotUsage: Long,
+    ): Ban {
+        val ban = Ban(
+            offenderId = offenderId,
+            bannedAt = Instant.fromEpochMilliseconds(bannedAt),
+            expiresAt = Instant.fromEpochMilliseconds(expiresAt),
+            issuerId = authorId,
+            preventBotUsage = preventBotUsage.toBoolean(),
+        )
+        return ban
     }
 
 

@@ -14,6 +14,7 @@ import io.github.sophon.discord.app.port.outbound.ConfigureAdminPort
 import io.github.sophon.inboundPorts.BanUserUseCase
 import io.github.sophon.inboundPorts.ConfigureAdminToolUseCase
 import io.github.sophon.inboundPorts.IsUserAdminUseCase
+import io.github.sophon.inboundPorts.IsUserBannedUseCase
 import io.github.sophon.inboundPorts.UnbanUserUseCase
 
 internal class AdminAdapter(
@@ -21,6 +22,7 @@ internal class AdminAdapter(
     private val isUserAdminUseCase: IsUserAdminUseCase,
     private val banUserUseCase: BanUserUseCase,
     private val unbanUserUseCase: UnbanUserUseCase,
+    private val isUserBannedUseCase: IsUserBannedUseCase,
 ): ConfigureAdminPort, AdminPort, BanPort {
     override fun configure(discordConfig: DiscordConfig): EmptyResult<BotError> {
         val result = configureAdminToolUseCase(discordConfig.adminConfig.administratorIdList)
@@ -48,6 +50,8 @@ internal class AdminAdapter(
     }
 
     override suspend fun isBanned(userId: String): Result<Boolean, BotError> {
-        TODO("feat/admin has no IsUserBanned use case yet")
+        val result = isUserBannedUseCase(userId)
+            .mapError { it.toDomainError() }
+        return result
     }
 }
