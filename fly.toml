@@ -12,7 +12,7 @@ primary_region = 'fra'
     ENV = "production"
     BANLIST_DATABASE_PATH = "/data/banlist.db"
     EWGF_DATABASE_PATH = "/data/playerlist.db"
-    COMMAND_LOG_PATH = "/data/commandLog.json"
+    STATS_DIR = "/data/stats"
     WIKI_DATABASE_DIR = "/data/wiki"
 
 [[vm]]
