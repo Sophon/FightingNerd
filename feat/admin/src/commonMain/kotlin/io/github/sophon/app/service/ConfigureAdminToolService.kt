@@ -1,9 +1,9 @@
-package io.github.sophon.app.domain.service
+package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.app.domain.model.AdminError
-import io.github.sophon.app.port.inbound.ConfigureAdminToolUseCase
-import io.github.sophon.app.port.outbound.AdminListPort
+import io.github.sophon.app.model.AdminError
+import io.github.sophon.inboundPorts.ConfigureAdminToolUseCase
+import io.github.sophon.app.outboundPorts.AdminListPort
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess

@@ -1,7 +1,7 @@
 package io.github.sophon.adapter.inbound.scheduler
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.app.port.outbound.ClearExpiredBansPort
+import io.github.sophon.app.outboundPorts.ClearExpiredBansPort
 import io.github.sophon.core.architecture.onError
 import kotlinx.coroutines.delay
 import kotlin.time.Duration.Companion.hours

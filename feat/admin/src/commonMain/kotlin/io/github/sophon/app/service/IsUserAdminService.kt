@@ -1,8 +1,8 @@
-package io.github.sophon.app.domain.service
+package io.github.sophon.app.service
 
-import io.github.sophon.app.domain.model.AdminError
-import io.github.sophon.app.port.inbound.IsUserAdminUseCase
-import io.github.sophon.app.port.outbound.AdminListPort
+import io.github.sophon.app.model.AdminError
+import io.github.sophon.inboundPorts.IsUserAdminUseCase
+import io.github.sophon.app.outboundPorts.AdminListPort
 import io.github.sophon.core.architecture.Result
 
 internal class IsUserAdminService(

@@ -27,9 +27,9 @@ import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.AdminFeatureInfo
-import io.github.sophon.app.domain.model.AdminResult
-import io.github.sophon.app.domain.model.Ban
-import io.github.sophon.app.domain.model.Source
+import io.github.sophon.app.model.AdminResult
+import io.github.sophon.app.model.Ban
+import io.github.sophon.app.model.Source
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

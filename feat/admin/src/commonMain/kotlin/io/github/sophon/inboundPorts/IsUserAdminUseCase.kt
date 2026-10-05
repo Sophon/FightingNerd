@@ -1,6 +1,6 @@
-package io.github.sophon.app.port.inbound
+package io.github.sophon.inboundPorts
 
-import io.github.sophon.app.domain.model.AdminError
+import io.github.sophon.app.model.AdminError
 import io.github.sophon.core.architecture.Result
 
 interface IsUserAdminUseCase {

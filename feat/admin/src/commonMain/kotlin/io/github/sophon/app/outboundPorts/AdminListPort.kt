@@ -1,6 +1,6 @@
-package io.github.sophon.app.port.outbound
+package io.github.sophon.app.outboundPorts
 
-import io.github.sophon.app.domain.model.AdminError
+import io.github.sophon.app.model.AdminError
 import io.github.sophon.core.architecture.EmptyResult
 
 internal interface AdminListPort {

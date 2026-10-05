@@ -6,7 +6,7 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.Command
-import io.github.sophon.app.domain.model.Source
+import io.github.sophon.app.model.Source
 
 internal interface DiscordRegisteredFeature {
     val featureInfo: FeatureInfo

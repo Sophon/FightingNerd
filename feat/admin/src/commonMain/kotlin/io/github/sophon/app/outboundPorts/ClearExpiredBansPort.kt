@@ -1,4 +1,4 @@
-package io.github.sophon.app.port.outbound
+package io.github.sophon.app.outboundPorts
 
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
