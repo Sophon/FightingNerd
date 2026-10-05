@@ -6,10 +6,9 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
-import io.github.sophon.integration.AdminTool
 import io.github.sophon.app.domain.model.Ban
-import io.github.sophon.integration.model.Source
-import io.github.sophon.integration.util.toSource
+import io.github.sophon.app.domain.model.Source
+import io.github.sophon.util.toSource
 
 @ExcludeFromCoverage("plain client call")
 internal class BanUseCase(

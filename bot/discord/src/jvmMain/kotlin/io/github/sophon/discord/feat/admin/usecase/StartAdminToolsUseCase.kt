@@ -6,7 +6,6 @@ import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
-import io.github.sophon.integration.AdminTool
 
 @ExcludeFromCoverage("plain client call")
 internal class StartAdminToolsUseCase(

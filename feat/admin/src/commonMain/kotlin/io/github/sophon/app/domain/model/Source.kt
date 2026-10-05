@@ -1,4 +1,4 @@
-package io.github.sophon.integration.model
+package io.github.sophon.app.domain.model
 
 data class Source(
     val username: String,

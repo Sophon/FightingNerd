@@ -9,7 +9,7 @@ import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.adapter.inbound.kord.ui.optionalField
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.integration.model.Source
+import io.github.sophon.app.domain.model.Source
 import kotlin.time.Duration.Companion.seconds
 
 @ExcludeFromCoverage("UI")

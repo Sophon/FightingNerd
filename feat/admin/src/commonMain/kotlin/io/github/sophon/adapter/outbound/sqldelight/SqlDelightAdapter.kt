@@ -9,7 +9,6 @@ import io.github.sophon.app.port.outbound.ClearExpiredBansPort
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.data.DatabaseDriverFactory
 import io.github.sophon.util.toLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

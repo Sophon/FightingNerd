@@ -1,4 +1,4 @@
-package io.github.sophon.data
+package io.github.sophon.adapter.outbound.sqldelight
 
 import app.cash.sqldelight.db.SqlDriver
 

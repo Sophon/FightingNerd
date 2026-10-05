@@ -14,12 +14,6 @@ import io.github.sophon.app.port.inbound.UnbanUserUseCase
 import io.github.sophon.app.port.outbound.AdminListPort
 import io.github.sophon.app.port.outbound.BanPort
 import io.github.sophon.app.port.outbound.ClearExpiredBansPort
-import io.github.sophon.data.BanRepo
-import io.github.sophon.data.BanRepoImpl
-import io.github.sophon.domain.AdminToolImpl
-import io.github.sophon.integration.AdminTool
-import io.github.sophon.usecase.ProcessFeedbackUseCase
-import io.github.sophon.usecase.ProcessReplyUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -32,12 +26,6 @@ fun adminModule() = module {
     includes(platformModule)
 
     single { AdminFeatureInfo }
-    singleOf(::AdminToolImpl).bind<AdminTool>()
-
-    singleOf(::BanRepoImpl).bind<BanRepo>()
-
-    singleOf(::ProcessFeedbackUseCase)
-    singleOf(::ProcessReplyUseCase)
 
     singleOf(::ConfigureAdminToolService).bind<ConfigureAdminToolUseCase>()
     singleOf(::IsUserAdminService).bind<IsUserAdminUseCase>()
