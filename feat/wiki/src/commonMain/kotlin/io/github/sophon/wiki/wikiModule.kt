@@ -61,6 +61,9 @@ import kotlin.time.Clock
  * [databaseDirectory] - where `wiki.db` lives; null for the platform's default database location.
  */
 fun wikiModule(databaseDirectory: String? = null): Module = module {
+    single { WikiFeatureInfo }
+
+
     singleOf(::ClearCacheService)
     singleOf(::ConfigureWikiService)
     singleOf(::GetCharacterListService)
