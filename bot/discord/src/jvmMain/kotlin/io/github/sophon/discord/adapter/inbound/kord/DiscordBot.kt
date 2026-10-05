@@ -20,7 +20,7 @@ import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.featureConfig.model.Config
+import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.adapter.inbound.kord.ui.characterEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.moveEmbed
@@ -39,11 +39,11 @@ import io.github.sophon.discord.app.domain.model.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.Scheduler
-import io.github.sophon.discord.feat.core.domain.Tracker
+//import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.util.kordRestCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.collectLatest
+//import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import java.lang.management.ManagementFactory
@@ -57,8 +57,8 @@ internal interface DiscordBot {
 @OptIn(ExperimentalUuidApi::class)
 internal class DiscordBotImpl(
     private val kord: Kord,
-    private val tracker: Tracker,
-    private val adminConfig: Config.AdminConfig,
+//    private val tracker: Tracker,
+    private val adminConfig: DiscordConfig.AdminConfig,
     private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
     private val scheduler: Scheduler,
@@ -74,7 +74,7 @@ internal class DiscordBotImpl(
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
 
         startFeatures()
-        startTracking()
+//        startTracking()
         startMemoryLogging()
         startKord()
 
@@ -598,18 +598,18 @@ internal class DiscordBotImpl(
         }
     }
 
-    private fun startTracking() {
-        coroutineScope.launch {
-            tracker.subscribe().collectLatest { dailyReport ->
-                kordRestCall(TAG) {
-                    postDailyReportEmbedUseCase.invoke(
-                        statsChannelId = tracker.statsChannelId,
-                        dailyReport = dailyReport,
-                    )
-                }
-            }
-        }
-    }
+//    private fun startTracking() {
+//        coroutineScope.launch {
+//            tracker.subscribe().collectLatest { dailyReport ->
+//                kordRestCall(TAG) {
+//                    postDailyReportEmbedUseCase.invoke(
+//                        statsChannelId = tracker.statsChannelId,
+//                        dailyReport = dailyReport,
+//                    )
+//                }
+//            }
+//        }
+//    }
 
     private fun startMemoryLogging() {
         scheduler.start(

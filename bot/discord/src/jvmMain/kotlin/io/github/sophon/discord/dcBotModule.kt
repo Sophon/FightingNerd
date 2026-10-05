@@ -43,6 +43,8 @@ import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
 import io.github.sophon.discord.app.port.outbound.GetMovesInRangePort
 import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.discord.app.domain.model.DiscordConfig
 import io.github.sophon.discord.app.port.outbound.LoadConfigPort
 import io.github.sophon.discord.app.port.outbound.ReadFilePort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
@@ -54,6 +56,8 @@ import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
 import io.github.sophon.glossaryinfil.integration.infilModule
 import io.github.sophon.adminModule
+import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
+import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
 import io.github.sophon.integration.data.ReportRepo
 import io.github.sophon.integration.ewgfModule
 import io.github.sophon.integration.statsModule
@@ -130,6 +134,7 @@ internal fun dcBotModule(kord: Kord) = module {
     }
 
     //region Kord
+    singleOf(::DiscordBotImpl).bind<DiscordBot>()
     singleOf(::KordResponder)
     //endregion
 
@@ -158,6 +163,12 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::ConfigAdapter) {
         bind<ReadFilePort>()
         bind<LoadConfigPort>()
+    }
+    single<DiscordConfig.AdminConfig> {
+        when (val result = get<LoadConfigPort>().load()) {
+            is Result.Success -> result.data.adminConfig
+            is Result.Error -> error("Failed to load config: ${result.error}")
+        }
     }
     //endregion
 

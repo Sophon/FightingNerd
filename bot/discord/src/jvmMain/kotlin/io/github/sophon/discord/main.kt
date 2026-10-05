@@ -7,7 +7,6 @@ import io.github.aakira.napier.LogLevel
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.util.maskSecret
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
-import io.github.sophon.discord.feat.config.domain.DiscordConfig
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.java.Java
 import io.ktor.client.plugins.HttpTimeout
@@ -16,6 +15,7 @@ import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.koin.java.KoinJavaComponent.getKoin
 import java.io.EOFException
@@ -98,9 +98,9 @@ private fun getApiKey(): String {
     val json = Json {
         ignoreUnknownKeys = true
     }
-    val discordConfig = json.decodeFromString<DiscordConfig>(configFile.readText())
+    val localConfig = json.decodeFromString<LocalDiscordConfig>(configFile.readText())
 
-    return discordConfig.discordBotApiKey.also { apiKey ->
+    return localConfig.discordBotApiKey.also { apiKey ->
         Napier.d(tag = TAG) { "API from file: $apiKey" }
     }
 }
@@ -108,5 +108,14 @@ private fun getApiKey(): String {
 private fun isDebugBuild(): Boolean {
     return System.getenv(BUILD_KEY_ENV) != BUILD_VAL_PROD
 }
+
+/**
+ * Local-dev secrets file ([CONFIG_FILE_NAME]); not the feature config in `res/`.
+ */
+@Serializable
+private data class LocalDiscordConfig(
+    val discordBotApiKey: String,
+)
+
 
 private const val TAG = "DiscordBot"
