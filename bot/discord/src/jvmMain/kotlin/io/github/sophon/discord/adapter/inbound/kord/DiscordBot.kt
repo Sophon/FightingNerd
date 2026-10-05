@@ -215,6 +215,12 @@ internal class DiscordBotImpl(
                                 feedback = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is BotResponse.Reply -> {
+                            kordResponder.respond(
+                                message = message,
+                                reply = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         is BotResponse.Ban -> {
                             kordResponder.respond(
                                 message = message,
@@ -313,6 +319,12 @@ internal class DiscordBotImpl(
                             kordResponder.respond(
                                 interaction = interaction,
                                 feedback = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Reply -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                reply = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.Ban -> {

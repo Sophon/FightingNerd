@@ -10,6 +10,7 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.FollowupPermittingInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.message.EmbedBuilder
@@ -32,6 +33,7 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.feedbackEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.replyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.steamLobbyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.unbanEmbed
@@ -275,6 +277,50 @@ internal class KordResponder(
         return result
     }
 
+    /**
+     * Posts the reply to the recipient's channel, then confirms to the admin.
+     */
+    suspend fun respond(
+        message: Message,
+        reply: BotResponse.Reply,
+    ): EmptyResult<BotError> {
+        val result = try {
+            val postResult = postReply(kord = message.kord, reply = reply)
+            message.channel.createMessage {
+                messageReference = message.id
+                allowedMentions { repliedUser = false }
+                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
+            }
+
+            postResult
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    /**
+     * Posts the reply to the recipient's channel, then confirms to the admin.
+     */
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        reply: BotResponse.Reply,
+    ): EmptyResult<BotError> {
+        val result = try {
+            val postResult = postReply(kord = interaction.kord, reply = reply)
+            interaction.respondPublic {
+                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
+            }
+
+            postResult
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
     suspend fun respond(
         message: Message,
         ban: BotResponse.Ban,
@@ -492,6 +538,25 @@ internal class KordResponder(
         }
     }
 
+    private suspend fun postReply(
+        kord: Kord,
+        reply: BotResponse.Reply,
+    ): EmptyResult<BotError> {
+        val recipient = reply.recipient
+        val channel = kord.getChannelOf<MessageChannel>(Snowflake(recipient.channelId))
+
+        val result = if (channel == null) {
+            Result.Error(BotError.Kord("Channel not found: ${recipient.channelId}"))
+        } else {
+            channel.createMessage {
+                content = "<@${recipient.id}>"
+                embed(replyEmbed(reply, getBotFeatureInfoUseCase.invoke()))
+            }
+            Result.Success(Unit)
+        }
+        return result
+    }
+
     private fun MessageBuilder.textContent(plainText: BotResponse.PlainText) {
         content = plainText.text
         plainText.buttonSet?.let { discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = it) }
@@ -542,5 +607,7 @@ internal class KordResponder(
         const val HTTP_FORBIDDEN = 403
         const val YELLOW = 0x00FFC107
         const val FEEDBACK_SENT = "Feedback sent successfully!"
+        const val REPLY_SENT = "Reply sent successfully!"
+        const val REPLY_FAILED = "Failed to send"
     }
 }

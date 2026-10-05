@@ -35,6 +35,25 @@ internal fun feedbackEmbed(
     return embedBuilder
 }
 
+internal fun replyEmbed(
+    reply: BotResponse.Reply,
+    featureInfo: FeatureInfo,
+): EmbedBuilder.() -> Unit {
+    val embedBuilder: EmbedBuilder.() -> Unit = {
+        title = "Feedback response"
+        color = Color(YELLOW)
+
+        mandatoryField(
+            name = "",
+            value = reply.message,
+            inline = false,
+        )
+
+        featureFooter(featureInfo)
+    }
+    return embedBuilder
+}
+
 internal fun banEmbed(
     ban: BotResponse.Ban,
     featureInfo: FeatureInfo,
