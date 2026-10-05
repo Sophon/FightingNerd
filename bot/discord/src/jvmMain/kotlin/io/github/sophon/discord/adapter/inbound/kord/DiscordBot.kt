@@ -209,6 +209,24 @@ internal class DiscordBotImpl(
                                 plainText = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is BotResponse.Feedback -> {
+                            kordResponder.respond(
+                                message = message,
+                                feedback = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Ban -> {
+                            kordResponder.respond(
+                                message = message,
+                                ban = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Unban -> {
+                            kordResponder.respond(
+                                message = message,
+                                unban = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         else -> {}
                     }
                 }
@@ -289,6 +307,24 @@ internal class DiscordBotImpl(
                             kordResponder.respond(
                                 interaction = interaction,
                                 plainText = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Feedback -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                feedback = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Ban -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                ban = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Unban -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                unban = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         else -> {}
