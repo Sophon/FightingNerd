@@ -5,9 +5,11 @@ import io.github.sophon.adapter.outbound.memory.InMemoryAdminListAdapter
 import io.github.sophon.adapter.outbound.sqldelight.SqlDelightAdapter
 import io.github.sophon.app.domain.service.BanUserService
 import io.github.sophon.app.domain.service.ConfigureAdminToolService
+import io.github.sophon.app.domain.service.IsUserAdminService
 import io.github.sophon.app.domain.service.UnbanUserService
 import io.github.sophon.app.port.inbound.BanUserUseCase
 import io.github.sophon.app.port.inbound.ConfigureAdminToolUseCase
+import io.github.sophon.app.port.inbound.IsUserAdminUseCase
 import io.github.sophon.app.port.inbound.UnbanUserUseCase
 import io.github.sophon.app.port.outbound.AdminListPort
 import io.github.sophon.app.port.outbound.BanPort
@@ -39,6 +41,7 @@ fun adminModule() = module {
     singleOf(::ProcessReplyUseCase)
 
     singleOf(::ConfigureAdminToolService).bind<ConfigureAdminToolUseCase>()
+    singleOf(::IsUserAdminService).bind<IsUserAdminUseCase>()
     singleOf(::BanUserService).bind<BanUserUseCase>()
     singleOf(::UnbanUserService).bind<UnbanUserUseCase>()
 
