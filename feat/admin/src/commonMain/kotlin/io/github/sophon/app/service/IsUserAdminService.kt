@@ -9,8 +9,7 @@ internal class IsUserAdminService(
     private val adminListPort: AdminListPort,
 ): IsUserAdminUseCase {
     override fun invoke(userId: String): Result<Boolean, AdminError> {
-        val isAdmin = adminListPort.load().contains(userId)
-        val result = Result.Success(isAdmin)
+        val result = Result.Success(adminListPort.isAdmin(userId))
         return result
     }
 }

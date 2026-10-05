@@ -1,12 +1,10 @@
 package io.github.sophon.app.outboundPorts
 
 import io.github.sophon.app.model.Ban
-import io.github.sophon.app.model.ModerationRequest
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
-import io.github.sophon.core.architecture.Result
 
 internal interface BanPort {
-    suspend fun ban(moderationRequest: ModerationRequest): Result<Ban, DataError>
-    suspend fun unban(moderationRequest: ModerationRequest): EmptyResult<DataError>
+    suspend fun ban(ban: Ban): EmptyResult<DataError>
+    suspend fun unban(offenderId: String): EmptyResult<DataError>
 }

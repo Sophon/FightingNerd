@@ -3,7 +3,6 @@ package io.github.sophon.adapter.outbound.sqldelight
 import io.github.aakira.napier.Napier
 import io.github.sophon.admin.data.AdminDatabase
 import io.github.sophon.app.model.Ban
-import io.github.sophon.app.model.ModerationRequest
 import io.github.sophon.app.outboundPorts.BanPort
 import io.github.sophon.app.outboundPorts.ClearExpiredBansPort
 import io.github.sophon.core.architecture.DataError
@@ -20,18 +19,9 @@ internal class SqlDelightAdapter(
 ): BanPort, ClearExpiredBansPort {
     private val queries = AdminDatabase(driverFactory.createDriver()).banQueries
 
-    override suspend fun ban(moderationRequest: ModerationRequest): Result<Ban, DataError> {
+    override suspend fun ban(ban: Ban): EmptyResult<DataError> {
         val result = withContext(Dispatchers.IO) {
             try {
-                val now = clock.now()
-                val ban = Ban(
-                    offenderId = moderationRequest.offenderId,
-                    bannedAt = now,
-                    expiresAt = (now + moderationRequest.duration),
-                    issuerId = moderationRequest.authorId,
-                    preventBotUsage = moderationRequest.preventBotUsage,
-                )
-
                 queries.upsertBan(
                     offenderId = ban.offenderId,
                     bannedAt = ban.bannedAt.toEpochMilliseconds(),
@@ -39,22 +29,22 @@ internal class SqlDelightAdapter(
                     authorId = ban.issuerId,
                     preventBotUsage = ban.preventBotUsage.toLong(),
                 )
-                Result.Success(ban)
+                Result.Success(Unit)
             } catch (e: Exception) {
-                Napier.e(throwable = e, tag = TAG) { "ban(${moderationRequest.offenderId}) failed" }
+                Napier.e(throwable = e, tag = TAG) { "save(${ban.offenderId}) failed" }
                 Result.Error(DataError.Local.UNKNOWN)
             }
         }
         return result
     }
 
-    override suspend fun unban(moderationRequest: ModerationRequest): EmptyResult<DataError> {
+    override suspend fun unban(offenderId: String): EmptyResult<DataError> {
         val result = withContext(Dispatchers.IO) {
             try {
-                queries.unban(moderationRequest.offenderId)
+                queries.unban(offenderId)
                 Result.Success(Unit)
             } catch (e: Exception) {
-                Napier.e(throwable = e, tag = TAG) { "unban(${moderationRequest.offenderId}) failed" }
+                Napier.e(throwable = e, tag = TAG) { "delete($offenderId) failed" }
                 Result.Error(DataError.Local.UNKNOWN)
             }
         }

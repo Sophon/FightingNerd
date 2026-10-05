@@ -9,8 +9,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 internal class InMemoryAdminListAdapter : AdminListPort {
     private val adminIdList = MutableStateFlow<List<String>>(emptyList())
 
-    override fun load(): List<String> {
-        return adminIdList.value
+    override fun isAdmin(userId: String): Boolean {
+        val isAdmin = adminIdList.value.contains(userId)
+        return isAdmin
     }
 
     override fun save(adminIdList: List<String>): EmptyResult<AdminError> {

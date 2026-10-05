@@ -2,7 +2,7 @@ package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.app.model.AdminError
-import io.github.sophon.app.model.ModerationRequest
+import io.github.sophon.app.model.UnbanRequest
 import io.github.sophon.inboundPorts.UnbanUserUseCase
 import io.github.sophon.app.outboundPorts.BanPort
 import io.github.sophon.app.outboundPorts.AdminListPort
@@ -16,16 +16,15 @@ internal class UnbanUserService(
     private val adminListPort: AdminListPort,
     private val banPort: BanPort,
 ): UnbanUserUseCase {
-    override suspend fun invoke(moderationRequest: ModerationRequest): EmptyResult<AdminError> {
-        val isAdmin = adminListPort.load().contains(moderationRequest.authorId)
-        if (!isAdmin) {
-            return Result.Error(AdminError.PermissionDenied())
+    override suspend fun invoke(unbanRequest: UnbanRequest): EmptyResult<AdminError> {
+        if (adminListPort.isAdmin(unbanRequest.issuerId).not()) {
+            return Result.Error(AdminError.PermissionDenied)
         }
 
-        val result = banPort.unban(moderationRequest)
-            .mapError { error -> AdminError.DatabaseError(error.toString()) }
-            .onSuccess { Napier.i(tag = TAG) { "Unbanned ${moderationRequest.offenderId}" } }
-            .onError { error -> Napier.e(tag = TAG) { "${moderationRequest.offenderId}: $error" } }
+        val result = banPort.unban(unbanRequest.offenderId)
+            .mapError { error -> AdminError.Database(error) }
+            .onSuccess { Napier.i(tag = TAG) { "Unbanned ${unbanRequest.offenderId}" } }
+            .onError { error -> Napier.e(tag = TAG) { "${unbanRequest.offenderId}: $error" } }
         return result
     }
 

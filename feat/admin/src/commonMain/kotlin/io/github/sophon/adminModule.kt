@@ -29,7 +29,7 @@ fun adminModule() = module {
 
     singleOf(::ConfigureAdminToolService).bind<ConfigureAdminToolUseCase>()
     singleOf(::IsUserAdminService).bind<IsUserAdminUseCase>()
-    singleOf(::BanUserService).bind<BanUserUseCase>()
+    single { BanUserService(adminListPort = get(), banPort = get(), clock = Clock.System) }.bind<BanUserUseCase>()
     singleOf(::UnbanUserService).bind<UnbanUserUseCase>()
 
     single { SqlDelightAdapter(driverFactory = get(), clock = Clock.System) } withOptions {
