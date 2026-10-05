@@ -33,6 +33,7 @@ import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
 import io.github.sophon.discord.app.port.outbound.CharactersPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
+import io.github.sophon.discord.app.port.outbound.GetMovesInRangePort
 import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
 import io.github.sophon.discord.app.port.outbound.LoadConfigPort
 import io.github.sophon.discord.app.port.outbound.ReadFilePort
@@ -148,6 +149,7 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<RefreshWikiPort>()
         bind<FrameDataPort>()
         bind<GetMovesOfTypePort>()
+        bind<GetMovesInRangePort>()
         bind<CharactersPort>()
     }
     //endregion

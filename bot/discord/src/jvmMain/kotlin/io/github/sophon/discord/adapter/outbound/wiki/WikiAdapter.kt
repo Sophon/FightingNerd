@@ -9,11 +9,13 @@ import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.CharacterId
 import io.github.sophon.discord.app.domain.model.DiscordConfig
+import io.github.sophon.discord.app.domain.model.FrameRange
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.app.domain.model.MoveType
 import io.github.sophon.discord.app.port.outbound.CharactersPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
+import io.github.sophon.discord.app.port.outbound.GetMovesInRangePort
 import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
 import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
 import io.github.sophon.wiki.application.domain.model.Filter
@@ -34,7 +36,7 @@ internal class WikiAdapter(
     private val getMoveListUseCase: GetMoveListUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort, CharactersPort {
+): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort, GetMovesInRangePort, CharactersPort {
     override suspend fun configure(discordConfig: DiscordConfig): EmptyResult<BotError> {
         val result = discordConfig.toWikiConfig()
             .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
@@ -67,6 +69,14 @@ internal class WikiAdapter(
         moveType: MoveType,
     ): Result<List<BotResponse.MoveResponse>, BotError> {
         val result = getMoveResponses(characterId = characterId, filter = moveType.toFilter())
+        return result
+    }
+
+    override suspend fun getMovesInRange(
+        characterId: CharacterId,
+        frameRange: FrameRange,
+    ): Result<List<BotResponse.MoveResponse>, BotError> {
+        val result = getMoveResponses(characterId = characterId, filter = frameRange.toFilter())
         return result
     }
 

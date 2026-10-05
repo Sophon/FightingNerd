@@ -5,6 +5,7 @@ import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.domain.model.FrameRange
 import io.github.sophon.discord.app.domain.model.MoveType
 import io.github.sophon.discord.app.domain.model.UserRequest
 
@@ -46,6 +47,10 @@ internal class CommandRouterService(
             Command.Homing -> moveService.findMovesOfType(characterQuery = query, moveType = MoveType.HOMING)
             Command.Stance -> moveService.findStanceOrMove(query)
             Command.Strings -> moveService.findStrings(query)
+            Command.Startup -> moveService.findMovesInRange(query = query, rangeType = FrameRange.Type.STARTUP)
+            Command.OnHit -> moveService.findMovesInRange(query = query, rangeType = FrameRange.Type.ON_HIT)
+            Command.OnBlock -> moveService.findMovesInRange(query = query, rangeType = FrameRange.Type.ON_BLOCK)
+            Command.OnCounter -> moveService.findMovesInRange(query = query, rangeType = FrameRange.Type.ON_COUNTER)
 
             Command.Char -> characterService.findCharacter(characterQuery = query, requireProperties = true)
             Command.Alias -> characterService.findAliases(gameQuery = query)
@@ -65,10 +70,6 @@ internal class CommandRouterService(
             Command.Unban,
             Command.Banlist,
             Command.Refresh,
-            Command.Startup,
-            Command.OnHit,
-            Command.OnBlock,
-            Command.OnCounter,
             Command.Gl,
             Command.ThrowTK,
             Command.SpecialROA,
