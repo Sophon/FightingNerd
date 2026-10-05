@@ -12,6 +12,8 @@ internal class CommandRouterService(
     private val moveService: MoveService,
     private val characterService: CharacterService,
     private val coreBotService: CoreBotService,
+    private val banService: BanService,
+    private val adminService: AdminService,
 ) {
     suspend operator fun invoke(userRequest: UserRequest): Result<BotResponse, BotError> {
         val initialResult = invoke(
@@ -63,10 +65,12 @@ internal class CommandRouterService(
             Command.Modules -> coreBotService.createModulesResponse()
             Command.Join -> coreBotService.createSteamLobbyResponse(query = query, source = source)
 
-            Command.Feedback,
-            Command.Reply,
-            Command.Ban,
-            Command.Unban,
+            Command.Ban -> banService.ban(query = query, source = source)
+            Command.Unban -> banService.unban(query = query, source = source)
+
+            Command.Feedback -> adminService.forwardFeedback(query = query, source = source)
+            Command.Reply -> adminService.replyToFeedback(query = query, source = source)
+
             Command.Banlist,
             Command.Refresh,
             Command.Gl,

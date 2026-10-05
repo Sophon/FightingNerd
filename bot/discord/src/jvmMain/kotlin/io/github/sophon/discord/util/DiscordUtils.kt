@@ -3,7 +3,7 @@ package io.github.sophon.discord.util
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.request.KtorRequestException
 import io.github.aakira.napier.Napier
-import io.github.sophon.integration.model.Source
+import io.github.sophon.model.Source
 
 internal suspend fun kordRestCall(
     tag: String,

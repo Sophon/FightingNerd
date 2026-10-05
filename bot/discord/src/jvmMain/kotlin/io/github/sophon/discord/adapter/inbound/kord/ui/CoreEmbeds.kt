@@ -14,7 +14,7 @@ import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
-import io.github.sophon.discord.feat.admin.adminCommands
+import io.github.sophon.discord.app.domain.model.adminCommands
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 
 internal fun errorEmbed(

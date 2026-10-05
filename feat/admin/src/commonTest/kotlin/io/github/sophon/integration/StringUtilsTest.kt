@@ -2,9 +2,9 @@ package io.github.sophon.integration
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.integration.model.Source
-import io.github.sophon.integration.util.toSource
-import io.github.sophon.integration.util.toSourceAndMessage
+import io.github.sophon.model.Source
+import io.github.sophon.app.util.toSource
+import io.github.sophon.app.util.toSourceAndMessage
 import kotlin.test.Test
 
 class StringUtilsTest {

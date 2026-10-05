@@ -1,6 +1,8 @@
 package io.github.sophon.discord.adapter.inbound.kord
 
 import dev.kord.common.Color
+import dev.kord.common.entity.Snowflake
+import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
@@ -8,6 +10,8 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.FollowupPermittingInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.channel.MessageChannel
+import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.MessageBuilder
@@ -22,16 +26,21 @@ import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
 import io.github.sophon.discord.adapter.inbound.kord.ui.aliasEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.aliasGamePromptEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.banEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.commandsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.feedbackEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.replyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.steamLobbyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.unbanEmbed
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
@@ -225,6 +234,122 @@ internal class KordResponder(
         return result
     }
 
+    /**
+     * Posts the feedback to every feedback channel, then confirms to the author.
+     */
+    suspend fun respond(
+        message: Message,
+        feedback: BotResponse.Feedback,
+    ): EmptyResult<BotError> {
+        val result = try {
+            postFeedback(kord = message.kord, feedback = feedback)
+            message.channel.createMessage {
+                messageReference = message.id
+                allowedMentions { repliedUser = false }
+                content = FEEDBACK_SENT
+            }
+
+            Result.Success(Unit)
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    /**
+     * Posts the feedback to every feedback channel, then confirms to the author.
+     */
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        feedback: BotResponse.Feedback,
+    ): EmptyResult<BotError> {
+        val result = try {
+            postFeedback(kord = interaction.kord, feedback = feedback)
+            interaction.respondPublic {
+                content = FEEDBACK_SENT
+            }
+
+            Result.Success(Unit)
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    suspend fun respond(
+        message: Message,
+        reply: BotResponse.Reply,
+    ): EmptyResult<BotError> {
+        val result = sendToRecipient(
+            message = message,
+            recipient = reply.recipient,
+            embedBuilder = replyEmbed(reply, getBotFeatureInfoUseCase.invoke()),
+        )
+        return result
+    }
+
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        reply: BotResponse.Reply,
+    ): EmptyResult<BotError> {
+        val result = sendToRecipient(
+            interaction = interaction,
+            recipient = reply.recipient,
+            embedBuilder = replyEmbed(reply, getBotFeatureInfoUseCase.invoke()),
+        )
+        return result
+    }
+
+    suspend fun respond(
+        message: Message,
+        ban: BotResponse.Ban,
+    ): EmptyResult<BotError> {
+        val result = sendToRecipient(
+            message = message,
+            recipient = ban.offender,
+            embedBuilder = banEmbed(ban, getBotFeatureInfoUseCase.invoke()),
+        )
+        return result
+    }
+
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        ban: BotResponse.Ban,
+    ): EmptyResult<BotError> {
+        val result = sendToRecipient(
+            interaction = interaction,
+            recipient = ban.offender,
+            embedBuilder = banEmbed(ban, getBotFeatureInfoUseCase.invoke()),
+        )
+        return result
+    }
+
+    suspend fun respond(
+        message: Message,
+        unban: BotResponse.Unban,
+    ): EmptyResult<BotError> {
+        val result = sendToRecipient(
+            message = message,
+            recipient = unban.offender,
+            embedBuilder = unbanEmbed(unban, getBotFeatureInfoUseCase.invoke()),
+        )
+        return result
+    }
+
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        unban: BotResponse.Unban,
+    ): EmptyResult<BotError> {
+        val result = sendToRecipient(
+            interaction = interaction,
+            recipient = unban.offender,
+            embedBuilder = unbanEmbed(unban, getBotFeatureInfoUseCase.invoke()),
+        )
+        return result
+    }
+
     suspend fun respond(
         message: Message,
         plainText: BotResponse.PlainText,
@@ -375,6 +500,82 @@ internal class KordResponder(
         buttonSet?.let { discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = it) }
     }
 
+    private suspend fun postFeedback(
+        kord: Kord,
+        feedback: BotResponse.Feedback,
+    ) {
+        val embedBuilder = feedbackEmbed(feedback, getBotFeatureInfoUseCase.invoke())
+        feedback.feedbackChannelIdList.forEach { channelId ->
+            kord.getChannelOf<TextChannel>(Snowflake(channelId))
+                ?.createMessage { embed(embedBuilder) }
+        }
+    }
+
+    /**
+     * Posts the embed to the recipient's channel, then confirms to the admin.
+     */
+    private suspend fun sendToRecipient(
+        message: Message,
+        recipient: UserRequest.Source,
+        embedBuilder: EmbedBuilder.() -> Unit,
+    ): EmptyResult<BotError> {
+        val result = try {
+            val postResult = postToRecipient(kord = message.kord, recipient = recipient, embedBuilder = embedBuilder)
+            message.channel.createMessage {
+                messageReference = message.id
+                allowedMentions { repliedUser = false }
+                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
+            }
+
+            postResult
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    /**
+     * Posts the embed to the recipient's channel, then confirms to the admin.
+     */
+    private suspend fun sendToRecipient(
+        interaction: GuildChatInputCommandInteraction,
+        recipient: UserRequest.Source,
+        embedBuilder: EmbedBuilder.() -> Unit,
+    ): EmptyResult<BotError> {
+        val result = try {
+            val postResult = postToRecipient(kord = interaction.kord, recipient = recipient, embedBuilder = embedBuilder)
+            interaction.respondPublic {
+                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
+            }
+
+            postResult
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    private suspend fun postToRecipient(
+        kord: Kord,
+        recipient: UserRequest.Source,
+        embedBuilder: EmbedBuilder.() -> Unit,
+    ): EmptyResult<BotError> {
+        val channel = kord.getChannelOf<MessageChannel>(Snowflake(recipient.channelId))
+
+        val result = if (channel == null) {
+            Result.Error(BotError.Kord("Channel not found: ${recipient.channelId}"))
+        } else {
+            channel.createMessage {
+                content = "<@${recipient.id}>"
+                embed(embedBuilder)
+            }
+            Result.Success(Unit)
+        }
+        return result
+    }
+
     private fun MessageBuilder.textContent(plainText: BotResponse.PlainText) {
         content = plainText.text
         plainText.buttonSet?.let { discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = it) }
@@ -424,5 +625,8 @@ internal class KordResponder(
     private companion object {
         const val HTTP_FORBIDDEN = 403
         const val YELLOW = 0x00FFC107
+        const val FEEDBACK_SENT = "Feedback sent successfully!"
+        const val REPLY_SENT = "Reply sent successfully!"
+        const val REPLY_FAILED = "Failed to send"
     }
 }

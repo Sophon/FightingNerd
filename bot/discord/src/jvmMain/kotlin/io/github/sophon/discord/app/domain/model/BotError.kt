@@ -16,8 +16,11 @@ sealed class BotError(private vararg val inputs: String) : Error {
     class InvalidSteamLobbyUrl(steamLobbyUrl: String): BotError(steamLobbyUrl)
     class SyntaxError(input: String): BotError(input)
     class PlayerNotRegistered : BotError()
+    class PermissionDenied : BotError()
+    class UserBanned(userId: String) : BotError(userId)
 
     class WikiError(error: String): BotError(error)
+    class AdminError(error: String): BotError(error)
 
     class FileError(vararg errors: String) : BotError(*errors)
     class DatabaseError : BotError()

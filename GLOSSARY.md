@@ -15,6 +15,7 @@ Frame data for fighting games, sourced from community wikis and served through t
 
 ### Bot
 
+- **Ban** - offender cannot provide feedback; in severe cases, offender is prohibited from using the bot
 - **Character query** - The first word of a Query, naming a Character (`ak`).
 - **Move query** - The rest of a Query after the Character query, naming a Move (`df1`).
 - **Query** - The text a user sends the bot after the tag or command, such as `ak df1`.

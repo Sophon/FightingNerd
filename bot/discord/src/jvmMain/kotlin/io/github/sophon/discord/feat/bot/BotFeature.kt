@@ -22,7 +22,7 @@ import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.ui.modulesEmbed
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
-import io.github.sophon.integration.model.Source
+import io.github.sophon.model.Source
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.time.Duration.Companion.seconds

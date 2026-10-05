@@ -8,14 +8,6 @@ import io.github.sophon.core.wiki.data.MoveListDB
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
 import io.github.sophon.discord.adapter.inbound.kord.KordResponder
-import io.github.sophon.discord.feat.admin.AdminDiscordFeature
-import io.github.sophon.discord.feat.admin.usecase.BanUseCase
-import io.github.sophon.discord.feat.admin.usecase.CreateRedirectButtonsUseCase
-import io.github.sophon.discord.feat.admin.usecase.ProcessFeedbackUseCase
-import io.github.sophon.discord.feat.admin.usecase.RefreshDataUseCase
-import io.github.sophon.discord.feat.admin.usecase.ReplyToFeedbackUseCase
-import io.github.sophon.discord.feat.admin.usecase.StartAdminToolsUseCase
-import io.github.sophon.discord.feat.admin.usecase.UnbanUseCase
 import io.github.sophon.discord.feat.bot.BotFeature
 import io.github.sophon.discord.feat.bot.usecase.CreateFeedbackEmbedUseCase
 import io.github.sophon.discord.feat.bot.usecase.CreateJoinEmbedButtonUseCase
@@ -51,20 +43,6 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal val featureRegistryModule = module {
-    //region ADMIN
-    singleOf(::StartAdminToolsUseCase)
-    singleOf(::ProcessFeedbackUseCase)
-    singleOf(::ReplyToFeedbackUseCase)
-    singleOf(::BanUseCase)
-    singleOf(::UnbanUseCase)
-    singleOf(::CreateRedirectButtonsUseCase)
-    single {
-        RefreshDataUseCase(
-            featureRepo = lazy { get<BotFeatureRepo>() },
-        )
-    }
-    //endregion
-
     //region CORE
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
     singleOf(::KordResponder)
@@ -116,7 +94,6 @@ internal val featureRegistryModule = module {
         BindToDiscordFeaturesUseCase(
             allRegisteredFeatures = getAll(),
             featureRepo = get(),
-            adminFeature = get(),
         )
     }
 
@@ -134,23 +111,6 @@ internal val featureRegistryModule = module {
         FeatureRegistry(
             features = getAll(),
             coreFeature = get<BotFeature>(),
-        )
-    }
-
-    single {
-        AdminDiscordFeature(
-            adminFeatureInfo = get(),
-            adminConfig = get<Config.AdminConfig>(),
-            startAdminToolsUseCase = get(),
-            processFeedbackUseCase = get(),
-            replyToFeedbackUseCase = get(),
-            createRedirectButtonsUseCase = get(),
-            banUseCase = get(),
-            unbanUseCase = get(),
-            refreshDataUseCase = get(),
-            scheduler = get(),
-            scope = get(),
-            featureRepo = lazy { get<BotFeatureRepo>() },
         )
     }
 

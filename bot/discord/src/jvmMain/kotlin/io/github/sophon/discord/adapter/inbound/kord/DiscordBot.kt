@@ -35,7 +35,7 @@ import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
-import io.github.sophon.discord.feat.admin.adminCommands
+import io.github.sophon.discord.app.domain.model.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.Scheduler
@@ -209,6 +209,30 @@ internal class DiscordBotImpl(
                                 plainText = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is BotResponse.Feedback -> {
+                            kordResponder.respond(
+                                message = message,
+                                feedback = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Reply -> {
+                            kordResponder.respond(
+                                message = message,
+                                reply = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Ban -> {
+                            kordResponder.respond(
+                                message = message,
+                                ban = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Unban -> {
+                            kordResponder.respond(
+                                message = message,
+                                unban = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         else -> {}
                     }
                 }
@@ -289,6 +313,30 @@ internal class DiscordBotImpl(
                             kordResponder.respond(
                                 interaction = interaction,
                                 plainText = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Feedback -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                feedback = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Reply -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                reply = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Ban -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                ban = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.Unban -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                unban = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         else -> {}
