@@ -1,4 +1,4 @@
-package io.github.sophon.integration.model
+package io.github.sophon.app.domain.model
 
 import io.github.sophon.core.util.toFormattedString
 import kotlin.time.ExperimentalTime
@@ -9,7 +9,7 @@ data class Ban(
     val offenderId: String,
     val bannedAt: Instant,
     val expiresAt: Instant,
-    val authorId: String,
+    val issuerId: String,
     val preventBotUsage: Boolean
 ) {
     override fun toString(): String {

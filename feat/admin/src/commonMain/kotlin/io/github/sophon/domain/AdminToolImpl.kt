@@ -10,9 +10,9 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.data.BanRepo
 import io.github.sophon.integration.AdminFeatureInfo
 import io.github.sophon.integration.AdminTool
-import io.github.sophon.integration.model.AdminError
-import io.github.sophon.integration.model.AdminResult
-import io.github.sophon.integration.model.Ban
+import io.github.sophon.app.domain.model.AdminError
+import io.github.sophon.app.domain.model.AdminResult
+import io.github.sophon.app.domain.model.Ban
 import io.github.sophon.integration.model.Source
 import io.github.sophon.usecase.ProcessFeedbackUseCase
 import io.github.sophon.usecase.ProcessReplyUseCase

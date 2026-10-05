@@ -7,9 +7,9 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.data.BanRepo
-import io.github.sophon.integration.model.AdminError
-import io.github.sophon.integration.model.AdminResult
-import io.github.sophon.integration.model.Ban
+import io.github.sophon.app.domain.model.AdminError
+import io.github.sophon.app.domain.model.AdminResult
+import io.github.sophon.app.domain.model.Ban
 import io.github.sophon.integration.model.Source
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test

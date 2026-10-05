@@ -2,8 +2,8 @@ package io.github.sophon.data
 
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.integration.model.AdminError
-import io.github.sophon.integration.model.Ban
+import io.github.sophon.app.domain.model.AdminError
+import io.github.sophon.app.domain.model.Ban
 import kotlin.time.Duration
 
 internal interface BanRepo {

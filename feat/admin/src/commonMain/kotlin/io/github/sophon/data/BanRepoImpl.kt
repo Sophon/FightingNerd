@@ -3,8 +3,8 @@ package io.github.sophon.data
 import io.github.sophon.admin.data.AdminDatabase
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.integration.model.AdminError
-import io.github.sophon.integration.model.Ban
+import io.github.sophon.app.domain.model.AdminError
+import io.github.sophon.app.domain.model.Ban
 import io.github.sophon.util.toLong
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -33,7 +33,7 @@ internal class BanRepoImpl(
                     offenderId = offenderId,
                     bannedAt = now,
                     expiresAt = expiresAt,
-                    authorId = authorId,
+                    issuerId = authorId,
                     preventBotUsage = preventBotUsage,
                 )
 
@@ -41,7 +41,7 @@ internal class BanRepoImpl(
                     offenderId = ban.offenderId,
                     bannedAt = ban.bannedAt.toEpochMilliseconds(),
                     expiresAt = ban.expiresAt.toEpochMilliseconds(),
-                    authorId = ban.authorId,
+                    authorId = ban.issuerId,
                     preventBotUsage = ban.preventBotUsage.toLong(),
                 )
                 Result.Success(ban)
@@ -103,7 +103,7 @@ internal class BanRepoImpl(
                     offenderId = offenderId,
                     bannedAt = now,
                     expiresAt = expiration,
-                    authorId = authorId,
+                    issuerId = authorId,
                     preventBotUsage = preventBotUsage,
                 )
 

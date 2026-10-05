@@ -5,8 +5,8 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Config
-import io.github.sophon.integration.model.AdminError
-import io.github.sophon.integration.model.AdminResult
+import io.github.sophon.app.domain.model.AdminError
+import io.github.sophon.app.domain.model.AdminResult
 import io.github.sophon.integration.model.Source
 import kotlin.test.Test
 
