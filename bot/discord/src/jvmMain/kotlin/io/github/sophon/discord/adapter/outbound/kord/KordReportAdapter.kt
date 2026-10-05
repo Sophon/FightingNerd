@@ -4,19 +4,15 @@ import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.createEmbed
 import dev.kord.core.entity.channel.TextChannel
-import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.request.RestRequestException
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.util.truncate
-import io.github.sophon.discord.EMBED_MAX_LENGTH
-import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
+import io.github.sophon.discord.adapter.inbound.kord.ui.dailyReportEmbed
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.UsageReport
 import io.github.sophon.discord.app.outPort.PostReportPort
-import io.github.sophon.wiki.model.wiki.Game
 
 @ExcludeFromCoverage("UI")
 internal class KordReportAdapter(
@@ -49,35 +45,8 @@ internal class KordReportAdapter(
         return result
     }
 
-    private fun dailyReportEmbed(usageReport: UsageReport): EmbedBuilder.() -> Unit = {
-        val totalCount = usageReport.usageList.sumOf { usage -> usage.count }
-        title = "📊 Daily Report — ${usageReport.date} — ${totalCount}x"
-
-        usageReport.usageList
-            .groupBy { usage -> usage.game }
-            .forEach { (game, usageList) ->
-                field {
-                    name = game?.let { Game.fromId(it)?.displayName ?: it } ?: NO_GAME_FIELD_NAME
-                    value = usageList
-                        .joinToString("\n") { usage -> "`${usage.command}` — ${usage.count} hits" }
-                        .truncate(EMBED_MAX_LENGTH)
-                    inline = false
-                }
-            }
-
-        if (usageReport.usageList.isEmpty()) {
-            description = "No commands recorded."
-        }
-
-        footer {
-            text = "FightingNerd Stats"
-            icon = URL_IMG_FIGHTING_NERD
-        }
-    }
-
 
     private companion object {
         const val TAG = "KordReportAdapter"
-        const val NO_GAME_FIELD_NAME = "No game"
     }
 }
