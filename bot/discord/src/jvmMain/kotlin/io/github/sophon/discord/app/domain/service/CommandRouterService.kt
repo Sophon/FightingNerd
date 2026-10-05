@@ -35,6 +35,7 @@ internal class CommandRouterService(
         return result
     }
 
+    @Suppress("CyclomaticComplexMethod")
     suspend operator fun invoke(
         command: Command,
         query: String,

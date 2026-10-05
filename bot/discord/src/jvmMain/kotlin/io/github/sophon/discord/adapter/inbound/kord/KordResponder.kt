@@ -33,6 +33,8 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.feedbackEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.promoButtonSet
+import io.github.sophon.discord.adapter.inbound.kord.ui.promoEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.replyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.steamLobbyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
@@ -41,7 +43,6 @@ import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.UserRequest
-import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import kotlin.uuid.ExperimentalUuidApi
@@ -49,7 +50,6 @@ import kotlin.uuid.ExperimentalUuidApi
 @OptIn(ExperimentalUuidApi::class)
 @ExcludeFromCoverage("UI")
 internal class KordResponder(
-    private val createPromoEmbedUseCase: CreatePromoEmbedUseCase,
     private val discordButtonBuilder: DiscordButtonBuilder,
     private val commandRegistry: CommandRegistry,
     private val getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
@@ -648,7 +648,10 @@ internal class KordResponder(
 
     private suspend fun rollForPromo(channel: MessageChannelBehavior) {
         if (rollChance(RNG_DONATION_PCT_COMMAND)) {
-            createPromoEmbedUseCase.invoke(channel)
+            channel.createMessage {
+                embed(promoEmbed())
+                discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = promoButtonSet())
+            }
         }
     }
 

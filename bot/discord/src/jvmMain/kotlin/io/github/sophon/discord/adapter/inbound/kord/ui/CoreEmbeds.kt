@@ -6,10 +6,12 @@ import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.EMBED_MAX_LENGTH
+import io.github.sophon.discord.URL_APP_STORE
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_IMG_FIGHTING_NERD
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
+import io.github.sophon.discord.URL_PLAY_STORE
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
@@ -290,6 +292,38 @@ internal fun steamLobbyEmbed(
         inline = false,
     )
 }
+
+internal fun promoEmbed(): EmbedBuilder.() -> Unit = {
+    title = "ENJOY THE BOT?"
+    color = Color(PURPLE)
+
+    mandatoryField(
+        name = "",
+        value = "Buy me a coffee.\n" +
+                "The project is also available on mobile.",
+    )
+}
+
+internal fun promoButtonSet(): BotResponse.ButtonSet = BotResponse.ButtonSet(
+    buttonList = listOf(
+        BotResponse.EmbedButton(
+            label = "☕️ KO-FI",
+            action = BotResponse.EmbedButton.Action.Url(URL_KOFI),
+        ),
+        BotResponse.EmbedButton(
+            label = "☕️ BUY-ME-COFFEE",
+            action = BotResponse.EmbedButton.Action.Url(URL_BUY_ME_COFFEE),
+        ),
+        BotResponse.EmbedButton(
+            label = "🍏 iPhone",
+            action = BotResponse.EmbedButton.Action.Url(URL_APP_STORE),
+        ),
+        BotResponse.EmbedButton(
+            label = "🤖 Android",
+            action = BotResponse.EmbedButton.Action.Url(URL_PLAY_STORE),
+        ),
+    ),
+)
 
 
 private const val PURPLE = 0x00A020F0
