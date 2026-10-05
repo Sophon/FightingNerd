@@ -94,7 +94,7 @@ sealed interface BotResponse {
     ): BotResponse
 
     data class Ban(
-        val offenderId: String,
+        val offender: UserRequest.Source,
         val bannedAt: Instant,
         val expiresAt: Instant,
         val issuerId: String,
@@ -106,7 +106,7 @@ sealed interface BotResponse {
     }
 
     data class Unban(
-        val offenderId: String,
+        val offender: UserRequest.Source,
     ): BotResponse
 
     data class Feedback(

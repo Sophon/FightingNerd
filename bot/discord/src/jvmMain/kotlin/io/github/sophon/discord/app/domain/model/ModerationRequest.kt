@@ -5,7 +5,7 @@ import kotlin.time.Duration.Companion.days
 
 data class ModerationRequest(
     val authorId: String,
-    val offenderId: String,
+    val offender: UserRequest.Source,
     val preventBotUsage: Boolean = false,
     val duration: Duration = 30.days,
 )

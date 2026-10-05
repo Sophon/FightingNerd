@@ -64,7 +64,7 @@ internal fun banEmbed(
 
         mandatoryField(
             name = "User",
-            value = "<@${ban.offenderId}>",
+            value = "<@${ban.offender.id}>",
             inline = false,
         )
 
@@ -89,7 +89,7 @@ internal fun unbanEmbed(
 
         mandatoryField(
             name = "User",
-            value = "<@${unban.offenderId}>",
+            value = "<@${unban.offender.id}>",
             inline = false,
         )
 

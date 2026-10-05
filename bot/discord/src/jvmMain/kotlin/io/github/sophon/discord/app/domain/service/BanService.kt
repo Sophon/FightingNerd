@@ -41,7 +41,7 @@ internal class BanServiceImpl(
         val result = createModerationRequest(command = Command.Unban, query = query, source = source)
             .flatMap { moderationRequest ->
                 val unbanResult = banPort.unban(moderationRequest)
-                    .map { BotResponse.Unban(offenderId = moderationRequest.offenderId) }
+                    .map { BotResponse.Unban(offender = moderationRequest.offender) }
                 unbanResult
             }
         return result
@@ -61,7 +61,7 @@ internal class BanServiceImpl(
         val result = when {
             (source == null) -> Result.Error(BotError.BotLogicError(command.name, query))
             (offender == null) -> Result.Error(BotError.InvalidQuery(query))
-            else -> Result.Success(ModerationRequest(authorId = source.id, offenderId = offender.id))
+            else -> Result.Success(ModerationRequest(authorId = source.id, offender = offender))
         }
         return result
     }

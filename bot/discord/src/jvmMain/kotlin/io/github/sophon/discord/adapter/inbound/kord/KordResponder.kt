@@ -40,6 +40,7 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.unbanEmbed
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.domain.model.UserRequest
 import io.github.sophon.discord.feat.bot.usecase.CreatePromoEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
@@ -277,47 +278,27 @@ internal class KordResponder(
         return result
     }
 
-    /**
-     * Posts the reply to the recipient's channel, then confirms to the admin.
-     */
     suspend fun respond(
         message: Message,
         reply: BotResponse.Reply,
     ): EmptyResult<BotError> {
-        val result = try {
-            val postResult = postReply(kord = message.kord, reply = reply)
-            message.channel.createMessage {
-                messageReference = message.id
-                allowedMentions { repliedUser = false }
-                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
-            }
-
-            postResult
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
-        }
-
+        val result = sendToRecipient(
+            message = message,
+            recipient = reply.recipient,
+            embedBuilder = replyEmbed(reply, getBotFeatureInfoUseCase.invoke()),
+        )
         return result
     }
 
-    /**
-     * Posts the reply to the recipient's channel, then confirms to the admin.
-     */
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         reply: BotResponse.Reply,
     ): EmptyResult<BotError> {
-        val result = try {
-            val postResult = postReply(kord = interaction.kord, reply = reply)
-            interaction.respondPublic {
-                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
-            }
-
-            postResult
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
-        }
-
+        val result = sendToRecipient(
+            interaction = interaction,
+            recipient = reply.recipient,
+            embedBuilder = replyEmbed(reply, getBotFeatureInfoUseCase.invoke()),
+        )
         return result
     }
 
@@ -325,12 +306,10 @@ internal class KordResponder(
         message: Message,
         ban: BotResponse.Ban,
     ): EmptyResult<BotError> {
-        val result = respond(
+        val result = sendToRecipient(
             message = message,
+            recipient = ban.offender,
             embedBuilder = banEmbed(ban, getBotFeatureInfoUseCase.invoke()),
-            imageList = emptyList(),
-            isExpanded = false,
-            buttonSet = null,
         )
         return result
     }
@@ -339,12 +318,10 @@ internal class KordResponder(
         interaction: GuildChatInputCommandInteraction,
         ban: BotResponse.Ban,
     ): EmptyResult<BotError> {
-        val result = respond(
+        val result = sendToRecipient(
             interaction = interaction,
+            recipient = ban.offender,
             embedBuilder = banEmbed(ban, getBotFeatureInfoUseCase.invoke()),
-            imageList = emptyList(),
-            isExpanded = false,
-            buttonSet = null,
         )
         return result
     }
@@ -353,12 +330,10 @@ internal class KordResponder(
         message: Message,
         unban: BotResponse.Unban,
     ): EmptyResult<BotError> {
-        val result = respond(
+        val result = sendToRecipient(
             message = message,
+            recipient = unban.offender,
             embedBuilder = unbanEmbed(unban, getBotFeatureInfoUseCase.invoke()),
-            imageList = emptyList(),
-            isExpanded = false,
-            buttonSet = null,
         )
         return result
     }
@@ -367,12 +342,10 @@ internal class KordResponder(
         interaction: GuildChatInputCommandInteraction,
         unban: BotResponse.Unban,
     ): EmptyResult<BotError> {
-        val result = respond(
+        val result = sendToRecipient(
             interaction = interaction,
+            recipient = unban.offender,
             embedBuilder = unbanEmbed(unban, getBotFeatureInfoUseCase.invoke()),
-            imageList = emptyList(),
-            isExpanded = false,
-            buttonSet = null,
         )
         return result
     }
@@ -538,11 +511,57 @@ internal class KordResponder(
         }
     }
 
-    private suspend fun postReply(
-        kord: Kord,
-        reply: BotResponse.Reply,
+    /**
+     * Posts the embed to the recipient's channel, then confirms to the admin.
+     */
+    private suspend fun sendToRecipient(
+        message: Message,
+        recipient: UserRequest.Source,
+        embedBuilder: EmbedBuilder.() -> Unit,
     ): EmptyResult<BotError> {
-        val recipient = reply.recipient
+        val result = try {
+            val postResult = postToRecipient(kord = message.kord, recipient = recipient, embedBuilder = embedBuilder)
+            message.channel.createMessage {
+                messageReference = message.id
+                allowedMentions { repliedUser = false }
+                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
+            }
+
+            postResult
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    /**
+     * Posts the embed to the recipient's channel, then confirms to the admin.
+     */
+    private suspend fun sendToRecipient(
+        interaction: GuildChatInputCommandInteraction,
+        recipient: UserRequest.Source,
+        embedBuilder: EmbedBuilder.() -> Unit,
+    ): EmptyResult<BotError> {
+        val result = try {
+            val postResult = postToRecipient(kord = interaction.kord, recipient = recipient, embedBuilder = embedBuilder)
+            interaction.respondPublic {
+                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
+            }
+
+            postResult
+        } catch (e: RestRequestException) {
+            Result.Error(BotError.Kord(e.toString()))
+        }
+
+        return result
+    }
+
+    private suspend fun postToRecipient(
+        kord: Kord,
+        recipient: UserRequest.Source,
+        embedBuilder: EmbedBuilder.() -> Unit,
+    ): EmptyResult<BotError> {
         val channel = kord.getChannelOf<MessageChannel>(Snowflake(recipient.channelId))
 
         val result = if (channel == null) {
@@ -550,7 +569,7 @@ internal class KordResponder(
         } else {
             channel.createMessage {
                 content = "<@${recipient.id}>"
-                embed(replyEmbed(reply, getBotFeatureInfoUseCase.invoke()))
+                embed(embedBuilder)
             }
             Result.Success(Unit)
         }

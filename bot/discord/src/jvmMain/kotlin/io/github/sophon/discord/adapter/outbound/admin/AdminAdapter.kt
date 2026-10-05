@@ -38,7 +38,7 @@ internal class AdminAdapter(
 
     override suspend fun ban(moderationRequest: ModerationRequest): Result<BotResponse.Ban, BotError> {
         val result = banUserUseCase(moderationRequest.toBanRequest())
-            .map { it.toDomain() }
+            .map { ban -> ban.toDomain(offender = moderationRequest.offender) }
             .mapError { it.toDomainError() }
         return result
     }
