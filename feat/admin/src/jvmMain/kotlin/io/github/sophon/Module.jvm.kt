@@ -1,4 +1,4 @@
-package io.github.sophon.integration
+package io.github.sophon
 
 import io.github.sophon.data.DatabaseDriverFactory
 import org.koin.dsl.module

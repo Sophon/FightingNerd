@@ -1,4 +1,4 @@
-package io.github.sophon.integration
+package io.github.sophon
 
 import io.github.sophon.adapter.inbound.scheduler.AdminScheduler
 import io.github.sophon.adapter.outbound.memory.InMemoryAdminListAdapter
@@ -11,13 +11,18 @@ import io.github.sophon.app.port.inbound.ConfigureAdminToolUseCase
 import io.github.sophon.app.port.inbound.UnbanUserUseCase
 import io.github.sophon.app.port.outbound.AdminListPort
 import io.github.sophon.app.port.outbound.BanPort
+import io.github.sophon.app.port.outbound.ClearExpiredBansPort
 import io.github.sophon.data.BanRepo
 import io.github.sophon.data.BanRepoImpl
 import io.github.sophon.domain.AdminToolImpl
+import io.github.sophon.integration.AdminFeatureInfo
+import io.github.sophon.integration.AdminTool
 import io.github.sophon.usecase.ProcessFeedbackUseCase
 import io.github.sophon.usecase.ProcessReplyUseCase
 import org.koin.core.module.Module
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
+import org.koin.core.module.dsl.withOptions
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import kotlin.time.Clock
@@ -37,7 +42,10 @@ fun adminModule() = module {
     singleOf(::BanUserService).bind<BanUserUseCase>()
     singleOf(::UnbanUserService).bind<UnbanUserUseCase>()
 
-    single { SqlDelightAdapter(driverFactory = get(), clock = Clock.System) }.bind<BanPort>()
+    single { SqlDelightAdapter(driverFactory = get(), clock = Clock.System) } withOptions {
+        bind<BanPort>()
+        bind<ClearExpiredBansPort>()
+    }
     singleOf(::InMemoryAdminListAdapter).bind<AdminListPort>()
     singleOf(::AdminScheduler)
 }

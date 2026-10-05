@@ -5,6 +5,7 @@ import io.github.sophon.admin.data.AdminDatabase
 import io.github.sophon.app.domain.model.Ban
 import io.github.sophon.app.domain.model.ModerationRequest
 import io.github.sophon.app.port.outbound.BanPort
+import io.github.sophon.app.port.outbound.ClearExpiredBansPort
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
@@ -17,7 +18,7 @@ import kotlin.time.Clock
 internal class SqlDelightAdapter(
     driverFactory: DatabaseDriverFactory,
     private val clock: Clock,
-): BanPort {
+): BanPort, ClearExpiredBansPort {
     private val queries = AdminDatabase(driverFactory.createDriver()).banQueries
 
     override suspend fun ban(moderationRequest: ModerationRequest): Result<Ban, DataError> {
@@ -55,6 +56,19 @@ internal class SqlDelightAdapter(
                 Result.Success(Unit)
             } catch (e: Exception) {
                 Napier.e(throwable = e, tag = TAG) { "unban(${moderationRequest.offenderId}) failed" }
+                Result.Error(DataError.Local.UNKNOWN)
+            }
+        }
+        return result
+    }
+
+    override suspend fun clear(): EmptyResult<DataError> {
+        val result = withContext(Dispatchers.IO) {
+            try {
+                queries.cleanExpiredBans(clock.now().toEpochMilliseconds())
+                Result.Success(Unit)
+            } catch (e: Exception) {
+                Napier.e(throwable = e, tag = TAG) { "clear() failed" }
                 Result.Error(DataError.Local.UNKNOWN)
             }
         }

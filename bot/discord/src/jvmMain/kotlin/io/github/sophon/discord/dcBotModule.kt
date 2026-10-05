@@ -45,7 +45,7 @@ import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
 import io.github.sophon.glossaryinfil.integration.infilModule
-import io.github.sophon.integration.adminModule
+import io.github.sophon.adminModule
 import io.github.sophon.integration.data.ReportRepo
 import io.github.sophon.integration.ewgfModule
 import io.github.sophon.integration.statsModule
