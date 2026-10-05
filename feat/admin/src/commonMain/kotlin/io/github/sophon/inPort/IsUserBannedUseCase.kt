@@ -1,4 +1,4 @@
-package io.github.sophon.inboundPorts
+package io.github.sophon.inPort
 
 import io.github.sophon.model.AdminError
 import io.github.sophon.core.architecture.Result

@@ -4,9 +4,9 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.model.AdminError
 import io.github.sophon.model.Ban
 import io.github.sophon.model.BanRequest
-import io.github.sophon.inboundPorts.BanUserUseCase
-import io.github.sophon.app.outboundPorts.BanPort
-import io.github.sophon.app.outboundPorts.AdminListPort
+import io.github.sophon.inPort.BanUserUseCase
+import io.github.sophon.app.outPort.BanPort
+import io.github.sophon.app.outPort.AdminListPort
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError

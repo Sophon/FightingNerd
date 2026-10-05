@@ -1,4 +1,4 @@
-package io.github.sophon.app.outboundPorts
+package io.github.sophon.app.outPort
 
 import io.github.sophon.model.Ban
 import io.github.sophon.core.architecture.DataError

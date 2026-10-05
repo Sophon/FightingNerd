@@ -3,9 +3,9 @@ package io.github.sophon.app.service
 import io.github.aakira.napier.Napier
 import io.github.sophon.model.AdminError
 import io.github.sophon.model.UnbanRequest
-import io.github.sophon.inboundPorts.UnbanUserUseCase
-import io.github.sophon.app.outboundPorts.BanPort
-import io.github.sophon.app.outboundPorts.AdminListPort
+import io.github.sophon.inPort.UnbanUserUseCase
+import io.github.sophon.app.outPort.BanPort
+import io.github.sophon.app.outPort.AdminListPort
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.mapError

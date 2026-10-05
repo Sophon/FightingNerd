@@ -1,8 +1,8 @@
 package io.github.sophon.app.service
 
 import io.github.sophon.model.AdminError
-import io.github.sophon.inboundPorts.IsUserBannedUseCase
-import io.github.sophon.app.outboundPorts.BanPort
+import io.github.sophon.inPort.IsUserBannedUseCase
+import io.github.sophon.app.outPort.BanPort
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError

@@ -11,11 +11,11 @@ import io.github.sophon.discord.app.domain.model.ModerationRequest
 import io.github.sophon.discord.app.port.outbound.AdminPort
 import io.github.sophon.discord.app.port.outbound.BanPort
 import io.github.sophon.discord.app.port.outbound.ConfigureAdminPort
-import io.github.sophon.inboundPorts.BanUserUseCase
-import io.github.sophon.inboundPorts.ConfigureAdminToolUseCase
-import io.github.sophon.inboundPorts.IsUserAdminUseCase
-import io.github.sophon.inboundPorts.IsUserBannedUseCase
-import io.github.sophon.inboundPorts.UnbanUserUseCase
+import io.github.sophon.inPort.BanUserUseCase
+import io.github.sophon.inPort.ConfigureAdminToolUseCase
+import io.github.sophon.inPort.IsUserAdminUseCase
+import io.github.sophon.inPort.IsUserBannedUseCase
+import io.github.sophon.inPort.UnbanUserUseCase
 
 internal class AdminAdapter(
     private val configureAdminToolUseCase: ConfigureAdminToolUseCase,
