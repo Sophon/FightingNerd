@@ -5,8 +5,8 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.Command
 import io.github.sophon.integration.StatsFeatureInfo
 import io.github.sophon.integration.StatsTracker
 import io.github.sophon.integration.model.DailyReport

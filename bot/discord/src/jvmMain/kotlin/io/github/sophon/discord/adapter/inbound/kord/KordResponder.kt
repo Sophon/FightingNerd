@@ -39,10 +39,10 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.replyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.steamLobbyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.unbanEmbed
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.app.domain.model.Command
-import io.github.sophon.discord.app.domain.model.UserRequest
+import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.Command
+import io.github.sophon.discord.app.model.UserRequest
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import kotlin.uuid.ExperimentalUuidApi

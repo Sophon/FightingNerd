@@ -1,8 +1,8 @@
 package io.github.sophon.discord.adapter.inbound.kord
 
-import io.github.sophon.discord.app.domain.model.ButtonEvent
-import io.github.sophon.discord.app.domain.model.Command
-import io.github.sophon.discord.app.domain.model.MoveId
+import io.github.sophon.discord.app.model.ButtonEvent
+import io.github.sophon.discord.app.model.Command
+import io.github.sophon.discord.app.model.MoveId
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton
 import io.github.sophon.wiki.model.wiki.Game
 

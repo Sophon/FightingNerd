@@ -1,7 +1,7 @@
 package io.github.sophon.discord.feat.core.domain.model
 
-import io.github.sophon.discord.app.domain.model.Command
-import io.github.sophon.discord.app.domain.model.MoveId
+import io.github.sophon.discord.app.model.Command
+import io.github.sophon.discord.app.model.MoveId
 
 internal sealed class DiscordButton(
     private val key: String,
@@ -20,7 +20,7 @@ internal sealed class DiscordButton(
     class Expand(val moveId: MoveId): DiscordButton(key = KEY_EXPAND, value = moveId.toButtonValue())
 
     class Command(
-        command: io.github.sophon.discord.app.domain.model.Command,
+        command: io.github.sophon.discord.app.model.Command,
         query: String,
     ): DiscordButton(key = KEY_COMMAND, value = command.toButtonValue(query))
 

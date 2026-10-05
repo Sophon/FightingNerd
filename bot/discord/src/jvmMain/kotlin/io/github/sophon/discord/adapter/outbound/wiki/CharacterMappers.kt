@@ -1,7 +1,7 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
-import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.app.domain.model.CharacterId
+import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.CharacterId
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.game.BBCharProperties
 import io.github.sophon.wiki.model.game.GBVSRCharProperties

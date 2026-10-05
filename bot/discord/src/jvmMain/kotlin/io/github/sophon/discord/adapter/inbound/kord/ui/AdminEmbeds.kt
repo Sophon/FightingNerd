@@ -4,7 +4,7 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.toFormattedString
-import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.model.BotResponse
 
 /**
  * Title is the author's handle, so admins can copy it into `/reply`.

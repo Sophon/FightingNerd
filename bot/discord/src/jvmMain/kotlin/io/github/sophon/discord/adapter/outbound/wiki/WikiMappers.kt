@@ -1,9 +1,9 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.DiscordConfig
-import io.github.sophon.discord.app.domain.model.FrameRange
+import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.model.FrameRange
 import io.github.sophon.wiki.model.wiki.CoreFilters
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.model.WikiConfig

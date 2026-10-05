@@ -4,10 +4,10 @@ import io.github.sophon.model.AdminError
 import io.github.sophon.model.Ban
 import io.github.sophon.model.BanRequest
 import io.github.sophon.model.UnbanRequest
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.app.domain.model.ModerationRequest
-import io.github.sophon.discord.app.domain.model.UserRequest
+import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.ModerationRequest
+import io.github.sophon.discord.app.model.UserRequest
 
 internal fun ModerationRequest.toBanRequest(): BanRequest {
     val banRequest = BanRequest(

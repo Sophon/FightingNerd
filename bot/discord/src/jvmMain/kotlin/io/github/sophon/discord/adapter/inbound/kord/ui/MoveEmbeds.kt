@@ -4,8 +4,8 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.toColumns
-import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.app.domain.model.Emoji
+import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.Emoji
 
 internal fun moveListEmbed(
     listResponse: BotResponse.ListResponse,
