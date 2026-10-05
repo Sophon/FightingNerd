@@ -7,7 +7,7 @@ import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.port.outbound.CharactersPort
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.wiki.Game
 import kotlin.time.Duration.Companion.seconds
 
 internal interface CharacterService {

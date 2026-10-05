@@ -7,11 +7,11 @@ import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.MizuumiS
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.SqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.SuperComboSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.WavuSqlDelightGameProperties
-import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.MoveGameProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
-import io.github.sophon.wiki.application.domain.model.wiki.Wiki
+import io.github.sophon.wiki.model.CharacterGameProperties
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.model.wiki.Game
+import io.github.sophon.wiki.model.wiki.Wiki
 
 /**
  * Routes each game to its wiki's extension tables - a wiki without them doesn't compile.

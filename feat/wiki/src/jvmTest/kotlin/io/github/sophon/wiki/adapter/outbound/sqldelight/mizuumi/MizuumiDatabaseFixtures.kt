@@ -1,13 +1,13 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.mizuumi
 
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.gameProperties.MBTLMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2CharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMoveProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.MBTLMoveProperties
+import io.github.sophon.wiki.model.game.Uni2CharProperties
+import io.github.sophon.wiki.model.game.Uni2MoveProperties
+import io.github.sophon.wiki.model.game.VSAVMoveProperties
+import io.github.sophon.wiki.model.wiki.Game
 
 // normalized, like the service hands them to the adapter
 // every property has a distinct value - a swapped column fails the round trip

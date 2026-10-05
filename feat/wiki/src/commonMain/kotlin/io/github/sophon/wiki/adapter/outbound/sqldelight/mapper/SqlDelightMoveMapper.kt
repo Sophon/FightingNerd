@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.mapper
 
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.MoveGameProperties
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.MoveGameProperties
 import io.github.sophon.wiki.data.Move as MoveEntity
 
 internal fun MoveEntity.toDomain(

@@ -4,15 +4,15 @@ import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.core.util.toClickable
 import io.github.sophon.core.util.urlEncode
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.gameProperties.BBCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.DBFZCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GGCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSCharProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterGameProperties
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.game.BBCharProperties
+import io.github.sophon.wiki.model.game.DBFZCharProperties
+import io.github.sophon.wiki.model.game.GBVSRCharProperties
+import io.github.sophon.wiki.model.game.GGCharProperties
+import io.github.sophon.wiki.model.game.MTFSCharProperties
+import io.github.sophon.wiki.model.wiki.Game
 
 internal fun DustLoopCharacterListResponseDto.toDomain(
     game: Game,

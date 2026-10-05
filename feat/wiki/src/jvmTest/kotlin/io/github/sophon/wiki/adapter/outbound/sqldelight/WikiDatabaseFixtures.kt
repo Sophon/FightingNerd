@@ -1,10 +1,10 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight
 
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.wiki.Game
 
 // normalized, like the service hands them to the adapter
 

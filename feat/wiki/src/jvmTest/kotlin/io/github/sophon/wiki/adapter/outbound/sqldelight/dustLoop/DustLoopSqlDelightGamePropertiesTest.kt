@@ -3,8 +3,8 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight.dustLoop
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.wiki.adapter.outbound.sqldelight.TestWikiDatabase
-import io.github.sophon.wiki.application.domain.model.gameProperties.GGCharProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.game.GGCharProperties
+import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test

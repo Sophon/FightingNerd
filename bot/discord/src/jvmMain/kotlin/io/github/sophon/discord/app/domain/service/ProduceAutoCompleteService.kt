@@ -9,7 +9,7 @@ import io.github.sophon.discord.app.domain.model.CharacterId
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * flow: [flow-autocomplete.mmd](../../../docs/flow-autocomplete.mmd)

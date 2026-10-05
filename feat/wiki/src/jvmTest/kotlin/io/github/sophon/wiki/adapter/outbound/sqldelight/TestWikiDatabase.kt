@@ -11,8 +11,8 @@ import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.DustLoop
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.MizuumiSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.SuperComboSqlDelightGameProperties
 import io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties.WavuSqlDelightGameProperties
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.Move
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.data.WikiDB
 import java.io.File
 import java.util.Properties

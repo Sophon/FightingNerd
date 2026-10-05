@@ -2,7 +2,7 @@ package io.github.sophon.discord.app.domain.model
 
 import io.github.sophon.core.util.toFormattedString
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_DEFAULT_S
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.wiki.Game
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.Instant

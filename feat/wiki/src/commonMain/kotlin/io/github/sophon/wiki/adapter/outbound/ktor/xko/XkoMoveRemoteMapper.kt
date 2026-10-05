@@ -1,9 +1,9 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
 import io.github.sophon.core.util.orDash
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * Bulk - the whole move bucket, grouped into characters by page.

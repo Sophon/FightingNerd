@@ -3,9 +3,9 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.createAliases
 import io.github.sophon.core.util.removeAccents
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * DreamCancel has no character table - the character is built from the move table's `chara` column.

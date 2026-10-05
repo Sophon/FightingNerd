@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * Character tables alias `_pageName` as `Character` - the character id is formed from the page name.

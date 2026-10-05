@@ -2,11 +2,11 @@ package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.gameProperties.MBTLMoveProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.MBTLMoveProperties
+import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 
 class MizuumiMoveRemoteMapperTest {

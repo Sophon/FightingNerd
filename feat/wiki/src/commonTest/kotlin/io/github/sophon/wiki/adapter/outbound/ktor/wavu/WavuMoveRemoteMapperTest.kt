@@ -3,11 +3,11 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 
 class WavuMoveRemoteMapperTest {

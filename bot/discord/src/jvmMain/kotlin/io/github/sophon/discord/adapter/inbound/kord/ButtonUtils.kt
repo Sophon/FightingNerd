@@ -4,7 +4,7 @@ import io.github.sophon.discord.app.domain.model.ButtonEvent
 import io.github.sophon.discord.app.domain.model.Command
 import io.github.sophon.discord.app.domain.model.MoveId
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * Null for a button the new API doesn't handle - the legacy Edit buttons,
