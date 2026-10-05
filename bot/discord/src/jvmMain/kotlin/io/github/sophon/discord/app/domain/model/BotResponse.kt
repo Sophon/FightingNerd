@@ -1,9 +1,11 @@
 package io.github.sophon.discord.app.domain.model
 
+import io.github.sophon.core.util.toFormattedString
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_DEFAULT_S
 import io.github.sophon.wiki.application.domain.model.wiki.Game
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
+import kotlin.time.Instant
 
 sealed interface BotResponse {
 
@@ -89,6 +91,33 @@ sealed interface BotResponse {
         val lobbyName: String?,
         val password: String?,
         val buttonSet: ButtonSet,
+    ): BotResponse
+
+    data class Ban(
+        val offenderId: String,
+        val bannedAt: Instant,
+        val expiresAt: Instant,
+        val issuerId: String,
+        val preventBotUsage: Boolean,
+    ): BotResponse {
+        override fun toString(): String {
+            return "BANNED: ${bannedAt.toFormattedString()} → ${expiresAt.toFormattedString()}"
+        }
+    }
+
+    data class Unban(
+        val offenderId: String,
+    ): BotResponse
+
+    data class Feedback(
+        val author: UserRequest.Source,
+        val message: String,
+        val feedbackChannelIdList: List<String>,
+    ): BotResponse
+
+    data class Reply(
+        val recipient: UserRequest.Source,
+        val message: String,
     ): BotResponse
 
 

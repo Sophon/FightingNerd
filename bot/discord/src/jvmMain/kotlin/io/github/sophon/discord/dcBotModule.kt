@@ -13,8 +13,13 @@ import io.github.sophon.core.wiki.data.readStoredFingerprint
 import io.github.sophon.core.wiki.data.storeFingerprint
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.adapter.inbound.kord.KordResponder
+import io.github.sophon.discord.adapter.outbound.admin.AdminAdapter
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
+import io.github.sophon.discord.app.domain.service.AdminService
+import io.github.sophon.discord.app.domain.service.AdminServiceImpl
+import io.github.sophon.discord.app.domain.service.BanService
+import io.github.sophon.discord.app.domain.service.BanServiceImpl
 import io.github.sophon.discord.app.domain.service.CharacterService
 import io.github.sophon.discord.app.domain.service.CharacterServiceImpl
 import io.github.sophon.discord.app.domain.service.CommandRouterService
@@ -30,7 +35,10 @@ import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
+import io.github.sophon.discord.app.port.outbound.AdminPort
+import io.github.sophon.discord.app.port.outbound.BanPort
 import io.github.sophon.discord.app.port.outbound.CharactersPort
+import io.github.sophon.discord.app.port.outbound.ConfigureAdminPort
 import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
 import io.github.sophon.discord.app.port.outbound.FrameDataPort
 import io.github.sophon.discord.app.port.outbound.GetMovesInRangePort
@@ -134,6 +142,16 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::CoreBotServiceImpl).bind<CoreBotService>()
     singleOf(::MoveServiceImpl).bind<MoveService>()
     singleOf(::ProduceAutoCompleteService).bind<ProduceAutoCompleteUseCase>()
+    singleOf(::BanServiceImpl).bind<BanService>()
+    singleOf(::AdminServiceImpl).bind<AdminService>()
+    //endregion
+
+    //region Admin
+    singleOf(::AdminAdapter) {
+        bind<ConfigureAdminPort>()
+        bind<AdminPort>()
+        bind<BanPort>()
+    }
     //endregion
 
     //region Config

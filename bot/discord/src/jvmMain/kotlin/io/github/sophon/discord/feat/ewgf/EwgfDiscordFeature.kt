@@ -17,7 +17,7 @@ import io.github.sophon.discord.feat.ewgf.usecase.UnregisterPlayerUseCase
 import io.github.sophon.discord.feat.ewgf.usecase.UpdatePlayerUseCase
 import io.github.sophon.integration.EwgfFeatureInfo
 import io.github.sophon.integration.model.Player
-import io.github.sophon.app.model.Source
+import io.github.sophon.model.Source
 
 internal class EwgfDiscordFeature(
     ewgfFeatureInfo: EwgfFeatureInfo,

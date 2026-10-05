@@ -6,8 +6,8 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.feat.core.domain.toDomainError
-import io.github.sophon.app.model.Ban
-import io.github.sophon.app.model.Source
+import io.github.sophon.model.Ban
+import io.github.sophon.model.Source
 import io.github.sophon.app.util.toSource
 
 @ExcludeFromCoverage("plain client call")

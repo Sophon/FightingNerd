@@ -1,0 +1,104 @@
+package io.github.sophon.discord.app.domain.service
+
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
+import io.github.sophon.discord.app.domain.model.BotError
+import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.domain.model.UserRequest
+import io.github.sophon.discord.app.port.outbound.AdminPort
+import io.github.sophon.discord.app.port.outbound.BanPort
+import io.github.sophon.discord.app.port.outbound.LoadConfigPort
+
+internal interface AdminService {
+    fun isAdmin(userId: String): Result<Boolean, BotError>
+
+    suspend fun forwardFeedback(
+        query: String,
+        source: UserRequest.Source?,
+    ): Result<BotResponse.Feedback, BotError>
+
+    fun replyToFeedback(
+        query: String,
+        source: UserRequest.Source?,
+    ): Result<BotResponse.Reply, BotError>
+}
+
+internal class AdminServiceImpl(
+    private val adminPort: AdminPort,
+    private val banPort: BanPort,
+    private val loadConfigPort: LoadConfigPort,
+): AdminService {
+    override fun isAdmin(userId: String): Result<Boolean, BotError> {
+        return adminPort.isUserAdmin(userId)
+    }
+
+    override suspend fun forwardFeedback(
+        query: String,
+        source: UserRequest.Source?,
+    ): Result<BotResponse.Feedback, BotError> {
+        val result = when {
+            (source == null) -> Result.Error(BotError.BotLogicError(Command.Feedback.name, query))
+            query.isBlank() -> Result.Error(BotError.InvalidQuery(query))
+            else -> createFeedback(author = source, message = query)
+        }
+        return result
+    }
+
+    override fun replyToFeedback(
+        query: String,
+        source: UserRequest.Source?,
+    ): Result<BotResponse.Reply, BotError> {
+        val recipient = UserRequest.Source.parse(query.substringBefore(' '))
+        val message = query.substringAfter(delimiter = " ", missingDelimiterValue = "").trim()
+
+        val result = when {
+            (source == null) -> Result.Error(BotError.BotLogicError(Command.Reply.name, query))
+            (recipient == null) || (message.isBlank()) -> Result.Error(BotError.InvalidQuery(query))
+            else -> createReply(issuerId = source.id, recipient = recipient, message = message)
+        }
+        return result
+    }
+
+
+    private suspend fun createFeedback(
+        author: UserRequest.Source,
+        message: String,
+    ): Result<BotResponse.Feedback, BotError> {
+        val result = banPort.isBanned(author.id)
+            .flatMap { isBanned ->
+                val feedbackResult = if (isBanned) {
+                    Result.Error(BotError.UserBanned(author.id))
+                } else {
+                    loadConfigPort.load()
+                        .map { discordConfig ->
+                            BotResponse.Feedback(
+                                author = author,
+                                message = message,
+                                feedbackChannelIdList = discordConfig.adminConfig.feedbackChannelIdList,
+                            )
+                        }
+                }
+                feedbackResult
+            }
+        return result
+    }
+
+    private fun createReply(
+        issuerId: String,
+        recipient: UserRequest.Source,
+        message: String,
+    ): Result<BotResponse.Reply, BotError> {
+        val result = isAdmin(issuerId)
+            .flatMap { isAdmin ->
+                val replyResult = if (isAdmin) {
+                    Result.Success(BotResponse.Reply(recipient = recipient, message = message))
+                } else {
+                    Result.Error(BotError.PermissionDenied())
+                }
+                replyResult
+            }
+        return result
+    }
+}
