@@ -28,7 +28,7 @@ internal interface MoveService {
 
     suspend fun findMovesInRange(
         query: String,
-        rangeType: FrameRange.Type,
+        command: Command,
     ): Result<BotResponse.ListResponse, BotError>
 
     suspend fun findStanceOrMove(query: String): Result<BotResponse.ListResponse, BotError>
@@ -84,12 +84,13 @@ internal class MoveServiceImpl(
      */
     override suspend fun findMovesInRange(
         query: String,
-        rangeType: FrameRange.Type,
+        command: Command,
     ): Result<BotResponse.ListResponse, BotError> {
         val characterQuery = query.substringBefore(' ')
         val rangeQuery = query.substringAfter(' ', missingDelimiterValue = "").trim()
 
-        val result = rangeQuery.toFrameRange(rangeType)
+        val result = command.toFrameRangeType()
+            .flatMap { rangeType -> rangeQuery.toFrameRange(rangeType) }
             .flatMap { frameRange ->
                 val listResponse = characterService.findCharacter(characterQuery)
                     .flatMap { character ->
@@ -331,6 +332,18 @@ internal class MoveServiceImpl(
         val title = "${character.displayName} ${type.toTitle()} [${from.toFormattedBound()} ; ${to.toFormattedBound()}]"
 
         return title
+    }
+
+    private fun Command.toFrameRangeType(): Result<FrameRange.Type, BotError> {
+        val result = when (this) {
+            Command.Startup -> Result.Success(FrameRange.Type.STARTUP)
+            Command.OnHit -> Result.Success(FrameRange.Type.ON_HIT)
+            Command.OnBlock -> Result.Success(FrameRange.Type.ON_BLOCK)
+            Command.OnCounter -> Result.Success(FrameRange.Type.ON_COUNTER)
+            else -> Result.Error(BotError.InvalidCommand(name))
+        }
+
+        return result
     }
 
     private fun FrameRange.Type.toTitle(): String {
