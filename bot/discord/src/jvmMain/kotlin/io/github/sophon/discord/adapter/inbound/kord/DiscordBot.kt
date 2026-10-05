@@ -447,6 +447,15 @@ internal class DiscordBotImpl(
                                 ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                             }
                         }
+
+                        is ButtonEvent.Forward -> {
+                            if (response is BotResponse.Redirect) {
+                                kordResponder.redirect(
+                                    message = interaction.message,
+                                    channelId = response.channelId,
+                                ).onError { error -> Napier.e(tag = TAG) { "Redirect failed: $error" } }
+                            }
+                        }
                     }
                 }
                 .onError { error -> Napier.e(tag = TAG) { "Button event failed: $error" } }
