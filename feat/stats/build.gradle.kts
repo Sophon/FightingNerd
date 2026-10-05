@@ -22,6 +22,7 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.kotlin.date.time)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.okio)
 
             api(libs.koin.core)
         }
