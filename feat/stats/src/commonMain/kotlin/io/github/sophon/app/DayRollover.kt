@@ -37,7 +37,7 @@ internal class DayRollover(
             val result = dayReportPort.loadDay()
                 .flatMap { storedReport ->
                     when {
-                        storedReport == null -> Result.Success(DailyReport(date = today, commandMap = emptyMap()))
+                        storedReport == null -> Result.Success(DailyReport(date = today, usageList = emptyList()))
                         storedReport.date == today -> Result.Success(storedReport)
                         else -> archive(finishedReport = storedReport, today = today)
                     }
@@ -57,7 +57,7 @@ internal class DayRollover(
         today: LocalDate,
     ): Result<DailyReport, StatsError> {
         val cutoffDate = today.minus(MONTH_LENGTH_DAYS, DateTimeUnit.DAY)
-        val freshReport = DailyReport(date = today, commandMap = emptyMap())
+        val freshReport = DailyReport(date = today, usageList = emptyList())
 
         val result = monthReportPort.loadMonth()
             .flatMap { monthReportList ->

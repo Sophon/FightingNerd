@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class DailyReport(
     val date: LocalDate,
-    val commandMap: Map<String, Map<String, Long>>, // feature -> commandName -> count
+    val usageList: List<Usage>,
 )

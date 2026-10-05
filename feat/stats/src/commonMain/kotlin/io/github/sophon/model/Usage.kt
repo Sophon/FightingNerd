@@ -3,7 +3,8 @@ package io.github.sophon.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Command(
+data class Usage(
     val game: String?,
-    val name: String,
+    val command: String,
+    val count: Long,
 )

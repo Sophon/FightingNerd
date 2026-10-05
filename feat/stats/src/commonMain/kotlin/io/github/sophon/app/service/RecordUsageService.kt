@@ -9,6 +9,7 @@ import io.github.sophon.inPort.RecordUsageUseCase
 import io.github.sophon.model.Command
 import io.github.sophon.model.DailyReport
 import io.github.sophon.model.StatsError
+import io.github.sophon.model.Usage
 
 internal class RecordUsageService(
     private val dayRollover: DayRollover,
@@ -26,11 +27,18 @@ internal class RecordUsageService(
 
 
     private fun DailyReport.increment(command: Command): DailyReport {
-        val featureCommandMap = commandMap[command.game].orEmpty()
-        val count = ((featureCommandMap[command.name] ?: 0L) + 1)
-        val updatedFeatureCommandMap = (featureCommandMap + (command.name to count))
-        val updated = copy(commandMap = (commandMap + (command.game to updatedFeatureCommandMap)))
+        val updatedUsageList = if (usageList.any { usage -> usage.isOf(command) }) {
+            usageList.map { usage -> if (usage.isOf(command)) usage.copy(count = (usage.count + 1)) else usage }
+        } else {
+            (usageList + Usage(game = command.game, command = command.name, count = 1))
+        }
+        val updated = copy(usageList = updatedUsageList)
         return updated
+    }
+
+    private fun Usage.isOf(command: Command): Boolean {
+        val isOf = ((game == command.game) && (this.command == command.name))
+        return isOf
     }
 
 
