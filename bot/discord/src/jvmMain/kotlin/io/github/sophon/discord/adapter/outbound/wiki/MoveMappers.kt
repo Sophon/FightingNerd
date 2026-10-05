@@ -1,28 +1,28 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
-import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.app.domain.model.MoveId
-import io.github.sophon.discord.app.domain.model.MoveType
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.Filter
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.MoveGameProperties
-import io.github.sophon.wiki.application.domain.model.WavuFilters
-import io.github.sophon.wiki.application.domain.model.gameProperties.AVLMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.BBMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.COTWMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.DBFZMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GGMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.KOF15MoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MBTLMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MKMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.SF6MoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.T8Properties
-import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMoveProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.MoveId
+import io.github.sophon.discord.app.model.MoveType
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.Filter
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.model.WavuFilters
+import io.github.sophon.wiki.model.game.AVLMoveProperties
+import io.github.sophon.wiki.model.game.BBMoveProperties
+import io.github.sophon.wiki.model.game.COTWMoveProperties
+import io.github.sophon.wiki.model.game.DBFZMoveProperties
+import io.github.sophon.wiki.model.game.GBVSRMoveProperties
+import io.github.sophon.wiki.model.game.GGMoveProperties
+import io.github.sophon.wiki.model.game.KOF15MoveProperties
+import io.github.sophon.wiki.model.game.MBTLMoveProperties
+import io.github.sophon.wiki.model.game.MKMoveProperties
+import io.github.sophon.wiki.model.game.MTFSMoveProperties
+import io.github.sophon.wiki.model.game.SF6MoveProperties
+import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.game.Uni2MoveProperties
+import io.github.sophon.wiki.model.game.VSAVMoveProperties
+import io.github.sophon.wiki.model.wiki.Game
 
 internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
     val isCollapsedByDefault: Boolean = when (character.id.game) {

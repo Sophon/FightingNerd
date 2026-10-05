@@ -1,19 +1,19 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.dustLoop
 
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.gameProperties.BBCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.BBMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.DBFZCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.DBFZMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GGCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GGMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSMoveProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.BBCharProperties
+import io.github.sophon.wiki.model.game.BBMoveProperties
+import io.github.sophon.wiki.model.game.DBFZCharProperties
+import io.github.sophon.wiki.model.game.DBFZMoveProperties
+import io.github.sophon.wiki.model.game.GBVSRCharProperties
+import io.github.sophon.wiki.model.game.GBVSRMoveProperties
+import io.github.sophon.wiki.model.game.GGCharProperties
+import io.github.sophon.wiki.model.game.GGMoveProperties
+import io.github.sophon.wiki.model.game.MTFSCharProperties
+import io.github.sophon.wiki.model.game.MTFSMoveProperties
+import io.github.sophon.wiki.model.wiki.Game
 
 // normalized, like the service hands them to the adapter
 // every property has a distinct value - a swapped column fails the round trip

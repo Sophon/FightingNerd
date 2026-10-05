@@ -3,15 +3,15 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dustLoop
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.toClickable
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.MoveGameProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.BBMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.DBFZMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GGMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSMoveProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.model.game.BBMoveProperties
+import io.github.sophon.wiki.model.game.DBFZMoveProperties
+import io.github.sophon.wiki.model.game.GBVSRMoveProperties
+import io.github.sophon.wiki.model.game.GGMoveProperties
+import io.github.sophon.wiki.model.game.MTFSMoveProperties
+import io.github.sophon.wiki.model.wiki.Game
 
 internal fun DustLoopMoveListResponseDto.toDomain(
     game: Game,

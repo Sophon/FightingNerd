@@ -3,9 +3,9 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dragDown
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.toClickable
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2MoveProperties
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.Roa2MoveProperties
 
 internal fun List<DragDownMoveResponseDto>.toDomain(
     character: Character,

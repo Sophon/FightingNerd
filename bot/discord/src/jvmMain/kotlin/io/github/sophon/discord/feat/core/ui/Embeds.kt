@@ -12,7 +12,7 @@ import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.adapter.inbound.kord.ui.featureFooter
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
-import io.github.sophon.discord.app.domain.model.Emoji
+import io.github.sophon.discord.app.model.Emoji
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.MoveRange
 

@@ -2,12 +2,12 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.wiki.adapter.outbound.sqldelight.LazyWikiDB
-import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.MoveGameProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2CharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2MoveProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.CharacterGameProperties
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.model.game.Roa2CharProperties
+import io.github.sophon.wiki.model.game.Roa2MoveProperties
+import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.data.dragDown.Roa2_character
 import io.github.sophon.wiki.data.dragDown.Roa2_move
 

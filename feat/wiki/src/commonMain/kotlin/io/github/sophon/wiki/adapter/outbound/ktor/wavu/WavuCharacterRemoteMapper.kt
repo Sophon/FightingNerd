@@ -1,8 +1,8 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.wiki.Game
 
 internal fun WavuCharacterListResponseDto.toDomain(game: Game): List<Character> {
     return characters.map { dto ->

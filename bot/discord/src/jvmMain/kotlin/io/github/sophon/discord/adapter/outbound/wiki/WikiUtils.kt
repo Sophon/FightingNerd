@@ -1,7 +1,7 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
 import io.github.sophon.core.util.orDash
-import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.model.BotResponse
 
 internal fun mandatoryFieldOf(title: String, value: String?): BotResponse.Field{
     val field = BotResponse.Field(title, value.orDash())

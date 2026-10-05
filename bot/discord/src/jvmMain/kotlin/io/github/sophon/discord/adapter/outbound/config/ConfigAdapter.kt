@@ -3,10 +3,10 @@ package io.github.sophon.discord.adapter.outbound.config
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.DiscordConfig
-import io.github.sophon.discord.app.port.outbound.LoadConfigPort
-import io.github.sophon.discord.app.port.outbound.ReadFilePort
+import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.outPort.LoadConfigPort
+import io.github.sophon.discord.app.outPort.ReadFilePort
 import kotlinx.serialization.json.Json
 import java.io.File
 

@@ -6,8 +6,8 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.ewgf.usecase.GetRecentMatchesUseCase

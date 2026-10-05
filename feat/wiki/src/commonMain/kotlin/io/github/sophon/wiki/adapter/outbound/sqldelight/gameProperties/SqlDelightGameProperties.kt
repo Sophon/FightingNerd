@@ -1,9 +1,9 @@
 package io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties
 
-import io.github.sophon.wiki.application.domain.model.CharacterGameProperties
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.MoveGameProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.CharacterGameProperties
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * One wiki's extension tables - one per game, 1:1 with a `character` / `move` row, keyed by that row's ID.

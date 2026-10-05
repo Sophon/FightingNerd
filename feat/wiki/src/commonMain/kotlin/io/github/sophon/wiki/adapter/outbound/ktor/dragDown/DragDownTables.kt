@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.dragDown
 
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.wiki.Game
 
 internal object DragDownTables {
     val characterTableByGame = mapOf(

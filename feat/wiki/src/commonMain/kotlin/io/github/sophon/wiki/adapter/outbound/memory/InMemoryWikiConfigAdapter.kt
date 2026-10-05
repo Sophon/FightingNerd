@@ -2,10 +2,10 @@ package io.github.sophon.wiki.adapter.outbound.memory
 
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.wiki.application.domain.model.WikiConfig
-import io.github.sophon.wiki.application.domain.model.WikiError
-import io.github.sophon.wiki.application.port.outbound.LoadWikiConfigPort
-import io.github.sophon.wiki.application.port.outbound.SaveWikiConfigPort
+import io.github.sophon.wiki.model.WikiConfig
+import io.github.sophon.wiki.model.WikiError
+import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
+import io.github.sophon.wiki.app.outPort.SaveWikiConfigPort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

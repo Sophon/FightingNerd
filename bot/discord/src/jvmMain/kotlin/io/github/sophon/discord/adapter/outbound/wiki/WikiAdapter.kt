@@ -5,29 +5,29 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.app.domain.model.CharacterId
-import io.github.sophon.discord.app.domain.model.DiscordConfig
-import io.github.sophon.discord.app.domain.model.FrameRange
-import io.github.sophon.discord.app.domain.model.MoveId
-import io.github.sophon.discord.app.domain.model.MoveType
-import io.github.sophon.discord.app.port.outbound.CharactersPort
-import io.github.sophon.discord.app.port.outbound.ConfigureWikiPort
-import io.github.sophon.discord.app.port.outbound.FrameDataPort
-import io.github.sophon.discord.app.port.outbound.GetMovesInRangePort
-import io.github.sophon.discord.app.port.outbound.GetMovesOfTypePort
-import io.github.sophon.discord.app.port.outbound.RefreshWikiPort
-import io.github.sophon.wiki.application.domain.model.Filter
-import io.github.sophon.wiki.application.port.inbound.ConfigureWikiUseCase
-import io.github.sophon.wiki.application.port.inbound.GetCharacterListUseCase
-import io.github.sophon.wiki.application.port.inbound.GetCharacterUseCase
-import io.github.sophon.wiki.application.port.inbound.GetMoveListUseCase
-import io.github.sophon.wiki.application.port.inbound.GetMoveUseCase
-import io.github.sophon.wiki.application.port.inbound.RefreshDataUseCase
+import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.CharacterId
+import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.model.FrameRange
+import io.github.sophon.discord.app.model.MoveId
+import io.github.sophon.discord.app.model.MoveType
+import io.github.sophon.discord.app.outPort.CharactersPort
+import io.github.sophon.discord.app.outPort.ConfigureWikiPort
+import io.github.sophon.discord.app.outPort.FrameDataPort
+import io.github.sophon.discord.app.outPort.GetMovesInRangePort
+import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
+import io.github.sophon.discord.app.outPort.RefreshWikiPort
+import io.github.sophon.wiki.model.Filter
+import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
+import io.github.sophon.wiki.inPort.GetCharacterListUseCase
+import io.github.sophon.wiki.inPort.GetCharacterUseCase
+import io.github.sophon.wiki.inPort.GetMoveListUseCase
+import io.github.sophon.wiki.inPort.GetMoveUseCase
+import io.github.sophon.wiki.inPort.RefreshDataUseCase
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
-import io.github.sophon.wiki.application.domain.model.CharacterId as WikiCharacterId
+import io.github.sophon.wiki.model.CharacterId as WikiCharacterId
 
 internal class WikiAdapter(
     private val configureWikiUseCase: ConfigureWikiUseCase,

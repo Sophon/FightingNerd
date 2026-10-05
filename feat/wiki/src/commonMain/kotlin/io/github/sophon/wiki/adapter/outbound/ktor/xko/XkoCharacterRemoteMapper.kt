@@ -1,8 +1,8 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * Xko has no character table - the character is built from the move's page name.

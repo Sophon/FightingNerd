@@ -4,18 +4,18 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.app.domain.model.DiscordConfig
-import io.github.sophon.discord.app.domain.model.ModerationRequest
-import io.github.sophon.discord.app.port.outbound.AdminPort
-import io.github.sophon.discord.app.port.outbound.BanPort
-import io.github.sophon.discord.app.port.outbound.ConfigureAdminPort
-import io.github.sophon.inboundPorts.BanUserUseCase
-import io.github.sophon.inboundPorts.ConfigureAdminToolUseCase
-import io.github.sophon.inboundPorts.IsUserAdminUseCase
-import io.github.sophon.inboundPorts.IsUserBannedUseCase
-import io.github.sophon.inboundPorts.UnbanUserUseCase
+import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.model.ModerationRequest
+import io.github.sophon.discord.app.outPort.AdminPort
+import io.github.sophon.discord.app.outPort.BanPort
+import io.github.sophon.discord.app.outPort.ConfigureAdminPort
+import io.github.sophon.inPort.BanUserUseCase
+import io.github.sophon.inPort.ConfigureAdminToolUseCase
+import io.github.sophon.inPort.IsUserAdminUseCase
+import io.github.sophon.inPort.IsUserBannedUseCase
+import io.github.sophon.inPort.UnbanUserUseCase
 
 internal class AdminAdapter(
     private val configureAdminToolUseCase: ConfigureAdminToolUseCase,

@@ -1,14 +1,14 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.app.domain.model.DiscordConfig
-import io.github.sophon.discord.app.domain.model.FrameRange
-import io.github.sophon.wiki.application.domain.model.CoreFilters
-import io.github.sophon.wiki.application.domain.model.Filter
-import io.github.sophon.wiki.application.domain.model.WikiConfig
-import io.github.sophon.wiki.application.domain.model.WikiError
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.model.FrameRange
+import io.github.sophon.wiki.model.wiki.CoreFilters
+import io.github.sophon.wiki.model.Filter
+import io.github.sophon.wiki.model.WikiConfig
+import io.github.sophon.wiki.model.WikiError
+import io.github.sophon.wiki.model.wiki.Game
 
 internal fun DiscordConfig.toWikiConfig(): Result<WikiConfig, WikiError> {
     val gameSet = this.featureList

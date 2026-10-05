@@ -3,12 +3,12 @@ package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.wiki.adapter.outbound.ktor.findMoveIdPrefix
 import io.github.sophon.wiki.adapter.outbound.ktor.removeMoveIdPrefix
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.MoveGameProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.AVLMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MKMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.SF6MoveProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.model.game.AVLMoveProperties
+import io.github.sophon.wiki.model.game.MKMoveProperties
+import io.github.sophon.wiki.model.game.SF6MoveProperties
+import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * One character's move list - the move ID prefix is that character's.

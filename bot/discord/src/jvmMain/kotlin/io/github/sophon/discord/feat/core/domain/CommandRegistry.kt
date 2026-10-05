@@ -1,7 +1,7 @@
 package io.github.sophon.discord.feat.core.domain
 
 import dev.kord.common.entity.Snowflake
-import io.github.sophon.discord.app.domain.model.Command
+import io.github.sophon.discord.app.model.Command
 
 internal class CommandRegistry {
     private val map = mutableMapOf<String, Snowflake>()

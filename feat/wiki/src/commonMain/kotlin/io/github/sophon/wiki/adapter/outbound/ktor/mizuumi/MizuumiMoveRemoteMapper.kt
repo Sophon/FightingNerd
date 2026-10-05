@@ -4,13 +4,13 @@ import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.wiki.adapter.outbound.ktor.findMoveIdPrefix
 import io.github.sophon.wiki.adapter.outbound.ktor.removeMoveIdPrefix
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.Move
-import io.github.sophon.wiki.application.domain.model.MoveGameProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MBTLMoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2MoveProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.VSAVMoveProperties
-import io.github.sophon.wiki.application.domain.model.wiki.Game
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.model.game.MBTLMoveProperties
+import io.github.sophon.wiki.model.game.Uni2MoveProperties
+import io.github.sophon.wiki.model.game.VSAVMoveProperties
+import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * Bulk - the whole move table, grouped into characters by `chara`.

@@ -8,7 +8,7 @@ import dev.kord.rest.builder.message.actionRow
 import io.github.aakira.napier.Napier
 import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.EMBED_MAX_BUTTON_ACTION_LENGTH
-import io.github.sophon.discord.app.domain.model.BotResponse
+import io.github.sophon.discord.app.model.BotResponse
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.feat.core.domain.model.DiscordButton
 import kotlin.uuid.ExperimentalUuidApi

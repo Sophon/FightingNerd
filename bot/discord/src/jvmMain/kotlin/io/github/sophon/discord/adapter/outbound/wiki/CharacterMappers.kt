@@ -1,16 +1,16 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
-import io.github.sophon.discord.app.domain.model.BotResponse
-import io.github.sophon.discord.app.domain.model.CharacterId
-import io.github.sophon.wiki.application.domain.model.Character
-import io.github.sophon.wiki.application.domain.model.gameProperties.BBCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GBVSRCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.GGCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.MTFSCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.Roa2CharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.SFCharProperties
-import io.github.sophon.wiki.application.domain.model.gameProperties.Uni2CharProperties
-import io.github.sophon.wiki.application.domain.model.CharacterId as WikiCharacterId
+import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.CharacterId
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.game.BBCharProperties
+import io.github.sophon.wiki.model.game.GBVSRCharProperties
+import io.github.sophon.wiki.model.game.GGCharProperties
+import io.github.sophon.wiki.model.game.MTFSCharProperties
+import io.github.sophon.wiki.model.game.Roa2CharProperties
+import io.github.sophon.wiki.model.game.SFCharProperties
+import io.github.sophon.wiki.model.game.Uni2CharProperties
+import io.github.sophon.wiki.model.CharacterId as WikiCharacterId
 
 internal fun Character.toDomain(): BotResponse.CharacterResponse {
     val characterResponse = BotResponse.CharacterResponse(
