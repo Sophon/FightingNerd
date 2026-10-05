@@ -59,7 +59,7 @@ internal class DiscordBotImpl(
     private val kord: Kord,
 //    private val tracker: Tracker,
     private val adminConfig: DiscordConfig.AdminConfig,
-    private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
+//    private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
     private val scheduler: Scheduler,
     private val commandRegistry: CommandRegistry,
@@ -351,6 +351,7 @@ internal class DiscordBotImpl(
         }
     }
 
+    @Suppress("CyclomaticComplexMethod")
     private suspend fun processButtonEvent(interaction: ButtonInteraction) {
         kordRestCall(TAG) {
             val buttonEvent = decodeToButtonEvent(buttonId = interaction.componentId)
