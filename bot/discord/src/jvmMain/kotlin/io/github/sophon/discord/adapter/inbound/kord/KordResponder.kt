@@ -27,6 +27,7 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.steamLobbyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.app.domain.model.BotError
 import io.github.sophon.discord.app.domain.model.BotResponse
@@ -164,6 +165,34 @@ internal class KordResponder(
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
+        )
+        return result
+    }
+
+    suspend fun respond(
+        message: Message,
+        steamLobby: BotResponse.SteamLobby,
+    ): EmptyResult<BotError> {
+        val result = respond(
+            message = message,
+            embedBuilder = steamLobbyEmbed(steamLobby),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = steamLobby.buttonSet,
+        )
+        return result
+    }
+
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        steamLobby: BotResponse.SteamLobby,
+    ): EmptyResult<BotError> {
+        val result = respond(
+            interaction = interaction,
+            embedBuilder = steamLobbyEmbed(steamLobby),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = steamLobby.buttonSet,
         )
         return result
     }

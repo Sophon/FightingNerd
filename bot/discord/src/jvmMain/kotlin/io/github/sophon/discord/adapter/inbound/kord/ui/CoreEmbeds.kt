@@ -272,6 +272,25 @@ internal fun helpEmbed(
     featureFooter(featureInfo)
 }
 
+internal fun steamLobbyEmbed(
+    steamLobby: BotResponse.SteamLobby,
+): EmbedBuilder.() -> Unit = {
+    title = "Join ${steamLobby.hostName}'s lobby!"
+    color = Color(PURPLE)
+
+    optionalField(
+        name = "Lobby name",
+        value = steamLobby.lobbyName?.let { "```$it```" },
+        inline = false,
+    )
+
+    optionalField(
+        name = "Password",
+        value = steamLobby.password?.let { "```$it```" },
+        inline = false,
+    )
+}
+
 
 private const val PURPLE = 0x00A020F0
 private const val RED = 0x00FF0000

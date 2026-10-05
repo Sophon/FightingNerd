@@ -197,6 +197,12 @@ internal class DiscordBotImpl(
                                 aliasResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is BotResponse.SteamLobby -> {
+                            kordResponder.respond(
+                                message = message,
+                                steamLobby = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         is BotResponse.PlainText -> {
                             kordResponder.respond(
                                 message = message,
@@ -271,6 +277,12 @@ internal class DiscordBotImpl(
                             kordResponder.respond(
                                 interaction = interaction,
                                 aliasResponse = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is BotResponse.SteamLobby -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                steamLobby = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         is BotResponse.PlainText -> {
