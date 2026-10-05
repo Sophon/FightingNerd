@@ -16,6 +16,7 @@ import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
+import kotlin.time.Clock
 
 fun adminModule() = module {
     includes(platformModule)
@@ -31,7 +32,7 @@ fun adminModule() = module {
     singleOf(::BanUserService).bind<BanUserUseCase>()
     singleOf(::UnbanUserService).bind<UnbanUserUseCase>()
 
-    singleOf(::SqlDelightAdapter).bind<BanPort>()
+    single { SqlDelightAdapter(driverFactory = get(), clock = Clock.System) }.bind<BanPort>()
     singleOf(::AdminScheduler)
 }
 
