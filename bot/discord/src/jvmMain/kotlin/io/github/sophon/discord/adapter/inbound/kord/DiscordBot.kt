@@ -35,7 +35,7 @@ import io.github.sophon.discord.app.port.inbound.ProcessButtonEventUseCase
 import io.github.sophon.discord.app.port.inbound.ProcessUserInputUseCase
 import io.github.sophon.discord.app.port.inbound.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.app.port.inbound.StartFeaturesUseCase
-import io.github.sophon.discord.feat.admin.adminCommands
+import io.github.sophon.discord.app.domain.model.adminCommands
 import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.Scheduler

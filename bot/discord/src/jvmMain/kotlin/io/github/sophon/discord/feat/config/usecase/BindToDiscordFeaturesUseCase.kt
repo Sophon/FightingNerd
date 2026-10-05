@@ -7,7 +7,6 @@ import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.discord.app.domain.model.BotError
-import io.github.sophon.discord.feat.admin.AdminDiscordFeature
 import io.github.sophon.discord.feat.bot.BotFeature
 import io.github.sophon.discord.feat.core.domain.model.DiscordRegisteredFeature
 import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
@@ -17,7 +16,6 @@ import io.github.sophon.discord.feat.core.domain.model.GameWikiDiscordFeature
 internal class BindToDiscordFeaturesUseCase(
     private val allRegisteredFeatures: List<DiscordRegisteredFeature>, //all Koin-bound DiscordRegisteredFeatures - not all enabled features
     private val featureRepo: FeatureRepo,
-    private val adminFeature: AdminDiscordFeature,
 ) {
     fun invoke(config: Config): Result<List<DiscordRegisteredFeature>, BotError> {
         val enabledNames = featureRepo.getEnabledFeatureNames()
@@ -36,8 +34,7 @@ internal class BindToDiscordFeaturesUseCase(
         }
 
         val orderedFeatures = sortByConfigOrder(enabledFeatures, config)
-        val result = orderedFeatures + adminFeature
-        return Result.Success(result)
+        return Result.Success(orderedFeatures)
     }
 
     private fun sortByConfigOrder(

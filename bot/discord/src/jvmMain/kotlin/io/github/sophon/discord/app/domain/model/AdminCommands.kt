@@ -1,6 +1,4 @@
-package io.github.sophon.discord.feat.admin
-
-import io.github.sophon.discord.app.domain.model.Command
+package io.github.sophon.discord.app.domain.model
 
 internal val adminCommands = listOf(
     Command.Reply,
