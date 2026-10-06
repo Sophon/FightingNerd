@@ -5,7 +5,7 @@ import io.github.sophon.model.Ban
 import io.github.sophon.model.BanRequest
 import io.github.sophon.model.UnbanRequest
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BanResponse
 import io.github.sophon.discord.app.model.ModerationRequest
 import io.github.sophon.discord.app.model.UserRequest
 
@@ -27,8 +27,8 @@ internal fun ModerationRequest.toUnbanRequest(): UnbanRequest {
     return unbanRequest
 }
 
-internal fun Ban.toDomain(offender: UserRequest.Source): BotResponse.Ban {
-    val ban = BotResponse.Ban(
+internal fun Ban.toDomain(offender: UserRequest.Source): BanResponse {
+    val ban = BanResponse(
         offender = offender,
         bannedAt = bannedAt,
         expiresAt = expiresAt,

@@ -6,7 +6,8 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.CharacterResponse
+import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.CharacterId
 import io.github.sophon.discord.app.model.DiscordConfig
 import io.github.sophon.discord.app.model.FrameRange
@@ -48,12 +49,12 @@ internal class WikiAdapter(
         refreshDataUseCase().collect()
     }
 
-    override suspend fun getMoves(characterId: CharacterId): Result<List<BotResponse.MoveResponse>, BotError> {
+    override suspend fun getMoves(characterId: CharacterId): Result<List<MoveResponse>, BotError> {
         val result = getMoveResponses(characterId = characterId, filter = Filter.None)
         return result
     }
 
-    override suspend fun getFrameData(moveId: MoveId): Result<BotResponse.MoveResponse, BotError> {
+    override suspend fun getFrameData(moveId: MoveId): Result<MoveResponse, BotError> {
         val characterId = WikiCharacterId(game = moveId.game, naturalId = moveId.characterId)
         val result = getCharacterUseCase(characterId)
             .flatMap { character ->
@@ -67,7 +68,7 @@ internal class WikiAdapter(
     override suspend fun getMovesOfType(
         characterId: CharacterId,
         moveType: MoveType,
-    ): Result<List<BotResponse.MoveResponse>, BotError> {
+    ): Result<List<MoveResponse>, BotError> {
         val result = getMoveResponses(characterId = characterId, filter = moveType.toFilter())
         return result
     }
@@ -75,12 +76,12 @@ internal class WikiAdapter(
     override suspend fun getMovesInRange(
         characterId: CharacterId,
         frameRange: FrameRange,
-    ): Result<List<BotResponse.MoveResponse>, BotError> {
+    ): Result<List<MoveResponse>, BotError> {
         val result = getMoveResponses(characterId = characterId, filter = frameRange.toFilter())
         return result
     }
 
-    override suspend fun getCharacters(): List<BotResponse.CharacterResponse> {
+    override suspend fun getCharacters(): List<CharacterResponse> {
         val characterList = getCharacterListUseCase()
             .first()
             .map { it.toDomain() }
@@ -91,7 +92,7 @@ internal class WikiAdapter(
     private suspend fun getMoveResponses(
         characterId: CharacterId,
         filter: Filter,
-    ): Result<List<BotResponse.MoveResponse>, BotError> {
+    ): Result<List<MoveResponse>, BotError> {
         val wikiCharacterId = characterId.toWikiCharacterId()
         val result = getCharacterUseCase(wikiCharacterId)
             .map { character ->

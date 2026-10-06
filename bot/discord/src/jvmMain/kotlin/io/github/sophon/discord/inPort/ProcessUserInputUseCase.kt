@@ -2,7 +2,7 @@ package io.github.sophon.discord.inPort
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.model.Message
 
