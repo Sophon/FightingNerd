@@ -2,8 +2,8 @@ package io.github.sophon.discord.adapter.inbound.kord.ui
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
+import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.truncate
-import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_APP_STORE
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
@@ -80,27 +80,17 @@ internal fun modulesEmbed(
     color = Color(PURPLE)
 
     val moduleList = modulesResponse.moduleList
-    val chunks: List<List<ModulesResponse.Module>> = when (moduleList.size) {
-        in 1..5 -> {
-            listOf(moduleList)
+    val columnSize = ((moduleList.size + MODULES_COLUMN_COUNT - 1) / MODULES_COLUMN_COUNT).coerceAtLeast(1)
+    moduleList
+        .chunked(columnSize)
+        .forEachIndexed { index, moduleChunk ->
+            mandatoryField(
+                name = if (index == 0) "🧩 FEATURE MODULES" else invisibleChar,
+                value = moduleChunk.joinToString("\n") { module ->
+                    "- **[${module.name}](${module.url})** - ${module.version}"
+                },
+            )
         }
-        in 5..EMBED_LIST_PER_COLUMN -> {
-            moduleList.chunked(5)
-        } else ->
-            moduleList.chunked(EMBED_LIST_PER_COLUMN)
-    }
-
-    chunks.forEachIndexed { index, moduleChunk ->
-        mandatoryField(
-            name = if (index == 0) "🧩 FEATURE MODULES" else "_",
-            value = moduleChunk.joinToString("\n") { module ->
-                val games = module.gameList.joinToString("\n") { game ->
-                    "  - $game"
-                }
-                "- **[${module.name}](${module.url})**:\n$games"
-            },
-        )
-    }
 
     mandatoryField(
         name = "🫶 OTHER LINKS",
@@ -328,3 +318,4 @@ internal fun promoButtonSet(): BotResponse.ButtonSet = BotResponse.ButtonSet(
 
 private const val PURPLE = 0x00A020F0
 private const val RED = 0x00FF0000
+private const val MODULES_COLUMN_COUNT = 2

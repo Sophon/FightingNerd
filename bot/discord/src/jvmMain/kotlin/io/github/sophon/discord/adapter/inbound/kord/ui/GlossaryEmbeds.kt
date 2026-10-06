@@ -11,7 +11,7 @@ internal fun glossaryEmbed(
 ): EmbedBuilder.() -> Unit = {
     title = glossary.term
     url = glossary.termUrl
-    color = Color(glossary.dataSource.color)
+    color = glossary.dataSource.color?.let { Color(it) }
 
     glossary.imageUrl?.let { image = it }
 

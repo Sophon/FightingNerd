@@ -3,6 +3,8 @@ package io.github.sophon.discord.app.service
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.discord.BOT_DATA_SOURCE
+import io.github.sophon.discord.BOT_NAME
+import io.github.sophon.discord.BuildKonfig
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_REPO
@@ -16,8 +18,8 @@ import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.UserRequest
+import io.github.sophon.discord.app.outPort.FeatureInfoPort
 import io.github.sophon.discord.app.outPort.LoadConfigPort
-import io.github.sophon.wiki.model.wiki.Game
 import kotlin.time.Duration.Companion.seconds
 
 internal interface CoreBotService {
@@ -41,6 +43,7 @@ internal interface CoreBotService {
 
 internal class CoreBotServiceImpl(
     private val loadConfigPort: LoadConfigPort,
+    private val featureInfoPort: FeatureInfoPort,
 ): CoreBotService {
     override fun createTipResponse(): Result<CoreResponse, BotError> {
         val response = CoreResponse(
@@ -79,22 +82,17 @@ internal class CoreBotServiceImpl(
     override fun createModulesResponse(): Result<ModulesResponse, BotError> {
         val result = loadConfigPort.load()
             .map { discordConfig ->
-                val moduleList = discordConfig.featureList
-                    .asSequence()
+                val enabledModuleList = discordConfig.featureList
                     .filter { it.isEnabled }
-                    .flatMap { it.supportedGames }
-                    .mapNotNull { gameId -> Game.fromId(gameId) }
-                    .groupBy { it.wiki }
-                    .map { (wiki, gameList) ->
-                        ModulesResponse.Module(
-                            name = wiki.displayName,
-                            url = wiki.url,
-                            gameList = gameList.map { it.displayName },
-                        )
-                    }
-                    .toList()
+                    .mapNotNull { feature -> featureInfoPort.getModule(feature.name) }
+                    .distinct()
+                val botModule = ModulesResponse.Module(
+                    name = BOT_NAME,
+                    url = URL_REPO,
+                    version = BuildKonfig.VERSION,
+                )
                 ModulesResponse(
-                    moduleList = moduleList,
+                    moduleList = listOf(botModule) + enabledModuleList,
                     dataSource = BOT_DATA_SOURCE,
                 )
             }

@@ -6,23 +6,49 @@ import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import dev.kord.core.Kord
 import io.github.aakira.napier.Napier
+import io.github.sophon.adminModule
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.coreModule
 import io.github.sophon.core.featureConfig.model.WikiClientFeature
 import io.github.sophon.core.wiki.data.fingerprint
 import io.github.sophon.core.wiki.data.readStoredFingerprint
 import io.github.sophon.core.wiki.data.storeFingerprint
+import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
+import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.adapter.inbound.kord.KordResponder
-import io.github.sophon.discord.adapter.outbound.admin.AdminAdapter
-import io.github.sophon.discord.adapter.outbound.ewgf.EwgfAdapter
-import io.github.sophon.discord.adapter.outbound.glossary.GlossaryAdapter
-import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.inbound.scheduler.DailyReportScheduler
 import io.github.sophon.discord.adapter.inbound.scheduler.GlossaryScheduler
+import io.github.sophon.discord.adapter.inbound.scheduler.Scheduler
 import io.github.sophon.discord.adapter.inbound.scheduler.WikiScheduler
+import io.github.sophon.discord.adapter.outbound.admin.AdminAdapter
+import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
+import io.github.sophon.discord.adapter.outbound.ewgf.EwgfAdapter
+import io.github.sophon.discord.adapter.outbound.featureInfo.FeatureInfoAdapter
+import io.github.sophon.discord.adapter.outbound.glossary.GlossaryAdapter
 import io.github.sophon.discord.adapter.outbound.kord.KordPostAdapter
 import io.github.sophon.discord.adapter.outbound.stats.StatsAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
+import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.outPort.AdminPort
+import io.github.sophon.discord.app.outPort.BanPort
+import io.github.sophon.discord.app.outPort.CharactersPort
+import io.github.sophon.discord.app.outPort.ConfigureAdminPort
+import io.github.sophon.discord.app.outPort.ConfigureWikiPort
+import io.github.sophon.discord.app.outPort.EwgfPort
+import io.github.sophon.discord.app.outPort.FeatureInfoPort
+import io.github.sophon.discord.app.outPort.ForwardPort
+import io.github.sophon.discord.app.outPort.FrameDataPort
+import io.github.sophon.discord.app.outPort.GamePort
+import io.github.sophon.discord.app.outPort.GetMovesInRangePort
+import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
+import io.github.sophon.discord.app.outPort.GlossaryPort
+import io.github.sophon.discord.app.outPort.LoadConfigPort
+import io.github.sophon.discord.app.outPort.PostReportPort
+import io.github.sophon.discord.app.outPort.ReadFilePort
+import io.github.sophon.discord.app.outPort.RefreshGlossaryPort
+import io.github.sophon.discord.app.outPort.RefreshWikiPort
+import io.github.sophon.discord.app.outPort.StatsPort
 import io.github.sophon.discord.app.service.AdminService
 import io.github.sophon.discord.app.service.AdminServiceImpl
 import io.github.sophon.discord.app.service.BanService
@@ -38,47 +64,23 @@ import io.github.sophon.discord.app.service.GlossaryService
 import io.github.sophon.discord.app.service.GlossaryServiceImpl
 import io.github.sophon.discord.app.service.MoveService
 import io.github.sophon.discord.app.service.MoveServiceImpl
+import io.github.sophon.discord.app.service.PostDailyReportService
 import io.github.sophon.discord.app.service.ProcessButtonEventService
 import io.github.sophon.discord.app.service.ProcessUserInputService
 import io.github.sophon.discord.app.service.ProduceAutoCompleteService
-import io.github.sophon.discord.app.service.StartFeaturesService
-import io.github.sophon.discord.app.service.PostDailyReportService
 import io.github.sophon.discord.app.service.RefreshGlossaryService
 import io.github.sophon.discord.app.service.RefreshWikiService
+import io.github.sophon.discord.app.service.StartFeaturesService
+import io.github.sophon.discord.adapter.inbound.kord.CommandRegistry
 import io.github.sophon.discord.inPort.PostDailyReportUseCase
-import io.github.sophon.discord.inPort.RefreshGlossaryUseCase
-import io.github.sophon.discord.inPort.RefreshWikiUseCase
-import io.github.sophon.discord.app.outPort.ForwardPort
-import io.github.sophon.discord.app.outPort.PostReportPort
-import io.github.sophon.discord.app.outPort.StatsPort
 import io.github.sophon.discord.inPort.ProcessButtonEventUseCase
 import io.github.sophon.discord.inPort.ProcessUserInputUseCase
 import io.github.sophon.discord.inPort.ProduceAutoCompleteUseCase
+import io.github.sophon.discord.inPort.RefreshGlossaryUseCase
+import io.github.sophon.discord.inPort.RefreshWikiUseCase
 import io.github.sophon.discord.inPort.StartFeaturesUseCase
-import io.github.sophon.discord.app.outPort.AdminPort
-import io.github.sophon.discord.app.outPort.BanPort
-import io.github.sophon.discord.app.outPort.CharactersPort
-import io.github.sophon.discord.app.outPort.ConfigureAdminPort
-import io.github.sophon.discord.app.outPort.ConfigureWikiPort
-import io.github.sophon.discord.app.outPort.EwgfPort
-import io.github.sophon.discord.app.outPort.FrameDataPort
-import io.github.sophon.discord.app.outPort.GetMovesInRangePort
-import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
-import io.github.sophon.discord.app.outPort.GlossaryPort
-import io.github.sophon.core.architecture.Result
-import io.github.sophon.discord.app.model.DiscordConfig
-import io.github.sophon.discord.app.outPort.LoadConfigPort
-import io.github.sophon.discord.app.outPort.ReadFilePort
-import io.github.sophon.discord.app.outPort.RefreshGlossaryPort
-import io.github.sophon.discord.app.outPort.RefreshWikiPort
-import io.github.sophon.discord.feat.core.data.FileManager
-import io.github.sophon.discord.feat.core.domain.CommandRegistry
-import io.github.sophon.discord.feat.featureRegistryModule
-import io.github.sophon.glossaryinfil.infilModule
-import io.github.sophon.adminModule
-import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
-import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
 import io.github.sophon.ewgfModule
+import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.statsModule
 import io.github.sophon.wiki.wikiModule
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -117,8 +119,6 @@ internal fun initKoin(
         wikiModule(
             databaseDirectory = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { LOCAL_DATABASE_DIR },
         ),
-
-        featureRegistryModule,
     )
 }
 
@@ -137,7 +137,7 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::DiscordButtonBuilder)
     singleOf(::CommandRegistry)
 
-    singleOf(::FileManager)
+    singleOf(::Scheduler)
 
     WikiClientFeature.entries.forEach { feature ->
         single<SqlDriver>(named(feature.id)) { params ->
@@ -189,6 +189,7 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<ReadFilePort>()
         bind<LoadConfigPort>()
     }
+    singleOf(::FeatureInfoAdapter).bind<FeatureInfoPort>()
     single<DiscordConfig.AdminConfig> {
         when (val result = get<LoadConfigPort>().load()) {
             is Result.Success -> result.data.adminConfig
@@ -214,6 +215,7 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<GetMovesOfTypePort>()
         bind<GetMovesInRangePort>()
         bind<CharactersPort>()
+        bind<GamePort>()
     }
     singleOf(::WikiScheduler)
     //endregion

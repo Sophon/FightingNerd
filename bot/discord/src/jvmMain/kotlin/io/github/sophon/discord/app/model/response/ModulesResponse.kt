@@ -7,6 +7,6 @@ data class ModulesResponse(
     data class Module(
         val name: String,
         val url: String,
-        val gameList: List<String>,
+        val version: String,
     )
 }
