@@ -126,7 +126,8 @@ Kord based. Hosted on cloud via Fly.io (`fly.toml`)
       - mostly `core` utils, feature module usecases
     - `./gradlew testCoverage --rerun-tasks`
   - `hexagonal` (`test_arch_hex`)
-    - checks for `internal` and that public can only be inside `integration`
+    - Konsist tests in the root `archTest` module - packaging, visibility, ports, services, dependency direction
+    - only scans migrated modules - add a module to `HexScope.modules` once it's migrated
     - `./gradlew testArchHexagonal --rerun-tasks`
 - static analysis
   - done via detekt
