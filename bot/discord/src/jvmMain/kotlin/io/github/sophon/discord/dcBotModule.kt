@@ -68,7 +68,7 @@ import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
-import io.github.sophon.glossaryinfil.integration.infilModule
+import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.adminModule
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl

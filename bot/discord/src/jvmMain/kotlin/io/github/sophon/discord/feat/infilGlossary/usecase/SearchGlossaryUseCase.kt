@@ -5,7 +5,7 @@ import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.glossaryinfil.integration.InfilGlossaryClient
-import io.github.sophon.glossaryinfil.integration.model.GlossaryItem
+import io.github.sophon.glossaryinfil.model.GlossaryItem
 
 @ExcludeFromCoverage("plain client call")
 internal class SearchGlossaryUseCase(

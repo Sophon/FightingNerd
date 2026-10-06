@@ -1,0 +1,13 @@
+-- every name a term is searchable by - the term itself and its alt terms
+CREATE TABLE glossary_alias (
+    alias TEXT NOT NULL,
+    term TEXT NOT NULL,
+    PRIMARY KEY (alias, term)
+);
+
+insert:
+INSERT OR IGNORE INTO glossary_alias(alias, term)
+VALUES (?, ?);
+
+deleteAll:
+DELETE FROM glossary_alias;
