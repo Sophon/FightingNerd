@@ -31,6 +31,7 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.commandsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.ewgfHelpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.feedbackEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.glossaryEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
@@ -49,6 +50,7 @@ import io.github.sophon.discord.app.model.response.BanResponse
 import io.github.sophon.discord.app.model.response.CoreResponse
 import io.github.sophon.discord.app.model.response.EwgfResponse
 import io.github.sophon.discord.app.model.response.FeedbackResponse
+import io.github.sophon.discord.app.model.response.GlossaryResponse
 import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.ReplyResponse
@@ -268,6 +270,34 @@ internal class KordResponder(
         val result = respond(
             interaction = interaction,
             embedBuilder = ewgfResponseEmbed(ewgfResponse),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = null,
+        )
+        return result
+    }
+
+    suspend fun respond(
+        message: Message,
+        glossaryResponse: GlossaryResponse,
+    ): EmptyResult<BotError> {
+        val result = respond(
+            message = message,
+            embedBuilder = glossaryEmbed(glossaryResponse),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = null,
+        )
+        return result
+    }
+
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        glossaryResponse: GlossaryResponse,
+    ): EmptyResult<BotError> {
+        val result = respond(
+            interaction = interaction,
+            embedBuilder = glossaryEmbed(glossaryResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,

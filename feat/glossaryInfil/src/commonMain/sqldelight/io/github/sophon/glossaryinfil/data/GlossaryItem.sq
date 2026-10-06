@@ -1,0 +1,36 @@
+import kotlin.String;
+import kotlin.collections.List;
+
+CREATE TABLE glossary_item (
+    term TEXT NOT NULL PRIMARY KEY,
+    definition TEXT NOT NULL,
+    alt_term_list TEXT AS List<String> NOT NULL,
+    game_list TEXT AS List<String> NOT NULL,
+    jp_translation_list TEXT AS List<String> NOT NULL,
+    term_url TEXT NOT NULL,
+    video_url TEXT,
+    image_url TEXT
+);
+
+insert:
+INSERT OR REPLACE INTO glossary_item(term, definition, alt_term_list, game_list, jp_translation_list, term_url, video_url, image_url)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+
+-- the adapter escapes LIKE wildcards in the queries with `!`
+selectByAlias:
+SELECT *
+FROM glossary_item
+WHERE term IN (
+    SELECT term
+    FROM glossary_alias
+    WHERE alias LIKE ('%' || :query || '%') ESCAPE '!'
+        OR alias LIKE ('%' || :compactQuery || '%') ESCAPE '!'
+)
+ORDER BY rowid;
+
+count:
+SELECT COUNT(*)
+FROM glossary_item;
+
+deleteAll:
+DELETE FROM glossary_item;

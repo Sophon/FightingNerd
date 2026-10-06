@@ -15,8 +15,10 @@ import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.adapter.inbound.kord.KordResponder
 import io.github.sophon.discord.adapter.outbound.admin.AdminAdapter
 import io.github.sophon.discord.adapter.outbound.ewgf.EwgfAdapter
+import io.github.sophon.discord.adapter.outbound.glossary.GlossaryAdapter
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.inbound.scheduler.DailyReportScheduler
+import io.github.sophon.discord.adapter.inbound.scheduler.GlossaryScheduler
 import io.github.sophon.discord.adapter.inbound.scheduler.WikiScheduler
 import io.github.sophon.discord.adapter.outbound.kord.KordPostAdapter
 import io.github.sophon.discord.adapter.outbound.stats.StatsAdapter
@@ -32,6 +34,8 @@ import io.github.sophon.discord.app.service.CoreBotService
 import io.github.sophon.discord.app.service.CoreBotServiceImpl
 import io.github.sophon.discord.app.service.EwgfService
 import io.github.sophon.discord.app.service.EwgfServiceImpl
+import io.github.sophon.discord.app.service.GlossaryService
+import io.github.sophon.discord.app.service.GlossaryServiceImpl
 import io.github.sophon.discord.app.service.MoveService
 import io.github.sophon.discord.app.service.MoveServiceImpl
 import io.github.sophon.discord.app.service.ProcessButtonEventService
@@ -39,8 +43,10 @@ import io.github.sophon.discord.app.service.ProcessUserInputService
 import io.github.sophon.discord.app.service.ProduceAutoCompleteService
 import io.github.sophon.discord.app.service.StartFeaturesService
 import io.github.sophon.discord.app.service.PostDailyReportService
+import io.github.sophon.discord.app.service.RefreshGlossaryService
 import io.github.sophon.discord.app.service.RefreshWikiService
 import io.github.sophon.discord.inPort.PostDailyReportUseCase
+import io.github.sophon.discord.inPort.RefreshGlossaryUseCase
 import io.github.sophon.discord.inPort.RefreshWikiUseCase
 import io.github.sophon.discord.app.outPort.ForwardPort
 import io.github.sophon.discord.app.outPort.PostReportPort
@@ -58,17 +64,17 @@ import io.github.sophon.discord.app.outPort.EwgfPort
 import io.github.sophon.discord.app.outPort.FrameDataPort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
+import io.github.sophon.discord.app.outPort.GlossaryPort
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.app.model.DiscordConfig
 import io.github.sophon.discord.app.outPort.LoadConfigPort
 import io.github.sophon.discord.app.outPort.ReadFilePort
+import io.github.sophon.discord.app.outPort.RefreshGlossaryPort
 import io.github.sophon.discord.app.outPort.RefreshWikiPort
 import io.github.sophon.discord.feat.core.data.FileManager
-import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
-import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
-import io.github.sophon.glossaryinfil.integration.infilModule
+import io.github.sophon.glossaryinfil.infilModule
 import io.github.sophon.adminModule
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
@@ -102,7 +108,9 @@ internal fun initKoin(
             directory = System.getenv(ENV_STATS_DIR).orEmpty().ifEmpty { LOCAL_STATS_DIR },
         ),
 
-        infilModule,
+        infilModule(
+            databaseDirectory = System.getenv(ENV_WIKI_DATABASE_DIR).orEmpty().ifEmpty { LOCAL_DATABASE_DIR },
+        ),
         ewgfModule(
             apiToken = System.getenv(ENV_API_EWGF).orEmpty()
         ),
@@ -128,8 +136,6 @@ internal fun dcBotModule(kord: Kord) = module {
 
     singleOf(::DiscordButtonBuilder)
     singleOf(::CommandRegistry)
-
-    singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 
     singleOf(::FileManager)
 
@@ -166,6 +172,8 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::EwgfServiceImpl).bind<EwgfService>()
     singleOf(::PostDailyReportService).bind<PostDailyReportUseCase>()
     singleOf(::RefreshWikiService).bind<RefreshWikiUseCase>()
+    singleOf(::GlossaryServiceImpl).bind<GlossaryService>()
+    singleOf(::RefreshGlossaryService).bind<RefreshGlossaryUseCase>()
     //endregion
 
     //region Admin
@@ -212,6 +220,14 @@ internal fun dcBotModule(kord: Kord) = module {
 
     //region EWGF
     singleOf(::EwgfAdapter).bind<EwgfPort>()
+    //endregion
+
+    //region Glossary
+    singleOf(::GlossaryAdapter) {
+        bind<GlossaryPort>()
+        bind<RefreshGlossaryPort>()
+    }
+    singleOf(::GlossaryScheduler)
     //endregion
 }
 
