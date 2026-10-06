@@ -18,6 +18,7 @@ internal class CommandRouterService(
     private val banService: BanService,
     private val adminService: AdminService,
     private val ewgfService: EwgfService,
+    private val glossaryService: GlossaryService,
     private val statsPort: StatsPort,
 ) {
     suspend operator fun invoke(userRequest: UserRequest): Result<BotResponse, BotError> {
@@ -83,8 +84,9 @@ internal class CommandRouterService(
 
             Command.Ewgf -> ewgfService.performOperation(query = query, source = source)
 
+            Command.Gl -> glossaryService.findTerm(query)
+
             Command.Banlist,
-            Command.Gl,
             Command.ThrowTK,
             Command.SpecialROA -> Result.Error(BotError.NotImplemented(command.name))
         }

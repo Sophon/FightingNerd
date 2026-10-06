@@ -9,6 +9,7 @@ sealed class BotError(private vararg val inputs: String) : Error {
     class UnknownCharacter(input: String) : BotError(input)
     class UnknownMove(vararg inputs: String) : BotError(*inputs)
     class GlossaryTermNotFound(input: String) : BotError(input)
+    class EmptyGlossary : BotError()
     class DownloadError(input: String) : BotError(input)
     class BotLogicError(vararg inputs: String) : BotError(*inputs)
     class UnsupportedGame(vararg inputs: String): BotError(*inputs)

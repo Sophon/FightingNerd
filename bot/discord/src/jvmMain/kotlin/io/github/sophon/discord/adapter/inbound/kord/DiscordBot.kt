@@ -31,6 +31,7 @@ import io.github.sophon.discord.app.model.response.CharacterResponse
 import io.github.sophon.discord.app.model.response.CoreResponse
 import io.github.sophon.discord.app.model.response.EwgfResponse
 import io.github.sophon.discord.app.model.response.FeedbackResponse
+import io.github.sophon.discord.app.model.response.GlossaryResponse
 import io.github.sophon.discord.app.model.response.ListResponse
 import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
@@ -245,6 +246,12 @@ internal class DiscordBotImpl(
                                 ewgfResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+                        is GlossaryResponse -> {
+                            kordResponder.respond(
+                                message = message,
+                                glossaryResponse = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
                         else -> {}
                     }
                 }
@@ -355,6 +362,12 @@ internal class DiscordBotImpl(
                             kordResponder.respond(
                                 interaction = interaction,
                                 ewgfResponse = response,
+                            ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                        }
+                        is GlossaryResponse -> {
+                            kordResponder.respond(
+                                interaction = interaction,
+                                glossaryResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
                         else -> {}
