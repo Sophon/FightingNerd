@@ -22,7 +22,7 @@ internal const val COMMAND_MAX_SUGGESTIONS = 25
 
 internal const val URL_REPO = "https://github.com/Sophon/FightingNerd"
 internal const val URL_IMG_GITHUB = "https://i.imgur.com/PdgcKV2.png"
-internal const val URL_IMG_FIGHTING_NERD = "https://i.imgur.com/TAgvOxX.png"
+internal const val URL_IMG_FIGHTING_NERD = "https://raw.githubusercontent.com/Sophon/FightingNerd/dev/res/icons/fighting_nerd.png"
 
 internal const val URL_KOFI = "https://ko-fi.com/sophon_"
 internal const val URL_BUY_ME_COFFEE = "https://buymeacoffee.com/sophon"

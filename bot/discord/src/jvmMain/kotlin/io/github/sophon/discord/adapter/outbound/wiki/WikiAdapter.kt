@@ -6,23 +6,24 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.CharacterResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.CharacterId
 import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.model.GameList
 import io.github.sophon.discord.app.model.FrameRange
 import io.github.sophon.discord.app.model.MoveId
 import io.github.sophon.discord.app.model.MoveType
 import io.github.sophon.discord.app.outPort.CharactersPort
 import io.github.sophon.discord.app.outPort.ConfigureWikiPort
 import io.github.sophon.discord.app.outPort.FrameDataPort
+import io.github.sophon.discord.app.outPort.GamePort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
 import io.github.sophon.discord.app.outPort.RefreshWikiPort
-import io.github.sophon.wiki.WikiFeatureInfo
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
+import io.github.sophon.wiki.inPort.GetAvailableGamesUseCase
 import io.github.sophon.wiki.inPort.GetCharacterListUseCase
 import io.github.sophon.wiki.inPort.GetCharacterUseCase
 import io.github.sophon.wiki.inPort.GetMoveListUseCase
@@ -33,16 +34,14 @@ import kotlinx.coroutines.flow.first
 import io.github.sophon.wiki.model.CharacterId as WikiCharacterId
 
 internal class WikiAdapter(
-    wikiFeatureInfo: WikiFeatureInfo,
     private val configureWikiUseCase: ConfigureWikiUseCase,
     private val refreshDataUseCase: RefreshDataUseCase,
     private val getCharacterListUseCase: GetCharacterListUseCase,
     private val getMoveListUseCase: GetMoveListUseCase,
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
-): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort, GetMovesInRangePort, CharactersPort {
-    override val dataSource: BotResponse.DataSource = wikiFeatureInfo.featureInfo.toDataSource()
-
+    private val getAvailableGamesUseCase: GetAvailableGamesUseCase,
+): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort, GetMovesInRangePort, CharactersPort, GamePort {
     override suspend fun configure(discordConfig: DiscordConfig): EmptyResult<BotError> {
         val result = discordConfig.toWikiConfig()
             .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
@@ -91,6 +90,13 @@ internal class WikiAdapter(
             .first()
             .map { it.toDomain() }
         return characterList
+    }
+
+    override suspend fun getGameList(): GameList {
+        val gameList = getAvailableGamesUseCase()
+            .first()
+            .toGameList()
+        return gameList
     }
 
 

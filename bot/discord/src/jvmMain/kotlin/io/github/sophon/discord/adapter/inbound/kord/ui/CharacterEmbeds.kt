@@ -10,7 +10,7 @@ import io.github.sophon.discord.app.model.response.CharacterResponse
 internal fun characterEmbed(
     character: CharacterResponse,
 ): EmbedBuilder.() -> Unit = {
-    color = Color(character.dataSource.color)
+    color = character.dataSource.color?.let { Color(it) }
     title = character.displayName
     url = character.url
     if (character.aliasList.isNotEmpty()) {
@@ -62,7 +62,7 @@ internal fun aliasEmbed(
     characterList
         .firstOrNull()
         ?.let { character ->
-            color = Color(character.dataSource.color)
+            color = character.dataSource.color?.let { Color(it) }
             featureFooter(character.dataSource)
         }
 }
