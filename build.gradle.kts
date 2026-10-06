@@ -70,7 +70,7 @@ subprojects {
 }
 
 // Aggregated test report task
-tasks.register<TestReport>("unitTests") {
+tasks.register<TestReport>("testUnit") {
     destinationDirectory.set(file("${layout.buildDirectory.get().asFile}/reports/allTests"))
 
     testResults.from(subprojects.mapNotNull { subproject ->

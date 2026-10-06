@@ -33,7 +33,7 @@ tasks.withType<Test>().configureEach {
         .withPathSensitivity(PathSensitivity.RELATIVE)
 }
 
-tasks.register<Test>("testArchHexagonal") {
+tasks.register<Test>("testArch") {
     group = "verification"
     description = "Verifies the hexagonal architecture of migrated feature modules"
 
