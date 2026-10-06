@@ -7,12 +7,13 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.network.safeCall
-import io.github.sophon.wiki.model.Character
-import io.github.sophon.wiki.model.Move
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
-import io.github.sophon.wiki.model.wiki.Game
+import io.github.sophon.wiki.adapter.outbound.ktor.mizuumi.MizuumiKtorGameDataAdapter.Companion.MAX_PAGES
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.wiki.Game
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter

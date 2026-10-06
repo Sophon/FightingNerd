@@ -1,10 +1,5 @@
 package io.github.sophon.wiki.app.util
 
-import io.github.sophon.wiki.app.util.add2dAliases
-import io.github.sophon.wiki.app.util.expandButtonVariants
-import io.github.sophon.wiki.app.util.isButtonVariants
-import io.github.sophon.wiki.app.util.splitOr
-
 /**
  * The close prefix becomes `cl`, not `c` - close D (`c.D` → `cld`) and Blowback (`CD` → `cd`) are different moves.
  */

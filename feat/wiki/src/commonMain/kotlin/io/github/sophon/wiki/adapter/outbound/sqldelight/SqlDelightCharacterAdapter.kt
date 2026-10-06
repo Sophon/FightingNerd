@@ -3,16 +3,17 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight
 import app.cash.sqldelight.coroutines.asFlow
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightCharacterAdapter.Companion.STRIKE_LIMIT
 import io.github.sophon.wiki.adapter.outbound.sqldelight.mapper.toDomain
-import io.github.sophon.wiki.model.Character
-import io.github.sophon.wiki.model.CharacterId
-import io.github.sophon.wiki.model.Move
-import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.app.outPort.DeleteCharacterListPort
 import io.github.sophon.wiki.app.outPort.LoadCharacterListPort
 import io.github.sophon.wiki.app.outPort.LoadCharacterPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterMoveListPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -21,7 +22,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlin.getValue
 import kotlin.time.Clock
 
 internal class SqlDelightCharacterAdapter(

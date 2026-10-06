@@ -1,8 +1,5 @@
 package io.github.sophon.wiki.app.util
 
-import io.github.sophon.wiki.app.util.create2dAliases
-import io.github.sophon.wiki.app.util.normalize2dInputs
-import io.github.sophon.wiki.app.util.normalizeDreamCancelInput
 import io.github.sophon.wiki.model.Move
 
 /**
