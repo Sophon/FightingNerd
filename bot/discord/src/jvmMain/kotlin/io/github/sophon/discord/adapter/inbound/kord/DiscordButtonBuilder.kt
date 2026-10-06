@@ -9,12 +9,8 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.EMBED_MAX_BUTTON_ACTION_LENGTH
 import io.github.sophon.discord.app.model.response.BotResponse
-import io.github.sophon.discord.feat.core.domain.model.BotOutput
 import io.github.sophon.discord.app.model.discord.DiscordButton
-import kotlin.uuid.ExperimentalUuidApi
-import kotlin.uuid.Uuid
 
-@OptIn(ExperimentalUuidApi::class)
 internal class DiscordButtonBuilder {
     fun createResponseButtons(
         messageBuilder: MessageBuilder,
@@ -36,63 +32,6 @@ internal class DiscordButtonBuilder {
                     rowButtonList.forEach { components.add(it) }
                 }
             }
-    }
-
-    fun createEmbedButtons(
-        messageBuilder: MessageBuilder,
-        buttonList: List<BotOutput.EmbedButton>,
-        uuid: Uuid? = null,
-    ) {
-        val chunkSize = if (buttonList.size == 4) {
-            2
-        } else {
-            5
-        }
-
-        buttonList
-            .take(EMBED_MAX_BUTTONS)
-            .chunked(chunkSize)
-            .forEach { rowButtons ->
-                val builtButtons = rowButtons.mapNotNull { button ->
-                    createEmbedButton(button.action, button.label, uuid)
-                }
-                if (builtButtons.isEmpty()) return@forEach
-                messageBuilder.actionRow {
-                    builtButtons.forEach { components.add(it) }
-                }
-            }
-    }
-
-
-    private fun createEmbedButton(
-        action: BotOutput.EmbedButton.Action,
-        label: String,
-        uuid: Uuid? = null,
-    ): ActionRowComponentBuilder? {
-        return when (action) {
-            is BotOutput.EmbedButton.Action.Query -> {
-                val customId = DiscordButton.Query(action.query).toString()
-                interactionButtonOrNull(customId, label)
-            }
-            is BotOutput.EmbedButton.Action.Edit -> {
-                uuid?.let {
-                    val customId = DiscordButton.Edit(it.toString()).toString()
-                    interactionButtonOrNull(customId, label)
-                }
-            }
-            is BotOutput.EmbedButton.Action.Url -> {
-                ButtonBuilder.LinkButtonBuilder(action.url)
-                    .apply { this.label = label }
-            }
-            is BotOutput.EmbedButton.Action.Redirect -> {
-                val customId = DiscordButton.Redirect(action.channelId).toString()
-                interactionButtonOrNull(customId, label)
-            }
-            is BotOutput.EmbedButton.Action.Text -> {
-                val customId = DiscordButton.Text(action.text).toString()
-                interactionButtonOrNull(customId, label)
-            }
-        }
     }
 
     private fun createEmbedButton(

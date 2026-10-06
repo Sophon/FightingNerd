@@ -10,7 +10,6 @@ import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.app.model.response.BotResponse
-import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 internal fun EmbedBuilder.mandatoryField(
     name: String,
@@ -99,17 +98,6 @@ internal fun EmbedBuilder.moveEmbedDescription(character: Character, move: Move)
         character.displayName.isNotBlank() -> "**${character.displayName}**"
         move.name.isNullOrBlank().not() -> move.name.orEmpty()
         else -> "Move data"
-    }
-}
-
-internal fun List<Move>.toButtons(charName: String): List<BotOutput.EmbedButton> {
-    return mapIndexed { index, move ->
-        val query = "$charName ${move.input}"
-        val buttonNumber = (index + 1).toString()
-        BotOutput.EmbedButton(
-            label = buttonNumber,
-            action = BotOutput.EmbedButton.Action.Query(query),
-        )
     }
 }
 
