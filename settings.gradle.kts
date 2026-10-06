@@ -53,4 +53,4 @@ include(":feat:stats")
 include(":feat:wikiDragDown")
 include(":feat:wiki")
 
-include(":archTest")
+include(":testSuite")

@@ -1,4 +1,4 @@
-package io.github.sophon.archtest
+package io.github.sophon.testsuite.hex
 
 import com.lemonappdev.konsist.api.verify.assertFalse
 import org.junit.Test

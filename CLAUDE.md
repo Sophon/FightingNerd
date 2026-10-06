@@ -116,17 +116,19 @@ Kord based. Hosted on cloud via Fly.io (`fly.toml`)
 
 ## Infrastructure
 - tests
-  - all tests are inside root `build.gradle.kts`
+  - `unitTests` lives in root `build.gradle.kts`; `testCoverage` and `testArchHexagonal` live in the `testSuite` module
+    - `testSuite` holds Konsist tests - `hex` and `coverage` packages, each run by its own task
   - all workflows for tests are inside `github/workflows/`
   - `unitTests` (`test-unit.yml`) 
     - runs all test classes
     - `./gradlew unitTests --rerun-tasks`
   - `testCoverage` (`test_coverage.yml`)
-    - what must be covered with unit tests
-      - mostly `core` utils, feature module usecases
+    - checks that each covered file has a `<Name>Test.kt` in the same package (existence only)
+    - covered: everything in `service` / `util` packages, `*Mapper.kt` / `*Mappers.kt` inside `adapter`
+    - scans `feat/*`, `composeApp`, `bot/discord`; opt out with `@ExcludeFromCoverage`
     - `./gradlew testCoverage --rerun-tasks`
   - `hexagonal` (`test_arch_hex`)
-    - Konsist tests in the root `archTest` module - packaging, visibility, ports, services, dependency direction
+    - Konsist tests in `testSuite` (`hex` package) - packaging, visibility, ports, services, dependency direction
     - only scans migrated modules - add a module to `HexScope.modules` once it's migrated
     - `./gradlew testArchHexagonal --rerun-tasks`
 - static analysis
