@@ -66,6 +66,53 @@ class MoveServiceTest {
     }
 
     @Test
+    fun `move is found by its normalized input`() = runTest {
+        // given
+        val expected = Result.Success(stored112)
+        val service = moveService(
+            frameDataPort = FakeFrameDataPort(mapOf(jinId to storedJinMoveList)),
+            normalizeMoveInputPort = FakeNormalizeMoveInputPort(mapOf("1,1,2" to "112")),
+        )
+
+        // when
+        val result = service.findFrameData("jin 1,1,2")
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move is found by its normalized input with spaces`() = runTest {
+        // given
+        val expected = Result.Success(reina112)
+        val service = moveService(
+            frameDataPort = FakeFrameDataPort(mapOf(reinaId to listOf(reina112))),
+            normalizeMoveInputPort = FakeNormalizeMoveInputPort(mapOf("1 1 2" to "112")),
+        )
+
+        // when
+        val result = service.findFrameData("rei 1 1 2")
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move is found by its name as typed`() = runTest {
+        // given
+        val expected = Result.Success(ewgf)
+        val service = moveService(
+            normalizeMoveInputPort = FakeNormalizeMoveInputPort(mapOf("electric wind god fist" to "electricwindgodfist")),
+        )
+
+        // when
+        val result = service.findFrameData("jin electric wind god fist")
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `unknown move is an error`() = runTest {
         // given
         val service = moveService()
@@ -384,6 +431,23 @@ class MoveServiceTest {
     }
 
     @Test
+    fun `followups start with the normalized prefix`() = runTest {
+        // given
+        val expected = listOf("11", "112")
+        val service = moveService(
+            frameDataPort = FakeFrameDataPort(mapOf(jinId to storedJinMoveList)),
+            normalizeMoveInputPort = FakeNormalizeMoveInputPort(mapOf("1,1" to "11")),
+        )
+
+        // when
+        val result = service.findStrings("jin 1,1")
+
+        // then
+        val values = (result as Result.Success).data.values
+        assertThat(values).isEqualTo(expected)
+    }
+
+    @Test
     fun `followups match the prefix regardless of case`() = runTest {
         // given
         val expected = listOf("ZEN.1", "ZEN.3")
@@ -418,9 +482,10 @@ class MoveServiceTest {
         frameDataPort: FakeFrameDataPort = FakeFrameDataPort(mapOf(jinId to jinMoveList)),
         getMovesOfTypePort: FakeGetMovesOfTypePort = FakeGetMovesOfTypePort(),
         getMovesInRangePort: FakeGetMovesInRangePort = FakeGetMovesInRangePort(),
+        normalizeMoveInputPort: FakeNormalizeMoveInputPort = FakeNormalizeMoveInputPort(),
     ): MoveServiceImpl {
         val characterService = CharacterServiceImpl(
-            charactersPort = FakeCharactersPort(listOf(jin)),
+            charactersPort = FakeCharactersPort(listOf(jin, reina)),
             gamePort = FakeGamePort(),
         )
         val service = MoveServiceImpl(
@@ -428,6 +493,7 @@ class MoveServiceTest {
             frameDataPort = frameDataPort,
             getMovesOfTypePort = getMovesOfTypePort,
             getMovesInRangePort = getMovesInRangePort,
+            normalizeMoveInputPort = normalizeMoveInputPort,
         )
         return service
     }
@@ -468,3 +534,16 @@ private val jinMoveList: List<MoveResponse> = listOf(
     moveResponse(input = "ZEN.3", stance = "ZEN"),
     moveResponse(input = "b+1+2", stance = "BT"),
 )
+
+// inputs as the wiki stores them - Tekken strings lose their commas and spaces
+private val stored112 = moveResponse(input = "112")
+private val storedJinMoveList: List<MoveResponse> = listOf(
+    moveResponse(input = "1", moveName = "Jab"),
+    moveResponse(input = "11"),
+    stored112,
+    moveResponse(input = "12"),
+)
+
+private val reina = characterResponse(id = "reina", displayName = "Reina", aliasList = listOf("rei"))
+private val reinaId = CharacterId(game = Game.Tekken8, characterId = "reina")
+private val reina112 = moveResponse(input = "112", characterName = "Reina")

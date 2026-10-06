@@ -33,6 +33,7 @@ import io.github.sophon.discord.app.outPort.GamePort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
 import io.github.sophon.discord.app.outPort.LoadConfigPort
+import io.github.sophon.discord.app.outPort.NormalizeMoveInputPort
 import io.github.sophon.discord.app.outPort.StatsPort
 import io.github.sophon.discord.app.service.AdminService
 import io.github.sophon.discord.app.service.BanService
@@ -111,6 +112,18 @@ internal class FakeGetMovesInRangePort(
     ): Result<List<MoveResponse>, BotError> {
         requestList += (characterId to frameRange)
         return result
+    }
+}
+
+/**
+ * Inputs missing from [normalizedInputMap] stay as typed - the wiki's per-game normalization isn't repeated here.
+ */
+internal class FakeNormalizeMoveInputPort(
+    private val normalizedInputMap: Map<String, String> = emptyMap(),
+): NormalizeMoveInputPort {
+    override fun normalizeMoveInput(game: Game, input: String): String {
+        val normalized = (normalizedInputMap[input] ?: input)
+        return normalized
     }
 }
 

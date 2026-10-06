@@ -45,6 +45,7 @@ import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
 import io.github.sophon.discord.app.outPort.GlossaryPort
 import io.github.sophon.discord.app.outPort.LoadConfigPort
+import io.github.sophon.discord.app.outPort.NormalizeMoveInputPort
 import io.github.sophon.discord.app.outPort.PostReportPort
 import io.github.sophon.discord.app.outPort.ReadFilePort
 import io.github.sophon.discord.app.outPort.RefreshGlossaryPort
@@ -216,6 +217,7 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<GetMovesInRangePort>()
         bind<CharactersPort>()
         bind<GamePort>()
+        bind<NormalizeMoveInputPort>()
     }
     singleOf(::WikiScheduler)
     //endregion
