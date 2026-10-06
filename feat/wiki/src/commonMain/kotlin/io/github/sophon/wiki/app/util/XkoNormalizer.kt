@@ -3,13 +3,18 @@ package io.github.sophon.wiki.app.util
 import io.github.sophon.wiki.model.Move
 
 internal fun Move.normalizeXko(): Move {
-    val normalizedInput = input.lowercase()
+    val normalizedInput = input.normalizeXkoInput()
     val normalizedAliases = (aliases + normalizedInput.create2dAliases(isPartial = false).addExtraAliases(normalizedInput))
 
     val normalized = copy(
         input = normalizedInput,
         aliases = normalizedAliases,
     )
+    return normalized
+}
+
+internal fun String.normalizeXkoInput(): String {
+    val normalized = lowercase()
     return normalized
 }
 

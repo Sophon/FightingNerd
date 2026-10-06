@@ -41,6 +41,7 @@ import io.github.sophon.wiki.app.service.GetGroupsService
 import io.github.sophon.wiki.app.service.GetMoveListService
 import io.github.sophon.wiki.app.service.GetMoveService
 import io.github.sophon.wiki.app.service.GetUpdateTimeStampService
+import io.github.sophon.wiki.app.service.NormalizeMoveInputService
 import io.github.sophon.wiki.app.service.RefreshDataService
 import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
 import io.github.sophon.wiki.inPort.GetAvailableGamesUseCase
@@ -51,6 +52,7 @@ import io.github.sophon.wiki.inPort.GetGroupsUseCase
 import io.github.sophon.wiki.inPort.GetMoveListUseCase
 import io.github.sophon.wiki.inPort.GetMoveUseCase
 import io.github.sophon.wiki.inPort.GetUpdateTimeStampUseCase
+import io.github.sophon.wiki.inPort.NormalizeMoveInputUseCase
 import io.github.sophon.wiki.inPort.RefreshDataUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
@@ -73,6 +75,7 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     singleOf(::GetMoveListService)
     singleOf(::GetMoveService)
     singleOf(::GetUpdateTimeStampService)
+    singleOf(::NormalizeMoveInputService)
     singleOf(::RefreshDataService)
 
     single<ConfigureWikiUseCase> { get<ConfigureWikiService>() }
@@ -84,6 +87,7 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     single<GetMoveListUseCase> { get<GetMoveListService>() }
     single<GetMoveUseCase> { get<GetMoveService>() }
     single<GetUpdateTimeStampUseCase> { get<GetUpdateTimeStampService>() }
+    single<NormalizeMoveInputUseCase> { get<NormalizeMoveInputService>() }
     single<RefreshDataUseCase> { get<RefreshDataService>() }
 
 

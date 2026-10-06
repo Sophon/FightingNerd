@@ -21,7 +21,7 @@ internal fun Move.normalizeSuperCombo(): Move {
     return normalized
 }
 
-private fun String.normalizeSuperComboInput(): String {
+internal fun String.normalizeSuperComboInput(): String {
     val normalized = cleanSuperComboInput()
         .normalize2dInputs()
         .replace("360+", "360")
