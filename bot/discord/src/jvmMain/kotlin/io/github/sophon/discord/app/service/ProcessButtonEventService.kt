@@ -5,7 +5,10 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.MoveResponse
+import io.github.sophon.discord.app.model.response.PlainTextResponse
+import io.github.sophon.discord.app.model.response.RedirectResponse
 import io.github.sophon.discord.app.model.ButtonEvent
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.MoveId
@@ -32,13 +35,13 @@ internal class ProcessButtonEventService(
                 recordUsage(command = Command.Fd, result = queryResult)
                 queryResult
             }
-            is ButtonEvent.Text -> Result.Success(BotResponse.PlainText(text = buttonEvent.text))
+            is ButtonEvent.Text -> Result.Success(PlainTextResponse(text = buttonEvent.text))
             is ButtonEvent.Forward -> {
                 val forwardResult = forwardPort.forward(
                     sourceChannelId = buttonEvent.sourceChannelId,
                     sourceMessageId = buttonEvent.sourceMessageId,
                     targetChannelId = buttonEvent.targetChannelId,
-                ).map { BotResponse.Redirect(channelId = buttonEvent.targetChannelId) }
+                ).map { RedirectResponse(channelId = buttonEvent.targetChannelId) }
                 forwardResult
             }
             is ButtonEvent.Command -> {
@@ -58,7 +61,7 @@ internal class ProcessButtonEventService(
     /**
      * The expanded embed has nothing left to expand, so the Details button goes.
      */
-    private suspend fun expand(moveId: MoveId): Result<BotResponse.MoveResponse, BotError> {
+    private suspend fun expand(moveId: MoveId): Result<MoveResponse, BotError> {
         val result = frameDataPort.getFrameData(moveId)
             .map { moveResponse ->
                 val expanded = moveResponse.copy(

@@ -5,7 +5,7 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.MoveType
 import io.github.sophon.discord.app.model.UserRequest
@@ -17,6 +17,7 @@ internal class CommandRouterService(
     private val coreBotService: CoreBotService,
     private val banService: BanService,
     private val adminService: AdminService,
+    private val ewgfService: EwgfService,
     private val statsPort: StatsPort,
 ) {
     suspend operator fun invoke(userRequest: UserRequest): Result<BotResponse, BotError> {
@@ -79,12 +80,13 @@ internal class CommandRouterService(
             Command.Feedback -> adminService.forwardFeedback(query = query, source = source)
             Command.Reply -> adminService.replyToFeedback(query = query, source = source)
 
+            Command.Ewgf -> ewgfService.performOperation(query = query, source = source)
+
             Command.Banlist,
             Command.Refresh,
             Command.Gl,
             Command.ThrowTK,
-            Command.SpecialROA,
-            Command.Ewgf -> Result.Error(BotError.NotImplemented(command.name))
+            Command.SpecialROA -> Result.Error(BotError.NotImplemented(command.name))
         }
 
         return result
