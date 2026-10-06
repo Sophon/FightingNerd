@@ -1,5 +1,6 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
+import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.wiki.Game
@@ -7,6 +8,7 @@ import io.github.sophon.wiki.model.wiki.Game
 /**
  * Xko has no character table - the character is built from the move's page name.
  */
+@ExcludeFromCoverage("only from string")
 internal fun String.toCharacter(game: Game): Character {
     val character = Character(
         id = CharacterId(game, this),
