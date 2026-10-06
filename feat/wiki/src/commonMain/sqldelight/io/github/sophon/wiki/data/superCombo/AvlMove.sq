@@ -1,0 +1,21 @@
+CREATE TABLE avl_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    chi_damage TEXT,
+    flow TEXT
+);
+
+upsert:
+INSERT INTO avl_move(move_id, chi_damage, flow)
+VALUES (?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    chi_damage = excluded.chi_damage,
+    flow = excluded.flow;
+
+selectByCharacter:
+SELECT *
+FROM avl_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

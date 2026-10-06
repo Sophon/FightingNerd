@@ -21,7 +21,7 @@ Both platforms can use any of these:
   - feature configuration
     - each module inside `feat/` is a feature that target can use
     - contains `CoreFeatureRepo` which is the source of truth for all enabled features; the json files are:
-      - bot: `~/res/config.json`
+      - bot: `~/res/discordConfig.json`
       - app: `~/composeApp/src/commonMain/composeResources/files/modules.json`
     - contains Wiki stuff
       - most feature modules are Wikis of fighting games - `DustLoop`, `SuperCombo`, `Wavu` etc
@@ -115,19 +115,7 @@ Kord based. Hosted on cloud via Fly.io (`fly.toml`)
     - any other Error → continue to next feature
 
 ## Infrastructure
-- tests
-  - all tests are inside root `build.gradle.kts`
-  - all workflows for tests are inside `github/workflows/`
-  - `unitTests` (`test-unit.yml`) 
-    - runs all test classes
-    - `./gradlew unitTests --rerun-tasks`
-  - `testCoverage` (`test_coverage.yml`)
-    - what must be covered with unit tests
-      - mostly `core` utils, feature module usecases
-    - `./gradlew testCoverage --rerun-tasks`
-  - `hexagonal` (`test_arch_hex`)
-    - checks for `internal` and that public can only be inside `integration`
-    - `./gradlew testArchHexagonal --rerun-tasks`
+- tests - `testUnit`, `testCoverage`, `testArch`; see `docs/test-suite.md`
 - static analysis
   - done via detekt
     - `./gradlew detekt`
@@ -158,4 +146,17 @@ Rules:
 - For codebase questions, first run `graphify query "<question>"` when graphify-out/graph.json exists. Use `graphify path "<A>" "<B>"` for relationships and `graphify explain "<concept>"` for focused concepts. These return a scoped subgraph, usually much smaller than GRAPH_REPORT.md or raw grep output.
 - If graphify-out/wiki/index.md exists, use it for broad navigation instead of raw source browsing.
 - Read graphify-out/GRAPH_REPORT.md only for broad architecture review or when query/path/explain do not surface enough context.
-- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as local markdown files under `.scratch/<feature-slug>/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Default five roles (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`), recorded as a `Status:` line in each issue file. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `GLOSSARY.md` + `docs/adr/`. See `docs/agents/domain.md`.

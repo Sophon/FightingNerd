@@ -1,0 +1,145 @@
+# Wiki module
+
+- hexagonal + DDD
+  - inspired by Tom Homberg's Get Your Hands Dirty on Clean Architecture
+- we should aspire to have a deep module, not a wide module
+- the priority is good architecture and best practices, not what's already in the code
+  - we can do drastic changes
+
+## Design
+- do we need `adapter/in`? or should we simply call the `port/in`?
+  - no - the hosts are the inbound adapters (see Findings)
+- `port/out`
+  - ktor - REST requests from wikis
+  - database - frame data of moves and characters, see [database.md](database.md)
+- ports
+  - inbound - usecases
+  - outbound - ports
+  
+
+## Plan
+
+1. ~~design the interface - how the outside interacts with this module~~
+2. ~~move what can be moved from `core` - mostly wiki stuff~~
+3. ~~move a single-game wiki module (`wavu`) to `wiki`~~
+4. ~~move a multi-game wiki module (`dustloop`) to `wiki`~~
+5. ~~move the rest of the wikis~~
+6. migrate the Discord bot
+7. migrate the compose app
+
+## Current plan
+
+- refactor of the discord bot
+- full integration into app
+
+### Config
+- the host owns the config; the wiki only receives it
+  - app - available features from `modules.json` (compose resource), enabled/disabled from DataStore
+  - bot - available features from `config.json` (file); everything available is enabled
+  - a feature disabled in the host's JSON is not available - its games are dropped entirely, same as the legacy `FeatureRepo`
+- each host has its own mapper - host configs can differ, the wiki only ever sees `WikiConfig`
+  - no JSON crosses into the wiki
+- the host only ever sees a `WikiConfig` or a `WikiError`
+- app first launch - the default games are written to DataStore after the config is applied, so the app must call `ConfigureWikiUseCase` again once they're saved
+- use cases called before configuration wait for the config instead of failing (`filterNotNull().first()`)
+- any service that needs available / enabled games loads them through `LoadWikiConfigPort`
+
+### Enabling / disabling a wiki
+- app flow
+  1. the user flips a game in settings
+  2. the app saves the choice to DataStore
+  3. only if the save succeeded - the app calls `ConfigureWikiUseCase(newConfig)`
+  4. the app wipes the disabled game's media (`MediaRepo` stays in the app)
+  5. the app collects `RefreshDataUseCase` in its app scope, so the refresh survives navigation - the wiki owns no scope
+- two stores (DataStore in the app, frame data in the wiki database) - no shared transaction
+  - the same tradeoff the app has today - carry it over unchanged
+  - invariant: enabled + corrupt/partial data is unacceptable; disabled + re-download is acceptable
+
+### Starting the module
+- no `initialize()` - the module is ready once Koin can resolve it
+- host setup
+  1. load `wikiModule()`
+  2. read + map its own config, call `ConfigureWikiUseCase(wikiConfig)`
+  3. call use cases
+- constructors do no I/O
+- proactive work (periodic refresh, launch-time sync) is an explicit use case
+  - the host decides *when* (bot - schedule, app - launch) and in which scope
+  - the module decides *what*
+- the wiki never stores a `CoroutineScope` - use cases are `suspend` or return a cold `Flow`, the caller owns the lifetime (structured concurrency)
+
+### Statefulness
+- like a stateless BE - request in, read/write stores through ports, result out
+- stores
+  - database - frame data
+  - in-memory adapter - running config; rebuildable, the host's sources (JSON, DataStore) are the source of truth
+- short-lived coordination in memory - a mutex runs overlapping refreshes one after another, so there are never two writers
+  - no sharing - a second caller downloads again once the first finishes
+- if memory ever holds something that exists nowhere else, the design has gone wrong
+- `Flow`-returning use cases stay stateless - the database's query `Flow` does the watching
+
+### Refresh
+- one outbound port for downloads - `FetchGameDataPort.fetch(game): Flow<Result<Pair<Character, List<Move>>, DataError.Remote>>`
+  - each emission is one character with its complete move list
+  - cold `Flow` - the download runs while the service collects; `emit` suspends until the service has saved, so the next download waits for the write
+  - a failure of the whole game (character list, bulk download) is a single `Result.Error` emission
+- two remote shapes - `Game.separateCharMoveDownload`
+  - separate (`true`) - a character list endpoint, then a move query per character; each character is emitted as soon as its moves are in - Wavu, Uni2, DustLoop, SuperCombo, DragDown
+  - bulk (`false`) - one download of the whole move table, characters built from its `chara` / page column, emitted one by one after the download - MBTL, VSAV, KoFXV, COTW, 2XKO
+  - the shape never reaches the service
+- one Ktor adapter per wiki (`adapter/outbound/ktor/<wiki>/`)
+  - `KtorGameDataAdapter` routes by `Game.wiki` with an exhaustive `when` - a wiki without an adapter doesn't compile
+- save per emission - `SaveCharacterMoveListPort.save(character, moveList)` - the game comes from `character.id`
+  - one transaction per character - the app can open a character as soon as its moves are saved
+  - bulk games - all characters become available together, after the one download
+  - the character's moves absent from the move list get a strike inside the save - the list is complete per character
+- character strikes - `StrikeCharacterListPort.strike(game, downloadedIdSet)`
+  - after a game's stream ends, strike the characters that weren't downloaded
+  - skip when nothing was downloaded
+- strikes are deleted at 5, both for characters and moves
+- normalization - one normalizer per wiki in `application/domain/util/` - `normalizeT8`, `normalizeMizuumi`, `normalizeDustLoop(characterId)`, `normalizeSuperCombo`, `normalizeXko`, `normalizeDreamCancel`
+  - the character first (`Character.normalize()`), then its moves with the normalized `CharacterId`
+  - the mapper only cleans (HTML, entities, template placeholders); the input, its aliases and ids built from it are the normalizer's
+  - DragDown has none - RoA2's input is built from attack id + mode, there's no notation to normalize
+- logs
+  - debug per character when its download is done - `<character> (<game>): N moves downloaded`
+  - info per game after its stream ends - `<game>: X characters downloaded`
+  - warn - `download failed`, `save failed`
+- bot - `BotFeatureRepoImpl` runs `RefreshDataUseCase` on the legacy `Scheduler` once `ConfigureWikiUseCase` succeeds (HEX migration region)
+
+### Findings
+- naming
+  - `port/inbound` - only `*UseCase`; the outside calls them
+  - `port/outbound` - `*Port`; the wiki's services call them, an adapter does the work
+  - a port is not a use case - naming it `*UseCase` would suggest the outside may call it
+  - the port names the capability, the method names the mode - `LoadXPort.subscribe()` / `get()`, `SaveXPort.save()`, `DeleteXPort.delete()`, `FetchXPort.fetch()`
+  - per-wiki adapter packages are the camelCase wiki name - `dustLoop`, `superCombo`
+  - per-wiki files, classes, tests and test fixtures carry the wiki prefix - `WavuMoveListResponseDto`, `MizuumiCharacterRemoteMapper`, `DustLoopMoveSource`
+- errors
+  - the outside only ever sees `WikiError` - every use case returns it
+  - ports may return `DataError`; services map it with `toWikiError()`
+- inbound adapters live in the hosts (bot's Discord feature, app's VM)
+  - the wiki has no protocol of its own (HTTP, Discord, UI), so there is nothing to translate - no `adapter/inbound`
+- a port the host implements is a runtime risk - a missing Koin binding crashes on first use, not at compile time
+  - that's why the config comes in through a use case, not a host-implemented port
+- config is a dependency of the services, not an input of each use case call
+  - use case parameters = what the caller wants, differs per call (`characterQuery`, `moveQuery`, ...)
+  - config / DB / HTTP client = fixed for the whole run - never part of a use case signature
+
+### Open issues
+- DustLoop answers 429 (`TOO_MANY_REQUESTS`) - the legacy and the hex refresh hit it at once, and nothing retries
+  - candidate - retry with backoff on 429 in the shared `HttpClient` (`HttpRequestRetry`, honor `Retry-After`)
+- legacy gaps ported as-is - queried but never mapped
+  - SF6 `airborne`; MK1 `chip`, `flawlessBlockAdv`, `hitCancelAdv`, `blockCancelAdv`, `punish`
+  - DreamCancel `guard`, `cancel`, `invul`
+- 2XKO quirks ported as-is
+  - `j.` inputs get a `j..` alias - no `normalize2dInputs`
+  - a missing input puts `null` into the image and wiki urls
+- `Game` lives in `core` and its `wiki: WikiClientFeature` carries only an id - the wiki's name, url, version and logo are in each legacy module's `FeatureInfo`
+  - the wiki needs its own `Game` enum that carries that data
+  - until then the bot's Fd reply shows only the game, not the wiki
+- `GetCharacterListUseCase` returns every character of every enabled game - the bot pattern-matches the character query against all of them
+  - not ideal - to be optimized
+  - idea - pass the character query and let the wiki match it in SQL; the cost is that query pattern matching becomes a wiki responsibility
+- the bot cleans the move query itself, the wiki normalizes inputs on save - in theory both must normalize the same way
+  - ideally the wiki provides the normalizer and the bot uses it
+  - for now the bot keeps its own cleaning

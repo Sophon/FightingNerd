@@ -1,0 +1,272 @@
+package io.github.sophon.botdiscord.adapter.outbound.wiki
+
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
+import io.github.sophon.discord.adapter.outbound.wiki.toDomain
+import io.github.sophon.discord.adapter.outbound.wiki.toFilter
+import io.github.sophon.discord.app.model.frameData.MoveId
+import io.github.sophon.discord.app.model.frameData.MoveType
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.MoveResponse
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.WavuFilters
+import io.github.sophon.wiki.model.game.DBFZMoveProperties
+import io.github.sophon.wiki.model.game.GGMoveProperties
+import io.github.sophon.wiki.model.game.SF6MoveProperties
+import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.wiki.Game
+import io.github.sophon.wiki.model.wiki.Wiki
+import kotlin.test.Test
+
+class MoveMappersTest {
+    //region toDomain
+    @Test
+    fun `tekken move is expanded with guard, recovery and stance`() {
+        // given
+        val move = Move(
+            input = "f,n,d,df+2",
+            name = "Electric Wind God Fist",
+            damage = "25",
+            startup = "i11~12",
+            onBlock = "+5",
+            onHit = "+5a (+15)",
+            onCH = "+5a (+15)",
+            recovery = "r28",
+            guard = "h",
+            notes = listOf("Balcony break"),
+            aliases = listOf("ewgf"),
+            urls = Move.Urls(
+                wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-f,n,d,df+2",
+                videoUrl = VIDEO_URL,
+                hitboxImageList = listOf("https://wavu.wiki/img/Jin_ewgf_hitbox.png"),
+            ),
+            gameProperties = T8Properties(isHeat = true, stance = "ZEN"),
+        )
+        val expected = MoveResponse(
+            game = Game.Tekken8,
+            input = "f,n,d,df+2",
+            url = "https://wavu.wiki/t/Jin_movelist#Jin-f,n,d,df+2",
+            characterName = "Jin",
+            moveName = "Electric Wind God Fist",
+            characterImageUrl = JIN_ICON_URL,
+            primaryFields = listOf(
+                BotResponse.Field(title = "Startup", value = "i11~12"),
+                BotResponse.Field(title = "Hit", value = "+5a (+15)"),
+                BotResponse.Field(title = "Block", value = "+5"),
+                BotResponse.Field(title = "Counter", value = "+5a (+15)"),
+                BotResponse.Field(title = "Damage", value = "25"),
+                BotResponse.Field(title = "Guard", value = "h"),
+                BotResponse.Field(title = "Recovery", value = "r28"),
+            ),
+            dataSource = BotResponse.DataSource(
+                name = "Tekken 8 (Wavu Wiki)",
+                iconUrl = Wiki.Wavu.iconUrl,
+                color = Wiki.Wavu.color,
+            ),
+            isCollapsedByDefault = false,
+            secondaryFields = emptyList(),
+            aliasList = listOf("ewgf"),
+            noteList = listOf("Balcony break"),
+            hitboxImageList = listOf("https://wavu.wiki/img/Jin_ewgf_hitbox.png"),
+            stance = "ZEN",
+            buttonSet = BotResponse.ButtonSet(buttonList = listOf(videoButton)),
+        )
+
+        // when
+        val result = move.toDomain(jin)
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `missing mandatory values are dashes`() {
+        // given
+        val move = Move(
+            input = "1+2",
+            startup = " ",
+            urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-1+2"),
+            gameProperties = T8Properties(),
+        )
+        val expected = listOf("-", "-", "-", "-", "-", "-", "-")
+
+        // when
+        val result = move.toDomain(jin)
+
+        // then
+        assertThat(result.primaryFields.map { it.value }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `collapsed move with secondary fields gets a details button before the video`() {
+        // given
+        val move = Move(
+            input = "5K",
+            active = "3",
+            cancel = "Gatling, Special, Super",
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5K", videoUrl = VIDEO_URL),
+            gameProperties = GGMoveProperties(level = "1", riscGain = " ", prorate = "90%"),
+        )
+        val expected = BotResponse.ButtonSet(
+            buttonList = listOf(
+                BotResponse.EmbedButton(
+                    label = "Details",
+                    action = BotResponse.EmbedButton.Action.Expand(
+                        moveId = MoveId(game = Game.GGST, characterId = "sol_badguy", input = "5K"),
+                    ),
+                ),
+                videoButton,
+            ),
+        )
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isEqualTo(expected)
+    }
+
+    @Test
+    fun `guilty gear secondary fields skip blank values`() {
+        // given
+        val move = Move(
+            input = "5K",
+            cancel = "Gatling, Special, Super",
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5K"),
+            gameProperties = GGMoveProperties(level = "1", riscGain = " ", prorate = "90%"),
+        )
+        val expected = listOf(
+            BotResponse.Field(title = "Cancel", value = "Gatling, Special, Super"),
+            BotResponse.Field(title = "Level", value = "1"),
+            BotResponse.Field(title = "Prorate", value = "90%"),
+        )
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.secondaryFields).isEqualTo(expected)
+    }
+
+    @Test
+    fun `collapsed move without secondary fields or video has no buttons`() {
+        // given
+        val move = Move(
+            input = "5P",
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5P"),
+            gameProperties = GGMoveProperties(),
+        )
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isNull()
+    }
+
+    @Test
+    fun `street fighter juggle values are merged with dashes for blanks`() {
+        // given
+        val move = Move(
+            input = "2HP",
+            urls = Move.Urls(wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu#2HP"),
+            gameProperties = SF6MoveProperties(blockStun = "17", jugStart = "1", jugIncrease = "3", jugLimit = null),
+        )
+        val expected = listOf(
+            BotResponse.Field(title = "Blockstun", value = "17"),
+            BotResponse.Field(title = "JGL st | inc | lim", value = "1 | 3 | -"),
+        )
+
+        // when
+        val result = move.toDomain(character(game = Game.StreetFighter6, displayName = "Ryu"))
+
+        // then
+        assertThat(result.secondaryFields).isEqualTo(expected)
+    }
+
+    @Test
+    fun `game without its own fields gets the non-blank default fields`() {
+        // given
+        val move = Move(
+            input = "5L",
+            damage = "400",
+            guard = "All",
+            active = "3",
+            invulnerability = " ",
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/DBFZ/Goku_(Super_Saiyan)#5L"),
+            gameProperties = DBFZMoveProperties(level = "1", kiGain = "5%"),
+        )
+        val expected = listOf(
+            BotResponse.Field(title = "Startup", value = "-"),
+            BotResponse.Field(title = "Hit", value = "-"),
+            BotResponse.Field(title = "Block", value = "-"),
+            BotResponse.Field(title = "Counter", value = "-"),
+            BotResponse.Field(title = "Damage", value = "400"),
+            BotResponse.Field(title = "Guard", value = "All"),
+            BotResponse.Field(title = "Active", value = "3"),
+            BotResponse.Field(title = "Level", value = "1"),
+            BotResponse.Field(title = "Ki gain", value = "5%"),
+        )
+
+        // when
+        val result = move.toDomain(character(game = Game.DBFZ, displayName = "Goku (Super Saiyan)"))
+
+        // then
+        assertThat(result.primaryFields).isEqualTo(expected)
+    }
+
+    @Test
+    fun `collapse follows the game`() {
+        // given
+        val gameList = listOf(Game.GGST, Game.BBCF, Game.GBVSR, Game.AVL, Game.StreetFighter6, Game.Tekken8, Game.DBFZ)
+        val expected = listOf(true, true, true, true, true, false, false)
+        val move = Move(input = "5P", urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5P"))
+
+        // when
+        val result = gameList.map { game -> move.toDomain(character(game = game)).isCollapsedByDefault }
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region toFilter
+    @Test
+    fun `each move type becomes its wavu filter`() {
+        // given
+        val expected = listOf(WavuFilters.PowerCrush, WavuFilters.Heat, WavuFilters.Homing)
+
+        // when
+        val result = listOf(MoveType.PC, MoveType.HEAT, MoveType.HOMING).map { it.toFilter() }
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+}
+
+private fun character(game: Game, displayName: String = "Sol Badguy"): Character {
+    val character = Character(
+        id = CharacterId(game = game, naturalId = displayName.lowercase().replace(" ", "_")),
+        displayName = displayName,
+        remoteQueryId = displayName,
+        wikiUrl = "${game.wikiUrl}/${displayName.replace(" ", "_")}",
+    )
+    return character
+}
+
+
+private const val VIDEO_URL = "https://wavu.wiki/vid/Jin_ewgf.mp4"
+private const val JIN_ICON_URL = "https://wavu.wiki/img/Jin_icon.png"
+private val videoButton = BotResponse.EmbedButton(label = "Video", action = BotResponse.EmbedButton.Action.Text(VIDEO_URL))
+private val jin = Character(
+    id = CharacterId(game = Game.Tekken8, naturalId = "jin"),
+    displayName = "Jin",
+    remoteQueryId = "Jin",
+    wikiUrl = "https://wavu.wiki/t/Jin",
+    images = Character.Images(iconUrl = JIN_ICON_URL),
+)
+private val sol = character(game = Game.GGST)

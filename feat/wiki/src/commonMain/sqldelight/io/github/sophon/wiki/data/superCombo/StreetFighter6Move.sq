@@ -1,0 +1,100 @@
+import kotlin.String;
+import kotlin.collections.List;
+
+CREATE TABLE street_fighter6_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    images TEXT AS List<String>,
+    chip TEXT,
+    dmg_scaling TEXT,
+    total TEXT,
+    hit_confirm TEXT,
+    punish_adv TEXT,
+    perf_parry_adv TEXT,
+    drc_oh TEXT,
+    drc_ob TEXT,
+    dr_oh TEXT,
+    dr_ob TEXT,
+    hit_stun TEXT,
+    block_stun TEXT,
+    hit_stop TEXT,
+    drive_dmg_on_block TEXT,
+    drive_dmg_on_hit TEXT,
+    drive_gain TEXT,
+    super_gain_on_hit TEXT,
+    super_gain_on_block TEXT,
+    armor TEXT,
+    airborne TEXT,
+    jug_start TEXT,
+    jug_increase TEXT,
+    jug_limit TEXT,
+    projectile_speed TEXT,
+    attack_range TEXT
+);
+
+upsert:
+INSERT INTO street_fighter6_move(
+    move_id,
+    images,
+    chip,
+    dmg_scaling,
+    total,
+    hit_confirm,
+    punish_adv,
+    perf_parry_adv,
+    drc_oh,
+    drc_ob,
+    dr_oh,
+    dr_ob,
+    hit_stun,
+    block_stun,
+    hit_stop,
+    drive_dmg_on_block,
+    drive_dmg_on_hit,
+    drive_gain,
+    super_gain_on_hit,
+    super_gain_on_block,
+    armor,
+    airborne,
+    jug_start,
+    jug_increase,
+    jug_limit,
+    projectile_speed,
+    attack_range
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    images = excluded.images,
+    chip = excluded.chip,
+    dmg_scaling = excluded.dmg_scaling,
+    total = excluded.total,
+    hit_confirm = excluded.hit_confirm,
+    punish_adv = excluded.punish_adv,
+    perf_parry_adv = excluded.perf_parry_adv,
+    drc_oh = excluded.drc_oh,
+    drc_ob = excluded.drc_ob,
+    dr_oh = excluded.dr_oh,
+    dr_ob = excluded.dr_ob,
+    hit_stun = excluded.hit_stun,
+    block_stun = excluded.block_stun,
+    hit_stop = excluded.hit_stop,
+    drive_dmg_on_block = excluded.drive_dmg_on_block,
+    drive_dmg_on_hit = excluded.drive_dmg_on_hit,
+    drive_gain = excluded.drive_gain,
+    super_gain_on_hit = excluded.super_gain_on_hit,
+    super_gain_on_block = excluded.super_gain_on_block,
+    armor = excluded.armor,
+    airborne = excluded.airborne,
+    jug_start = excluded.jug_start,
+    jug_increase = excluded.jug_increase,
+    jug_limit = excluded.jug_limit,
+    projectile_speed = excluded.projectile_speed,
+    attack_range = excluded.attack_range;
+
+selectByCharacter:
+SELECT *
+FROM street_fighter6_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

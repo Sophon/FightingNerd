@@ -1,0 +1,299 @@
+package io.github.sophon.glossaryinfil.adapter.outbound.ktor
+
+import assertk.assertThat
+import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
+import io.github.sophon.glossaryinfil.model.GlossaryItem
+import kotlin.test.Test
+
+class GlossaryRemoteMapperTest {
+    //region toMarkdown
+    @Test
+    fun `toMarkdown handles html`() {
+        //given
+        val string = "A specific type of !<'projectile'> that travels horizontally " +
+                "and is traditionally input using a !<'quarter circle'> command. " +
+                "Ryu, Sagat, Jago and Sol all throw fireballs, and they are perhaps the most" +
+                " iconic special moves in all of fighting games. !<'beam','Beams'> that " +
+                "travel the whole screen instantly and !<'sonic boom','Sonic Booms'> that " +
+                "require a !<'charge'> to execute aren't usually called fireballs. \"Fireball\" " +
+                "can even be used as shorthand for \"quarter circle forward\", if you're trying " +
+                "to quickly describe a special move input. \"The input for your " +
+                "!<'command dash'> is fireball + kick\" would be a valid sentence, for example."
+        val expected = "A specific type of **__projectile__** that travels horizontally and is " +
+                "traditionally input using a **__quarter circle__** command. Ryu, Sagat, Jago " +
+                "and Sol all throw fireballs, and they are perhaps the most iconic special moves " +
+                "in all of fighting games. **__beam__** that travel the whole screen instantly " +
+                "and **__sonic boom__** that require a **__charge__** to execute aren't " +
+                "usually called fireballs. \"Fireball\" can even be used as shorthand for " +
+                "\"quarter circle forward\", if you're trying to quickly describe a special move " +
+                "input. \"The input for your **__command dash__** is fireball + kick\" would " +
+                "be a valid sentence, for example."
+
+        //when
+        val result = string.toMarkdown()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    
+    @Test
+    fun `toMarkdown handles links`() {
+        //given
+        val string = "A complete list of the inner workings of every move in a fighting game. " +
+                "Pretty much everything will be measured with !<'frame','frames'>, a " +
+                "fighting game's fundamental building block of time. You can learn the " +
+                "!<'startup'>, !<'active'>, and !<'recovery'> frames of each move, what " +
+                "the !<'frame advantage'> is when the move hits or is blocked, how much " +
+                "damage each move does, and any other special properties the move might have, " +
+                "like hitting !<'overhead'> or !<'low'>.<br><br>Frame data can intimidate " +
+                "people, because it's a ?<'https://docs.google.com/spreadsheets/d/1EBONXi2TCD1gTS2GbcB4z6ZYEoq3NNYp99kSxstKACE/edit#gid=0','giant spreadsheet'> " +
+                "that looks pretty overwhelming. But, really, frame data is not intended to be memorized " +
+                "like a list of formulas for your high school math class. The two most important numbers " +
+                "are the !<'startup'> of a move (\"how fast is it?\") and how !<'safe'> or !<'unsafe'> " +
+                "the move is if it gets blocked (\"how risky is it to use?\"). When you're getting started " +
+                "with frame data, you can generally skip all the other numbers and focus on these. Look for " +
+                "fast moves, and safe moves, then try these out in matches and see how you do! Then, " +
+                "when you get more practice with the game, the other numbers will make more sense naturally."
+        val expected = "A complete list of the inner workings of every move in a fighting game. " +
+                "Pretty much everything will be measured with **__frame__**, a fighting " +
+                "game's fundamental building block of time. You can learn the **__startup__**," +
+                " **__active__**, and **__recovery__** frames of each move, what the " +
+                "**__frame advantage__** is when the move hits or is blocked, how much " +
+                "damage each move does, and any other special properties the move might have, " +
+                "like hitting **__overhead__** or **__low__**.\n\n" +
+                "Frame data can intimidate people, because it's a " +
+                "[**giant spreadsheet**](https://docs.google.com/spreadsheets/d/1EBONXi2TCD1gTS2GbcB4z6ZYEoq3NNYp99kSxstKACE/edit#gid=0) " +
+                "that looks pretty overwhelming. But, really, frame data is not intended to be memorized " +
+                "like a list of formulas for your high school math class. The two most important numbers " +
+                "are the **__startup__** of a move (\"how fast is it?\") and how **__safe__** or " +
+                "**__unsafe__** the move is if it gets blocked (\"how risky is it to use?\"). " +
+                "When you're getting started with frame data, you can generally skip all the other numbers " +
+                "and focus on these. Look for fast moves, and safe moves, then try these out in matches " +
+                "and see how you do! Then, when you get more practice with the game, the other numbers " +
+                "will make more sense naturally."
+
+        //when
+        val result = string.toMarkdown()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `strong, em and br tags become markdown`() {
+        // given
+        val string = "<strong>Plus frames</strong> mean you act <em>first</em>.<br>Minus frames mean you don't."
+        val expected = "**Plus frames** mean you act *first*.\nMinus frames mean you don't."
+
+        // when
+        val result = string.toMarkdown()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `link without text shows its url`() {
+        // given
+        val string = "Read the ?<'https://glossary.infil.net/?t=Frame%20Data'> entry first."
+        val expected = "Read the [**https://glossary.infil.net/?t=Frame%20Data**]" +
+                "(https://glossary.infil.net/?t=Frame%20Data) entry first."
+
+        // when
+        val result = string.toMarkdown()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `unclosed term reference is left as is`() {
+        // given
+        val string = "Check the !<'frame advantage of the move."
+        val expected = "Check the !<'frame advantage of the move."
+
+        // when
+        val result = string.toMarkdown()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region URL
+    @Test
+    fun `toUrl handles basic term url`() {
+        // given
+        val string = "Fireball"
+        val expected = "https://glossary.infil.net/?t=Fireball"
+
+        // when
+        val result = string.toUrl()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toUrl handles spaces`() {
+        // given
+        val string = "White Girl Sweep"
+        val expected = "https://glossary.infil.net/?t=White%20Girl%20Sweep"
+
+        // when
+        val result = string.toUrl()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `image without a description has no url`() {
+        // given
+        val image = listOf("png")
+
+        // when
+        val result = image.toImageUrl("Okizeme")
+
+        //then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `video without a description has no url`() {
+        // given
+        val video = listOf("mp4")
+
+        // when
+        val result = video.toVideoUrl("Okizeme")
+
+        //then
+        assertThat(result).isNull()
+    }
+    //endregion
+
+    @Test
+    fun `toDomain handles image`() {
+        // given
+        val term = GlossaryItemDto(
+            term = "White Girl Sweep",
+            def = "",
+            image = listOf(
+                "jpg",
+                "descriptionWhite Girl Sweeps from Karin (Street Fighter V), Lili (Tekken 8), Wagner (Under Night In-Birth II), and Powered Ciel (Melty Blood: Type Lumina)."
+            ),
+        )
+        val expected = GlossaryItem(
+            term = "White Girl Sweep",
+            definition = "",
+            url = GlossaryItem.Url(
+                term = "https://glossary.infil.net/?t=White%20Girl%20Sweep",
+                image = "https://glossary.infil.net/images/terms/White%20Girl%20Sweep.jpg"
+            )
+        )
+
+        // when
+        val result = term.toDomain()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toDomain handles all fields`() {
+        // given
+        val term = GlossaryItemDto(
+            term = "Fireball",
+            def = "A projectile that travels horizontally",
+            altterm = listOf("Hadouken", "Projectile"),
+            video = listOf("video1", "video2"),
+            games = listOf("SF", "COM"),
+            jp = "波動拳 (hadouken)<br>Lit. wave motion fist",
+        )
+        val expected = GlossaryItem(
+            term = "Fireball",
+            definition = "A projectile that travels horizontally",
+            altTerm = listOf("Hadouken", "Projectile"),
+            games = listOf("SF", "COM"),
+            jpTranslation = listOf("波動拳 (hadouken)", "Lit. wave motion fist"),
+            url = GlossaryItem.Url(
+                term = "https://glossary.infil.net/?t=Fireball",
+                video = "https://glossary.infil.net/videos/Fireball.mp4",
+            ),
+        )
+
+        // when
+        val result = term.toDomain()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toDomain handles missing optional fields`() {
+        // given
+        val term = GlossaryItemDto(
+            term = "Combo",
+            def = "A sequence of attacks",
+        )
+        val expected = GlossaryItem(
+            term = "Combo",
+            definition = "A sequence of attacks",
+            url = GlossaryItem.Url(term = "https://glossary.infil.net/?t=Combo"),
+        )
+
+        // when
+        val result = term.toDomain()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toDomain handles empty optional fields`() {
+        // given
+        val term = GlossaryItemDto(
+            term = "Block",
+            def = "Defending against attacks",
+            altterm = emptyList(),
+            image = emptyList(),
+            video = emptyList(),
+            games = emptyList(),
+            jp = "",
+        )
+        val expected = GlossaryItem(
+            term = "Block",
+            definition = "Defending against attacks",
+            jpTranslation = listOf(""),
+            url = GlossaryItem.Url(term = "https://glossary.infil.net/?t=Block"),
+        )
+
+        // when
+        val result = term.toDomain()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `toDomain splits japanese translation by line breaks`() {
+        // given
+        val term = GlossaryItemDto(
+            term = "Guard Crush",
+            def = "Breaking an opponent's guard",
+            jp = "ガードクラッシュ (gādo kurasshu)<br>Lit. guard crush<br>ガークラ (gā kura)",
+        )
+        val expected = listOf(
+            "ガードクラッシュ (gādo kurasshu)",
+            "Lit. guard crush",
+            "ガークラ (gā kura)",
+        )
+
+        // when
+        val result = term.toDomain()
+
+        //then
+        assertThat(result.jpTranslation).isEqualTo(expected)
+    }
+}

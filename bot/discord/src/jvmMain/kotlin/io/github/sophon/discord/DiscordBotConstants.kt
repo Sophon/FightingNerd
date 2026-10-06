@@ -1,8 +1,16 @@
 package io.github.sophon.discord
 
-internal const val BOT_NAME = "FightingNerd"
+import io.github.sophon.discord.app.model.response.BotResponse
 
-internal const val CONFIG_FILE_NAME = "config.json"
+internal const val BOT_NAME = "FightingNerd"
+internal const val BOT_COLOR = 0x00A020F0
+internal val BOT_DATA_SOURCE = BotResponse.DataSource(
+    name = BOT_NAME,
+    iconUrl = URL_IMG_FIGHTING_NERD,
+    color = BOT_COLOR,
+)
+
+internal const val CONFIG_FILE_NAME = "discordConfig.json"
 internal const val EMBED_MAX_LENGTH = 1_000
 internal const val EMBED_MAX_BUTTONS = 25
 internal const val EMBED_MAX_BUTTON_ACTION_LENGTH = 100
@@ -14,7 +22,7 @@ internal const val COMMAND_MAX_SUGGESTIONS = 25
 
 internal const val URL_REPO = "https://github.com/Sophon/FightingNerd"
 internal const val URL_IMG_GITHUB = "https://i.imgur.com/PdgcKV2.png"
-internal const val URL_IMG_FIGHTING_NERD = "https://i.imgur.com/TAgvOxX.png"
+internal const val URL_IMG_FIGHTING_NERD = "https://raw.githubusercontent.com/Sophon/FightingNerd/dev/res/icons/fighting_nerd.png"
 
 internal const val URL_KOFI = "https://ko-fi.com/sophon_"
 internal const val URL_BUY_ME_COFFEE = "https://buymeacoffee.com/sophon"
@@ -39,6 +47,9 @@ internal const val URL_STEAM_LOBBY = "steam://joinlobby/"
 internal const val ENV_API_DISCORD = "discordBotApiKey"
 internal const val ENV_API_EWGF = "ewgfApiKey"
 internal const val ENV_WIKI_DATABASE_DIR = "WIKI_DATABASE_DIR"
+internal const val LOCAL_DATABASE_DIR = "db"
+internal const val ENV_STATS_DIR = "STATS_DIR"
+internal const val LOCAL_STATS_DIR = "stats"
 
 internal const val RNG_DONATION_PCT_COMMAND = 5
 internal const val RNG_DONATION_PCT_FEEDBACK = 20

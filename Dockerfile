@@ -30,7 +30,7 @@ COPY --from=builder /app/bot/discord/build/libs/discord-bot-all.jar /app/discord
 
 # Create /res directory for config volume
 RUN mkdir -p /app/res
-COPY res/config.json /app/res/config.json
+COPY res/discordConfig.json /app/res/discordConfig.json
 
 # Run the bot
 CMD ["java", "-Xms128m", "-Xmx350m", "-jar", "discord-bot.jar"]

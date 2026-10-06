@@ -80,7 +80,7 @@ lint/tmp/
 # lint/reports/
 
 # Config files
-/feat/dcBot/config.json
+/feat/dcBot/discordConfig.json
 /config.json
 
 # Kotlin
@@ -107,3 +107,9 @@ graphify-out/*
 
 /.claude/skills/ide-index-mcp/references/tools-reference.md
 /.claude/skills/ide-index-mcp/SKILL.md
+
+# Local markdown issue tracker (see docs/agents/issue-tracker.md)
+/.scratch/
+
+# Stats
+/stats/

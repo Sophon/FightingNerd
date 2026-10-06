@@ -8,14 +8,14 @@
     <string name="general_unit_day">Days</string>
     <string name="general_unit_month">Months</string>
 
-    <string name="home_refresh_refreshing">Refreshing...</string>
-    <string name="home_refresh_success">%1$s: %2$d chars refreshed</string>
-
     <string name="bottom_bar_item_character_list">Data</string>
     <string name="bottom_bar_item_search">Search</string>
     <string name="bottom_bar_item_saved">Saved</string>
     <string name="bottom_bar_item_quiz">Quiz</string>
     <string name="bottom_bar_item_more">More</string>
+
+    <string name="home_refresh_refreshing">Refreshing...</string>
+    <string name="home_refresh_success">%1$s: %2$d chars refreshed</string>
 
     <string name="move_list_search_hint">Search</string>
     <string name="move_list_field_startup">Startup</string>
@@ -121,10 +121,10 @@ The logo is a boxing glove with nerd glasses. Get it?</string>
     <string name="more_about_next_title">What next</string>
     <string name="more_about_next_body">The core platform is done. From here on, focus will be on adding games.</string>
     <string name="more_about_wikis_title">Wikis</string>
-    <string name="more_about_wikis_body">All data is sourced from community wikis. This has certain implications:
+    <string name="more_about_wikis_body">I don't maintain the data. All data is sourced from community wikis. This has certain implications:
 
-    - I don't maintain the data, the community does
-    - this project would not exist without wikis
+    - even if I fall in love or fall dead, the data gets updated
+    - this project would not exist without community and the wikis
 
 So check the wikis out:</string>
     <string name="more_about_invite_links_title">Links</string>

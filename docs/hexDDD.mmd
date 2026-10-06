@@ -1,0 +1,58 @@
+graph TD
+    subgraph Compose app
+        in_port_wiki_compose["IN: Wiki port"]
+        svc_wiki_compose["Wiki service"]
+        out_port_wiki_compose["OUT: Wiki port"]
+        out_adp_wiki_compose["OUT: Wiki adapter"]
+        out_port_other_compose["OUT: another port"]
+        out_adp_other_compose["OUT: another adapter"]
+    end
+
+    subgraph Discord bot
+        in_port_wiki_discord["IN: Wiki port"]
+        svc_wiki_discord["Wiki service"]
+        out_port_wiki_discord["OUT: Wiki port"]
+        out_adp_wiki_discord["OUT: Wiki adapter"]
+        out_port_other_discord["OUT: another port"]
+        out_adp_other_discord["OUT: another adapter"]
+    end
+
+    subgraph Wiki
+        in_wiki["IN: port"]
+        svc_wiki["Service"]
+        out_adp_network["OUT: network adapter"]
+        out_adp_db["OUT: DB adapter"]
+    end
+
+
+    screen["Screen"] --> in_port_wiki_compose
+    in_port_wiki_compose -.- |"implements"| svc_wiki_compose
+    svc_wiki_compose --> |"calls"| out_port_wiki_compose
+    out_port_wiki_compose -.- |"implements"| out_adp_wiki_compose
+    out_adp_wiki_compose --> |"calls"| in_wiki
+    svc_wiki_compose --> |"calls"| out_port_other_compose -.- |"implements"| out_adp_other_compose
+
+
+    kord["Kord"] --> in_port_wiki_discord
+    svc_wiki_discord -.- |"implements"| in_port_wiki_discord
+    svc_wiki_discord --> |"calls"| out_port_wiki_discord -.- |"implements"| out_adp_wiki_discord
+    out_adp_wiki_discord --> |"calls"| in_wiki
+    svc_wiki_discord --> |"calls"| out_port_other_discord -.- |"implements"| out_adp_other_discord
+
+
+    svc_wiki -.- |"implements"| in_wiki
+    svc_wiki --> |"calls"| out_adp_network
+    svc_wiki --> |"calls"| out_adp_db
+
+
+    classDef inbound stroke:orange
+    classDef inboundPort stroke:orange,stroke-dasharray:3 3
+    classDef application stroke:green
+    classDef outboundPort stroke:green,stroke-dasharray:3 3
+    classDef adapter stroke:blue
+
+    class screen,kord inbound
+    class in_port_wiki_compose,in_port_wiki_discord inboundPort
+    class svc_wiki_compose,svc_wiki_discord application
+    class out_port_wiki_compose,out_port_other_compose,out_port_wiki_discord,out_port_other_discord outboundPort
+    class out_adp_wiki_compose,out_adp_other_compose,out_adp_wiki_discord,out_adp_other_discord adapter

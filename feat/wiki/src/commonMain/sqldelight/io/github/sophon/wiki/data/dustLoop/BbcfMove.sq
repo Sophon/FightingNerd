@@ -1,0 +1,64 @@
+CREATE TABLE bbcf_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    on_odr TEXT,
+    attribute TEXT,
+    p1 TEXT,
+    p2 TEXT,
+    starter TEXT,
+    level TEXT,
+    blockstun TEXT,
+    ground_hit TEXT,
+    air_hit TEXT,
+    ground_ch TEXT,
+    air_ch TEXT,
+    blockstop TEXT,
+    hitstop TEXT,
+    ch_stop TEXT,
+    cancel_timing TEXT
+);
+
+upsert:
+INSERT INTO bbcf_move(
+    move_id,
+    on_odr,
+    attribute,
+    p1,
+    p2,
+    starter,
+    level,
+    blockstun,
+    ground_hit,
+    air_hit,
+    ground_ch,
+    air_ch,
+    blockstop,
+    hitstop,
+    ch_stop,
+    cancel_timing
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    on_odr = excluded.on_odr,
+    attribute = excluded.attribute,
+    p1 = excluded.p1,
+    p2 = excluded.p2,
+    starter = excluded.starter,
+    level = excluded.level,
+    blockstun = excluded.blockstun,
+    ground_hit = excluded.ground_hit,
+    air_hit = excluded.air_hit,
+    ground_ch = excluded.ground_ch,
+    air_ch = excluded.air_ch,
+    blockstop = excluded.blockstop,
+    hitstop = excluded.hitstop,
+    ch_stop = excluded.ch_stop,
+    cancel_timing = excluded.cancel_timing;
+
+selectByCharacter:
+SELECT *
+FROM bbcf_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

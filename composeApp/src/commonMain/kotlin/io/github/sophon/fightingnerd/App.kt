@@ -240,6 +240,9 @@ private fun AppNavDisplay(
                 HomeScreen(
                     onNavigateToMoveList = { gameId, characterId ->
                         backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
+                    },
+                    onNavigateToFeatureSettings = {
+                        backStack.add(Destination.FeatureSettings)
                     }
                 )
             }

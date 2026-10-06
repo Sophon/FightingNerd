@@ -1,0 +1,16 @@
+CREATE TABLE mk1_character (
+    character_id INTEGER PRIMARY KEY REFERENCES character(id) ON DELETE CASCADE,
+    hp_mod TEXT,
+    throw_dmg TEXT
+);
+
+upsert:
+INSERT INTO mk1_character(character_id, hp_mod, throw_dmg)
+VALUES (?, ?, ?)
+ON CONFLICT (character_id) DO UPDATE SET
+    hp_mod = excluded.hp_mod,
+    throw_dmg = excluded.throw_dmg;
+
+selectAll:
+SELECT *
+FROM mk1_character;

@@ -17,6 +17,11 @@ import org.jetbrains.compose.resources.MissingResourceException
 @ExcludeFromCoverage("TODO: find a way to mock RES")
 internal class LoadConfigUseCase(
     private val json: Json,
+
+    //region HEX migration
+//    private val store: DataStore<Preferences>,
+//    private val configureWikiUseCase: ConfigureWikiUseCase,
+    //endregion
 ) {
     suspend operator fun invoke(): Result<Config, AppError> {
         val result = try {
@@ -41,6 +46,10 @@ internal class LoadConfigUseCase(
                 },
             )
 
+            //region HEX migration
+//            bindHexagonalWiki(config)
+            //endregion
+
             Result.Success(config)
         } catch (e: MissingResourceException) {
             val errorMessage = e.message ?: "Config file not found"
@@ -54,6 +63,41 @@ internal class LoadConfigUseCase(
 
         return result
     }
+
+    //region HEX migration
+//    private suspend fun bindHexagonalWiki(config: Config) {
+//        val prefs = store.data.first()
+//
+//        config.toWikiConfig(prefs)
+//            .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
+//            .onError { error ->
+//                Napier.e(tag = TAG) { "Hexagonal wiki configuration failed: $error" }
+//            }
+//    }
+//
+//    /**
+//     * Available games come from `modules.json`, enabled games from DataStore.
+//     * Disabled features are dropped, same as the legacy `FeatureRepo`.
+//     */
+//    private fun Config.toWikiConfig(prefs: Preferences): Result<WikiConfig, WikiError> {
+//        val availableFeatureList = featureList.filter { it.isEnabled }
+//
+//        val availableGameSet = availableFeatureList
+//            .flatMap { it.supportedGameList }
+//            .toSet()
+//        val enabledGameSet = availableFeatureList
+//            .flatMap { feature ->
+//                feature.supportedGameList.filter { game -> prefs[featureKey(feature.name, game.id)] ?: false }
+//            }
+//            .toSet()
+//
+//        val result = WikiConfig.create(
+//            availableGameSet = availableGameSet,
+//            enabledGameSet = enabledGameSet,
+//        )
+//        return result
+//    }
+    //endregion
 
     @Serializable
     private data class JsonConfig(

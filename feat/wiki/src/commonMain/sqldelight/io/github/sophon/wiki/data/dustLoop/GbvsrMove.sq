@@ -1,0 +1,25 @@
+CREATE TABLE gbvsr_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    meter TEXT,
+    level TEXT,
+    cooldown TEXT,
+    cls TEXT
+);
+
+upsert:
+INSERT INTO gbvsr_move(move_id, meter, level, cooldown, cls)
+VALUES (?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    meter = excluded.meter,
+    level = excluded.level,
+    cooldown = excluded.cooldown,
+    cls = excluded.cls;
+
+selectByCharacter:
+SELECT *
+FROM gbvsr_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

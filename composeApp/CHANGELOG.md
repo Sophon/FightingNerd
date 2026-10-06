@@ -1,6 +1,12 @@
 # APP CHANGELOG
 
-## [v5.0.0] - TODO
+## [v5.1.1] - TODO
+- fixed DustLoop missing some characters
+
+## [v5.1.0] - 2026-09-23
+- `Home` - Add Game button
+
+## [v5.0.0] - 2026-09-14
 - `Home` - full screen swipe to refresh
 - `Move` - can share a moves as images
 - `Changelog` - display changelog if release hasn't been seen
