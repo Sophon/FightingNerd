@@ -11,11 +11,15 @@ internal fun dailyReportEmbed(usageReport: UsageReport): EmbedBuilder.() -> Unit
 
     usageReport.usageList
         .groupBy { usage -> usage.game }
+        .entries
+        .sortedByDescending { (_, usageList) -> usageList.sumOf { usage -> usage.count } }
         .forEach { (game, usageList) ->
             val gameCategory = game?.let { Game.fromId(it)?.displayName ?: it } ?: NO_GAME_FIELD_NAME
-            val stats = usageList.joinToString("\n") { usage ->
-                "`${usage.command.uppercase()}` - ${usage.count} hits"
-            }
+            val stats = usageList
+                .sortedByDescending { usage -> usage.count }
+                .joinToString("\n") { usage ->
+                    "`${usage.command.uppercase()}` - ${usage.count} hits"
+                }
             mandatoryField(
                 name = gameCategory,
                 value = stats,
