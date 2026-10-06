@@ -52,7 +52,7 @@ internal fun List<Battle>.groupIntoSets(): List<BattleSet> {
     currentBattle?.let { last ->
         setList.add(
             BattleSet(
-                battleList = currentSet.toList(),
+                battleList = currentSet.toList().reversed(),
                 player = last.player,
                 opponent = last.opponent,
                 score = currentSet.calculateScore(),
