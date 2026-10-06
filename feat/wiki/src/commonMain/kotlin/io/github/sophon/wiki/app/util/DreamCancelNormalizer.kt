@@ -19,7 +19,7 @@ internal fun Move.normalizeDreamCancel(): Move {
     return normalized
 }
 
-private fun String.normalizeDreamCancelInput(): String {
+internal fun String.normalizeDreamCancelInput(): String {
     val normalized = normalize2dInputs().lowercase()
     return normalized
 }
