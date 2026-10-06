@@ -3,6 +3,7 @@ package io.github.sophon.discord.app.service
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
+import io.github.sophon.discord.BOT_DATA_SOURCE
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.response.BotResponse
@@ -112,6 +113,7 @@ internal class AdminServiceImpl(
                                 author = author,
                                 message = message,
                                 feedbackChannelIdList = discordConfig.adminConfig.feedbackChannelIdList,
+                                dataSource = BOT_DATA_SOURCE,
                                 buttonSet = createForwardButtonSet(discordConfig.featureList),
                             )
                         }
@@ -154,7 +156,12 @@ internal class AdminServiceImpl(
         val result = isAdmin(issuerId)
             .flatMap { isAdmin ->
                 val replyResult = if (isAdmin) {
-                    Result.Success(ReplyResponse(recipient = recipient, message = message))
+                    val reply = ReplyResponse(
+                        recipient = recipient,
+                        message = message,
+                        dataSource = BOT_DATA_SOURCE,
+                    )
+                    Result.Success(reply)
                 } else {
                     Result.Error(BotError.PermissionDenied())
                 }

@@ -11,6 +11,7 @@ sealed interface AliasResponse: BotResponse {
 
     data class GamePrompt(
         val gameList: List<String>,
+        val dataSource: BotResponse.DataSource,
         val buttonSet: BotResponse.ButtonSet,
     ): AliasResponse
 }

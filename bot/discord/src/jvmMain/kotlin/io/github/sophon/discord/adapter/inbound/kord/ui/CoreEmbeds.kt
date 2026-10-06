@@ -2,7 +2,6 @@ package io.github.sophon.discord.adapter.inbound.kord.ui
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.truncate
 import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.EMBED_MAX_LENGTH
@@ -58,7 +57,7 @@ internal fun errorEmbed(
 }
 
 internal fun tipEmbed(
-    featureInfo: FeatureInfo,
+    dataSource: BotResponse.DataSource,
 ): EmbedBuilder.() -> Unit = {
     title = "Dono arigato!"
     url = URL_KOFI
@@ -71,12 +70,11 @@ internal fun tipEmbed(
                 "- ${URL_BUY_ME_COFFEE}\n"
     )
 
-    featureFooter(featureInfo)
+    featureFooter(dataSource)
 }
 
 internal fun modulesEmbed(
     modulesResponse: ModulesResponse,
-    featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     title = "FightingNerd bot by @phd_cunnilingus"
     color = Color(PURPLE)
@@ -114,13 +112,13 @@ internal fun modulesEmbed(
         inline = false,
     )
 
-    featureFooter(featureInfo)
+    featureFooter(modulesResponse.dataSource)
 }
 
 internal fun commandsEmbed(
     commandList: List<Command>,
     commandRegistry: CommandRegistry,
-    featureInfo: FeatureInfo,
+    dataSource: BotResponse.DataSource,
 ): EmbedBuilder.() -> Unit {
     val fdCommands = commandList.filter {
         it.name.startsWith("Fd")
@@ -215,7 +213,7 @@ internal fun commandsEmbed(
             }.trimEnd(),
         )
 
-        featureFooter(featureInfo)
+        featureFooter(dataSource)
     }
 
     return embedBuilder
@@ -223,7 +221,7 @@ internal fun commandsEmbed(
 
 internal fun helpEmbed(
     commandRegistry: CommandRegistry,
-    featureInfo: FeatureInfo,
+    dataSource: BotResponse.DataSource,
 ): EmbedBuilder.() -> Unit = {
     title = "EXAMPLES"
     color = Color(PURPLE)
@@ -273,7 +271,7 @@ internal fun helpEmbed(
                 "- some outputs have buttons, clicking those outputs the proper query",
     )
 
-    featureFooter(featureInfo)
+    featureFooter(dataSource)
 }
 
 internal fun steamLobbyEmbed(

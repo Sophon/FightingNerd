@@ -2,6 +2,7 @@ package io.github.sophon.discord.app.service
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
+import io.github.sophon.discord.BOT_DATA_SOURCE
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_REPO
@@ -42,7 +43,10 @@ internal class CoreBotServiceImpl(
     private val loadConfigPort: LoadConfigPort,
 ): CoreBotService {
     override fun createTipResponse(): Result<CoreResponse, BotError> {
-        val response = CoreResponse(type = CoreResponse.Type.Tip)
+        val response = CoreResponse(
+            type = CoreResponse.Type.Tip,
+            dataSource = BOT_DATA_SOURCE,
+        )
         return Result.Success(response)
     }
 
@@ -89,7 +93,10 @@ internal class CoreBotServiceImpl(
                         )
                     }
                     .toList()
-                ModulesResponse(moduleList = moduleList)
+                ModulesResponse(
+                    moduleList = moduleList,
+                    dataSource = BOT_DATA_SOURCE,
+                )
             }
         return result
     }
@@ -139,6 +146,7 @@ internal class CoreBotServiceImpl(
     ): Result<CoreResponse, BotError> {
         val response = CoreResponse(
             type = type,
+            dataSource = BOT_DATA_SOURCE,
             buttonSet = BotResponse.ButtonSet(
                 buttonList = listOf(
                     BotResponse.EmbedButton(

@@ -2,6 +2,7 @@ package io.github.sophon.discord.app.service
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.equalsIgnoreCase
+import io.github.sophon.discord.BOT_DATA_SOURCE
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.response.BotResponse
@@ -68,6 +69,7 @@ internal class CharacterServiceImpl(
     private fun createGamePromptResponse(gameList: List<Game>): AliasResponse {
         val response = AliasResponse.GamePrompt(
             gameList = gameList.map { it.displayName },
+            dataSource = BOT_DATA_SOURCE,
             buttonSet = BotResponse.ButtonSet(
                 buttonList = gameList.mapIndexed { index, game ->
                     BotResponse.EmbedButton(

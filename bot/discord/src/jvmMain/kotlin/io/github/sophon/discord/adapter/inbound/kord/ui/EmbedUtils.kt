@@ -1,7 +1,6 @@
 package io.github.sophon.discord.adapter.inbound.kord.ui
 
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
@@ -82,14 +81,6 @@ internal fun EmbedBuilder.separator() {
         name = invisibleChar
         value = ""
         inline = false
-    }
-}
-
-internal fun EmbedBuilder.featureFooter(featureInfo: FeatureInfo) {
-    footer {
-        text = "${featureInfo.name}\n" +
-                "Ideas or errors? Use /feedback"
-        icon = featureInfo.iconUrl
     }
 }
 
