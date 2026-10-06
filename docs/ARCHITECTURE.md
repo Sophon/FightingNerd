@@ -31,3 +31,9 @@ As such, there are differences from the book:
 │   └── outbound/                      - e.g. ktor, sqldelight, memory
 └── docs/
 ```
+
+### Testing
+
+Architecture and packaging is enforced by Konsist.
+
+Can be summoned via `./gradlew testHexagonal`.

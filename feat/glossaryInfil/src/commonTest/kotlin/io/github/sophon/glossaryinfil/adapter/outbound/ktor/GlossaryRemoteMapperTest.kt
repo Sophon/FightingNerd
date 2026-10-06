@@ -2,6 +2,7 @@ package io.github.sophon.glossaryinfil.adapter.outbound.ktor
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.github.sophon.glossaryinfil.model.GlossaryItem
 import kotlin.test.Test
 
@@ -78,6 +79,46 @@ class GlossaryRemoteMapperTest {
         //then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `strong, em and br tags become markdown`() {
+        // given
+        val string = "<strong>Plus frames</strong> mean you act <em>first</em>.<br>Minus frames mean you don't."
+        val expected = "**Plus frames** mean you act *first*.\nMinus frames mean you don't."
+
+        // when
+        val result = string.toMarkdown()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `link without text shows its url`() {
+        // given
+        val string = "Read the ?<'https://glossary.infil.net/?t=Frame%20Data'> entry first."
+        val expected = "Read the [**https://glossary.infil.net/?t=Frame%20Data**]" +
+                "(https://glossary.infil.net/?t=Frame%20Data) entry first."
+
+        // when
+        val result = string.toMarkdown()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `unclosed term reference is left as is`() {
+        // given
+        val string = "Check the !<'frame advantage of the move."
+        val expected = "Check the !<'frame advantage of the move."
+
+        // when
+        val result = string.toMarkdown()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region URL
@@ -105,6 +146,30 @@ class GlossaryRemoteMapperTest {
 
         //then
         assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `image without a description has no url`() {
+        // given
+        val image = listOf("png")
+
+        // when
+        val result = image.toImageUrl("Okizeme")
+
+        //then
+        assertThat(result).isNull()
+    }
+
+    @Test
+    fun `video without a description has no url`() {
+        // given
+        val video = listOf("mp4")
+
+        // when
+        val result = video.toVideoUrl("Okizeme")
+
+        //then
+        assertThat(result).isNull()
     }
     //endregion
 

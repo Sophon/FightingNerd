@@ -52,3 +52,5 @@ include(":feat:ewgf")
 include(":feat:stats")
 include(":feat:wikiDragDown")
 include(":feat:wiki")
+
+include(":testSuite")

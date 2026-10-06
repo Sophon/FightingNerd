@@ -115,19 +115,7 @@ Kord based. Hosted on cloud via Fly.io (`fly.toml`)
     - any other Error → continue to next feature
 
 ## Infrastructure
-- tests
-  - all tests are inside root `build.gradle.kts`
-  - all workflows for tests are inside `github/workflows/`
-  - `unitTests` (`test-unit.yml`) 
-    - runs all test classes
-    - `./gradlew unitTests --rerun-tasks`
-  - `testCoverage` (`test_coverage.yml`)
-    - what must be covered with unit tests
-      - mostly `core` utils, feature module usecases
-    - `./gradlew testCoverage --rerun-tasks`
-  - `hexagonal` (`test_arch_hex`)
-    - checks for `internal` and that public can only be inside `integration`
-    - `./gradlew testArchHexagonal --rerun-tasks`
+- tests - `testUnit`, `testCoverage`, `testArch`; see `docs/test-suite.md`
 - static analysis
   - done via detekt
     - `./gradlew detekt`
