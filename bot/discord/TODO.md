@@ -10,6 +10,8 @@
 - Mizuumi
   - Pokemon CC
   - SamSho
+- `games` command - displays all available games
+  - `modules` only lists features + versions
 
 ## Low prio
 
