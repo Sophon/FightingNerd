@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.0.1] - 2026-10-06
+- fix - normalize user query
+
 ## [v17.0.0] - 2026-10-06
 - full architectural refactor into HexDDD
 
