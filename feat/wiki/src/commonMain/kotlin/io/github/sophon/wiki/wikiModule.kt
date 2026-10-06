@@ -32,7 +32,6 @@ import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterMoveListPort
 import io.github.sophon.wiki.app.outPort.SaveWikiConfigPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
-import io.github.sophon.wiki.app.service.ClearCacheService
 import io.github.sophon.wiki.app.service.ConfigureWikiService
 import io.github.sophon.wiki.app.service.GetAvailableGamesService
 import io.github.sophon.wiki.app.service.GetCharacterListService
@@ -43,7 +42,6 @@ import io.github.sophon.wiki.app.service.GetMoveListService
 import io.github.sophon.wiki.app.service.GetMoveService
 import io.github.sophon.wiki.app.service.GetUpdateTimeStampService
 import io.github.sophon.wiki.app.service.RefreshDataService
-import io.github.sophon.wiki.inPort.ClearCacheUseCase
 import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
 import io.github.sophon.wiki.inPort.GetAvailableGamesUseCase
 import io.github.sophon.wiki.inPort.GetCharacterListUseCase
@@ -66,7 +64,6 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     single { WikiFeatureInfo }
 
 
-    singleOf(::ClearCacheService)
     singleOf(::ConfigureWikiService)
     singleOf(::GetAvailableGamesService)
     singleOf(::GetCharacterListService)
@@ -78,7 +75,6 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     singleOf(::GetUpdateTimeStampService)
     singleOf(::RefreshDataService)
 
-    single<ClearCacheUseCase> { get<ClearCacheService>() }
     single<ConfigureWikiUseCase> { get<ConfigureWikiService>() }
     single<GetAvailableGamesUseCase> { get<GetAvailableGamesService>() }
     single<GetCharacterListUseCase> { get<GetCharacterListService>() }
