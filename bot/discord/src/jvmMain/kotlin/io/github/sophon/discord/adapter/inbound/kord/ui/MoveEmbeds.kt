@@ -4,11 +4,13 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.toColumns
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.ListResponse
+import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.Emoji
 
 internal fun moveListEmbed(
-    listResponse: BotResponse.ListResponse,
+    listResponse: ListResponse,
 ): EmbedBuilder.() -> Unit = {
     color = Color(listResponse.dataSource.color)
 
@@ -46,7 +48,7 @@ internal fun moveListEmbed(
 }
 
 internal fun moveEmbed(
-    move: BotResponse.MoveResponse,
+    move: MoveResponse,
 ): EmbedBuilder.() -> Unit {
     val embedBuilder = if (move.forceExpand) {
         expandedMoveEmbed(move)
@@ -57,7 +59,7 @@ internal fun moveEmbed(
 }
 
 private fun coreMoveEmbed(
-    move: BotResponse.MoveResponse
+    move: MoveResponse
 ): EmbedBuilder.() -> Unit = {
     color = Color(move.dataSource.color)
     headerSection(move)
@@ -74,7 +76,7 @@ private fun coreMoveEmbed(
 }
 
 private fun expandedMoveEmbed(
-    move: BotResponse.MoveResponse,
+    move: MoveResponse,
 ): EmbedBuilder.() -> Unit = {
     color = Color(move.dataSource.color)
     headerSection(move)
@@ -87,7 +89,7 @@ private fun expandedMoveEmbed(
     featureFooter(dataSource = move.dataSource)
 }
 
-private fun EmbedBuilder.headerSection(move: BotResponse.MoveResponse) {
+private fun EmbedBuilder.headerSection(move: MoveResponse) {
     title = move.input
     url = move.url
     description = when {
@@ -112,7 +114,7 @@ private fun EmbedBuilder.primaryFieldsSection(fields: List<BotResponse.Field>) {
     }
 }
 
-private fun EmbedBuilder.notesSection(move: BotResponse.MoveResponse) {
+private fun EmbedBuilder.notesSection(move: MoveResponse) {
     val aliasNote = if (move.aliasList.isNotEmpty()) {
         "**ALIAS**: ${move.aliasList.joinToString("; ")}"
     } else null

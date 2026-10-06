@@ -4,13 +4,16 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.toFormattedString
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BanResponse
+import io.github.sophon.discord.app.model.response.FeedbackResponse
+import io.github.sophon.discord.app.model.response.ReplyResponse
+import io.github.sophon.discord.app.model.response.UnbanResponse
 
 /**
  * Title is the author's handle, so admins can copy it into `/reply`.
  */
 internal fun feedbackEmbed(
-    feedback: BotResponse.Feedback,
+    feedback: FeedbackResponse,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val author = feedback.author
@@ -36,7 +39,7 @@ internal fun feedbackEmbed(
 }
 
 internal fun replyEmbed(
-    reply: BotResponse.Reply,
+    reply: ReplyResponse,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val embedBuilder: EmbedBuilder.() -> Unit = {
@@ -55,7 +58,7 @@ internal fun replyEmbed(
 }
 
 internal fun banEmbed(
-    ban: BotResponse.Ban,
+    ban: BanResponse,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val embedBuilder: EmbedBuilder.() -> Unit = {
@@ -80,7 +83,7 @@ internal fun banEmbed(
 }
 
 internal fun unbanEmbed(
-    unban: BotResponse.Unban,
+    unban: UnbanResponse,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val embedBuilder: EmbedBuilder.() -> Unit = {

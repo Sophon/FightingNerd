@@ -14,6 +14,7 @@ import io.github.sophon.core.wiki.data.storeFingerprint
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.adapter.inbound.kord.KordResponder
 import io.github.sophon.discord.adapter.outbound.admin.AdminAdapter
+import io.github.sophon.discord.adapter.outbound.ewgf.EwgfAdapter
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.inbound.scheduler.DailyReportScheduler
 import io.github.sophon.discord.adapter.outbound.kord.KordPostAdapter
@@ -28,6 +29,8 @@ import io.github.sophon.discord.app.service.CharacterServiceImpl
 import io.github.sophon.discord.app.service.CommandRouterService
 import io.github.sophon.discord.app.service.CoreBotService
 import io.github.sophon.discord.app.service.CoreBotServiceImpl
+import io.github.sophon.discord.app.service.EwgfService
+import io.github.sophon.discord.app.service.EwgfServiceImpl
 import io.github.sophon.discord.app.service.MoveService
 import io.github.sophon.discord.app.service.MoveServiceImpl
 import io.github.sophon.discord.app.service.ProcessButtonEventService
@@ -48,6 +51,7 @@ import io.github.sophon.discord.app.outPort.BanPort
 import io.github.sophon.discord.app.outPort.CharactersPort
 import io.github.sophon.discord.app.outPort.ConfigureAdminPort
 import io.github.sophon.discord.app.outPort.ConfigureWikiPort
+import io.github.sophon.discord.app.outPort.EwgfPort
 import io.github.sophon.discord.app.outPort.FrameDataPort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
@@ -65,7 +69,7 @@ import io.github.sophon.glossaryinfil.integration.infilModule
 import io.github.sophon.adminModule
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
-import io.github.sophon.integration.ewgfModule
+import io.github.sophon.ewgfModule
 import io.github.sophon.statsModule
 import io.github.sophon.wiki.wikiModule
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -156,6 +160,7 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::ProduceAutoCompleteService).bind<ProduceAutoCompleteUseCase>()
     singleOf(::BanServiceImpl).bind<BanService>()
     singleOf(::AdminServiceImpl).bind<AdminService>()
+    singleOf(::EwgfServiceImpl).bind<EwgfService>()
     singleOf(::PostDailyReportService).bind<PostDailyReportUseCase>()
     //endregion
 
@@ -198,6 +203,10 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<GetMovesInRangePort>()
         bind<CharactersPort>()
     }
+    //endregion
+
+    //region EWGF
+    singleOf(::EwgfAdapter).bind<EwgfPort>()
     //endregion
 }
 
