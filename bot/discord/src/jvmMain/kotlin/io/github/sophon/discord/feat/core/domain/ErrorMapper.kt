@@ -4,7 +4,6 @@ import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.model.AdminError
 import io.github.sophon.integration.model.EwgfError
-import io.github.sophon.integration.model.StatsError
 
 internal fun WikiError.toDomainError(): BotError {
     return when (this) {
@@ -27,12 +26,5 @@ internal fun EwgfError.toDomainError(): BotError {
         is EwgfError.PlayerNotFound -> BotError.DownloadError(this.toString())
         is EwgfError.DatabaseError -> BotError.DatabaseError()
         else -> BotError.Unknown()
-    }
-}
-
-internal fun StatsError.toDomainError(): BotError {
-    return when (this) {
-        is StatsError.FileError -> BotError.FileError(*errors)
-        else -> BotError.Unknown(errors.toString())
     }
 }

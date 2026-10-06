@@ -1,6 +1,5 @@
 package io.github.sophon.discord.feat
 
-import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import io.github.sophon.discord.feat.core.usecase.GetMovesWithinRangeUseCase
@@ -13,23 +12,11 @@ import io.github.sophon.discord.feat.infilGlossary.usecase.GetInfilFeatureInfoUs
 import io.github.sophon.discord.feat.infilGlossary.usecase.SearchGlossaryUseCase
 import io.github.sophon.discord.feat.infilGlossary.usecase.StartGlossaryUseCase
 import org.koin.core.module.dsl.singleOf
-//import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal val featureRegistryModule = module {
     //region CORE
-//    single {
-//        TrackerImpl(
-//            statsFeatureInfo = get(),
-//            statsChannelId = get<Config>().statsConfig?.statsChannelIdList?.firstOrNull() ?: "",
-//            scheduler = get(),
-//            scope = get(),
-//            statsTracker = get(),
-//        )
-//    }.bind<Tracker>()
-
     singleOf(::GetBotFeatureInfoUseCase)
-    singleOf(::PostDailyReportEmbedUseCase)
     //endregion
 
     //region Generic

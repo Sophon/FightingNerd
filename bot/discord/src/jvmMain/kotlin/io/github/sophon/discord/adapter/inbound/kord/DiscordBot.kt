@@ -36,14 +36,11 @@ import io.github.sophon.discord.inPort.ProcessUserInputUseCase
 import io.github.sophon.discord.inPort.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.inPort.StartFeaturesUseCase
 import io.github.sophon.discord.app.model.adminCommands
-import io.github.sophon.discord.feat.bot.usecase.PostDailyReportEmbedUseCase
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.core.domain.Scheduler
-//import io.github.sophon.discord.feat.core.domain.Tracker
 import io.github.sophon.discord.util.kordRestCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
-//import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import java.lang.management.ManagementFactory
@@ -57,9 +54,7 @@ internal interface DiscordBot {
 @OptIn(ExperimentalUuidApi::class)
 internal class DiscordBotImpl(
     private val kord: Kord,
-//    private val tracker: Tracker,
     private val adminConfig: DiscordConfig.AdminConfig,
-//    private val postDailyReportEmbedUseCase: PostDailyReportEmbedUseCase,
     private val coroutineScope: CoroutineScope,
     private val scheduler: Scheduler,
     private val commandRegistry: CommandRegistry,
@@ -74,7 +69,6 @@ internal class DiscordBotImpl(
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
 
         startFeatures()
-//        startTracking()
         startMemoryLogging()
         startKord()
 
@@ -354,7 +348,11 @@ internal class DiscordBotImpl(
     @Suppress("CyclomaticComplexMethod")
     private suspend fun processButtonEvent(interaction: ButtonInteraction) {
         kordRestCall(TAG) {
-            val buttonEvent = decodeToButtonEvent(buttonId = interaction.componentId)
+            val buttonEvent = decodeToButtonEvent(
+                buttonId = interaction.componentId,
+                sourceChannelId = interaction.message.channelId.toString(),
+                sourceMessageId = interaction.message.id.toString(),
+            )
             if (buttonEvent == null) {
                 Napier.w(tag = TAG) { "Unknown button: ${interaction.componentId}" }
                 return@kordRestCall
@@ -449,14 +447,8 @@ internal class DiscordBotImpl(
                             }
                         }
 
-                        is ButtonEvent.Forward -> {
-                            if (response is BotResponse.Redirect) {
-                                kordResponder.redirect(
-                                    message = interaction.message,
-                                    channelId = response.channelId,
-                                ).onError { error -> Napier.e(tag = TAG) { "Redirect failed: $error" } }
-                            }
-                        }
+                        // already posted by the service
+                        is ButtonEvent.Forward -> {}
                     }
                 }
                 .onError { error -> Napier.e(tag = TAG) { "Button event failed: $error" } }
@@ -598,19 +590,6 @@ internal class DiscordBotImpl(
             Napier.i(tag = TAG) { "Gateway resumed successfully" }
         }
     }
-
-//    private fun startTracking() {
-//        coroutineScope.launch {
-//            tracker.subscribe().collectLatest { dailyReport ->
-//                kordRestCall(TAG) {
-//                    postDailyReportEmbedUseCase.invoke(
-//                        statsChannelId = tracker.statsChannelId,
-//                        dailyReport = dailyReport,
-//                    )
-//                }
-//            }
-//        }
-//    }
 
     private fun startMemoryLogging() {
         scheduler.start(

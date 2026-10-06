@@ -452,34 +452,6 @@ internal class KordResponder(
         return result
     }
 
-    /**
-     * Copies the message's embed into the channel - a button's custom_id is too short to carry the content itself.
-     */
-    suspend fun redirect(
-        message: Message,
-        channelId: String,
-    ): EmptyResult<BotError> {
-        val sourceEmbed = message.embeds.firstOrNull()
-
-        val result = try {
-            val channel = message.kord.getChannelOf<MessageChannel>(Snowflake(channelId))
-            when {
-                (sourceEmbed == null) -> Result.Error(BotError.Kord("Message has no embed: ${message.id}"))
-                (channel == null) -> Result.Error(BotError.Kord("Channel not found: $channelId"))
-                else -> {
-                    channel.createMessage {
-                        embed { sourceEmbed.apply(this) }
-                    }
-                    Result.Success(Unit)
-                }
-            }
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
-        }
-
-        return result
-    }
-
     suspend fun respondText(
         response: FollowupPermittingInteractionResponseBehavior,
         mention: String,

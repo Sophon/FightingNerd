@@ -15,6 +15,9 @@ import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.adapter.inbound.kord.KordResponder
 import io.github.sophon.discord.adapter.outbound.admin.AdminAdapter
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
+import io.github.sophon.discord.adapter.inbound.scheduler.DailyReportScheduler
+import io.github.sophon.discord.adapter.outbound.kord.KordPostAdapter
+import io.github.sophon.discord.adapter.outbound.stats.StatsAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.discord.app.service.AdminService
 import io.github.sophon.discord.app.service.AdminServiceImpl
@@ -31,6 +34,11 @@ import io.github.sophon.discord.app.service.ProcessButtonEventService
 import io.github.sophon.discord.app.service.ProcessUserInputService
 import io.github.sophon.discord.app.service.ProduceAutoCompleteService
 import io.github.sophon.discord.app.service.StartFeaturesService
+import io.github.sophon.discord.app.service.PostDailyReportService
+import io.github.sophon.discord.inPort.PostDailyReportUseCase
+import io.github.sophon.discord.app.outPort.ForwardPort
+import io.github.sophon.discord.app.outPort.PostReportPort
+import io.github.sophon.discord.app.outPort.StatsPort
 import io.github.sophon.discord.inPort.ProcessButtonEventUseCase
 import io.github.sophon.discord.inPort.ProcessUserInputUseCase
 import io.github.sophon.discord.inPort.ProduceAutoCompleteUseCase
@@ -50,7 +58,6 @@ import io.github.sophon.discord.app.outPort.ReadFilePort
 import io.github.sophon.discord.app.outPort.RefreshWikiPort
 import io.github.sophon.discord.feat.core.data.FileManager
 import io.github.sophon.discord.feat.core.data.InMemoryGlossaryDB
-import io.github.sophon.discord.feat.core.data.JsonReportRepo
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.feat.featureRegistryModule
 import io.github.sophon.glossaryinfil.integration.data.GlossaryDB
@@ -58,9 +65,8 @@ import io.github.sophon.glossaryinfil.integration.infilModule
 import io.github.sophon.adminModule
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
-import io.github.sophon.integration.data.ReportRepo
 import io.github.sophon.integration.ewgfModule
-import io.github.sophon.integration.statsModule
+import io.github.sophon.statsModule
 import io.github.sophon.wiki.wikiModule
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -85,7 +91,9 @@ internal fun initKoin(
         coreModule,
         dcBotModule(kord),
         adminModule(),
-        statsModule(),
+        statsModule(
+            directory = System.getenv(ENV_STATS_DIR).orEmpty().ifEmpty { LOCAL_STATS_DIR },
+        ),
 
         infilModule,
         ewgfModule(
@@ -117,7 +125,6 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::InMemoryGlossaryDB).bind<GlossaryDB>()
 
     singleOf(::FileManager)
-    singleOf(::JsonReportRepo).bind<ReportRepo>()
 
     WikiClientFeature.entries.forEach { feature ->
         single<SqlDriver>(named(feature.id)) { params ->
@@ -149,6 +156,7 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::ProduceAutoCompleteService).bind<ProduceAutoCompleteUseCase>()
     singleOf(::BanServiceImpl).bind<BanService>()
     singleOf(::AdminServiceImpl).bind<AdminService>()
+    singleOf(::PostDailyReportService).bind<PostDailyReportUseCase>()
     //endregion
 
     //region Admin
@@ -170,6 +178,15 @@ internal fun dcBotModule(kord: Kord) = module {
             is Result.Error -> error("Failed to load config: ${result.error}")
         }
     }
+    //endregion
+
+    //region Stats
+    singleOf(::StatsAdapter).bind<StatsPort>()
+    singleOf(::KordPostAdapter) {
+        bind<PostReportPort>()
+        bind<ForwardPort>()
+    }
+    singleOf(::DailyReportScheduler)
     //endregion
 
     //region Wiki
