@@ -11,13 +11,13 @@ import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.URL_SCRIPT_LOBBY
 import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.UserRequest
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.CoreResponse
 import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
-import io.github.sophon.discord.app.model.Command
-import io.github.sophon.discord.app.model.UserRequest
 import io.github.sophon.discord.app.outPort.FeatureInfoPort
 import io.github.sophon.discord.app.outPort.LoadConfigPort
 import kotlin.time.Duration.Companion.seconds

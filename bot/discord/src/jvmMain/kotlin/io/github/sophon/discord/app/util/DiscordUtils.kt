@@ -1,4 +1,4 @@
-package io.github.sophon.discord.util
+package io.github.sophon.discord.app.util
 
 import dev.kord.core.exception.EntityNotFoundException
 import dev.kord.rest.request.KtorRequestException

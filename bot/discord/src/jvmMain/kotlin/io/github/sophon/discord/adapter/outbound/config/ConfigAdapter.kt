@@ -4,7 +4,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.model.discord.DiscordConfig
 import io.github.sophon.discord.app.outPort.LoadConfigPort
 import io.github.sophon.discord.app.outPort.ReadFilePort
 import kotlinx.serialization.json.Json

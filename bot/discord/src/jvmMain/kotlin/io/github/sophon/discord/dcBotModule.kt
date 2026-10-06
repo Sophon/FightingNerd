@@ -13,12 +13,13 @@ import io.github.sophon.core.featureConfig.model.WikiClientFeature
 import io.github.sophon.core.wiki.data.fingerprint
 import io.github.sophon.core.wiki.data.readStoredFingerprint
 import io.github.sophon.core.wiki.data.storeFingerprint
+import io.github.sophon.discord.adapter.inbound.kord.CommandRegistry
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
 import io.github.sophon.discord.adapter.inbound.kord.KordResponder
-import io.github.sophon.discord.adapter.inbound.scheduler.DailyReportScheduler
 import io.github.sophon.discord.adapter.inbound.scheduler.GlossaryScheduler
+import io.github.sophon.discord.adapter.inbound.scheduler.ReportScheduler
 import io.github.sophon.discord.adapter.inbound.scheduler.Scheduler
 import io.github.sophon.discord.adapter.inbound.scheduler.WikiScheduler
 import io.github.sophon.discord.adapter.outbound.admin.AdminAdapter
@@ -29,7 +30,7 @@ import io.github.sophon.discord.adapter.outbound.glossary.GlossaryAdapter
 import io.github.sophon.discord.adapter.outbound.kord.KordPostAdapter
 import io.github.sophon.discord.adapter.outbound.stats.StatsAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
-import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.model.discord.DiscordConfig
 import io.github.sophon.discord.app.outPort.AdminPort
 import io.github.sophon.discord.app.outPort.BanPort
 import io.github.sophon.discord.app.outPort.CharactersPort
@@ -71,7 +72,6 @@ import io.github.sophon.discord.app.service.ProduceAutoCompleteService
 import io.github.sophon.discord.app.service.RefreshGlossaryService
 import io.github.sophon.discord.app.service.RefreshWikiService
 import io.github.sophon.discord.app.service.StartFeaturesService
-import io.github.sophon.discord.adapter.inbound.kord.CommandRegistry
 import io.github.sophon.discord.inPort.PostDailyReportUseCase
 import io.github.sophon.discord.inPort.ProcessButtonEventUseCase
 import io.github.sophon.discord.inPort.ProcessUserInputUseCase
@@ -204,7 +204,7 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<PostReportPort>()
         bind<ForwardPort>()
     }
-    singleOf(::DailyReportScheduler)
+    singleOf(::ReportScheduler)
     //endregion
 
     //region Wiki

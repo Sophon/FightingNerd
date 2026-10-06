@@ -1,4 +1,4 @@
-package io.github.sophon.discord.app.model
+package io.github.sophon.discord.app.model.frameData
 
 import io.github.sophon.wiki.model.wiki.Game
 

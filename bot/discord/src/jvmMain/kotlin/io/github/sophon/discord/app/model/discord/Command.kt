@@ -1,4 +1,4 @@
-package io.github.sophon.discord.app.model
+package io.github.sophon.discord.app.model.discord
 
 sealed class Command(
     val name: String,

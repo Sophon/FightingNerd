@@ -12,13 +12,13 @@ import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_PLAY_STORE
 import io.github.sophon.discord.URL_REPO
+import io.github.sophon.discord.adapter.inbound.kord.CommandRegistry
 import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.adminCommands
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
-import io.github.sophon.discord.app.model.Command
-import io.github.sophon.discord.app.model.adminCommands
-import io.github.sophon.discord.adapter.inbound.kord.CommandRegistry
 
 internal fun errorEmbed(
     error: BotError,

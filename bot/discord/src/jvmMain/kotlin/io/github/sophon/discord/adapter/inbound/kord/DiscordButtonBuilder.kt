@@ -8,8 +8,8 @@ import dev.kord.rest.builder.message.MessageBuilder
 import io.github.aakira.napier.Napier
 import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.EMBED_MAX_BUTTON_ACTION_LENGTH
-import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.discord.DiscordButton
+import io.github.sophon.discord.app.model.response.BotResponse
 
 internal class DiscordButtonBuilder {
     fun createResponseButtons(

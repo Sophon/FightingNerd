@@ -2,9 +2,9 @@ package io.github.sophon.discord.adapter.outbound.wiki
 
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.discord.app.model.GameList
+import io.github.sophon.discord.app.model.frameData.CharacterId
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.CharacterResponse
-import io.github.sophon.discord.app.model.CharacterId
 import io.github.sophon.wiki.WikiFeatureInfo
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.game.BBCharProperties

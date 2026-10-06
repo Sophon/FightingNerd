@@ -4,11 +4,11 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.response.BotResponse
-import io.github.sophon.discord.app.model.response.AliasResponse
-import io.github.sophon.discord.app.model.response.CharacterResponse
-import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.GameList
+import io.github.sophon.discord.app.model.discord.Command
+import io.github.sophon.discord.app.model.response.AliasResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.CharacterResponse
 import io.github.sophon.discord.app.outPort.CharactersPort
 import io.github.sophon.discord.app.outPort.GamePort
 import io.github.sophon.wiki.model.wiki.Game

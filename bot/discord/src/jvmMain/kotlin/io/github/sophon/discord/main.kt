@@ -7,8 +7,8 @@ import io.github.aakira.napier.LogLevel
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.util.maskSecret
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
-import io.github.sophon.discord.adapter.inbound.scheduler.DailyReportScheduler
 import io.github.sophon.discord.adapter.inbound.scheduler.GlossaryScheduler
+import io.github.sophon.discord.adapter.inbound.scheduler.ReportScheduler
 import io.github.sophon.discord.adapter.inbound.scheduler.WikiScheduler
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.java.Java
@@ -30,7 +30,7 @@ internal suspend fun main() = coroutineScope {
     initKoin(kord)
 
     val discordBot = getKoin().get<DiscordBot>()
-    getKoin().get<DailyReportScheduler>().start()
+    getKoin().get<ReportScheduler>().start()
     getKoin().get<WikiScheduler>().start()
     getKoin().get<GlossaryScheduler>().start()
 

@@ -1,9 +1,9 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
+import io.github.sophon.discord.app.model.frameData.MoveId
+import io.github.sophon.discord.app.model.frameData.MoveType
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
-import io.github.sophon.discord.app.model.MoveId
-import io.github.sophon.discord.app.model.MoveType
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.model.Move
