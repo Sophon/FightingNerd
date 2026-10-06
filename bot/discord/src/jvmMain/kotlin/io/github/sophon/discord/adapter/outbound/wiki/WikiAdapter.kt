@@ -20,6 +20,7 @@ import io.github.sophon.discord.app.outPort.FrameDataPort
 import io.github.sophon.discord.app.outPort.GamePort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
+import io.github.sophon.discord.app.outPort.NormalizeMoveInputPort
 import io.github.sophon.discord.app.outPort.RefreshWikiPort
 import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
 import io.github.sophon.wiki.inPort.GetAvailableGamesUseCase
@@ -27,8 +28,10 @@ import io.github.sophon.wiki.inPort.GetCharacterListUseCase
 import io.github.sophon.wiki.inPort.GetCharacterUseCase
 import io.github.sophon.wiki.inPort.GetMoveListUseCase
 import io.github.sophon.wiki.inPort.GetMoveUseCase
+import io.github.sophon.wiki.inPort.NormalizeMoveInputUseCase
 import io.github.sophon.wiki.inPort.RefreshDataUseCase
 import io.github.sophon.wiki.model.Filter
+import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 import io.github.sophon.wiki.model.CharacterId as WikiCharacterId
@@ -41,7 +44,9 @@ internal class WikiAdapter(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
     private val getAvailableGamesUseCase: GetAvailableGamesUseCase,
-): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort, GetMovesInRangePort, CharactersPort, GamePort {
+    private val normalizeMoveInputUseCase: NormalizeMoveInputUseCase,
+): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort, GetMovesInRangePort, CharactersPort, GamePort,
+    NormalizeMoveInputPort {
     override suspend fun configure(discordConfig: DiscordConfig): EmptyResult<BotError> {
         val result = discordConfig.toWikiConfig()
             .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
@@ -97,6 +102,11 @@ internal class WikiAdapter(
             .first()
             .toGameList()
         return gameList
+    }
+
+    override fun normalizeMoveInput(game: Game, input: String): String {
+        val normalized = normalizeMoveInputUseCase(game, input)
+        return normalized
     }
 
 

@@ -19,6 +19,7 @@ import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.outPort.FrameDataPort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
+import io.github.sophon.discord.app.outPort.NormalizeMoveInputPort
 import kotlin.time.Duration.Companion.seconds
 
 internal interface MoveService {
@@ -47,20 +48,25 @@ internal class MoveServiceImpl(
     private val frameDataPort: FrameDataPort,
     private val getMovesOfTypePort: GetMovesOfTypePort,
     private val getMovesInRangePort: GetMovesInRangePort,
+    private val normalizeMoveInputPort: NormalizeMoveInputPort,
 ): MoveService {
     override suspend fun findFrameData(query: String): Result<MoveResponse, BotError> {
         val characterQuery = query.substringBefore(' ')
         val moveQuery = query.substringAfter(delimiter = " ", missingDelimiterValue = "")
 
         val result = characterService.findCharacter(characterQuery)
-            .flatMap { character -> frameDataPort.getMoves(character.toCharacterId()) }
-            .flatMap { moveList ->
-                val move = moveList.firstOrNull { it.matches(moveQuery) }
-                val moveResult = if (move == null) {
-                    Result.Error(BotError.UnknownMove(characterQuery, moveQuery))
-                } else {
-                    Result.Success(move)
-                }
+            .flatMap { character ->
+                val normalizedMoveQuery = normalizeMoveInputPort.normalizeMoveInput(game = character.game, input = moveQuery)
+                val moveResult = frameDataPort.getMoves(character.toCharacterId())
+                    .flatMap { moveList ->
+                        val move = moveList.firstOrNull { it.matches(moveQuery = moveQuery, normalizedMoveQuery = normalizedMoveQuery) }
+                        val foundMoveResult = if (move == null) {
+                            Result.Error(BotError.UnknownMove(characterQuery, moveQuery))
+                        } else {
+                            Result.Success(move)
+                        }
+                        foundMoveResult
+                    }
                 moveResult
             }
         return result
@@ -132,12 +138,13 @@ internal class MoveServiceImpl(
 
         val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
+                val normalizedPrefix = normalizeMoveInputPort.normalizeMoveInput(game = character.game, input = prefix)
                 val listResponse = frameDataPort.getMoves(character.toCharacterId())
                     .map { moveList ->
                         val followupListResponse = moveList
                             .filter { move ->
-                                val isFollowedByPlus = (move.input.getOrNull(prefix.length) == '+')
-                                move.input.startsWith(prefix, ignoreCase = true) && isFollowedByPlus.not()
+                                val isFollowedByPlus = (move.input.getOrNull(normalizedPrefix.length) == '+')
+                                move.input.startsWith(normalizedPrefix, ignoreCase = true) && isFollowedByPlus.not()
                             }
                             .toListResponse(
                                 character = character,
@@ -191,10 +198,18 @@ internal class MoveServiceImpl(
     }
 
 
-    private fun MoveResponse.matches(moveQuery: String): Boolean {
-        return input.equalsIgnoreCase(moveQuery)
-                || moveName.equalsIgnoreCase(moveQuery)
-                || aliasList.any { it.equalsIgnoreCase(moveQuery) }
+    /**
+     * The name is matched as typed - normalization strips its spaces.
+     */
+    private fun MoveResponse.matches(
+        moveQuery: String,
+        normalizedMoveQuery: String,
+    ): Boolean {
+        val isMatch = (moveName.equalsIgnoreCase(moveQuery)
+                || listOf(moveQuery, normalizedMoveQuery).any { query ->
+                    input.equalsIgnoreCase(query) || aliasList.any { it.equalsIgnoreCase(query) }
+                })
+        return isMatch
     }
 
     private fun CharacterResponse.toCharacterId(): CharacterId {

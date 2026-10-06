@@ -293,6 +293,7 @@ class ProduceAutoCompleteServiceTest {
             frameDataPort = FakeFrameDataPort(mapOf(CharacterId(game = Game.Tekken8, characterId = "jin") to jinMoveList)),
             getMovesOfTypePort = FakeGetMovesOfTypePort(),
             getMovesInRangePort = FakeGetMovesInRangePort(),
+            normalizeMoveInputPort = FakeNormalizeMoveInputPort(),
         )
         val service = ProduceAutoCompleteService(characterService = characterService, moveService = moveService)
         return service
