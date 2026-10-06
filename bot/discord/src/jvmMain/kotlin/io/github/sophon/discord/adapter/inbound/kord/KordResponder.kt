@@ -58,7 +58,6 @@ import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.response.UnbanResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.UserRequest
-import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)

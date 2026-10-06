@@ -1,4 +1,4 @@
-package io.github.sophon.discord.feat.core.domain
+package io.github.sophon.discord.adapter.inbound.kord
 
 import dev.kord.common.entity.Snowflake
 import io.github.sophon.discord.app.model.Command

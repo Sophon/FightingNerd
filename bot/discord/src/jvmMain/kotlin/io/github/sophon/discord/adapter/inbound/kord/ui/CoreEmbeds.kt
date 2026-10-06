@@ -18,7 +18,7 @@ import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.adminCommands
-import io.github.sophon.discord.feat.core.domain.CommandRegistry
+import io.github.sophon.discord.adapter.inbound.kord.CommandRegistry
 
 internal fun errorEmbed(
     error: BotError,

@@ -49,7 +49,6 @@ import io.github.sophon.discord.inPort.ProcessUserInputUseCase
 import io.github.sophon.discord.inPort.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.inPort.StartFeaturesUseCase
 import io.github.sophon.discord.app.model.adminCommands
-import io.github.sophon.discord.feat.core.domain.CommandRegistry
 import io.github.sophon.discord.adapter.inbound.scheduler.Scheduler
 import io.github.sophon.discord.util.kordRestCall
 import kotlinx.coroutines.CoroutineScope
