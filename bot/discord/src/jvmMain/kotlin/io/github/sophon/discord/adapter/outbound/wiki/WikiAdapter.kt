@@ -6,6 +6,7 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.CharacterResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.CharacterId
@@ -19,6 +20,7 @@ import io.github.sophon.discord.app.outPort.FrameDataPort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
 import io.github.sophon.discord.app.outPort.RefreshWikiPort
+import io.github.sophon.wiki.WikiFeatureInfo
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
 import io.github.sophon.wiki.inPort.GetCharacterListUseCase
@@ -31,6 +33,7 @@ import kotlinx.coroutines.flow.first
 import io.github.sophon.wiki.model.CharacterId as WikiCharacterId
 
 internal class WikiAdapter(
+    wikiFeatureInfo: WikiFeatureInfo,
     private val configureWikiUseCase: ConfigureWikiUseCase,
     private val refreshDataUseCase: RefreshDataUseCase,
     private val getCharacterListUseCase: GetCharacterListUseCase,
@@ -38,6 +41,8 @@ internal class WikiAdapter(
     private val getCharacterUseCase: GetCharacterUseCase,
     private val getMoveUseCase: GetMoveUseCase,
 ): ConfigureWikiPort, RefreshWikiPort, FrameDataPort, GetMovesOfTypePort, GetMovesInRangePort, CharactersPort {
+    override val dataSource: BotResponse.DataSource = wikiFeatureInfo.featureInfo.toDataSource()
+
     override suspend fun configure(discordConfig: DiscordConfig): EmptyResult<BotError> {
         val result = discordConfig.toWikiConfig()
             .flatMap { wikiConfig -> configureWikiUseCase(wikiConfig) }
