@@ -1,9 +1,9 @@
 package io.github.sophon.adapter.outbound.memory
 
-import io.github.sophon.model.AdminError
 import io.github.sophon.app.outPort.AdminListPort
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.model.AdminError
 import kotlinx.coroutines.flow.MutableStateFlow
 
 internal class InMemoryAdminListAdapter : AdminListPort {

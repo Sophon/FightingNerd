@@ -3,6 +3,9 @@ package io.github.sophon
 import io.github.sophon.adapter.inbound.scheduler.AdminScheduler
 import io.github.sophon.adapter.outbound.memory.InMemoryAdminListAdapter
 import io.github.sophon.adapter.outbound.sqldelight.SqlDelightAdapter
+import io.github.sophon.app.outPort.AdminListPort
+import io.github.sophon.app.outPort.BanPort
+import io.github.sophon.app.outPort.ClearExpiredBansPort
 import io.github.sophon.app.service.BanUserService
 import io.github.sophon.app.service.ConfigureAdminToolService
 import io.github.sophon.app.service.IsUserAdminService
@@ -13,9 +16,6 @@ import io.github.sophon.inPort.ConfigureAdminToolUseCase
 import io.github.sophon.inPort.IsUserAdminUseCase
 import io.github.sophon.inPort.IsUserBannedUseCase
 import io.github.sophon.inPort.UnbanUserUseCase
-import io.github.sophon.app.outPort.AdminListPort
-import io.github.sophon.app.outPort.BanPort
-import io.github.sophon.app.outPort.ClearExpiredBansPort
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
