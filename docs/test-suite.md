@@ -10,7 +10,7 @@
 ## `testCoverage`
 - checks each covered file has a `<Name>Test.kt` in the same package (existence only)
 - covered: everything in `service` / `util` packages, `*Mapper.kt` / `*Mappers.kt` inside `adapter`
-- scans `feat/*`, `composeApp`, `bot/discord`; opt out with `@ExcludeFromCoverage`
+- only scans the modules listed in `CoverageScope.modules` (all their source sets) - add a module once its tests are written; opt out a file with `@ExcludeFromCoverage`
 - `./gradlew testCoverage --rerun-tasks`
 
 ## `testArch`
