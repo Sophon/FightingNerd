@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.0.0] - 2026-10-06
+- full architectural refactor into HexDDD
+
 ## [v16.6.2] - 2026-09-16
 - Kord snapshot version to fix ULong bug on Discord
 
