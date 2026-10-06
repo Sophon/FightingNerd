@@ -206,8 +206,8 @@ private fun configureWikiService(
     configPort: FakeWikiConfigPort,
     moveStore: FakeGameDataStore = FakeGameDataStore(storedGameSet = emptySet()),
     characterStore: FakeGameDataStore = FakeGameDataStore(storedGameSet = emptySet()),
-): io.github.sophon.wiki.app.service.ConfigureWikiService =
-    _root_ide_package_.io.github.sophon.wiki.app.service.ConfigureWikiService(
+): ConfigureWikiService =
+    ConfigureWikiService(
         loadWikiConfigPort = configPort,
         saveWikiConfigPort = configPort,
         deleteMoveListPort = moveStore,
