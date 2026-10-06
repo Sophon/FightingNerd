@@ -8,6 +8,7 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.util.maskSecret
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.scheduler.DailyReportScheduler
+import io.github.sophon.discord.adapter.inbound.scheduler.WikiScheduler
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.java.Java
 import io.ktor.client.plugins.HttpTimeout
@@ -29,6 +30,7 @@ internal suspend fun main() = coroutineScope {
 
     val discordBot = getKoin().get<DiscordBot>()
     getKoin().get<DailyReportScheduler>().start()
+    getKoin().get<WikiScheduler>().start()
 
     launch {
         discordBot.startSession()
