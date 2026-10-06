@@ -2,6 +2,16 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.wiki.adapter.outbound.sqldelight.LazyWikiDB
+import io.github.sophon.wiki.data.dustLoop.Bbcf_character
+import io.github.sophon.wiki.data.dustLoop.Bbcf_move
+import io.github.sophon.wiki.data.dustLoop.Dbfz_character
+import io.github.sophon.wiki.data.dustLoop.Dbfz_move
+import io.github.sophon.wiki.data.dustLoop.Gbvsr_character
+import io.github.sophon.wiki.data.dustLoop.Gbvsr_move
+import io.github.sophon.wiki.data.dustLoop.Ggst_character
+import io.github.sophon.wiki.data.dustLoop.Ggst_move
+import io.github.sophon.wiki.data.dustLoop.Mtfs_character
+import io.github.sophon.wiki.data.dustLoop.Mtfs_move
 import io.github.sophon.wiki.model.CharacterGameProperties
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.MoveGameProperties
@@ -16,16 +26,6 @@ import io.github.sophon.wiki.model.game.GGMoveProperties
 import io.github.sophon.wiki.model.game.MTFSCharProperties
 import io.github.sophon.wiki.model.game.MTFSMoveProperties
 import io.github.sophon.wiki.model.wiki.Game
-import io.github.sophon.wiki.data.dustLoop.Bbcf_character
-import io.github.sophon.wiki.data.dustLoop.Bbcf_move
-import io.github.sophon.wiki.data.dustLoop.Dbfz_character
-import io.github.sophon.wiki.data.dustLoop.Dbfz_move
-import io.github.sophon.wiki.data.dustLoop.Gbvsr_character
-import io.github.sophon.wiki.data.dustLoop.Gbvsr_move
-import io.github.sophon.wiki.data.dustLoop.Ggst_character
-import io.github.sophon.wiki.data.dustLoop.Ggst_move
-import io.github.sophon.wiki.data.dustLoop.Mtfs_character
-import io.github.sophon.wiki.data.dustLoop.Mtfs_move
 
 internal class DustLoopSqlDelightGameProperties(
     wikiDatabase: LazyWikiDB,

@@ -2,6 +2,11 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.wiki.adapter.outbound.sqldelight.LazyWikiDB
+import io.github.sophon.wiki.data.superCombo.Avl_move
+import io.github.sophon.wiki.data.superCombo.Mk1_character
+import io.github.sophon.wiki.data.superCombo.Mk1_move
+import io.github.sophon.wiki.data.superCombo.Street_fighter6_character
+import io.github.sophon.wiki.data.superCombo.Street_fighter6_move
 import io.github.sophon.wiki.model.CharacterGameProperties
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.MoveGameProperties
@@ -11,11 +16,6 @@ import io.github.sophon.wiki.model.game.MKMoveProperties
 import io.github.sophon.wiki.model.game.SF6MoveProperties
 import io.github.sophon.wiki.model.game.SFCharProperties
 import io.github.sophon.wiki.model.wiki.Game
-import io.github.sophon.wiki.data.superCombo.Avl_move
-import io.github.sophon.wiki.data.superCombo.Mk1_character
-import io.github.sophon.wiki.data.superCombo.Mk1_move
-import io.github.sophon.wiki.data.superCombo.Street_fighter6_character
-import io.github.sophon.wiki.data.superCombo.Street_fighter6_move
 
 internal class SuperComboSqlDelightGameProperties(
     wikiDatabase: LazyWikiDB,

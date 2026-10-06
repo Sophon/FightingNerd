@@ -1,5 +1,7 @@
 package io.github.sophon.discord.app.model
 
+import io.github.sophon.discord.app.model.discord.Command
+
 data class UserRequest(
     val command: Command?,
     val query: String,

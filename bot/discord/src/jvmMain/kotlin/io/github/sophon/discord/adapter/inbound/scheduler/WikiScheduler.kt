@@ -1,6 +1,5 @@
 package io.github.sophon.discord.adapter.inbound.scheduler
 
-import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.inPort.RefreshWikiUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn

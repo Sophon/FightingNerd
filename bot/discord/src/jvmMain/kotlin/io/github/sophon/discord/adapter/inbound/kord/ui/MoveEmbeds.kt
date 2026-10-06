@@ -4,15 +4,15 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.toColumns
+import io.github.sophon.discord.app.model.discord.Emoji
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.ListResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
-import io.github.sophon.discord.app.model.Emoji
 
 internal fun moveListEmbed(
     listResponse: ListResponse,
 ): EmbedBuilder.() -> Unit = {
-    color = Color(listResponse.dataSource.color)
+    color = listResponse.dataSource.color?.let { Color(it) }
 
     if (listResponse.values.isEmpty()) {
         mandatoryField(
@@ -61,7 +61,7 @@ internal fun moveEmbed(
 private fun coreMoveEmbed(
     move: MoveResponse
 ): EmbedBuilder.() -> Unit = {
-    color = Color(move.dataSource.color)
+    color = move.dataSource.color?.let { Color(it) }
     headerSection(move)
 
     primaryFieldsSection(fields = move.primaryFields)
@@ -78,7 +78,7 @@ private fun coreMoveEmbed(
 private fun expandedMoveEmbed(
     move: MoveResponse,
 ): EmbedBuilder.() -> Unit = {
-    color = Color(move.dataSource.color)
+    color = move.dataSource.color?.let { Color(it) }
     headerSection(move)
 
     primaryFieldsSection(fields = move.primaryFields)

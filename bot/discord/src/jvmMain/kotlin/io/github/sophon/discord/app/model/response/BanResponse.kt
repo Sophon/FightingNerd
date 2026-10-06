@@ -10,6 +10,7 @@ data class BanResponse(
     val expiresAt: Instant,
     val issuerId: String,
     val preventBotUsage: Boolean,
+    val dataSource: BotResponse.DataSource,
 ): BotResponse {
     override fun toString(): String {
         return "BANNED: ${bannedAt.toFormattedString()} → ${expiresAt.toFormattedString()}"

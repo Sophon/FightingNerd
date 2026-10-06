@@ -4,9 +4,9 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.EwgfOperation
 import io.github.sophon.discord.app.model.UserRequest
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.response.EwgfResponse
 import io.github.sophon.discord.app.outPort.EwgfPort
 import io.github.sophon.discord.app.util.toEwgfOperation

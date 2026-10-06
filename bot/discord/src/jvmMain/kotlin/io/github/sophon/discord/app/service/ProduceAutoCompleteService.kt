@@ -3,12 +3,12 @@ package io.github.sophon.discord.app.service
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
-import io.github.sophon.discord.app.model.AutocompleteChoice
+import io.github.sophon.discord.app.model.discord.AutocompleteChoice
+import io.github.sophon.discord.app.model.discord.Command
+import io.github.sophon.discord.app.model.discord.Command.Argument.AutoCompleteType
+import io.github.sophon.discord.app.model.frameData.CharacterId
 import io.github.sophon.discord.app.model.response.CharacterResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
-import io.github.sophon.discord.app.model.CharacterId
-import io.github.sophon.discord.app.model.Command
-import io.github.sophon.discord.app.model.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.inPort.ProduceAutoCompleteUseCase
 import io.github.sophon.wiki.model.wiki.Game
 

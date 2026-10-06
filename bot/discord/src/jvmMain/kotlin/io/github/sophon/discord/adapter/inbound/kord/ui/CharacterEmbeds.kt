@@ -2,15 +2,15 @@ package io.github.sophon.discord.adapter.inbound.kord.ui
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.toColumns
+import io.github.sophon.discord.app.model.response.AliasResponse
 import io.github.sophon.discord.app.model.response.CharacterResponse
 
 internal fun characterEmbed(
     character: CharacterResponse,
 ): EmbedBuilder.() -> Unit = {
-    color = Color(character.dataSource.color)
+    color = character.dataSource.color?.let { Color(it) }
     title = character.displayName
     url = character.url
     if (character.aliasList.isNotEmpty()) {
@@ -62,16 +62,15 @@ internal fun aliasEmbed(
     characterList
         .firstOrNull()
         ?.let { character ->
-            color = Color(character.dataSource.color)
+            color = character.dataSource.color?.let { Color(it) }
             featureFooter(character.dataSource)
         }
 }
 
 internal fun aliasGamePromptEmbed(
-    gameList: List<String>,
-    featureInfo: FeatureInfo,
+    gamePrompt: AliasResponse.GamePrompt,
 ): EmbedBuilder.() -> Unit = {
-    val numberedGames = gameList
+    val numberedGames = gamePrompt.gameList
         .mapIndexed { index, game -> "${index + 1}. **$game**" }
         .joinToString("\n")
 
@@ -87,5 +86,5 @@ internal fun aliasGamePromptEmbed(
         inline = false,
     )
 
-    featureFooter(featureInfo)
+    featureFooter(gamePrompt.dataSource)
 }

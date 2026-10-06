@@ -44,9 +44,11 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.successEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.unbanEmbed
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.UserRequest
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.response.AliasResponse
 import io.github.sophon.discord.app.model.response.BanResponse
+import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.CoreResponse
 import io.github.sophon.discord.app.model.response.EwgfResponse
 import io.github.sophon.discord.app.model.response.FeedbackResponse
@@ -56,10 +58,6 @@ import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.ReplyResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.response.UnbanResponse
-import io.github.sophon.discord.app.model.Command
-import io.github.sophon.discord.app.model.UserRequest
-import io.github.sophon.discord.feat.core.domain.CommandRegistry
-import io.github.sophon.discord.feat.core.usecase.GetBotFeatureInfoUseCase
 import kotlin.uuid.ExperimentalUuidApi
 
 @OptIn(ExperimentalUuidApi::class)
@@ -67,7 +65,6 @@ import kotlin.uuid.ExperimentalUuidApi
 internal class KordResponder(
     private val discordButtonBuilder: DiscordButtonBuilder,
     private val commandRegistry: CommandRegistry,
-    private val getBotFeatureInfoUseCase: GetBotFeatureInfoUseCase,
 ) {
     suspend fun respond(
         message: Message,
@@ -143,7 +140,7 @@ internal class KordResponder(
     ): EmptyResult<BotError> {
         val result = respond(
             message = message,
-            embedBuilder = coreEmbed(coreResponse.type),
+            embedBuilder = coreEmbed(coreResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = coreResponse.buttonSet,
@@ -157,7 +154,7 @@ internal class KordResponder(
     ): EmptyResult<BotError> {
         val result = respond(
             interaction = interaction,
-            embedBuilder = coreEmbed(coreResponse.type),
+            embedBuilder = coreEmbed(coreResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = coreResponse.buttonSet,
@@ -171,7 +168,7 @@ internal class KordResponder(
     ): EmptyResult<BotError> {
         val result = respond(
             message = message,
-            embedBuilder = modulesEmbed(modulesResponse, getBotFeatureInfoUseCase.invoke()),
+            embedBuilder = modulesEmbed(modulesResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
@@ -185,7 +182,7 @@ internal class KordResponder(
     ): EmptyResult<BotError> {
         val result = respond(
             interaction = interaction,
-            embedBuilder = modulesEmbed(modulesResponse, getBotFeatureInfoUseCase.invoke()),
+            embedBuilder = modulesEmbed(modulesResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
@@ -356,7 +353,7 @@ internal class KordResponder(
         val result = sendToRecipient(
             message = message,
             recipient = reply.recipient,
-            embedBuilder = replyEmbed(reply, getBotFeatureInfoUseCase.invoke()),
+            embedBuilder = replyEmbed(reply),
         )
         return result
     }
@@ -368,7 +365,7 @@ internal class KordResponder(
         val result = sendToRecipient(
             interaction = interaction,
             recipient = reply.recipient,
-            embedBuilder = replyEmbed(reply, getBotFeatureInfoUseCase.invoke()),
+            embedBuilder = replyEmbed(reply),
         )
         return result
     }
@@ -380,7 +377,7 @@ internal class KordResponder(
         val result = sendToRecipient(
             message = message,
             recipient = ban.offender,
-            embedBuilder = banEmbed(ban, getBotFeatureInfoUseCase.invoke()),
+            embedBuilder = banEmbed(ban),
         )
         return result
     }
@@ -392,7 +389,7 @@ internal class KordResponder(
         val result = sendToRecipient(
             interaction = interaction,
             recipient = ban.offender,
-            embedBuilder = banEmbed(ban, getBotFeatureInfoUseCase.invoke()),
+            embedBuilder = banEmbed(ban),
         )
         return result
     }
@@ -404,7 +401,7 @@ internal class KordResponder(
         val result = sendToRecipient(
             message = message,
             recipient = unban.offender,
-            embedBuilder = unbanEmbed(unban, getBotFeatureInfoUseCase.invoke()),
+            embedBuilder = unbanEmbed(unban),
         )
         return result
     }
@@ -416,7 +413,7 @@ internal class KordResponder(
         val result = sendToRecipient(
             interaction = interaction,
             recipient = unban.offender,
-            embedBuilder = unbanEmbed(unban, getBotFeatureInfoUseCase.invoke()),
+            embedBuilder = unbanEmbed(unban),
         )
         return result
     }
@@ -575,7 +572,7 @@ internal class KordResponder(
         kord: Kord,
         feedback: FeedbackResponse,
     ) {
-        val embedBuilder = feedbackEmbed(feedback, getBotFeatureInfoUseCase.invoke())
+        val embedBuilder = feedbackEmbed(feedback)
         feedback.feedbackChannelIdList.forEach { channelId ->
             kord.getChannelOf<TextChannel>(Snowflake(channelId))
                 ?.createMessage {
@@ -655,15 +652,15 @@ internal class KordResponder(
         plainText.buttonSet?.let { discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = it) }
     }
 
-    private fun coreEmbed(type: CoreResponse.Type): EmbedBuilder.() -> Unit {
-        val featureInfo = getBotFeatureInfoUseCase.invoke()
-        val embedBuilder = when (type) {
-            CoreResponse.Type.Tip -> tipEmbed(featureInfo)
-            CoreResponse.Type.Help -> helpEmbed(commandRegistry, featureInfo)
+    private fun coreEmbed(coreResponse: CoreResponse): EmbedBuilder.() -> Unit {
+        val dataSource = coreResponse.dataSource
+        val embedBuilder = when (coreResponse.type) {
+            CoreResponse.Type.Tip -> tipEmbed(dataSource)
+            CoreResponse.Type.Help -> helpEmbed(commandRegistry, dataSource)
             CoreResponse.Type.Commands -> commandsEmbed(
                 commandList = Command.entries.sortedBy { it.name },
                 commandRegistry = commandRegistry,
-                featureInfo = featureInfo,
+                dataSource = dataSource,
             )
         }
         return embedBuilder
@@ -672,10 +669,7 @@ internal class KordResponder(
     private fun aliasResponseEmbed(aliasResponse: AliasResponse): EmbedBuilder.() -> Unit {
         val embedBuilder = when (aliasResponse) {
             is AliasResponse.CharacterAliases -> aliasEmbed(aliasResponse.characterList)
-            is AliasResponse.GamePrompt -> aliasGamePromptEmbed(
-                gameList = aliasResponse.gameList,
-                featureInfo = getBotFeatureInfoUseCase.invoke(),
-            )
+            is AliasResponse.GamePrompt -> aliasGamePromptEmbed(aliasResponse)
         }
         return embedBuilder
     }

@@ -7,15 +7,15 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.wiki.model.WikiConfig
-import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.app.model.toWikiError
-import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.app.outPort.DeleteCharacterListPort
 import io.github.sophon.wiki.app.outPort.DeleteMoveListPort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
 import io.github.sophon.wiki.app.outPort.SaveWikiConfigPort
 import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
+import io.github.sophon.wiki.model.WikiConfig
+import io.github.sophon.wiki.model.WikiError
+import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.flow.first
 
 internal class ConfigureWikiService(

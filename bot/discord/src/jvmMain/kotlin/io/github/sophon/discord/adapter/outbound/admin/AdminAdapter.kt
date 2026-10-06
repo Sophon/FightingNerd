@@ -5,9 +5,9 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.response.BanResponse
-import io.github.sophon.discord.app.model.DiscordConfig
 import io.github.sophon.discord.app.model.ModerationRequest
+import io.github.sophon.discord.app.model.discord.DiscordConfig
+import io.github.sophon.discord.app.model.response.BanResponse
 import io.github.sophon.discord.app.outPort.AdminPort
 import io.github.sophon.discord.app.outPort.BanPort
 import io.github.sophon.discord.app.outPort.ConfigureAdminPort

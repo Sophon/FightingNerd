@@ -1,11 +1,11 @@
 package io.github.sophon.wiki.app.service
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.wiki.app.outPort.LoadCharacterPort
+import io.github.sophon.wiki.inPort.GetCharacterUseCase
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.WikiError
-import io.github.sophon.wiki.inPort.GetCharacterUseCase
-import io.github.sophon.wiki.app.outPort.LoadCharacterPort
 
 internal class GetCharacterService(
     private val loadCharacterPort: LoadCharacterPort,

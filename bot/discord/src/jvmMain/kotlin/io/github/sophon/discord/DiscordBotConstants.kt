@@ -1,6 +1,14 @@
 package io.github.sophon.discord
 
+import io.github.sophon.discord.app.model.response.BotResponse
+
 internal const val BOT_NAME = "FightingNerd"
+internal const val BOT_COLOR = 0x00A020F0
+internal val BOT_DATA_SOURCE = BotResponse.DataSource(
+    name = BOT_NAME,
+    iconUrl = URL_IMG_FIGHTING_NERD,
+    color = BOT_COLOR,
+)
 
 internal const val CONFIG_FILE_NAME = "discordConfig.json"
 internal const val EMBED_MAX_LENGTH = 1_000
@@ -14,7 +22,7 @@ internal const val COMMAND_MAX_SUGGESTIONS = 25
 
 internal const val URL_REPO = "https://github.com/Sophon/FightingNerd"
 internal const val URL_IMG_GITHUB = "https://i.imgur.com/PdgcKV2.png"
-internal const val URL_IMG_FIGHTING_NERD = "https://i.imgur.com/TAgvOxX.png"
+internal const val URL_IMG_FIGHTING_NERD = "https://raw.githubusercontent.com/Sophon/FightingNerd/dev/res/icons/fighting_nerd.png"
 
 internal const val URL_KOFI = "https://ko-fi.com/sophon_"
 internal const val URL_BUY_ME_COFFEE = "https://buymeacoffee.com/sophon"

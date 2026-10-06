@@ -2,7 +2,6 @@ package io.github.sophon.discord.adapter.inbound.kord.ui
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.toFormattedString
 import io.github.sophon.discord.app.model.response.BanResponse
 import io.github.sophon.discord.app.model.response.FeedbackResponse
@@ -14,7 +13,6 @@ import io.github.sophon.discord.app.model.response.UnbanResponse
  */
 internal fun feedbackEmbed(
     feedback: FeedbackResponse,
-    featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val author = feedback.author
     val origin = if (author.serverName.isBlank()) {
@@ -33,14 +31,13 @@ internal fun feedbackEmbed(
             inline = false,
         )
 
-        featureFooter(featureInfo)
+        featureFooter(feedback.dataSource)
     }
     return embedBuilder
 }
 
 internal fun replyEmbed(
     reply: ReplyResponse,
-    featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val embedBuilder: EmbedBuilder.() -> Unit = {
         title = "Feedback response"
@@ -52,14 +49,13 @@ internal fun replyEmbed(
             inline = false,
         )
 
-        featureFooter(featureInfo)
+        featureFooter(reply.dataSource)
     }
     return embedBuilder
 }
 
 internal fun banEmbed(
     ban: BanResponse,
-    featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val embedBuilder: EmbedBuilder.() -> Unit = {
         title = "Chat shit, get banged! 🔥🔥🔥"
@@ -77,14 +73,13 @@ internal fun banEmbed(
             inline = false,
         )
 
-        featureFooter(featureInfo)
+        featureFooter(ban.dataSource)
     }
     return embedBuilder
 }
 
 internal fun unbanEmbed(
     unban: UnbanResponse,
-    featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit {
     val embedBuilder: EmbedBuilder.() -> Unit = {
         title = "Free like a bird! 🕊🕊🕊"
@@ -102,7 +97,7 @@ internal fun unbanEmbed(
             inline = false,
         )
 
-        featureFooter(featureInfo)
+        featureFooter(unban.dataSource)
     }
     return embedBuilder
 }

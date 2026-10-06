@@ -2,9 +2,8 @@ package io.github.sophon.discord.adapter.inbound.kord.ui
 
 import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
-import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.truncate
-import io.github.sophon.discord.EMBED_LIST_PER_COLUMN
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_APP_STORE
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
@@ -13,13 +12,13 @@ import io.github.sophon.discord.URL_INVITE
 import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_PLAY_STORE
 import io.github.sophon.discord.URL_REPO
+import io.github.sophon.discord.adapter.inbound.kord.CommandRegistry
 import io.github.sophon.discord.app.model.BotError
+import io.github.sophon.discord.app.model.adminCommands
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
-import io.github.sophon.discord.app.model.Command
-import io.github.sophon.discord.app.model.adminCommands
-import io.github.sophon.discord.feat.core.domain.CommandRegistry
 
 internal fun errorEmbed(
     error: BotError,
@@ -58,7 +57,7 @@ internal fun errorEmbed(
 }
 
 internal fun tipEmbed(
-    featureInfo: FeatureInfo,
+    dataSource: BotResponse.DataSource,
 ): EmbedBuilder.() -> Unit = {
     title = "Dono arigato!"
     url = URL_KOFI
@@ -71,38 +70,27 @@ internal fun tipEmbed(
                 "- ${URL_BUY_ME_COFFEE}\n"
     )
 
-    featureFooter(featureInfo)
+    featureFooter(dataSource)
 }
 
 internal fun modulesEmbed(
     modulesResponse: ModulesResponse,
-    featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     title = "FightingNerd bot by @phd_cunnilingus"
     color = Color(PURPLE)
 
     val moduleList = modulesResponse.moduleList
-    val chunks: List<List<ModulesResponse.Module>> = when (moduleList.size) {
-        in 1..5 -> {
-            listOf(moduleList)
+    val columnSize = ((moduleList.size + MODULES_COLUMN_COUNT - 1) / MODULES_COLUMN_COUNT).coerceAtLeast(1)
+    moduleList
+        .chunked(columnSize)
+        .forEachIndexed { index, moduleChunk ->
+            mandatoryField(
+                name = if (index == 0) "🧩 FEATURE MODULES" else invisibleChar,
+                value = moduleChunk.joinToString("\n") { module ->
+                    "- **[${module.name}](${module.url})** - ${module.version}"
+                },
+            )
         }
-        in 5..EMBED_LIST_PER_COLUMN -> {
-            moduleList.chunked(5)
-        } else ->
-            moduleList.chunked(EMBED_LIST_PER_COLUMN)
-    }
-
-    chunks.forEachIndexed { index, moduleChunk ->
-        mandatoryField(
-            name = if (index == 0) "🧩 FEATURE MODULES" else "_",
-            value = moduleChunk.joinToString("\n") { module ->
-                val games = module.gameList.joinToString("\n") { game ->
-                    "  - $game"
-                }
-                "- **[${module.name}](${module.url})**:\n$games"
-            },
-        )
-    }
 
     mandatoryField(
         name = "🫶 OTHER LINKS",
@@ -114,13 +102,13 @@ internal fun modulesEmbed(
         inline = false,
     )
 
-    featureFooter(featureInfo)
+    featureFooter(modulesResponse.dataSource)
 }
 
 internal fun commandsEmbed(
     commandList: List<Command>,
     commandRegistry: CommandRegistry,
-    featureInfo: FeatureInfo,
+    dataSource: BotResponse.DataSource,
 ): EmbedBuilder.() -> Unit {
     val fdCommands = commandList.filter {
         it.name.startsWith("Fd")
@@ -215,7 +203,7 @@ internal fun commandsEmbed(
             }.trimEnd(),
         )
 
-        featureFooter(featureInfo)
+        featureFooter(dataSource)
     }
 
     return embedBuilder
@@ -223,7 +211,7 @@ internal fun commandsEmbed(
 
 internal fun helpEmbed(
     commandRegistry: CommandRegistry,
-    featureInfo: FeatureInfo,
+    dataSource: BotResponse.DataSource,
 ): EmbedBuilder.() -> Unit = {
     title = "EXAMPLES"
     color = Color(PURPLE)
@@ -273,7 +261,7 @@ internal fun helpEmbed(
                 "- some outputs have buttons, clicking those outputs the proper query",
     )
 
-    featureFooter(featureInfo)
+    featureFooter(dataSource)
 }
 
 internal fun steamLobbyEmbed(
@@ -330,3 +318,4 @@ internal fun promoButtonSet(): BotResponse.ButtonSet = BotResponse.ButtonSet(
 
 private const val PURPLE = 0x00A020F0
 private const val RED = 0x00FF0000
+private const val MODULES_COLUMN_COUNT = 2

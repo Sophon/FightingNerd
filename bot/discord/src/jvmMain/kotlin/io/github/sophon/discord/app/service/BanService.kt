@@ -3,12 +3,13 @@ package io.github.sophon.discord.app.service
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
+import io.github.sophon.discord.BOT_DATA_SOURCE
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.response.BanResponse
-import io.github.sophon.discord.app.model.response.UnbanResponse
-import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.ModerationRequest
 import io.github.sophon.discord.app.model.UserRequest
+import io.github.sophon.discord.app.model.discord.Command
+import io.github.sophon.discord.app.model.response.BanResponse
+import io.github.sophon.discord.app.model.response.UnbanResponse
 import io.github.sophon.discord.app.outPort.BanPort
 
 internal interface BanService {
@@ -42,7 +43,12 @@ internal class BanServiceImpl(
         val result = createModerationRequest(command = Command.Unban, query = query, source = source)
             .flatMap { moderationRequest ->
                 val unbanResult = banPort.unban(moderationRequest)
-                    .map { UnbanResponse(offender = moderationRequest.offender) }
+                    .map {
+                        UnbanResponse(
+                            offender = moderationRequest.offender,
+                            dataSource = BOT_DATA_SOURCE,
+                        )
+                    }
                 unbanResult
             }
         return result

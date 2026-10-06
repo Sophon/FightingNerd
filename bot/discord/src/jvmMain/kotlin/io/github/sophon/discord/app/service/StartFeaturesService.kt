@@ -5,7 +5,7 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.DiscordConfig
+import io.github.sophon.discord.app.model.discord.DiscordConfig
 import io.github.sophon.discord.app.outPort.ConfigureAdminPort
 import io.github.sophon.discord.app.outPort.ConfigureWikiPort
 import io.github.sophon.discord.app.outPort.LoadConfigPort

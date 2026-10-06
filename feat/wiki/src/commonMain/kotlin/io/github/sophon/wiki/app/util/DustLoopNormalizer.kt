@@ -1,12 +1,5 @@
 package io.github.sophon.wiki.app.util
 
-import io.github.sophon.wiki.app.util.addAliasForReleaseNotation
-import io.github.sophon.wiki.app.util.create2dAliases
-import io.github.sophon.wiki.app.util.createGbvsAliases
-import io.github.sophon.wiki.app.util.createNarmayaStanceAliases
-import io.github.sophon.wiki.app.util.formAliases
-import io.github.sophon.wiki.app.util.formNagoriyukiAliases
-import io.github.sophon.wiki.app.util.normalize2dInputs
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.wiki.Game

@@ -1,8 +1,8 @@
 package io.github.sophon.discord.adapter.outbound.stats
 
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.UsageReport
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.model.DailyReport
 import io.github.sophon.model.StatsError
 import io.github.sophon.model.Usage

@@ -1,11 +1,12 @@
 package io.github.sophon
 
 import io.github.sophon.adapter.outbound.file.StatsFileAdapter
-import io.github.sophon.app.DayRollover
 import io.github.sophon.app.outPort.DayReportPort
 import io.github.sophon.app.outPort.MonthReportPort
 import io.github.sophon.app.outPort.PrepareStoragePort
 import io.github.sophon.app.service.ConfigureStatsService
+import io.github.sophon.app.service.DayRolloverService
+import io.github.sophon.app.service.DayRolloverServiceImpl
 import io.github.sophon.app.service.GetCurrentReportService
 import io.github.sophon.app.service.GetReportService
 import io.github.sophon.app.service.RecordUsageService
@@ -29,7 +30,9 @@ fun statsModule(directory: String) = module {
     singleOf(::GetReportService).bind<GetReportUseCase>()
     singleOf(::GetCurrentReportService).bind<GetCurrentReportUseCase>()
 
-    single { DayRollover(dayReportPort = get(), monthReportPort = get(), clock = Clock.System) }
+    single<DayRolloverService> {
+        DayRolloverServiceImpl(dayReportPort = get(), monthReportPort = get(), clock = Clock.System)
+    }
 
     single { StatsFileAdapter(json = get(), fileSystem = FileSystem.SYSTEM, directory = directory) } withOptions {
         bind<PrepareStoragePort>()

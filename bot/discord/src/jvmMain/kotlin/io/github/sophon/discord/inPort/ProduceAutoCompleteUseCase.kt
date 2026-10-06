@@ -1,6 +1,6 @@
 package io.github.sophon.discord.inPort
 
-import io.github.sophon.discord.app.model.AutocompleteChoice
+import io.github.sophon.discord.app.model.discord.AutocompleteChoice
 
 interface ProduceAutoCompleteUseCase {
     suspend operator fun invoke(

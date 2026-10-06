@@ -1,8 +1,11 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
+import io.github.sophon.core.featureConfig.model.FeatureInfo
+import io.github.sophon.discord.app.model.GameList
+import io.github.sophon.discord.app.model.frameData.CharacterId
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.CharacterResponse
-import io.github.sophon.discord.app.model.CharacterId
+import io.github.sophon.wiki.WikiFeatureInfo
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.game.BBCharProperties
 import io.github.sophon.wiki.model.game.GBVSRCharProperties
@@ -11,6 +14,7 @@ import io.github.sophon.wiki.model.game.MTFSCharProperties
 import io.github.sophon.wiki.model.game.Roa2CharProperties
 import io.github.sophon.wiki.model.game.SFCharProperties
 import io.github.sophon.wiki.model.game.Uni2CharProperties
+import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.model.CharacterId as WikiCharacterId
 
 internal fun Character.toDomain(): CharacterResponse {
@@ -27,6 +31,15 @@ internal fun Character.toDomain(): CharacterResponse {
     return characterResponse
 }
 
+internal fun Set<Game>.toGameList(): GameList {
+    val gameList = GameList(
+        gameList = toList(),
+        dataSource = WikiFeatureInfo.featureInfo.toDataSource(),
+    )
+
+    return gameList
+}
+
 internal fun CharacterId.toWikiCharacterId(): WikiCharacterId {
     val wikiCharacterId = WikiCharacterId(
         game = game,
@@ -41,6 +54,15 @@ internal fun Character.toDataSource(): BotResponse.DataSource {
         name = "${id.game.displayName} (${id.game.wiki.displayName})",
         iconUrl = id.game.wiki.iconUrl,
         color = id.game.wiki.color,
+    )
+
+    return dataSource
+}
+
+private fun FeatureInfo.toDataSource(): BotResponse.DataSource {
+    val dataSource = BotResponse.DataSource(
+        name = name,
+        iconUrl = iconUrl.orEmpty(),
     )
 
     return dataSource

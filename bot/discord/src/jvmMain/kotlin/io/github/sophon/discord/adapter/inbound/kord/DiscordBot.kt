@@ -20,11 +20,18 @@ import dev.kord.rest.builder.interaction.string
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.discord.app.model.DiscordConfig
 import io.github.sophon.discord.COMMAND_MAX_SUGGESTIONS
 import io.github.sophon.discord.adapter.inbound.kord.ui.characterEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.moveEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.moveListEmbed
+import io.github.sophon.discord.adapter.inbound.scheduler.Scheduler
+import io.github.sophon.discord.app.model.adminCommands
+import io.github.sophon.discord.app.model.discord.ButtonEvent
+import io.github.sophon.discord.app.model.discord.Command
+import io.github.sophon.discord.app.model.discord.Command.Argument.AutoCompleteType
+import io.github.sophon.discord.app.model.discord.DiscordCommandInteraction
+import io.github.sophon.discord.app.model.discord.DiscordConfig
+import io.github.sophon.discord.app.model.discord.Message
 import io.github.sophon.discord.app.model.response.AliasResponse
 import io.github.sophon.discord.app.model.response.BanResponse
 import io.github.sophon.discord.app.model.response.CharacterResponse
@@ -39,19 +46,11 @@ import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.ReplyResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.response.UnbanResponse
-import io.github.sophon.discord.app.model.ButtonEvent
-import io.github.sophon.discord.app.model.Command
-import io.github.sophon.discord.app.model.Command.Argument.AutoCompleteType
-import io.github.sophon.discord.app.model.DiscordCommandInteraction
-import io.github.sophon.discord.app.model.Message
+import io.github.sophon.discord.app.util.kordRestCall
 import io.github.sophon.discord.inPort.ProcessButtonEventUseCase
 import io.github.sophon.discord.inPort.ProcessUserInputUseCase
 import io.github.sophon.discord.inPort.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.inPort.StartFeaturesUseCase
-import io.github.sophon.discord.app.model.adminCommands
-import io.github.sophon.discord.feat.core.domain.CommandRegistry
-import io.github.sophon.discord.feat.core.domain.Scheduler
-import io.github.sophon.discord.util.kordRestCall
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
@@ -77,7 +76,7 @@ internal class DiscordBotImpl(
     private val processUserInputUseCase: ProcessUserInputUseCase,
     private val processButtonEventUseCase: ProcessButtonEventUseCase,
     private val produceAutoCompleteUseCase: ProduceAutoCompleteUseCase,
-): DiscordBot {
+) : DiscordBot {
     override suspend fun startSession() {
         Napier.i(tag = TAG) { "🚀 Bot starting..." }
 
@@ -90,8 +89,6 @@ internal class DiscordBotImpl(
 
 
     private fun startFeatures() {
-//        botFeatureRepo.initialize()
-
         coroutineScope.launch {
             startFeaturesUseCase()
                 .onError { error -> Napier.e(tag = TAG) { "Feature start failed: $error" } }
@@ -126,7 +123,6 @@ internal class DiscordBotImpl(
         try {
             kord.login {
                 @OptIn(PrivilegedIntent::class)
-//                intents += Intent.MessageContent //TODO: enable once verified
 
                 presence {
                     playing("/FD | /HELP | /FEEDBACK")
@@ -168,6 +164,7 @@ internal class DiscordBotImpl(
                                 buttonSet = response.buttonSet,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is ListResponse -> {
                             kordResponder.respond(
                                 message = message,
@@ -177,6 +174,7 @@ internal class DiscordBotImpl(
                                 buttonSet = response.buttonSet,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is CharacterResponse -> {
                             kordResponder.respond(
                                 message = message,
@@ -186,72 +184,84 @@ internal class DiscordBotImpl(
                                 buttonSet = null,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is CoreResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 coreResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is ModulesResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 modulesResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is AliasResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 aliasResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is SteamLobbyResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 steamLobby = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is PlainTextResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 plainText = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is FeedbackResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 feedback = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is ReplyResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 reply = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is BanResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 ban = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is UnbanResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 unban = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is EwgfResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 ewgfResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is GlossaryResponse -> {
                             kordResponder.respond(
                                 message = message,
                                 glossaryResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         else -> {}
                     }
                 }
@@ -286,6 +296,7 @@ internal class DiscordBotImpl(
                                 buttonSet = response.buttonSet,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is ListResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
@@ -295,6 +306,7 @@ internal class DiscordBotImpl(
                                 buttonSet = response.buttonSet,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is CharacterResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
@@ -304,72 +316,84 @@ internal class DiscordBotImpl(
                                 buttonSet = null,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is CoreResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 coreResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is ModulesResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 modulesResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is AliasResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 aliasResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is SteamLobbyResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 steamLobby = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is PlainTextResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 plainText = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is FeedbackResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 feedback = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is ReplyResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 reply = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is BanResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 ban = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is UnbanResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 unban = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is EwgfResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 ewgfResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         is GlossaryResponse -> {
                             kordResponder.respond(
                                 interaction = interaction,
                                 glossaryResponse = response,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
+
                         else -> {}
                     }
                 }
@@ -434,6 +458,7 @@ internal class DiscordBotImpl(
                                         buttonSet = response.buttonSet,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
+
                                 is ListResponse -> {
                                     kordResponder.respond(
                                         message = interaction.message,
@@ -443,6 +468,7 @@ internal class DiscordBotImpl(
                                         buttonSet = response.buttonSet,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
+
                                 is CharacterResponse -> {
                                     kordResponder.respond(
                                         message = interaction.message,
@@ -452,24 +478,28 @@ internal class DiscordBotImpl(
                                         buttonSet = null,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
+
                                 is CoreResponse -> {
                                     kordResponder.respond(
                                         message = interaction.message,
                                         coreResponse = response,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
+
                                 is ModulesResponse -> {
                                     kordResponder.respond(
                                         message = interaction.message,
                                         modulesResponse = response,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
+
                                 is AliasResponse -> {
                                     kordResponder.respond(
                                         message = interaction.message,
                                         aliasResponse = response,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
+
                                 else -> {}
                             }
                         }
@@ -522,7 +552,7 @@ internal class DiscordBotImpl(
                 Napier.e(tag = TAG) { "Failed to delete command ${command.name}: ${e.message}" }
             }
         }
-    } catch(e: Exception) {
+    } catch (e: Exception) {
         Napier.e(tag = TAG, throwable = e) { "Failed to delete old commands" }
     }
 

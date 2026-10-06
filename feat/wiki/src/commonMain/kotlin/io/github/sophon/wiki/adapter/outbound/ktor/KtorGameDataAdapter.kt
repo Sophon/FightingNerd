@@ -2,8 +2,6 @@ package io.github.sophon.wiki.adapter.outbound.ktor
 
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.wiki.model.Character
-import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.adapter.outbound.ktor.dragDown.DragDownKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel.DreamCancelKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.dustLoop.DustLoopKtorGameDataAdapter
@@ -11,9 +9,11 @@ import io.github.sophon.wiki.adapter.outbound.ktor.mizuumi.MizuumiKtorGameDataAd
 import io.github.sophon.wiki.adapter.outbound.ktor.superCombo.SuperComboKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.xko.XkoKtorGameDataAdapter
+import io.github.sophon.wiki.app.outPort.FetchGameDataPort
+import io.github.sophon.wiki.model.Character
+import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.model.wiki.Wiki
-import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import kotlinx.coroutines.flow.Flow
 
 /**

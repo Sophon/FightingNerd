@@ -8,7 +8,7 @@ internal fun recentSetsEmbed(
     recentSets: EwgfResponse.RecentSets,
 ): EmbedBuilder.() -> Unit = {
     title = "${recentSets.playerName}: ${recentSets.playerRank}"
-    color = Color(recentSets.dataSource.color)
+    color = recentSets.dataSource.color?.let { Color(it) }
     url = recentSets.profileUrl
 
     recentSets.setList
@@ -28,7 +28,7 @@ internal fun successEmbed(
     success: EwgfResponse.Success,
 ): EmbedBuilder.() -> Unit = {
     title = "Success"
-    color = Color(success.dataSource.color)
+    color = success.dataSource.color?.let { Color(it) }
 
     mandatoryField(
         name = "",
@@ -42,7 +42,7 @@ internal fun ewgfHelpEmbed(
     help: EwgfResponse.Help,
 ): EmbedBuilder.() -> Unit = {
     title = "How to use EWGF"
-    color = Color(help.dataSource.color)
+    color = help.dataSource.color?.let { Color(it) }
 
     mandatoryField(
         name = "",

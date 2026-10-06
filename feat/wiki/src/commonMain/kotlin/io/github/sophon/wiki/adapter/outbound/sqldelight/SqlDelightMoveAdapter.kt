@@ -4,13 +4,13 @@ import app.cash.sqldelight.coroutines.asFlow
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.wiki.adapter.outbound.sqldelight.mapper.toDomain
-import io.github.sophon.wiki.model.CharacterId
-import io.github.sophon.wiki.model.Move
-import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.app.outPort.DeleteMoveListPort
 import io.github.sophon.wiki.app.outPort.LoadLastUpdatePort
 import io.github.sophon.wiki.app.outPort.LoadMoveListPort
 import io.github.sophon.wiki.app.outPort.LoadMovePort
+import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +19,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
-import kotlin.getValue
 import kotlin.time.Instant
 
 internal class SqlDelightMoveAdapter(

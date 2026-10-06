@@ -1,7 +1,7 @@
 package io.github.sophon.discord.app.model.response
 
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_DEFAULT_S
-import io.github.sophon.discord.app.model.MoveId
+import io.github.sophon.discord.app.model.frameData.MoveId
 import io.github.sophon.wiki.model.wiki.Game
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
@@ -13,7 +13,7 @@ sealed interface BotResponse {
     data class DataSource(
         val name: String,
         val iconUrl: String,
-        val color: Int,
+        val color: Int? = null,
     )
 
     data class Field(
@@ -38,7 +38,7 @@ sealed interface BotResponse {
             data class Text(val text: String): Action()
             data class Expand(val moveId: MoveId): Action()
             data class Command(
-                val command: io.github.sophon.discord.app.model.Command,
+                val command: io.github.sophon.discord.app.model.discord.Command,
                 val query: String,
             ): Action()
         }

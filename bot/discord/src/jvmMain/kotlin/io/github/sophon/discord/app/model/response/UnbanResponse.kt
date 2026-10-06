@@ -4,4 +4,5 @@ import io.github.sophon.discord.app.model.UserRequest
 
 data class UnbanResponse(
     val offender: UserRequest.Source,
+    val dataSource: BotResponse.DataSource,
 ): BotResponse

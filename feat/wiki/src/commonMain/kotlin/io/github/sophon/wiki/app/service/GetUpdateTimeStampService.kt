@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.app.service
 
-import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.inPort.GetUpdateTimeStampUseCase
+import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
 
