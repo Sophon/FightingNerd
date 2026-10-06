@@ -1,7 +1,6 @@
 package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.app.DayRollover
 import io.github.sophon.app.outPort.DayReportPort
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.onError
@@ -12,11 +11,11 @@ import io.github.sophon.model.StatsError
 import io.github.sophon.model.Usage
 
 internal class RecordUsageService(
-    private val dayRollover: DayRollover,
+    private val dayRolloverService: DayRolloverService,
     private val dayReportPort: DayReportPort,
 ) : RecordUsageUseCase {
     override suspend fun invoke(command: Command): EmptyResult<StatsError> {
-        val result = dayRollover
+        val result = dayRolloverService
             .withCurrentReport { currentReport ->
                 val updatedReport = currentReport.increment(command)
                 dayReportPort.saveDay(updatedReport)

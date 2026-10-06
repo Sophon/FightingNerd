@@ -1,5 +1,6 @@
-package io.github.sophon.app
+package io.github.sophon.app.service
 
+import io.github.sophon.app.MONTH_LENGTH_DAYS
 import io.github.sophon.app.outPort.DayReportPort
 import io.github.sophon.app.outPort.MonthReportPort
 import io.github.sophon.app.util.todayUtc
@@ -15,21 +16,21 @@ import kotlinx.datetime.LocalDate
 import kotlinx.datetime.minus
 import kotlin.time.Clock
 
-/**
- * Archives day.json into month.json lazily - the first access on a new UTC day does it,
- * so a bot that was down over midnight still archives the day it missed.
- */
-internal class DayRollover(
+internal interface DayRolloverService {
+    suspend fun <T> withCurrentReport(
+        block: suspend (DailyReport) -> Result<T, StatsError>,
+    ): Result<T, StatsError>
+}
+
+
+internal class DayRolloverServiceImpl(
     private val dayReportPort: DayReportPort,
     private val monthReportPort: MonthReportPort,
     private val clock: Clock,
-) {
+) : DayRolloverService {
     private val mutex = Mutex()
 
-    /**
-     * Serialized, so concurrent records can't lose a count or archive the same day twice.
-     */
-    suspend fun <T> withCurrentReport(
+    override suspend fun <T> withCurrentReport(
         block: suspend (DailyReport) -> Result<T, StatsError>,
     ): Result<T, StatsError> {
         mutex.withLock {
@@ -48,10 +49,6 @@ internal class DayRollover(
     }
 
 
-    /**
-     * Month is saved before day, and replaces any entry with the same date - if saving day fails,
-     * the next access archives the same report again without duplicating it.
-     */
     private suspend fun archive(
         finishedReport: DailyReport,
         today: LocalDate,
