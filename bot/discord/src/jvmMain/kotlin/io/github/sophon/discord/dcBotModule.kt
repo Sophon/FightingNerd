@@ -17,6 +17,7 @@ import io.github.sophon.discord.adapter.outbound.admin.AdminAdapter
 import io.github.sophon.discord.adapter.outbound.ewgf.EwgfAdapter
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
 import io.github.sophon.discord.adapter.inbound.scheduler.DailyReportScheduler
+import io.github.sophon.discord.adapter.inbound.scheduler.WikiScheduler
 import io.github.sophon.discord.adapter.outbound.kord.KordPostAdapter
 import io.github.sophon.discord.adapter.outbound.stats.StatsAdapter
 import io.github.sophon.discord.adapter.outbound.wiki.WikiAdapter
@@ -38,7 +39,9 @@ import io.github.sophon.discord.app.service.ProcessUserInputService
 import io.github.sophon.discord.app.service.ProduceAutoCompleteService
 import io.github.sophon.discord.app.service.StartFeaturesService
 import io.github.sophon.discord.app.service.PostDailyReportService
+import io.github.sophon.discord.app.service.RefreshWikiService
 import io.github.sophon.discord.inPort.PostDailyReportUseCase
+import io.github.sophon.discord.inPort.RefreshWikiUseCase
 import io.github.sophon.discord.app.outPort.ForwardPort
 import io.github.sophon.discord.app.outPort.PostReportPort
 import io.github.sophon.discord.app.outPort.StatsPort
@@ -162,6 +165,7 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::AdminServiceImpl).bind<AdminService>()
     singleOf(::EwgfServiceImpl).bind<EwgfService>()
     singleOf(::PostDailyReportService).bind<PostDailyReportUseCase>()
+    singleOf(::RefreshWikiService).bind<RefreshWikiUseCase>()
     //endregion
 
     //region Admin
@@ -203,6 +207,7 @@ internal fun dcBotModule(kord: Kord) = module {
         bind<GetMovesInRangePort>()
         bind<CharactersPort>()
     }
+    singleOf(::WikiScheduler)
     //endregion
 
     //region EWGF

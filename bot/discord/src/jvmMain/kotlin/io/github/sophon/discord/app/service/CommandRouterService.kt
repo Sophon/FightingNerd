@@ -79,11 +79,11 @@ internal class CommandRouterService(
 
             Command.Feedback -> adminService.forwardFeedback(query = query, source = source)
             Command.Reply -> adminService.replyToFeedback(query = query, source = source)
+            Command.Refresh -> adminService.refreshWiki(source = source)
 
             Command.Ewgf -> ewgfService.performOperation(query = query, source = source)
 
             Command.Banlist,
-            Command.Refresh,
             Command.Gl,
             Command.ThrowTK,
             Command.SpecialROA -> Result.Error(BotError.NotImplemented(command.name))
