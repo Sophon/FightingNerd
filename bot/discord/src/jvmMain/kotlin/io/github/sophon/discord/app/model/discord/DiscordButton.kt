@@ -1,4 +1,4 @@
-package io.github.sophon.discord.feat.core.domain.model
+package io.github.sophon.discord.app.model.discord
 
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.MoveId

@@ -7,7 +7,7 @@ import io.github.sophon.core.util.toColumns
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.ListResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
-import io.github.sophon.discord.app.model.Emoji
+import io.github.sophon.discord.app.model.discord.Emoji
 
 internal fun moveListEmbed(
     listResponse: ListResponse,

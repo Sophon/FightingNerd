@@ -10,7 +10,7 @@ import io.github.sophon.discord.EMBED_MAX_BUTTONS
 import io.github.sophon.discord.EMBED_MAX_BUTTON_ACTION_LENGTH
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
-import io.github.sophon.discord.feat.core.domain.model.DiscordButton
+import io.github.sophon.discord.app.model.discord.DiscordButton
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 

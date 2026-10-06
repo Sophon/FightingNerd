@@ -8,7 +8,7 @@ import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.IgnoreResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.DiscordCommandInteraction
-import io.github.sophon.discord.app.model.Message
+import io.github.sophon.discord.app.model.discord.Message
 import io.github.sophon.discord.app.model.UserRequest
 import io.github.sophon.discord.inPort.ProcessUserInputUseCase
 

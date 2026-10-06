@@ -12,7 +12,7 @@ import io.github.sophon.discord.app.model.response.ListResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.CharacterId
 import io.github.sophon.discord.app.model.Command
-import io.github.sophon.discord.app.model.Emoji
+import io.github.sophon.discord.app.model.discord.Emoji
 import io.github.sophon.discord.app.model.FrameRange
 import io.github.sophon.discord.app.model.MoveId
 import io.github.sophon.discord.app.model.MoveType

@@ -1,4 +1,6 @@
-package io.github.sophon.discord.app.model
+package io.github.sophon.discord.app.model.discord
+
+import io.github.sophon.discord.app.model.MoveId
 
 sealed interface ButtonEvent {
     data class Expand(val moveId: MoveId): ButtonEvent

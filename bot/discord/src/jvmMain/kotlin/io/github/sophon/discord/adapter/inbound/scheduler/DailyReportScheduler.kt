@@ -2,7 +2,6 @@ package io.github.sophon.discord.adapter.inbound.scheduler
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
-import io.github.sophon.discord.feat.core.domain.Scheduler
 import io.github.sophon.discord.inPort.PostDailyReportUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn

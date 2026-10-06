@@ -3,7 +3,7 @@ package io.github.sophon.discord.app.service
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
-import io.github.sophon.discord.app.model.AutocompleteChoice
+import io.github.sophon.discord.app.model.discord.AutocompleteChoice
 import io.github.sophon.discord.app.model.response.CharacterResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.CharacterId

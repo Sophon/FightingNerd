@@ -9,7 +9,7 @@ import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.RedirectResponse
-import io.github.sophon.discord.app.model.ButtonEvent
+import io.github.sophon.discord.app.model.discord.ButtonEvent
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.MoveId
 import io.github.sophon.discord.inPort.ProcessButtonEventUseCase
