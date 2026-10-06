@@ -396,6 +396,21 @@ class SearchGlossaryServiceTest {
     }
 
     @Test
+    fun `failed count after nothing found is a database error`() = runTest {
+        // given
+        val query = "combo"
+        val expected = Result.Error(GlossaryError.Database(DataError.Local.UNKNOWN))
+        loadPort.setResult(Result.Success(emptyList()))
+        countPort.result = Result.Error(DataError.Local.UNKNOWN)
+
+        // when
+        val result = service.invoke(query)
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `query is also searched without whitespace`() = runTest {
         // Given
         val query = "hit confirm"
