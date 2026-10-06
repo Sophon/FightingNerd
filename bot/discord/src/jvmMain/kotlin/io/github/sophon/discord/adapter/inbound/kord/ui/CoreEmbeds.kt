@@ -14,7 +14,9 @@ import io.github.sophon.discord.URL_KOFI
 import io.github.sophon.discord.URL_PLAY_STORE
 import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.ModulesResponse
+import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.adminCommands
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
@@ -73,14 +75,14 @@ internal fun tipEmbed(
 }
 
 internal fun modulesEmbed(
-    modulesResponse: BotResponse.ModulesResponse,
+    modulesResponse: ModulesResponse,
     featureInfo: FeatureInfo,
 ): EmbedBuilder.() -> Unit = {
     title = "FightingNerd bot by @phd_cunnilingus"
     color = Color(PURPLE)
 
     val moduleList = modulesResponse.moduleList
-    val chunks: List<List<BotResponse.ModulesResponse.Module>> = when (moduleList.size) {
+    val chunks: List<List<ModulesResponse.Module>> = when (moduleList.size) {
         in 1..5 -> {
             listOf(moduleList)
         }
@@ -275,7 +277,7 @@ internal fun helpEmbed(
 }
 
 internal fun steamLobbyEmbed(
-    steamLobby: BotResponse.SteamLobby,
+    steamLobby: SteamLobbyResponse,
 ): EmbedBuilder.() -> Unit = {
     title = "Join ${steamLobby.hostName}'s lobby!"
     color = Color(PURPLE)

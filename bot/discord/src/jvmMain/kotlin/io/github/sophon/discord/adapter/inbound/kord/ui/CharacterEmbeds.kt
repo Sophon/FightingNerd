@@ -5,10 +5,10 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.featureConfig.model.FeatureInfo
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.toColumns
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.CharacterResponse
 
 internal fun characterEmbed(
-    character: BotResponse.CharacterResponse,
+    character: CharacterResponse,
 ): EmbedBuilder.() -> Unit = {
     color = Color(character.dataSource.color)
     title = character.displayName
@@ -25,7 +25,7 @@ internal fun characterEmbed(
 }
 
 internal fun aliasEmbed(
-    characterList: List<BotResponse.CharacterResponse>,
+    characterList: List<CharacterResponse>,
 ): EmbedBuilder.() -> Unit = {
     val aliasList = characterList
         .filter { it.aliasList.isNotEmpty() }

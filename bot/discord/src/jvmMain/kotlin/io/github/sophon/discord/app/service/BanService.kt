@@ -4,7 +4,8 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BanResponse
+import io.github.sophon.discord.app.model.response.UnbanResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.ModerationRequest
 import io.github.sophon.discord.app.model.UserRequest
@@ -14,12 +15,12 @@ internal interface BanService {
     suspend fun ban(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.Ban, BotError>
+    ): Result<BanResponse, BotError>
 
     suspend fun unban(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.Unban, BotError>
+    ): Result<UnbanResponse, BotError>
 }
 
 internal class BanServiceImpl(
@@ -28,7 +29,7 @@ internal class BanServiceImpl(
     override suspend fun ban(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.Ban, BotError> {
+    ): Result<BanResponse, BotError> {
         val result = createModerationRequest(command = Command.Ban, query = query, source = source)
             .flatMap { moderationRequest -> banPort.ban(moderationRequest) }
         return result
@@ -37,11 +38,11 @@ internal class BanServiceImpl(
     override suspend fun unban(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.Unban, BotError> {
+    ): Result<UnbanResponse, BotError> {
         val result = createModerationRequest(command = Command.Unban, query = query, source = source)
             .flatMap { moderationRequest ->
                 val unbanResult = banPort.unban(moderationRequest)
-                    .map { BotResponse.Unban(offender = moderationRequest.offender) }
+                    .map { UnbanResponse(offender = moderationRequest.offender) }
                 unbanResult
             }
         return result

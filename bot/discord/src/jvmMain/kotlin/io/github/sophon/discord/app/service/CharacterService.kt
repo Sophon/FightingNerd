@@ -4,7 +4,9 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.AliasResponse
+import io.github.sophon.discord.app.model.response.CharacterResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.outPort.CharactersPort
 import io.github.sophon.wiki.model.wiki.Game
@@ -14,9 +16,9 @@ internal interface CharacterService {
     suspend fun findCharacter(
         characterQuery: String,
         requireProperties: Boolean = false,
-    ): Result<BotResponse.CharacterResponse, BotError>
-    suspend fun findAliases(gameQuery: String): Result<BotResponse.AliasResponse, BotError>
-    suspend fun getCharacters(): List<BotResponse.CharacterResponse>
+    ): Result<CharacterResponse, BotError>
+    suspend fun findAliases(gameQuery: String): Result<AliasResponse, BotError>
+    suspend fun getCharacters(): List<CharacterResponse>
 }
 
 internal class CharacterServiceImpl(
@@ -25,7 +27,7 @@ internal class CharacterServiceImpl(
     override suspend fun findCharacter(
         characterQuery: String,
         requireProperties: Boolean,
-    ): Result<BotResponse.CharacterResponse, BotError> {
+    ): Result<CharacterResponse, BotError> {
         val character = getCharacters()
             .filter { requireProperties.not() || it.propertyList.isNotEmpty() }
             .firstOrNull { it.matches(characterQuery) }
@@ -41,7 +43,7 @@ internal class CharacterServiceImpl(
     /**
      * Blank query -> list of games with character properties + buttons
      */
-    override suspend fun findAliases(gameQuery: String): Result<BotResponse.AliasResponse, BotError> {
+    override suspend fun findAliases(gameQuery: String): Result<AliasResponse, BotError> {
         val characterList = getCharacters()
 
         val result = if (gameQuery.isBlank()) {
@@ -52,19 +54,19 @@ internal class CharacterServiceImpl(
             if (gameCharacterList.isEmpty()) {
                 Result.Error(BotError.UnsupportedGame(gameQuery))
             } else {
-                Result.Success(BotResponse.AliasResponse.CharacterAliases(characterList = gameCharacterList))
+                Result.Success(AliasResponse.CharacterAliases(characterList = gameCharacterList))
             }
         }
         return result
     }
 
-    override suspend fun getCharacters(): List<BotResponse.CharacterResponse> {
+    override suspend fun getCharacters(): List<CharacterResponse> {
         val characterList = charactersPort.getCharacters()
         return characterList
     }
 
-    private fun createGamePromptResponse(gameList: List<Game>): BotResponse.AliasResponse {
-        val response = BotResponse.AliasResponse.GamePrompt(
+    private fun createGamePromptResponse(gameList: List<Game>): AliasResponse {
+        val response = AliasResponse.GamePrompt(
             gameList = gameList.map { it.displayName },
             buttonSet = BotResponse.ButtonSet(
                 buttonList = gameList.mapIndexed { index, game ->
@@ -80,7 +82,7 @@ internal class CharacterServiceImpl(
     }
 }
 
-private fun BotResponse.CharacterResponse.matches(characterQuery: String): Boolean {
+private fun CharacterResponse.matches(characterQuery: String): Boolean {
     return id.equalsIgnoreCase(characterQuery)
             || aliasList.any { it.equalsIgnoreCase(characterQuery) }
 }

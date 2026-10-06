@@ -1,6 +1,7 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.MoveId
 import io.github.sophon.discord.app.model.MoveType
 import io.github.sophon.wiki.model.Character
@@ -24,7 +25,7 @@ import io.github.sophon.wiki.model.game.Uni2MoveProperties
 import io.github.sophon.wiki.model.game.VSAVMoveProperties
 import io.github.sophon.wiki.model.wiki.Game
 
-internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
+internal fun Move.toDomain(character: Character): MoveResponse {
     val isCollapsedByDefault: Boolean = when (character.id.game) {
         Game.GGST,
         Game.BBCF,
@@ -43,7 +44,7 @@ internal fun Move.toDomain(character: Character): BotResponse.MoveResponse {
         .takeIf { it.isNotEmpty() }
         ?.let { buttonList -> BotResponse.ButtonSet(buttonList = buttonList) }
 
-    val moveResponse = BotResponse.MoveResponse(
+    val moveResponse = MoveResponse(
         game = character.id.game,
         input = input,
         url = urls.wikiUrl,

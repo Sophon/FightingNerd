@@ -8,7 +8,11 @@ import io.github.sophon.discord.URL_REPO
 import io.github.sophon.discord.URL_SCRIPT_LOBBY
 import io.github.sophon.discord.URL_STEAM_LOBBY
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.CoreResponse
+import io.github.sophon.discord.app.model.response.ModulesResponse
+import io.github.sophon.discord.app.model.response.PlainTextResponse
+import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.UserRequest
 import io.github.sophon.discord.app.outPort.LoadConfigPort
@@ -16,59 +20,59 @@ import io.github.sophon.wiki.model.wiki.Game
 import kotlin.time.Duration.Companion.seconds
 
 internal interface CoreBotService {
-    fun createTipResponse(): Result<BotResponse.CoreResponse, BotError>
+    fun createTipResponse(): Result<CoreResponse, BotError>
 
-    fun createHelpResponse(): Result<BotResponse.CoreResponse, BotError>
+    fun createHelpResponse(): Result<CoreResponse, BotError>
 
-    fun createCommandsResponse(): Result<BotResponse.CoreResponse, BotError>
+    fun createCommandsResponse(): Result<CoreResponse, BotError>
 
-    fun createRepoResponse(): Result<BotResponse.PlainText, BotError>
+    fun createRepoResponse(): Result<PlainTextResponse, BotError>
 
-    fun createInviteResponse(): Result<BotResponse.PlainText, BotError>
+    fun createInviteResponse(): Result<PlainTextResponse, BotError>
 
-    fun createModulesResponse(): Result<BotResponse.ModulesResponse, BotError>
+    fun createModulesResponse(): Result<ModulesResponse, BotError>
 
     fun createSteamLobbyResponse(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.SteamLobby, BotError>
+    ): Result<SteamLobbyResponse, BotError>
 }
 
 internal class CoreBotServiceImpl(
     private val loadConfigPort: LoadConfigPort,
 ): CoreBotService {
-    override fun createTipResponse(): Result<BotResponse.CoreResponse, BotError> {
-        val response = BotResponse.CoreResponse(type = BotResponse.CoreResponse.Type.Tip)
+    override fun createTipResponse(): Result<CoreResponse, BotError> {
+        val response = CoreResponse(type = CoreResponse.Type.Tip)
         return Result.Success(response)
     }
 
-    override fun createHelpResponse(): Result<BotResponse.CoreResponse, BotError> {
+    override fun createHelpResponse(): Result<CoreResponse, BotError> {
         val result = createHelpfulResponse(
-            type = BotResponse.CoreResponse.Type.Help,
+            type = CoreResponse.Type.Help,
             linkedCommand = Command.Commands,
         )
         return result
     }
 
-    override fun createCommandsResponse(): Result<BotResponse.CoreResponse, BotError> {
+    override fun createCommandsResponse(): Result<CoreResponse, BotError> {
         val result = createHelpfulResponse(
-            type = BotResponse.CoreResponse.Type.Commands,
+            type = CoreResponse.Type.Commands,
             linkedCommand = Command.Help,
         )
         return result
     }
 
-    override fun createRepoResponse(): Result<BotResponse.PlainText, BotError> {
-        val response = BotResponse.PlainText(text = "Contribute to FightingNerd: $URL_REPO")
+    override fun createRepoResponse(): Result<PlainTextResponse, BotError> {
+        val response = PlainTextResponse(text = "Contribute to FightingNerd: $URL_REPO")
         return Result.Success(response)
     }
 
-    override fun createInviteResponse(): Result<BotResponse.PlainText, BotError> {
-        val response = BotResponse.PlainText(text = "FightingNerd bot invite: $URL_INVITE")
+    override fun createInviteResponse(): Result<PlainTextResponse, BotError> {
+        val response = PlainTextResponse(text = "FightingNerd bot invite: $URL_INVITE")
         return Result.Success(response)
     }
 
-    override fun createModulesResponse(): Result<BotResponse.ModulesResponse, BotError> {
+    override fun createModulesResponse(): Result<ModulesResponse, BotError> {
         val result = loadConfigPort.load()
             .map { discordConfig ->
                 val moduleList = discordConfig.featureList
@@ -78,14 +82,14 @@ internal class CoreBotServiceImpl(
                     .mapNotNull { gameId -> Game.fromId(gameId) }
                     .groupBy { it.wiki }
                     .map { (wiki, gameList) ->
-                        BotResponse.ModulesResponse.Module(
+                        ModulesResponse.Module(
                             name = wiki.displayName,
                             url = wiki.url,
                             gameList = gameList.map { it.displayName },
                         )
                     }
                     .toList()
-                BotResponse.ModulesResponse(moduleList = moduleList)
+                ModulesResponse(moduleList = moduleList)
             }
         return result
     }
@@ -97,7 +101,7 @@ internal class CoreBotServiceImpl(
     override fun createSteamLobbyResponse(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.SteamLobby, BotError> {
+    ): Result<SteamLobbyResponse, BotError> {
         val parts = query.split(" ")
         val steamLobbyUrl = parts[0]
 
@@ -108,7 +112,7 @@ internal class CoreBotServiceImpl(
             }
             else -> {
                 val joinUrl = "$URL_SCRIPT_LOBBY?target=$steamLobbyUrl"
-                val response = BotResponse.SteamLobby(
+                val response = SteamLobbyResponse(
                     hostName = source.username,
                     lobbyName = parts.drop(2).joinToString(" ").ifBlank { null },
                     password = parts.getOrNull(1),
@@ -130,10 +134,10 @@ internal class CoreBotServiceImpl(
 
     //`Help` and `Commands`
     private fun createHelpfulResponse(
-        type: BotResponse.CoreResponse.Type,
+        type: CoreResponse.Type,
         linkedCommand: Command,
-    ): Result<BotResponse.CoreResponse, BotError> {
-        val response = BotResponse.CoreResponse(
+    ): Result<CoreResponse, BotError> {
+        val response = CoreResponse(
             type = type,
             buttonSet = BotResponse.ButtonSet(
                 buttonList = listOf(

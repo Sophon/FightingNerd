@@ -4,7 +4,8 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.app.model.AutocompleteChoice
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.CharacterResponse
+import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.CharacterId
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.Command.Argument.AutoCompleteType
@@ -112,7 +113,7 @@ internal class ProduceAutoCompleteService(
     private suspend fun getSiblingCharacterMoves(
         command: Command,
         argumentMap: Map<String, String>,
-    ): List<BotResponse.MoveResponse> {
+    ): List<MoveResponse> {
         val characterValue = command.readSibling(argumentMap, type = AutoCompleteType.Character)
         val characterId = decodeCharacterValue(characterValue) ?: return emptyList()
 
@@ -124,7 +125,7 @@ internal class ProduceAutoCompleteService(
     }
 
 
-    private fun BotResponse.CharacterResponse.isApprox(query: String): Boolean {
+    private fun CharacterResponse.isApprox(query: String): Boolean {
         val normalizedQuery = query.normalizeForMatch()
         val isApprox = (id == normalizedQuery)
                 || displayName.normalizeForMatch().contains(normalizedQuery)
@@ -132,14 +133,14 @@ internal class ProduceAutoCompleteService(
         return isApprox
     }
 
-    private fun BotResponse.MoveResponse.isApprox(query: String): Boolean {
+    private fun MoveResponse.isApprox(query: String): Boolean {
         val isApprox = input.contains(query, ignoreCase = true)
                 || moveName.orEmpty().contains(query, ignoreCase = true)
                 || aliasList.any { it.contains(query, ignoreCase = true) }
         return isApprox
     }
 
-    private fun BotResponse.CharacterResponse.toChoice(): AutocompleteChoice {
+    private fun CharacterResponse.toChoice(): AutocompleteChoice {
         val choice = AutocompleteChoice(
             name = "$displayName (${game.displayName})",
             value = "$id$AUTOCOMPLETE_VALUE_DELIMITER${game.name}",
@@ -152,7 +153,7 @@ internal class ProduceAutoCompleteService(
         return normalized
     }
 
-    private fun BotResponse.MoveResponse.toChoice(): AutocompleteChoice {
+    private fun MoveResponse.toChoice(): AutocompleteChoice {
         val frameData = primaryFields
             .take(CHOICE_FIELD_COUNT)
             .joinToString(" | ") { it.value.formatForAutoComplete() }

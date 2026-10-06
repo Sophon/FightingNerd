@@ -10,7 +10,7 @@ import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_KOFI
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.feat.core.domain.model.BotOutput
 
 internal fun EmbedBuilder.mandatoryField(

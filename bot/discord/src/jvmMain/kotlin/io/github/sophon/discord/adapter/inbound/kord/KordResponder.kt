@@ -29,18 +29,31 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.aliasGamePromptEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.banEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.commandsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.ewgfHelpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.feedbackEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.promoButtonSet
 import io.github.sophon.discord.adapter.inbound.kord.ui.promoEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.recentSetsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.replyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.steamLobbyEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.successEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.unbanEmbed
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.AliasResponse
+import io.github.sophon.discord.app.model.response.BanResponse
+import io.github.sophon.discord.app.model.response.CoreResponse
+import io.github.sophon.discord.app.model.response.EwgfResponse
+import io.github.sophon.discord.app.model.response.FeedbackResponse
+import io.github.sophon.discord.app.model.response.ModulesResponse
+import io.github.sophon.discord.app.model.response.PlainTextResponse
+import io.github.sophon.discord.app.model.response.ReplyResponse
+import io.github.sophon.discord.app.model.response.SteamLobbyResponse
+import io.github.sophon.discord.app.model.response.UnbanResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.UserRequest
 import io.github.sophon.discord.feat.core.domain.CommandRegistry
@@ -124,7 +137,7 @@ internal class KordResponder(
 
     suspend fun respond(
         message: Message,
-        coreResponse: BotResponse.CoreResponse,
+        coreResponse: CoreResponse,
     ): EmptyResult<BotError> {
         val result = respond(
             message = message,
@@ -138,7 +151,7 @@ internal class KordResponder(
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
-        coreResponse: BotResponse.CoreResponse,
+        coreResponse: CoreResponse,
     ): EmptyResult<BotError> {
         val result = respond(
             interaction = interaction,
@@ -152,7 +165,7 @@ internal class KordResponder(
 
     suspend fun respond(
         message: Message,
-        modulesResponse: BotResponse.ModulesResponse,
+        modulesResponse: ModulesResponse,
     ): EmptyResult<BotError> {
         val result = respond(
             message = message,
@@ -166,7 +179,7 @@ internal class KordResponder(
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
-        modulesResponse: BotResponse.ModulesResponse,
+        modulesResponse: ModulesResponse,
     ): EmptyResult<BotError> {
         val result = respond(
             interaction = interaction,
@@ -180,7 +193,7 @@ internal class KordResponder(
 
     suspend fun respond(
         message: Message,
-        steamLobby: BotResponse.SteamLobby,
+        steamLobby: SteamLobbyResponse,
     ): EmptyResult<BotError> {
         val result = respond(
             message = message,
@@ -194,7 +207,7 @@ internal class KordResponder(
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
-        steamLobby: BotResponse.SteamLobby,
+        steamLobby: SteamLobbyResponse,
     ): EmptyResult<BotError> {
         val result = respond(
             interaction = interaction,
@@ -208,28 +221,56 @@ internal class KordResponder(
 
     suspend fun respond(
         message: Message,
-        aliasResponse: BotResponse.AliasResponse,
+        aliasResponse: AliasResponse,
     ): EmptyResult<BotError> {
         val result = respond(
             message = message,
             embedBuilder = aliasResponseEmbed(aliasResponse),
             imageList = emptyList(),
             isExpanded = false,
-            buttonSet = (aliasResponse as? BotResponse.AliasResponse.GamePrompt)?.buttonSet,
+            buttonSet = (aliasResponse as? AliasResponse.GamePrompt)?.buttonSet,
         )
         return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
-        aliasResponse: BotResponse.AliasResponse,
+        aliasResponse: AliasResponse,
     ): EmptyResult<BotError> {
         val result = respond(
             interaction = interaction,
             embedBuilder = aliasResponseEmbed(aliasResponse),
             imageList = emptyList(),
             isExpanded = false,
-            buttonSet = (aliasResponse as? BotResponse.AliasResponse.GamePrompt)?.buttonSet,
+            buttonSet = (aliasResponse as? AliasResponse.GamePrompt)?.buttonSet,
+        )
+        return result
+    }
+
+    suspend fun respond(
+        message: Message,
+        ewgfResponse: EwgfResponse,
+    ): EmptyResult<BotError> {
+        val result = respond(
+            message = message,
+            embedBuilder = ewgfResponseEmbed(ewgfResponse),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = null,
+        )
+        return result
+    }
+
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        ewgfResponse: EwgfResponse,
+    ): EmptyResult<BotError> {
+        val result = respond(
+            interaction = interaction,
+            embedBuilder = ewgfResponseEmbed(ewgfResponse),
+            imageList = emptyList(),
+            isExpanded = false,
+            buttonSet = null,
         )
         return result
     }
@@ -239,7 +280,7 @@ internal class KordResponder(
      */
     suspend fun respond(
         message: Message,
-        feedback: BotResponse.Feedback,
+        feedback: FeedbackResponse,
     ): EmptyResult<BotError> {
         val result = try {
             postFeedback(kord = message.kord, feedback = feedback)
@@ -262,7 +303,7 @@ internal class KordResponder(
      */
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
-        feedback: BotResponse.Feedback,
+        feedback: FeedbackResponse,
     ): EmptyResult<BotError> {
         val result = try {
             postFeedback(kord = interaction.kord, feedback = feedback)
@@ -280,7 +321,7 @@ internal class KordResponder(
 
     suspend fun respond(
         message: Message,
-        reply: BotResponse.Reply,
+        reply: ReplyResponse,
     ): EmptyResult<BotError> {
         val result = sendToRecipient(
             message = message,
@@ -292,7 +333,7 @@ internal class KordResponder(
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
-        reply: BotResponse.Reply,
+        reply: ReplyResponse,
     ): EmptyResult<BotError> {
         val result = sendToRecipient(
             interaction = interaction,
@@ -304,7 +345,7 @@ internal class KordResponder(
 
     suspend fun respond(
         message: Message,
-        ban: BotResponse.Ban,
+        ban: BanResponse,
     ): EmptyResult<BotError> {
         val result = sendToRecipient(
             message = message,
@@ -316,7 +357,7 @@ internal class KordResponder(
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
-        ban: BotResponse.Ban,
+        ban: BanResponse,
     ): EmptyResult<BotError> {
         val result = sendToRecipient(
             interaction = interaction,
@@ -328,7 +369,7 @@ internal class KordResponder(
 
     suspend fun respond(
         message: Message,
-        unban: BotResponse.Unban,
+        unban: UnbanResponse,
     ): EmptyResult<BotError> {
         val result = sendToRecipient(
             message = message,
@@ -340,7 +381,7 @@ internal class KordResponder(
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
-        unban: BotResponse.Unban,
+        unban: UnbanResponse,
     ): EmptyResult<BotError> {
         val result = sendToRecipient(
             interaction = interaction,
@@ -352,7 +393,7 @@ internal class KordResponder(
 
     suspend fun respond(
         message: Message,
-        plainText: BotResponse.PlainText,
+        plainText: PlainTextResponse,
     ): EmptyResult<BotError> {
         val result = try {
             message.channel.createMessage {
@@ -371,7 +412,7 @@ internal class KordResponder(
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
-        plainText: BotResponse.PlainText,
+        plainText: PlainTextResponse,
     ): EmptyResult<BotError> {
         val result = try {
             interaction.respondPublic {
@@ -502,7 +543,7 @@ internal class KordResponder(
 
     private suspend fun postFeedback(
         kord: Kord,
-        feedback: BotResponse.Feedback,
+        feedback: FeedbackResponse,
     ) {
         val embedBuilder = feedbackEmbed(feedback, getBotFeatureInfoUseCase.invoke())
         feedback.feedbackChannelIdList.forEach { channelId ->
@@ -579,17 +620,17 @@ internal class KordResponder(
         return result
     }
 
-    private fun MessageBuilder.textContent(plainText: BotResponse.PlainText) {
+    private fun MessageBuilder.textContent(plainText: PlainTextResponse) {
         content = plainText.text
         plainText.buttonSet?.let { discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = it) }
     }
 
-    private fun coreEmbed(type: BotResponse.CoreResponse.Type): EmbedBuilder.() -> Unit {
+    private fun coreEmbed(type: CoreResponse.Type): EmbedBuilder.() -> Unit {
         val featureInfo = getBotFeatureInfoUseCase.invoke()
         val embedBuilder = when (type) {
-            BotResponse.CoreResponse.Type.Tip -> tipEmbed(featureInfo)
-            BotResponse.CoreResponse.Type.Help -> helpEmbed(commandRegistry, featureInfo)
-            BotResponse.CoreResponse.Type.Commands -> commandsEmbed(
+            CoreResponse.Type.Tip -> tipEmbed(featureInfo)
+            CoreResponse.Type.Help -> helpEmbed(commandRegistry, featureInfo)
+            CoreResponse.Type.Commands -> commandsEmbed(
                 commandList = Command.entries.sortedBy { it.name },
                 commandRegistry = commandRegistry,
                 featureInfo = featureInfo,
@@ -598,13 +639,22 @@ internal class KordResponder(
         return embedBuilder
     }
 
-    private fun aliasResponseEmbed(aliasResponse: BotResponse.AliasResponse): EmbedBuilder.() -> Unit {
+    private fun aliasResponseEmbed(aliasResponse: AliasResponse): EmbedBuilder.() -> Unit {
         val embedBuilder = when (aliasResponse) {
-            is BotResponse.AliasResponse.CharacterAliases -> aliasEmbed(aliasResponse.characterList)
-            is BotResponse.AliasResponse.GamePrompt -> aliasGamePromptEmbed(
+            is AliasResponse.CharacterAliases -> aliasEmbed(aliasResponse.characterList)
+            is AliasResponse.GamePrompt -> aliasGamePromptEmbed(
                 gameList = aliasResponse.gameList,
                 featureInfo = getBotFeatureInfoUseCase.invoke(),
             )
+        }
+        return embedBuilder
+    }
+
+    private fun ewgfResponseEmbed(ewgfResponse: EwgfResponse): EmbedBuilder.() -> Unit {
+        val embedBuilder = when (ewgfResponse) {
+            is EwgfResponse.RecentSets -> recentSetsEmbed(ewgfResponse)
+            is EwgfResponse.Success -> successEmbed(ewgfResponse)
+            is EwgfResponse.Help -> ewgfHelpEmbed(ewgfResponse)
         }
         return embedBuilder
     }

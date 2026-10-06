@@ -5,7 +5,9 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.FeedbackResponse
+import io.github.sophon.discord.app.model.response.ReplyResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.DiscordConfig
 import io.github.sophon.discord.app.model.UserRequest
@@ -21,12 +23,12 @@ internal interface AdminService {
     suspend fun forwardFeedback(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.Feedback, BotError>
+    ): Result<FeedbackResponse, BotError>
 
     fun replyToFeedback(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.Reply, BotError>
+    ): Result<ReplyResponse, BotError>
 }
 
 internal class AdminServiceImpl(
@@ -41,7 +43,7 @@ internal class AdminServiceImpl(
     override suspend fun forwardFeedback(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.Feedback, BotError> {
+    ): Result<FeedbackResponse, BotError> {
         val result = when {
             (source == null) -> Result.Error(BotError.BotLogicError(Command.Feedback.name, query))
             query.isBlank() -> Result.Error(BotError.InvalidQuery(query))
@@ -53,7 +55,7 @@ internal class AdminServiceImpl(
     override fun replyToFeedback(
         query: String,
         source: UserRequest.Source?,
-    ): Result<BotResponse.Reply, BotError> {
+    ): Result<ReplyResponse, BotError> {
         val recipient = UserRequest.Source.parse(query.substringBefore(' '))
         val message = query.substringAfter(delimiter = " ", missingDelimiterValue = "").trim()
 
@@ -69,7 +71,7 @@ internal class AdminServiceImpl(
     private suspend fun createFeedback(
         author: UserRequest.Source,
         message: String,
-    ): Result<BotResponse.Feedback, BotError> {
+    ): Result<FeedbackResponse, BotError> {
         val result = banPort.isBanned(author.id)
             .flatMap { isBanned ->
                 val feedbackResult = if (isBanned) {
@@ -77,7 +79,7 @@ internal class AdminServiceImpl(
                 } else {
                     loadConfigPort.load()
                         .map { discordConfig ->
-                            BotResponse.Feedback(
+                            FeedbackResponse(
                                 author = author,
                                 message = message,
                                 feedbackChannelIdList = discordConfig.adminConfig.feedbackChannelIdList,
@@ -119,11 +121,11 @@ internal class AdminServiceImpl(
         issuerId: String,
         recipient: UserRequest.Source,
         message: String,
-    ): Result<BotResponse.Reply, BotError> {
+    ): Result<ReplyResponse, BotError> {
         val result = isAdmin(issuerId)
             .flatMap { isAdmin ->
                 val replyResult = if (isAdmin) {
-                    Result.Success(BotResponse.Reply(recipient = recipient, message = message))
+                    Result.Success(ReplyResponse(recipient = recipient, message = message))
                 } else {
                     Result.Error(BotError.PermissionDenied())
                 }

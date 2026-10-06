@@ -1,6 +1,7 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.CharacterResponse
 import io.github.sophon.discord.app.model.CharacterId
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.game.BBCharProperties
@@ -12,8 +13,8 @@ import io.github.sophon.wiki.model.game.SFCharProperties
 import io.github.sophon.wiki.model.game.Uni2CharProperties
 import io.github.sophon.wiki.model.CharacterId as WikiCharacterId
 
-internal fun Character.toDomain(): BotResponse.CharacterResponse {
-    val characterResponse = BotResponse.CharacterResponse(
+internal fun Character.toDomain(): CharacterResponse {
+    val characterResponse = CharacterResponse(
         id = id.naturalId,
         game = id.game,
         displayName = displayName,

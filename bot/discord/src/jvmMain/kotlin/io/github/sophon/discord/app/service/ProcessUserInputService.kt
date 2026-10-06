@@ -4,7 +4,8 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.normalizeWhiteSpace
 import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.IgnoreResponse
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.DiscordCommandInteraction
 import io.github.sophon.discord.app.model.Message
@@ -21,7 +22,7 @@ internal class ProcessUserInputService(
         message: Message,
         botId: String,
     ): Result<BotResponse, BotError> {
-        if (message.isValid(botId).not()) return Result.Success(BotResponse.Ignore)
+        if (message.isValid(botId).not()) return Result.Success(IgnoreResponse)
 
         val messageContent = message.content
             .removePrefix(message.findMention(botId).orEmpty())

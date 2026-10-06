@@ -6,7 +6,10 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.CharacterResponse
+import io.github.sophon.discord.app.model.response.ListResponse
+import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.CharacterId
 import io.github.sophon.discord.app.model.Command
 import io.github.sophon.discord.app.model.Emoji
@@ -19,23 +22,23 @@ import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
 import kotlin.time.Duration.Companion.seconds
 
 internal interface MoveService {
-    suspend fun findFrameData(query: String): Result<BotResponse.MoveResponse, BotError>
+    suspend fun findFrameData(query: String): Result<MoveResponse, BotError>
 
     suspend fun findMovesOfType(
         characterQuery: String,
         moveType: MoveType,
-    ): Result<BotResponse.ListResponse, BotError>
+    ): Result<ListResponse, BotError>
 
     suspend fun findMovesInRange(
         query: String,
         command: Command,
-    ): Result<BotResponse.ListResponse, BotError>
+    ): Result<ListResponse, BotError>
 
-    suspend fun findStanceOrMove(query: String): Result<BotResponse.ListResponse, BotError>
+    suspend fun findStanceOrMove(query: String): Result<ListResponse, BotError>
 
-    suspend fun findStrings(query: String): Result<BotResponse.ListResponse, BotError>
+    suspend fun findStrings(query: String): Result<ListResponse, BotError>
 
-    suspend fun getMoves(characterId: CharacterId): Result<List<BotResponse.MoveResponse>, BotError>
+    suspend fun getMoves(characterId: CharacterId): Result<List<MoveResponse>, BotError>
 }
 
 
@@ -45,7 +48,7 @@ internal class MoveServiceImpl(
     private val getMovesOfTypePort: GetMovesOfTypePort,
     private val getMovesInRangePort: GetMovesInRangePort,
 ): MoveService {
-    override suspend fun findFrameData(query: String): Result<BotResponse.MoveResponse, BotError> {
+    override suspend fun findFrameData(query: String): Result<MoveResponse, BotError> {
         val characterQuery = query.substringBefore(' ')
         val moveQuery = query.substringAfter(delimiter = " ", missingDelimiterValue = "")
 
@@ -66,7 +69,7 @@ internal class MoveServiceImpl(
     override suspend fun findMovesOfType(
         characterQuery: String,
         moveType: MoveType,
-    ): Result<BotResponse.ListResponse, BotError> {
+    ): Result<ListResponse, BotError> {
         val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val listResponse = getMovesOfTypePort.getMovesOfType(
@@ -85,7 +88,7 @@ internal class MoveServiceImpl(
     override suspend fun findMovesInRange(
         query: String,
         command: Command,
-    ): Result<BotResponse.ListResponse, BotError> {
+    ): Result<ListResponse, BotError> {
         val characterQuery = query.substringBefore(' ')
         val rangeQuery = query.substringAfter(' ', missingDelimiterValue = "").trim()
 
@@ -111,7 +114,7 @@ internal class MoveServiceImpl(
         return result
     }
 
-    override suspend fun findStanceOrMove(query: String): Result<BotResponse.ListResponse, BotError> {
+    override suspend fun findStanceOrMove(query: String): Result<ListResponse, BotError> {
         val characterQuery = query.substringBefore(' ')
         val stanceQuery = query.substringAfter(' ', missingDelimiterValue = "").trim()
 
@@ -123,7 +126,7 @@ internal class MoveServiceImpl(
         return result
     }
 
-    override suspend fun findStrings(query: String): Result<BotResponse.ListResponse, BotError> {
+    override suspend fun findStrings(query: String): Result<ListResponse, BotError> {
         val characterQuery = query.substringBefore(' ')
         val prefix = query.substringAfter(' ', missingDelimiterValue = "").trim()
 
@@ -147,13 +150,13 @@ internal class MoveServiceImpl(
         return result
     }
 
-    override suspend fun getMoves(characterId: CharacterId): Result<List<BotResponse.MoveResponse>, BotError> {
+    override suspend fun getMoves(characterId: CharacterId): Result<List<MoveResponse>, BotError> {
         val result = frameDataPort.getMoves(characterId)
         return result
     }
 
 
-    private suspend fun findStances(characterQuery: String): Result<BotResponse.ListResponse, BotError> {
+    private suspend fun findStances(characterQuery: String): Result<ListResponse, BotError> {
         val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val listResponse = frameDataPort.getMoves(character.toCharacterId())
@@ -172,7 +175,7 @@ internal class MoveServiceImpl(
     private suspend fun findStanceMoves(
         characterQuery: String,
         stanceQuery: String,
-    ): Result<BotResponse.ListResponse, BotError> {
+    ): Result<ListResponse, BotError> {
         val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val listResponse = frameDataPort.getMoves(character.toCharacterId())
@@ -188,13 +191,13 @@ internal class MoveServiceImpl(
     }
 
 
-    private fun BotResponse.MoveResponse.matches(moveQuery: String): Boolean {
+    private fun MoveResponse.matches(moveQuery: String): Boolean {
         return input.equalsIgnoreCase(moveQuery)
                 || moveName.equalsIgnoreCase(moveQuery)
                 || aliasList.any { it.equalsIgnoreCase(moveQuery) }
     }
 
-    private fun BotResponse.CharacterResponse.toCharacterId(): CharacterId {
+    private fun CharacterResponse.toCharacterId(): CharacterId {
         val characterId = CharacterId(
             game = game,
             characterId = id,
@@ -203,10 +206,10 @@ internal class MoveServiceImpl(
         return characterId
     }
 
-    private fun List<BotResponse.MoveResponse>.toListResponse(
-        character: BotResponse.CharacterResponse,
+    private fun List<MoveResponse>.toListResponse(
+        character: CharacterResponse,
         moveType: MoveType,
-    ): BotResponse.ListResponse {
+    ): ListResponse {
         val buttonSet = mapIndexed { index, move ->
             BotResponse.EmbedButton(
                 label = (index + 1).toString(),
@@ -227,7 +230,7 @@ internal class MoveServiceImpl(
                 )
             }
 
-        val listResponse = BotResponse.ListResponse(
+        val listResponse = ListResponse(
             game = character.game,
             title = "${moveType.toEmoji()}${character.displayName.uppercase()} ${moveType.toTitle()} moves",
             values = map { it.input },
@@ -238,10 +241,10 @@ internal class MoveServiceImpl(
         return listResponse
     }
 
-    private fun List<BotResponse.MoveResponse>.toListResponse(
-        character: BotResponse.CharacterResponse,
+    private fun List<MoveResponse>.toListResponse(
+        character: CharacterResponse,
         moveType: String,
-    ): BotResponse.ListResponse {
+    ): ListResponse {
         val buttonSet = mapIndexed { index, move ->
             BotResponse.EmbedButton(
                 label = (index + 1).toString(),
@@ -262,7 +265,7 @@ internal class MoveServiceImpl(
                 )
             }
 
-        val listResponse = BotResponse.ListResponse(
+        val listResponse = ListResponse(
             game = character.game,
             title = "$moveType moves",
             values = map { it.input },
@@ -274,8 +277,8 @@ internal class MoveServiceImpl(
     }
 
     private fun Set<String>.toListResponse(
-        character: BotResponse.CharacterResponse,
-    ): BotResponse.ListResponse {
+        character: CharacterResponse,
+    ): ListResponse {
         val buttonSet = mapIndexed { index, stance ->
             BotResponse.EmbedButton(
                 label = (index + 1).toString(),
@@ -293,7 +296,7 @@ internal class MoveServiceImpl(
                 )
             }
 
-        val listResponse = BotResponse.ListResponse(
+        val listResponse = ListResponse(
             game = character.game,
             title = "${character.displayName.uppercase()} stances",
             values = toList(),
@@ -331,7 +334,7 @@ internal class MoveServiceImpl(
         return bound
     }
 
-    private fun FrameRange.toTitle(character: BotResponse.CharacterResponse): String {
+    private fun FrameRange.toTitle(character: CharacterResponse): String {
         val title = "${character.displayName} ${type.toTitle()} [${from.toFormattedBound()} ; ${to.toFormattedBound()}]"
 
         return title

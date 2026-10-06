@@ -5,7 +5,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.discord.app.model.BotError
-import io.github.sophon.discord.app.model.BotResponse
+import io.github.sophon.discord.app.model.response.BanResponse
 import io.github.sophon.discord.app.model.DiscordConfig
 import io.github.sophon.discord.app.model.ModerationRequest
 import io.github.sophon.discord.app.outPort.AdminPort
@@ -36,7 +36,7 @@ internal class AdminAdapter(
         return result
     }
 
-    override suspend fun ban(moderationRequest: ModerationRequest): Result<BotResponse.Ban, BotError> {
+    override suspend fun ban(moderationRequest: ModerationRequest): Result<BanResponse, BotError> {
         val result = banUserUseCase(moderationRequest.toBanRequest())
             .map { ban -> ban.toDomain(offender = moderationRequest.offender) }
             .mapError { it.toDomainError() }
