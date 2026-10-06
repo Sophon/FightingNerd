@@ -2,6 +2,9 @@
 
 ## High prio
 
+- `media` command
+  - separate command, same pattern as `fd` but returns media of a move
+  - Video button uses `media` instead of raw URL - we avoid the 120 char limit of a button
 - BUG: `char` UNI - Trait and Vorpal not formatted 
   - use formatLinks or something 
   - use `char Ogre`
