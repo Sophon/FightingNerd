@@ -3,7 +3,6 @@ package io.github.sophon.discord.feat.core.domain
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.model.AdminError
-import io.github.sophon.integration.model.EwgfError
 
 internal fun WikiError.toDomainError(): BotError {
     return when (this) {
@@ -18,13 +17,4 @@ internal fun WikiError.toDomainError(): BotError {
 internal fun AdminError.toDomainError(): BotError {
     //TODO: proper mapping
     return BotError.Unknown(this.toString())
-}
-
-internal fun EwgfError.toDomainError(): BotError {
-    return when (this) {
-        is EwgfError.PlayerNotRegistered -> BotError.PlayerNotRegistered()
-        is EwgfError.PlayerNotFound -> BotError.DownloadError(this.toString())
-        is EwgfError.DatabaseError -> BotError.DatabaseError()
-        else -> BotError.Unknown()
-    }
 }
