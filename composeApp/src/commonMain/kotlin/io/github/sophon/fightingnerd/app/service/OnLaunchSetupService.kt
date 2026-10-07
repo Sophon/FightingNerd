@@ -1,10 +1,12 @@
 package io.github.sophon.fightingnerd.app.service
 
+import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.fightingnerd.app.model.AppError
+import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.fightingnerd.app.outPort.ConfigureWikiPort
 import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
@@ -34,12 +36,7 @@ internal class OnLaunchSetupService(
             is Result.Success -> {
                 val hasLaunchedBefore = hasLaunchedBeforeResult.data
                 if (hasLaunchedBefore.not()) {
-                    saveGameSettingsPort.saveGameSettings(
-                        composeConfig = composeConfig,
-                        enabledGameIdSet = DEFAULT_ENABLED_GAME_ID_SET,
-                    )
-                        .flatMap { firstLaunchPort.markLaunched() }
-                        .onError { return Result.Error(it) }
+                    performFirstTimeSetup(composeConfig)
                 }
                 hasLaunchedBefore
             }
@@ -57,6 +54,16 @@ internal class OnLaunchSetupService(
                     refreshWikiPort.refresh()
                 }
             }
+        return result
+    }
+
+    private suspend fun performFirstTimeSetup(composeConfig: ComposeConfig): EmptyResult<AppError> {
+        val result = saveGameSettingsPort.saveGameSettings(
+            composeConfig = composeConfig,
+            enabledGameIdSet = DEFAULT_ENABLED_GAME_ID_SET,
+        )
+            .flatMap { firstLaunchPort.markLaunched() }
+            .onError { return Result.Error(it) }
         return result
     }
 }
