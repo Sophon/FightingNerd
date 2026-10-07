@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components
+package io.github.sophon.fightingnerd.adapter.inbound.quiz.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

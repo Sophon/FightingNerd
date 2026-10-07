@@ -30,7 +30,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListState
 import io.github.sophon.fightingnerd.core.ui.components.ImageCarousel
-import io.github.sophon.fightingnerd.feat.move.model.Property
+import io.github.sophon.fightingnerd.adapter.inbound.move.model.Property
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

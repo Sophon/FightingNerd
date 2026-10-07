@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components
+package io.github.sophon.fightingnerd.adapter.inbound.quiz.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -38,8 +38,8 @@ import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_hit
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_startup
 import fightingnerd.composeapp.generated.resources.quiz_frame_data_label_no_media
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
-import io.github.sophon.fightingnerd.feat.quiz.model.Question
-import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizState
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.model.QuizQuestion
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizGameState
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -49,7 +49,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun QuestionSection(
-    question: Question,
+    question: QuizQuestion,
     onAnswer: (answerIndex: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -91,7 +91,7 @@ internal fun QuestionSection(
 
 @Composable
 private fun Image(
-    url: Question.MoveOption.Urls?,
+    url: QuizQuestion.MoveOption.Urls?,
     modifier: Modifier = Modifier
 ) {
     val image = url?.hitboxImageList?.firstOrNull()
@@ -139,7 +139,7 @@ private fun NoMedia(modifier: Modifier = Modifier) {
 
 @Composable
 private fun Options(
-    question: Question,
+    question: QuizQuestion,
     onAnswer: (answerIndex: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -178,7 +178,7 @@ private fun Options(
 
 @Composable
 private fun Option(
-    move: Question.MoveOption,
+    move: QuizQuestion.MoveOption,
     isCorrect: Boolean,
     isWrong: Boolean,
     isEnabled: Boolean,
@@ -271,7 +271,7 @@ private fun PreviewQuestionSectionWithVideo() {
     FightingNerdTheme {
         Surface {
             QuestionSection(
-                question = QuizState.PREVIEW.questionList[0],
+                question = QuizGameState.PREVIEW.questionList[0],
                 onAnswer = {},
             )
         }
@@ -284,7 +284,7 @@ private fun PreviewQuestionSectionNoVideo() {
     FightingNerdTheme {
         Surface {
             QuestionSection(
-                question = QuizState.PREVIEW.questionList[1],
+                question = QuizGameState.PREVIEW.questionList[1],
                 onAnswer = {},
             )
         }

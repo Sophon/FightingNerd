@@ -1,9 +1,9 @@
-package io.github.sophon.fightingnerd.feat.quiz.model
+package io.github.sophon.fightingnerd.adapter.inbound.quiz.model
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-data class Question(
+data class QuizQuestion(
     val characterName: String,
     val options: ImmutableList<MoveOption>,
     val correctIndex: Int,

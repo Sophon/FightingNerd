@@ -25,12 +25,7 @@ import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToUpdatePeriodUs
 import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
 import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.feat.payment.usecase.PurchaseTipUseCase
-import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
-import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizVM
-import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
-import io.github.sophon.fightingnerd.feat.quiz.usecase.SubscribeGameWidgetsUseCase
 import org.koin.core.module.dsl.singleOf
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -59,23 +54,6 @@ internal fun featureModule() = module {
     //region Review
     singleOf(::RequestReviewUseCase)
     singleOf(::RecordInstallationUseCase)
-    //endregion
-
-    //region Quiz
-    viewModelOf(::QuizOverviewVM)
-    viewModel { (gameId: String, characterId: String, onExit: () -> Unit) ->
-        QuizVM(
-            gameId = gameId,
-            characterId = characterId,
-            onExit = onExit,
-            overlayService = get(),
-            generateQuestionsUseCase = get(),
-            requestReviewUseCase = get(),
-        )
-    }
-
-    singleOf(::GenerateQuestionsUseCase)
-    singleOf(::SubscribeGameWidgetsUseCase)
     //endregion
 
     //region Payment

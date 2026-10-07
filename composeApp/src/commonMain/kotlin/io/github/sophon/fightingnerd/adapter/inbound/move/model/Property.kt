@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.move.model
+package io.github.sophon.fightingnerd.adapter.inbound.move.model
 
 internal enum class Property {
     Invincible,

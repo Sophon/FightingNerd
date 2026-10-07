@@ -6,13 +6,13 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.app.model.GroupedMoveList
 import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.model.MoveFilter
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
 import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
-import io.github.sophon.fightingnerd.feat.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.feat.review.SessionContext
 import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.inPort.GroupMovesUseCase

@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.quiz.ui.overview
+package io.github.sophon.fightingnerd.adapter.inbound.quiz
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Spacer
@@ -13,8 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
+import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.core.ui.components.CharacterMatrix
 import io.github.sophon.fightingnerd.core.ui.components.GameWidget
 import io.github.sophon.fightingnerd.core.ui.components.IconAction

@@ -1,13 +1,13 @@
-package io.github.sophon.fightingnerd.feat.quiz.ui.quiz
+package io.github.sophon.fightingnerd.adapter.inbound.quiz
 
-import io.github.sophon.fightingnerd.feat.quiz.model.Question
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.model.QuizQuestion
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 
-internal data class QuizState(
+internal data class QuizGameState(
     val enabledCharacterIdList: ImmutableList<String> = persistentListOf(),
-    val questionList: ImmutableList<Question> = persistentListOf(),
+    val questionList: ImmutableList<QuizQuestion> = persistentListOf(),
     val currentQuestionIndex: Int = 0,
     val correct: Int = 0,
     val incorrect: Int = 0,
@@ -16,7 +16,7 @@ internal data class QuizState(
     val isLoading: Boolean = false,
 ) {
     val isLastQuestion: Boolean get() = (currentQuestionIndex == questionList.lastIndex)
-    val currentQuestion: Question? get() = questionList.getOrNull(currentQuestionIndex)
+    val currentQuestion: QuizQuestion? get() = questionList.getOrNull(currentQuestionIndex)
     val correctAnswerPct: Int get() {
         val total = correct + incorrect
         val pct = if (total > 0) {
@@ -29,21 +29,21 @@ internal data class QuizState(
 
     companion object {
         private val armorKingMoves = listOf(
-            Question.MoveOption(
+            QuizQuestion.MoveOption(
                 id = "armor_king-bad.2,3",
                 input = "bad23",
                 startup = "i15~i16",
                 onBlock = "-7",
                 onHit = "+18g",
             ),
-            Question.MoveOption(
+            QuizQuestion.MoveOption(
                 id = "armor_king-h.ub1",
                 input = "h.ub1",
                 startup = "i24~25",
                 onBlock = "+8",
                 onHit = "+60a",
             ),
-            Question.MoveOption(
+            QuizQuestion.MoveOption(
                 id = "armor_king-b1+2",
                 input = "b1+2",
                 startup = "i16~17",
@@ -51,7 +51,7 @@ internal data class QuizState(
                 onHit = "+4",
                 onCH = "+15",
             ),
-            Question.MoveOption(
+            QuizQuestion.MoveOption(
                 id = "armor_king-1",
                 input = "1",
                 startup = "i10",
@@ -60,13 +60,33 @@ internal data class QuizState(
             ),
         )
 
-        val PREVIEW = QuizState(
+        val PREVIEW = QuizGameState(
             enabledCharacterIdList = persistentListOf("Armor King"),
             questionList = persistentListOf(
-                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 0, answeredIndex = 0),
-                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 1, answeredIndex = 3),
-                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 2, answeredIndex = 2),
-                Question(characterName = "Armor King", options = armorKingMoves.toImmutableList(), correctIndex = 3, answeredIndex = null),
+                QuizQuestion(
+                    characterName = "Armor King",
+                    options = armorKingMoves.toImmutableList(),
+                    correctIndex = 0,
+                    answeredIndex = 0
+                ),
+                QuizQuestion(
+                    characterName = "Armor King",
+                    options = armorKingMoves.toImmutableList(),
+                    correctIndex = 1,
+                    answeredIndex = 3
+                ),
+                QuizQuestion(
+                    characterName = "Armor King",
+                    options = armorKingMoves.toImmutableList(),
+                    correctIndex = 2,
+                    answeredIndex = 2
+                ),
+                QuizQuestion(
+                    characterName = "Armor King",
+                    options = armorKingMoves.toImmutableList(),
+                    correctIndex = 3,
+                    answeredIndex = null
+                ),
             ),
             currentQuestionIndex = 3,
             correct = 2,

@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.quiz.ui.quiz
+package io.github.sophon.fightingnerd.adapter.inbound.quiz
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,17 +9,17 @@ import io.github.sophon.fightingnerd.core.ui.Dialog
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
-import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.FinishDialog
-import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.components.FinishDialog
 import io.github.sophon.fightingnerd.feat.review.SessionContext
 import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
+import io.github.sophon.fightingnerd.inPort.GenerateQuestionsUseCase
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-internal class QuizVM(
+internal class QuizGameVM(
     private val gameId: String,
     private val characterId: String?,
     private val onExit: () -> Unit,
@@ -28,7 +28,7 @@ internal class QuizVM(
     private val generateQuestionsUseCase: GenerateQuestionsUseCase,
     private val requestReviewUseCase: RequestReviewUseCase,
 ): ViewModel() {
-    private val _state = MutableStateFlow(QuizState())
+    private val _state = MutableStateFlow(QuizGameState())
     val state = _state.asStateFlow()
     private val screenStopWatch = ScreenStopWatch()
 
@@ -96,7 +96,10 @@ internal class QuizVM(
 
             generateQuestionsUseCase(gameId = gameId, characterId = characterId)
                 .onSuccess { questionList ->
-                    _state.update { it.copy(questionList = questionList.toImmutableList()) }
+                    val quizQuestionList = questionList
+                        .map { question -> question.toQuizQuestion() }
+                        .toImmutableList()
+                    _state.update { it.copy(questionList = quizQuestionList) }
                 }
                 .onError { error ->
                     Napier.e(tag = TAG) { "loadMoveList: $error" }

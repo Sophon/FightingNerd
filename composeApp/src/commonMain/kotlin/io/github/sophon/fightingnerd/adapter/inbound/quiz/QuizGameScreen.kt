@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.quiz.ui.quiz
+package io.github.sophon.fightingnerd.adapter.inbound.quiz
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,8 +31,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.core.ui.components.LoadingContent
 import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
-import io.github.sophon.fightingnerd.feat.quiz.COUNT_QUESTIONS
-import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.QuestionSection
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.components.QuestionSection
+import io.github.sophon.fightingnerd.app.model.COUNT_QUESTIONS
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -48,7 +48,7 @@ internal fun QuizScreen(
     onExit: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val vm = koinViewModel<QuizVM>(
+    val vm = koinViewModel<QuizGameVM>(
         parameters = { parametersOf(gameId, characterId, onExit) }
     )
     val state by vm.state.collectAsStateWithLifecycle()
@@ -65,7 +65,7 @@ internal fun QuizScreen(
 
 @Composable
 private fun Content(
-    state: QuizState,
+    state: QuizGameState,
     onExit: () -> Unit,
     onAnswer: (answerIndex: Int) -> Unit,
     onClickNext: () -> Unit,
@@ -204,7 +204,7 @@ private fun NavigationButton(
 private fun QuizPreview() {
     FightingNerdTheme {
         Content(
-            state = QuizState.PREVIEW,
+            state = QuizGameState.PREVIEW,
             onAnswer = {},
             onClickNext = {},
             onClickBack = {},

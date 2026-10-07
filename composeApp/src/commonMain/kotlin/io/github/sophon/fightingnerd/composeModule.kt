@@ -4,6 +4,8 @@ import io.github.sophon.core.coreModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeVM
 import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListVM
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizOverviewVM
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizGameVM
 import io.github.sophon.fightingnerd.adapter.outbound.compose.ComposeAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.dataStore.DataStoreAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.media.MediaAdapter
@@ -23,6 +25,7 @@ import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
 import io.github.sophon.fightingnerd.app.service.CheckCharacterHasMovesService
 import io.github.sophon.fightingnerd.app.service.DownloadMediaService
+import io.github.sophon.fightingnerd.app.service.GenerateQuestionsService
 import io.github.sophon.fightingnerd.app.service.GroupMovesService
 import io.github.sophon.fightingnerd.app.service.LoadMoveFiltersService
 import io.github.sophon.fightingnerd.app.service.OnLaunchSetupService
@@ -37,6 +40,7 @@ import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.featureModule
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
 import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
+import io.github.sophon.fightingnerd.inPort.GenerateQuestionsUseCase
 import io.github.sophon.fightingnerd.inPort.GroupMovesUseCase
 import io.github.sophon.fightingnerd.inPort.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
@@ -103,6 +107,17 @@ internal fun composeModule() = module {
             requestReviewUseCase = get(),
         )
     }
+    viewModelOf(::QuizOverviewVM)
+    viewModel { (gameId: String, characterId: String?, onExit: () -> Unit) ->
+        QuizGameVM(
+            gameId = gameId,
+            characterId = characterId,
+            onExit = onExit,
+            overlayService = get(),
+            generateQuestionsUseCase = get(),
+            requestReviewUseCase = get(),
+        )
+    }
 
     singleOf(::RefreshUseCase)
 
@@ -117,6 +132,7 @@ internal fun composeModule() = module {
     singleOf(::DownloadMediaService).bind<DownloadMediaUseCase>()
     singleOf(::WipeMediaService).bind<WipeMediaUseCase>()
     singleOf(::SubscribeToOfflineMediaService).bind<SubscribeToOfflineMediaUseCase>()
+    singleOf(::GenerateQuestionsService).bind<GenerateQuestionsUseCase>()
 
     singleOf(::WikiAdapter) {
         bind<ConfigureWikiPort>()

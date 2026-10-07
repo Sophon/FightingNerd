@@ -66,6 +66,7 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_counter
 import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.util.stripMarkdownLinks
+import io.github.sophon.fightingnerd.adapter.inbound.move.model.Property
 import io.github.sophon.fightingnerd.app.model.Character
 import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.model.game.AVLMoveProperties
@@ -86,7 +87,6 @@ import io.github.sophon.fightingnerd.app.model.game.SFCharProperties
 import io.github.sophon.fightingnerd.app.model.game.T8Properties
 import io.github.sophon.fightingnerd.app.model.game.Uni2CharProperties
 import io.github.sophon.fightingnerd.app.model.game.VSAVMoveProperties
-import io.github.sophon.fightingnerd.feat.move.model.Property
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.toImmutableList

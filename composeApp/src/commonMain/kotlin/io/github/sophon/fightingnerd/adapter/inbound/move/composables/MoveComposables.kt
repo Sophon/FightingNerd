@@ -18,7 +18,7 @@ import coil3.compose.SubcomposeAsyncImage
 import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListState
 import io.github.sophon.fightingnerd.adapter.inbound.move.icon
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
-import io.github.sophon.fightingnerd.feat.move.model.Property
+import io.github.sophon.fightingnerd.adapter.inbound.move.model.Property
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography

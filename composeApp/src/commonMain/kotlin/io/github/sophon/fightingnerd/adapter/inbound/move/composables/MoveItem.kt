@@ -43,8 +43,8 @@ import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListState
 import io.github.sophon.fightingnerd.core.ui.components.IconAction
 import io.github.sophon.fightingnerd.core.ui.components.IconActionButton
 import io.github.sophon.fightingnerd.core.ui.components.ImageCarousel
-import io.github.sophon.fightingnerd.feat.move.model.Property
-import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.components.VideoPlayer
+import io.github.sophon.fightingnerd.adapter.inbound.move.model.Property
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.components.VideoPlayer
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

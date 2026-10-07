@@ -1,6 +1,6 @@
-package io.github.sophon.fightingnerd.feat.quiz.ui.overview
+package io.github.sophon.fightingnerd.adapter.inbound.quiz
 
-import io.github.sophon.fightingnerd.feat.quiz.model.QuizGameWidget
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.model.QuizGameWidget
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
