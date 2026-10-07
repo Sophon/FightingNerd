@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.navigation.ui
+package io.github.sophon.fightingnerd.adapter.inbound.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box

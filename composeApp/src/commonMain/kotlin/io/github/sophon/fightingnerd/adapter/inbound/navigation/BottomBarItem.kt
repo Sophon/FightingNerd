@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.navigation.domain
+package io.github.sophon.fightingnerd.adapter.inbound.navigation
 
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
 import org.jetbrains.compose.resources.StringResource

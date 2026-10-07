@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.navigation.ui
+package io.github.sophon.fightingnerd.adapter.inbound.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,9 +28,6 @@ import fightingnerd.composeapp.generated.resources.bottom_bar_item_character_lis
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_more
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_quiz
 import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
-import io.github.sophon.fightingnerd.navigation.domain.BottomBarItem
-import io.github.sophon.fightingnerd.navigation.domain.Destination
-import io.github.sophon.fightingnerd.navigation.domain.rootDestinations
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

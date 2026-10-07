@@ -69,10 +69,10 @@ import io.github.sophon.fightingnerd.adapter.inbound.more.about.AboutScreen
 import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
 import io.github.sophon.fightingnerd.inPort.SaveReleaseAsSeenUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToUnseenReleaseUseCase
-import io.github.sophon.fightingnerd.navigation.domain.Destination
-import io.github.sophon.fightingnerd.navigation.domain.rootDestinationSet
-import io.github.sophon.fightingnerd.navigation.domain.rootDestinations
-import io.github.sophon.fightingnerd.navigation.ui.BottomNavBarView
+import io.github.sophon.fightingnerd.adapter.inbound.navigation.Destination
+import io.github.sophon.fightingnerd.adapter.inbound.navigation.rootDestinationSet
+import io.github.sophon.fightingnerd.adapter.inbound.navigation.rootDestinations
+import io.github.sophon.fightingnerd.adapter.inbound.navigation.BottomNavBarView
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import kotlinx.coroutines.launch
 import kotlinx.serialization.modules.SerializersModule

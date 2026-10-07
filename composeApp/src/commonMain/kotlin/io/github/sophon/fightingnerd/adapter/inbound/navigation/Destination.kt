@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.navigation.domain
+package io.github.sophon.fightingnerd.adapter.inbound.navigation
 
 import androidx.navigation3.runtime.NavKey
 import io.github.sophon.core.wiki.model.Move
