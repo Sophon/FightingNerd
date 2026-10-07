@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.payment.ui.components
+package io.github.sophon.fightingnerd.adapter.inbound.payment.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -26,8 +26,8 @@ import fightingnerd.composeapp.generated.resources.payment_tip_dialog_descriptio
 import fightingnerd.composeapp.generated.resources.payment_tip_dialog_title
 import fightingnerd.composeapp.generated.resources.payment_tip_error_load
 import fightingnerd.composeapp.generated.resources.payment_tip_retry
-import io.github.sophon.fightingnerd.feat.payment.model.TipOption
-import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
+import io.github.sophon.fightingnerd.app.model.TipOption
+import io.github.sophon.fightingnerd.adapter.inbound.payment.TipVM
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography

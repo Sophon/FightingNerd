@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.payment.ui
+package io.github.sophon.fightingnerd.adapter.inbound.payment
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,14 +8,14 @@ import fightingnerd.composeapp.generated.resources.payment_tip_thank_you
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.fightingnerd.app.model.AppError
+import io.github.sophon.fightingnerd.app.model.TipOption
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
-import io.github.sophon.fightingnerd.feat.payment.model.PaymentError
-import io.github.sophon.fightingnerd.feat.payment.model.TipOption
-import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
-import io.github.sophon.fightingnerd.feat.payment.usecase.PurchaseTipUseCase
 import io.github.sophon.fightingnerd.feat.review.SessionContext
+import io.github.sophon.fightingnerd.inPort.GetTipOptionsUseCase
+import io.github.sophon.fightingnerd.inPort.PurchaseTipUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -68,13 +68,9 @@ internal class TipVM(
                     requestReviewUseCase(SessionContext.Donation)
                 }
                 .onError { error ->
-                    when (error) {
-                        PaymentError.UserCancelled -> Unit
-                        is PaymentError.Unknown,
-                        PaymentError.NoCurrentOffering -> {
-                            val message = getString(Res.string.payment_tip_error_purchase)
-                            overlay.show(Toast(message = message, type = Toast.Type.ERROR))
-                        }
+                    if (error != AppError.PurchaseCancelled) {
+                        val message = getString(Res.string.payment_tip_error_purchase)
+                        overlay.show(Toast(message = message, type = Toast.Type.ERROR))
                     }
                 }
 

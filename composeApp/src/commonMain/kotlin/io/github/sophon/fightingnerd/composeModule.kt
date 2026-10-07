@@ -7,6 +7,7 @@ import io.github.sophon.fightingnerd.adapter.inbound.more.about.AboutVM
 import io.github.sophon.fightingnerd.adapter.inbound.more.featureSettings.FeatureSettingsVM
 import io.github.sophon.fightingnerd.adapter.inbound.more.MoreVM
 import io.github.sophon.fightingnerd.adapter.inbound.more.updates.UpdatesVM
+import io.github.sophon.fightingnerd.adapter.inbound.payment.TipVM
 import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListVM
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizOverviewVM
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizGameVM
@@ -14,6 +15,7 @@ import io.github.sophon.fightingnerd.adapter.outbound.compose.ComposeAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.dataStore.DataStoreAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.ktor.KtorAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.media.MediaAdapter
+import io.github.sophon.fightingnerd.adapter.outbound.revenueCat.RevenueCatAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.fightingnerd.app.model.AppVersion
 import io.github.sophon.fightingnerd.app.outPort.ConfigureWikiPort
@@ -33,11 +35,14 @@ import io.github.sophon.fightingnerd.app.outPort.RefreshWikiPort
 import io.github.sophon.fightingnerd.app.outPort.ReleasePort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
+import io.github.sophon.fightingnerd.app.outPort.TipPort
 import io.github.sophon.fightingnerd.app.service.CheckCharacterHasMovesService
 import io.github.sophon.fightingnerd.app.service.DownloadMediaService
 import io.github.sophon.fightingnerd.app.service.GenerateQuestionsService
+import io.github.sophon.fightingnerd.app.service.GetTipOptionsService
 import io.github.sophon.fightingnerd.app.service.GroupMovesService
 import io.github.sophon.fightingnerd.app.service.LoadMoveFiltersService
+import io.github.sophon.fightingnerd.app.service.PurchaseTipService
 import io.github.sophon.fightingnerd.app.service.OnLaunchSetupService
 import io.github.sophon.fightingnerd.app.service.RefreshGamesService
 import io.github.sophon.fightingnerd.app.service.RefreshDataService
@@ -60,8 +65,10 @@ import io.github.sophon.fightingnerd.feat.featureModule
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
 import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.inPort.GenerateQuestionsUseCase
+import io.github.sophon.fightingnerd.inPort.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.inPort.GroupMovesUseCase
 import io.github.sophon.fightingnerd.inPort.LoadMoveFiltersUseCase
+import io.github.sophon.fightingnerd.inPort.PurchaseTipUseCase
 import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshGamesUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshDataUseCase
@@ -150,6 +157,7 @@ internal fun composeModule() = module {
     viewModelOf(::FeatureSettingsVM)
     viewModelOf(::UpdatesVM)
     viewModelOf(::AboutVM)
+    viewModelOf(::TipVM)
 
     single { AppVersion(BuildKonfig.VERSION) }
 
@@ -176,6 +184,8 @@ internal fun composeModule() = module {
     singleOf(::SubscribeToWikisService).bind<SubscribeToWikisUseCase>()
     singleOf(::SubscribeToUnseenReleaseService).bind<SubscribeToUnseenReleaseUseCase>()
     singleOf(::SaveReleaseAsSeenService).bind<SaveReleaseAsSeenUseCase>()
+    singleOf(::GetTipOptionsService).bind<GetTipOptionsUseCase>()
+    singleOf(::PurchaseTipService).bind<PurchaseTipUseCase>()
 
     singleOf(::WikiAdapter) {
         bind<ConfigureWikiPort>()
@@ -190,6 +200,7 @@ internal fun composeModule() = module {
     }
     singleOf(::ComposeAdapter).bind<LoadConfigPort>()
     singleOf(::KtorAdapter).bind<ReleasePort>()
+    singleOf(::RevenueCatAdapter).bind<TipPort>()
     single<MediaPort> {
         MediaAdapter(
             fs = FileSystem.SYSTEM,

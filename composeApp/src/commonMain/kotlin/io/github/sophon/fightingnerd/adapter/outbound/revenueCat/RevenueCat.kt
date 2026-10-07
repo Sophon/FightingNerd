@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.payment
+package io.github.sophon.fightingnerd.adapter.outbound.revenueCat
 
 import com.revenuecat.purchases.kmp.Purchases
 import com.revenuecat.purchases.kmp.PurchasesConfiguration

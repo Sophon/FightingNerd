@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.payment.ui.components
+package io.github.sophon.fightingnerd.adapter.inbound.payment.components
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.more_donate
-import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
+import io.github.sophon.fightingnerd.adapter.inbound.payment.TipVM
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
