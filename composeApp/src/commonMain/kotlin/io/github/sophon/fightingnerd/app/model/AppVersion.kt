@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.model
+package io.github.sophon.fightingnerd.app.model
 
 import kotlin.jvm.JvmInline
 

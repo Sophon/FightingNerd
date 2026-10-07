@@ -1,10 +1,10 @@
-package io.github.sophon.fightingnerd.feat.changelog.data
+package io.github.sophon.fightingnerd.adapter.outbound.ktor
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ReleaseDto(
+internal data class ReleaseDto(
     val url: String,
     @SerialName("assets_url") val assetsUrl: String,
     @SerialName("upload_url") val uploadUrl: String,
@@ -28,7 +28,7 @@ data class ReleaseDto(
 )
 
 @Serializable
-data class AuthorDto(
+internal data class AuthorDto(
     val login: String,
     val id: Long,
     @SerialName("node_id") val nodeId: String,
@@ -51,7 +51,7 @@ data class AuthorDto(
 )
 
 @Serializable
-data class AssetDto(
+internal data class AssetDto(
     val url: String,
     val id: Long,
     @SerialName("node_id") val nodeId: String,

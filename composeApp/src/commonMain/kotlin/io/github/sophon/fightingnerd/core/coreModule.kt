@@ -1,11 +1,9 @@
 package io.github.sophon.fightingnerd.core
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.fightingnerd.core.data.ReleaseRepo
 import io.github.sophon.fightingnerd.core.data.MediaRepo
 import io.github.sophon.fightingnerd.core.data.PreferenceRepo
 import io.github.sophon.fightingnerd.core.data.ReviewPolicyRepo
-import io.github.sophon.fightingnerd.core.data.store.ReleaseRepoImpl
 import io.github.sophon.fightingnerd.core.data.store.MediaRepoImpl
 import io.github.sophon.fightingnerd.core.data.store.PreferenceRepoImpl
 import io.github.sophon.fightingnerd.core.data.store.ReviewPolicyRepoImpl
@@ -42,8 +40,6 @@ internal fun coreModule() = module {
     }
 
     singleOf(::PreferenceRepoImpl).bind<PreferenceRepo>()
-
-    singleOf(::ReleaseRepoImpl).bind<ReleaseRepo>()
 
     singleOf(::ReviewPolicyRepoImpl).bind<ReviewPolicyRepo>()
 

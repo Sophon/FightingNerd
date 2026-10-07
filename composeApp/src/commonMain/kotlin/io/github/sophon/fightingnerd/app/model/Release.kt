@@ -1,9 +1,9 @@
-package io.github.sophon.fightingnerd.feat.changelog.model
+package io.github.sophon.fightingnerd.app.model
 
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-internal data class Release(
+data class Release(
     val version: String = "",
     val isPreRelease: Boolean,
     val type: Type,

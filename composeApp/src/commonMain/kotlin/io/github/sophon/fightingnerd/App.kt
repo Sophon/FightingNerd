@@ -44,6 +44,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import kotlinx.coroutines.flow.collect
@@ -53,8 +54,7 @@ import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.core.ui.components.ToastSnackBar
 import io.github.sophon.fightingnerd.core.ui.components.ToastVisuals
-import io.github.sophon.fightingnerd.feat.changelog.ChangelogClient
-import io.github.sophon.fightingnerd.feat.changelog.ui.ChangelogDialog
+import io.github.sophon.fightingnerd.adapter.inbound.changelog.ChangelogDialog
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.adapter.inbound.more.model.MoreItem
@@ -67,6 +67,8 @@ import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizScreen
 import io.github.sophon.fightingnerd.core.usecase.RecordInstallationUseCase
 import io.github.sophon.fightingnerd.adapter.inbound.more.about.AboutScreen
 import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
+import io.github.sophon.fightingnerd.inPort.SaveReleaseAsSeenUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToUnseenReleaseUseCase
 import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.navigation.domain.rootDestinationSet
 import io.github.sophon.fightingnerd.navigation.domain.rootDestinations
@@ -163,19 +165,23 @@ private fun Content(
 ) {
     val backStack = rememberNavBackStack(navConfig, Destination.Home)
     val overlayService = koinInject<OverlayService>()
-    val changelogClient = koinInject<ChangelogClient>()
+    val subscribeToUnseenRelease = koinInject<SubscribeToUnseenReleaseUseCase>()
+    val saveReleaseAsSeen = koinInject<SaveReleaseAsSeenUseCase>()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(changelogClient, overlayService) {
-        changelogClient.subscribeToUnseenChangelog().collect { release ->
+    LaunchedEffect(subscribeToUnseenRelease, overlayService) {
+        subscribeToUnseenRelease().collect { release ->
             overlayService.show(
                 Dialog(
                     content = { onDismiss ->
                         ChangelogDialog(
                             release = release,
                             onDismiss = {
-                                scope.launch { changelogClient.saveReleaseAsSeen(release.version) }
+                                scope.launch {
+                                    saveReleaseAsSeen(release.version)
+                                        .onError { error -> Napier.e(tag = TAG_CHANGELOG) { error.errorMessage } }
+                                }
                                 onDismiss()
                             },
                         )
@@ -367,3 +373,6 @@ private fun BoxScope.AppBottomBar(
         }
     }
 }
+
+
+private const val TAG_CHANGELOG = "Changelog"

@@ -1,15 +1,7 @@
 package io.github.sophon.fightingnerd.feat
 
-import io.github.sophon.fightingnerd.BuildKonfig
-import io.github.sophon.fightingnerd.core.model.AppVersion
 import io.github.sophon.fightingnerd.core.usecase.RecordInstallationUseCase
 import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
-import io.github.sophon.fightingnerd.feat.changelog.ChangelogClient
-import io.github.sophon.fightingnerd.feat.changelog.ChangelogClientImpl
-import io.github.sophon.fightingnerd.feat.changelog.data.ChangelogRemoteSource
-import io.github.sophon.fightingnerd.feat.changelog.data.ChangelogRemoteSourceImpl
-import io.github.sophon.fightingnerd.feat.changelog.usecase.GetUnseenReleaseUseCase
-import io.github.sophon.fightingnerd.feat.changelog.usecase.SaveReleaseAsSeenUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
@@ -17,7 +9,6 @@ import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.feat.payment.usecase.PurchaseTipUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal fun featureModule() = module {
@@ -35,13 +26,5 @@ internal fun featureModule() = module {
     singleOf(::GetTipOptionsUseCase)
     singleOf(::PurchaseTipUseCase)
     viewModelOf(::TipVM)
-    //endregion
-
-    //region Changelog
-    single { AppVersion(BuildKonfig.VERSION) }
-    singleOf(::ChangelogRemoteSourceImpl).bind<ChangelogRemoteSource>()
-    singleOf(::SaveReleaseAsSeenUseCase)
-    singleOf(::GetUnseenReleaseUseCase)
-    singleOf(::ChangelogClientImpl).bind<ChangelogClient>()
     //endregion
 }

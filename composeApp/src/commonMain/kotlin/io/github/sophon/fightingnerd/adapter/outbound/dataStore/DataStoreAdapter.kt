@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.MutablePreferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.KEY_HAS_LAUNCHED_BEFORE
@@ -14,6 +16,7 @@ import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
 import io.github.sophon.fightingnerd.app.outPort.FirstLaunchPort
+import io.github.sophon.fightingnerd.app.outPort.LastSeenReleasePort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
 import kotlinx.coroutines.flow.Flow
@@ -23,7 +26,7 @@ import kotlinx.coroutines.flow.map
 
 internal class DataStoreAdapter(
     private val store: DataStore<Preferences>,
-): FirstLaunchPort, SaveGameSettingsPort, EnabledGamesPort, SubscribeToGameSettingsPort {
+): FirstLaunchPort, SaveGameSettingsPort, EnabledGamesPort, SubscribeToGameSettingsPort, LastSeenReleasePort {
     override suspend fun hasLaunchedBefore(): Result<Boolean, AppError> {
         val result = try {
             val preferences = store.data.first()
@@ -86,6 +89,20 @@ internal class DataStoreAdapter(
         return flow
     }
 
+    override fun subscribeToLastSeenVersion(): Flow<String?> {
+        val flow = store.data
+            .catch { emit(emptyPreferences()) }
+            .map { preferences -> preferences[LAST_SEEN_VERSION_KEY] }
+        return flow
+    }
+
+    override suspend fun saveLastSeenVersion(version: String): EmptyResult<AppError> {
+        val result = edit { preferences ->
+            preferences[LAST_SEEN_VERSION_KEY] = version
+        }
+        return result
+    }
+
 
     private suspend fun edit(transform: (MutablePreferences) -> Unit): EmptyResult<AppError> {
         val result = try {
@@ -100,3 +117,4 @@ internal class DataStoreAdapter(
 
 
 private val HAS_LAUNCHED_BEFORE_KEY = booleanPreferencesKey(KEY_HAS_LAUNCHED_BEFORE)
+private val LAST_SEEN_VERSION_KEY = stringPreferencesKey("last_seen_version")

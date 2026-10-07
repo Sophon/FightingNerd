@@ -1,6 +1,6 @@
-package io.github.sophon.fightingnerd.feat.changelog.data
+package io.github.sophon.fightingnerd.adapter.outbound.ktor
 
-import io.github.sophon.fightingnerd.feat.changelog.model.Release
+import io.github.sophon.fightingnerd.app.model.Release
 import kotlinx.collections.immutable.toImmutableList
 
 internal fun List<ReleaseDto>.toDomain(): List<Release> {

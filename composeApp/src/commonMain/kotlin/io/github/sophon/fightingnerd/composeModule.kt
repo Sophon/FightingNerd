@@ -12,8 +12,10 @@ import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizOverviewVM
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizGameVM
 import io.github.sophon.fightingnerd.adapter.outbound.compose.ComposeAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.dataStore.DataStoreAdapter
+import io.github.sophon.fightingnerd.adapter.outbound.ktor.KtorAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.media.MediaAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.wiki.WikiAdapter
+import io.github.sophon.fightingnerd.app.model.AppVersion
 import io.github.sophon.fightingnerd.app.outPort.ConfigureWikiPort
 import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
 import io.github.sophon.fightingnerd.app.outPort.FirstLaunchPort
@@ -22,11 +24,13 @@ import io.github.sophon.fightingnerd.app.outPort.AvailableGamesPort
 import io.github.sophon.fightingnerd.app.outPort.AvailableWikisPort
 import io.github.sophon.fightingnerd.app.outPort.CharacterPort
 import io.github.sophon.fightingnerd.app.outPort.LastUpdatePort
+import io.github.sophon.fightingnerd.app.outPort.LastSeenReleasePort
 import io.github.sophon.fightingnerd.app.outPort.MediaPort
 import io.github.sophon.fightingnerd.app.outPort.MoveFilterPort
 import io.github.sophon.fightingnerd.app.outPort.MoveGroupPort
 import io.github.sophon.fightingnerd.app.outPort.MovePort
 import io.github.sophon.fightingnerd.app.outPort.RefreshWikiPort
+import io.github.sophon.fightingnerd.app.outPort.ReleasePort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
 import io.github.sophon.fightingnerd.app.service.CheckCharacterHasMovesService
@@ -38,6 +42,7 @@ import io.github.sophon.fightingnerd.app.service.OnLaunchSetupService
 import io.github.sophon.fightingnerd.app.service.RefreshGamesService
 import io.github.sophon.fightingnerd.app.service.RefreshDataService
 import io.github.sophon.fightingnerd.app.service.SaveGameSettingsService
+import io.github.sophon.fightingnerd.app.service.SaveReleaseAsSeenService
 import io.github.sophon.fightingnerd.app.service.SetUpdatePeriodService
 import io.github.sophon.fightingnerd.app.service.SubscribeToCharactersService
 import io.github.sophon.fightingnerd.app.service.SubscribeToGameSettingsService
@@ -45,6 +50,7 @@ import io.github.sophon.fightingnerd.app.service.SubscribeToGamesService
 import io.github.sophon.fightingnerd.app.service.SubscribeToLastUpdatesService
 import io.github.sophon.fightingnerd.app.service.SubscribeToMoveListService
 import io.github.sophon.fightingnerd.app.service.SubscribeToOfflineMediaService
+import io.github.sophon.fightingnerd.app.service.SubscribeToUnseenReleaseService
 import io.github.sophon.fightingnerd.app.service.SubscribeToUpdatePeriodService
 import io.github.sophon.fightingnerd.app.service.SubscribeToWikisService
 import io.github.sophon.fightingnerd.app.service.WipeMediaService
@@ -60,6 +66,7 @@ import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshGamesUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshDataUseCase
 import io.github.sophon.fightingnerd.inPort.SaveGameSettingsUseCase
+import io.github.sophon.fightingnerd.inPort.SaveReleaseAsSeenUseCase
 import io.github.sophon.fightingnerd.inPort.SetUpdatePeriodUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToCharactersUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToGameSettingsUseCase
@@ -67,6 +74,7 @@ import io.github.sophon.fightingnerd.inPort.SubscribeToGamesUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToLastUpdatesUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToMoveListUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToOfflineMediaUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToUnseenReleaseUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToUpdatePeriodUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToWikisUseCase
 import io.github.sophon.fightingnerd.inPort.WipeMediaUseCase
@@ -143,6 +151,8 @@ internal fun composeModule() = module {
     viewModelOf(::UpdatesVM)
     viewModelOf(::AboutVM)
 
+    single { AppVersion(BuildKonfig.VERSION) }
+
     singleOf(::RefreshUseCase)
 
     singleOf(::OnLaunchSetupService).bind<OnLaunchSetupUseCase>()
@@ -164,6 +174,8 @@ internal fun composeModule() = module {
     singleOf(::SubscribeToUpdatePeriodService).bind<SubscribeToUpdatePeriodUseCase>()
     singleOf(::SetUpdatePeriodService).bind<SetUpdatePeriodUseCase>()
     singleOf(::SubscribeToWikisService).bind<SubscribeToWikisUseCase>()
+    singleOf(::SubscribeToUnseenReleaseService).bind<SubscribeToUnseenReleaseUseCase>()
+    singleOf(::SaveReleaseAsSeenService).bind<SaveReleaseAsSeenUseCase>()
 
     singleOf(::WikiAdapter) {
         bind<ConfigureWikiPort>()
@@ -177,6 +189,7 @@ internal fun composeModule() = module {
         bind<LastUpdatePort>()
     }
     singleOf(::ComposeAdapter).bind<LoadConfigPort>()
+    singleOf(::KtorAdapter).bind<ReleasePort>()
     single<MediaPort> {
         MediaAdapter(
             fs = FileSystem.SYSTEM,
@@ -190,6 +203,7 @@ internal fun composeModule() = module {
         bind<SaveGameSettingsPort>()
         bind<EnabledGamesPort>()
         bind<SubscribeToGameSettingsPort>()
+        bind<LastSeenReleasePort>()
     }
 }
 
