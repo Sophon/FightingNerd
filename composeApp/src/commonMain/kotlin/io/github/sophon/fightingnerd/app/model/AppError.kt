@@ -1,0 +1,18 @@
+package io.github.sophon.fightingnerd.app.model
+
+import io.github.sophon.core.architecture.Error
+
+sealed class AppError(val errorMessage: String) : Error {
+    internal data class ConfigNotFoundError(val error: String) : AppError(errorMessage = error)
+    internal data class ConfigParseError(val error: String) : AppError(errorMessage = error)
+    internal data class WikiClientNotFound(val name: String) : AppError(errorMessage = name)
+    internal data class WikiError(val error: String) : AppError(errorMessage = error)
+    internal data class GameNotFound(val game: String): AppError(errorMessage = game)
+    internal data class IOError(val error: String): AppError(errorMessage = error)
+    internal data class ReviewError(val error: String): AppError(errorMessage = error)
+    internal data class ShareError(val error: String): AppError(errorMessage = error)
+    internal data class PaymentError(val error: String): AppError(errorMessage = error)
+    internal data object PurchaseCancelled: AppError(errorMessage = "Purchase cancelled")
+
+    internal data class Unknown(val error: String = "Unknown"): AppError(errorMessage = error)
+}

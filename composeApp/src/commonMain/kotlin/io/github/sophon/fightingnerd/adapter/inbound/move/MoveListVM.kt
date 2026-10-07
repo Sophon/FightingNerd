@@ -1,0 +1,397 @@
+package io.github.sophon.fightingnerd.adapter.inbound.move
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
+import io.github.sophon.fightingnerd.app.model.GroupedMoveList
+import io.github.sophon.fightingnerd.app.model.Move
+import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.core.ui.OverlayService
+import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
+import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
+import io.github.sophon.fightingnerd.app.model.SessionContext
+import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
+import io.github.sophon.fightingnerd.inPort.GroupMovesUseCase
+import io.github.sophon.fightingnerd.inPort.LoadMoveFiltersUseCase
+import io.github.sophon.fightingnerd.inPort.ShareImageUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToMoveListUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToOfflineMediaUseCase
+import io.github.sophon.fightingnerd.inPort.WipeMediaUseCase
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableMap
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentMapOf
+import kotlinx.collections.immutable.persistentSetOf
+import kotlinx.collections.immutable.toImmutableList
+import kotlinx.collections.immutable.toImmutableMap
+import kotlinx.collections.immutable.toImmutableSet
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+internal class MoveListVM(
+    private val gameId: String,
+    private val characterId: String,
+
+    subscribeToOfflineMediaUseCase: SubscribeToOfflineMediaUseCase,
+
+    private val overlayService: OverlayService,
+    private val subscribeToMoveListUseCase: SubscribeToMoveListUseCase,
+    private val loadMoveFiltersUseCase: LoadMoveFiltersUseCase,
+    private val groupMovesUseCase: GroupMovesUseCase,
+    private val downloadMediaUseCase: DownloadMediaUseCase,
+    private val wipeMediaUseCase: WipeMediaUseCase,
+    private val requestReviewUseCase: RequestReviewUseCase,
+    private val shareImageUseCase: ShareImageUseCase,
+): ViewModel() {
+    private val _state = MutableStateFlow(MoveListState())
+    private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
+    private val _downloadProgress = MutableStateFlow<Int?>(null)
+    private val _pendingShareMoveId = MutableStateFlow<String?>(null)
+    val pendingShareMoveId: StateFlow<String?> = _pendingShareMoveId.asStateFlow()
+    private val screenStopWatch = ScreenStopWatch()
+
+    val state: StateFlow<MoveListState> = combine(
+        _state.onStart { subscribeToData() },
+        subscribeToOfflineMediaUseCase(gameId),
+        _downloadProgress,
+    ) { base, offlineCharacterIdSet, progress ->
+        val availability = deriveAvailability(
+            progress = progress,
+            offlineCharacterIdSet = offlineCharacterIdSet,
+            mediaCount = base.mediaCount,
+        )
+        base.copy(mediaAvailability = availability)
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = MoveListState(),
+    )
+
+    val filteredMoves: StateFlow<ImmutableList<MoveListState.UiMove>> = combine(
+        _state.distinctUntilChanged { old, new ->
+            val slidersEqual = MoveListState.FilterSheet.FrameSlider.entries.all { type ->
+                old.filterSheet.sliderData(type).minMax == new.filterSheet.sliderData(type).minMax
+            }
+            old.searchQuery == new.searchQuery
+                    && old.filterSheet.activeFilterSet == new.filterSheet.activeFilterSet
+                    && slidersEqual
+        },
+        _fullMoveList,
+        ::processMoveListChange,
+    ).stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = persistentListOf(),
+    )
+
+
+    init {
+        loadMoveFiltersFor(gameId)
+    }
+
+
+    fun onSearchInput(searchQuery: String?) {
+        _state.update { it.copy(searchQuery = searchQuery) }
+    }
+
+    fun onDisplayFilter(isVisible: Boolean) {
+        _state.update { it.copy(filterSheet = it.filterSheet.copy(isVisible = isVisible)) }
+    }
+
+    fun onClearFilters() {
+        _state.update { state ->
+            val resetFilterSheet = state.filterSheet.copy(
+                activeFilterSet = persistentSetOf(),
+                sliders = MoveListState.FilterSheet.FrameSlider.defaultSliders,
+            )
+            state.copy(filterSheet = resetFilterSheet)
+        }
+    }
+
+    fun toggleFilter(filter: MoveFilter.Named) {
+        _state.update { state ->
+            val current = state.filterSheet.activeFilterSet
+            val newFilterSet = if (filter in current) {
+                (current - filter).toImmutableSet()
+            } else {
+                (current + filter).toImmutableSet()
+            }
+            state.copy(filterSheet = state.filterSheet.copy(activeFilterSet = newFilterSet))
+        }
+    }
+
+    fun onChangeSlider(
+        type: MoveListState.FilterSheet.FrameSlider,
+        minMax: MoveListState.FilterSheet.MinMax?,
+    ) {
+        _state.update { state ->
+            val normalized = type.normalize(minMax)
+            val prevData = state.filterSheet.sliderData(type)
+            val newThumbs = computeSliderPositions(
+                new = normalized,
+                prev = prevData.minMax,
+                prevThumbs = prevData.thumbs,
+                sliderMin = type.sliderMin,
+                sliderMax = type.sliderMax,
+            )
+            val newData = MoveListState.FilterSheet.SliderData(
+                minMax = normalized,
+                thumbs = newThumbs,
+            )
+            state.copy(filterSheet = state.filterSheet.withSliderData(type, newData))
+        }
+    }
+
+    fun onMoveClick(moveId: String) {
+        _state.update { state ->
+            val newExpandedMoveId = if (state.expandedMoveId == moveId) null else moveId
+            state.copy(expandedMoveId = newExpandedMoveId)
+        }
+    }
+
+    fun onBookmarkSwitch() {
+        _state.update { state ->
+            val new = state.bookmarks.isExpanded.not()
+            state.copy(bookmarks = state.bookmarks.copy(isExpanded = new)) }
+    }
+
+    fun onBookmarkClose() {
+        _state.update { state ->
+            state.copy(bookmarks = state.bookmarks.copy(isExpanded = false))
+        }
+    }
+
+    fun onDownloadMedia() {
+        if (_downloadProgress.value != null) return
+
+        val moveList = _fullMoveList.value.movesById.values.toList()
+        downloadMediaUseCase(
+            gameId = gameId,
+            characterId = characterId,
+            moveList = moveList,
+        )
+            .onEach { downloadedCount -> _downloadProgress.value = downloadedCount }
+            .onCompletion { _downloadProgress.value = null }
+            .launchIn(viewModelScope)
+    }
+
+    fun onWipeMedia() {
+        viewModelScope.launch {
+            wipeMediaUseCase(gameId = gameId, characterId = characterId)
+                .onError { error ->
+                    Napier.e(tag = TAG) { "onWipeMedia: $error" }
+                    overlayService.show(error)
+                }
+        }
+    }
+
+    fun onExpandCharacter() {
+        _state.update { state ->
+            val newCharacterValue = state.character?.copy(isExpanded = state.character.isExpanded.not())
+            state.copy(character = newCharacterValue)
+        }
+    }
+
+    fun onCollapseCharacter() {
+        _state.update { state ->
+            val newCharacterValue = state.character?.copy(isExpanded = false)
+            state.copy(character = newCharacterValue)
+        }
+    }
+
+    fun onShare(moveId: String) {
+        _pendingShareMoveId.value = moveId
+    }
+
+    fun onShareCaptured(pngBytes: ByteArray) {
+        val moveId = _pendingShareMoveId.value ?: return
+        _pendingShareMoveId.value = null
+
+        viewModelScope.launch {
+            shareImageUseCase(pngBytes = pngBytes, fileName = "move_$moveId.png")
+                .onError { error ->
+                    Napier.e(tag = TAG) { "onShareCaptured ($moveId): $error" }
+                    overlayService.show(error)
+                }
+        }
+    }
+
+    fun onScreenExit() {
+        val sessionDuration = screenStopWatch.elapsed()
+        val sessionContext = SessionContext.MoveList(duration = sessionDuration)
+        requestReviewUseCase(sessionContext)
+    }
+
+
+    private fun deriveAvailability(
+        progress: Int?,
+        offlineCharacterIdSet: Set<String>,
+        mediaCount: Int,
+    ): MediaAvailability {
+        val availability = when {
+            (progress != null) -> MediaAvailability.Downloading(
+                downloaded = progress,
+                total = mediaCount,
+            )
+            (characterId in offlineCharacterIdSet) -> MediaAvailability.Downloaded
+            else -> MediaAvailability.NotDownloaded
+        }
+        return availability
+    }
+
+    private fun subscribeToData() {
+        viewModelScope.launch {
+            subscribeToMoveListUseCase(gameId = gameId, characterId = characterId)
+                .collectLatest { result ->
+                    result
+                        .onSuccess { (character, moveList) ->
+                            val movesById = moveList.associateBy { it.input }.toImmutableMap()
+                            val uiMovesById = moveList
+                                .associate { move ->
+                                    val uiMove = move.toUiMove()
+                                    move.input to uiMove
+                                }
+                                .toImmutableMap()
+                            _fullMoveList.value = MoveCache(
+                                movesById = movesById,
+                                uiMovesById = uiMovesById,
+                            )
+                            _state.update { state ->
+                                state.copy(
+                                    character = character.toUiCharacter(),
+                                    mediaCount = moveList.sumOf { move -> move.urls.mediaCount },
+                                )
+                            }
+                        }
+                        .onError { error ->
+                            Napier.e(tag = TAG) { "loadData: $error" }
+                            overlayService.show(error)
+                        }
+                }
+        }
+    }
+
+    private fun loadMoveFiltersFor(gameId: String) {
+        loadMoveFiltersUseCase(gameId)
+            .onSuccess { filterSet ->
+                val immutableFilterSet = filterSet.toImmutableSet()
+                _state.update {
+                    it.copy(filterSheet = it.filterSheet.copy(filterSet = immutableFilterSet))
+                }
+            }
+            .onError { error ->
+                Napier.e(tag = TAG) { "loadMoveFiltersFor ($gameId): $error" }
+                overlayService.show(error)
+            }
+    }
+
+    private fun processMoveListChange(
+        state: MoveListState,
+        cache: MoveCache,
+    ): ImmutableList<MoveListState.UiMove> {
+        val filters = state.filterSheet.activeFilterSet + state.filterSheet.buildSliderFilters()
+
+        val filtered = cache.movesById.values.filter { move ->
+            val isMatching = filters.all { filter -> filter.matches(move) } && move.matches(state.searchQuery)
+            isMatching
+        }
+
+        val (ordered, bookmarkList) = groupMoves(filtered)
+
+        _state.update { state ->
+            state.copy(
+                bookmarks = state.bookmarks
+                    .copy(bookmarkList = bookmarkList.toImmutableList())
+            )
+        }
+
+        val uiMoveList = ordered.mapNotNull { move -> cache.uiMovesById[move.input] }.toImmutableList()
+        return uiMoveList
+    }
+
+    private fun groupMoves(moveList: List<Move>): GroupedMoveList {
+        val groupedMoveList = when (val result = groupMovesUseCase(gameId, moveList)) {
+            is Result.Success -> result.data
+            is Result.Error -> {
+                Napier.e(tag = TAG) { "groupMoves ($gameId): ${result.error}" }
+                GroupedMoveList(moveList = moveList, bookmarkList = emptyList())
+            }
+        }
+        return groupedMoveList
+    }
+
+    private fun MoveListState.FilterSheet.buildSliderFilters(): List<MoveFilter> {
+        val list = sliders.entries.mapNotNull { (type, data) ->
+            val minMax = data.minMax ?: return@mapNotNull null
+            type.toMoveFilter(minMax)
+        }
+        return list
+    }
+
+    private fun computeSliderPositions(
+        new: MoveListState.FilterSheet.MinMax?,
+        prev: MoveListState.FilterSheet.MinMax?,
+        prevThumbs: Pair<Int, Int>,
+        sliderMin: Int,
+        sliderMax: Int,
+    ): Pair<Int, Int> {
+        if (new == null) {
+            val defaults = sliderMin to sliderMax
+            return defaults
+        }
+
+        if (new.isValid) {
+            val minPos = when {
+                (new.min == null) -> sliderMin
+                (new.min in sliderMin..sliderMax) -> new.min
+                else -> sliderMin
+            }
+            val maxPos = when {
+                (new.max == null) -> sliderMax
+                (new.max in sliderMin..sliderMax) -> new.max
+                else -> sliderMax
+            }
+            val positions = minPos to maxPos
+            return positions
+        }
+
+        val minChanged = new.min != prev?.min
+        val maxChanged = new.max != prev?.max
+        val positions = when {
+            (minChanged && maxChanged.not()) -> sliderMin to prevThumbs.second
+            (maxChanged && minChanged.not()) -> prevThumbs.first to sliderMax
+            else -> prevThumbs
+        }
+        return positions
+    }
+
+
+    private companion object {
+        const val TAG = "MoveListVM"
+    }
+}
+
+private data class MoveCache(
+    val movesById: ImmutableMap<String, Move>,
+    val uiMovesById: ImmutableMap<String, MoveListState.UiMove>,
+) {
+    companion object {
+        val EMPTY = MoveCache(persistentMapOf(), persistentMapOf())
+    }
+}

@@ -1,6 +1,7 @@
 package io.github.sophon.wiki.inPort
 
 import io.github.sophon.wiki.model.RefreshEvent
+import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -13,4 +14,9 @@ import kotlinx.coroutines.flow.Flow
  */
 interface RefreshDataUseCase {
     operator fun invoke(): Flow<RefreshEvent>
+
+    /**
+     * Same as the parameterless refresh, limited to the games of [gameSet] that are enabled.
+     */
+    operator fun invoke(gameSet: Set<Game>): Flow<RefreshEvent>
 }

@@ -11,12 +11,12 @@ import io.github.sophon.core.wiki.data.readStoredFingerprint
 import io.github.sophon.core.wiki.data.storeFingerprint
 import io.github.sophon.fightingnerd.core.domain.UrlOpener
 import io.github.sophon.fightingnerd.core.domain.UrlOpenerIos
-import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandler
-import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandlerImpl
-import io.github.sophon.fightingnerd.feat.scheduler.BGTaskScheduler
-import io.github.sophon.fightingnerd.feat.scheduler.Scheduler
-import io.github.sophon.fightingnerd.feat.share.ShareSheet
-import io.github.sophon.fightingnerd.feat.share.ShareSheetImpl
+import io.github.sophon.fightingnerd.app.outPort.ReviewPort
+import io.github.sophon.fightingnerd.adapter.outbound.review.ReviewAdapter
+import io.github.sophon.fightingnerd.adapter.outbound.scheduler.BGTaskScheduler
+import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
+import io.github.sophon.fightingnerd.app.outPort.SharePort
+import io.github.sophon.fightingnerd.adapter.outbound.share.ShareAdapter
 import io.github.sophon.fightingnerd.infrastructure.createDataStore
 import okio.Path
 import okio.Path.Companion.toPath
@@ -32,9 +32,9 @@ import platform.Foundation.NSUserDomainMask
 internal actual val platformModule = module {
     single { createDataStore() }
     singleOf(::UrlOpenerIos).bind<UrlOpener>()
-    singleOf(::BGTaskScheduler).bind<Scheduler>()
-    singleOf(::ShareSheetImpl).bind<ShareSheet>()
-    singleOf(::ReviewHandlerImpl).bind<ReviewHandler>()
+    singleOf(::BGTaskScheduler).bind<SchedulerPort>()
+    singleOf(::ShareAdapter).bind<SharePort>()
+    singleOf(::ReviewAdapter).bind<ReviewPort>()
 
 
     single<Path> {

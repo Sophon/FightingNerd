@@ -1,0 +1,47 @@
+graph TD
+    subgraph Preferences
+        dataStore["DataStore"]
+    end
+
+    subgraph Config
+        config["Compose Resources"]
+    end
+
+    subgraph Wiki
+        configureWikiAdapter["configure Wiki"]
+        refreshWikiAdapter["refresh Wiki"]
+    end
+
+    subgraph UseCase
+        loadConfigPort["1. Load config port"]
+        hasLaunchedBeforePort["2. Has launched before port"]
+        performFirstTimeSetup["Perform first time setup"]
+        saveGamesPort["Save games port"]
+        refreshWikiPort["Refresh wiki port"]
+        configureWikiPort["3. Configure wiki port"]
+        enabledGamesPort["Enabled games port"]
+    end
+
+    json["config.json"] --> config
+    config --> |"Compose config"| loadConfigPort
+    dataStore --> hasLaunchedBeforePort
+    loadConfigPort --> hasLaunchedBeforePort --> |"yes"| performFirstTimeSetup
+    performFirstTimeSetup --> |"Compose config"| saveGamesPort -.- dataStore
+    performFirstTimeSetup --> refreshWikiPort --> refreshWikiAdapter
+
+    enabledGamesPort --> |"enabled games"| configureWikiPort
+    hasLaunchedBeforePort --> |"compose config"| configureWikiPort -.- configureWikiAdapter
+
+
+    style Preferences stroke:blue,stroke-dasharray:5 5,fill:none
+    style Config stroke:blue,stroke-dasharray:5 5,fill:none
+    style Wiki stroke:blue,stroke-dasharray:5 5,fill:none
+    style UseCase stroke:green,stroke-dasharray:5 5,fill:none
+
+    classDef application stroke:green
+    classDef adapter stroke:blue
+    classDef outboundPort stroke:green,stroke-dasharray:3 3
+
+    class performFirstTimeSetup application
+    class loadConfigPort,hasLaunchedBeforePort,saveGamesPort,refreshWikiPort,configureWikiPort,enabledGamesPort outboundPort
+    class dataStore,config,configureWikiAdapter,refreshWikiAdapter adapter
