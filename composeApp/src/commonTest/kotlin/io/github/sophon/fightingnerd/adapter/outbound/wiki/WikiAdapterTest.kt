@@ -3,16 +3,26 @@ package io.github.sophon.fightingnerd.adapter.outbound.wiki
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.Character
 import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.Move
+import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.app.model.game.T8Properties
 import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
 import io.github.sophon.wiki.inPort.GetAvailableGamesUseCase
 import io.github.sophon.wiki.inPort.GetCharacterListUseCase
+import io.github.sophon.wiki.inPort.GetFiltersUseCase
+import io.github.sophon.wiki.inPort.GetGroupsUseCase
 import io.github.sophon.wiki.inPort.GetMoveListUseCase
 import io.github.sophon.wiki.inPort.RefreshDataUseCase
 import io.github.sophon.wiki.model.CharacterId
-import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.Filter
+import io.github.sophon.wiki.model.Group
 import io.github.sophon.wiki.model.RefreshEvent
+import io.github.sophon.wiki.model.WavuFilters
+import io.github.sophon.wiki.model.WavuGroups
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +32,8 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import io.github.sophon.wiki.model.Character as WikiCharacter
+import io.github.sophon.wiki.model.Move as WikiMove
+import io.github.sophon.wiki.model.game.T8Properties as WikiT8Properties
 import io.github.sophon.wiki.model.wiki.Game as WikiGame
 
 internal class WikiAdapterTest {
@@ -50,6 +62,25 @@ internal class WikiAdapterTest {
         wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu",
     )
 
+    private val jinOneOneTwo = WikiMove(
+        input = "1,1,2",
+        urls = WikiMove.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-1,1,2"),
+    )
+    private val jinDownForwardOne = WikiMove(
+        input = "d/f+1",
+        urls = WikiMove.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-df+1"),
+    )
+    private val jinHeatDash = WikiMove(
+        input = "2,1,H.2",
+        urls = WikiMove.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-2,1,H.2"),
+        gameProperties = WikiT8Properties(isHeat = true, isHoming = true),
+    )
+    private val jinZenOne = WikiMove(
+        input = "ZEN.1",
+        urls = WikiMove.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-ZEN.1"),
+        gameProperties = WikiT8Properties(stance = "zen"),
+    )
+
     @Test
     fun `only the game's characters are listed`() = runTest {
         // given
@@ -60,7 +91,7 @@ internal class WikiAdapterTest {
         )
 
         // when
-        val result = adapter.subscribeToCharacters(tekken8).first()
+        val result = adapter.subscribeToCharacters(tekken8.id).first()
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -69,29 +100,146 @@ internal class WikiAdapterTest {
     @Test
     fun `moves come from the character's move list`() = runTest {
         // given
-        val moveList = listOf(
-            Move(input = "1,1,2", urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-1,1,2")),
-            Move(input = "d/f+1", urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-df+1")),
+        val adapter = wikiAdapter(
+            moveListById = mapOf(jin.id to listOf(jinOneOneTwo, jinDownForwardOne)),
+            groupList = listOf(WavuGroups.Neutral),
         )
-        val adapter = wikiAdapter(moveListById = mapOf(jin.id to moveList))
-        val expected = moveList
+        val expected = listOf(
+            Move(
+                input = "1,1,2",
+                urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-1,1,2"),
+                groupId = "n",
+            ),
+            Move(
+                input = "d/f+1",
+                urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-df+1"),
+                groupId = "Other",
+            ),
+        )
 
         // when
-        val result = adapter.subscribeToMoves(tekken8, "jin").first()
+        val result = adapter.subscribeToMoves(tekken8.id, "jin").first()
 
         // then
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
+    fun `move belongs to the first group it matches`() = runTest {
+        // given
+        val adapter = wikiAdapter(
+            moveListById = mapOf(jin.id to listOf(jinHeatDash)),
+            groupList = listOf(WavuGroups.Heat, WavuGroups.Neutral),
+        )
+        val expected = "Heat"
+
+        // when
+        val result = adapter.subscribeToMoves(tekken8.id, "jin").first()
+
+        // then
+        assertThat(result.single().groupId).isEqualTo(expected)
+    }
+
+    @Test
+    fun `stance moves belong to their stance group`() = runTest {
+        // given
+        val adapter = wikiAdapter(
+            moveListById = mapOf(jin.id to listOf(jinZenOne)),
+            groupList = listOf(WavuGroups.Neutral),
+        )
+        val expected = "ZEN"
+
+        // when
+        val result = adapter.subscribeToMoves(tekken8.id, "jin").first()
+
+        // then
+        assertThat(result.single().groupId).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move lists the filters it passes`() = runTest {
+        // given
+        val adapter = wikiAdapter(
+            moveListById = mapOf(jin.id to listOf(jinHeatDash)),
+            filterSet = setOf(WavuFilters.Heat, WavuFilters.Homing, WavuFilters.PowerCrush),
+        )
+        val expected = setOf("Heat", "Homing")
+
+        // when
+        val result = adapter.subscribeToMoves(tekken8.id, "jin").first()
+
+        // then
+        assertThat(result.single().filterNameSet).isEqualTo(expected)
+    }
+
+    @Test
     fun `unknown game has no moves`() = runTest {
         // given
-        val tekken9 = tekken8.copy(id = "Tekken_9", displayName = "Tekken 9")
         val adapter = wikiAdapter()
         val expected = emptyList<Move>()
 
         // when
-        val result = adapter.subscribeToMoves(tekken9, "jin").first()
+        val result = adapter.subscribeToMoves("Tekken_9", "jin").first()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `filters are the game's filter names`() {
+        // given
+        val adapter = wikiAdapter(filterSet = setOf(WavuFilters.Heat, WavuFilters.PowerCrush))
+        val expected = Result.Success(setOf(MoveFilter.Named("Heat"), MoveFilter.Named("PowerCrush")))
+
+        // when
+        val result = adapter.loadFilters(tekken8.id)
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `unknown game has no filters`() {
+        // given
+        val adapter = wikiAdapter()
+        val expected = Result.Error(AppError.GameNotFound("Tekken_9"))
+
+        // when
+        val result = adapter.loadFilters("Tekken_9")
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `group order has the stances after the game's groups and the ungrouped moves last`() {
+        // given
+        val adapter = wikiAdapter(groupList = listOf(WavuGroups.Heat, WavuGroups.Neutral))
+        val moveList = listOf(
+            Move(
+                input = "ZEN.1",
+                urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-ZEN.1"),
+                gameProperties = T8Properties(stance = "zen"),
+                groupId = "ZEN",
+            ),
+        )
+        val expected = Result.Success(listOf("Heat", "n", "ZEN", "Other"))
+
+        // when
+        val result = adapter.loadGroupIdList(tekken8.id, moveList)
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `unknown game has no group order`() {
+        // given
+        val adapter = wikiAdapter()
+        val expected = Result.Error(AppError.GameNotFound("Tekken_9"))
+
+        // when
+        val result = adapter.loadGroupIdList("Tekken_9", emptyList())
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -100,7 +248,9 @@ internal class WikiAdapterTest {
 
     private fun wikiAdapter(
         characterList: List<WikiCharacter> = emptyList(),
-        moveListById: Map<CharacterId, List<Move>> = emptyMap(),
+        moveListById: Map<CharacterId, List<WikiMove>> = emptyMap(),
+        filterSet: Set<Filter> = emptySet(),
+        groupList: List<Group> = emptyList(),
     ): WikiAdapter {
         val adapter = WikiAdapter(
             configureWikiUseCase = UnusedConfigureWikiUseCase(),
@@ -108,6 +258,8 @@ internal class WikiAdapterTest {
             getAvailableGamesUseCase = UnusedGetAvailableGamesUseCase(),
             getCharacterListUseCase = FakeGetCharacterListUseCase(characterList),
             getMoveListUseCase = FakeGetMoveListUseCase(moveListById),
+            getFiltersUseCase = FakeGetFiltersUseCase(filterSet),
+            getGroupsUseCase = FakeGetGroupsUseCase(groupList),
         )
         return adapter
     }
@@ -122,11 +274,31 @@ internal class WikiAdapterTest {
     }
 
     private class FakeGetMoveListUseCase(
-        private val moveListById: Map<CharacterId, List<Move>>,
+        private val moveListById: Map<CharacterId, List<WikiMove>>,
     ): GetMoveListUseCase {
-        override fun invoke(characterId: CharacterId): Flow<List<Move>> {
+        override fun invoke(characterId: CharacterId): Flow<List<WikiMove>> {
             val flow = flowOf(moveListById[characterId].orEmpty())
             return flow
+        }
+    }
+
+    private class FakeGetFiltersUseCase(
+        private val filterSet: Set<Filter>,
+    ): GetFiltersUseCase {
+        override fun invoke(game: WikiGame): Set<Filter> {
+            return filterSet
+        }
+    }
+
+    /**
+     * Same contract as the wiki's - every extra is a Tekken stance that becomes its own group after the others.
+     */
+    private class FakeGetGroupsUseCase(
+        private val groupList: List<Group>,
+    ): GetGroupsUseCase {
+        override fun invoke(game: WikiGame, extras: List<String>): List<Group> {
+            val groupListWithStances = (groupList + extras.map { stance -> WavuGroups.Stance(stance) })
+            return groupListWithStances
         }
     }
 

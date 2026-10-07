@@ -4,8 +4,8 @@ import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.outPort.MovePort
-import io.github.sophon.wiki.model.Move
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -19,9 +19,21 @@ internal class CheckCharacterHasMovesServiceTest {
         iconUrl = "https://i.imgur.com/Yl6j809.png",
         wikiName = "Wavu Wiki",
     )
-    private val jab = Move(input = "1", urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-1"))
-    private val oneTwo = Move(input = "1,2", urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-1,2"))
-    private val electric = Move(input = "f,n,d,d/f+2", urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-f,n,d,df+2"))
+    private val jab = Move(
+        input = "1",
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-1"),
+        groupId = "n",
+    )
+    private val oneTwo = Move(
+        input = "1,2",
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-1,2"),
+        groupId = "n",
+    )
+    private val electric = Move(
+        input = "f,n,d,d/f+2",
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-f,n,d,df+2"),
+        groupId = "Motion input",
+    )
 
     @Test
     fun `character without moves has no moves`() = runTest {
@@ -88,7 +100,7 @@ internal class CheckCharacterHasMovesServiceTest {
     private class FakeMovePort(moveList: List<Move>): MovePort {
         val moveList = MutableStateFlow(moveList)
 
-        override fun subscribeToMoves(game: Game, characterId: String): Flow<List<Move>> {
+        override fun subscribeToMoves(gameId: String, characterId: String): Flow<List<Move>> {
             return moveList
         }
     }

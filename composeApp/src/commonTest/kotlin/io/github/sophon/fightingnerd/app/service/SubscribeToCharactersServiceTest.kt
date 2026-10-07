@@ -25,7 +25,7 @@ internal class SubscribeToCharactersServiceTest {
             Character(id = "jin", displayName = "Jin"),
             Character(id = "armor_king", displayName = "Armor King"),
         )
-        val service = SubscribeToCharactersService(FakeCharacterPort(mapOf(tekken8 to expected)))
+        val service = SubscribeToCharactersService(FakeCharacterPort(mapOf(tekken8.id to expected)))
 
         // when
         val result = service(tekken8).first()
@@ -36,10 +36,10 @@ internal class SubscribeToCharactersServiceTest {
 
 
     private class FakeCharacterPort(
-        private val characterListByGame: Map<Game, List<Character>>,
+        private val characterListByGameId: Map<String, List<Character>>,
     ): CharacterPort {
-        override fun subscribeToCharacters(game: Game): Flow<List<Character>> {
-            val flow = flowOf(characterListByGame[game].orEmpty())
+        override fun subscribeToCharacters(gameId: String): Flow<List<Character>> {
+            val flow = flowOf(characterListByGameId[gameId].orEmpty())
             return flow
         }
     }

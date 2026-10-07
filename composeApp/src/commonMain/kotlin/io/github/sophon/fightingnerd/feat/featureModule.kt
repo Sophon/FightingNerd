@@ -22,15 +22,6 @@ import io.github.sophon.fightingnerd.feat.more.usecase.SetUpdatePeriodUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToUpdatePeriodUseCase
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
-import io.github.sophon.fightingnerd.feat.move.usecase.DownloadMediaUseCase
-import io.github.sophon.fightingnerd.feat.move.usecase.GroupMovesUseCase
-import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveFiltersUseCase
-import io.github.sophon.fightingnerd.feat.move.usecase.LoadMoveGroupsUseCase
-import io.github.sophon.fightingnerd.feat.move.usecase.NormalizeSliderUseCase
-import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToMoveListUseCase
-import io.github.sophon.fightingnerd.feat.move.usecase.SubscribeToOfflineMediaAvailability
-import io.github.sophon.fightingnerd.feat.move.usecase.WipeMediaUseCase
 import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
 import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.feat.payment.usecase.PurchaseTipUseCase
@@ -63,33 +54,6 @@ internal fun featureModule() = module {
     viewModelOf(::FeatureSettingsVM)
     viewModelOf(::UpdatesVM)
     viewModelOf(::AboutVM)
-    //endregion
-
-    //region Move
-    viewModel { (gameId: String, characterId: String) ->
-        MoveListVM(
-            gameId = gameId,
-            characterId = characterId,
-            overlayService = get(),
-            subscribeToMoveListUseCase = get(),
-            loadMoveFiltersUseCase = get(),
-            loadMoveGroupsUseCase = get(),
-            normalizeSliderUseCase = get(),
-            groupMovesUseCase = get(),
-            downloadMediaUseCase = get(),
-            wipeMediaUseCase = get(),
-            subscribeToOfflineMediaAvailability = get(),
-            requestReviewUseCase = get(),
-        )
-    }
-    singleOf(::SubscribeToMoveListUseCase)
-    singleOf(::LoadMoveFiltersUseCase)
-    singleOf(::NormalizeSliderUseCase)
-    singleOf(::LoadMoveGroupsUseCase)
-    singleOf(::GroupMovesUseCase)
-    singleOf(::DownloadMediaUseCase)
-    singleOf(::WipeMediaUseCase)
-    singleOf(::SubscribeToOfflineMediaAvailability)
     //endregion
 
     //region Review

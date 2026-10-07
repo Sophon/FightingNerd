@@ -10,7 +10,7 @@ internal class SubscribeToCharactersService(
     private val characterPort: CharacterPort,
 ): SubscribeToCharactersUseCase {
     override fun invoke(game: Game): Flow<List<Character>> {
-        val flow = characterPort.subscribeToCharacters(game)
+        val flow = characterPort.subscribeToCharacters(game.id)
         return flow
     }
 }

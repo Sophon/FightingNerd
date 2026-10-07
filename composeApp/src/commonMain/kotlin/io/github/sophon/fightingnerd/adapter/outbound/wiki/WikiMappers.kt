@@ -5,10 +5,12 @@ import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.Character
 import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.Character as WikiCharacter
+import io.github.sophon.wiki.model.Move as WikiMove
 import io.github.sophon.wiki.model.RefreshEvent as WikiRefreshEvent
 import io.github.sophon.wiki.model.wiki.Game as WikiGame
 
@@ -60,6 +62,50 @@ internal fun WikiCharacter.toDomain(): Character {
         id = id.naturalId,
         displayName = displayName,
         iconUrl = images?.iconUrl,
+        hp = hp,
+        umo = umo,
+        gameProperties = gameProperties?.toDomain(),
     )
     return character
+}
+
+internal fun WikiMove.toDomain(
+    groupId: String,
+    filterNameSet: Set<String>,
+): Move {
+    val move = Move(
+        input = input,
+        remoteId = remoteId,
+        name = name,
+        damage = damage,
+        startup = startup,
+        onBlock = onBlock,
+        onHit = onHit,
+        onCH = onCH,
+        active = active,
+        cancel = cancel,
+        recovery = recovery,
+        guard = guard,
+        invulnerability = invulnerability,
+        isThrow = isThrow,
+        type = type,
+        notes = notes,
+        aliases = aliases,
+        urls = urls.toDomain(),
+        gameProperties = gameProperties?.toDomain(),
+        groupId = groupId,
+        filterNameSet = filterNameSet,
+    )
+    return move
+}
+
+private fun WikiMove.Urls.toDomain(): Move.Urls {
+    val urls = Move.Urls(
+        wikiUrl = wikiUrl,
+        videoId = videoId,
+        videoUrl = videoUrl,
+        hitboxImageList = hitboxImageList,
+        moveImageList = moveImageList,
+    )
+    return urls
 }

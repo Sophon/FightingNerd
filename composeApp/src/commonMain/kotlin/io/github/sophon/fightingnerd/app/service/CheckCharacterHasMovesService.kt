@@ -14,7 +14,7 @@ internal class CheckCharacterHasMovesService(
         game: Game,
         characterId: String,
     ): Flow<Boolean> {
-        val flow = movePort.subscribeToMoves(game, characterId)
+        val flow = movePort.subscribeToMoves(game.id, characterId)
             .map { moveList -> moveList.isNotEmpty() }
             .distinctUntilChanged()
         return flow
