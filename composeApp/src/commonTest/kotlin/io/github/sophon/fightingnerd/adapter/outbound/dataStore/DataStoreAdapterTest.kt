@@ -5,6 +5,7 @@ import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.preferencesOf
 import app.cash.turbine.test
 import assertk.assertThat
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
+import kotlin.time.Instant
 
 internal class DataStoreAdapterTest {
     private val composeConfig = ComposeConfig(
@@ -160,6 +162,35 @@ internal class DataStoreAdapterTest {
 
         // when
         val result = adapter.subscribeToGameSettings(setOf(tekken8, mbtl, ggst)).first()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `installation timestamp is read from the existing key`() = runTest {
+        // given
+        val timestamp = Instant.fromEpochMilliseconds(1_759_276_800_000)
+        val adapter = DataStoreAdapter(fakeStore(longPreferencesKey("installation_timestamp") to timestamp.toEpochMilliseconds()))
+        val expected = Result.Success(timestamp)
+
+        // when
+        val result = adapter.getInstallationTimestamp()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `saved installation timestamp is remembered`() = runTest {
+        // given
+        val timestamp = Instant.fromEpochMilliseconds(1_759_276_800_000)
+        val adapter = DataStoreAdapter(fakeStore())
+        val expected = Result.Success(timestamp)
+
+        // when
+        adapter.saveInstallationTimestamp(timestamp)
+        val result = adapter.getInstallationTimestamp()
 
         // then
         assertThat(result).isEqualTo(expected)

@@ -1,30 +1,30 @@
-package io.github.sophon.fightingnerd.core.usecase
+ package io.github.sophon.fightingnerd.app.service
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.fightingnerd.core.data.ReviewPolicyRepo
-import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandler
-import io.github.sophon.fightingnerd.feat.review.SessionContext
+import io.github.sophon.fightingnerd.app.model.SessionContext
+import io.github.sophon.fightingnerd.app.outPort.InstallationPort
+import io.github.sophon.fightingnerd.app.outPort.ReviewPort
+import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.seconds
 
-//TODO: refactor into service
-internal class RequestReviewUseCase(
-    private val reviewPolicyRepo: ReviewPolicyRepo,
-    private val reviewHandler: ReviewHandler,
+internal class RequestReviewService(
+    private val installationPort: InstallationPort,
+    private val reviewPort: ReviewPort,
     private val appScope: CoroutineScope,
-) {
-    operator fun invoke(sessionContext: SessionContext) {
+): RequestReviewUseCase {
+    override fun invoke(sessionContext: SessionContext) {
         appScope.launch {
             if (shouldTrigger(sessionContext).not()) return@launch
 
             Napier.d(tag = TAG) { "Review: triggering (${sessionContext::class.simpleName})" }
-            reviewHandler.requestReview()
+            reviewPort.requestReview()
                 .onSuccess {
                     Napier.d(tag = TAG) { "Review: Success" }
                 }
@@ -37,10 +37,16 @@ internal class RequestReviewUseCase(
     private suspend fun shouldTrigger(sessionContext: SessionContext): Boolean {
         val isSessionLongEnough = (sessionContext.duration >= DURATION_SESSION)
 
-        val isInstallationOldEnough = reviewPolicyRepo.getInstallationTimestamp().first()?.let { instant ->
-            val age = (Clock.System.now() - instant)
-            age >= DURATION_INSTALLATION
-        } ?: false
+        val isInstallationOldEnough = when (val timestampResult = installationPort.getInstallationTimestamp()) {
+            is Result.Success -> {
+                val isOldEnough = timestampResult.data?.let { instant ->
+                    val age = (Clock.System.now() - instant)
+                    age >= DURATION_INSTALLATION
+                } ?: false
+                isOldEnough
+            }
+            is Result.Error -> false
+        }
 
         val otherRequirementsMet = sessionContext.otherRequirementsMet()
 
@@ -66,12 +72,10 @@ internal class RequestReviewUseCase(
         }
         return isMet
     }
-
-
-    private companion object {
-        const val TAG = "RequestReviewUseCase"
-        val DURATION_SESSION = 10.seconds
-        val DURATION_INSTALLATION = 7.days
-        const val PCT_CORRECT_ANSWERS = 80
-    }
 }
+
+
+private const val TAG = "RequestReviewService"
+private val DURATION_SESSION = 10.seconds
+private val DURATION_INSTALLATION = 7.days
+private const val PCT_CORRECT_ANSWERS = 80

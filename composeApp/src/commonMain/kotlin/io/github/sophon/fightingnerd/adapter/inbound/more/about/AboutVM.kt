@@ -3,9 +3,9 @@ package io.github.sophon.fightingnerd.adapter.inbound.more.about
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
-import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
+import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
-import io.github.sophon.fightingnerd.feat.review.SessionContext
+import io.github.sophon.fightingnerd.app.model.SessionContext
 import io.github.sophon.fightingnerd.inPort.SubscribeToWikisUseCase
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.review.platform
+package io.github.sophon.fightingnerd.adapter.outbound.review
 
 import android.app.Activity
 import android.app.Application
@@ -9,14 +9,15 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
+import io.github.sophon.fightingnerd.app.outPort.ReviewPort
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.concurrent.atomic.AtomicReference
 
-internal class ReviewHandlerImpl(
+internal class ReviewAdapter(
     private val app: Application,
-) : ReviewHandler {
+) : ReviewPort {
     private val currentActivity = AtomicReference<Activity?>()
 
 

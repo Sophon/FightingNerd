@@ -64,7 +64,7 @@ import io.github.sophon.fightingnerd.adapter.inbound.more.updates.UpdatesScreen
 import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListScreen
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizOverviewScreen
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizScreen
-import io.github.sophon.fightingnerd.core.usecase.RecordInstallationUseCase
+import io.github.sophon.fightingnerd.inPort.RecordInstallationUseCase
 import io.github.sophon.fightingnerd.adapter.inbound.more.about.AboutScreen
 import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
 import io.github.sophon.fightingnerd.inPort.SaveReleaseAsSeenUseCase

@@ -11,8 +11,8 @@ import io.github.sophon.core.wiki.data.readStoredFingerprint
 import io.github.sophon.core.wiki.data.storeFingerprint
 import io.github.sophon.fightingnerd.core.domain.UrlOpener
 import io.github.sophon.fightingnerd.core.domain.UrlOpenerIos
-import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandler
-import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandlerImpl
+import io.github.sophon.fightingnerd.app.outPort.ReviewPort
+import io.github.sophon.fightingnerd.adapter.outbound.review.ReviewAdapter
 import io.github.sophon.fightingnerd.feat.scheduler.BGTaskScheduler
 import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
 import io.github.sophon.fightingnerd.feat.share.ShareSheet
@@ -34,7 +34,7 @@ internal actual val platformModule = module {
     singleOf(::UrlOpenerIos).bind<UrlOpener>()
     singleOf(::BGTaskScheduler).bind<SchedulerPort>()
     singleOf(::ShareSheetImpl).bind<ShareSheet>()
-    singleOf(::ReviewHandlerImpl).bind<ReviewHandler>()
+    singleOf(::ReviewAdapter).bind<ReviewPort>()
 
 
     single<Path> {

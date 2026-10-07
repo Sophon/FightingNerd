@@ -12,8 +12,8 @@ import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.TipOption
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
-import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
-import io.github.sophon.fightingnerd.feat.review.SessionContext
+import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
+import io.github.sophon.fightingnerd.app.model.SessionContext
 import io.github.sophon.fightingnerd.inPort.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.inPort.PurchaseTipUseCase
 import kotlinx.coroutines.flow.MutableStateFlow

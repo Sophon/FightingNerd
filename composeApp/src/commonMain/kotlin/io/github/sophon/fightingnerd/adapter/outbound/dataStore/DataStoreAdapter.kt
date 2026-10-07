@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
@@ -16,6 +17,7 @@ import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
 import io.github.sophon.fightingnerd.app.outPort.FirstLaunchPort
+import io.github.sophon.fightingnerd.app.outPort.InstallationPort
 import io.github.sophon.fightingnerd.app.outPort.LastSeenReleasePort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
@@ -23,10 +25,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlin.time.Instant
 
 internal class DataStoreAdapter(
     private val store: DataStore<Preferences>,
-): FirstLaunchPort, SaveGameSettingsPort, EnabledGamesPort, SubscribeToGameSettingsPort, LastSeenReleasePort {
+): FirstLaunchPort, SaveGameSettingsPort, EnabledGamesPort, SubscribeToGameSettingsPort, LastSeenReleasePort,
+    InstallationPort {
     override suspend fun hasLaunchedBefore(): Result<Boolean, AppError> {
         val result = try {
             val preferences = store.data.first()
@@ -103,6 +107,24 @@ internal class DataStoreAdapter(
         return result
     }
 
+    override suspend fun getInstallationTimestamp(): Result<Instant?, AppError> {
+        val result = try {
+            val preferences = store.data.first()
+            val timestamp = preferences[INSTALLATION_TIMESTAMP_KEY]?.let(Instant::fromEpochMilliseconds)
+            Result.Success(timestamp)
+        } catch (e: IOException) {
+            Result.Error(AppError.IOError(e.message.orEmpty()))
+        }
+        return result
+    }
+
+    override suspend fun saveInstallationTimestamp(timestamp: Instant): EmptyResult<AppError> {
+        val result = edit { preferences ->
+            preferences[INSTALLATION_TIMESTAMP_KEY] = timestamp.toEpochMilliseconds()
+        }
+        return result
+    }
+
 
     private suspend fun edit(transform: (MutablePreferences) -> Unit): EmptyResult<AppError> {
         val result = try {
@@ -118,3 +140,4 @@ internal class DataStoreAdapter(
 
 private val HAS_LAUNCHED_BEFORE_KEY = booleanPreferencesKey(KEY_HAS_LAUNCHED_BEFORE)
 private val LAST_SEEN_VERSION_KEY = stringPreferencesKey("last_seen_version")
+private val INSTALLATION_TIMESTAMP_KEY = longPreferencesKey("installation_timestamp")

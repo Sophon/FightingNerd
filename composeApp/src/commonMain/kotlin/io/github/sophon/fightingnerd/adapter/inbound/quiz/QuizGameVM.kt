@@ -10,8 +10,8 @@ import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.components.FinishDialog
-import io.github.sophon.fightingnerd.feat.review.SessionContext
-import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
+import io.github.sophon.fightingnerd.app.model.SessionContext
+import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import io.github.sophon.fightingnerd.inPort.GenerateQuestionsUseCase
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow

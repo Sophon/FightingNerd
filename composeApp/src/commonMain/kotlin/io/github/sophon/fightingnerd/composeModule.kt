@@ -21,6 +21,7 @@ import io.github.sophon.fightingnerd.app.model.AppVersion
 import io.github.sophon.fightingnerd.app.outPort.ConfigureWikiPort
 import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
 import io.github.sophon.fightingnerd.app.outPort.FirstLaunchPort
+import io.github.sophon.fightingnerd.app.outPort.InstallationPort
 import io.github.sophon.fightingnerd.app.outPort.LoadConfigPort
 import io.github.sophon.fightingnerd.app.outPort.AvailableGamesPort
 import io.github.sophon.fightingnerd.app.outPort.AvailableWikisPort
@@ -43,6 +44,8 @@ import io.github.sophon.fightingnerd.app.service.GetTipOptionsService
 import io.github.sophon.fightingnerd.app.service.GroupMovesService
 import io.github.sophon.fightingnerd.app.service.LoadMoveFiltersService
 import io.github.sophon.fightingnerd.app.service.PurchaseTipService
+import io.github.sophon.fightingnerd.app.service.RecordInstallationService
+import io.github.sophon.fightingnerd.app.service.RequestReviewService
 import io.github.sophon.fightingnerd.app.service.OnLaunchSetupService
 import io.github.sophon.fightingnerd.app.service.RefreshGamesService
 import io.github.sophon.fightingnerd.app.service.RefreshDataService
@@ -69,6 +72,8 @@ import io.github.sophon.fightingnerd.inPort.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.inPort.GroupMovesUseCase
 import io.github.sophon.fightingnerd.inPort.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.inPort.PurchaseTipUseCase
+import io.github.sophon.fightingnerd.inPort.RecordInstallationUseCase
+import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshGamesUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshDataUseCase
@@ -186,6 +191,8 @@ internal fun composeModule() = module {
     singleOf(::SaveReleaseAsSeenService).bind<SaveReleaseAsSeenUseCase>()
     singleOf(::GetTipOptionsService).bind<GetTipOptionsUseCase>()
     singleOf(::PurchaseTipService).bind<PurchaseTipUseCase>()
+    singleOf(::RequestReviewService).bind<RequestReviewUseCase>()
+    singleOf(::RecordInstallationService).bind<RecordInstallationUseCase>()
 
     singleOf(::WikiAdapter) {
         bind<ConfigureWikiPort>()
@@ -215,6 +222,7 @@ internal fun composeModule() = module {
         bind<EnabledGamesPort>()
         bind<SubscribeToGameSettingsPort>()
         bind<LastSeenReleasePort>()
+        bind<InstallationPort>()
     }
 }
 

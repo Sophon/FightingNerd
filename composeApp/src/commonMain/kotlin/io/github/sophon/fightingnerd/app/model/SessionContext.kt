@@ -1,8 +1,8 @@
-package io.github.sophon.fightingnerd.feat.review
+package io.github.sophon.fightingnerd.app.model
 
 import kotlin.time.Duration
 
-internal sealed interface SessionContext {
+sealed interface SessionContext {
     val duration: Duration
 
     data class MoveList(override val duration: Duration = Duration.ZERO) : SessionContext

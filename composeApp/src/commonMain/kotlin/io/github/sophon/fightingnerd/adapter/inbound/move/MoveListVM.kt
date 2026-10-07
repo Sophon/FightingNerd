@@ -11,9 +11,9 @@ import io.github.sophon.fightingnerd.app.model.GroupedMoveList
 import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.model.MoveFilter
 import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
+import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
-import io.github.sophon.fightingnerd.feat.review.SessionContext
+import io.github.sophon.fightingnerd.app.model.SessionContext
 import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.inPort.GroupMovesUseCase
 import io.github.sophon.fightingnerd.inPort.LoadMoveFiltersUseCase
