@@ -6,7 +6,7 @@ import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Config
 import io.github.sophon.core.featureConfig.model.Game
-import io.github.sophon.fightingnerd.core.model.AppError
+import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.feat.module.CONFIG_PATH
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

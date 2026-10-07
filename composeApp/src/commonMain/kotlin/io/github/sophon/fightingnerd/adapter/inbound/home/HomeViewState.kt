@@ -1,7 +1,7 @@
-package io.github.sophon.fightingnerd.feat.home.ui
+package io.github.sophon.fightingnerd.adapter.inbound.home
 
 import androidx.compose.runtime.Immutable
-import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.fightingnerd.app.model.Game
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -24,7 +24,6 @@ internal data class HomeViewState(
                 GameFeature.UiCharacter(
                     id = "char_$index",
                     displayName = name,
-                    queryName = "",
                     hasMoves = true,
                 )
             }.toImmutableList()
@@ -47,9 +46,36 @@ internal data class HomeViewState(
 
         val PREVIEW = HomeViewState(
             gameFeatureList = persistentListOf(
-                mockWidget(Game.Tekken8, "Wavu Wiki", isExpanded = true),
-                mockWidget(Game.StreetFighter6, "SuperCombo", isExpanded = false),
-                mockWidget(Game.KoFXV, "Dream Cancel", isExpanded = false),
+                mockWidget(
+                    game = Game(
+                        id = "Tekken_8",
+                        displayName = "Tekken 8",
+                        iconUrl = "https://i.imgur.com/Yl6j809.png",
+                        wikiName = "Wavu Wiki",
+                    ),
+                    featureName = "Wavu Wiki",
+                    isExpanded = true,
+                ),
+                mockWidget(
+                    game = Game(
+                        id = "Street_Fighter_6",
+                        displayName = "Street Fighter 6",
+                        iconUrl = "https://i.imgur.com/N9wYA5K.png",
+                        wikiName = "SuperCombo Wiki",
+                    ),
+                    featureName = "SuperCombo",
+                    isExpanded = false,
+                ),
+                mockWidget(
+                    game = Game(
+                        id = "The_King_of_Fighters_XV",
+                        displayName = "The King of Fighters XV",
+                        iconUrl = "https://i.imgur.com/Zlin7xi.png",
+                        wikiName = "DreamCancel Wiki",
+                    ),
+                    featureName = "Dream Cancel",
+                    isExpanded = false,
+                ),
             )
         )
     }

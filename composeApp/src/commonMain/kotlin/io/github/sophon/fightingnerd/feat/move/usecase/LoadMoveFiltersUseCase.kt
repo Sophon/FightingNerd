@@ -5,7 +5,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.Filter
-import io.github.sophon.fightingnerd.core.model.AppError
+import io.github.sophon.fightingnerd.app.model.AppError
 
 @ExcludeFromCoverage("plain client call")
 internal class LoadMoveFiltersUseCase(

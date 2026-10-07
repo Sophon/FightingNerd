@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.home.ui
+package io.github.sophon.fightingnerd.adapter.inbound.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,14 +7,15 @@ import fightingnerd.composeapp.generated.resources.home_refresh_refreshing
 import fightingnerd.composeapp.generated.resources.home_refresh_success
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
-import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.CheckCharacterHasMovesUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.PerformFirstTimeConfigUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
+import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
+import io.github.sophon.fightingnerd.inPort.FirstTimeConfigUseCase
+import io.github.sophon.fightingnerd.inPort.RefreshDataUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToCharactersUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToGamesUseCase
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Job
@@ -32,11 +33,11 @@ import org.jetbrains.compose.resources.getString
 
 internal class HomeVM(
     private val overlayService: OverlayService,
-    private val performFirstTimeConfigUseCase: PerformFirstTimeConfigUseCase,
+    private val firstTimeConfigUseCase: FirstTimeConfigUseCase,
     private val subscribeToGamesUseCase: SubscribeToGamesUseCase,
-    private val subscribeToCharacterListUseCase: SubscribeToCharacterListUseCase,
+    private val subscribeToCharactersUseCase: SubscribeToCharactersUseCase,
     private val checkCharacterHasMovesUseCase: CheckCharacterHasMovesUseCase,
-    private val refreshUseCase: RefreshUseCase,
+    private val refreshDataUseCase: RefreshDataUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = flow {
@@ -69,23 +70,24 @@ internal class HomeVM(
                     type = Toast.Type.INFO,
                 )
             )
-            refreshUseCase().collect { outcome ->
-                outcome
-                    .onSuccess { refreshReport ->
+            refreshDataUseCase().collect { outcome ->
+                when (outcome) {
+                    is RefreshEvent.Finished -> {
                         overlayService.show(
                             Toast(
                                 message = getString(
                                     Res.string.home_refresh_success,
-                                    refreshReport.game.shortDisplayName,
-                                    refreshReport.successCount,
+                                    "TODO: game refresh",
+                                    outcome.successCount,
                                 ),
                                 type = Toast.Type.SUCCESS,
                             )
                         )
                     }
-                    .onError { error ->
-                        overlayService.show(error = error)
+                    is RefreshEvent.Failed -> {
+                        overlayService.show(error = outcome.error)
                     }
+                }
             }
         }
     }
@@ -112,20 +114,20 @@ internal class HomeVM(
 
     private fun firstTimeCheck() {
         viewModelScope.launch {
-            performFirstTimeConfigUseCase()
+            firstTimeConfigUseCase()
         }
     }
 
     private suspend fun subscribeToEnabledGames() {
-        subscribeToGamesUseCase.invoke().collectLatest { result ->
+        subscribeToGamesUseCase().collectLatest { result ->
             result
-                .onSuccess { gameWikiPairList ->
+                .onSuccess { gameList ->
                     val existingByGame = _state.value.gameFeatureList.associateBy { it.game }
-                    val widgetList = gameWikiPairList.map { (game, featureInfo) ->
+                    val widgetList = gameList.map { game ->
                         val existing = existingByGame[game]
                         val widget = GameFeature(
                             game = game,
-                            featureName = featureInfo.name,
+                            featureName = game.wikiName,
                             characterList = existing?.characterList ?: persistentListOf(),
                             isExpanded = existing?.isExpanded ?: false,
                         )
@@ -144,7 +146,7 @@ internal class HomeVM(
         coroutineScope {
             widgets.forEach { gameWidget ->
                 launch {
-                    subscribeToCharacterListUseCase.invoke(gameWidget.game).collectLatest { characterList ->
+                    subscribeToCharactersUseCase(gameWidget.game).collectLatest { characterList ->
                         val newState = _state.updateAndGet { state ->
                             val updatedList = state.gameFeatureList.map { widget ->
                                 if (widget.game == gameWidget.game) {
@@ -154,8 +156,7 @@ internal class HomeVM(
                                         val ui = GameFeature.UiCharacter(
                                             id = domainCharacter.id,
                                             displayName = domainCharacter.displayName,
-                                            queryName = domainCharacter.remoteQueryId,
-                                            iconUrl = domainCharacter.images?.iconUrl,
+                                            iconUrl = domainCharacter.iconUrl,
                                             hasMoves = existing?.hasMoves ?: false,
                                         )
                                         ui

@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.home.ui
+package io.github.sophon.fightingnerd.adapter.inbound.home
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
@@ -27,8 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
+import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.core.ui.components.CharacterCard
 import io.github.sophon.fightingnerd.core.ui.components.CharacterMatrix
 import io.github.sophon.fightingnerd.core.ui.components.GameWidget

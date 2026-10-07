@@ -53,7 +53,7 @@ import io.github.sophon.fightingnerd.core.ui.components.ToastSnackBar
 import io.github.sophon.fightingnerd.core.ui.components.ToastVisuals
 import io.github.sophon.fightingnerd.feat.changelog.ChangelogClient
 import io.github.sophon.fightingnerd.feat.changelog.ui.ChangelogDialog
-import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
+import io.github.sophon.fightingnerd.adapter.inbound.home.HomeScreen
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.model.MoreItem
 import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen

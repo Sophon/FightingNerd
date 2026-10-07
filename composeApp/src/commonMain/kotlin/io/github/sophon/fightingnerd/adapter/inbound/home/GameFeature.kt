@@ -1,7 +1,7 @@
-package io.github.sophon.fightingnerd.feat.home.ui
+package io.github.sophon.fightingnerd.adapter.inbound.home
 
 import androidx.compose.runtime.Immutable
-import io.github.sophon.core.featureConfig.model.Game
+import io.github.sophon.fightingnerd.app.model.Game
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -23,7 +23,6 @@ internal data class GameFeature(
     internal data class UiCharacter(
         val id: String,
         val displayName: String,
-        val queryName: String,
         val iconUrl: String? = null,
         val hasMoves: Boolean = false,
     ) {

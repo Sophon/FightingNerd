@@ -9,9 +9,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.data.WikiError
 import io.github.sophon.core.wiki.model.RefreshEvent
-import io.github.sophon.fightingnerd.core.model.AppError
-import io.github.sophon.fightingnerd.core.usecase.RefreshReport
-import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
+import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
 import io.github.sophon.fightingnerd.feat.FakeWikiClient
 import io.github.sophon.fightingnerd.feat.more.util.featureKey

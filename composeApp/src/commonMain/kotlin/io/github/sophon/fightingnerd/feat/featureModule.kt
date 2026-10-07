@@ -2,28 +2,24 @@ package io.github.sophon.fightingnerd.feat
 
 import io.github.sophon.fightingnerd.BuildKonfig
 import io.github.sophon.fightingnerd.core.model.AppVersion
-import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
+import io.github.sophon.fightingnerd.core.usecase.RecordInstallationUseCase
+import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
 import io.github.sophon.fightingnerd.feat.changelog.ChangelogClient
 import io.github.sophon.fightingnerd.feat.changelog.ChangelogClientImpl
 import io.github.sophon.fightingnerd.feat.changelog.data.ChangelogRemoteSource
 import io.github.sophon.fightingnerd.feat.changelog.data.ChangelogRemoteSourceImpl
 import io.github.sophon.fightingnerd.feat.changelog.usecase.GetUnseenReleaseUseCase
 import io.github.sophon.fightingnerd.feat.changelog.usecase.SaveReleaseAsSeenUseCase
-import io.github.sophon.fightingnerd.feat.home.ui.HomeVM
-import io.github.sophon.fightingnerd.feat.home.usecase.CheckCharacterHasMovesUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.PerformFirstTimeConfigUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToCharacterListUseCase
-import io.github.sophon.fightingnerd.feat.home.usecase.SubscribeToGamesUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.MoreVM
 import io.github.sophon.fightingnerd.feat.more.ui.about.AboutVM
 import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsVM
 import io.github.sophon.fightingnerd.feat.more.ui.updates.UpdatesVM
-import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.ManualRefreshUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SetUpdatePeriodUseCase
+import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
 import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToUpdatePeriodUseCase
 import io.github.sophon.fightingnerd.feat.move.ui.MoveListVM
@@ -42,8 +38,6 @@ import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewVM
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizVM
 import io.github.sophon.fightingnerd.feat.quiz.usecase.GenerateQuestionsUseCase
 import io.github.sophon.fightingnerd.feat.quiz.usecase.SubscribeGameWidgetsUseCase
-import io.github.sophon.fightingnerd.core.usecase.RecordInstallationUseCase
-import io.github.sophon.fightingnerd.core.usecase.RequestReviewUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
@@ -54,15 +48,6 @@ internal fun featureModule() = module {
     //region Module
     singleOf(::LoadConfigUseCase)
     singleOf(::WikiClientFactory)
-    //endregion
-
-    //region Home
-    viewModelOf(::HomeVM)
-    singleOf(::PerformFirstTimeConfigUseCase)
-    singleOf(::SubscribeToGamesUseCase)
-    singleOf(::SubscribeToCharacterListUseCase)
-    singleOf(::RefreshUseCase)
-    singleOf(::CheckCharacterHasMovesUseCase)
     //endregion
 
     //region More

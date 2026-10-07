@@ -1,8 +1,8 @@
-package io.github.sophon.fightingnerd.core.model
+package io.github.sophon.fightingnerd.app.model
 
 import io.github.sophon.core.architecture.Error
 
-internal sealed class AppError(val errorMessage: String) : Error {
+sealed class AppError(val errorMessage: String) : Error {
     internal data class ConfigNotFoundError(val error: String) : AppError(errorMessage = error)
     internal data class ConfigParseError(val error: String) : AppError(errorMessage = error)
     internal data class WikiClientNotFound(val name: String) : AppError(errorMessage = name)

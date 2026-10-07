@@ -16,7 +16,7 @@ import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.core.data.MediaRepo
 import io.github.sophon.fightingnerd.core.data.ReviewPolicyRepo
-import io.github.sophon.fightingnerd.core.model.AppError
+import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandler
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
