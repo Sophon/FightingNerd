@@ -1,0 +1,371 @@
+package io.github.sophon.fightingnerd.adapter.inbound.move.composables
+
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Notes
+import androidx.compose.material.icons.outlined.ExpandMore
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.Share
+import androidx.compose.material.icons.outlined.Videocam
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.graphicsLayer
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.move_list_field_damage
+import fightingnerd.composeapp.generated.resources.move_list_field_guard
+import fightingnerd.composeapp.generated.resources.move_list_field_on_block
+import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
+import fightingnerd.composeapp.generated.resources.move_list_field_startup
+import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListState
+import io.github.sophon.fightingnerd.core.ui.components.IconAction
+import io.github.sophon.fightingnerd.core.ui.components.IconActionButton
+import io.github.sophon.fightingnerd.core.ui.components.ImageCarousel
+import io.github.sophon.fightingnerd.adapter.inbound.move.model.Property
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.components.VideoPlayer
+import io.github.sophon.fightingnerd.theme.FightingNerdTheme
+import io.github.sophon.fightingnerd.theme.nerdColorPalette
+import io.github.sophon.fightingnerd.theme.nerdDimensions
+import io.github.sophon.fightingnerd.theme.nerdTypography
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.ImmutableSet
+import kotlinx.collections.immutable.persistentListOf
+import kotlinx.collections.immutable.persistentSetOf
+import org.jetbrains.compose.ui.tooling.preview.Preview
+
+private const val COUNT_MAX_PER_ROW = 3
+
+@Composable
+internal fun MoveItem(
+    uiMove: MoveListState.UiMove,
+    onMoveClick: () -> Unit,
+    onShareClick: (id: String) -> Unit,
+    isExpanded: Boolean,
+    modifier: Modifier = Modifier,
+) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isExpandable = remember { uiMove.isExpandable() }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(
+                enabled = isExpandable,
+                interactionSource = interactionSource,
+                onClick = onMoveClick,
+                indication = ripple(color = MaterialTheme.colorScheme.primaryContainer)
+            )
+            .clip(RoundedCornerShape(nerdDimensions.cornerDefault))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(nerdDimensions.componentPadding)
+    ) {
+        Header(
+            input = uiMove.input,
+            name = uiMove.name,
+            propertySet = uiMove.propertySet,
+            onShare = { onShareClick(uiMove.id) },
+        )
+
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(nerdDimensions.inlineGap),
+            maxItemsInEachRow = COUNT_MAX_PER_ROW,
+            verticalArrangement = Arrangement.spacedBy(nerdDimensions.componentPaddingTight),
+        ) {
+            uiMove.coreFields.forEach { field ->
+                FieldColumn(
+                    field = field,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+
+        if (isExpandable) {
+            Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+            ExpansionIndicator(
+                isExpanded = isExpanded,
+                urls = uiMove.urls,
+                notes = uiMove.notes,
+            )
+
+            if (isExpanded) {
+                Details(uiMove)
+            }
+        }
+    }
+}
+
+@Composable
+private fun Header(
+    input: String,
+    name: String?,
+    propertySet: ImmutableSet<Property>,
+    onShare: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier) {
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(
+                text = input,
+                style = nerdTypography.titleLarge,
+                color = nerdColorPalette.textPrimary,
+                maxLines = 2,
+                modifier = Modifier.weight(1f),
+            )
+
+            IconActionButton(
+                action = IconAction(
+                    icon = Icons.Outlined.Share,
+                    onClick = onShare,
+                ),
+                tint = nerdColorPalette.textSecondary,
+                modifier = Modifier.size(nerdDimensions.iconInline),
+            )
+        }
+        Spacer(Modifier.height(nerdDimensions.componentGapTight))
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.Bottom,
+            modifier = Modifier.fillMaxWidth(),
+        ) {
+            Text(
+                text = name.orEmpty(),
+                style = nerdTypography.labelSmall,
+                color = nerdColorPalette.textSecondary,
+            )
+            Properties(
+                propertySet = propertySet
+            )
+        }
+        Spacer(Modifier.height(nerdDimensions.componentGapTight))
+
+        HorizontalDivider(
+            modifier = Modifier
+                .padding(vertical = nerdDimensions.listRowPaddingVertical)
+                .background(nerdColorPalette.dividerSubtle)
+        )
+    }
+}
+
+@Composable
+private fun Details(
+    uiMove: MoveListState.UiMove,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+    ) {
+        uiMove.urls.videoUrl?.let { videoUrl ->
+            VideoPlayer(videoUrl)
+            Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+        }
+
+        when {
+            uiMove.urls.hitboxImageList.isNotEmpty() -> {
+                ImageCarousel(
+                    imageList = uiMove.urls.hitboxImageList,
+                    modifier = Modifier.fillMaxWidth(),
+                )
+
+                Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+            }
+            uiMove.urls.moveImageList.isNotEmpty() -> {
+                MoveImage(uiMove.urls.moveImageList.first())
+                Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+            }
+        }
+
+        FlowRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(nerdDimensions.inlineGapTight),
+            maxItemsInEachRow = COUNT_MAX_PER_ROW,
+            verticalArrangement = Arrangement.spacedBy(nerdDimensions.componentPaddingTight),
+        ) {
+            uiMove.optionalFields.forEach { field ->
+                FieldColumn(
+                    field = field,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+        }
+        if (uiMove.optionalFields.isNotEmpty()) {
+            Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+        }
+
+        uiMove.notes.takeIf { it.isNotEmpty() }?.let { noteList ->
+            NotesSection(noteList)
+            Spacer(Modifier.height(nerdDimensions.componentPaddingTight))
+        }
+    }
+}
+
+@Composable
+private fun ExpansionIndicator(
+    isExpanded: Boolean,
+    urls: MoveListState.UiMove.Urls,
+    notes: ImmutableList<String>,
+    modifier: Modifier = Modifier
+) {
+    val chevronFlip by animateFloatAsState(
+        targetValue = if (isExpanded) -1f else 1f,
+        label = "chevronFlip",
+    )
+
+    Row(
+        horizontalArrangement = Arrangement.Center,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Row {
+            if (urls.moveImageList.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.Outlined.Image,
+                    contentDescription = null,
+                    tint = nerdColorPalette.textPrimary,
+                    modifier = Modifier.size(nerdDimensions.iconInline)
+                )
+            }
+
+            if (urls.videoUrl != null) {
+                Icon(
+                    imageVector = Icons.Outlined.Videocam,
+                    contentDescription = null,
+                    tint = nerdColorPalette.textPrimary,
+                    modifier = Modifier.size(nerdDimensions.iconInline)
+                )
+            }
+
+            if (notes.isNotEmpty()) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Outlined.Notes,
+                    contentDescription = null,
+                    tint = nerdColorPalette.textPrimary,
+                    modifier = Modifier.size(nerdDimensions.iconInline)
+                )
+            }
+            Spacer(Modifier.width(nerdDimensions.inlineGap))
+        }
+
+        Icon(
+            imageVector = Icons.Outlined.ExpandMore,
+            contentDescription = null,
+            tint = nerdColorPalette.textPrimary,
+            modifier = Modifier
+                .size(nerdDimensions.iconInline)
+                .graphicsLayer { scaleY = chevronFlip }
+        )
+    }
+}
+
+
+//region PREVIEW
+private val videoMove = MoveListState.UiMove(
+    id = "nina-hub1",
+    input = "H.ub1",
+    name = "Neck Hunter: Villain",
+    propertySet = persistentSetOf(Property.Heat, Property.Homing),
+    coreFields = persistentListOf(
+        MoveListState.Field(Res.string.move_list_field_startup, "i24"),
+        MoveListState.Field(Res.string.move_list_field_guard, "h"),
+        MoveListState.Field(Res.string.move_list_field_damage, "25"),
+        MoveListState.Field(Res.string.move_list_field_on_block, "+8"),
+        MoveListState.Field(Res.string.move_list_field_on_hit, "+60a"),
+    ),
+    optionalFields = persistentListOf(),
+    urls = MoveListState.UiMove.Urls(
+        videoUrl = "video",
+    ),
+    notes = persistentListOf(
+        "Strong Aerial Tailspin",
+        "Homing",
+        "Consumes 150F of remaining Heat time",
+    ),
+)
+
+private val imageMove = MoveListState.UiMove(
+    id = "nina-hub1",
+    input = "H.ub1",
+    name = "Neck Hunter: Villain",
+    coreFields = persistentListOf(
+        MoveListState.Field(Res.string.move_list_field_startup, "i24"),
+        MoveListState.Field(Res.string.move_list_field_guard, "h"),
+        MoveListState.Field(Res.string.move_list_field_damage, "25"),
+        MoveListState.Field(Res.string.move_list_field_on_block, "+8"),
+        MoveListState.Field(Res.string.move_list_field_on_hit, "+60a"),
+    ),
+    optionalFields = persistentListOf(),
+    urls = MoveListState.UiMove.Urls(
+        hitboxImageList = persistentListOf("a", "b"),
+    ),
+    notes = persistentListOf(
+        "Something",
+    ),
+)
+
+@Preview
+@Composable
+private fun CollapsedItemPreview() {
+    FightingNerdTheme {
+        MoveItem(
+            uiMove = videoMove,
+            onMoveClick = {},
+            onShareClick = {},
+            isExpanded = false,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ExpandedVideoItemPreview() {
+    FightingNerdTheme {
+        MoveItem(
+            uiMove = videoMove,
+            onMoveClick = {},
+            onShareClick = {},
+            isExpanded = true,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun ExpandedImageItemPreview() {
+    FightingNerdTheme {
+        MoveItem(
+            uiMove = imageMove,
+            onMoveClick = {},
+            onShareClick = {},
+            isExpanded = true,
+        )
+    }
+}
+//endregion

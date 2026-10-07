@@ -41,13 +41,24 @@ internal class RefreshDataService(
     private val refreshMutex = Mutex()
 
     override fun invoke(): Flow<RefreshEvent> {
+        val flow = refresh { enabledGameSet -> enabledGameSet }
+        return flow
+    }
+
+    override fun invoke(gameSet: Set<Game>): Flow<RefreshEvent> {
+        val flow = refresh { enabledGameSet -> (enabledGameSet intersect gameSet) }
+        return flow
+    }
+
+    private fun refresh(selectGameSet: (Set<Game>) -> Set<Game>): Flow<RefreshEvent> {
         val flow = flow {
             refreshMutex.withLock {
-                val gameSet = loadWikiConfigPort
+                val enabledGameSet = loadWikiConfigPort
                     .subscribe()
                     .filterNotNull()
                     .first()
                     .enabledGameSet
+                val gameSet = selectGameSet(enabledGameSet)
 
                 var successCount = 0
                 for (game in gameSet) {

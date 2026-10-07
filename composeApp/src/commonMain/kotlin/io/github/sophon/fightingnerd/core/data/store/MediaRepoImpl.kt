@@ -10,7 +10,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.wiki.model.CharacterId
 import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.fightingnerd.core.data.MediaRepo
-import io.github.sophon.fightingnerd.core.model.AppError
+import io.github.sophon.fightingnerd.app.model.AppError
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.statement.readRawBytes

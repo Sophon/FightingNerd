@@ -28,7 +28,7 @@ sealed class Wiki(
         id = "dustloop",
         displayName = "DustLoop Wiki",
         url = "https://www.dustloop.com/wiki/",
-        iconUrl = "https://www.dustloop.com/wiki/images/archive/3/30/20260601135625%21Dustloop_Wiki.png",
+        iconUrl = "https://www.dustloop.com/wiki/images/3/30/Dustloop_Wiki.png",
         color = DUSTLOOP_RED,
         feedbackDiscordChannelId = "578257299529924621",
     )

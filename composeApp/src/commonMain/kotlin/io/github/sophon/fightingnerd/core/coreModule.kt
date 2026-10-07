@@ -1,14 +1,8 @@
 package io.github.sophon.fightingnerd.core
 
 import io.github.aakira.napier.Napier
-import io.github.sophon.fightingnerd.core.data.ReleaseRepo
 import io.github.sophon.fightingnerd.core.data.MediaRepo
-import io.github.sophon.fightingnerd.core.data.PreferenceRepo
-import io.github.sophon.fightingnerd.core.data.ReviewPolicyRepo
-import io.github.sophon.fightingnerd.core.data.store.ReleaseRepoImpl
 import io.github.sophon.fightingnerd.core.data.store.MediaRepoImpl
-import io.github.sophon.fightingnerd.core.data.store.PreferenceRepoImpl
-import io.github.sophon.fightingnerd.core.data.store.ReviewPolicyRepoImpl
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -18,7 +12,6 @@ import kotlinx.coroutines.SupervisorJob
 import okio.FileSystem
 import okio.SYSTEM
 import org.koin.core.module.dsl.singleOf
-import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal fun coreModule() = module {
@@ -40,12 +33,6 @@ internal fun coreModule() = module {
             store = get(),
         )
     }
-
-    singleOf(::PreferenceRepoImpl).bind<PreferenceRepo>()
-
-    singleOf(::ReleaseRepoImpl).bind<ReleaseRepo>()
-
-    singleOf(::ReviewPolicyRepoImpl).bind<ReviewPolicyRepo>()
 
     singleOf(::OpenUrlUseCase)
 

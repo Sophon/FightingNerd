@@ -6,7 +6,6 @@ import io.github.sophon.discord.inPort.PostDailyReportUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlin.time.Duration.Companion.hours
 
 internal class ReportScheduler(
     private val scheduler: Scheduler,
@@ -14,11 +13,7 @@ internal class ReportScheduler(
     private val postDailyReportUseCase: PostDailyReportUseCase,
 ) {
     fun start() {
-        scheduler.start(
-            initialDelay = untilNextUtcMidnight(),
-            period = 24.hours,
-            task = { postDailyReportUseCase() },
-        )
+        scheduler.startDaily { postDailyReportUseCase() }
             .onEach { result -> result.onError { error -> Napier.e(tag = TAG) { "Daily report failed: $error" } } }
             .launchIn(coroutineScope)
     }

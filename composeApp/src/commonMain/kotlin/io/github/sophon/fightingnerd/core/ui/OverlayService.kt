@@ -1,7 +1,7 @@
 package io.github.sophon.fightingnerd.core.ui
 
 import androidx.compose.runtime.Composable
-import io.github.sophon.fightingnerd.core.model.AppError
+import io.github.sophon.fightingnerd.app.model.AppError
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow

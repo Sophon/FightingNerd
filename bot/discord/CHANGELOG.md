@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.0.2] - 2026-10-08
+- fix - missing daily stats report
+
 ## [v17.0.1] - 2026-10-06
 - fix - normalize user query
 

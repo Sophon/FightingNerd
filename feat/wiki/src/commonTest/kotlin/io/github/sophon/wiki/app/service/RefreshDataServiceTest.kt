@@ -99,6 +99,56 @@ internal class RefreshDataServiceTest {
         val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
         assertThat(failedEvent.error).isInstanceOf(WikiError.DatabaseError::class)
     }
+
+    @Test
+    fun `a scoped refresh skips the games outside the set`() = runTest {
+        // given
+        val store = FakeCharacterMoveListStore()
+        val service = RefreshDataService(
+            loadWikiConfigPort = FakeLoadWikiConfigPort(Game.Tekken8, Game.StreetFighter6),
+            fetchGameDataPort = FakeFetchGameDataPort(
+                mapOf(
+                    Game.Tekken8 to listOf(Result.Success(yoshimitsu to emptyList())),
+                    Game.StreetFighter6 to listOf(Result.Success(ryu to emptyList())),
+                ),
+            ),
+            saveCharacterMoveListPort = store,
+            strikeCharacterListPort = store,
+        )
+        val expected = listOf(Game.StreetFighter6)
+
+        // when
+        service.invoke(setOf(Game.StreetFighter6)).toList()
+
+        // then
+        val refreshedGameList = store.strikeCallList.map { (game, _) -> game }
+        assertThat(refreshedGameList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a scoped refresh skips the games that aren't enabled`() = runTest {
+        // given
+        val store = FakeCharacterMoveListStore()
+        val service = RefreshDataService(
+            loadWikiConfigPort = FakeLoadWikiConfigPort(Game.Tekken8),
+            fetchGameDataPort = FakeFetchGameDataPort(
+                mapOf(
+                    Game.Tekken8 to listOf(Result.Success(yoshimitsu to emptyList())),
+                    Game.StreetFighter6 to listOf(Result.Success(ryu to emptyList())),
+                ),
+            ),
+            saveCharacterMoveListPort = store,
+            strikeCharacterListPort = store,
+        )
+        val expected = listOf(Game.Tekken8)
+
+        // when
+        service.invoke(setOf(Game.Tekken8, Game.StreetFighter6)).toList()
+
+        // then
+        val refreshedGameList = store.strikeCallList.map { (game, _) -> game }
+        assertThat(refreshedGameList).isEqualTo(expected)
+    }
 }
 
 private fun refreshDataService(
@@ -126,6 +176,13 @@ private val armorKing = Character(
     displayName = "Armor King",
     remoteQueryId = "Armor King",
     wikiUrl = "https://wavu.wiki/t/Armor_King",
+)
+
+private val ryu = Character(
+    id = CharacterId(Game.StreetFighter6, "Ryu"),
+    displayName = "Ryu",
+    remoteQueryId = "Ryu",
+    wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu",
 )
 
 private val fleaRoll = Move(

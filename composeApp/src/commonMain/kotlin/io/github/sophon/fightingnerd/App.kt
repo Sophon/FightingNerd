@@ -32,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -44,30 +43,32 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.core.featureConfig.FeatureRepo
+import kotlinx.coroutines.flow.collect
 import io.github.sophon.fightingnerd.core.ui.Dialog
 import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.core.ui.components.ToastSnackBar
 import io.github.sophon.fightingnerd.core.ui.components.ToastVisuals
-import io.github.sophon.fightingnerd.feat.changelog.ChangelogClient
-import io.github.sophon.fightingnerd.feat.changelog.ui.ChangelogDialog
-import io.github.sophon.fightingnerd.feat.home.ui.HomeScreen
-import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
-import io.github.sophon.fightingnerd.feat.more.model.MoreItem
-import io.github.sophon.fightingnerd.feat.more.ui.MoreScreen
-import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsScreen
-import io.github.sophon.fightingnerd.feat.more.ui.updates.UpdatesScreen
-import io.github.sophon.fightingnerd.feat.move.ui.MoveListScreen
-import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewScreen
-import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizScreen
-import io.github.sophon.fightingnerd.core.usecase.RecordInstallationUseCase
-import io.github.sophon.fightingnerd.feat.more.ui.about.AboutScreen
-import io.github.sophon.fightingnerd.navigation.domain.Destination
-import io.github.sophon.fightingnerd.navigation.domain.rootDestinationSet
-import io.github.sophon.fightingnerd.navigation.domain.rootDestinations
-import io.github.sophon.fightingnerd.navigation.ui.BottomNavBarView
+import io.github.sophon.fightingnerd.adapter.inbound.changelog.ChangelogDialog
+import io.github.sophon.fightingnerd.adapter.inbound.home.HomeScreen
+import io.github.sophon.fightingnerd.adapter.inbound.more.model.MoreItem
+import io.github.sophon.fightingnerd.adapter.inbound.more.MoreScreen
+import io.github.sophon.fightingnerd.adapter.inbound.more.featureSettings.FeatureSettingsScreen
+import io.github.sophon.fightingnerd.adapter.inbound.more.updates.UpdatesScreen
+import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListScreen
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizOverviewScreen
+import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizScreen
+import io.github.sophon.fightingnerd.inPort.RecordInstallationUseCase
+import io.github.sophon.fightingnerd.adapter.inbound.more.about.AboutScreen
+import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
+import io.github.sophon.fightingnerd.inPort.SaveReleaseAsSeenUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToUnseenReleaseUseCase
+import io.github.sophon.fightingnerd.adapter.inbound.navigation.Destination
+import io.github.sophon.fightingnerd.adapter.inbound.navigation.rootDestinationSet
+import io.github.sophon.fightingnerd.adapter.inbound.navigation.rootDestinations
+import io.github.sophon.fightingnerd.adapter.inbound.navigation.BottomNavBarView
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import kotlinx.coroutines.launch
 import kotlinx.serialization.modules.SerializersModule
@@ -113,37 +114,17 @@ internal fun App() {
     val recordInstallation = koinInject<RecordInstallationUseCase>()
     LaunchedEffect(Unit) { recordInstallation() }
 
-    val isInitialized = rememberFeaturesLoaded()
+    val syncWikiConfig = koinInject<OnLaunchSetupUseCase>()
+    val overlayService = koinInject<OverlayService>()
+    LaunchedEffect(Unit) {
+        syncWikiConfig()
+            .onSuccess { refreshFlow -> refreshFlow.collect() }
+            .onError { error -> overlayService.show(error) }
+    }
 
     FightingNerdTheme {
-        if (isInitialized) {
-            Content()
-        } else {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularLoader()
-            }
-        }
+        Content()
     }
-}
-
-@Composable
-private fun rememberFeaturesLoaded(): Boolean {
-    var isInitialized by remember { mutableStateOf(false) }
-
-    val featureRepo = koinInject<FeatureRepo>()
-    val loadConfigUseCase = koinInject<LoadConfigUseCase>()
-    LaunchedEffect(Unit) {
-        loadConfigUseCase()
-            .onSuccess { config ->
-                featureRepo.initialize(config)
-                isInitialized = true
-            }
-    }
-
-    return isInitialized
 }
 
 @Composable
@@ -152,19 +133,23 @@ private fun Content(
 ) {
     val backStack = rememberNavBackStack(navConfig, Destination.Home)
     val overlayService = koinInject<OverlayService>()
-    val changelogClient = koinInject<ChangelogClient>()
+    val subscribeToUnseenRelease = koinInject<SubscribeToUnseenReleaseUseCase>()
+    val saveReleaseAsSeen = koinInject<SaveReleaseAsSeenUseCase>()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(changelogClient, overlayService) {
-        changelogClient.subscribeToUnseenChangelog().collect { release ->
+    LaunchedEffect(subscribeToUnseenRelease, overlayService) {
+        subscribeToUnseenRelease().collect { release ->
             overlayService.show(
                 Dialog(
                     content = { onDismiss ->
                         ChangelogDialog(
                             release = release,
                             onDismiss = {
-                                scope.launch { changelogClient.saveReleaseAsSeen(release.version) }
+                                scope.launch {
+                                    saveReleaseAsSeen(release.version)
+                                        .onError { error -> Napier.e(tag = TAG_CHANGELOG) { error.errorMessage } }
+                                }
                                 onDismiss()
                             },
                         )
@@ -356,3 +341,6 @@ private fun BoxScope.AppBottomBar(
         }
     }
 }
+
+
+private const val TAG_CHANGELOG = "Changelog"
