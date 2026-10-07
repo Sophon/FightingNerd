@@ -139,5 +139,9 @@ internal class SubscribeToMoveListServiceTest {
         override suspend fun wipe(gameId: String, characterId: String): EmptyResult<AppError> {
             error("not used")
         }
+
+        override suspend fun wipe(gameId: String): EmptyResult<AppError> {
+            error("not used")
+        }
     }
 }

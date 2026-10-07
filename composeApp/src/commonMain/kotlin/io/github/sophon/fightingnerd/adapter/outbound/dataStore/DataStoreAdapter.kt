@@ -16,8 +16,6 @@ import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
 import io.github.sophon.fightingnerd.app.outPort.FirstLaunchPort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
-import io.github.sophon.fightingnerd.feat.more.KEY_PREFIX_FEATURE
-import io.github.sophon.fightingnerd.feat.more.util.featureKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -76,7 +74,7 @@ internal class DataStoreAdapter(
         val flow = store.data
             .map { preferences ->
                 val isEnabledByGame = gameSet.associateWith { game ->
-                    preferences[featureKey(game.wikiName, game.id)] == true
+                    preferences[featureKey(game.wiki.name, game.id)] == true
                 }
                 val result: Result<Map<Game, Boolean>, AppError> = Result.Success(isEnabledByGame)
                 result

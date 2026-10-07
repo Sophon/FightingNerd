@@ -12,7 +12,7 @@ import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
 import io.github.sophon.fightingnerd.feat.FakeWikiClient
-import io.github.sophon.fightingnerd.feat.more.util.featureKey
+import io.github.sophon.fightingnerd.adapter.outbound.dataStore.featureKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.TestScope

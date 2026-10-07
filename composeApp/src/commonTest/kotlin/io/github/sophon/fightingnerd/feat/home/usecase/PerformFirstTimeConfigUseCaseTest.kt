@@ -10,7 +10,7 @@ import io.github.sophon.fightingnerd.KEY_HAS_LAUNCHED_BEFORE
 import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.FakeFeatureRepo
 import io.github.sophon.fightingnerd.feat.FakeWikiClient
-import io.github.sophon.fightingnerd.feat.more.util.featureKey
+import io.github.sophon.fightingnerd.adapter.outbound.dataStore.featureKey
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.TestScope

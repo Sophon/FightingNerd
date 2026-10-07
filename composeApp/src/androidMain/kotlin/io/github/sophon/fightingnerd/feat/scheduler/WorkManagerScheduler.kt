@@ -8,6 +8,7 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.core.data.PreferenceRepo
 import io.github.sophon.fightingnerd.app.model.AppError
+import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
 import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
@@ -15,7 +16,7 @@ import kotlin.time.Duration
 internal class WorkManagerScheduler(
     private val context: Context,
     private val preferenceRepo: PreferenceRepo,
-) : Scheduler {
+) : SchedulerPort {
 
     override suspend fun setPeriod(duration: Duration): EmptyResult<AppError> {
         val result = try {

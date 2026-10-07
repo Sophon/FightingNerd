@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.fightingnerd.app.model.Character
 import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.outPort.CharacterPort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -19,7 +20,7 @@ internal class SubscribeToCharactersServiceTest {
             id = "Tekken_8",
             displayName = "Tekken 8",
             iconUrl = "https://i.imgur.com/Yl6j809.png",
-            wikiName = "Wavu Wiki",
+            wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"),
         )
         val expected = listOf(
             Character(id = "jin", displayName = "Jin"),

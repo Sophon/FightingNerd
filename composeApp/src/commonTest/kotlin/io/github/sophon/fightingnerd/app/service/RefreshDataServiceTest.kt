@@ -36,5 +36,9 @@ internal class RefreshDataServiceTest {
             val flow = eventList.asFlow()
             return flow
         }
+
+        override fun refresh(gameIdSet: Set<String>): Flow<RefreshEvent> {
+            error("not used")
+        }
     }
 }

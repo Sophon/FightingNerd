@@ -4,7 +4,7 @@ data class Game(
     val id: String,
     val displayName: String,
     val iconUrl: String,
-    val wikiName: String,
+    val wiki: Wiki,
 ) {
     val shortDisplayName: String
         get() {

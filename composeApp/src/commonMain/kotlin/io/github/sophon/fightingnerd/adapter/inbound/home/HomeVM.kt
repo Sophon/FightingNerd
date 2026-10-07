@@ -114,7 +114,7 @@ internal class HomeVM(
                         val existing = existingByGame[game]
                         val widget = GameFeature(
                             game = game,
-                            featureName = game.wikiName,
+                            featureName = game.wiki.name,
                             characterList = existing?.characterList ?: persistentListOf(),
                             isExpanded = existing?.isExpanded ?: false,
                         )

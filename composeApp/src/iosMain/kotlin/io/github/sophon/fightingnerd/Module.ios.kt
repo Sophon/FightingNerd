@@ -14,7 +14,7 @@ import io.github.sophon.fightingnerd.core.domain.UrlOpenerIos
 import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandler
 import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandlerImpl
 import io.github.sophon.fightingnerd.feat.scheduler.BGTaskScheduler
-import io.github.sophon.fightingnerd.feat.scheduler.Scheduler
+import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
 import io.github.sophon.fightingnerd.feat.share.ShareSheet
 import io.github.sophon.fightingnerd.feat.share.ShareSheetImpl
 import io.github.sophon.fightingnerd.infrastructure.createDataStore
@@ -32,7 +32,7 @@ import platform.Foundation.NSUserDomainMask
 internal actual val platformModule = module {
     single { createDataStore() }
     singleOf(::UrlOpenerIos).bind<UrlOpener>()
-    singleOf(::BGTaskScheduler).bind<Scheduler>()
+    singleOf(::BGTaskScheduler).bind<SchedulerPort>()
     singleOf(::ShareSheetImpl).bind<ShareSheet>()
     singleOf(::ReviewHandlerImpl).bind<ReviewHandler>()
 

@@ -304,5 +304,9 @@ internal class SyncWikiConfigServiceTest {
             }
             return flow
         }
+
+        override fun refresh(gameIdSet: Set<String>): Flow<RefreshEvent> {
+            error("not used")
+        }
     }
 }

@@ -5,4 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 internal interface RefreshWikiPort {
     fun refresh(): Flow<RefreshEvent>
+    fun refresh(gameIdSet: Set<String>): Flow<RefreshEvent>
 }

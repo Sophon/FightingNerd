@@ -9,6 +9,7 @@ import io.github.sophon.fightingnerd.app.model.Character
 import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.model.game.T8Properties
 import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
 import io.github.sophon.wiki.inPort.GetAvailableGamesUseCase
@@ -16,6 +17,7 @@ import io.github.sophon.wiki.inPort.GetCharacterListUseCase
 import io.github.sophon.wiki.inPort.GetFiltersUseCase
 import io.github.sophon.wiki.inPort.GetGroupsUseCase
 import io.github.sophon.wiki.inPort.GetMoveListUseCase
+import io.github.sophon.wiki.inPort.GetUpdateTimeStampUseCase
 import io.github.sophon.wiki.inPort.RefreshDataUseCase
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Filter
@@ -29,8 +31,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
+import kotlin.time.Instant
 import io.github.sophon.wiki.model.Character as WikiCharacter
 import io.github.sophon.wiki.model.Move as WikiMove
 import io.github.sophon.wiki.model.game.T8Properties as WikiT8Properties
@@ -41,7 +45,7 @@ internal class WikiAdapterTest {
         id = "Tekken_8",
         displayName = "Tekken 8",
         iconUrl = "https://i.imgur.com/Yl6j809.png",
-        wikiName = "Wavu Wiki",
+        wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"),
     )
     private val jin = WikiCharacter(
         id = CharacterId(game = WikiGame.Tekken8, naturalId = "jin"),
@@ -245,21 +249,54 @@ internal class WikiAdapterTest {
         assertThat(result).isEqualTo(expected)
     }
 
+    @Test
+    fun `each wiki is listed once`() = runTest {
+        // given
+        val adapter = wikiAdapter(availableGameSet = setOf(WikiGame.Tekken8, WikiGame.StreetFighter6, WikiGame.MK1))
+        val expected = setOf(
+            Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"),
+            Wiki(name = "SuperCombo Wiki", url = "https://wiki.supercombo.gg/", iconUrl = "https://wiki.supercombo.gg/srk_wordmark.png"),
+        )
+
+        // when
+        val result = adapter.subscribeToWikis().first()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `unknown games are left out of a refresh`() = runTest {
+        // given
+        val refreshDataUseCase = FakeRefreshDataUseCase()
+        val adapter = wikiAdapter(refreshDataUseCase = refreshDataUseCase)
+        val expected = listOf(setOf(WikiGame.Tekken8))
+
+        // when
+        adapter.refresh(setOf("Tekken_8", "Tekken_9")).toList()
+
+        // then
+        assertThat(refreshDataUseCase.refreshedList).isEqualTo(expected)
+    }
+
 
     private fun wikiAdapter(
         characterList: List<WikiCharacter> = emptyList(),
         moveListById: Map<CharacterId, List<WikiMove>> = emptyMap(),
         filterSet: Set<Filter> = emptySet(),
         groupList: List<Group> = emptyList(),
+        availableGameSet: Set<WikiGame> = emptySet(),
+        refreshDataUseCase: FakeRefreshDataUseCase = FakeRefreshDataUseCase(),
     ): WikiAdapter {
         val adapter = WikiAdapter(
             configureWikiUseCase = UnusedConfigureWikiUseCase(),
-            refreshDataUseCase = UnusedRefreshDataUseCase(),
-            getAvailableGamesUseCase = UnusedGetAvailableGamesUseCase(),
+            refreshDataUseCase = refreshDataUseCase,
+            getAvailableGamesUseCase = FakeGetAvailableGamesUseCase(availableGameSet),
             getCharacterListUseCase = FakeGetCharacterListUseCase(characterList),
             getMoveListUseCase = FakeGetMoveListUseCase(moveListById),
             getFiltersUseCase = FakeGetFiltersUseCase(filterSet),
             getGroupsUseCase = FakeGetGroupsUseCase(groupList),
+            getUpdateTimeStampUseCase = UnusedGetUpdateTimeStampUseCase(),
         )
         return adapter
     }
@@ -308,15 +345,30 @@ internal class WikiAdapterTest {
         }
     }
 
-    private class UnusedRefreshDataUseCase: RefreshDataUseCase {
+    private class FakeRefreshDataUseCase: RefreshDataUseCase {
+        val refreshedList = mutableListOf<Set<WikiGame>>()
+
         override fun invoke(): Flow<RefreshEvent> {
+            error("not used")
+        }
+
+        override fun invoke(gameSet: Set<WikiGame>): Flow<RefreshEvent> {
+            refreshedList.add(gameSet)
             return emptyFlow()
         }
     }
 
-    private class UnusedGetAvailableGamesUseCase: GetAvailableGamesUseCase {
-        override fun invoke(): Flow<Set<WikiGame>> {
+    private class UnusedGetUpdateTimeStampUseCase: GetUpdateTimeStampUseCase {
+        override fun invoke(game: WikiGame): Flow<Instant?> {
             return emptyFlow()
+        }
+    }
+
+    private class FakeGetAvailableGamesUseCase(
+        private val gameSet: Set<WikiGame>,
+    ): GetAvailableGamesUseCase {
+        override fun invoke(): Flow<Set<WikiGame>> {
+            return flowOf(gameSet)
         }
     }
 }

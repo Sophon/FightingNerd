@@ -87,6 +87,10 @@ internal class DownloadMediaServiceTest {
             error("not used")
         }
 
+        override suspend fun wipe(gameId: String): EmptyResult<AppError> {
+            error("not used")
+        }
+
         override fun toOfflineUrls(gameId: String, characterId: String, urls: Move.Urls): Move.Urls {
             error("not used")
         }

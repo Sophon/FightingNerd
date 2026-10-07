@@ -2,6 +2,7 @@ package io.github.sophon.fightingnerd.adapter.inbound.home
 
 import androidx.compose.runtime.Immutable
 import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.Wiki
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
@@ -51,7 +52,7 @@ internal data class HomeViewState(
                         id = "Tekken_8",
                         displayName = "Tekken 8",
                         iconUrl = "https://i.imgur.com/Yl6j809.png",
-                        wikiName = "Wavu Wiki",
+                        wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"),
                     ),
                     featureName = "Wavu Wiki",
                     isExpanded = true,
@@ -61,7 +62,7 @@ internal data class HomeViewState(
                         id = "Street_Fighter_6",
                         displayName = "Street Fighter 6",
                         iconUrl = "https://i.imgur.com/N9wYA5K.png",
-                        wikiName = "SuperCombo Wiki",
+                        wiki = Wiki(name = "SuperCombo Wiki", url = "https://wiki.supercombo.gg/", iconUrl = "https://wiki.supercombo.gg/srk_wordmark.png"),
                     ),
                     featureName = "SuperCombo",
                     isExpanded = false,
@@ -71,7 +72,7 @@ internal data class HomeViewState(
                         id = "The_King_of_Fighters_XV",
                         displayName = "The King of Fighters XV",
                         iconUrl = "https://i.imgur.com/Zlin7xi.png",
-                        wikiName = "DreamCancel Wiki",
+                        wiki = Wiki(name = "DreamCancel Wiki", url = "https://dreamcancel.com/wiki", iconUrl = "https://dreamcancel.com/w/images/dclogooutlined2.png"),
                     ),
                     featureName = "Dream Cancel",
                     isExpanded = false,

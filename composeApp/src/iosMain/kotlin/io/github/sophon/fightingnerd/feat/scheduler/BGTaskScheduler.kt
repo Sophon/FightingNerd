@@ -7,6 +7,7 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.core.data.PreferenceRepo
 import io.github.sophon.fightingnerd.app.model.AppError
+import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
 import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -33,7 +34,7 @@ import kotlin.time.Duration
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
 internal class BGTaskScheduler(
     private val preferenceRepo: PreferenceRepo,
-): Scheduler {
+): SchedulerPort {
 
     override suspend fun setPeriod(duration: Duration): EmptyResult<AppError> {
         val result = try {

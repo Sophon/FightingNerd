@@ -13,6 +13,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.Wiki
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.first
@@ -146,9 +147,9 @@ internal class DataStoreAdapterTest {
     @Test
     fun `game settings are read from the existing feature keys`() = runTest {
         // given
-        val tekken8 = Game(id = "Tekken_8", displayName = "Tekken 8", iconUrl = "https://i.imgur.com/Yl6j809.png", wikiName = "Wavu Wiki")
-        val mbtl = Game(id = "MBTL", displayName = "Melty Blood: Type Lumina", iconUrl = "https://i.imgur.com/E6O7DMi.png", wikiName = "Mizuumi Wiki")
-        val ggst = Game(id = "GGST", displayName = "Guilty Gear -Strive-", iconUrl = "https://i.imgur.com/07yTLtj.png", wikiName = "DustLoop Wiki")
+        val tekken8 = Game(id = "Tekken_8", displayName = "Tekken 8", iconUrl = "https://i.imgur.com/Yl6j809.png", wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"))
+        val mbtl = Game(id = "MBTL", displayName = "Melty Blood: Type Lumina", iconUrl = "https://i.imgur.com/E6O7DMi.png", wiki = Wiki(name = "Mizuumi Wiki", url = "https://mizuumi.wiki", iconUrl = "https://mizuumi.wiki/mizulogo.png?1fe5d"))
+        val ggst = Game(id = "GGST", displayName = "Guilty Gear -Strive-", iconUrl = "https://i.imgur.com/07yTLtj.png", wiki = Wiki(name = "DustLoop Wiki", url = "https://www.dustloop.com/wiki/", iconUrl = "https://www.dustloop.com/wiki/images/archive/3/30/20260601135625%21Dustloop_Wiki.png"))
         val adapter = DataStoreAdapter(
             fakeStore(
                 booleanPreferencesKey("settings_feature__Wavu Wiki_Tekken_8") to true,
@@ -167,7 +168,7 @@ internal class DataStoreAdapterTest {
     @Test
     fun `unreadable store emits an io error`() = runTest {
         // given
-        val tekken8 = Game(id = "Tekken_8", displayName = "Tekken 8", iconUrl = "https://i.imgur.com/Yl6j809.png", wikiName = "Wavu Wiki")
+        val tekken8 = Game(id = "Tekken_8", displayName = "Tekken 8", iconUrl = "https://i.imgur.com/Yl6j809.png", wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"))
         val adapter = DataStoreAdapter(unreadableStore("corrupted preferences"))
         val expected = Result.Error(AppError.IOError("corrupted preferences"))
 

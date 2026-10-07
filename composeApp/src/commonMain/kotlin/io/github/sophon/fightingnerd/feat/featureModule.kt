@@ -12,16 +12,6 @@ import io.github.sophon.fightingnerd.feat.changelog.usecase.GetUnseenReleaseUseC
 import io.github.sophon.fightingnerd.feat.changelog.usecase.SaveReleaseAsSeenUseCase
 import io.github.sophon.fightingnerd.feat.module.domain.WikiClientFactory
 import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
-import io.github.sophon.fightingnerd.feat.more.ui.MoreVM
-import io.github.sophon.fightingnerd.feat.more.ui.about.AboutVM
-import io.github.sophon.fightingnerd.feat.more.ui.featureSettings.FeatureSettingsVM
-import io.github.sophon.fightingnerd.feat.more.ui.updates.UpdatesVM
-import io.github.sophon.fightingnerd.feat.more.usecase.ManualRefreshUseCase
-import io.github.sophon.fightingnerd.feat.more.usecase.SaveFeatureConfigUseCase
-import io.github.sophon.fightingnerd.feat.more.usecase.SetUpdatePeriodUseCase
-import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToAvailableFeaturesUseCase
-import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToThemeUseCase
-import io.github.sophon.fightingnerd.feat.more.usecase.SubscribeToUpdatePeriodUseCase
 import io.github.sophon.fightingnerd.feat.payment.ui.TipVM
 import io.github.sophon.fightingnerd.feat.payment.usecase.GetTipOptionsUseCase
 import io.github.sophon.fightingnerd.feat.payment.usecase.PurchaseTipUseCase
@@ -34,21 +24,6 @@ internal fun featureModule() = module {
     //region Module
     singleOf(::LoadConfigUseCase)
     singleOf(::WikiClientFactory)
-    //endregion
-
-    //region More
-    viewModelOf(::MoreVM)
-
-    singleOf(::SubscribeToAvailableFeaturesUseCase)
-    singleOf(::SubscribeToThemeUseCase)
-    singleOf(::SaveFeatureConfigUseCase)
-    singleOf(::SubscribeToUpdatePeriodUseCase)
-    singleOf(::SetUpdatePeriodUseCase)
-    singleOf(::ManualRefreshUseCase)
-
-    viewModelOf(::FeatureSettingsVM)
-    viewModelOf(::UpdatesVM)
-    viewModelOf(::AboutVM)
     //endregion
 
     //region Review

@@ -13,7 +13,7 @@ import io.github.sophon.fightingnerd.core.domain.UrlOpener
 import io.github.sophon.fightingnerd.core.domain.UrlOpenerAnd
 import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandler
 import io.github.sophon.fightingnerd.feat.review.platform.ReviewHandlerImpl
-import io.github.sophon.fightingnerd.feat.scheduler.Scheduler
+import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
 import io.github.sophon.fightingnerd.feat.scheduler.WorkManagerScheduler
 import io.github.sophon.fightingnerd.feat.share.ShareSheet
 import io.github.sophon.fightingnerd.feat.share.ShareSheetImpl
@@ -32,7 +32,7 @@ internal actual val platformModule = module {
     single { createDataStore() }
 
     singleOf(::UrlOpenerAnd).bind<UrlOpener>()
-    singleOf(::WorkManagerScheduler).bind<Scheduler>()
+    singleOf(::WorkManagerScheduler).bind<SchedulerPort>()
     singleOf(::ShareSheetImpl).bind<ShareSheet>()
     singleOf(::ReviewHandlerImpl) {
         createdAtStart()

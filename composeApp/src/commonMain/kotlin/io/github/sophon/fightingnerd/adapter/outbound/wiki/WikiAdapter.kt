@@ -11,10 +11,13 @@ import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.model.MoveFilter
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
+import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.model.game.T8Properties
 import io.github.sophon.fightingnerd.app.outPort.AvailableGamesPort
+import io.github.sophon.fightingnerd.app.outPort.AvailableWikisPort
 import io.github.sophon.fightingnerd.app.outPort.CharacterPort
 import io.github.sophon.fightingnerd.app.outPort.ConfigureWikiPort
+import io.github.sophon.fightingnerd.app.outPort.LastUpdatePort
 import io.github.sophon.fightingnerd.app.outPort.MoveFilterPort
 import io.github.sophon.fightingnerd.app.outPort.MoveGroupPort
 import io.github.sophon.fightingnerd.app.outPort.MovePort
@@ -25,12 +28,14 @@ import io.github.sophon.wiki.inPort.GetCharacterListUseCase
 import io.github.sophon.wiki.inPort.GetFiltersUseCase
 import io.github.sophon.wiki.inPort.GetGroupsUseCase
 import io.github.sophon.wiki.inPort.GetMoveListUseCase
+import io.github.sophon.wiki.inPort.GetUpdateTimeStampUseCase
 import io.github.sophon.wiki.inPort.RefreshDataUseCase
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Default
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlin.time.Instant
 import io.github.sophon.wiki.model.Move as WikiMove
 import io.github.sophon.wiki.model.game.T8Properties as WikiT8Properties
 import io.github.sophon.wiki.model.wiki.Game as WikiGame
@@ -43,7 +48,16 @@ internal class WikiAdapter(
     private val getMoveListUseCase: GetMoveListUseCase,
     private val getFiltersUseCase: GetFiltersUseCase,
     private val getGroupsUseCase: GetGroupsUseCase,
-): ConfigureWikiPort, RefreshWikiPort, AvailableGamesPort, CharacterPort, MovePort, MoveFilterPort, MoveGroupPort {
+    private val getUpdateTimeStampUseCase: GetUpdateTimeStampUseCase,
+): ConfigureWikiPort,
+    RefreshWikiPort,
+    AvailableGamesPort,
+    AvailableWikisPort,
+    CharacterPort,
+    MovePort,
+    MoveFilterPort,
+    MoveGroupPort,
+    LastUpdatePort {
     override suspend fun configure(
         composeConfig: ComposeConfig,
         enabledGameIdSet: Set<String>,
@@ -59,12 +73,40 @@ internal class WikiAdapter(
         return flow
     }
 
+    override fun refresh(gameIdSet: Set<String>): Flow<RefreshEvent> {
+        val wikiGameSet = gameIdSet
+            .mapNotNull { gameId -> WikiGame.fromId(gameId) }
+            .toSet()
+        val flow = refreshDataUseCase(wikiGameSet).map { event -> event.toDomain() }
+        return flow
+    }
+
     override fun subscribe(): Flow<Set<Game>> {
         val flow = getAvailableGamesUseCase().map { wikiGameSet ->
             val gameSet = wikiGameSet
                 .map { wikiGame -> wikiGame.toDomain() }
                 .toSet()
             gameSet
+        }
+        return flow
+    }
+
+    override fun subscribeToWikis(): Flow<Set<Wiki>> {
+        val flow = getAvailableGamesUseCase().map { wikiGameSet ->
+            val wikiSet = wikiGameSet
+                .map { wikiGame -> wikiGame.wiki.toDomain() }
+                .toSet()
+            wikiSet
+        }
+        return flow
+    }
+
+    override fun subscribeToLastUpdate(gameId: String): Flow<Instant?> {
+        val wikiGame = WikiGame.fromId(gameId)
+        val flow = if (wikiGame == null) {
+            flowOf(null)
+        } else {
+            getUpdateTimeStampUseCase(wikiGame)
         }
         return flow
     }

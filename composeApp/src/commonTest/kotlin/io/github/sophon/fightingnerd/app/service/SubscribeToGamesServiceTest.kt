@@ -6,6 +6,7 @@ import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.outPort.AvailableGamesPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
 import kotlinx.coroutines.flow.Flow
@@ -22,25 +23,25 @@ internal class SubscribeToGamesServiceTest {
         id = "Tekken_8",
         displayName = "Tekken 8",
         iconUrl = "https://i.imgur.com/Yl6j809.png",
-        wikiName = "Wavu Wiki",
+        wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"),
     )
     private val streetFighter6 = Game(
         id = "Street_Fighter_6",
         displayName = "Street Fighter 6",
         iconUrl = "https://i.imgur.com/N9wYA5K.png",
-        wikiName = "SuperCombo Wiki",
+        wiki = Wiki(name = "SuperCombo Wiki", url = "https://wiki.supercombo.gg/", iconUrl = "https://wiki.supercombo.gg/srk_wordmark.png"),
     )
     private val ggst = Game(
         id = "GGST",
         displayName = "Guilty Gear -Strive-",
         iconUrl = "https://i.imgur.com/07yTLtj.png",
-        wikiName = "DustLoop Wiki",
+        wiki = Wiki(name = "DustLoop Wiki", url = "https://www.dustloop.com/wiki/", iconUrl = "https://www.dustloop.com/wiki/images/archive/3/30/20260601135625%21Dustloop_Wiki.png"),
     )
     private val mbtl = Game(
         id = "MBTL",
         displayName = "Melty Blood: Type Lumina",
         iconUrl = "https://i.imgur.com/E6O7DMi.png",
-        wikiName = "Mizuumi Wiki",
+        wiki = Wiki(name = "Mizuumi Wiki", url = "https://mizuumi.wiki", iconUrl = "https://mizuumi.wiki/mizulogo.png?1fe5d"),
     )
     private val availableGameSet = setOf(tekken8, streetFighter6, ggst, mbtl)
 

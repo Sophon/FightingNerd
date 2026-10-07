@@ -7,12 +7,14 @@ import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
+import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.Character as WikiCharacter
 import io.github.sophon.wiki.model.Move as WikiMove
 import io.github.sophon.wiki.model.RefreshEvent as WikiRefreshEvent
 import io.github.sophon.wiki.model.wiki.Game as WikiGame
+import io.github.sophon.wiki.model.wiki.Wiki as WikiWiki
 
 internal fun WikiRefreshEvent.toDomain(): RefreshEvent {
     val refreshEvent = when (this) {
@@ -32,9 +34,18 @@ internal fun WikiGame.toDomain(): Game {
         id = id,
         displayName = displayName,
         iconUrl = iconUrl,
-        wikiName = wiki.displayName,
+        wiki = wiki.toDomain(),
     )
     return game
+}
+
+internal fun WikiWiki.toDomain(): Wiki {
+    val domainWiki = Wiki(
+        name = displayName,
+        url = url,
+        iconUrl = iconUrl,
+    )
+    return domainWiki
 }
 
 internal fun ComposeConfig.toWikiConfig(enabledGameIdSet: Set<String>): Result<WikiConfig, WikiError> {

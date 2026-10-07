@@ -9,6 +9,7 @@ internal interface MediaPort {
     fun subscribeToCharactersWithOfflineMedia(gameId: String): Flow<Set<String>>
     suspend fun save(gameId: String, characterId: String, urls: Move.Urls): EmptyResult<AppError>
     suspend fun wipe(gameId: String, characterId: String): EmptyResult<AppError>
+    suspend fun wipe(gameId: String): EmptyResult<AppError>
 
     /**
      * Points every downloaded media of [urls] to its local file; the rest keep their remote url.

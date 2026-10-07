@@ -8,7 +8,7 @@ import io.github.sophon.core.featureConfig.model.Game
 import io.github.sophon.core.wiki.model.RefreshEvent
 import io.github.sophon.core.wiki.model.WikiClient
 import io.github.sophon.fightingnerd.app.model.AppError
-import io.github.sophon.fightingnerd.feat.more.util.featureKey
+import io.github.sophon.fightingnerd.adapter.outbound.dataStore.featureKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.first

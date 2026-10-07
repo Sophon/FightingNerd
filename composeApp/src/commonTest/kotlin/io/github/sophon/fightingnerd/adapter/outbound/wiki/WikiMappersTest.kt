@@ -8,6 +8,7 @@ import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
+import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.model.game.MKCharProperties
 import io.github.sophon.fightingnerd.app.model.game.T8Properties
 import io.github.sophon.wiki.model.CharacterId
@@ -56,7 +57,7 @@ internal class WikiMappersTest {
             id = "Tekken_8",
             displayName = "Tekken 8",
             iconUrl = "https://i.imgur.com/Yl6j809.png",
-            wikiName = "Wavu Wiki",
+            wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"),
         )
 
         // when

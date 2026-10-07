@@ -72,6 +72,16 @@ internal class MediaAdapter(
         return result
     }
 
+    override suspend fun wipe(gameId: String): EmptyResult<AppError> {
+        val result = runCatchingIO {
+            fs.deleteRecursively(baseDir / gameId, mustExist = false)
+            store.edit { preferences ->
+                preferences.remove(offlineCharactersKey(gameId))
+            }
+        }
+        return result
+    }
+
     override fun toOfflineUrls(
         gameId: String,
         characterId: String,
