@@ -32,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -48,15 +47,12 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import kotlinx.coroutines.flow.collect
-import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.fightingnerd.core.ui.Dialog
 import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
 import io.github.sophon.fightingnerd.core.ui.components.ToastSnackBar
 import io.github.sophon.fightingnerd.core.ui.components.ToastVisuals
 import io.github.sophon.fightingnerd.adapter.inbound.changelog.ChangelogDialog
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeScreen
-import io.github.sophon.fightingnerd.feat.module.usecase.LoadConfigUseCase
 import io.github.sophon.fightingnerd.adapter.inbound.more.model.MoreItem
 import io.github.sophon.fightingnerd.adapter.inbound.more.MoreScreen
 import io.github.sophon.fightingnerd.adapter.inbound.more.featureSettings.FeatureSettingsScreen
@@ -126,37 +122,9 @@ internal fun App() {
             .onError { error -> overlayService.show(error) }
     }
 
-    val isInitialized = rememberFeaturesLoaded()
-
     FightingNerdTheme {
-        if (isInitialized) {
-            Content()
-        } else {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
-            ) {
-                CircularLoader()
-            }
-        }
+        Content()
     }
-}
-
-@Composable
-private fun rememberFeaturesLoaded(): Boolean {
-    var isInitialized by remember { mutableStateOf(false) }
-
-    val featureRepo = koinInject<FeatureRepo>()
-    val loadConfigUseCase = koinInject<LoadConfigUseCase>()
-    LaunchedEffect(Unit) {
-        loadConfigUseCase()
-            .onSuccess { config ->
-                featureRepo.initialize(config)
-                isInitialized = true
-            }
-    }
-
-    return isInitialized
 }
 
 @Composable

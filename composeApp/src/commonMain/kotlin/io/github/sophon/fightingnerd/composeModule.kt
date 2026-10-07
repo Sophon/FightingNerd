@@ -65,7 +65,6 @@ import io.github.sophon.fightingnerd.app.service.SubscribeToUpdatePeriodService
 import io.github.sophon.fightingnerd.app.service.SubscribeToWikisService
 import io.github.sophon.fightingnerd.app.service.WipeMediaService
 import io.github.sophon.fightingnerd.core.coreModule
-import io.github.sophon.fightingnerd.feat.featureModule
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
 import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.inPort.GenerateQuestionsUseCase
@@ -127,7 +126,6 @@ internal fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
         dragDownModule(),
         wikiModule(),
 
-        featureModule(),
         coreModule(),
         composeModule(),
     )
