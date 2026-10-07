@@ -37,6 +37,7 @@ import io.github.sophon.fightingnerd.app.outPort.ReleasePort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.TipPort
+import io.github.sophon.fightingnerd.app.outPort.UpdatePeriodPort
 import io.github.sophon.fightingnerd.app.service.CheckCharacterHasMovesService
 import io.github.sophon.fightingnerd.app.service.DownloadMediaService
 import io.github.sophon.fightingnerd.app.service.GenerateQuestionsService
@@ -64,7 +65,6 @@ import io.github.sophon.fightingnerd.app.service.SubscribeToUpdatePeriodService
 import io.github.sophon.fightingnerd.app.service.SubscribeToWikisService
 import io.github.sophon.fightingnerd.app.service.WipeMediaService
 import io.github.sophon.fightingnerd.core.coreModule
-import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.featureModule
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
 import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
@@ -169,8 +169,6 @@ internal fun composeModule() = module {
 
     single { AppVersion(BuildKonfig.VERSION) }
 
-    singleOf(::RefreshUseCase)
-
     singleOf(::OnLaunchSetupService).bind<OnLaunchSetupUseCase>()
     singleOf(::RefreshDataService).bind<RefreshDataUseCase>()
     singleOf(::SubscribeToGamesService).bind<SubscribeToGamesUseCase>()
@@ -227,6 +225,7 @@ internal fun composeModule() = module {
         bind<SubscribeToGameSettingsPort>()
         bind<LastSeenReleasePort>()
         bind<InstallationPort>()
+        bind<UpdatePeriodPort>()
     }
 }
 

@@ -21,16 +21,19 @@ import io.github.sophon.fightingnerd.app.outPort.InstallationPort
 import io.github.sophon.fightingnerd.app.outPort.LastSeenReleasePort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
+import io.github.sophon.fightingnerd.app.outPort.UpdatePeriodPort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Instant
 
 internal class DataStoreAdapter(
     private val store: DataStore<Preferences>,
 ): FirstLaunchPort, SaveGameSettingsPort, EnabledGamesPort, SubscribeToGameSettingsPort, LastSeenReleasePort,
-    InstallationPort {
+    InstallationPort, UpdatePeriodPort {
     override suspend fun hasLaunchedBefore(): Result<Boolean, AppError> {
         val result = try {
             val preferences = store.data.first()
@@ -125,6 +128,24 @@ internal class DataStoreAdapter(
         return result
     }
 
+    override fun subscribe(): Flow<Duration?> {
+        val flow = store.data
+            .catch { emit(emptyPreferences()) }
+            .map { preferences -> preferences[UPDATE_PERIOD_MS_KEY]?.milliseconds }
+        return flow
+    }
+
+    override suspend fun save(period: Duration?): EmptyResult<AppError> {
+        val result = edit { preferences ->
+            if (period == null) {
+                preferences.remove(UPDATE_PERIOD_MS_KEY)
+            } else {
+                preferences[UPDATE_PERIOD_MS_KEY] = period.inWholeMilliseconds
+            }
+        }
+        return result
+    }
+
 
     private suspend fun edit(transform: (MutablePreferences) -> Unit): EmptyResult<AppError> {
         val result = try {
@@ -141,3 +162,4 @@ internal class DataStoreAdapter(
 private val HAS_LAUNCHED_BEFORE_KEY = booleanPreferencesKey(KEY_HAS_LAUNCHED_BEFORE)
 private val LAST_SEEN_VERSION_KEY = stringPreferencesKey("last_seen_version")
 private val INSTALLATION_TIMESTAMP_KEY = longPreferencesKey("installation_timestamp")
+private val UPDATE_PERIOD_MS_KEY = longPreferencesKey("update_interval_ms")

@@ -4,12 +4,11 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
-import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.preferencesOf
-import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.ComposeConfig
@@ -22,6 +21,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
+import kotlin.time.Duration.Companion.hours
 import kotlin.time.Instant
 
 internal class DataStoreAdapterTest {
@@ -102,48 +102,10 @@ internal class DataStoreAdapterTest {
         val expected = Result.Success(setOf("Tekken_8"))
 
         // when
-        val result = adapter.subscribe(composeConfig).first()
+        val result = adapter.load()
 
         // then
         assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `enabled games of features disabled in the config are left out`() = runTest {
-        // given
-        val adapter = DataStoreAdapter(
-            fakeStore(
-                booleanPreferencesKey("settings_feature__Wavu Wiki_Tekken_8") to true,
-                booleanPreferencesKey("settings_feature__DustLoop Wiki_GGST") to true,
-            )
-        )
-        val expected = Result.Success(setOf("Tekken_8"))
-
-        // when
-        val result = adapter.subscribe(composeConfig).first()
-
-        // then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `unrelated preference changes don't emit the enabled games again`() = runTest {
-        // given
-        val store = fakeStore(booleanPreferencesKey("settings_feature__Wavu Wiki_Tekken_8") to true)
-        val adapter = DataStoreAdapter(store)
-        val expected = Result.Success(setOf("Tekken_8", "MBTL"))
-
-        adapter.subscribe(composeConfig).test {
-            awaitItem()
-
-            // when
-            adapter.markLaunched()
-            store.edit { preferences -> preferences[booleanPreferencesKey("settings_feature__Mizuumi Wiki_MBTL")] = true }
-
-            // then
-            val result = awaitItem()
-            assertThat(result).isEqualTo(expected)
-        }
     }
 
     @Test
@@ -194,6 +156,46 @@ internal class DataStoreAdapterTest {
 
         // then
         assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `update period is read from the existing key`() = runTest {
+        // given
+        val adapter = DataStoreAdapter(fakeStore(longPreferencesKey("update_interval_ms") to 43_200_000L))
+        val expected = 12.hours
+
+        // when
+        val result = adapter.subscribe().first()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `saved update period is remembered`() = runTest {
+        // given
+        val adapter = DataStoreAdapter(fakeStore())
+        val expected = 24.hours
+
+        // when
+        adapter.save(24.hours)
+        val result = adapter.subscribe().first()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `saving no update period clears it`() = runTest {
+        // given
+        val adapter = DataStoreAdapter(fakeStore(longPreferencesKey("update_interval_ms") to 43_200_000L))
+
+        // when
+        adapter.save(null)
+        val result = adapter.subscribe().first()
+
+        // then
+        assertThat(result).isNull()
     }
 
     @Test

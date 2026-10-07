@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.scheduler
+package io.github.sophon.fightingnerd.adapter.outbound.scheduler
 
 import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -6,22 +6,20 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.fightingnerd.core.data.PreferenceRepo
+import io.github.sophon.fightingnerd.adapter.inbound.scheduler.FightingNerdRefreshWorker
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
-import kotlinx.coroutines.flow.Flow
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 
 internal class WorkManagerScheduler(
     private val context: Context,
-    private val preferenceRepo: PreferenceRepo,
 ) : SchedulerPort {
 
-    override suspend fun setPeriod(duration: Duration): EmptyResult<AppError> {
+    override suspend fun schedule(period: Duration): EmptyResult<AppError> {
         val result = try {
             val request = PeriodicWorkRequestBuilder<FightingNerdRefreshWorker>(
-                duration.inWholeMilliseconds,
+                period.inWholeMilliseconds,
                 TimeUnit.MILLISECONDS,
             ).build()
 
@@ -33,7 +31,7 @@ internal class WorkManagerScheduler(
                     request,
                 )
 
-            preferenceRepo.setUpdateInterval(duration)
+            Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(AppError.Unknown(e.message.orEmpty()))
         }
@@ -44,16 +42,11 @@ internal class WorkManagerScheduler(
     override suspend fun cancel(): EmptyResult<AppError> {
         val result = try {
             WorkManager.getInstance(context).cancelUniqueWork(WORK_NAME)
-            preferenceRepo.setUpdateInterval(null)
+            Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(AppError.Unknown(e.message.orEmpty()))
         }
         return result
-    }
-
-    override fun subscribeToPeriod(): Flow<Duration?> {
-        val flow = preferenceRepo.subscribeToUpdateInterval()
-        return flow
     }
 
 

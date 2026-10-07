@@ -1,22 +1,24 @@
 package io.github.sophon.fightingnerd.app.service
 
 import io.github.sophon.core.architecture.EmptyResult
-import io.github.sophon.core.architecture.ExcludeFromCoverage
+import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
+import io.github.sophon.fightingnerd.app.outPort.UpdatePeriodPort
 import io.github.sophon.fightingnerd.inPort.SetUpdatePeriodUseCase
 import kotlin.time.Duration
 
-@ExcludeFromCoverage("plain port call")
 internal class SetUpdatePeriodService(
     private val schedulerPort: SchedulerPort,
+    private val updatePeriodPort: UpdatePeriodPort,
 ): SetUpdatePeriodUseCase {
     override suspend fun invoke(period: Duration?): EmptyResult<AppError> {
-        val result = if (period == null) {
+        val scheduleResult = if (period == null) {
             schedulerPort.cancel()
         } else {
-            schedulerPort.setPeriod(period)
+            schedulerPort.schedule(period)
         }
+        val result = scheduleResult.flatMap { updatePeriodPort.save(period) }
         return result
     }
 }
