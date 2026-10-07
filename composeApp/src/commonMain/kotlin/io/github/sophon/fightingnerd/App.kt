@@ -44,7 +44,9 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
+import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import kotlinx.coroutines.flow.collect
 import io.github.sophon.core.featureConfig.FeatureRepo
 import io.github.sophon.fightingnerd.core.ui.Dialog
 import io.github.sophon.fightingnerd.core.ui.OverlayService
@@ -64,6 +66,7 @@ import io.github.sophon.fightingnerd.feat.quiz.ui.overview.QuizOverviewScreen
 import io.github.sophon.fightingnerd.feat.quiz.ui.quiz.QuizScreen
 import io.github.sophon.fightingnerd.core.usecase.RecordInstallationUseCase
 import io.github.sophon.fightingnerd.feat.more.ui.about.AboutScreen
+import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
 import io.github.sophon.fightingnerd.navigation.domain.Destination
 import io.github.sophon.fightingnerd.navigation.domain.rootDestinationSet
 import io.github.sophon.fightingnerd.navigation.domain.rootDestinations
@@ -112,6 +115,14 @@ private val popDownTransition: ContentTransform = ContentTransform(
 internal fun App() {
     val recordInstallation = koinInject<RecordInstallationUseCase>()
     LaunchedEffect(Unit) { recordInstallation() }
+
+    val syncWikiConfig = koinInject<OnLaunchSetupUseCase>()
+    val overlayService = koinInject<OverlayService>()
+    LaunchedEffect(Unit) {
+        syncWikiConfig()
+            .onSuccess { refreshFlow -> refreshFlow.collect() }
+            .onError { error -> overlayService.show(error) }
+    }
 
     val isInitialized = rememberFeaturesLoaded()
 

@@ -4,9 +4,11 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.Character
+import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import kotlin.test.Test
 import io.github.sophon.wiki.model.Character as WikiCharacter
@@ -76,6 +78,68 @@ internal class WikiMappersTest {
 
         // when
         val result = wikiCharacter.toDomain()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `games of disabled features aren't available`() {
+        // given
+        val composeConfig = ComposeConfig(
+            featureList = listOf(
+                ComposeConfig.Feature(name = "Wavu Wiki", isEnabled = true, supportedGames = listOf("Tekken_8")),
+                ComposeConfig.Feature(name = "Mizuumi Wiki", isEnabled = false, supportedGames = listOf("MBTL", "UNI2")),
+            ),
+        )
+        val expected = WikiConfig.create(
+            availableGameSet = setOf(WikiGame.Tekken8),
+            enabledGameSet = emptySet(),
+        )
+
+        // when
+        val result = composeConfig.toWikiConfig(enabledGameIdSet = emptySet())
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `unknown game ids are dropped`() {
+        // given
+        val composeConfig = ComposeConfig(
+            featureList = listOf(
+                ComposeConfig.Feature(name = "Wavu Wiki", isEnabled = true, supportedGames = listOf("Tekken_8", "Tekken_9")),
+            ),
+        )
+        val expected = WikiConfig.create(
+            availableGameSet = setOf(WikiGame.Tekken8),
+            enabledGameSet = emptySet(),
+        )
+
+        // when
+        val result = composeConfig.toWikiConfig(enabledGameIdSet = emptySet())
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `enabled games come from the preferences`() {
+        // given
+        val composeConfig = ComposeConfig(
+            featureList = listOf(
+                ComposeConfig.Feature(name = "Wavu Wiki", isEnabled = true, supportedGames = listOf("Tekken_8")),
+                ComposeConfig.Feature(name = "DustLoop Wiki", isEnabled = true, supportedGames = listOf("GGST")),
+            ),
+        )
+        val expected = WikiConfig.create(
+            availableGameSet = setOf(WikiGame.Tekken8, WikiGame.GGST),
+            enabledGameSet = setOf(WikiGame.Tekken8),
+        )
+
+        // when
+        val result = composeConfig.toWikiConfig(enabledGameIdSet = setOf("Tekken_8"))
 
         // then
         assertThat(result).isEqualTo(expected)

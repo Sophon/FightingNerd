@@ -6,7 +6,7 @@ import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.Game
-import io.github.sophon.fightingnerd.app.outPort.SubscribeToAvailableGamesPort
+import io.github.sophon.fightingnerd.app.outPort.AvailableGamesPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -50,7 +50,7 @@ internal class SubscribeToGamesServiceTest {
         val settingsPort = FakeSubscribeToGameSettingsPort(
             isEnabledById = mapOf("GGST" to true, "Tekken_8" to true, "Street_Fighter_6" to false),
         )
-        val service = SubscribeToGamesService(FakeSubscribeToAvailableGamesPort(availableGameSet), settingsPort)
+        val service = SubscribeToGamesService(FakeAvailableGamesPort(availableGameSet), settingsPort)
         val expected = Result.Success(listOf(tekken8, ggst))
 
         // when
@@ -64,7 +64,7 @@ internal class SubscribeToGamesServiceTest {
     fun `settings changes are emitted`() = runTest {
         // given
         val settingsPort = FakeSubscribeToGameSettingsPort(isEnabledById = mapOf("Tekken_8" to true))
-        val service = SubscribeToGamesService(FakeSubscribeToAvailableGamesPort(availableGameSet), settingsPort)
+        val service = SubscribeToGamesService(FakeAvailableGamesPort(availableGameSet), settingsPort)
         val expected = Result.Success(listOf(tekken8, mbtl))
 
         service().test {
@@ -82,7 +82,7 @@ internal class SubscribeToGamesServiceTest {
     fun `settings of unavailable games don't re-emit`() = runTest {
         // given
         val settingsPort = FakeSubscribeToGameSettingsPort(isEnabledById = mapOf("Tekken_8" to true))
-        val service = SubscribeToGamesService(FakeSubscribeToAvailableGamesPort(availableGameSet), settingsPort)
+        val service = SubscribeToGamesService(FakeAvailableGamesPort(availableGameSet), settingsPort)
 
         service().test {
             awaitItem()
@@ -100,7 +100,7 @@ internal class SubscribeToGamesServiceTest {
         // given
         val error = AppError.IOError("corrupted preferences")
         val settingsPort = FakeSubscribeToGameSettingsPort(isEnabledById = emptyMap(), error = error)
-        val service = SubscribeToGamesService(FakeSubscribeToAvailableGamesPort(availableGameSet), settingsPort)
+        val service = SubscribeToGamesService(FakeAvailableGamesPort(availableGameSet), settingsPort)
         val expected = Result.Error(error)
 
         // when
@@ -111,10 +111,10 @@ internal class SubscribeToGamesServiceTest {
     }
 
 
-    private class FakeSubscribeToAvailableGamesPort(
+    private class FakeAvailableGamesPort(
         private val gameSet: Set<Game>,
-    ): SubscribeToAvailableGamesPort {
-        override fun subscribeToAvailableGames(): Flow<Set<Game>> {
+    ): AvailableGamesPort {
+        override fun subscribe(): Flow<Set<Game>> {
             val flow = flowOf(gameSet)
             return flow
         }

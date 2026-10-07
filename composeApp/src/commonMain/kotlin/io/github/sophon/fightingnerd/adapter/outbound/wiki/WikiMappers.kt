@@ -1,9 +1,12 @@
 package io.github.sophon.fightingnerd.adapter.outbound.wiki
 
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.Character
+import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
+import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.Character as WikiCharacter
 import io.github.sophon.wiki.model.RefreshEvent as WikiRefreshEvent
@@ -32,9 +35,22 @@ internal fun WikiGame.toDomain(): Game {
     return game
 }
 
-internal fun Set<Game>.toWikiGameSet(): Set<WikiGame> {
+internal fun ComposeConfig.toWikiConfig(enabledGameIdSet: Set<String>): Result<WikiConfig, WikiError> {
+    val availableGameSet = availableFeatureList
+        .flatMap { feature -> feature.supportedGames }
+        .toWikiGameSet()
+    val enabledGameSet = enabledGameIdSet.toWikiGameSet()
+
+    val result = WikiConfig.create(
+        availableGameSet = availableGameSet,
+        enabledGameSet = enabledGameSet,
+    )
+    return result
+}
+
+private fun Iterable<String>.toWikiGameSet(): Set<WikiGame> {
     val wikiGameSet = this
-        .mapNotNull { game -> WikiGame.fromId(game.id) }
+        .mapNotNull { gameId -> WikiGame.fromId(gameId) }
         .toSet()
     return wikiGameSet
 }

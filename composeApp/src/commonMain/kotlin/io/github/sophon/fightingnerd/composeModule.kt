@@ -3,18 +3,21 @@ package io.github.sophon.fightingnerd
 import io.github.sophon.core.coreModule
 import io.github.sophon.dreamcancel.integration.dreamCancelModule
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeVM
+import io.github.sophon.fightingnerd.adapter.outbound.compose.ComposeAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.dataStore.DataStoreAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.wiki.WikiAdapter
 import io.github.sophon.fightingnerd.app.outPort.ConfigureWikiPort
+import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
 import io.github.sophon.fightingnerd.app.outPort.FirstLaunchPort
-import io.github.sophon.fightingnerd.app.outPort.SubscribeToAvailableGamesPort
+import io.github.sophon.fightingnerd.app.outPort.LoadConfigPort
+import io.github.sophon.fightingnerd.app.outPort.AvailableGamesPort
 import io.github.sophon.fightingnerd.app.outPort.CharacterPort
 import io.github.sophon.fightingnerd.app.outPort.MovePort
 import io.github.sophon.fightingnerd.app.outPort.RefreshWikiPort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
 import io.github.sophon.fightingnerd.app.service.CheckCharacterHasMovesService
-import io.github.sophon.fightingnerd.app.service.FirstTimeConfigService
+import io.github.sophon.fightingnerd.app.service.OnLaunchSetupService
 import io.github.sophon.fightingnerd.app.service.RefreshDataService
 import io.github.sophon.fightingnerd.app.service.SubscribeToCharactersService
 import io.github.sophon.fightingnerd.app.service.SubscribeToGamesService
@@ -22,7 +25,7 @@ import io.github.sophon.fightingnerd.core.coreModule
 import io.github.sophon.fightingnerd.core.usecase.RefreshUseCase
 import io.github.sophon.fightingnerd.feat.featureModule
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
-import io.github.sophon.fightingnerd.inPort.FirstTimeConfigUseCase
+import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshDataUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToCharactersUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToGamesUseCase
@@ -69,7 +72,7 @@ internal fun composeModule() = module {
 
     singleOf(::RefreshUseCase)
 
-    singleOf(::FirstTimeConfigService).bind<FirstTimeConfigUseCase>()
+    singleOf(::OnLaunchSetupService).bind<OnLaunchSetupUseCase>()
     singleOf(::RefreshDataService).bind<RefreshDataUseCase>()
     singleOf(::SubscribeToGamesService).bind<SubscribeToGamesUseCase>()
     singleOf(::SubscribeToCharactersService).bind<SubscribeToCharactersUseCase>()
@@ -78,13 +81,15 @@ internal fun composeModule() = module {
     singleOf(::WikiAdapter) {
         bind<ConfigureWikiPort>()
         bind<RefreshWikiPort>()
-        bind<SubscribeToAvailableGamesPort>()
+        bind<AvailableGamesPort>()
         bind<CharacterPort>()
         bind<MovePort>()
     }
+    singleOf(::ComposeAdapter).bind<LoadConfigPort>()
     singleOf(::DataStoreAdapter) {
         bind<FirstLaunchPort>()
         bind<SaveGameSettingsPort>()
+        bind<EnabledGamesPort>()
         bind<SubscribeToGameSettingsPort>()
     }
 }

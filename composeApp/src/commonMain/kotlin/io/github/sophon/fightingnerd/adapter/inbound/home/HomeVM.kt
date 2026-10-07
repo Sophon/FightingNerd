@@ -12,7 +12,6 @@ import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
-import io.github.sophon.fightingnerd.inPort.FirstTimeConfigUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshDataUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToCharactersUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToGamesUseCase
@@ -33,7 +32,6 @@ import org.jetbrains.compose.resources.getString
 
 internal class HomeVM(
     private val overlayService: OverlayService,
-    private val firstTimeConfigUseCase: FirstTimeConfigUseCase,
     private val subscribeToGamesUseCase: SubscribeToGamesUseCase,
     private val subscribeToCharactersUseCase: SubscribeToCharactersUseCase,
     private val checkCharacterHasMovesUseCase: CheckCharacterHasMovesUseCase,
@@ -52,11 +50,6 @@ internal class HomeVM(
     )
 
     private var refreshJob: Job? = null
-
-
-    init {
-        firstTimeCheck()
-    }
 
 
     fun refresh() {
@@ -111,12 +104,6 @@ internal class HomeVM(
         }
     }
 
-
-    private fun firstTimeCheck() {
-        viewModelScope.launch {
-            firstTimeConfigUseCase()
-        }
-    }
 
     private suspend fun subscribeToEnabledGames() {
         subscribeToGamesUseCase().collectLatest { result ->

@@ -4,11 +4,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.preferencesOf
+import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
+import io.github.sophon.fightingnerd.app.model.ComposeConfig
 import io.github.sophon.fightingnerd.app.model.Game
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +22,14 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 internal class DataStoreAdapterTest {
+    private val composeConfig = ComposeConfig(
+        featureList = listOf(
+            ComposeConfig.Feature(name = "Wavu Wiki", isEnabled = true, supportedGames = listOf("Tekken_8")),
+            ComposeConfig.Feature(name = "Mizuumi Wiki", isEnabled = true, supportedGames = listOf("MBTL")),
+            ComposeConfig.Feature(name = "DustLoop Wiki", isEnabled = false, supportedGames = listOf("GGST")),
+        ),
+    )
+
     @Test
     fun `fresh install has not launched before`() = runTest {
         // given
@@ -64,20 +75,72 @@ internal class DataStoreAdapterTest {
         // given
         val store = fakeStore()
         val adapter = DataStoreAdapter(store)
-        val isEnabledByGame = mapOf(
-            Game(id = "Tekken_8", displayName = "Tekken 8", iconUrl = "https://i.imgur.com/Yl6j809.png", wikiName = "Wavu Wiki") to true,
-            Game(id = "MBTL", displayName = "Melty Blood: Type Lumina", iconUrl = "https://i.imgur.com/E6O7DMi.png", wikiName = "Mizuumi Wiki") to false,
-        )
         val expected = preferencesOf(
             booleanPreferencesKey("settings_feature__Wavu Wiki_Tekken_8") to true,
             booleanPreferencesKey("settings_feature__Mizuumi Wiki_MBTL") to false,
         )
 
         // when
-        adapter.saveGameSettings(isEnabledByGame)
+        adapter.saveGameSettings(composeConfig, enabledGameIdSet = setOf("Tekken_8"))
 
         // then
         assertThat(store.data.first()).isEqualTo(expected)
+    }
+
+    @Test
+    fun `enabled games are read from the existing feature keys`() = runTest {
+        // given
+        val adapter = DataStoreAdapter(
+            fakeStore(
+                booleanPreferencesKey("settings_feature__Wavu Wiki_Tekken_8") to true,
+                booleanPreferencesKey("settings_feature__Mizuumi Wiki_MBTL") to false,
+            )
+        )
+        val expected = Result.Success(setOf("Tekken_8"))
+
+        // when
+        val result = adapter.subscribe(composeConfig).first()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `enabled games of features disabled in the config are left out`() = runTest {
+        // given
+        val adapter = DataStoreAdapter(
+            fakeStore(
+                booleanPreferencesKey("settings_feature__Wavu Wiki_Tekken_8") to true,
+                booleanPreferencesKey("settings_feature__DustLoop Wiki_GGST") to true,
+            )
+        )
+        val expected = Result.Success(setOf("Tekken_8"))
+
+        // when
+        val result = adapter.subscribe(composeConfig).first()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `unrelated preference changes don't emit the enabled games again`() = runTest {
+        // given
+        val store = fakeStore(booleanPreferencesKey("settings_feature__Wavu Wiki_Tekken_8") to true)
+        val adapter = DataStoreAdapter(store)
+        val expected = Result.Success(setOf("Tekken_8", "MBTL"))
+
+        adapter.subscribe(composeConfig).test {
+            awaitItem()
+
+            // when
+            adapter.markLaunched()
+            store.edit { preferences -> preferences[booleanPreferencesKey("settings_feature__Mizuumi Wiki_MBTL")] = true }
+
+            // then
+            val result = awaitItem()
+            assertThat(result).isEqualTo(expected)
+        }
     }
 
     @Test
