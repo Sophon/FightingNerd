@@ -10,6 +10,7 @@ sealed class AppError(val errorMessage: String) : Error {
     internal data class GameNotFound(val game: String): AppError(errorMessage = game)
     internal data class IOError(val error: String): AppError(errorMessage = error)
     internal data class ReviewError(val error: String): AppError(errorMessage = error)
+    internal data class ShareError(val error: String): AppError(errorMessage = error)
     internal data class PaymentError(val error: String): AppError(errorMessage = error)
     internal data object PurchaseCancelled: AppError(errorMessage = "Purchase cancelled")
 

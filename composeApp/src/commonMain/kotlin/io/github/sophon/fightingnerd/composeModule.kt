@@ -46,6 +46,7 @@ import io.github.sophon.fightingnerd.app.service.LoadMoveFiltersService
 import io.github.sophon.fightingnerd.app.service.PurchaseTipService
 import io.github.sophon.fightingnerd.app.service.RecordInstallationService
 import io.github.sophon.fightingnerd.app.service.RequestReviewService
+import io.github.sophon.fightingnerd.app.service.ShareImageService
 import io.github.sophon.fightingnerd.app.service.OnLaunchSetupService
 import io.github.sophon.fightingnerd.app.service.RefreshGamesService
 import io.github.sophon.fightingnerd.app.service.RefreshDataService
@@ -74,6 +75,7 @@ import io.github.sophon.fightingnerd.inPort.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.inPort.PurchaseTipUseCase
 import io.github.sophon.fightingnerd.inPort.RecordInstallationUseCase
 import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
+import io.github.sophon.fightingnerd.inPort.ShareImageUseCase
 import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshGamesUseCase
 import io.github.sophon.fightingnerd.inPort.RefreshDataUseCase
@@ -145,6 +147,7 @@ internal fun composeModule() = module {
             downloadMediaUseCase = get(),
             wipeMediaUseCase = get(),
             requestReviewUseCase = get(),
+            shareImageUseCase = get(),
         )
     }
     viewModelOf(::QuizOverviewVM)
@@ -193,6 +196,7 @@ internal fun composeModule() = module {
     singleOf(::PurchaseTipService).bind<PurchaseTipUseCase>()
     singleOf(::RequestReviewService).bind<RequestReviewUseCase>()
     singleOf(::RecordInstallationService).bind<RecordInstallationUseCase>()
+    singleOf(::ShareImageService).bind<ShareImageUseCase>()
 
     singleOf(::WikiAdapter) {
         bind<ConfigureWikiPort>()

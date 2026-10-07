@@ -40,8 +40,7 @@ import io.github.sophon.fightingnerd.adapter.inbound.move.composables.MoveTopBar
 import io.github.sophon.fightingnerd.adapter.inbound.move.composables.SharedMove
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.app.model.MoveFilter
-import io.github.sophon.fightingnerd.feat.share.ShareCaptureHost
-import io.github.sophon.fightingnerd.feat.share.ShareSheet
+import io.github.sophon.fightingnerd.adapter.inbound.share.ShareCaptureHost
 import io.github.sophon.fightingnerd.infrastructure.toPngBytes
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
@@ -50,7 +49,6 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import org.koin.compose.koinInject
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -67,7 +65,6 @@ internal fun MoveListScreen(
     val state by vm.state.collectAsStateWithLifecycle()
     val filteredMoves by vm.filteredMoves.collectAsStateWithLifecycle()
     val pendingShareMoveId by vm.pendingShareMoveId.collectAsStateWithLifecycle()
-    val shareSheet: ShareSheet = koinInject()
     val onExitWithReview: () -> Unit = {
         vm.onScreenExit()
         onExit()
@@ -98,10 +95,7 @@ internal fun MoveListScreen(
             filteredMoves.firstOrNull { it.id == id }?.let { uiMove ->
                 ShareCaptureHost(
                     content = { SharedMove(uiMove, uiMove.id == state.expandedMoveId) },
-                    onCaptured = { bmp ->
-                        shareSheet.shareImage(bmp.toPngBytes(), "move_${uiMove.id}.png")
-                        vm.onSharedDone()
-                    },
+                    onCaptured = { bmp -> vm.onShareCaptured(bmp.toPngBytes()) },
                 )
             }
         }

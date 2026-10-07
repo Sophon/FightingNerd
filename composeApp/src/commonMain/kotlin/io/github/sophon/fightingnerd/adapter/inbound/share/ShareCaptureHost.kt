@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.feat.share
+package io.github.sophon.fightingnerd.adapter.inbound.share
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.width

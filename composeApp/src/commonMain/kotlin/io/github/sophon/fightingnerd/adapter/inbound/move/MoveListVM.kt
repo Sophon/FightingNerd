@@ -17,6 +17,7 @@ import io.github.sophon.fightingnerd.app.model.SessionContext
 import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.inPort.GroupMovesUseCase
 import io.github.sophon.fightingnerd.inPort.LoadMoveFiltersUseCase
+import io.github.sophon.fightingnerd.inPort.ShareImageUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToMoveListUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToOfflineMediaUseCase
 import io.github.sophon.fightingnerd.inPort.WipeMediaUseCase
@@ -56,6 +57,7 @@ internal class MoveListVM(
     private val downloadMediaUseCase: DownloadMediaUseCase,
     private val wipeMediaUseCase: WipeMediaUseCase,
     private val requestReviewUseCase: RequestReviewUseCase,
+    private val shareImageUseCase: ShareImageUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(MoveListState())
     private val _fullMoveList = MutableStateFlow(MoveCache.EMPTY)
@@ -217,8 +219,17 @@ internal class MoveListVM(
         _pendingShareMoveId.value = moveId
     }
 
-    fun onSharedDone() {
+    fun onShareCaptured(pngBytes: ByteArray) {
+        val moveId = _pendingShareMoveId.value ?: return
         _pendingShareMoveId.value = null
+
+        viewModelScope.launch {
+            shareImageUseCase(pngBytes = pngBytes, fileName = "move_$moveId.png")
+                .onError { error ->
+                    Napier.e(tag = TAG) { "onShareCaptured ($moveId): $error" }
+                    overlayService.show(error)
+                }
+        }
     }
 
     fun onScreenExit() {

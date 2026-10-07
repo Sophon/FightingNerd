@@ -1,5 +1,9 @@
-package io.github.sophon.fightingnerd.feat.share
+package io.github.sophon.fightingnerd.adapter.outbound.share
 
+import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
+import io.github.sophon.fightingnerd.app.model.AppError
+import io.github.sophon.fightingnerd.app.outPort.SharePort
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.addressOf
@@ -14,9 +18,12 @@ import platform.UIKit.UIApplication
 import platform.UIKit.UIImage
 
 @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
-internal class ShareSheetImpl : ShareSheet {
+internal class ShareAdapter : SharePort {
 
-    override suspend fun shareImage(pngBytes: ByteArray, fileName: String) {
+    override suspend fun shareImage(pngBytes: ByteArray, fileName: String): EmptyResult<AppError> {
+        val rootViewController = UIApplication.sharedApplication.keyWindow?.rootViewController
+            ?: return Result.Error(AppError.ShareError("no root view controller"))
+
         val image = withContext(Dispatchers.IO) {
             val nsData = pngBytes.usePinned { pinned ->
                 NSData.dataWithBytes(pinned.addressOf(0), pngBytes.size.toULong())
@@ -29,8 +36,7 @@ internal class ShareSheetImpl : ShareSheet {
             activityItems = listOf(image),
             applicationActivities = null,
         )
-        UIApplication.sharedApplication.keyWindow
-            ?.rootViewController
-            ?.presentViewController(activityVc, animated = true, completion = null)
+        rootViewController.presentViewController(activityVc, animated = true, completion = null)
+        return Result.Success(Unit)
     }
 }

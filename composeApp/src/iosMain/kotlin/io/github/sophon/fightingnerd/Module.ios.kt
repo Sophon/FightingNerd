@@ -15,8 +15,8 @@ import io.github.sophon.fightingnerd.app.outPort.ReviewPort
 import io.github.sophon.fightingnerd.adapter.outbound.review.ReviewAdapter
 import io.github.sophon.fightingnerd.feat.scheduler.BGTaskScheduler
 import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
-import io.github.sophon.fightingnerd.feat.share.ShareSheet
-import io.github.sophon.fightingnerd.feat.share.ShareSheetImpl
+import io.github.sophon.fightingnerd.app.outPort.SharePort
+import io.github.sophon.fightingnerd.adapter.outbound.share.ShareAdapter
 import io.github.sophon.fightingnerd.infrastructure.createDataStore
 import okio.Path
 import okio.Path.Companion.toPath
@@ -33,7 +33,7 @@ internal actual val platformModule = module {
     single { createDataStore() }
     singleOf(::UrlOpenerIos).bind<UrlOpener>()
     singleOf(::BGTaskScheduler).bind<SchedulerPort>()
-    singleOf(::ShareSheetImpl).bind<ShareSheet>()
+    singleOf(::ShareAdapter).bind<SharePort>()
     singleOf(::ReviewAdapter).bind<ReviewPort>()
 
 
