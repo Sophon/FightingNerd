@@ -76,7 +76,7 @@ internal class LoadConfigUseCase(
 //    }
 //
 //    /**
-//     * Available games come from `modules.json`, enabled games from DataStore.
+//     * Available games come from `composeConfig.json`, enabled games from DataStore.
 //     * Disabled features are dropped, same as the legacy `FeatureRepo`.
 //     */
 //    private fun Config.toWikiConfig(prefs: Preferences): Result<WikiConfig, WikiError> {
