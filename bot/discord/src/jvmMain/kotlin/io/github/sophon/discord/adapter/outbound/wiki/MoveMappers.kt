@@ -29,7 +29,7 @@ internal fun Move.toDomain(character: Character): MoveResponse {
     val secondaryFields = toSecondaryFields()
     val buttonSet = toButtonList(
         character = character,
-        hasDetails = (secondaryFields.isNotEmpty() || notes.isNotEmpty() || aliases.isNotEmpty()),
+        hasDetails = (secondaryFields.isNotEmpty() || notes.isNotEmpty()),
     )
         .takeIf { it.isNotEmpty() }
         ?.let { buttonList -> BotResponse.ButtonSet(buttonList = buttonList) }

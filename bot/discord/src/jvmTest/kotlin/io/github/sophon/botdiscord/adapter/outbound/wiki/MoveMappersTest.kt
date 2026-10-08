@@ -342,7 +342,7 @@ class MoveMappersTest {
     }
 
     @Test
-    fun `move with only aliases gets a details button`() {
+    fun `move with only aliases has no buttons`() {
         // given
         val move = Move(
             input = "f,n,d,df+2",
@@ -350,13 +350,12 @@ class MoveMappersTest {
             urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-f,n,d,df+2"),
             gameProperties = T8Properties(),
         )
-        val expected = BotResponse.ButtonSet(buttonList = listOf(jinDetailsButton(input = "f,n,d,df+2")))
 
         // when
         val result = move.toDomain(jin)
 
         // then
-        assertThat(result.buttonSet).isEqualTo(expected)
+        assertThat(result.buttonSet).isNull()
     }
     //endregion
 
