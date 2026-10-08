@@ -7,6 +7,7 @@ data class MoveResponse(
     val input: String,
     val url: String?,
     val characterName: String,
+    val characterUrl: String,
     val moveName: String?,
     val characterImageUrl: String?,
     val primaryFields: List<BotResponse.Field>,

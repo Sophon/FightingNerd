@@ -49,6 +49,7 @@ internal fun Move.toDomain(character: Character): MoveResponse {
         input = input,
         url = urls.wikiUrl,
         characterName = character.displayName,
+        characterUrl = character.wikiUrl,
         moveName = name,
         characterImageUrl = character.images?.iconUrl,
         primaryFields = toPrimaryFields(),
