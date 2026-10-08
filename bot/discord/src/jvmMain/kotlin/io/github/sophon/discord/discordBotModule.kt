@@ -64,6 +64,8 @@ import io.github.sophon.discord.app.service.EwgfService
 import io.github.sophon.discord.app.service.EwgfServiceImpl
 import io.github.sophon.discord.app.service.GlossaryService
 import io.github.sophon.discord.app.service.GlossaryServiceImpl
+import io.github.sophon.discord.app.service.MediaService
+import io.github.sophon.discord.app.service.MediaServiceImpl
 import io.github.sophon.discord.app.service.MoveService
 import io.github.sophon.discord.app.service.MoveServiceImpl
 import io.github.sophon.discord.app.service.PostDailyReportService
@@ -175,6 +177,7 @@ internal fun dcBotModule(kord: Kord) = module {
     singleOf(::RefreshWikiService).bind<RefreshWikiUseCase>()
     singleOf(::GlossaryServiceImpl).bind<GlossaryService>()
     singleOf(::RefreshGlossaryService).bind<RefreshGlossaryUseCase>()
+    singleOf(::MediaServiceImpl).bind<MediaService>()
     //endregion
 
     //region Admin

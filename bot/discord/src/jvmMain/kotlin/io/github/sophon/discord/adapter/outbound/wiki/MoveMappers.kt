@@ -57,7 +57,9 @@ internal fun Move.toDomain(character: Character): MoveResponse {
         secondaryFields = secondaryFields,
         noteList = notes,
         aliasList = aliases,
+        videoUrl = urls.videoUrl,
         hitboxImageList = urls.hitboxImageList,
+        imageList = urls.moveImageList,
         stance = (gameProperties as? T8Properties)?.stance,
         buttonSet = buttonSet,
     )

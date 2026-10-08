@@ -15,7 +15,9 @@ data class MoveResponse(
     val secondaryFields: List<BotResponse.Field> = emptyList(),
     val aliasList: List<String> = emptyList(),
     val noteList: List<String> = emptyList(),
+    val videoUrl: String? = null,
     val hitboxImageList: List<String> = emptyList(),
+    val imageList: List<String> = emptyList(),
     val stance: String? = null,
 
     val forceExpand: Boolean = false,
