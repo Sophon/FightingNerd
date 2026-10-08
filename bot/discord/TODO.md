@@ -2,9 +2,9 @@
 
 ## High prio
 
-- `media` command
-  - separate command, same pattern as `fd` but returns media of a move
-  - Video button uses `media` instead of raw URL - we avoid the 120 char limit of a button
+- `/fd` ignores game
+  - steps: take a char that is in multiple games of one Wiki - like Gato in COTW and KOF
+  - it will return first match
 - BUG: `char` UNI - Trait and Vorpal not formatted 
   - use formatLinks or something 
   - use `char Ogre`
