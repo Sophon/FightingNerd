@@ -2,9 +2,9 @@ package io.github.sophon.glossaryinfil.adapter.outbound.sqldelight
 
 import app.cash.sqldelight.db.SqlDriver
 import io.github.aakira.napier.Napier
-import io.github.sophon.core.wiki.data.fingerprint
-import io.github.sophon.core.wiki.data.readStoredFingerprint
-import io.github.sophon.core.wiki.data.storeFingerprint
+import io.github.sophon.core.sqldelight.fingerprint
+import io.github.sophon.core.sqldelight.readStoredFingerprint
+import io.github.sophon.core.sqldelight.storeFingerprint
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 
 internal const val GLOSSARY_DATABASE_NAME = "glossary.db"

@@ -1,25 +1,28 @@
 package io.github.sophon.fightingnerd
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.android.AndroidSqliteDriver
 import io.github.sophon.core.featureConfig.model.WikiClientFeature
-import io.github.sophon.core.wiki.data.fingerprint
-import io.github.sophon.core.wiki.data.readStoredFingerprint
-import io.github.sophon.core.wiki.data.storeFingerprint
-import io.github.sophon.fightingnerd.core.domain.UrlOpener
-import io.github.sophon.fightingnerd.core.domain.UrlOpenerAnd
+import io.github.sophon.core.sqldelight.fingerprint
+import io.github.sophon.core.sqldelight.readStoredFingerprint
+import io.github.sophon.core.sqldelight.storeFingerprint
+import io.github.sophon.fightingnerd.app.outPort.UrlPort
+import io.github.sophon.fightingnerd.adapter.outbound.url.UrlAdapter
 import io.github.sophon.fightingnerd.app.outPort.ReviewPort
 import io.github.sophon.fightingnerd.adapter.outbound.review.ReviewAdapter
 import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
 import io.github.sophon.fightingnerd.adapter.outbound.scheduler.WorkManagerScheduler
 import io.github.sophon.fightingnerd.app.outPort.SharePort
 import io.github.sophon.fightingnerd.adapter.outbound.share.ShareAdapter
-import io.github.sophon.fightingnerd.infrastructure.createDataStore
 import okio.Path
 import okio.Path.Companion.toOkioPath
+import okio.Path.Companion.toPath
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.createdAtStart
@@ -29,9 +32,18 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 internal actual val platformModule = module {
-    single { createDataStore() }
+    single<DataStore<Preferences>> {
+        val context = androidContext()
+        val dataStore = PreferenceDataStoreFactory.createWithPath(
+            produceFile = {
+                val path = context.filesDir.resolve(DATA_STORE_FILE_NAME).absolutePath.toPath()
+                path
+            }
+        )
+        dataStore
+    }
 
-    singleOf(::UrlOpenerAnd).bind<UrlOpener>()
+    singleOf(::UrlAdapter).bind<UrlPort>()
     singleOf(::WorkManagerScheduler).bind<SchedulerPort>()
     singleOf(::ShareAdapter).bind<SharePort>()
     singleOf(::ReviewAdapter) {
@@ -80,3 +92,7 @@ private fun openFingerprintedDriver(
     fresh.storeFingerprint(expected)
     return fresh
 }
+
+
+// Legacy name - existing installs already keep their preferences in this file
+private const val DATA_STORE_FILE_NAME = "wavu_preferences.preferences_pb"

@@ -33,8 +33,8 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.ic_media_delete
 import fightingnerd.composeapp.generated.resources.ic_media_download
 import fightingnerd.composeapp.generated.resources.move_list_search_hint
-import io.github.sophon.fightingnerd.core.ui.components.CircularProgressButton
-import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.CircularProgressButton
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.TopBarButton
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

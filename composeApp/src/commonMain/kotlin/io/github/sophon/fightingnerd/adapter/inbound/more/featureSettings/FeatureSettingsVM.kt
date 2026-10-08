@@ -6,9 +6,9 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.adapter.inbound.more.toUiFeatureSettingList
-import io.github.sophon.fightingnerd.core.ui.Dialog
-import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.core.ui.Toast
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.Dialog
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.Toast
 import io.github.sophon.fightingnerd.inPort.SaveGameSettingsUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToGameSettingsUseCase
 import kotlinx.collections.immutable.ImmutableList

@@ -1,23 +1,26 @@
 package io.github.sophon.fightingnerd
 
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
 import app.cash.sqldelight.db.QueryResult
 import app.cash.sqldelight.db.SqlDriver
 import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import co.touchlab.sqliter.DatabaseFileContext
 import io.github.sophon.core.featureConfig.model.WikiClientFeature
-import io.github.sophon.core.wiki.data.fingerprint
-import io.github.sophon.core.wiki.data.readStoredFingerprint
-import io.github.sophon.core.wiki.data.storeFingerprint
-import io.github.sophon.fightingnerd.core.domain.UrlOpener
-import io.github.sophon.fightingnerd.core.domain.UrlOpenerIos
+import io.github.sophon.core.sqldelight.fingerprint
+import io.github.sophon.core.sqldelight.readStoredFingerprint
+import io.github.sophon.core.sqldelight.storeFingerprint
+import io.github.sophon.fightingnerd.app.outPort.UrlPort
+import io.github.sophon.fightingnerd.adapter.outbound.url.UrlAdapter
 import io.github.sophon.fightingnerd.app.outPort.ReviewPort
 import io.github.sophon.fightingnerd.adapter.outbound.review.ReviewAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.scheduler.BGTaskScheduler
 import io.github.sophon.fightingnerd.app.outPort.SchedulerPort
 import io.github.sophon.fightingnerd.app.outPort.SharePort
 import io.github.sophon.fightingnerd.adapter.outbound.share.ShareAdapter
-import io.github.sophon.fightingnerd.infrastructure.createDataStore
+import kotlinx.cinterop.ExperimentalForeignApi
 import okio.Path
 import okio.Path.Companion.toPath
 import org.koin.core.module.dsl.singleOf
@@ -25,13 +28,30 @@ import org.koin.core.qualifier.named
 import org.koin.dsl.bind
 import org.koin.dsl.module
 import platform.Foundation.NSApplicationSupportDirectory
+import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSUserDomainMask
 
 internal actual val platformModule = module {
-    single { createDataStore() }
-    singleOf(::UrlOpenerIos).bind<UrlOpener>()
+    single<DataStore<Preferences>> {
+        val dataStore = PreferenceDataStoreFactory.createWithPath(
+            produceFile = {
+                @OptIn(ExperimentalForeignApi::class)
+                val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
+                    directory = NSDocumentDirectory,
+                    inDomain = NSUserDomainMask,
+                    appropriateForURL = null,
+                    create = false,
+                    error = null,
+                )
+                val path = (requireNotNull(documentDirectory).path + "/$DATA_STORE_FILE_NAME").toPath()
+                path
+            }
+        )
+        dataStore
+    }
+    singleOf(::UrlAdapter).bind<UrlPort>()
     singleOf(::BGTaskScheduler).bind<SchedulerPort>()
     singleOf(::ShareAdapter).bind<SharePort>()
     singleOf(::ReviewAdapter).bind<ReviewPort>()
@@ -86,3 +106,7 @@ private fun openFingerprintedDriver(
     fresh.storeFingerprint(expected)
     return fresh
 }
+
+
+// Legacy name - existing installs already keep their preferences in this file
+private const val DATA_STORE_FILE_NAME = "wavu_preferences.preferences_pb"

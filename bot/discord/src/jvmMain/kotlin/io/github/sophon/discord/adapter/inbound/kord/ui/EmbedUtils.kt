@@ -4,8 +4,6 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_KOFI
@@ -88,16 +86,6 @@ internal fun EmbedBuilder.featureFooter(dataSource: BotResponse.DataSource) {
         text = "${dataSource.name}\n" +
                 "Ideas or errors? Use /feedback"
         icon = dataSource.iconUrl
-    }
-}
-
-internal fun EmbedBuilder.moveEmbedDescription(character: Character, move: Move) {
-    description = when {
-        character.displayName.isNotBlank() && move.name.isNullOrBlank().not() ->
-            "**${character.displayName}**: ${move.name}"
-        character.displayName.isNotBlank() -> "**${character.displayName}**"
-        move.name.isNullOrBlank().not() -> move.name.orEmpty()
-        else -> "Move data"
     }
 }
 
