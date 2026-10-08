@@ -14,20 +14,28 @@ import io.github.sophon.fightingnerd.app.model.game.T8Properties
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
+import io.github.sophon.wiki.model.WikiEvent
 import kotlin.test.Test
 import io.github.sophon.wiki.model.Character as WikiCharacter
 import io.github.sophon.wiki.model.Move as WikiMove
-import io.github.sophon.wiki.model.RefreshEvent as WikiRefreshEvent
 import io.github.sophon.wiki.model.game.MKCharProperties as WikiMKCharProperties
 import io.github.sophon.wiki.model.game.T8Properties as WikiT8Properties
 import io.github.sophon.wiki.model.wiki.Game as WikiGame
 
 internal class WikiMappersTest {
     @Test
-    fun `failed event keeps the wiki error`() {
+    fun `failure event keeps the wiki error and the character`() {
         // given
-        val event = WikiRefreshEvent.Failed(WikiError.DownloadError("Jin"))
-        val expected = RefreshEvent.Failed(AppError.WikiError("DownloadError(Jin)"))
+        val event = WikiEvent.Refresh.Failure(
+            game = WikiGame.Tekken8,
+            error = WikiError.DownloadError("Jin"),
+            characterId = CharacterId(game = WikiGame.Tekken8, naturalId = "jin"),
+        )
+        val expected = RefreshEvent.Failure(
+            game = WikiGame.Tekken8.toDomain(),
+            error = AppError.WikiError("DownloadError(Jin)"),
+            characterId = "jin",
+        )
 
         // when
         val result = event.toDomain()
@@ -39,8 +47,21 @@ internal class WikiMappersTest {
     @Test
     fun `finished event keeps the success count`() {
         // given
-        val event = WikiRefreshEvent.Finished(successCount = 37)
-        val expected = RefreshEvent.Finished(successCount = 37)
+        val event = WikiEvent.Refresh.Finished(game = WikiGame.Tekken8, successCount = 37)
+        val expected = RefreshEvent.Finished(game = WikiGame.Tekken8.toDomain(), successCount = 37)
+
+        // when
+        val result = event.toDomain()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `progress event keeps the fraction`() {
+        // given
+        val event = WikiEvent.Refresh.Progress(game = WikiGame.Tekken8, fraction = 0.5f)
+        val expected = RefreshEvent.Progress(game = WikiGame.Tekken8.toDomain(), fraction = 0.5f)
 
         // when
         val result = event.toDomain()

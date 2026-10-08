@@ -12,6 +12,7 @@ internal data class GameFeature(
     val featureName: String,
     val characterList: ImmutableList<UiCharacter> = persistentListOf(),
     val isExpanded: Boolean = false,
+    val inProgress: Float? = null,
 ) {
     val isLoading: Boolean
         get() {

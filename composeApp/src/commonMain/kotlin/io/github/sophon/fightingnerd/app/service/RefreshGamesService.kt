@@ -14,7 +14,7 @@ internal class RefreshGamesService(
 ): RefreshGamesUseCase {
     override suspend fun invoke(gameIdSet: Set<String>): EmptyResult<AppError> {
         val failedEventList = refreshWikiPort.refresh(gameIdSet)
-            .filterIsInstance<RefreshEvent.Failed>()
+            .filterIsInstance<RefreshEvent.Failure>()
             .toList()
         val failedEvent = failedEventList.firstOrNull()
         val result = if (failedEvent == null) {

@@ -16,7 +16,7 @@ internal class RefreshDataServiceTest {
     fun `wiki events are emitted in order`() = runTest {
         // given
         val expected = listOf(
-            RefreshEvent.Failed(AppError.WikiError("DownloadError(Jin)")),
+            RefreshEvent.Failure(AppError.WikiError("DownloadError(Jin)")),
             RefreshEvent.Finished(successCount = 37),
         )
         val service = RefreshDataService(refreshWikiPort = FakeRefreshWikiPort(expected))

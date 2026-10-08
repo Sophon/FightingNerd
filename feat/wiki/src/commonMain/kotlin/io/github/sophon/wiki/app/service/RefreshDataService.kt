@@ -13,6 +13,7 @@ import io.github.sophon.wiki.RefreshDataUseCase
 import io.github.sophon.wiki.app.model.toWikiError
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
+import io.github.sophon.wiki.app.outPort.PublishWikiEventPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
 import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
@@ -27,7 +28,7 @@ import io.github.sophon.wiki.app.util.normalizeXko
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
-import io.github.sophon.wiki.model.RefreshEvent
+import io.github.sophon.wiki.model.WikiEvent
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.NonCancellable
@@ -53,17 +54,18 @@ internal class RefreshDataService(
     private val saveMoveListPort: SaveMoveListPort,
     private val saveGameDataPort: SaveGameDataPort,
     private val strikeCharacterListPort: StrikeCharacterListPort,
+    private val publishWikiEventPort: PublishWikiEventPort,
 ) : RefreshDataUseCase {
     private val downloadSemaphore = Semaphore(MAX_PARALLEL_GAME_DOWNLOADS)
     private val refreshingGameMutex = Mutex()
     private val gamesMarkedForRefresh = mutableSetOf<Game>()
 
-    override fun invoke(): Flow<RefreshEvent> {
+    override fun invoke(): Flow<WikiEvent.Refresh> {
         val flow = refresh { enabledGameSet -> enabledGameSet }
         return flow
     }
 
-    override fun invoke(gameSet: Set<Game>): Flow<RefreshEvent> {
+    override fun invoke(gameSet: Set<Game>): Flow<WikiEvent.Refresh> {
         val flow = refresh { enabledGameSet -> (enabledGameSet intersect gameSet) }
         return flow
     }
@@ -73,7 +75,7 @@ internal class RefreshDataService(
      */
     private fun refresh(
         gamesToRefresh: (enabledGameSet: Set<Game>) -> Set<Game>,
-    ): Flow<RefreshEvent> {
+    ): Flow<WikiEvent.Refresh> {
         val flow = channelFlow {
             val enabledGameSet = loadWikiConfigPort
                 .subscribe()
@@ -92,34 +94,56 @@ internal class RefreshDataService(
     }
 
     /**
-     * Never throws - a crash in one game must not cancel the others, so it's reported as [RefreshEvent.Failed].
+     * Never throws - a crash in one game must not cancel the others, so it's reported as [WikiEvent.Refresh.Failure].
+     *
+     * A started game always ends with [WikiEvent.Refresh.Finished], crashed and cancelled games too - it's the
+     * subscribers' only signal that the game stopped. A cancelled game has no collector left, so only the subscribers
+     * get it. A game cancelled while waiting for a download slot never started, so it sends nothing.
      */
-    private suspend fun ProducerScope<RefreshEvent>.refresh(game: Game) {
+    private suspend fun ProducerScope<WikiEvent.Refresh>.refresh(game: Game) {
+        var isStarted = false
+        var successCount = 0
         try {
-            val successCount = downloadSemaphore.withPermit {
+            successCount = downloadSemaphore.withPermit {
+                // before the publish - a cancellation mid-publish must still end in Finished
+                isStarted = true
+                publish(WikiEvent.Refresh.Started(game))
+
                 if (game.separateCharMoveDownload) {
                     refreshSeparate(game)
                 } else {
                     refreshBulk(game)
                 }
             }
-            send(RefreshEvent.Finished(game, successCount))
         } catch (exception: CancellationException) {
             throw exception
         } catch (exception: Exception) {
             Napier.e(throwable = exception, tag = TAG) { "${game.id}: refresh crashed" }
-            send(RefreshEvent.Failed(game, WikiError.DownloadError("$exception")))
+            publish(WikiEvent.Refresh.Failure(game, WikiError.DownloadError("$exception")))
         } finally {
-            withContext(NonCancellable) { releaseGame(game) }
+            withContext(NonCancellable) {
+                // before the release - a refresh that claims the game next must not get its progress wiped
+                if (isStarted) {
+                    publishWikiEventPort.publish(WikiEvent.Refresh.Finished(game, successCount))
+                }
+                releaseGame(game)
+            }
         }
+        send(WikiEvent.Refresh.Finished(game, successCount))
     }
 
     /**
-     * Character list download, then move list download per character.
-     *
+     * To the collector of this refresh and to the wiki event subscribers.
+     */
+    private suspend fun ProducerScope<WikiEvent.Refresh>.publish(event: WikiEvent.Refresh) {
+        send(event)
+        publishWikiEventPort.publish(event)
+    }
+
+    /**
      * Returns how many characters got their move list saved.
      */
-    private suspend fun ProducerScope<RefreshEvent>.refreshSeparate(game: Game): Int {
+    private suspend fun ProducerScope<WikiEvent.Refresh>.refreshSeparate(game: Game): Int {
         var successCount = 0
         val characterListResult = withTimeoutOrNull(DOWNLOAD_TIMEOUT) { downloadCharacterList(game) }
             ?: timeoutError(game.id)
@@ -132,30 +156,33 @@ internal class RefreshDataService(
                         .map { character -> character.id }
                         .toSet()
                     strikeAbsentCharacters(game, downloadedIdSet)
-                        .onError { error -> send(RefreshEvent.Failed(game, error)) }
+                        .onError { error -> publish(WikiEvent.Refresh.Failure(game, error)) }
                 }
 
-                for (character in characterList) {
+                characterList.forEachIndexed { index, character ->
                     val moveListLabel = "${character.id.naturalId} (${game.id})"
                     val moveListResult = withTimeoutOrNull(DOWNLOAD_TIMEOUT) { downloadMoveList(character) }
                         ?: timeoutError(moveListLabel)
 
                     moveListResult
                         .onSuccess { successCount++ }
-                        .onError { error -> send(RefreshEvent.Failed(game, error)) }
+                        .onError { error ->
+                            publish(WikiEvent.Refresh.Failure(game = game, error = error, characterId = character.id))
+                        }
+
+                    val progressFraction = ((index + 1).toFloat() / characterList.size)
+                    publish(WikiEvent.Refresh.Progress(game = game, fraction = progressFraction))
                 }
             }
-            .onError { error -> send(RefreshEvent.Failed(game, error)) }
+            .onError { error -> publish(WikiEvent.Refresh.Failure(game, error)) }
 
         return successCount
     }
 
     /**
-     * Whole data set downloaded at once.
-     *
      * Returns how many characters got their move list saved.
      */
-    private suspend fun ProducerScope<RefreshEvent>.refreshBulk(game: Game): Int {
+    private suspend fun ProducerScope<WikiEvent.Refresh>.refreshBulk(game: Game): Int {
         var successCount = 0
         val gameDataResult = withTimeoutOrNull(BULK_DOWNLOAD_TIMEOUT) { downloadGameData(game) }
             ?: timeoutError(game.id)
@@ -168,10 +195,10 @@ internal class RefreshDataService(
                 if (gameData.isNotEmpty()) {
                     val downloadedIdSet = gameData.map { (character, _) -> character.id }.toSet()
                     strikeAbsentCharacters(game, downloadedIdSet)
-                        .onError { error -> send(RefreshEvent.Failed(game, error)) }
+                        .onError { error -> publish(WikiEvent.Refresh.Failure(game, error)) }
                 }
             }
-            .onError { error -> send(RefreshEvent.Failed(game, error)) }
+            .onError { error -> publish(WikiEvent.Refresh.Failure(game, error)) }
 
         return successCount
     }

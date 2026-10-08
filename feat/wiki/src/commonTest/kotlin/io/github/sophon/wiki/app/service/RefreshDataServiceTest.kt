@@ -2,6 +2,7 @@ package io.github.sophon.wiki.app.service
 
 import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
@@ -10,6 +11,7 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
+import io.github.sophon.wiki.app.outPort.PublishWikiEventPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
 import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
@@ -17,16 +19,18 @@ import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
-import io.github.sophon.wiki.model.RefreshEvent
+import io.github.sophon.wiki.model.WikiEvent
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -109,8 +113,8 @@ internal class RefreshDataServiceTest {
 
         // then
         assertThat(store.savedMoveListById.keys).isEqualTo(expected)
-        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
-        assertThat(failedEvent.error).isInstanceOf(WikiError.DownloadError::class)
+        val refreshFailedEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(refreshFailedEvent.error).isInstanceOf(WikiError.DownloadError::class)
     }
 
     @Test
@@ -196,8 +200,8 @@ internal class RefreshDataServiceTest {
         val eventList = service.invoke().toList()
 
         // then
-        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
-        assertThat(failedEvent.error).isInstanceOf(WikiError.DatabaseError::class)
+        val refreshFailedEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(refreshFailedEvent.error).isInstanceOf(WikiError.DatabaseError::class)
     }
 
     @Test
@@ -317,7 +321,7 @@ internal class RefreshDataServiceTest {
             fetchGameDataPort = fetchGameDataPort,
             store = FakeDownloadStore(),
         )
-        val expected = emptyList<RefreshEvent>()
+        val expected = emptyList<WikiEvent>()
 
         // when
         val firstRefresh = async { service.invoke().toList() }
@@ -341,7 +345,11 @@ internal class RefreshDataServiceTest {
             fetchGameDataPort = fetchGameDataPort,
             store = FakeDownloadStore(),
         )
-        val expected = listOf<RefreshEvent>(RefreshEvent.Finished(Game.Tekken8, 1))
+        val expected = listOf(
+            WikiEvent.Refresh.Started(Game.Tekken8),
+            WikiEvent.Refresh.Progress(Game.Tekken8, 1f),
+            WikiEvent.Refresh.Finished(Game.Tekken8, 1),
+        )
 
         // when
         service.invoke().toList()
@@ -371,8 +379,8 @@ internal class RefreshDataServiceTest {
 
         // then
         assertThat(store.savedMoveListById.keys).isEqualTo(expected)
-        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
-        assertThat(failedEvent.error).isInstanceOf(WikiError.DownloadError::class)
+        val refreshFailedEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(refreshFailedEvent.error).isInstanceOf(WikiError.DownloadError::class)
     }
 
     @Test
@@ -394,8 +402,8 @@ internal class RefreshDataServiceTest {
 
         // then
         assertThat(store.savedMoveListById.keys).isEqualTo(expected)
-        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
-        assertThat(failedEvent.error).isInstanceOf(WikiError.DownloadError::class)
+        val refreshFailedEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(refreshFailedEvent.error).isInstanceOf(WikiError.DownloadError::class)
     }
 
     @Test
@@ -416,13 +424,167 @@ internal class RefreshDataServiceTest {
             store = FakeDownloadStore(),
             enabledGameList = listOf(Game.Tekken8, Game.StreetFighter6),
         )
-        val expected = arrayOf(RefreshEvent.Finished(Game.Tekken8, 2), RefreshEvent.Finished(Game.StreetFighter6, 1))
+        val expected = arrayOf(WikiEvent.Refresh.Finished(Game.Tekken8, 2), WikiEvent.Refresh.Finished(Game.StreetFighter6, 1))
 
         // when
         val eventList = service.invoke().toList()
 
         // then
-        assertThat(eventList).containsExactlyInAnyOrder(*expected)
+        val refreshFinishedEventList = eventList.filterIsInstance<WikiEvent.Refresh.Finished>()
+        assertThat(refreshFinishedEventList).containsExactlyInAnyOrder(*expected)
+    }
+
+    @Test
+    fun `progress reaches the end even when the last move list fails`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu, armorKing))),
+                moveListByRemoteQueryId = mapOf(
+                    "Yoshimitsu" to Result.Success(listOf(fleaRoll)),
+                    "Armor King" to Result.Error(DataError.Remote.REQUEST_TIMEOUT),
+                ),
+            ),
+            store = FakeDownloadStore(),
+        )
+        val expected = listOf(0.5f, 1f)
+
+        // when
+        val eventList = service.invoke().toList()
+
+        // then
+        val fractionList = eventList
+            .filterIsInstance<WikiEvent.Refresh.Progress>()
+            .map { event -> event.fraction }
+        assertThat(fractionList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a crashed game still finishes`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(crashingGameSet = setOf(Game.Tekken8)),
+            store = FakeDownloadStore(),
+        )
+        val expected = WikiEvent.Refresh.Finished(Game.Tekken8, 0)
+
+        // when
+        val eventList = service.invoke().toList()
+
+        // then
+        assertThat(eventList.last()).isEqualTo(expected)
+    }
+
+    @Test
+    fun `every refresh event is published`() = runTest {
+        // given
+        val publishWikiEventPort = FakePublishWikiEventPort()
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
+                moveListByRemoteQueryId = mapOf(
+                    "Armor King" to Result.Success(emptyList()),
+                    "Yoshimitsu" to Result.Success(emptyList()),
+                ),
+            ),
+            store = FakeDownloadStore(),
+            publishWikiEventPort = publishWikiEventPort,
+        )
+        val expected = listOf(
+            WikiEvent.Refresh.Started(Game.Tekken8),
+            WikiEvent.Refresh.Progress(Game.Tekken8, 0.5f),
+            WikiEvent.Refresh.Progress(Game.Tekken8, 1f),
+            WikiEvent.Refresh.Finished(Game.Tekken8, 2),
+        )
+
+        // when
+        service.invoke().toList()
+
+        // then
+        assertThat(publishWikiEventPort.publishedEventList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a cancelled game still finishes for the subscribers`() = runTest {
+        // given
+        val publishWikiEventPort = FakePublishWikiEventPort()
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
+                fetchDelay = 1.seconds,
+            ),
+            store = FakeDownloadStore(),
+            publishWikiEventPort = publishWikiEventPort,
+        )
+        val expected = listOf(
+            WikiEvent.Refresh.Started(Game.Tekken8),
+            WikiEvent.Refresh.Finished(Game.Tekken8, 0),
+        )
+
+        // when
+        val refresh = launch { service.invoke().toList() }
+        runCurrent()
+        refresh.cancelAndJoin()
+
+        // then
+        assertThat(publishWikiEventPort.publishedEventList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a game cancelled while waiting for a download slot sends nothing`() = runTest {
+        // given
+        val publishWikiEventPort = FakePublishWikiEventPort()
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(
+                    Game.Tekken8 to Result.Success(listOf(yoshimitsu)),
+                    Game.StreetFighter6 to Result.Success(listOf(ryu)),
+                    Game.GGST to Result.Success(listOf(sol)),
+                    Game.MK1 to Result.Success(listOf(scorpion)),
+                ),
+                fetchDelay = 1.seconds,
+            ),
+            store = FakeDownloadStore(),
+            enabledGameList = listOf(Game.Tekken8, Game.StreetFighter6, Game.GGST, Game.MK1),
+            publishWikiEventPort = publishWikiEventPort,
+        )
+
+        // when
+        val refresh = launch { service.invoke().toList() }
+        runCurrent()
+        refresh.cancelAndJoin()
+
+        // then
+        val startedGameSet = publishWikiEventPort.publishedEventList
+            .filterIsInstance<WikiEvent.Refresh.Started>()
+            .map { event -> event.game }
+            .toSet()
+        val finishedGameSet = publishWikiEventPort.publishedEventList
+            .filterIsInstance<WikiEvent.Refresh.Finished>()
+            .map { event -> event.game }
+            .toSet()
+        assertThat(startedGameSet).hasSize(3)
+        assertThat(finishedGameSet).isEqualTo(startedGameSet)
+    }
+
+    @Test
+    fun `a failed move list names its character`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing))),
+                moveListByRemoteQueryId = mapOf("Armor King" to Result.Error(DataError.Remote.REQUEST_TIMEOUT)),
+            ),
+            store = FakeDownloadStore(),
+        )
+        val expected = CharacterId(Game.Tekken8, "armor_king")
+
+        // when
+        val eventList = service.invoke().toList()
+
+        // then
+        val failureEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(failureEvent.characterId).isEqualTo(expected)
     }
 }
 
@@ -430,6 +592,7 @@ private fun refreshDataService(
     fetchGameDataPort: FetchGameDataPort,
     store: FakeDownloadStore,
     enabledGameList: List<Game> = listOf(Game.Tekken8),
+    publishWikiEventPort: PublishWikiEventPort = FakePublishWikiEventPort(),
 ): RefreshDataService {
     val service = RefreshDataService(
         loadWikiConfigPort = FakeLoadWikiConfigPort(enabledGameList.toSet()),
@@ -438,6 +601,7 @@ private fun refreshDataService(
         saveMoveListPort = store,
         saveGameDataPort = store,
         strikeCharacterListPort = store,
+        publishWikiEventPort = publishWikiEventPort,
     )
     return service
 }
@@ -565,6 +729,14 @@ private class FakeFetchGameDataPort(
 
     override suspend fun fetchGameData(game: Game): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
         return gameDataByGame[game] ?: Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+    }
+}
+
+private class FakePublishWikiEventPort : PublishWikiEventPort {
+    val publishedEventList = mutableListOf<WikiEvent>()
+
+    override suspend fun publish(event: WikiEvent) {
+        publishedEventList.add(event)
     }
 }
 

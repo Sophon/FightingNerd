@@ -8,7 +8,7 @@ import io.github.sophon.wiki.model.Default
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.model.Group
 import io.github.sophon.wiki.model.Move
-import io.github.sophon.wiki.model.RefreshEvent
+import io.github.sophon.wiki.model.WikiEvent
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.wiki.Game
@@ -68,18 +68,29 @@ interface NormalizeMoveInputUseCase {
 }
 
 /**
- * Downloads and saves the characters and moves of every enabled game. Emits [RefreshEvent.Failed] for every
- * character list or move list that failed, then a single [RefreshEvent.Finished].
+ * Downloads and saves the characters and moves of every enabled game, following the [WikiEvent.Refresh] lifecycle
+ * per game. [WikiEvent.Refresh.Progress] only comes from games that download move lists per character - one after
+ * each character, whether its move list succeeded or not.
  * Waits for the config if the wiki isn't configured yet.
  *
  * The flow is cold - the refresh runs while it's collected and stops when the collection is cancelled.
  * Overlapping collections run one after another - two refreshes never write at the same time.
  */
 interface RefreshDataUseCase {
-    operator fun invoke(): Flow<RefreshEvent>
+    operator fun invoke(): Flow<WikiEvent.Refresh>
 
     /**
      * Same as the parameterless refresh, limited to the games of [gameSet] that are enabled.
      */
-    operator fun invoke(gameSet: Set<Game>): Flow<RefreshEvent>
+    operator fun invoke(gameSet: Set<Game>): Flow<WikiEvent.Refresh>
+}
+
+/**
+ * Everything happening in the wiki, whoever started it - every refresh, not just the subscriber's own.
+ *
+ * Hot, no replay - a late subscriber only gets what's emitted after it subscribed, so it can see
+ * a [WikiEvent.Refresh.Progress] without the [WikiEvent.Refresh.Started] before it.
+ */
+interface SubscribeToWikiEventsUseCase {
+    operator fun invoke(): Flow<WikiEvent>
 }

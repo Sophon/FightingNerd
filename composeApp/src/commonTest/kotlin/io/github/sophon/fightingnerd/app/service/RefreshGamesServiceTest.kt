@@ -48,7 +48,7 @@ internal class RefreshGamesServiceTest {
         val service = RefreshGamesService(
             FakeRefreshWikiPort(
                 eventList = listOf(
-                    RefreshEvent.Failed(error),
+                    RefreshEvent.Failure(error),
                     RefreshEvent.Finished(successCount = 36),
                 ),
             ),

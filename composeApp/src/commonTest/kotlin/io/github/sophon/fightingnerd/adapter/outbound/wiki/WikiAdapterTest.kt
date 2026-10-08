@@ -19,10 +19,11 @@ import io.github.sophon.wiki.GetGroupsUseCase
 import io.github.sophon.wiki.GetMoveListUseCase
 import io.github.sophon.wiki.GetUpdateTimeStampUseCase
 import io.github.sophon.wiki.RefreshDataUseCase
+import io.github.sophon.wiki.SubscribeToWikiEventsUseCase
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.model.Group
-import io.github.sophon.wiki.model.RefreshEvent
+import io.github.sophon.wiki.model.WikiEvent
 import io.github.sophon.wiki.model.WavuFilters
 import io.github.sophon.wiki.model.WavuGroups
 import io.github.sophon.wiki.model.WikiConfig
@@ -291,6 +292,7 @@ internal class WikiAdapterTest {
         val adapter = WikiAdapter(
             configureWikiUseCase = UnusedConfigureWikiUseCase(),
             refreshDataUseCase = refreshDataUseCase,
+            subscribeToWikiEventsUseCase = UnusedSubscribeToWikiEventsUseCase(),
             getAvailableGamesUseCase = FakeGetAvailableGamesUseCase(availableGameSet),
             getCharacterListUseCase = FakeGetCharacterListUseCase(characterList),
             getMoveListUseCase = FakeGetMoveListUseCase(moveListById),
@@ -348,12 +350,18 @@ internal class WikiAdapterTest {
     private class FakeRefreshDataUseCase: RefreshDataUseCase {
         val refreshedList = mutableListOf<Set<WikiGame>>()
 
-        override fun invoke(): Flow<RefreshEvent> {
+        override fun invoke(): Flow<WikiEvent.Refresh> {
             error("not used")
         }
 
-        override fun invoke(gameSet: Set<WikiGame>): Flow<RefreshEvent> {
+        override fun invoke(gameSet: Set<WikiGame>): Flow<WikiEvent.Refresh> {
             refreshedList.add(gameSet)
+            return emptyFlow()
+        }
+    }
+
+    private class UnusedSubscribeToWikiEventsUseCase: SubscribeToWikiEventsUseCase {
+        override fun invoke(): Flow<WikiEvent> {
             return emptyFlow()
         }
     }

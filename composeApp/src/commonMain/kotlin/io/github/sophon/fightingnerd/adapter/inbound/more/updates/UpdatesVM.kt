@@ -2,42 +2,52 @@ package io.github.sophon.fightingnerd.adapter.inbound.more.updates
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import fightingnerd.composeapp.generated.resources.Res
+import fightingnerd.composeapp.generated.resources.home_refresh_success
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.adapter.inbound.more.toUiUpdatesFeatureList
+import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
-import io.github.sophon.fightingnerd.inPort.RefreshGamesUseCase
 import io.github.sophon.fightingnerd.inPort.SetUpdatePeriodUseCase
+import io.github.sophon.fightingnerd.inPort.StartRefreshUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToLastUpdatesUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToRefreshEventsUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToUpdatePeriodUseCase
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 
 internal class UpdatesVM(
     private val overlayService: OverlayService,
     private val subscribeToLastUpdatesUseCase: SubscribeToLastUpdatesUseCase,
     private val subscribeToUpdatePeriodUseCase: SubscribeToUpdatePeriodUseCase,
     private val setUpdatePeriodUseCase: SetUpdatePeriodUseCase,
-    private val refreshGamesUseCase: RefreshGamesUseCase,
+    private val startRefreshUseCase: StartRefreshUseCase,
+    private val subscribeToRefreshEventsUseCase: SubscribeToRefreshEventsUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(UpdatesState())
-    val state = _state
-        .onStart {
-            subscribeToFeatureList()
-            subscribeToAutoUpdateSetting()
+    val state = flow {
+        coroutineScope {
+            launch { subscribeToFeatureList() }
+            launch { subscribeToAutoUpdateSetting() }
+            launch { subscribeToRefreshEvents() }
+            emitAll(_state)
         }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000),
-            initialValue = UpdatesState(),
-        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5_000),
+        initialValue = UpdatesState(),
+    )
 
 
     fun toggleEnableAutoUpdate(isEnabled: Boolean) {
@@ -70,46 +80,11 @@ internal class UpdatesVM(
             .toSet()
         if (gameIdSet.isEmpty()) return
 
-        setFeatureRefreshing(name = name, isRefreshing = true)
-        viewModelScope.launch {
-            refreshGamesUseCase(gameIdSet)
-                .onSuccess {
-                    overlayService.show(Toast(message = "Refreshed", type = Toast.Type.SUCCESS))
-                }
-                .onError { error ->
-                    Napier.e(tag = TAG) { "refreshWiki $name: $error" }
-                    overlayService.show(error)
-                }
-            setFeatureRefreshing(name = name, isRefreshing = false)
-        }
+        startRefreshUseCase(gameIdSet)
     }
 
     fun refreshGame(gameId: String) {
-        setGameRefreshing(gameId = gameId, isRefreshing = true)
-        viewModelScope.launch {
-            refreshGamesUseCase(setOf(gameId))
-                .onSuccess {
-                    overlayService.show(Toast(message = "Refreshed", type = Toast.Type.SUCCESS))
-                }
-                .onError { error ->
-                    Napier.e(tag = TAG) { "refreshGame $gameId: $error" }
-                    overlayService.show(error)
-                }
-            setGameRefreshing(gameId = gameId, isRefreshing = false)
-        }
-    }
-
-    private fun setFeatureRefreshing(name: String, isRefreshing: Boolean) {
-        _state.update { current ->
-            val newList = current.featureList.map { feature ->
-                if (feature.name != name) return@map feature
-                val newGameList = feature.gameList
-                    .map { it.copy(isRefreshing = isRefreshing) }
-                    .toImmutableList()
-                feature.copy(gameList = newGameList)
-            }.toImmutableList()
-            current.copy(featureList = newList)
-        }
+        startRefreshUseCase(setOf(gameId))
     }
 
     private fun setGameRefreshing(gameId: String, isRefreshing: Boolean) {
@@ -145,41 +120,66 @@ internal class UpdatesVM(
     }
 
 
-    private fun subscribeToFeatureList() {
-        viewModelScope.launch {
-            subscribeToLastUpdatesUseCase().collect { result ->
-                result
-                    .onSuccess { lastUpdateByGame ->
-                        _state.update { current ->
-                            val refreshingGameIdSet = current.featureList
-                                .flatMap { it.gameList }
-                                .filter { it.isRefreshing }
-                                .map { it.id }
-                                .toSet()
-                            val uiList = lastUpdateByGame.toUiUpdatesFeatureList(refreshingGameIdSet)
-                            current.copy(featureList = uiList)
-                        }
+    private suspend fun subscribeToFeatureList() {
+        subscribeToLastUpdatesUseCase().collect { result ->
+            result
+                .onSuccess { lastUpdateByGame ->
+                    _state.update { current ->
+                        val refreshingGameIdSet = current.featureList
+                            .flatMap { it.gameList }
+                            .filter { it.isRefreshing }
+                            .map { it.id }
+                            .toSet()
+                        val uiList = lastUpdateByGame.toUiUpdatesFeatureList(refreshingGameIdSet)
+                        current.copy(featureList = uiList)
                     }
-                    .onError { error ->
-                        Napier.e(tag = TAG) { "subscribeToFeatureList: $error" }
-                    }
+                }
+                .onError { error ->
+                    Napier.e(tag = TAG) { "subscribeToFeatureList: $error" }
+                }
+        }
+    }
+
+    private suspend fun subscribeToAutoUpdateSetting() {
+        subscribeToUpdatePeriodUseCase().collect { duration ->
+            _state.update { current ->
+                val newSettings = if (duration == null) {
+                    current.updatedAutoUpdateSettings.copy(isEnabled = false)
+                } else {
+                    UpdatesState.AutoUpdateSettings.fromDuration(duration)
+                }
+                current.copy(
+                    currentAutoUpdateSettings = newSettings,
+                    updatedAutoUpdateSettings = newSettings,
+                )
             }
         }
     }
 
-    private fun subscribeToAutoUpdateSetting() {
-        viewModelScope.launch {
-            subscribeToUpdatePeriodUseCase().collect { duration ->
-                _state.update { current ->
-                    val newSettings = if (duration == null) {
-                        current.updatedAutoUpdateSettings.copy(isEnabled = false)
-                    } else {
-                        UpdatesState.AutoUpdateSettings.fromDuration(duration)
-                    }
-                    current.copy(
-                        currentAutoUpdateSettings = newSettings,
-                        updatedAutoUpdateSettings = newSettings,
+    /**
+     * Every refresh, not just the ones started here - first launch, newly added games, background updates.
+     */
+    private suspend fun subscribeToRefreshEvents() {
+        subscribeToRefreshEventsUseCase().collect { event ->
+            when (event) {
+                is RefreshEvent.Started -> setGameRefreshing(gameId = event.game.id, isRefreshing = true)
+                is RefreshEvent.Progress -> Unit
+                is RefreshEvent.Finished -> {
+                    setGameRefreshing(gameId = event.game.id, isRefreshing = false)
+                    overlayService.show(
+                        Toast(
+                            message = getString(
+                                Res.string.home_refresh_success,
+                                event.game.displayName,
+                                event.successCount,
+                            ),
+                            type = Toast.Type.SUCCESS,
+                        )
                     )
+                }
+                is RefreshEvent.Failure -> {
+                    Napier.e(tag = TAG) { "refresh ${event.game.id}: ${event.error}" }
+                    overlayService.show(event.error)
                 }
             }
         }

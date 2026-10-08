@@ -90,6 +90,7 @@ private fun Content(
                         isExpanded = feature.isExpanded,
                         isLoading = feature.isLoading,
                         onExpandClick = { onExpandWidget(feature.game) },
+                        progress = feature.inProgress,
                     ) {
                         CharacterMatrix(
                             characterList = feature.characterList.toCharacterCards(),
