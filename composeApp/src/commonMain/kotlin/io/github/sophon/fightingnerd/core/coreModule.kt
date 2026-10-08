@@ -19,6 +19,4 @@ internal fun coreModule() = module {
                     }
         )
     }
-
-    singleOf(::OverlayService)
 }

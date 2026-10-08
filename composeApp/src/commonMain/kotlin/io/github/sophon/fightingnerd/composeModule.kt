@@ -1,6 +1,7 @@
 package io.github.sophon.fightingnerd
 
 import io.github.sophon.core.coreModule
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeVM
 import io.github.sophon.fightingnerd.adapter.inbound.more.about.AboutVM
 import io.github.sophon.fightingnerd.adapter.inbound.more.featureSettings.FeatureSettingsVM
@@ -157,6 +158,8 @@ internal fun composeModule() = module {
     viewModelOf(::UpdatesVM)
     viewModelOf(::AboutVM)
     viewModelOf(::TipVM)
+
+    singleOf(::OverlayService)
 
     single { AppVersion(BuildKonfig.VERSION) }
 

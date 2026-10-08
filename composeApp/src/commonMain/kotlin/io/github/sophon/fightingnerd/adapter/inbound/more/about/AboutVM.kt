@@ -7,7 +7,7 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
 import io.github.sophon.fightingnerd.inPort.OpenUrlUseCase
 import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
-import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.ScreenStopWatch
 import io.github.sophon.fightingnerd.app.model.SessionContext
 import io.github.sophon.fightingnerd.inPort.SubscribeToWikisUseCase
 import kotlinx.collections.immutable.toImmutableList

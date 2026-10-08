@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.util
+package io.github.sophon.fightingnerd.adapter.inbound.coreUi
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
