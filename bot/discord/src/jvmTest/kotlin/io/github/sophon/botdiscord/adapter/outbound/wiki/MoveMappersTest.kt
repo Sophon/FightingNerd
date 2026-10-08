@@ -50,6 +50,7 @@ class MoveMappersTest {
             input = "f,n,d,df+2",
             url = "https://wavu.wiki/t/Jin_movelist#Jin-f,n,d,df+2",
             characterName = "Jin",
+            characterUrl = "https://wavu.wiki/t/Jin",
             moveName = "Electric Wind God Fist",
             characterImageUrl = JIN_ICON_URL,
             primaryFields = listOf(
@@ -70,6 +71,7 @@ class MoveMappersTest {
             secondaryFields = emptyList(),
             aliasList = listOf("ewgf"),
             noteList = listOf("Balcony break"),
+            videoUrl = VIDEO_URL,
             hitboxImageList = listOf("https://wavu.wiki/img/Jin_ewgf_hitbox.png"),
             stance = "ZEN",
             buttonSet = BotResponse.ButtonSet(buttonList = listOf(videoButton)),

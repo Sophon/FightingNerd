@@ -33,6 +33,7 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.ewgfHelpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.feedbackEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.glossaryEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.imagesMediaEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.promoButtonSet
@@ -43,6 +44,7 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.steamLobbyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.successEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.unbanEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.videoMediaText
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.UserRequest
 import io.github.sophon.discord.app.model.discord.Command
@@ -53,6 +55,7 @@ import io.github.sophon.discord.app.model.response.CoreResponse
 import io.github.sophon.discord.app.model.response.EwgfResponse
 import io.github.sophon.discord.app.model.response.FeedbackResponse
 import io.github.sophon.discord.app.model.response.GlossaryResponse
+import io.github.sophon.discord.app.model.response.MediaResponse
 import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.ReplyResponse
@@ -299,6 +302,58 @@ internal class KordResponder(
             isExpanded = false,
             buttonSet = null,
         )
+        return result
+    }
+
+    suspend fun respond(
+        message: Message,
+        mediaResponse: MediaResponse,
+    ): EmptyResult<BotError> {
+        val result = when (mediaResponse) {
+            is MediaResponse.ImagesMediaResponse -> respond(
+                message = message,
+                embedBuilder = imagesMediaEmbed(mediaResponse),
+                imageList = mediaResponse.imageList,
+                isExpanded = true,
+                buttonSet = null,
+            )
+
+            is MediaResponse.VideoMediaResponse -> respond(
+                message = message,
+                plainText = PlainTextResponse(text = videoMediaText(mediaResponse)),
+            )
+
+            MediaResponse.NoMedia -> respond(
+                message = message,
+                plainText = PlainTextResponse(text = NO_MEDIA),
+            )
+        }
+        return result
+    }
+
+    suspend fun respond(
+        interaction: GuildChatInputCommandInteraction,
+        mediaResponse: MediaResponse,
+    ): EmptyResult<BotError> {
+        val result = when (mediaResponse) {
+            is MediaResponse.ImagesMediaResponse -> respond(
+                interaction = interaction,
+                embedBuilder = imagesMediaEmbed(mediaResponse),
+                imageList = mediaResponse.imageList,
+                isExpanded = true,
+                buttonSet = null,
+            )
+
+            is MediaResponse.VideoMediaResponse -> respond(
+                interaction = interaction,
+                plainText = PlainTextResponse(text = videoMediaText(mediaResponse)),
+            )
+
+            MediaResponse.NoMedia -> respond(
+                interaction = interaction,
+                plainText = PlainTextResponse(text = NO_MEDIA),
+            )
+        }
         return result
     }
 
@@ -708,5 +763,6 @@ internal class KordResponder(
         const val FEEDBACK_SENT = "Feedback sent successfully!"
         const val REPLY_SENT = "Reply sent successfully!"
         const val REPLY_FAILED = "Failed to send"
+        const val NO_MEDIA = "No media found 😔"
     }
 }

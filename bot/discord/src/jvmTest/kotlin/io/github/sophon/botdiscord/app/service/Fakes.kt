@@ -20,6 +20,7 @@ import io.github.sophon.discord.app.model.response.CoreResponse
 import io.github.sophon.discord.app.model.response.EwgfResponse
 import io.github.sophon.discord.app.model.response.FeedbackResponse
 import io.github.sophon.discord.app.model.response.GlossaryResponse
+import io.github.sophon.discord.app.model.response.MediaResponse
 import io.github.sophon.discord.app.model.response.ListResponse
 import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
@@ -42,6 +43,7 @@ import io.github.sophon.discord.app.service.CommandRouterService
 import io.github.sophon.discord.app.service.CoreBotService
 import io.github.sophon.discord.app.service.EwgfService
 import io.github.sophon.discord.app.service.GlossaryService
+import io.github.sophon.discord.app.service.MediaService
 import io.github.sophon.discord.app.service.MoveService
 import io.github.sophon.wiki.model.wiki.Game
 
@@ -326,6 +328,15 @@ internal class FakeGlossaryService: GlossaryService {
     }
 }
 
+internal class FakeMediaService: MediaService {
+    val callList = mutableListOf<String>()
+
+    override suspend fun findMedia(query: String): Result<MediaResponse, BotError> {
+        callList += "findMedia($query)"
+        return Result.Success(MediaResponse.NoMedia)
+    }
+}
+
 /**
  * A real router over recording service fakes.
  */
@@ -337,6 +348,7 @@ internal class RouterFixture(
     val adminService: FakeAdminService = FakeAdminService(),
     val ewgfService: FakeEwgfService = FakeEwgfService(),
     val glossaryService: FakeGlossaryService = FakeGlossaryService(),
+    val mediaService: FakeMediaService = FakeMediaService(),
     val statsPort: FakeStatsPort = FakeStatsPort(),
 ) {
     val router = CommandRouterService(
@@ -348,6 +360,7 @@ internal class RouterFixture(
         ewgfService = ewgfService,
         glossaryService = glossaryService,
         statsPort = statsPort,
+        mediaService = mediaService,
     )
 
     /**
@@ -361,7 +374,8 @@ internal class RouterFixture(
                     + banService.callList
                     + adminService.callList
                     + ewgfService.callList
-                    + glossaryService.callList)
+                    + glossaryService.callList
+                    + mediaService.callList)
             return callList
         }
 }
@@ -408,6 +422,7 @@ internal fun moveResponse(
         input = input,
         url = "https://wavu.wiki/t/${characterName}_movelist#$input",
         characterName = characterName,
+        characterUrl = "https://wavu.wiki/t/$characterName",
         moveName = moveName,
         characterImageUrl = null,
         primaryFields = primaryFields,
