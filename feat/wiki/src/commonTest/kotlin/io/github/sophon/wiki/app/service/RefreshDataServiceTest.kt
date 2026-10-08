@@ -1,6 +1,7 @@
 package io.github.sophon.wiki.app.service
 
 import assertk.assertThat
+import assertk.assertions.containsExactlyInAnyOrder
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
@@ -20,11 +21,17 @@ import io.github.sophon.wiki.model.RefreshEvent
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.wiki.Game
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
+import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 internal class RefreshDataServiceTest {
     @Test
@@ -271,6 +278,152 @@ internal class RefreshDataServiceTest {
         val refreshedGameList = store.strikeCallList.map { (game, _) -> game }
         assertThat(refreshedGameList).isEqualTo(expected)
     }
+
+    @Test
+    fun `at most three games download at once`() = runTest {
+        // given
+        val fetchGameDataPort = FakeFetchGameDataPort(
+            characterListByGame = mapOf(
+                Game.Tekken8 to Result.Success(listOf(yoshimitsu)),
+                Game.StreetFighter6 to Result.Success(listOf(ryu)),
+                Game.GGST to Result.Success(listOf(sol)),
+                Game.MK1 to Result.Success(listOf(scorpion)),
+            ),
+            fetchDelay = 1.seconds,
+        )
+        val service = refreshDataService(
+            fetchGameDataPort = fetchGameDataPort,
+            store = FakeDownloadStore(),
+            enabledGameList = listOf(Game.Tekken8, Game.StreetFighter6, Game.GGST, Game.MK1),
+        )
+        val expected = 3
+
+        // when
+        service.invoke().toList()
+
+        // then
+        assertThat(fetchGameDataPort.maxCharacterListInFlightCount).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a game another refresh is downloading is skipped`() = runTest {
+        // given
+        val fetchGameDataPort = FakeFetchGameDataPort(
+            characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
+            moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(fleaRoll))),
+            fetchDelay = 1.seconds,
+        )
+        val service = refreshDataService(
+            fetchGameDataPort = fetchGameDataPort,
+            store = FakeDownloadStore(),
+        )
+        val expected = emptyList<RefreshEvent>()
+
+        // when
+        val firstRefresh = async { service.invoke().toList() }
+        runCurrent()
+        val secondEventList = service.invoke().toList()
+        firstRefresh.await()
+
+        // then
+        assertThat(secondEventList).isEqualTo(expected)
+        assertThat(fetchGameDataPort.characterListCallCount).isEqualTo(1)
+    }
+
+    @Test
+    fun `a finished game can be refreshed again`() = runTest {
+        // given
+        val fetchGameDataPort = FakeFetchGameDataPort(
+            characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
+            moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(fleaRoll))),
+        )
+        val service = refreshDataService(
+            fetchGameDataPort = fetchGameDataPort,
+            store = FakeDownloadStore(),
+        )
+        val expected = listOf<RefreshEvent>(RefreshEvent.Finished(1))
+
+        // when
+        service.invoke().toList()
+        val secondEventList = service.invoke().toList()
+
+        // then
+        assertThat(secondEventList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a crashing game doesn't cancel the others`() = runTest {
+        // given
+        val store = FakeDownloadStore()
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
+                moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(fleaRoll))),
+                crashingGameSet = setOf(Game.StreetFighter6),
+            ),
+            store = store,
+            enabledGameList = listOf(Game.Tekken8, Game.StreetFighter6),
+        )
+        val expected = setOf(CharacterId(Game.Tekken8, "yoshimitsu"))
+
+        // when
+        val eventList = service.invoke().toList()
+
+        // then
+        assertThat(store.savedMoveListById.keys).isEqualTo(expected)
+        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
+        assertThat(failedEvent.error).isInstanceOf(WikiError.DownloadError::class)
+    }
+
+    @Test
+    fun `a hanging move list times out and the next character still downloads`() = runTest {
+        // given
+        val store = FakeDownloadStore()
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
+                moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(fleaRoll))),
+                hangingRemoteQueryIdSet = setOf("Armor King"),
+            ),
+            store = store,
+        )
+        val expected = setOf(CharacterId(Game.Tekken8, "yoshimitsu"))
+
+        // when
+        val eventList = service.invoke().toList()
+
+        // then
+        assertThat(store.savedMoveListById.keys).isEqualTo(expected)
+        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
+        assertThat(failedEvent.error).isInstanceOf(WikiError.DownloadError::class)
+    }
+
+    @Test
+    fun `each game sends its own finished event`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(
+                    Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu)),
+                    Game.StreetFighter6 to Result.Success(listOf(ryu)),
+                ),
+                moveListByRemoteQueryId = mapOf(
+                    "Armor King" to Result.Success(emptyList()),
+                    "Yoshimitsu" to Result.Success(emptyList()),
+                    "Ryu" to Result.Success(emptyList()),
+                ),
+            ),
+            store = FakeDownloadStore(),
+            enabledGameList = listOf(Game.Tekken8, Game.StreetFighter6),
+        )
+        val expected = arrayOf(RefreshEvent.Finished(2), RefreshEvent.Finished(1))
+
+        // when
+        val eventList = service.invoke().toList()
+
+        // then
+        assertThat(eventList).containsExactlyInAnyOrder(*expected)
+    }
 }
 
 private fun refreshDataService(
@@ -310,6 +463,20 @@ private val ryu = Character(
     displayName = "Ryu",
     remoteQueryId = "Ryu",
     wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu",
+)
+
+private val sol = Character(
+    id = CharacterId(Game.GGST, "Sol Badguy"),
+    displayName = "Sol Badguy",
+    remoteQueryId = "Sol Badguy",
+    wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy",
+)
+
+private val scorpion = Character(
+    id = CharacterId(Game.MK1, "Scorpion"),
+    displayName = "Scorpion",
+    remoteQueryId = "Scorpion",
+    wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1/Scorpion",
 )
 
 private val darius = Character(
@@ -362,18 +529,37 @@ private class FakeLoadWikiConfigPort(enabledGameSet: Set<Game>) : LoadWikiConfig
 
 /**
  * Hands out what each test sets up - an unset game or character is [DataError.Remote.PAGE_NOT_FOUND],
- * like a shape the wiki doesn't serve.
+ * like a shape the wiki doesn't serve. A crashing game throws, a hanging character never answers.
  */
 private class FakeFetchGameDataPort(
     private val characterListByGame: Map<Game, Result<List<Character>, DataError.Remote>> = emptyMap(),
     private val moveListByRemoteQueryId: Map<String, Result<List<Move>, DataError.Remote>> = emptyMap(),
     private val gameDataByGame: Map<Game, Result<List<Pair<Character, List<Move>>>, DataError.Remote>> = emptyMap(),
+    private val fetchDelay: Duration = Duration.ZERO,
+    private val crashingGameSet: Set<Game> = emptySet(),
+    private val hangingRemoteQueryIdSet: Set<String> = emptySet(),
 ) : FetchGameDataPort {
+    var characterListCallCount = 0
+    var maxCharacterListInFlightCount = 0
+    private var characterListInFlightCount = 0
+
     override suspend fun fetchCharacterList(game: Game): Result<List<Character>, DataError.Remote> {
+        characterListCallCount++
+        characterListInFlightCount++
+        maxCharacterListInFlightCount = maxOf(maxCharacterListInFlightCount, characterListInFlightCount)
+        try {
+            delay(fetchDelay)
+        } finally {
+            characterListInFlightCount--
+        }
+        check(game !in crashingGameSet) { "${game.id} wiki crashed" }
+
         return characterListByGame[game] ?: Result.Error(DataError.Remote.PAGE_NOT_FOUND)
     }
 
     override suspend fun fetchMoveList(character: Character): Result<List<Move>, DataError.Remote> {
+        if (character.remoteQueryId in hangingRemoteQueryIdSet) awaitCancellation()
+
         return moveListByRemoteQueryId[character.remoteQueryId] ?: Result.Error(DataError.Remote.PAGE_NOT_FOUND)
     }
 

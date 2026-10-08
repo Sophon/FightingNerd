@@ -1,7 +1,9 @@
 package io.github.sophon.wiki.app.service
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.EmptyResult
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
@@ -28,13 +30,21 @@ import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.RefreshEvent
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.wiki.Game
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.sync.withPermit
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.coroutines.cancellation.CancellationException
+import kotlin.time.Duration.Companion.minutes
 
 internal class RefreshDataService(
     private val loadWikiConfigPort: LoadWikiConfigPort,
@@ -44,7 +54,9 @@ internal class RefreshDataService(
     private val saveGameDataPort: SaveGameDataPort,
     private val strikeCharacterListPort: StrikeCharacterListPort,
 ) : RefreshDataUseCase {
-    private val refreshMutex = Mutex()
+    private val downloadSemaphore = Semaphore(MAX_PARALLEL_GAME_DOWNLOADS)
+    private val refreshingGameMutex = Mutex()
+    private val gamesMarkedForRefresh = mutableSetOf<Game>()
 
     override fun invoke(): Flow<RefreshEvent> {
         val flow = refresh { enabledGameSet -> enabledGameSet }
@@ -56,26 +68,23 @@ internal class RefreshDataService(
         return flow
     }
 
-    private fun refresh(selectGameSet: (Set<Game>) -> Set<Game>): Flow<RefreshEvent> {
-        val flow = flow {
-            refreshMutex.withLock {
-                val enabledGameSet = loadWikiConfigPort
-                    .subscribe()
-                    .filterNotNull()
-                    .first()
-                    .enabledGameSet
-                val gameSet = selectGameSet(enabledGameSet)
+    /**
+     * Skips games already in the process of refreshing.
+     */
+    private fun refresh(
+        gamesToRefresh: (enabledGameSet: Set<Game>) -> Set<Game>,
+    ): Flow<RefreshEvent> {
+        val flow = channelFlow {
+            val enabledGameSet = loadWikiConfigPort
+                .subscribe()
+                .filterNotNull()
+                .first()
+                .enabledGameSet
+            val enabledGamesToRefresh = gamesToRefresh(enabledGameSet)
+            val newlyClaimedGamesToRefresh = claimFreeGames(gameSet = enabledGamesToRefresh)
 
-                var successCount = 0
-                for (game in gameSet) {
-                    successCount += if (game.separateCharMoveDownload) {
-                        refreshSeparate(game)
-                    } else {
-                        refreshBulk(game)
-                    }
-                }
-
-                emit(RefreshEvent.Finished(successCount))
+            newlyClaimedGamesToRefresh.forEach { game ->
+                launch { refresh(game) }
             }
         }
 
@@ -83,49 +92,60 @@ internal class RefreshDataService(
     }
 
     /**
+     * Never throws - a crash in one game must not cancel the others, so it's reported as [RefreshEvent.Failed].
+     */
+    private suspend fun ProducerScope<RefreshEvent>.refresh(game: Game) {
+        try {
+            val successCount = downloadSemaphore.withPermit {
+                if (game.separateCharMoveDownload) {
+                    refreshSeparate(game)
+                } else {
+                    refreshBulk(game)
+                }
+            }
+            send(RefreshEvent.Finished(successCount))
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
+            Napier.e(throwable = exception, tag = TAG) { "${game.id}: refresh crashed" }
+            send(RefreshEvent.Failed(WikiError.DownloadError("${game.id}: $exception")))
+        } finally {
+            withContext(NonCancellable) { releaseGame(game) }
+        }
+    }
+
+    /**
      * Character list download, then move list download per character.
      *
      * Returns how many characters got their move list saved.
      */
-    private suspend fun FlowCollector<RefreshEvent>.refreshSeparate(game: Game): Int {
+    private suspend fun ProducerScope<RefreshEvent>.refreshSeparate(game: Game): Int {
         var successCount = 0
-        fetchGameDataPort.fetchCharacterList(game)
-            .onError { error ->
-                Napier.w(tag = TAG) { "${game.id}: character list download failed - $error" }
-            }
-            .mapError { error -> error.toWikiError() }
-            .map { characterList -> characterList.map { character -> character.normalize() } }
-            .flatMap { characterList -> saveCharacterList(game, characterList).map { characterList } }
-            .onSuccess { characterList ->
-                Napier.i(tag = TAG) { "${game.id}: ${characterList.size} characters downloaded" }
+        val characterListResult = withTimeoutOrNull(DOWNLOAD_TIMEOUT) { downloadCharacterList(game) }
+            ?: timeoutError(game.id)
 
+        characterListResult
+            .onSuccess { characterList ->
                 // nothing downloaded - the wiki failed, not its characters
                 if (characterList.isNotEmpty()) {
-                    val downloadedIdSet = characterList.map { character -> character.id }.toSet()
+                    val downloadedIdSet = characterList
+                        .map { character -> character.id }
+                        .toSet()
                     strikeAbsentCharacters(game, downloadedIdSet)
-                        .onError { error -> emit(RefreshEvent.Failed(error)) }
+                        .onError { error -> send(RefreshEvent.Failed(error)) }
                 }
 
                 for (character in characterList) {
-                    fetchGameDataPort.fetchMoveList(character)
-                        .onSuccess { moveList ->
-                            Napier.d(tag = TAG) { "${character.id.naturalId} (${game.id}): ${moveList.size} moves downloaded" }
-                        }
-                        .onError { error ->
-                            Napier.w(tag = TAG) { "${character.id.naturalId} (${game.id}): move list download failed - $error" }
-                        }
-                        .mapError { error -> error.toWikiError() }
-                        .flatMap { moveList ->
-                            val normalizedMoveList = moveList
-                                .normalize(character.id)
-                                .dropDuplicateInputs(character.id)
-                            saveMoveList(character.id, normalizedMoveList)
-                        }
+                    val moveListLabel = "${character.id.naturalId} (${game.id})"
+                    val moveListResult = withTimeoutOrNull(DOWNLOAD_TIMEOUT) { downloadMoveList(character) }
+                        ?: timeoutError(moveListLabel)
+
+                    moveListResult
                         .onSuccess { successCount++ }
-                        .onError { error -> emit(RefreshEvent.Failed(error)) }
+                        .onError { error -> send(RefreshEvent.Failed(error)) }
                 }
             }
-            .onError { error -> emit(RefreshEvent.Failed(error)) }
+            .onError { error -> send(RefreshEvent.Failed(error)) }
 
         return successCount
     }
@@ -135,9 +155,63 @@ internal class RefreshDataService(
      *
      * Returns how many characters got their move list saved.
      */
-    private suspend fun FlowCollector<RefreshEvent>.refreshBulk(game: Game): Int {
+    private suspend fun ProducerScope<RefreshEvent>.refreshBulk(game: Game): Int {
         var successCount = 0
-        fetchGameDataPort.fetchGameData(game)
+        val gameDataResult = withTimeoutOrNull(BULK_DOWNLOAD_TIMEOUT) { downloadGameData(game) }
+            ?: timeoutError(game.id)
+
+        gameDataResult
+            .onSuccess { gameData ->
+                successCount = gameData.size
+
+                // nothing downloaded - the wiki failed, not its characters
+                if (gameData.isNotEmpty()) {
+                    val downloadedIdSet = gameData.map { (character, _) -> character.id }.toSet()
+                    strikeAbsentCharacters(game, downloadedIdSet)
+                        .onError { error -> send(RefreshEvent.Failed(error)) }
+                }
+            }
+            .onError { error -> send(RefreshEvent.Failed(error)) }
+
+        return successCount
+    }
+
+    private suspend fun downloadCharacterList(game: Game): Result<List<Character>, WikiError> {
+        val downloadResult = fetchGameDataPort.fetchCharacterList(game)
+            .onError { error ->
+                Napier.w(tag = TAG) { "${game.id}: character list download failed - $error" }
+            }
+            .mapError { error -> error.toWikiError() }
+            .map { characterList -> characterList.map { character -> character.normalize() } }
+            .flatMap { characterList -> saveCharacterList(game, characterList).map { characterList } }
+            .onSuccess { characterList ->
+                Napier.i(tag = TAG) { "${game.id}: ${characterList.size} characters downloaded" }
+            }
+
+        return downloadResult
+    }
+
+    private suspend fun downloadMoveList(character: Character): EmptyResult<WikiError> {
+        val downloadResult = fetchGameDataPort.fetchMoveList(character)
+            .onSuccess { moveList ->
+                Napier.d(tag = TAG) { "${character.id.naturalId} (${character.id.game.id}): ${moveList.size} moves downloaded" }
+            }
+            .onError { error ->
+                Napier.w(tag = TAG) { "${character.id.naturalId} (${character.id.game.id}): move list download failed - $error" }
+            }
+            .mapError { error -> error.toWikiError() }
+            .flatMap { moveList ->
+                val normalizedMoveList = moveList
+                    .normalize(character.id)
+                    .dropDuplicateInputs(character.id)
+                saveMoveList(character.id, normalizedMoveList)
+            }
+
+        return downloadResult
+    }
+
+    private suspend fun downloadGameData(game: Game): Result<List<Pair<Character, List<Move>>>, WikiError> {
+        val downloadResult = fetchGameDataPort.fetchGameData(game)
             .onError { error ->
                 Napier.w(tag = TAG) { "${game.id}: download failed - $error" }
             }
@@ -146,18 +220,31 @@ internal class RefreshDataService(
             .flatMap { gameData -> saveGameData(game, gameData).map { gameData } }
             .onSuccess { gameData ->
                 Napier.i(tag = TAG) { "${game.id}: ${gameData.size} characters downloaded" }
-                successCount = gameData.size
-
-                // nothing downloaded - the wiki failed, not its characters
-                if (gameData.isNotEmpty()) {
-                    val downloadedIdSet = gameData.map { (character, _) -> character.id }.toSet()
-                    strikeAbsentCharacters(game, downloadedIdSet)
-                        .onError { error -> emit(RefreshEvent.Failed(error)) }
-                }
             }
-            .onError { error -> emit(RefreshEvent.Failed(error)) }
 
-        return successCount
+        return downloadResult
+    }
+
+    private fun timeoutError(label: String): Result<Nothing, WikiError> {
+        Napier.w(tag = TAG) { "$label: download timed out" }
+        val timeoutResult = Result.Error(DataError.Remote.REQUEST_TIMEOUT.toWikiError())
+        return timeoutResult
+    }
+
+    /**
+     * Returns the games nobody else is downloading, marked as taken.
+     */
+    private suspend fun claimFreeGames(gameSet: Set<Game>): Set<Game> {
+        val claimedGameSet = refreshingGameMutex.withLock {
+            val freeGameSet = (gameSet - gamesMarkedForRefresh)
+            gamesMarkedForRefresh += freeGameSet
+            freeGameSet
+        }
+        return claimedGameSet
+    }
+
+    private suspend fun releaseGame(game: Game) {
+        refreshingGameMutex.withLock { gamesMarkedForRefresh -= game }
     }
 
     private suspend fun saveCharacterList(
@@ -253,5 +340,8 @@ internal class RefreshDataService(
 
     private companion object {
         const val TAG = "RefreshDataService"
+        const val MAX_PARALLEL_GAME_DOWNLOADS = 3
+        val DOWNLOAD_TIMEOUT = 1.minutes
+        val BULK_DOWNLOAD_TIMEOUT = 2.minutes
     }
 }
