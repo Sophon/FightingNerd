@@ -136,5 +136,5 @@ internal fun donationMessage(): String {
 }
 
 
-private const val DETAILS_COLUMN_COUNT = 3
+private const val DETAILS_COLUMN_COUNT = 2
 
