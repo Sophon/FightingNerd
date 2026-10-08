@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.infrastructure
+package io.github.sophon.fightingnerd.adapter.inbound.share
 
 import android.graphics.Bitmap
 import androidx.compose.ui.graphics.ImageBitmap
