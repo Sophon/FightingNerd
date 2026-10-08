@@ -43,17 +43,6 @@ import io.github.sophon.wiki.app.service.GetMoveService
 import io.github.sophon.wiki.app.service.GetUpdateTimeStampService
 import io.github.sophon.wiki.app.service.NormalizeMoveInputService
 import io.github.sophon.wiki.app.service.RefreshDataService
-import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
-import io.github.sophon.wiki.inPort.GetAvailableGamesUseCase
-import io.github.sophon.wiki.inPort.GetCharacterListUseCase
-import io.github.sophon.wiki.inPort.GetCharacterUseCase
-import io.github.sophon.wiki.inPort.GetFiltersUseCase
-import io.github.sophon.wiki.inPort.GetGroupsUseCase
-import io.github.sophon.wiki.inPort.GetMoveListUseCase
-import io.github.sophon.wiki.inPort.GetMoveUseCase
-import io.github.sophon.wiki.inPort.GetUpdateTimeStampUseCase
-import io.github.sophon.wiki.inPort.NormalizeMoveInputUseCase
-import io.github.sophon.wiki.inPort.RefreshDataUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module

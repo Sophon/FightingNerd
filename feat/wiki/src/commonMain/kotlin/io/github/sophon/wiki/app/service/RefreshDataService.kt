@@ -6,6 +6,7 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.wiki.RefreshDataUseCase
 import io.github.sophon.wiki.app.model.toWikiError
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
@@ -18,7 +19,6 @@ import io.github.sophon.wiki.app.util.normalizeMizuumi
 import io.github.sophon.wiki.app.util.normalizeSuperCombo
 import io.github.sophon.wiki.app.util.normalizeT8
 import io.github.sophon.wiki.app.util.normalizeXko
-import io.github.sophon.wiki.inPort.RefreshDataUseCase
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
