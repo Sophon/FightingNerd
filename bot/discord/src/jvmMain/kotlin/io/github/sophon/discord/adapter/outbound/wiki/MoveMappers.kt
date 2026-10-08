@@ -97,19 +97,23 @@ private fun Move.toButtonList(
     } else {
         null
     }
-    // the Media command posts the video itself - a Text button's custom_id can't fit every URL
-    val videoButton = if (urls.videoUrl != null) {
-        BotResponse.EmbedButton(
-            label = "Video",
-            action = BotResponse.EmbedButton.Action.Command(
-                command = Command.Media,
-                query = "${character.id.naturalId} $input",
-            ),
-        )
+    val hasImages = (urls.hitboxImageList.isNotEmpty() || urls.moveImageList.isNotEmpty())
+    // the Media command posts the media itself - a Text button's custom_id can't fit every URL
+    val mediaAction = BotResponse.EmbedButton.Action.Command(
+        command = Command.Media,
+        query = "${character.id.naturalId} $input",
+    )
+    val imagesButton = if (hasImages) {
+        BotResponse.EmbedButton(label = "Images", action = mediaAction)
     } else {
         null
     }
-    val buttonList = listOfNotNull(detailsButton, videoButton)
+    val videoButton = if (urls.videoUrl != null) {
+        BotResponse.EmbedButton(label = "Video", action = mediaAction)
+    } else {
+        null
+    }
+    val buttonList = listOfNotNull(detailsButton, imagesButton, videoButton)
 
     return buttonList
 }
