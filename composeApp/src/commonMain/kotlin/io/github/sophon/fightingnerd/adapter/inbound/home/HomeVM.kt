@@ -70,7 +70,7 @@ internal class HomeVM(
                             Toast(
                                 message = getString(
                                     Res.string.home_refresh_success,
-                                    "TODO: game refresh",
+                                    outcome.game.displayName,
                                     outcome.successCount,
                                 ),
                                 type = Toast.Type.SUCCESS,

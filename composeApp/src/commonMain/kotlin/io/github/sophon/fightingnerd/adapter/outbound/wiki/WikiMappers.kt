@@ -18,8 +18,8 @@ import io.github.sophon.wiki.model.wiki.Wiki as WikiWiki
 
 internal fun WikiRefreshEvent.toDomain(): RefreshEvent {
     val refreshEvent = when (this) {
-        is WikiRefreshEvent.Failed -> RefreshEvent.Failed(error.toDomainError())
-        is WikiRefreshEvent.Finished -> RefreshEvent.Finished(successCount)
+        is WikiRefreshEvent.Failed -> RefreshEvent.Failed(game = game.toDomain(), error = error.toDomainError())
+        is WikiRefreshEvent.Finished -> RefreshEvent.Finished(game = game.toDomain(), successCount = successCount)
     }
     return refreshEvent
 }
