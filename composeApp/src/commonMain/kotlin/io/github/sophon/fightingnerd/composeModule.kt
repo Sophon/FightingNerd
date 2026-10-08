@@ -46,6 +46,7 @@ import io.github.sophon.fightingnerd.app.service.GroupMovesService
 import io.github.sophon.fightingnerd.app.service.LoadMoveFiltersService
 import io.github.sophon.fightingnerd.app.service.PurchaseTipService
 import io.github.sophon.fightingnerd.app.service.RecordInstallationService
+import io.github.sophon.fightingnerd.app.service.OpenUrlService
 import io.github.sophon.fightingnerd.app.service.RequestReviewService
 import io.github.sophon.fightingnerd.app.service.ShareImageService
 import io.github.sophon.fightingnerd.app.service.OnLaunchSetupService
@@ -75,6 +76,7 @@ import io.github.sophon.fightingnerd.inPort.GroupMovesUseCase
 import io.github.sophon.fightingnerd.inPort.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.inPort.PurchaseTipUseCase
 import io.github.sophon.fightingnerd.inPort.RecordInstallationUseCase
+import io.github.sophon.fightingnerd.inPort.OpenUrlUseCase
 import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import io.github.sophon.fightingnerd.inPort.ShareImageUseCase
 import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
@@ -186,6 +188,7 @@ internal fun composeModule() = module {
     singleOf(::RequestReviewService).bind<RequestReviewUseCase>()
     singleOf(::RecordInstallationService).bind<RecordInstallationUseCase>()
     singleOf(::ShareImageService).bind<ShareImageUseCase>()
+    singleOf(::OpenUrlService).bind<OpenUrlUseCase>()
 
     singleOf(::WikiAdapter) {
         bind<ConfigureWikiPort>()

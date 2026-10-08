@@ -12,8 +12,8 @@ import io.github.sophon.core.featureConfig.model.WikiClientFeature
 import io.github.sophon.core.sqldelight.fingerprint
 import io.github.sophon.core.sqldelight.readStoredFingerprint
 import io.github.sophon.core.sqldelight.storeFingerprint
-import io.github.sophon.fightingnerd.core.domain.UrlOpener
-import io.github.sophon.fightingnerd.core.domain.UrlOpenerIos
+import io.github.sophon.fightingnerd.app.outPort.UrlPort
+import io.github.sophon.fightingnerd.adapter.outbound.url.UrlAdapter
 import io.github.sophon.fightingnerd.app.outPort.ReviewPort
 import io.github.sophon.fightingnerd.adapter.outbound.review.ReviewAdapter
 import io.github.sophon.fightingnerd.adapter.outbound.scheduler.BGTaskScheduler
@@ -51,7 +51,7 @@ internal actual val platformModule = module {
         )
         dataStore
     }
-    singleOf(::UrlOpenerIos).bind<UrlOpener>()
+    singleOf(::UrlAdapter).bind<UrlPort>()
     singleOf(::BGTaskScheduler).bind<SchedulerPort>()
     singleOf(::ShareAdapter).bind<SharePort>()
     singleOf(::ReviewAdapter).bind<ReviewPort>()

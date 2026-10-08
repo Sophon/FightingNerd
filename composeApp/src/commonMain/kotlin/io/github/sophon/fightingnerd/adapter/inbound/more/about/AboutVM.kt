@@ -2,7 +2,10 @@ package io.github.sophon.fightingnerd.adapter.inbound.more.about
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
+import io.github.aakira.napier.Napier
+import io.github.sophon.core.architecture.onError
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
+import io.github.sophon.fightingnerd.inPort.OpenUrlUseCase
 import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
 import io.github.sophon.fightingnerd.app.model.SessionContext
@@ -19,6 +22,7 @@ internal class AboutVM(
     private val openUrlUseCase: OpenUrlUseCase,
     private val requestReviewUseCase: RequestReviewUseCase,
     private val subscribeToWikisUseCase: SubscribeToWikisUseCase,
+    private val overlayService: OverlayService,
 ) : ViewModel() {
     private val screenStopWatch = ScreenStopWatch()
     private val _state = MutableStateFlow(AboutState())
@@ -31,6 +35,10 @@ internal class AboutVM(
 
     fun openUrl(url: String) {
         openUrlUseCase(url)
+            .onError { error ->
+                Napier.e(tag = TAG) { "openUrl ($url): $error" }
+                overlayService.show(error)
+            }
     }
 
     fun onScreenExit() {
@@ -55,3 +63,6 @@ internal class AboutVM(
         }
     }
 }
+
+
+private const val TAG = "AboutVM"

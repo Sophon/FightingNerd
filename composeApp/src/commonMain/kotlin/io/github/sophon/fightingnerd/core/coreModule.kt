@@ -2,7 +2,6 @@ package io.github.sophon.fightingnerd.core
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
-import io.github.sophon.fightingnerd.core.usecase.OpenUrlUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -20,8 +19,6 @@ internal fun coreModule() = module {
                     }
         )
     }
-
-    singleOf(::OpenUrlUseCase)
 
     singleOf(::OverlayService)
 }
