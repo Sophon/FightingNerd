@@ -17,6 +17,7 @@ import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.adminCommands
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.response.BotResponse
+import io.github.sophon.discord.app.model.response.CoreResponse
 import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 
@@ -54,6 +55,32 @@ internal fun errorEmbed(
         text = "Got something to say, nerd? Use `/feedback`"
         icon = URL_IMG_FIGHTING_NERD
     }
+}
+
+internal fun missingPermissionsEmbed(errorMessage: String?): EmbedBuilder.() -> Unit = {
+    title = "⚠️ Error"
+    color = Color(YELLOW)
+    mandatoryField(
+        name = "",
+        value = errorMessage,
+    )
+}
+
+internal fun coreEmbed(
+    coreResponse: CoreResponse,
+    commandRegistry: CommandRegistry,
+): EmbedBuilder.() -> Unit {
+    val dataSource = coreResponse.dataSource
+    val embedBuilder = when (coreResponse.type) {
+        CoreResponse.Type.Tip -> tipEmbed(dataSource)
+        CoreResponse.Type.Help -> helpEmbed(commandRegistry, dataSource)
+        CoreResponse.Type.Commands -> commandsEmbed(
+            commandList = Command.entries.sortedBy { it.name },
+            commandRegistry = commandRegistry,
+            dataSource = dataSource,
+        )
+    }
+    return embedBuilder
 }
 
 internal fun tipEmbed(
@@ -325,4 +352,5 @@ internal fun promoButtonSet(): BotResponse.ButtonSet = BotResponse.ButtonSet(
 
 private const val PURPLE = 0x00A020F0
 private const val RED = 0x00FF0000
+private const val YELLOW = 0x00FFC107
 private const val MODULES_COLUMN_COUNT = 2

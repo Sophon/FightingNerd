@@ -4,6 +4,15 @@ import dev.kord.common.Color
 import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.discord.app.model.response.EwgfResponse
 
+internal fun ewgfResponseEmbed(ewgfResponse: EwgfResponse): EmbedBuilder.() -> Unit {
+    val embedBuilder = when (ewgfResponse) {
+        is EwgfResponse.RecentSets -> recentSetsEmbed(ewgfResponse)
+        is EwgfResponse.Success -> successEmbed(ewgfResponse)
+        is EwgfResponse.Help -> ewgfHelpEmbed(ewgfResponse)
+    }
+    return embedBuilder
+}
+
 internal fun recentSetsEmbed(
     recentSets: EwgfResponse.RecentSets,
 ): EmbedBuilder.() -> Unit = {

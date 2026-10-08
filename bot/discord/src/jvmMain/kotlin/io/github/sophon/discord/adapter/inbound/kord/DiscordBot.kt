@@ -458,6 +458,7 @@ internal class DiscordBotImpl(
                                     imageList = response.hitboxImageList,
                                     isExpanded = response.forceExpand,
                                     buttonSet = response.buttonSet,
+                                    mentionedUser = interaction.user,
                                 ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                             }
                         }
@@ -471,6 +472,7 @@ internal class DiscordBotImpl(
                                         imageList = response.hitboxImageList,
                                         isExpanded = response.forceExpand,
                                         buttonSet = response.buttonSet,
+                                        mentionedUser = interaction.user,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
 
@@ -481,6 +483,7 @@ internal class DiscordBotImpl(
                                         imageList = emptyList(),
                                         isExpanded = false,
                                         buttonSet = response.buttonSet,
+                                        mentionedUser = interaction.user,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
 
@@ -491,6 +494,7 @@ internal class DiscordBotImpl(
                                         imageList = emptyList(),
                                         isExpanded = false,
                                         buttonSet = null,
+                                        mentionedUser = interaction.user,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
 
@@ -498,6 +502,7 @@ internal class DiscordBotImpl(
                                     kordResponder.respond(
                                         message = interaction.message,
                                         coreResponse = response,
+                                        mentionedUser = interaction.user,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
 
@@ -505,6 +510,7 @@ internal class DiscordBotImpl(
                                     kordResponder.respond(
                                         message = interaction.message,
                                         modulesResponse = response,
+                                        mentionedUser = interaction.user,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
 
@@ -512,6 +518,7 @@ internal class DiscordBotImpl(
                                     kordResponder.respond(
                                         message = interaction.message,
                                         aliasResponse = response,
+                                        mentionedUser = interaction.user,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
 
@@ -519,6 +526,7 @@ internal class DiscordBotImpl(
                                     kordResponder.respond(
                                         message = interaction.message,
                                         mediaResponse = response,
+                                        mentionedUser = interaction.user,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
 
