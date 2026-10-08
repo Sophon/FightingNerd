@@ -1,5 +1,6 @@
 package io.github.sophon.fightingnerd
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.coreModule
 import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeVM
@@ -68,7 +69,6 @@ import io.github.sophon.fightingnerd.app.service.SubscribeToUnseenReleaseService
 import io.github.sophon.fightingnerd.app.service.SubscribeToUpdatePeriodService
 import io.github.sophon.fightingnerd.app.service.SubscribeToWikisService
 import io.github.sophon.fightingnerd.app.service.WipeMediaService
-import io.github.sophon.fightingnerd.core.coreModule
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
 import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.inPort.GenerateQuestionsUseCase
@@ -101,6 +101,10 @@ import io.github.sophon.fightingnerd.inPort.WipeMediaUseCase
 import io.github.sophon.wiki.wikiModule
 import okio.FileSystem
 import okio.SYSTEM
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -120,7 +124,6 @@ internal fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
         coreModule,
         wikiModule(),
 
-        coreModule(),
         composeModule(),
     )
 }
@@ -159,6 +162,15 @@ internal fun composeModule() = module {
     viewModelOf(::AboutVM)
     viewModelOf(::TipVM)
 
+    single {
+        CoroutineScope(
+            SupervisorJob() +
+                    Dispatchers.Default +
+                    CoroutineExceptionHandler { _, throwable ->
+                        Napier.e(tag = "WikiClient") { "Unhandled exception: $throwable" }
+                    }
+        )
+    }
     singleOf(::OverlayService)
 
     single { AppVersion(BuildKonfig.VERSION) }
