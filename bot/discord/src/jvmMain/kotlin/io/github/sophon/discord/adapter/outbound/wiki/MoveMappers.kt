@@ -1,5 +1,6 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.frameData.MoveId
 import io.github.sophon.discord.app.model.frameData.MoveType
 import io.github.sophon.discord.app.model.response.BotResponse
@@ -49,6 +50,7 @@ internal fun Move.toDomain(character: Character): MoveResponse {
         input = input,
         url = urls.wikiUrl,
         characterName = character.displayName,
+        characterUrl = character.wikiUrl,
         moveName = name,
         characterImageUrl = character.images?.iconUrl,
         primaryFields = toPrimaryFields(),
@@ -57,7 +59,9 @@ internal fun Move.toDomain(character: Character): MoveResponse {
         secondaryFields = secondaryFields,
         noteList = notes,
         aliasList = aliases,
+        videoUrl = urls.videoUrl,
         hitboxImageList = urls.hitboxImageList,
+        imageList = urls.moveImageList,
         stance = (gameProperties as? T8Properties)?.stance,
         buttonSet = buttonSet,
     )
@@ -93,10 +97,23 @@ private fun Move.toButtonList(
     } else {
         null
     }
-    val videoButton = urls.videoUrl?.let { url ->
-        BotResponse.EmbedButton(label = "Video", action = BotResponse.EmbedButton.Action.Text(url))
+    val hasImages = (urls.hitboxImageList.isNotEmpty() || urls.moveImageList.isNotEmpty())
+    // the Media command posts the media itself - a Text button's custom_id can't fit every URL
+    val mediaAction = BotResponse.EmbedButton.Action.Command(
+        command = Command.Media,
+        query = "${character.id.naturalId} $input",
+    )
+    val imagesButton = if (hasImages) {
+        BotResponse.EmbedButton(label = "Images", action = mediaAction)
+    } else {
+        null
     }
-    val buttonList = listOfNotNull(detailsButton, videoButton)
+    val videoButton = if (urls.videoUrl != null) {
+        BotResponse.EmbedButton(label = "Video", action = mediaAction)
+    } else {
+        null
+    }
+    val buttonList = listOfNotNull(detailsButton, imagesButton, videoButton)
 
     return buttonList
 }

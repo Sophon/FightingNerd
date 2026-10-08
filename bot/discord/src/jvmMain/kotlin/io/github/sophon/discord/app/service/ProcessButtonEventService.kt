@@ -59,15 +59,14 @@ internal class ProcessButtonEventService(
 
 
     /**
-     * The expanded embed has nothing left to expand, so the Details button goes.
+     * The expanded embed shows everything, media included, so no buttons are left.
      */
     private suspend fun expand(moveId: MoveId): Result<MoveResponse, BotError> {
         val result = frameDataPort.getFrameData(moveId)
             .map { moveResponse ->
                 val expanded = moveResponse.copy(
                     forceExpand = true,
-                    buttonSet = moveResponse.buttonSet
-                        ?.filterNot { action -> action is BotResponse.EmbedButton.Action.Expand },
+                    buttonSet = null,
                 )
                 expanded
             }
@@ -84,15 +83,5 @@ internal class ProcessButtonEventService(
         result
             .onSuccess { response -> statsPort.register(command = command, game = response.game) }
             .onError { statsPort.registerFailure() }
-    }
-
-    private fun BotResponse.ButtonSet.filterNot(
-        predicate: (BotResponse.EmbedButton.Action) -> Boolean,
-    ): BotResponse.ButtonSet? {
-        val buttonSet = buttonList
-            .filterNot { button -> predicate(button.action) }
-            .takeIf { it.isNotEmpty() }
-            ?.let { remainingButtonList -> copy(buttonList = remainingButtonList) }
-        return buttonSet
     }
 }

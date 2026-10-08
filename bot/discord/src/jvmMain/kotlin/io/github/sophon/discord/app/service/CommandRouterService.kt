@@ -20,6 +20,7 @@ internal class CommandRouterService(
     private val ewgfService: EwgfService,
     private val glossaryService: GlossaryService,
     private val statsPort: StatsPort,
+    private val mediaService: MediaService,
 ) {
     suspend operator fun invoke(userRequest: UserRequest): Result<BotResponse, BotError> {
         val initialCommand = resolveCommand(userRequest)
@@ -62,6 +63,8 @@ internal class CommandRouterService(
             Command.OnHit,
             Command.OnBlock,
             Command.OnCounter -> moveService.findMovesInRange(query = query, command = command)
+
+            Command.Media -> mediaService.findMedia(query = query)
 
             Command.Char -> characterService.findCharacter(characterQuery = query, requireProperties = true)
             Command.Alias -> characterService.findAliases(gameQuery = query)

@@ -233,6 +233,23 @@ sealed class Command(
         )
     )
 
+    object Media : Command(
+        name = "Media",
+        description = "Move media - images or videos",
+        argumentList = listOf(
+            Argument(
+                name = "character",
+                description = "Character name",
+                autoCompleteType = Argument.AutoCompleteType.Character,
+            ),
+            Argument(
+                name = "move",
+                description = "Move",
+                autoCompleteType = Argument.AutoCompleteType.Move,
+            ),
+        ),
+    )
+
     //region Wavu
     object Pc : Command(
         name = "Pc",

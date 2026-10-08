@@ -147,6 +147,7 @@ internal fun commandsEmbed(
         addAll(gameSpecificCommands)
         addAll(rangeCommands)
         add(Command.Fd)
+        add(Command.Media)
         addAll(adminCommands)
     }
     val otherCommands = commandList.filterNot { it in excludedFromOthers }
@@ -164,6 +165,12 @@ internal fun commandsEmbed(
         mandatoryField(
             name = "Character Data",
             value = commandRegistry.mention(Command.Char),
+        )
+
+        mandatoryField(
+            name = "Media",
+            value = "${commandRegistry.mention(Command.Media)}: *displays video or images of a move*",
+            inline = false,
         )
 
         mandatoryField(

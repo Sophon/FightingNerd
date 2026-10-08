@@ -7,6 +7,7 @@ data class MoveResponse(
     val input: String,
     val url: String?,
     val characterName: String,
+    val characterUrl: String,
     val moveName: String?,
     val characterImageUrl: String?,
     val primaryFields: List<BotResponse.Field>,
@@ -15,7 +16,9 @@ data class MoveResponse(
     val secondaryFields: List<BotResponse.Field> = emptyList(),
     val aliasList: List<String> = emptyList(),
     val noteList: List<String> = emptyList(),
+    val videoUrl: String? = null,
     val hitboxImageList: List<String> = emptyList(),
+    val imageList: List<String> = emptyList(),
     val stance: String? = null,
 
     val forceExpand: Boolean = false,
