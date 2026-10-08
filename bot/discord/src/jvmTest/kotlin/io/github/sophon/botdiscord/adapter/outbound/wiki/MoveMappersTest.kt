@@ -25,7 +25,7 @@ import kotlin.test.Test
 class MoveMappersTest {
     //region toDomain
     @Test
-    fun `tekken move is expanded with guard, recovery and stance`() {
+    fun `tekken move maps guard, recovery and stance`() {
         // given
         val move = Move(
             input = "f,n,d,df+2",
@@ -68,7 +68,6 @@ class MoveMappersTest {
                 iconUrl = Wiki.Wavu.iconUrl,
                 color = Wiki.Wavu.color,
             ),
-            isCollapsedByDefault = false,
             secondaryFields = emptyList(),
             aliasList = listOf("ewgf"),
             noteList = listOf("Balcony break"),
@@ -77,6 +76,7 @@ class MoveMappersTest {
             stance = "ZEN",
             buttonSet = BotResponse.ButtonSet(
                 buttonList = listOf(
+                    jinDetailsButton(input = "f,n,d,df+2"),
                     mediaCommandButton(label = "Images", query = "jin f,n,d,df+2"),
                     mediaCommandButton(label = "Video", query = "jin f,n,d,df+2"),
                 ),
@@ -257,7 +257,7 @@ class MoveMappersTest {
     }
 
     @Test
-    fun `collapsed move without secondary fields or video has no buttons`() {
+    fun `move without details or media has no buttons`() {
         // given
         val move = Move(
             input = "5P",
@@ -324,17 +324,39 @@ class MoveMappersTest {
     }
 
     @Test
-    fun `collapse follows the game`() {
+    fun `move with only notes gets a details button`() {
         // given
-        val gameList = listOf(Game.GGST, Game.BBCF, Game.GBVSR, Game.AVL, Game.StreetFighter6, Game.Tekken8, Game.DBFZ)
-        val expected = listOf(true, true, true, true, true, false, false)
-        val move = Move(input = "5P", urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5P"))
+        val move = Move(
+            input = "d/b+1",
+            notes = listOf("Homing"),
+            urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-d/b+1"),
+            gameProperties = T8Properties(),
+        )
+        val expected = BotResponse.ButtonSet(buttonList = listOf(jinDetailsButton(input = "d/b+1")))
 
         // when
-        val result = gameList.map { game -> move.toDomain(character(game = game)).isCollapsedByDefault }
+        val result = move.toDomain(jin)
 
         // then
-        assertThat(result).isEqualTo(expected)
+        assertThat(result.buttonSet).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move with only aliases gets a details button`() {
+        // given
+        val move = Move(
+            input = "f,n,d,df+2",
+            aliases = listOf("ewgf"),
+            urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-f,n,d,df+2"),
+            gameProperties = T8Properties(),
+        )
+        val expected = BotResponse.ButtonSet(buttonList = listOf(jinDetailsButton(input = "f,n,d,df+2")))
+
+        // when
+        val result = move.toDomain(jin)
+
+        // then
+        assertThat(result.buttonSet).isEqualTo(expected)
     }
     //endregion
 
@@ -357,6 +379,16 @@ private fun mediaCommandButton(label: String, query: String): BotResponse.EmbedB
     val button = BotResponse.EmbedButton(
         label = label,
         action = BotResponse.EmbedButton.Action.Command(command = Command.Media, query = query),
+    )
+    return button
+}
+
+private fun jinDetailsButton(input: String): BotResponse.EmbedButton {
+    val button = BotResponse.EmbedButton(
+        label = "Details",
+        action = BotResponse.EmbedButton.Action.Expand(
+            moveId = MoveId(game = Game.Tekken8, characterId = "jin", input = input),
+        ),
     )
     return button
 }

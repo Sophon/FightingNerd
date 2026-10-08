@@ -161,7 +161,7 @@ internal class DiscordBotImpl(
                                 message = message,
                                 embedBuilder = moveEmbed(response),
                                 imageList = response.hitboxImageList,
-                                isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                isExpanded = response.forceExpand,
                                 buttonSet = response.buttonSet,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
@@ -300,7 +300,7 @@ internal class DiscordBotImpl(
                                 interaction = interaction,
                                 embedBuilder = moveEmbed(response),
                                 imageList = response.hitboxImageList,
-                                isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                isExpanded = response.forceExpand,
                                 buttonSet = response.buttonSet,
                             ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                         }
@@ -444,7 +444,7 @@ internal class DiscordBotImpl(
                                     message = interaction.message,
                                     embedBuilder = moveEmbed(response),
                                     imageList = response.hitboxImageList,
-                                    isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                    isExpanded = response.forceExpand,
                                     buttonSet = response.buttonSet,
                                 ).onError { error -> Napier.e(tag = TAG) { "Edit failed: $error" } }
                             }
@@ -456,7 +456,7 @@ internal class DiscordBotImpl(
                                     message = interaction.message,
                                     embedBuilder = moveEmbed(response),
                                     imageList = response.hitboxImageList,
-                                    isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                    isExpanded = response.forceExpand,
                                     buttonSet = response.buttonSet,
                                 ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                             }
@@ -469,7 +469,7 @@ internal class DiscordBotImpl(
                                         message = interaction.message,
                                         embedBuilder = moveEmbed(response),
                                         imageList = response.hitboxImageList,
-                                        isExpanded = (response.isCollapsedByDefault.not() || response.forceExpand),
+                                        isExpanded = response.forceExpand,
                                         buttonSet = response.buttonSet,
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }

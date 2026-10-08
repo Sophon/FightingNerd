@@ -24,23 +24,12 @@ import io.github.sophon.wiki.model.game.SF6MoveProperties
 import io.github.sophon.wiki.model.game.T8Properties
 import io.github.sophon.wiki.model.game.Uni2MoveProperties
 import io.github.sophon.wiki.model.game.VSAVMoveProperties
-import io.github.sophon.wiki.model.wiki.Game
 
 internal fun Move.toDomain(character: Character): MoveResponse {
-    val isCollapsedByDefault: Boolean = when (character.id.game) {
-        Game.GGST,
-        Game.BBCF,
-        Game.GBVSR,
-        Game.AVL,
-        Game.StreetFighter6 -> true
-
-        else -> false
-    }
-
     val secondaryFields = toSecondaryFields()
     val buttonSet = toButtonList(
         character = character,
-        hasDetails = (isCollapsedByDefault && secondaryFields.isNotEmpty()),
+        hasDetails = (secondaryFields.isNotEmpty() || notes.isNotEmpty() || aliases.isNotEmpty()),
     )
         .takeIf { it.isNotEmpty() }
         ?.let { buttonList -> BotResponse.ButtonSet(buttonList = buttonList) }
@@ -55,7 +44,6 @@ internal fun Move.toDomain(character: Character): MoveResponse {
         characterImageUrl = character.images?.iconUrl,
         primaryFields = toPrimaryFields(),
         dataSource = character.toDataSource(),
-        isCollapsedByDefault = isCollapsedByDefault,
         secondaryFields = secondaryFields,
         noteList = notes,
         aliasList = aliases,
