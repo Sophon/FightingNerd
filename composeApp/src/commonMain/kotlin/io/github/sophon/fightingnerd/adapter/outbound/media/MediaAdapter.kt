@@ -129,7 +129,7 @@ internal class MediaAdapter(
 
 
 /**
- * Same key as the legacy `MediaRepoImpl` - both read and write the same offline characters.
+ * Don't change the key - existing installs already store their offline characters under it.
  */
 private fun offlineCharactersKey(gameId: String): Preferences.Key<Set<String>> {
     val key = stringSetPreferencesKey("${KEY_PREFIX_OFFLINE_CHARACTERS}_$gameId")

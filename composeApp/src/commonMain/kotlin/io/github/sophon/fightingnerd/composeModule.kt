@@ -1,7 +1,6 @@
 package io.github.sophon.fightingnerd
 
 import io.github.sophon.core.coreModule
-import io.github.sophon.dreamcancel.integration.dreamCancelModule
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeVM
 import io.github.sophon.fightingnerd.adapter.inbound.more.about.AboutVM
 import io.github.sophon.fightingnerd.adapter.inbound.more.featureSettings.FeatureSettingsVM
@@ -97,12 +96,6 @@ import io.github.sophon.fightingnerd.inPort.SubscribeToUpdatePeriodUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToWikisUseCase
 import io.github.sophon.fightingnerd.inPort.WipeMediaUseCase
 import io.github.sophon.wiki.wikiModule
-import io.github.sophon.wikiSuperCombo.integration.superComboModule
-import io.github.sophon.wikidragdown.integration.dragDownModule
-import io.github.sophon.wikidustloop.integration.dustLoopModule
-import io.github.sophon.wikimizuumi.integration.mizuumiModule
-import io.github.sophon.wikiwavu.integration.wavuModule
-import io.github.sophon.xko.integration.xkoModule
 import okio.FileSystem
 import okio.SYSTEM
 import org.koin.core.context.startKoin
@@ -122,13 +115,6 @@ internal fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
         platformModule,
 
         coreModule,
-        wavuModule(),
-        superComboModule(),
-        xkoModule(),
-        dreamCancelModule(),
-        dustLoopModule(),
-        mizuumiModule(),
-        dragDownModule(),
         wikiModule(),
 
         coreModule(),
