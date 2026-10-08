@@ -341,7 +341,7 @@ internal class RefreshDataServiceTest {
             fetchGameDataPort = fetchGameDataPort,
             store = FakeDownloadStore(),
         )
-        val expected = listOf<RefreshEvent>(RefreshEvent.Finished(1))
+        val expected = listOf<RefreshEvent>(RefreshEvent.Finished(Game.Tekken8, 1))
 
         // when
         service.invoke().toList()
@@ -416,7 +416,7 @@ internal class RefreshDataServiceTest {
             store = FakeDownloadStore(),
             enabledGameList = listOf(Game.Tekken8, Game.StreetFighter6),
         )
-        val expected = arrayOf(RefreshEvent.Finished(2), RefreshEvent.Finished(1))
+        val expected = arrayOf(RefreshEvent.Finished(Game.Tekken8, 2), RefreshEvent.Finished(Game.StreetFighter6, 1))
 
         // when
         val eventList = service.invoke().toList()
