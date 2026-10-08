@@ -13,6 +13,7 @@ import io.github.sophon.wiki.RefreshDataUseCase
 import io.github.sophon.wiki.app.model.toWikiError
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
+import io.github.sophon.wiki.app.outPort.PublishWikiEventPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
 import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
@@ -33,9 +34,6 @@ import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.channels.ProducerScope
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
@@ -56,13 +54,11 @@ internal class RefreshDataService(
     private val saveMoveListPort: SaveMoveListPort,
     private val saveGameDataPort: SaveGameDataPort,
     private val strikeCharacterListPort: StrikeCharacterListPort,
+    private val publishWikiEventPort: PublishWikiEventPort,
 ) : RefreshDataUseCase {
     private val downloadSemaphore = Semaphore(MAX_PARALLEL_GAME_DOWNLOADS)
     private val refreshingGameMutex = Mutex()
     private val gamesMarkedForRefresh = mutableSetOf<Game>()
-    private val _wikiEventFlow = MutableSharedFlow<WikiEvent>(extraBufferCapacity = EVENT_BUFFER_CAPACITY)
-
-    val wikiEventFlow: SharedFlow<WikiEvent> = _wikiEventFlow.asSharedFlow()
 
     override fun invoke(): Flow<WikiEvent.Refresh> {
         val flow = refresh { enabledGameSet -> enabledGameSet }
@@ -128,7 +124,7 @@ internal class RefreshDataService(
             withContext(NonCancellable) {
                 // before the release - a refresh that claims the game next must not get its progress wiped
                 if (isStarted) {
-                    _wikiEventFlow.emit(WikiEvent.Refresh.Finished(game, successCount))
+                    publishWikiEventPort.publish(WikiEvent.Refresh.Finished(game, successCount))
                 }
                 releaseGame(game)
             }
@@ -137,11 +133,11 @@ internal class RefreshDataService(
     }
 
     /**
-     * To the collector of this refresh and to the subscribers of [wikiEventFlow].
+     * To the collector of this refresh and to the wiki event subscribers.
      */
     private suspend fun ProducerScope<WikiEvent.Refresh>.publish(event: WikiEvent.Refresh) {
         send(event)
-        _wikiEventFlow.emit(event)
+        publishWikiEventPort.publish(event)
     }
 
     /**
@@ -372,7 +368,6 @@ internal class RefreshDataService(
     private companion object {
         const val TAG = "RefreshDataService"
         const val MAX_PARALLEL_GAME_DOWNLOADS = 3
-        const val EVENT_BUFFER_CAPACITY = 64
         val DOWNLOAD_TIMEOUT = 1.minutes
         val BULK_DOWNLOAD_TIMEOUT = 2.minutes
     }

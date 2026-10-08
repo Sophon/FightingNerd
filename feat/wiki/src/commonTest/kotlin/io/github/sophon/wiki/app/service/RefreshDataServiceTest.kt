@@ -11,6 +11,7 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
+import io.github.sophon.wiki.app.outPort.PublishWikiEventPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
 import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
@@ -30,7 +31,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -476,8 +476,9 @@ internal class RefreshDataServiceTest {
     }
 
     @Test
-    fun `subscribers get the events of a refresh they didn't start`() = runTest {
+    fun `every refresh event is published`() = runTest {
         // given
+        val publishWikiEventPort = FakePublishWikiEventPort()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
                 characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
@@ -487,11 +488,8 @@ internal class RefreshDataServiceTest {
                 ),
             ),
             store = FakeDownloadStore(),
+            publishWikiEventPort = publishWikiEventPort,
         )
-        val subscribedEventList = mutableListOf<WikiEvent>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            SubscribeToWikiEventsService(service).invoke().toList(subscribedEventList)
-        }
         val expected = listOf(
             WikiEvent.Refresh.Started(Game.Tekken8),
             WikiEvent.Refresh.Progress(Game.Tekken8, 0.5f),
@@ -503,23 +501,21 @@ internal class RefreshDataServiceTest {
         service.invoke().toList()
 
         // then
-        assertThat(subscribedEventList).isEqualTo(expected)
+        assertThat(publishWikiEventPort.publishedEventList).isEqualTo(expected)
     }
 
     @Test
     fun `a cancelled game still finishes for the subscribers`() = runTest {
         // given
+        val publishWikiEventPort = FakePublishWikiEventPort()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
                 characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
                 fetchDelay = 1.seconds,
             ),
             store = FakeDownloadStore(),
+            publishWikiEventPort = publishWikiEventPort,
         )
-        val subscribedEventList = mutableListOf<WikiEvent>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            SubscribeToWikiEventsService(service).invoke().toList(subscribedEventList)
-        }
         val expected = listOf(
             WikiEvent.Refresh.Started(Game.Tekken8),
             WikiEvent.Refresh.Finished(Game.Tekken8, 0),
@@ -531,11 +527,13 @@ internal class RefreshDataServiceTest {
         refresh.cancelAndJoin()
 
         // then
-        assertThat(subscribedEventList).isEqualTo(expected)
+        assertThat(publishWikiEventPort.publishedEventList).isEqualTo(expected)
     }
+
     @Test
     fun `a game cancelled while waiting for a download slot sends nothing`() = runTest {
         // given
+        val publishWikiEventPort = FakePublishWikiEventPort()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
                 characterListByGame = mapOf(
@@ -548,11 +546,8 @@ internal class RefreshDataServiceTest {
             ),
             store = FakeDownloadStore(),
             enabledGameList = listOf(Game.Tekken8, Game.StreetFighter6, Game.GGST, Game.MK1),
+            publishWikiEventPort = publishWikiEventPort,
         )
-        val subscribedEventList = mutableListOf<WikiEvent>()
-        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
-            SubscribeToWikiEventsService(service).invoke().toList(subscribedEventList)
-        }
 
         // when
         val refresh = launch { service.invoke().toList() }
@@ -560,11 +555,11 @@ internal class RefreshDataServiceTest {
         refresh.cancelAndJoin()
 
         // then
-        val startedGameSet = subscribedEventList
+        val startedGameSet = publishWikiEventPort.publishedEventList
             .filterIsInstance<WikiEvent.Refresh.Started>()
             .map { event -> event.game }
             .toSet()
-        val finishedGameSet = subscribedEventList
+        val finishedGameSet = publishWikiEventPort.publishedEventList
             .filterIsInstance<WikiEvent.Refresh.Finished>()
             .map { event -> event.game }
             .toSet()
@@ -597,6 +592,7 @@ private fun refreshDataService(
     fetchGameDataPort: FetchGameDataPort,
     store: FakeDownloadStore,
     enabledGameList: List<Game> = listOf(Game.Tekken8),
+    publishWikiEventPort: PublishWikiEventPort = FakePublishWikiEventPort(),
 ): RefreshDataService {
     val service = RefreshDataService(
         loadWikiConfigPort = FakeLoadWikiConfigPort(enabledGameList.toSet()),
@@ -605,6 +601,7 @@ private fun refreshDataService(
         saveMoveListPort = store,
         saveGameDataPort = store,
         strikeCharacterListPort = store,
+        publishWikiEventPort = publishWikiEventPort,
     )
     return service
 }
@@ -732,6 +729,14 @@ private class FakeFetchGameDataPort(
 
     override suspend fun fetchGameData(game: Game): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
         return gameDataByGame[game] ?: Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+    }
+}
+
+private class FakePublishWikiEventPort : PublishWikiEventPort {
+    val publishedEventList = mutableListOf<WikiEvent>()
+
+    override suspend fun publish(event: WikiEvent) {
+        publishedEventList.add(event)
     }
 }
 

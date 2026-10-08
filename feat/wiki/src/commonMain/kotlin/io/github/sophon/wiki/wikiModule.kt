@@ -9,6 +9,7 @@ import io.github.sophon.wiki.adapter.outbound.ktor.superCombo.SuperComboKtorGame
 import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.xko.XkoKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.memory.InMemoryWikiConfigAdapter
+import io.github.sophon.wiki.adapter.outbound.memory.InMemoryWikiEventAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.LazyWikiDB
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightCharacterAdapter
 import io.github.sophon.wiki.adapter.outbound.sqldelight.SqlDelightGamePropertiesRouter
@@ -29,11 +30,13 @@ import io.github.sophon.wiki.app.outPort.LoadLastUpdatePort
 import io.github.sophon.wiki.app.outPort.LoadMoveListPort
 import io.github.sophon.wiki.app.outPort.LoadMovePort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
+import io.github.sophon.wiki.app.outPort.PublishWikiEventPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
 import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
 import io.github.sophon.wiki.app.outPort.SaveWikiConfigPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
+import io.github.sophon.wiki.app.outPort.SubscribeToWikiEventsPort
 import io.github.sophon.wiki.app.service.ConfigureWikiService
 import io.github.sophon.wiki.app.service.GetAvailableGamesService
 import io.github.sophon.wiki.app.service.GetCharacterListService
@@ -86,6 +89,7 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
 
 
     singleOf(::InMemoryWikiConfigAdapter)
+    singleOf(::InMemoryWikiEventAdapter)
     singleOf(::KtorGameDataAdapter)
     singleOf(::WavuKtorGameDataAdapter)
     singleOf(::MizuumiKtorGameDataAdapter)
@@ -123,9 +127,11 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     single<LoadMoveListPort> { get<SqlDelightMoveAdapter>() }
     single<LoadMovePort> { get<SqlDelightMoveAdapter>() }
     single<LoadWikiConfigPort> { get<InMemoryWikiConfigAdapter>() }
+    single<PublishWikiEventPort> { get<InMemoryWikiEventAdapter>() }
     single<SaveCharacterListPort> { get<SqlDelightCharacterAdapter>() }
     single<SaveGameDataPort> { get<SqlDelightCharacterAdapter>() }
     single<SaveMoveListPort> { get<SqlDelightCharacterAdapter>() }
     single<SaveWikiConfigPort> { get<InMemoryWikiConfigAdapter>() }
     single<StrikeCharacterListPort> { get<SqlDelightCharacterAdapter>() }
+    single<SubscribeToWikiEventsPort> { get<InMemoryWikiEventAdapter>() }
 }
