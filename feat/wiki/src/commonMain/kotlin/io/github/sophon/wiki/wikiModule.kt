@@ -29,7 +29,9 @@ import io.github.sophon.wiki.app.outPort.LoadLastUpdatePort
 import io.github.sophon.wiki.app.outPort.LoadMoveListPort
 import io.github.sophon.wiki.app.outPort.LoadMovePort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
-import io.github.sophon.wiki.app.outPort.SaveCharacterMoveListPort
+import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
+import io.github.sophon.wiki.app.outPort.SaveGameDataPort
+import io.github.sophon.wiki.app.outPort.SaveMoveListPort
 import io.github.sophon.wiki.app.outPort.SaveWikiConfigPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
 import io.github.sophon.wiki.app.service.ConfigureWikiService
@@ -43,17 +45,6 @@ import io.github.sophon.wiki.app.service.GetMoveService
 import io.github.sophon.wiki.app.service.GetUpdateTimeStampService
 import io.github.sophon.wiki.app.service.NormalizeMoveInputService
 import io.github.sophon.wiki.app.service.RefreshDataService
-import io.github.sophon.wiki.inPort.ConfigureWikiUseCase
-import io.github.sophon.wiki.inPort.GetAvailableGamesUseCase
-import io.github.sophon.wiki.inPort.GetCharacterListUseCase
-import io.github.sophon.wiki.inPort.GetCharacterUseCase
-import io.github.sophon.wiki.inPort.GetFiltersUseCase
-import io.github.sophon.wiki.inPort.GetGroupsUseCase
-import io.github.sophon.wiki.inPort.GetMoveListUseCase
-import io.github.sophon.wiki.inPort.GetMoveUseCase
-import io.github.sophon.wiki.inPort.GetUpdateTimeStampUseCase
-import io.github.sophon.wiki.inPort.NormalizeMoveInputUseCase
-import io.github.sophon.wiki.inPort.RefreshDataUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -129,7 +120,9 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     single<LoadMoveListPort> { get<SqlDelightMoveAdapter>() }
     single<LoadMovePort> { get<SqlDelightMoveAdapter>() }
     single<LoadWikiConfigPort> { get<InMemoryWikiConfigAdapter>() }
-    single<SaveCharacterMoveListPort> { get<SqlDelightCharacterAdapter>() }
+    single<SaveCharacterListPort> { get<SqlDelightCharacterAdapter>() }
+    single<SaveGameDataPort> { get<SqlDelightCharacterAdapter>() }
+    single<SaveMoveListPort> { get<SqlDelightCharacterAdapter>() }
     single<SaveWikiConfigPort> { get<InMemoryWikiConfigAdapter>() }
     single<StrikeCharacterListPort> { get<SqlDelightCharacterAdapter>() }
 }

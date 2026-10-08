@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.app.service
 
+import io.github.sophon.wiki.GetAvailableGamesUseCase
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
-import io.github.sophon.wiki.inPort.GetAvailableGamesUseCase
 import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged

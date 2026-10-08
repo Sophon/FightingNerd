@@ -14,7 +14,6 @@ import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.model.wiki.Wiki
-import kotlinx.coroutines.flow.Flow
 
 /**
  * Routes each game to its wiki's adapter - which wiki serves which game stays out of the service.
@@ -28,18 +27,37 @@ internal class KtorGameDataAdapter(
     private val xkoAdapter: XkoKtorGameDataAdapter,
     private val dreamCancelAdapter: DreamCancelKtorGameDataAdapter,
 ) : FetchGameDataPort {
-    override fun fetch(
+    override suspend fun fetchCharacterList(
         game: Game,
-    ): Flow<Result<Pair<Character, List<Move>>, DataError.Remote>> {
-        val flow = when (game.wiki) {
-            Wiki.Wavu -> wavuAdapter.fetch(game)
-            Wiki.Mizuumi -> mizuumiAdapter.fetch(game)
-            Wiki.DustLoop -> dustLoopAdapter.fetch(game)
-            Wiki.SuperCombo -> superComboAdapter.fetch(game)
-            Wiki.DragDown -> dragDownAdapter.fetch(game)
-            Wiki.Xko -> xkoAdapter.fetch(game)
-            Wiki.DreamCancel -> dreamCancelAdapter.fetch(game)
+    ): Result<List<Character>, DataError.Remote> {
+        val result = adapterOf(game).fetchCharacterList(game)
+        return result
+    }
+
+    override suspend fun fetchMoveList(
+        character: Character,
+    ): Result<List<Move>, DataError.Remote> {
+        val result = adapterOf(character.id.game).fetchMoveList(character)
+        return result
+    }
+
+    override suspend fun fetchGameData(
+        game: Game,
+    ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
+        val result = adapterOf(game).fetchGameData(game)
+        return result
+    }
+
+    private fun adapterOf(game: Game): FetchGameDataPort {
+        val adapter = when (game.wiki) {
+            Wiki.Wavu -> wavuAdapter
+            Wiki.Mizuumi -> mizuumiAdapter
+            Wiki.DustLoop -> dustLoopAdapter
+            Wiki.SuperCombo -> superComboAdapter
+            Wiki.DragDown -> dragDownAdapter
+            Wiki.Xko -> xkoAdapter
+            Wiki.DreamCancel -> dreamCancelAdapter
         }
-        return flow
+        return adapter
     }
 }

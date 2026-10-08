@@ -1,6 +1,6 @@
 package io.github.sophon.wiki.app.service
 
-import io.github.sophon.wiki.inPort.GetGroupsUseCase
+import io.github.sophon.wiki.GetGroupsUseCase
 import io.github.sophon.wiki.model.AVLGroups
 import io.github.sophon.wiki.model.BBCFGroups
 import io.github.sophon.wiki.model.COTWGroups
