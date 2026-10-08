@@ -24,31 +24,13 @@ import kotlin.test.Test
 class ProcessButtonEventServiceTest {
     //region expand
     @Test
-    fun `expanded move is forced open without its details button`() = runTest {
+    fun `expanded move is forced open without any buttons`() = runTest {
         // given
-        val expected = Result.Success(
-            sf6Move.copy(
-                forceExpand = true,
-                buttonSet = BotResponse.ButtonSet(buttonList = listOf(videoButton)),
-            ),
-        )
+        val expected = Result.Success(sf6Move.copy(forceExpand = true, buttonSet = null))
         val service = processButtonEventService()
 
         // when
         val result = service(ButtonEvent.Expand(sf6MoveId))
-
-        // then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `expanded move with only a details button has no buttons`() = runTest {
-        // given
-        val expected = Result.Success(ggstMove.copy(forceExpand = true, buttonSet = null))
-        val service = processButtonEventService()
-
-        // when
-        val result = service(ButtonEvent.Expand(ggstMoveId))
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -237,7 +219,6 @@ class ProcessButtonEventServiceTest {
     ): ProcessButtonEventService {
         val moveMap = mapOf(
             CharacterId(game = Game.StreetFighter6, characterId = "ryu") to listOf(sf6Move),
-            CharacterId(game = Game.GGST, characterId = "sol") to listOf(ggstMove),
         )
         val service = ProcessButtonEventService(
             frameDataPort = FakeFrameDataPort(moveMap),
@@ -261,7 +242,6 @@ private val forwardEvent = ButtonEvent.Forward(
     targetChannelId = TARGET_CHANNEL_ID,
 )
 private val sf6MoveId = MoveId(game = Game.StreetFighter6, characterId = "ryu", input = "5MP")
-private val ggstMoveId = MoveId(game = Game.GGST, characterId = "sol", input = "5K")
 private val videoButton = BotResponse.EmbedButton(label = "Video", action = BotResponse.EmbedButton.Action.Text(VIDEO_URL))
 private val sf6Move = moveResponse(
     input = "5MP",
@@ -271,16 +251,6 @@ private val sf6Move = moveResponse(
         buttonList = listOf(
             BotResponse.EmbedButton(label = "Details", action = BotResponse.EmbedButton.Action.Expand(sf6MoveId)),
             videoButton,
-        ),
-    ),
-)
-private val ggstMove = moveResponse(
-    input = "5K",
-    game = Game.GGST,
-    characterName = "Sol Badguy",
-    buttonSet = BotResponse.ButtonSet(
-        buttonList = listOf(
-            BotResponse.EmbedButton(label = "Details", action = BotResponse.EmbedButton.Action.Expand(ggstMoveId)),
         ),
     ),
 )
