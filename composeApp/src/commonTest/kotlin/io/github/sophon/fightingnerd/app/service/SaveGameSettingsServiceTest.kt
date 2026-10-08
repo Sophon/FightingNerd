@@ -8,8 +8,10 @@ import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.ComposeConfig
+import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.Move
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
+import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.outPort.ConfigureWikiPort
 import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
 import io.github.sophon.fightingnerd.app.outPort.LoadConfigPort
@@ -212,7 +214,7 @@ internal class SaveGameSettingsServiceTest {
         override fun refresh(gameIdSet: Set<String>): Flow<RefreshEvent> {
             val flow = flow {
                 refreshedList.add(gameIdSet)
-                emit(RefreshEvent.Finished(successCount = 43))
+                emit(RefreshEvent.Finished(game = TEKKEN_8, successCount = 43))
             }
             return flow
         }
@@ -246,3 +248,11 @@ internal class SaveGameSettingsServiceTest {
         }
     }
 }
+
+
+private val TEKKEN_8 = Game(
+    id = "Tekken_8",
+    displayName = "Tekken 8",
+    iconUrl = "https://i.imgur.com/Yl6j809.png",
+    wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"),
+)

@@ -1,13 +1,16 @@
 package io.github.sophon.fightingnerd.app.service
 
-import app.cash.turbine.test
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isFalse
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.map
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.ComposeConfig
+import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
+import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.outPort.ConfigureWikiPort
 import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
 import io.github.sophon.fightingnerd.app.outPort.FirstLaunchPort
@@ -15,15 +18,12 @@ import io.github.sophon.fightingnerd.app.outPort.LoadConfigPort
 import io.github.sophon.fightingnerd.app.outPort.RefreshWikiPort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
-internal class SyncWikiConfigServiceTest {
+internal class OnLaunchSetupServiceTest {
     private val composeConfig = ComposeConfig(
         featureList = listOf(
             ComposeConfig.Feature(name = "Wavu Wiki", isEnabled = true, supportedGames = listOf("Tekken_8")),
@@ -32,12 +32,22 @@ internal class SyncWikiConfigServiceTest {
             ComposeConfig.Feature(name = "Mizuumi Wiki", isEnabled = true, supportedGames = listOf("MBTL")),
         ),
     )
+    private val tekken8 = Game(
+        id = "Tekken_8",
+        displayName = "Tekken 8",
+        iconUrl = "https://i.imgur.com/Yl6j809.png",
+        wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"),
+    )
+    private val refreshEventList = listOf(
+        RefreshEvent.Started(game = tekken8),
+        RefreshEvent.Finished(game = tekken8, successCount = 37),
+    )
 
     private val loadConfigPort = FakeLoadConfigPort(composeConfig)
     private val firstLaunchPort = FakeFirstLaunchPort()
     private val gameSettingsPort = FakeGameSettingsPort()
     private val configureWikiPort = FakeConfigureWikiPort()
-    private val refreshWikiPort = FakeRefreshWikiPort()
+    private val refreshWikiPort = FakeRefreshWikiPort(refreshEventList)
     private val service = OnLaunchSetupService(
         loadConfigPort = loadConfigPort,
         firstLaunchPort = firstLaunchPort,
@@ -58,45 +68,45 @@ internal class SyncWikiConfigServiceTest {
         )
 
         // when
-        service().first()
+        service()
 
         // then
-        assertThat(gameSettingsPort.isEnabledByGameId.value).isEqualTo(expected)
+        assertThat(gameSettingsPort.isEnabledByGameId).isEqualTo(expected)
     }
 
     @Test
-    fun `first launch configures the wiki once with the default games`() = runTest {
+    fun `first launch configures the wiki with the default games`() = runTest {
         // given
         val expected = listOf(composeConfig to setOf("Tekken_8", "Street_Fighter_6", "GGST"))
 
         // when
-        service().first()
+        service()
 
         // then
         assertThat(configureWikiPort.configuredList).isEqualTo(expected)
     }
 
     @Test
-    fun `first launch is remembered and refreshes the wiki`() = runTest {
+    fun `first launch is remembered and returns the wiki refresh`() = runTest {
         // given
-        val expected = Triple(Result.Success(Unit), true, 1)
+        val expected = Pair(Result.Success(refreshEventList), true)
 
         // when
-        val result = service().first()
+        val result = service().map { refreshEventFlow -> refreshEventFlow.toList() }
 
         // then
-        assertThat(Triple(result, firstLaunchPort.hasLaunched, refreshWikiPort.collectCount)).isEqualTo(expected)
+        assertThat(result to firstLaunchPort.hasLaunched).isEqualTo(expected)
     }
 
     @Test
     fun `later launches configure the wiki with the saved games`() = runTest {
         // given
         firstLaunchPort.hasLaunched = true
-        gameSettingsPort.isEnabledByGameId.value = mapOf("Tekken_8" to true, "MBTL" to true, "GGST" to false)
+        gameSettingsPort.isEnabledByGameId = mapOf("Tekken_8" to true, "MBTL" to true, "GGST" to false)
         val expected = listOf(composeConfig to setOf("Tekken_8", "MBTL"))
 
         // when
-        service().first()
+        service()
 
         // then
         assertThat(configureWikiPort.configuredList).isEqualTo(expected)
@@ -107,60 +117,15 @@ internal class SyncWikiConfigServiceTest {
         // given
         firstLaunchPort.hasLaunched = true
         val isEnabledByGameId = mapOf("Tekken_8" to true, "MBTL" to true, "GGST" to false)
-        gameSettingsPort.isEnabledByGameId.value = isEnabledByGameId
-        val expected = Triple(Result.Success(Unit), isEnabledByGameId, 0)
+        gameSettingsPort.isEnabledByGameId = isEnabledByGameId
+        val expected = Triple(Result.Success(emptyList<RefreshEvent>()), isEnabledByGameId, 0)
 
         // when
-        val result = service().first()
+        val result = service().map { refreshEventFlow -> refreshEventFlow.toList() }
 
         // then
-        val sideEffects = Triple(result, gameSettingsPort.isEnabledByGameId.value, refreshWikiPort.collectCount)
+        val sideEffects = Triple(result, gameSettingsPort.isEnabledByGameId, refreshWikiPort.refreshCount)
         assertThat(sideEffects).isEqualTo(expected)
-    }
-
-    @Test
-    fun `toggled game reconfigures the wiki without another refresh`() = runTest {
-        // given
-        val expected = Pair(
-            listOf(
-                composeConfig to setOf("Tekken_8", "Street_Fighter_6", "GGST"),
-                composeConfig to setOf("Tekken_8", "Street_Fighter_6"),
-            ),
-            1,
-        )
-
-        service().test {
-            awaitItem()
-
-            // when
-            gameSettingsPort.isEnabledByGameId.update { isEnabledByGameId -> isEnabledByGameId + ("GGST" to false) }
-            awaitItem()
-
-            // then
-            assertThat(configureWikiPort.configuredList to refreshWikiPort.collectCount).isEqualTo(expected)
-        }
-    }
-
-    @Test
-    fun `disabling every game still configures the wiki`() = runTest {
-        // given
-        firstLaunchPort.hasLaunched = true
-        gameSettingsPort.isEnabledByGameId.value = mapOf("Tekken_8" to true)
-        val expected = listOf(
-            composeConfig to setOf("Tekken_8"),
-            composeConfig to emptySet(),
-        )
-
-        service().test {
-            awaitItem()
-
-            // when
-            gameSettingsPort.isEnabledByGameId.value = mapOf("Tekken_8" to false)
-            awaitItem()
-
-            // then
-            assertThat(configureWikiPort.configuredList).isEqualTo(expected)
-        }
     }
 
     @Test
@@ -170,31 +135,37 @@ internal class SyncWikiConfigServiceTest {
         loadConfigPort.error = error
         val expected = Triple(Result.Error(error), false, emptyList<Pair<ComposeConfig, Set<String>>>())
 
-        service().test {
-            // when
-            val result = awaitItem()
-            awaitComplete()
+        // when
+        val result = service()
 
-            // then
-            assertThat(Triple(result, firstLaunchPort.hasLaunched, configureWikiPort.configuredList)).isEqualTo(expected)
-        }
+        // then
+        assertThat(Triple(result, firstLaunchPort.hasLaunched, configureWikiPort.configuredList)).isEqualTo(expected)
     }
 
     @Test
-    fun `failed save leaves the launch unmarked and the wiki unconfigured`() = runTest {
+    fun `failed first launch check leaves the wiki unconfigured`() = runTest {
         // given
-        val error = AppError.IOError("disk full")
-        gameSettingsPort.error = error
-        val expected = Triple(Result.Error(error), false, emptyList<Pair<ComposeConfig, Set<String>>>())
+        val error = AppError.IOError("corrupted preferences")
+        firstLaunchPort.error = error
+        val expected = Pair(Result.Error(error), emptyList<Pair<ComposeConfig, Set<String>>>())
 
-        service().test {
-            // when
-            val result = awaitItem()
-            awaitComplete()
+        // when
+        val result = service()
 
-            // then
-            assertThat(Triple(result, firstLaunchPort.hasLaunched, configureWikiPort.configuredList)).isEqualTo(expected)
-        }
+        // then
+        assertThat(result to configureWikiPort.configuredList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `failed save leaves the launch unmarked`() = runTest {
+        // given
+        gameSettingsPort.error = AppError.IOError("disk full")
+
+        // when
+        service()
+
+        // then
+        assertThat(firstLaunchPort.hasLaunched).isFalse()
     }
 
     @Test
@@ -205,10 +176,10 @@ internal class SyncWikiConfigServiceTest {
         val expected = Pair(Result.Error(error), 0)
 
         // when
-        val result = service().first()
+        val result = service()
 
         // then
-        assertThat(result to refreshWikiPort.collectCount).isEqualTo(expected)
+        assertThat(result to refreshWikiPort.refreshCount).isEqualTo(expected)
     }
 
 
@@ -230,9 +201,15 @@ internal class SyncWikiConfigServiceTest {
 
     private class FakeFirstLaunchPort: FirstLaunchPort {
         var hasLaunched = false
+        var error: AppError? = null
 
         override suspend fun hasLaunchedBefore(): Result<Boolean, AppError> {
-            val result = Result.Success(hasLaunched)
+            val currentError = error
+            val result = if (currentError == null) {
+                Result.Success(hasLaunched)
+            } else {
+                Result.Error(currentError)
+            }
             return result
         }
 
@@ -244,7 +221,7 @@ internal class SyncWikiConfigServiceTest {
 
     private class FakeGameSettingsPort: SaveGameSettingsPort, EnabledGamesPort {
         var error: AppError? = null
-        val isEnabledByGameId = MutableStateFlow<Map<String, Boolean>>(emptyMap())
+        var isEnabledByGameId: Map<String, Boolean> = emptyMap()
 
         override suspend fun saveGameSettings(
             composeConfig: ComposeConfig,
@@ -252,7 +229,7 @@ internal class SyncWikiConfigServiceTest {
         ): EmptyResult<AppError> {
             val currentError = error
             val result = if (currentError == null) {
-                isEnabledByGameId.value = composeConfig.availableFeatureList
+                isEnabledByGameId = composeConfig.availableFeatureList
                     .flatMap { feature -> feature.supportedGames }
                     .associateWith { gameId -> gameId in enabledGameIdSet }
                 Result.Success(Unit)
@@ -262,15 +239,11 @@ internal class SyncWikiConfigServiceTest {
             return result
         }
 
-        override fun subscribe(composeConfig: ComposeConfig): Flow<Result<Set<String>, AppError>> {
-            val flow = isEnabledByGameId.map { isEnabledByGameId ->
-                val enabledGameIdSet = isEnabledByGameId
-                    .filterValues { isEnabled -> isEnabled }
-                    .keys
-                val result: Result<Set<String>, AppError> = Result.Success(enabledGameIdSet)
-                result
-            }
-            return flow
+        override suspend fun load(): Result<Set<String>, AppError> {
+            val enabledGameIdSet = isEnabledByGameId
+                .filterValues { isEnabled -> isEnabled }
+                .keys
+            return Result.Success(enabledGameIdSet)
         }
     }
 
@@ -293,16 +266,15 @@ internal class SyncWikiConfigServiceTest {
         }
     }
 
-    private class FakeRefreshWikiPort: RefreshWikiPort {
-        var collectCount = 0
+    private class FakeRefreshWikiPort(
+        private val eventList: List<RefreshEvent>,
+    ): RefreshWikiPort {
+        var refreshCount = 0
             private set
 
         override fun refresh(): Flow<RefreshEvent> {
-            val flow = flow {
-                collectCount++
-                emit(RefreshEvent.Finished(successCount = 37))
-            }
-            return flow
+            refreshCount++
+            return eventList.asFlow()
         }
 
         override fun refresh(gameIdSet: Set<String>): Flow<RefreshEvent> {
