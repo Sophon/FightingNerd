@@ -44,6 +44,7 @@ private fun handleBGTask(task: BGTask) {
                         success = false
                     }
                     is RefreshEvent.Finished -> Napier.i(tag = TAG) { "bgTask: $event" }
+                    is RefreshEvent.Started, is RefreshEvent.Progress -> {}
                 }
             }
         } catch (e: Exception) {
