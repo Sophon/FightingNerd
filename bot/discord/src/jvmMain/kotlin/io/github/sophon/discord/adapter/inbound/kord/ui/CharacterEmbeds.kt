@@ -24,6 +24,14 @@ internal fun characterEmbed(
     featureFooter(dataSource = character.dataSource)
 }
 
+internal fun aliasResponseEmbed(aliasResponse: AliasResponse): EmbedBuilder.() -> Unit {
+    val embedBuilder = when (aliasResponse) {
+        is AliasResponse.CharacterAliases -> aliasEmbed(aliasResponse.characterList)
+        is AliasResponse.GamePrompt -> aliasGamePromptEmbed(aliasResponse)
+    }
+    return embedBuilder
+}
+
 internal fun aliasEmbed(
     characterList: List<CharacterResponse>,
 ): EmbedBuilder.() -> Unit = {

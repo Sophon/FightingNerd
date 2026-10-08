@@ -12,7 +12,6 @@ data class MoveResponse(
     val characterImageUrl: String?,
     val primaryFields: List<BotResponse.Field>,
     val dataSource: BotResponse.DataSource,
-    val isCollapsedByDefault: Boolean = true,
     val secondaryFields: List<BotResponse.Field> = emptyList(),
     val aliasList: List<String> = emptyList(),
     val noteList: List<String> = emptyList(),

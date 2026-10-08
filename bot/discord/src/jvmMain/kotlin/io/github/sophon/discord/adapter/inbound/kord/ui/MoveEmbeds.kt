@@ -65,12 +65,7 @@ private fun coreMoveEmbed(
     headerSection(move)
 
     primaryFieldsSection(fields = move.primaryFields)
-
-    if (move.isCollapsedByDefault.not()) {
-        detailsBulletPoints(move.secondaryFields)
-        notesSection(move)
-        embedImage(urls = move.hitboxImageList)
-    }
+    notesSection(noteList = emptyList(), aliasList = move.aliasList)
 
     featureFooter(dataSource = move.dataSource)
 }
@@ -83,7 +78,7 @@ private fun expandedMoveEmbed(
 
     primaryFieldsSection(fields = move.primaryFields)
     detailsBulletPoints(move.secondaryFields)
-    notesSection(move)
+    notesSection(noteList = move.noteList, aliasList = move.aliasList)
     embedImage(urls = move.hitboxImageList)
 
     featureFooter(dataSource = move.dataSource)
@@ -114,13 +109,16 @@ private fun EmbedBuilder.primaryFieldsSection(fields: List<BotResponse.Field>) {
     }
 }
 
-private fun EmbedBuilder.notesSection(move: MoveResponse) {
-    val aliasNote = if (move.aliasList.isNotEmpty()) {
-        "**ALIAS**: ${move.aliasList.joinToString("; ")}"
+private fun EmbedBuilder.notesSection(
+    noteList: List<String>,
+    aliasList: List<String>,
+) {
+    val aliasNote = if (aliasList.isNotEmpty()) {
+        "**ALIAS**: ${aliasList.joinToString("; ")}"
     } else null
 
     val allNotes = buildList {
-        addAll(move.noteList.map { it })
+        addAll(noteList.map { it })
         aliasNote?.let { add(it) }
     }
 
