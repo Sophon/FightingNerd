@@ -24,12 +24,14 @@ import io.github.sophon.wiki.model.game.SF6MoveProperties
 import io.github.sophon.wiki.model.game.T8Properties
 import io.github.sophon.wiki.model.game.Uni2MoveProperties
 import io.github.sophon.wiki.model.game.VSAVMoveProperties
+import io.github.sophon.wiki.model.wiki.Game
 
 internal fun Move.toDomain(character: Character): MoveResponse {
+    val isAlwaysExpanded = (character.id.game == Game.Tekken8)
     val secondaryFields = toSecondaryFields()
     val buttonSet = toButtonList(
         character = character,
-        hasDetails = (secondaryFields.isNotEmpty() || notes.isNotEmpty()),
+        hasDetails = (isAlwaysExpanded.not() && (secondaryFields.isNotEmpty() || notes.isNotEmpty())),
     )
         .takeIf { it.isNotEmpty() }
         ?.let { buttonList -> BotResponse.ButtonSet(buttonList = buttonList) }
@@ -51,6 +53,7 @@ internal fun Move.toDomain(character: Character): MoveResponse {
         hitboxImageList = urls.hitboxImageList,
         imageList = urls.moveImageList,
         stance = (gameProperties as? T8Properties)?.stance,
+        forceExpand = isAlwaysExpanded,
         buttonSet = buttonSet,
     )
 

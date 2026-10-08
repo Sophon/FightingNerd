@@ -25,7 +25,7 @@ import kotlin.test.Test
 class MoveMappersTest {
     //region toDomain
     @Test
-    fun `tekken move maps guard, recovery and stance`() {
+    fun `tekken move is always expanded with guard, recovery and stance`() {
         // given
         val move = Move(
             input = "f,n,d,df+2",
@@ -74,9 +74,9 @@ class MoveMappersTest {
             videoUrl = VIDEO_URL,
             hitboxImageList = listOf("https://wavu.wiki/img/Jin_ewgf_hitbox.png"),
             stance = "ZEN",
+            forceExpand = true,
             buttonSet = BotResponse.ButtonSet(
                 buttonList = listOf(
-                    jinDetailsButton(input = "f,n,d,df+2"),
                     mediaCommandButton(label = "Images", query = "jin f,n,d,df+2"),
                     mediaCommandButton(label = "Video", query = "jin f,n,d,df+2"),
                 ),
@@ -327,15 +327,15 @@ class MoveMappersTest {
     fun `move with only notes gets a details button`() {
         // given
         val move = Move(
-            input = "d/b+1",
-            notes = listOf("Homing"),
-            urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-d/b+1"),
-            gameProperties = T8Properties(),
+            input = "5K",
+            notes = listOf("Can be jump cancelled"),
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5K"),
+            gameProperties = GGMoveProperties(),
         )
-        val expected = BotResponse.ButtonSet(buttonList = listOf(jinDetailsButton(input = "d/b+1")))
+        val expected = BotResponse.ButtonSet(buttonList = listOf(solDetailsButton))
 
         // when
-        val result = move.toDomain(jin)
+        val result = move.toDomain(sol)
 
         // then
         assertThat(result.buttonSet).isEqualTo(expected)
@@ -345,9 +345,26 @@ class MoveMappersTest {
     fun `move with only aliases has no buttons`() {
         // given
         val move = Move(
-            input = "f,n,d,df+2",
-            aliases = listOf("ewgf"),
-            urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-f,n,d,df+2"),
+            input = "6P",
+            aliases = listOf("anti-air"),
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#6P"),
+            gameProperties = GGMoveProperties(),
+        )
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isNull()
+    }
+
+    @Test
+    fun `tekken move with notes has no details button`() {
+        // given
+        val move = Move(
+            input = "d/b+1",
+            notes = listOf("Homing"),
+            urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-d/b+1"),
             gameProperties = T8Properties(),
         )
 
@@ -356,6 +373,20 @@ class MoveMappersTest {
 
         // then
         assertThat(result.buttonSet).isNull()
+    }
+
+    @Test
+    fun `only tekken is always expanded`() {
+        // given
+        val gameList = listOf(Game.Tekken8, Game.GGST, Game.StreetFighter6, Game.DBFZ)
+        val expected = listOf(true, false, false, false)
+        val move = Move(input = "5P", urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5P"))
+
+        // when
+        val result = gameList.map { game -> move.toDomain(character(game = game)).forceExpand }
+
+        // then
+        assertThat(result).isEqualTo(expected)
     }
     //endregion
 
@@ -378,16 +409,6 @@ private fun mediaCommandButton(label: String, query: String): BotResponse.EmbedB
     val button = BotResponse.EmbedButton(
         label = label,
         action = BotResponse.EmbedButton.Action.Command(command = Command.Media, query = query),
-    )
-    return button
-}
-
-private fun jinDetailsButton(input: String): BotResponse.EmbedButton {
-    val button = BotResponse.EmbedButton(
-        label = "Details",
-        action = BotResponse.EmbedButton.Action.Expand(
-            moveId = MoveId(game = Game.Tekken8, characterId = "jin", input = input),
-        ),
     )
     return button
 }
