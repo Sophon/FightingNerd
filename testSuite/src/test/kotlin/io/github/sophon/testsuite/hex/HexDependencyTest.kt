@@ -7,7 +7,7 @@ class HexDependencyTest {
 
     @Test
     fun `inPort and model do not depend on app or adapter`() {
-        (HexScope.filesIn("inPort") + HexScope.filesIn("model"))
+        (HexScope.inPortFiles + HexScope.filesIn("model"))
             .flatMap { it.imports }
             .assertFalse(additionalMessage = "inPort and model must not import from app or adapter") {
                 it.isFromLayer("app") || it.isFromLayer("adapter")

@@ -4,8 +4,6 @@ import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
-import io.github.sophon.core.architecture.onError
-import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
@@ -15,31 +13,12 @@ import io.github.sophon.wiki.model.wiki.Game
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 internal class DustLoopKtorGameDataAdapter(
     private val httpClient: HttpClient,
 ) : FetchGameDataPort {
 
-    override fun fetch(
-        game: Game,
-    ): Flow<Result<Pair<Character, List<Move>>, DataError.Remote>> {
-        val flow = flow {
-            fetchCharacterList(game)
-                .onSuccess { characterList ->
-                    for (character in characterList) {
-                        val characterWithMovesResult = fetchMoveList(game, character)
-                            .map { moveList -> character to moveList }
-                        emit(characterWithMovesResult)
-                    }
-                }
-                .onError { error -> emit(Result.Error(error)) }
-        }
-        return flow
-    }
-
-    private suspend fun fetchCharacterList(
+    override suspend fun fetchCharacterList(
         game: Game,
     ): Result<List<Character>, DataError.Remote> {
         val table = DustLoopTables.characterTableByGame[game]
@@ -61,10 +40,10 @@ internal class DustLoopKtorGameDataAdapter(
         return characterListResult
     }
 
-    private suspend fun fetchMoveList(
-        game: Game,
+    override suspend fun fetchMoveList(
         character: Character,
     ): Result<List<Move>, DataError.Remote> {
+        val game = character.id.game
         val table = DustLoopTables.moveTableByGame[game]
             ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
 
@@ -83,6 +62,12 @@ internal class DustLoopKtorGameDataAdapter(
                     .map { imageUrlMap -> dto.toDomain(game, character, imageUrlMap) }
             }
         return moveListResult
+    }
+
+    override suspend fun fetchGameData(
+        game: Game,
+    ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
+        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
     }
 
     private suspend fun resolveCharacterImageUrls(

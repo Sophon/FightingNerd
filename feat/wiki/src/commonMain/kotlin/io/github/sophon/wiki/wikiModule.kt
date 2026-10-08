@@ -29,7 +29,9 @@ import io.github.sophon.wiki.app.outPort.LoadLastUpdatePort
 import io.github.sophon.wiki.app.outPort.LoadMoveListPort
 import io.github.sophon.wiki.app.outPort.LoadMovePort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
-import io.github.sophon.wiki.app.outPort.SaveCharacterMoveListPort
+import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
+import io.github.sophon.wiki.app.outPort.SaveGameDataPort
+import io.github.sophon.wiki.app.outPort.SaveMoveListPort
 import io.github.sophon.wiki.app.outPort.SaveWikiConfigPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
 import io.github.sophon.wiki.app.service.ConfigureWikiService
@@ -118,7 +120,9 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     single<LoadMoveListPort> { get<SqlDelightMoveAdapter>() }
     single<LoadMovePort> { get<SqlDelightMoveAdapter>() }
     single<LoadWikiConfigPort> { get<InMemoryWikiConfigAdapter>() }
-    single<SaveCharacterMoveListPort> { get<SqlDelightCharacterAdapter>() }
+    single<SaveCharacterListPort> { get<SqlDelightCharacterAdapter>() }
+    single<SaveGameDataPort> { get<SqlDelightCharacterAdapter>() }
+    single<SaveMoveListPort> { get<SqlDelightCharacterAdapter>() }
     single<SaveWikiConfigPort> { get<InMemoryWikiConfigAdapter>() }
     single<StrikeCharacterListPort> { get<SqlDelightCharacterAdapter>() }
 }

@@ -8,7 +8,9 @@ import io.github.sophon.wiki.adapter.outbound.sqldelight.mapper.toDomain
 import io.github.sophon.wiki.app.outPort.DeleteCharacterListPort
 import io.github.sophon.wiki.app.outPort.LoadCharacterListPort
 import io.github.sophon.wiki.app.outPort.LoadCharacterPort
-import io.github.sophon.wiki.app.outPort.SaveCharacterMoveListPort
+import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
+import io.github.sophon.wiki.app.outPort.SaveGameDataPort
+import io.github.sophon.wiki.app.outPort.SaveMoveListPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
@@ -30,7 +32,9 @@ internal class SqlDelightCharacterAdapter(
     private val clock: Clock,
 ) : LoadCharacterListPort,
     LoadCharacterPort,
-    SaveCharacterMoveListPort,
+    SaveCharacterListPort,
+    SaveMoveListPort,
+    SaveGameDataPort,
     StrikeCharacterListPort,
     DeleteCharacterListPort {
     private val database by wikiDatabase
@@ -48,17 +52,50 @@ internal class SqlDelightCharacterAdapter(
         return character
     }
 
-    override suspend fun save(
-        character: Character,
+    override suspend fun saveCharacterList(
+        characterList: List<Character>,
+    ): EmptyResult<DataError.Local> {
+        val result = runDatabaseWrite(TAG, "saveCharacterList(${characterList.size} characters)") {
+            database.transaction {
+                characterList.forEach { character ->
+                    val game = character.id.game
+                    val characterRowId = upsertCharacter(game, character)
+                    replaceCharacterAliasList(game, characterRowId, character.aliasList)
+                }
+            }
+        }
+        return result
+    }
+
+    override suspend fun saveMoveList(
+        characterId: CharacterId,
         moveList: List<Move>,
     ): EmptyResult<DataError.Local> {
-        val game = character.id.game
-        val result = runDatabaseWrite(TAG, "save(${game.id}, ${character.id.naturalId})") {
+        val game = characterId.game
+        val result = runDatabaseWrite(TAG, "saveMoveList(${game.id}, ${characterId.naturalId})") {
             database.transaction {
-                val characterRowId = upsertCharacter(game, character)
-                replaceCharacterAliasList(game, characterRowId, character.aliasList)
+                val characterRowId = database.characterQueries
+                    .selectId(game = game.id, natural_id = characterId.naturalId)
+                    .executeAsOne()
                 val moveRowIdList = upsertMoveList(game, characterRowId, moveList)
                 replaceMoveAliasList(characterRowId, moveList, moveRowIdList)
+            }
+        }
+        return result
+    }
+
+    override suspend fun saveGameData(
+        gameData: List<Pair<Character, List<Move>>>,
+    ): EmptyResult<DataError.Local> {
+        val result = runDatabaseWrite(TAG, "saveGameData(${gameData.size} characters)") {
+            database.transaction {
+                gameData.forEach { (character, moveList) ->
+                    val game = character.id.game
+                    val characterRowId = upsertCharacter(game, character)
+                    replaceCharacterAliasList(game, characterRowId, character.aliasList)
+                    val moveRowIdList = upsertMoveList(game, characterRowId, moveList)
+                    replaceMoveAliasList(characterRowId, moveList, moveRowIdList)
+                }
             }
         }
         return result

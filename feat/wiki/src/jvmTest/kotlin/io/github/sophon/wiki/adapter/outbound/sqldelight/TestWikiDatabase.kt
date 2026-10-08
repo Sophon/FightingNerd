@@ -49,12 +49,17 @@ internal class TestWikiDatabase(clock: Clock = FakeClock()) {
     val characterAdapter = SqlDelightCharacterAdapter(wikiDatabase, gamePropertiesRouter, clock)
     val moveAdapter = SqlDelightMoveAdapter(wikiDatabase, gamePropertiesRouter)
 
+    /**
+     * Saves the way a separate download does - the character first, then its move list.
+     */
     suspend fun save(
         character: Character,
         moveList: List<Move> = emptyList(),
     ) {
-        val result = characterAdapter.save(character, moveList)
-        assertThat(result).isEqualTo(Result.Success(Unit))
+        val characterListResult = characterAdapter.saveCharacterList(listOf(character))
+        assertThat(characterListResult).isEqualTo(Result.Success(Unit))
+        val moveListResult = characterAdapter.saveMoveList(character.id, moveList)
+        assertThat(moveListResult).isEqualTo(Result.Success(Unit))
     }
 
     fun countRows(table: String): Long {

@@ -4,8 +4,6 @@ import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
-import io.github.sophon.core.architecture.onError
-import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
@@ -18,7 +16,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.flow
@@ -29,22 +26,19 @@ internal class DreamCancelKtorGameDataAdapter(
     private val httpClient: HttpClient,
 ) : FetchGameDataPort {
 
-    override fun fetch(
+    override suspend fun fetchCharacterList(
         game: Game,
-    ): Flow<Result<Pair<Character, List<Move>>, DataError.Remote>> {
-        val flow = flow {
-            fetchGameData(game)
-                .onSuccess { gameData ->
-                    for (characterWithMoves in gameData) {
-                        emit(Result.Success(characterWithMoves))
-                    }
-                }
-                .onError { error -> emit(Result.Error(error)) }
-        }
-        return flow
+    ): Result<List<Character>, DataError.Remote> {
+        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
     }
 
-    private suspend fun fetchGameData(
+    override suspend fun fetchMoveList(
+        character: Character,
+    ): Result<List<Move>, DataError.Remote> {
+        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+    }
+
+    override suspend fun fetchGameData(
         game: Game,
     ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
         val table = DreamCancelTables.moveTableByGame[game]

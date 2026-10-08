@@ -5,6 +5,8 @@ import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
+import io.github.sophon.core.architecture.DataError
+import io.github.sophon.core.architecture.Result
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.flow.first
@@ -150,6 +152,48 @@ internal class SqlDelightCharacterAdapterTest {
         val ggstCharacterList = database.characterAdapter.subscribe(Game.GGST).first()
         assertThat(tekkenCharacterList).isEmpty()
         assertThat(ggstCharacterList).containsExactly(solBadguy)
+    }
+
+    @Test
+    fun `a character saved without a move list has no moves`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+
+        // when
+        database.characterAdapter.saveCharacterList(listOf(jin, armorKing))
+
+        // then
+        val moveList = database.moveAdapter.subscribe(jin.id).first()
+        assertThat(moveList).isEmpty()
+    }
+
+    @Test
+    fun `a move list of an unsaved character fails`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+        val expected = Result.Error(DataError.Local.UNKNOWN)
+
+        // when
+        val result = database.characterAdapter.saveMoveList(jin.id, listOf(demonsPaw))
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `game data saves every character with its moves`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+        val expected = listOf(demonsPaw, windHookFist)
+
+        // when
+        database.characterAdapter.saveGameData(listOf(jin to expected, armorKing to emptyList()))
+
+        // then
+        val characterList = database.characterAdapter.subscribe(Game.Tekken8).first()
+        assertThat(characterList.map { character -> character.id }).containsExactly(armorKing.id, jin.id)
+        val moveList = database.moveAdapter.subscribe(jin.id).first()
+        assertThat(moveList).isEqualTo(expected)
     }
 
     @Test
