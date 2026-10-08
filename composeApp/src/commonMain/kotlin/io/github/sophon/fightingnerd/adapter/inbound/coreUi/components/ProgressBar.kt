@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.ui.components
+package io.github.sophon.fightingnerd.adapter.inbound.coreUi.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween

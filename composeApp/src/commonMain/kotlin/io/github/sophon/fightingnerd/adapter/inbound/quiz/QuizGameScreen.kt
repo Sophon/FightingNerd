@@ -29,8 +29,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import io.github.sophon.fightingnerd.core.ui.components.LoadingContent
-import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.LoadingContent
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.TopBarButton
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.components.QuestionSection
 import io.github.sophon.fightingnerd.app.model.COUNT_QUESTIONS
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme

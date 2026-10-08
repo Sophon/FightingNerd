@@ -37,7 +37,7 @@ import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_block
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_on_hit
 import fightingnerd.composeapp.generated.resources.quiz_frame_dat_label_startup
 import fightingnerd.composeapp.generated.resources.quiz_frame_data_label_no_media
-import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.CircularLoader
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.model.QuizQuestion
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.QuizGameState
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme

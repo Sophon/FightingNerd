@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.adapter.inbound.navigation
 
-import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.FlexibleIcon
 import org.jetbrains.compose.resources.StringResource
 
 internal data class BottomBarItem(

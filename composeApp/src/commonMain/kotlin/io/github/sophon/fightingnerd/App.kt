@@ -47,10 +47,10 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import kotlinx.coroutines.flow.collect
-import io.github.sophon.fightingnerd.core.ui.Dialog
-import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.core.ui.components.ToastSnackBar
-import io.github.sophon.fightingnerd.core.ui.components.ToastVisuals
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.Dialog
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.ToastSnackBar
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.ToastVisuals
 import io.github.sophon.fightingnerd.adapter.inbound.changelog.ChangelogDialog
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeScreen
 import io.github.sophon.fightingnerd.adapter.inbound.more.model.MoreItem

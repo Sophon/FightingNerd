@@ -51,8 +51,8 @@ import fightingnerd.composeapp.generated.resources.more_updates_settings_auto_up
 import fightingnerd.composeapp.generated.resources.more_updates_settings_auto_update_title
 import fightingnerd.composeapp.generated.resources.more_updates_settings_last_updated
 import fightingnerd.composeapp.generated.resources.more_updates_settings_period_label
-import io.github.sophon.fightingnerd.core.ui.components.CircularLoader
-import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.CircularLoader
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.TopBarButton
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

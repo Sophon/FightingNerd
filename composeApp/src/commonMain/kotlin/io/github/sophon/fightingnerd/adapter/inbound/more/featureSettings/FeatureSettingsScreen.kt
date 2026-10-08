@@ -24,7 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.general_save
-import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.TopBarButton
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

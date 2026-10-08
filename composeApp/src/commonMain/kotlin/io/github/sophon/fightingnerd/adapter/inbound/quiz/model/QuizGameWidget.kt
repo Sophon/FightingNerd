@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.adapter.inbound.quiz.model
 
 import androidx.compose.runtime.Immutable
 import io.github.sophon.fightingnerd.app.model.Game
-import io.github.sophon.fightingnerd.core.ui.components.CharacterCard
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.CharacterCard
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList

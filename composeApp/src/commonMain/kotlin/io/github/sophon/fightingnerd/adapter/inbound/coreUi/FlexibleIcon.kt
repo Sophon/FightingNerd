@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.core.ui
+package io.github.sophon.fightingnerd.adapter.inbound.coreUi
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import org.jetbrains.compose.resources.DrawableResource

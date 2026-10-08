@@ -27,7 +27,7 @@ import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_character_list
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_more
 import fightingnerd.composeapp.generated.resources.bottom_bar_item_quiz
-import io.github.sophon.fightingnerd.core.ui.FlexibleIcon
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.FlexibleIcon
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
