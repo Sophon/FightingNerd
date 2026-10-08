@@ -6,14 +6,14 @@ import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.fightingnerd.app.model.Wiki
-import io.github.sophon.fightingnerd.app.outPort.RefreshWikiPort
+import io.github.sophon.fightingnerd.app.outPort.RefreshEventsPort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
-internal class RefreshDataServiceTest {
+internal class SubscribeToRefreshEventsServiceTest {
     private val tekken8 = Game(
         id = "Tekken_8",
         displayName = "Tekken 8",
@@ -22,13 +22,15 @@ internal class RefreshDataServiceTest {
     )
 
     @Test
-    fun `wiki events are emitted in order`() = runTest {
+    fun `refresh events are emitted in order`() = runTest {
         // given
         val expected = listOf(
+            RefreshEvent.Started(game = tekken8),
+            RefreshEvent.Progress(game = tekken8, fraction = 0.5f),
             RefreshEvent.Failure(game = tekken8, error = AppError.WikiError("DownloadError(Jin)"), characterId = "jin"),
             RefreshEvent.Finished(game = tekken8, successCount = 37),
         )
-        val service = RefreshDataService(refreshWikiPort = FakeRefreshWikiPort(expected))
+        val service = SubscribeToRefreshEventsService(refreshEventsPort = FakeRefreshEventsPort(expected))
 
         // when
         val result = service().toList()
@@ -38,16 +40,12 @@ internal class RefreshDataServiceTest {
     }
 
 
-    private class FakeRefreshWikiPort(
+    private class FakeRefreshEventsPort(
         private val eventList: List<RefreshEvent>,
-    ): RefreshWikiPort {
-        override fun refresh(): Flow<RefreshEvent> {
+    ): RefreshEventsPort {
+        override fun subscribeToRefreshEvents(): Flow<RefreshEvent> {
             val flow = eventList.asFlow()
             return flow
-        }
-
-        override fun refresh(gameIdSet: Set<String>): Flow<RefreshEvent> {
-            error("not used")
         }
     }
 }

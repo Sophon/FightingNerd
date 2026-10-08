@@ -12,6 +12,7 @@ internal object CoverageScope {
      * Modules held to the coverage rules - add a module here once its tests are written.
      */
     val modules = listOf(
+        "composeApp",
         "feat/admin",
         "feat/ewgf",
         "feat/glossaryInfil",
