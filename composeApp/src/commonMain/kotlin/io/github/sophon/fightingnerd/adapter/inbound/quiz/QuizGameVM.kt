@@ -5,10 +5,10 @@ import androidx.lifecycle.viewModelScope
 import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.fightingnerd.core.ui.Dialog
-import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.core.ui.Toast
-import io.github.sophon.fightingnerd.core.util.ScreenStopWatch
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.Dialog
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.Toast
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.ScreenStopWatch
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.components.FinishDialog
 import io.github.sophon.fightingnerd.app.model.SessionContext
 import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase

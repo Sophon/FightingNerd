@@ -5,12 +5,16 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.wiki.Game
-import kotlinx.coroutines.flow.Flow
 
 /**
- * Emits each character of [Game] paired with its move list - how many requests that takes is up to the adapter.
- * A failure that affects the whole game (e.g. the character list) is a single [Result.Error] emission.
+ * [Game.separateCharMoveDownload] decides which shape a game is fetched in -
+ * separate: [fetchCharacterList], then [fetchMoveList] per character; bulk: [fetchGameData].
+ * A shape the game's wiki doesn't serve is [DataError.Remote.PAGE_NOT_FOUND].
  */
 internal interface FetchGameDataPort {
-    fun fetch(game: Game): Flow<Result<Pair<Character, List<Move>>, DataError.Remote>>
+    suspend fun fetchCharacterList(game: Game): Result<List<Character>, DataError.Remote>
+
+    suspend fun fetchMoveList(character: Character): Result<List<Move>, DataError.Remote>
+
+    suspend fun fetchGameData(game: Game): Result<List<Pair<Character, List<Move>>>, DataError.Remote>
 }

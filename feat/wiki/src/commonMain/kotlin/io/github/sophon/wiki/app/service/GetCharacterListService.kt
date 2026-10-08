@@ -1,8 +1,8 @@
 package io.github.sophon.wiki.app.service
 
+import io.github.sophon.wiki.GetCharacterListUseCase
 import io.github.sophon.wiki.app.outPort.LoadCharacterListPort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
-import io.github.sophon.wiki.inPort.GetCharacterListUseCase
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.ExperimentalCoroutinesApi

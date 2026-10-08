@@ -1,5 +1,13 @@
 # BOT CHANGELOG
 
+## [v17.1.0] - 2026-10-09
+- `media` command
+  - can search for move media the same as `fd`
+  - fixed bug where clicking Video button didn't show anything due to char limit
+    - uses `media` instead
+  - move embed with media can now only display images, instead of details + images (Details button)
+- changed details columns to 2 for better readability
+
 ## [v17.0.2] - 2026-10-08
 - fix - missing daily stats report
 

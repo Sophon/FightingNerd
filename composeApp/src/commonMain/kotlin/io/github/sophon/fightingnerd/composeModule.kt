@@ -1,7 +1,8 @@
 package io.github.sophon.fightingnerd
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.coreModule
-import io.github.sophon.dreamcancel.integration.dreamCancelModule
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeVM
 import io.github.sophon.fightingnerd.adapter.inbound.more.about.AboutVM
 import io.github.sophon.fightingnerd.adapter.inbound.more.featureSettings.FeatureSettingsVM
@@ -32,6 +33,7 @@ import io.github.sophon.fightingnerd.app.outPort.MediaPort
 import io.github.sophon.fightingnerd.app.outPort.MoveFilterPort
 import io.github.sophon.fightingnerd.app.outPort.MoveGroupPort
 import io.github.sophon.fightingnerd.app.outPort.MovePort
+import io.github.sophon.fightingnerd.app.outPort.RefreshEventsPort
 import io.github.sophon.fightingnerd.app.outPort.RefreshWikiPort
 import io.github.sophon.fightingnerd.app.outPort.ReleasePort
 import io.github.sophon.fightingnerd.app.outPort.SaveGameSettingsPort
@@ -46,6 +48,7 @@ import io.github.sophon.fightingnerd.app.service.GroupMovesService
 import io.github.sophon.fightingnerd.app.service.LoadMoveFiltersService
 import io.github.sophon.fightingnerd.app.service.PurchaseTipService
 import io.github.sophon.fightingnerd.app.service.RecordInstallationService
+import io.github.sophon.fightingnerd.app.service.OpenUrlService
 import io.github.sophon.fightingnerd.app.service.RequestReviewService
 import io.github.sophon.fightingnerd.app.service.ShareImageService
 import io.github.sophon.fightingnerd.app.service.OnLaunchSetupService
@@ -54,17 +57,18 @@ import io.github.sophon.fightingnerd.app.service.RefreshDataService
 import io.github.sophon.fightingnerd.app.service.SaveGameSettingsService
 import io.github.sophon.fightingnerd.app.service.SaveReleaseAsSeenService
 import io.github.sophon.fightingnerd.app.service.SetUpdatePeriodService
+import io.github.sophon.fightingnerd.app.service.StartRefreshService
 import io.github.sophon.fightingnerd.app.service.SubscribeToCharactersService
 import io.github.sophon.fightingnerd.app.service.SubscribeToGameSettingsService
 import io.github.sophon.fightingnerd.app.service.SubscribeToGamesService
 import io.github.sophon.fightingnerd.app.service.SubscribeToLastUpdatesService
 import io.github.sophon.fightingnerd.app.service.SubscribeToMoveListService
 import io.github.sophon.fightingnerd.app.service.SubscribeToOfflineMediaService
+import io.github.sophon.fightingnerd.app.service.SubscribeToRefreshEventsService
 import io.github.sophon.fightingnerd.app.service.SubscribeToUnseenReleaseService
 import io.github.sophon.fightingnerd.app.service.SubscribeToUpdatePeriodService
 import io.github.sophon.fightingnerd.app.service.SubscribeToWikisService
 import io.github.sophon.fightingnerd.app.service.WipeMediaService
-import io.github.sophon.fightingnerd.core.coreModule
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
 import io.github.sophon.fightingnerd.inPort.DownloadMediaUseCase
 import io.github.sophon.fightingnerd.inPort.GenerateQuestionsUseCase
@@ -73,6 +77,7 @@ import io.github.sophon.fightingnerd.inPort.GroupMovesUseCase
 import io.github.sophon.fightingnerd.inPort.LoadMoveFiltersUseCase
 import io.github.sophon.fightingnerd.inPort.PurchaseTipUseCase
 import io.github.sophon.fightingnerd.inPort.RecordInstallationUseCase
+import io.github.sophon.fightingnerd.inPort.OpenUrlUseCase
 import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import io.github.sophon.fightingnerd.inPort.ShareImageUseCase
 import io.github.sophon.fightingnerd.inPort.OnLaunchSetupUseCase
@@ -81,25 +86,25 @@ import io.github.sophon.fightingnerd.inPort.RefreshDataUseCase
 import io.github.sophon.fightingnerd.inPort.SaveGameSettingsUseCase
 import io.github.sophon.fightingnerd.inPort.SaveReleaseAsSeenUseCase
 import io.github.sophon.fightingnerd.inPort.SetUpdatePeriodUseCase
+import io.github.sophon.fightingnerd.inPort.StartRefreshUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToCharactersUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToGameSettingsUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToGamesUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToLastUpdatesUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToMoveListUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToOfflineMediaUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToRefreshEventsUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToUnseenReleaseUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToUpdatePeriodUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToWikisUseCase
 import io.github.sophon.fightingnerd.inPort.WipeMediaUseCase
 import io.github.sophon.wiki.wikiModule
-import io.github.sophon.wikiSuperCombo.integration.superComboModule
-import io.github.sophon.wikidragdown.integration.dragDownModule
-import io.github.sophon.wikidustloop.integration.dustLoopModule
-import io.github.sophon.wikimizuumi.integration.mizuumiModule
-import io.github.sophon.wikiwavu.integration.wavuModule
-import io.github.sophon.xko.integration.xkoModule
 import okio.FileSystem
 import okio.SYSTEM
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
@@ -117,16 +122,8 @@ internal fun initKoin(config: KoinAppDeclaration? = null) = startKoin {
         platformModule,
 
         coreModule,
-        wavuModule(),
-        superComboModule(),
-        xkoModule(),
-        dreamCancelModule(),
-        dustLoopModule(),
-        mizuumiModule(),
-        dragDownModule(),
         wikiModule(),
 
-        coreModule(),
         composeModule(),
     )
 }
@@ -165,10 +162,23 @@ internal fun composeModule() = module {
     viewModelOf(::AboutVM)
     viewModelOf(::TipVM)
 
+    single {
+        CoroutineScope(
+            SupervisorJob() +
+                    Dispatchers.Default +
+                    CoroutineExceptionHandler { _, throwable ->
+                        Napier.e(tag = "WikiClient") { "Unhandled exception: $throwable" }
+                    }
+        )
+    }
+    singleOf(::OverlayService)
+
     single { AppVersion(BuildKonfig.VERSION) }
 
     singleOf(::OnLaunchSetupService).bind<OnLaunchSetupUseCase>()
     singleOf(::RefreshDataService).bind<RefreshDataUseCase>()
+    singleOf(::StartRefreshService).bind<StartRefreshUseCase>()
+    singleOf(::SubscribeToRefreshEventsService).bind<SubscribeToRefreshEventsUseCase>()
     singleOf(::SubscribeToGamesService).bind<SubscribeToGamesUseCase>()
     singleOf(::SubscribeToCharactersService).bind<SubscribeToCharactersUseCase>()
     singleOf(::CheckCharacterHasMovesService).bind<CheckCharacterHasMovesUseCase>()
@@ -193,10 +203,12 @@ internal fun composeModule() = module {
     singleOf(::RequestReviewService).bind<RequestReviewUseCase>()
     singleOf(::RecordInstallationService).bind<RecordInstallationUseCase>()
     singleOf(::ShareImageService).bind<ShareImageUseCase>()
+    singleOf(::OpenUrlService).bind<OpenUrlUseCase>()
 
     singleOf(::WikiAdapter) {
         bind<ConfigureWikiPort>()
         bind<RefreshWikiPort>()
+        bind<RefreshEventsPort>()
         bind<AvailableGamesPort>()
         bind<AvailableWikisPort>()
         bind<CharacterPort>()

@@ -1,11 +1,11 @@
 package io.github.sophon.wiki.app.service
 
+import io.github.sophon.wiki.NormalizeMoveInputUseCase
 import io.github.sophon.wiki.app.util.cleanMoveInput
 import io.github.sophon.wiki.app.util.normalize2dInputs
 import io.github.sophon.wiki.app.util.normalizeDreamCancelInput
 import io.github.sophon.wiki.app.util.normalizeSuperComboInput
 import io.github.sophon.wiki.app.util.normalizeXkoInput
-import io.github.sophon.wiki.inPort.NormalizeMoveInputUseCase
 import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.model.wiki.Wiki
 

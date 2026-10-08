@@ -47,10 +47,10 @@ import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import kotlinx.coroutines.flow.collect
-import io.github.sophon.fightingnerd.core.ui.Dialog
-import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.core.ui.components.ToastSnackBar
-import io.github.sophon.fightingnerd.core.ui.components.ToastVisuals
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.Dialog
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.ToastSnackBar
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.ToastVisuals
 import io.github.sophon.fightingnerd.adapter.inbound.changelog.ChangelogDialog
 import io.github.sophon.fightingnerd.adapter.inbound.home.HomeScreen
 import io.github.sophon.fightingnerd.adapter.inbound.more.model.MoreItem
@@ -84,7 +84,6 @@ private val navConfig = SavedStateConfiguration {
             subclass(Destination.Quiz::class, Destination.Quiz.serializer())
             subclass(Destination.More::class, Destination.More.serializer())
             subclass(Destination.MoveList::class, Destination.MoveList.serializer())
-            subclass(Destination.MoveDetail::class, Destination.MoveDetail.serializer())
             subclass(Destination.CharacterDetail::class, Destination.CharacterDetail.serializer())
             subclass(Destination.FeatureSettings::class, Destination.FeatureSettings.serializer())
             subclass(Destination.UpdatesSettings::class, Destination.UpdatesSettings.serializer())

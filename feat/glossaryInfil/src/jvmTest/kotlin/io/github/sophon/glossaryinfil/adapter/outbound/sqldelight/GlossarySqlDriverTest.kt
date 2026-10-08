@@ -5,9 +5,9 @@ import app.cash.sqldelight.driver.jdbc.sqlite.JdbcSqliteDriver
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.wiki.data.fingerprint
-import io.github.sophon.core.wiki.data.readStoredFingerprint
-import io.github.sophon.core.wiki.data.storeFingerprint
+import io.github.sophon.core.sqldelight.fingerprint
+import io.github.sophon.core.sqldelight.readStoredFingerprint
+import io.github.sophon.core.sqldelight.storeFingerprint
 import io.github.sophon.glossaryinfil.data.GlossaryDB
 import io.github.sophon.glossaryinfil.model.GlossaryItem
 import kotlinx.coroutines.test.runTest

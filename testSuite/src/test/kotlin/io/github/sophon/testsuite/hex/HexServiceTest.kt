@@ -64,7 +64,7 @@ class HexServiceTest {
             .filter { it.name.endsWith(SERVICE) }
             .assertTrue(additionalMessage = "`XService` must implement `XUseCase` from inPort") { service ->
                 val useCaseName = "${service.name.removeSuffix(SERVICE)}$USE_CASE"
-                val useCaseExists = useCaseName in HexScope.typeNamesIn(service.containingFile.moduleName, "inPort")
+                val useCaseExists = useCaseName in HexScope.inPortTypeNamesIn(service.containingFile.moduleName)
                 val implemented = (useCaseExists && service.parents().any { it.name == useCaseName })
                 implemented
             }
@@ -72,7 +72,7 @@ class HexServiceTest {
 
     @Test
     fun `every UseCase has a Service of the same name`() {
-        HexScope.filesIn("inPort")
+        HexScope.inPortFiles
             .flatMap { it.interfaces(includeNested = false) }
             .assertTrue(additionalMessage = "`XUseCase` needs an `XService` in app.service") { useCase ->
                 val serviceName = "${useCase.name.removeSuffix(USE_CASE)}$SERVICE"

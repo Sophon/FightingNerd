@@ -39,7 +39,7 @@ import fightingnerd.composeapp.generated.resources.more_about_next_body
 import fightingnerd.composeapp.generated.resources.more_about_next_title
 import fightingnerd.composeapp.generated.resources.more_about_wikis_body
 import fightingnerd.composeapp.generated.resources.more_about_wikis_title
-import io.github.sophon.fightingnerd.core.ui.components.TopBarButton
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.TopBarButton
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

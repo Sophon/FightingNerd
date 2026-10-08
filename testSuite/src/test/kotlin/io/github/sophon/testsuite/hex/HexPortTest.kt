@@ -9,7 +9,7 @@ class HexPortTest {
 
     @Test
     fun `inPort declares only interfaces`() {
-        HexScope.filesIn("inPort")
+        HexScope.inPortFiles
             .flatMap { it.topLevelDeclarations() }
             .filterNot { it is KoInterfaceDeclaration }
             .assertEmpty(additionalMessage = "inPort may only declare interfaces")
@@ -17,7 +17,7 @@ class HexPortTest {
 
     @Test
     fun `inPort interfaces end with UseCase`() {
-        HexScope.filesIn("inPort")
+        HexScope.inPortFiles
             .flatMap { it.interfaces(includeNested = false) }
             .assertTrue(additionalMessage = "inPort interfaces must end with `UseCase`") { it.name.endsWith("UseCase") }
     }

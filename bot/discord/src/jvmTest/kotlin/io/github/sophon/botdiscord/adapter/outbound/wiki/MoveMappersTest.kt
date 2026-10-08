@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import io.github.sophon.discord.adapter.outbound.wiki.toDomain
 import io.github.sophon.discord.adapter.outbound.wiki.toFilter
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.frameData.MoveId
 import io.github.sophon.discord.app.model.frameData.MoveType
 import io.github.sophon.discord.app.model.response.BotResponse
@@ -50,6 +51,7 @@ class MoveMappersTest {
             input = "f,n,d,df+2",
             url = "https://wavu.wiki/t/Jin_movelist#Jin-f,n,d,df+2",
             characterName = "Jin",
+            characterUrl = "https://wavu.wiki/t/Jin",
             moveName = "Electric Wind God Fist",
             characterImageUrl = JIN_ICON_URL,
             primaryFields = listOf(
@@ -70,9 +72,15 @@ class MoveMappersTest {
             secondaryFields = emptyList(),
             aliasList = listOf("ewgf"),
             noteList = listOf("Balcony break"),
+            videoUrl = VIDEO_URL,
             hitboxImageList = listOf("https://wavu.wiki/img/Jin_ewgf_hitbox.png"),
             stance = "ZEN",
-            buttonSet = BotResponse.ButtonSet(buttonList = listOf(videoButton)),
+            buttonSet = BotResponse.ButtonSet(
+                buttonList = listOf(
+                    mediaCommandButton(label = "Images", query = "jin f,n,d,df+2"),
+                    mediaCommandButton(label = "Video", query = "jin f,n,d,df+2"),
+                ),
+            ),
         )
 
         // when
@@ -101,7 +109,7 @@ class MoveMappersTest {
     }
 
     @Test
-    fun `collapsed move with secondary fields gets a details button before the video`() {
+    fun `move with details and a video gets details and video buttons`() {
         // given
         val move = Move(
             input = "5K",
@@ -111,15 +119,112 @@ class MoveMappersTest {
             gameProperties = GGMoveProperties(level = "1", riscGain = " ", prorate = "90%"),
         )
         val expected = BotResponse.ButtonSet(
-            buttonList = listOf(
-                BotResponse.EmbedButton(
-                    label = "Details",
-                    action = BotResponse.EmbedButton.Action.Expand(
-                        moveId = MoveId(game = Game.GGST, characterId = "sol_badguy", input = "5K"),
-                    ),
-                ),
-                videoButton,
+            buttonList = listOf(solDetailsButton, mediaCommandButton(label = "Video", query = "sol_badguy 5K")),
+        )
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move without details and a video gets only a video button`() {
+        // given
+        val move = Move(
+            input = "5P",
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5P", videoUrl = VIDEO_URL),
+            gameProperties = GGMoveProperties(),
+        )
+        val expected = BotResponse.ButtonSet(
+            buttonList = listOf(mediaCommandButton(label = "Video", query = "sol_badguy 5P")),
+        )
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move with details and hitbox images gets an images button`() {
+        // given
+        val move = Move(
+            input = "5K",
+            cancel = "Gatling, Special, Super",
+            urls = Move.Urls(
+                wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5K",
+                hitboxImageList = listOf(HITBOX_IMAGE_URL),
             ),
+            gameProperties = GGMoveProperties(),
+        )
+        val expected = BotResponse.ButtonSet(
+            buttonList = listOf(solDetailsButton, mediaCommandButton(label = "Images", query = "sol_badguy 5K")),
+        )
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move with details and move images gets an images button`() {
+        // given
+        val move = Move(
+            input = "5K",
+            cancel = "Gatling, Special, Super",
+            urls = Move.Urls(
+                wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5K",
+                moveImageList = listOf(MOVE_IMAGE_URL),
+            ),
+            gameProperties = GGMoveProperties(),
+        )
+        val expected = BotResponse.ButtonSet(
+            buttonList = listOf(solDetailsButton, mediaCommandButton(label = "Images", query = "sol_badguy 5K")),
+        )
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move with details and no media gets only the details button`() {
+        // given
+        val move = Move(
+            input = "5K",
+            cancel = "Gatling, Special, Super",
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5K"),
+            gameProperties = GGMoveProperties(),
+        )
+        val expected = BotResponse.ButtonSet(buttonList = listOf(solDetailsButton))
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move without details and images gets only an images button`() {
+        // given
+        val move = Move(
+            input = "5P",
+            urls = Move.Urls(
+                wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5P",
+                hitboxImageList = listOf(HITBOX_IMAGE_URL),
+            ),
+            gameProperties = GGMoveProperties(),
+        )
+        val expected = BotResponse.ButtonSet(
+            buttonList = listOf(mediaCommandButton(label = "Images", query = "sol_badguy 5P")),
         )
 
         // when
@@ -248,6 +353,14 @@ class MoveMappersTest {
     //endregion
 }
 
+private fun mediaCommandButton(label: String, query: String): BotResponse.EmbedButton {
+    val button = BotResponse.EmbedButton(
+        label = label,
+        action = BotResponse.EmbedButton.Action.Command(command = Command.Media, query = query),
+    )
+    return button
+}
+
 private fun character(game: Game, displayName: String = "Sol Badguy"): Character {
     val character = Character(
         id = CharacterId(game = game, naturalId = displayName.lowercase().replace(" ", "_")),
@@ -260,8 +373,9 @@ private fun character(game: Game, displayName: String = "Sol Badguy"): Character
 
 
 private const val VIDEO_URL = "https://wavu.wiki/vid/Jin_ewgf.mp4"
+private const val HITBOX_IMAGE_URL = "https://www.dustloop.com/wiki/images/GGST_Sol_Badguy_5K_Hitbox.png"
+private const val MOVE_IMAGE_URL = "https://www.dustloop.com/wiki/images/GGST_Sol_Badguy_5K.png"
 private const val JIN_ICON_URL = "https://wavu.wiki/img/Jin_icon.png"
-private val videoButton = BotResponse.EmbedButton(label = "Video", action = BotResponse.EmbedButton.Action.Text(VIDEO_URL))
 private val jin = Character(
     id = CharacterId(game = Game.Tekken8, naturalId = "jin"),
     displayName = "Jin",
@@ -270,3 +384,9 @@ private val jin = Character(
     images = Character.Images(iconUrl = JIN_ICON_URL),
 )
 private val sol = character(game = Game.GGST)
+private val solDetailsButton = BotResponse.EmbedButton(
+    label = "Details",
+    action = BotResponse.EmbedButton.Action.Expand(
+        moveId = MoveId(game = Game.GGST, characterId = "sol_badguy", input = "5K"),
+    ),
+)

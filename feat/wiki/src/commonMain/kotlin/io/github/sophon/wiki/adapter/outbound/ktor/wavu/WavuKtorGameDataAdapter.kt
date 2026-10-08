@@ -3,8 +3,6 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
-import io.github.sophon.core.architecture.onError
-import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import io.github.sophon.wiki.model.Character
@@ -13,8 +11,6 @@ import io.github.sophon.wiki.model.wiki.Game
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 
 internal class WavuKtorGameDataAdapter(
     private val httpClient: HttpClient,
@@ -26,25 +22,7 @@ internal class WavuKtorGameDataAdapter(
         Game.Tekken8 to TABLE_T8_MOVE_LIST,
     )
 
-    override fun fetch(
-        game: Game,
-    ): Flow<Result<Pair<Character, List<Move>>, DataError.Remote>> {
-        val flow = flow {
-            fetchCharacterList(game)
-                .onSuccess { characterList ->
-                    for (character in characterList) {
-                        val characterMoveListResult = fetchMoveList(game, character)
-                            .map { moveList -> character to moveList }
-                        emit(characterMoveListResult)
-                    }
-                }
-                .onError { error -> emit(Result.Error(error)) }
-        }
-
-        return flow
-    }
-
-    private suspend fun fetchCharacterList(
+    override suspend fun fetchCharacterList(
         game: Game,
     ): Result<List<Character>, DataError.Remote> {
         val url = characterListUrlByGame[game]
@@ -57,10 +35,10 @@ internal class WavuKtorGameDataAdapter(
         return characterListResult
     }
 
-    private suspend fun fetchMoveList(
-        game: Game,
+    override suspend fun fetchMoveList(
         character: Character,
     ): Result<List<Move>, DataError.Remote> {
+        val game = character.id.game
         val table = moveTableByGame[game]
             ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
 
@@ -77,6 +55,12 @@ internal class WavuKtorGameDataAdapter(
         }.map { dto -> dto.toDomain(character) }
 
         return moveListResult
+    }
+
+    override suspend fun fetchGameData(
+        game: Game,
+    ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
+        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
     }
 
 

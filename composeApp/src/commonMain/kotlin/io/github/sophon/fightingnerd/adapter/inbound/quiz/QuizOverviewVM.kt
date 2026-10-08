@@ -6,8 +6,8 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.model.QuizGameWidget
 import io.github.sophon.fightingnerd.app.model.Game
-import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.core.ui.components.CharacterCard
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.CharacterCard
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToCharactersUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToGamesUseCase

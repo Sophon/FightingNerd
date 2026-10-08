@@ -1,6 +1,6 @@
 package io.github.sophon.wiki.app.service
 
-import io.github.sophon.wiki.inPort.GetFiltersUseCase
+import io.github.sophon.wiki.GetFiltersUseCase
 import io.github.sophon.wiki.model.BBFilters
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.model.GGFilters

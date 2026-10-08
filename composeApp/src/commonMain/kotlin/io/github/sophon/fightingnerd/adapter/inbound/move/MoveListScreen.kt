@@ -41,7 +41,6 @@ import io.github.sophon.fightingnerd.adapter.inbound.move.composables.SharedMove
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.app.model.MoveFilter
 import io.github.sophon.fightingnerd.adapter.inbound.share.ShareCaptureHost
-import io.github.sophon.fightingnerd.infrastructure.toPngBytes
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
@@ -95,7 +94,7 @@ internal fun MoveListScreen(
             filteredMoves.firstOrNull { it.id == id }?.let { uiMove ->
                 ShareCaptureHost(
                     content = { SharedMove(uiMove, uiMove.id == state.expandedMoveId) },
-                    onCaptured = { bmp -> vm.onShareCaptured(bmp.toPngBytes()) },
+                    onCaptured = { pngBytes -> vm.onShareCaptured(pngBytes) },
                 )
             }
         }

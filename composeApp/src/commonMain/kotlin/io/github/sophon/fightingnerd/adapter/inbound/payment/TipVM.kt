@@ -10,8 +10,8 @@ import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.TipOption
-import io.github.sophon.fightingnerd.core.ui.OverlayService
-import io.github.sophon.fightingnerd.core.ui.Toast
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.Toast
 import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import io.github.sophon.fightingnerd.app.model.SessionContext
 import io.github.sophon.fightingnerd.inPort.GetTipOptionsUseCase

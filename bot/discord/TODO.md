@@ -20,6 +20,12 @@
   - fixed `24.hours` period drifts; re-anchor each cycle with `delay(untilNextUtcMidnight() + grace)`
   - `WikiScheduler` and `GlossaryScheduler` fire early too, but harmlessly - they don't depend on the date
   - maybe also post only the report dated yesterday, and warn when it's missing
+- Fly.io RAM: `768mb` → `512mb`
+  - measured on prod: `VmHWM` 224MB, `VmRSS` 219MB, `free -m` used 247MB of 710MB
+  - `fly.toml`: `memory = '512mb'` + `swap_size_mb = 256` as a cushion
+  - `Dockerfile`: `-Xmx350m` → `-Xmx256m` - heap never committed above 198MB
+  - before switching, check `VmHWM` again after uptime spans a full wiki refresh
+    - `fly ssh console -C 'sh -c "grep -E \"VmRSS|VmHWM\" /proc/\$(pgrep -x java)/status"'`
 
 ## Low prio
 

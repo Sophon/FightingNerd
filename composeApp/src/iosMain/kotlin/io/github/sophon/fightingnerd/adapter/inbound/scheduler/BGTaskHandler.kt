@@ -39,11 +39,12 @@ private fun handleBGTask(task: BGTask) {
         try {
             refreshDataUseCase().collect { event ->
                 when (event) {
-                    is RefreshEvent.Failed -> {
+                    is RefreshEvent.Failure -> {
                         Napier.e(tag = TAG) { "bgTask: ${event.error}" }
                         success = false
                     }
                     is RefreshEvent.Finished -> Napier.i(tag = TAG) { "bgTask: $event" }
+                    is RefreshEvent.Started, is RefreshEvent.Progress -> {}
                 }
             }
         } catch (e: Exception) {

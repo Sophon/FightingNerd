@@ -33,6 +33,14 @@ internal object HexScope {
         files
     }
 
+    /**
+     * Files that declare the use cases - see [isInPort].
+     */
+    val inPortFiles: List<KoFileDeclaration> by lazy {
+        val filtered = files.filter { it.isInPort }
+        filtered
+    }
+
     fun filesIn(layer: String): List<KoFileDeclaration> {
         val filtered = files.filter { it.resideInLayer(layer) }
         return filtered
@@ -42,7 +50,20 @@ internal object HexScope {
      * Names of the top-level classes, interfaces and objects declared in [layer] of the module at [modulePath].
      */
     fun typeNamesIn(modulePath: String, layer: String): Set<String> {
-        val names = filesIn(layer)
+        val names = typeNamesOf(filesIn(layer), modulePath)
+        return names
+    }
+
+    /**
+     * Names of the use cases declared in the module at [modulePath].
+     */
+    fun inPortTypeNamesIn(modulePath: String): Set<String> {
+        val names = typeNamesOf(inPortFiles, modulePath)
+        return names
+    }
+
+    private fun typeNamesOf(files: List<KoFileDeclaration>, modulePath: String): Set<String> {
+        val names = files
             .filter { it.moduleName == modulePath }
             .flatMap { file ->
                 val types = (
@@ -97,6 +118,19 @@ internal fun KoFileDeclaration.resideInLayer(layer: String): Boolean {
 }
 
 /**
+ * Whether the file declares the module's use cases - the root `InPorts.kt`, or a file of the `inPort` package
+ * in modules that haven't moved to `InPorts.kt` yet.
+ */
+internal val KoFileDeclaration.isInPort: Boolean
+    get() {
+        val isInPort = ((layer == "" && name == IN_PORTS_FILE) || resideInLayer("inPort"))
+        return isInPort
+    }
+
+/**
  * Whether the import points into [layer] of the importing file's module.
  */
 internal fun KoImportDeclaration.isFromLayer(layer: String): Boolean = name.startsWith("${containingFile.rootPackage}.$layer.")
+
+
+private const val IN_PORTS_FILE = "InPorts"

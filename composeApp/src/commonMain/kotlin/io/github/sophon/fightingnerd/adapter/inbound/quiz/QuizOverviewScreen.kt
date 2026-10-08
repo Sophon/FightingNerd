@@ -15,9 +15,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
 import io.github.sophon.fightingnerd.app.model.Game
-import io.github.sophon.fightingnerd.core.ui.components.CharacterMatrix
-import io.github.sophon.fightingnerd.core.ui.components.GameWidget
-import io.github.sophon.fightingnerd.core.ui.components.IconAction
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.CharacterMatrix
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.GameWidget
+import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.IconAction
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import org.koin.compose.viewmodel.koinViewModel

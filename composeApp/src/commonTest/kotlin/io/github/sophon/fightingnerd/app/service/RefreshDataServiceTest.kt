@@ -3,7 +3,9 @@ package io.github.sophon.fightingnerd.app.service
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.fightingnerd.app.model.AppError
+import io.github.sophon.fightingnerd.app.model.Game
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
+import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.outPort.RefreshWikiPort
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asFlow
@@ -12,12 +14,19 @@ import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 
 internal class RefreshDataServiceTest {
+    private val tekken8 = Game(
+        id = "Tekken_8",
+        displayName = "Tekken 8",
+        iconUrl = "https://i.imgur.com/Yl6j809.png",
+        wiki = Wiki(name = "Wavu Wiki", url = "https://wavu.wiki/", iconUrl = "https://wavu.wiki/android-chrome-512x512.png"),
+    )
+
     @Test
     fun `wiki events are emitted in order`() = runTest {
         // given
         val expected = listOf(
-            RefreshEvent.Failed(AppError.WikiError("DownloadError(Jin)")),
-            RefreshEvent.Finished(successCount = 37),
+            RefreshEvent.Failure(game = tekken8, error = AppError.WikiError("DownloadError(Jin)"), characterId = "jin"),
+            RefreshEvent.Finished(game = tekken8, successCount = 37),
         )
         val service = RefreshDataService(refreshWikiPort = FakeRefreshWikiPort(expected))
 

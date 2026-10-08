@@ -4,8 +4,6 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import io.github.sophon.core.util.invisibleChar
 import io.github.sophon.core.util.orDash
 import io.github.sophon.core.util.truncate
-import io.github.sophon.core.wiki.model.Character
-import io.github.sophon.core.wiki.model.Move
 import io.github.sophon.discord.EMBED_MAX_LENGTH
 import io.github.sophon.discord.URL_BUY_ME_COFFEE
 import io.github.sophon.discord.URL_KOFI
@@ -91,16 +89,6 @@ internal fun EmbedBuilder.featureFooter(dataSource: BotResponse.DataSource) {
     }
 }
 
-internal fun EmbedBuilder.moveEmbedDescription(character: Character, move: Move) {
-    description = when {
-        character.displayName.isNotBlank() && move.name.isNullOrBlank().not() ->
-            "**${character.displayName}**: ${move.name}"
-        character.displayName.isNotBlank() -> "**${character.displayName}**"
-        move.name.isNullOrBlank().not() -> move.name.orEmpty()
-        else -> "Move data"
-    }
-}
-
 /**
  * Due to how Discord embedding works:
  * 1. one image - part of embed
@@ -148,5 +136,5 @@ internal fun donationMessage(): String {
 }
 
 
-private const val DETAILS_COLUMN_COUNT = 3
+private const val DETAILS_COLUMN_COUNT = 2
 
