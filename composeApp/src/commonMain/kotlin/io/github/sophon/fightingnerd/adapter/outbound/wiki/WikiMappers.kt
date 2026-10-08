@@ -10,16 +10,22 @@ import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
+import io.github.sophon.wiki.model.WikiEvent
 import io.github.sophon.wiki.model.Character as WikiCharacter
 import io.github.sophon.wiki.model.Move as WikiMove
-import io.github.sophon.wiki.model.RefreshEvent as WikiRefreshEvent
 import io.github.sophon.wiki.model.wiki.Game as WikiGame
 import io.github.sophon.wiki.model.wiki.Wiki as WikiWiki
 
-internal fun WikiRefreshEvent.toDomain(): RefreshEvent {
+internal fun WikiEvent.Refresh.toDomain(): RefreshEvent {
     val refreshEvent = when (this) {
-        is WikiRefreshEvent.Failed -> RefreshEvent.Failed(game = game.toDomain(), error = error.toDomainError())
-        is WikiRefreshEvent.Finished -> RefreshEvent.Finished(game = game.toDomain(), successCount = successCount)
+        is WikiEvent.Refresh.Started -> RefreshEvent.Started(game = game.toDomain())
+        is WikiEvent.Refresh.Progress -> RefreshEvent.Progress(game = game.toDomain(), fraction = fraction)
+        is WikiEvent.Refresh.Failure -> RefreshEvent.Failure(
+            game = game.toDomain(),
+            error = error.toDomainError(),
+            characterId = characterId?.naturalId,
+        )
+        is WikiEvent.Refresh.Finished -> RefreshEvent.Finished(game = game.toDomain(), successCount = successCount)
     }
     return refreshEvent
 }

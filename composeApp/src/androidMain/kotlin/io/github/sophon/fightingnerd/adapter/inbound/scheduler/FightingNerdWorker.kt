@@ -21,8 +21,9 @@ internal class FightingNerdRefreshWorker(
         Napier.i(tag = TAG) { "doWork: refreshing" }
         refreshDataUseCase().collect { event ->
             when (event) {
-                is RefreshEvent.Failed -> Napier.e(tag = TAG) { "doWork: ${event.error}" }
+                is RefreshEvent.Failure -> Napier.e(tag = TAG) { "doWork: ${event.error}" }
                 is RefreshEvent.Finished -> Napier.i(tag = TAG) { "doWork: $event" }
+                is RefreshEvent.Started, is RefreshEvent.Progress -> {}
             }
         }
 

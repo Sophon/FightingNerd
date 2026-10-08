@@ -21,6 +21,7 @@ import io.github.sophon.fightingnerd.app.outPort.LastUpdatePort
 import io.github.sophon.fightingnerd.app.outPort.MoveFilterPort
 import io.github.sophon.fightingnerd.app.outPort.MoveGroupPort
 import io.github.sophon.fightingnerd.app.outPort.MovePort
+import io.github.sophon.fightingnerd.app.outPort.RefreshEventsPort
 import io.github.sophon.fightingnerd.app.outPort.RefreshWikiPort
 import io.github.sophon.wiki.ConfigureWikiUseCase
 import io.github.sophon.wiki.GetAvailableGamesUseCase
@@ -30,9 +31,12 @@ import io.github.sophon.wiki.GetGroupsUseCase
 import io.github.sophon.wiki.GetMoveListUseCase
 import io.github.sophon.wiki.GetUpdateTimeStampUseCase
 import io.github.sophon.wiki.RefreshDataUseCase
+import io.github.sophon.wiki.SubscribeToWikiEventsUseCase
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Default
+import io.github.sophon.wiki.model.WikiEvent
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlin.time.Instant
@@ -43,6 +47,7 @@ import io.github.sophon.wiki.model.wiki.Game as WikiGame
 internal class WikiAdapter(
     private val configureWikiUseCase: ConfigureWikiUseCase,
     private val refreshDataUseCase: RefreshDataUseCase,
+    private val subscribeToWikiEventsUseCase: SubscribeToWikiEventsUseCase,
     private val getAvailableGamesUseCase: GetAvailableGamesUseCase,
     private val getCharacterListUseCase: GetCharacterListUseCase,
     private val getMoveListUseCase: GetMoveListUseCase,
@@ -51,6 +56,7 @@ internal class WikiAdapter(
     private val getUpdateTimeStampUseCase: GetUpdateTimeStampUseCase,
 ): ConfigureWikiPort,
     RefreshWikiPort,
+    RefreshEventsPort,
     AvailableGamesPort,
     AvailableWikisPort,
     CharacterPort,
@@ -78,6 +84,13 @@ internal class WikiAdapter(
             .mapNotNull { gameId -> WikiGame.fromId(gameId) }
             .toSet()
         val flow = refreshDataUseCase(wikiGameSet).map { event -> event.toDomain() }
+        return flow
+    }
+
+    override fun subscribeToRefreshEvents(): Flow<RefreshEvent> {
+        val flow = subscribeToWikiEventsUseCase()
+            .filterIsInstance<WikiEvent.Refresh>()
+            .map { event -> event.toDomain() }
         return flow
     }
 

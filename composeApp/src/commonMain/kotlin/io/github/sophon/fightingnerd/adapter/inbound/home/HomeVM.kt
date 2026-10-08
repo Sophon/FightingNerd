@@ -12,12 +12,12 @@ import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.fightingnerd.core.ui.OverlayService
 import io.github.sophon.fightingnerd.core.ui.Toast
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
-import io.github.sophon.fightingnerd.inPort.RefreshDataUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToCharactersUseCase
+import io.github.sophon.fightingnerd.inPort.StartRefreshUseCase
 import io.github.sophon.fightingnerd.inPort.SubscribeToGamesUseCase
+import io.github.sophon.fightingnerd.inPort.SubscribeToRefreshEventsUseCase
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,12 +35,14 @@ internal class HomeVM(
     private val subscribeToGamesUseCase: SubscribeToGamesUseCase,
     private val subscribeToCharactersUseCase: SubscribeToCharactersUseCase,
     private val checkCharacterHasMovesUseCase: CheckCharacterHasMovesUseCase,
-    private val refreshDataUseCase: RefreshDataUseCase,
+    private val startRefreshUseCase: StartRefreshUseCase,
+    private val subscribeToRefreshEventsUseCase: SubscribeToRefreshEventsUseCase,
 ): ViewModel() {
     private val _state = MutableStateFlow(HomeViewState())
     val state = flow {
         coroutineScope {
             launch { subscribeToEnabledGames() }
+            launch { subscribeToRefreshEvents() }
             emitAll(_state)
         }
     }.stateIn(
@@ -49,40 +51,19 @@ internal class HomeVM(
         initialValue = HomeViewState(),
     )
 
-    private var refreshJob: Job? = null
-
 
     fun refresh() {
         if (_state.value.gameFeatureList.isEmpty()) return
 
-        refreshJob?.cancel()
-        refreshJob = viewModelScope.launch {
+        viewModelScope.launch {
             overlayService.show(
                 Toast(
                     message = getString(Res.string.home_refresh_refreshing),
                     type = Toast.Type.INFO,
                 )
             )
-            refreshDataUseCase().collect { outcome ->
-                when (outcome) {
-                    is RefreshEvent.Finished -> {
-                        overlayService.show(
-                            Toast(
-                                message = getString(
-                                    Res.string.home_refresh_success,
-                                    outcome.game.displayName,
-                                    outcome.successCount,
-                                ),
-                                type = Toast.Type.SUCCESS,
-                            )
-                        )
-                    }
-                    is RefreshEvent.Failed -> {
-                        overlayService.show(error = outcome.error)
-                    }
-                }
-            }
         }
+        startRefreshUseCase()
     }
 
     fun onExpandWidget(game: Game) {
@@ -105,6 +86,46 @@ internal class HomeVM(
     }
 
 
+    private fun updateProgress(game: Game, progress: Float?) {
+        _state.update { state ->
+            val updatedList = state.gameFeatureList.map { widget ->
+                if (widget.game == game) {
+                    widget.copy(inProgress = progress)
+                } else {
+                    widget
+                }
+            }
+            val updatedState = state.copy(gameFeatureList = updatedList.toImmutableList())
+            updatedState
+        }
+    }
+
+    /**
+     * Every refresh, not just the ones started here - first launch, newly added games, background updates.
+     */
+    private suspend fun subscribeToRefreshEvents() {
+        subscribeToRefreshEventsUseCase().collect { event ->
+            when (event) {
+                is RefreshEvent.Started -> updateProgress(game = event.game, progress = 0f)
+                is RefreshEvent.Progress -> updateProgress(game = event.game, progress = event.fraction)
+                is RefreshEvent.Finished -> {
+                    updateProgress(game = event.game, progress = null)
+                    overlayService.show(
+                        Toast(
+                            message = getString(
+                                Res.string.home_refresh_success,
+                                event.game.displayName,
+                                event.successCount,
+                            ),
+                            type = Toast.Type.SUCCESS,
+                        )
+                    )
+                }
+                is RefreshEvent.Failure -> overlayService.show(error = event.error)
+            }
+        }
+    }
+
     private suspend fun subscribeToEnabledGames() {
         subscribeToGamesUseCase().collectLatest { result ->
             result
@@ -117,6 +138,7 @@ internal class HomeVM(
                             featureName = game.wiki.name,
                             characterList = existing?.characterList ?: persistentListOf(),
                             isExpanded = existing?.isExpanded ?: false,
+                            inProgress = existing?.inProgress,
                         )
                         widget
                     }.toImmutableList()

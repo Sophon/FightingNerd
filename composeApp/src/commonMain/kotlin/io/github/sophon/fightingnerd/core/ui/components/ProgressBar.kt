@@ -3,8 +3,6 @@ package io.github.sophon.fightingnerd.core.ui.components
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
@@ -15,7 +13,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
-import io.github.sophon.fightingnerd.theme.nerdDimensions
 
 @Composable
 internal fun ProgressBar(
@@ -37,8 +34,6 @@ internal fun ProgressBar(
         gapSize = 0.dp,
         drawStopIndicator = {},
         modifier = modifier
-            .width(128.dp)
-            .padding(bottom = nerdDimensions.componentPadding)
             .height(8.dp)
             .clip(CircleShape),
     )

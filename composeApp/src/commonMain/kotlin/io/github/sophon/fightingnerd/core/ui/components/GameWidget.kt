@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.compose_multiplatform
@@ -51,6 +52,7 @@ internal fun GameWidget(
     onExpandClick: () -> Unit,
     modifier: Modifier = Modifier,
     leadingAction: IconAction? = null,
+    progress: Float? = null,
     content: @Composable () -> Unit,
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
@@ -61,6 +63,7 @@ internal fun GameWidget(
             isLoading = isLoading,
             onExpandClick = onExpandClick,
             leadingAction = leadingAction,
+            progress = progress,
         )
 
         AnimatedVisibility(
@@ -82,6 +85,7 @@ private fun WidgetHeader(
     isLoading: Boolean,
     modifier: Modifier = Modifier,
     leadingAction: IconAction? = null,
+    progress: Float? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val shape = if (isExpanded) {
@@ -143,6 +147,14 @@ private fun WidgetHeader(
 
         Spacer(Modifier.width(nerdDimensions.inlineGap))
 
+        if (progress != null) {
+            ProgressBar(
+                progress = progress,
+                modifier = Modifier.width(PROGRESS_BAR_WIDTH),
+            )
+            Spacer(Modifier.width(nerdDimensions.inlineGap))
+        }
+
         val chevronFlip by animateFloatAsState(
             targetValue = if (isExpanded) -1f else 1f,
             label = "chevronFlip",
@@ -164,6 +176,9 @@ private fun WidgetHeader(
         }
     }
 }
+
+
+private val PROGRESS_BAR_WIDTH = 64.dp
 
 
 //region PREVIEW
@@ -224,6 +239,21 @@ private fun GameWidgetLoadingPreview() {
             isExpanded = false,
             isLoading = true,
             onExpandClick = {},
+        ) {}
+    }
+}
+
+@Preview
+@Composable
+private fun GameWidgetProgressPreview() {
+    FightingNerdTheme {
+        GameWidget(
+            iconUrl = null,
+            title = "TEKKEN 8",
+            isExpanded = false,
+            isLoading = false,
+            onExpandClick = {},
+            progress = 0.4f,
         ) {}
     }
 }
