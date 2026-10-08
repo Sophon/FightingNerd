@@ -1,5 +1,6 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.frameData.MoveId
 import io.github.sophon.discord.app.model.frameData.MoveType
 import io.github.sophon.discord.app.model.response.BotResponse
@@ -96,8 +97,17 @@ private fun Move.toButtonList(
     } else {
         null
     }
-    val videoButton = urls.videoUrl?.let { url ->
-        BotResponse.EmbedButton(label = "Video", action = BotResponse.EmbedButton.Action.Text(url))
+    // the Media command posts the video itself - a Text button's custom_id can't fit every URL
+    val videoButton = if (urls.videoUrl != null) {
+        BotResponse.EmbedButton(
+            label = "Video",
+            action = BotResponse.EmbedButton.Action.Command(
+                command = Command.Media,
+                query = "${character.id.naturalId} $input",
+            ),
+        )
+    } else {
+        null
     }
     val buttonList = listOfNotNull(detailsButton, videoButton)
 

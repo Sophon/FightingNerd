@@ -515,6 +515,13 @@ internal class DiscordBotImpl(
                                     ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
                                 }
 
+                                is MediaResponse -> {
+                                    kordResponder.respond(
+                                        message = interaction.message,
+                                        mediaResponse = response,
+                                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                                }
+
                                 else -> {}
                             }
                         }

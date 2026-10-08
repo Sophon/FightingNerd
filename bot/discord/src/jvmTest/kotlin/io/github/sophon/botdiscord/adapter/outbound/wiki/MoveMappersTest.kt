@@ -5,6 +5,7 @@ import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import io.github.sophon.discord.adapter.outbound.wiki.toDomain
 import io.github.sophon.discord.adapter.outbound.wiki.toFilter
+import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.frameData.MoveId
 import io.github.sophon.discord.app.model.frameData.MoveType
 import io.github.sophon.discord.app.model.response.BotResponse
@@ -74,7 +75,7 @@ class MoveMappersTest {
             videoUrl = VIDEO_URL,
             hitboxImageList = listOf("https://wavu.wiki/img/Jin_ewgf_hitbox.png"),
             stance = "ZEN",
-            buttonSet = BotResponse.ButtonSet(buttonList = listOf(videoButton)),
+            buttonSet = BotResponse.ButtonSet(buttonList = listOf(videoButton(query = "jin f,n,d,df+2"))),
         )
 
         // when
@@ -120,7 +121,7 @@ class MoveMappersTest {
                         moveId = MoveId(game = Game.GGST, characterId = "sol_badguy", input = "5K"),
                     ),
                 ),
-                videoButton,
+                videoButton(query = "sol_badguy 5K"),
             ),
         )
 
@@ -250,6 +251,14 @@ class MoveMappersTest {
     //endregion
 }
 
+private fun videoButton(query: String): BotResponse.EmbedButton {
+    val button = BotResponse.EmbedButton(
+        label = "Video",
+        action = BotResponse.EmbedButton.Action.Command(command = Command.Media, query = query),
+    )
+    return button
+}
+
 private fun character(game: Game, displayName: String = "Sol Badguy"): Character {
     val character = Character(
         id = CharacterId(game = game, naturalId = displayName.lowercase().replace(" ", "_")),
@@ -263,7 +272,6 @@ private fun character(game: Game, displayName: String = "Sol Badguy"): Character
 
 private const val VIDEO_URL = "https://wavu.wiki/vid/Jin_ewgf.mp4"
 private const val JIN_ICON_URL = "https://wavu.wiki/img/Jin_icon.png"
-private val videoButton = BotResponse.EmbedButton(label = "Video", action = BotResponse.EmbedButton.Action.Text(VIDEO_URL))
 private val jin = Character(
     id = CharacterId(game = Game.Tekken8, naturalId = "jin"),
     displayName = "Jin",
