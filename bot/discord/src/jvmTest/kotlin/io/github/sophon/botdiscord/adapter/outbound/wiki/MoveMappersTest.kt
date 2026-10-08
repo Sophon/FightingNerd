@@ -25,7 +25,7 @@ import kotlin.test.Test
 class MoveMappersTest {
     //region toDomain
     @Test
-    fun `tekken move is expanded with guard, recovery and stance`() {
+    fun `tekken move is always expanded with guard, recovery and stance`() {
         // given
         val move = Move(
             input = "f,n,d,df+2",
@@ -68,13 +68,13 @@ class MoveMappersTest {
                 iconUrl = Wiki.Wavu.iconUrl,
                 color = Wiki.Wavu.color,
             ),
-            isCollapsedByDefault = false,
             secondaryFields = emptyList(),
             aliasList = listOf("ewgf"),
             noteList = listOf("Balcony break"),
             videoUrl = VIDEO_URL,
             hitboxImageList = listOf("https://wavu.wiki/img/Jin_ewgf_hitbox.png"),
             stance = "ZEN",
+            forceExpand = true,
             buttonSet = BotResponse.ButtonSet(
                 buttonList = listOf(
                     mediaCommandButton(label = "Images", query = "jin f,n,d,df+2"),
@@ -257,7 +257,7 @@ class MoveMappersTest {
     }
 
     @Test
-    fun `collapsed move without secondary fields or video has no buttons`() {
+    fun `move without details or media has no buttons`() {
         // given
         val move = Move(
             input = "5P",
@@ -324,14 +324,66 @@ class MoveMappersTest {
     }
 
     @Test
-    fun `collapse follows the game`() {
+    fun `move with only notes gets a details button`() {
         // given
-        val gameList = listOf(Game.GGST, Game.BBCF, Game.GBVSR, Game.AVL, Game.StreetFighter6, Game.Tekken8, Game.DBFZ)
-        val expected = listOf(true, true, true, true, true, false, false)
+        val move = Move(
+            input = "5K",
+            notes = listOf("Can be jump cancelled"),
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5K"),
+            gameProperties = GGMoveProperties(),
+        )
+        val expected = BotResponse.ButtonSet(buttonList = listOf(solDetailsButton))
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move with only aliases has no buttons`() {
+        // given
+        val move = Move(
+            input = "6P",
+            aliases = listOf("anti-air"),
+            urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#6P"),
+            gameProperties = GGMoveProperties(),
+        )
+
+        // when
+        val result = move.toDomain(sol)
+
+        // then
+        assertThat(result.buttonSet).isNull()
+    }
+
+    @Test
+    fun `tekken move with notes has no details button`() {
+        // given
+        val move = Move(
+            input = "d/b+1",
+            notes = listOf("Homing"),
+            urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jin_movelist#Jin-d/b+1"),
+            gameProperties = T8Properties(),
+        )
+
+        // when
+        val result = move.toDomain(jin)
+
+        // then
+        assertThat(result.buttonSet).isNull()
+    }
+
+    @Test
+    fun `only tekken is always expanded`() {
+        // given
+        val gameList = listOf(Game.Tekken8, Game.GGST, Game.StreetFighter6, Game.DBFZ)
+        val expected = listOf(true, false, false, false)
         val move = Move(input = "5P", urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5P"))
 
         // when
-        val result = gameList.map { game -> move.toDomain(character(game = game)).isCollapsedByDefault }
+        val result = gameList.map { game -> move.toDomain(character(game = game)).forceExpand }
 
         // then
         assertThat(result).isEqualTo(expected)

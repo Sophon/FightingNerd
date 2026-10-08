@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v17.2.0] - 2026-10-09
+- hide images by default
+- move aliases displayed by default
+- user who press buttons are tagged
+
 ## [v17.1.0] - 2026-10-09
 - `media` command
   - can search for move media the same as `fd`

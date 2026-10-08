@@ -27,20 +27,11 @@ import io.github.sophon.wiki.model.game.VSAVMoveProperties
 import io.github.sophon.wiki.model.wiki.Game
 
 internal fun Move.toDomain(character: Character): MoveResponse {
-    val isCollapsedByDefault: Boolean = when (character.id.game) {
-        Game.GGST,
-        Game.BBCF,
-        Game.GBVSR,
-        Game.AVL,
-        Game.StreetFighter6 -> true
-
-        else -> false
-    }
-
+    val isAlwaysExpanded = (character.id.game == Game.Tekken8)
     val secondaryFields = toSecondaryFields()
     val buttonSet = toButtonList(
         character = character,
-        hasDetails = (isCollapsedByDefault && secondaryFields.isNotEmpty()),
+        hasDetails = (isAlwaysExpanded.not() && (secondaryFields.isNotEmpty() || notes.isNotEmpty())),
     )
         .takeIf { it.isNotEmpty() }
         ?.let { buttonList -> BotResponse.ButtonSet(buttonList = buttonList) }
@@ -55,7 +46,6 @@ internal fun Move.toDomain(character: Character): MoveResponse {
         characterImageUrl = character.images?.iconUrl,
         primaryFields = toPrimaryFields(),
         dataSource = character.toDataSource(),
-        isCollapsedByDefault = isCollapsedByDefault,
         secondaryFields = secondaryFields,
         noteList = notes,
         aliasList = aliases,
@@ -63,6 +53,7 @@ internal fun Move.toDomain(character: Character): MoveResponse {
         hitboxImageList = urls.hitboxImageList,
         imageList = urls.moveImageList,
         stance = (gameProperties as? T8Properties)?.stance,
+        forceExpand = isAlwaysExpanded,
         buttonSet = buttonSet,
     )
 

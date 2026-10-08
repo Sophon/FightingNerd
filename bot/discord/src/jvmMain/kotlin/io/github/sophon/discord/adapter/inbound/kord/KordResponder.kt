@@ -1,6 +1,5 @@
 package io.github.sophon.discord.adapter.inbound.kord
 
-import dev.kord.common.Color
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.MessageChannelBehavior
@@ -10,6 +9,7 @@ import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.FollowupPermittingInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.entity.Message
+import dev.kord.core.entity.User
 import dev.kord.core.entity.channel.MessageChannel
 import dev.kord.core.entity.channel.TextChannel
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
@@ -24,30 +24,24 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
-import io.github.sophon.discord.adapter.inbound.kord.ui.aliasEmbed
-import io.github.sophon.discord.adapter.inbound.kord.ui.aliasGamePromptEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.aliasResponseEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.banEmbed
-import io.github.sophon.discord.adapter.inbound.kord.ui.commandsEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.coreEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.errorEmbed
-import io.github.sophon.discord.adapter.inbound.kord.ui.ewgfHelpEmbed
+import io.github.sophon.discord.adapter.inbound.kord.ui.ewgfResponseEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.feedbackEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.glossaryEmbed
-import io.github.sophon.discord.adapter.inbound.kord.ui.helpEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.imagesMediaEmbed
-import io.github.sophon.discord.adapter.inbound.kord.ui.mandatoryField
+import io.github.sophon.discord.adapter.inbound.kord.ui.missingPermissionsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.modulesEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.promoButtonSet
 import io.github.sophon.discord.adapter.inbound.kord.ui.promoEmbed
-import io.github.sophon.discord.adapter.inbound.kord.ui.recentSetsEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.replyEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.steamLobbyEmbed
-import io.github.sophon.discord.adapter.inbound.kord.ui.successEmbed
-import io.github.sophon.discord.adapter.inbound.kord.ui.tipEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.unbanEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.videoMediaText
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.UserRequest
-import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.response.AliasResponse
 import io.github.sophon.discord.app.model.response.BanResponse
 import io.github.sophon.discord.app.model.response.BotResponse
@@ -75,17 +69,18 @@ internal class KordResponder(
         imageList: List<String>,
         isExpanded: Boolean,
         buttonSet: BotResponse.ButtonSet?,
+        mentionedUser: User? = null,
     ): EmptyResult<BotError> {
         val result = try {
             message.channel.createMessage {
                 messageReference = message.id
-                allowedMentions { repliedUser = false }
                 moveContent(
                     embedBuilder = embedBuilder,
                     imageList = imageList,
                     isExpanded = isExpanded,
                     buttonSet = buttonSet,
                 )
+                mention(user = mentionedUser)
             }
 
             Result.Success(Unit)
@@ -140,13 +135,15 @@ internal class KordResponder(
     suspend fun respond(
         message: Message,
         coreResponse: CoreResponse,
+        mentionedUser: User? = null,
     ): EmptyResult<BotError> {
         val result = respond(
             message = message,
-            embedBuilder = coreEmbed(coreResponse),
+            embedBuilder = coreEmbed(coreResponse = coreResponse, commandRegistry = commandRegistry),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = coreResponse.buttonSet,
+            mentionedUser = mentionedUser,
         )
         return result
     }
@@ -157,7 +154,7 @@ internal class KordResponder(
     ): EmptyResult<BotError> {
         val result = respond(
             interaction = interaction,
-            embedBuilder = coreEmbed(coreResponse),
+            embedBuilder = coreEmbed(coreResponse = coreResponse, commandRegistry = commandRegistry),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = coreResponse.buttonSet,
@@ -168,6 +165,7 @@ internal class KordResponder(
     suspend fun respond(
         message: Message,
         modulesResponse: ModulesResponse,
+        mentionedUser: User? = null,
     ): EmptyResult<BotError> {
         val result = respond(
             message = message,
@@ -175,6 +173,7 @@ internal class KordResponder(
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
+            mentionedUser = mentionedUser,
         )
         return result
     }
@@ -224,6 +223,7 @@ internal class KordResponder(
     suspend fun respond(
         message: Message,
         aliasResponse: AliasResponse,
+        mentionedUser: User? = null,
     ): EmptyResult<BotError> {
         val result = respond(
             message = message,
@@ -231,6 +231,7 @@ internal class KordResponder(
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = (aliasResponse as? AliasResponse.GamePrompt)?.buttonSet,
+            mentionedUser = mentionedUser,
         )
         return result
     }
@@ -308,6 +309,7 @@ internal class KordResponder(
     suspend fun respond(
         message: Message,
         mediaResponse: MediaResponse,
+        mentionedUser: User? = null,
     ): EmptyResult<BotError> {
         val result = when (mediaResponse) {
             is MediaResponse.ImagesMediaResponse -> respond(
@@ -316,16 +318,19 @@ internal class KordResponder(
                 imageList = mediaResponse.imageList,
                 isExpanded = true,
                 buttonSet = null,
+                mentionedUser = mentionedUser,
             )
 
             is MediaResponse.VideoMediaResponse -> respond(
                 message = message,
                 plainText = PlainTextResponse(text = videoMediaText(mediaResponse)),
+                mentionedUser = mentionedUser,
             )
 
             MediaResponse.NoMedia -> respond(
                 message = message,
                 plainText = PlainTextResponse(text = NO_MEDIA),
+                mentionedUser = mentionedUser,
             )
         }
         return result
@@ -476,12 +481,13 @@ internal class KordResponder(
     suspend fun respond(
         message: Message,
         plainText: PlainTextResponse,
+        mentionedUser: User? = null,
     ): EmptyResult<BotError> {
         val result = try {
             message.channel.createMessage {
                 messageReference = message.id
-                allowedMentions { repliedUser = false }
                 textContent(plainText)
+                mention(user = mentionedUser)
             }
 
             Result.Success(Unit)
@@ -707,44 +713,15 @@ internal class KordResponder(
         plainText.buttonSet?.let { discordButtonBuilder.createResponseButtons(messageBuilder = this, buttonSet = it) }
     }
 
-    private fun coreEmbed(coreResponse: CoreResponse): EmbedBuilder.() -> Unit {
-        val dataSource = coreResponse.dataSource
-        val embedBuilder = when (coreResponse.type) {
-            CoreResponse.Type.Tip -> tipEmbed(dataSource)
-            CoreResponse.Type.Help -> helpEmbed(commandRegistry, dataSource)
-            CoreResponse.Type.Commands -> commandsEmbed(
-                commandList = Command.entries.sortedBy { it.name },
-                commandRegistry = commandRegistry,
-                dataSource = dataSource,
-            )
+    /**
+     * Pings only the given user (if any) on top of the existing content - never the replied-to author.
+     */
+    private fun MessageBuilder.mention(user: User?) {
+        allowedMentions {
+            repliedUser = false
+            user?.let { users.add(it.id) }
         }
-        return embedBuilder
-    }
-
-    private fun aliasResponseEmbed(aliasResponse: AliasResponse): EmbedBuilder.() -> Unit {
-        val embedBuilder = when (aliasResponse) {
-            is AliasResponse.CharacterAliases -> aliasEmbed(aliasResponse.characterList)
-            is AliasResponse.GamePrompt -> aliasGamePromptEmbed(aliasResponse)
-        }
-        return embedBuilder
-    }
-
-    private fun ewgfResponseEmbed(ewgfResponse: EwgfResponse): EmbedBuilder.() -> Unit {
-        val embedBuilder = when (ewgfResponse) {
-            is EwgfResponse.RecentSets -> recentSetsEmbed(ewgfResponse)
-            is EwgfResponse.Success -> successEmbed(ewgfResponse)
-            is EwgfResponse.Help -> ewgfHelpEmbed(ewgfResponse)
-        }
-        return embedBuilder
-    }
-
-    private fun missingPermissionsEmbed(errorMessage: String?): EmbedBuilder.() -> Unit = {
-        title = "⚠️ Error"
-        color = Color(YELLOW)
-        mandatoryField(
-            name = "",
-            value = errorMessage,
-        )
+        user?.let { content = listOfNotNull(it.mention, content).joinToString(separator = "\n") }
     }
 
     private suspend fun rollForPromo(channel: MessageChannelBehavior) {
@@ -759,7 +736,6 @@ internal class KordResponder(
 
     private companion object {
         const val HTTP_FORBIDDEN = 403
-        const val YELLOW = 0x00FFC107
         const val FEEDBACK_SENT = "Feedback sent successfully!"
         const val REPLY_SENT = "Reply sent successfully!"
         const val REPLY_FAILED = "Failed to send"
