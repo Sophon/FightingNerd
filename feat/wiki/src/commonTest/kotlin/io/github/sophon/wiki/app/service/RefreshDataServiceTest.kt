@@ -341,7 +341,10 @@ internal class RefreshDataServiceTest {
             fetchGameDataPort = fetchGameDataPort,
             store = FakeDownloadStore(),
         )
-        val expected = listOf<RefreshEvent>(RefreshEvent.Finished(Game.Tekken8, 1))
+        val expected = listOf(
+            RefreshEvent.Progress(Game.Tekken8, 1f),
+            RefreshEvent.Finished(Game.Tekken8, 1),
+        )
 
         // when
         service.invoke().toList()
@@ -422,7 +425,33 @@ internal class RefreshDataServiceTest {
         val eventList = service.invoke().toList()
 
         // then
-        assertThat(eventList).containsExactlyInAnyOrder(*expected)
+        val finishedEventList = eventList.filterIsInstance<RefreshEvent.Finished>()
+        assertThat(finishedEventList).containsExactlyInAnyOrder(*expected)
+    }
+
+    @Test
+    fun `progress reaches the end even when the last move list fails`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu, armorKing))),
+                moveListByRemoteQueryId = mapOf(
+                    "Yoshimitsu" to Result.Success(listOf(fleaRoll)),
+                    "Armor King" to Result.Error(DataError.Remote.REQUEST_TIMEOUT),
+                ),
+            ),
+            store = FakeDownloadStore(),
+        )
+        val expected = listOf(0.5f, 1f)
+
+        // when
+        val eventList = service.invoke().toList()
+
+        // then
+        val fractionList = eventList
+            .filterIsInstance<RefreshEvent.Progress>()
+            .map { event -> event.fraction }
+        assertThat(fractionList).isEqualTo(expected)
     }
 }
 

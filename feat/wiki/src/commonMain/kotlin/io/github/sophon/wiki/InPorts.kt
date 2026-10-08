@@ -69,7 +69,9 @@ interface NormalizeMoveInputUseCase {
 
 /**
  * Downloads and saves the characters and moves of every enabled game. Emits [RefreshEvent.Failed] for every
- * character list or move list that failed, then a single [RefreshEvent.Finished].
+ * character list or move list that failed, then a [RefreshEvent.Finished] per game.
+ * Games that download move lists per character also emit [RefreshEvent.Progress] after each character,
+ * whether its move list succeeded or not.
  * Waits for the config if the wiki isn't configured yet.
  *
  * The flow is cold - the refresh runs while it's collected and stops when the collection is cancelled.

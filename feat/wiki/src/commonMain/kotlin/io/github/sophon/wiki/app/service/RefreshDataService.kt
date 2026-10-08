@@ -135,7 +135,7 @@ internal class RefreshDataService(
                         .onError { error -> send(RefreshEvent.Failed(game, error)) }
                 }
 
-                for (character in characterList) {
+                characterList.forEachIndexed { index, character ->
                     val moveListLabel = "${character.id.naturalId} (${game.id})"
                     val moveListResult = withTimeoutOrNull(DOWNLOAD_TIMEOUT) { downloadMoveList(character) }
                         ?: timeoutError(moveListLabel)
@@ -143,6 +143,9 @@ internal class RefreshDataService(
                     moveListResult
                         .onSuccess { successCount++ }
                         .onError { error -> send(RefreshEvent.Failed(game, error)) }
+
+                    val progressFraction = ((index + 1).toFloat() / characterList.size)
+                    send(RefreshEvent.Progress(game = game, fraction = progressFraction))
                 }
             }
             .onError { error -> send(RefreshEvent.Failed(game, error)) }
