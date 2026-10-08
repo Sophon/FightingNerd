@@ -103,12 +103,12 @@ internal class RefreshDataService(
                     refreshBulk(game)
                 }
             }
-            send(RefreshEvent.Finished(successCount))
+            send(RefreshEvent.Finished(game, successCount))
         } catch (exception: CancellationException) {
             throw exception
         } catch (exception: Exception) {
             Napier.e(throwable = exception, tag = TAG) { "${game.id}: refresh crashed" }
-            send(RefreshEvent.Failed(WikiError.DownloadError("${game.id}: $exception")))
+            send(RefreshEvent.Failed(game, WikiError.DownloadError("$exception")))
         } finally {
             withContext(NonCancellable) { releaseGame(game) }
         }
@@ -132,7 +132,7 @@ internal class RefreshDataService(
                         .map { character -> character.id }
                         .toSet()
                     strikeAbsentCharacters(game, downloadedIdSet)
-                        .onError { error -> send(RefreshEvent.Failed(error)) }
+                        .onError { error -> send(RefreshEvent.Failed(game, error)) }
                 }
 
                 for (character in characterList) {
@@ -142,10 +142,10 @@ internal class RefreshDataService(
 
                     moveListResult
                         .onSuccess { successCount++ }
-                        .onError { error -> send(RefreshEvent.Failed(error)) }
+                        .onError { error -> send(RefreshEvent.Failed(game, error)) }
                 }
             }
-            .onError { error -> send(RefreshEvent.Failed(error)) }
+            .onError { error -> send(RefreshEvent.Failed(game, error)) }
 
         return successCount
     }
@@ -168,10 +168,10 @@ internal class RefreshDataService(
                 if (gameData.isNotEmpty()) {
                     val downloadedIdSet = gameData.map { (character, _) -> character.id }.toSet()
                     strikeAbsentCharacters(game, downloadedIdSet)
-                        .onError { error -> send(RefreshEvent.Failed(error)) }
+                        .onError { error -> send(RefreshEvent.Failed(game, error)) }
                 }
             }
-            .onError { error -> send(RefreshEvent.Failed(error)) }
+            .onError { error -> send(RefreshEvent.Failed(game, error)) }
 
         return successCount
     }
