@@ -1,15 +1,14 @@
-package io.github.sophon.core.wiki.util
+package io.github.sophon.wiki.adapter.outbound.ktor
 
 import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.network.safeCall
-import io.github.sophon.core.wiki.data.ImageUrlResponseDto
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
-suspend fun getWikiImageUrl(
+internal suspend fun getWikiImageUrl(
     httpClient: HttpClient,
     url: String,
     fileNames: List<String>,

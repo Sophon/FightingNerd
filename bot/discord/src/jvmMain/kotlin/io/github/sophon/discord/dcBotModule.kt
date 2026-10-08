@@ -10,9 +10,9 @@ import io.github.sophon.adminModule
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.coreModule
 import io.github.sophon.core.featureConfig.model.WikiClientFeature
-import io.github.sophon.core.wiki.data.fingerprint
-import io.github.sophon.core.wiki.data.readStoredFingerprint
-import io.github.sophon.core.wiki.data.storeFingerprint
+import io.github.sophon.core.sqldelight.fingerprint
+import io.github.sophon.core.sqldelight.readStoredFingerprint
+import io.github.sophon.core.sqldelight.storeFingerprint
 import io.github.sophon.discord.adapter.inbound.kord.CommandRegistry
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl

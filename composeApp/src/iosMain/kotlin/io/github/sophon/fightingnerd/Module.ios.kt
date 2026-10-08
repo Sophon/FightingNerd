@@ -6,9 +6,9 @@ import app.cash.sqldelight.db.SqlSchema
 import app.cash.sqldelight.driver.native.NativeSqliteDriver
 import co.touchlab.sqliter.DatabaseFileContext
 import io.github.sophon.core.featureConfig.model.WikiClientFeature
-import io.github.sophon.core.wiki.data.fingerprint
-import io.github.sophon.core.wiki.data.readStoredFingerprint
-import io.github.sophon.core.wiki.data.storeFingerprint
+import io.github.sophon.core.sqldelight.fingerprint
+import io.github.sophon.core.sqldelight.readStoredFingerprint
+import io.github.sophon.core.sqldelight.storeFingerprint
 import io.github.sophon.fightingnerd.core.domain.UrlOpener
 import io.github.sophon.fightingnerd.core.domain.UrlOpenerIos
 import io.github.sophon.fightingnerd.app.outPort.ReviewPort

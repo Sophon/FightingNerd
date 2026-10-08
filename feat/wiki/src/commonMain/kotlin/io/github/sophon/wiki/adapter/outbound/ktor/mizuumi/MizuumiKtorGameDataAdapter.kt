@@ -5,8 +5,8 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.network.safeCall
-import io.github.sophon.core.wiki.util.getWikiImageUrl
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
+import io.github.sophon.wiki.adapter.outbound.ktor.getWikiImageUrl
 import io.github.sophon.wiki.adapter.outbound.ktor.mizuumi.MizuumiKtorGameDataAdapter.Companion.MAX_PAGES
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import io.github.sophon.wiki.model.Character
