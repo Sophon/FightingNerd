@@ -45,6 +45,7 @@ import io.github.sophon.wiki.app.service.GetMoveService
 import io.github.sophon.wiki.app.service.GetUpdateTimeStampService
 import io.github.sophon.wiki.app.service.NormalizeMoveInputService
 import io.github.sophon.wiki.app.service.RefreshDataService
+import io.github.sophon.wiki.app.service.SubscribeToWikiEventsService
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -68,6 +69,7 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     singleOf(::GetUpdateTimeStampService)
     singleOf(::NormalizeMoveInputService)
     singleOf(::RefreshDataService)
+    singleOf(::SubscribeToWikiEventsService)
 
     single<ConfigureWikiUseCase> { get<ConfigureWikiService>() }
     single<GetAvailableGamesUseCase> { get<GetAvailableGamesService>() }
@@ -80,6 +82,7 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     single<GetUpdateTimeStampUseCase> { get<GetUpdateTimeStampService>() }
     single<NormalizeMoveInputUseCase> { get<NormalizeMoveInputService>() }
     single<RefreshDataUseCase> { get<RefreshDataService>() }
+    single<SubscribeToWikiEventsUseCase> { get<SubscribeToWikiEventsService>() }
 
 
     singleOf(::InMemoryWikiConfigAdapter)

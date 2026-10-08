@@ -2,6 +2,7 @@ package io.github.sophon.wiki.app.service
 
 import assertk.assertThat
 import assertk.assertions.containsExactlyInAnyOrder
+import assertk.assertions.hasSize
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
 import assertk.assertions.isInstanceOf
@@ -17,16 +18,19 @@ import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
-import io.github.sophon.wiki.model.RefreshEvent
+import io.github.sophon.wiki.model.WikiEvent
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -109,8 +113,8 @@ internal class RefreshDataServiceTest {
 
         // then
         assertThat(store.savedMoveListById.keys).isEqualTo(expected)
-        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
-        assertThat(failedEvent.error).isInstanceOf(WikiError.DownloadError::class)
+        val refreshFailedEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(refreshFailedEvent.error).isInstanceOf(WikiError.DownloadError::class)
     }
 
     @Test
@@ -196,8 +200,8 @@ internal class RefreshDataServiceTest {
         val eventList = service.invoke().toList()
 
         // then
-        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
-        assertThat(failedEvent.error).isInstanceOf(WikiError.DatabaseError::class)
+        val refreshFailedEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(refreshFailedEvent.error).isInstanceOf(WikiError.DatabaseError::class)
     }
 
     @Test
@@ -317,7 +321,7 @@ internal class RefreshDataServiceTest {
             fetchGameDataPort = fetchGameDataPort,
             store = FakeDownloadStore(),
         )
-        val expected = emptyList<RefreshEvent>()
+        val expected = emptyList<WikiEvent>()
 
         // when
         val firstRefresh = async { service.invoke().toList() }
@@ -342,8 +346,9 @@ internal class RefreshDataServiceTest {
             store = FakeDownloadStore(),
         )
         val expected = listOf(
-            RefreshEvent.Progress(Game.Tekken8, 1f),
-            RefreshEvent.Finished(Game.Tekken8, 1),
+            WikiEvent.Refresh.Started(Game.Tekken8),
+            WikiEvent.Refresh.Progress(Game.Tekken8, 1f),
+            WikiEvent.Refresh.Finished(Game.Tekken8, 1),
         )
 
         // when
@@ -374,8 +379,8 @@ internal class RefreshDataServiceTest {
 
         // then
         assertThat(store.savedMoveListById.keys).isEqualTo(expected)
-        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
-        assertThat(failedEvent.error).isInstanceOf(WikiError.DownloadError::class)
+        val refreshFailedEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(refreshFailedEvent.error).isInstanceOf(WikiError.DownloadError::class)
     }
 
     @Test
@@ -397,8 +402,8 @@ internal class RefreshDataServiceTest {
 
         // then
         assertThat(store.savedMoveListById.keys).isEqualTo(expected)
-        val failedEvent = eventList.filterIsInstance<RefreshEvent.Failed>().single()
-        assertThat(failedEvent.error).isInstanceOf(WikiError.DownloadError::class)
+        val refreshFailedEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(refreshFailedEvent.error).isInstanceOf(WikiError.DownloadError::class)
     }
 
     @Test
@@ -419,14 +424,14 @@ internal class RefreshDataServiceTest {
             store = FakeDownloadStore(),
             enabledGameList = listOf(Game.Tekken8, Game.StreetFighter6),
         )
-        val expected = arrayOf(RefreshEvent.Finished(Game.Tekken8, 2), RefreshEvent.Finished(Game.StreetFighter6, 1))
+        val expected = arrayOf(WikiEvent.Refresh.Finished(Game.Tekken8, 2), WikiEvent.Refresh.Finished(Game.StreetFighter6, 1))
 
         // when
         val eventList = service.invoke().toList()
 
         // then
-        val finishedEventList = eventList.filterIsInstance<RefreshEvent.Finished>()
-        assertThat(finishedEventList).containsExactlyInAnyOrder(*expected)
+        val refreshFinishedEventList = eventList.filterIsInstance<WikiEvent.Refresh.Finished>()
+        assertThat(refreshFinishedEventList).containsExactlyInAnyOrder(*expected)
     }
 
     @Test
@@ -449,9 +454,142 @@ internal class RefreshDataServiceTest {
 
         // then
         val fractionList = eventList
-            .filterIsInstance<RefreshEvent.Progress>()
+            .filterIsInstance<WikiEvent.Refresh.Progress>()
             .map { event -> event.fraction }
         assertThat(fractionList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a crashed game still finishes`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(crashingGameSet = setOf(Game.Tekken8)),
+            store = FakeDownloadStore(),
+        )
+        val expected = WikiEvent.Refresh.Finished(Game.Tekken8, 0)
+
+        // when
+        val eventList = service.invoke().toList()
+
+        // then
+        assertThat(eventList.last()).isEqualTo(expected)
+    }
+
+    @Test
+    fun `subscribers get the events of a refresh they didn't start`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
+                moveListByRemoteQueryId = mapOf(
+                    "Armor King" to Result.Success(emptyList()),
+                    "Yoshimitsu" to Result.Success(emptyList()),
+                ),
+            ),
+            store = FakeDownloadStore(),
+        )
+        val subscribedEventList = mutableListOf<WikiEvent>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            SubscribeToWikiEventsService(service).invoke().toList(subscribedEventList)
+        }
+        val expected = listOf(
+            WikiEvent.Refresh.Started(Game.Tekken8),
+            WikiEvent.Refresh.Progress(Game.Tekken8, 0.5f),
+            WikiEvent.Refresh.Progress(Game.Tekken8, 1f),
+            WikiEvent.Refresh.Finished(Game.Tekken8, 2),
+        )
+
+        // when
+        service.invoke().toList()
+
+        // then
+        assertThat(subscribedEventList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `a cancelled game still finishes for the subscribers`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
+                fetchDelay = 1.seconds,
+            ),
+            store = FakeDownloadStore(),
+        )
+        val subscribedEventList = mutableListOf<WikiEvent>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            SubscribeToWikiEventsService(service).invoke().toList(subscribedEventList)
+        }
+        val expected = listOf(
+            WikiEvent.Refresh.Started(Game.Tekken8),
+            WikiEvent.Refresh.Finished(Game.Tekken8, 0),
+        )
+
+        // when
+        val refresh = launch { service.invoke().toList() }
+        runCurrent()
+        refresh.cancelAndJoin()
+
+        // then
+        assertThat(subscribedEventList).isEqualTo(expected)
+    }
+    @Test
+    fun `a game cancelled while waiting for a download slot sends nothing`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(
+                    Game.Tekken8 to Result.Success(listOf(yoshimitsu)),
+                    Game.StreetFighter6 to Result.Success(listOf(ryu)),
+                    Game.GGST to Result.Success(listOf(sol)),
+                    Game.MK1 to Result.Success(listOf(scorpion)),
+                ),
+                fetchDelay = 1.seconds,
+            ),
+            store = FakeDownloadStore(),
+            enabledGameList = listOf(Game.Tekken8, Game.StreetFighter6, Game.GGST, Game.MK1),
+        )
+        val subscribedEventList = mutableListOf<WikiEvent>()
+        backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
+            SubscribeToWikiEventsService(service).invoke().toList(subscribedEventList)
+        }
+
+        // when
+        val refresh = launch { service.invoke().toList() }
+        runCurrent()
+        refresh.cancelAndJoin()
+
+        // then
+        val startedGameSet = subscribedEventList
+            .filterIsInstance<WikiEvent.Refresh.Started>()
+            .map { event -> event.game }
+            .toSet()
+        val finishedGameSet = subscribedEventList
+            .filterIsInstance<WikiEvent.Refresh.Finished>()
+            .map { event -> event.game }
+            .toSet()
+        assertThat(startedGameSet).hasSize(3)
+        assertThat(finishedGameSet).isEqualTo(startedGameSet)
+    }
+
+    @Test
+    fun `a failed move list names its character`() = runTest {
+        // given
+        val service = refreshDataService(
+            fetchGameDataPort = FakeFetchGameDataPort(
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing))),
+                moveListByRemoteQueryId = mapOf("Armor King" to Result.Error(DataError.Remote.REQUEST_TIMEOUT)),
+            ),
+            store = FakeDownloadStore(),
+        )
+        val expected = CharacterId(Game.Tekken8, "armor_king")
+
+        // when
+        val eventList = service.invoke().toList()
+
+        // then
+        val failureEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
+        assertThat(failureEvent.characterId).isEqualTo(expected)
     }
 }
 
