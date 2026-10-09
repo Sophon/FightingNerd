@@ -93,7 +93,13 @@ class CoreBotServiceTest {
     @Test
     fun `invite response carries the invite url`() {
         // given
-        val expected = Result.Success(PlainTextResponse(text = "FightingNerd bot invite: $URL_INVITE"))
+        val expected = Result.Success(
+            PlainTextResponse(
+                text = "- Discord 💬: $URL_INVITE\n" +
+                        "- Android 🤖: <https://play.google.com/store/apps/details?id=io.github.sophon.fightingnerd>\n" +
+                        "- iOS 🍏: <https://apps.apple.com/us/app/fighting-nerd/id6793185357>"
+            )
+        )
         val service = coreBotService()
 
         // when
