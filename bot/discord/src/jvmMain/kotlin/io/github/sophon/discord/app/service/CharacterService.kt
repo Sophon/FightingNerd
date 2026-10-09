@@ -6,6 +6,7 @@ import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.GameList
 import io.github.sophon.discord.app.model.discord.Command
+import io.github.sophon.discord.app.model.frameData.CharacterId
 import io.github.sophon.discord.app.model.response.AliasResponse
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.CharacterResponse
@@ -19,6 +20,9 @@ internal interface CharacterService {
         characterQuery: String,
         requireProperties: Boolean = false,
     ): Result<CharacterResponse, BotError>
+
+    suspend fun findCharacter(characterId: CharacterId): Result<CharacterResponse, BotError>
+
     suspend fun findAliases(gameQuery: String): Result<AliasResponse, BotError>
     suspend fun getCharacters(): List<CharacterResponse>
 }
@@ -38,6 +42,18 @@ internal class CharacterServiceImpl(
             Result.Success(character)
         } else {
             Result.Error(BotError.UnknownCharacter(characterQuery))
+        }
+
+        return result
+    }
+
+    override suspend fun findCharacter(characterId: CharacterId): Result<CharacterResponse, BotError> {
+        val character = getCharacters()
+            .firstOrNull { it.game == characterId.game && it.id == characterId.characterId }
+        val result = if (character != null) {
+            Result.Success(character)
+        } else {
+            Result.Error(BotError.UnknownCharacter(characterId.characterId))
         }
 
         return result

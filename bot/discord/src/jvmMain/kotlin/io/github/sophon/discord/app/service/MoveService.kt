@@ -4,6 +4,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.util.equalsIgnoreCase
+import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.FrameRange
@@ -20,10 +21,11 @@ import io.github.sophon.discord.app.outPort.FrameDataPort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
 import io.github.sophon.discord.app.outPort.NormalizeMoveInputPort
+import io.github.sophon.wiki.model.wiki.Game
 import kotlin.time.Duration.Companion.seconds
 
 internal interface MoveService {
-    suspend fun findFrameData(query: String): Result<MoveResponse, BotError>
+    suspend fun findMove(query: String): Result<MoveResponse, BotError>
 
     suspend fun findMovesOfType(
         characterQuery: String,
@@ -50,11 +52,11 @@ internal class MoveServiceImpl(
     private val getMovesInRangePort: GetMovesInRangePort,
     private val normalizeMoveInputPort: NormalizeMoveInputPort,
 ): MoveService {
-    override suspend fun findFrameData(query: String): Result<MoveResponse, BotError> {
+    override suspend fun findMove(query: String): Result<MoveResponse, BotError> {
         val characterQuery = query.substringBefore(' ')
         val moveQuery = query.substringAfter(delimiter = " ", missingDelimiterValue = "")
 
-        val result = characterService.findCharacter(characterQuery)
+        val result = findCharacter(characterQuery)
             .flatMap { character ->
                 val normalizedMoveQuery = normalizeMoveInputPort.normalizeMoveInput(game = character.game, input = moveQuery)
                 val moveResult = frameDataPort.getMoves(character.toCharacterId())
@@ -162,6 +164,22 @@ internal class MoveServiceImpl(
         return result
     }
 
+
+    //TODO: we're referencing the Wiki model directly, that's wrong
+    private suspend fun findCharacter(characterQuery: String): Result<CharacterResponse, BotError> {
+        return if (characterQuery.contains(AUTOCOMPLETE_VALUE_DELIMITER)) {
+            val game = Game.entries
+                .firstOrNull { it.name == characterQuery.substringAfter(AUTOCOMPLETE_VALUE_DELIMITER) }
+                ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
+            val characterId = CharacterId(
+                game = game,
+                characterId = characterQuery.substringBefore(AUTOCOMPLETE_VALUE_DELIMITER)
+            )
+            characterService.findCharacter(characterId)
+        } else {
+            characterService.findCharacter(characterQuery)
+        }
+    }
 
     private suspend fun findStances(characterQuery: String): Result<ListResponse, BotError> {
         val result = characterService.findCharacter(characterQuery)

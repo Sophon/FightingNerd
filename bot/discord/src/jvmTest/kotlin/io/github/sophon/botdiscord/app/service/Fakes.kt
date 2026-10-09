@@ -174,7 +174,7 @@ internal class FakeMoveService(
 ): MoveService {
     val callList = mutableListOf<String>()
 
-    override suspend fun findFrameData(query: String): Result<MoveResponse, BotError> {
+    override suspend fun findMove(query: String): Result<MoveResponse, BotError> {
         callList += "findFrameData($query)"
         return frameDataResult
     }
@@ -216,6 +216,11 @@ internal class FakeCharacterService(
         requireProperties: Boolean,
     ): Result<CharacterResponse, BotError> {
         callList += "findCharacter($characterQuery, $requireProperties)"
+        return characterResult
+    }
+
+    override suspend fun findCharacter(characterId: CharacterId): Result<CharacterResponse, BotError> {
+        callList += "findCharacter($characterId)"
         return characterResult
     }
 

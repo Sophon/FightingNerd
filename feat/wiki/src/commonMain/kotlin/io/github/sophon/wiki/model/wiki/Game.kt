@@ -1,5 +1,6 @@
 package io.github.sophon.wiki.model.wiki
 
+//TODO: refactor to a different model
 enum class Game(
     val id: String,
     val displayName: String,

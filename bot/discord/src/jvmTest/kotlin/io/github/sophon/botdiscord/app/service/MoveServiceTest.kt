@@ -33,7 +33,7 @@ class MoveServiceTest {
         val service = moveService()
 
         // when
-        val result = service.findFrameData("jin DF+1")
+        val result = service.findMove("jin DF+1")
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -46,7 +46,7 @@ class MoveServiceTest {
         val service = moveService()
 
         // when
-        val result = service.findFrameData("jin electric wind god fist")
+        val result = service.findMove("jin electric wind god fist")
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -59,7 +59,7 @@ class MoveServiceTest {
         val service = moveService()
 
         // when
-        val result = service.findFrameData("jin EWGF")
+        val result = service.findMove("jin EWGF")
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -75,7 +75,7 @@ class MoveServiceTest {
         )
 
         // when
-        val result = service.findFrameData("jin 1,1,2")
+        val result = service.findMove("jin 1,1,2")
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -91,7 +91,7 @@ class MoveServiceTest {
         )
 
         // when
-        val result = service.findFrameData("rei 1 1 2")
+        val result = service.findMove("rei 1 1 2")
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -106,7 +106,7 @@ class MoveServiceTest {
         )
 
         // when
-        val result = service.findFrameData("jin electric wind god fist")
+        val result = service.findMove("jin electric wind god fist")
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -118,7 +118,7 @@ class MoveServiceTest {
         val service = moveService()
 
         // when
-        val result = service.findFrameData("jin d+5")
+        val result = service.findMove("jin d+5")
 
         // then
         val error = (result as Result.Error).error
@@ -131,7 +131,7 @@ class MoveServiceTest {
         val service = moveService()
 
         // when
-        val result = service.findFrameData("jni df+1")
+        val result = service.findMove("jni df+1")
 
         // then
         val error = (result as Result.Error).error
@@ -145,7 +145,7 @@ class MoveServiceTest {
         val service = moveService(frameDataPort = FakeFrameDataPort(moveMap = emptyMap(), error = expected))
 
         // when
-        val result = service.findFrameData("jin df+1")
+        val result = service.findMove("jin df+1")
 
         // then
         val error = (result as Result.Error).error
