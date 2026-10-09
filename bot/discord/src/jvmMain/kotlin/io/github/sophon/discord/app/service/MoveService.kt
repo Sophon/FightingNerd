@@ -7,6 +7,7 @@ import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.FrameRange
+import io.github.sophon.discord.app.model.discord.EncodedCharacter
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.discord.Emoji
 import io.github.sophon.discord.app.model.frameData.CharacterId
@@ -23,7 +24,7 @@ import io.github.sophon.discord.app.outPort.NormalizeMoveInputPort
 import kotlin.time.Duration.Companion.seconds
 
 internal interface MoveService {
-    suspend fun findFrameData(query: String): Result<MoveResponse, BotError>
+    suspend fun findMove(query: String): Result<MoveResponse, BotError>
 
     suspend fun findMovesOfType(
         characterQuery: String,
@@ -50,11 +51,11 @@ internal class MoveServiceImpl(
     private val getMovesInRangePort: GetMovesInRangePort,
     private val normalizeMoveInputPort: NormalizeMoveInputPort,
 ): MoveService {
-    override suspend fun findFrameData(query: String): Result<MoveResponse, BotError> {
+    override suspend fun findMove(query: String): Result<MoveResponse, BotError> {
         val characterQuery = query.substringBefore(' ')
         val moveQuery = query.substringAfter(delimiter = " ", missingDelimiterValue = "")
 
-        val result = characterService.findCharacter(characterQuery)
+        val result = findCharacter(characterQuery)
             .flatMap { character ->
                 val normalizedMoveQuery = normalizeMoveInputPort.normalizeMoveInput(game = character.game, input = moveQuery)
                 val moveResult = frameDataPort.getMoves(character.toCharacterId())
@@ -162,6 +163,16 @@ internal class MoveServiceImpl(
         return result
     }
 
+
+    private suspend fun findCharacter(characterQuery: String): Result<CharacterResponse, BotError> {
+        val choiceValue = EncodedCharacter.decode(characterQuery)
+        val result = if (choiceValue != null) {
+            characterService.findCharacter(choiceValue)
+        } else {
+            characterService.findCharacter(characterQuery)
+        }
+        return result
+    }
 
     private suspend fun findStances(characterQuery: String): Result<ListResponse, BotError> {
         val result = characterService.findCharacter(characterQuery)

@@ -1,16 +1,16 @@
 package io.github.sophon.discord.app.service
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.util.stripMarkdownLinks
-import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.app.model.discord.AutocompleteChoice
+import io.github.sophon.discord.app.model.discord.EncodedCharacter
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.discord.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.app.model.frameData.CharacterId
 import io.github.sophon.discord.app.model.response.CharacterResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.inPort.ProduceAutoCompleteUseCase
-import io.github.sophon.wiki.model.wiki.Game
 
 /**
  * flow: [flow-autocomplete.mmd](../../../docs/flow-autocomplete.mmd)
@@ -115,10 +115,15 @@ internal class ProduceAutoCompleteService(
         argumentMap: Map<String, String>,
     ): List<MoveResponse> {
         val characterValue = command.readSibling(argumentMap, type = AutoCompleteType.Character)
-        val characterId = decodeCharacterValue(characterValue) ?: return emptyList()
+        val choiceValue = EncodedCharacter.decode(characterValue) ?: return emptyList()
 
-        val moveList = when (val result = moveService.getMoves(characterId)) {
-            is Result.Success -> result.data
+        val movesResult = characterService.findCharacter(choiceValue)
+            .flatMap { character ->
+                val characterId = CharacterId(game = character.game, characterId = character.id)
+                moveService.getMoves(characterId)
+            }
+        val moveList = when (movesResult) {
+            is Result.Success -> movesResult.data
             is Result.Error -> emptyList()
         }
         return moveList
@@ -143,7 +148,7 @@ internal class ProduceAutoCompleteService(
     private fun CharacterResponse.toChoice(): AutocompleteChoice {
         val choice = AutocompleteChoice(
             name = "$displayName (${game.displayName})",
-            value = "$id$AUTOCOMPLETE_VALUE_DELIMITER${game.name}",
+            value = EncodedCharacter(characterId = id, gameId = game.id).encode(),
         )
         return choice
     }
@@ -196,19 +201,6 @@ internal class ProduceAutoCompleteService(
         val siblingArg = argumentList.firstOrNull { it.autoCompleteType == type }
         val value = siblingArg?.let { argumentMap[it.name] }.orEmpty()
         return value
-    }
-
-    // inverse of CharacterResponse.toChoice's value - `id::GAME`
-    private fun decodeCharacterValue(value: String): CharacterId? {
-        val parts = value.split(AUTOCOMPLETE_VALUE_DELIMITER, limit = 2)
-        if (parts.size != 2) return null
-        val (characterId, gameName) = parts
-        val game = Game.entries.firstOrNull { it.name == gameName } ?: return null
-        val decoded = CharacterId(
-            game = game,
-            characterId = characterId,
-        )
-        return decoded
     }
 }
 

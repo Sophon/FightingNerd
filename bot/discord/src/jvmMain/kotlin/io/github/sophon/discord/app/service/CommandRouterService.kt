@@ -52,7 +52,7 @@ internal class CommandRouterService(
         source: UserRequest.Source?,
     ): Result<BotResponse, BotError> {
         val result = when (command) {
-            Command.Fd -> moveService.findFrameData(query)
+            Command.Fd -> moveService.findMove(query)
 
             Command.Pc -> moveService.findMovesOfType(characterQuery = query, moveType = MoveType.PC)
             Command.Heat -> moveService.findMovesOfType(characterQuery = query, moveType = MoveType.HEAT)

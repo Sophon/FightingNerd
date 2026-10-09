@@ -14,7 +14,7 @@ internal class MediaServiceImpl(
     private val moveService: MoveService,
 ): MediaService {
     override suspend fun findMedia(query: String): Result<MediaResponse, BotError> {
-        val result = moveService.findFrameData(query)
+        val result = moveService.findMove(query)
             .map { move ->
                 when {
                     (move.videoUrl != null) -> {

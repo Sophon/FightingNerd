@@ -9,14 +9,14 @@ import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 /**
- * Runs [write] on [Dispatchers.IO] - the port only sees [DataError.Local], so the exception is logged here.
+ * Runs [write] on [databaseWriteDispatcher] - the port only sees [DataError.Local], so the exception is logged here.
  */
 internal suspend fun runDatabaseWrite(
     tag: String,
     description: String,
     write: () -> Unit,
 ): EmptyResult<DataError.Local> {
-    val result = withContext(Dispatchers.IO) {
+    val result = withContext(databaseWriteDispatcher) {
         try {
             write()
             Result.Success(Unit)
@@ -27,3 +27,10 @@ internal suspend fun runDatabaseWrite(
     }
     return result
 }
+
+
+/**
+ * One write at a time - the JVM driver opens a connection per thread, and SQLite fails a transaction
+ * that reads, then writes while another connection is writing, with SQLITE_BUSY instead of waiting.
+ */
+private val databaseWriteDispatcher = Dispatchers.IO.limitedParallelism(1)

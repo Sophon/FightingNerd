@@ -1,6 +1,7 @@
 package io.github.sophon.discord.adapter.outbound.wiki
 
 import io.github.sophon.discord.app.model.discord.Command
+import io.github.sophon.discord.app.model.discord.EncodedCharacter
 import io.github.sophon.discord.app.model.frameData.MoveId
 import io.github.sophon.discord.app.model.frameData.MoveType
 import io.github.sophon.discord.app.model.response.BotResponse
@@ -90,9 +91,10 @@ private fun Move.toButtonList(
     }
     val hasImages = (urls.hitboxImageList.isNotEmpty() || urls.moveImageList.isNotEmpty())
     // the Media command posts the media itself - a Text button's custom_id can't fit every URL
+    val encodedCharacter = EncodedCharacter(characterId = character.id.naturalId, gameId = character.id.game.id)
     val mediaAction = BotResponse.EmbedButton.Action.Command(
         command = Command.Media,
-        query = "${character.id.naturalId} $input",
+        query = "${encodedCharacter.encode()} $input",
     )
     val imagesButton = if (hasImages) {
         BotResponse.EmbedButton(label = "Images", action = mediaAction)

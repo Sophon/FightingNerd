@@ -2,7 +2,6 @@ package io.github.sophon.discord.app.service
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.util.normalizeWhiteSpace
-import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.UserRequest
 import io.github.sophon.discord.app.model.discord.Command
@@ -94,8 +93,6 @@ internal class ProcessUserInputService(
         // character goes first, the wiki resolves the character before the move
         val orderedValueList = (listOfNotNull(get(ARG_CHARACTER)) + filterKeys { it != ARG_CHARACTER }.values)
         val query = orderedValueList
-            // autocomplete values are encoded as `value::game`, only the value is the query
-            .map { it.substringBefore(AUTOCOMPLETE_VALUE_DELIMITER) }
             .filter { it.isNotBlank() }
             .joinToString(" ")
             .normalizeWhiteSpace()

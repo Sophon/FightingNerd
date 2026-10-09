@@ -7,6 +7,7 @@ import io.github.sophon.discord.app.model.FrameRange
 import io.github.sophon.discord.app.model.GameList
 import io.github.sophon.discord.app.model.UsageReport
 import io.github.sophon.discord.app.model.UserRequest
+import io.github.sophon.discord.app.model.discord.EncodedCharacter
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.discord.DiscordConfig
 import io.github.sophon.discord.app.model.frameData.CharacterId
@@ -58,6 +59,16 @@ internal class FakeGamePort(
     private val gameList: GameList = GameList(gameList = emptyList(), dataSource = wavuDataSource),
 ): GamePort {
     override suspend fun getGameList(): GameList = gameList
+
+    override suspend fun findGame(gameId: String): Result<Game, BotError> {
+        val game = gameList.gameList.firstOrNull { it.id == gameId }
+        val result = if (game != null) {
+            Result.Success(game)
+        } else {
+            Result.Error(BotError.UnsupportedGame(gameId))
+        }
+        return result
+    }
 }
 
 /**
@@ -174,7 +185,7 @@ internal class FakeMoveService(
 ): MoveService {
     val callList = mutableListOf<String>()
 
-    override suspend fun findFrameData(query: String): Result<MoveResponse, BotError> {
+    override suspend fun findMove(query: String): Result<MoveResponse, BotError> {
         callList += "findFrameData($query)"
         return frameDataResult
     }
@@ -216,6 +227,16 @@ internal class FakeCharacterService(
         requireProperties: Boolean,
     ): Result<CharacterResponse, BotError> {
         callList += "findCharacter($characterQuery, $requireProperties)"
+        return characterResult
+    }
+
+    override suspend fun findCharacter(characterId: CharacterId): Result<CharacterResponse, BotError> {
+        callList += "findCharacter($characterId)"
+        return characterResult
+    }
+
+    override suspend fun findCharacter(choiceValue: EncodedCharacter): Result<CharacterResponse, BotError> {
+        callList += "findCharacter($choiceValue)"
         return characterResult
     }
 
