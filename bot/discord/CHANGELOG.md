@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.2.2] - 2026-10-09
+- fixed `invite` missing mobile links
+
 ## [v17.2.1] - 2026-10-09
 - fixed DB locking up
   - serial writes
