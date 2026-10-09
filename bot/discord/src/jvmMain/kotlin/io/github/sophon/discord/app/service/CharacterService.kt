@@ -1,10 +1,12 @@
 package io.github.sophon.discord.app.service
 
 import io.github.sophon.core.architecture.Result
+import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.GameList
+import io.github.sophon.discord.app.model.discord.EncodedCharacter
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.frameData.CharacterId
 import io.github.sophon.discord.app.model.response.AliasResponse
@@ -22,6 +24,8 @@ internal interface CharacterService {
     ): Result<CharacterResponse, BotError>
 
     suspend fun findCharacter(characterId: CharacterId): Result<CharacterResponse, BotError>
+
+    suspend fun findCharacter(encodedCharacter: EncodedCharacter): Result<CharacterResponse, BotError>
 
     suspend fun findAliases(gameQuery: String): Result<AliasResponse, BotError>
     suspend fun getCharacters(): List<CharacterResponse>
@@ -56,6 +60,17 @@ internal class CharacterServiceImpl(
             Result.Error(BotError.UnknownCharacter(characterId.characterId))
         }
 
+        return result
+    }
+
+    override suspend fun findCharacter(
+        encodedCharacter: EncodedCharacter,
+    ): Result<CharacterResponse, BotError> {
+        val result = gamePort.findGame(encodedCharacter.gameId)
+            .flatMap { game ->
+                val characterId = CharacterId(game = game, characterId = encodedCharacter.characterId)
+                findCharacter(characterId)
+            }
         return result
     }
 

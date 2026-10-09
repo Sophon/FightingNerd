@@ -9,6 +9,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.FrameRange
+import io.github.sophon.discord.app.model.GameList
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.discord.Emoji
 import io.github.sophon.discord.app.model.frameData.CharacterId
@@ -136,6 +137,32 @@ class MoveServiceTest {
         // then
         val error = (result as Result.Error).error
         assertThat(error).isInstanceOf(BotError.UnknownCharacter::class)
+    }
+
+    @Test
+    fun `move is found for a character picked from autocomplete`() = runTest {
+        // given
+        val expected = Result.Success(df1)
+        val service = moveService()
+
+        // when
+        val result = service.findMove("jin::Tekken_8 df+1")
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `autocompleted character of an unavailable game is an error`() = runTest {
+        // given
+        val service = moveService()
+
+        // when
+        val result = service.findMove("jin::Tekken_9 df+1")
+
+        // then
+        val error = (result as Result.Error).error
+        assertThat(error).isInstanceOf(BotError.UnsupportedGame::class)
     }
 
     @Test
@@ -486,7 +513,7 @@ class MoveServiceTest {
     ): MoveServiceImpl {
         val characterService = CharacterServiceImpl(
             charactersPort = FakeCharactersPort(listOf(jin, reina)),
-            gamePort = FakeGamePort(),
+            gamePort = FakeGamePort(GameList(gameList = listOf(Game.Tekken8), dataSource = wavuDataSource)),
         )
         val service = MoveServiceImpl(
             characterService = characterService,

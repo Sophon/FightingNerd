@@ -4,10 +4,10 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.util.equalsIgnoreCase
-import io.github.sophon.discord.AUTOCOMPLETE_VALUE_DELIMITER
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.FrameRange
+import io.github.sophon.discord.app.model.discord.EncodedCharacter
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.discord.Emoji
 import io.github.sophon.discord.app.model.frameData.CharacterId
@@ -21,7 +21,6 @@ import io.github.sophon.discord.app.outPort.FrameDataPort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
 import io.github.sophon.discord.app.outPort.NormalizeMoveInputPort
-import io.github.sophon.wiki.model.wiki.Game
 import kotlin.time.Duration.Companion.seconds
 
 internal interface MoveService {
@@ -165,20 +164,14 @@ internal class MoveServiceImpl(
     }
 
 
-    //TODO: we're referencing the Wiki model directly, that's wrong
     private suspend fun findCharacter(characterQuery: String): Result<CharacterResponse, BotError> {
-        return if (characterQuery.contains(AUTOCOMPLETE_VALUE_DELIMITER)) {
-            val game = Game.entries
-                .firstOrNull { it.name == characterQuery.substringAfter(AUTOCOMPLETE_VALUE_DELIMITER) }
-                ?: return Result.Error(BotError.UnknownCharacter(characterQuery))
-            val characterId = CharacterId(
-                game = game,
-                characterId = characterQuery.substringBefore(AUTOCOMPLETE_VALUE_DELIMITER)
-            )
-            characterService.findCharacter(characterId)
+        val choiceValue = EncodedCharacter.decode(characterQuery)
+        val result = if (choiceValue != null) {
+            characterService.findCharacter(choiceValue)
         } else {
             characterService.findCharacter(characterQuery)
         }
+        return result
     }
 
     private suspend fun findStances(characterQuery: String): Result<ListResponse, BotError> {
