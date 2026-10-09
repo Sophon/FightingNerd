@@ -12,14 +12,38 @@ internal actual fun Scope.createWikiSqlDriver(databaseDirectory: String?): SqlDr
     databaseFile.parentFile?.mkdirs()
 
     val driver = openFingerprintedDriver(
-        open = {
-            JdbcSqliteDriver(
-                url = "jdbc:sqlite:${databaseFile.absolutePath}",
-                properties = Properties().apply { put("foreign_keys", "true") },
-                schema = WikiDB.Schema,
-            )
-        },
-        delete = { databaseFile.delete() },
+        open = { openWikiJdbcDriver(databaseFile) },
+        delete = { deleteWikiDatabase(databaseFile) },
     )
     return driver
 }
+
+/**
+ * WAL - reads see the last commit instead of waiting for a write in progress.
+ * Every connection gets these properties - the driver opens one per thread.
+ */
+internal fun openWikiJdbcDriver(databaseFile: File): SqlDriver {
+    val properties = Properties().apply {
+        put("foreign_keys", "true")
+        put("journal_mode", "WAL")
+        put("busy_timeout", BUSY_TIMEOUT_MILLIS)
+    }
+    val driver = JdbcSqliteDriver(
+        url = "jdbc:sqlite:${databaseFile.absolutePath}",
+        properties = properties,
+        schema = WikiDB.Schema,
+    )
+    return driver
+}
+
+/**
+ * Deletes the WAL files too - a leftover WAL must not be applied to a new database.
+ */
+internal fun deleteWikiDatabase(databaseFile: File) {
+    databaseFile.delete()
+    File("${databaseFile.path}-wal").delete()
+    File("${databaseFile.path}-shm").delete()
+}
+
+
+private const val BUSY_TIMEOUT_MILLIS = "5000"

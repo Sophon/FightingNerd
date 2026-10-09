@@ -1,5 +1,11 @@
 # BOT CHANGELOG
 
+## [v17.2.1] - TODO
+- fixed DB locking up
+  - serial writes
+  - WAL mode
+- 
+
 ## [v17.2.0] - 2026-10-09
 - hide images by default
 - move aliases displayed by default

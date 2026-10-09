@@ -9,6 +9,8 @@ import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.wiki.Game
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
@@ -212,4 +214,32 @@ internal class SqlDelightCharacterAdapterTest {
         assertThat(database.countRows("move_alias")).isEqualTo(expected)
         assertThat(database.countRows("tekken8_move")).isEqualTo(expected)
     }
+
+    @Test
+    fun `move lists saved concurrently all succeed`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+        val gameData = listOf(
+            jin to listOf(demonsPaw, midLeftPunch, windHookFist),
+            asuka to emptyList(),
+            armorKing to emptyList(),
+            solBadguy to listOf(solFarSlash),
+        )
+        database.characterAdapter.saveCharacterList(gameData.map { (character, _) -> character })
+        val expected = List(gameData.size * CONCURRENT_SAVES_PER_CHARACTER) { Result.Success(Unit) }
+
+        // when
+        val resultList = gameData
+            .flatMap { characterData -> List(CONCURRENT_SAVES_PER_CHARACTER) { characterData } }
+            .map { (character, moveList) ->
+                async { database.characterAdapter.saveMoveList(character.id, moveList) }
+            }
+            .awaitAll()
+
+        // then
+        assertThat(resultList).isEqualTo(expected)
+    }
 }
+
+
+private const val CONCURRENT_SAVES_PER_CHARACTER = 25
