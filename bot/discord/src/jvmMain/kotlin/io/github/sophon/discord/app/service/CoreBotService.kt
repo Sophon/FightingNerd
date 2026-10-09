@@ -75,7 +75,11 @@ internal class CoreBotServiceImpl(
     }
 
     override fun createInviteResponse(): Result<PlainTextResponse, BotError> {
-        val response = PlainTextResponse(text = "FightingNerd bot invite: $URL_INVITE")
+        val response = PlainTextResponse(
+            text = "- Discord 💬: $URL_INVITE\n" +
+                    "- Android 🤖: <https://play.google.com/store/apps/details?id=io.github.sophon.fightingnerd>\n" +
+                    "- iOS 🍏: <https://apps.apple.com/us/app/fighting-nerd/id6793185357>"
+        )
         return Result.Success(response)
     }
 
