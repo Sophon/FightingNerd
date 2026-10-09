@@ -167,16 +167,16 @@ class ProcessUserInputServiceTest {
 
     //region slash command
     @Test
-    fun `character argument goes first and autocomplete values are decoded`() = runTest {
+    fun `character argument goes first and autocomplete values stay encoded`() = runTest {
         // given
         val fixture = RouterFixture(moveService = FakeMoveService(frameDataResult = Result.Success(df1)))
         val service = ProcessUserInputService(commandRouterService = fixture.router)
 
         // when
-        service(interaction(command = "fd", argumentMap = mapOf("move" to "df+1", "character" to "jin::Tekken8")))
+        service(interaction(command = "fd", argumentMap = mapOf("move" to "df+1", "character" to "jin::Tekken_8")))
 
         // then
-        assertThat(fixture.callList).containsExactly("findFrameData(jin df+1)")
+        assertThat(fixture.callList).containsExactly("findFrameData(jin::Tekken_8 df+1)")
     }
 
     @Test

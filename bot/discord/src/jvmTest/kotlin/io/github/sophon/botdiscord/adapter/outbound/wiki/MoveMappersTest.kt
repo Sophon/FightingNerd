@@ -77,8 +77,8 @@ class MoveMappersTest {
             forceExpand = true,
             buttonSet = BotResponse.ButtonSet(
                 buttonList = listOf(
-                    mediaCommandButton(label = "Images", query = "jin f,n,d,df+2"),
-                    mediaCommandButton(label = "Video", query = "jin f,n,d,df+2"),
+                    mediaCommandButton(label = "Images", query = "jin::Tekken_8 f,n,d,df+2"),
+                    mediaCommandButton(label = "Video", query = "jin::Tekken_8 f,n,d,df+2"),
                 ),
             ),
         )
@@ -119,7 +119,7 @@ class MoveMappersTest {
             gameProperties = GGMoveProperties(level = "1", riscGain = " ", prorate = "90%"),
         )
         val expected = BotResponse.ButtonSet(
-            buttonList = listOf(solDetailsButton, mediaCommandButton(label = "Video", query = "sol_badguy 5K")),
+            buttonList = listOf(solDetailsButton, mediaCommandButton(label = "Video", query = "sol_badguy::GGST 5K")),
         )
 
         // when
@@ -138,7 +138,7 @@ class MoveMappersTest {
             gameProperties = GGMoveProperties(),
         )
         val expected = BotResponse.ButtonSet(
-            buttonList = listOf(mediaCommandButton(label = "Video", query = "sol_badguy 5P")),
+            buttonList = listOf(mediaCommandButton(label = "Video", query = "sol_badguy::GGST 5P")),
         )
 
         // when
@@ -161,7 +161,7 @@ class MoveMappersTest {
             gameProperties = GGMoveProperties(),
         )
         val expected = BotResponse.ButtonSet(
-            buttonList = listOf(solDetailsButton, mediaCommandButton(label = "Images", query = "sol_badguy 5K")),
+            buttonList = listOf(solDetailsButton, mediaCommandButton(label = "Images", query = "sol_badguy::GGST 5K")),
         )
 
         // when
@@ -184,7 +184,7 @@ class MoveMappersTest {
             gameProperties = GGMoveProperties(),
         )
         val expected = BotResponse.ButtonSet(
-            buttonList = listOf(solDetailsButton, mediaCommandButton(label = "Images", query = "sol_badguy 5K")),
+            buttonList = listOf(solDetailsButton, mediaCommandButton(label = "Images", query = "sol_badguy::GGST 5K")),
         )
 
         // when
@@ -224,7 +224,7 @@ class MoveMappersTest {
             gameProperties = GGMoveProperties(),
         )
         val expected = BotResponse.ButtonSet(
-            buttonList = listOf(mediaCommandButton(label = "Images", query = "sol_badguy 5P")),
+            buttonList = listOf(mediaCommandButton(label = "Images", query = "sol_badguy::GGST 5P")),
         )
 
         // when

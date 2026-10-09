@@ -1,10 +1,10 @@
 # BOT CHANGELOG
 
-## [v17.2.1] - TODO
+## [v17.2.1] - 2026-10-09
 - fixed DB locking up
   - serial writes
   - WAL mode
-- 
+- autocomplete and button flows use character ID instead of string query
 
 ## [v17.2.0] - 2026-10-09
 - hide images by default

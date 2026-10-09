@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.containsExactly
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
+import io.github.sophon.discord.app.model.GameList
 import io.github.sophon.discord.app.model.discord.AutocompleteChoice
 import io.github.sophon.discord.app.model.frameData.CharacterId
 import io.github.sophon.discord.app.model.response.BotResponse
@@ -58,8 +59,8 @@ class ProduceAutoCompleteServiceTest {
     fun `blank character query offers every character with its game`() = runTest {
         // given
         val expected = listOf(
-            AutocompleteChoice(name = "Jin (Tekken 8)", value = "jin::Tekken8"),
-            AutocompleteChoice(name = "Kazuya (Tekken 8)", value = "kazuya::Tekken8"),
+            AutocompleteChoice(name = "Jin (Tekken 8)", value = "jin::Tekken_8"),
+            AutocompleteChoice(name = "Kazuya (Tekken 8)", value = "kazuya::Tekken_8"),
             AutocompleteChoice(name = "Sol Badguy (Guilty Gear -Strive-)", value = "sol::GGST"),
         )
         val service = produceAutoCompleteService()
@@ -100,7 +101,7 @@ class ProduceAutoCompleteServiceTest {
     @Test
     fun `character alias matches partially`() = runTest {
         // given
-        val expected = listOf(AutocompleteChoice(name = "Kazuya (Tekken 8)", value = "kazuya::Tekken8"))
+        val expected = listOf(AutocompleteChoice(name = "Kazuya (Tekken 8)", value = "kazuya::Tekken_8"))
         val service = produceAutoCompleteService()
 
         // when
@@ -189,7 +190,7 @@ class ProduceAutoCompleteServiceTest {
         // given
         val argumentMapList = listOf(
             mapOf("character" to "jin"),
-            mapOf("character" to "jin::Tekken9"),
+            mapOf("character" to "jin::Tekken_9"),
             emptyMap(),
         )
         val service = produceAutoCompleteService()
@@ -213,7 +214,7 @@ class ProduceAutoCompleteServiceTest {
             commandString = "fd",
             argument = "move",
             query = "",
-            argumentMap = mapOf("character" to "kazuya::Tekken8"),
+            argumentMap = mapOf("character" to "kazuya::Tekken_8"),
         )
 
         // then
@@ -286,7 +287,7 @@ class ProduceAutoCompleteServiceTest {
     private fun produceAutoCompleteService(): ProduceAutoCompleteService {
         val characterService = CharacterServiceImpl(
             charactersPort = FakeCharactersPort(listOf(jin, kazuya, sol)),
-            gamePort = FakeGamePort(),
+            gamePort = FakeGamePort(GameList(gameList = listOf(Game.Tekken8, Game.GGST), dataSource = wavuDataSource)),
         )
         val moveService = MoveServiceImpl(
             characterService = characterService,
@@ -308,7 +309,7 @@ private fun fieldList(vararg values: String): List<BotResponse.Field> {
 
 
 private const val UF4_NAME = "Left Spinning Axe Kick into Hellsweep into Electric Wind Hook Fist into Heat Smash"
-private val jinArgumentMap = mapOf("character" to "jin::Tekken8")
+private val jinArgumentMap = mapOf("character" to "jin::Tekken_8")
 private val jin = characterResponse(id = "jin", displayName = "Jin", aliasList = listOf("jim"))
 private val kazuya = characterResponse(id = "kazuya", displayName = "Kazuya", aliasList = listOf("kaz", "masku"))
 private val sol = characterResponse(

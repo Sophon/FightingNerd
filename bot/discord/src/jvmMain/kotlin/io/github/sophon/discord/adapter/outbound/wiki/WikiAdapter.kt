@@ -104,6 +104,18 @@ internal class WikiAdapter(
         return gameList
     }
 
+    override suspend fun findGame(gameId: String): Result<Game, BotError> {
+        val game = getAvailableGamesUseCase()
+            .first()
+            .firstOrNull { it.id == gameId }
+        val result = if (game != null) {
+            Result.Success(game)
+        } else {
+            Result.Error(BotError.UnsupportedGame(gameId))
+        }
+        return result
+    }
+
     override fun normalizeMoveInput(game: Game, input: String): String {
         val normalized = normalizeMoveInputUseCase(game, input)
         return normalized
