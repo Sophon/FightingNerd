@@ -138,6 +138,7 @@ internal class DiscordBotImpl(
         Napier.e(tag = TAG) { "⚠️ Login ended (bot disconnected)" }
     }
 
+    //TODO: need to extract this somewhere
     private suspend fun processMessage(message: dev.kord.core.entity.Message) {
         kordRestCall(TAG) {
             val userMessage = Message(
@@ -284,6 +285,7 @@ internal class DiscordBotImpl(
         }
     }
 
+    //TODO: need to split this somewhere
     private suspend fun processInteraction(interaction: GuildChatInputCommandInteraction) {
         kordRestCall(TAG) {
             val discordCommandInteraction = DiscordCommandInteraction(

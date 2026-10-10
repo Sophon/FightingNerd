@@ -57,6 +57,7 @@ import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.response.UnbanResponse
 import kotlin.uuid.ExperimentalUuidApi
 
+//TODO: need to split this. Maybe slash vs tag split?
 @OptIn(ExperimentalUuidApi::class)
 @ExcludeFromCoverage("UI")
 internal class KordResponder(
