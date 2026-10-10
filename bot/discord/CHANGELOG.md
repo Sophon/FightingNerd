@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.2.3] - 2026-10-11
+- fixed missing error logs
+
 ## [v17.2.2] - 2026-10-09
 - fixed `invite` missing mobile links
 
