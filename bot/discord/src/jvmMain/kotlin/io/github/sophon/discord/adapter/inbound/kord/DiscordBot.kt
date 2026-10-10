@@ -25,6 +25,7 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.characterEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.moveEmbed
 import io.github.sophon.discord.adapter.inbound.kord.ui.moveListEmbed
 import io.github.sophon.discord.adapter.inbound.scheduler.Scheduler
+import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.adminCommands
 import io.github.sophon.discord.app.model.discord.ButtonEvent
 import io.github.sophon.discord.app.model.discord.Command
@@ -137,6 +138,7 @@ internal class DiscordBotImpl(
         Napier.e(tag = TAG) { "⚠️ Login ended (bot disconnected)" }
     }
 
+    //TODO: need to extract this somewhere
     private suspend fun processMessage(message: dev.kord.core.entity.Message) {
         kordRestCall(TAG) {
             val userMessage = Message(
@@ -274,14 +276,16 @@ internal class DiscordBotImpl(
                     }
                 }
                 .onError { botError ->
-                    kordResponder.respond(
+                    handleError(
                         message = message,
+                        serverName = userMessage.serverName,
                         botError = botError,
-                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                    )
                 }
         }
     }
 
+    //TODO: need to split this somewhere
     private suspend fun processInteraction(interaction: GuildChatInputCommandInteraction) {
         kordRestCall(TAG) {
             val discordCommandInteraction = DiscordCommandInteraction(
@@ -413,12 +417,41 @@ internal class DiscordBotImpl(
                     }
                 }
                 .onError { botError ->
-                    kordResponder.respond(
+                    handleError(
                         interaction = interaction,
+                        serverName = discordCommandInteraction.serverName,
                         botError = botError,
-                    ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+                    )
                 }
         }
+    }
+
+    private suspend fun handleError(
+        message: dev.kord.core.entity.Message,
+        serverName: String?,
+        botError: BotError,
+    ) {
+        val server = serverName?.takeIf { it.isNotBlank() } ?: UNKNOWN_SERVER
+        Napier.e(tag = TAG) { "$server: $botError" }
+
+        kordResponder.respond(
+            message = message,
+            botError = botError,
+        ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
+    }
+
+    private suspend fun handleError(
+        interaction: GuildChatInputCommandInteraction,
+        serverName: String?,
+        botError: BotError,
+    ) {
+        val server = serverName?.takeIf { it.isNotBlank() } ?: UNKNOWN_SERVER
+        Napier.e(tag = TAG) { "$server: $botError" }
+
+        kordResponder.respond(
+            interaction = interaction,
+            botError = botError,
+        ).onError { error -> Napier.e(tag = TAG) { "Post failed: $error" } }
     }
 
     @Suppress("CyclomaticComplexMethod")
@@ -711,5 +744,6 @@ internal class DiscordBotImpl(
 
     private companion object {
         const val TAG = "DiscordBot"
+        const val UNKNOWN_SERVER = "(Unknown server)"
     }
 }
