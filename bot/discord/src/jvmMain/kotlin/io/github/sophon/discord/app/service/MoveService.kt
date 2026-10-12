@@ -77,7 +77,7 @@ internal class MoveServiceImpl(
         characterQuery: String,
         moveType: MoveType,
     ): Result<ListResponse, BotError> {
-        val result = characterService.findCharacter(characterQuery)
+        val result = findCharacter(characterQuery)
             .flatMap { character ->
                 val listResponse = getMovesOfTypePort.getMovesOfType(
                     characterId = character.toCharacterId(),
@@ -102,7 +102,7 @@ internal class MoveServiceImpl(
         val result = command.toFrameRangeType()
             .flatMap { rangeType -> rangeQuery.toFrameRange(rangeType) }
             .flatMap { frameRange ->
-                val listResponse = characterService.findCharacter(characterQuery)
+                val listResponse = findCharacter(characterQuery)
                     .flatMap { character ->
                         val rangeListResponse = getMovesInRangePort.getMovesInRange(
                             characterId = character.toCharacterId(),
@@ -137,7 +137,7 @@ internal class MoveServiceImpl(
         val characterQuery = query.substringBefore(' ')
         val prefix = query.substringAfter(' ', missingDelimiterValue = "").trim()
 
-        val result = characterService.findCharacter(characterQuery)
+        val result = findCharacter(characterQuery)
             .flatMap { character ->
                 val normalizedPrefix = normalizeMoveInputPort.normalizeMoveInput(game = character.game, input = prefix)
                 val listResponse = frameDataPort.getMoves(character.toCharacterId())
@@ -175,7 +175,7 @@ internal class MoveServiceImpl(
     }
 
     private suspend fun findStances(characterQuery: String): Result<ListResponse, BotError> {
-        val result = characterService.findCharacter(characterQuery)
+        val result = findCharacter(characterQuery)
             .flatMap { character ->
                 val listResponse = frameDataPort.getMoves(character.toCharacterId())
                     .map { moveList ->
@@ -194,7 +194,7 @@ internal class MoveServiceImpl(
         characterQuery: String,
         stanceQuery: String,
     ): Result<ListResponse, BotError> {
-        val result = characterService.findCharacter(characterQuery)
+        val result = findCharacter(characterQuery)
             .flatMap { character ->
                 val listResponse = frameDataPort.getMoves(character.toCharacterId())
                     .map { moveList ->
