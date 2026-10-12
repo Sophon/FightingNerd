@@ -8,6 +8,7 @@ import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.GameList
 import io.github.sophon.discord.app.model.discord.Command
+import io.github.sophon.discord.app.model.frameData.CharacterId
 import io.github.sophon.discord.app.model.response.AliasResponse
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.CharacterResponse
@@ -96,6 +97,100 @@ class CharacterServiceTest {
         // then
         assertThat(result).isEqualTo(expected)
     }
+
+    @Test
+    fun `autocomplete value finds the character in its game`() = runTest {
+        // given
+        val expected = Result.Success(sol)
+        val service = characterService()
+
+        // when
+        val result = service.findCharacter("sol::GGST")
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `autocomplete value picks the character of its game when the id is shared`() = runTest {
+        // given
+        val expected = Result.Success(cotwTerry)
+        val service = characterService(
+            characterList = listOf(sf6Terry, cotwTerry),
+            gameList = GameList(gameList = listOf(Game.StreetFighter6, Game.COTW), dataSource = wavuDataSource),
+        )
+
+        // when
+        val result = service.findCharacter("terry::Fatal_Fury:_City_of_the_Wolves")
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `autocomplete value of an unsupported game is an error`() = runTest {
+        // given
+        val service = characterService()
+
+        // when
+        val result = service.findCharacter("jin::Tekken_9")
+
+        // then
+        val error = (result as Result.Error).error
+        assertThat(error).isInstanceOf(BotError.UnsupportedGame::class)
+    }
+
+    @Test
+    fun `autocomplete value of a character from another game is unknown`() = runTest {
+        // given
+        val service = characterService()
+
+        // when
+        val result = service.findCharacter("sol::Tekken_8")
+
+        // then
+        val error = (result as Result.Error).error
+        assertThat(error).isInstanceOf(BotError.UnknownCharacter::class)
+    }
+
+    @Test
+    fun `autocomplete value doesn't fall back to alias matching`() = runTest {
+        // given
+        val service = characterService()
+
+        // when
+        val result = service.findCharacter("kaz::Tekken_8")
+
+        // then
+        val error = (result as Result.Error).error
+        assertThat(error).isInstanceOf(BotError.UnknownCharacter::class)
+    }
+
+    @Test
+    fun `character id finds the character in its game`() = runTest {
+        // given
+        val expected = Result.Success(cotwTerry)
+        val service = characterService(characterList = listOf(sf6Terry, cotwTerry))
+
+        // when
+        val result = service.findCharacter(CharacterId(game = Game.COTW, characterId = "terry"))
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `character id of a character from another game is unknown`() = runTest {
+        // given
+        val service = characterService()
+
+        // when
+        val result = service.findCharacter(CharacterId(game = Game.Tekken8, characterId = "sol"))
+
+        // then
+        val error = (result as Result.Error).error
+        assertThat(error).isInstanceOf(BotError.UnknownCharacter::class)
+    }
     //endregion
 
     //region findAliases
@@ -175,7 +270,7 @@ class CharacterServiceTest {
 
     private fun characterService(
         characterList: List<CharacterResponse> = listOf(jin, kazuya, sol),
-        gameList: GameList = GameList(gameList = emptyList(), dataSource = wavuDataSource),
+        gameList: GameList = GameList(gameList = listOf(Game.Tekken8, Game.GGST), dataSource = wavuDataSource),
     ): CharacterServiceImpl {
         val service = CharacterServiceImpl(
             charactersPort = FakeCharactersPort(characterList),
@@ -194,3 +289,5 @@ private val sol = characterResponse(
     game = Game.GGST,
     propertyList = listOf(BotResponse.Field(title = "Guts", value = "2")),
 )
+private val sf6Terry = characterResponse(id = "terry", displayName = "Terry Bogard", game = Game.StreetFighter6)
+private val cotwTerry = characterResponse(id = "terry", displayName = "Terry Bogard", game = Game.COTW)

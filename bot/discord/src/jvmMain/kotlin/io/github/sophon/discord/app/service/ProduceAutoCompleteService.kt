@@ -114,10 +114,9 @@ internal class ProduceAutoCompleteService(
         command: Command,
         argumentMap: Map<String, String>,
     ): List<MoveResponse> {
-        val characterValue = command.readSibling(argumentMap, type = AutoCompleteType.Character)
-        val choiceValue = EncodedCharacter.decode(characterValue) ?: return emptyList()
+        val characterQuery = command.readSibling(argumentMap, type = AutoCompleteType.Character)
 
-        val movesResult = characterService.findCharacter(choiceValue)
+        val movesResult = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val characterId = CharacterId(game = character.game, characterId = character.id)
                 moveService.getMoves(characterId)
