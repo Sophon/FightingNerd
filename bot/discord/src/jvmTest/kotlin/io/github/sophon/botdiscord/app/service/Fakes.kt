@@ -7,7 +7,6 @@ import io.github.sophon.discord.app.model.FrameRange
 import io.github.sophon.discord.app.model.GameList
 import io.github.sophon.discord.app.model.UsageReport
 import io.github.sophon.discord.app.model.UserRequest
-import io.github.sophon.discord.app.model.discord.EncodedCharacter
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.discord.DiscordConfig
 import io.github.sophon.discord.app.model.frameData.CharacterId
@@ -232,11 +231,6 @@ internal class FakeCharacterService(
 
     override suspend fun findCharacter(characterId: CharacterId): Result<CharacterResponse, BotError> {
         callList += "findCharacter($characterId)"
-        return characterResult
-    }
-
-    override suspend fun findCharacter(choiceValue: EncodedCharacter): Result<CharacterResponse, BotError> {
-        callList += "findCharacter($choiceValue)"
         return characterResult
     }
 

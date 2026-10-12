@@ -186,10 +186,23 @@ class ProduceAutoCompleteServiceTest {
     }
 
     @Test
-    fun `undecodable character has no move choices`() = runTest {
+    fun `typed character name offers its moves`() = runTest {
+        // given
+        val expected = jinMoveList.map { it.input }
+        val service = produceAutoCompleteService()
+
+        // when
+        val result = service(commandString = "fd", argument = "move", query = "", argumentMap = mapOf("character" to "jin"))
+
+        // then
+        assertThat(result.map { it.value }).isEqualTo(expected)
+    }
+
+    @Test
+    fun `unresolved character has no move choices`() = runTest {
         // given
         val argumentMapList = listOf(
-            mapOf("character" to "jin"),
+            mapOf("character" to "jni"),
             mapOf("character" to "jin::Tekken_9"),
             emptyMap(),
         )
