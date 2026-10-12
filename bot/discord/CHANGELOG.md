@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v17.2.4] - 2026-10-12
+- fixed Wiki module's name
+- fixed some commands not working with autocomplete encoded values
+
 ## [v17.2.3] - 2026-10-11
 - fixed missing error logs
 

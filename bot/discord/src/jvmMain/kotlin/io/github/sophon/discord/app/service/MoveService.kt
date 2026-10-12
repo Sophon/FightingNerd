@@ -55,7 +55,7 @@ internal class MoveServiceImpl(
         val characterQuery = query.substringBefore(' ')
         val moveQuery = query.substringAfter(delimiter = " ", missingDelimiterValue = "")
 
-        val result = findCharacter(characterQuery)
+        val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val normalizedMoveQuery = normalizeMoveInputPort.normalizeMoveInput(game = character.game, input = moveQuery)
                 val moveResult = frameDataPort.getMoves(character.toCharacterId())
@@ -163,16 +163,6 @@ internal class MoveServiceImpl(
         return result
     }
 
-
-    private suspend fun findCharacter(characterQuery: String): Result<CharacterResponse, BotError> {
-        val choiceValue = EncodedCharacter.decode(characterQuery)
-        val result = if (choiceValue != null) {
-            characterService.findCharacter(choiceValue)
-        } else {
-            characterService.findCharacter(characterQuery)
-        }
-        return result
-    }
 
     private suspend fun findStances(characterQuery: String): Result<ListResponse, BotError> {
         val result = characterService.findCharacter(characterQuery)
