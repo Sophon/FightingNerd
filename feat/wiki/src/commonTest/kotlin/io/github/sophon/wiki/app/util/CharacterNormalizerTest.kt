@@ -40,10 +40,23 @@ class CharacterNormalizerTest {
 
     //region aliases
     @Test
-    fun `display name becomes a lowercase alias`() {
+    fun `one-word display name becomes a lowercase alias`() {
+        //given
+        val character = CharacterSource.jack8
+        val expected = listOf("jack", "j8", "jack8", "jack-8")
+
+        //when
+        val result = character.normalize()
+
+        //then
+        assertThat(result.aliasList).isEqualTo(expected)
+    }
+
+    @Test
+    fun `multi-word display name is not an alias`() {
         //given
         val character = CharacterSource.armorKing
-        val expected = listOf("ak", "aking", "armorking", "armor king")
+        val expected = listOf("ak", "aking", "armorking")
 
         //when
         val result = character.normalize()
@@ -56,7 +69,7 @@ class CharacterNormalizerTest {
     fun `aliases are lowercased without blanks or duplicates`() {
         //given
         val character = CharacterSource.devilJin
-        val expected = listOf("dvj", "dj", "deviljin", "devil jin")
+        val expected = listOf("dvj", "dj", "deviljin")
 
         //when
         val result = character.normalize()

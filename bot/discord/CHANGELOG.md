@@ -2,6 +2,7 @@
 
 ## [v17.2.5] - 2026-10-12
 - fixed `char` embed missing character image
+- fixed `alias` displaying multi-word options
 
 ## [v17.2.4] - 2026-10-12
 - fixed Wiki module's name
