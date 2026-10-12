@@ -16,6 +16,7 @@ internal fun characterEmbed(
     if (character.aliasList.isNotEmpty()) {
         description = "Aliases: ${character.aliasList.joinToString(", ")}"
     }
+    character.imageUrl?.let { thumbnail { url = it } }
 
     character.propertyList.forEach { field ->
         mandatoryField(name = field.title, value = field.value)

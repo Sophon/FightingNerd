@@ -24,6 +24,7 @@ internal fun Character.toDomain(): CharacterResponse {
         displayName = displayName,
         url = wikiUrl,
         dataSource = toDataSource(),
+        imageUrl = images?.iconUrl,
         aliasList = aliasList,
         propertyList = toPropertyList(),
     )
