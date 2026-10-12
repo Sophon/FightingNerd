@@ -55,7 +55,7 @@ internal class MoveServiceImpl(
         val characterQuery = query.substringBefore(' ')
         val moveQuery = query.substringAfter(delimiter = " ", missingDelimiterValue = "")
 
-        val result = findCharacter(characterQuery)
+        val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val normalizedMoveQuery = normalizeMoveInputPort.normalizeMoveInput(game = character.game, input = moveQuery)
                 val moveResult = frameDataPort.getMoves(character.toCharacterId())
@@ -77,7 +77,7 @@ internal class MoveServiceImpl(
         characterQuery: String,
         moveType: MoveType,
     ): Result<ListResponse, BotError> {
-        val result = findCharacter(characterQuery)
+        val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val listResponse = getMovesOfTypePort.getMovesOfType(
                     characterId = character.toCharacterId(),
@@ -102,7 +102,7 @@ internal class MoveServiceImpl(
         val result = command.toFrameRangeType()
             .flatMap { rangeType -> rangeQuery.toFrameRange(rangeType) }
             .flatMap { frameRange ->
-                val listResponse = findCharacter(characterQuery)
+                val listResponse = characterService.findCharacter(characterQuery)
                     .flatMap { character ->
                         val rangeListResponse = getMovesInRangePort.getMovesInRange(
                             characterId = character.toCharacterId(),
@@ -137,7 +137,7 @@ internal class MoveServiceImpl(
         val characterQuery = query.substringBefore(' ')
         val prefix = query.substringAfter(' ', missingDelimiterValue = "").trim()
 
-        val result = findCharacter(characterQuery)
+        val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val normalizedPrefix = normalizeMoveInputPort.normalizeMoveInput(game = character.game, input = prefix)
                 val listResponse = frameDataPort.getMoves(character.toCharacterId())
@@ -164,18 +164,8 @@ internal class MoveServiceImpl(
     }
 
 
-    private suspend fun findCharacter(characterQuery: String): Result<CharacterResponse, BotError> {
-        val choiceValue = EncodedCharacter.decode(characterQuery)
-        val result = if (choiceValue != null) {
-            characterService.findCharacter(choiceValue)
-        } else {
-            characterService.findCharacter(characterQuery)
-        }
-        return result
-    }
-
     private suspend fun findStances(characterQuery: String): Result<ListResponse, BotError> {
-        val result = findCharacter(characterQuery)
+        val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val listResponse = frameDataPort.getMoves(character.toCharacterId())
                     .map { moveList ->
@@ -194,7 +184,7 @@ internal class MoveServiceImpl(
         characterQuery: String,
         stanceQuery: String,
     ): Result<ListResponse, BotError> {
-        val result = findCharacter(characterQuery)
+        val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
                 val listResponse = frameDataPort.getMoves(character.toCharacterId())
                     .map { moveList ->

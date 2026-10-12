@@ -24,9 +24,6 @@ internal interface CharacterService {
     ): Result<CharacterResponse, BotError>
 
     suspend fun findCharacter(characterId: CharacterId): Result<CharacterResponse, BotError>
-
-    suspend fun findCharacter(encodedCharacter: EncodedCharacter): Result<CharacterResponse, BotError>
-
     suspend fun findAliases(gameQuery: String): Result<AliasResponse, BotError>
     suspend fun getCharacters(): List<CharacterResponse>
 }
@@ -39,13 +36,19 @@ internal class CharacterServiceImpl(
         characterQuery: String,
         requireProperties: Boolean,
     ): Result<CharacterResponse, BotError> {
-        val character = getCharacters()
-            .filter { requireProperties.not() || it.propertyList.isNotEmpty() }
-            .firstOrNull { it.matches(characterQuery) }
-        val result = if (character != null) {
-            Result.Success(character)
+        val encodedCharacter = EncodedCharacter.decode(characterQuery)
+        val result = if (encodedCharacter == null) {
+            getCharacters()
+                .filter { requireProperties.not() || it.propertyList.isNotEmpty() }
+                .firstOrNull { it.matches(characterQuery) }
+                ?.let { Result.Success(it) }
+                ?: Result.Error(BotError.UnknownCharacter(characterQuery))
         } else {
-            Result.Error(BotError.UnknownCharacter(characterQuery))
+            gamePort.findGame(encodedCharacter.gameId)
+                .flatMap { game ->
+                    val characterId = CharacterId(game = game, characterId = encodedCharacter.characterId)
+                    findCharacter(characterId)
+                }
         }
 
         return result
@@ -60,17 +63,6 @@ internal class CharacterServiceImpl(
             Result.Error(BotError.UnknownCharacter(characterId.characterId))
         }
 
-        return result
-    }
-
-    override suspend fun findCharacter(
-        encodedCharacter: EncodedCharacter,
-    ): Result<CharacterResponse, BotError> {
-        val result = gamePort.findGame(encodedCharacter.gameId)
-            .flatMap { game ->
-                val characterId = CharacterId(game = game, characterId = encodedCharacter.characterId)
-                findCharacter(characterId)
-            }
         return result
     }
 
@@ -96,6 +88,7 @@ internal class CharacterServiceImpl(
         val characterList = charactersPort.getCharacters()
         return characterList
     }
+
 
     private fun createGamePromptResponse(gameList: GameList): AliasResponse {
         val response = AliasResponse.GamePrompt(
