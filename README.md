@@ -13,7 +13,6 @@ Frame data targeting Discord bot and mobile apps:
   - 📚 community wikis: [DustLoop](https://www.dustloop.com/wiki/), [DreamCancel](https://dreamcancel.com/wiki/Main_Page), [Mizuumi](https://mizuumi.wiki/w/Main_Page), [SuperCombo](https://wiki.supercombo.gg/w/Main_Page), [Wavu](https://wavu.wiki/), [DragDown](https://dragdown.wiki/wiki/Main_Page), [2xko](https://wiki.play2xko.com/en-us/)
   - ELO service: [EWGF.gg](https://ewgf.gg/)
 
-
 [![ko-fi](https://img.shields.io/badge/Support_on_Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/sorryuken)
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/sophon)
@@ -27,15 +26,14 @@ This README serves as a technical overview for the project.
   - language: `Kotlin`
   - concurrency: `Coroutines` and `Flow`
   - networking: `Ktor`
-  - serialization: `kotlinx.serialization`
+  - serialization: `Kotlin serialization`
   - DI: `Koin`
 - platforms
-  - `Kotlin Multiplatform` - Android, iOS and JVM
+  - Android, iOS, JVM: `Kotlin Multiplatform`
   - Discord API - `Kord`
-- logging - `Napier`
 - data
   - DB - `SQLDelight`
-  - preferences - `DataStore`
+  - preferences - `DataStore` 
 - testing and quality
   - unit tests - `JUnit 4`, `AssertK`
   - architecture testing - `Konsist`
@@ -51,6 +49,8 @@ This README serves as a technical overview for the project.
   - cloud hosting: `Fly.io`
 - others
   - versioning: `BuildKonfig`
+  - diagrams: `Mermaid.js`
+  - logging: `Napier`
 
 ### Architecture
 
@@ -87,132 +87,6 @@ Specific breakdown:
   - CICD
 - AI written, minimal human supervision:
   - data models from json
-
-### Current features
-
-```mermaid
-graph LR
-  classDef green fill:green,color:#000
-  classDef grey fill:lightgrey,color:#000
-  classDef yellow fill:#FFEB3B,color:#000
-
-  subgraph Bots
-    discordBot[Discord bot]
-    twitchBot[Twitch bot]
-  end
-
-  subgraph "Mobile Clients"
-    android[Android]
-    iOS[iOS]
-  end
-
-  subgraph Features
-    glossaryInfil[Glossary Infil]
-    communityWiki[Community Wiki]
-    elo[Ranked stats]
-  end
-
-  subgraph Community Wiki
-    wikiWavu[Wavu + Tekken Docs]
-    supercombo[SuperCombo]
-    2xko[2XKO]
-    dustloop[Dustloop]
-    dreamcancel[DreamCancel]
-    mizuumi[Mizuumi]
-    dragdown[DragDown]
-  end
-
-  subgraph Games
-    t8[Tekken 8]
-    sf6[Street Fighter 6]
-    mk1[Mortal Kombat 1]
-    ggst[Guilty Gear: Strive]
-    dbfz[Dragon Ball FighterZ]
-    gbvsr[Granblue Fantasy Versus: Rising]
-    kof15[King of Fighters XV]
-    cotw[Fatal Fury: City of the Wolves]
-    xko[2XKO]
-    melty[Melty Blood: Type Lumina]
-    bbcf[BlazBlue: Central Fiction]
-    uni2[Under Night In-Birth II Sys:Celes]
-    vsav[Vampire Savior]
-    avl[Avatar: Legends]
-    roa[Rivals of Aether 2]
-    mtfs[Marvel Tokon: Fighting Spirit]
-  end
-
-  subgraph Ranked service
-    ewgf[EWGF]
-    cfn[CFN]
-  end
-
-  android -->|uses| communityWiki
-  iOS -->|uses| communityWiki
-
-  discordBot -->|uses| glossaryInfil
-  discordBot -->|uses| communityWiki
-  discordBot -->|uses| elo
-  twitchBot -->|uses| communityWiki
-
-  communityWiki --> wikiWavu
-  communityWiki --> supercombo
-  communityWiki --> 2xko
-  communityWiki --> dreamcancel
-  communityWiki --> dustloop
-  communityWiki --> mizuumi
-  communityWiki --> dragdown
-
-  elo --> ewgf
-  elo --> cfn
-
-  wikiWavu --> t8
-  supercombo --> sf6
-  supercombo --> mk1
-  supercombo --> avl
-  dustloop --> ggst
-  dustloop --> dbfz
-  dustloop --> gbvsr
-  dustloop --> bbcf
-  dustloop --> mtfs
-  2xko --> xko
-  dreamcancel --> kof15
-  dreamcancel --> cotw
-  mizuumi --> melty
-  mizuumi --> uni2
-  mizuumi --> vsav
-  dragdown --> roa
-
-
-  style discordBot fill:green, color:#fff
-  style android fill:green, color:#fff
-  style iOS fill:green, color:#fff
-  style glossaryInfil fill:green, color:#fff
-  style communityWiki fill:green, color:#fff
-  style wikiWavu fill:green, color:#fff
-  style supercombo fill:green, color:#fff
-  style dreamcancel fill:green, color:#fff
-  style dustloop fill:green, color:#fff
-  style mizuumi fill:green, color:#fff
-  style dragdown fill:green, color:#fff
-  style 2xko fill:green, color:#fff
-  style t8 fill:green, color:#fff
-  style sf6 fill:green, color:#fff
-  style xko fill:green, color:#fff
-  style kof15 fill:green, color:#fff
-  style cotw fill:green, color:#fff
-  style ggst fill:green, color:#fff
-  style mk1 fill:green, color:#fff
-  style dbfz fill:green, color:#fff
-  style gbvsr fill:green, color:#fff
-  style melty fill:green, color:#fff
-  style bbcf fill:green, color:#fff
-  style uni2 fill:green, color:#fff
-  style vsav fill:green, color:#fff
-  style ewgf fill:green, color:#fff
-  style avl fill:yellow, color:#000
-  style mtfs fill:yellow, color:#000
-  style roa fill:green, color:#fff
-```
 
 ### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
 - Twitch bot
