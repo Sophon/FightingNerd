@@ -29,6 +29,8 @@ internal interface CoreBotService {
 
     fun createCommandsResponse(): Result<CoreResponse, BotError>
 
+    fun createPermissionsResponse(): Result<CoreResponse, BotError>
+
     fun createRepoResponse(): Result<PlainTextResponse, BotError>
 
     fun createInviteResponse(): Result<PlainTextResponse, BotError>
@@ -67,6 +69,14 @@ internal class CoreBotServiceImpl(
             linkedCommand = Command.Help,
         )
         return result
+    }
+
+    override fun createPermissionsResponse(): Result<CoreResponse, BotError> {
+        val response = CoreResponse(
+            type = CoreResponse.Type.Permissions,
+            dataSource = BOT_DATA_SOURCE,
+        )
+        return Result.Success(response)
     }
 
     override fun createRepoResponse(): Result<PlainTextResponse, BotError> {

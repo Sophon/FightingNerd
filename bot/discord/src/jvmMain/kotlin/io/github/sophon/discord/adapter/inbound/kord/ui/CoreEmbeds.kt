@@ -79,6 +79,7 @@ internal fun coreEmbed(
             commandRegistry = commandRegistry,
             dataSource = dataSource,
         )
+        CoreResponse.Type.Permissions -> permissionsEmbed(dataSource)
     }
     return embedBuilder
 }
@@ -95,6 +96,30 @@ internal fun tipEmbed(
         value = "I don't drink coffee but feel free to support the server costs!\n" +
                 "- ${URL_KOFI}\n" +
                 "- ${URL_BUY_ME_COFFEE}\n"
+    )
+
+    featureFooter(dataSource)
+}
+
+internal fun permissionsEmbed(
+    dataSource: BotResponse.DataSource,
+): EmbedBuilder.() -> Unit = {
+    title = "PERMISSIONS"
+    color = Color(PURPLE)
+    description = "For full functionality, the bot needs these permissions..."
+
+    mandatoryField(
+        name = "MANDATORY:",
+        value = "- **View Channels**\n" +
+                "- **Send Messages**\n" +
+                "- **Embed Links**\n" +
+                "- **Read Message History**",
+    )
+
+    mandatoryField(
+        name = "Optional:",
+        value = "- Send Messages in Threads\n" +
+                "- User External Emojis\n"
     )
 
     featureFooter(dataSource)

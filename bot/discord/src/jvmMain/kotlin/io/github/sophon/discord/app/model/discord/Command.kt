@@ -13,6 +13,7 @@ sealed class Command(
     object Help : Command(name = "Help", description = "RTFM")
     object Modules : Command(name = "Modules", description = "Features")
     object Commands : Command(name = "Commands", description = "Available commands")
+    object Permissions : Command(name = "Permissions", description = "Required bot permissions")
     object Join : Command(
         name = "Join",
         description = "Make clickable Steam lobby link",
