@@ -20,7 +20,7 @@ Frame data targeting Discord bot and mobile apps:
 This README serves as a technical overview for the project.
 
 
-### Tech stack
+## Tech stack
 
 - core
   - language: `Kotlin`
@@ -52,7 +52,7 @@ This README serves as a technical overview for the project.
   - diagrams: `Mermaid.js`
   - logging: `Napier`
 
-### Architecture
+## Architecture
 
 - Hexagonal architecture + DDD: see [ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - multi-module: see [modules.mmd](docs/modules.mmd)
@@ -65,7 +65,7 @@ This README serves as a technical overview for the project.
   - feat/stats - usage tracking, daily reports
   - feat/wiki - frame data from various wikis
 
-### CICD
+## CICD
 
 - PR checks (see [test.yml](.github/workflows/test.yml)):
   - detekt: [detekt.yml](.github/workflows/detekt.yml)
@@ -76,8 +76,13 @@ This README serves as a technical overview for the project.
   - Discord bot: [release_bot.mmd](docs/release_bot.mmd)
   - mobile apps: TODO
 
-### AI disclaimer
+## AI disclaimer
 
+Creator technical background:
+- 2020 - 2026: Android developer and mobile developer with KMP 
+- 2026 - onwards: backend developer with Kotlin and Micronaut
+
+Project timeline:
 - October 2025 (project start) - June 2026: completely human coded.
 - June 2026 - onwards: AI assisted.
 
@@ -101,7 +106,7 @@ Specific breakdown:
 
 Harness: Claude code.
 
-### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
+## Long term goals
 - webapp
   - KMP + CMP WASM
 - CFN
