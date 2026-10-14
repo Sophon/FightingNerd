@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.3.0] - TODO
+- `permissions` - displays mandatory and optional permissions
+
 ## [v17.2.5] - 2026-10-12
 - fixed `char` embed missing character image
 - fixed `alias` displaying multi-word options
