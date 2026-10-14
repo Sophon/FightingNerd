@@ -263,6 +263,11 @@ internal class FakeCoreBotService: CoreBotService {
         return Result.Success(CoreResponse(type = CoreResponse.Type.Commands, dataSource = wavuDataSource))
     }
 
+    override fun createPermissionsResponse(): Result<CoreResponse, BotError> {
+        callList += "createPermissionsResponse()"
+        return Result.Success(CoreResponse(type = CoreResponse.Type.Permissions, dataSource = wavuDataSource))
+    }
+
     override fun createRepoResponse(): Result<PlainTextResponse, BotError> {
         callList += "createRepoResponse()"
         return Result.Success(PlainTextResponse(text = "repo"))

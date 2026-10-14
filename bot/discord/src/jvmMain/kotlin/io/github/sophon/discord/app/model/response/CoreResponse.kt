@@ -9,5 +9,6 @@ data class CoreResponse(
         Tip,
         Help,
         Commands,
+        Permissions,
     }
 }

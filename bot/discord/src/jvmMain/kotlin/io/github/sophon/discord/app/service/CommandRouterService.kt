@@ -73,6 +73,7 @@ internal class CommandRouterService(
             Command.Donate -> coreBotService.createTipResponse()
             Command.Help -> coreBotService.createHelpResponse()
             Command.Commands -> coreBotService.createCommandsResponse()
+            Command.Permissions -> coreBotService.createPermissionsResponse()
             Command.Repo -> coreBotService.createRepoResponse()
             Command.Invite -> coreBotService.createInviteResponse()
             Command.Modules -> coreBotService.createModulesResponse()
