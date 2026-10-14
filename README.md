@@ -1,73 +1,94 @@
 <img width="2400" height="1200" alt="banner-no_bg" src="https://github.com/user-attachments/assets/0a3ff265-08ef-408f-8264-10527e8d56cf" />
 
 
-
-# Fighting Nerd - FGC frame data
+# FIGHTING NERD - FGC frame data
 
 Frame data targeting Discord bot and mobile apps:
-- 🧩 highly extensible
-  - 📘 glossary
-  - 📚 [any community Wikis](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
 - 🌐 multiplatform:
   - Play Store [![Play Store](https://img.shields.io/badge/Play_Store-01875F?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=io.github.sophon.fightingnerd)
   - App Store [![App Store](https://img.shields.io/badge/App_Store-555555?style=for-the-badge&logo=appstore&logoColor=white)](https://apps.apple.com/us/app/fighting-nerd/id6793185357)
   - Discord [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/discovery/applications/1438716136790429776)
+- 🧩 highly extensible
+  - 📘 glossary: Infil Glossary
+  - 📚 community wikis: [DustLoop](https://www.dustloop.com/wiki/), [DreamCancel](https://dreamcancel.com/wiki/Main_Page), [Mizuumi](https://mizuumi.wiki/w/Main_Page), [SuperCombo](https://wiki.supercombo.gg/w/Main_Page), [Wavu](https://wavu.wiki/), [DragDown](https://dragdown.wiki/wiki/Main_Page), [2xko](https://wiki.play2xko.com/en-us/)
+  - ELO service: [EWGF.gg](https://ewgf.gg/)
 
 
 [![ko-fi](https://img.shields.io/badge/Support_on_Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/sorryuken)
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/sophon)
 
+This README serves as a technical overview for the project.
 
-## Sample Usage
 
-All commands are case **insensitive** - uppercase or lowercase or anything in between is identical.
+### Tech stack
 
-All commands can be used in one of two ways:
-1. tag - `@bot [command] [query]`
-2. slash - `/command [query]`
+- core
+  - language: `Kotlin`
+  - concurrency: `Coroutines` and `Flow`
+  - networking: `Ktor`
+  - serialization: `kotlinx.serialization`
+  - DI: `Koin`
+- platforms
+  - `Kotlin Multiplatform` - Android, iOS and JVM
+  - Discord API - `Kord`
+- logging - `Napier`
+- data
+  - DB - `SQLDelight`
+  - preferences - `DataStore`
+- testing and quality
+  - unit tests - `JUnit 4`, `AssertK`
+  - architecture testing - `Konsist`
+  - lint: `Detekt`
+- mobile
+  - UI: `Compose Multiplatform` 
+  - navigation: `navigation 3`
+  - media: `Coil` for images, `Compose Media Player` for videos
+  - IAP (donations): `RevenueCat`
+  - store: `Play Review`
+- Discord bot
+  - containerization: `Docker`
+  - cloud hosting: `Fly.io`
+- others
+  - versioning: `BuildKonfig`
 
-In the signatures below, `<param>` is required and `[param]` is optional.
+### Architecture
 
-- **frame data** - `fd <character> <move>`
-  - `<move>` can be input or move name
-  - default command: `@bot <character> <move>` and `@bot fd <character> <move>` are identical
-  - game specific variants: `fdTK`, `fdSF`, `fdGG` etc.
-  - examples: `@bot ak f21` or `@bot ken 236pp` or `@bot sol fafnir`
-- **character data** - `char <game> <character>`
-  - game specific variants: `charGG`, `charSF`, `charAV` etc.
-  - examples: `@bot charsf akuma` or `@bot charroa olympia`
-- **game specific commands**
-  - Tekken 8
-    - `Heat <character>`, `Homing <character>`, `PC <character>`
-    - `Stance <character> [stance]`
-      - examples: `@bot stance steve` or `@bot stance king jgs`
-    - `Strings <character> <input>`
-      - examples: `@bot strings eddy u4`
-  - `Inv <character>` - invincible moves
-- **ELO**
-  - Tekken 8
-    - `EWGF [operation] [tekkenID]` - https://ewgf.gg/
-      - operations:
-        - `register` (or `+`), requires `<tekkenID>`: registers your Discord account
-          - example: `@bot ewgf + 3DgB8jQ82rJ4`
-        - (no operation): displays your last 50 matches
-          - example: `@bot ewgf`
-        - `unregister` (or `-`): deletes your Discord account from the database
-          - example: `@bot ewgf -`
-- **utility commands**
-  - `Alias` - displays character aliases for a game
-  - `Commands` - lists all available commands
-  - `Donate` - displays links to support the project
-  - `Examples` - displays example bot usage
-  - `Feedback <message>` - sends feedback or bug report to the author
-  - `Invite` - displays the invitation link
-  - `Join <steamURL> [password|name]` - creates a clickable link to join a Steam lobby
-    - default bot command: `@bot steam://joinlobby/...` or `@bot join steam://joinlobby/...` are identical
-  - `Modules` - displays all enabled modules, be it games or otherwise
-  - `Repo` - displays the GitHub link to the project
+- Hexagonal architecture + DDD: see [ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- multi-module: see [modules.mmd](docs/modules.mmd)
+  - core 
+  - composeApp - mobile clients
+  - bot/discord - Discord bot
+  - feat/admin - administrative tasks
+  - feat/ewgf - ELO service
+  - feat/glossaryInfil - FGC glossary
+  - feat/stats - usage tracking, daily reports
+  - feat/wiki - frame data from various wikis
 
-### [CURRENT FEATURE MODULES](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
+### AI disclaimer
+
+- October 2025 (project start) - June 2026: completely human coded.
+- June 2026 - onwards: AI assisted.
+
+Specific breakdown:
+
+- completely human created/decided:
+  - architecture
+  - interfaces
+  - code reviews and commits
+  - features
+  - documentation
+  - releases
+  - all project assets - banners, icons, screenshots etc.
+- AI assisted, complete human supervision:
+  - unit tests
+  - minor refactoring using IDE MCP
+  - comments
+  - CICD
+- AI written, minimal human supervision:
+  - data models from json
+
+### Current features
 
 ```mermaid
 graph LR
@@ -193,14 +214,12 @@ graph LR
   style roa fill:green, color:#fff
 ```
 
-## [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
-
 ### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
 - Twitch bot
 - ELO rank services
 
 ___
-# [License](https://github.com/Sophon/FightingNerd/blob/feat/sorry/license/LICENSE.txt)
+# [License](LICENSE.txt)
 ```
 License: Apache 2.0 with Commons Clause
 
