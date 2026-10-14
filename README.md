@@ -65,6 +65,17 @@ This README serves as a technical overview for the project.
   - feat/stats - usage tracking, daily reports
   - feat/wiki - frame data from various wikis
 
+### CICD
+
+- PR checks (see [test.yml](.github/workflows/test.yml)):
+  - detekt: [detekt.yml](.github/workflows/detekt.yml)
+  - unit tests
+  - coverage
+  - architecture tests
+- release:
+  - Discord bot: [release_bot.mmd](docs/release_bot.mmd)
+  - mobile apps: TODO
+
 ### AI disclaimer
 
 - October 2025 (project start) - June 2026: completely human coded.
@@ -88,9 +99,13 @@ Specific breakdown:
 - AI written, minimal human supervision:
   - data models from json
 
+Harness: Claude code.
+
 ### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
+- webapp
+  - KMP + CMP WASM
+- CFN
 - Twitch bot
-- ELO rank services
 
 ___
 # [License](LICENSE.txt)
