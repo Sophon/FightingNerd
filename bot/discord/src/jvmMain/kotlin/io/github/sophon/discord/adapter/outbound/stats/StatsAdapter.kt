@@ -1,5 +1,8 @@
 package io.github.sophon.discord.adapter.outbound.stats
 
+import io.github.sophon.ConfigureStatsUseCase
+import io.github.sophon.GetReportUseCase
+import io.github.sophon.RecordUsageUseCase
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
@@ -8,9 +11,6 @@ import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.UsageReport
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.outPort.StatsPort
-import io.github.sophon.inPort.ConfigureStatsUseCase
-import io.github.sophon.inPort.GetReportUseCase
-import io.github.sophon.inPort.RecordUsageUseCase
 import io.github.sophon.wiki.model.wiki.Game
 
 internal class StatsAdapter(
