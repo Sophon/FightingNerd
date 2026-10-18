@@ -11,10 +11,6 @@ import io.github.sophon.app.service.GetRecentSetsService
 import io.github.sophon.app.service.RegisterPlayerService
 import io.github.sophon.app.service.UnregisterPlayerService
 import io.github.sophon.app.service.UpdatePolarisIdService
-import io.github.sophon.inPort.GetRecentSetsUseCase
-import io.github.sophon.inPort.RegisterPlayerUseCase
-import io.github.sophon.inPort.UnregisterPlayerUseCase
-import io.github.sophon.inPort.UpdatePolarisIdUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf

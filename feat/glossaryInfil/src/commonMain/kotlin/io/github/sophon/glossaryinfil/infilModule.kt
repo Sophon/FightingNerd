@@ -10,8 +10,6 @@ import io.github.sophon.glossaryinfil.app.outPort.LoadGlossaryItemListPort
 import io.github.sophon.glossaryinfil.app.outPort.ReplaceGlossaryPort
 import io.github.sophon.glossaryinfil.app.service.RefreshGlossaryService
 import io.github.sophon.glossaryinfil.app.service.SearchGlossaryService
-import io.github.sophon.glossaryinfil.inPort.RefreshGlossaryUseCase
-import io.github.sophon.glossaryinfil.inPort.SearchGlossaryUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf

@@ -1,6 +1,7 @@
 package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.GetRecentSetsUseCase
 import io.github.sophon.app.outPort.FetchBattleListPort
 import io.github.sophon.app.outPort.LoadPlayerPort
 import io.github.sophon.app.util.groupIntoSets
@@ -10,7 +11,6 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.inPort.GetRecentSetsUseCase
 import io.github.sophon.model.Battle
 import io.github.sophon.model.BattleSet
 import io.github.sophon.model.EwgfError

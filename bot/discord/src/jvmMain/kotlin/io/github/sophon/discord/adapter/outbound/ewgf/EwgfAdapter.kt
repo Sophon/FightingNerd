@@ -1,6 +1,10 @@
 package io.github.sophon.discord.adapter.outbound.ewgf
 
 import io.github.sophon.EwgfFeatureInfo
+import io.github.sophon.GetRecentSetsUseCase
+import io.github.sophon.RegisterPlayerUseCase
+import io.github.sophon.UnregisterPlayerUseCase
+import io.github.sophon.UpdatePolarisIdUseCase
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
@@ -9,10 +13,6 @@ import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.response.BotResponse
 import io.github.sophon.discord.app.model.response.EwgfResponse
 import io.github.sophon.discord.app.outPort.EwgfPort
-import io.github.sophon.inPort.GetRecentSetsUseCase
-import io.github.sophon.inPort.RegisterPlayerUseCase
-import io.github.sophon.inPort.UnregisterPlayerUseCase
-import io.github.sophon.inPort.UpdatePolarisIdUseCase
 import io.github.sophon.model.Player
 
 internal class EwgfAdapter(

@@ -12,14 +12,14 @@ Modified packaging - the priority was to have packages in a flat hierarchy, for 
 
 As such, there are differences from the book:
 
-- `ports/in` moved to the root, renamed to `inPort`
+- `ports/in` collapsed into a single `InPorts.kt` file at the root, holding every use case interface
 - `app/ports/out` renamed and moved to `app/outPort`
 - `app/domain` moved to `app/`
 - `app/domain/model` split to public `model/` and internal `app/model`
 
 ```
 <feature>/
-├── inPort/                  (public)  - use case interfaces
+├── InPorts.kt               (public)  - use case interfaces
 ├── model/                   (public)  - domain model exposed to the outside world
 ├── app/
 │   ├── model/                         - internal domain model
@@ -36,4 +36,4 @@ As such, there are differences from the book:
 
 Architecture and packaging is enforced by Konsist.
 
-Can be summoned via `./gradlew testHexagonal`.
+Can be summoned via `./gradlew testArch`.

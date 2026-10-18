@@ -1,13 +1,13 @@
 package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.UpdatePolarisIdUseCase
 import io.github.sophon.app.outPort.UpdatePolarisIdPort
 import io.github.sophon.app.util.toPolarisId
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.inPort.UpdatePolarisIdUseCase
 import io.github.sophon.model.EwgfError
 import io.github.sophon.model.Player
 
