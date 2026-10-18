@@ -11,11 +11,6 @@ import io.github.sophon.app.service.ConfigureAdminToolService
 import io.github.sophon.app.service.IsUserAdminService
 import io.github.sophon.app.service.IsUserBannedService
 import io.github.sophon.app.service.UnbanUserService
-import io.github.sophon.inPort.BanUserUseCase
-import io.github.sophon.inPort.ConfigureAdminToolUseCase
-import io.github.sophon.inPort.IsUserAdminUseCase
-import io.github.sophon.inPort.IsUserBannedUseCase
-import io.github.sophon.inPort.UnbanUserUseCase
 import org.koin.core.module.Module
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf

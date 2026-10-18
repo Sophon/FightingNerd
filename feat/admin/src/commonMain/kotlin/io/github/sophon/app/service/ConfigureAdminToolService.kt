@@ -1,11 +1,11 @@
 package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.ConfigureAdminToolUseCase
 import io.github.sophon.app.outPort.AdminListPort
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
-import io.github.sophon.inPort.ConfigureAdminToolUseCase
 import io.github.sophon.model.AdminError
 
 internal class ConfigureAdminToolService(

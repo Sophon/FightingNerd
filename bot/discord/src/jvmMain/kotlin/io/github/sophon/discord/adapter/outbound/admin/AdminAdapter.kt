@@ -1,5 +1,10 @@
 package io.github.sophon.discord.adapter.outbound.admin
 
+import io.github.sophon.BanUserUseCase
+import io.github.sophon.ConfigureAdminToolUseCase
+import io.github.sophon.IsUserAdminUseCase
+import io.github.sophon.IsUserBannedUseCase
+import io.github.sophon.UnbanUserUseCase
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
@@ -11,11 +16,6 @@ import io.github.sophon.discord.app.model.response.BanResponse
 import io.github.sophon.discord.app.outPort.AdminPort
 import io.github.sophon.discord.app.outPort.BanPort
 import io.github.sophon.discord.app.outPort.ConfigureAdminPort
-import io.github.sophon.inPort.BanUserUseCase
-import io.github.sophon.inPort.ConfigureAdminToolUseCase
-import io.github.sophon.inPort.IsUserAdminUseCase
-import io.github.sophon.inPort.IsUserBannedUseCase
-import io.github.sophon.inPort.UnbanUserUseCase
 
 internal class AdminAdapter(
     private val configureAdminToolUseCase: ConfigureAdminToolUseCase,
