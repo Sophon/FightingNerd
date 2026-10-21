@@ -7,9 +7,9 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.glossaryinfil.RefreshGlossaryUseCase
 import io.github.sophon.glossaryinfil.app.outPort.FetchGlossaryPort
 import io.github.sophon.glossaryinfil.app.outPort.ReplaceGlossaryPort
-import io.github.sophon.glossaryinfil.inPort.RefreshGlossaryUseCase
 import io.github.sophon.glossaryinfil.model.GlossaryError
 import io.github.sophon.glossaryinfil.model.GlossaryItem
 import kotlinx.coroutines.sync.Mutex

@@ -78,6 +78,19 @@ class CoreBotServiceTest {
     }
 
     @Test
+    fun `permissions is a bot response`() {
+        // given
+        val expected = Result.Success(CoreResponse(type = CoreResponse.Type.Permissions, dataSource = BOT_DATA_SOURCE))
+        val service = coreBotService()
+
+        // when
+        val result = service.createPermissionsResponse()
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `repo response carries the repo url`() {
         // given
         val expected = Result.Success(PlainTextResponse(text = "Contribute to FightingNerd: $URL_REPO"))

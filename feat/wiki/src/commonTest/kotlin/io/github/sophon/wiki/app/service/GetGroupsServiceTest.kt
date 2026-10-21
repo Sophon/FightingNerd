@@ -44,6 +44,18 @@ internal class GetGroupsServiceTest {
     }
 
     @Test
+    fun `tag 2 stances follow the generic groups`() {
+        // given
+        val expected = (tekkenGroupList - WavuGroups.Heat) + listOf(WavuGroups.Stance("RFF"), WavuGroups.Stance("LFF"))
+
+        // when
+        val result = service(Game.Tag2, extras = listOf("RFF", "LFF"))
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `stances are only for tekken`() {
         // given
         val expected = listOf(

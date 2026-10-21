@@ -1,0 +1,90 @@
+graph LR
+    subgraph bots[Bots]
+        discordBot[Discord bot]
+        twitchBot[Twitch bot]
+    end
+
+    subgraph compose[Compose apps]
+        android[Android]
+        iOS[iOS]
+    end
+
+    subgraph Features
+        glossaryInfil[Glossary Infil]
+        wikiFeat[Wiki]
+        elo[Ranked stats]
+    end
+
+    subgraph wikiGraph[Community wikis]
+        wikiWavu[Wavu]
+        supercombo[SuperCombo]
+        2xko[2XKO]
+        dustloop[Dustloop]
+        dreamcancel[DreamCancel]
+        mizuumi[Mizuumi]
+        dragdown[DragDown]
+    end
+
+    subgraph Games
+        t8[Tekken 8]
+        sf6[Street Fighter 6]
+        mk1[Mortal Kombat 1]
+        ggst[Guilty Gear: Strive]
+        dbfz[Dragon Ball FighterZ]
+        gbvsr[Granblue Fantasy Versus: Rising]
+        kof15[King of Fighters XV]
+        cotw[Fatal Fury: City of the Wolves]
+        xko[2XKO]
+        melty[Melty Blood: Type Lumina]
+        bbcf[BlazBlue: Central Fiction]
+        uni2[Under Night In-Birth II Sys:Celes]
+        vsav[Vampire Savior]
+        avl[Avatar Legends: The Fighting Game]
+        roa[Rivals of Aether 2]
+        mtfs[Marvel Tokon: Fighting Souls]
+    end
+
+    subgraph Ranked service
+        ewgf[EWGF]
+        cfn[CFN]
+    end
+
+    compose --> wikiFeat
+
+    bots --> glossaryInfil
+    bots --> wikiFeat
+    bots --> elo
+
+    wikiFeat --> wikiGraph
+
+    elo --> ewgf
+    elo --> cfn
+
+    wikiWavu --> t8
+    supercombo --> sf6
+    supercombo --> mk1
+    supercombo --> avl
+    dustloop --> ggst
+    dustloop --> dbfz
+    dustloop --> gbvsr
+    dustloop --> bbcf
+    dustloop --> mtfs
+    2xko --> xko
+    dreamcancel --> kof15
+    dreamcancel --> cotw
+    mizuumi --> melty
+    mizuumi --> uni2
+    mizuumi --> vsav
+    dragdown --> roa
+
+    classDef done fill:green,color:white
+    classDef inProgress fill:khaki,color:black
+    classDef planned fill:lightcoral,color:black
+
+    class discordBot,android,iOS done
+    class glossaryInfil,wikiFeat done
+    class wikiWavu,supercombo,2xko,dustloop,dreamcancel,mizuumi,dragdown done
+    class t8,sf6,mk1,avl,ggst,dbfz,gbvsr,bbcf,mtfs,xko,kof15,cotw,melty,uni2,vsav,roa done
+    class ewgf done
+    class elo inProgress
+    class twitchBot,cfn planned

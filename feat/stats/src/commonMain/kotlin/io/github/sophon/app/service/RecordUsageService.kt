@@ -1,10 +1,10 @@
 package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.RecordUsageUseCase
 import io.github.sophon.app.outPort.DayReportPort
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.onError
-import io.github.sophon.inPort.RecordUsageUseCase
 import io.github.sophon.model.Command
 import io.github.sophon.model.DailyReport
 import io.github.sophon.model.StatsError

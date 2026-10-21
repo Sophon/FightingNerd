@@ -1,10 +1,10 @@
 package io.github.sophon.app.service
 
 import io.github.aakira.napier.Napier
+import io.github.sophon.ConfigureStatsUseCase
 import io.github.sophon.app.outPort.PrepareStoragePort
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.onError
-import io.github.sophon.inPort.ConfigureStatsUseCase
 import io.github.sophon.model.StatsError
 
 internal class ConfigureStatsService(

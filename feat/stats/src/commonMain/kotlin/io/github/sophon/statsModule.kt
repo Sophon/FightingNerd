@@ -10,10 +10,6 @@ import io.github.sophon.app.service.DayRolloverServiceImpl
 import io.github.sophon.app.service.GetCurrentReportService
 import io.github.sophon.app.service.GetReportService
 import io.github.sophon.app.service.RecordUsageService
-import io.github.sophon.inPort.ConfigureStatsUseCase
-import io.github.sophon.inPort.GetCurrentReportUseCase
-import io.github.sophon.inPort.GetReportUseCase
-import io.github.sophon.inPort.RecordUsageUseCase
 import okio.FileSystem
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf

@@ -10,8 +10,8 @@ import io.github.sophon.discord.app.model.response.GlossaryResponse
 import io.github.sophon.discord.app.outPort.GlossaryPort
 import io.github.sophon.discord.app.outPort.RefreshGlossaryPort
 import io.github.sophon.glossaryinfil.GlossaryFeatureInfo
-import io.github.sophon.glossaryinfil.inPort.RefreshGlossaryUseCase
-import io.github.sophon.glossaryinfil.inPort.SearchGlossaryUseCase
+import io.github.sophon.glossaryinfil.RefreshGlossaryUseCase
+import io.github.sophon.glossaryinfil.SearchGlossaryUseCase
 
 internal class GlossaryAdapter(
     glossaryFeatureInfo: GlossaryFeatureInfo,

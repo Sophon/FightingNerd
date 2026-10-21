@@ -22,6 +22,13 @@ internal class GetFiltersService : GetFiltersUseCase {
                 WavuFilters.LowCrush,
                 WavuFilters.HighCrush,
             )
+            Game.Tag2 -> setOf(
+                WavuFilters.Homing,
+                WavuFilters.Throw,
+                WavuFilters.Stance,
+                WavuFilters.LowCrush,
+                WavuFilters.HighCrush,
+            )
 
             Game.BBCF -> setOf(BBFilters.Invincible)
             Game.GGST -> setOf(GGFilters.Invincible)

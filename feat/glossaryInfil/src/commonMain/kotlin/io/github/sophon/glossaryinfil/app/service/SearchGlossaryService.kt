@@ -7,9 +7,9 @@ import io.github.sophon.core.architecture.map
 import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.util.removeWhiteSpace
+import io.github.sophon.glossaryinfil.SearchGlossaryUseCase
 import io.github.sophon.glossaryinfil.app.outPort.CountGlossaryItemsPort
 import io.github.sophon.glossaryinfil.app.outPort.LoadGlossaryItemListPort
-import io.github.sophon.glossaryinfil.inPort.SearchGlossaryUseCase
 import io.github.sophon.glossaryinfil.model.GlossaryError
 import io.github.sophon.glossaryinfil.model.GlossaryItem
 
