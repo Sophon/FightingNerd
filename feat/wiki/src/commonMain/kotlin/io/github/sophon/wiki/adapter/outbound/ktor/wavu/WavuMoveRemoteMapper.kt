@@ -5,7 +5,10 @@ import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.MoveGameProperties
 import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.game.Tag2Properties
+import io.github.sophon.wiki.model.wiki.Game
 
 internal fun WavuMoveListResponseDto.toDomain(character: Character): List<Move> {
     val downloadedMoves = cargoQuery.map { it.title }
@@ -44,10 +47,11 @@ private fun MoveDto.toDomain(
         urls = Move.Urls(
             videoId = video?.toStorageSafeFileName(),
             videoUrl = video.formVideoUrl(),
-            wikiUrl = formMoveWikiUrl(characterRemoteQueryId = character.remoteQueryId, moveId = id),
+            wikiUrl = formMoveWikiUrl(game = character.id.game, characterRemoteQueryId = character.remoteQueryId, moveId = id),
         ),
 
         gameProperties = formProperties(
+            game = character.id.game,
             notes = unifiedNotes,
             crushes = cleanedCrushes,
         )
@@ -161,9 +165,9 @@ private fun String.toStorageSafeFileName(): String {
     return stripped
 }
 
-private fun formMoveWikiUrl(characterRemoteQueryId: String, moveId: String): String {
+private fun formMoveWikiUrl(game: Game, characterRemoteQueryId: String, moveId: String): String {
     val formattedCharacterName = characterRemoteQueryId.replace(" ", "_")
-    val wikiUrl = "${URL_PREFIX_MOVE}/${formattedCharacterName}_movelist#${moveId.replace(" ", "_")}"
+    val wikiUrl = "${URL_PREFIX_MOVE}/${formattedCharacterName}_movelist${game.toPageSuffix()}#${moveId.replace(" ", "_")}"
     return wikiUrl
 }
 
@@ -193,9 +197,10 @@ private fun String?.formatClickable(): String? {
  * Only the properties that don't depend on the notation - heat and stance are derived by the normalizer.
  */
 private fun formProperties(
+    game: Game,
     notes: List<String>,
     crushes: List<String>,
-): T8Properties {
+): MoveGameProperties? {
     val isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) }
     val isHoming = notes.any { it.contains("Homing", ignoreCase = true) }
     val isHighCrush = notes.any { it.contains("cs") }
@@ -203,14 +208,26 @@ private fun formProperties(
     val hasWallInteraction = notes.any { it.contains("balcony break", ignoreCase = true) }
     val hasFloorInteraction = notes.any { it.contains("floor break", ignoreCase = true) }
 
-    val properties = T8Properties(
-        isHoming = isHoming,
-        isPowerCrush = isPowerCrush,
-        isHighCrush = isHighCrush,
-        isLowCrush = isLowCrush,
-        hasWallInteraction = hasWallInteraction,
-        hasFloorInteraction = hasFloorInteraction,
-    )
+    val properties = when (game) {
+        Game.Tekken8 -> T8Properties(
+            isHoming = isHoming,
+            isPowerCrush = isPowerCrush,
+            isHighCrush = isHighCrush,
+            isLowCrush = isLowCrush,
+            hasWallInteraction = hasWallInteraction,
+            hasFloorInteraction = hasFloorInteraction,
+        )
+
+        Game.Tag2 -> Tag2Properties(
+            isHoming = isHoming,
+            isHighCrush = isHighCrush,
+            isLowCrush = isLowCrush,
+            hasWallInteraction = hasWallInteraction,
+            hasFloorInteraction = hasFloorInteraction,
+        )
+
+        else -> null
+    }
     return properties
 }
 
