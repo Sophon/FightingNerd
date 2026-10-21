@@ -1,7 +1,7 @@
 package io.github.sophon.wiki.model
 
 import io.github.sophon.core.util.equalsIgnoreCase
-import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.game.WavuMoveProperties
 
 object WavuGroups {
     object Heat: Group {
@@ -90,7 +90,7 @@ object WavuGroups {
 
     data class Stance(override val id: String): Group {
         override val predicate: (Move) -> Boolean = {
-            (it.gameProperties as? T8Properties)?.stance.equalsIgnoreCase(id)
+            (it.gameProperties as? WavuMoveProperties)?.stance.equalsIgnoreCase(id)
         }
     }
 

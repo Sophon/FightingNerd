@@ -7,6 +7,7 @@ import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.game.Tag2Properties
 import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 
@@ -16,6 +17,12 @@ class WavuMoveRemoteMapperTest {
         displayName = "Armor King",
         remoteQueryId = "Armor_King",
         wikiUrl = "https://wavu.wiki/t/Armor_King_movelist",
+    )
+    val tag2Kazuya = Character(
+        id = CharacterId(Game.Tag2, "Kazuya"),
+        displayName = "Kazuya",
+        remoteQueryId = "Kazuya",
+        wikiUrl = "https://wavu.wiki/t/Kazuya_(Tag_2)",
     )
 
     //region aliases
@@ -452,6 +459,34 @@ class WavuMoveRemoteMapperTest {
         assertThat(result.isThrow).isEqualTo(expected)
     }
     //endregion
+
+    //region tag 2
+    @Test
+    fun `tag 2 move gets tag 2 properties`() {
+        // given
+        val move = WavuMoveSource.tag2NejiriUraken
+        val expected = Tag2Properties(isHighCrush = true)
+
+        // when
+        val result = move.toMove(tag2Kazuya)
+
+        //then
+        assertThat(result.gameProperties).isEqualTo(expected)
+    }
+
+    @Test
+    fun `tag 2 wiki url points to the tag 2 movelist`() {
+        // given
+        val move = WavuMoveSource.tag2NejiriUraken
+        val expected = "https://wavu.wiki/t/Kazuya_movelist_(Tag_2)#Kazuya-d+1+2"
+
+        // when
+        val result = move.toMove(tag2Kazuya)
+
+        //then
+        assertThat(result.urls.wikiUrl).isEqualTo(expected)
+    }
+    //endregion
 }
 
 private fun List<MoveDto>.toMoveList(character: Character): List<Move> {
@@ -665,5 +700,25 @@ private object WavuMoveSource {
         image = null,
         video = null,
         alt = "wr2+4"
+    )
+    val tag2NejiriUraken = MoveDto(
+        id = "Kazuya-d+1+2",
+        name = "Nejiri Uraken",
+        input = "d+1+2",
+        parent = null,
+        target = "l",
+        damage = "24",
+        startup = "i25",
+        recv = "FC",
+        tot = null,
+        crush = "cs",
+        block = "-16",
+        hit = "+2c",
+        ch = "KND",
+        notes = "Can be cancelled with DB",
+        alias = null,
+        image = null,
+        video = null,
+        alt = null,
     )
 }

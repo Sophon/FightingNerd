@@ -79,6 +79,19 @@ class WavuCharacterRemoteMapperTest {
         //then
         assertThat(result.wikiUrl).isEqualTo(expected)
     }
+
+    @Test
+    fun `tag 2 wiki url points to the tag 2 page`() {
+        //given
+        val responseDto = WavuCharacterListResponseDto(characters = listOf(tag2ArmorKing))
+        val expected = "https://wavu.wiki/t/Armor_King_(Tag_2)"
+
+        //when
+        val result = responseDto.toDomain(Game.Tag2).single()
+
+        //then
+        assertThat(result.wikiUrl).isEqualTo(expected)
+    }
     //endregion
 
     //region aliases
@@ -168,5 +181,16 @@ private val jack8 = CharacterDto(
     images = CharacterDto.Images(
         largePng = "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ccn.png",
         officialLargePng = "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ccn.png",
+    ),
+)
+
+private val tag2ArmorKing = CharacterDto(
+    id = "armor-king",
+    displayName = "Armor King",
+    wavuName = "Armor King",
+    aliasList = listOf("ak", "aking", "armorking"),
+    images = CharacterDto.Images(
+        largePng = "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_armorking.png",
+        officialLargePng = "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_armorking.png",
     ),
 )

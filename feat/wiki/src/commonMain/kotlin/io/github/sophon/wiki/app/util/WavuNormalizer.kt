@@ -2,20 +2,27 @@ package io.github.sophon.wiki.app.util
 
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.game.Tag2Properties
 
-internal fun Move.normalizeT8(): Move {
+internal fun Move.normalizeTekken(): Move {
     val normalizedInput = input.cleanMoveInput()
     val normalizedAliases = normalizedInput.formAliases(aliases)
+    val stance = normalizedInput.findStance(normalizedAliases)
 
-    val mappedProperties = ((gameProperties as? T8Properties) ?: T8Properties())
-    val properties = mappedProperties.copy(
-        isHeat = _root_ide_package_.io.github.sophon.wiki.app.util.isHeat(
-            notes = notes,
-            input = normalizedInput,
-            aliases = normalizedAliases
-        ),
-        stance = (normalizedInput.getStance() ?: normalizedAliases.firstNotNullOfOrNull { it.getStance() }), //TODO: this has flawed impl - what if there are multiple stances in the aliases?
-    )
+    val properties = when (val mappedProperties = gameProperties) {
+        is T8Properties -> {
+            mappedProperties.copy(
+                isHeat = isHeat(
+                    notes = notes,
+                    input = normalizedInput,
+                    aliases = normalizedAliases
+                ),
+                stance = stance,
+            )
+        }
+        is Tag2Properties -> mappedProperties.copy(stance = stance)
+        else -> mappedProperties
+    }
 
     val normalized = copy(
         input = normalizedInput,
@@ -138,6 +145,14 @@ private fun isHeat(
             || aliases.any { it.contains("H.", ignoreCase = true) })
 
     return isHeat
+}
+
+/**
+ * Receiver is the normalized input.
+ */
+private fun String.findStance(aliases: List<String>): String? {
+    val stance = (getStance() ?: aliases.firstNotNullOfOrNull { it.getStance() }) //TODO: this has flawed impl - what if there are multiple stances in the aliases?
+    return stance
 }
 
 private fun String.getStance(): String? {

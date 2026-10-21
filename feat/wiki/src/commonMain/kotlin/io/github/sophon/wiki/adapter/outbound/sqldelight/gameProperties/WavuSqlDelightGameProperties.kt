@@ -2,11 +2,13 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight.gameProperties
 
 import io.github.aakira.napier.Napier
 import io.github.sophon.wiki.adapter.outbound.sqldelight.LazyWikiDB
+import io.github.sophon.wiki.data.wavu.Tag2_move
 import io.github.sophon.wiki.data.wavu.Tekken8_move
 import io.github.sophon.wiki.model.CharacterGameProperties
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.MoveGameProperties
 import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.game.Tag2Properties
 import io.github.sophon.wiki.model.wiki.Game
 
 internal class WavuSqlDelightGameProperties(
@@ -14,7 +16,7 @@ internal class WavuSqlDelightGameProperties(
 ) : SqlDelightGameProperties {
     private val database by wikiDatabase
 
-    // Tekken 8 characters have no game properties
+    // Wavu characters have no game properties
     override fun saveCharacterProperties(
         characterRowId: Long,
         properties: CharacterGameProperties,
@@ -37,6 +39,16 @@ internal class WavuSqlDelightGameProperties(
                 has_floor_interaction = properties.hasFloorInteraction,
             )
 
+            is Tag2Properties -> database.tag2MoveQueries.upsert(
+                move_id = moveRowId,
+                is_homing = properties.isHoming,
+                stance = properties.stance,
+                is_high_crush = properties.isHighCrush,
+                is_low_crush = properties.isLowCrush,
+                has_wall_interaction = properties.hasWallInteraction,
+                has_floor_interaction = properties.hasFloorInteraction,
+            )
+
             else -> Napier.w(tag = TAG) { "no table for ${properties::class.simpleName}" }
         }
     }
@@ -44,10 +56,19 @@ internal class WavuSqlDelightGameProperties(
     override fun loadCharacterProperties(game: Game): Map<Long, CharacterGameProperties> = emptyMap()
 
     override fun loadMoveProperties(characterId: CharacterId): Map<Long, MoveGameProperties> {
-        val propertiesByMoveRowId = database.tekken8MoveQueries
-            .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
-            .executeAsList()
-            .associate { row -> row.move_id to row.toDomain() }
+        val propertiesByMoveRowId: Map<Long, MoveGameProperties> = when (characterId.game) {
+            Game.Tekken8 -> database.tekken8MoveQueries
+                .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
+                .executeAsList()
+                .associate { row -> row.move_id to row.toDomain() }
+
+            Game.Tag2 -> database.tag2MoveQueries
+                .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
+                .executeAsList()
+                .associate { row -> row.move_id to row.toDomain() }
+
+            else -> emptyMap()
+        }
         return propertiesByMoveRowId
     }
 
@@ -63,6 +84,18 @@ private fun Tekken8_move.toDomain(): T8Properties {
         isHoming = is_homing,
         stance = stance,
         isPowerCrush = is_power_crush,
+        isHighCrush = is_high_crush,
+        isLowCrush = is_low_crush,
+        hasWallInteraction = has_wall_interaction,
+        hasFloorInteraction = has_floor_interaction,
+    )
+    return properties
+}
+
+private fun Tag2_move.toDomain(): Tag2Properties {
+    val properties = Tag2Properties(
+        isHoming = is_homing,
+        stance = stance,
         isHighCrush = is_high_crush,
         isLowCrush = is_low_crush,
         hasWallInteraction = has_wall_interaction,

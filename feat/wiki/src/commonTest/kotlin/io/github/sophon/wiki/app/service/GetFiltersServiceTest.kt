@@ -36,6 +36,24 @@ internal class GetFiltersServiceTest {
     }
 
     @Test
+    fun `tag 2 has the correct filters`() {
+        // given
+        val expected = setOf(
+            WavuFilters.Homing,
+            WavuFilters.Throw,
+            WavuFilters.Stance,
+            WavuFilters.LowCrush,
+            WavuFilters.HighCrush,
+        )
+
+        // when
+        val result = service(Game.Tag2)
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `bbcf has its own invincible filter`() {
         // given
         val expected = setOf(BBFilters.Invincible)

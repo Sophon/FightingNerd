@@ -1,6 +1,7 @@
 package io.github.sophon.wiki.model
 
 import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.game.WavuMoveProperties
 
 object WavuFilters {
     object PowerCrush: Filter {
@@ -20,7 +21,7 @@ object WavuFilters {
     object Homing: Filter {
         override val name: String = "Homing"
         override val predicate: (Move) -> Boolean = { move ->
-            (move.gameProperties as? T8Properties)?.isHoming == true
+            (move.gameProperties as? WavuMoveProperties)?.isHoming == true
         }
     }
 
@@ -34,21 +35,21 @@ object WavuFilters {
     object Stance: Filter {
         override val name: String = "Stance"
         override val predicate: (Move) -> Boolean = { move ->
-            (move.gameProperties as? T8Properties)?.stance?.isNotBlank() == true
+            (move.gameProperties as? WavuMoveProperties)?.stance?.isNotBlank() == true
         }
     }
 
     object HighCrush: Filter {
         override val name: String = "HighCrush"
         override val predicate: (Move) -> Boolean = { move ->
-            (move.gameProperties as? T8Properties)?.isHighCrush == true
+            (move.gameProperties as? WavuMoveProperties)?.isHighCrush == true
         }
     }
 
     object LowCrush: Filter {
         override val name: String = "LowCrush"
         override val predicate: (Move) -> Boolean = { move ->
-            (move.gameProperties as? T8Properties)?.isLowCrush == true
+            (move.gameProperties as? WavuMoveProperties)?.isLowCrush == true
         }
     }
 

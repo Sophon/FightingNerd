@@ -23,7 +23,7 @@ import io.github.sophon.wiki.app.util.normalizeDreamCancel
 import io.github.sophon.wiki.app.util.normalizeDustLoop
 import io.github.sophon.wiki.app.util.normalizeMizuumi
 import io.github.sophon.wiki.app.util.normalizeSuperCombo
-import io.github.sophon.wiki.app.util.normalizeT8
+import io.github.sophon.wiki.app.util.normalizeTekken
 import io.github.sophon.wiki.app.util.normalizeXko
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
@@ -353,7 +353,7 @@ internal class RefreshDataService(
 
     private fun List<Move>.normalize(characterId: CharacterId): List<Move> {
         val normalizedList = when (characterId.game) {
-            Game.Tekken8 -> this.map { move -> move.normalizeT8() }
+            Game.Tekken8, Game.Tag2 -> this.map { move -> move.normalizeTekken() }
             Game.MBTL, Game.Uni2, Game.VSAV -> this.map { move -> move.normalizeMizuumi() }
             Game.GGST, Game.DBFZ, Game.GBVSR, Game.BBCF, Game.MTFS -> this.map { move -> move.normalizeDustLoop(characterId) }
             Game.StreetFighter6, Game.MK1, Game.AVL -> this.map { move -> move.normalizeSuperCombo() }

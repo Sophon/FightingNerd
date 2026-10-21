@@ -16,6 +16,13 @@ enum class Game(
         wikiUrl = "https://wavu.wiki/t/Main_Page",
         wiki = Wiki.Wavu,
     ),
+    Tag2(
+        id = "Tag_2",
+        displayName = "Tekken Tag Tournament 2",
+        iconUrl = "https://wavu.wiki/w/images/thumb/7/7f/Tekken_Tag_Tournament_2.png/500px-Tekken_Tag_Tournament_2.png",
+        wikiUrl = "https://wavu.wiki/t/Tekken_Tag_Tournament_2_(Main_Page)",
+        wiki = Wiki.Wavu,
+    ),
 
     StreetFighter6(
         id = "Street_Fighter_6",
