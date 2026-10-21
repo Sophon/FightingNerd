@@ -2,6 +2,9 @@
 
 ## [v17.3.0] - TODO
 - `permissions` - displays mandatory and optional permissions
+- `wiki` 
+  - updated the URL for character list
+  - Tekken Tag Tournament 2 character list
 
 ## [v17.2.5] - 2026-10-12
 - fixed `char` embed missing character image

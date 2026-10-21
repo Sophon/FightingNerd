@@ -68,6 +68,6 @@ internal class WavuKtorGameDataAdapter(
         const val TABLE_T8_MOVE_LIST = "Move"
         const val BASE_URL = "https://wavu.wiki/w/api.php"
         const val LIMIT_MOVES = 500
-        const val URL_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/t8-characters.json"
+        const val URL_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/t8-characters.json"
     }
 }
