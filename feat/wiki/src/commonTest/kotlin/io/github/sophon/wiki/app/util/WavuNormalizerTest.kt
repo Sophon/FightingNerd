@@ -3,9 +3,9 @@ package io.github.sophon.wiki.app.util
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
-import io.github.sophon.wiki.app.util.normalizeT8
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.game.T8Properties
+import io.github.sophon.wiki.model.game.Tag2Properties
 import kotlin.test.Test
 
 class WavuNormalizerTest {
@@ -18,7 +18,7 @@ class WavuNormalizerTest {
         val expected = emptyList<String>()
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -31,7 +31,7 @@ class WavuNormalizerTest {
         val expected = listOf("shining wizard")
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -44,7 +44,7 @@ class WavuNormalizerTest {
         val expected = listOf("can cans", "cancan")
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -57,7 +57,7 @@ class WavuNormalizerTest {
         val expected = listOf("whf", "cd.2", "cd2", "cddf2")
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -70,7 +70,7 @@ class WavuNormalizerTest {
         val expected = listOf("ewhf", "electric", "ecd2", "cd#2", "fndf#2", "cddf#2")
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -89,7 +89,7 @@ class WavuNormalizerTest {
         )
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -102,7 +102,7 @@ class WavuNormalizerTest {
         val expected = listOf("ss4")
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -115,7 +115,7 @@ class WavuNormalizerTest {
         val expected = listOf("hs", "heatsmash")
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -128,7 +128,7 @@ class WavuNormalizerTest {
         val expected = listOf("hfcdb1+2", "fcdb1+2", "fc1+2")
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -141,7 +141,7 @@ class WavuNormalizerTest {
         val expected = listOf("fn4", "wds.4", "wds4", "unsd4")
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -156,7 +156,7 @@ class WavuNormalizerTest {
         val expected = "BAD"
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expected)
@@ -168,7 +168,7 @@ class WavuNormalizerTest {
         val move = WavuMoveSource.matterhorn
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.t8Properties?.stance).isNull()
@@ -180,7 +180,7 @@ class WavuNormalizerTest {
         val move = WavuMoveSource.stomp
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.t8Properties?.stance).isNull()
@@ -193,7 +193,7 @@ class WavuNormalizerTest {
         val expected = "BT"
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expected)
@@ -206,7 +206,7 @@ class WavuNormalizerTest {
         val expected = "BT"
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expected)
@@ -221,7 +221,7 @@ class WavuNormalizerTest {
         val expected = true
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.t8Properties?.isHeat).isEqualTo(expected)
@@ -237,7 +237,7 @@ class WavuNormalizerTest {
         val expectedAliases = listOf("h.bad.f1+2", "h.cd1+2")
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)
@@ -251,7 +251,7 @@ class WavuNormalizerTest {
         val expected = "otg.d44"
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result.input).isEqualTo(expected)
@@ -266,7 +266,7 @@ class WavuNormalizerTest {
         val expected = move
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -285,7 +285,7 @@ class WavuNormalizerTest {
         )
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -305,7 +305,7 @@ class WavuNormalizerTest {
         )
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -321,7 +321,39 @@ class WavuNormalizerTest {
         )
 
         //when
-        val result = move.normalizeT8()
+        val result = move.normalizeTekken()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
+
+    //region tag 2
+    @Test
+    fun `tag 2 stance move gets stance and dotless alias`() {
+        //given
+        val move = WavuMoveSource.tag2HwoarangRff1
+        val expected = move.copy(
+            input = "rff.1",
+            aliases = listOf("rff1"),
+            gameProperties = Tag2Properties(stance = "RFF"),
+        )
+
+        //when
+        val result = move.normalizeTekken()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `tag 2 keeps the mapped properties`() {
+        //given
+        val move = WavuMoveSource.tag2NejiriUraken
+        val expected = move.copy(input = "d1+2")
+
+        //when
+        val result = move.normalizeTekken()
 
         //then
         assertThat(result).isEqualTo(expected)
@@ -549,5 +581,34 @@ private object WavuMoveSource {
         ),
         urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f,f,F+2+4"),
         gameProperties = T8Properties(isHoming = true, hasWallInteraction = true),
+    )
+    val tag2HwoarangRff1 = Move(
+        remoteId = "Hwoarang-RFF.1",
+        input = "RFF.1",
+        damage = "13",
+        startup = "i10",
+        recovery = "RFF",
+        onBlock = "+0",
+        onHit = "+6",
+        onCH = "+6",
+        guard = "h",
+        notes = listOf("Transition to RFF"),
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Hwoarang_movelist_(Tag_2)#Hwoarang-RFF.1"),
+        gameProperties = Tag2Properties(),
+    )
+    val tag2NejiriUraken = Move(
+        remoteId = "Kazuya-d+1+2",
+        name = "Nejiri Uraken",
+        input = "d+1+2",
+        damage = "24",
+        startup = "i25",
+        recovery = "FC",
+        onBlock = "-16",
+        onHit = "+2c",
+        onCH = "KND",
+        guard = "l",
+        notes = listOf("Can be cancelled with DB", "cs"),
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Kazuya_movelist_(Tag_2)#Kazuya-d+1+2"),
+        gameProperties = Tag2Properties(isHighCrush = true),
     )
 }
