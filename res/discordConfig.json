@@ -14,7 +14,8 @@
       "name": "Wavu Wiki",
       "isEnabled": true,
       "supportedGames": [
-        "Tekken_8"
+        "Tekken_8",
+        "Tag_2"
       ]
     },
     {
