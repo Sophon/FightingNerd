@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v17.3.0] - TODO
+## [v17.3.0] - 2026-10-22
 - `permissions` - displays mandatory and optional permissions
 - `wiki` 
   - updated the URL for character list
