@@ -378,8 +378,8 @@ class MoveMappersTest {
     @Test
     fun `only tekken is always expanded`() {
         // given
-        val gameList = listOf(Game.Tekken8, Game.GGST, Game.StreetFighter6, Game.DBFZ)
-        val expected = listOf(true, false, false, false)
+        val gameList = listOf(Game.Tekken8, Game.Tag2, Game.GGST, Game.StreetFighter6, Game.DBFZ)
+        val expected = listOf(true, true, false, false, false)
         val move = Move(input = "5P", urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy#5P"))
 
         // when
