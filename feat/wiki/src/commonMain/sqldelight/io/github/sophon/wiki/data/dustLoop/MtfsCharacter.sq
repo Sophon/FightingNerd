@@ -1,0 +1,18 @@
+CREATE TABLE mtfs_character (
+    character_id INTEGER PRIMARY KEY REFERENCES character(id) ON DELETE CASCADE,
+    prejump TEXT,
+    backdash TEXT,
+    team TEXT
+);
+
+upsert:
+INSERT INTO mtfs_character(character_id, prejump, backdash, team)
+VALUES (?, ?, ?, ?)
+ON CONFLICT (character_id) DO UPDATE SET
+    prejump = excluded.prejump,
+    backdash = excluded.backdash,
+    team = excluded.team;
+
+selectAll:
+SELECT *
+FROM mtfs_character;

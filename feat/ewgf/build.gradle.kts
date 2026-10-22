@@ -49,7 +49,7 @@ kotlin {
     }
 }
 
-val featureVersion = "1.4.0"
+val featureVersion = "2.1.0"
 buildkonfig {
     packageName = "io.github.sophon.ewgf"
 

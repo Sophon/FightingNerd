@@ -2,6 +2,10 @@
 
 ## High prio
 
+- we're currently loading characters one by one, when their move-lists are completed
+  - we should load all characters and have them loading
+  - and then unload the characters after their move-lists are downloaded
+
 ## Low prio
 
 - first time launch tutorial dialog

@@ -1,0 +1,14 @@
+CREATE TABLE dbfz_character (
+    character_id INTEGER PRIMARY KEY REFERENCES character(id) ON DELETE CASCADE,
+    ki_mod TEXT
+);
+
+upsert:
+INSERT INTO dbfz_character(character_id, ki_mod)
+VALUES (?, ?)
+ON CONFLICT (character_id) DO UPDATE SET
+    ki_mod = excluded.ki_mod;
+
+selectAll:
+SELECT *
+FROM dbfz_character;

@@ -1,0 +1,34 @@
+import kotlin.Boolean;
+
+CREATE TABLE move_alias (
+    character_id INTEGER NOT NULL REFERENCES character(id) ON DELETE CASCADE,
+    alias TEXT NOT NULL,
+    move_id INTEGER NOT NULL REFERENCES move(id) ON DELETE CASCADE,
+    is_input INTEGER AS Boolean NOT NULL,
+    PRIMARY KEY (character_id, alias)
+);
+
+CREATE INDEX move_alias_move_id ON move_alias(move_id);
+
+-- inputs are unique per character, so they never conflict with each other
+insertInputsByCharacter:
+INSERT INTO move_alias(character_id, alias, move_id, is_input)
+SELECT character_id, input, id, 1
+FROM move
+WHERE character_id = ?;
+
+-- written after the inputs - an input beats an alias, then the first alias written wins
+insertAlias:
+INSERT INTO move_alias(character_id, alias, move_id, is_input)
+VALUES (?, ?, ?, 0)
+ON CONFLICT (character_id, alias) DO NOTHING;
+
+selectAliasByCharacter:
+SELECT move_id, alias
+FROM move_alias
+WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?) AND is_input = 0
+ORDER BY rowid;
+
+deleteByCharacter:
+DELETE FROM move_alias
+WHERE character_id = ?;

@@ -1,0 +1,33 @@
+CREATE TABLE mbtl_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    input_info TEXT,
+    subtitle TEXT,
+    min_damage TEXT,
+    mizuumi_property TEXT,
+    cost TEXT,
+    attribute TEXT,
+    landing TEXT,
+    overall TEXT
+);
+
+upsert:
+INSERT INTO mbtl_move(move_id, input_info, subtitle, min_damage, mizuumi_property, cost, attribute, landing, overall)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    input_info = excluded.input_info,
+    subtitle = excluded.subtitle,
+    min_damage = excluded.min_damage,
+    mizuumi_property = excluded.mizuumi_property,
+    cost = excluded.cost,
+    attribute = excluded.attribute,
+    landing = excluded.landing,
+    overall = excluded.overall;
+
+selectByCharacter:
+SELECT *
+FROM mbtl_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

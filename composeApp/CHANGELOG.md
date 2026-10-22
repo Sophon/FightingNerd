@@ -1,6 +1,13 @@
 # APP CHANGELOG
 
-## [v5.1.1] - TODO
+## [v5.2.0] - TODO
+- progress bars when downloading/refreshing data
+- performance improvements thanks to new architecture
+- added games:
+  - Tekken Tag Tournament 2
+  - Tekken 5
+
+## [v5.1.1] - 2026-09-27
 - fixed DustLoop missing some characters
 
 ## [v5.1.0] - 2026-09-23

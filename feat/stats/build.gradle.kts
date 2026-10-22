@@ -22,6 +22,7 @@ kotlin {
             implementation(libs.napier)
             implementation(libs.kotlin.date.time)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.okio)
 
             api(libs.koin.core)
         }
@@ -40,7 +41,7 @@ kotlin {
     }
 }
 
-val featureVersion = "1.1.0"
+val featureVersion = "1.2.0"
 buildkonfig {
     packageName = "io.github.sophon.stats"
 

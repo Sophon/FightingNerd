@@ -1,0 +1,42 @@
+flowchart TD
+    message["Message"]
+
+    subgraph KORD
+        bot["Bot"]
+        poster["Poster"]
+    end
+
+    subgraph APPLICATION
+        btn_svc["Process button event"]
+        fd_p["Frame data port"]
+    end
+
+    subgraph ADAPTER
+        wiki_adp["Wiki adapter"]
+    end
+
+    subgraph FEATURES
+        wiki["Wiki"]
+    end
+
+
+    message --> |"1. DETAILS press"| bot --> |"2. Expand event (MoveID)"| btn_svc --> |"3. MoveId"| fd_p
+    fd_p --- wiki_adp --- wiki
+    fd_p --> |"4. response"| btn_svc --> |"5. response (expand flag)"| bot
+    bot --> |"6. expanded embed"| poster --> |"7. edits"| message
+
+
+    style KORD stroke:orange,stroke-dasharray:5 5,fill:none
+    style APPLICATION stroke:green,stroke-dasharray:5 5,fill:none
+    style ADAPTER stroke:blue,stroke-dasharray:5 5,fill:none
+    style FEATURES stroke-dasharray:5 5,fill:none
+
+    classDef kord stroke:orange
+    classDef application stroke:green
+    classDef adapter stroke:blue
+    classDef outboundPort stroke:green,stroke-dasharray:3 3
+
+    class bot,poster kord
+    class btn_svc application
+    class fd_p outboundPort
+    class wiki_adp adapter

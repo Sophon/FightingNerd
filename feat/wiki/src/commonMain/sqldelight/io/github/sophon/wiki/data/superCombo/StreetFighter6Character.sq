@@ -1,0 +1,59 @@
+CREATE TABLE street_fighter6_character (
+    character_id INTEGER PRIMARY KEY REFERENCES character(id) ON DELETE CASCADE,
+    fwd_walk_spd TEXT,
+    bwd_walk_spd TEXT,
+    fwd_dash_spd TEXT,
+    bwd_dash_spd TEXT,
+    fwd_dash_dist TEXT,
+    bwd_dash_dist TEXT,
+    d_rush_min TEXT,
+    d_rush_block TEXT,
+    d_rush_max TEXT,
+    throw_range TEXT,
+    throw_hurtbox TEXT,
+    jump_spd TEXT,
+    jump_apex TEXT,
+    fwd_jump_dist TEXT,
+    bwd_jump_dist TEXT
+);
+
+upsert:
+INSERT INTO street_fighter6_character(
+    character_id,
+    fwd_walk_spd,
+    bwd_walk_spd,
+    fwd_dash_spd,
+    bwd_dash_spd,
+    fwd_dash_dist,
+    bwd_dash_dist,
+    d_rush_min,
+    d_rush_block,
+    d_rush_max,
+    throw_range,
+    throw_hurtbox,
+    jump_spd,
+    jump_apex,
+    fwd_jump_dist,
+    bwd_jump_dist
+)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (character_id) DO UPDATE SET
+    fwd_walk_spd = excluded.fwd_walk_spd,
+    bwd_walk_spd = excluded.bwd_walk_spd,
+    fwd_dash_spd = excluded.fwd_dash_spd,
+    bwd_dash_spd = excluded.bwd_dash_spd,
+    fwd_dash_dist = excluded.fwd_dash_dist,
+    bwd_dash_dist = excluded.bwd_dash_dist,
+    d_rush_min = excluded.d_rush_min,
+    d_rush_block = excluded.d_rush_block,
+    d_rush_max = excluded.d_rush_max,
+    throw_range = excluded.throw_range,
+    throw_hurtbox = excluded.throw_hurtbox,
+    jump_spd = excluded.jump_spd,
+    jump_apex = excluded.jump_apex,
+    fwd_jump_dist = excluded.fwd_jump_dist,
+    bwd_jump_dist = excluded.bwd_jump_dist;
+
+selectAll:
+SELECT *
+FROM street_fighter6_character;

@@ -1,5 +1,61 @@
 # BOT CHANGELOG
 
+## [v17.4.0] - 2026-10-22
+- `wiki`
+  - Tag 2 - fixed Dr Bosconovitch and Roger
+  - added Tekken 5
+
+## [v17.3.1] - 2026-10-22
+- fixed Tag2 not being expanded
+
+## [v17.3.0] - 2026-10-22
+- `permissions` - displays mandatory and optional permissions
+- `wiki` 
+  - updated the URL for character list
+  - Tekken Tag Tournament 2
+
+## [v17.2.5] - 2026-10-12
+- fixed `char` embed missing character image
+- fixed `alias` displaying multi-word options
+
+## [v17.2.4] - 2026-10-12
+- fixed Wiki module's name
+- fixed some commands not working with autocomplete encoded values
+
+## [v17.2.3] - 2026-10-11
+- fixed missing error logs
+
+## [v17.2.2] - 2026-10-09
+- fixed `invite` missing mobile links
+
+## [v17.2.1] - 2026-10-09
+- fixed DB locking up
+  - serial writes
+  - WAL mode
+- autocomplete and button flows use character ID instead of string query
+
+## [v17.2.0] - 2026-10-09
+- hide images by default
+- move aliases displayed by default
+- user who press buttons are tagged
+
+## [v17.1.0] - 2026-10-09
+- `media` command
+  - can search for move media the same as `fd`
+  - fixed bug where clicking Video button didn't show anything due to char limit
+    - uses `media` instead
+  - move embed with media can now only display images, instead of details + images (Details button)
+- changed details columns to 2 for better readability
+
+## [v17.0.2] - 2026-10-08
+- fix - missing daily stats report
+
+## [v17.0.1] - 2026-10-06
+- fix - normalize user query
+
+## [v17.0.0] - 2026-10-06
+- full architectural refactor into HexDDD
+
 ## [v16.6.2] - 2026-09-16
 - Kord snapshot version to fix ULong bug on Discord
 

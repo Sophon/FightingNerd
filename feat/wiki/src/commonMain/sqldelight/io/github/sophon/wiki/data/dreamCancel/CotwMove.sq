@@ -1,0 +1,19 @@
+CREATE TABLE cotw_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    rev_damage TEXT
+);
+
+upsert:
+INSERT INTO cotw_move(move_id, rev_damage)
+VALUES (?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    rev_damage = excluded.rev_damage;
+
+selectByCharacter:
+SELECT *
+FROM cotw_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

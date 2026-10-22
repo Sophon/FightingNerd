@@ -215,3 +215,5 @@ fun List<String>.toColumns(): List<List<String>> {
     return chunks
 }
 
+//Zero Width Space
+const val invisibleChar = "\u200B"

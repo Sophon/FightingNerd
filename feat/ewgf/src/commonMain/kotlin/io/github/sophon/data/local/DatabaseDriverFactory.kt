@@ -1,7 +1,0 @@
-package io.github.sophon.data.local
-
-import app.cash.sqldelight.db.SqlDriver
-
-internal expect class DatabaseDriverFactory {
-    fun createDriver(): SqlDriver
-}

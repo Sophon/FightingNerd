@@ -1,0 +1,18 @@
+CREATE TABLE bbcf_character (
+    character_id INTEGER PRIMARY KEY REFERENCES character(id) ON DELETE CASCADE,
+    pre_jump TEXT,
+    back_dash TEXT,
+    forward_dash TEXT
+);
+
+upsert:
+INSERT INTO bbcf_character(character_id, pre_jump, back_dash, forward_dash)
+VALUES (?, ?, ?, ?)
+ON CONFLICT (character_id) DO UPDATE SET
+    pre_jump = excluded.pre_jump,
+    back_dash = excluded.back_dash,
+    forward_dash = excluded.forward_dash;
+
+selectAll:
+SELECT *
+FROM bbcf_character;

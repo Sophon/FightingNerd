@@ -1,0 +1,41 @@
+flowchart TD
+    subgraph KORD
+        bot["Bot"]
+    end
+
+    subgraph APPLICATION
+        process["Process auto complete"]
+        fd_svc["Char/Move service"]
+        fd_port["FD port"]
+    end
+
+    subgraph ADAPTER
+        wiki_adp["Wiki adapter"]
+    end
+
+    subgraph FEATURES
+        wiki["Wiki"]
+    end
+
+
+    bot --> |"1. command, arg, query"| process
+    process --> |"2. query"| fd_svc --> |"3. nothing, then move query"| fd_port
+    fd_port --- wiki_adp --- wiki
+    fd_port --> |"4. char list, move list"| fd_svc --> process
+    process --> |"5. options"| bot
+
+
+    style KORD stroke:orange,stroke-dasharray:5 5,fill:none
+    style APPLICATION stroke:green,stroke-dasharray:5 5,fill:none
+    style ADAPTER stroke:blue,stroke-dasharray:5 5,fill:none
+    style FEATURES stroke-dasharray:5 5,fill:none
+
+    classDef kord stroke:orange
+    classDef application stroke:green
+    classDef adapter stroke:blue
+    classDef outboundPort stroke:green,stroke-dasharray:3 3
+
+    class bot kord
+    class process,fd_svc application
+    class fd_port outboundPort
+    class wiki_adp adapter

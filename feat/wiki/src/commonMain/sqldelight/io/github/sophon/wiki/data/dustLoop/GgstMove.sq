@@ -1,0 +1,33 @@
+CREATE TABLE ggst_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    risc_gain TEXT,
+    risc_loss TEXT,
+    wall_damage TEXT,
+    input_tension TEXT,
+    chip_ratio TEXT,
+    otg_type TEXT,
+    prorate TEXT,
+    level TEXT
+);
+
+upsert:
+INSERT INTO ggst_move(move_id, risc_gain, risc_loss, wall_damage, input_tension, chip_ratio, otg_type, prorate, level)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    risc_gain = excluded.risc_gain,
+    risc_loss = excluded.risc_loss,
+    wall_damage = excluded.wall_damage,
+    input_tension = excluded.input_tension,
+    chip_ratio = excluded.chip_ratio,
+    otg_type = excluded.otg_type,
+    prorate = excluded.prorate,
+    level = excluded.level;
+
+selectByCharacter:
+SELECT *
+FROM ggst_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

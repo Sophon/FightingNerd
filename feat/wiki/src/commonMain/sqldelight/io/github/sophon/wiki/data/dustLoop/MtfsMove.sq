@@ -1,0 +1,29 @@
+CREATE TABLE mtfs_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    simple_input TEXT,
+    level TEXT,
+    prorate TEXT,
+    meter_gain TEXT,
+    untech_amount TEXT,
+    hitbox_caption TEXT
+);
+
+upsert:
+INSERT INTO mtfs_move(move_id, simple_input, level, prorate, meter_gain, untech_amount, hitbox_caption)
+VALUES (?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    simple_input = excluded.simple_input,
+    level = excluded.level,
+    prorate = excluded.prorate,
+    meter_gain = excluded.meter_gain,
+    untech_amount = excluded.untech_amount,
+    hitbox_caption = excluded.hitbox_caption;
+
+selectByCharacter:
+SELECT *
+FROM mtfs_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);

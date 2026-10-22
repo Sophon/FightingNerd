@@ -1,206 +1,119 @@
-<img width="3600" height="1200" alt="banner" src="https://github.com/user-attachments/assets/cb97083b-8ecc-4496-852b-c5ed48514b1f" />
+<img width="2400" height="1200" alt="banner-no_bg" src="https://github.com/user-attachments/assets/0a3ff265-08ef-408f-8264-10527e8d56cf" />
 
 
-
-# Fighting Nerd - FGC frame data
+# FIGHTING NERD - FGC frame data
 
 Frame data targeting Discord bot and mobile apps:
-- 🧩 highly extensible
-  - 📘 glossary
-  - 📚 [any community Wikis](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
 - 🌐 multiplatform:
   - Play Store [![Play Store](https://img.shields.io/badge/Play_Store-01875F?style=for-the-badge&logo=googleplay&logoColor=white)](https://play.google.com/store/apps/details?id=io.github.sophon.fightingnerd)
   - App Store [![App Store](https://img.shields.io/badge/App_Store-555555?style=for-the-badge&logo=appstore&logoColor=white)](https://apps.apple.com/us/app/fighting-nerd/id6793185357)
   - Discord [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/discovery/applications/1438716136790429776)
-
+- 🧩 highly extensible
+  - 📘 glossary: Infil Glossary
+  - 📚 community wikis: [DustLoop](https://www.dustloop.com/wiki/), [DreamCancel](https://dreamcancel.com/wiki/Main_Page), [Mizuumi](https://mizuumi.wiki/w/Main_Page), [SuperCombo](https://wiki.supercombo.gg/w/Main_Page), [Wavu](https://wavu.wiki/), [DragDown](https://dragdown.wiki/wiki/Main_Page), [2xko](https://wiki.play2xko.com/en-us/)
+  - ELO service: [EWGF.gg](https://ewgf.gg/)
 
 [![ko-fi](https://img.shields.io/badge/Support_on_Ko--fi-FF5E5B?style=for-the-badge&logo=kofi&logoColor=white)](https://ko-fi.com/sorryuken)
 
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy_Me_a_Coffee-FFDD00?style=for-the-badge&logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/sophon)
 
-
-## Sample Usage
-
-All commands are case **insensitive** - uppercase or lowercase or anything in between is identical.
-
-All commands can be used in one of two ways:
-1. tag - `@bot [command] [query]`
-2. slash - `/command [query]`
-
-In the signatures below, `<param>` is required and `[param]` is optional.
-
-- **frame data** - `fd <character> <move>`
-  - `<move>` can be input or move name
-  - default command: `@bot <character> <move>` and `@bot fd <character> <move>` are identical
-  - game specific variants: `fdTK`, `fdSF`, `fdGG` etc.
-  - examples: `@bot ak f21` or `@bot ken 236pp` or `@bot sol fafnir`
-- **character data** - `char <game> <character>`
-  - game specific variants: `charGG`, `charSF`, `charAV` etc.
-  - examples: `@bot charsf akuma` or `@bot charroa olympia`
-- **game specific commands**
-  - Tekken 8
-    - `Heat <character>`, `Homing <character>`, `PC <character>`
-    - `Stance <character> [stance]`
-      - examples: `@bot stance steve` or `@bot stance king jgs`
-    - `Strings <character> <input>`
-      - examples: `@bot strings eddy u4`
-  - `Inv <character>` - invincible moves
-- **ELO**
-  - Tekken 8
-    - `EWGF [operation] [tekkenID]` - https://ewgf.gg/
-      - operations:
-        - `register` (or `+`), requires `<tekkenID>`: registers your Discord account
-          - example: `@bot ewgf + 3DgB8jQ82rJ4`
-        - (no operation): displays your last 50 matches
-          - example: `@bot ewgf`
-        - `unregister` (or `-`): deletes your Discord account from the database
-          - example: `@bot ewgf -`
-- **utility commands**
-  - `Alias` - displays character aliases for a game
-  - `Commands` - lists all available commands
-  - `Donate` - displays links to support the project
-  - `Examples` - displays example bot usage
-  - `Feedback <message>` - sends feedback or bug report to the author
-  - `Invite` - displays the invitation link
-  - `Join <steamURL> [password|name]` - creates a clickable link to join a Steam lobby
-    - default bot command: `@bot steam://joinlobby/...` or `@bot join steam://joinlobby/...` are identical
-  - `Modules` - displays all enabled modules, be it games or otherwise
-  - `Repo` - displays the GitHub link to the project
-
-### [CURRENT FEATURE MODULES](https://github.com/Sophon/FightingNerd/wiki/Features#list-of-feature-modules)
-
-```mermaid
-graph LR
-  classDef green fill:green,color:#000
-  classDef grey fill:lightgrey,color:#000
-  classDef yellow fill:#FFEB3B,color:#000
-
-  subgraph Bots
-    discordBot[Discord bot]
-    twitchBot[Twitch bot]
-  end
-
-  subgraph "Mobile Clients"
-    android[Android]
-    iOS[iOS]
-  end
-
-  subgraph Features
-    glossaryInfil[Glossary Infil]
-    communityWiki[Community Wiki]
-    elo[Ranked stats]
-  end
-
-  subgraph Community Wiki
-    wikiWavu[Wavu + Tekken Docs]
-    supercombo[SuperCombo]
-    2xko[2XKO]
-    dustloop[Dustloop]
-    dreamcancel[DreamCancel]
-    mizuumi[Mizuumi]
-    dragdown[DragDown]
-  end
-
-  subgraph Games
-    t8[Tekken 8]
-    sf6[Street Fighter 6]
-    mk1[Mortal Kombat 1]
-    ggst[Guilty Gear: Strive]
-    dbfz[Dragon Ball FighterZ]
-    gbvsr[Granblue Fantasy Versus: Rising]
-    kof15[King of Fighters XV]
-    cotw[Fatal Fury: City of the Wolves]
-    xko[2XKO]
-    melty[Melty Blood: Type Lumina]
-    bbcf[BlazBlue: Central Fiction]
-    uni2[Under Night In-Birth II Sys:Celes]
-    vsav[Vampire Savior]
-    avl[Avatar: Legends]
-    roa[Rivals of Aether 2]
-    mtfs[Marvel Tokon: Fighting Spirit]
-  end
-
-  subgraph Ranked service
-    ewgf[EWGF]
-    cfn[CFN]
-  end
-
-  android -->|uses| communityWiki
-  iOS -->|uses| communityWiki
-
-  discordBot -->|uses| glossaryInfil
-  discordBot -->|uses| communityWiki
-  discordBot -->|uses| elo
-  twitchBot -->|uses| communityWiki
-
-  communityWiki --> wikiWavu
-  communityWiki --> supercombo
-  communityWiki --> 2xko
-  communityWiki --> dreamcancel
-  communityWiki --> dustloop
-  communityWiki --> mizuumi
-  communityWiki --> dragdown
-
-  elo --> ewgf
-  elo --> cfn
-
-  wikiWavu --> t8
-  supercombo --> sf6
-  supercombo --> mk1
-  supercombo --> avl
-  dustloop --> ggst
-  dustloop --> dbfz
-  dustloop --> gbvsr
-  dustloop --> bbcf
-  dustloop --> mtfs
-  2xko --> xko
-  dreamcancel --> kof15
-  dreamcancel --> cotw
-  mizuumi --> melty
-  mizuumi --> uni2
-  mizuumi --> vsav
-  dragdown --> roa
+This README serves as a technical overview for the project.
 
 
-  style discordBot fill:green, color:#fff
-  style android fill:green, color:#fff
-  style iOS fill:green, color:#fff
-  style glossaryInfil fill:green, color:#fff
-  style communityWiki fill:green, color:#fff
-  style wikiWavu fill:green, color:#fff
-  style supercombo fill:green, color:#fff
-  style dreamcancel fill:green, color:#fff
-  style dustloop fill:green, color:#fff
-  style mizuumi fill:green, color:#fff
-  style dragdown fill:green, color:#fff
-  style 2xko fill:green, color:#fff
-  style t8 fill:green, color:#fff
-  style sf6 fill:green, color:#fff
-  style xko fill:green, color:#fff
-  style kof15 fill:green, color:#fff
-  style cotw fill:green, color:#fff
-  style ggst fill:green, color:#fff
-  style mk1 fill:green, color:#fff
-  style dbfz fill:green, color:#fff
-  style gbvsr fill:green, color:#fff
-  style melty fill:green, color:#fff
-  style bbcf fill:green, color:#fff
-  style uni2 fill:green, color:#fff
-  style vsav fill:green, color:#fff
-  style ewgf fill:green, color:#fff
-  style avl fill:yellow, color:#000
-  style mtfs fill:yellow, color:#000
-  style roa fill:green, color:#fff
-```
+## Tech stack
 
-## [CHECK THE WIKI](https://github.com/Sophon/FightingNerd/wiki)
+- core
+  - language: `Kotlin`
+  - concurrency: `Coroutines` and `Flow`
+  - networking: `Ktor`
+  - serialization: `Kotlin serialization`
+  - DI: `Koin`
+- platforms
+  - Android, iOS, JVM: `Kotlin Multiplatform`
+  - Discord API - `Kord`
+- data
+  - DB - `SQLDelight`
+  - preferences - `DataStore` 
+- testing and quality
+  - unit tests - `JUnit 4`, `AssertK`
+  - architecture testing - `Konsist`
+  - lint: `Detekt`
+- mobile
+  - UI: `Compose Multiplatform` 
+  - navigation: `navigation 3`
+  - media: `Coil` for images, `Compose Media Player` for videos
+  - IAP (donations): `RevenueCat`
+  - store: `Play Review`
+- Discord bot
+  - containerization: `Docker`
+  - cloud hosting: `Fly.io`
+- others
+  - versioning: `BuildKonfig`
+  - diagrams: `Mermaid.js`
+  - logging: `Napier`
 
-### [Long term goals](https://github.com/Sophon/FightingNerd/wiki/Features#planned-feature-modules):
+## Architecture
+
+- Hexagonal architecture + DDD: see [ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- multi-module: see [modules.mmd](docs/modules.mmd)
+  - core 
+  - composeApp - mobile clients
+  - bot/discord - Discord bot
+  - feat/admin - administrative tasks
+  - feat/ewgf - ELO service
+  - feat/glossaryInfil - FGC glossary
+  - feat/stats - usage tracking, daily reports
+  - feat/wiki - frame data from various wikis
+
+## CICD
+
+- PR checks (see [test.yml](.github/workflows/test.yml)):
+  - detekt: [detekt.yml](.github/workflows/detekt.yml)
+  - unit tests
+  - coverage
+  - architecture tests
+- release:
+  - Discord bot: [release_bot.mmd](docs/release_bot.mmd)
+  - mobile apps: TODO
+
+## AI disclaimer
+
+Creator technical background:
+- 2020 - 2026: Android developer and mobile developer with KMP 
+- 2026 - onwards: backend developer with Kotlin and Micronaut
+
+Project timeline:
+- October 2025 (project start) - June 2026: completely human coded.
+- June 2026 - onwards: AI assisted.
+
+Specific breakdown:
+
+- completely human created/decided:
+  - architecture
+  - interfaces
+  - code reviews and commits
+  - features
+  - documentation
+  - releases
+  - all project assets - banners, icons, screenshots etc.
+- AI assisted, complete human supervision:
+  - unit tests
+  - minor refactoring using IDE MCP
+  - comments
+  - CICD
+- AI written, minimal human supervision:
+  - data models from json
+
+Harness: Claude code.
+
+## Long term goals
+- webapp
+  - KMP + CMP WASM
+- CFN
 - Twitch bot
-- ELO rank services
 
 ___
-# [License](https://github.com/Sophon/FightingNerd/blob/feat/sorry/license/LICENSE.txt)
+# [License](LICENSE.txt)
 ```
 License: Apache 2.0 with Commons Clause
 
