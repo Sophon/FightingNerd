@@ -21,4 +21,18 @@ internal class WavuSqlDelightGamePropertiesTest {
         val moveList = database.moveAdapter.subscribe(tag2Hwoarang.id).first()
         assertThat(moveList).isEqualTo(expected)
     }
+
+    @Test
+    fun `Tekken 5 move properties are loaded back`() = runTest {
+        // given
+        val database = TestWikiDatabase()
+        val expected = listOf(t5HwoarangRff1)
+
+        // when
+        database.save(t5Hwoarang, expected)
+
+        // then
+        val moveList = database.moveAdapter.subscribe(t5Hwoarang.id).first()
+        assertThat(moveList).isEqualTo(expected)
+    }
 }
