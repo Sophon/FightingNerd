@@ -3,6 +3,7 @@ package io.github.sophon.wiki.adapter.outbound.sqldelight.wavu
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.T5Properties
 import io.github.sophon.wiki.model.game.Tag2Properties
 import io.github.sophon.wiki.model.wiki.Game
 
@@ -31,6 +32,36 @@ internal val tag2HwoarangRff1 = Move(
     notes = listOf("Transition to RFF"),
     urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Hwoarang_movelist_(Tag_2)#Hwoarang-RFF.1"),
     gameProperties = Tag2Properties(
+        isHoming = true,
+        stance = "RFF",
+        isHighCrush = false,
+        isLowCrush = true,
+        hasWallInteraction = false,
+        hasFloorInteraction = true,
+    ),
+)
+
+internal val t5Hwoarang = Character(
+    id = CharacterId(Game.Tekken5, "hwoarang"),
+    displayName = "Hwoarang",
+    remoteQueryId = "Hwoarang",
+    wikiUrl = "https://wavu.wiki/t/Hwoarang_(Tekken_5)",
+    aliasList = listOf("hwoarang", "hwo"),
+)
+
+internal val t5HwoarangRff1 = Move(
+    remoteId = "Hwoarang-RFF.1",
+    input = "rff.1",
+    aliases = listOf("rff1"),
+    damage = "10",
+    startup = "i10",
+    recovery = "RFF",
+    onBlock = "+1",
+    onHit = "+9",
+    onCH = "+7",
+    guard = "h",
+    urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Hwoarang_movelist_(Tekken_5)#Hwoarang-RFF.1"),
+    gameProperties = T5Properties(
         isHoming = true,
         stance = "RFF",
         isHighCrush = false,

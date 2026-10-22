@@ -23,6 +23,13 @@ enum class Game(
         wikiUrl = "https://wavu.wiki/t/Tekken_Tag_Tournament_2_(Main_Page)",
         wiki = Wiki.Wavu,
     ),
+    Tekken5(
+        id = "Tekken_5",
+        displayName = "Tekken 5",
+        iconUrl = "https://tekkenwarehouse.com/wp-content/uploads/2024/03/tekken5_logo.png",
+        wikiUrl = "https://wavu.wiki/t/Tekken_5:_Dark_Resurrection_(Main_Page)",
+        wiki = Wiki.Wavu,
+    ),
 
     StreetFighter6(
         id = "Street_Fighter_6",

@@ -1,6 +1,7 @@
 package io.github.sophon.wiki.app.util
 
 import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.T5Properties
 import io.github.sophon.wiki.model.game.T8Properties
 import io.github.sophon.wiki.model.game.Tag2Properties
 
@@ -21,6 +22,7 @@ internal fun Move.normalizeTekken(): Move {
             )
         }
         is Tag2Properties -> mappedProperties.copy(stance = stance)
+        is T5Properties -> mappedProperties.copy(stance = stance)
         else -> mappedProperties
     }
 

@@ -56,6 +56,19 @@ internal class GetGroupsService : GetGroupsUseCase {
                 WavuGroups.Crouch,
                 WavuGroups.WS,
             ) + extras.map { WavuGroups.Stance(it) }
+            Game.Tekken5 -> listOf(
+                WavuGroups.Neutral,
+                WavuGroups.Forward,
+                WavuGroups.DownForward,
+                WavuGroups.Down,
+                WavuGroups.DownBack,
+                WavuGroups.Back,
+                WavuGroups.Up,
+                WavuGroups.UpBack,
+                WavuGroups.Motion,
+                WavuGroups.Crouch,
+                WavuGroups.WS,
+            ) + extras.map { WavuGroups.Stance(it) }
 
             Game.StreetFighter6 -> listOf(
                 SFGroups.Normal,

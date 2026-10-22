@@ -1,5 +1,10 @@
 # BOT CHANGELOG
 
+## [v17.4.0] - 2026-10-22
+- `wiki`
+  - Tag 2 - fixed Dr Bosconovitch and Roger
+  - added Tekken 5
+
 ## [v17.3.1] - 2026-10-22
 - fixed Tag2 not being expanded
 

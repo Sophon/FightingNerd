@@ -1,0 +1,334 @@
+{
+  "characters": [
+    {
+      "id": "anna",
+      "displayName": "Anna",
+      "wavuName": "Anna",
+      "aliasList": ["ana", "an"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_anna_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_anna_c.png"
+      }
+    },
+    {
+      "id": "armor-king",
+      "displayName": "Armor King",
+      "wavuName": "Armor King",
+      "aliasList": ["ak", "aking", "armorking"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_armorking_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_armorking_c.png"
+      }
+    },
+    {
+      "id": "asuka",
+      "displayName": "Asuka",
+      "wavuName": "Asuka",
+      "aliasList": ["oscar", "oskar", "aska"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_asuka_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_asuka_c.png"
+      }
+    },
+    {
+      "id": "baek",
+      "displayName": "Baek",
+      "wavuName": "Baek",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_baek_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_baek_c.png"
+      }
+    },
+    {
+      "id": "bruce",
+      "displayName": "Bruce",
+      "wavuName": "Bruce",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_bruce_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_bruce_c.png"
+      }
+    },
+    {
+      "id": "bryan",
+      "displayName": "Bryan",
+      "wavuName": "Bryan",
+      "aliasList": ["bry", "byron"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_bryan_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_bryan_c.png"
+      }
+    },
+    {
+      "id": "devil-jin",
+      "displayName": "Devil Jin",
+      "wavuName": "Devil Jin",
+      "aliasList": ["dvj", "dj", "deviljin", "djin"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_deviljin_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_deviljin_c.png"
+      }
+    },
+    {
+      "id": "dragunov",
+      "displayName": "Dragunov",
+      "wavuName": "Dragunov",
+      "aliasList": ["dra", "drag", "dragu", "sergei"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_dragunov_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_dragunov_c.png"
+      }
+    },
+    {
+      "id": "eddy",
+      "displayName": "Eddy",
+      "wavuName": "Eddy",
+      "aliasList": ["capo", "edy", "christie", "christie"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_eddy_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_eddy_c.png"
+      }
+    },
+    {
+      "id": "feng",
+      "displayName": "Feng",
+      "wavuName": "Feng",
+      "aliasList": ["fen"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_feng_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_feng_c.png"
+      }
+    },
+    {
+      "id": "ganryu",
+      "displayName": "Ganryu",
+      "wavuName": "Ganryu",
+      "aliasList": ["gan"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_ganryu_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_ganryu_c.png"
+      }
+    },
+    {
+      "id": "heihachi",
+      "displayName": "Heihachi",
+      "wavuName": "Heihachi",
+      "aliasList": ["hei", "hachi"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_heihachi_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_heihachi_c.png"
+      }
+    },
+    {
+      "id": "hwoarang",
+      "displayName": "Hwoarang",
+      "wavuName": "Hwoarang",
+      "aliasList": ["hwo"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_hwoarang_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_hwoarang_c.png"
+      }
+    },
+    {
+      "id": "jack-5",
+      "displayName": "Jack-5",
+      "wavuName": "Jack-5",
+      "aliasList": ["jack", "j5"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jack5_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jack5_c.png"
+      }
+    },
+    {
+      "id": "jin",
+      "displayName": "Jin",
+      "wavuName": "Jin",
+      "aliasList": ["jim"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jin_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jin_c.png"
+      }
+    },
+    {
+      "id": "jinpachi",
+      "displayName": "Jinpachi",
+      "wavuName": "Jinpachi",
+      "aliasList": ["pachi"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jinpachi_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jinpachi_c.png"
+      }
+    },
+    {
+      "id": "julia",
+      "displayName": "Julia",
+      "wavuName": "Julia",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_julia_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_julia_c.png"
+      }
+    },
+    {
+      "id": "kazuya",
+      "displayName": "Kazuya",
+      "wavuName": "Kazuya",
+      "aliasList": ["kaz", "masku"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_kazuya_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_kazuya_c.png"
+      }
+    },
+    {
+      "id": "king",
+      "displayName": "King",
+      "wavuName": "King",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_king_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_king_c.png"
+      }
+    },
+    {
+      "id": "kuma",
+      "displayName": "Kuma",
+      "wavuName": "Kuma",
+      "aliasList": ["bear", "panda"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_kuma_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_kuma_c.png"
+      }
+    },
+    {
+      "id": "law",
+      "displayName": "Law",
+      "wavuName": "Law",
+      "aliasList": ["marshall"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_law_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_law_c.png"
+      }
+    },
+    {
+      "id": "lee",
+      "displayName": "Lee",
+      "wavuName": "Lee",
+      "aliasList": ["violet"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_lee_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_lee_c.png"
+      }
+    },
+    {
+      "id": "lei",
+      "displayName": "Lei",
+      "wavuName": "Lei",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_lei_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_lei_c.png"
+      }
+    },
+    {
+      "id": "lili",
+      "displayName": "Lili",
+      "wavuName": "Lili",
+      "aliasList": ["lil", "riri", "lilli", "lilly", "lily"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_lili_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_lili_c.png"
+      }
+    },
+    {
+      "id": "marduk",
+      "displayName": "Marduk",
+      "wavuName": "Marduk",
+      "aliasList": ["mar"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_marduk_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_marduk_c.png"
+      }
+    },
+    {
+      "id": "nina",
+      "displayName": "Nina",
+      "wavuName": "Nina",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_nina_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_nina_c.png"
+      }
+    },
+    {
+      "id": "paul",
+      "displayName": "Paul",
+      "wavuName": "Paul",
+      "aliasList": ["phoenix"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_paul_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_paul_c.png"
+      }
+    },
+    {
+      "id": "raven",
+      "displayName": "Raven",
+      "wavuName": "Raven",
+      "aliasList": ["maven", "masterraven", "mrv"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_raven_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_raven_c.png"
+      }
+    },
+    {
+      "id": "roger-jr",
+      "displayName": "Roger Jr",
+      "wavuName": "Roger",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_rogerjr_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_rogerjr_c.png"
+      }
+    },
+    {
+      "id": "steve",
+      "displayName": "Steve",
+      "wavuName": "Steve",
+      "aliasList": ["stv", "fox", "guv"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_steve_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_steve_c.png"
+      }
+    },
+    {
+      "id": "wang",
+      "displayName": "Wang",
+      "wavuName": "Wang",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_wang_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_wang_c.png"
+      }
+    },
+    {
+      "id": "xiaoyu",
+      "displayName": "Xiaoyu",
+      "wavuName": "Xiaoyu",
+      "aliasList": ["ling", "xiao"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_xiaoyu_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_xiaoyu_c.png"
+      }
+    },
+    {
+      "id": "yoshimitsu",
+      "displayName": "Yoshimitsu",
+      "wavuName": "Yoshimitsu",
+      "aliasList": ["yoshi"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_yoshimitsu_c.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_yoshimitsu_c.png"
+      }
+    }
+  ]
+}

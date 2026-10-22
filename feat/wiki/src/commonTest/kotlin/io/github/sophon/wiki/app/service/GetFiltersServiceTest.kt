@@ -54,6 +54,23 @@ internal class GetFiltersServiceTest {
     }
 
     @Test
+    fun `tekken 5 has the correct filters`() {
+        // given
+        val expected = setOf(
+            WavuFilters.Throw,
+            WavuFilters.Stance,
+            WavuFilters.LowCrush,
+            WavuFilters.HighCrush,
+        )
+
+        // when
+        val result = service(Game.Tekken5)
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `bbcf has its own invincible filter`() {
         // given
         val expected = setOf(BBFilters.Invincible)

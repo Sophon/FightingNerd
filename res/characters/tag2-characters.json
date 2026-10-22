@@ -133,7 +133,7 @@
     {
       "id": "dr-bosconovitch",
       "displayName": "Dr. Bosconovitch",
-      "wavuName": "Dr. Bosconovitch",
+      "wavuName": "Dr Bosconovitch",
       "aliasList": [],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_drbosconovitch.png",
@@ -463,7 +463,7 @@
     {
       "id": "roger-jr",
       "displayName": "Roger Jr.",
-      "wavuName": "Roger Jr.",
+      "wavuName": "Roger",
       "aliasList": ["roger"],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_rogerjr.png",

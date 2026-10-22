@@ -36,3 +36,13 @@ data class Tag2Properties(
     override val hasWallInteraction: Boolean = false,
     override val hasFloorInteraction: Boolean = false,
 ): WavuMoveProperties
+
+@Serializable
+data class T5Properties(
+    override val isHoming: Boolean = false,
+    override val stance: String? = null,
+    override val isHighCrush: Boolean = false,
+    override val isLowCrush: Boolean = false,
+    override val hasWallInteraction: Boolean = false,
+    override val hasFloorInteraction: Boolean = false,
+): WavuMoveProperties
