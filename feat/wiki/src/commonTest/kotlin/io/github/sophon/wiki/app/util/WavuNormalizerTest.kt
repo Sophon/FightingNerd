@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import assertk.assertions.isNull
 import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.T5Properties
 import io.github.sophon.wiki.model.game.T8Properties
 import io.github.sophon.wiki.model.game.Tag2Properties
 import kotlin.test.Test
@@ -359,6 +360,38 @@ class WavuNormalizerTest {
         assertThat(result).isEqualTo(expected)
     }
     //endregion
+
+    //region tekken 5
+    @Test
+    fun `tekken 5 stance move gets stance and dotless alias`() {
+        //given
+        val move = WavuMoveSource.t5HwoarangRff1
+        val expected = move.copy(
+            input = "rff.1",
+            aliases = listOf("rff1"),
+            gameProperties = T5Properties(stance = "RFF"),
+        )
+
+        //when
+        val result = move.normalizeTekken()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `tekken 5 keeps the mapped properties`() {
+        //given
+        val move = WavuMoveSource.t5Jack5HighCrush
+        val expected = move.copy(input = "d3")
+
+        //when
+        val result = move.normalizeTekken()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+    //endregion
 }
 
 private val Move.t8Properties: T8Properties?
@@ -610,5 +643,31 @@ private object WavuMoveSource {
         notes = listOf("Can be cancelled with DB", "cs"),
         urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Kazuya_movelist_(Tag_2)#Kazuya-d+1+2"),
         gameProperties = Tag2Properties(isHighCrush = true),
+    )
+    val t5HwoarangRff1 = Move(
+        remoteId = "Hwoarang-RFF.1",
+        input = "RFF.1",
+        damage = "10",
+        startup = "i10",
+        recovery = "RFF",
+        onBlock = "+1",
+        onHit = "+9",
+        onCH = "+7",
+        guard = "h",
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Hwoarang_movelist_(Tekken_5)#Hwoarang-RFF.1"),
+        gameProperties = T5Properties(),
+    )
+    val t5Jack5HighCrush = Move(
+        remoteId = "Jack-5-d+3",
+        input = "d+3",
+        damage = "12",
+        startup = "i20",
+        recovery = "FC",
+        onBlock = "-15",
+        onHit = "-1",
+        guard = "l",
+        notes = listOf("cs"),
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Jack-5_movelist_(Tekken_5)#Jack-5-d+3"),
+        gameProperties = T5Properties(isHighCrush = true),
     )
 }

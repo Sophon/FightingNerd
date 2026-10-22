@@ -6,6 +6,7 @@ import assertk.assertions.isEqualTo
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
+import io.github.sophon.wiki.model.game.T5Properties
 import io.github.sophon.wiki.model.game.T8Properties
 import io.github.sophon.wiki.model.game.Tag2Properties
 import io.github.sophon.wiki.model.wiki.Game
@@ -23,6 +24,12 @@ class WavuMoveRemoteMapperTest {
         displayName = "Kazuya",
         remoteQueryId = "Kazuya",
         wikiUrl = "https://wavu.wiki/t/Kazuya_(Tag_2)",
+    )
+    val t5Jack5 = Character(
+        id = CharacterId(Game.Tekken5, "Jack-5"),
+        displayName = "Jack-5",
+        remoteQueryId = "Jack-5",
+        wikiUrl = "https://wavu.wiki/t/Jack-5_(Tekken_5)",
     )
 
     //region aliases
@@ -487,6 +494,34 @@ class WavuMoveRemoteMapperTest {
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
     }
     //endregion
+
+    //region tekken 5
+    @Test
+    fun `tekken 5 move gets tekken 5 properties`() {
+        // given
+        val move = WavuMoveSource.t5Jack5HighCrush
+        val expected = T5Properties(isHighCrush = true)
+
+        // when
+        val result = move.toMove(t5Jack5)
+
+        //then
+        assertThat(result.gameProperties).isEqualTo(expected)
+    }
+
+    @Test
+    fun `tekken 5 wiki url points to the tekken 5 movelist`() {
+        // given
+        val move = WavuMoveSource.t5Jack5HighCrush
+        val expected = "https://wavu.wiki/t/Jack-5_movelist_(Tekken_5)#Jack-5-d+3"
+
+        // when
+        val result = move.toMove(t5Jack5)
+
+        //then
+        assertThat(result.urls.wikiUrl).isEqualTo(expected)
+    }
+    //endregion
 }
 
 private fun List<MoveDto>.toMoveList(character: Character): List<Move> {
@@ -716,6 +751,26 @@ private object WavuMoveSource {
         hit = "+2c",
         ch = "KND",
         notes = "Can be cancelled with DB",
+        alias = null,
+        image = null,
+        video = null,
+        alt = null,
+    )
+    val t5Jack5HighCrush = MoveDto(
+        id = "Jack-5-d+3",
+        name = null,
+        input = "d+3",
+        parent = null,
+        target = "l",
+        damage = "12",
+        startup = "i20",
+        recv = "FC",
+        tot = null,
+        crush = "cs",
+        block = "-15",
+        hit = "-1",
+        ch = null,
+        notes = null,
         alias = null,
         image = null,
         video = null,
