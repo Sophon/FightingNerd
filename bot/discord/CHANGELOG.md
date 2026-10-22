@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.3.1] - 2026-10-22
+- fixed Tag2 not being expanded
+
 ## [v17.3.0] - 2026-10-22
 - `permissions` - displays mandatory and optional permissions
 - `wiki` 
