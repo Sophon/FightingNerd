@@ -104,7 +104,7 @@
       "id": "ganryu",
       "displayName": "Ganryu",
       "wavuName": "Ganryu",
-      "aliasList": [],
+      "aliasList": ["gan"],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_ganryu_c.png",
         "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_ganryu_c.png"
@@ -134,7 +134,7 @@
       "id": "jack-5",
       "displayName": "Jack-5",
       "wavuName": "Jack-5",
-      "aliasList": [],
+      "aliasList": ["jack", "j5"],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jack5_c.png",
         "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jack5_c.png"
@@ -154,7 +154,7 @@
       "id": "jinpachi",
       "displayName": "Jinpachi",
       "wavuName": "Jinpachi",
-      "aliasList": [],
+      "aliasList": ["pachi"],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jinpachi_c.png",
         "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_jinpachi_c.png"
@@ -244,7 +244,7 @@
       "id": "marduk",
       "displayName": "Marduk",
       "wavuName": "Marduk",
-      "aliasList": [],
+      "aliasList": ["mar"],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_marduk_c.png",
         "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_marduk_c.png"
@@ -283,7 +283,7 @@
     {
       "id": "roger-jr",
       "displayName": "Roger Jr",
-      "wavuName": "Roger Jr.",
+      "wavuName": "Roger",
       "aliasList": [],
       "images": {
         "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_rogerjr_c.png",

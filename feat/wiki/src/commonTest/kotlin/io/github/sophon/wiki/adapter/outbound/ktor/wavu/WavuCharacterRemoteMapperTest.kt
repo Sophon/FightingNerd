@@ -92,6 +92,19 @@ class WavuCharacterRemoteMapperTest {
         //then
         assertThat(result.wikiUrl).isEqualTo(expected)
     }
+
+    @Test
+    fun `tekken 5 wiki url points to the tekken 5 page`() {
+        //given
+        val responseDto = WavuCharacterListResponseDto(characters = listOf(t5RogerJr))
+        val expected = "https://wavu.wiki/t/Roger_Jr._(Tekken_5)"
+
+        //when
+        val result = responseDto.toDomain(Game.Tekken5).single()
+
+        //then
+        assertThat(result.wikiUrl).isEqualTo(expected)
+    }
     //endregion
 
     //region aliases
@@ -192,5 +205,16 @@ private val tag2ArmorKing = CharacterDto(
     images = CharacterDto.Images(
         largePng = "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_armorking.png",
         officialLargePng = "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_armorking.png",
+    ),
+)
+
+private val t5RogerJr = CharacterDto(
+    id = "roger-jr",
+    displayName = "Roger Jr",
+    wavuName = "Roger Jr.",
+    aliasList = emptyList(),
+    images = CharacterDto.Images(
+        largePng = "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_rogerjr_c.png",
+        officialLargePng = "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_rogerjr_c.png",
     ),
 )

@@ -29,6 +29,12 @@ internal class GetFiltersService : GetFiltersUseCase {
                 WavuFilters.LowCrush,
                 WavuFilters.HighCrush,
             )
+            Game.Tekken5 -> setOf(
+                WavuFilters.Throw,
+                WavuFilters.Stance,
+                WavuFilters.LowCrush,
+                WavuFilters.HighCrush,
+            )
 
             Game.BBCF -> setOf(BBFilters.Invincible)
             Game.GGST -> setOf(GGFilters.Invincible)

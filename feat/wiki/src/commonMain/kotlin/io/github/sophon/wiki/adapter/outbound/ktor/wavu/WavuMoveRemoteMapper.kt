@@ -6,6 +6,7 @@ import io.github.sophon.core.util.urlEncode
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.MoveGameProperties
+import io.github.sophon.wiki.model.game.T5Properties
 import io.github.sophon.wiki.model.game.T8Properties
 import io.github.sophon.wiki.model.game.Tag2Properties
 import io.github.sophon.wiki.model.wiki.Game
@@ -219,6 +220,14 @@ private fun formProperties(
         )
 
         Game.Tag2 -> Tag2Properties(
+            isHoming = isHoming,
+            isHighCrush = isHighCrush,
+            isLowCrush = isLowCrush,
+            hasWallInteraction = hasWallInteraction,
+            hasFloorInteraction = hasFloorInteraction,
+        )
+
+        Game.Tekken5 -> T5Properties(
             isHoming = isHoming,
             isHighCrush = isHighCrush,
             isLowCrush = isLowCrush,

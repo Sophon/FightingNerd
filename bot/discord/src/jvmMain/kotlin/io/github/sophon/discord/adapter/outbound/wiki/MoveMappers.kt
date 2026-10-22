@@ -28,7 +28,7 @@ import io.github.sophon.wiki.model.game.VSAVMoveProperties
 import io.github.sophon.wiki.model.wiki.Game
 
 internal fun Move.toDomain(character: Character): MoveResponse {
-    val isAlwaysExpanded = (character.id.game in setOf(Game.Tekken8, Game.Tag2))
+    val isAlwaysExpanded = (character.id.game in setOf(Game.Tekken8, Game.Tag2, Game.Tekken5))
     val secondaryFields = toSecondaryFields()
     val buttonSet = toButtonList(
         character = character,

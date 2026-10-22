@@ -18,10 +18,12 @@ internal class WavuKtorGameDataAdapter(
     private val characterListUrlByGame = mapOf(
         Game.Tekken8 to URL_T8_CHAR_LIST,
         Game.Tag2 to URL_TAG2_CHAR_LIST,
+        Game.Tekken5 to URL_T5_CHAR_LIST,
     )
     private val moveTableByGame = mapOf(
         Game.Tekken8 to TABLE_T8_MOVE_LIST,
         Game.Tag2 to TABLE_TAG2_MOVE_LIST,
+        Game.Tekken5 to TABLE_T5_MOVE_LIST,
     )
 
     override suspend fun fetchCharacterList(
@@ -69,9 +71,11 @@ internal class WavuKtorGameDataAdapter(
     private companion object {
         const val TABLE_T8_MOVE_LIST = "Move"
         const val TABLE_TAG2_MOVE_LIST = "Move2"
+        const val TABLE_T5_MOVE_LIST = "Move5"
         const val BASE_URL = "https://wavu.wiki/w/api.php"
         const val LIMIT_MOVES = 500
         const val URL_T8_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/t8-characters.json"
         const val URL_TAG2_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/tag2-characters.json"
+        const val URL_T5_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/t5-characters.json"
     }
 }

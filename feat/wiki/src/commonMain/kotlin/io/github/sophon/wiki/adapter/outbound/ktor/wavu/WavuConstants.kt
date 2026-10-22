@@ -11,6 +11,7 @@ internal const val URL_PREFIX_MOVE = "https://wavu.wiki/t"
 internal fun Game.toPageSuffix(): String {
     val suffix = when (this) {
         Game.Tag2 -> "_(Tag_2)"
+        Game.Tekken5 -> "_(Tekken_5)"
         else -> ""
     }
     return suffix
