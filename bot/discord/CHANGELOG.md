@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.4.2] - 2026-10-22
+- `Ktor` - retry with exponential backoff
+
 ## [v17.4.1] - 2026-10-22
 - fixed Roger Jr missing moves
 

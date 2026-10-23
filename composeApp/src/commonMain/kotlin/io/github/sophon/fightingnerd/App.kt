@@ -41,6 +41,7 @@ import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.scene.Scene
 import androidx.navigation3.ui.NavDisplay
 import androidx.savedstate.serialization.SavedStateConfiguration
 import io.github.aakira.napier.Napier
@@ -93,8 +94,13 @@ private val navConfig = SavedStateConfiguration {
 }
 val LocalBottomBarPadding = compositionLocalOf { PaddingValues(0.dp) }
 
-private val rootDestinationIndex: Map<String, Int> =
-    rootDestinations.withIndex().associate { (index, destination) -> destination.toString() to index }
+private fun rootMetadata(destination: Destination): Map<String, Any> {
+    val metadata = mapOf(KEY_ROOT_INDEX to rootDestinations.indexOf(destination))
+    return metadata
+}
+
+private val Scene<NavKey>.rootIndex: Int
+    get() = (metadata[KEY_ROOT_INDEX] as? Int) ?: -1
 
 private val forwardTransition: ContentTransform =
     slideInHorizontally { it } togetherWith slideOutHorizontally { -it }
@@ -198,8 +204,8 @@ private fun AppNavDisplay(
             rememberViewModelStoreNavEntryDecorator(),
         ),
         transitionSpec = {
-            val from = rootDestinationIndex[initialState.key] ?: -1
-            val to = rootDestinationIndex[targetState.key] ?: -1
+            val from = initialState.rootIndex
+            val to = targetState.rootIndex
             val bothTopLevel = (from >= 0) && (to >= 0)
             val spec = if (bothTopLevel) {
                 if (to > from) forwardTransition else backTransition
@@ -209,8 +215,8 @@ private fun AppNavDisplay(
             spec
         },
         popTransitionSpec = {
-            val from = rootDestinationIndex[initialState.key] ?: -1
-            val to = rootDestinationIndex[targetState.key] ?: -1
+            val from = initialState.rootIndex
+            val to = targetState.rootIndex
             val bothTopLevel = (from >= 0) && (to >= 0)
             val spec = if (bothTopLevel) backTransition else popDownTransition
             spec
@@ -220,7 +226,7 @@ private fun AppNavDisplay(
             .fillMaxSize()
             .statusBarsPadding(),
         entryProvider = entryProvider {
-            entry<Destination.Home> {
+            entry<Destination.Home>(metadata = rootMetadata(Destination.Home)) {
                 HomeScreen(
                     onNavigateToMoveList = { gameId, characterId ->
                         backStack.add(Destination.MoveList(gameId = gameId, characterId = characterId))
@@ -238,7 +244,7 @@ private fun AppNavDisplay(
                 )
             }
 
-            entry<Destination.QuizOverview> {
+            entry<Destination.QuizOverview>(metadata = rootMetadata(Destination.QuizOverview)) {
                 QuizOverviewScreen(
                     onNavigateToQuiz = { gameId, characterId ->
                         backStack.add(Destination.Quiz(gameId = gameId, characterId = characterId))
@@ -253,7 +259,7 @@ private fun AppNavDisplay(
                 )
             }
 
-            entry<Destination.More> {
+            entry<Destination.More>(metadata = rootMetadata(Destination.More)) {
                 MoreScreen(
                     onNavigate = { moreItem ->
                         when (moreItem) {
@@ -343,3 +349,4 @@ private fun BoxScope.AppBottomBar(
 
 
 private const val TAG_CHANGELOG = "Changelog"
+private const val KEY_ROOT_INDEX = "rootIndex"

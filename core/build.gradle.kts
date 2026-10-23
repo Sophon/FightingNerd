@@ -83,6 +83,7 @@ kotlin {
             implementation(libs.kotlin.test)
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.mock)
         }
 
         jvmTest.dependencies {
