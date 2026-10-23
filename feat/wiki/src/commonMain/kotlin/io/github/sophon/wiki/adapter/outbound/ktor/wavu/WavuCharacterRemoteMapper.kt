@@ -9,7 +9,7 @@ internal fun WavuCharacterListResponseDto.toDomain(game: Game): List<Character> 
         Character(
             id = CharacterId(game, dto.displayName),
             displayName = dto.displayName,
-            remoteQueryId = dto.displayName,
+            remoteQueryId = dto.wavuName,
             wikiUrl = "$URL_PREFIX_MOVE/${dto.wavuName.replace(" ", "_")}${game.toPageSuffix()}",
             aliasList = dto.aliasList,
             images = Character.Images(
