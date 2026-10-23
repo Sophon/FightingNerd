@@ -1,12 +1,13 @@
 # APP CHANGELOG
 
-## [v5.2.1] - 2026-10-23
+## [v5.2.2] - 2026-10-23
 - progress bars when downloading/refreshing data
 - performance improvements thanks to new architecture
 - added games:
   - Tekken Tag Tournament 2
   - Tekken 5
 - fixed some characters unable to download moves
+- retry with exponential backoff
 
 ## [v5.2.0] - 2026-10-23
 - progress bars when downloading/refreshing data

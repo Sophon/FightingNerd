@@ -89,6 +89,7 @@ ktor-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor"}
 ktor-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor"}
 ktor-slf = { module = "org.slf4j:slf4j-simple", version.ref = "slf"}
 ktor-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
 
 # Koin
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
