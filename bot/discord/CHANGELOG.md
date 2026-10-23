@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.4.1] - 2026-10-22
+- fixed Roger Jr missing moves
+
 ## [v17.4.0] - 2026-10-22
 - `wiki`
   - Tag 2 - fixed Dr Bosconovitch and Roger
