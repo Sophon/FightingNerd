@@ -17,6 +17,7 @@ import org.jetbrains.compose.resources.StringResource
 @Immutable
 internal data class MoveListState(
     val character: UiCharacter? = null,
+    val gameDisplayName: String? = null,
     val mediaCount: Int = 0,
 
     val moveDetail: MoveDetail? = null,
@@ -33,6 +34,7 @@ internal data class MoveListState(
     @Immutable
     data class UiCharacter(
         val displayName: String,
+        val iconUrl: String? = null,
         val propertyFields: ImmutableList<Field> = persistentListOf(),
         val isExpanded: Boolean = false,
     ) {

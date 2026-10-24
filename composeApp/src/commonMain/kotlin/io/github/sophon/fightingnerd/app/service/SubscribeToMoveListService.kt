@@ -2,8 +2,9 @@ package io.github.sophon.fightingnerd.app.service
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
-import io.github.sophon.fightingnerd.app.model.Character
 import io.github.sophon.fightingnerd.app.model.Move
+import io.github.sophon.fightingnerd.app.model.MoveListData
+import io.github.sophon.fightingnerd.app.outPort.AvailableGamesPort
 import io.github.sophon.fightingnerd.app.outPort.CharacterPort
 import io.github.sophon.fightingnerd.app.outPort.MediaPort
 import io.github.sophon.fightingnerd.app.outPort.MovePort
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 internal class SubscribeToMoveListService(
+    private val availableGamesPort: AvailableGamesPort,
     private val characterPort: CharacterPort,
     private val movePort: MovePort,
     private val mediaPort: MediaPort,
@@ -21,16 +23,18 @@ internal class SubscribeToMoveListService(
     override fun invoke(
         gameId: String,
         characterId: String,
-    ): Flow<Result<Pair<Character, List<Move>>, AppError>> {
+    ): Flow<Result<MoveListData, AppError>> {
         val flow = combine(
+            availableGamesPort.subscribe(),
             characterPort.subscribeToCharacters(gameId),
             movePort.subscribeToMoves(gameId, characterId).preferDownloadedMedia(gameId, characterId),
-        ) { characterList, moveList ->
+        ) { gameSet, characterList, moveList ->
+            val game = gameSet.firstOrNull { it.id == gameId }
             val character = characterList.firstOrNull { it.id == characterId }
-            val result: Result<Pair<Character, List<Move>>, AppError> = if (character == null) {
-                Result.Error(AppError.WikiError("$characterId not found"))
-            } else {
-                Result.Success(Pair(character, moveList))
+            val result: Result<MoveListData, AppError> = when {
+                game == null -> Result.Error(AppError.WikiError("$gameId not found"))
+                character == null -> Result.Error(AppError.WikiError("$characterId not found"))
+                else -> Result.Success(MoveListData(character = character, moveList = moveList, game = game))
             }
             result
         }.distinctUntilChanged()

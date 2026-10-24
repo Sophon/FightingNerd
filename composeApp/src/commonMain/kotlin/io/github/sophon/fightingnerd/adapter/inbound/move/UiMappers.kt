@@ -229,6 +229,7 @@ internal fun Character.toUiCharacter(): MoveListState.UiCharacter {
     }
     val uiCharacter = MoveListState.UiCharacter(
         displayName = displayName,
+        iconUrl = iconUrl,
         propertyFields = fields.toImmutableList(),
     )
     return uiCharacter

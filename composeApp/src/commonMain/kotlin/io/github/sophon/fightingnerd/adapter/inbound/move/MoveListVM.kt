@@ -260,7 +260,7 @@ internal class MoveListVM(
             subscribeToMoveListUseCase(gameId = gameId, characterId = characterId)
                 .collectLatest { result ->
                     result
-                        .onSuccess { (character, moveList) ->
+                        .onSuccess { (character, moveList, game) ->
                             val movesById = moveList.associateBy { it.input }.toImmutableMap()
                             val uiMovesById = moveList
                                 .associate { move ->
@@ -275,6 +275,7 @@ internal class MoveListVM(
                             _state.update { state ->
                                 state.copy(
                                     character = character.toUiCharacter(),
+                                    gameDisplayName = game.displayName,
                                     mediaCount = moveList.sumOf { move -> move.urls.mediaCount },
                                 )
                             }
