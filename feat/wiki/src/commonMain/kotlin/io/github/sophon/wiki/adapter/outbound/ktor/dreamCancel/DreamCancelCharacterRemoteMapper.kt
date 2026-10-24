@@ -26,7 +26,7 @@ internal fun String.toCharacter(
         wikiUrl = "$WIKI_BASE_URL/${game.id}/$queryName",
         images = Character.Images(
             iconId = iconKeys.firstOrNull { iconUrlMap.contains(it) },
-            iconUrl = (iconKeys.firstNotNullOfOrNull { iconUrlMap[it] } ?: game.iconUrl),
+            iconUrl = iconKeys.firstNotNullOfOrNull { iconUrlMap[it] },
         ),
     )
     return character

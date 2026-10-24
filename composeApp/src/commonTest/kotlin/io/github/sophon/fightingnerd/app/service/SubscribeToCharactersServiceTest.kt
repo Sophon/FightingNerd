@@ -2,8 +2,8 @@ package io.github.sophon.fightingnerd.app.service
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.fightingnerd.app.model.Character
-import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.game.Character
+import io.github.sophon.fightingnerd.app.model.game.Game
 import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.outPort.CharacterPort
 import kotlinx.coroutines.flow.Flow

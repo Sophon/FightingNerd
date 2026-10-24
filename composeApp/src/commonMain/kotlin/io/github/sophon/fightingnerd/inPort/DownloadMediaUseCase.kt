@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.inPort
 
-import io.github.sophon.fightingnerd.app.model.Move
+import io.github.sophon.fightingnerd.app.model.game.Move
 import kotlinx.coroutines.flow.Flow
 
 /**

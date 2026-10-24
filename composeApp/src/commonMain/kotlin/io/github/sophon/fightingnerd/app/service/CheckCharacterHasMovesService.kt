@@ -1,6 +1,6 @@
 package io.github.sophon.fightingnerd.app.service
 
-import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.game.Game
 import io.github.sophon.fightingnerd.app.outPort.MovePort
 import io.github.sophon.fightingnerd.inPort.CheckCharacterHasMovesUseCase
 import kotlinx.coroutines.flow.Flow

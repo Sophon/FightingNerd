@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.app.service
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
-import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.game.Game
 import io.github.sophon.fightingnerd.app.outPort.AvailableGamesPort
 import io.github.sophon.fightingnerd.app.outPort.SubscribeToGameSettingsPort
 import io.github.sophon.fightingnerd.inPort.SubscribeToGameSettingsUseCase

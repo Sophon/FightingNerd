@@ -1,5 +1,7 @@
 package io.github.sophon.fightingnerd.app.model
 
+import io.github.sophon.fightingnerd.app.model.game.Game
+
 /**
  * Per game: [Started], then any number of [Progress] and [Failure], then exactly one [Finished].
  */

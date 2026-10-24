@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.adapter.inbound.quiz
 
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.model.QuizQuestion
-import io.github.sophon.fightingnerd.app.model.Move
+import io.github.sophon.fightingnerd.app.model.game.Move
 import io.github.sophon.fightingnerd.app.model.Question
 import kotlinx.collections.immutable.toImmutableList
 

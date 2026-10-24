@@ -33,7 +33,7 @@ import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_blo
 import fightingnerd.composeapp.generated.resources.move_list_filter_label_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_filter_label_startup
 import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListState
-import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.app.model.game.MoveFilter
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

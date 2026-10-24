@@ -67,8 +67,8 @@ import fightingnerd.composeapp.generated.resources.move_list_field_on_hit
 import fightingnerd.composeapp.generated.resources.move_list_field_startup
 import io.github.sophon.core.util.stripMarkdownLinks
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.Property
-import io.github.sophon.fightingnerd.app.model.Character
-import io.github.sophon.fightingnerd.app.model.Move
+import io.github.sophon.fightingnerd.app.model.game.Character
+import io.github.sophon.fightingnerd.app.model.game.Move
 import io.github.sophon.fightingnerd.app.model.game.AVLMoveProperties
 import io.github.sophon.fightingnerd.app.model.game.BBCharProperties
 import io.github.sophon.fightingnerd.app.model.game.BBMoveProperties
@@ -229,6 +229,7 @@ internal fun Character.toUiCharacter(): MoveListState.UiCharacter {
     }
     val uiCharacter = MoveListState.UiCharacter(
         displayName = displayName,
+        iconUrl = iconUrl,
         propertyFields = fields.toImmutableList(),
     )
     return uiCharacter

@@ -2,6 +2,8 @@ package io.github.sophon.fightingnerd.app.model
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import io.github.sophon.fightingnerd.app.model.game.Move
+import io.github.sophon.fightingnerd.app.model.game.MoveFilter
 import kotlin.test.Test
 
 internal class MoveFilterTest {

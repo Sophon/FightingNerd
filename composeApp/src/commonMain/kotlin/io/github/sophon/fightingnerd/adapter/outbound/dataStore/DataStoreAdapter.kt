@@ -14,7 +14,7 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.KEY_HAS_LAUNCHED_BEFORE
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.ComposeConfig
-import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.game.Game
 import io.github.sophon.fightingnerd.app.outPort.EnabledGamesPort
 import io.github.sophon.fightingnerd.app.outPort.FirstLaunchPort
 import io.github.sophon.fightingnerd.app.outPort.InstallationPort

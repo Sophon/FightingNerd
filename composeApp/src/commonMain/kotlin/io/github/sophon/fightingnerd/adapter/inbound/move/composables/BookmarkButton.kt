@@ -28,7 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import io.github.sophon.fightingnerd.adapter.inbound.move.MoveListState
-import io.github.sophon.fightingnerd.app.model.Bookmark
+import io.github.sophon.fightingnerd.app.model.game.Bookmark
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions

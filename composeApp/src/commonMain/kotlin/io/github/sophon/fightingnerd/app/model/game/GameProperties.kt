@@ -1,4 +1,4 @@
-package io.github.sophon.fightingnerd.app.model
+package io.github.sophon.fightingnerd.app.model.game
 
 interface CharacterGameProperties
 
