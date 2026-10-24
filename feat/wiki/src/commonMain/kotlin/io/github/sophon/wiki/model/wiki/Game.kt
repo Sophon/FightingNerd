@@ -48,7 +48,7 @@ enum class Game(
     AVL(
         id = "Avatar_Legends",
         displayName = "Avatar Legends: The Fighting Game",
-        iconUrl = "https://i.imgur.com/aRyOZfI.png",
+        iconUrl = "https://wiki.supercombo.gg/images/thumb/5/5e/Avatar_Legends_Logo.png/1599px-Avatar_Legends_Logo.png",
         wikiUrl = "https://wiki.supercombo.gg/w/Avatar_Legends",
         wiki = Wiki.SuperCombo,
     ),
