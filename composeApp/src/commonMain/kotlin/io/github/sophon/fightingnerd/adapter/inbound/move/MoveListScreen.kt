@@ -39,7 +39,7 @@ import io.github.sophon.fightingnerd.adapter.inbound.move.composables.MoveItem
 import io.github.sophon.fightingnerd.adapter.inbound.move.composables.MoveTopBar
 import io.github.sophon.fightingnerd.adapter.inbound.move.composables.SharedMove
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
-import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.app.model.game.MoveFilter
 import io.github.sophon.fightingnerd.adapter.inbound.share.ShareCaptureHost
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette

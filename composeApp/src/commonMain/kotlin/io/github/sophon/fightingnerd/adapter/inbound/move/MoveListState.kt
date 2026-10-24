@@ -3,8 +3,8 @@ package io.github.sophon.fightingnerd.adapter.inbound.move
 import androidx.compose.runtime.Immutable
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.Property
-import io.github.sophon.fightingnerd.app.model.Bookmark
-import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.app.model.game.Bookmark
+import io.github.sophon.fightingnerd.app.model.game.MoveFilter
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet

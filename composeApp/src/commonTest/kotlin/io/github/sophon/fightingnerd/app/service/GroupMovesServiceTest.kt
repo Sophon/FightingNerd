@@ -4,9 +4,9 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
-import io.github.sophon.fightingnerd.app.model.Bookmark
-import io.github.sophon.fightingnerd.app.model.GroupedMoveList
-import io.github.sophon.fightingnerd.app.model.Move
+import io.github.sophon.fightingnerd.app.model.game.Bookmark
+import io.github.sophon.fightingnerd.app.model.game.GroupedMoveList
+import io.github.sophon.fightingnerd.app.model.game.Move
 import io.github.sophon.fightingnerd.app.outPort.MoveGroupPort
 import kotlin.test.Test
 

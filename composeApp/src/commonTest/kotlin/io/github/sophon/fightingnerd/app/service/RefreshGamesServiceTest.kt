@@ -4,7 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
-import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.game.Game
 import io.github.sophon.fightingnerd.app.model.RefreshEvent
 import io.github.sophon.fightingnerd.app.model.Wiki
 import io.github.sophon.fightingnerd.app.outPort.RefreshWikiPort

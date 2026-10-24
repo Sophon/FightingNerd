@@ -2,8 +2,8 @@ package io.github.sophon.fightingnerd.app.service
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
-import io.github.sophon.fightingnerd.app.model.Move
-import io.github.sophon.fightingnerd.app.model.MoveListData
+import io.github.sophon.fightingnerd.app.model.game.Move
+import io.github.sophon.fightingnerd.app.model.game.MoveListData
 import io.github.sophon.fightingnerd.app.outPort.AvailableGamesPort
 import io.github.sophon.fightingnerd.app.outPort.CharacterPort
 import io.github.sophon.fightingnerd.app.outPort.MediaPort

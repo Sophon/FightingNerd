@@ -7,9 +7,9 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
-import io.github.sophon.fightingnerd.app.model.GroupedMoveList
-import io.github.sophon.fightingnerd.app.model.Move
-import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.app.model.game.GroupedMoveList
+import io.github.sophon.fightingnerd.app.model.game.Move
+import io.github.sophon.fightingnerd.app.model.game.MoveFilter
 import io.github.sophon.fightingnerd.adapter.inbound.coreUi.OverlayService
 import io.github.sophon.fightingnerd.inPort.RequestReviewUseCase
 import io.github.sophon.fightingnerd.adapter.inbound.coreUi.ScreenStopWatch
