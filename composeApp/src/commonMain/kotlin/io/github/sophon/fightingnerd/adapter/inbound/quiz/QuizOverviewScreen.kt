@@ -68,6 +68,7 @@ private fun Content(
                 ) {
                     CharacterMatrix(
                         characterList = widget.characterList,
+                        gameIconUrl = widget.game.iconUrl,
                         onCharacterClick = { characterId ->
                             onNavigateToQuiz(widget.game.id, characterId)
                         },

@@ -94,6 +94,7 @@ private fun Content(
                     ) {
                         CharacterMatrix(
                             characterList = feature.characterList.toCharacterCards(),
+                            gameIconUrl = feature.game.iconUrl,
                             onCharacterClick = { characterId ->
                                 onCharacterClick(feature.game.id, characterId)
                             },
