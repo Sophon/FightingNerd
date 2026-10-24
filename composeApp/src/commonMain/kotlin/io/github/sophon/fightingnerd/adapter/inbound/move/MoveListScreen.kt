@@ -90,13 +90,21 @@ internal fun MoveListScreen(
             onCollapseCharacter = vm::onCollapseCharacter,
         )
 
-        pendingShareMoveId?.let { id ->
-            filteredMoves.firstOrNull { it.id == id }?.let { uiMove ->
-                ShareCaptureHost(
-                    content = { SharedMove(uiMove, uiMove.id == state.expandedMoveId) },
-                    onCaptured = { pngBytes -> vm.onShareCaptured(pngBytes) },
-                )
-            }
+        val uiCharacter = state.character
+        val gameDisplayName = state.gameDisplayName
+        val uiMove = pendingShareMoveId?.let { id -> filteredMoves.firstOrNull { it.id == id } }
+        if (uiMove != null && uiCharacter != null && gameDisplayName != null) {
+            ShareCaptureHost(
+                content = {
+                    SharedMove(
+                        uiMove = uiMove,
+                        uiCharacter = uiCharacter,
+                        gameDisplayName = gameDisplayName,
+                        isExpanded = uiMove.id == state.expandedMoveId,
+                    )
+                },
+                onCaptured = { pngBytes -> vm.onShareCaptured(pngBytes) },
+            )
         }
     }
 }
