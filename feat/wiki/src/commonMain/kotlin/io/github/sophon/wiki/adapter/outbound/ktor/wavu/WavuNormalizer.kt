@@ -3,9 +3,16 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 
 /**
  * Only strips the separators - `,`, `/` and the `+` after a direction or stance - the notation itself stays.
+ * Lowercases, unless it starts with a held `UB`, `U` or `UF` followed by a number or `+` - `UF+4` becomes `UF4`.
  */
 internal fun String.minimizeTekkenMoveInput(keepSpaces: Boolean = false): String {
-    var result = this.trim().lowercase()
+    val trimmed = this.trim()
+    var result = if (trimmed.contains(heldUpDirectionRegex)) {
+        // `$1` is the direction group alone, so the match loses its `+` - `UF+4` becomes `UF4`
+        trimmed.replaceFirst(heldUpDirectionRegex, "$1")
+    } else {
+        trimmed.lowercase()
+    }
 
     val separators = listOf(
         "," to "",
@@ -65,3 +72,5 @@ internal fun String.normalizeTekkenMoveInput(keepSpaces: Boolean = false): Strin
     return result
 }
 
+
+private val heldUpDirectionRegex = Regex("^(UB|UF|U)\\+?(?=[0-9])")

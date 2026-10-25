@@ -211,6 +211,34 @@ class WavuMoveRemoteMapperTest {
     }
     //endregion
 
+    //region case
+    @Test
+    fun `held up direction input keeps its case`() {
+        //given
+        val move = WavuMoveSource.sommersault
+        val expected = "UF4"
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.input).isEqualTo(expected)
+    }
+
+    @Test
+    fun `tapped up direction input stays lowercase`() {
+        //given
+        val move = WavuMoveSource.hopkick
+        val expected = "u4"
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.input).isEqualTo(expected)
+    }
+    //endregion
+
     //region stance
     @Test
     fun `stance is detected from input`() {
