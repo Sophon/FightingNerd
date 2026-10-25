@@ -14,31 +14,6 @@ import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 
 class WavuMoveRemoteMapperTest {
-    val ak = Character(
-        id = CharacterId(Game.Tekken8, "Armor_King"),
-        displayName = "Armor King",
-        remoteQueryId = "Armor_King",
-        wikiUrl = "https://wavu.wiki/t/Armor_King_movelist",
-    )
-    val tag2Kazuya = Character(
-        id = CharacterId(Game.Tag2, "Kazuya"),
-        displayName = "Kazuya",
-        remoteQueryId = "Kazuya",
-        wikiUrl = "https://wavu.wiki/t/Kazuya_(Tag_2)",
-    )
-    val t5Jack5 = Character(
-        id = CharacterId(Game.Tekken5, "Jack-5"),
-        displayName = "Jack-5",
-        remoteQueryId = "Jack-5",
-        wikiUrl = "https://wavu.wiki/t/Jack-5_(Tekken_5)",
-    )
-    val genericChar = Character(
-        id = CharacterId(Game.Tekken8, "Generic"),
-        displayName = "Generic",
-        remoteQueryId = "remote",
-        wikiUrl = "",
-    )
-
     //region aliases
     @Test
     fun `no alias and no alt means no aliases`() {
@@ -47,7 +22,7 @@ class WavuMoveRemoteMapperTest {
         val expected = emptyList<String>()
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -60,7 +35,7 @@ class WavuMoveRemoteMapperTest {
         val expected = listOf("shining wizard", "fff2+4")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -73,7 +48,7 @@ class WavuMoveRemoteMapperTest {
         val expected = listOf("matterhorn")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.genericChar)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -86,7 +61,7 @@ class WavuMoveRemoteMapperTest {
         val expected = listOf("can cans", "cancan")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -99,7 +74,7 @@ class WavuMoveRemoteMapperTest {
         val expected = listOf("whf", "cd.2", "cd2", "cddf2")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -112,7 +87,7 @@ class WavuMoveRemoteMapperTest {
         val expected = listOf("fn4", "wds.4", "wds4", "unsd4")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -128,7 +103,7 @@ class WavuMoveRemoteMapperTest {
         )
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -141,7 +116,7 @@ class WavuMoveRemoteMapperTest {
         val expected = listOf("ewhf", "electric", "ecd2", "cd#2", "fndf#2", "cddf#2")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -160,23 +135,25 @@ class WavuMoveRemoteMapperTest {
         )
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
     }
 
     @Test
-    fun `sidestep gets a dotless variant`() {
+    fun `sidestep has correct dot for input or alias`() {
         //given
         val move = WavuMoveSource.ss4
-        val expected = listOf("ss4")
+        val expectedAlias = listOf("ss.4")
+        val expectedInput = "ss4"
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
-        assertThat(result.aliases).isEqualTo(expected)
+        assertThat(result.aliases).isEqualTo(expectedAlias)
+        assertThat(result.input).isEqualTo(expectedInput)
     }
 
     @Test
@@ -186,7 +163,7 @@ class WavuMoveRemoteMapperTest {
         val expected = listOf("hs", "heatsmash")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -199,7 +176,7 @@ class WavuMoveRemoteMapperTest {
         val expected = listOf("hfcdb1+2", "fcdb1+2", "fc1+2", "hfc.1+2")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -212,7 +189,7 @@ class WavuMoveRemoteMapperTest {
         val expected = listOf("h.bad.f1+2", "h.cd1+2", "h.fnddf1+2")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -227,19 +204,19 @@ class WavuMoveRemoteMapperTest {
         val expected = "BAD"
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expected)
     }
 
     @Test
-    fun `input without stance has none`() {
+    fun `input without stance has empty stance field`() {
         //given
         val move = WavuMoveSource.matterhorn
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.t8Properties?.stance).isNull()
@@ -251,7 +228,7 @@ class WavuMoveRemoteMapperTest {
         val move = WavuMoveSource.stomp
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.t8Properties?.stance).isNull()
@@ -264,7 +241,7 @@ class WavuMoveRemoteMapperTest {
         val expected = "BT"
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expected)
@@ -277,7 +254,7 @@ class WavuMoveRemoteMapperTest {
         val expected = "BT"
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.t8Properties?.stance).isEqualTo(expected)
@@ -292,7 +269,7 @@ class WavuMoveRemoteMapperTest {
         val expected = true
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.t8Properties?.isHeat).isEqualTo(expected)
@@ -305,15 +282,9 @@ class WavuMoveRemoteMapperTest {
         //given
         val move = WavuMoveSource.matterhorn
         val expected = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4"
-        val lili = Character(
-            id = CharacterId(Game.Tekken8, "Lili"),
-            remoteQueryId = "Lili",
-            displayName = "Lili",
-            wikiUrl = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4",
-        )
 
         //when
-        val result = move.toMove(lili)
+        val result = move.toMove(WavuCharacterSource.lili)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -332,7 +303,7 @@ class WavuMoveRemoteMapperTest {
         )
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.notes).isEqualTo(expected)
@@ -350,7 +321,7 @@ class WavuMoveRemoteMapperTest {
         val expectedGuard = "L, L"
 
         // when
-        val result = moveList.toMoveList(ak)[1]
+        val result = moveList.toMoveList(WavuCharacterSource.ak)[1]
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)
@@ -393,7 +364,7 @@ class WavuMoveRemoteMapperTest {
         val expectedGuard = "h, h, m"
 
         // when
-        val result = moveList.toMoveList(ak)[2]
+        val result = moveList.toMoveList(WavuCharacterSource.ak)[2]
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)
@@ -452,7 +423,7 @@ class WavuMoveRemoteMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(ak)
+        val result = responseDto.toDomain(WavuCharacterSource.ak)
 
         // then
         assertThat(result).hasSize(1)
@@ -538,7 +509,7 @@ class WavuMoveRemoteMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(ak)
+        val result = responseDto.toDomain(WavuCharacterSource.ak)
 
         // then
         assertThat(result).hasSize(2)
@@ -585,7 +556,7 @@ class WavuMoveRemoteMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(ak)
+        val result = responseDto.toDomain(WavuCharacterSource.ak)
 
         // then
         assertThat(result).hasSize(1)
@@ -635,7 +606,7 @@ class WavuMoveRemoteMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(ak)
+        val result = responseDto.toDomain(WavuCharacterSource.ak)
 
         // then
         assertThat(result).hasSize(1)
@@ -649,7 +620,7 @@ class WavuMoveRemoteMapperTest {
         val expected = true
 
         // when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.isThrow).isEqualTo(expected)
@@ -664,7 +635,7 @@ class WavuMoveRemoteMapperTest {
         val expected = Tag2Properties(isHighCrush = true)
 
         // when
-        val result = move.toMove(tag2Kazuya)
+        val result = move.toMove(WavuCharacterSource.tag2Kazuya)
 
         //then
         assertThat(result.gameProperties).isEqualTo(expected)
@@ -677,7 +648,7 @@ class WavuMoveRemoteMapperTest {
         val expected = "https://wavu.wiki/t/Kazuya_movelist_(Tag_2)#Kazuya-d+1+2"
 
         // when
-        val result = move.toMove(tag2Kazuya)
+        val result = move.toMove(WavuCharacterSource.tag2Kazuya)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -692,7 +663,7 @@ class WavuMoveRemoteMapperTest {
         val expected = T5Properties(isHighCrush = true)
 
         // when
-        val result = move.toMove(t5Jack5)
+        val result = move.toMove(WavuCharacterSource.t5Jack5)
 
         //then
         assertThat(result.gameProperties).isEqualTo(expected)
@@ -705,7 +676,7 @@ class WavuMoveRemoteMapperTest {
         val expected = "https://wavu.wiki/t/Jack-5_movelist_(Tekken_5)#Jack-5-d+3"
 
         // when
-        val result = move.toMove(t5Jack5)
+        val result = move.toMove(WavuCharacterSource.t5Jack5)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -725,6 +696,39 @@ private fun List<MoveDto>.toMoveList(character: Character): List<Move> {
 private fun MoveDto.toMove(character: Character): Move {
     val move = listOf(this).toMoveList(character).single()
     return move
+}
+
+private object WavuCharacterSource {
+    val ak = Character(
+        id = CharacterId(Game.Tekken8, "Armor_King"),
+        displayName = "Armor King",
+        remoteQueryId = "Armor_King",
+        wikiUrl = "https://wavu.wiki/t/Armor_King_movelist",
+    )
+    val lili = Character(
+        id = CharacterId(Game.Tekken8, "Lili"),
+        displayName = "Lili",
+        remoteQueryId = "Lili",
+        wikiUrl = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4",
+    )
+    val tag2Kazuya = Character(
+        id = CharacterId(Game.Tag2, "Kazuya"),
+        displayName = "Kazuya",
+        remoteQueryId = "Kazuya",
+        wikiUrl = "https://wavu.wiki/t/Kazuya_(Tag_2)",
+    )
+    val t5Jack5 = Character(
+        id = CharacterId(Game.Tekken5, "Jack-5"),
+        displayName = "Jack-5",
+        remoteQueryId = "Jack-5",
+        wikiUrl = "https://wavu.wiki/t/Jack-5_(Tekken_5)",
+    )
+    val genericChar = Character(
+        id = CharacterId(Game.Tekken8, "Generic"),
+        displayName = "Generic",
+        remoteQueryId = "remote",
+        wikiUrl = "",
+    )
 }
 
 private object WavuMoveSource {
