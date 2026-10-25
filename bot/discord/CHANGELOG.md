@@ -1,5 +1,7 @@
 # BOT CHANGELOG
 
+## [v17.5.0] - 2026-10-22
+
 ## [v17.4.2] - 2026-10-22
 - `Ktor` - retry with exponential backoff
 
