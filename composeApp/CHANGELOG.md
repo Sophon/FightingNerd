@@ -2,6 +2,7 @@
 
 ## [v5.3.0] - TODO
 - shared move image now contains the character and game
+- Tekken - all Up (ub, u, uf) direction moves are grouped into one U group 
 
 ## [v5.2.2] - 2026-10-23
 - progress bars when downloading/refreshing data
