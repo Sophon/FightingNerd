@@ -1,7 +1,7 @@
 package io.github.sophon.fightingnerd.adapter.inbound.home
 
 import androidx.compose.runtime.Immutable
-import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.game.Game
 import io.github.sophon.fightingnerd.app.model.Wiki
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf

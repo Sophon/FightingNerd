@@ -26,12 +26,18 @@ private fun MoveDto.toDomain(
     val unifiedNotes = (notes.formNotes() + cleanedCrushes)
     val parentalProperties = formCompleteDataFromParent(movesById)
     val fullInput = parentalProperties.input.cleanHtml()
-    val aliases = formAliases(alias, alt)
+    val normalizedInput = fullInput.normalizeTekkenMoveInput()
+    val aliases = formAliases(
+        wikiAliases = alias,
+        wikiAltInputs = alt,
+        fullInput = fullInput,
+        normalizedInput = normalizedInput,
+    )
 
     val move = Move(
         name = name?.cleanHtml(),
 
-        input = fullInput,
+        input = normalizedInput,
         remoteId = id,
         damage = parentalProperties.damage,
         startup = parentalProperties.startup,
@@ -48,17 +54,112 @@ private fun MoveDto.toDomain(
         urls = Move.Urls(
             videoId = video?.toStorageSafeFileName(),
             videoUrl = video.formVideoUrl(),
-            wikiUrl = formMoveWikiUrl(game = character.id.game, characterRemoteQueryId = character.remoteQueryId, moveId = id),
+            wikiUrl = formMoveWikiUrl(
+                game = character.id.game,
+                characterRemoteQueryId = character.remoteQueryId,
+                moveId = id,
+            ),
         ),
 
         gameProperties = formProperties(
             game = character.id.game,
             notes = unifiedNotes,
             crushes = cleanedCrushes,
+            input = normalizedInput,
+            aliases = aliases,
         )
     )
 
     return move
+}
+
+/**
+ * Wiki aliases and the input get normalized and expanded into variants; the minimized input is kept as an alias too.
+ */
+private fun formAliases(
+    wikiAliases: String?,
+    wikiAltInputs: String?,
+    fullInput: String,
+    normalizedInput: String,
+): List<String> {
+    val variants = (wikiAliases.toAliases() + wikiAltInputs.toAliases() + normalizedInput)
+        .filter { it.isNotEmpty() }
+        .map { it.normalizeTekkenMoveInput(keepSpaces = true) }
+        .flatMap { it.expandVariants() }
+
+    val aliases = (variants + fullInput.minimizeTekkenMoveInput())
+        .distinct()
+        .filterNot { it == normalizedInput }
+
+    return aliases
+}
+
+private fun formMoveWikiUrl(game: Game, characterRemoteQueryId: String, moveId: String): String {
+    val formattedCharacterName = characterRemoteQueryId.replace(" ", "_")
+    val wikiUrl = "${URL_PREFIX_MOVE}/${formattedCharacterName}_movelist${game.toPageSuffix()}#${moveId.replace(" ", "_")}"
+    return wikiUrl
+}
+
+private fun formProperties(
+    game: Game,
+    notes: List<String>,
+    crushes: List<String>,
+    input: String,
+    aliases: List<String>,
+): MoveGameProperties? {
+    val isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) }
+    val isHoming = notes.any { it.contains("Homing", ignoreCase = true) }
+    val isHighCrush = notes.any { it.contains("cs") }
+    val isLowCrush = notes.any { it.contains("js") }
+    val hasWallInteraction = notes.any { it.contains("balcony break", ignoreCase = true) }
+    val hasFloorInteraction = notes.any { it.contains("floor break", ignoreCase = true) }
+    val isHeat = (notes.any { it.contains("Heat Engager", ignoreCase = true) }
+            || notes.any { it.contains("Heat Smash", ignoreCase = true) }
+            || input.contains("H.", ignoreCase = true)
+            || aliases.any { it.contains("H.", ignoreCase = true) })
+    val stance = input.findStance(aliases)
+
+    val properties = when (game) {
+        Game.Tekken8 -> T8Properties(
+            isHeat = isHeat,
+            stance = stance,
+            isHoming = isHoming,
+            isPowerCrush = isPowerCrush,
+            isHighCrush = isHighCrush,
+            isLowCrush = isLowCrush,
+            hasWallInteraction = hasWallInteraction,
+            hasFloorInteraction = hasFloorInteraction,
+        )
+
+        Game.Tag2 -> Tag2Properties(
+            stance = stance,
+            isHoming = isHoming,
+            isHighCrush = isHighCrush,
+            isLowCrush = isLowCrush,
+            hasWallInteraction = hasWallInteraction,
+            hasFloorInteraction = hasFloorInteraction,
+        )
+
+        Game.Tekken5 -> T5Properties(
+            stance = stance,
+            isHoming = isHoming,
+            isHighCrush = isHighCrush,
+            isLowCrush = isLowCrush,
+            hasWallInteraction = hasWallInteraction,
+            hasFloorInteraction = hasFloorInteraction,
+        )
+
+        else -> null
+    }
+    return properties
+}
+
+private fun isThrow(guard: String?, notes: List<String>): Boolean {
+    val level = guard.orEmpty().lowercase()
+    val isThrow = (level.contains("t")
+            || level.contains("th(")
+            || notes.any { it.contains("throw break", ignoreCase = true) })
+    return isThrow
 }
 
 /**
@@ -136,11 +237,6 @@ private fun MoveDto.formCompleteDataFromParent(movesById: Map<String, MoveDto>):
     return parentalProperties
 }
 
-private fun formAliases(alias: String?, alt: String?): List<String> {
-    val aliases = (alias.toAliases() + alt.toAliases()).distinct()
-    return aliases
-}
-
 private fun String?.toAliases(): List<String> {
     val cleaned = this
         .cleanHtmlOrNull()
@@ -166,12 +262,6 @@ private fun String.toStorageSafeFileName(): String {
     return stripped
 }
 
-private fun formMoveWikiUrl(game: Game, characterRemoteQueryId: String, moveId: String): String {
-    val formattedCharacterName = characterRemoteQueryId.replace(" ", "_")
-    val wikiUrl = "${URL_PREFIX_MOVE}/${formattedCharacterName}_movelist${game.toPageSuffix()}#${moveId.replace(" ", "_")}"
-    return wikiUrl
-}
-
 private fun MoveDto.splitCrush(): List<String> {
     val finalCrushes = crush.orEmpty()
         .trimIndent()
@@ -194,60 +284,6 @@ private fun String?.formatClickable(): String? {
     return formatted
 }
 
-/**
- * Only the properties that don't depend on the notation - heat and stance are derived by the normalizer.
- */
-private fun formProperties(
-    game: Game,
-    notes: List<String>,
-    crushes: List<String>,
-): MoveGameProperties? {
-    val isPowerCrush = crushes.any { it.contains("pc", ignoreCase = true) }
-    val isHoming = notes.any { it.contains("Homing", ignoreCase = true) }
-    val isHighCrush = notes.any { it.contains("cs") }
-    val isLowCrush = notes.any { it.contains("js") }
-    val hasWallInteraction = notes.any { it.contains("balcony break", ignoreCase = true) }
-    val hasFloorInteraction = notes.any { it.contains("floor break", ignoreCase = true) }
-
-    val properties = when (game) {
-        Game.Tekken8 -> T8Properties(
-            isHoming = isHoming,
-            isPowerCrush = isPowerCrush,
-            isHighCrush = isHighCrush,
-            isLowCrush = isLowCrush,
-            hasWallInteraction = hasWallInteraction,
-            hasFloorInteraction = hasFloorInteraction,
-        )
-
-        Game.Tag2 -> Tag2Properties(
-            isHoming = isHoming,
-            isHighCrush = isHighCrush,
-            isLowCrush = isLowCrush,
-            hasWallInteraction = hasWallInteraction,
-            hasFloorInteraction = hasFloorInteraction,
-        )
-
-        Game.Tekken5 -> T5Properties(
-            isHoming = isHoming,
-            isHighCrush = isHighCrush,
-            isLowCrush = isLowCrush,
-            hasWallInteraction = hasWallInteraction,
-            hasFloorInteraction = hasFloorInteraction,
-        )
-
-        else -> null
-    }
-    return properties
-}
-
-private fun isThrow(guard: String?, notes: List<String>): Boolean {
-    val level = guard.orEmpty().lowercase()
-    val isThrow = (level.contains("t")
-            || level.contains("th(")
-            || notes.any { it.contains("throw break", ignoreCase = true) })
-    return isThrow
-}
-
 private fun String?.formNotes(): List<String> {
     val finalNotes = this.orEmpty()
         .trimIndent()
@@ -259,6 +295,67 @@ private fun String?.formNotes(): List<String> {
         .mapNotNull { it.formatClickable() }
 
     return finalNotes
+}
+
+private fun String.expandVariants(): List<String> {
+    val variants = mutableListOf(this)
+
+    when {
+        startsWith("cd.df#") -> variants.add(replaceFirst("cd.df#", "cd#"))
+        startsWith("cd.df") -> {
+            variants.add(replaceFirst("cd.df", "cd"))
+            variants.add(replaceFirst("cd.df", "cd."))
+        }
+        startsWith("cd.") -> variants.add(replace("cd.", "cd"))
+    }
+
+    if (contains(".") && split(".").first().length == 3) {
+        variants.add(replace(".", ""))
+    }
+
+    if (startsWith("ss.")) {
+        variants.add(replace("ss.", "ss"))
+    }
+
+    if (startsWith("bt.")) {
+        variants.add(replace("bt.", "bt"))
+    }
+
+    if (contains("h.", ignoreCase = true) && startsWith("h.", ignoreCase = true).not()) {
+        val heatless = replace("h.", "")
+        variants.add("h.$heatless")
+    }
+
+    if (this == "h.2+3") {
+        variants.addAll(listOf("hs", "heatsmash"))
+    }
+
+    if (contains("cd.", ignoreCase = true)) {
+        variants.add(replace("cd.", "cd"))
+    }
+
+    if (startsWith("hfc", ignoreCase = true)) {
+        variants.add(replace("hfc", "fc"))
+    }
+
+    return variants
+}
+
+private fun String.findStance(aliases: List<String>): String? {
+    val stance = (getStance() ?: aliases.firstNotNullOfOrNull { it.getStance() }) //TODO: this has flawed impl - what if there are multiple stances in the aliases?
+    return stance
+}
+
+private fun String.getStance(): String? {
+    when {
+        startsWith("BT", ignoreCase = true) -> return "BT"
+        startsWith("CD", ignoreCase = true) -> return "CD"
+    }
+
+    val stance = take(3).takeIf {
+        (length >= 4 && it.all { char -> char.isLetter() } && get(3) == '.' && it != "otg")
+    }
+    return stance?.uppercase()
 }
 
 private data class ParentalProperties(

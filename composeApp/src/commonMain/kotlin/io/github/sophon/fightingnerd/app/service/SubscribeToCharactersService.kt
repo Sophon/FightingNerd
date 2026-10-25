@@ -1,7 +1,7 @@
 package io.github.sophon.fightingnerd.app.service
 
-import io.github.sophon.fightingnerd.app.model.Character
-import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.game.Character
+import io.github.sophon.fightingnerd.app.model.game.Game
 import io.github.sophon.fightingnerd.app.outPort.CharacterPort
 import io.github.sophon.fightingnerd.inPort.SubscribeToCharactersUseCase
 import kotlinx.coroutines.flow.Flow

@@ -3,7 +3,7 @@ package io.github.sophon.fightingnerd.adapter.inbound.more
 import io.github.sophon.core.util.toHumanReadableString
 import io.github.sophon.fightingnerd.adapter.inbound.more.featureSettings.FeatureSettingsState
 import io.github.sophon.fightingnerd.adapter.inbound.more.updates.UpdatesState
-import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.game.Game
 import io.github.sophon.fightingnerd.app.model.Wiki
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList

@@ -4,7 +4,7 @@ import io.github.sophon.core.architecture.DataError
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.network.safeCall
-import io.github.sophon.wiki.app.outPort.FetchGameDataPort
+import io.github.sophon.wiki.adapter.outbound.ktor.KtorWikiAdapter
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.wiki.Game
@@ -18,7 +18,7 @@ import io.ktor.client.request.parameter
  */
 internal class DragDownKtorGameDataAdapter(
     private val httpClient: HttpClient,
-) : FetchGameDataPort {
+) : KtorWikiAdapter {
 
     override suspend fun fetchCharacterList(
         game: Game,
@@ -76,6 +76,10 @@ internal class DragDownKtorGameDataAdapter(
         game: Game,
     ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
         return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+    }
+
+    override fun normalizeMoveInput(game: Game, input: String): String {
+        return input
     }
 
     private fun List<String>.toImageUrlMap(): Map<String, String> {

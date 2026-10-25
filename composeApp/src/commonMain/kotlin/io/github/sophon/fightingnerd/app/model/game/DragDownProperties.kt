@@ -1,8 +1,5 @@
 package io.github.sophon.fightingnerd.app.model.game
 
-import io.github.sophon.fightingnerd.app.model.CharacterGameProperties
-import io.github.sophon.fightingnerd.app.model.MoveGameProperties
-
 data class Roa2CharProperties(
     val dacusSpeedMultiplier: String? = null,
     val weight: String? = null,

@@ -3,8 +3,8 @@ package io.github.sophon.fightingnerd.adapter.inbound.move
 import androidx.compose.runtime.Immutable
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.Property
-import io.github.sophon.fightingnerd.app.model.Bookmark
-import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.app.model.game.Bookmark
+import io.github.sophon.fightingnerd.app.model.game.MoveFilter
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet
@@ -17,6 +17,7 @@ import org.jetbrains.compose.resources.StringResource
 @Immutable
 internal data class MoveListState(
     val character: UiCharacter? = null,
+    val gameDisplayName: String? = null,
     val mediaCount: Int = 0,
 
     val moveDetail: MoveDetail? = null,
@@ -33,6 +34,7 @@ internal data class MoveListState(
     @Immutable
     data class UiCharacter(
         val displayName: String,
+        val iconUrl: String? = null,
         val propertyFields: ImmutableList<Field> = persistentListOf(),
         val isExpanded: Boolean = false,
     ) {

@@ -3,8 +3,8 @@ package io.github.sophon.fightingnerd.adapter.inbound.quiz
 import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.fightingnerd.adapter.inbound.quiz.model.QuizQuestion
-import io.github.sophon.fightingnerd.app.model.Character
-import io.github.sophon.fightingnerd.app.model.Move
+import io.github.sophon.fightingnerd.app.model.game.Character
+import io.github.sophon.fightingnerd.app.model.game.Move
 import io.github.sophon.fightingnerd.app.model.Question
 import kotlinx.collections.immutable.persistentListOf
 import kotlin.test.Test

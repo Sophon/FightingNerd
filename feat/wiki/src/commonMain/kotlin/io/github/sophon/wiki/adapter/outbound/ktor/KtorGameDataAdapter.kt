@@ -10,14 +10,12 @@ import io.github.sophon.wiki.adapter.outbound.ktor.superCombo.SuperComboKtorGame
 import io.github.sophon.wiki.adapter.outbound.ktor.wavu.WavuKtorGameDataAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.xko.XkoKtorGameDataAdapter
 import io.github.sophon.wiki.app.outPort.FetchGameDataPort
+import io.github.sophon.wiki.app.outPort.NormalizeMoveInputPort
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.wiki.Game
 import io.github.sophon.wiki.model.wiki.Wiki
 
-/**
- * Routes each game to its wiki's adapter - which wiki serves which game stays out of the service.
- */
 internal class KtorGameDataAdapter(
     private val wavuAdapter: WavuKtorGameDataAdapter,
     private val mizuumiAdapter: MizuumiKtorGameDataAdapter,
@@ -26,7 +24,7 @@ internal class KtorGameDataAdapter(
     private val dragDownAdapter: DragDownKtorGameDataAdapter,
     private val xkoAdapter: XkoKtorGameDataAdapter,
     private val dreamCancelAdapter: DreamCancelKtorGameDataAdapter,
-) : FetchGameDataPort {
+) : FetchGameDataPort, NormalizeMoveInputPort {
     override suspend fun fetchCharacterList(
         game: Game,
     ): Result<List<Character>, DataError.Remote> {
@@ -48,7 +46,12 @@ internal class KtorGameDataAdapter(
         return result
     }
 
-    private fun adapterOf(game: Game): FetchGameDataPort {
+    override fun normalizeMoveInput(game: Game, input: String): String {
+        val normalized = adapterOf(game).normalizeMoveInput(game, input)
+        return normalized
+    }
+
+    private fun adapterOf(game: Game): KtorWikiAdapter {
         val adapter = when (game.wiki) {
             Wiki.Wavu -> wavuAdapter
             Wiki.Mizuumi -> mizuumiAdapter
@@ -61,3 +64,6 @@ internal class KtorGameDataAdapter(
         return adapter
     }
 }
+
+
+internal interface KtorWikiAdapter : FetchGameDataPort, NormalizeMoveInputPort

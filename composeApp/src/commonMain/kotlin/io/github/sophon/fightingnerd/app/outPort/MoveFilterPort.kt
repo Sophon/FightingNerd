@@ -2,7 +2,7 @@ package io.github.sophon.fightingnerd.app.outPort
 
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
-import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.app.model.game.MoveFilter
 
 internal interface MoveFilterPort {
     fun loadFilters(gameId: String): Result<Set<MoveFilter.Named>, AppError>

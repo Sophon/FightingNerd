@@ -39,7 +39,7 @@ import io.github.sophon.fightingnerd.adapter.inbound.move.composables.MoveItem
 import io.github.sophon.fightingnerd.adapter.inbound.move.composables.MoveTopBar
 import io.github.sophon.fightingnerd.adapter.inbound.move.composables.SharedMove
 import io.github.sophon.fightingnerd.adapter.inbound.move.model.MediaAvailability
-import io.github.sophon.fightingnerd.app.model.MoveFilter
+import io.github.sophon.fightingnerd.app.model.game.MoveFilter
 import io.github.sophon.fightingnerd.adapter.inbound.share.ShareCaptureHost
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
@@ -90,13 +90,21 @@ internal fun MoveListScreen(
             onCollapseCharacter = vm::onCollapseCharacter,
         )
 
-        pendingShareMoveId?.let { id ->
-            filteredMoves.firstOrNull { it.id == id }?.let { uiMove ->
-                ShareCaptureHost(
-                    content = { SharedMove(uiMove, uiMove.id == state.expandedMoveId) },
-                    onCaptured = { pngBytes -> vm.onShareCaptured(pngBytes) },
-                )
-            }
+        val uiCharacter = state.character
+        val gameDisplayName = state.gameDisplayName
+        val uiMove = pendingShareMoveId?.let { id -> filteredMoves.firstOrNull { it.id == id } }
+        if (uiMove != null && uiCharacter != null && gameDisplayName != null) {
+            ShareCaptureHost(
+                content = {
+                    SharedMove(
+                        uiMove = uiMove,
+                        uiCharacter = uiCharacter,
+                        gameDisplayName = gameDisplayName,
+                        isExpanded = uiMove.id == state.expandedMoveId,
+                    )
+                },
+                onCaptured = { pngBytes -> vm.onShareCaptured(pngBytes) },
+            )
         }
     }
 }

@@ -45,9 +45,10 @@
 ### Model
 - core fields are universal; game-specific fields go in `gameProperties`
   - `CharacterGameProperties` / `MoveGameProperties` interfaces, each wiki provides its own implementations
-- normalization is business logic, done by the service
-  - remote adapter maps DTO → model, service normalizes, SQL port receives the normalized model
-  - service also normalizes user input before lookup
+- move normalization belongs to the wiki - the notation is per wiki
+  - remote adapter maps DTO → model and normalizes it in the mapper, SQL port receives the normalized model
+  - user input goes through the same normalizer - `NormalizeMoveInputPort`, implemented by the wiki's remote adapter
+  - characters are normalized by the service - the natural ID rule is the same for every wiki
   - not in fakes
 - lookup is two queries - character first, then moves by char ID
   - distinguishes `UnknownCharacter` (try next feature) from `UnknownMove` (stop)
@@ -100,4 +101,4 @@ CREATE TABLE move_alias (
 ### Model
 - lookup by input or alias - `findMove(characterId, input): Move?`
 - by ID - `LoadMovePort.get(characterId, input): Move?` over `selectByInput` - the complete input only, no alias
-- input variants (`d/f+1` vs `df1`) normalized by the service, both for the model and user input
+- input variants (`d/f+1` vs `df1`) normalized by the wiki's remote adapter, both for the model and user input

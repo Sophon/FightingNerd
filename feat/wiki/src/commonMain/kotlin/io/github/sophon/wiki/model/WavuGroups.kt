@@ -43,12 +43,12 @@ object WavuGroups {
 
     object Up: Group {
         override val id: String = "u"
-        override val predicate: (Move) -> Boolean = { it.input.startsWithBeforeNumber("u") }
-    }
-
-    object UpBack: Group {
-        override val id: String = "ub"
-        override val predicate: (Move) -> Boolean = { it.input.startsWithBeforeNumber("ub") }
+        override val predicate: (Move) -> Boolean = { move ->
+            val input = move.input
+            input.startsWithBeforeNumber("u")
+                    || input.startsWithBeforeNumber("ub")
+                    || input.startsWithBeforeNumber("uf")
+        }
     }
 
     object Motion: Group {

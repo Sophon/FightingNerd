@@ -29,7 +29,7 @@ internal fun String.toDomain(
         aliasList = this.createAliases(),
         images = Character.Images(
             iconId = iconKeys.firstOrNull { iconUrlMap.contains(it) },
-            iconUrl = (iconKeys.firstNotNullOfOrNull { iconUrlMap[it] } ?: game.iconUrl),
+            iconUrl = iconKeys.firstNotNullOfOrNull { iconUrlMap[it] },
         ),
     )
     return character

@@ -1,9 +1,8 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
-import io.github.sophon.wiki.app.util.normalizeSuperCombo
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.game.SF6MoveProperties
 import kotlin.test.Test
@@ -14,7 +13,7 @@ class SuperComboNormalizerTest {
     @Test
     fun `input from the move ID is lowercased`() {
         //given
-        val move = SuperComboMoveSource.aangThrow
+        val move = SuperComboMappedMoveSource.aangThrow
         val expected = "a+d"
 
         //when
@@ -27,7 +26,7 @@ class SuperComboNormalizerTest {
     @Test
     fun `version suffix from the move ID survives normalization`() {
         //given
-        val move = SuperComboMoveSource.ryuuenbuFlame
+        val move = SuperComboMappedMoveSource.ryuuenbuFlame
         val expected = "214hp_flame"
 
         //when
@@ -36,13 +35,26 @@ class SuperComboNormalizerTest {
         //then
         assertThat(result.input).isEqualTo(expected)
     }
+
+    @Test
+    fun `user input loses spaces and case`() {
+        //given
+        val input = "236 HP"
+        val expected = "236hp"
+
+        //when
+        val result = input.normalizeSuperComboInput()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
     //endregion
 
     //region aliases
     @Test
     fun `motion notation gets its motion alias`() {
         //given
-        val move = SuperComboMoveSource.hadoken
+        val move = SuperComboMappedMoveSource.hadoken
         val expected = listOf("qcfhp")
 
         //when
@@ -55,7 +67,7 @@ class SuperComboNormalizerTest {
     @Test
     fun `crouching notation gets its cr alias`() {
         //given
-        val move = SuperComboMoveSource.crHP
+        val move = SuperComboMappedMoveSource.crHP
         val expected = listOf("crhp")
 
         //when
@@ -68,7 +80,7 @@ class SuperComboNormalizerTest {
     @Test
     fun `spd notation drops the plus and gets its spd alias`() {
         //given
-        val move = SuperComboMoveSource.screwPiledriver
+        val move = SuperComboMappedMoveSource.screwPiledriver
         val expected = listOf("spdhp")
 
         //when
@@ -81,7 +93,7 @@ class SuperComboNormalizerTest {
     @Test
     fun `or notation stays an alias and splits into aliases`() {
         //given
-        val move = SuperComboMoveSource.swiftThrust
+        val move = SuperComboMappedMoveSource.swiftThrust
         val expected = listOf("4/6mp", "4mp")
 
         //when
@@ -94,7 +106,7 @@ class SuperComboNormalizerTest {
     @Test
     fun `wiki notation that differs from the input stays an alias`() {
         //given
-        val move = SuperComboMoveSource.nightshadeChaser
+        val move = SuperComboMappedMoveSource.nightshadeChaser
         val expected = "214lp~6p"
 
         //when
@@ -107,7 +119,7 @@ class SuperComboNormalizerTest {
     @Test
     fun `super gets its level from the meter cost`() {
         //given
-        val move = SuperComboMoveSource.dragonlashFlame
+        val move = SuperComboMappedMoveSource.dragonlashFlame
         val expected = listOf("sa1")
 
         //when
@@ -120,7 +132,7 @@ class SuperComboNormalizerTest {
     @Test
     fun `critical art gets no super level`() {
         //given
-        val move = SuperComboMoveSource.shinryuReppaCa
+        val move = SuperComboMappedMoveSource.shinryuReppaCa
         val expected = listOf("236236p")
 
         //when
@@ -135,7 +147,7 @@ class SuperComboNormalizerTest {
 /**
  * Moves as the SuperCombo adapter maps them - the input from the move ID, the wiki notation as the only alias.
  */
-private object SuperComboMoveSource {
+private object SuperComboMappedMoveSource {
     val hadoken = superComboMove(remoteId = "ken_236hp", input = "236hp", wikiInput = "236HP", type = "special", superGain = "600 (420)")
     val crHP = superComboMove(remoteId = "ken_2hp", input = "2hp", wikiInput = "2HP", type = "ground_normal", superGain = "1000 (700)")
     val dragonlashFlame = superComboMove(remoteId = "ken_214214k", input = "214214k", wikiInput = "214214K", type = "super", superGain = "-10000")

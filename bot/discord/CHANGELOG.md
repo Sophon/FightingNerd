@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v17.5.0] - 2026-10-25
+- fixed Tekken moves ignoring case sensitivity
+  - this fixed moves like Law's uf4 vs UF4
+
 ## [v17.4.2] - 2026-10-22
 - `Ktor` - retry with exponential backoff
 

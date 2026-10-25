@@ -199,7 +199,6 @@ private val tekkenGroupList = listOf(
     WavuGroups.DownBack,
     WavuGroups.Back,
     WavuGroups.Up,
-    WavuGroups.UpBack,
     WavuGroups.Motion,
     WavuGroups.Crouch,
     WavuGroups.WS,

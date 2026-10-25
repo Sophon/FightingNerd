@@ -2,6 +2,7 @@ package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.wiki.Game
@@ -60,15 +61,14 @@ class MizuumiCharacterRemoteMapperTest {
     }
 
     @Test
-    fun `missing icon falls back to the game icon`() {
+    fun `missing icon leaves the icon url null`() {
         //given
         val chara = "Shiki Tohno"
-        val expected = Game.MBTL.iconUrl
 
         //when
         val result = chara.toDomain(Game.MBTL, iconUrlMap)
 
         //then
-        assertThat(result.images?.iconUrl).isEqualTo(expected)
+        assertThat(result.images?.iconUrl).isNull()
     }
 }

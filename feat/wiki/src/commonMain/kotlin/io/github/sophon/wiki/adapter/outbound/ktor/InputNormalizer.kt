@@ -1,4 +1,4 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor
 
 /**
  * The close prefix becomes `cl`, not `c` - close D (`c.D` → `cld`) and Blowback (`CD` → `cd`) are different moves.
@@ -12,7 +12,7 @@ internal fun String.normalize2dInputs(): String {
         .replace("j.", "j")
         .replace("f.", "f")
 
-    for ((old, new) in _root_ide_package_.io.github.sophon.wiki.app.util.closePrefixList) {
+    for ((old, new) in closePrefixList) {
         if (result.startsWith(old)) {
             result = new + result.removePrefix(old)
             break
@@ -55,7 +55,7 @@ private fun String.splitOr(
     val result = when {
         splitParts.isButtonVariants() -> splitParts.expandButtonVariants()
         isPartial.not() -> parts
-        else -> _root_ide_package_.io.github.sophon.wiki.app.util.expandDirectionVariants(normalized, delimiter)
+        else -> expandDirectionVariants(normalized, delimiter)
     }
     return result
 }
@@ -110,8 +110,8 @@ private fun String.add2dAliases(): List<String> {
     val aliases = when {
         startsWith("j") -> listOf("j." + removePrefix("j"))
         startsWith("f") -> listOf("f." + removePrefix("f"))
-        startsWith(_root_ide_package_.io.github.sophon.wiki.app.util.CLOSE_PREFIX) -> {
-            val withoutPrefix = removePrefix(_root_ide_package_.io.github.sophon.wiki.app.util.CLOSE_PREFIX)
+        startsWith(CLOSE_PREFIX) -> {
+            val withoutPrefix = removePrefix(CLOSE_PREFIX)
             listOf("cl.$withoutPrefix", "c.$withoutPrefix", "c$withoutPrefix")
         }
 
@@ -124,6 +124,6 @@ private fun String.add2dAliases(): List<String> {
 private const val CLOSE_PREFIX = "cl"
 
 private val closePrefixList = listOf(
-    "(close)" to _root_ide_package_.io.github.sophon.wiki.app.util.CLOSE_PREFIX,
-    "c." to _root_ide_package_.io.github.sophon.wiki.app.util.CLOSE_PREFIX,
+    "(close)" to CLOSE_PREFIX,
+    "c." to CLOSE_PREFIX,
 )

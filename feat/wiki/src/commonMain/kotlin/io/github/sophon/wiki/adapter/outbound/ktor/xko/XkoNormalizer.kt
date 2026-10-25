@@ -1,5 +1,6 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
+import io.github.sophon.wiki.adapter.outbound.ktor.create2dAliases
 import io.github.sophon.wiki.model.Move
 
 internal fun Move.normalizeXko(): Move {
