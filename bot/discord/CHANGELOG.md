@@ -1,6 +1,6 @@
 # BOT CHANGELOG
 
-## [v17.5.0] - 2026-10-22
+## [v17.5.0] - 2026-10-25
 - fixed Tekken moves ignoring case sensitivity
   - this fixed moves like Law's uf4 vs UF4
 
