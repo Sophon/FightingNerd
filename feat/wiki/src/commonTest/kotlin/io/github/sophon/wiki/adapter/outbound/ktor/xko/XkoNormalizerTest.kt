@@ -1,9 +1,8 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
 import assertk.assertThat
 import assertk.assertions.contains
 import assertk.assertions.isEqualTo
-import io.github.sophon.wiki.app.util.normalizeXko
 import io.github.sophon.wiki.model.Move
 import kotlin.test.Test
 
@@ -12,7 +11,7 @@ class XkoNormalizerTest {
     @Test
     fun `input is lowercased`() {
         //given
-        val move = XkoMoveSource.jinx5M
+        val move = XkoMappedMoveSource.jinx5M
         val expected = "5m"
 
         //when
@@ -25,7 +24,7 @@ class XkoNormalizerTest {
     @Test
     fun `button combination also matches without parentheses`() {
         //given
-        val move = XkoMoveSource.jinxJMH
+        val move = XkoMappedMoveSource.jinxJMH
         val expected = "j.m+h"
 
         //when
@@ -34,12 +33,25 @@ class XkoNormalizerTest {
         //then
         assertThat(result.aliases).contains(expected)
     }
+
+    @Test
+    fun `user input keeps its dot`() {
+        //given
+        val input = "j.M"
+        val expected = "j.m"
+
+        //when
+        val result = input.normalizeXkoInput()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
 }
 
 /**
  * Moves as the Xko adapter maps them - wiki notation, no aliases yet.
  */
-private object XkoMoveSource {
+private object XkoMappedMoveSource {
     val jinx5M = jinxMove(input = "5M")
     val jinxJMH = jinxMove(input = "j.(M+H)")
 }

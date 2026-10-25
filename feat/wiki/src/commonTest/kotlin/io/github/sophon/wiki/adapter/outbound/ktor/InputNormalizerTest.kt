@@ -1,9 +1,7 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.wiki.app.util.create2dAliases
-import io.github.sophon.wiki.app.util.normalize2dInputs
 import kotlin.test.Test
 
 class InputNormalizerTest {
@@ -40,6 +38,19 @@ class InputNormalizerTest {
         //given
         val input = "CD"
         val expected = "cd"
+
+        //when
+        val result = input.normalize2dInputs()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `jump input loses its dot`() {
+        //given
+        val input = "j.C"
+        val expected = "jc"
 
         //when
         val result = input.normalize2dInputs()

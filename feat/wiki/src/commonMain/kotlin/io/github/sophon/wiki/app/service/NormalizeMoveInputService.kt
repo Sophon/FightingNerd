@@ -1,27 +1,14 @@
 package io.github.sophon.wiki.app.service
 
 import io.github.sophon.wiki.NormalizeMoveInputUseCase
-import io.github.sophon.wiki.app.util.normalizeTekkenMoveInput
-import io.github.sophon.wiki.app.util.normalize2dInputs
-import io.github.sophon.wiki.app.util.normalizeDreamCancelInput
-import io.github.sophon.wiki.app.util.normalizeSuperComboInput
-import io.github.sophon.wiki.app.util.normalizeXkoInput
+import io.github.sophon.wiki.app.outPort.NormalizeMoveInputPort
 import io.github.sophon.wiki.model.wiki.Game
-import io.github.sophon.wiki.model.wiki.Wiki
 
-/**
- * Same per-game input normalization that [RefreshDataService] applies to stored moves.
- */
-internal class NormalizeMoveInputService : NormalizeMoveInputUseCase {
+internal class NormalizeMoveInputService(
+    private val normalizeMoveInputPort: NormalizeMoveInputPort,
+) : NormalizeMoveInputUseCase {
     override fun invoke(game: Game, input: String): String {
-        val normalized = when (game.wiki) {
-            Wiki.Wavu -> input.normalizeTekkenMoveInput()
-            Wiki.Mizuumi, Wiki.DustLoop -> input.normalize2dInputs()
-            Wiki.SuperCombo -> input.normalizeSuperComboInput()
-            Wiki.Xko -> input.normalizeXkoInput()
-            Wiki.DreamCancel -> input.normalizeDreamCancelInput()
-            Wiki.DragDown -> input
-        }
+        val normalized = normalizeMoveInputPort.normalizeMoveInput(game, input)
         return normalized
     }
 }

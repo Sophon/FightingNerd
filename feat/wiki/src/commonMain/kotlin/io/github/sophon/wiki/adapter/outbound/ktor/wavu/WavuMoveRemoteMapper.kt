@@ -3,8 +3,6 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
-import io.github.sophon.wiki.app.util.minimizeTekkenMoveInput
-import io.github.sophon.wiki.app.util.normalizeTekkenMoveInput
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.MoveGameProperties

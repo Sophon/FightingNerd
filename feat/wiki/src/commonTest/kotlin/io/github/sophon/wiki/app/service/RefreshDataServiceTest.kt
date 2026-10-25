@@ -606,7 +606,7 @@ private fun refreshDataService(
     return service
 }
 
-// raw, like the adapters map them - the service normalizes
+// characters raw, like the adapters map them - the service normalizes them
 
 private val yoshimitsu = Character(
     id = CharacterId(Game.Tekken8, "Yoshimitsu"),

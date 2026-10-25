@@ -20,7 +20,7 @@ class XkoMoveRemoteMapperTest {
         val expected = listOf(
             XkoMoveSource.jinx to listOf(
                 Move(
-                    input = "5M",
+                    input = "5m",
                     damage = "55",
                     startup = "11",
                     onBlock = "-6",
@@ -37,7 +37,7 @@ class XkoMoveRemoteMapperTest {
             ),
             XkoMoveSource.darius to listOf(
                 Move(
-                    input = "5M",
+                    input = "5m",
                     damage = "65",
                     startup = "12",
                     onBlock = "-3",
@@ -69,7 +69,7 @@ class XkoMoveRemoteMapperTest {
             bucket = listOf(XkoMoveSource.jinx5MEmptyFields),
         )
         val expected = Move(
-            input = "5M",
+            input = "5m",
             damage = null,
             startup = "11",
             onBlock = "-6",

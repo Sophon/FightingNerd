@@ -14,15 +14,12 @@ internal fun XkoMoveListResponseDto.toDomainAll(game: Game): List<Pair<Character
         .groupBy { dto -> dto.pageName }
         .map { (pageName, dtoList) ->
             val character = pageName.toCharacter(game)
-            val moveList = dtoList.map { dto -> dto.toDomain() }
+            val moveList = dtoList.map { dto -> dto.toDomain().normalizeXko() }
             character to moveList
         }
     return characterWithMovesList
 }
 
-/**
- * Only cleaning - the input and the aliases are normalized by the service.
- */
 private fun MoveDto.toDomain(): Move {
     val cleanedInput = input.orDash()
 

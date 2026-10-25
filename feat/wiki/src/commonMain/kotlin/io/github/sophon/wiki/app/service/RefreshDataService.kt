@@ -19,11 +19,6 @@ import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
 import io.github.sophon.wiki.app.util.normalize
-import io.github.sophon.wiki.app.util.normalizeDreamCancel
-import io.github.sophon.wiki.app.util.normalizeDustLoop
-import io.github.sophon.wiki.app.util.normalizeMizuumi
-import io.github.sophon.wiki.app.util.normalizeSuperCombo
-import io.github.sophon.wiki.app.util.normalizeXko
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
@@ -227,10 +222,8 @@ internal class RefreshDataService(
             }
             .mapError { error -> error.toWikiError() }
             .flatMap { moveList ->
-                val normalizedMoveList = moveList
-                    .normalize(character.id)
-                    .dropDuplicateInputs(character.id)
-                saveMoveList(character.id, normalizedMoveList)
+                val uniqueMoveList = moveList.dropDuplicateInputs(character.id)
+                saveMoveList(character.id, uniqueMoveList)
             }
 
         return downloadResult
@@ -328,10 +321,8 @@ internal class RefreshDataService(
     private fun Pair<Character, List<Move>>.normalize(): Pair<Character, List<Move>> {
         val (character, moveList) = this
         val normalizedCharacter = character.normalize()
-        val normalizedMoveList = moveList
-            .normalize(normalizedCharacter.id)
-            .dropDuplicateInputs(normalizedCharacter.id)
-        val normalized = (normalizedCharacter to normalizedMoveList)
+        val uniqueMoveList = moveList.dropDuplicateInputs(normalizedCharacter.id)
+        val normalized = (normalizedCharacter to uniqueMoveList)
         return normalized
     }
 
@@ -348,18 +339,6 @@ internal class RefreshDataService(
             Napier.w(tag = TAG) { "${characterId.naturalId} (${characterId.game.id}): duplicate inputs dropped - $droppedIdList" }
         }
         return uniqueMoveList
-    }
-
-    private fun List<Move>.normalize(characterId: CharacterId): List<Move> {
-        val normalizedList = when (characterId.game) {
-            Game.MBTL, Game.Uni2, Game.VSAV -> this.map { move -> move.normalizeMizuumi() }
-            Game.GGST, Game.DBFZ, Game.GBVSR, Game.BBCF, Game.MTFS -> this.map { move -> move.normalizeDustLoop(characterId) }
-            Game.StreetFighter6, Game.MK1, Game.AVL -> this.map { move -> move.normalizeSuperCombo() }
-            Game.Xko -> this.map { move -> move.normalizeXko() }
-            Game.KoFXV, Game.COTW -> this.map { move -> move.normalizeDreamCancel() }
-            else -> this
-        }
-        return normalizedList
     }
 
 

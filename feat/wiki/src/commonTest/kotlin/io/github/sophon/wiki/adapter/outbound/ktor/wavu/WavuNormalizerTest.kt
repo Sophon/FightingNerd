@@ -1,4 +1,4 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
@@ -388,6 +388,45 @@ class WavuNormalizerTest {
         val result = string.normalizeTekkenMoveInput()
 
         //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move string loses its commas`() {
+        // Given
+        val input = "1,1,3"
+        val expected = "113"
+
+        // When
+        val result = input.normalizeTekkenMoveInput()
+
+        // Then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `move string loses its spaces`() {
+        // Given
+        val input = "1 1 2"
+        val expected = "112"
+
+        // When
+        val result = input.normalizeTekkenMoveInput()
+
+        // Then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `motion loses its plus`() {
+        // Given
+        val input = "DF+1"
+        val expected = "df1"
+
+        // When
+        val result = input.normalizeTekkenMoveInput()
+
+        // Then
         assertThat(result).isEqualTo(expected)
     }
 }

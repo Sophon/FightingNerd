@@ -1,8 +1,7 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.wiki.app.util.normalizeDreamCancel
 import io.github.sophon.wiki.model.Move
 import kotlin.test.Test
 
@@ -11,7 +10,7 @@ class DreamCancelNormalizerTest {
     @Test
     fun `button alternatives expand into aliases`() {
         //given
-        val move = DreamCancelMoveSource.aurora
+        val move = DreamCancelMappedMoveSource.aurora
         val expected = listOf("236236b/d", "236236b", "236236d")
 
         //when
@@ -24,7 +23,7 @@ class DreamCancelNormalizerTest {
     @Test
     fun `close direction alternatives expand into close aliases`() {
         //given
-        val move = DreamCancelMoveSource.byeByeBoo
+        val move = DreamCancelMappedMoveSource.byeByeBoo
         val expected = listOf(
             "cl4/6c",
             "cl4c",
@@ -47,7 +46,7 @@ class DreamCancelNormalizerTest {
     @Test
     fun `close D and Blowback get different inputs`() {
         //given
-        val moveList = listOf(DreamCancelMoveSource.closeD, DreamCancelMoveSource.blowback)
+        val moveList = listOf(DreamCancelMappedMoveSource.closeD, DreamCancelMappedMoveSource.blowback)
         val expected = listOf("cld", "cd")
 
         //when
@@ -60,7 +59,7 @@ class DreamCancelNormalizerTest {
     @Test
     fun `close input gets the other close spellings as aliases`() {
         //given
-        val move = DreamCancelMoveSource.closeD
+        val move = DreamCancelMappedMoveSource.closeD
         val expected = listOf("cl.d", "c.d", "cd")
 
         //when
@@ -69,12 +68,25 @@ class DreamCancelNormalizerTest {
         //then
         assertThat(result.aliases).isEqualTo(expected)
     }
+
+    @Test
+    fun `close normal gets the close prefix`() {
+        //given
+        val input = "c.C"
+        val expected = "clc"
+
+        //when
+        val result = input.normalizeDreamCancelInput()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
 }
 
 /**
  * Moves as the DreamCancel adapter maps them - the input from the move ID, the wiki notation as the only alias.
  */
-private object DreamCancelMoveSource {
+private object DreamCancelMappedMoveSource {
     val aurora = dreamCancelMove(remoteId = "bjenet_236236k", input = "236236k", wikiInput = "236236B/D", name = "Aurora")
     val byeByeBoo = dreamCancelMove(remoteId = "bjenet_cthrow", input = "cthrow", wikiInput = "(close) 4/6C", name = "Bye-Bye Boo")
     val closeD = dreamCancelMove(remoteId = "kyo_cld", input = "cld", wikiInput = "c.D", name = "close D")
