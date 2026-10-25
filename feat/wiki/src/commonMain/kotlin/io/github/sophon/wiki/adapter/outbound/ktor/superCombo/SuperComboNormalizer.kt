@@ -1,5 +1,7 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor.superCombo
 
+import io.github.sophon.wiki.adapter.outbound.ktor.create2dAliases
+import io.github.sophon.wiki.adapter.outbound.ktor.normalize2dInputs
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.game.SF6MoveProperties
 
@@ -81,7 +83,7 @@ private fun String.formMotionInput(): String? {
 private fun String.cleanSuperComboInput(): String {
     var result = this.trim().lowercase().replace(" ", "")
 
-    for ((old, new) in _root_ide_package_.io.github.sophon.wiki.app.util.superComboInputReplacementList) {
+    for ((old, new) in superComboInputReplacementList) {
         result = result.replace(old, new)
     }
 

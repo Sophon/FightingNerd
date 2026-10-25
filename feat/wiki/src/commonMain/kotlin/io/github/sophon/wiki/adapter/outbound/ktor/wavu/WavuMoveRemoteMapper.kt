@@ -3,8 +3,6 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.core.util.urlEncode
-import io.github.sophon.wiki.app.util.minimizeTekkenMoveInput
-import io.github.sophon.wiki.app.util.normalizeTekkenMoveInput
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.MoveGameProperties
@@ -317,6 +315,10 @@ private fun String.expandVariants(): List<String> {
 
     if (startsWith("ss.")) {
         variants.add(replace("ss.", "ss"))
+    }
+
+    if (startsWith("bt.")) {
+        variants.add(replace("bt.", "bt"))
     }
 
     if (contains("h.", ignoreCase = true) && startsWith("h.", ignoreCase = true).not()) {

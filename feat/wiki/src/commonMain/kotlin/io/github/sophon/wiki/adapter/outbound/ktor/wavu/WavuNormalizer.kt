@@ -1,4 +1,4 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 
 
 /**

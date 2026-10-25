@@ -194,6 +194,21 @@ class WavuMoveRemoteMapperTest {
         //then
         assertThat(result.aliases).isEqualTo(expected)
     }
+
+    @Test
+    fun `backturn is properly formatted`() {
+        //given
+        val move = WavuMoveSource.blindKick
+        val expectedInput = "bt.3"
+        val expectedAliases = listOf("bt3")
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.input).isEqualTo(expectedInput)
+        assertThat(result.aliases).isEqualTo(expectedAliases)
+    }
     //endregion
 
     //region stance
@@ -1057,6 +1072,26 @@ private object WavuMoveSource {
         id = "Armor King-BT.1+4",
         name = "Moonsault Drop",
         input = "BT.1+4",
+    )
+    val blindKick = MoveDto(
+        id = "Armor King-BT.3",
+        name = "Blind Kick",
+        input = "BT.3",
+        parent = null,
+        target = "M",
+        damage = "20",
+        startup = "i13~14",
+        recv = "r37",
+        tot = "51",
+        crush = null,
+        block = "-14",
+        hit = "+49a",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-orange tornado&quot;\n&gt;Tornado&lt;/div&gt;\n* Unparryable by traditional kick parries (bug?)\n&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = null,
+        alt = null,
     )
     val manjiBackfistShredder = MoveDto(
         id = "Yoshimitsu-f+2,1",

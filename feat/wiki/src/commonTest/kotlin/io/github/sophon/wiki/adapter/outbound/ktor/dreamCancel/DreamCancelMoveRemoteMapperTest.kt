@@ -63,10 +63,13 @@ class DreamCancelMoveRemoteMapperTest {
     }
 
     @Test
-    fun `wiki input is kept as an alias`() {
+    fun `wiki input is normalized into aliases`() {
         //given
         val dtoList = listOf(DreamCancelMoveSource.aurora, DreamCancelMoveSource.byeByeBoo)
-        val expected = listOf(listOf("236236B/D"), listOf("(close) 4/6C"))
+        val expected = listOf(
+            listOf("236236b/d", "236236b", "236236d"),
+            listOf("cl4/6c", "cl4c", "cl6c", "cl.4c", "c.4c", "c4c", "cl.6c", "c.6c", "c6c"),
+        )
 
         //when
         val result = dtoList.toMoveList()

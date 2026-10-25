@@ -1,5 +1,7 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel
 
+import io.github.sophon.wiki.adapter.outbound.ktor.create2dAliases
+import io.github.sophon.wiki.adapter.outbound.ktor.normalize2dInputs
 import io.github.sophon.wiki.model.Move
 
 /**

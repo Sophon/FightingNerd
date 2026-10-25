@@ -6,9 +6,10 @@ import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
 import io.github.sophon.core.network.safeCall
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
+import io.github.sophon.wiki.adapter.outbound.ktor.KtorWikiAdapter
 import io.github.sophon.wiki.adapter.outbound.ktor.getWikiImageUrl
 import io.github.sophon.wiki.adapter.outbound.ktor.mizuumi.MizuumiKtorGameDataAdapter.Companion.MAX_PAGES
-import io.github.sophon.wiki.app.outPort.FetchGameDataPort
+import io.github.sophon.wiki.adapter.outbound.ktor.normalize2dInputs
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.wiki.Game
@@ -27,7 +28,7 @@ import kotlinx.coroutines.flow.toList
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class MizuumiKtorGameDataAdapter(
     private val httpClient: HttpClient,
-) : FetchGameDataPort {
+) : KtorWikiAdapter {
 
     override suspend fun fetchCharacterList(
         game: Game,
@@ -91,6 +92,11 @@ internal class MizuumiKtorGameDataAdapter(
                 }
             }
         return gameDataResult
+    }
+
+    override fun normalizeMoveInput(game: Game, input: String): String {
+        val normalized = input.normalize2dInputs()
+        return normalized
     }
 
     /**

@@ -61,7 +61,7 @@ interface GetUpdateTimeStampUseCase {
 }
 
 /**
- * Stored inputs are normalized per game on refresh - a user's `1,1,3` has to become `113` before it can match.
+ * Stored inputs are normalized by their wiki - a user's `1,1,3` has to become `113` the same way before it can match.
  */
 interface NormalizeMoveInputUseCase {
     operator fun invoke(game: Game, input: String): String

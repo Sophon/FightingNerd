@@ -116,10 +116,10 @@ class SuperComboMoveRemoteMapperTest {
     }
 
     @Test
-    fun `wiki input is kept as an alias`() {
+    fun `wiki input is normalized into aliases`() {
         //given
         val moveList = listOf(SuperComboMoveSource.maiRyuuenbu, SuperComboMoveSource.maiRyuuenbuFlame)
-        val expected = listOf(listOf("214HP"), listOf("214HP"))
+        val expected = listOf(listOf("qcbhp"), listOf("214hp", "qcbhp"))
 
         //when
         val result = moveList.toMoveList(Game.StreetFighter6)

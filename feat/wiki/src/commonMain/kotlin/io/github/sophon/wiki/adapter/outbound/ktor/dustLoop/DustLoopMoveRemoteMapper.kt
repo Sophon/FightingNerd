@@ -18,13 +18,10 @@ internal fun DustLoopMoveListResponseDto.toDomain(
     character: Character,
     imageUrlMap: Map<String, String>,
 ): List<Move> {
-    val moveList = cargoQuery.map { query -> query.title.toDomain(game, character, imageUrlMap) }
+    val moveList = cargoQuery.map { query -> query.title.toDomain(game, character, imageUrlMap).normalizeDustLoop(character.id) }
     return moveList
 }
 
-/**
- * Only cleaning - the input and the aliases are normalized by the service.
- */
 private fun MoveDto.toDomain(
     game: Game,
     character: Character,

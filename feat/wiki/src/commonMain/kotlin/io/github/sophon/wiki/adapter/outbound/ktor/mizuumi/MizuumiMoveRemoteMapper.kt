@@ -56,12 +56,11 @@ private fun List<MoveDto>.toDomain(
     hitboxUrlMap: Map<String, String>,
 ): List<Move> {
     val moveIdPrefix = map { dto -> dto.moveId }.findMoveIdPrefix()
-    val moveList = map { dto -> dto.toDomain(game, character, moveIdPrefix, hitboxUrlMap) }
+    val moveList = map { dto -> dto.toDomain(game, character, moveIdPrefix, hitboxUrlMap).normalizeMizuumi() }
     return moveList
 }
 
 /**
- * Only cleaning - input normalization and aliases are done by the service.
  * The input comes from the move ID - the wiki's `input` doesn't tell versions apart (`ak_5b_close` / `ak_5b_far`
  * are both `5B`), so it's kept as an alias.
  */
