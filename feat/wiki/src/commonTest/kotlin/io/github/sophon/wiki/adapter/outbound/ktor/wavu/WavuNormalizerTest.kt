@@ -85,6 +85,30 @@ class WavuNormalizerTest {
     }
 
     @Test
+    fun `held up directions followed by a plus or number keep their case`() {
+        // Given
+        val inputUb = "UB+4"
+        val expectedUb = "UB4"
+        val inputU = "U+4"
+        val expectedU = "U4"
+        val inputUf = "UF+4"
+        val inputUfNumber = "UF4"
+        val expectedUf = "UF4"
+
+        // When
+        val resultUb = inputUb.minimizeTekkenMoveInput()
+        val resultU = inputU.minimizeTekkenMoveInput()
+        val resultUf = inputUf.minimizeTekkenMoveInput()
+        val resultUfNumber = inputUfNumber.minimizeTekkenMoveInput()
+
+        // Then
+        assertThat(resultUb).isEqualTo(expectedUb)
+        assertThat(resultU).isEqualTo(expectedU)
+        assertThat(resultUf).isEqualTo(expectedUf)
+        assertThat(resultUfNumber).isEqualTo(expectedUf)
+    }
+
+    @Test
     fun `removes commas`() {
         // Given
         val input = "1,1,2"
