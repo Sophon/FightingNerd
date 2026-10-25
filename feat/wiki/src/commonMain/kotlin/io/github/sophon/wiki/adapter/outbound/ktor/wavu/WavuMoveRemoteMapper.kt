@@ -317,6 +317,10 @@ private fun String.expandVariants(): List<String> {
         variants.add(replace("ss.", "ss"))
     }
 
+    if (startsWith("bt.")) {
+        variants.add(replace("bt.", "bt"))
+    }
+
     if (contains("h.", ignoreCase = true) && startsWith("h.", ignoreCase = true).not()) {
         val heatless = replace("h.", "")
         variants.add("h.$heatless")
