@@ -28,16 +28,29 @@ import kotlin.time.Duration.Companion.seconds
 class MoveServiceTest {
     //region findFrameData
     @Test
-    fun `move is found by input regardless of case`() = runTest {
+    fun `move is found by its input`() = runTest {
         // given
         val expected = Result.Success(df1)
+        val service = moveService()
+
+        // when
+        val result = service.findMove("jin df+1")
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `input of a different case is a different move`() = runTest {
+        // given
         val service = moveService()
 
         // when
         val result = service.findMove("jin DF+1")
 
         // then
-        assertThat(result).isEqualTo(expected)
+        val error = (result as Result.Error).error
+        assertThat(error).isInstanceOf(BotError.UnknownMove::class)
     }
 
     @Test
