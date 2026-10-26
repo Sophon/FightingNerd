@@ -21,6 +21,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import coil3.compose.AsyncImage
 import fightingnerd.composeapp.generated.resources.Res
 import fightingnerd.composeapp.generated.resources.ic_fighting_nerd
 import fightingnerd.composeapp.generated.resources.move_list_field_damage
@@ -44,6 +47,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 internal fun SharedMove(
     uiMove: MoveListState.UiMove,
+    uiCharacter: MoveListState.UiCharacter,
+    gameDisplayName: String,
     isExpanded: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -56,7 +61,9 @@ internal fun SharedMove(
     ) {
         Header(
             input = uiMove.input,
-            name = uiMove.name,
+            moveName = uiMove.name,
+            characterName = uiCharacter.displayName,
+            characterImageUrl = uiCharacter.iconUrl,
             propertySet = uiMove.propertySet,
         )
 
@@ -80,25 +87,59 @@ internal fun SharedMove(
         }
         Spacer(Modifier.height(nerdDimensions.componentGapTight))
 
-        Credits()
+        Footer(gameDisplayName = gameDisplayName)
     }
 }
 
 @Composable
 private fun Header(
     input: String,
-    name: String?,
+    moveName: String?,
+    characterName: String,
+    characterImageUrl: String?,
     propertySet: ImmutableSet<Property>,
     modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
-        Text(
-            text = input,
-            style = nerdTypography.titleLarge,
-            color = nerdColorPalette.textPrimary,
-            maxLines = 2,
+        Row(
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth(),
-        )
+        ) {
+            if (characterImageUrl.isNullOrBlank()) {
+                Text(
+                    text = input,
+                    style = nerdTypography.titleLarge,
+                    color = nerdColorPalette.textPrimary,
+                    maxLines = 2,
+                )
+                Spacer(Modifier.width(nerdDimensions.inlineGap))
+
+                Text(
+                    text = characterName,
+                    style = nerdTypography.titleSmall,
+                    color = nerdColorPalette.textPrimary,
+                    textAlign = TextAlign.End,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.weight(1f),
+                )
+            } else {
+                Text(
+                    text = input,
+                    style = nerdTypography.titleLarge,
+                    color = nerdColorPalette.textPrimary,
+                    maxLines = 2,
+                    modifier = Modifier.weight(1f),
+                )
+
+                AsyncImage(
+                    model = characterImageUrl,
+                    contentDescription = characterName,
+                    modifier = Modifier.size(nerdDimensions.iconHeadline),
+                )
+            }
+        }
         Spacer(Modifier.height(nerdDimensions.componentGapTight))
 
         Row(
@@ -106,9 +147,9 @@ private fun Header(
             verticalAlignment = Alignment.Bottom,
             modifier = Modifier.fillMaxWidth(),
         ) {
-            if (name.isNullOrBlank().not()) {
+            if (moveName.isNullOrBlank().not()) {
                 Text(
-                    text = name,
+                    text = moveName,
                     style = nerdTypography.labelSmall,
                     color = nerdColorPalette.textSecondary,
                 )
@@ -176,27 +217,42 @@ private fun Details(
 }
 
 @Composable
-private fun Credits(
+private fun Footer(
+    gameDisplayName: String,
     modifier: Modifier = Modifier
 ) {
-   Row(
-       horizontalArrangement = Arrangement.End,
-       verticalAlignment = Alignment.Bottom,
-       modifier = modifier.fillMaxWidth(),
-   ) {
-       Text(
-           text = "Fighting Nerd",
-           style = nerdTypography.labelMedium,
-           color = nerdColorPalette.textTertiary,
-       )
-       Spacer(Modifier.width(nerdDimensions.inlineGapTight))
+    Row(
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.Bottom,
+        modifier = modifier.fillMaxWidth(),
+    ) {
+        Text(
+            text = gameDisplayName,
+            style = nerdTypography.labelMedium,
+            color = nerdColorPalette.textTertiary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f),
+        )
+        Spacer(Modifier.width(nerdDimensions.inlineGap))
 
-       Image(
-           painter = painterResource(Res.drawable.ic_fighting_nerd),
-           contentDescription = null,
-           modifier = Modifier.size(nerdDimensions.iconInline),
-       )
-   }
+        Row(
+            verticalAlignment = Alignment.Bottom,
+        ) {
+            Text(
+                text = "Fighting Nerd",
+                style = nerdTypography.labelMedium,
+                color = nerdColorPalette.textTertiary,
+            )
+            Spacer(Modifier.width(nerdDimensions.inlineGapTight))
+
+            Image(
+                painter = painterResource(Res.drawable.ic_fighting_nerd),
+                contentDescription = null,
+                modifier = Modifier.size(nerdDimensions.iconInline),
+            )
+        }
+    }
 }
 
 
@@ -226,6 +282,8 @@ private val previewMove = MoveListState.UiMove(
         "Consumes 150F of remaining Heat time",
     ),
 )
+private val previewCharacter = MoveListState.UiCharacter(displayName = "Nina")
+private const val PREVIEW_GAME = "Tekken 8"
 
 @Preview
 @Composable
@@ -233,6 +291,8 @@ private fun CollapsedSharedMovePreview() {
     FightingNerdTheme {
         SharedMove(
             uiMove = previewMove,
+            uiCharacter = previewCharacter,
+            gameDisplayName = PREVIEW_GAME,
             isExpanded = false,
             modifier = Modifier.wrapContentHeight(unbounded = true),
         )
@@ -245,6 +305,8 @@ private fun ExpandedSharedMovePreview() {
     FightingNerdTheme {
         SharedMove(
             uiMove = previewMove,
+            uiCharacter = previewCharacter,
+            gameDisplayName = PREVIEW_GAME,
             isExpanded = true,
             modifier = Modifier.wrapContentHeight(unbounded = true),
         )

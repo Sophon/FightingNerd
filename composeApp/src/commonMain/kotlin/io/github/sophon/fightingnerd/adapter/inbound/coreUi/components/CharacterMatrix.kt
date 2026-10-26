@@ -26,13 +26,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import fightingnerd.composeapp.generated.resources.Res
-import fightingnerd.composeapp.generated.resources.compose_multiplatform
+import coil3.compose.rememberAsyncImagePainter
 import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
 import kotlinx.collections.immutable.ImmutableList
-import org.jetbrains.compose.resources.painterResource
 
 @Immutable
 internal data class CharacterCard(
@@ -45,6 +43,7 @@ internal data class CharacterCard(
 @Composable
 internal fun CharacterMatrix(
     characterList: ImmutableList<CharacterCard>,
+    gameIconUrl: String?,
     onCharacterClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -68,6 +67,7 @@ internal fun CharacterMatrix(
         characterList.forEach { character ->
             CharacterPanel(
                 character = character,
+                gameIconUrl = gameIconUrl,
                 onClick = { onCharacterClick(character.id) },
             )
         }
@@ -77,11 +77,13 @@ internal fun CharacterMatrix(
 @Composable
 private fun CharacterPanel(
     character: CharacterCard,
+    gameIconUrl: String?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val shape = RoundedCornerShape(nerdDimensions.cornerDefault)
+    val gameIconPainter = rememberAsyncImagePainter(gameIconUrl)
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -107,8 +109,8 @@ private fun CharacterPanel(
             AsyncImage(
                 model = character.iconUrl,
                 contentDescription = character.displayName,
-                placeholder = painterResource(Res.drawable.compose_multiplatform),
-                error = painterResource(Res.drawable.compose_multiplatform),
+                placeholder = gameIconPainter,
+                error = gameIconPainter,
                 modifier = Modifier.size(nerdDimensions.iconHeadline)
             )
 

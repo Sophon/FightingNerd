@@ -7,7 +7,6 @@ import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.FrameRange
-import io.github.sophon.discord.app.model.discord.EncodedCharacter
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.discord.Emoji
 import io.github.sophon.discord.app.model.frameData.CharacterId
@@ -206,10 +205,12 @@ internal class MoveServiceImpl(
         moveQuery: String,
         normalizedMoveQuery: String,
     ): Boolean {
-        val isMatch = (moveName.equalsIgnoreCase(moveQuery)
-                || listOf(moveQuery, normalizedMoveQuery).any { query ->
-                    input.equalsIgnoreCase(query) || aliasList.any { it.equalsIgnoreCase(query) }
-                })
+        val isMatch = (
+                moveName.equalsIgnoreCase(moveQuery)
+                        || listOf(moveQuery, normalizedMoveQuery).any { query ->
+                    (input == query) || aliasList.any { it.equalsIgnoreCase(query) }
+                }
+                )
         return isMatch
     }
 

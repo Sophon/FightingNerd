@@ -204,6 +204,7 @@ private fun GameWidgetExpandedPreview() {
         ) {
             CharacterMatrix(
                 characterList = previewCharacters,
+                gameIconUrl = null,
                 onCharacterClick = {},
             )
         }
@@ -223,6 +224,7 @@ private fun GameWidgetCollapsedPreview() {
         ) {
             CharacterMatrix(
                 characterList = previewCharacters,
+                gameIconUrl = null,
                 onCharacterClick = {},
             )
         }
@@ -275,6 +277,7 @@ private fun GameWidgetLeadingIconPreview() {
         ) {
             CharacterMatrix(
                 characterList = previewCharacters,
+                gameIconUrl = null,
                 onCharacterClick = {},
             )
         }
@@ -299,6 +302,7 @@ private fun GameWidgetLeadingIconDisabledPreview() {
         ) {
             CharacterMatrix(
                 characterList = previewCharacters,
+                gameIconUrl = null,
                 onCharacterClick = {},
             )
         }

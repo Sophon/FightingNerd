@@ -28,7 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.sophon.fightingnerd.LocalBottomBarPadding
-import io.github.sophon.fightingnerd.app.model.Game
+import io.github.sophon.fightingnerd.app.model.game.Game
 import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.CharacterCard
 import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.CharacterMatrix
 import io.github.sophon.fightingnerd.adapter.inbound.coreUi.components.GameWidget
@@ -94,6 +94,7 @@ private fun Content(
                     ) {
                         CharacterMatrix(
                             characterList = feature.characterList.toCharacterCards(),
+                            gameIconUrl = feature.game.iconUrl,
                             onCharacterClick = { characterId ->
                                 onCharacterClick(feature.game.id, characterId)
                             },

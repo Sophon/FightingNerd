@@ -1,5 +1,8 @@
 package io.github.sophon.fightingnerd.app.model
 
+import io.github.sophon.fightingnerd.app.model.game.Character
+import io.github.sophon.fightingnerd.app.model.game.Move
+
 data class Question(
     val character: Character,
     val options: List<Move>,

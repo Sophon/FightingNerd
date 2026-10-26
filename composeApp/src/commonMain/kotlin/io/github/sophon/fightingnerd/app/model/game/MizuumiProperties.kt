@@ -1,8 +1,5 @@
 package io.github.sophon.fightingnerd.app.model.game
 
-import io.github.sophon.fightingnerd.app.model.CharacterGameProperties
-import io.github.sophon.fightingnerd.app.model.MoveGameProperties
-
 data class Uni2CharProperties(
     val smartSteer: String? = null,
     val fWalkSpeed: String? = null,

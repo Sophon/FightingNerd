@@ -11,8 +11,8 @@ import io.github.sophon.core.architecture.Result
 import io.github.sophon.fightingnerd.app.model.AppError
 import io.github.sophon.fightingnerd.app.model.COUNT_DISTRACTIONS
 import io.github.sophon.fightingnerd.app.model.COUNT_QUESTIONS
-import io.github.sophon.fightingnerd.app.model.Character
-import io.github.sophon.fightingnerd.app.model.Move
+import io.github.sophon.fightingnerd.app.model.game.Character
+import io.github.sophon.fightingnerd.app.model.game.Move
 import io.github.sophon.fightingnerd.app.model.Question
 import io.github.sophon.fightingnerd.app.outPort.CharacterPort
 import io.github.sophon.fightingnerd.app.outPort.MovePort

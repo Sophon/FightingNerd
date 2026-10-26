@@ -1,4 +1,6 @@
-package io.github.sophon.fightingnerd.app.model
+package io.github.sophon.fightingnerd.app.model.game
+
+import io.github.sophon.fightingnerd.app.model.Wiki
 
 data class Game(
     val id: String,

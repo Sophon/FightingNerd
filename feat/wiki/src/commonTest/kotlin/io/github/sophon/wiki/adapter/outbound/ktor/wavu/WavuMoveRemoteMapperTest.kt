@@ -3,6 +3,7 @@ package io.github.sophon.wiki.adapter.outbound.ktor.wavu
 import assertk.assertThat
 import assertk.assertions.hasSize
 import assertk.assertions.isEqualTo
+import assertk.assertions.isNull
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
@@ -13,25 +14,6 @@ import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 
 class WavuMoveRemoteMapperTest {
-    val ak = Character(
-        id = CharacterId(Game.Tekken8, "Armor_King"),
-        displayName = "Armor King",
-        remoteQueryId = "Armor_King",
-        wikiUrl = "https://wavu.wiki/t/Armor_King_movelist",
-    )
-    val tag2Kazuya = Character(
-        id = CharacterId(Game.Tag2, "Kazuya"),
-        displayName = "Kazuya",
-        remoteQueryId = "Kazuya",
-        wikiUrl = "https://wavu.wiki/t/Kazuya_(Tag_2)",
-    )
-    val t5Jack5 = Character(
-        id = CharacterId(Game.Tekken5, "Jack-5"),
-        displayName = "Jack-5",
-        remoteQueryId = "Jack-5",
-        wikiUrl = "https://wavu.wiki/t/Jack-5_(Tekken_5)",
-    )
-
     //region aliases
     @Test
     fun `no alias and no alt means no aliases`() {
@@ -40,7 +22,7 @@ class WavuMoveRemoteMapperTest {
         val expected = emptyList<String>()
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -50,10 +32,10 @@ class WavuMoveRemoteMapperTest {
     fun `multi-word alias stays one entry`() {
         //given
         val move = WavuMoveSource.shiningWizard
-        val expected = listOf("Shining Wizard")
+        val expected = listOf("shining wizard", "fff2+4")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -63,10 +45,10 @@ class WavuMoveRemoteMapperTest {
     fun `word containing or is not split`() {
         //given
         val move = WavuMoveSource.matterhorn
-        val expected = listOf("Matterhorn")
+        val expected = listOf("matterhorn")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.genericChar)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -76,23 +58,23 @@ class WavuMoveRemoteMapperTest {
     fun `html alias list is split into entries`() {
         //given
         val move = WavuMoveSource.cancans
-        val expected = listOf("Can Cans", "Cancan")
+        val expected = listOf("can cans", "cancan")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
     }
 
     @Test
-    fun `aliases keep the wiki notation`() {
+    fun `aliases are normalized`() {
         //given
         val move = WavuMoveSource.whf
-        val expected = listOf("WHF", "f,n,d,df+2")
+        val expected = listOf("whf", "cd.2", "cd2", "cddf2")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
@@ -102,13 +84,238 @@ class WavuMoveRemoteMapperTest {
     fun `alt entries follow alias entries`() {
         //given
         val move = WavuMoveSource.unsd4
-        val expected = listOf("f,n,4", "WDS.4")
+        val expected = listOf("fn4", "wds.4", "wds4", "unsd4")
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `denormalized input is kept in the alias`() {
+        //given
+        val move = WavuMoveSource.shiningWizard
+        val expected = listOf(
+            "shining wizard",
+            "fff2+4",
+        )
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `just-frame crouch dash gets cd variants`() {
+        //given
+        val move = WavuMoveSource.ewhf
+        val expected = listOf("ewhf", "electric", "ecd2", "cd#2", "fndf#2", "cddf#2")
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `motion aliases are cleaned`() {
+        //given
+        val move = WavuMoveSource.wgk
+        val expected = listOf(
+            "cd.3",
+            "cd3",
+            "fndf3",
+            "df3df3",
+            "wgsdf3",
+        )
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `sidestep has correct dot for input or alias`() {
+        //given
+        val move = WavuMoveSource.ss4
+        val expectedAlias = listOf("ss.4")
+        val expectedInput = "ss4"
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.aliases).isEqualTo(expectedAlias)
+        assertThat(result.input).isEqualTo(expectedInput)
+    }
+
+    @Test
+    fun `heat smash gets its nicknames`() {
+        //given
+        val move = WavuMoveSource.heatSmash
+        val expected = listOf("hs", "heatsmash")
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `hfc gets a fc variant`() {
+        //given
+        val move = WavuMoveSource.yakouga
+        val expected = listOf("hfcdb1+2", "fcdb1+2", "fc1+2", "hfc.1+2")
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `heat crouch dash gets a dotless variant`() {
+        //given
+        val move = WavuMoveSource.heatMist
+        val expected = listOf("h.bad.f1+2", "h.cd1+2", "h.fnddf1+2")
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.aliases).isEqualTo(expected)
+    }
+
+    @Test
+    fun `backturn is properly formatted`() {
+        //given
+        val move = WavuMoveSource.blindKick
+        val expectedInput = "bt.3"
+        val expectedAliases = listOf("bt3")
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.input).isEqualTo(expectedInput)
+        assertThat(result.aliases).isEqualTo(expectedAliases)
+    }
+    //endregion
+
+    //region case
+    @Test
+    fun `held up direction input keeps its case`() {
+        //given
+        val move = WavuMoveSource.sommersault
+        val expected = "UF4"
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.input).isEqualTo(expected)
+    }
+
+    @Test
+    fun `tapped up direction input stays lowercase`() {
+        //given
+        val move = WavuMoveSource.hopkick
+        val expected = "u4"
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.input).isEqualTo(expected)
+    }
+    //endregion
+
+    //region stance
+    @Test
+    fun `stance is detected from input`() {
+        //given
+        val move = WavuMoveSource.bad4
+        val expected = "BAD"
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.t8Properties?.stance).isEqualTo(expected)
+    }
+
+    @Test
+    fun `input without stance has empty stance field`() {
+        //given
+        val move = WavuMoveSource.matterhorn
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.t8Properties?.stance).isNull()
+    }
+
+    @Test
+    fun `otg is not a stance`() {
+        //given
+        val move = WavuMoveSource.stomp
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.t8Properties?.stance).isNull()
+    }
+
+    @Test
+    fun `backturn is a stance`() {
+        //given
+        val move = WavuMoveSource.moonsault
+        val expected = "BT"
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.t8Properties?.stance).isEqualTo(expected)
+    }
+
+    @Test
+    fun `stance is detected from aliases`() {
+        //given
+        val move = WavuMoveSource.manjiBackfistShredder
+        val expected = "BT"
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.t8Properties?.stance).isEqualTo(expected)
+    }
+    //endregion
+
+    //region heat
+    @Test
+    fun `heat is detected from aliases`() {
+        //given
+        val move = WavuMoveSource.tempestBlaster
+        val expected = true
+
+        //when
+        val result = move.toMove(WavuCharacterSource.ak)
+
+        //then
+        assertThat(result.t8Properties?.isHeat).isEqualTo(expected)
     }
     //endregion
 
@@ -118,15 +325,9 @@ class WavuMoveRemoteMapperTest {
         //given
         val move = WavuMoveSource.matterhorn
         val expected = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4"
-        val lili = Character(
-            id = CharacterId(Game.Tekken8, "Lili"),
-            remoteQueryId = "Lili",
-            displayName = "Lili",
-            wikiUrl = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4",
-        )
 
         //when
-        val result = move.toMove(lili)
+        val result = move.toMove(WavuCharacterSource.lili)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -145,7 +346,7 @@ class WavuMoveRemoteMapperTest {
         )
 
         //when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.notes).isEqualTo(expected)
@@ -157,13 +358,13 @@ class WavuMoveRemoteMapperTest {
     fun `child move is completed from its parent`() {
         // given
         val moveList = listOf(WavuMoveSource.stomp, WavuMoveSource.secondStomp)
-        val expectedInput = "OTG.d+4,4"
+        val expectedInput = "otg.d44"
         val expectedStartup = "i19~21 (i18~21)"
         val expectedDamage = "18, 8"
         val expectedGuard = "L, L"
 
         // when
-        val result = moveList.toMoveList(ak)[1]
+        val result = moveList.toMoveList(WavuCharacterSource.ak)[1]
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)
@@ -200,13 +401,13 @@ class WavuMoveRemoteMapperTest {
             damage = "12",
         )
         val moveList = listOf(move1, move2, move3)
-        val expectedInput = "1,1,2"
+        val expectedInput = "112"
         val expectedStartup = "i11 (i12, i13)"
         val expectedDamage = "10, 11, 12"
         val expectedGuard = "h, h, m"
 
         // when
-        val result = moveList.toMoveList(ak)[2]
+        val result = moveList.toMoveList(WavuCharacterSource.ak)[2]
 
         //then
         assertThat(result.input).isEqualTo(expectedInput)
@@ -265,7 +466,7 @@ class WavuMoveRemoteMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(ak)
+        val result = responseDto.toDomain(WavuCharacterSource.ak)
 
         // then
         assertThat(result).hasSize(1)
@@ -324,7 +525,7 @@ class WavuMoveRemoteMapperTest {
         val expected = Move(
             remoteId = "Armor King-f+2,1",
             name = "Dark Elbow Hook",
-            input = "f+2,1",
+            input = "f21",
             damage = "12, 25",
             startup = "i15~16 (i18~19)",
             recovery = "r33",
@@ -345,12 +546,13 @@ class WavuMoveRemoteMapperTest {
             aliases = emptyList(),
             urls = Move.Urls(videoUrl = null, wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f+2,1"),
             gameProperties = T8Properties(
+                isHeat = true,
                 hasWallInteraction = true,
             )
         )
 
         // when
-        val result = responseDto.toDomain(ak)
+        val result = responseDto.toDomain(WavuCharacterSource.ak)
 
         // then
         assertThat(result).hasSize(2)
@@ -369,7 +571,7 @@ class WavuMoveRemoteMapperTest {
         val expected = Move(
             remoteId = "Armor King-BAD.db+1+2",
             name = "Shadow Press",
-            input = "BAD.db+1+2",
+            input = "bad.db1+2",
             damage = "18,15",
             startup = "i14~17",
             recovery = "r43? FDFA",
@@ -384,19 +586,20 @@ class WavuMoveRemoteMapperTest {
                 "Opponent is left FUFT on hit",
                 "js14~34"
             ),
-            aliases = emptyList(),
+            aliases = listOf("baddb1+2"),
             urls = Move.Urls(
                 videoId = "t8-p2-armor_king-bad.db+1+2.mp4",
                 videoUrl = "https://wavu.wiki/t/Special:Redirect/file/File%3At8-p2-armor_king-bad.db%2B1%2B2.mp4",
                 wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-BAD.db+1+2",
             ),
             gameProperties = T8Properties(
+                stance = "BAD",
                 isLowCrush = true,
             )
         )
 
         // when
-        val result = responseDto.toDomain(ak)
+        val result = responseDto.toDomain(WavuCharacterSource.ak)
 
         // then
         assertThat(result).hasSize(1)
@@ -415,7 +618,7 @@ class WavuMoveRemoteMapperTest {
         val expected = Move(
             remoteId = "Armor King-f,f,F+2+4",
             name = "Brilliant Brawler Kick",
-            input = "f,f,F+2+4",
+            input = "wr2+4",
             damage = "40 (45)",
             startup = "i10",
             isThrow = true,
@@ -434,7 +637,7 @@ class WavuMoveRemoteMapperTest {
                 "becomes Homing in heat",
                 "Partially restores remaining Heat Time"
             ),
-            aliases = listOf("Shining Wizard", "wr2+4"),
+            aliases = listOf("shining wizard", "fff2+4"),
             urls = Move.Urls(
                 videoUrl = null,
                 wikiUrl = "https://wavu.wiki/t/Armor_King_movelist#Armor_King-f,f,F+2+4"
@@ -446,7 +649,7 @@ class WavuMoveRemoteMapperTest {
         )
 
         // when
-        val result = responseDto.toDomain(ak)
+        val result = responseDto.toDomain(WavuCharacterSource.ak)
 
         // then
         assertThat(result).hasSize(1)
@@ -460,7 +663,7 @@ class WavuMoveRemoteMapperTest {
         val expected = true
 
         // when
-        val result = move.toMove(ak)
+        val result = move.toMove(WavuCharacterSource.ak)
 
         //then
         assertThat(result.isThrow).isEqualTo(expected)
@@ -475,7 +678,7 @@ class WavuMoveRemoteMapperTest {
         val expected = Tag2Properties(isHighCrush = true)
 
         // when
-        val result = move.toMove(tag2Kazuya)
+        val result = move.toMove(WavuCharacterSource.tag2Kazuya)
 
         //then
         assertThat(result.gameProperties).isEqualTo(expected)
@@ -488,7 +691,7 @@ class WavuMoveRemoteMapperTest {
         val expected = "https://wavu.wiki/t/Kazuya_movelist_(Tag_2)#Kazuya-d+1+2"
 
         // when
-        val result = move.toMove(tag2Kazuya)
+        val result = move.toMove(WavuCharacterSource.tag2Kazuya)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
@@ -503,7 +706,7 @@ class WavuMoveRemoteMapperTest {
         val expected = T5Properties(isHighCrush = true)
 
         // when
-        val result = move.toMove(t5Jack5)
+        val result = move.toMove(WavuCharacterSource.t5Jack5)
 
         //then
         assertThat(result.gameProperties).isEqualTo(expected)
@@ -516,13 +719,16 @@ class WavuMoveRemoteMapperTest {
         val expected = "https://wavu.wiki/t/Jack-5_movelist_(Tekken_5)#Jack-5-d+3"
 
         // when
-        val result = move.toMove(t5Jack5)
+        val result = move.toMove(WavuCharacterSource.t5Jack5)
 
         //then
         assertThat(result.urls.wikiUrl).isEqualTo(expected)
     }
     //endregion
 }
+
+private val Move.t8Properties: T8Properties?
+    get() = gameProperties as? T8Properties
 
 private fun List<MoveDto>.toMoveList(character: Character): List<Move> {
     val responseDto = WavuMoveListResponseDto(cargoQuery = map { WavuMoveListResponseDto.Title(it) })
@@ -533,6 +739,39 @@ private fun List<MoveDto>.toMoveList(character: Character): List<Move> {
 private fun MoveDto.toMove(character: Character): Move {
     val move = listOf(this).toMoveList(character).single()
     return move
+}
+
+private object WavuCharacterSource {
+    val ak = Character(
+        id = CharacterId(Game.Tekken8, "Armor_King"),
+        displayName = "Armor King",
+        remoteQueryId = "Armor_King",
+        wikiUrl = "https://wavu.wiki/t/Armor_King_movelist",
+    )
+    val lili = Character(
+        id = CharacterId(Game.Tekken8, "Lili"),
+        displayName = "Lili",
+        remoteQueryId = "Lili",
+        wikiUrl = "https://wavu.wiki/t/Lili_movelist#Lili-d+3+4",
+    )
+    val tag2Kazuya = Character(
+        id = CharacterId(Game.Tag2, "Kazuya"),
+        displayName = "Kazuya",
+        remoteQueryId = "Kazuya",
+        wikiUrl = "https://wavu.wiki/t/Kazuya_(Tag_2)",
+    )
+    val t5Jack5 = Character(
+        id = CharacterId(Game.Tekken5, "Jack-5"),
+        displayName = "Jack-5",
+        remoteQueryId = "Jack-5",
+        wikiUrl = "https://wavu.wiki/t/Jack-5_(Tekken_5)",
+    )
+    val genericChar = Character(
+        id = CharacterId(Game.Tekken8, "Generic"),
+        displayName = "Generic",
+        remoteQueryId = "remote",
+        wikiUrl = "",
+    )
 }
 
 private object WavuMoveSource {
@@ -776,4 +1015,122 @@ private object WavuMoveSource {
         video = null,
         alt = null,
     )
+    val hopkick = MoveDto(
+        id = "Law-u+4",
+        name = "Rising Toe Kick",
+        input = "u+4",
+        parent = null,
+        target = "m",
+        damage = "12",
+        startup = "i15",
+        recv = null,
+        tot = null,
+        crush = "js",
+        block = "-13",
+        hit = "+19a (+9)",
+        ch = "+33a (+23)",
+        notes = null,
+        alias = "neutral hopkick",
+        image = null,
+        video = null,
+        alt = null,
+    )
+    val sommersault = MoveDto(
+        id = "Law-UF+4",
+        name = "Somersault Kick",
+        input = "UF+4",
+        parent = null,
+        target = "m",
+        damage = "23",
+        startup = "i18",
+        recv = "FC",
+        tot = null,
+        crush = "js9~",
+        block = "-17",
+        hit = "+28a (+18)",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* Alternate input\n** UB+4, U+4, FC.ub+4, FC.u+4, FC.uf+4\n* 18 dmg when performed with UB+4 or FC.ub+4&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = "File:t8-p2-law-ufx+4.mp4",
+        alt = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* UB+4\n* U+4\n* FC.ub+4\n* FC.u+4\n\n&lt;/div&gt;",
+    )
+    val ewhf = MoveDto(
+        id = "Jin-CD.df#2",
+        name = "Electric Wind Hook Fist",
+        input = "CD.df#2",
+        alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* EWHF\n* Electric\n* ECD+2\n* f,n,d,df#2\n* f,n,df#2\n&lt;/div&gt;",
+    )
+    val wgk = MoveDto(
+        id = "Reina-WGS.DF+3",
+        name = "War God Kick",
+        input = "WGS.df+3",
+        alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* f,n,d,DF+3\n* f,n,DF+3\n* df+3,df+3\n&lt;/div&gt;",
+    )
+    val ss4 = MoveDto(
+        id = "Claudio-SS.4",
+        name = "Luxuria",
+        input = "SS.4",
+    )
+    val heatSmash = MoveDto(
+        id = "Bryan-H.2+3",
+        name = "Notorious Monster",
+        input = "H.2+3",
+        crush = "js9~",
+        notes = "<div class=\"plainlist\">\n* Heat Smash\n* Reversal Break\n* Spike\n* Transition to attack throw on hit\n</div>",
+    )
+    val yakouga = MoveDto(
+        id = "Kunimitsu-hFC.1+2",
+        name = "Yakouga",
+        input = "hFC.1+2",
+        alias = "hFC.db+1+2",
+    )
+    val heatMist = MoveDto(
+        id = "Armor King-H.f,n,d,df+1+2",
+        name = "Malice Mist: Villain",
+        input = "H.f,n,d,df+1+2",
+        alias = "H.BAD.f+1+2",
+    )
+    val bad4 = MoveDto(
+        id = "Armor King-BAD.4",
+        name = "Bandido Snatch",
+        input = "BAD.4",
+    )
+    val moonsault = MoveDto(
+        id = "Armor King-BT.1+4",
+        name = "Moonsault Drop",
+        input = "BT.1+4",
+    )
+    val blindKick = MoveDto(
+        id = "Armor King-BT.3",
+        name = "Blind Kick",
+        input = "BT.3",
+        parent = null,
+        target = "M",
+        damage = "20",
+        startup = "i13~14",
+        recv = "r37",
+        tot = "51",
+        crush = null,
+        block = "-14",
+        hit = "+49a",
+        ch = null,
+        notes = "&lt;div class=&quot;plainlist&quot;&gt;\n* \n&lt;div\n  style=&quot;display: block; border-width: 0 0 0 0.5em; padding-left: 0.2em; border-style: solid;&quot;\n  class=&quot;movedata-icon border-orange tornado&quot;\n&gt;Tornado&lt;/div&gt;\n* Unparryable by traditional kick parries (bug?)\n&lt;/div&gt;",
+        alias = null,
+        image = null,
+        video = null,
+        alt = null,
+    )
+    val manjiBackfistShredder = MoveDto(
+        id = "Yoshimitsu-f+2,1",
+        name = "Manji Backfist Shredder",
+        input = "f+2,1",
+        alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* 1SS.f+2,1\n* f+2,1SS.1\n* BT.2,1\n&lt;/div&gt;",
+    ) //has Stance in alt inputs
+    val tempestBlaster = MoveDto(
+        id = "Kazuya-DVK.f,n,d,df+3",
+        name = "Tempest Blaster",
+        input = "DVK.f,n,d,df+3",
+        alias = "&lt;div class=&quot;dotlist&quot;&gt;\n\n* DVK.cd+3\n* H.f,n,d,df+3\n* H.cd+3\n&lt;/div&gt;",
+    ) //has Heat in alt inputs
 }

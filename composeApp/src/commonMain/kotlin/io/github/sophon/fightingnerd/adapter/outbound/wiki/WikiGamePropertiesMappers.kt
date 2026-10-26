@@ -1,7 +1,7 @@
 package io.github.sophon.fightingnerd.adapter.outbound.wiki
 
-import io.github.sophon.fightingnerd.app.model.CharacterGameProperties
-import io.github.sophon.fightingnerd.app.model.MoveGameProperties
+import io.github.sophon.fightingnerd.app.model.game.CharacterGameProperties
+import io.github.sophon.fightingnerd.app.model.game.MoveGameProperties
 import io.github.sophon.fightingnerd.app.model.game.AVLMoveProperties
 import io.github.sophon.fightingnerd.app.model.game.BBCharProperties
 import io.github.sophon.fightingnerd.app.model.game.BBMoveProperties

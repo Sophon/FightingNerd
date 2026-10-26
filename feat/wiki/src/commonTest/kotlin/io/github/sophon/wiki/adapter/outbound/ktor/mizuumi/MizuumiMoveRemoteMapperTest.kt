@@ -59,7 +59,7 @@ class MizuumiMoveRemoteMapperTest {
     fun `move ID without the character prefix stays whole`() {
         //given
         val moveList = listOf(MizuumiMoveSource.le214hp, MizuumiMoveSource.le236hp, MizuumiMoveSource.tenraihaAnvil)
-        val expected = listOf("214HP", "236HP", "tenraiha_anvil")
+        val expected = listOf("214hp", "236hp", "tenraiha_anvil")
 
         //when
         val result = moveList.toMoveList(Game.VSAV, MizuumiMoveSource.leiLei)
@@ -82,10 +82,10 @@ class MizuumiMoveRemoteMapperTest {
     }
 
     @Test
-    fun `wiki input is kept as an alias`() {
+    fun `wiki input is normalized into aliases`() {
         //given
         val move = MizuumiMoveSource.lumenStellaAir
-        val expected = listOf("j[4]6A")
+        val expected = listOf("j[4]6a", "j.[4]6a", "j46a")
 
         //when
         val result = move.toMove(Game.Uni2, MizuumiMoveSource.va)

@@ -1,5 +1,7 @@
-package io.github.sophon.wiki.app.util
+package io.github.sophon.wiki.adapter.outbound.ktor.dustLoop
 
+import io.github.sophon.wiki.adapter.outbound.ktor.create2dAliases
+import io.github.sophon.wiki.adapter.outbound.ktor.normalize2dInputs
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.wiki.Game
@@ -20,7 +22,7 @@ internal fun Move.normalizeDustLoop(characterId: CharacterId): Move {
 
 private fun String.formAliases(characterId: CharacterId): List<String> {
     val aliases = when {
-        characterId == _root_ide_package_.io.github.sophon.wiki.app.util.nagoriyukiId -> formNagoriyukiAliases()
+        characterId == nagoriyukiId -> formNagoriyukiAliases()
         characterId.game == Game.GBVSR -> createGbvsAliases()
         else -> create2dAliases(isPartial = false)
     }

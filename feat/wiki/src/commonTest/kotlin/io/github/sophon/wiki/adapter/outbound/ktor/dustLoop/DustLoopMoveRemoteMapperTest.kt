@@ -41,10 +41,10 @@ class DustLoopMoveRemoteMapperTest {
 
     //region input
     @Test
-    fun `input keeps the wiki notation`() {
+    fun `input is normalized`() {
         //given
         val dto = DustLoopMoveSource.closeSlash
-        val expected = "c.S"
+        val expected = "cls"
 
         //when
         val result = dto.toMove(Game.GGST, DustLoopMoveSource.sol)
@@ -54,10 +54,10 @@ class DustLoopMoveRemoteMapperTest {
     }
 
     @Test
-    fun `no aliases are created`() {
+    fun `close input gets the other close spellings as aliases`() {
         //given
         val dto = DustLoopMoveSource.closeSlash
-        val expected = emptyList<String>()
+        val expected = listOf("cl.s", "c.s", "cs")
 
         //when
         val result = dto.toMove(Game.GGST, DustLoopMoveSource.sol)

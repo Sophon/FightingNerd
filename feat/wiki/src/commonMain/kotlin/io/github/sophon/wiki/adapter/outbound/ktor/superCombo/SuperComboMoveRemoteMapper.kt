@@ -19,12 +19,11 @@ internal fun SuperComboMoveListResponseDto.toDomain(
 ): List<Move> {
     val dtoList = cargoQuery.map { query -> query.title }
     val moveIdPrefix = dtoList.map { dto -> dto.moveId }.findMoveIdPrefix()
-    val moveList = dtoList.map { dto -> dto.toDomain(game, moveIdPrefix, imageUrlMap) }
+    val moveList = dtoList.map { dto -> dto.toDomain(game, moveIdPrefix, imageUrlMap).normalizeSuperCombo() }
     return moveList
 }
 
 /**
- * Only cleaning - the input and the aliases are normalized by the service.
  * The input comes from the move ID - the wiki's `input` doesn't tell versions apart (`mai_214hp` / `mai_214hp_flame`
  * are both `214HP`), so it's kept as an alias.
  */
