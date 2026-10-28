@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.6.0] - TODO
+- `Tekken` - now distinguishes B and b
+
 ## [v17.5.0] - 2026-10-25
 - fixed Tekken moves ignoring case sensitivity
   - this fixed moves like Law's uf4 vs UF4
