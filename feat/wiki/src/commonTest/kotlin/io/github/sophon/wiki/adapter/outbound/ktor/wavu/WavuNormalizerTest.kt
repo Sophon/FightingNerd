@@ -85,7 +85,7 @@ class WavuNormalizerTest {
     }
 
     @Test
-    fun `held up directions followed by a plus or number keep their case`() {
+    fun `held directions followed by a plus or number keep their case`() {
         // Given
         val inputUb = "UB+4"
         val expectedUb = "UB4"
@@ -94,18 +94,25 @@ class WavuNormalizerTest {
         val inputUf = "UF+4"
         val inputUfNumber = "UF4"
         val expectedUf = "UF4"
+        val inputB = "B+4"
+        val inputBNumber = "B4"
+        val expectedB = "B4"
 
         // When
         val resultUb = inputUb.minimizeTekkenMoveInput()
         val resultU = inputU.minimizeTekkenMoveInput()
         val resultUf = inputUf.minimizeTekkenMoveInput()
         val resultUfNumber = inputUfNumber.minimizeTekkenMoveInput()
+        val resultB = inputB.minimizeTekkenMoveInput()
+        val resultBNumber = inputBNumber.minimizeTekkenMoveInput()
 
         // Then
         assertThat(resultUb).isEqualTo(expectedUb)
         assertThat(resultU).isEqualTo(expectedU)
         assertThat(resultUf).isEqualTo(expectedUf)
         assertThat(resultUfNumber).isEqualTo(expectedUf)
+        assertThat(resultB).isEqualTo(expectedB)
+        assertThat(resultBNumber).isEqualTo(expectedB)
     }
 
     @Test
