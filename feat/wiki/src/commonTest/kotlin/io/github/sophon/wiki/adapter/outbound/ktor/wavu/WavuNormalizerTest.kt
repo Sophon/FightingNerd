@@ -72,19 +72,6 @@ class WavuNormalizerTest {
     }
 
     @Test
-    fun `converts to lowercase`() {
-        // Given
-        val input = "DF2"
-        val expected = "df2"
-
-        // When
-        val result = input.minimizeTekkenMoveInput()
-
-        // Then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
     fun `held directions followed by a plus or number keep their case`() {
         // Given
         val inputUb = "UB+4"
@@ -113,6 +100,49 @@ class WavuNormalizerTest {
         assertThat(resultUfNumber).isEqualTo(expectedUf)
         assertThat(resultB).isEqualTo(expectedB)
         assertThat(resultBNumber).isEqualTo(expectedB)
+    }
+
+    @Test
+    fun `held down directions keep their case`() {
+        // Given
+        val inputDf = "DF+1"
+        val expectedDf = "DF1"
+        val inputDb = "DB+1+2"
+        val expectedDb = "DB1+2"
+
+        // When
+        val resultDf = inputDf.minimizeTekkenMoveInput()
+        val resultDb = inputDb.minimizeTekkenMoveInput()
+
+        // Then
+        assertThat(resultDf).isEqualTo(expectedDf)
+        assertThat(resultDb).isEqualTo(expectedDb)
+    }
+
+    @Test
+    fun `held up directions from crouch keep their case and stance dot`() {
+        // Given
+        val input = "FC.UF+4"
+        val expected = "FC.UF4"
+
+        // When
+        val result = input.minimizeTekkenMoveInput()
+
+        // Then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `non-held up direction from crouch is lowercased`() {
+        // Given
+        val input = "FC.uf+4"
+        val expected = "fc.uf4"
+
+        // When
+        val result = input.minimizeTekkenMoveInput()
+
+        // Then
+        assertThat(result).isEqualTo(expected)
     }
 
     @Test
@@ -329,6 +359,19 @@ class WavuNormalizerTest {
     }
 
     @Test
+    fun `held up direction from crouch keeps its stance dot`() {
+        // Given
+        val input = "FC.UF+3+4"
+        val expected = "FC.UF3+4"
+
+        // When
+        val result = input.normalizeTekkenMoveInput()
+
+        // Then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `preserves dot in stance notation`() {
         // Given
         val input = "IND.u+1+2"
@@ -440,19 +483,6 @@ class WavuNormalizerTest {
         // Given
         val input = "1 1 2"
         val expected = "112"
-
-        // When
-        val result = input.normalizeTekkenMoveInput()
-
-        // Then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `motion loses its plus`() {
-        // Given
-        val input = "DF+1"
-        val expected = "df1"
 
         // When
         val result = input.normalizeTekkenMoveInput()
