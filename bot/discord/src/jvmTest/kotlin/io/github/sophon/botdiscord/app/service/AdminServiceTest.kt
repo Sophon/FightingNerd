@@ -267,7 +267,7 @@ class AdminServiceTest {
         val service = adminService(coroutineScope = backgroundScope)
 
         // when
-        val result = service.refreshWiki(source = null)
+        val result = service.refreshWiki(gameId = "", source = null)
 
         // then
         val error = (result as Result.Error).error
@@ -280,7 +280,7 @@ class AdminServiceTest {
         val service = adminService(coroutineScope = backgroundScope)
 
         // when
-        val result = service.refreshWiki(source = user)
+        val result = service.refreshWiki(gameId = "", source = user)
 
         // then
         val error = (result as Result.Error).error
@@ -294,7 +294,7 @@ class AdminServiceTest {
         val service = adminService(coroutineScope = backgroundScope, refreshWikiUseCase = refreshWikiUseCase)
 
         // when
-        service.refreshWiki(source = user)
+        service.refreshWiki(gameId = "", source = user)
         runCurrent()
 
         // then
@@ -308,7 +308,7 @@ class AdminServiceTest {
         val service = adminService(coroutineScope = backgroundScope)
 
         // when
-        val result = service.refreshWiki(source = admin)
+        val result = service.refreshWiki(gameId = "", source = admin)
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -321,7 +321,7 @@ class AdminServiceTest {
         val service = adminService(coroutineScope = backgroundScope, refreshWikiUseCase = refreshWikiUseCase)
 
         // when
-        service.refreshWiki(source = admin)
+        service.refreshWiki(gameId = "", source = admin)
         runCurrent()
 
         // then
@@ -357,7 +357,7 @@ class AdminServiceTest {
     private class FakeRefreshWikiUseCase: RefreshWikiUseCase {
         var callCount = 0
 
-        override suspend fun invoke() {
+        override suspend fun invoke(gameId: String) {
             callCount++
         }
     }

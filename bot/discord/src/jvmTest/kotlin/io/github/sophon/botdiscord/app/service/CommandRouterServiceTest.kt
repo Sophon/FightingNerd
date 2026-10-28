@@ -147,7 +147,7 @@ class CommandRouterServiceTest {
             "unban($OFFENDER_HANDLE, $user)",
             "forwardFeedback(Heat Smash is off by one, $user)",
             "replyToFeedback($OFFENDER_HANDLE thanks, $user)",
-            "refreshWiki($user)",
+            "refreshWiki(Tekken_8, $user)",
             "performOperation(register 2Aa4bQ7nJyRf, $user)",
         )
         val fixture = RouterFixture()
@@ -158,7 +158,7 @@ class CommandRouterServiceTest {
         fixture.router(command = Command.Unban, query = OFFENDER_HANDLE, source = user)
         fixture.router(command = Command.Feedback, query = "Heat Smash is off by one", source = user)
         fixture.router(command = Command.Reply, query = "$OFFENDER_HANDLE thanks", source = user)
-        fixture.router(command = Command.Refresh, query = "", source = user)
+        fixture.router(command = Command.Refresh, query = "Tekken_8", source = user)
         fixture.router(command = Command.Ewgf, query = "register 2Aa4bQ7nJyRf", source = user)
 
         // then
