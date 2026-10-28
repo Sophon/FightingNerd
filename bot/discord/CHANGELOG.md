@@ -2,6 +2,7 @@
 
 ## [v17.6.0] - TODO
 - `Tekken` - now distinguishes B and b
+- `refresh` - optional parameter for a specific game to refresh
 
 ## [v17.5.0] - 2026-10-25
 - fixed Tekken moves ignoring case sensitivity
