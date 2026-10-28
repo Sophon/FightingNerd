@@ -26,7 +26,7 @@ class RefreshWikiServiceTest {
         var refreshCount = 0
             private set
 
-        override suspend fun refresh() {
+        override suspend fun refresh(gameId: String) {
             refreshCount++
         }
     }

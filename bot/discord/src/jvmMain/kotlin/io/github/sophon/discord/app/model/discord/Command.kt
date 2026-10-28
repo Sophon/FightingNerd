@@ -82,7 +82,18 @@ sealed class Command(
         )
     )
     object Banlist : Command(name = "Banlist", description = "List of users banned from using the bot")
-    object Refresh : Command(name = "Refresh", description = "Refreshes all features")
+    object Refresh : Command(
+        name = "Refresh",
+        description = "Refreshes the wiki - one game, or all when none is given",
+        argumentList = listOf(
+            Argument(
+                name = "game",
+                description = "Game",
+                autoCompleteType = Argument.AutoCompleteType.Other,
+                isRequired = false,
+            ),
+        ),
+    )
     //endregion
 
     object Fd : Command(

@@ -84,7 +84,7 @@ internal class CommandRouterService(
 
             Command.Feedback -> adminService.forwardFeedback(query = query, source = source)
             Command.Reply -> adminService.replyToFeedback(query = query, source = source)
-            Command.Refresh -> adminService.refreshWiki(source = source)
+            Command.Refresh -> adminService.refreshWiki(gameId = query, source = source)
 
             Command.Ewgf -> ewgfService.performOperation(query = query, source = source)
 

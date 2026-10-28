@@ -55,6 +55,7 @@ internal class ProduceAutoCompleteService(
             AutoCompleteType.Other -> {
                 when (command) {
                     Command.Alias -> getGameChoices(query)
+                    Command.Refresh -> getGameChoices(query)
                     Command.Stance -> getStanceChoices(command, query, argumentMap)
                     else -> emptyList()
                 }
