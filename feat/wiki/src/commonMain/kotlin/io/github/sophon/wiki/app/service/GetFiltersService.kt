@@ -1,13 +1,13 @@
 package io.github.sophon.wiki.app.service
 
 import io.github.sophon.wiki.GetFiltersUseCase
-import io.github.sophon.wiki.model.BBFilters
+import io.github.sophon.wiki.model.game.BBFilters
 import io.github.sophon.wiki.model.Filter
-import io.github.sophon.wiki.model.GGFilters
-import io.github.sophon.wiki.model.MBFilters
-import io.github.sophon.wiki.model.UniFilters
-import io.github.sophon.wiki.model.VSAVFilters
-import io.github.sophon.wiki.model.WavuFilters
+import io.github.sophon.wiki.model.game.GGFilters
+import io.github.sophon.wiki.model.game.MBFilters
+import io.github.sophon.wiki.model.game.UniFilters
+import io.github.sophon.wiki.model.game.VSAVFilters
+import io.github.sophon.wiki.model.game.WavuFilters
 import io.github.sophon.wiki.model.wiki.Game
 
 internal class GetFiltersService : GetFiltersUseCase {

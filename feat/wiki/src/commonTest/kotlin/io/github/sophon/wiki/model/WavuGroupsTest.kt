@@ -2,6 +2,7 @@ package io.github.sophon.wiki.model
 
 import assertk.assertThat
 import assertk.assertions.isTrue
+import io.github.sophon.wiki.model.game.WavuGroups
 import kotlin.test.Test
 
 class WavuGroupsTest {

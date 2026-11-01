@@ -13,7 +13,7 @@ import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
-import io.github.sophon.wiki.model.WavuFilters
+import io.github.sophon.wiki.model.game.WavuFilters
 import io.github.sophon.wiki.model.game.DBFZMoveProperties
 import io.github.sophon.wiki.model.game.GGMoveProperties
 import io.github.sophon.wiki.model.game.SF6MoveProperties

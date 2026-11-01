@@ -4,14 +4,14 @@ import assertk.assertThat
 import assertk.assertions.doesNotContain
 import assertk.assertions.isEmpty
 import assertk.assertions.isEqualTo
-import io.github.sophon.wiki.model.COTWGroups
+import io.github.sophon.wiki.model.game.COTWGroups
 import io.github.sophon.wiki.model.Default
-import io.github.sophon.wiki.model.DreamCancelGroups
-import io.github.sophon.wiki.model.KofGroups
-import io.github.sophon.wiki.model.MBGroups
-import io.github.sophon.wiki.model.MizuumiGroups
-import io.github.sophon.wiki.model.SFGroups
-import io.github.sophon.wiki.model.WavuGroups
+import io.github.sophon.wiki.model.game.DreamCancelGroups
+import io.github.sophon.wiki.model.game.KofGroups
+import io.github.sophon.wiki.model.game.MBGroups
+import io.github.sophon.wiki.model.game.MizuumiGroups
+import io.github.sophon.wiki.model.game.SFGroups
+import io.github.sophon.wiki.model.game.WavuGroups
 import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 

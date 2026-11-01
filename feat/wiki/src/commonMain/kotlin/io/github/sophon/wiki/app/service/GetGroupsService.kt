@@ -1,22 +1,22 @@
 package io.github.sophon.wiki.app.service
 
 import io.github.sophon.wiki.GetGroupsUseCase
-import io.github.sophon.wiki.model.AVLGroups
-import io.github.sophon.wiki.model.BBCFGroups
-import io.github.sophon.wiki.model.COTWGroups
-import io.github.sophon.wiki.model.DBFZGroups
-import io.github.sophon.wiki.model.DreamCancelGroups
-import io.github.sophon.wiki.model.GBVSRGroups
-import io.github.sophon.wiki.model.GGSTGroups
+import io.github.sophon.wiki.model.game.AVLGroups
+import io.github.sophon.wiki.model.game.BBCFGroups
+import io.github.sophon.wiki.model.game.COTWGroups
+import io.github.sophon.wiki.model.game.DBFZGroups
+import io.github.sophon.wiki.model.game.DreamCancelGroups
+import io.github.sophon.wiki.model.game.GBVSRGroups
+import io.github.sophon.wiki.model.game.GGSTGroups
 import io.github.sophon.wiki.model.Group
-import io.github.sophon.wiki.model.KofGroups
-import io.github.sophon.wiki.model.MBGroups
-import io.github.sophon.wiki.model.MTFSGroups
-import io.github.sophon.wiki.model.MizuumiGroups
-import io.github.sophon.wiki.model.RoaGroups
-import io.github.sophon.wiki.model.SFGroups
-import io.github.sophon.wiki.model.UniGroups
-import io.github.sophon.wiki.model.WavuGroups
+import io.github.sophon.wiki.model.game.KofGroups
+import io.github.sophon.wiki.model.game.MBGroups
+import io.github.sophon.wiki.model.game.MTFSGroups
+import io.github.sophon.wiki.model.game.MizuumiGroups
+import io.github.sophon.wiki.model.game.RoaGroups
+import io.github.sophon.wiki.model.game.SFGroups
+import io.github.sophon.wiki.model.game.UniGroups
+import io.github.sophon.wiki.model.game.WavuGroups
 import io.github.sophon.wiki.model.wiki.Game
 
 /**

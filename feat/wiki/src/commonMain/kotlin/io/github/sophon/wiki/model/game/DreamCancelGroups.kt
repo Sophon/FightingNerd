@@ -1,7 +1,9 @@
-package io.github.sophon.wiki.model
+package io.github.sophon.wiki.model.game
 
 import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.core.util.isSpecial
+import io.github.sophon.wiki.model.Group
+import io.github.sophon.wiki.model.Move
 
 /**
  * Groups shared by KOFXV and COTW.

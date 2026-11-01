@@ -1,4 +1,7 @@
-package io.github.sophon.wiki.model
+package io.github.sophon.wiki.model.game
+
+import io.github.sophon.wiki.model.Group
+import io.github.sophon.wiki.model.Move
 
 object RoaGroups {
     object Normal: Group {
