@@ -1,4 +1,7 @@
-package io.github.sophon.wiki.model
+package io.github.sophon.wiki.model.game
+
+import io.github.sophon.wiki.model.Filter
+import io.github.sophon.wiki.model.Move
 
 object MBFilters {
     object Invincible: Filter {

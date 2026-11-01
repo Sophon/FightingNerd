@@ -24,8 +24,8 @@ import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.model.Group
 import io.github.sophon.wiki.model.WikiEvent
-import io.github.sophon.wiki.model.WavuFilters
-import io.github.sophon.wiki.model.WavuGroups
+import io.github.sophon.wiki.model.game.WavuFilters
+import io.github.sophon.wiki.model.game.WavuGroups
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import kotlinx.coroutines.flow.Flow
