@@ -1,0 +1,22 @@
+---
+title: WIKI MODELS
+---
+classDiagram
+    note "Characters in multiple games are considered distinct entities"
+
+    Wiki "1" *-- "1..*" Game
+    Game "1" *-- "1..*" Character
+    Character "1" *-- "1..*" Move
+
+    WikiConfig "*" --> "*" Game: available
+    WikiConfig "*" --> "*" Game: enabled
+
+    Game --> Group: offers
+    Game --> Filter: offers
+
+    GameFilter ..|> Filter
+    CoreFilter ..|> Filter
+    GameGroup ..|> Group
+
+    Move "1" *-- "0..1" MoveGameProperties
+    Character "1" *-- "0..1" CharacterGameProperties
