@@ -3,6 +3,7 @@ package io.github.sophon.discord.app.service
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
@@ -68,6 +69,9 @@ internal class MoveServiceImpl(
                         foundMoveResult
                     }
                 moveResult
+            }
+            .mapError {
+                BotError.UnknownCharacter("char: ${characterQuery.uppercase()}; move: $moveQuery")
             }
         return result
     }
