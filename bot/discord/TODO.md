@@ -2,7 +2,6 @@
 
 ## High prio
 
-- add the game ID to the `modules` output
 - BUG: `char` UNI - Trait and Vorpal not formatted 
   - use formatLinks or something 
   - use `char Ogre`
