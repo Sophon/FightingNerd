@@ -70,8 +70,12 @@ internal class MoveServiceImpl(
                     }
                 moveResult
             }
-            .mapError {
-                BotError.UnknownCharacter("char: ${characterQuery.uppercase()}; move: $moveQuery")
+            .mapError { error ->
+                if (error is BotError.UnknownCharacter) {
+                    BotError.UnknownCharacter("char: ${characterQuery.uppercase()}; move: $moveQuery")
+                } else {
+                    error
+                }
             }
         return result
     }
