@@ -138,9 +138,7 @@ internal fun modulesEmbed(
         .forEachIndexed { index, moduleChunk ->
             mandatoryField(
                 name = if (index == 0) "🧩 FEATURE MODULES" else invisibleChar,
-                value = moduleChunk.joinToString("\n") { module ->
-                    "- **[${module.name}](${module.url})** - ${module.version}"
-                },
+                value = moduleChunk.joinToString("\n") { module -> moduleEntry(module) },
             )
         }
 
@@ -155,6 +153,16 @@ internal fun modulesEmbed(
     )
 
     featureFooter(modulesResponse.dataSource)
+}
+
+private fun moduleEntry(module: ModulesResponse.Module): String {
+    val entry = buildString {
+        append("- **[${module.name}](${module.url})** - ${module.version}")
+        module.gameSet.forEach { game ->
+            append("\n   1. ${game.name} (`::${game.id}`)")
+        }
+    }
+    return entry
 }
 
 internal fun commandsEmbed(
