@@ -48,7 +48,8 @@ class HttpClientFactoryTest {
         val expected = HttpStatusCode.InternalServerError
 
         //when
-        val result = httpClient.get(URL).status
+        // real time - the virtual clock jumps to the request timeout while the engine responds on another dispatcher
+        val result = withContext(Dispatchers.Default) { httpClient.get(URL).status }
 
         //then
         assertThat(result).isEqualTo(expected)

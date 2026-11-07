@@ -84,7 +84,7 @@ android {
     }
 }
 
-val featureVersion = "2.4.0"
+val featureVersion = "2.4.1"
 buildkonfig {
     packageName = "io.github.sophon.wiki"
 

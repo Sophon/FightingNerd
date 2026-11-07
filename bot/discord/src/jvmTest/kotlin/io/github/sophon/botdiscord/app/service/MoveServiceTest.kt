@@ -26,7 +26,6 @@ import kotlin.test.Test
 import kotlin.time.Duration.Companion.seconds
 
 class MoveServiceTest {
-    //region findFrameData
     @Test
     fun `move is found by its input`() = runTest {
         // given
@@ -41,16 +40,32 @@ class MoveServiceTest {
     }
 
     @Test
-    fun `input of a different case is a different move`() = runTest {
+    fun `input of a different case is a accepted if there's match move`() = runTest {
         // given
         val service = moveService()
+        val expected = Result.Success(df1)
 
         // when
         val result = service.findMove("jin DF+1")
 
         // then
-        val error = (result as Result.Error).error
-        assertThat(error).isInstanceOf(BotError.UnknownMove::class)
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `held direction input is distinguished from its tapped counterpart`() = runTest {
+        // given
+        val expectedTapped = Result.Success(devilJinB14)
+        val expectedHeld = Result.Success(devilJinHeldB14)
+        val service = moveService(frameDataPort = FakeFrameDataPort(mapOf(devilJinId to devilJinMoveList)))
+
+        // when
+        val resultTapped = service.findMove("dvj b1+4")
+        val resultHeld = service.findMove("dvj B1+4")
+
+        // then
+        assertThat(resultTapped).isEqualTo(expectedTapped)
+        assertThat(resultHeld).isEqualTo(expectedHeld)
     }
 
     @Test
@@ -191,9 +206,7 @@ class MoveServiceTest {
         val error = (result as Result.Error).error
         assertThat(error).isEqualTo(expected)
     }
-    //endregion
 
-    //region findMovesOfType
     @Test
     fun `moves of type are requested for the character`() = runTest {
         // given
@@ -262,9 +275,7 @@ class MoveServiceTest {
         // then
         assertThat(getMovesOfTypePort.requestList).isEmpty()
     }
-    //endregion
 
-    //region findMovesInRange
     @Test
     fun `two bounds are sorted into a range`() = runTest {
         // given
@@ -369,9 +380,7 @@ class MoveServiceTest {
         val error = (result as Result.Error).error
         assertThat(error).isInstanceOf(BotError.InvalidCommand::class)
     }
-    //endregion
 
-    //region findStanceOrMove
     @Test
     fun `character alone lists its stances with a command button each`() = runTest {
         // given
@@ -446,9 +455,7 @@ class MoveServiceTest {
         // then
         assertThat(result).isEqualTo(expected)
     }
-    //endregion
 
-    //region findStrings
     @Test
     fun `followups start with the prefix`() = runTest {
         // given
@@ -500,9 +507,7 @@ class MoveServiceTest {
         val values = (result as Result.Success).data.values
         assertThat(values).isEqualTo(expected)
     }
-    //endregion
 
-    //region getMoves
     @Test
     fun `moves are the character's frame data`() = runTest {
         // given
@@ -515,7 +520,6 @@ class MoveServiceTest {
         // then
         assertThat(result).isEqualTo(expected)
     }
-    //endregion
 
 
     private fun moveService(
@@ -525,7 +529,7 @@ class MoveServiceTest {
         normalizeMoveInputPort: FakeNormalizeMoveInputPort = FakeNormalizeMoveInputPort(),
     ): MoveServiceImpl {
         val characterService = CharacterServiceImpl(
-            charactersPort = FakeCharactersPort(listOf(jin, reina)),
+            charactersPort = FakeCharactersPort(listOf(jin, reina, devilJin)),
             gamePort = FakeGamePort(GameList(gameList = listOf(Game.Tekken8), dataSource = wavuDataSource)),
         )
         val service = MoveServiceImpl(
@@ -587,3 +591,10 @@ private val storedJinMoveList: List<MoveResponse> = listOf(
 private val reina = characterResponse(id = "reina", displayName = "Reina", aliasList = listOf("rei"))
 private val reinaId = CharacterId(game = Game.Tekken8, characterId = "reina")
 private val reina112 = moveResponse(input = "112", characterName = "Reina")
+
+private val devilJin = characterResponse(id = "devil-jin", displayName = "Devil Jin", aliasList = listOf("dvj"))
+private val devilJinId = CharacterId(game = Game.Tekken8, characterId = "devil-jin")
+// the tapped one comes first, so a case-insensitive match would wrongly return it for the held query
+private val devilJinB14 = moveResponse(input = "b1+4", characterName = "Devil Jin")
+private val devilJinHeldB14 = moveResponse(input = "B1+4", characterName = "Devil Jin")
+private val devilJinMoveList: List<MoveResponse> = listOf(devilJinB14, devilJinHeldB14)

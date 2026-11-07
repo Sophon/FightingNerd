@@ -8,5 +8,11 @@ data class ModulesResponse(
         val name: String,
         val url: String,
         val version: String,
-    )
+        val gameSet: Set<Game>,
+    ) {
+        data class Game(
+            val name: String,
+            val id: String,
+        )
+    }
 }

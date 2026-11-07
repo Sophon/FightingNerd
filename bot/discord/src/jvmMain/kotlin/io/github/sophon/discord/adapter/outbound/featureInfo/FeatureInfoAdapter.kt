@@ -20,7 +20,8 @@ internal class FeatureInfoAdapter(
             (featureName == glossaryFeatureInfo.featureInfo.name) -> glossaryFeatureInfo.featureInfo
             else -> null
         }
-        val module = featureInfo?.toModule()
+        val supportedGameSet = if (isWiki) Game.entries.toSet() else emptySet()
+        val module = featureInfo?.toModule(supportedGameSet)
         return module
     }
 }
