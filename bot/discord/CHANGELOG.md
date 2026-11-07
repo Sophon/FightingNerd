@@ -1,6 +1,7 @@
 # BOT CHANGELOG
 
 ## [v17.6.0] - TODO
+- character-not-found error specifically formats character and move input
 - `Tekken` - now distinguishes B and b
 - `refresh` - optional parameter for a specific game to refresh
 
