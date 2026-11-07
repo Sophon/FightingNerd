@@ -329,14 +329,24 @@ private const val DUSTLOOP_FEATURE = "DustLoop Wiki"
 private const val GLOSSARY_FEATURE = "Infil Glossary"
 private const val STEAM_LOBBY_URL = "steam://joinlobby/586140/109775241137042824/76561198443042808"
 private val host = UserRequest.Source(username = "arslan", id = "333333333333333333", channelId = "555555555555555555")
-private val botModule = ModulesResponse.Module(name = BOT_NAME, url = URL_REPO, version = BuildKonfig.VERSION)
+private val botModule = ModulesResponse.Module(
+    name = BOT_NAME,
+    url = URL_REPO,
+    version = BuildKonfig.VERSION,
+    gameSet = emptySet(),
+)
 private val wikiModule = ModulesResponse.Module(
     name = "Wiki",
     url = "https://github.com/Sophon/FightingNerd/tree/main/feat/wiki",
     version = "2.3.0",
+    gameSet = setOf(
+        ModulesResponse.Module.Game(name = "Tekken 8", id = "Tekken_8"),
+        ModulesResponse.Module.Game(name = "Guilty Gear -Strive-", id = "GGST"),
+    ),
 )
 private val glossaryModule = ModulesResponse.Module(
     name = "Infil Glossary",
     url = "https://glossary.infil.net",
     version = "1.1.0",
+    gameSet = emptySet(),
 )
