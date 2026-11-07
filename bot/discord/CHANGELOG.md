@@ -2,8 +2,9 @@
 
 ## [v17.6.0] - TODO
 - character-not-found error specifically formats character and move input
-- `Tekken` - now distinguishes B and b
 - `refresh` - optional parameter for a specific game to refresh
+- `module` - each module can display the supported game list 
+- `Tekken` - now distinguishes B and b
 
 ## [v17.5.0] - 2026-10-25
 - fixed Tekken moves ignoring case sensitivity
