@@ -12,8 +12,6 @@ import io.github.sophon.wiki.model.wiki.Game
  */
 internal fun MizuumiCharacterJsonResponseDto.toDomain(game: Game): List<Character> {
     val characterList = characters.map { dto ->
-        val iconUrl = dto.images?.officialLargePng
-
         val character = Character(
             id = CharacterId(game, dto.displayName),
             displayName = dto.displayName,
@@ -21,8 +19,9 @@ internal fun MizuumiCharacterJsonResponseDto.toDomain(game: Game): List<Characte
             wikiUrl = "${game.wikiUrl}/${dto.displayName.replace(" ", "_")}",
             aliasList = dto.aliasList,
             images = Character.Images(
-                iconId = iconUrl?.substringAfterLast('/'),
-                iconUrl = iconUrl,
+                portraitId = dto.images?.portrait?.substringAfterLast('/'),
+                portrait = dto.images?.portrait,
+                full = dto.images?.full,
             ),
         )
         character
@@ -43,8 +42,8 @@ internal fun MizuumiCharacterListResponseDto.toDomain(
             remoteQueryId = dto.chara,
             wikiUrl = "${game.wikiUrl}/${dto.chara}",
             images = Character.Images(
-                iconId = dto.chara,
-                iconUrl = iconUrlMap[dto.chara],
+                portraitId = dto.chara,
+                portrait = iconUrlMap[dto.chara],
             ),
             hp = dto.health,
             gameProperties = dto.toGameProperties(game),

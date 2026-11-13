@@ -124,12 +124,13 @@ class WavuCharacterRemoteMapperTest {
 
     //region images
     @Test
-    fun `icon is the official large png and its file name`() {
+    fun `portrait, its file name and full come from the json images`() {
         //given
         val responseDto = WavuCharacterListResponseDto(characters = listOf(armorKing))
         val expected = Character.Images(
-            iconId = "T_UI_CS_Character_Thumb_Selected_knk.png",
-            iconUrl = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
+            portraitId = "T_UI_CS_Character_Thumb_Selected_knk.png",
+            portrait = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
+            full = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
         )
 
         //when
@@ -140,18 +141,21 @@ class WavuCharacterRemoteMapperTest {
     }
 
     @Test
-    fun `no official large png means no icon`() {
+    fun `no full png still keeps the portrait`() {
         //given
         val responseDto = WavuCharacterListResponseDto(
             characters = listOf(
                 armorKing.copy(
                     images = CharacterDto.Images(
-                        largePng = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
+                        portrait = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
                     )
                 )
             )
         )
-        val expected = Character.Images()
+        val expected = Character.Images(
+            portraitId = "T_UI_CS_Character_Thumb_Selected_knk.png",
+            portrait = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
+        )
 
         //when
         val result = responseDto.toDomain(Game.Tekken8).single()
@@ -161,7 +165,7 @@ class WavuCharacterRemoteMapperTest {
     }
 
     @Test
-    fun `no images means no icon`() {
+    fun `no images means no portrait`() {
         //given
         val responseDto = WavuCharacterListResponseDto(characters = listOf(armorKing.copy(images = null)))
 
@@ -169,7 +173,7 @@ class WavuCharacterRemoteMapperTest {
         val result = responseDto.toDomain(Game.Tekken8).single()
 
         //then
-        assertThat(result.images?.iconUrl).isNull()
+        assertThat(result.images?.portrait).isNull()
     }
     //endregion
 }
@@ -181,8 +185,8 @@ private val armorKing = CharacterDto(
     wavuName = "Armor King",
     aliasList = listOf("ak", "aking", "armorking"),
     images = CharacterDto.Images(
-        largePng = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
-        officialLargePng = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
+        portrait = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
+        full = "https://tekkenwarehouse.com/wp-content/uploads/2025/10/T_UI_CS_Character_Thumb_Selected_knk.png",
     ),
 )
 
@@ -192,8 +196,8 @@ private val jack8 = CharacterDto(
     wavuName = "Jack-8",
     aliasList = listOf("jack", "j8", "jack8"),
     images = CharacterDto.Images(
-        largePng = "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ccn.png",
-        officialLargePng = "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ccn.png",
+        portrait = "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ccn.png",
+        full = "https://tekkenwarehouse.com/wp-content/uploads/2024/02/T_UI_CS_Character_Thumb_Selected_ccn.png",
     ),
 )
 
@@ -203,8 +207,8 @@ private val tag2ArmorKing = CharacterDto(
     wavuName = "Armor King",
     aliasList = listOf("ak", "aking", "armorking"),
     images = CharacterDto.Images(
-        largePng = "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_armorking.png",
-        officialLargePng = "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_armorking.png",
+        portrait = "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_armorking.png",
+        full = "https://tekkenwarehouse.com/wp-content/uploads/2025/01/ttt2_mugshot_armorking.png",
     ),
 )
 
@@ -214,7 +218,7 @@ private val t5RogerJr = CharacterDto(
     wavuName = "Roger Jr.",
     aliasList = emptyList(),
     images = CharacterDto.Images(
-        largePng = "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_rogerjr_c.png",
-        officialLargePng = "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_rogerjr_c.png",
+        portrait = "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_rogerjr_c.png",
+        full = "https://tekkenwarehouse.com/wp-content/uploads/2024/08/t5dr_mugshot_rogerjr_c.png",
     ),
 )

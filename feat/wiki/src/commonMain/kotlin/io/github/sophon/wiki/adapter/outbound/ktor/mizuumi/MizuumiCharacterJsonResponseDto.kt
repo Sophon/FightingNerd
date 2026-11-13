@@ -16,7 +16,7 @@ internal data class MizuumiCharacterJsonDto(
 ) {
     @Serializable
     data class Images(
-        val largePng: String? = null,
-        val officialLargePng: String? = null,
+        val portrait: String? = null,
+        val full: String? = null,
     )
 }

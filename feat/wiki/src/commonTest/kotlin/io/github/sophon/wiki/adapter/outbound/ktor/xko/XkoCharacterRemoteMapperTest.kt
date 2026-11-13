@@ -10,7 +10,7 @@ import kotlin.test.Test
 class XkoCharacterRemoteMapperTest {
 
     @Test
-    fun `character maps to domain with the official icon`() {
+    fun `character maps to domain with portrait and full images`() {
         //given
         val responseDto = XkoCharacterJsonResponseDto(
             characters = listOf(XkoCharacterSource.jinx),
@@ -23,8 +23,9 @@ class XkoCharacterRemoteMapperTest {
                 wikiUrl = "https://wiki.play2xko.com/en-us/Jinx",
                 aliasList = listOf(),
                 images = Character.Images(
-                    iconId = "Jinx_cs.png?218c3",
-                    iconUrl = "https://wiki.play2xko.com/en-us/images/Jinx_cs.png?218c3",
+                    portraitId = "120px-Champ_JinxBase_Icon.png?5dd1d",
+                    portrait = "https://wiki.play2xko.com/en-us/images/thumb/Champ_JinxBase_Icon.png/120px-Champ_JinxBase_Icon.png?5dd1d",
+                    full = "https://wiki.play2xko.com/en-us/images/Jinx_cs.png?218c3",
                 ),
             ),
         )
@@ -37,14 +38,15 @@ class XkoCharacterRemoteMapperTest {
     }
 
     @Test
-    fun `missing images leave the icon empty`() {
+    fun `missing images leave the images empty`() {
         //given
         val responseDto = XkoCharacterJsonResponseDto(
             characters = listOf(XkoCharacterSource.settWithoutImages),
         )
         val expected = Character.Images(
-            iconId = null,
-            iconUrl = null,
+            portraitId = null,
+            portrait = null,
+            full = null,
         )
 
         //when
@@ -79,8 +81,8 @@ private object XkoCharacterSource {
         displayName = "Jinx",
         aliasList = listOf(),
         images = XkoCharacterJsonDto.Images(
-            largePng = "https://wiki.play2xko.com/en-us/images/thumb/Champ_JinxBase_Icon.png/120px-Champ_JinxBase_Icon.png?5dd1d",
-            officialLargePng = "https://wiki.play2xko.com/en-us/images/Jinx_cs.png?218c3",
+            portrait = "https://wiki.play2xko.com/en-us/images/thumb/Champ_JinxBase_Icon.png/120px-Champ_JinxBase_Icon.png?5dd1d",
+            full = "https://wiki.play2xko.com/en-us/images/Jinx_cs.png?218c3",
         ),
     )
 

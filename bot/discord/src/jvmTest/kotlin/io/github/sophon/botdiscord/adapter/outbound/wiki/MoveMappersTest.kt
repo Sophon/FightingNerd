@@ -433,7 +433,7 @@ private val jin = Character(
     displayName = "Jin",
     remoteQueryId = "Jin",
     wikiUrl = "https://wavu.wiki/t/Jin",
-    images = Character.Images(iconUrl = JIN_ICON_URL),
+    images = Character.Images(portrait = JIN_ICON_URL),
 )
 private val sol = character(game = Game.GGST)
 private val solDetailsButton = BotResponse.EmbedButton(

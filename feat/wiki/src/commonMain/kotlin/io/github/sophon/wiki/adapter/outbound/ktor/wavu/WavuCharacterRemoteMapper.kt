@@ -13,8 +13,9 @@ internal fun WavuCharacterListResponseDto.toDomain(game: Game): List<Character> 
             wikiUrl = "$URL_PREFIX_MOVE/${dto.wavuName.replace(" ", "_")}${game.toPageSuffix()}",
             aliasList = dto.aliasList,
             images = Character.Images(
-                iconId = dto.images?.officialLargePng?.substringAfterLast('/'),
-                iconUrl = dto.images?.officialLargePng,
+                portraitId = dto.images?.portrait?.substringAfterLast('/'),
+                portrait = dto.images?.portrait,
+                full = dto.images?.full,
             )
         )
     }

@@ -96,7 +96,7 @@ internal class WikiMappersTest {
             displayName = "Armor King",
             remoteQueryId = "Armor King",
             wikiUrl = "https://wavu.wiki/t/Armor_King",
-            images = WikiCharacter.Images(iconUrl = "https://wavu.wiki/w/images/Armor_King_icon.png"),
+            images = WikiCharacter.Images(portrait = "https://wavu.wiki/w/images/Armor_King_icon.png"),
         )
         val expected = Character(
             id = "armor_king",
