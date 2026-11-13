@@ -1,0 +1,202 @@
+{
+  "characters": [
+    {
+      "id": "akiha-tohno",
+      "displayName": "Akiha Tohno",
+      "aliasList": ["akiha", "ak"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png"
+      }
+    },
+    {
+      "id": "aoko-aozaki",
+      "displayName": "Aoko Aozaki",
+      "aliasList": ["aoko", "aozaki", "ao"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/e/ef/MBTL_aoko_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/e/ef/MBTL_aoko_icon.png"
+      }
+    },
+    {
+      "id": "arcueid-brunestud",
+      "displayName": "Arcueid Brunestud",
+      "aliasList": ["arcueid", "brunestud", "arc", "ar"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/7/79/MBTL_arcueid_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/7/79/MBTL_arcueid_icon.png"
+      }
+    },
+    {
+      "id": "ciel",
+      "displayName": "Ciel",
+      "aliasList": ["cl", "ci"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/1/18/MBTL_ciel_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/1/18/MBTL_ciel_icon.png"
+      }
+    },
+    {
+      "id": "dead-apostle-noel",
+      "displayName": "Dead Apostle Noel",
+      "aliasList": ["dead", "dan", "vnoel", "dn"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/0/03/MBTL_da_noel_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/0/03/MBTL_da_noel_icon.png"
+      }
+    },
+    {
+      "id": "hisui",
+      "displayName": "Hisui",
+      "aliasList": ["hi"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/9/9b/MBTL_hisui_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/9/9b/MBTL_hisui_icon.png"
+      }
+    },
+    {
+      "id": "hisui-kohaku",
+      "displayName": "Hisui & Kohaku",
+      "aliasList": ["maids", "hk"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/5/55/MBTL_maids_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/5/55/MBTL_maids_icon.png"
+      }
+    },
+    {
+      "id": "kohaku",
+      "displayName": "Kohaku",
+      "aliasList": ["ko", "koha"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/4/41/MBTL_kohaku_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/4/41/MBTL_kohaku_icon.png"
+      }
+    },
+    {
+      "id": "kouma-kishima",
+      "displayName": "Kouma Kishima",
+      "aliasList": ["kouma", "kishima", "ki"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/4/41/MBTL_kouma_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/4/41/MBTL_kouma_icon.png"
+      }
+    },
+    {
+      "id": "mario",
+      "displayName": "Mario",
+      "aliasList": ["mario", "bestino", "ma"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/d/d7/MBTL_mario_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/d/d7/MBTL_mario_icon.png"
+      }
+    },
+    {
+      "id": "mash-kyrielight",
+      "displayName": "Mash Kyrielight",
+      "aliasList": ["mash", "kyrielight", "mas"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/7/74/MBTL_mash_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/7/74/MBTL_mash_icon.png"
+      }
+    },
+    {
+      "id": "michael-roa-valdamjong",
+      "displayName": "Michael Roa Valdamjong",
+      "aliasList": ["michael", "valdamjong", "roa", "ro"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/3/38/MBTL_roa_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/3/38/MBTL_roa_icon.png"
+      }
+    },
+    {
+      "id": "miyako-arima",
+      "displayName": "Miyako Arima",
+      "aliasList": ["miyako", "arima", "mi"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/6/61/MBTL_miyako_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/6/61/MBTL_miyako_icon.png"
+      }
+    },
+    {
+      "id": "monte-cristo",
+      "displayName": "Monte Cristo",
+      "aliasList": ["cristo", "count", "dantes", "edmond", "ed"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/9/94/MBTL_monte_cristo_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/9/94/MBTL_monte_cristo_icon.png"
+      }
+    },
+    {
+      "id": "neco-arc",
+      "displayName": "Neco-Arc",
+      "aliasList": ["neco", "narc", "ne"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/5/5a/MBTL_neco_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/5/5a/MBTL_neco_icon.png"
+      }
+    },
+    {
+      "id": "noel",
+      "displayName": "Noel",
+      "aliasList": ["no"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/d/d9/MBTL_noel_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/d/d9/MBTL_noel_icon.png"
+      }
+    },
+    {
+      "id": "powered-ciel",
+      "displayName": "Powered Ciel",
+      "aliasList": ["powered", "pciel", "pc"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/c/c2/MBTL_pciel_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/c/c2/MBTL_pciel_icon.png"
+      }
+    },
+    {
+      "id": "red-arcueid",
+      "displayName": "Red Arcueid",
+      "aliasList": ["red", "warc", "re"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/5/58/MBTL_warc_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/5/58/MBTL_warc_icon.png"
+      }
+    },
+    {
+      "id": "saber",
+      "displayName": "Saber",
+      "aliasList": ["sa"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/c/cb/MBTL_saber_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/c/cb/MBTL_saber_icon.png"
+      }
+    },
+    {
+      "id": "shiki-tohno",
+      "displayName": "Shiki Tohno",
+      "aliasList": ["shiki", "sh", "tony"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/f/fe/MBTL_tohno_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/f/fe/MBTL_tohno_icon.png"
+      }
+    },
+    {
+      "id": "ushiwakamaru",
+      "displayName": "Ushiwakamaru",
+      "aliasList": ["ushi", "us"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/6/60/MBTL_ushiwaka_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/6/60/MBTL_ushiwaka_icon.png"
+      }
+    },
+    {
+      "id": "vlov-arkhangel",
+      "displayName": "Vlov Arkhangel",
+      "aliasList": ["vlov", "arkhangel", "vl"],
+      "images": {
+        "largePng": "https://mizuumi.wiki/images/5/55/MBTL_vlov_icon.png",
+        "officialLargePng": "https://mizuumi.wiki/images/5/55/MBTL_vlov_icon.png"
+      }
+    }
+  ]
+}
