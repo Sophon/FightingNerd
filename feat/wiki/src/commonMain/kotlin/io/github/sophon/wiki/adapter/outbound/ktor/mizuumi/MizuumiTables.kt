@@ -3,9 +3,6 @@ package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 import io.github.sophon.wiki.adapter.outbound.ktor.CargoTable
 import io.github.sophon.wiki.model.wiki.Game
 
-/**
- * Only separate games (`Game.separateCharMoveDownload`) have a character table.
- */
 internal object MizuumiTables {
     val characterTableByGame = mapOf(
         Game.Uni2 to CargoTable(name = "UNI2_CharStats", fieldList = uni2CharacterFieldList),

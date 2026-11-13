@@ -1,35 +1,11 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 
-import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.cleanHtmlOrNull
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterGameProperties
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.game.Uni2CharProperties
 import io.github.sophon.wiki.model.wiki.Game
-
-/**
- * Bulk games have no character table - the character is built from the move table's `chara` column.
- */
-internal fun String.toDomain(
-    game: Game,
-    iconUrlMap: Map<String, String>,
-): Character {
-    val iconKey = this.cleanHtml().lowercase().replace(" ", "_")
-    val iconUrl = iconUrlMap[iconKey]
-
-    val character = Character(
-        id = CharacterId(game, this),
-        displayName = this.cleanHtml(),
-        remoteQueryId = this,
-        wikiUrl = "${game.wikiUrl}/${this.replace(" ", "_")}",
-        images = Character.Images(
-            iconId = iconKey.takeIf { iconUrl != null },
-            iconUrl = iconUrl,
-        ),
-    )
-    return character
-}
 
 /**
  * `displayName` is the move table's `chara` verbatim, so it doubles as [Character.remoteQueryId].

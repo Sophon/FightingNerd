@@ -15,7 +15,6 @@ import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
 import io.github.sophon.wiki.app.outPort.PublishWikiEventPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
-import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
 import io.github.sophon.wiki.app.util.normalize
@@ -46,7 +45,6 @@ internal class RefreshDataService(
     private val fetchGameDataPort: FetchGameDataPort,
     private val saveCharacterListPort: SaveCharacterListPort,
     private val saveMoveListPort: SaveMoveListPort,
-    private val saveGameDataPort: SaveGameDataPort,
     private val strikeCharacterListPort: StrikeCharacterListPort,
     private val publishWikiEventPort: PublishWikiEventPort,
 ) : RefreshDataUseCase {
@@ -103,11 +101,7 @@ internal class RefreshDataService(
                 isStarted = true
                 publish(WikiEvent.Refresh.Started(game))
 
-                if (game.separateCharMoveDownload) {
-                    refreshSeparate(game)
-                } else {
-                    refreshBulk(game)
-                }
+                refreshSeparate(game)
             }
         } catch (exception: CancellationException) {
             throw exception
@@ -173,30 +167,6 @@ internal class RefreshDataService(
         return successCount
     }
 
-    /**
-     * Returns how many characters got their move list saved.
-     */
-    private suspend fun ProducerScope<WikiEvent.Refresh>.refreshBulk(game: Game): Int {
-        var successCount = 0
-        val gameDataResult = withTimeoutOrNull(BULK_DOWNLOAD_TIMEOUT) { downloadGameData(game) }
-            ?: timeoutError(game.id)
-
-        gameDataResult
-            .onSuccess { gameData ->
-                successCount = gameData.size
-
-                // nothing downloaded - the wiki failed, not its characters
-                if (gameData.isNotEmpty()) {
-                    val downloadedIdSet = gameData.map { (character, _) -> character.id }.toSet()
-                    strikeAbsentCharacters(game, downloadedIdSet)
-                        .onError { error -> publish(WikiEvent.Refresh.Failure(game, error)) }
-                }
-            }
-            .onError { error -> publish(WikiEvent.Refresh.Failure(game, error)) }
-
-        return successCount
-    }
-
     private suspend fun downloadCharacterList(game: Game): Result<List<Character>, WikiError> {
         val downloadResult = fetchGameDataPort.fetchCharacterList(game)
             .onError { error ->
@@ -224,21 +194,6 @@ internal class RefreshDataService(
             .flatMap { moveList ->
                 val uniqueMoveList = moveList.dropDuplicateInputs(character.id)
                 saveMoveList(character.id, uniqueMoveList)
-            }
-
-        return downloadResult
-    }
-
-    private suspend fun downloadGameData(game: Game): Result<List<Pair<Character, List<Move>>>, WikiError> {
-        val downloadResult = fetchGameDataPort.fetchGameData(game)
-            .onError { error ->
-                Napier.w(tag = TAG) { "${game.id}: download failed - $error" }
-            }
-            .mapError { error -> error.toWikiError() }
-            .map { gameData -> gameData.map { characterWithMoves -> characterWithMoves.normalize() } }
-            .flatMap { gameData -> saveGameData(game, gameData).map { gameData } }
-            .onSuccess { gameData ->
-                Napier.i(tag = TAG) { "${game.id}: ${gameData.size} characters downloaded" }
             }
 
         return downloadResult
@@ -292,19 +247,6 @@ internal class RefreshDataService(
         return saveResult
     }
 
-    private suspend fun saveGameData(
-        game: Game,
-        gameData: List<Pair<Character, List<Move>>>,
-    ): EmptyResult<WikiError> {
-        val saveResult = saveGameDataPort.saveGameData(gameData)
-            .mapError { error -> error.toWikiError() }
-            .onError { error ->
-                Napier.w(tag = TAG) { "${game.id}: save failed - $error" }
-            }
-
-        return saveResult
-    }
-
     private suspend fun strikeAbsentCharacters(
         game: Game,
         downloadedIdSet: Set<CharacterId>,
@@ -316,14 +258,6 @@ internal class RefreshDataService(
             }
 
         return strikeResult
-    }
-
-    private fun Pair<Character, List<Move>>.normalize(): Pair<Character, List<Move>> {
-        val (character, moveList) = this
-        val normalizedCharacter = character.normalize()
-        val uniqueMoveList = moveList.dropDuplicateInputs(normalizedCharacter.id)
-        val normalized = (normalizedCharacter to uniqueMoveList)
-        return normalized
     }
 
     /**
@@ -346,6 +280,5 @@ internal class RefreshDataService(
         const val TAG = "RefreshDataService"
         const val MAX_PARALLEL_GAME_DOWNLOADS = 3
         val DOWNLOAD_TIMEOUT = 1.minutes
-        val BULK_DOWNLOAD_TIMEOUT = 2.minutes
     }
 }

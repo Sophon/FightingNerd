@@ -7,7 +7,6 @@ enum class Game(
     val iconUrl: String,
     val wikiUrl: String,
     val wiki: Wiki,
-    val separateCharMoveDownload: Boolean = true,
 ) {
     Tekken8(
         id = "Tekken_8",

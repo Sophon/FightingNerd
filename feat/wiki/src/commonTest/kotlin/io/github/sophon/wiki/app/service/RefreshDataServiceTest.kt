@@ -13,7 +13,6 @@ import io.github.sophon.wiki.app.outPort.FetchGameDataPort
 import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
 import io.github.sophon.wiki.app.outPort.PublishWikiEventPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
-import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
 import io.github.sophon.wiki.model.Character
@@ -202,30 +201,6 @@ internal class RefreshDataServiceTest {
         // then
         val refreshFailedEvent = eventList.filterIsInstance<WikiEvent.Refresh.Failure>().single()
         assertThat(refreshFailedEvent.error).isInstanceOf(WikiError.DatabaseError::class)
-    }
-
-    @Test
-    fun `a bulk game is saved in one go`() = runTest {
-        // given
-        val store = FakeDownloadStore()
-        val service = refreshDataService(
-            fetchGameDataPort = FakeFetchGameDataPort(
-                gameDataByGame = mapOf(
-                    Game.COTW to Result.Success(listOf(CharacterSource.darius to emptyList(), CharacterSource.ahri to emptyList())),
-                ),
-            ),
-            store = store,
-            enabledGameList = listOf(Game.COTW),
-        )
-        val expected = listOf(
-            SaveCall.GameData(listOf(CharacterId(Game.Xko, "darius"), CharacterId(Game.Xko, "ahri"))),
-        )
-
-        // when
-        service.invoke().toList()
-
-        // then
-        assertThat(store.saveCallList).isEqualTo(expected)
     }
 
     @Test
@@ -599,7 +574,6 @@ private fun refreshDataService(
         fetchGameDataPort = fetchGameDataPort,
         saveCharacterListPort = store,
         saveMoveListPort = store,
-        saveGameDataPort = store,
         strikeCharacterListPort = store,
         publishWikiEventPort = publishWikiEventPort,
     )
@@ -642,20 +616,6 @@ private object CharacterSource {
         remoteQueryId = "Scorpion",
         wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1/Scorpion",
     )
-
-    val darius = Character(
-        id = CharacterId(Game.Xko, "Darius"),
-        displayName = "Darius",
-        remoteQueryId = "Darius",
-        wikiUrl = "https://wiki.play2xko.com/en-us/Darius",
-    )
-
-    val ahri = Character(
-        id = CharacterId(Game.Xko, "Ahri"),
-        displayName = "Ahri",
-        remoteQueryId = "Ahri",
-        wikiUrl = "https://wiki.play2xko.com/en-us/Ahri",
-    )
 }
 
 private object MoveSource {
@@ -695,13 +655,12 @@ private class FakeLoadWikiConfigPort(enabledGameSet: Set<Game>) : LoadWikiConfig
 }
 
 /**
- * Hands out what each test sets up - an unset game or character is [DataError.Remote.PAGE_NOT_FOUND],
- * like a shape the wiki doesn't serve. A crashing game throws, a hanging character never answers.
+ * Hands out what each test sets up - an unset game or character is [DataError.Remote.PAGE_NOT_FOUND].
+ * A crashing game throws, a hanging character never answers.
  */
 private class FakeFetchGameDataPort(
     private val characterListByGame: Map<Game, Result<List<Character>, DataError.Remote>> = emptyMap(),
     private val moveListByRemoteQueryId: Map<String, Result<List<Move>, DataError.Remote>> = emptyMap(),
-    private val gameDataByGame: Map<Game, Result<List<Pair<Character, List<Move>>>, DataError.Remote>> = emptyMap(),
     private val fetchDelay: Duration = Duration.ZERO,
     private val crashingGameSet: Set<Game> = emptySet(),
     private val hangingRemoteQueryIdSet: Set<String> = emptySet(),
@@ -729,10 +688,6 @@ private class FakeFetchGameDataPort(
 
         return moveListByRemoteQueryId[character.remoteQueryId] ?: Result.Error(DataError.Remote.PAGE_NOT_FOUND)
     }
-
-    override suspend fun fetchGameData(game: Game): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
-        return gameDataByGame[game] ?: Result.Error(DataError.Remote.PAGE_NOT_FOUND)
-    }
 }
 
 private class FakePublishWikiEventPort : PublishWikiEventPort {
@@ -746,7 +701,6 @@ private class FakePublishWikiEventPort : PublishWikiEventPort {
 private sealed interface SaveCall {
     data class CharacterList(val idList: List<CharacterId>) : SaveCall
     data class MoveList(val id: CharacterId) : SaveCall
-    data class GameData(val idList: List<CharacterId>) : SaveCall
 }
 
 /**
@@ -754,7 +708,7 @@ private sealed interface SaveCall {
  */
 private class FakeDownloadStore(
     private val strikeResult: EmptyResult<DataError.Local> = Result.Success(Unit),
-) : SaveCharacterListPort, SaveMoveListPort, SaveGameDataPort, StrikeCharacterListPort {
+) : SaveCharacterListPort, SaveMoveListPort, StrikeCharacterListPort {
     val saveCallList = mutableListOf<SaveCall>()
     val savedMoveListById = mutableMapOf<CharacterId, List<Move>>()
     val strikeCallList = mutableListOf<Pair<Game, Set<CharacterId>>>()
@@ -772,14 +726,6 @@ private class FakeDownloadStore(
     ): EmptyResult<DataError.Local> {
         saveCallList.add(SaveCall.MoveList(characterId))
         savedMoveListById[characterId] = moveList
-        return Result.Success(Unit)
-    }
-
-    override suspend fun saveGameData(
-        gameData: List<Pair<Character, List<Move>>>,
-    ): EmptyResult<DataError.Local> {
-        saveCallList.add(SaveCall.GameData(gameData.map { (character, _) -> character.id }))
-        gameData.forEach { (character, moveList) -> savedMoveListById[character.id] = moveList }
         return Result.Success(Unit)
     }
 

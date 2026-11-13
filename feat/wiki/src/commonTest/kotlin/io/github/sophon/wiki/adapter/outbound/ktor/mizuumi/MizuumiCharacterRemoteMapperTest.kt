@@ -2,52 +2,12 @@ package io.github.sophon.wiki.adapter.outbound.ktor.mizuumi
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isNull
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 
 class MizuumiCharacterRemoteMapperTest {
-    val iconUrlMap = mapOf(
-        "morrigan" to "https://mizuumi.wiki/images/7/7f/Vsav-nav-portrait-morrigan.gif",
-        "felicia" to "https://mizuumi.wiki/images/b/ba/Vsav-nav-portrait-felicia.gif",
-    )
-
-    @Test
-    fun `chara maps to a character`() {
-        //given
-        val chara = "Morrigan"
-        val expected = Character(
-            id = CharacterId(Game.VSAV, "Morrigan"),
-            displayName = "Morrigan",
-            remoteQueryId = "Morrigan",
-            wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior/Morrigan",
-            images = Character.Images(
-                iconId = "morrigan",
-                iconUrl = "https://mizuumi.wiki/images/7/7f/Vsav-nav-portrait-morrigan.gif",
-            ),
-        )
-
-        //when
-        val result = chara.toDomain(Game.VSAV, iconUrlMap)
-
-        //then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `missing icon leaves the icon url null`() {
-        //given
-        val chara = "Lei-Lei"
-
-        //when
-        val result = chara.toDomain(Game.VSAV, iconUrlMap)
-
-        //then
-        assertThat(result.images?.iconUrl).isNull()
-    }
-
     @Test
     fun `json character uses its display name as the remote query id`() {
         //given

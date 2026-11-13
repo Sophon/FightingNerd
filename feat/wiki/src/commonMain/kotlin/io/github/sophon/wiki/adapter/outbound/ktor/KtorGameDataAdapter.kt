@@ -39,13 +39,6 @@ internal class KtorGameDataAdapter(
         return result
     }
 
-    override suspend fun fetchGameData(
-        game: Game,
-    ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
-        val result = adapterOf(game).fetchGameData(game)
-        return result
-    }
-
     override fun normalizeMoveInput(game: Game, input: String): String {
         val normalized = adapterOf(game).normalizeMoveInput(game, input)
         return normalized

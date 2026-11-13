@@ -12,30 +12,6 @@ import io.github.sophon.wiki.model.game.Uni2MoveProperties
 import io.github.sophon.wiki.model.game.VSAVMoveProperties
 import io.github.sophon.wiki.model.wiki.Game
 
-/**
- * Bulk - the whole move table, grouped into characters by `chara`.
- */
-internal fun MizuumiMoveListResponseDto.toDomainAll(
-    game: Game,
-    iconUrlMap: Map<String, String>,
-    hitboxUrlMap: Map<String, String>,
-): List<Pair<Character, List<Move>>> {
-    val characterWithMovesList = cargoquery
-        .groupBy { moveTitle -> moveTitle.title.chara }
-        .filter { (_, moveTitleList) -> moveTitleList.size >= MIN_MOVES_PER_CHARACTER }
-        .map { (chara, moveTitleList) ->
-            val character = chara.toDomain(game, iconUrlMap)
-            val moveList = moveTitleList
-                .map { moveTitle -> moveTitle.title }
-                .toDomain(game, character, hitboxUrlMap)
-            character to moveList
-        }
-    return characterWithMovesList
-}
-
-/**
- * Separate - one character's move list.
- */
 internal fun MizuumiMoveListResponseDto.toDomain(
     game: Game,
     character: Character,
@@ -175,5 +151,4 @@ private fun String.formatCancel(): String {
 }
 
 
-private const val MIN_MOVES_PER_CHARACTER = 10
 private const val WIKI_BASE_URL = "https://mizuumi.wiki/w"

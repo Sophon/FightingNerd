@@ -4,33 +4,11 @@ import io.github.sophon.core.util.cleanHtml
 import io.github.sophon.core.util.decodeHtmlEntities
 import io.github.sophon.wiki.adapter.outbound.ktor.findMoveIdPrefix
 import io.github.sophon.wiki.adapter.outbound.ktor.removeMoveIdPrefix
-import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.MoveGameProperties
 import io.github.sophon.wiki.model.game.COTWMoveProperties
 import io.github.sophon.wiki.model.game.KOF15MoveProperties
 import io.github.sophon.wiki.model.wiki.Game
-
-/**
- * Bulk - the whole move table, grouped into characters. `chara` spellings that form the same grouping key are one character.
- * The move ID prefix is found per character.
- */
-internal fun DreamCancelMoveListResponseDto.toDomainAll(
-    game: Game,
-    iconUrlMap: Map<String, String>,
-    hitboxUrlMap: Map<String, String>,
-): List<Pair<Character, List<Move>>> {
-    val characterWithMovesList = cargoQuery
-        .groupBy { query -> query.title.chara.formGroupingKey() }
-        .map { (_, queryList) ->
-            val dtoList = queryList.map { query -> query.title }
-            val character = dtoList.first().chara.toCharacter(game, iconUrlMap)
-            val moveIdPrefix = dtoList.map { dto -> dto.moveId }.findMoveIdPrefix()
-            val moveList = dtoList.map { dto -> dto.toDomain(game, moveIdPrefix, hitboxUrlMap).normalizeDreamCancel() }
-            character to moveList
-        }
-    return characterWithMovesList
-}
 
 internal fun DreamCancelMoveListResponseDto.toDomain(
     game: Game,

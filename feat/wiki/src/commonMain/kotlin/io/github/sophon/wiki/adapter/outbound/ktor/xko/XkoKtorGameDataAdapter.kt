@@ -50,24 +50,6 @@ internal class XkoKtorGameDataAdapter(
         return moveListResult
     }
 
-    override suspend fun fetchGameData(
-        game: Game,
-    ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
-        val moveSelect = moveSelectByGame[game]
-            ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
-        val bucketQuery = "$moveSelect.limit($LIMIT_MOVES).run()"
-
-        val gameDataResult = safeCall<XkoMoveListResponseDto> {
-            httpClient.get(BASE_URL) {
-                parameter("action", "bucket")
-                parameter("query", bucketQuery)
-                parameter("format", "json")
-            }
-        }
-            .map { dto -> dto.toDomainAll(game) }
-        return gameDataResult
-    }
-
     override fun normalizeMoveInput(game: Game, input: String): String {
         val normalized = input.normalizeXkoInput()
         return normalized

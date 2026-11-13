@@ -183,22 +183,6 @@ internal class SqlDelightCharacterAdapterTest {
     }
 
     @Test
-    fun `game data saves every character with its moves`() = runTest {
-        // given
-        val database = TestWikiDatabase()
-        val expected = listOf(demonsPaw, windHookFist)
-
-        // when
-        database.characterAdapter.saveGameData(listOf(jin to expected, armorKing to emptyList()))
-
-        // then
-        val characterList = database.characterAdapter.subscribe(Game.Tekken8).first()
-        assertThat(characterList.map { character -> character.id }).containsExactly(armorKing.id, jin.id)
-        val moveList = database.moveAdapter.subscribe(jin.id).first()
-        assertThat(moveList).isEqualTo(expected)
-    }
-
-    @Test
     fun `deleting a character deletes its aliases, moves and game properties`() = runTest {
         // given
         val database = TestWikiDatabase()
