@@ -7,7 +7,6 @@ enum class Game(
     val iconUrl: String,
     val wikiUrl: String,
     val wiki: Wiki,
-    val separateCharMoveDownload: Boolean = true,
 ) {
     Tekken8(
         id = "Tekken_8",
@@ -59,7 +58,6 @@ enum class Game(
         iconUrl = "https://i.imgur.com/XtHOd6T.png",
         wikiUrl = "https://wiki.play2xko.com/en-us/",
         wiki = Wiki.Xko,
-        separateCharMoveDownload = false,
     ),
 
     KoFXV(
@@ -68,7 +66,6 @@ enum class Game(
         iconUrl = "https://dreamcancel.com/w/images/thumb/7/7e/KOF_XV_Logo.png/400px-KOF_XV_Logo.png",
         wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV",
         wiki = Wiki.DreamCancel,
-        separateCharMoveDownload = false,
     ),
     COTW(
         id = "Fatal_Fury:_City_of_the_Wolves",
@@ -76,7 +73,6 @@ enum class Game(
         iconUrl = "https://dreamcancel.com/w/images/thumb/b/b2/FF_CotW_logo.png/400px-FF_CotW_logo.png",
         wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves",
         wiki = Wiki.DreamCancel,
-        separateCharMoveDownload = false,
     ),
 
     GGST(
@@ -121,7 +117,6 @@ enum class Game(
         iconUrl = "https://mizuumi.wiki/images/1/18/MBTL_Logo.png",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL",
         wiki = Wiki.Mizuumi,
-        separateCharMoveDownload = false,
     ),
     Uni2(
         id = "UNI2",
@@ -136,7 +131,6 @@ enum class Game(
         iconUrl = "https://mizuumi.wiki/images/thumb/a/a1/VSAV_Logo.png/150px-VSAV_Logo.png",
         wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior",
         wiki = Wiki.Mizuumi,
-        separateCharMoveDownload = false,
     ),
     ROA2(
         id = "ROA2",

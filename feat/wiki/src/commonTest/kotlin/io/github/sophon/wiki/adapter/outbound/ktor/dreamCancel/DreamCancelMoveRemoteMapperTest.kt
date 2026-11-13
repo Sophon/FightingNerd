@@ -2,25 +2,11 @@ package io.github.sophon.wiki.adapter.outbound.ktor.dreamCancel
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import io.github.sophon.wiki.model.CharacterId
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 
 class DreamCancelMoveRemoteMapperTest {
-
-    @Test
-    fun `bulk table is grouped into characters by chara`() {
-        //given
-        val responseDto = listOf(DreamCancelMoveSource.aurora, DreamCancelMoveSource.byeByeBoo).toResponseDto()
-        val expected = listOf(CharacterId(Game.KoFXV, "B.Jenet") to 2)
-
-        //when
-        val result = responseDto.toDomainAll(Game.KoFXV, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
-
-        //then
-        assertThat(result.map { (character, moveList) -> character.id to moveList.size }).isEqualTo(expected)
-    }
 
     @Test
     fun `wiki url is the game url and the chara page`() {
@@ -85,13 +71,8 @@ private fun List<MoveDto>.toResponseDto(): DreamCancelMoveListResponseDto {
     return responseDto
 }
 
-/**
- * One character's moves - the bulk mapper groups them into that character.
- */
 private fun List<MoveDto>.toMoveList(): List<Move> {
-    val (_, moveList) = toResponseDto()
-        .toDomainAll(Game.KoFXV, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
-        .single()
+    val moveList = toResponseDto().toDomain(Game.KoFXV, hitboxUrlMap = emptyMap())
     return moveList
 }
 
