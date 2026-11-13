@@ -15,9 +15,9 @@ internal fun CharacterEntity.toDomain(
     gameProperties: CharacterGameProperties?,
 ): Character {
     val images = Character.Images(
-        portraitId = icon_id,
-        portrait = icon_url,
-        full = banner_url,
+        portraitId = portrait_id,
+        portrait = portrait,
+        full = full,
     )
 
     val character = Character(
