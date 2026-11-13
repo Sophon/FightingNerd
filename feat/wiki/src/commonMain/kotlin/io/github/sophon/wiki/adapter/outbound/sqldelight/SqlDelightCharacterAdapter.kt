@@ -9,7 +9,6 @@ import io.github.sophon.wiki.app.outPort.DeleteCharacterListPort
 import io.github.sophon.wiki.app.outPort.LoadCharacterListPort
 import io.github.sophon.wiki.app.outPort.LoadCharacterPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
-import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
 import io.github.sophon.wiki.model.Character
@@ -34,7 +33,6 @@ internal class SqlDelightCharacterAdapter(
     LoadCharacterPort,
     SaveCharacterListPort,
     SaveMoveListPort,
-    SaveGameDataPort,
     StrikeCharacterListPort,
     DeleteCharacterListPort {
     private val database by wikiDatabase
@@ -79,23 +77,6 @@ internal class SqlDelightCharacterAdapter(
                     .executeAsOne()
                 val moveRowIdList = upsertMoveList(game, characterRowId, moveList)
                 replaceMoveAliasList(characterRowId, moveList, moveRowIdList)
-            }
-        }
-        return result
-    }
-
-    override suspend fun saveGameData(
-        gameData: List<Pair<Character, List<Move>>>,
-    ): EmptyResult<DataError.Local> {
-        val result = runDatabaseWrite(TAG, "saveGameData(${gameData.size} characters)") {
-            database.transaction {
-                gameData.forEach { (character, moveList) ->
-                    val game = character.id.game
-                    val characterRowId = upsertCharacter(game, character)
-                    replaceCharacterAliasList(game, characterRowId, character.aliasList)
-                    val moveRowIdList = upsertMoveList(game, characterRowId, moveList)
-                    replaceMoveAliasList(characterRowId, moveList, moveRowIdList)
-                }
             }
         }
         return result
@@ -187,9 +168,9 @@ internal class SqlDelightCharacterAdapter(
             remote_query_id = character.remoteQueryId,
             display_name = character.displayName,
             wiki_url = character.wikiUrl,
-            icon_id = character.images?.iconId,
-            icon_url = character.images?.iconUrl,
-            banner_url = character.images?.bannerUrl,
+            portrait_id = character.images?.portraitId,
+            portrait = character.images?.portrait,
+            full = character.images?.full,
             hp = character.hp,
             umo = character.umo,
             updated_at = clock.now().toEpochMilliseconds(),

@@ -94,39 +94,6 @@ class MizuumiMoveRemoteMapperTest {
         assertThat(result.aliases).isEqualTo(expected)
     }
     //endregion
-
-    //region bulk
-    @Test
-    fun `bulk table is grouped into characters by chara`() {
-        //given
-        val moveList = (movesOf(chara = "Akiha Tohno", idPrefix = "ak", count = 10)
-                + movesOf(chara = "Ciel", idPrefix = "ci", count = 10))
-        val responseDto = MizuumiMoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
-        val expected = listOf(CharacterId(Game.MBTL, "Akiha Tohno") to 10, CharacterId(Game.MBTL, "Ciel") to 10)
-
-        //when
-        val result = responseDto.toDomainAll(Game.MBTL, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
-
-        //then
-        assertThat(result.map { (character, characterMoveList) -> character.id to characterMoveList.size })
-            .isEqualTo(expected)
-    }
-
-    @Test
-    fun `chara with fewer than 10 moves is dropped`() {
-        //given
-        val moveList = (movesOf(chara = "Akiha Tohno", idPrefix = "ak", count = 10)
-                + movesOf(chara = "Ciel", idPrefix = "ci", count = 9))
-        val responseDto = MizuumiMoveListResponseDto(cargoquery = moveList.map { move -> Title(move) })
-        val expected = listOf(CharacterId(Game.MBTL, "Akiha Tohno"))
-
-        //when
-        val result = responseDto.toDomainAll(Game.MBTL, iconUrlMap = emptyMap(), hitboxUrlMap = emptyMap())
-
-        //then
-        assertThat(result.map { (character, _) -> character.id }).isEqualTo(expected)
-    }
-    //endregion
 }
 
 private val Move.mbtlProperties: MBTLMoveProperties?
@@ -147,23 +114,6 @@ private fun MoveDto.toMove(
 ): Move {
     val move = listOf(this).toMoveList(game, character).single()
     return move
-}
-
-private fun movesOf(
-    chara: String,
-    idPrefix: String,
-    count: Int,
-): List<MoveDto> {
-    val moveList = mbtlInputList
-        .take(count)
-        .map { input ->
-            MoveDto(
-                moveId = "${idPrefix}_${input.lowercase().replace(".", "")}",
-                chara = chara,
-                input = input,
-            )
-        }
-    return moveList
 }
 
 private object MizuumiMoveSource {
@@ -291,6 +241,3 @@ private object MizuumiMoveSource {
         comboP2 = "93",
     )
 }
-
-
-private val mbtlInputList = listOf("5A", "5B", "5C", "2A", "2B", "2C", "j.A", "j.B", "j.C", "214A")

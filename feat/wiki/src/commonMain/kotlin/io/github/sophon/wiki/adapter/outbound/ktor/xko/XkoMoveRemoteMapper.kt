@@ -1,23 +1,11 @@
 package io.github.sophon.wiki.adapter.outbound.ktor.xko
 
 import io.github.sophon.core.util.orDash
-import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Move
-import io.github.sophon.wiki.model.wiki.Game
 
-/**
- * Bulk - the whole move bucket, grouped into characters by page.
- */
-internal fun XkoMoveListResponseDto.toDomainAll(game: Game): List<Pair<Character, List<Move>>> {
-    val characterWithMovesList = bucket
-        .filterNot { dto -> dto.pageName.isExcludedPage() }
-        .groupBy { dto -> dto.pageName }
-        .map { (pageName, dtoList) ->
-            val character = pageName.toCharacter(game)
-            val moveList = dtoList.map { dto -> dto.toDomain().normalizeXko() }
-            character to moveList
-        }
-    return characterWithMovesList
+internal fun XkoMoveListResponseDto.toDomain(): List<Move> {
+    val moveList = bucket.map { dto -> dto.toDomain().normalizeXko() }
+    return moveList
 }
 
 private fun MoveDto.toDomain(): Move {
@@ -41,15 +29,5 @@ private fun MoveDto.toDomain(): Move {
     )
     return move
 }
-
-/**
- * Drops namespaced pages (`Template:...`) and ` POC` pages.
- */
-private fun String.isExcludedPage(): Boolean {
-    val lowercasePageName = lowercase()
-    val isExcluded = (lowercasePageName.contains(":") || lowercasePageName.contains(" poc"))
-    return isExcluded
-}
-
 
 private const val IMAGE_URL = "$WIKI_BASE_URL/images"

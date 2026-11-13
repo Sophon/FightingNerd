@@ -34,8 +34,8 @@ private fun DragDownCharacterResponseDto.toDomain(
         aliasList = chara.formAliases(),
         wikiUrl = "${game.wikiUrl}/${chara.replace(" ", "_")}",
         images = Character.Images(
-            iconId = iconFileName,
-            iconUrl = imageUrlMap[iconFileName],
+            portraitId = iconFileName,
+            portrait = imageUrlMap[iconFileName],
         ),
         gameProperties = toGameProperties(),
     )

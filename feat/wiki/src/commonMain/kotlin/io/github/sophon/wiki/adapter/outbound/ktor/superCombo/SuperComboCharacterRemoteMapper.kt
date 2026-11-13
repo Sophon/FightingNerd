@@ -33,9 +33,9 @@ private fun formCharacter(
         wikiUrl = "$WIKI_BASE_URL/${game.id}/${dto.chara}",
         aliasList = dto.chara.createAliases(addInitials = (game != Game.MK1)),
         images = Character.Images(
-            iconId = dto.icon,
-            iconUrl = dto.icon.let { imageUrlMap[it] },
-            bannerUrl = dto.portrait.let { imageUrlMap[it] },
+            portraitId = dto.icon,
+            portrait = dto.icon.let { imageUrlMap[it] },
+            full = dto.portrait.let { imageUrlMap[it] },
         ),
         hp = dto.hp,
         gameProperties = dto.toGameProperties(game),

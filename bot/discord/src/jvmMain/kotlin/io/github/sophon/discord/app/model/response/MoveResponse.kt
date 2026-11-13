@@ -9,7 +9,7 @@ data class MoveResponse(
     val characterName: String,
     val characterUrl: String,
     val moveName: String?,
-    val characterImageUrl: String?,
+    val characterPortrait: String?,
     val primaryFields: List<BotResponse.Field>,
     val dataSource: BotResponse.DataSource,
     val secondaryFields: List<BotResponse.Field> = emptyList(),

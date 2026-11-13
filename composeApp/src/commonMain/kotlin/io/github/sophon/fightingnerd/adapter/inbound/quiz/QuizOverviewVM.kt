@@ -100,7 +100,7 @@ internal class QuizOverviewVM(
                                         val card = CharacterCard(
                                             id = domainCharacter.id,
                                             displayName = domainCharacter.displayName,
-                                            iconUrl = domainCharacter.iconUrl,
+                                            iconUrl = domainCharacter.portrait,
                                             isLoading = existing?.isLoading ?: true,
                                         )
                                         card

@@ -100,7 +100,7 @@ private fun EmbedBuilder.headerSection(move: MoveResponse) {
         else -> "Move data"
     }
 
-    move.characterImageUrl?.let { thumbnail { url = it } }
+    move.characterPortrait?.let { thumbnail { url = it } }
 }
 
 private fun EmbedBuilder.primaryFieldsSection(fields: List<BotResponse.Field>) {

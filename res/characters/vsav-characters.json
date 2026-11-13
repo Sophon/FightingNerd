@@ -1,0 +1,139 @@
+{
+  "characters": [
+    {
+      "id": "anakaris",
+      "displayName": "Anakaris",
+      "aliasList": ["an"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/3/3b/Vsav-nav-portrait-anakaris.gif",
+        "full": "https://mizuumi.wiki/images/3/3b/Vsav-nav-portrait-anakaris.gif"
+      }
+    },
+    {
+      "id": "aulbath",
+      "displayName": "Aulbath",
+      "aliasList": ["au"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/6/6f/Vsav-nav-portrait-aulbath.gif",
+        "full": "https://mizuumi.wiki/images/6/6f/Vsav-nav-portrait-aulbath.gif"
+      }
+    },
+    {
+      "id": "bishamon",
+      "displayName": "Bishamon",
+      "aliasList": ["bi"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/0/04/Vsav-nav-portrait-bishamon.gif",
+        "full": "https://mizuumi.wiki/images/0/04/Vsav-nav-portrait-bishamon.gif"
+      }
+    },
+    {
+      "id": "bulleta",
+      "displayName": "Bulleta",
+      "aliasList": ["bu"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/a/a4/Vsav-nav-portrait-bulleta.gif",
+        "full": "https://mizuumi.wiki/images/a/a4/Vsav-nav-portrait-bulleta.gif"
+      }
+    },
+    {
+      "id": "demitri",
+      "displayName": "Demitri",
+      "aliasList": ["de"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/d/d7/Vsav-nav-portrait-demitri.gif",
+        "full": "https://mizuumi.wiki/images/d/d7/Vsav-nav-portrait-demitri.gif"
+      }
+    },
+    {
+      "id": "felicia",
+      "displayName": "Felicia",
+      "aliasList": ["fe"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/b/ba/Vsav-nav-portrait-felicia.gif",
+        "full": "https://mizuumi.wiki/images/b/ba/Vsav-nav-portrait-felicia.gif"
+      }
+    },
+    {
+      "id": "gallon",
+      "displayName": "Gallon",
+      "aliasList": ["ga"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/8/88/Vsav-nav-portrait-gallon.gif",
+        "full": "https://mizuumi.wiki/images/8/88/Vsav-nav-portrait-gallon.gif"
+      }
+    },
+    {
+      "id": "jedah",
+      "displayName": "Jedah",
+      "aliasList": ["je"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/4/4a/Vsav-nav-portrait-jedah.gif",
+        "full": "https://mizuumi.wiki/images/4/4a/Vsav-nav-portrait-jedah.gif"
+      }
+    },
+    {
+      "id": "lei-lei",
+      "displayName": "Lei-Lei",
+      "aliasList": ["le"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/2/26/Vsav-nav-portrait-lei-lei.gif",
+        "full": "https://mizuumi.wiki/images/2/26/Vsav-nav-portrait-lei-lei.gif"
+      }
+    },
+    {
+      "id": "lilith",
+      "displayName": "Lilith",
+      "aliasList": ["li"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/3/3b/Vsav-nav-portrait-lilith.gif",
+        "full": "https://mizuumi.wiki/images/3/3b/Vsav-nav-portrait-lilith.gif"
+      }
+    },
+    {
+      "id": "morrigan",
+      "displayName": "Morrigan",
+      "aliasList": ["mo"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/7/7f/Vsav-nav-portrait-morrigan.gif",
+        "full": "https://mizuumi.wiki/images/7/7f/Vsav-nav-portrait-morrigan.gif"
+      }
+    },
+    {
+      "id": "q-bee",
+      "displayName": "Q-Bee",
+      "aliasList": ["qb"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/b/b5/Vsav-nav-portrait-q-bee.gif",
+        "full": "https://mizuumi.wiki/images/b/b5/Vsav-nav-portrait-q-bee.gif"
+      }
+    },
+    {
+      "id": "sasquatch",
+      "displayName": "Sasquatch",
+      "aliasList": ["sa"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/2/24/Vsav-nav-portrait-sasquatch.gif",
+        "full": "https://mizuumi.wiki/images/2/24/Vsav-nav-portrait-sasquatch.gif"
+      }
+    },
+    {
+      "id": "victor",
+      "displayName": "Victor",
+      "aliasList": ["vi"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/1/18/Vsav-nav-portrait-victor.gif",
+        "full": "https://mizuumi.wiki/images/1/18/Vsav-nav-portrait-victor.gif"
+      }
+    },
+    {
+      "id": "zabel",
+      "displayName": "Zabel",
+      "aliasList": ["za"],
+      "images": {
+        "portrait": "https://mizuumi.wiki/images/5/5a/Vsav-nav-portrait-zabel.gif",
+        "full": "https://mizuumi.wiki/images/5/5a/Vsav-nav-portrait-zabel.gif"
+      }
+    }
+  ]
+}

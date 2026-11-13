@@ -37,9 +37,9 @@ private fun CharacterDto.toDomain(
         wikiUrl = queryName.formWikiUrl(game),
         aliasList = name.createAliases(game, aliases),
         images = Character.Images(
-            iconId = icon,
-            iconUrl = icon.let { imageUrlMap[it] },
-            bannerUrl = portrait.let { imageUrlMap[it] },
+            portraitId = icon,
+            portrait = icon.let { imageUrlMap[it] },
+            full = portrait.let { imageUrlMap[it] },
         ),
         hp = health?.cleanHtml(),
         umo = umo.formUmo(),
