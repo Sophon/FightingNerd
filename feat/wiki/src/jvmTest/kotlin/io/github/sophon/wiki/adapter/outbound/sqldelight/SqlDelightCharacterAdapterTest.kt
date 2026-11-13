@@ -63,7 +63,7 @@ internal class SqlDelightCharacterAdapterTest {
         // given
         val database = TestWikiDatabase()
         val updatedArmorKing = armorKing.copy(
-            images = Character.Images(iconUrl = "https://wavu.wiki/w/images/Armor_King_icon_2.png"),
+            images = Character.Images(portrait = "https://wavu.wiki/w/images/Armor_King_icon_2.png"),
         )
         val expected = listOf(updatedArmorKing)
 

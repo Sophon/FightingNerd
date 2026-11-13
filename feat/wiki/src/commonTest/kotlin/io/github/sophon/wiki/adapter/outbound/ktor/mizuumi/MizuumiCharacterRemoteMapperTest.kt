@@ -18,8 +18,8 @@ class MizuumiCharacterRemoteMapperTest {
                     displayName = "Akiha Tohno",
                     aliasList = listOf("akiha", "ak"),
                     images = MizuumiCharacterJsonDto.Images(
-                        largePng = "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
-                        officialLargePng = "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
+                        portrait = "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
+                        full = "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
                     ),
                 ),
             ),
@@ -32,8 +32,9 @@ class MizuumiCharacterRemoteMapperTest {
                 wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL/Akiha_Tohno",
                 aliasList = listOf("akiha", "ak"),
                 images = Character.Images(
-                    iconId = "MBTL_akiha_icon.png",
-                    iconUrl = "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
+                    portraitId = "MBTL_akiha_icon.png",
+                    portrait = "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
+                    full = "https://mizuumi.wiki/images/b/ba/MBTL_akiha_icon.png",
                 ),
             ),
         )

@@ -33,9 +33,9 @@ class SqlDelightCharacterMapperTest {
         //given
         val entity = ryuEntity
         val expected = Character.Images(
-            iconId = "SF6_Ryu_Icon.png",
-            iconUrl = "https://wiki.supercombo.gg/images/SF6_Ryu_Icon.png",
-            bannerUrl = "https://wiki.supercombo.gg/images/SF6_Ryu_Banner.png",
+            portraitId = "SF6_Ryu_Icon.png",
+            portrait = "https://wiki.supercombo.gg/images/SF6_Ryu_Icon.png",
+            full = "https://wiki.supercombo.gg/images/SF6_Ryu_Banner.png",
         )
 
         //when
@@ -48,8 +48,8 @@ class SqlDelightCharacterMapperTest {
     @Test
     fun `one image column is enough to keep images`() {
         //given
-        val entity = ryuEntity.copy(icon_id = null, icon_url = null)
-        val expected = Character.Images(bannerUrl = "https://wiki.supercombo.gg/images/SF6_Ryu_Banner.png")
+        val entity = ryuEntity.copy(portrait_id = null, portrait = null)
+        val expected = Character.Images(full = "https://wiki.supercombo.gg/images/SF6_Ryu_Banner.png")
 
         //when
         val result = entity.toDomain(Game.StreetFighter6, aliasList = emptyList(), gameProperties = null)
@@ -61,7 +61,7 @@ class SqlDelightCharacterMapperTest {
     @Test
     fun `no image columns means no images`() {
         //given
-        val entity = ryuEntity.copy(icon_id = null, icon_url = null, banner_url = null)
+        val entity = ryuEntity.copy(portrait_id = null, portrait = null, full = null)
 
         //when
         val result = entity.toDomain(Game.StreetFighter6, aliasList = emptyList(), gameProperties = null)
@@ -84,9 +84,9 @@ class SqlDelightCharacterMapperTest {
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu",
             aliasList = aliasList,
             images = Character.Images(
-                iconId = "SF6_Ryu_Icon.png",
-                iconUrl = "https://wiki.supercombo.gg/images/SF6_Ryu_Icon.png",
-                bannerUrl = "https://wiki.supercombo.gg/images/SF6_Ryu_Banner.png",
+                portraitId = "SF6_Ryu_Icon.png",
+                portrait = "https://wiki.supercombo.gg/images/SF6_Ryu_Icon.png",
+                full = "https://wiki.supercombo.gg/images/SF6_Ryu_Banner.png",
             ),
             hp = "10000",
             umo = listOf("Denjin Charge"),
@@ -110,9 +110,9 @@ private val ryuEntity = CharacterEntity(
     remote_query_id = "Ryu",
     display_name = "Ryu",
     wiki_url = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu",
-    icon_id = "SF6_Ryu_Icon.png",
-    icon_url = "https://wiki.supercombo.gg/images/SF6_Ryu_Icon.png",
-    banner_url = "https://wiki.supercombo.gg/images/SF6_Ryu_Banner.png",
+    portrait_id = "SF6_Ryu_Icon.png",
+    portrait = "https://wiki.supercombo.gg/images/SF6_Ryu_Icon.png",
+    full = "https://wiki.supercombo.gg/images/SF6_Ryu_Banner.png",
     hp = "10000",
     umo = listOf("Denjin Charge"),
     strike_count = 0,

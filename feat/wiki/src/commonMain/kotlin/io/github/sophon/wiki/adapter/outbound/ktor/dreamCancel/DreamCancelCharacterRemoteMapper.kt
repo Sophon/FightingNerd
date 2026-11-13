@@ -8,8 +8,6 @@ import io.github.sophon.wiki.model.wiki.Game
 
 internal fun DreamCancelCharacterJsonResponseDto.toDomain(game: Game): List<Character> {
     val characterList = characters.map { dto ->
-        val iconUrl = dto.images?.officialLargePng
-
         val character = Character(
             id = CharacterId(game, dto.displayName),
             displayName = dto.displayName,
@@ -17,8 +15,9 @@ internal fun DreamCancelCharacterJsonResponseDto.toDomain(game: Game): List<Char
             wikiUrl = "$WIKI_BASE_URL/${game.id}/${dto.displayName.createQueryName()}",
             aliasList = dto.aliasList,
             images = Character.Images(
-                iconId = iconUrl?.substringAfterLast('/'),
-                iconUrl = iconUrl,
+                portraitId = dto.images?.portrait?.substringAfterLast('/'),
+                portrait = dto.images?.portrait,
+                full = dto.images?.full,
             ),
         )
         character
