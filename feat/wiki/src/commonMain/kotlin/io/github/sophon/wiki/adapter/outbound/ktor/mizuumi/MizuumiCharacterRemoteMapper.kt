@@ -15,11 +15,8 @@ internal fun String.toDomain(
     game: Game,
     iconUrlMap: Map<String, String>,
 ): Character {
-    val iconName = this.cleanHtml().lowercase().replace(" ", "_")
-    val iconKeys = when (game) {
-        Game.MBTL -> listOf(iconName.substringBefore("_"), iconName.substringAfterLast("_"))
-        else -> listOf(iconName)
-    }
+    val iconKey = this.cleanHtml().lowercase().replace(" ", "_")
+    val iconUrl = iconUrlMap[iconKey]
 
     val character = Character(
         id = CharacterId(game, this),
@@ -28,11 +25,34 @@ internal fun String.toDomain(
         wikiUrl = "${game.wikiUrl}/${this.replace(" ", "_")}",
         aliasList = this.createAliases(),
         images = Character.Images(
-            iconId = iconKeys.firstOrNull { iconUrlMap.contains(it) },
-            iconUrl = iconKeys.firstNotNullOfOrNull { iconUrlMap[it] },
+            iconId = iconKey.takeIf { iconUrl != null },
+            iconUrl = iconUrl,
         ),
     )
     return character
+}
+
+/**
+ * `displayName` is the move table's `chara` verbatim, so it doubles as [Character.remoteQueryId].
+ */
+internal fun MizuumiCharacterJsonResponseDto.toDomain(game: Game): List<Character> {
+    val characterList = characters.map { dto ->
+        val iconUrl = dto.images?.officialLargePng
+
+        val character = Character(
+            id = CharacterId(game, dto.displayName),
+            displayName = dto.displayName,
+            remoteQueryId = dto.displayName,
+            wikiUrl = "${game.wikiUrl}/${dto.displayName.replace(" ", "_")}",
+            aliasList = dto.aliasList,
+            images = Character.Images(
+                iconId = iconUrl?.substringAfterLast('/'),
+                iconUrl = iconUrl,
+            ),
+        )
+        character
+    }
+    return characterList
 }
 
 internal fun MizuumiCharacterListResponseDto.toDomain(
@@ -98,33 +118,6 @@ private fun UniCharacterDto.toGameProperties(game: Game): CharacterGamePropertie
 
 @Suppress("CyclomaticComplexMethod")
 private fun String.createAliases(): List<String> {
-    val meltyAliases = when (this.lowercase()) {
-        "akiha tohno" -> listOf("akiha", "ak")
-        "aoko aozaki" -> listOf("aoko", "aozaki", "ao")
-        "arcueid brunestud" -> listOf("arcueid", "brunestud", "arc", "ar")
-        "ciel" -> listOf("cl", "ci")
-        "dead apostle noel" -> listOf("dead", "dan", "vnoel", "dn")
-        "hisui" -> listOf("hi")
-        "hisui & kohaku" -> listOf("maids", "hk")
-        "kohaku" -> listOf("ko", "koha")
-        "kouma kishima" -> listOf("kouma", "kishima", "ki")
-        "mario" -> listOf("mario", "bestino", "ma")
-        "mash kyrielight" -> listOf("mash", "kyrielight", "mas")
-        "michael roa valdamjong" -> listOf("michael", "valdamjong", "roa", "ro")
-        "miyako arima" -> listOf("miyako", "arima", "mi")
-        "neco-arc" -> listOf("neco", "narc", "ne")
-        "noel" -> listOf("no")
-        "powered ciel" -> listOf("powered", "pciel", "pc")
-        "red arcueid" -> listOf("red", "warc", "re")
-        "saber" -> listOf("sa")
-        "shiki tohno" -> listOf("shiki", "sh", "tony")
-        "monte cristo" -> listOf("cristo", "count", "dantes", "edmond", "ed")
-        "ushiwakamaru" -> listOf("ushi", "us")
-        "vlov arkhangel" -> listOf("vlov", "arkhangel", "vl")
-
-        else -> listOf()
-    }
-
     val vsavAliases = when (this.lowercase()) {
         "anakaris" -> listOf("an")
         "aulbath" -> listOf("au")
@@ -145,8 +138,7 @@ private fun String.createAliases(): List<String> {
         else -> listOf()
     }
 
-    val combined = (meltyAliases + vsavAliases).distinct()
-    return combined
+    return vsavAliases
 }
 
 private fun String.formatBulletPoints(): String {

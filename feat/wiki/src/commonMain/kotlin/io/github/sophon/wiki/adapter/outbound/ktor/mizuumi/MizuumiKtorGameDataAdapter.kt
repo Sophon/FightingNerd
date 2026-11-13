@@ -29,27 +29,19 @@ import kotlinx.coroutines.flow.toList
 internal class MizuumiKtorGameDataAdapter(
     private val httpClient: HttpClient,
 ) : KtorWikiAdapter {
+    private val gitHubCharacterListUrlByGame = mapOf(
+        Game.MBTL to URL_GITHUB_MBTL_CHAR_LIST,
+    )
 
     override suspend fun fetchCharacterList(
         game: Game,
     ): Result<List<Character>, DataError.Remote> {
-        val table = MizuumiTables.characterTableByGame[game]
-            ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
-
-        val characterListResult = safeCall<MizuumiCharacterListResponseDto> {
-            httpClient.get(BASE_URL) {
-                parameter("action", "cargoquery")
-                parameter("tables", table.name)
-                parameter("fields", table.fieldList.joinToString(","))
-                parameter("format", "json")
-                parameter("limit", LIMIT_CHARACTERS)
-            }
+        val gitHubCharacterList = gitHubCharacterListUrlByGame[game]
+        val characterListResult = if (gitHubCharacterList == null) {
+            fetchFromWiki(game)
+        } else {
+            fetchFromGitHub(game, gitHubCharacterList)
         }
-            .flatMap { dto ->
-                val charaList = dto.cargoquery.map { characterTitle -> characterTitle.title.chara }
-                resolveCharacterIconUrls(game, charaList)
-                    .map { iconUrlMap -> dto.toDomain(game, iconUrlMap) }
-            }
         return characterListResult
     }
 
@@ -97,6 +89,40 @@ internal class MizuumiKtorGameDataAdapter(
     override fun normalizeMoveInput(game: Game, input: String): String {
         val normalized = input.normalize2dInputs()
         return normalized
+    }
+
+    private suspend fun fetchFromGitHub(
+        game: Game,
+        url: String,
+    ): Result<List<Character>, DataError.Remote> {
+        val characterListResult = safeCall<MizuumiCharacterJsonResponseDto> {
+            httpClient.get(url)
+        }
+            .map { dto -> dto.toDomain(game) }
+        return characterListResult
+    }
+
+    private suspend fun fetchFromWiki(
+        game: Game,
+    ): Result<List<Character>, DataError.Remote> {
+        val table = MizuumiTables.characterTableByGame[game]
+            ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+
+        val characterListResult = safeCall<MizuumiCharacterListResponseDto> {
+            httpClient.get(BASE_URL) {
+                parameter("action", "cargoquery")
+                parameter("tables", table.name)
+                parameter("fields", table.fieldList.joinToString(","))
+                parameter("format", "json")
+                parameter("limit", LIMIT_CHARACTERS)
+            }
+        }
+            .flatMap { dto ->
+                val charaList = dto.cargoquery.map { characterTitle -> characterTitle.title.chara }
+                resolveCharacterIconUrls(game, charaList)
+                    .map { iconUrlMap -> dto.toDomain(game, iconUrlMap) }
+            }
+        return characterListResult
     }
 
     /**
@@ -186,10 +212,6 @@ internal class MizuumiKtorGameDataAdapter(
 
     private fun List<String>.toIconFileNameByKey(game: Game): Map<String, String> {
         val fileNameByKey = when (game) {
-            Game.MBTL -> this
-                .flatMap { chara -> listOf(chara.substringBefore(" "), chara.substringAfterLast(" ")) }
-                .associate { token -> token.lowercase() to "MBTL_${token.lowercase()}_icon.png" }
-
             Game.Uni2 -> this.associateWith { chara -> "UNI2_${chara}_CSel.png" }
 
             Game.VSAV -> this.associate { chara -> chara.lowercase() to "Vsav-nav-portrait-${chara.lowercase()}.gif" }
@@ -206,5 +228,6 @@ internal class MizuumiKtorGameDataAdapter(
         const val LIMIT_MOVES = 500
         const val MAX_PAGES = 10
         const val MAX_CONCURRENT_PAGES = 5
+        const val URL_GITHUB_MBTL_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/mbtl-characters.json"
     }
 }

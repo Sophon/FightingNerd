@@ -121,7 +121,6 @@ enum class Game(
         iconUrl = "https://mizuumi.wiki/images/1/18/MBTL_Logo.png",
         wikiUrl = "https://mizuumi.wiki/w/Melty_Blood/MBTL",
         wiki = Wiki.Mizuumi,
-        separateCharMoveDownload = false,
     ),
     Uni2(
         id = "UNI2",
