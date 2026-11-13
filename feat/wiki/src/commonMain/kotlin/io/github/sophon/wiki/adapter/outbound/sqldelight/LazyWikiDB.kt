@@ -45,7 +45,6 @@ private fun createWikiDB(driver: SqlDriver): WikiDB {
             hit_activeAdapter = StringListAdapter,
             custom_shield_safetyAdapter = StringListAdapter,
             unique_fieldAdapter = StringListAdapter,
-            article_idAdapter = StringListAdapter,
         ),
     )
     return database

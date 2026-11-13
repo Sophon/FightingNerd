@@ -38,6 +38,7 @@ internal class DragDownSqlDelightGameProperties(
                 gravity = properties.gravity,
                 hitstun_gravity = properties.hitstunGravity,
                 fall_speed_max = properties.fallSpeedMax,
+                hitstun_fall_speed_max = properties.hitstunFallSpeedMax,
                 fast_fall_speed = properties.fastFallSpeed,
                 air_acceleration = properties.airAcceleration,
                 air_speed_horizontal_max = properties.airSpeedHorizontalMax,
@@ -91,9 +92,9 @@ internal class DragDownSqlDelightGameProperties(
                 hit_active = properties.hitActive,
                 custom_shield_safety = properties.customShieldSafety,
                 unique_field = properties.uniqueField,
-                article_id = properties.articleID,
                 notes = properties.notes,
                 adv_notes = properties.advNotes,
+                no_frame_data = properties.noFrameData,
             )
 
             else -> Napier.w(tag = TAG) { "no table for ${properties::class.simpleName}" }
@@ -139,6 +140,7 @@ private fun Roa2_character.toDomain(): Roa2CharProperties {
         gravity = gravity,
         hitstunGravity = hitstun_gravity,
         fallSpeedMax = fall_speed_max,
+        hitstunFallSpeedMax = hitstun_fall_speed_max,
         fastFallSpeed = fast_fall_speed,
         airAcceleration = air_acceleration,
         airSpeedHorizontalMax = air_speed_horizontal_max,
@@ -185,9 +187,9 @@ private fun Roa2_move.toDomain(): Roa2MoveProperties {
         hitActive = hit_active,
         customShieldSafety = custom_shield_safety,
         uniqueField = unique_field,
-        articleID = article_id,
         notes = notes,
         advNotes = adv_notes,
+        noFrameData = no_frame_data,
     )
     return properties
 }
