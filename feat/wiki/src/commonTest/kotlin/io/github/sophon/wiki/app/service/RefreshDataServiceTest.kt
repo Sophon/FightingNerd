@@ -211,11 +211,11 @@ internal class RefreshDataServiceTest {
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
                 gameDataByGame = mapOf(
-                    Game.KoFXV to Result.Success(listOf(CharacterSource.darius to emptyList(), CharacterSource.ahri to emptyList())),
+                    Game.COTW to Result.Success(listOf(CharacterSource.darius to emptyList(), CharacterSource.ahri to emptyList())),
                 ),
             ),
             store = store,
-            enabledGameList = listOf(Game.KoFXV),
+            enabledGameList = listOf(Game.COTW),
         )
         val expected = listOf(
             SaveCall.GameData(listOf(CharacterId(Game.Xko, "darius"), CharacterId(Game.Xko, "ahri"))),

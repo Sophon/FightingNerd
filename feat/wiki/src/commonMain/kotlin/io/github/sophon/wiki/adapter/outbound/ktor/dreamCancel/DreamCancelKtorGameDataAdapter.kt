@@ -25,17 +25,45 @@ import kotlinx.coroutines.flow.toList
 internal class DreamCancelKtorGameDataAdapter(
     private val httpClient: HttpClient,
 ) : KtorWikiAdapter {
+    private val gitHubCharacterListUrlByGame = mapOf(
+        Game.KoFXV to URL_GITHUB_KOFXV_CHAR_LIST,
+    )
 
     override suspend fun fetchCharacterList(
         game: Game,
     ): Result<List<Character>, DataError.Remote> {
-        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+        val url = gitHubCharacterListUrlByGame[game]
+            ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+
+        val characterListResult = safeCall<DreamCancelCharacterJsonResponseDto> {
+            httpClient.get(url)
+        }
+            .map { dto -> dto.toDomain(game) }
+        return characterListResult
     }
 
     override suspend fun fetchMoveList(
         character: Character,
     ): Result<List<Move>, DataError.Remote> {
-        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+        val game = character.id.game
+        val table = DreamCancelTables.moveTableByGame[game]
+            ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+
+        val moveListResult = safeCall<DreamCancelMoveListResponseDto> {
+            httpClient.get(BASE_URL) {
+                parameter("action", "cargoquery")
+                parameter("tables", table.name)
+                parameter("fields", table.fieldList.joinToString(","))
+                parameter("where", "chara=\"${character.remoteQueryId}\"")
+                parameter("format", "json")
+                parameter("limit", LIMIT_MOVES)
+            }
+        }
+            .flatMap { dto ->
+                resolveHitboxUrls(dto)
+                    .map { hitboxUrlMap -> dto.toDomain(game, hitboxUrlMap) }
+            }
+        return moveListResult
     }
 
     override suspend fun fetchGameData(
@@ -148,7 +176,6 @@ internal class DreamCancelKtorGameDataAdapter(
     private fun List<String>.toIconFileNameByKey(game: Game): Map<String, String> {
         val keyList = flatMap { chara -> listOf(chara.substringBefore(" "), chara.substringAfterLast(" ")) }
         val fileNameByKey = when (game) {
-            Game.KoFXV -> keyList.associateWith { key -> "KOFXV_${key}_Portrait.png" }
             Game.COTW -> keyList.associateWith { key -> "FF_COTW_${key}_Icon.png" }
             else -> emptyMap()
         }
@@ -161,5 +188,6 @@ internal class DreamCancelKtorGameDataAdapter(
         const val LIMIT_MOVES = 500
         const val MAX_PAGES = 10
         const val MAX_CONCURRENT_PAGES = 5
+        const val URL_GITHUB_KOFXV_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/kofxv-characters.json"
     }
 }

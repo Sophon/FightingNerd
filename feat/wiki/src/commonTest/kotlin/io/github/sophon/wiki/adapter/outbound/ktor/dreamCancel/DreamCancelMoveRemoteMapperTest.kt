@@ -23,6 +23,19 @@ class DreamCancelMoveRemoteMapperTest {
     }
 
     @Test
+    fun `single character table maps every move with the shared prefix removed`() {
+        //given
+        val responseDto = listOf(DreamCancelMoveSource.aurora, DreamCancelMoveSource.byeByeBoo).toResponseDto()
+        val expected = listOf(DreamCancelMoveSource.aurora, DreamCancelMoveSource.byeByeBoo).toMoveList()
+
+        //when
+        val result = responseDto.toDomain(Game.KoFXV, hitboxUrlMap = emptyMap())
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `wiki url is the game url and the chara page`() {
         //given
         val dto = DreamCancelMoveSource.aurora

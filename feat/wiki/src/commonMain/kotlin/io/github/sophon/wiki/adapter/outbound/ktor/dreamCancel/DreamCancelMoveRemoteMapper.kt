@@ -32,6 +32,16 @@ internal fun DreamCancelMoveListResponseDto.toDomainAll(
     return characterWithMovesList
 }
 
+internal fun DreamCancelMoveListResponseDto.toDomain(
+    game: Game,
+    hitboxUrlMap: Map<String, String>,
+): List<Move> {
+    val dtoList = cargoQuery.map { query -> query.title }
+    val moveIdPrefix = dtoList.map { dto -> dto.moveId }.findMoveIdPrefix()
+    val moveList = dtoList.map { dto -> dto.toDomain(game, moveIdPrefix, hitboxUrlMap).normalizeDreamCancel() }
+    return moveList
+}
+
 /**
  * The input comes from the move ID - the wiki's `input` doesn't tell versions apart (`rock_214a` / `rock_214a_install`
  * are both `214A`), so it's kept as an alias.

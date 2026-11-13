@@ -67,7 +67,6 @@ enum class Game(
         iconUrl = "https://dreamcancel.com/w/images/thumb/7/7e/KOF_XV_Logo.png/400px-KOF_XV_Logo.png",
         wikiUrl = "https://dreamcancel.com/wiki/The_King_of_Fighters_XV",
         wiki = Wiki.DreamCancel,
-        separateCharMoveDownload = false,
     ),
     COTW(
         id = "Fatal_Fury:_City_of_the_Wolves",
