@@ -18,3 +18,23 @@ internal fun String.toCharacter(game: Game): Character {
     )
     return character
 }
+
+internal fun XkoCharacterJsonResponseDto.toDomain(game: Game): List<Character> {
+    val characterList = characters.map { dto ->
+        val iconUrl = dto.images?.officialLargePng
+
+        val character = Character(
+            id = CharacterId(game, dto.displayName),
+            displayName = dto.displayName,
+            remoteQueryId = dto.displayName,
+            wikiUrl = "$WIKI_BASE_URL/${dto.displayName}",
+            aliasList = dto.aliasList,
+            images = Character.Images(
+                iconId = iconUrl?.substringAfterLast('/'),
+                iconUrl = iconUrl,
+            ),
+        )
+        character
+    }
+    return characterList
+}

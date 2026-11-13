@@ -59,7 +59,6 @@ enum class Game(
         iconUrl = "https://i.imgur.com/XtHOd6T.png",
         wikiUrl = "https://wiki.play2xko.com/en-us/",
         wiki = Wiki.Xko,
-        separateCharMoveDownload = false,
     ),
 
     KoFXV(

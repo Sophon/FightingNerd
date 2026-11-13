@@ -62,6 +62,38 @@ class XkoMoveRemoteMapperTest {
     }
 
     @Test
+    fun `single character bucket maps to its normalized moves`() {
+        //given
+        val responseDto = XkoMoveListResponseDto(
+            bucketQuery = "bucket('move')",
+            bucket = listOf(XkoMoveSource.jinx5M),
+        )
+        val expected = listOf(
+            Move(
+                input = "5m",
+                damage = "55",
+                startup = "11",
+                onBlock = "-6",
+                recovery = "18",
+                active = "5",
+                guard = "LHA",
+                cancel = "N,SP,SU",
+                urls = Move.Urls(
+                    hitboxImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M_Hitbox.png"),
+                    moveImageList = listOf("https://wiki.play2xko.com/en-us/images/Jinx_5M.png"),
+                    wikiUrl = "https://wiki.play2xko.com/en-us/Jinx#5M",
+                ),
+            ),
+        )
+
+        //when
+        val result = responseDto.toDomain()
+
+        //then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `empty fields become null`() {
         //given
         val responseDto = XkoMoveListResponseDto(

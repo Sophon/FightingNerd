@@ -44,9 +44,9 @@ internal class RefreshDataServiceTest {
         val store = FakeDownloadStore()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu))),
                 moveListByRemoteQueryId = mapOf(
-                    "Yoshimitsu" to Result.Success(listOf(fleaRoll, fleaDigger, fleaDiggerStrike)),
+                    "Yoshimitsu" to Result.Success(listOf(MoveSource.fleaRoll, MoveSource.fleaDigger, MoveSource.fleaDiggerStrike)),
                 ),
             ),
             store = store,
@@ -69,10 +69,10 @@ internal class RefreshDataServiceTest {
         val store = FakeDownloadStore()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.armorKing, CharacterSource.yoshimitsu))),
                 moveListByRemoteQueryId = mapOf(
                     "Armor King" to Result.Success(emptyList()),
-                    "Yoshimitsu" to Result.Success(listOf(fleaRoll)),
+                    "Yoshimitsu" to Result.Success(listOf(MoveSource.fleaRoll)),
                 ),
             ),
             store = store,
@@ -98,10 +98,10 @@ internal class RefreshDataServiceTest {
         val store = FakeDownloadStore()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.armorKing, CharacterSource.yoshimitsu))),
                 moveListByRemoteQueryId = mapOf(
                     "Armor King" to Result.Error(DataError.Remote.REQUEST_TIMEOUT),
-                    "Yoshimitsu" to Result.Success(listOf(fleaRoll)),
+                    "Yoshimitsu" to Result.Success(listOf(MoveSource.fleaRoll)),
                 ),
             ),
             store = store,
@@ -123,7 +123,7 @@ internal class RefreshDataServiceTest {
         val store = FakeDownloadStore()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.armorKing, CharacterSource.yoshimitsu))),
                 moveListByRemoteQueryId = mapOf(
                     "Armor King" to Result.Success(emptyList()),
                     "Yoshimitsu" to Result.Success(emptyList()),
@@ -148,7 +148,7 @@ internal class RefreshDataServiceTest {
         val store = FakeDownloadStore()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.armorKing, CharacterSource.yoshimitsu))),
                 moveListByRemoteQueryId = mapOf(
                     "Armor King" to Result.Error(DataError.Remote.REQUEST_TIMEOUT),
                     "Yoshimitsu" to Result.Success(emptyList()),
@@ -190,8 +190,8 @@ internal class RefreshDataServiceTest {
         // given
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
-                moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(fleaRoll))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu))),
+                moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(MoveSource.fleaRoll))),
             ),
             store = FakeDownloadStore(strikeResult = Result.Error(DataError.Local.UNKNOWN)),
         )
@@ -211,11 +211,11 @@ internal class RefreshDataServiceTest {
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
                 gameDataByGame = mapOf(
-                    Game.Xko to Result.Success(listOf(darius to emptyList(), ahri to emptyList())),
+                    Game.KoFXV to Result.Success(listOf(CharacterSource.darius to emptyList(), CharacterSource.ahri to emptyList())),
                 ),
             ),
             store = store,
-            enabledGameList = listOf(Game.Xko),
+            enabledGameList = listOf(Game.KoFXV),
         )
         val expected = listOf(
             SaveCall.GameData(listOf(CharacterId(Game.Xko, "darius"), CharacterId(Game.Xko, "ahri"))),
@@ -235,8 +235,8 @@ internal class RefreshDataServiceTest {
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
                 characterListByGame = mapOf(
-                    Game.Tekken8 to Result.Success(listOf(yoshimitsu)),
-                    Game.StreetFighter6 to Result.Success(listOf(ryu)),
+                    Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu)),
+                    Game.StreetFighter6 to Result.Success(listOf(CharacterSource.ryu)),
                 ),
                 moveListByRemoteQueryId = mapOf(
                     "Yoshimitsu" to Result.Success(emptyList()),
@@ -263,8 +263,8 @@ internal class RefreshDataServiceTest {
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
                 characterListByGame = mapOf(
-                    Game.Tekken8 to Result.Success(listOf(yoshimitsu)),
-                    Game.StreetFighter6 to Result.Success(listOf(ryu)),
+                    Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu)),
+                    Game.StreetFighter6 to Result.Success(listOf(CharacterSource.ryu)),
                 ),
                 moveListByRemoteQueryId = mapOf(
                     "Yoshimitsu" to Result.Success(emptyList()),
@@ -288,10 +288,10 @@ internal class RefreshDataServiceTest {
         // given
         val fetchGameDataPort = FakeFetchGameDataPort(
             characterListByGame = mapOf(
-                Game.Tekken8 to Result.Success(listOf(yoshimitsu)),
-                Game.StreetFighter6 to Result.Success(listOf(ryu)),
-                Game.GGST to Result.Success(listOf(sol)),
-                Game.MK1 to Result.Success(listOf(scorpion)),
+                Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu)),
+                Game.StreetFighter6 to Result.Success(listOf(CharacterSource.ryu)),
+                Game.GGST to Result.Success(listOf(CharacterSource.sol)),
+                Game.MK1 to Result.Success(listOf(CharacterSource.scorpion)),
             ),
             fetchDelay = 1.seconds,
         )
@@ -313,8 +313,8 @@ internal class RefreshDataServiceTest {
     fun `a game another refresh is downloading is skipped`() = runTest {
         // given
         val fetchGameDataPort = FakeFetchGameDataPort(
-            characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
-            moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(fleaRoll))),
+            characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu))),
+            moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(MoveSource.fleaRoll))),
             fetchDelay = 1.seconds,
         )
         val service = refreshDataService(
@@ -338,8 +338,8 @@ internal class RefreshDataServiceTest {
     fun `a finished game can be refreshed again`() = runTest {
         // given
         val fetchGameDataPort = FakeFetchGameDataPort(
-            characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
-            moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(fleaRoll))),
+            characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu))),
+            moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(MoveSource.fleaRoll))),
         )
         val service = refreshDataService(
             fetchGameDataPort = fetchGameDataPort,
@@ -365,8 +365,8 @@ internal class RefreshDataServiceTest {
         val store = FakeDownloadStore()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
-                moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(fleaRoll))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu))),
+                moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(MoveSource.fleaRoll))),
                 crashingGameSet = setOf(Game.StreetFighter6),
             ),
             store = store,
@@ -389,8 +389,8 @@ internal class RefreshDataServiceTest {
         val store = FakeDownloadStore()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
-                moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(fleaRoll))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.armorKing, CharacterSource.yoshimitsu))),
+                moveListByRemoteQueryId = mapOf("Yoshimitsu" to Result.Success(listOf(MoveSource.fleaRoll))),
                 hangingRemoteQueryIdSet = setOf("Armor King"),
             ),
             store = store,
@@ -412,8 +412,8 @@ internal class RefreshDataServiceTest {
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
                 characterListByGame = mapOf(
-                    Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu)),
-                    Game.StreetFighter6 to Result.Success(listOf(ryu)),
+                    Game.Tekken8 to Result.Success(listOf(CharacterSource.armorKing, CharacterSource.yoshimitsu)),
+                    Game.StreetFighter6 to Result.Success(listOf(CharacterSource.ryu)),
                 ),
                 moveListByRemoteQueryId = mapOf(
                     "Armor King" to Result.Success(emptyList()),
@@ -439,9 +439,9 @@ internal class RefreshDataServiceTest {
         // given
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu, armorKing))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu, CharacterSource.armorKing))),
                 moveListByRemoteQueryId = mapOf(
-                    "Yoshimitsu" to Result.Success(listOf(fleaRoll)),
+                    "Yoshimitsu" to Result.Success(listOf(MoveSource.fleaRoll)),
                     "Armor King" to Result.Error(DataError.Remote.REQUEST_TIMEOUT),
                 ),
             ),
@@ -481,7 +481,7 @@ internal class RefreshDataServiceTest {
         val publishWikiEventPort = FakePublishWikiEventPort()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing, yoshimitsu))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.armorKing, CharacterSource.yoshimitsu))),
                 moveListByRemoteQueryId = mapOf(
                     "Armor King" to Result.Success(emptyList()),
                     "Yoshimitsu" to Result.Success(emptyList()),
@@ -510,7 +510,7 @@ internal class RefreshDataServiceTest {
         val publishWikiEventPort = FakePublishWikiEventPort()
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(yoshimitsu))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu))),
                 fetchDelay = 1.seconds,
             ),
             store = FakeDownloadStore(),
@@ -537,10 +537,10 @@ internal class RefreshDataServiceTest {
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
                 characterListByGame = mapOf(
-                    Game.Tekken8 to Result.Success(listOf(yoshimitsu)),
-                    Game.StreetFighter6 to Result.Success(listOf(ryu)),
-                    Game.GGST to Result.Success(listOf(sol)),
-                    Game.MK1 to Result.Success(listOf(scorpion)),
+                    Game.Tekken8 to Result.Success(listOf(CharacterSource.yoshimitsu)),
+                    Game.StreetFighter6 to Result.Success(listOf(CharacterSource.ryu)),
+                    Game.GGST to Result.Success(listOf(CharacterSource.sol)),
+                    Game.MK1 to Result.Success(listOf(CharacterSource.scorpion)),
                 ),
                 fetchDelay = 1.seconds,
             ),
@@ -572,7 +572,7 @@ internal class RefreshDataServiceTest {
         // given
         val service = refreshDataService(
             fetchGameDataPort = FakeFetchGameDataPort(
-                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(armorKing))),
+                characterListByGame = mapOf(Game.Tekken8 to Result.Success(listOf(CharacterSource.armorKing))),
                 moveListByRemoteQueryId = mapOf("Armor King" to Result.Error(DataError.Remote.REQUEST_TIMEOUT)),
             ),
             store = FakeDownloadStore(),
@@ -607,77 +607,80 @@ private fun refreshDataService(
 }
 
 // characters raw, like the adapters map them - the service normalizes them
+private object CharacterSource {
+    val yoshimitsu = Character(
+        id = CharacterId(Game.Tekken8, "Yoshimitsu"),
+        displayName = "Yoshimitsu",
+        remoteQueryId = "Yoshimitsu",
+        wikiUrl = "https://wavu.wiki/t/Yoshimitsu",
+    )
 
-private val yoshimitsu = Character(
-    id = CharacterId(Game.Tekken8, "Yoshimitsu"),
-    displayName = "Yoshimitsu",
-    remoteQueryId = "Yoshimitsu",
-    wikiUrl = "https://wavu.wiki/t/Yoshimitsu",
-)
+    val armorKing = Character(
+        id = CharacterId(Game.Tekken8, "Armor King"),
+        displayName = "Armor King",
+        remoteQueryId = "Armor King",
+        wikiUrl = "https://wavu.wiki/t/Armor_King",
+    )
 
-private val armorKing = Character(
-    id = CharacterId(Game.Tekken8, "Armor King"),
-    displayName = "Armor King",
-    remoteQueryId = "Armor King",
-    wikiUrl = "https://wavu.wiki/t/Armor_King",
-)
+    val ryu = Character(
+        id = CharacterId(Game.StreetFighter6, "Ryu"),
+        displayName = "Ryu",
+        remoteQueryId = "Ryu",
+        wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu",
+    )
 
-private val ryu = Character(
-    id = CharacterId(Game.StreetFighter6, "Ryu"),
-    displayName = "Ryu",
-    remoteQueryId = "Ryu",
-    wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ryu",
-)
+    val sol = Character(
+        id = CharacterId(Game.GGST, "Sol Badguy"),
+        displayName = "Sol Badguy",
+        remoteQueryId = "Sol Badguy",
+        wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy",
+    )
 
-private val sol = Character(
-    id = CharacterId(Game.GGST, "Sol Badguy"),
-    displayName = "Sol Badguy",
-    remoteQueryId = "Sol Badguy",
-    wikiUrl = "https://www.dustloop.com/w/GGST/Sol_Badguy",
-)
+    val scorpion = Character(
+        id = CharacterId(Game.MK1, "Scorpion"),
+        displayName = "Scorpion",
+        remoteQueryId = "Scorpion",
+        wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1/Scorpion",
+    )
 
-private val scorpion = Character(
-    id = CharacterId(Game.MK1, "Scorpion"),
-    displayName = "Scorpion",
-    remoteQueryId = "Scorpion",
-    wikiUrl = "https://srk.shib.live/w/Mortal_Kombat_1/Scorpion",
-)
+    val darius = Character(
+        id = CharacterId(Game.Xko, "Darius"),
+        displayName = "Darius",
+        remoteQueryId = "Darius",
+        wikiUrl = "https://wiki.play2xko.com/en-us/Darius",
+    )
 
-private val darius = Character(
-    id = CharacterId(Game.Xko, "Darius"),
-    displayName = "Darius",
-    remoteQueryId = "Darius",
-    wikiUrl = "https://wiki.play2xko.com/en-us/Darius",
-)
+    val ahri = Character(
+        id = CharacterId(Game.Xko, "Ahri"),
+        displayName = "Ahri",
+        remoteQueryId = "Ahri",
+        wikiUrl = "https://wiki.play2xko.com/en-us/Ahri",
+    )
+}
 
-private val ahri = Character(
-    id = CharacterId(Game.Xko, "Ahri"),
-    displayName = "Ahri",
-    remoteQueryId = "Ahri",
-    wikiUrl = "https://wiki.play2xko.com/en-us/Ahri",
-)
+private object MoveSource {
+    val fleaRoll = Move(
+        input = "FLE.1",
+        remoteId = "Yoshimitsu-FLE.1",
+        name = "Flea Roll",
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Yoshimitsu_movelist#Yoshimitsu-FLE.1"),
+    )
 
-private val fleaRoll = Move(
-    input = "FLE.1",
-    remoteId = "Yoshimitsu-FLE.1",
-    name = "Flea Roll",
-    urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Yoshimitsu_movelist#Yoshimitsu-FLE.1"),
-)
+    val fleaDigger = Move(
+        input = "FLE.d",
+        remoteId = "Yoshimitsu-FLE.d",
+        name = "Flea Digger",
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Yoshimitsu_movelist#Yoshimitsu-FLE.d"),
+    )
 
-private val fleaDigger = Move(
-    input = "FLE.d",
-    remoteId = "Yoshimitsu-FLE.d",
-    name = "Flea Digger",
-    urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Yoshimitsu_movelist#Yoshimitsu-FLE.d"),
-)
-
-// a wiki error - Flea Digger Strike repeats Flea Digger's input
-private val fleaDiggerStrike = Move(
-    input = "FLE.d",
-    remoteId = "Yoshimitsu-FLE.ds",
-    name = "Flea Digger Strike",
-    urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Yoshimitsu_movelist#Yoshimitsu-FLE.ds"),
-)
+    // a wiki error - Flea Digger Strike repeats Flea Digger's input
+    val fleaDiggerStrike = Move(
+        input = "FLE.d",
+        remoteId = "Yoshimitsu-FLE.ds",
+        name = "Flea Digger Strike",
+        urls = Move.Urls(wikiUrl = "https://wavu.wiki/t/Yoshimitsu_movelist#Yoshimitsu-FLE.ds"),
+    )
+}
 
 private class FakeLoadWikiConfigPort(enabledGameSet: Set<Game>) : LoadWikiConfigPort {
     private val wikiConfig = WikiConfig.create(

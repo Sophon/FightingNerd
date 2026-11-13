@@ -20,6 +20,11 @@ internal fun XkoMoveListResponseDto.toDomainAll(game: Game): List<Pair<Character
     return characterWithMovesList
 }
 
+internal fun XkoMoveListResponseDto.toDomain(): List<Move> {
+    val moveList = bucket.map { dto -> dto.toDomain().normalizeXko() }
+    return moveList
+}
+
 private fun MoveDto.toDomain(): Move {
     val cleanedInput = input.orDash()
 
