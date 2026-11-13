@@ -101,7 +101,7 @@ internal class WikiMappersTest {
         val expected = Character(
             id = "armor_king",
             displayName = "Armor King",
-            iconUrl = "https://wavu.wiki/w/images/Armor_King_icon.png",
+            portrait = "https://wavu.wiki/w/images/Armor_King_icon.png",
         )
 
         // when

@@ -165,7 +165,7 @@ internal class HomeVM(
                                         val ui = GameFeature.UiCharacter(
                                             id = domainCharacter.id,
                                             displayName = domainCharacter.displayName,
-                                            iconUrl = domainCharacter.iconUrl,
+                                            iconUrl = domainCharacter.portrait,
                                             hasMoves = existing?.hasMoves ?: false,
                                         )
                                         ui

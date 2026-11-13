@@ -78,7 +78,7 @@ internal fun WikiCharacter.toDomain(): Character {
     val character = Character(
         id = id.naturalId,
         displayName = displayName,
-        iconUrl = images?.portrait,
+        portrait = images?.portrait,
         hp = hp,
         umo = umo,
         gameProperties = gameProperties?.toDomain(),
