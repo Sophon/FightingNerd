@@ -74,7 +74,6 @@ enum class Game(
         iconUrl = "https://dreamcancel.com/w/images/thumb/b/b2/FF_CotW_logo.png/400px-FF_CotW_logo.png",
         wikiUrl = "https://dreamcancel.com/wiki/Fatal_Fury:_City_of_the_Wolves",
         wiki = Wiki.DreamCancel,
-        separateCharMoveDownload = false,
     ),
 
     GGST(

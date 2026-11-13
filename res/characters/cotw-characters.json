@@ -1,0 +1,283 @@
+{
+  "characters": [
+    {
+      "id": "andy-bogard",
+      "displayName": "Andy Bogard",
+      "aliasList": ["ab", "andy", "bogard"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/f/f6/FF_COTW_Andy_Icon.png/75px-FF_COTW_Andy_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/9/95/FF_COTW_Andy_Profile.png/300px-FF_COTW_Andy_Profile.png"
+      }
+    },
+    {
+      "id": "b-jenet",
+      "displayName": "B. Jenet",
+      "aliasList": ["bj", "jenet"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/a/a1/FF_COTW_B_Jenet_Icon.png/75px-FF_COTW_B_Jenet_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/2/27/FF_COTW_B_Jenet_Profile.png/300px-FF_COTW_B_Jenet_Profile.png"
+      }
+    },
+    {
+      "id": "billy-kane",
+      "displayName": "Billy Kane",
+      "aliasList": ["bk", "billy", "kane"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/5/51/FF_COTW_Billy_Icon.png/75px-FF_COTW_Billy_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/4/45/COTW_BILLY_Profile.png/300px-COTW_BILLY_Profile.png"
+      }
+    },
+    {
+      "id": "blue-mary",
+      "displayName": "Blue Mary",
+      "aliasList": ["bm", "blue", "mary"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/5/5b/FF_COTW_Mary_Icon.png/75px-FF_COTW_Mary_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/5/54/FF_COTW_Mary_Profile.png/300px-FF_COTW_Mary_Profile.png"
+      }
+    },
+    {
+      "id": "chun-li",
+      "displayName": "Chun-Li",
+      "aliasList": ["cl", "chun", "li"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/8/8e/FF_COTW_Chun-Li_Icon.png/75px-FF_COTW_Chun-Li_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/3/30/FF_COTW_Chun-Li_Profile.png/300px-FF_COTW_Chun-Li_Profile.png"
+      }
+    },
+    {
+      "id": "cristiano-ronaldo",
+      "displayName": "Cristiano Ronaldo",
+      "aliasList": ["cr", "cristiano", "ronaldo"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/d/d8/FF_COTW_CR7_Icon.png/75px-FF_COTW_CR7_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/7/77/COTW_CR7_Profile.png/300px-COTW_CR7_Profile.png"
+      }
+    },
+    {
+      "id": "duck-king",
+      "displayName": "Duck King",
+      "aliasList": ["dk", "duck", "king"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/2/26/FF_COTW_Duck_King_Icon.png/75px-FF_COTW_Duck_King_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/c/c0/FF_COTW_Duck_King_Profile.png/300px-FF_COTW_Duck_King_Profile.png"
+      }
+    },
+    {
+      "id": "gato",
+      "displayName": "Gato",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/a/ae/FF_COTW_Gato_Icon.png/75px-FF_COTW_Gato_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/7/7f/COTW_Gato_Profile.png/300px-COTW_Gato_Profile.png"
+      }
+    },
+    {
+      "id": "hokutomaru",
+      "displayName": "Hokutomaru",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/2/2c/FF_COTW_Hokutomaru_Icon.png/75px-FF_COTW_Hokutomaru_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/0/0d/COTW_Hokutomaru_Profile.png/300px-COTW_Hokutomaru_Profile.png"
+      }
+    },
+    {
+      "id": "hotaru-futaba",
+      "displayName": "Hotaru Futaba",
+      "aliasList": ["hf", "hotaru", "futaba"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/b/bc/FF_COTW_Hotaru_Icon.png/75px-FF_COTW_Hotaru_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/b/ba/COTW_Hotaru_Profile.png/300px-COTW_Hotaru_Profile.png"
+      }
+    },
+    {
+      "id": "joe-higashi",
+      "displayName": "Joe Higashi",
+      "aliasList": ["jh", "joe", "higashi"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/8/89/FF_COTW_Joe_Icon.png/75px-FF_COTW_Joe_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/a/af/FF_COTW_Joe_Profile.png/300px-FF_COTW_Joe_Profile.png"
+      }
+    },
+    {
+      "id": "kain-r-heinlein",
+      "displayName": "Kain R. Heinlein",
+      "aliasList": ["krh", "kain", "heinlein"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/0/08/COTW_Kain_Icon.png/75px-COTW_Kain_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/d/d9/COTW_KAIN_Profile.png/300px-COTW_KAIN_Profile.png"
+      }
+    },
+    {
+      "id": "ken-masters",
+      "displayName": "Ken Masters",
+      "aliasList": ["km", "ken", "masters"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/0/0b/FF_COTW_Ken_Icon.png/75px-FF_COTW_Ken_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/5/5a/FF_COTW_Ken_Profile.png/300px-FF_COTW_Ken_Profile.png"
+      }
+    },
+    {
+      "id": "kenshiro",
+      "displayName": "Kenshiro",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/6/65/FF_COTW_Kenshiro_Icon.png/75px-FF_COTW_Kenshiro_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/4/4e/FF_COTW_Kenshiro_Profile.png/300px-FF_COTW_Kenshiro_Profile.png"
+      }
+    },
+    {
+      "id": "kevin-rian",
+      "displayName": "Kevin Rian",
+      "aliasList": ["kr", "kevin", "rian"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/9/91/FF_COTW_Kevin_Icon.png/75px-FF_COTW_Kevin_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/2/25/COTW_KEVIN_Profile.png/300px-COTW_KEVIN_Profile.png"
+      }
+    },
+    {
+      "id": "kim-dong-hwan",
+      "displayName": "Kim Dong Hwan",
+      "aliasList": ["kdh", "kim", "hwan"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/b/b7/COTW_Dong_Icon.png/75px-COTW_Dong_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/e/e8/COTW_Dong_Hwan_Profile.png/300px-COTW_Dong_Hwan_Profile.png"
+      }
+    },
+    {
+      "id": "kim-jae-hoon",
+      "displayName": "Kim Jae Hoon",
+      "aliasList": ["kjh", "kim", "hoon"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/0/0b/COTW_Jae_Hoon_Icon.png/75px-COTW_Jae_Hoon_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/1/14/FF_COTW_Jae_Hoon_Profile.png/300px-FF_COTW_Jae_Hoon_Profile.png"
+      }
+    },
+    {
+      "id": "kim-kaphwan",
+      "displayName": "Kim Kaphwan",
+      "aliasList": ["kk", "kim", "kaphwan"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/c/c3/FF_COTW_Kim_Icon.png/75px-FF_COTW_Kim_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/c/c2/FF_COTW_Kim_Profile.webp/300px-FF_COTW_Kim_Profile.webp.png"
+      }
+    },
+    {
+      "id": "mai-shiranui",
+      "displayName": "Mai Shiranui",
+      "aliasList": ["ms", "mai", "shiranui"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/b/bf/FF_COTW_Mai_Icon.png/75px-FF_COTW_Mai_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/4/44/COTW_Mai_Profile.png/300px-COTW_Mai_Profile.png"
+      }
+    },
+    {
+      "id": "marco-rodrigues",
+      "displayName": "Marco Rodrigues",
+      "aliasList": ["mr", "marco", "rodrigues"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/d/d9/FF_COTW_Marco_Icon.png/75px-FF_COTW_Marco_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/e/e4/COTW_MARCO_Profile.png/300px-COTW_MARCO_Profile.png"
+      }
+    },
+    {
+      "id": "mr-big",
+      "displayName": "Mr. Big",
+      "aliasList": ["mb", "mr", "big"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/f/f5/FF_COTW_Mr_Big_Icon.png/75px-FF_COTW_Mr_Big_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/a/a9/FF_COTW_Mr_Big_Profile.png/300px-FF_COTW_Mr_Big_Profile.png"
+      }
+    },
+    {
+      "id": "mr-karate",
+      "displayName": "Mr. Karate",
+      "aliasList": ["mk", "mr", "karate"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/4/43/FF_COTW_Mr_Karate_Icon.png/75px-FF_COTW_Mr_Karate_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/d/d9/FF_COTW_Mr_Karate_Profile.webp/300px-FF_COTW_Mr_Karate_Profile.webp.png"
+      }
+    },
+    {
+      "id": "nightmare-geese",
+      "displayName": "Nightmare Geese",
+      "aliasList": ["ng", "nightmare", "geese"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/5/52/FF_COTW_Nightmare_Geese_Icon.png/75px-FF_COTW_Nightmare_Geese_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/1/1c/FF_COTW_Nightmare_Geese_Profile.png/300px-FF_COTW_Nightmare_Geese_Profile.png"
+      }
+    },
+    {
+      "id": "preecha",
+      "displayName": "Preecha",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/4/4c/FF_COTW_Preecha_Icon.png/75px-FF_COTW_Preecha_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/0/00/FF_COTW_Preecha_Profile.png/300px-FF_COTW_Preecha_Profile.png"
+      }
+    },
+    {
+      "id": "rick-strowd",
+      "displayName": "Rick Strowd",
+      "aliasList": ["rs", "rick", "strowd"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/e/e2/FF_COTW_Rick_Icon.png/75px-FF_COTW_Rick_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/5/5d/FF_COTW_Rick_Strowd_Profile.webp/300px-FF_COTW_Rick_Strowd_Profile.webp.png"
+      }
+    },
+    {
+      "id": "rock-howard",
+      "displayName": "Rock Howard",
+      "aliasList": ["rh", "rock", "howard"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/9/90/FF_COTW_Rock_Icon.png/75px-FF_COTW_Rock_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/f/ff/FF_COTW_B_Rock_Profile.png/300px-FF_COTW_B_Rock_Profile.png"
+      }
+    },
+    {
+      "id": "salvatore-ganacci",
+      "displayName": "Salvatore Ganacci",
+      "aliasList": ["sg", "salvatore", "ganacci"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/5/52/FF_COTW_Salvatore_Icon.png/75px-FF_COTW_Salvatore_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/b/b7/COTW_SALVATORE_Profile.png/300px-COTW_SALVATORE_Profile.png"
+      }
+    },
+    {
+      "id": "terry-bogard",
+      "displayName": "Terry Bogard",
+      "aliasList": ["tb", "terry", "bogard"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/1/18/FF_COTW_Terry_Icon.png/75px-FF_COTW_Terry_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/4/44/COTW_TERRY_Profile.png/300px-COTW_TERRY_Profile.png"
+      }
+    },
+    {
+      "id": "tizoc",
+      "displayName": "Tizoc",
+      "aliasList": [],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/9/96/FF_COTW_Tizoc_Icon.png/75px-FF_COTW_Tizoc_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/1/10/COTW_TIZOC_Profile.png/300px-COTW_TIZOC_Profile.png"
+      }
+    },
+    {
+      "id": "vox-reaper",
+      "displayName": "Vox Reaper",
+      "aliasList": ["vr", "vox", "reaper"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/b/b2/FF_COTW_Vox_Icon.png/75px-FF_COTW_Vox_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/d/d4/COTW_VOX_Profile.png/300px-COTW_VOX_Profile.png"
+      }
+    },
+    {
+      "id": "wolfgang-krauser",
+      "displayName": "Wolfgang Krauser",
+      "aliasList": ["wk", "wolfgang", "krauser"],
+      "images": {
+        "largePng": "https://dreamcancel.com/w/images/thumb/2/28/FF_COTW_Krauser_Icon.png/75px-FF_COTW_Krauser_Icon.png",
+        "officialLargePng": "https://dreamcancel.com/w/images/thumb/9/95/FF_COTW_Wolfgang_Krauser_Profile.webp/300px-FF_COTW_Wolfgang_Krauser_Profile.webp.png"
+      }
+    }
+  ]
+}

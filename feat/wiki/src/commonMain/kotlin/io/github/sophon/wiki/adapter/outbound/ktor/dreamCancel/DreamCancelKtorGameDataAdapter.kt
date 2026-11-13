@@ -27,6 +27,7 @@ internal class DreamCancelKtorGameDataAdapter(
 ) : KtorWikiAdapter {
     private val gitHubCharacterListUrlByGame = mapOf(
         Game.KoFXV to URL_GITHUB_KOFXV_CHAR_LIST,
+        Game.COTW to URL_GITHUB_COTW_CHAR_LIST,
     )
 
     override suspend fun fetchCharacterList(
@@ -189,5 +190,6 @@ internal class DreamCancelKtorGameDataAdapter(
         const val MAX_PAGES = 10
         const val MAX_CONCURRENT_PAGES = 5
         const val URL_GITHUB_KOFXV_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/kofxv-characters.json"
+        const val URL_GITHUB_COTW_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/cotw-characters.json"
     }
 }
