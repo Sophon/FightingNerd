@@ -361,6 +361,16 @@
       }
     },
     {
+      "id": "roger-jr",
+      "displayName": "Roger Jr.",
+      "wavuName": "Roger Jr",
+      "aliasList": ["roger"],
+      "images": {
+        "largePng": "https://tekkenwarehouse.com/wp-content/uploads/2026/11/T_UI_CS_Character_Thumb_Selected_inu.png",
+        "officialLargePng": "https://tekkenwarehouse.com/wp-content/uploads/2026/11/T_UI_CS_Character_Thumb_Selected_inu.png"
+      }
+    },
+    {
       "id": "shaheen",
       "displayName": "Shaheen",
       "wavuName": "Shaheen",
