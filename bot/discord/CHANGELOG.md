@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.7.0] - TODO
+- fixed character lists for some games
+
 ## [v17.6.0] - 2026-11-07
 - character-not-found error specifically formats character and move input
 - `refresh` - optional parameter for a specific game to refresh
