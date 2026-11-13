@@ -31,6 +31,7 @@ internal class MizuumiKtorGameDataAdapter(
 ) : KtorWikiAdapter {
     private val gitHubCharacterListUrlByGame = mapOf(
         Game.MBTL to URL_GITHUB_MBTL_CHAR_LIST,
+        Game.VSAV to URL_GITHUB_VSAV_CHAR_LIST,
     )
 
     override suspend fun fetchCharacterList(
@@ -214,8 +215,6 @@ internal class MizuumiKtorGameDataAdapter(
         val fileNameByKey = when (game) {
             Game.Uni2 -> this.associateWith { chara -> "UNI2_${chara}_CSel.png" }
 
-            Game.VSAV -> this.associate { chara -> chara.lowercase() to "Vsav-nav-portrait-${chara.lowercase()}.gif" }
-
             else -> emptyMap()
         }
         return fileNameByKey
@@ -229,5 +228,6 @@ internal class MizuumiKtorGameDataAdapter(
         const val MAX_PAGES = 10
         const val MAX_CONCURRENT_PAGES = 5
         const val URL_GITHUB_MBTL_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/mbtl-characters.json"
+        const val URL_GITHUB_VSAV_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/vsav-characters.json"
     }
 }

@@ -23,7 +23,6 @@ internal fun String.toDomain(
         displayName = this.cleanHtml(),
         remoteQueryId = this,
         wikiUrl = "${game.wikiUrl}/${this.replace(" ", "_")}",
-        aliasList = this.createAliases(),
         images = Character.Images(
             iconId = iconKey.takeIf { iconUrl != null },
             iconUrl = iconUrl,
@@ -114,31 +113,6 @@ private fun UniCharacterDto.toGameProperties(game: Game): CharacterGamePropertie
         else -> null
     }
     return properties
-}
-
-@Suppress("CyclomaticComplexMethod")
-private fun String.createAliases(): List<String> {
-    val vsavAliases = when (this.lowercase()) {
-        "anakaris" -> listOf("an")
-        "aulbath" -> listOf("au")
-        "bishamon" -> listOf("bi")
-        "bulleta" -> listOf("bu")
-        "demitri" -> listOf("de")
-        "felicia" -> listOf("fe")
-        "gallon" -> listOf("ga")
-        "jedah" -> listOf("je")
-        "lei-lei" -> listOf("le")
-        "lilith" -> listOf("li")
-        "morrigan" -> listOf("mo")
-        "q-bee" -> listOf("qb")
-        "sasquatch" -> listOf("sa")
-        "victor" -> listOf("vi")
-        "zabel" -> listOf("za")
-
-        else -> listOf()
-    }
-
-    return vsavAliases
 }
 
 private fun String.formatBulletPoints(): String {

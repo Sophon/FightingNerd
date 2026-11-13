@@ -23,7 +23,6 @@ class MizuumiCharacterRemoteMapperTest {
             displayName = "Morrigan",
             remoteQueryId = "Morrigan",
             wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior/Morrigan",
-            aliasList = listOf("mo"),
             images = Character.Images(
                 iconId = "morrigan",
                 iconUrl = "https://mizuumi.wiki/images/7/7f/Vsav-nav-portrait-morrigan.gif",

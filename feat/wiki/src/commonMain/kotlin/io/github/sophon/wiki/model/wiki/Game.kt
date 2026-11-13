@@ -135,7 +135,6 @@ enum class Game(
         iconUrl = "https://mizuumi.wiki/images/thumb/a/a1/VSAV_Logo.png/150px-VSAV_Logo.png",
         wikiUrl = "https://mizuumi.wiki/w/Vampire_Savior",
         wiki = Wiki.Mizuumi,
-        separateCharMoveDownload = false,
     ),
     ROA2(
         id = "ROA2",
