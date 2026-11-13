@@ -444,7 +444,7 @@ internal fun moveResponse(
         characterName = characterName,
         characterUrl = "https://wavu.wiki/t/$characterName",
         moveName = moveName,
-        characterImageUrl = null,
+        characterPortrait = null,
         primaryFields = primaryFields,
         dataSource = wavuDataSource,
         aliasList = aliasList,

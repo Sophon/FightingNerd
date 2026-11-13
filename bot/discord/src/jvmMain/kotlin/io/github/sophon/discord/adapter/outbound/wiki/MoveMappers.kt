@@ -44,7 +44,7 @@ internal fun Move.toDomain(character: Character): MoveResponse {
         characterName = character.displayName,
         characterUrl = character.wikiUrl,
         moveName = name,
-        characterImageUrl = character.images?.portrait,
+        characterPortrait = character.images?.portrait,
         primaryFields = toPrimaryFields(),
         dataSource = character.toDataSource(),
         secondaryFields = secondaryFields,

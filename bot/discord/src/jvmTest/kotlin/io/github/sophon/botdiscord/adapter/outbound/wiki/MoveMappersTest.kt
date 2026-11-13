@@ -53,7 +53,7 @@ class MoveMappersTest {
             characterName = "Jin",
             characterUrl = "https://wavu.wiki/t/Jin",
             moveName = "Electric Wind God Fist",
-            characterImageUrl = JIN_ICON_URL,
+            characterPortrait = JIN_ICON_URL,
             primaryFields = listOf(
                 BotResponse.Field(title = "Startup", value = "i11~12"),
                 BotResponse.Field(title = "Hit", value = "+5a (+15)"),
