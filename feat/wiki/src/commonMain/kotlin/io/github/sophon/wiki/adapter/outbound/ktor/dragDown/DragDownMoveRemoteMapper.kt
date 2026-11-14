@@ -33,7 +33,7 @@ private fun DragDownMoveResponseDto.toDomain(
         recovery = endlag,
         cancel = cancel
             ?.filter { it.isNotBlank() }
-            ?.joinToString(";")
+            ?.joinToString("\n")
             .cleanHtmlOrNull()
             ?.ifEmpty { null },
         notes = notes.formNotes(),
@@ -70,8 +70,8 @@ private fun DragDownMoveResponseDto.toGameProperties(): Roa2MoveProperties {
         hitActive = hitActive,
         customShieldSafety = customShieldSafety.filterOutJunk(),
         uniqueField = uniqueField.filterOutJunk(),
-        articleID = articleID,
         advNotes = advNotes,
+        noFrameData = noFrameData,
     )
     return properties
 }

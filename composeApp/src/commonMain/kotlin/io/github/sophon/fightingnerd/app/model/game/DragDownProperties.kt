@@ -16,6 +16,7 @@ data class Roa2CharProperties(
     val gravity: String? = null,
     val hitstunGravity: String? = null,
     val fallSpeedMax: String? = null,
+    val hitstunFallSpeedMax: String? = null,
     val fastFallSpeed: String? = null,
     val airAcceleration: String? = null,
     val airSpeedHorizontalMax: String? = null,
@@ -59,7 +60,7 @@ data class Roa2MoveProperties(
     val hitActive: List<String>? = null,
     val customShieldSafety: List<String>? = null,
     val uniqueField: List<String>? = null,
-    val articleID: List<String>? = null,
     val notes: String? = null,
     val advNotes: String? = null,
+    val noFrameData: Boolean = false,
 ): MoveGameProperties
