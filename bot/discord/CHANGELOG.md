@@ -1,5 +1,17 @@
 # BOT CHANGELOG
 
+## [v17.8.0] - 2026-11-13
+- update RoA2 tables
+
+## [v17.7.0] - 2026-11-13
+- fixed character lists for some games
+
+## [v17.6.0] - 2026-11-07
+- character-not-found error specifically formats character and move input
+- `refresh` - optional parameter for a specific game to refresh
+- `module` - each module can display the supported game list 
+- `Tekken` - now distinguishes B and b
+
 ## [v17.5.0] - 2026-10-25
 - fixed Tekken moves ignoring case sensitivity
   - this fixed moves like Law's uf4 vs UF4

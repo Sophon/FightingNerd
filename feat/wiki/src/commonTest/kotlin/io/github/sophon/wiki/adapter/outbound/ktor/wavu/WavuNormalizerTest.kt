@@ -72,10 +72,58 @@ class WavuNormalizerTest {
     }
 
     @Test
-    fun `converts to lowercase`() {
+    fun `held directions followed by a plus or number keep their case`() {
         // Given
-        val input = "DF2"
-        val expected = "df2"
+        val inputUb = "UB+4"
+        val expectedUb = "UB4"
+        val inputU = "U+4"
+        val expectedU = "U4"
+        val inputUf = "UF+4"
+        val inputUfNumber = "UF4"
+        val expectedUf = "UF4"
+        val inputB = "B+4"
+        val inputBNumber = "B4"
+        val expectedB = "B4"
+
+        // When
+        val resultUb = inputUb.minimizeTekkenMoveInput()
+        val resultU = inputU.minimizeTekkenMoveInput()
+        val resultUf = inputUf.minimizeTekkenMoveInput()
+        val resultUfNumber = inputUfNumber.minimizeTekkenMoveInput()
+        val resultB = inputB.minimizeTekkenMoveInput()
+        val resultBNumber = inputBNumber.minimizeTekkenMoveInput()
+
+        // Then
+        assertThat(resultUb).isEqualTo(expectedUb)
+        assertThat(resultU).isEqualTo(expectedU)
+        assertThat(resultUf).isEqualTo(expectedUf)
+        assertThat(resultUfNumber).isEqualTo(expectedUf)
+        assertThat(resultB).isEqualTo(expectedB)
+        assertThat(resultBNumber).isEqualTo(expectedB)
+    }
+
+    @Test
+    fun `held down directions keep their case`() {
+        // Given
+        val inputDf = "DF+1"
+        val expectedDf = "DF1"
+        val inputDb = "DB+1+2"
+        val expectedDb = "DB1+2"
+
+        // When
+        val resultDf = inputDf.minimizeTekkenMoveInput()
+        val resultDb = inputDb.minimizeTekkenMoveInput()
+
+        // Then
+        assertThat(resultDf).isEqualTo(expectedDf)
+        assertThat(resultDb).isEqualTo(expectedDb)
+    }
+
+    @Test
+    fun `held up directions from crouch keep their case and stance dot`() {
+        // Given
+        val input = "FC.UF+4"
+        val expected = "FC.UF4"
 
         // When
         val result = input.minimizeTekkenMoveInput()
@@ -85,27 +133,16 @@ class WavuNormalizerTest {
     }
 
     @Test
-    fun `held up directions followed by a plus or number keep their case`() {
+    fun `non-held up direction from crouch is lowercased`() {
         // Given
-        val inputUb = "UB+4"
-        val expectedUb = "UB4"
-        val inputU = "U+4"
-        val expectedU = "U4"
-        val inputUf = "UF+4"
-        val inputUfNumber = "UF4"
-        val expectedUf = "UF4"
+        val input = "FC.uf+4"
+        val expected = "fc.uf4"
 
         // When
-        val resultUb = inputUb.minimizeTekkenMoveInput()
-        val resultU = inputU.minimizeTekkenMoveInput()
-        val resultUf = inputUf.minimizeTekkenMoveInput()
-        val resultUfNumber = inputUfNumber.minimizeTekkenMoveInput()
+        val result = input.minimizeTekkenMoveInput()
 
         // Then
-        assertThat(resultUb).isEqualTo(expectedUb)
-        assertThat(resultU).isEqualTo(expectedU)
-        assertThat(resultUf).isEqualTo(expectedUf)
-        assertThat(resultUfNumber).isEqualTo(expectedUf)
+        assertThat(result).isEqualTo(expected)
     }
 
     @Test
@@ -322,6 +359,19 @@ class WavuNormalizerTest {
     }
 
     @Test
+    fun `held up direction from crouch keeps its stance dot`() {
+        // Given
+        val input = "FC.UF+3+4"
+        val expected = "FC.UF3+4"
+
+        // When
+        val result = input.normalizeTekkenMoveInput()
+
+        // Then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
     fun `preserves dot in stance notation`() {
         // Given
         val input = "IND.u+1+2"
@@ -433,19 +483,6 @@ class WavuNormalizerTest {
         // Given
         val input = "1 1 2"
         val expected = "112"
-
-        // When
-        val result = input.normalizeTekkenMoveInput()
-
-        // Then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `motion loses its plus`() {
-        // Given
-        val input = "DF+1"
-        val expected = "df1"
 
         // When
         val result = input.normalizeTekkenMoveInput()

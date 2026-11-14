@@ -31,7 +31,7 @@ internal val armorKing = Character(
     wikiUrl = "https://wavu.wiki/t/Armor_King",
     aliasList = listOf("ak", "aking", "armorking", "armor king"),
     images = Character.Images(
-        iconUrl = "https://wavu.wiki/w/images/Armor_King_icon.png",
+        portrait = "https://wavu.wiki/w/images/Armor_King_icon.png",
     ),
 )
 

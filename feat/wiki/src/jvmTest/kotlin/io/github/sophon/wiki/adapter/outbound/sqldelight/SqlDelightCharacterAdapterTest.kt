@@ -63,7 +63,7 @@ internal class SqlDelightCharacterAdapterTest {
         // given
         val database = TestWikiDatabase()
         val updatedArmorKing = armorKing.copy(
-            images = Character.Images(iconUrl = "https://wavu.wiki/w/images/Armor_King_icon_2.png"),
+            images = Character.Images(portrait = "https://wavu.wiki/w/images/Armor_King_icon_2.png"),
         )
         val expected = listOf(updatedArmorKing)
 
@@ -180,22 +180,6 @@ internal class SqlDelightCharacterAdapterTest {
 
         // then
         assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `game data saves every character with its moves`() = runTest {
-        // given
-        val database = TestWikiDatabase()
-        val expected = listOf(demonsPaw, windHookFist)
-
-        // when
-        database.characterAdapter.saveGameData(listOf(jin to expected, armorKing to emptyList()))
-
-        // then
-        val characterList = database.characterAdapter.subscribe(Game.Tekken8).first()
-        assertThat(characterList.map { character -> character.id }).containsExactly(armorKing.id, jin.id)
-        val moveList = database.moveAdapter.subscribe(jin.id).first()
-        assertThat(moveList).isEqualTo(expected)
     }
 
     @Test

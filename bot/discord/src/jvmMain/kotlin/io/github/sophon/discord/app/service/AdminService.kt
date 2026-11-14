@@ -38,7 +38,7 @@ internal interface AdminService {
     /**
      * Starts the refresh in the background and confirms right away - a refresh outlasts Discord's response window.
      */
-    fun refreshWiki(source: UserRequest.Source?): Result<PlainTextResponse, BotError>
+    fun refreshWiki(gameId: String, source: UserRequest.Source?): Result<PlainTextResponse, BotError>
 }
 
 internal class AdminServiceImpl(
@@ -79,14 +79,16 @@ internal class AdminServiceImpl(
         return result
     }
 
-    override fun refreshWiki(source: UserRequest.Source?): Result<PlainTextResponse, BotError> {
+    override fun refreshWiki(gameId: String, source: UserRequest.Source?): Result<PlainTextResponse, BotError> {
         val result = if (source == null) {
             Result.Error(BotError.BotLogicError(Command.Refresh.name))
         } else {
             isAdmin(source.id)
                 .flatMap { isAdmin ->
                     val refreshResult = if (isAdmin) {
-                        coroutineScope.launch { refreshWikiUseCase() }
+                        coroutineScope.launch {
+                            refreshWikiUseCase(gameId)
+                        }
                         Result.Success(PlainTextResponse(text = "Wiki refresh started"))
                     } else {
                         Result.Error(BotError.PermissionDenied())

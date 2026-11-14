@@ -20,7 +20,7 @@ class SuperComboCharacterRemoteMapperTest {
             remoteQueryId = "Ken",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Ken",
             aliasList = emptyList(),
-            images = Character.Images(iconId = "SF6_Ken_Face.png"),
+            images = Character.Images(portraitId = "SF6_Ken_Face.png"),
             hp = "10000",
             gameProperties = SFCharProperties(
                 fwdWalkSpd = "0.047",
@@ -58,7 +58,7 @@ class SuperComboCharacterRemoteMapperTest {
             remoteQueryId = "C.Viper",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/C.Viper",
             aliasList = listOf("cv", "viper"),
-            images = Character.Images(iconId = "SF6 Cviper Face.png"),
+            images = Character.Images(portraitId = "SF6 Cviper Face.png"),
             hp = "10000",
             gameProperties = SFCharProperties(
                 fwdWalkSpd = "0.0452",
@@ -96,7 +96,7 @@ class SuperComboCharacterRemoteMapperTest {
             remoteQueryId = "Chun-Li",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Chun-Li",
             aliasList = listOf("cl", "chun", "li"),
-            images = Character.Images(iconId = "SF6 Chun-Li Face.png"),
+            images = Character.Images(portraitId = "SF6 Chun-Li Face.png"),
             hp = "10000",
             gameProperties = SFCharProperties(
                 fwdWalkSpd = "0.050",
@@ -134,7 +134,7 @@ class SuperComboCharacterRemoteMapperTest {
             remoteQueryId = "Dee_Jay",
             wikiUrl = "https://wiki.supercombo.gg/w/Street_Fighter_6/Dee_Jay",
             aliasList = listOf("dj", "dee", "jay"),
-            images = Character.Images(iconId = "SF6 Dee_Jay Face.png"),
+            images = Character.Images(portraitId = "SF6 Dee_Jay Face.png"),
             hp = "10000",
             gameProperties = SFCharProperties(
                 fwdWalkSpd = "0.043",
@@ -171,9 +171,9 @@ class SuperComboCharacterRemoteMapperTest {
             "SF6_Ken_Face.png" to "https://wiki.supercombo.gg/images/SF6_Ken_Face.png",
         )
         val expected = Character.Images(
-            iconId = "SF6_Ken_Face.png",
-            iconUrl = "https://wiki.supercombo.gg/images/SF6_Ken_Face.png",
-            bannerUrl = "https://wiki.supercombo.gg/images/SF6_Ken_Portrait.png",
+            portraitId = "SF6_Ken_Face.png",
+            portrait = "https://wiki.supercombo.gg/images/SF6_Ken_Face.png",
+            full = "https://wiki.supercombo.gg/images/SF6_Ken_Portrait.png",
         )
 
         //when

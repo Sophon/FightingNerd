@@ -24,7 +24,7 @@ internal fun Character.toDomain(): CharacterResponse {
         displayName = displayName,
         url = wikiUrl,
         dataSource = toDataSource(),
-        imageUrl = images?.iconUrl,
+        portrait = images?.portrait,
         aliasList = aliasList,
         propertyList = toPropertyList(),
     )
@@ -197,6 +197,7 @@ private fun Roa2CharProperties.toFieldList(): List<BotResponse.Field> {
         fieldOf("Weight", weight),
         fieldOf("Hitstun gravity", hitstunGravity),
         fieldOf("Max fall speed", fallSpeedMax),
+        fieldOf("Hitstun max fall speed", hitstunFallSpeedMax),
         fieldOf("Dash speed", dashSpeed),
         fieldOf("Dash frames", dashFrames),
         fieldOf("Max run speed", runSpeedMax),

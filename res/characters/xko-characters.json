@@ -1,0 +1,166 @@
+{
+  "characters": [
+    {
+      "id": "ahri",
+      "displayName": "Ahri",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/File:Champ_AhriBase_Icon.png",
+        "full": "https://wiki.play2xko.com/en-us/images/Ahri_cs.png?dc5a3"
+      }
+    },
+    {
+      "id": "akali",
+      "displayName": "Akali",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_AkaliBase_Icon.png/120px-Champ_AkaliBase_Icon.png?6c6c4",
+        "full": "https://wiki.play2xko.com/en-us/images/Akali_cs.png?3a606"
+      }
+    },
+    {
+      "id": "blitzcrank",
+      "displayName": "Blitzcrank",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_BlitzcrankBase_Icon.png/120px-Champ_BlitzcrankBase_Icon.png?38346",
+        "full": "https://wiki.play2xko.com/en-us/images/Blitzcrank_cs.png?3e5ba"
+      }
+    },
+    {
+      "id": "braum",
+      "displayName": "Braum",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_BraumBase_Icon.png/120px-Champ_BraumBase_Icon.png?97517",
+        "full": "https://wiki.play2xko.com/en-us/images/Braum_cs.png?218c3"
+      }
+    },
+    {
+      "id": "caitlyn",
+      "displayName": "Caitlyn",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_CaitlynBase_Icon.png/120px-Champ_CaitlynBase_Icon.png?03d04",
+        "full": "https://wiki.play2xko.com/en-us/images/Caitlyn_cs.png?505b9"
+      }
+    },
+    {
+      "id": "darius",
+      "displayName": "Darius",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_DariusBase_Icon.png/120px-Champ_DariusBase_Icon.png?79577",
+        "full": "https://wiki.play2xko.com/en-us/images/Darius_cs.png?218c3"
+      }
+    },
+    {
+      "id": "ekko",
+      "displayName": "Ekko",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_EkkoBase_Icon.png/120px-Champ_EkkoBase_Icon.png?e1a15",
+        "full": "https://wiki.play2xko.com/en-us/images/Ekko_cs.png?dc5a3"
+      }
+    },
+    {
+      "id": "illaoi",
+      "displayName": "Illaoi",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_IllaoiBase_Icon.png/120px-Champ_IllaoiBase_Icon.png?71d16",
+        "full": "https://wiki.play2xko.com/en-us/images/Illaoi_cs.png?dc5a3"
+      }
+    },
+    {
+      "id": "jinx",
+      "displayName": "Jinx",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_JinxBase_Icon.png/120px-Champ_JinxBase_Icon.png?5dd1d",
+        "full": "https://wiki.play2xko.com/en-us/images/Jinx_cs.png?218c3"
+      }
+    },
+    {
+      "id": "lux",
+      "displayName": "Lux",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_LuxBase_Icon.png/120px-Champ_LuxBase_Icon.png?61a76",
+        "full": "https://wiki.play2xko.com/en-us/images/Lux_cs.png?d3737"
+      }
+    },
+    {
+      "id": "samira",
+      "displayName": "Samira",
+      "aliasList": [],
+      "images": {
+        "portrait": "",
+        "full": "https://wiki.play2xko.com/en-us/images/Samira_cs.png?a9392"
+      }
+    },
+    {
+      "id": "senna",
+      "displayName": "Senna",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_SennaBase_Icon.png/120px-Champ_SennaBase_Icon.png?9e7fd",
+        "full": "https://wiki.play2xko.com/en-us/images/Senna_cs.png?5f6e6"
+      }
+    },
+    {
+      "id": "sett",
+      "displayName": "Sett",
+      "aliasList": [],
+      "images": {
+        "portrait": "",
+        "full": "https://wiki.play2xko.com/en-us/images/Sett_cs.png?05fd8"
+      }
+    },
+    {
+      "id": "teemo",
+      "displayName": "Teemo",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_TeemoBase_Icon.png/120px-Champ_TeemoBase_Icon.png?092f2",
+        "full": "https://wiki.play2xko.com/en-us/images/Teemo_cs.png?d0536"
+      }
+    },
+    {
+      "id": "thresh",
+      "displayName": "Thresh",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_ThreshBase_Icon.png/120px-Champ_ThreshBase_Icon.png?5f0a3",
+        "full": "https://wiki.play2xko.com/en-us/images/Thresh_cs.png?8c56b"
+      }
+    },
+    {
+      "id": "vi",
+      "displayName": "Vi",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_ViBase_Icon.png/120px-Champ_ViBase_Icon.png?3eb3f",
+        "full": "https://wiki.play2xko.com/en-us/images/Vi_cs.png?dc5a3"
+      }
+    },
+    {
+      "id": "warwick",
+      "displayName": "Warwick",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_WarwickBase_Icon.png/120px-Champ_WarwickBase_Icon.png?682e6",
+        "full": "https://wiki.play2xko.com/en-us/images/Warwick_cs.png?b8a1f"
+      }
+    },
+    {
+      "id": "yasuo",
+      "displayName": "Yasuo",
+      "aliasList": [],
+      "images": {
+        "portrait": "https://wiki.play2xko.com/en-us/images/thumb/Champ_YasuoBase_Icon.png/120px-Champ_YasuoBase_Icon.png?18ba8",
+        "full": "https://wiki.play2xko.com/en-us/images/Yasuo_cs.png?dc5a3"
+      }
+    }
+  ]
+}

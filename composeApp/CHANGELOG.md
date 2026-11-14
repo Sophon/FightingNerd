@@ -1,6 +1,9 @@
 # APP CHANGELOG
 
-## [v5.3.0] - TODO
+## [v5.3.1] - TODO
+- fixed character lists for some games
+
+## [v5.3.0] - 2026-10-26
 - progress bars when downloading/refreshing data
 - performance improvements thanks to new architecture
 - added games:

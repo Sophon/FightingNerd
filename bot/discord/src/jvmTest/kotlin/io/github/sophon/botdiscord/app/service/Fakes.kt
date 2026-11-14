@@ -324,8 +324,8 @@ internal class FakeAdminService: AdminService {
         return Result.Error(BotError.NotImplemented("replyToFeedback"))
     }
 
-    override fun refreshWiki(source: UserRequest.Source?): Result<PlainTextResponse, BotError> {
-        callList += "refreshWiki($source)"
+    override fun refreshWiki(gameId: String, source: UserRequest.Source?): Result<PlainTextResponse, BotError> {
+        callList += "refreshWiki($gameId, $source)"
         return Result.Error(BotError.NotImplemented("refreshWiki"))
     }
 }
@@ -444,7 +444,7 @@ internal fun moveResponse(
         characterName = characterName,
         characterUrl = "https://wavu.wiki/t/$characterName",
         moveName = moveName,
-        characterImageUrl = null,
+        characterPortrait = null,
         primaryFields = primaryFields,
         dataSource = wavuDataSource,
         aliasList = aliasList,

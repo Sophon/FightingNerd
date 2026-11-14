@@ -54,8 +54,11 @@ internal class WikiAdapter(
         return result
     }
 
-    override suspend fun refresh() {
-        refreshDataUseCase().collect()
+    override suspend fun refresh(gameId: String) {
+        val refreshFlow = Game.fromId(gameId)
+            ?.let { game -> refreshDataUseCase(gameSet = setOf(game)) }
+            ?: refreshDataUseCase()
+        refreshFlow.collect()
     }
 
     override suspend fun getMoves(characterId: CharacterId): Result<List<MoveResponse>, BotError> {

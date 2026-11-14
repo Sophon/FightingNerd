@@ -3,6 +3,7 @@ package io.github.sophon.discord.app.service
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
 import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.mapError
 import io.github.sophon.core.util.equalsIgnoreCase
 import io.github.sophon.discord.EMBED_BUTTON_DURATION_INF
 import io.github.sophon.discord.app.model.BotError
@@ -20,6 +21,7 @@ import io.github.sophon.discord.app.outPort.FrameDataPort
 import io.github.sophon.discord.app.outPort.GetMovesInRangePort
 import io.github.sophon.discord.app.outPort.GetMovesOfTypePort
 import io.github.sophon.discord.app.outPort.NormalizeMoveInputPort
+import io.github.sophon.wiki.model.wiki.Game
 import kotlin.time.Duration.Companion.seconds
 
 internal interface MoveService {
@@ -56,18 +58,24 @@ internal class MoveServiceImpl(
 
         val result = characterService.findCharacter(characterQuery)
             .flatMap { character ->
-                val normalizedMoveQuery = normalizeMoveInputPort.normalizeMoveInput(game = character.game, input = moveQuery)
                 val moveResult = frameDataPort.getMoves(character.toCharacterId())
                     .flatMap { moveList ->
-                        val move = moveList.firstOrNull { it.matches(moveQuery = moveQuery, normalizedMoveQuery = normalizedMoveQuery) }
+                        val move = moveList.findMove(game = character.game, moveQuery = moveQuery)
                         val foundMoveResult = if (move == null) {
-                            Result.Error(BotError.UnknownMove(characterQuery, moveQuery))
+                            Result.Error(BotError.UnknownMove("char: ${characterQuery.uppercase()}; move: $moveQuery"))
                         } else {
                             Result.Success(move)
                         }
                         foundMoveResult
                     }
                 moveResult
+            }
+            .mapError { error ->
+                if (error is BotError.UnknownCharacter) {
+                    BotError.UnknownCharacter("char: ${characterQuery.uppercase()}; move: $moveQuery")
+                } else {
+                    error
+                }
             }
         return result
     }
@@ -197,6 +205,25 @@ internal class MoveServiceImpl(
         return result
     }
 
+
+    private fun List<MoveResponse>.findMove(
+        game: Game,
+        moveQuery: String,
+    ): MoveResponse? {
+        val move = listOf(moveQuery, moveQuery.lowercase())
+            .distinct()
+            .firstNotNullOfOrNull { candidate ->
+                val normalizedCandidate = normalizeMoveInputPort.normalizeMoveInput(game = game, input = candidate)
+                val candidateMove = firstOrNull { move ->
+                    move.matches(
+                        moveQuery = candidate,
+                        normalizedMoveQuery = normalizedCandidate,
+                    )
+                }
+                candidateMove
+            }
+        return move
+    }
 
     /**
      * The name is matched as typed - normalization strips its spaces.

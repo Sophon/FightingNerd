@@ -6,7 +6,7 @@ import io.github.sophon.discord.inPort.RefreshWikiUseCase
 internal class RefreshWikiService(
     private val refreshWikiPort: RefreshWikiPort,
 ): RefreshWikiUseCase {
-    override suspend fun invoke() {
-        refreshWikiPort.refresh()
+    override suspend fun invoke(gameId: String) {
+        refreshWikiPort.refresh(gameId)
     }
 }

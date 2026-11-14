@@ -34,8 +34,8 @@ private fun DragDownCharacterResponseDto.toDomain(
         aliasList = chara.formAliases(),
         wikiUrl = "${game.wikiUrl}/${chara.replace(" ", "_")}",
         images = Character.Images(
-            iconId = iconFileName,
-            iconUrl = imageUrlMap[iconFileName],
+            portraitId = iconFileName,
+            portrait = imageUrlMap[iconFileName],
         ),
         gameProperties = toGameProperties(),
     )
@@ -59,6 +59,7 @@ private fun DragDownCharacterResponseDto.toGameProperties(): Roa2CharProperties 
         gravity = gravity?.toString(),
         hitstunGravity = hitstunGravity?.toString(),
         fallSpeedMax = fallSpeedMax?.toString(),
+        hitstunFallSpeedMax = hitstunFallSpeedMax?.toString(),
         fastFallSpeed = fastFallSpeed?.toString(),
         airAcceleration = airAcceleration?.toString(),
         airSpeedHorizontalMax = airSpeedHorizontalMax?.toString(),

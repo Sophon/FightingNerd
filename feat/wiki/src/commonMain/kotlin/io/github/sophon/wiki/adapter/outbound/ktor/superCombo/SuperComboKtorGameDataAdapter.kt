@@ -64,12 +64,6 @@ internal class SuperComboKtorGameDataAdapter(
         return moveListResult
     }
 
-    override suspend fun fetchGameData(
-        game: Game,
-    ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
-        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
-    }
-
     override fun normalizeMoveInput(game: Game, input: String): String {
         val normalized = input.normalizeSuperComboInput()
         return normalized

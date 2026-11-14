@@ -33,7 +33,6 @@ import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
 import io.github.sophon.wiki.app.outPort.NormalizeMoveInputPort
 import io.github.sophon.wiki.app.outPort.PublishWikiEventPort
 import io.github.sophon.wiki.app.outPort.SaveCharacterListPort
-import io.github.sophon.wiki.app.outPort.SaveGameDataPort
 import io.github.sophon.wiki.app.outPort.SaveMoveListPort
 import io.github.sophon.wiki.app.outPort.SaveWikiConfigPort
 import io.github.sophon.wiki.app.outPort.StrikeCharacterListPort
@@ -131,7 +130,6 @@ fun wikiModule(databaseDirectory: String? = null): Module = module {
     single<NormalizeMoveInputPort> { get<KtorGameDataAdapter>() }
     single<PublishWikiEventPort> { get<InMemoryWikiEventAdapter>() }
     single<SaveCharacterListPort> { get<SqlDelightCharacterAdapter>() }
-    single<SaveGameDataPort> { get<SqlDelightCharacterAdapter>() }
     single<SaveMoveListPort> { get<SqlDelightCharacterAdapter>() }
     single<SaveWikiConfigPort> { get<InMemoryWikiConfigAdapter>() }
     single<StrikeCharacterListPort> { get<SqlDelightCharacterAdapter>() }

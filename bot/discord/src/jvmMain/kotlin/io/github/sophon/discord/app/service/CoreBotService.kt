@@ -104,6 +104,7 @@ internal class CoreBotServiceImpl(
                     name = BOT_NAME,
                     url = URL_REPO,
                     version = BuildKonfig.VERSION,
+                    gameSet = emptySet(),
                 )
                 ModulesResponse(
                     moduleList = listOf(botModule) + enabledModuleList,

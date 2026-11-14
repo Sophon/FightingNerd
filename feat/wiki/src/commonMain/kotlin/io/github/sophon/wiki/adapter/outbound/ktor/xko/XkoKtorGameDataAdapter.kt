@@ -15,34 +15,39 @@ import io.ktor.client.request.parameter
 internal class XkoKtorGameDataAdapter(
     private val httpClient: HttpClient,
 ) : KtorWikiAdapter {
+    private val gitHubCharacterListUrlByGame = mapOf(
+        Game.Xko to URL_GITHUB_XKO_CHAR_LIST,
+    )
 
     override suspend fun fetchCharacterList(
         game: Game,
     ): Result<List<Character>, DataError.Remote> {
-        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+        val url = gitHubCharacterListUrlByGame[game]
+            ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+
+        val characterListResult = safeCall<XkoCharacterJsonResponseDto> {
+            httpClient.get(url)
+        }
+            .map { dto -> dto.toDomain(game) }
+        return characterListResult
     }
 
     override suspend fun fetchMoveList(
         character: Character,
     ): Result<List<Move>, DataError.Remote> {
-        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
-    }
-
-    override suspend fun fetchGameData(
-        game: Game,
-    ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
-        val bucketQuery = bucketQueryByGame[game]
+        val moveSelect = moveSelectByGame[character.id.game]
             ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+        val bucketQuery = "$moveSelect.where('page_name', '${character.remoteQueryId}').limit($LIMIT_MOVES).run()"
 
-        val gameDataResult = safeCall<XkoMoveListResponseDto> {
+        val moveListResult = safeCall<XkoMoveListResponseDto> {
             httpClient.get(BASE_URL) {
                 parameter("action", "bucket")
                 parameter("query", bucketQuery)
                 parameter("format", "json")
             }
         }
-            .map { dto -> dto.toDomainAll(game) }
-        return gameDataResult
+            .map { dto -> dto.toDomain() }
+        return moveListResult
     }
 
     override fun normalizeMoveInput(game: Game, input: String): String {
@@ -53,9 +58,11 @@ internal class XkoKtorGameDataAdapter(
 
     private companion object {
         const val BASE_URL = "https://wiki.play2xko.com/en-us/api.php"
+        const val LIMIT_MOVES = 5000
+        const val URL_GITHUB_XKO_CHAR_LIST = "https://raw.githubusercontent.com/Sophon/FightingNerd/refs/heads/dev/res/characters/xko-characters.json"
 
-        val bucketQueryByGame = mapOf(
-            Game.Xko to "bucket('move').select('page_name', 'input', 'damage', 'guard', 'startup', 'active', 'recovery', 'onblock', 'cancel', 'invuln').limit(5000).run()",
+        val moveSelectByGame = mapOf(
+            Game.Xko to "bucket('move').select('page_name', 'input', 'damage', 'guard', 'startup', 'active', 'recovery', 'onblock', 'cancel', 'invuln')",
         )
     }
 }

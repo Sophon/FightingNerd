@@ -14,7 +14,7 @@ import io.ktor.client.request.parameter
 
 /**
  * DragDown is separate - a character table, then one move query per character.
- * Cargo export returns plain JSON arrays, and image urls are built from the file name - no image requests.
+ * Image urls are built from the file name - no image requests.
  */
 internal class DragDownKtorGameDataAdapter(
     private val httpClient: HttpClient,
@@ -25,16 +25,16 @@ internal class DragDownKtorGameDataAdapter(
     ): Result<List<Character>, DataError.Remote> {
         val table = DragDownTables.characterTableByGame[game]
             ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+        val bucketQuery = "${table.toSelect()}.limit($LIMIT_CHARACTERS).run()"
 
-        val characterListResult = safeCall<List<DragDownCharacterResponseDto>> {
+        val characterListResult = safeCall<DragDownBucketResponseDto<DragDownCharacterResponseDto>> {
             httpClient.get(BASE_URL) {
-                parameter("action", "cargoquery")
-                parameter("tables", table.name)
-                parameter("fields", table.fieldList.joinToString(","))
+                parameter("action", "bucket")
+                parameter("query", bucketQuery)
                 parameter("format", "json")
-                parameter("limit", LIMIT_CHARACTERS)
             }
         }
+            .map { dto -> dto.bucket }
             .map { dtoList ->
                 val imageUrlMap = dtoList
                     .map { dto -> dto.chara.formIconFileName() }
@@ -50,17 +50,16 @@ internal class DragDownKtorGameDataAdapter(
         val game = character.id.game
         val table = DragDownTables.moveTableByGame[game]
             ?: return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
+        val bucketQuery = "${table.toSelect()}.where('chara','${character.remoteQueryId}').limit($LIMIT_MOVES).run()"
 
-        val moveListResult = safeCall<List<DragDownMoveResponseDto>> {
+        val moveListResult = safeCall<DragDownBucketResponseDto<DragDownMoveResponseDto>> {
             httpClient.get(BASE_URL) {
-                parameter("action", "cargoquery")
-                parameter("tables", table.name)
-                parameter("fields", table.fieldList.joinToString(","))
-                parameter("where", "chara=\"${character.remoteQueryId}\"")
+                parameter("action", "bucket")
+                parameter("query", bucketQuery)
                 parameter("format", "json")
-                parameter("limit", LIMIT_MOVES)
             }
         }
+            .map { dto -> dto.bucket }
             .map { dtoList ->
                 val imageUrlMap = dtoList
                     .flatMap { dto -> dto.image.orEmpty() + dto.hitbox.orEmpty() }
@@ -70,12 +69,6 @@ internal class DragDownKtorGameDataAdapter(
                 dtoList.toDomain(character, imageUrlMap)
             }
         return moveListResult
-    }
-
-    override suspend fun fetchGameData(
-        game: Game,
-    ): Result<List<Pair<Character, List<Move>>>, DataError.Remote> {
-        return Result.Error(DataError.Remote.PAGE_NOT_FOUND)
     }
 
     override fun normalizeMoveInput(game: Game, input: String): String {
@@ -89,7 +82,7 @@ internal class DragDownKtorGameDataAdapter(
 
 
     private companion object {
-        const val BASE_URL = "https://dragdown.wiki/wiki/Special:CargoExport"
+        const val BASE_URL = "https://dragdown.wiki/w/api.php"
         const val IMAGE_URL = "https://dragdown.wiki/wiki/Special:Redirect/file"
         const val LIMIT_CHARACTERS = 50
         const val LIMIT_MOVES = 500
