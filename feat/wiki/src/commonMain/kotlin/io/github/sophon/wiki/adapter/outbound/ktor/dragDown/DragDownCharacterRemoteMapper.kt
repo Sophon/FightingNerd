@@ -59,6 +59,7 @@ private fun DragDownCharacterResponseDto.toGameProperties(): Roa2CharProperties 
         gravity = gravity?.toString(),
         hitstunGravity = hitstunGravity?.toString(),
         fallSpeedMax = fallSpeedMax?.toString(),
+        hitstunFallSpeedMax = hitstunFallSpeedMax?.toString(),
         fastFallSpeed = fastFallSpeed?.toString(),
         airAcceleration = airAcceleration?.toString(),
         airSpeedHorizontalMax = airSpeedHorizontalMax?.toString(),

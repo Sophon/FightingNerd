@@ -40,6 +40,7 @@ import fightingnerd.composeapp.generated.resources.move_list_char_hp_life_points
 import fightingnerd.composeapp.generated.resources.move_list_char_hp_mod
 import fightingnerd.composeapp.generated.resources.move_list_char_jump_startup
 import fightingnerd.composeapp.generated.resources.move_list_char_ki_mod
+import fightingnerd.composeapp.generated.resources.move_list_char_hitstun_max_fall_speed
 import fightingnerd.composeapp.generated.resources.move_list_char_max_fall_speed
 import fightingnerd.composeapp.generated.resources.move_list_char_max_run_speed
 import fightingnerd.composeapp.generated.resources.move_list_char_prejump
@@ -336,6 +337,7 @@ private fun roa2Fields(props: Roa2CharProperties): List<MoveListState.Field> {
         MoveListState.Field(Res.string.move_list_char_weight, props.weight),
         MoveListState.Field(Res.string.move_list_char_hitstun_gravity, props.hitstunGravity),
         MoveListState.Field(Res.string.move_list_char_max_fall_speed, props.fallSpeedMax),
+        MoveListState.Field(Res.string.move_list_char_hitstun_max_fall_speed, props.hitstunFallSpeedMax),
         MoveListState.Field(Res.string.move_list_char_dash_speed, props.dashSpeed),
         MoveListState.Field(Res.string.move_list_char_dash_frames, props.dashFrames),
         MoveListState.Field(Res.string.move_list_char_max_run_speed, props.runSpeedMax),

@@ -1,6 +1,12 @@
 # BOT CHANGELOG
 
-## [v17.7.0] - TODO
+## [v17.8.1] - 2026-11-15
+- improved the error output for unknown moves
+
+## [v17.8.0] - 2026-11-13
+- update RoA2 tables
+
+## [v17.7.0] - 2026-11-13
 - fixed character lists for some games
 
 ## [v17.6.0] - 2026-11-07

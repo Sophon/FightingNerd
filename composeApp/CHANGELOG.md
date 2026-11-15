@@ -1,6 +1,6 @@
 # APP CHANGELOG
 
-## [v5.4.0] - TODO
+## [v5.3.1] - TODO
 - fixed character lists for some games
 
 ## [v5.3.0] - 2026-10-26

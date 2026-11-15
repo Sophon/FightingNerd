@@ -1,3 +1,4 @@
+import kotlin.Boolean;
 import kotlin.String;
 import kotlin.collections.List;
 
@@ -24,9 +25,9 @@ CREATE TABLE roa2_move (
     hit_active TEXT AS List<String>,
     custom_shield_safety TEXT AS List<String>,
     unique_field TEXT AS List<String>,
-    article_id TEXT AS List<String>,
     notes TEXT,
-    adv_notes TEXT
+    adv_notes TEXT,
+    no_frame_data INTEGER AS Boolean NOT NULL
 );
 
 upsert:
@@ -53,9 +54,9 @@ INSERT INTO roa2_move(
     hit_active,
     custom_shield_safety,
     unique_field,
-    article_id,
     notes,
-    adv_notes
+    adv_notes,
+    no_frame_data
 )
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT (move_id) DO UPDATE SET
@@ -80,9 +81,9 @@ ON CONFLICT (move_id) DO UPDATE SET
     hit_active = excluded.hit_active,
     custom_shield_safety = excluded.custom_shield_safety,
     unique_field = excluded.unique_field,
-    article_id = excluded.article_id,
     notes = excluded.notes,
-    adv_notes = excluded.adv_notes;
+    adv_notes = excluded.adv_notes,
+    no_frame_data = excluded.no_frame_data;
 
 selectByCharacter:
 SELECT *

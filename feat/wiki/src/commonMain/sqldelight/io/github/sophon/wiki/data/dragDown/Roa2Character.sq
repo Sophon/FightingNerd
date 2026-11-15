@@ -15,6 +15,7 @@ CREATE TABLE roa2_character (
     gravity TEXT,
     hitstun_gravity TEXT,
     fall_speed_max TEXT,
+    hitstun_fall_speed_max TEXT,
     fast_fall_speed TEXT,
     air_acceleration TEXT,
     air_speed_horizontal_max TEXT,
@@ -54,6 +55,7 @@ INSERT INTO roa2_character(
     gravity,
     hitstun_gravity,
     fall_speed_max,
+    hitstun_fall_speed_max,
     fast_fall_speed,
     air_acceleration,
     air_speed_horizontal_max,
@@ -74,7 +76,7 @@ INSERT INTO roa2_character(
     wall_jump_speed_y,
     wall_jump_speed_x
 )
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 ON CONFLICT (character_id) DO UPDATE SET
     dacus_speed_multiplier = excluded.dacus_speed_multiplier,
     weight = excluded.weight,
@@ -91,6 +93,7 @@ ON CONFLICT (character_id) DO UPDATE SET
     gravity = excluded.gravity,
     hitstun_gravity = excluded.hitstun_gravity,
     fall_speed_max = excluded.fall_speed_max,
+    hitstun_fall_speed_max = excluded.hitstun_fall_speed_max,
     fast_fall_speed = excluded.fast_fall_speed,
     air_acceleration = excluded.air_acceleration,
     air_speed_horizontal_max = excluded.air_speed_horizontal_max,

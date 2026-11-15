@@ -72,6 +72,7 @@ internal fun WikiCharacterGameProperties.toDomain(): CharacterGameProperties? {
             gravity = gravity,
             hitstunGravity = hitstunGravity,
             fallSpeedMax = fallSpeedMax,
+            hitstunFallSpeedMax = hitstunFallSpeedMax,
             fastFallSpeed = fastFallSpeed,
             airAcceleration = airAcceleration,
             airSpeedHorizontalMax = airSpeedHorizontalMax,
@@ -227,9 +228,9 @@ internal fun WikiMoveGameProperties.toDomain(): MoveGameProperties? {
             hitActive = hitActive,
             customShieldSafety = customShieldSafety,
             uniqueField = uniqueField,
-            articleID = articleID,
             notes = notes,
             advNotes = advNotes,
+            noFrameData = noFrameData,
         )
         is WikiKOF15MoveProperties -> KOF15MoveProperties(
             stun = stun,

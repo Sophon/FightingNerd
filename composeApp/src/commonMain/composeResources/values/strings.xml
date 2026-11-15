@@ -72,6 +72,7 @@
     <string name="move_list_char_weight">Weight</string>
     <string name="move_list_char_hitstun_gravity">Hitstun Gravity</string>
     <string name="move_list_char_max_fall_speed">Max Fall Speed</string>
+    <string name="move_list_char_hitstun_max_fall_speed">Hitstun Max Fall Speed</string>
     <string name="move_list_char_dash_speed">Dash Speed</string>
     <string name="move_list_char_dash_frames">Dash Frames</string>
     <string name="move_list_char_max_run_speed">Maximum Run Speed</string>

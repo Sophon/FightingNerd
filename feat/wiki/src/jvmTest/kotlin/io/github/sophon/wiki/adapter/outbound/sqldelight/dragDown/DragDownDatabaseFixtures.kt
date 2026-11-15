@@ -32,6 +32,7 @@ internal val clairen = Character(
         gravity = "0.55",
         hitstunGravity = "0.51",
         fallSpeedMax = "10",
+        hitstunFallSpeedMax = "12.75",
         fastFallSpeed = "14.5",
         airAcceleration = "0.3",
         airSpeedHorizontalMax = "4.25",
@@ -82,8 +83,8 @@ internal val clairenJab = Move(
         hitActive = listOf("5-6", "9-10"),
         customShieldSafety = listOf("-12", "-9"),
         uniqueField = listOf("Tipper"),
-        articleID = listOf("plasma_field"),
         notes = "Fast out of shield option",
         advNotes = "Tipper is safer",
+        noFrameData = true,
     ),
 )
