@@ -1,5 +1,8 @@
 # APP CHANGELOG
 
+## [v5.4.0] - TODO
+- fixed text padding in the character matrix
+
 ## [v5.3.1] - TODO
 - fixed character lists for some games
 - migrated to AGP 9
