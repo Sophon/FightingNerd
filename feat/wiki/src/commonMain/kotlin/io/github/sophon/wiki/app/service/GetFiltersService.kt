@@ -39,7 +39,9 @@ internal class GetFiltersService : GetFiltersUseCase {
             Game.BBCF,
             Game.BBTag,
                 -> setOf(BBFilters.Invincible)
-            Game.GGST -> setOf(GGFilters.Invincible)
+            Game.GGST,
+            Game.GGXRD,
+                -> setOf(GGFilters.Invincible)
 
             Game.MBTL -> setOf(MBFilters.Invincible)
             Game.Uni2 -> setOf(UniFilters.Invincible)

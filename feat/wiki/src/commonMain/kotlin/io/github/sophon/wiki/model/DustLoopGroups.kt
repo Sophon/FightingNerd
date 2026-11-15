@@ -29,6 +29,50 @@ object GGSTGroups {
     }
 }
 
+object GGXrdGroups {
+    // combination and sword are Ramlethal's normals
+    object Normal: Group {
+        override val id: String = "Normal Moves"
+        override val predicate: (Move) -> Boolean = {
+            it.type.isNormal()
+                    || it.type.equalsIgnoreCase("combination")
+                    || it.type.equalsIgnoreCase("sword")
+        }
+    }
+
+    object Universal: Group {
+        override val id: String = "Universal Mechanics"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("other")
+        }
+    }
+
+    // servant (Jack-O), stance (Leo) and item (Faust) are character-specific specials
+    object Special: Group {
+        override val id: String = "Special Moves"
+        override val predicate: (Move) -> Boolean = {
+            it.type.isSpecial()
+                    || it.type.equalsIgnoreCase("servant")
+                    || it.type.equalsIgnoreCase("stance")
+                    || it.type.equalsIgnoreCase("item")
+        }
+    }
+
+    object Overdrive: Group {
+        override val id: String = "Overdrives"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("super")
+        }
+    }
+
+    object InstantKill: Group {
+        override val id: String = "Instant Kill"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("instantkill")
+        }
+    }
+}
+
 object BBCFGroups {
     object Normal: Group {
         override val id: String = "Normal"

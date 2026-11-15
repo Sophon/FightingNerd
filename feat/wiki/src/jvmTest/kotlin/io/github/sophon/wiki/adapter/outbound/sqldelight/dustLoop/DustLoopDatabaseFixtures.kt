@@ -11,6 +11,8 @@ import io.github.sophon.wiki.model.game.GBVSRCharProperties
 import io.github.sophon.wiki.model.game.GBVSRMoveProperties
 import io.github.sophon.wiki.model.game.GGCharProperties
 import io.github.sophon.wiki.model.game.GGMoveProperties
+import io.github.sophon.wiki.model.game.GGXrdCharProperties
+import io.github.sophon.wiki.model.game.GGXrdMoveProperties
 import io.github.sophon.wiki.model.game.MTFSCharProperties
 import io.github.sophon.wiki.model.game.MTFSMoveProperties
 import io.github.sophon.wiki.model.wiki.Game
@@ -183,6 +185,63 @@ internal val ragnaStandingB = Move(
         hitstop = "10",
         chStop = "12",
         cancelTiming = "Rev, Jump",
+    ),
+)
+
+internal val answer = Character(
+    id = CharacterId(Game.GGXRD, "answer"),
+    displayName = "Answer",
+    remoteQueryId = "Answer",
+    wikiUrl = "https://www.dustloop.com/w/GGXRD-R2/Answer",
+    aliasList = listOf("an"),
+    gameProperties = GGXrdCharProperties(
+        defense = "1.03",
+        guts = "0",
+        stunResistance = "55",
+        weight = "[100] Medium",
+        prejump = "3",
+        backdashDuration = "21",
+        backdashDistance = "3120",
+        backdashInvuln = "12",
+        dashForward = "",
+        dashForwardDuration = "",
+        dashResistance = "",
+        dashAcceleration = "45",
+        initialDashSpeed = "1925",
+        friction = "100",
+        walkSpeedForwards = "542",
+        walkSpeedBackwards = "437",
+        airDashForwardsSpeed = "2625",
+        airDashForwardsStartup = "7",
+        airDashBackwardsSpeed = "2275",
+        airDashBackwardsStartup = "6",
+        landingRecovery = "2",
+        throwRange = "70",
+        airThrowRange = "192",
+        riscGainRate = "36",
+        riscInertia = "6",
+        wakeupFaceUp = "25",
+        wakeupFaceDown = "25",
+        walkForwardsTensionGain = "10",
+        dashTensionGain = "18",
+        jumpForwardsTensionGain = "10",
+        airDashForwardsTensionGain = "18",
+    ),
+)
+
+internal val answerCrouchingDust = Move(
+    input = "2d",
+    name = "2D",
+    startup = "7",
+    onBlock = "-6",
+    urls = Move.Urls(wikiUrl = "https://www.dustloop.com/w/GGXRD-R2/Answer#2D"),
+    gameProperties = GGXrdMoveProperties(
+        level = "3",
+        riscGain = "14",
+        riscLoss = "6",
+        prorate = "",
+        roman = "YRP",
+        tension = "384",
     ),
 )
 

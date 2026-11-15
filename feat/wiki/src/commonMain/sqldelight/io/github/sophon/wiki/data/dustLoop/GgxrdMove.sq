@@ -1,0 +1,37 @@
+CREATE TABLE ggxrd_move (
+    move_id INTEGER PRIMARY KEY REFERENCES move(id) ON DELETE CASCADE,
+    level TEXT,
+    risc_gain TEXT,
+    risc_loss TEXT,
+    prorate TEXT,
+    roman TEXT,
+    tension TEXT
+);
+
+upsert:
+INSERT INTO ggxrd_move(
+    move_id,
+    level,
+    risc_gain,
+    risc_loss,
+    prorate,
+    roman,
+    tension
+)
+VALUES (?, ?, ?, ?, ?, ?, ?)
+ON CONFLICT (move_id) DO UPDATE SET
+    level = excluded.level,
+    risc_gain = excluded.risc_gain,
+    risc_loss = excluded.risc_loss,
+    prorate = excluded.prorate,
+    roman = excluded.roman,
+    tension = excluded.tension;
+
+selectByCharacter:
+SELECT *
+FROM ggxrd_move
+WHERE move_id IN (
+    SELECT id
+    FROM move
+    WHERE character_id = (SELECT id FROM character WHERE game = ? AND natural_id = ?)
+);
