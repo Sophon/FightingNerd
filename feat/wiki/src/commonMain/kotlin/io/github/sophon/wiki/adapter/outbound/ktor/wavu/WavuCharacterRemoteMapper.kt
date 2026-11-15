@@ -7,7 +7,7 @@ import io.github.sophon.wiki.model.wiki.Game
 internal fun WavuCharacterListResponseDto.toDomain(game: Game): List<Character> {
     return characters.map { dto ->
         Character(
-            id = CharacterId(game, dto.displayName),
+            id = CharacterId(game, dto.id),
             displayName = dto.displayName,
             remoteQueryId = dto.wavuName,
             wikiUrl = "$URL_PREFIX_MOVE/${dto.wavuName.replace(" ", "_")}${game.toPageSuffix()}",

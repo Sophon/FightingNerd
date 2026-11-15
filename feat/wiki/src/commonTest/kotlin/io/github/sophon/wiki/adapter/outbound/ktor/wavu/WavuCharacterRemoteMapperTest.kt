@@ -25,10 +25,10 @@ class WavuCharacterRemoteMapperTest {
 
     //region id
     @Test
-    fun `id is the display name - the service normalizes it`() {
+    fun `id is the json id`() {
         //given
         val responseDto = WavuCharacterListResponseDto(characters = listOf(armorKing))
-        val expected = CharacterId(Game.Tekken8, "Armor King")
+        val expected = CharacterId(Game.Tekken8, "armor-king")
 
         //when
         val result = responseDto.toDomain(Game.Tekken8).single()
