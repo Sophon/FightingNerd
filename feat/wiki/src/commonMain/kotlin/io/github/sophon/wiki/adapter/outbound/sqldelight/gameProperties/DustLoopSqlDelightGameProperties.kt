@@ -8,6 +8,8 @@ import io.github.sophon.wiki.data.dustLoop.Dbfz_character
 import io.github.sophon.wiki.data.dustLoop.Dbfz_move
 import io.github.sophon.wiki.data.dustLoop.Gbvsr_character
 import io.github.sophon.wiki.data.dustLoop.Gbvsr_move
+import io.github.sophon.wiki.data.dustLoop.Ggxrd_character
+import io.github.sophon.wiki.data.dustLoop.Ggxrd_move
 import io.github.sophon.wiki.data.dustLoop.Ggst_character
 import io.github.sophon.wiki.data.dustLoop.Ggst_move
 import io.github.sophon.wiki.data.dustLoop.Mtfs_character
@@ -23,6 +25,8 @@ import io.github.sophon.wiki.model.game.GBVSRCharProperties
 import io.github.sophon.wiki.model.game.GBVSRMoveProperties
 import io.github.sophon.wiki.model.game.GGCharProperties
 import io.github.sophon.wiki.model.game.GGMoveProperties
+import io.github.sophon.wiki.model.game.GGXrdCharProperties
+import io.github.sophon.wiki.model.game.GGXrdMoveProperties
 import io.github.sophon.wiki.model.game.MTFSCharProperties
 import io.github.sophon.wiki.model.game.MTFSMoveProperties
 import io.github.sophon.wiki.model.wiki.Game
@@ -104,6 +108,41 @@ internal class DustLoopSqlDelightGameProperties(
                 forward_dash = properties.forwardDash,
             )
 
+            is GGXrdCharProperties -> database.ggxrdCharacterQueries.upsert(
+                character_id = characterRowId,
+                defense = properties.defense,
+                guts = properties.guts,
+                stun_resistance = properties.stunResistance,
+                weight = properties.weight,
+                prejump = properties.prejump,
+                backdash_duration = properties.backdashDuration,
+                backdash_distance = properties.backdashDistance,
+                backdash_invuln = properties.backdashInvuln,
+                dash_forward = properties.dashForward,
+                dash_forward_duration = properties.dashForwardDuration,
+                dash_resistance = properties.dashResistance,
+                dash_acceleration = properties.dashAcceleration,
+                initial_dash_speed = properties.initialDashSpeed,
+                friction = properties.friction,
+                walk_speed_forwards = properties.walkSpeedForwards,
+                walk_speed_backwards = properties.walkSpeedBackwards,
+                air_dash_forwards_speed = properties.airDashForwardsSpeed,
+                air_dash_forwards_startup = properties.airDashForwardsStartup,
+                air_dash_backwards_speed = properties.airDashBackwardsSpeed,
+                air_dash_backwards_startup = properties.airDashBackwardsStartup,
+                landing_recovery = properties.landingRecovery,
+                throw_range = properties.throwRange,
+                air_throw_range = properties.airThrowRange,
+                risc_gain_rate = properties.riscGainRate,
+                risc_inertia = properties.riscInertia,
+                wakeup_face_up = properties.wakeupFaceUp,
+                wakeup_face_down = properties.wakeupFaceDown,
+                walk_forwards_tension_gain = properties.walkForwardsTensionGain,
+                dash_tension_gain = properties.dashTensionGain,
+                jump_forwards_tension_gain = properties.jumpForwardsTensionGain,
+                air_dash_forwards_tension_gain = properties.airDashForwardsTensionGain,
+            )
+
             is MTFSCharProperties -> database.mtfsCharacterQueries.upsert(
                 character_id = characterRowId,
                 prejump = properties.prejump,
@@ -171,6 +210,16 @@ internal class DustLoopSqlDelightGameProperties(
                 cancel_timing = properties.cancelTiming,
             )
 
+            is GGXrdMoveProperties -> database.ggxrdMoveQueries.upsert(
+                move_id = moveRowId,
+                level = properties.level,
+                risc_gain = properties.riscGain,
+                risc_loss = properties.riscLoss,
+                prorate = properties.prorate,
+                roman = properties.roman,
+                tension = properties.tension,
+            )
+
             is MTFSMoveProperties -> database.mtfsMoveQueries.upsert(
                 move_id = moveRowId,
                 simple_input = properties.simpleInput,
@@ -202,7 +251,14 @@ internal class DustLoopSqlDelightGameProperties(
                 .executeAsList()
                 .associate { row -> row.character_id to row.toDomain() }
 
-            Game.BBCF -> database.bbcfCharacterQueries
+            Game.BBCF,
+            Game.BBTag,
+                -> database.bbcfCharacterQueries
+                .selectAll()
+                .executeAsList()
+                .associate { row -> row.character_id to row.toDomain() }
+
+            Game.GGXRD -> database.ggxrdCharacterQueries
                 .selectAll()
                 .executeAsList()
                 .associate { row -> row.character_id to row.toDomain() }
@@ -234,7 +290,14 @@ internal class DustLoopSqlDelightGameProperties(
                 .executeAsList()
                 .associate { row -> row.move_id to row.toDomain() }
 
-            Game.BBCF -> database.bbcfMoveQueries
+            Game.BBCF,
+            Game.BBTag,
+                -> database.bbcfMoveQueries
+                .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
+                .executeAsList()
+                .associate { row -> row.move_id to row.toDomain() }
+
+            Game.GGXRD -> database.ggxrdMoveQueries
                 .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
                 .executeAsList()
                 .associate { row -> row.move_id to row.toDomain() }
@@ -335,6 +398,43 @@ private fun Bbcf_character.toDomain(): BBCharProperties {
     return properties
 }
 
+private fun Ggxrd_character.toDomain(): GGXrdCharProperties {
+    val properties = GGXrdCharProperties(
+        defense = defense,
+        guts = guts,
+        stunResistance = stun_resistance,
+        weight = weight,
+        prejump = prejump,
+        backdashDuration = backdash_duration,
+        backdashDistance = backdash_distance,
+        backdashInvuln = backdash_invuln,
+        dashForward = dash_forward,
+        dashForwardDuration = dash_forward_duration,
+        dashResistance = dash_resistance,
+        dashAcceleration = dash_acceleration,
+        initialDashSpeed = initial_dash_speed,
+        friction = friction,
+        walkSpeedForwards = walk_speed_forwards,
+        walkSpeedBackwards = walk_speed_backwards,
+        airDashForwardsSpeed = air_dash_forwards_speed,
+        airDashForwardsStartup = air_dash_forwards_startup,
+        airDashBackwardsSpeed = air_dash_backwards_speed,
+        airDashBackwardsStartup = air_dash_backwards_startup,
+        landingRecovery = landing_recovery,
+        throwRange = throw_range,
+        airThrowRange = air_throw_range,
+        riscGainRate = risc_gain_rate,
+        riscInertia = risc_inertia,
+        wakeupFaceUp = wakeup_face_up,
+        wakeupFaceDown = wakeup_face_down,
+        walkForwardsTensionGain = walk_forwards_tension_gain,
+        dashTensionGain = dash_tension_gain,
+        jumpForwardsTensionGain = jump_forwards_tension_gain,
+        airDashForwardsTensionGain = air_dash_forwards_tension_gain,
+    )
+    return properties
+}
+
 private fun Mtfs_character.toDomain(): MTFSCharProperties {
     val properties = MTFSCharProperties(
         prejump = prejump,
@@ -399,6 +499,18 @@ private fun Bbcf_move.toDomain(): BBMoveProperties {
         hitstop = hitstop,
         chStop = ch_stop,
         cancelTiming = cancel_timing,
+    )
+    return properties
+}
+
+private fun Ggxrd_move.toDomain(): GGXrdMoveProperties {
+    val properties = GGXrdMoveProperties(
+        level = level,
+        riscGain = risc_gain,
+        riscLoss = risc_loss,
+        prorate = prorate,
+        roman = roman,
+        tension = tension,
     )
     return properties
 }

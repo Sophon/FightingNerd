@@ -17,6 +17,9 @@ COPY core core
 COPY bot bot
 COPY feat feat
 
+# Gradle 9 requires every included project's directory to exist; app/test modules aren't needed for the bot
+RUN mkdir -p composeApp androidApp testSuite
+
 # Build fat JAR
 RUN ./gradlew :bot:discord:fatJar --no-daemon
 

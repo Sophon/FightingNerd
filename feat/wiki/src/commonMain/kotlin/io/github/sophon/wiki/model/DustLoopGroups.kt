@@ -29,6 +29,50 @@ object GGSTGroups {
     }
 }
 
+object GGXrdGroups {
+    // combination and sword are Ramlethal's normals
+    object Normal: Group {
+        override val id: String = "Normal Moves"
+        override val predicate: (Move) -> Boolean = {
+            it.type.isNormal()
+                    || it.type.equalsIgnoreCase("combination")
+                    || it.type.equalsIgnoreCase("sword")
+        }
+    }
+
+    object Universal: Group {
+        override val id: String = "Universal Mechanics"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("other")
+        }
+    }
+
+    // servant (Jack-O), stance (Leo) and item (Faust) are character-specific specials
+    object Special: Group {
+        override val id: String = "Special Moves"
+        override val predicate: (Move) -> Boolean = {
+            it.type.isSpecial()
+                    || it.type.equalsIgnoreCase("servant")
+                    || it.type.equalsIgnoreCase("stance")
+                    || it.type.equalsIgnoreCase("item")
+        }
+    }
+
+    object Overdrive: Group {
+        override val id: String = "Overdrives"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("super")
+        }
+    }
+
+    object InstantKill: Group {
+        override val id: String = "Instant Kill"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("instantkill")
+        }
+    }
+}
+
 object BBCFGroups {
     object Normal: Group {
         override val id: String = "Normal"
@@ -70,6 +114,65 @@ object BBCFGroups {
 
     object Astral: Group {
         override val id: String = "Astral"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("astral")
+        }
+    }
+}
+
+object BBTagGroups {
+    object Normal: Group {
+        override val id: String = "Normal"
+        override val predicate: (Move) -> Boolean = { it.type.isNormal() }
+    }
+
+    object Universal: Group {
+        override val id: String = "Universal Mechanics"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("other")
+        }
+    }
+
+    // drive (Noel's Chain Revolver) and item (Teddie's items) are character-specific skills
+    object Skill: Group {
+        override val id: String = "Skills"
+        override val predicate: (Move) -> Boolean = {
+            it.type.isSpecial()
+                    || it.type.equalsIgnoreCase("drive")
+                    || it.type.equalsIgnoreCase("item")
+        }
+    }
+
+    object ExtraSkill: Group {
+        override val id: String = "Extra Skills"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("ex")
+        }
+    }
+
+    object PartnerSkill: Group {
+        override val id: String = "Partner Skills"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("assist")
+        }
+    }
+
+    object DistortionSkill: Group {
+        override val id: String = "Distortion Skills"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("super") && it.isDistortionSkillDuo().not()
+        }
+    }
+
+    object DistortionSkillDuo: Group {
+        override val id: String = "Distortion Skill Duo"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("super") && it.isDistortionSkillDuo()
+        }
+    }
+
+    object AstralHeat: Group {
+        override val id: String = "Astral Heat"
         override val predicate: (Move) -> Boolean = {
             it.type.equalsIgnoreCase("astral")
         }
@@ -191,4 +294,8 @@ private fun String?.isNormal(): Boolean {
 
 private fun String?.isSpecial(): Boolean {
     return this.equalsIgnoreCase("special")
+}
+
+private fun Move.isDistortionSkillDuo(): Boolean {
+    return input.equalsIgnoreCase("Distortion Skill Duo")
 }

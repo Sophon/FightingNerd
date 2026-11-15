@@ -11,6 +11,7 @@ import io.github.sophon.wiki.model.game.BBCharProperties
 import io.github.sophon.wiki.model.game.DBFZCharProperties
 import io.github.sophon.wiki.model.game.GBVSRCharProperties
 import io.github.sophon.wiki.model.game.GGCharProperties
+import io.github.sophon.wiki.model.game.GGXrdCharProperties
 import io.github.sophon.wiki.model.game.MTFSCharProperties
 import io.github.sophon.wiki.model.wiki.Game
 
@@ -85,10 +86,46 @@ private fun CharacterDto.toGameProperties(game: Game): CharacterGameProperties? 
             boostDefense = boostDefense,
         )
 
-        Game.BBCF -> BBCharProperties(
+        Game.BBCF,
+        Game.BBTag,
+            -> BBCharProperties(
             preJump = prejump?.cleanHtml(),
             backDash = backdash?.cleanHtml(),
             forwardDash = forwardDash?.cleanHtml(),
+        )
+
+        Game.GGXRD -> GGXrdCharProperties(
+            defense = defense,
+            guts = guts,
+            stunResistance = stunResistance,
+            weight = weight,
+            prejump = prejump,
+            backdashDuration = backdashDuration,
+            backdashDistance = backdashDistance,
+            backdashInvuln = backdashInvuln,
+            dashForward = dashForward,
+            dashForwardDuration = dashForwardDuration,
+            dashResistance = dashResistance,
+            dashAcceleration = xrdDashAcceleration,
+            initialDashSpeed = initialDashSpeed,
+            friction = friction,
+            walkSpeedForwards = walkSpeedForwards,
+            walkSpeedBackwards = walkSpeedBackwards,
+            airDashForwardsSpeed = airDashForwardsSpeed,
+            airDashForwardsStartup = airDashForwardsStartup,
+            airDashBackwardsSpeed = airDashBackwardsSpeed,
+            airDashBackwardsStartup = airDashBackwardsStartup,
+            landingRecovery = landingRecovery,
+            throwRange = throwRange,
+            airThrowRange = airThrowRange,
+            riscGainRate = riscGainRate,
+            riscInertia = riscInertia,
+            wakeupFaceUp = wakeupFaceUp,
+            wakeupFaceDown = wakeupFaceDown,
+            walkForwardsTensionGain = walkForwardsTensionGain,
+            dashTensionGain = dashTensionGain,
+            jumpForwardsTensionGain = jumpForwardsTensionGain,
+            airDashForwardsTensionGain = airDashForwardsTensionGain,
         )
 
         Game.MTFS -> MTFSCharProperties(
@@ -133,7 +170,7 @@ private fun String?.formCharacterQueryName(game: Game): String {
     val queryName = this
         .orEmpty()
         .replace("?", "")
-        .let { if (game == Game.BBCF) it else it.replace("'", "") }
+        .let { if (game in apostropheKeepingGameSet) it else it.replace("'", "") }
     return queryName
 }
 
@@ -154,9 +191,13 @@ private fun String?.createAliases(
 
     val aliases = if (dtoAliases == null) {
         when (game) {
-            Game.GGST -> this.createGGAliases()
+            Game.GGST,
+            Game.GGXRD,
+                -> this.createGGAliases()
             Game.GBVSR -> listOf(this.substringBefore(" ").lowercase())
-            Game.BBCF -> this.createBBAliases()
+            Game.BBCF,
+            Game.BBTag,
+                -> this.createBBAliases()
             else -> listOf()
         }
     } else {
@@ -257,6 +298,8 @@ private fun List<CargoQueryItem>.filterAltModeCharacters(game: Game): List<Cargo
     return filtered
 }
 
+
+private val apostropheKeepingGameSet = setOf(Game.BBCF, Game.BBTag)
 
 private val bbCodeMap = mapOf(
     "amane nishiki" to listOf("amane", "am"),

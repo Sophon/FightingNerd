@@ -3,11 +3,13 @@ package io.github.sophon.wiki.app.service
 import io.github.sophon.wiki.GetGroupsUseCase
 import io.github.sophon.wiki.model.AVLGroups
 import io.github.sophon.wiki.model.BBCFGroups
+import io.github.sophon.wiki.model.BBTagGroups
 import io.github.sophon.wiki.model.COTWGroups
 import io.github.sophon.wiki.model.DBFZGroups
 import io.github.sophon.wiki.model.DreamCancelGroups
 import io.github.sophon.wiki.model.GBVSRGroups
 import io.github.sophon.wiki.model.GGSTGroups
+import io.github.sophon.wiki.model.GGXrdGroups
 import io.github.sophon.wiki.model.Group
 import io.github.sophon.wiki.model.KofGroups
 import io.github.sophon.wiki.model.MBGroups
@@ -23,7 +25,7 @@ import io.github.sophon.wiki.model.wiki.Game
  * [extras] are Tekken stances - each becomes its own group after the generic ones.
  */
 internal class GetGroupsService : GetGroupsUseCase {
-    @Suppress("LongMethod")
+    @Suppress("LongMethod", "CyclomaticComplexMethod")
     override fun invoke(
         game: Game,
         extras: List<String>,
@@ -112,6 +114,23 @@ internal class GetGroupsService : GetGroupsUseCase {
                 BBCFGroups.Super,
                 BBCFGroups.Exceed,
                 BBCFGroups.Astral,
+            )
+            Game.GGXRD -> listOf(
+                GGXrdGroups.Normal,
+                GGXrdGroups.Universal,
+                GGXrdGroups.Special,
+                GGXrdGroups.Overdrive,
+                GGXrdGroups.InstantKill,
+            )
+            Game.BBTag -> listOf(
+                BBTagGroups.Normal,
+                BBTagGroups.Universal,
+                BBTagGroups.Skill,
+                BBTagGroups.ExtraSkill,
+                BBTagGroups.PartnerSkill,
+                BBTagGroups.DistortionSkill,
+                BBTagGroups.DistortionSkillDuo,
+                BBTagGroups.AstralHeat,
             )
             Game.DBFZ -> listOf(
                 DBFZGroups.Normal,

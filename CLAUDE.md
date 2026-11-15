@@ -8,6 +8,7 @@ Two important target modules:
 - `composeApp` - referred to as `app`
   - KMP + CMP stuff
   - targets Android, iOS; WASM in the future
+  - `androidApp` - Android application shell (manifest, launcher resources, signing, R8); depends on `composeApp`
 - `bot` - referred to as `bot`
   - currently only has `discord` bot
   - targets JVM

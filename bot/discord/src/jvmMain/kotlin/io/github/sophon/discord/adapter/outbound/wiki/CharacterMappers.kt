@@ -10,6 +10,7 @@ import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.game.BBCharProperties
 import io.github.sophon.wiki.model.game.GBVSRCharProperties
 import io.github.sophon.wiki.model.game.GGCharProperties
+import io.github.sophon.wiki.model.game.GGXrdCharProperties
 import io.github.sophon.wiki.model.game.MTFSCharProperties
 import io.github.sophon.wiki.model.game.Roa2CharProperties
 import io.github.sophon.wiki.model.game.SFCharProperties
@@ -73,6 +74,7 @@ private fun Character.toPropertyList(): List<BotResponse.Field> {
     val healthFieldList = listOfNotNull(fieldOf("Health", hp))
     val gameFieldList = when (val properties = gameProperties) {
         is GGCharProperties -> properties.toFieldList()
+        is GGXrdCharProperties -> properties.toFieldList()
         is BBCharProperties -> properties.toFieldList()
         is MTFSCharProperties -> properties.toFieldList()
         is GBVSRCharProperties -> properties.toFieldList()
@@ -103,6 +105,24 @@ private fun GGCharProperties.toFieldList(): List<BotResponse.Field> {
         fieldOf("Dash initial speed", dashInitialSpd),
         fieldOf("Air dash distance", adDist),
         fieldOf("Air backdash distance", abdDist),
+        fieldOf("Jump startup", prejump.toFrames()),
+    )
+
+    return fieldList
+}
+
+private fun GGXrdCharProperties.toFieldList(): List<BotResponse.Field> {
+    val backdash = listOfNotNull(
+        backdashDuration.toFrames()?.let { "$it duration" },
+        backdashInvuln.toFrames()?.let { "$it invuln" },
+    ).joinToString("\n")
+    val fieldList = listOfNotNull(
+        fieldOf("Defense", defense),
+        fieldOf("Guts", guts),
+        fieldOf("Stun resistance", stunResistance),
+        fieldOf("Weight", weight),
+        fieldOf("Backdash", backdash),
+        fieldOf("Dash initial speed", initialDashSpeed),
         fieldOf("Jump startup", prejump.toFrames()),
     )
 

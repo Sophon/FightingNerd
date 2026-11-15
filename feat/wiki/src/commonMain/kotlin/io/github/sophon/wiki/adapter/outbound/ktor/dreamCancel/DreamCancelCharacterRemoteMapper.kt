@@ -9,7 +9,7 @@ import io.github.sophon.wiki.model.wiki.Game
 internal fun DreamCancelCharacterJsonResponseDto.toDomain(game: Game): List<Character> {
     val characterList = characters.map { dto ->
         val character = Character(
-            id = CharacterId(game, dto.displayName),
+            id = CharacterId(game, dto.id),
             displayName = dto.displayName,
             remoteQueryId = dto.displayName,
             wikiUrl = "$WIKI_BASE_URL/${game.id}/${dto.displayName.createQueryName()}",

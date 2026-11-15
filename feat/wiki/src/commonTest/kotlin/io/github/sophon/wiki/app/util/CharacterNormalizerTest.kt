@@ -36,6 +36,19 @@ class CharacterNormalizerTest {
         //then
         assertThat(result.id).isEqualTo(expected)
     }
+
+    @Test
+    fun `id comes from the adapter id, not the remote query id`() {
+        //given
+        val character = CharacterSource.rogerJr
+        val expected = CharacterId(Game.Tekken8, "roger-jr")
+
+        //when
+        val result = character.normalize()
+
+        //then
+        assertThat(result.id).isEqualTo(expected)
+    }
     //endregion
 
     //region aliases
@@ -100,14 +113,16 @@ private object CharacterSource {
     val armorKing = wavuCharacter(name = "Armor King", aliasList = listOf("ak", "aking", "armorking"))
     val jack8 = wavuCharacter(name = "Jack-8", aliasList = listOf("jack", "j8", "jack8"))
     val devilJin = wavuCharacter(name = "Devil Jin", aliasList = listOf("DVJ", " dj ", "", "deviljin", "dvj"))
+    val rogerJr = wavuCharacter(name = "Roger Jr", aliasList = listOf("roger"), id = "roger-jr")
 }
 
 private fun wavuCharacter(
     name: String,
     aliasList: List<String>,
+    id: String = name,
 ): Character {
     val character = Character(
-        id = CharacterId(Game.Tekken8, name),
+        id = CharacterId(Game.Tekken8, id),
         displayName = name,
         remoteQueryId = name,
         wikiUrl = "https://wavu.wiki/t/${name.replace(" ", "_")}_movelist",
