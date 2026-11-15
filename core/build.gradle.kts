@@ -49,7 +49,6 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(libs.kotlin.stdlib)
                 implementation(libs.bundles.ktor)
                 implementation(libs.ktor.cio)
                 implementation(libs.ktor.slf)

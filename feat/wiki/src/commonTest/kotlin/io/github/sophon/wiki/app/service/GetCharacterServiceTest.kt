@@ -17,7 +17,7 @@ internal class GetCharacterServiceTest {
     @Test
     fun `a stored character is returned`() = runTest {
         // given
-        val service = _root_ide_package_.io.github.sophon.wiki.app.service.GetCharacterService(FakeLoadCharacterPort(jin))
+        val service = GetCharacterService(FakeLoadCharacterPort(jin))
         val expected = Result.Success(jin)
 
         // when
@@ -30,7 +30,7 @@ internal class GetCharacterServiceTest {
     @Test
     fun `a missing character is an unknown character`() = runTest {
         // given
-        val service = _root_ide_package_.io.github.sophon.wiki.app.service.GetCharacterService(FakeLoadCharacterPort())
+        val service = GetCharacterService(FakeLoadCharacterPort())
         val expected = listOf("jin")
 
         // when
