@@ -53,7 +53,7 @@ import io.github.sophon.fightingnerd.theme.nerdDimensions
 import io.github.sophon.fightingnerd.theme.nerdTypography
 import kotlinx.coroutines.flow.merge
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)

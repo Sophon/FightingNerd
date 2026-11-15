@@ -22,7 +22,7 @@ import androidx.compose.ui.window.Dialog
 import io.github.sophon.fightingnerd.theme.FightingNerdTheme
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 internal fun <T> SingleSelectDialog(

@@ -63,7 +63,6 @@ kotlin {
 
     sourceSets {
         androidMain.dependencies {
-            implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.android)
             implementation(libs.koin.android)
@@ -88,7 +87,7 @@ kotlin {
             implementation(compose.material3)
             implementation(compose.ui)
             implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
+            implementation(compose.preview)
             implementation(compose.materialIconsExtended)
 
             implementation(libs.androidx.lifecycle.viewmodelCompose)
@@ -136,6 +135,10 @@ kotlin {
             implementation(libs.test.turbine)
         }
     }
+}
+
+dependencies {
+    "androidRuntimeClasspath"(compose.uiTooling)
 }
 
 compose.desktop {
