@@ -11,6 +11,7 @@ import io.github.sophon.wiki.model.game.BBCharProperties
 import io.github.sophon.wiki.model.game.DBFZCharProperties
 import io.github.sophon.wiki.model.game.GBVSRCharProperties
 import io.github.sophon.wiki.model.game.GGCharProperties
+import io.github.sophon.wiki.model.game.GGXrdCharProperties
 import io.github.sophon.wiki.model.game.MTFSCharProperties
 import io.github.sophon.wiki.model.wiki.Game
 
@@ -93,6 +94,40 @@ private fun CharacterDto.toGameProperties(game: Game): CharacterGameProperties? 
             forwardDash = forwardDash?.cleanHtml(),
         )
 
+        Game.GGXRD -> GGXrdCharProperties(
+            defense = defense,
+            guts = guts,
+            stunResistance = stunResistance,
+            weight = weight,
+            prejump = prejump,
+            backdashDuration = backdashDuration,
+            backdashDistance = backdashDistance,
+            backdashInvuln = backdashInvuln,
+            dashForward = dashForward,
+            dashForwardDuration = dashForwardDuration,
+            dashResistance = dashResistance,
+            dashAcceleration = xrdDashAcceleration,
+            initialDashSpeed = initialDashSpeed,
+            friction = friction,
+            walkSpeedForwards = walkSpeedForwards,
+            walkSpeedBackwards = walkSpeedBackwards,
+            airDashForwardsSpeed = airDashForwardsSpeed,
+            airDashForwardsStartup = airDashForwardsStartup,
+            airDashBackwardsSpeed = airDashBackwardsSpeed,
+            airDashBackwardsStartup = airDashBackwardsStartup,
+            landingRecovery = landingRecovery,
+            throwRange = throwRange,
+            airThrowRange = airThrowRange,
+            riscGainRate = riscGainRate,
+            riscInertia = riscInertia,
+            wakeupFaceUp = wakeupFaceUp,
+            wakeupFaceDown = wakeupFaceDown,
+            walkForwardsTensionGain = walkForwardsTensionGain,
+            dashTensionGain = dashTensionGain,
+            jumpForwardsTensionGain = jumpForwardsTensionGain,
+            airDashForwardsTensionGain = airDashForwardsTensionGain,
+        )
+
         Game.MTFS -> MTFSCharProperties(
             prejump = prejump?.cleanHtml(),
             backdash = backdash?.cleanHtml(),
@@ -156,7 +191,9 @@ private fun String?.createAliases(
 
     val aliases = if (dtoAliases == null) {
         when (game) {
-            Game.GGST -> this.createGGAliases()
+            Game.GGST,
+            Game.GGXRD,
+                -> this.createGGAliases()
             Game.GBVSR -> listOf(this.substringBefore(" ").lowercase())
             Game.BBCF,
             Game.BBTag,

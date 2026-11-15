@@ -1,9 +1,10 @@
 # BOT CHANGELOG
 
-## [v17.8.1] - 2026-11-15
+## [v17.9.0] - 2026-11-15
 - improved the error output for unknown moves
 - added:
   - BBTag
+  - GGXrd Rev 2
 
 ## [v17.8.0] - 2026-11-13
 - update RoA2 tables

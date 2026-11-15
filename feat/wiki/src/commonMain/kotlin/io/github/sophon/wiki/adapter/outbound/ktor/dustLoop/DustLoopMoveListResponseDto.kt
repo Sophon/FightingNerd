@@ -75,4 +75,10 @@ internal data class MoveDto(
     val simpleInput: String? = null,
     val untechAmount: String? = null,
     val meterGain: String? = null,
+
+    //ggxrd
+    val riscp: String? = null,
+    val riscm: String? = null,
+    val roman: String? = null,
+    val tension: String? = null,
 )

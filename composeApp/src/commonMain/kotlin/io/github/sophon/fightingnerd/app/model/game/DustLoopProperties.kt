@@ -71,6 +71,40 @@ data class GBVSRCharProperties(
     )
 }
 
+data class GGXrdCharProperties(
+    val defense: String? = null,
+    val guts: String? = null,
+    val stunResistance: String? = null,
+    val weight: String? = null,
+    val prejump: String? = null,
+    val backdashDuration: String? = null,
+    val backdashDistance: String? = null,
+    val backdashInvuln: String? = null,
+    val dashForward: String? = null,
+    val dashForwardDuration: String? = null,
+    val dashResistance: String? = null,
+    val dashAcceleration: String? = null,
+    val initialDashSpeed: String? = null,
+    val friction: String? = null,
+    val walkSpeedForwards: String? = null,
+    val walkSpeedBackwards: String? = null,
+    val airDashForwardsSpeed: String? = null,
+    val airDashForwardsStartup: String? = null,
+    val airDashBackwardsSpeed: String? = null,
+    val airDashBackwardsStartup: String? = null,
+    val landingRecovery: String? = null,
+    val throwRange: String? = null,
+    val airThrowRange: String? = null,
+    val riscGainRate: String? = null,
+    val riscInertia: String? = null,
+    val wakeupFaceUp: String? = null,
+    val wakeupFaceDown: String? = null,
+    val walkForwardsTensionGain: String? = null,
+    val dashTensionGain: String? = null,
+    val jumpForwardsTensionGain: String? = null,
+    val airDashForwardsTensionGain: String? = null,
+): CharacterGameProperties
+
 data class MTFSCharProperties(
     val prejump: String? = null,
     val backdash: String? = null,
@@ -123,6 +157,15 @@ data class GBVSRMoveProperties(
     val level: String? = null,
     val cooldown: String? = null,
     val cls: String? = null,
+): MoveGameProperties
+
+data class GGXrdMoveProperties(
+    val level: String? = null,
+    val riscGain: String? = null,
+    val riscLoss: String? = null,
+    val prorate: String? = null,
+    val roman: String? = null,
+    val tension: String? = null,
 ): MoveGameProperties
 
 data class MTFSMoveProperties(

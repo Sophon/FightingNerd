@@ -103,4 +103,32 @@ internal data class CharacterDto(
 
     //mtfs
     val team: String? = null,
+
+    //ggxrd
+    val stunResistance: String? = null,
+    val weight: String? = null,
+    val dashForward: String? = null,
+    val dashForwardDuration: String? = null,
+    val dashResistance: String? = null,
+    @SerialName("dashAcceleration")
+    val xrdDashAcceleration: String? = null,
+    val initialDashSpeed: String? = null,
+    val friction: String? = null,
+    val walkSpeedForwards: String? = null,
+    val walkSpeedBackwards: String? = null,
+    val airDashForwardsSpeed: String? = null,
+    val airDashForwardsStartup: String? = null,
+    val airDashBackwardsSpeed: String? = null,
+    val airDashBackwardsStartup: String? = null,
+    val landingRecovery: String? = null,
+    val throwRange: String? = null,
+    val airThrowRange: String? = null,
+    val riscGainRate: String? = null,
+    val riscInertia: String? = null,
+    val wakeupFaceUp: String? = null,
+    val wakeupFaceDown: String? = null,
+    val walkForwardsTensionGain: String? = null,
+    val dashTensionGain: String? = null,
+    val jumpForwardsTensionGain: String? = null,
+    val airDashForwardsTensionGain: String? = null,
 )

@@ -4,6 +4,7 @@
 - fixed text padding in the character matrix
 - added 
   - BBTag
+  - GGXrd Rev 2
 
 ## [v5.3.1] - TODO
 - fixed character lists for some games

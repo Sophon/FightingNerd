@@ -82,6 +82,13 @@ enum class Game(
         wikiUrl = "https://www.dustloop.com/w/GGST",
         wiki = Wiki.DustLoop,
     ),
+    GGXRD(
+        id = "GGXRD",
+        displayName = "Guilty Gear Xrd REV 2",
+        iconUrl = "https://www.dustloop.com/wiki/images/4/44/GGXRD-R2_Logo.png",
+        wikiUrl = "https://www.dustloop.com/w/GGXRD-R2",
+        wiki = Wiki.DustLoop,
+    ),
     DBFZ(
         id = "DBFZ",
         displayName = "Dragon Ball FighterZ",
