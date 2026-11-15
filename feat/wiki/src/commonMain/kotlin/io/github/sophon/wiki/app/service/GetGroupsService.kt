@@ -3,6 +3,7 @@ package io.github.sophon.wiki.app.service
 import io.github.sophon.wiki.GetGroupsUseCase
 import io.github.sophon.wiki.model.AVLGroups
 import io.github.sophon.wiki.model.BBCFGroups
+import io.github.sophon.wiki.model.BBTagGroups
 import io.github.sophon.wiki.model.COTWGroups
 import io.github.sophon.wiki.model.DBFZGroups
 import io.github.sophon.wiki.model.DreamCancelGroups
@@ -112,6 +113,16 @@ internal class GetGroupsService : GetGroupsUseCase {
                 BBCFGroups.Super,
                 BBCFGroups.Exceed,
                 BBCFGroups.Astral,
+            )
+            Game.BBTag -> listOf(
+                BBTagGroups.Normal,
+                BBTagGroups.Universal,
+                BBTagGroups.Skill,
+                BBTagGroups.ExtraSkill,
+                BBTagGroups.PartnerSkill,
+                BBTagGroups.DistortionSkill,
+                BBTagGroups.DistortionSkillDuo,
+                BBTagGroups.AstralHeat,
             )
             Game.DBFZ -> listOf(
                 DBFZGroups.Normal,

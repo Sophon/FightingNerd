@@ -4,6 +4,7 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.game.BBCharProperties
 import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 
@@ -49,6 +50,25 @@ class DustLoopCharacterRemoteMapperTest {
 
         //then
         assertThat(result.remoteQueryId).isEqualTo(expected)
+    }
+    //endregion
+
+    //region game properties
+    @Test
+    fun `BBTag character gets BB properties`() {
+        //given
+        val dto = DustLoopCharacterSource.aegis
+        val expected = BBCharProperties(
+            preJump = "4F",
+            backDash = "29F (1~7F Inv All)",
+            forwardDash = "",
+        )
+
+        //when
+        val result = dto.toCharacter(Game.BBTag)
+
+        //then
+        assertThat(result.gameProperties).isEqualTo(expected)
     }
     //endregion
 
@@ -589,6 +609,16 @@ private object DustLoopCharacterSource {
         umo = "",
         portrait = "BBCF_Susanoo_Portrait.png",
         icon = "BBCF_Susano'o_Icon.png",
+    )
+    val aegis = CharacterDto(
+        name = "Aegis",
+        health = "17,000",
+        prejump = "4F",
+        backdash = "29F (1~7F Inv All)",
+        forwardDash = "",
+        umo = "Boost Dash",
+        portrait = "BBTag_Aegis_Portrait.png",
+        icon = "BBTag_Aegis_Icon.png",
     )
     val hellsing = CharacterDto(
         name = "Valkenhayn R. Hellsing",

@@ -68,7 +68,9 @@ private fun MoveDto.toGameProperties(game: Game): MoveGameProperties? {
             level = level,
         )
 
-        Game.BBCF -> BBMoveProperties(
+        Game.BBCF,
+        Game.BBTag,
+            -> BBMoveProperties(
             onODR = onODR,
             attribute = attribute,
             p1 = p1,

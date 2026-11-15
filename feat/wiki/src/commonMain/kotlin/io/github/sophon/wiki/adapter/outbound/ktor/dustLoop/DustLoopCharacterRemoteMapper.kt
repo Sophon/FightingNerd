@@ -85,7 +85,9 @@ private fun CharacterDto.toGameProperties(game: Game): CharacterGameProperties? 
             boostDefense = boostDefense,
         )
 
-        Game.BBCF -> BBCharProperties(
+        Game.BBCF,
+        Game.BBTag,
+            -> BBCharProperties(
             preJump = prejump?.cleanHtml(),
             backDash = backdash?.cleanHtml(),
             forwardDash = forwardDash?.cleanHtml(),
@@ -133,7 +135,7 @@ private fun String?.formCharacterQueryName(game: Game): String {
     val queryName = this
         .orEmpty()
         .replace("?", "")
-        .let { if (game == Game.BBCF) it else it.replace("'", "") }
+        .let { if (game in apostropheKeepingGameSet) it else it.replace("'", "") }
     return queryName
 }
 
@@ -156,7 +158,9 @@ private fun String?.createAliases(
         when (game) {
             Game.GGST -> this.createGGAliases()
             Game.GBVSR -> listOf(this.substringBefore(" ").lowercase())
-            Game.BBCF -> this.createBBAliases()
+            Game.BBCF,
+            Game.BBTag,
+                -> this.createBBAliases()
             else -> listOf()
         }
     } else {
@@ -257,6 +261,8 @@ private fun List<CargoQueryItem>.filterAltModeCharacters(game: Game): List<Cargo
     return filtered
 }
 
+
+private val apostropheKeepingGameSet = setOf(Game.BBCF, Game.BBTag)
 
 private val bbCodeMap = mapOf(
     "amane nishiki" to listOf("amane", "am"),

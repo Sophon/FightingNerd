@@ -202,7 +202,9 @@ internal class DustLoopSqlDelightGameProperties(
                 .executeAsList()
                 .associate { row -> row.character_id to row.toDomain() }
 
-            Game.BBCF -> database.bbcfCharacterQueries
+            Game.BBCF,
+            Game.BBTag,
+                -> database.bbcfCharacterQueries
                 .selectAll()
                 .executeAsList()
                 .associate { row -> row.character_id to row.toDomain() }
@@ -234,7 +236,9 @@ internal class DustLoopSqlDelightGameProperties(
                 .executeAsList()
                 .associate { row -> row.move_id to row.toDomain() }
 
-            Game.BBCF -> database.bbcfMoveQueries
+            Game.BBCF,
+            Game.BBTag,
+                -> database.bbcfMoveQueries
                 .selectByCharacter(game = characterId.game.id, natural_id = characterId.naturalId)
                 .executeAsList()
                 .associate { row -> row.move_id to row.toDomain() }

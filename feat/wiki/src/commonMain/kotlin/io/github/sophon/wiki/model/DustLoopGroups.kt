@@ -76,6 +76,65 @@ object BBCFGroups {
     }
 }
 
+object BBTagGroups {
+    object Normal: Group {
+        override val id: String = "Normal"
+        override val predicate: (Move) -> Boolean = { it.type.isNormal() }
+    }
+
+    object Universal: Group {
+        override val id: String = "Universal Mechanics"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("other")
+        }
+    }
+
+    // drive (Noel's Chain Revolver) and item (Teddie's items) are character-specific skills
+    object Skill: Group {
+        override val id: String = "Skills"
+        override val predicate: (Move) -> Boolean = {
+            it.type.isSpecial()
+                    || it.type.equalsIgnoreCase("drive")
+                    || it.type.equalsIgnoreCase("item")
+        }
+    }
+
+    object ExtraSkill: Group {
+        override val id: String = "Extra Skills"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("ex")
+        }
+    }
+
+    object PartnerSkill: Group {
+        override val id: String = "Partner Skills"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("assist")
+        }
+    }
+
+    object DistortionSkill: Group {
+        override val id: String = "Distortion Skills"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("super") && it.isDistortionSkillDuo().not()
+        }
+    }
+
+    object DistortionSkillDuo: Group {
+        override val id: String = "Distortion Skill Duo"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("super") && it.isDistortionSkillDuo()
+        }
+    }
+
+    object AstralHeat: Group {
+        override val id: String = "Astral Heat"
+        override val predicate: (Move) -> Boolean = {
+            it.type.equalsIgnoreCase("astral")
+        }
+    }
+}
+
 object DBFZGroups {
     object Normal: Group {
         override val id: String = "Normal"
@@ -191,4 +250,8 @@ private fun String?.isNormal(): Boolean {
 
 private fun String?.isSpecial(): Boolean {
     return this.equalsIgnoreCase("special")
+}
+
+private fun Move.isDistortionSkillDuo(): Boolean {
+    return input.equalsIgnoreCase("Distortion Skill Duo")
 }

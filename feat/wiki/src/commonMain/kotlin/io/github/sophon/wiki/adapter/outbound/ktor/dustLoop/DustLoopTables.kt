@@ -9,6 +9,7 @@ internal object DustLoopTables {
         Game.DBFZ to CargoTable(name = "dbfzCharacters", fieldList = dbfzCharacterFieldList),
         Game.GBVSR to CargoTable(name = "gbvsrCharacters", fieldList = gbvsrCharacterFieldList),
         Game.BBCF to CargoTable(name = "bbcfCharacters", fieldList = bbcfCharacterFieldList),
+        Game.BBTag to CargoTable(name = "bbtagCharacters", fieldList = bbtagCharacterFieldList),
         Game.MTFS to CargoTable(name = "mtfsCharacters", fieldList = mtfsCharacterFieldList),
     )
 
@@ -17,6 +18,7 @@ internal object DustLoopTables {
         Game.DBFZ to CargoTable(name = "MoveData_DBFZ", fieldList = dbfzMoveFieldList),
         Game.GBVSR to CargoTable(name = "MoveData_GBVSR", fieldList = gbvsrMoveFieldList),
         Game.BBCF to CargoTable(name = "MoveData_BBCF", fieldList = bbcfMoveFieldList),
+        Game.BBTag to CargoTable(name = "MoveData_BBTag", fieldList = bbtagMoveFieldList),
         Game.MTFS to CargoTable(name = "MoveData_MTFS", fieldList = mtfsMoveFieldList),
     )
 }
@@ -96,6 +98,17 @@ private val gbvsrCharacterFieldList = listOf(
 )
 
 private val bbcfCharacterFieldList = listOf(
+    "name",
+    "health",
+    "prejump",
+    "backdash",
+    "forwarddash",
+    "umo",
+    "portrait",
+    "icon",
+)
+
+private val bbtagCharacterFieldList = listOf(
     "name",
     "health",
     "prejump",
@@ -228,6 +241,38 @@ private val bbcfMoveFieldList = listOf(
     "images",
     "caption",
     "hitboxes",
+    "hitboxCaption",
+    "type",
+    "notes",
+)
+
+private val bbtagMoveFieldList = listOf(
+    "chara",
+    "name",
+    "input",
+    "damage",
+    "guard",
+    "startup",
+    "active",
+    "recovery",
+    "onBlock",
+    "attribute",
+    "invuln",
+    "cancel",
+    "p1",
+    "p2",
+    "level",
+    "blockstun",
+    "groundHit",
+    "airHit",
+    "groundCH",
+    "airCH",
+    "blockstop",
+    "hitstop",
+    "CHstop",
+    "images",
+    "hitboxes",
+    "caption",
     "hitboxCaption",
     "type",
     "notes",

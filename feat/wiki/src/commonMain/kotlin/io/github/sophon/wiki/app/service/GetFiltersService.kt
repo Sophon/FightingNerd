@@ -36,7 +36,9 @@ internal class GetFiltersService : GetFiltersUseCase {
                 WavuFilters.HighCrush,
             )
 
-            Game.BBCF -> setOf(BBFilters.Invincible)
+            Game.BBCF,
+            Game.BBTag,
+                -> setOf(BBFilters.Invincible)
             Game.GGST -> setOf(GGFilters.Invincible)
 
             Game.MBTL -> setOf(MBFilters.Invincible)
