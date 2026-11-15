@@ -86,7 +86,7 @@ private fun Content(
                 item(key = "widget_${feature.game.id}") {
                     GameWidget(
                         iconUrl = feature.game.iconUrl,
-                        title = feature.game.shortDisplayName.uppercase(),
+                        title = feature.game.displayName.uppercase(),
                         isExpanded = feature.isExpanded,
                         isLoading = feature.isLoading,
                         onExpandClick = { onExpandWidget(feature.game) },
