@@ -1,6 +1,6 @@
 [versions]
 activity-compose = "1.9.3"
-agp = "8.11.2"
+agp = "9.5.1"
 android-compileSdk = "36"
 android-minSdk = "30"
 android-targetSdk = "36"
@@ -134,7 +134,6 @@ okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
 buildkonfig = { id = "com.codingfeline.buildkonfig", version.ref = "buildkonfig"}
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

@@ -115,7 +115,7 @@ private val popDownTransition: ContentTransform = ContentTransform(
 )
 
 @Composable
-internal fun App() {
+fun App() {
     val recordInstallation = koinInject<RecordInstallationUseCase>()
     LaunchedEffect(Unit) { recordInstallation() }
 

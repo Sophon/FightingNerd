@@ -33,7 +33,7 @@ Migration files live next to the `.sq` files:
 4. `touch <highest+1>.sqm` in the affected database's directory. Only the affected database needs a new file — the other can stay at its current version.
 5. Build and verify the version bumped:
 ```bash
-   ./gradlew :composeApp:clean :composeApp:assembleDebug
+   ./gradlew :composeApp:clean :androidApp:assembleDebug
 ```
 6. Commit the `.sq` change, mapper updates, and new `.sqm` file together.
 

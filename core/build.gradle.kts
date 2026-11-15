@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -8,17 +10,19 @@ plugins {
 kotlin {
     jvm()
 
-    androidLibrary {
+    android {
         namespace = "io.github.sophon.core"
         compileSdk = 36
         minSdk = 30
 
-        withHostTestBuilder {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_11)
         }
 
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
+        withHostTest {
+        }
+
+        withDeviceTest {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
     }

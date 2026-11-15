@@ -93,33 +93,38 @@ jobs:
           APP_VERSION_CODE: ${{ needs.setup.outputs.version_code }}
           REVENUECAT_API_KEY_ANDROID: ${{ secrets.REVENUECAT_API_KEY_ANDROID }}
         run: |
-          ./gradlew :composeApp:bundleRelease :composeApp:assembleRelease
+          ./gradlew :androidApp:bundleRelease :androidApp:assembleRelease
+
+      - name: Rename APK
+        run: |
+          mv androidApp/build/outputs/apk/release/androidApp-release.apk \
+             androidApp/build/outputs/apk/release/FightingNerd-${{ needs.setup.outputs.version_name }}.apk
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-aab
-          path: composeApp/build/outputs/bundle/release/composeApp-release.aab
+          path: androidApp/build/outputs/bundle/release/androidApp-release.aab
 
       - name: Upload mapping artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-mapping
-          path: composeApp/build/outputs/mapping/release/mapping.txt
+          path: androidApp/build/outputs/mapping/release/mapping.txt
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
           name: app-release-apk
-          path: composeApp/build/outputs/apk/release/FightingNerd-*.apk
+          path: androidApp/build/outputs/apk/release/FightingNerd-*.apk
 
       - name: Upload to Play Store (internal, draft)
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.PLAY_SERVICE_ACCOUNT_JSON }}
           packageName: io.github.sophon.fightingnerd
-          releaseFiles: composeApp/build/outputs/bundle/release/composeApp-release.aab
-          mappingFile: composeApp/build/outputs/mapping/release/mapping.txt
+          releaseFiles: androidApp/build/outputs/bundle/release/androidApp-release.aab
+          mappingFile: androidApp/build/outputs/mapping/release/mapping.txt
           track: internal
           status: draft
 

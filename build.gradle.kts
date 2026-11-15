@@ -2,7 +2,6 @@ import io.gitlab.arturbosch.detekt.extensions.DetektExtension
 
 plugins {
     alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.androidLibrary) apply false
     alias(libs.plugins.composeHotReload) apply false
     alias(libs.plugins.composeMultiplatform) apply false
     alias(libs.plugins.composeCompiler) apply false
@@ -29,6 +28,7 @@ subprojects {
                 "src/main/kotlin",
                 "src/commonTest/kotlin",
                 "src/androidUnitTest/kotlin",
+                "src/androidHostTest/kotlin",
                 "src/jvmTest/kotlin",
             ).filter { it.exists() }
         )

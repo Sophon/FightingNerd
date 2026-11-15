@@ -2,6 +2,7 @@
 
 ## [v5.3.1] - TODO
 - fixed character lists for some games
+- migrated to AGP 9
 
 ## [v5.3.0] - 2026-10-26
 - progress bars when downloading/refreshing data
