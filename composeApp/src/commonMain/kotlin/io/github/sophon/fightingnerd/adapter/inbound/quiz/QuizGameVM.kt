@@ -111,11 +111,14 @@ internal class QuizGameVM(
     }
 
     private fun finishQuiz() {
+        val correctCount = state.value.correct
+        val incorrectCount = state.value.incorrect
+
         overlayService.show(
             Dialog { onDismiss ->
                 FinishDialog(
-                    correctCount = state.value.correct,
-                    incorrectCount = state.value.incorrect,
+                    correctCount = correctCount,
+                    incorrectCount = incorrectCount,
                     onExit = {
                         _state.update { it.copy(displayFinishDialog = false) }
                         askForReview()

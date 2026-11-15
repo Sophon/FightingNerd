@@ -4,20 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
 
 val appVersionName: String = (project.properties["app.version.name"] as? String) ?: "1.0.0-dev"
-val appVersionCode: Int = System.getenv("APP_VERSION_CODE")?.toIntOrNull() ?: 1
-
-val releaseKeystorePath: String = System.getenv("KEYSTORE_PATH").orEmpty()
-val releaseKeystorePassword: String = System.getenv("KEYSTORE_PASSWORD").orEmpty()
-val releaseKeyAlias: String = System.getenv("KEY_ALIAS").orEmpty()
-val releaseKeyPassword: String = System.getenv("KEY_PASSWORD").orEmpty()
-
-val hasReleaseSigning: Boolean = listOf(
-    releaseKeystorePath,
-    releaseKeystorePassword,
-    releaseKeyAlias,
-    releaseKeyPassword,
-).all { it.isNotEmpty() }
-
 val localProperties: Properties = rootProject.file("local.properties")
     .takeIf { it.exists() }
     ?.inputStream()
@@ -35,7 +21,8 @@ val revenueCatApiKeyIos: String = readSecret("REVENUECAT_API_KEY_IOS")
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.androidKotlinMultiplatformLibrary)
+    alias(libs.plugins.androidLint)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
@@ -45,9 +32,20 @@ plugins {
 }
 
 kotlin {
-    androidTarget {
+    android {
+        namespace = "io.github.sophon.fightingnerd.shared"
+        compileSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_11)
+        }
+
+        androidResources {
+            enable = true
+        }
+
+        withHostTest {
         }
     }
 
@@ -138,74 +136,6 @@ kotlin {
             implementation(libs.test.turbine)
         }
     }
-}
-
-android {
-    namespace = "io.github.sophon.fightingnerd"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
-
-    defaultConfig {
-        applicationId = "io.github.sophon.fightingnerd"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = appVersionCode
-        versionName = appVersionName
-    }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-
-    signingConfigs {
-        if (hasReleaseSigning) {
-            create("release") {
-                storeFile = file(releaseKeystorePath)
-                storePassword = releaseKeystorePassword
-                keyAlias = releaseKeyAlias
-                keyPassword = releaseKeyPassword
-            }
-        }
-    }
-
-    buildTypes {
-        getByName("release") {
-            isMinifyEnabled = true
-            isShrinkResources = true
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-            )
-            signingConfig = if (hasReleaseSigning) {
-                signingConfigs.getByName("release")
-            } else {
-                signingConfigs.getByName("debug")
-            }
-        }
-    }
-    lint {
-        abortOnError = true
-        warningsAsErrors = false
-        checkDependencies = true
-        checkReleaseBuilds = true
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
-    }
-
-    applicationVariants.all {
-        if (buildType.name == "release") {
-            outputs.all {
-                val output = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
-                output.outputFileName = "FightingNerd-$appVersionName.apk"
-            }
-        }
-    }
-}
-
-dependencies {
-    debugImplementation(compose.uiTooling)
 }
 
 compose.desktop {
