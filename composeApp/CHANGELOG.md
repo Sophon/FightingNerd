@@ -6,7 +6,7 @@
   - BBTag
   - GGXrd Rev 2
 
-## [v5.3.1] - TODO
+## [v5.3.1] - 2026-11-15
 - fixed character lists for some games
 - migrated to AGP 9
 
