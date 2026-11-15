@@ -78,6 +78,7 @@ import io.github.sophon.fightingnerd.app.model.game.DBFZCharProperties
 import io.github.sophon.fightingnerd.app.model.game.GBVSRCharProperties
 import io.github.sophon.fightingnerd.app.model.game.GBVSRMoveProperties
 import io.github.sophon.fightingnerd.app.model.game.GGCharProperties
+import io.github.sophon.fightingnerd.app.model.game.GGXrdCharProperties
 import io.github.sophon.fightingnerd.app.model.game.KOF15MoveProperties
 import io.github.sophon.fightingnerd.app.model.game.MBTLMoveProperties
 import io.github.sophon.fightingnerd.app.model.game.MKCharProperties
@@ -224,6 +225,7 @@ internal fun Character.toUiCharacter(): MoveListState.UiCharacter {
         is DBFZCharProperties -> dbfzFields(hp = hp, props = props)
         is GBVSRCharProperties -> gbvsrFields(hp = hp, umo = umo, props = props)
         is MTFSCharProperties -> mtfsFields(umo = umo, props = props)
+        is GGXrdCharProperties -> ggxrdFields(umo = umo, props = props)
         is Uni2CharProperties -> uni2Fields(hp = hp, umo = umo, props = props)
         is Roa2CharProperties -> roa2Fields(props = props)
         else -> fallbackFields(hp = hp, umo = umo)
@@ -278,6 +280,22 @@ private fun ggstFields(umo: List<String>, props: GGCharProperties): List<MoveLis
         MoveListState.Field(Res.string.move_list_char_dash_accel, props.dashAcceleration),
         MoveListState.Field(Res.string.move_list_char_air_dash_dist, props.adDist),
         MoveListState.Field(Res.string.move_list_char_air_bwd_dash_dist, props.abdDist),
+        MoveListState.Field(Res.string.move_list_char_jump_startup, props.prejump),
+        MoveListState.Field(Res.string.move_list_char_umo, umo.toUmoValue()),
+    )
+    return fields
+}
+
+private fun ggxrdFields(umo: List<String>, props: GGXrdCharProperties): List<MoveListState.Field> {
+    val backdashValue = listOfNotNull(props.backdashDuration, props.backdashInvuln)
+        .joinToString("\n")
+        .ifBlank { null }
+    val fields = listOf(
+        MoveListState.Field(Res.string.move_list_char_dmg_received_mod, props.defense),
+        MoveListState.Field(Res.string.move_list_char_guts, props.guts),
+        MoveListState.Field(Res.string.move_list_char_backdash, backdashValue),
+        MoveListState.Field(Res.string.move_list_char_dash_init_spd, props.initialDashSpeed),
+        MoveListState.Field(Res.string.move_list_char_dash_accel, props.dashAcceleration),
         MoveListState.Field(Res.string.move_list_char_jump_startup, props.prejump),
         MoveListState.Field(Res.string.move_list_char_umo, umo.toUmoValue()),
     )

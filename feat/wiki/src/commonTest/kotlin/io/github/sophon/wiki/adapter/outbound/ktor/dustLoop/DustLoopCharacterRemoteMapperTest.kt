@@ -4,6 +4,8 @@ import assertk.assertThat
 import assertk.assertions.isEqualTo
 import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.CharacterId
+import io.github.sophon.wiki.model.game.BBCharProperties
+import io.github.sophon.wiki.model.game.GGXrdCharProperties
 import io.github.sophon.wiki.model.wiki.Game
 import kotlin.test.Test
 
@@ -49,6 +51,38 @@ class DustLoopCharacterRemoteMapperTest {
 
         //then
         assertThat(result.remoteQueryId).isEqualTo(expected)
+    }
+    //endregion
+
+    //region game properties
+    @Test
+    fun `GGXRD character takes dash acceleration from the Xrd column`() {
+        //given
+        val dto = DustLoopCharacterSource.axl
+        val expected = "52"
+
+        //when
+        val result = dto.toCharacter(Game.GGXRD)
+
+        //then
+        assertThat((result.gameProperties as GGXrdCharProperties).dashAcceleration).isEqualTo(expected)
+    }
+
+    @Test
+    fun `BBTag character gets BB properties`() {
+        //given
+        val dto = DustLoopCharacterSource.aegis
+        val expected = BBCharProperties(
+            preJump = "4F",
+            backDash = "29F (1~7F Inv All)",
+            forwardDash = "",
+        )
+
+        //when
+        val result = dto.toCharacter(Game.BBTag)
+
+        //then
+        assertThat(result.gameProperties).isEqualTo(expected)
     }
     //endregion
 
@@ -589,6 +623,53 @@ private object DustLoopCharacterSource {
         umo = "",
         portrait = "BBCF_Susanoo_Portrait.png",
         icon = "BBCF_Susano'o_Icon.png",
+    )
+    val axl = CharacterDto(
+        name = "Axl Low",
+        defense = "1.06",
+        guts = "1",
+        stunResistance = "60",
+        weight = "[100] Medium",
+        prejump = "4",
+        backdashDuration = "16",
+        backdashDistance = "1960",
+        backdashInvuln = "8",
+        dashForward = "",
+        dashForwardDuration = "",
+        dashResistance = "",
+        xrdDashAcceleration = "52",
+        initialDashSpeed = "1312",
+        friction = "100",
+        walkSpeedForwards = "525",
+        walkSpeedBackwards = "490",
+        airDashForwardsSpeed = "2625",
+        airDashForwardsStartup = "7",
+        airDashBackwardsSpeed = "1925",
+        airDashBackwardsStartup = "6",
+        landingRecovery = "2",
+        throwRange = "78",
+        airThrowRange = "192",
+        riscGainRate = "32",
+        riscInertia = "5",
+        wakeupFaceUp = "25",
+        wakeupFaceDown = "21",
+        walkForwardsTensionGain = "11",
+        dashTensionGain = "18",
+        jumpForwardsTensionGain = "10",
+        airDashForwardsTensionGain = "25",
+        umo = "",
+        portrait = "GGXRD-R_Axl_Portrait.png",
+        icon = "GGXRD-R2_Axl_Low_Icon.png",
+    )
+    val aegis = CharacterDto(
+        name = "Aegis",
+        health = "17,000",
+        prejump = "4F",
+        backdash = "29F (1~7F Inv All)",
+        forwardDash = "",
+        umo = "Boost Dash",
+        portrait = "BBTag_Aegis_Portrait.png",
+        icon = "BBTag_Aegis_Icon.png",
     )
     val hellsing = CharacterDto(
         name = "Valkenhayn R. Hellsing",

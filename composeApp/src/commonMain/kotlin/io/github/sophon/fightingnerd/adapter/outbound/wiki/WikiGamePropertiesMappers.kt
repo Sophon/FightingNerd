@@ -12,6 +12,8 @@ import io.github.sophon.fightingnerd.app.model.game.GBVSRCharProperties
 import io.github.sophon.fightingnerd.app.model.game.GBVSRMoveProperties
 import io.github.sophon.fightingnerd.app.model.game.GGCharProperties
 import io.github.sophon.fightingnerd.app.model.game.GGMoveProperties
+import io.github.sophon.fightingnerd.app.model.game.GGXrdCharProperties
+import io.github.sophon.fightingnerd.app.model.game.GGXrdMoveProperties
 import io.github.sophon.fightingnerd.app.model.game.KOF15MoveProperties
 import io.github.sophon.fightingnerd.app.model.game.MBTLMoveProperties
 import io.github.sophon.fightingnerd.app.model.game.MKCharProperties
@@ -38,6 +40,8 @@ import io.github.sophon.wiki.model.game.GBVSRCharProperties as WikiGBVSRCharProp
 import io.github.sophon.wiki.model.game.GBVSRMoveProperties as WikiGBVSRMoveProperties
 import io.github.sophon.wiki.model.game.GGCharProperties as WikiGGCharProperties
 import io.github.sophon.wiki.model.game.GGMoveProperties as WikiGGMoveProperties
+import io.github.sophon.wiki.model.game.GGXrdCharProperties as WikiGGXrdCharProperties
+import io.github.sophon.wiki.model.game.GGXrdMoveProperties as WikiGGXrdMoveProperties
 import io.github.sophon.wiki.model.game.KOF15MoveProperties as WikiKOF15MoveProperties
 import io.github.sophon.wiki.model.game.MBTLMoveProperties as WikiMBTLMoveProperties
 import io.github.sophon.wiki.model.game.MKCharProperties as WikiMKCharProperties
@@ -142,6 +146,39 @@ internal fun WikiCharacterGameProperties.toDomain(): CharacterGameProperties? {
             dashInitial = dashInitial,
             dashAcceleration = dashAcceleration,
             closeRange = closeRange?.toDomain(),
+        )
+        is WikiGGXrdCharProperties -> GGXrdCharProperties(
+            defense = defense,
+            guts = guts,
+            stunResistance = stunResistance,
+            weight = weight,
+            prejump = prejump,
+            backdashDuration = backdashDuration,
+            backdashDistance = backdashDistance,
+            backdashInvuln = backdashInvuln,
+            dashForward = dashForward,
+            dashForwardDuration = dashForwardDuration,
+            dashResistance = dashResistance,
+            dashAcceleration = dashAcceleration,
+            initialDashSpeed = initialDashSpeed,
+            friction = friction,
+            walkSpeedForwards = walkSpeedForwards,
+            walkSpeedBackwards = walkSpeedBackwards,
+            airDashForwardsSpeed = airDashForwardsSpeed,
+            airDashForwardsStartup = airDashForwardsStartup,
+            airDashBackwardsSpeed = airDashBackwardsSpeed,
+            airDashBackwardsStartup = airDashBackwardsStartup,
+            landingRecovery = landingRecovery,
+            throwRange = throwRange,
+            airThrowRange = airThrowRange,
+            riscGainRate = riscGainRate,
+            riscInertia = riscInertia,
+            wakeupFaceUp = wakeupFaceUp,
+            wakeupFaceDown = wakeupFaceDown,
+            walkForwardsTensionGain = walkForwardsTensionGain,
+            dashTensionGain = dashTensionGain,
+            jumpForwardsTensionGain = jumpForwardsTensionGain,
+            airDashForwardsTensionGain = airDashForwardsTensionGain,
         )
         is WikiMTFSCharProperties -> MTFSCharProperties(
             prejump = prejump,
@@ -280,6 +317,14 @@ internal fun WikiMoveGameProperties.toDomain(): MoveGameProperties? {
             level = level,
             cooldown = cooldown,
             cls = cls,
+        )
+        is WikiGGXrdMoveProperties -> GGXrdMoveProperties(
+            level = level,
+            riscGain = riscGain,
+            riscLoss = riscLoss,
+            prorate = prorate,
+            roman = roman,
+            tension = tension,
         )
         is WikiMTFSMoveProperties -> MTFSMoveProperties(
             simpleInput = simpleInput,

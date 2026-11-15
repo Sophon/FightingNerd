@@ -62,7 +62,8 @@ internal class MoveServiceImpl(
                     .flatMap { moveList ->
                         val move = moveList.findMove(game = character.game, moveQuery = moveQuery)
                         val foundMoveResult = if (move == null) {
-                            Result.Error(BotError.UnknownMove("char: ${characterQuery.uppercase()}; move: $moveQuery"))
+                            val string = "MOVE: $moveQuery (char: ${characterQuery.uppercase()}, ${character.game.id})"
+                            Result.Error(BotError.UnknownMove(string))
                         } else {
                             Result.Success(move)
                         }

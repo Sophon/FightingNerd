@@ -17,6 +17,7 @@ import io.github.sophon.wiki.model.game.COTWMoveProperties
 import io.github.sophon.wiki.model.game.DBFZMoveProperties
 import io.github.sophon.wiki.model.game.GBVSRMoveProperties
 import io.github.sophon.wiki.model.game.GGMoveProperties
+import io.github.sophon.wiki.model.game.GGXrdMoveProperties
 import io.github.sophon.wiki.model.game.KOF15MoveProperties
 import io.github.sophon.wiki.model.game.MBTLMoveProperties
 import io.github.sophon.wiki.model.game.MKMoveProperties
@@ -123,6 +124,7 @@ private fun Move.toPrimaryFields(): List<BotResponse.Field> {
         is T8Properties -> properties.toPrimaryFields(this)
 
         is GGMoveProperties -> properties.toPrimaryFields(this)
+        is GGXrdMoveProperties -> properties.toPrimaryFields(this)
         is BBMoveProperties -> properties.toPrimaryFields(this)
         is GBVSRMoveProperties -> properties.toPrimaryFields(this)
         is MTFSMoveProperties -> properties.toPrimaryFields(this)
@@ -147,6 +149,7 @@ private fun Move.toPrimaryFields(): List<BotResponse.Field> {
 private fun Move.toSecondaryFields(): List<BotResponse.Field> {
     val fieldList = when (val properties = gameProperties) {
         is GGMoveProperties -> properties.toSecondaryFields(this)
+        is GGXrdMoveProperties -> properties.toSecondaryFields(this)
         is BBMoveProperties -> properties.toSecondaryFields(this)
         is GBVSRMoveProperties -> properties.toSecondaryFields(this)
 
@@ -217,6 +220,31 @@ private fun GGMoveProperties.toSecondaryFields(move: Move): List<BotResponse.Fie
         fieldOf("Chip ratio", chipRatio),
         fieldOf("OTG", otgType),
         fieldOf("Prorate", prorate),
+    )
+
+    return fieldList
+}
+
+private fun GGXrdMoveProperties.toPrimaryFields(move: Move): List<BotResponse.Field> {
+    val fieldList = listOf(
+        mandatoryFieldOf("Guard", move.guard),
+        mandatoryFieldOf("Active", move.active),
+        mandatoryFieldOf("Recovery", move.recovery),
+        mandatoryFieldOf("Invul", move.invulnerability),
+    )
+
+    return fieldList
+}
+
+private fun GGXrdMoveProperties.toSecondaryFields(move: Move): List<BotResponse.Field> {
+    val fieldList = listOfNotNull(
+        fieldOf("Cancel", move.cancel),
+        fieldOf("Roman", roman),
+        fieldOf("Level", level),
+        fieldOf("Risc gain", riscGain),
+        fieldOf("Risc loss", riscLoss),
+        fieldOf("Prorate", prorate),
+        fieldOf("Tension", tension),
     )
 
     return fieldList

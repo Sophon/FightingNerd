@@ -37,7 +37,7 @@ import io.github.sophon.fightingnerd.theme.nerdColorPalette
 import io.github.sophon.fightingnerd.theme.nerdDimensions
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.Preview
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -86,7 +86,7 @@ private fun Content(
                 item(key = "widget_${feature.game.id}") {
                     GameWidget(
                         iconUrl = feature.game.iconUrl,
-                        title = feature.game.shortDisplayName.uppercase(),
+                        title = feature.game.displayName.uppercase(),
                         isExpanded = feature.isExpanded,
                         isLoading = feature.isLoading,
                         onExpandClick = { onExpandWidget(feature.game) },

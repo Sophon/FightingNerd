@@ -10,6 +10,7 @@ import io.github.sophon.wiki.model.game.BBMoveProperties
 import io.github.sophon.wiki.model.game.DBFZMoveProperties
 import io.github.sophon.wiki.model.game.GBVSRMoveProperties
 import io.github.sophon.wiki.model.game.GGMoveProperties
+import io.github.sophon.wiki.model.game.GGXrdMoveProperties
 import io.github.sophon.wiki.model.game.MTFSMoveProperties
 import io.github.sophon.wiki.model.wiki.Game
 
@@ -68,7 +69,9 @@ private fun MoveDto.toGameProperties(game: Game): MoveGameProperties? {
             level = level,
         )
 
-        Game.BBCF -> BBMoveProperties(
+        Game.BBCF,
+        Game.BBTag,
+            -> BBMoveProperties(
             onODR = onODR,
             attribute = attribute,
             p1 = p1,
@@ -84,6 +87,15 @@ private fun MoveDto.toGameProperties(game: Game): MoveGameProperties? {
             hitstop = hitstop,
             chStop = CHstop,
             cancelTiming = cancelTiming,
+        )
+
+        Game.GGXRD -> GGXrdMoveProperties(
+            level = level,
+            riscGain = riscp,
+            riscLoss = riscm,
+            prorate = prorate,
+            roman = roman,
+            tension = tension,
         )
 
         Game.MTFS -> MTFSMoveProperties(

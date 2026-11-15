@@ -17,7 +17,7 @@ internal class GetMoveServiceTest {
     @Test
     fun `a stored move is returned`() = runTest {
         // given
-        val service = _root_ide_package_.io.github.sophon.wiki.app.service.GetMoveService(FakeLoadMovePort(jinId to oneTwo))
+        val service = GetMoveService(FakeLoadMovePort(jinId to oneTwo))
         val expected = Result.Success(oneTwo)
 
         // when
@@ -30,7 +30,7 @@ internal class GetMoveServiceTest {
     @Test
     fun `a missing move is an unknown move`() = runTest {
         // given
-        val service = _root_ide_package_.io.github.sophon.wiki.app.service.GetMoveService(FakeLoadMovePort())
+        val service = GetMoveService(FakeLoadMovePort())
         val expected = listOf("jin", "1,2")
 
         // when
