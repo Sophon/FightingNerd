@@ -17,7 +17,7 @@ class XkoCharacterRemoteMapperTest {
         )
         val expected = listOf(
             Character(
-                id = CharacterId(Game.Xko, "Jinx"),
+                id = CharacterId(Game.Xko, "jinx"),
                 displayName = "Jinx",
                 remoteQueryId = "Jinx",
                 wikiUrl = "https://wiki.play2xko.com/en-us/Jinx",
