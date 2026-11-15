@@ -128,7 +128,9 @@ private fun CharacterPanel(
             style = nerdTypography.titleMedium,
             color = nerdColorPalette.textPrimary,
             textAlign = TextAlign.Center,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(nerdDimensions.inlineGapTight),
         )
     }
 }
