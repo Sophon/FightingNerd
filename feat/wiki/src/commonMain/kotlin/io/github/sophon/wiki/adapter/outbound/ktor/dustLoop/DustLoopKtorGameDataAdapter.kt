@@ -108,7 +108,7 @@ internal class DustLoopKtorGameDataAdapter(
 
     private companion object {
         const val BASE_URL = "https://www.dustloop.com/wiki/api.php"
-        const val LIMIT_CHARACTERS = 50
+        const val LIMIT_CHARACTERS = 100
         const val LIMIT_MOVES = 500
     }
 }

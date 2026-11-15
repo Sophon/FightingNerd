@@ -2,6 +2,8 @@
 
 ## [v17.8.1] - 2026-11-15
 - improved the error output for unknown moves
+- added:
+  - BBTag
 
 ## [v17.8.0] - 2026-11-13
 - update RoA2 tables

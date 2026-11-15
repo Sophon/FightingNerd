@@ -2,6 +2,8 @@
 
 ## [v5.4.0] - TODO
 - fixed text padding in the character matrix
+- added 
+  - BBTag
 
 ## [v5.3.1] - TODO
 - fixed character lists for some games

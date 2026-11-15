@@ -103,6 +103,13 @@ enum class Game(
         wikiUrl = "https://www.dustloop.com/w/BBCF",
         wiki = Wiki.DustLoop,
     ),
+    BBTag(
+        id = "BBTag",
+        displayName = "BlazBlue: Cross Tag Battle",
+        iconUrl = "https://www.dustloop.com/wiki/images/3/3d/BBTag_Logo.png",
+        wikiUrl = "https://www.dustloop.com/w/BBTag",
+        wiki = Wiki.DustLoop,
+    ),
     MTFS(
         id = "MTFS",
         displayName = "Marvel Tokon: Fighting Souls",
