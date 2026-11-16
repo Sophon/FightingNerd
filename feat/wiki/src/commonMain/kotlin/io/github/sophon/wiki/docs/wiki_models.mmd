@@ -2,21 +2,107 @@
 title: WIKI MODELS
 ---
 classDiagram
-    note "Characters in multiple games are considered distinct entities"
+    class Game {
+        <<enumeration>>
+        id
+        displayName
+        iconUrl
+        wikiUrl
+    }
 
-    Wiki "1" *-- "1..*" Game
-    Game "1" *-- "1..*" Character
-    Character "1" *-- "1..*" Move
+    class Wiki {
+        <<abstract>>
+        id
+        displayName
+        url
+        iconUrl
+        color
+        feedbackDiscordChannelId
+    }
+
+    class Character {
+        displayName
+        remoteQueryId
+        wikiUrl
+        aliasList
+        hp
+        umo
+    }
+
+    class CharacterId {
+        naturalId
+    }
+
+    class Images {
+        portraitId
+        portrait
+        full
+    }
+
+    class Move {
+        input
+        remoteId
+        name
+        damage
+        startup
+        block
+        onHit
+        onCH
+        active
+        cancel
+        recovery
+        guard
+        invulnerability
+        isThrow
+        type
+        notes
+        aliasList
+    }
+
+    class Filter {
+        <<interface>>
+    }
+
+    class Group {
+        <<interface>>
+    }
+
+    class CharacterGameProperties {
+        <<interface>>
+    }
+
+    class MoveGameProperties {
+        <<interface>>
+    }
+
+    class Urls {
+        wikiUrl
+        videoId
+        videoUrl
+        hitboxImageList
+        moveImageList
+    }
+
+
+    Game "1..*" --> "1" Wiki
+    Character "1" *-- "1" CharacterId
+    Character "1" *-- "0..1" Images
+    Character "1" *-- "*" Move
+    Character "1" *-- "0..1" CharacterGameProperties
+    CharacterId "*" --> "1" Game
+
+    Move "1" *-- "0..1" Urls
+    Move "1" *-- "0..1" MoveGameProperties
 
     WikiConfig "*" --> "*" Game: available
     WikiConfig "*" --> "*" Game: enabled
 
-    Game --> Group: offers
-    Game --> Filter: offers
+    Filter ..> Move
+    Group ..> Move
 
     GameFilter ..|> Filter
     CoreFilter ..|> Filter
     GameGroup ..|> Group
 
-    Move "1" *-- "0..1" MoveGameProperties
-    Character "1" *-- "0..1" CharacterGameProperties
+
+    note for Character "Characters in multiple games are considered distinct entities"
