@@ -24,13 +24,31 @@ import kotlin.test.Test
 class ProcessButtonEventServiceTest {
     //region expand
     @Test
-    fun `expanded move is forced open without any buttons`() = runTest {
+    fun `expanded move is forced open and keeps its media buttons`() = runTest {
         // given
-        val expected = Result.Success(sf6Move.copy(forceExpand = true, buttonSet = null))
+        val expected = Result.Success(
+            sf6Move.copy(
+                forceExpand = true,
+                buttonSet = BotResponse.ButtonSet(buttonList = listOf(videoButton)),
+            )
+        )
         val service = processButtonEventService()
 
         // when
         val result = service(ButtonEvent.Expand(sf6MoveId))
+
+        // then
+        assertThat(result).isEqualTo(expected)
+    }
+
+    @Test
+    fun `expanded move without media has no buttons`() = runTest {
+        // given
+        val expected = Result.Success(kenMove.copy(forceExpand = true, buttonSet = null))
+        val service = processButtonEventService()
+
+        // when
+        val result = service(ButtonEvent.Expand(kenMoveId))
 
         // then
         assertThat(result).isEqualTo(expected)
@@ -219,6 +237,7 @@ class ProcessButtonEventServiceTest {
     ): ProcessButtonEventService {
         val moveMap = mapOf(
             CharacterId(game = Game.StreetFighter6, characterId = "ryu") to listOf(sf6Move),
+            CharacterId(game = Game.StreetFighter6, characterId = "ken") to listOf(kenMove),
         )
         val service = ProcessButtonEventService(
             frameDataPort = FakeFrameDataPort(moveMap),
@@ -251,6 +270,17 @@ private val sf6Move = moveResponse(
         buttonList = listOf(
             BotResponse.EmbedButton(label = "Details", action = BotResponse.EmbedButton.Action.Expand(sf6MoveId)),
             videoButton,
+        ),
+    ),
+)
+private val kenMoveId = MoveId(game = Game.StreetFighter6, characterId = "ken", input = "2MK")
+private val kenMove = moveResponse(
+    input = "2MK",
+    game = Game.StreetFighter6,
+    characterName = "Ken",
+    buttonSet = BotResponse.ButtonSet(
+        buttonList = listOf(
+            BotResponse.EmbedButton(label = "Details", action = BotResponse.EmbedButton.Action.Expand(kenMoveId)),
         ),
     ),
 )
