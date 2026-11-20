@@ -59,18 +59,28 @@ internal class ProcessButtonEventService(
 
 
     /**
-     * The expanded embed shows everything, media included, so no buttons are left.
+     * The expanded embed shows everything, media included. Hides the Detail button.
      */
     private suspend fun expand(moveId: MoveId): Result<MoveResponse, BotError> {
         val result = frameDataPort.getFrameData(moveId)
             .map { moveResponse ->
                 val expanded = moveResponse.copy(
                     forceExpand = true,
-                    buttonSet = null,
+                    buttonSet = moveResponse.buttonSet?.withoutExpand(),
                 )
                 expanded
             }
         return result
+    }
+
+    private fun BotResponse.ButtonSet.withoutExpand(): BotResponse.ButtonSet? {
+        val remainingList = buttonList.filterNot { button -> button.action is BotResponse.EmbedButton.Action.Expand }
+        val remaining = if (remainingList.isEmpty()) {
+            null
+        } else {
+            copy(buttonList = remainingList)
+        }
+        return remaining
     }
 
     /**

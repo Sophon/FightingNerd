@@ -78,10 +78,6 @@ This README serves as a technical overview for the project.
 
 ## AI disclaimer
 
-Creator technical background:
-- 2020 - 2026: Android developer and mobile developer with KMP 
-- 2026 - onwards: backend developer with Kotlin and Micronaut
-
 Project timeline:
 - October 2025 (project start) - June 2026: completely human coded.
 - June 2026 - onwards: AI assisted.
@@ -103,6 +99,10 @@ Specific breakdown:
   - CICD
 - AI written, minimal human supervision:
   - data models from json
+
+Creator technical background:
+- 2020 - 2026: Android developer and mobile developer with KMP 
+- 2026 - onwards: backend developer with Kotlin and Micronaut
 
 Harness: Claude code.
 

@@ -79,7 +79,7 @@ private fun expandedMoveEmbed(
     primaryFieldsSection(fields = move.primaryFields)
     detailsBulletPoints(move.secondaryFields)
     notesSection(noteList = move.noteList, aliasList = move.aliasList)
-    embedImage(urls = move.hitboxImageList)
+    embedImage(urls = move.hitboxImageList.ifEmpty { move.imageList })
 
     featureFooter(dataSource = move.dataSource)
 }
