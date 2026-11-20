@@ -1,5 +1,9 @@
 # BOT CHANGELOG
 
+## [v17.10.0] - 2026-11-20
+- display non-hitbox image if hitbox images missing
+- keep the Media button after expanding the move embed
+
 ## [v17.9.0] - 2026-11-15
 - improved the error output for unknown moves
 - added:
