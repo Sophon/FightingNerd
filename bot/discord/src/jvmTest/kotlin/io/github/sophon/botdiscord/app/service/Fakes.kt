@@ -170,7 +170,8 @@ internal class FakeStatsPort(
 internal class FakeLoadConfigPort(
     private val result: Result<DiscordConfig, BotError>,
 ): LoadConfigPort {
-    override fun load(): Result<DiscordConfig, BotError> = result
+    override suspend fun load(): Result<DiscordConfig, BotError> = result
+    override suspend fun download(): Result<DiscordConfig, BotError> = result
 }
 //endregion
 
@@ -278,7 +279,7 @@ internal class FakeCoreBotService: CoreBotService {
         return Result.Success(PlainTextResponse(text = "invite"))
     }
 
-    override fun createModulesResponse(): Result<ModulesResponse, BotError> {
+    override suspend fun createModulesResponse(): Result<ModulesResponse, BotError> {
         callList += "createModulesResponse()"
         return Result.Success(ModulesResponse(moduleList = emptyList(), dataSource = wavuDataSource))
     }
@@ -312,6 +313,11 @@ internal class FakeAdminService: AdminService {
     override fun isAdmin(userId: String): Result<Boolean, BotError> {
         callList += "isAdmin($userId)"
         return Result.Success(false)
+    }
+
+    override suspend fun getAdminConfig(): Result<DiscordConfig.AdminConfig, BotError> {
+        callList += "getAdminConfig()"
+        return Result.Error(BotError.NotImplemented("getAdminConfig"))
     }
 
     override suspend fun forwardFeedback(query: String, source: UserRequest.Source?): Result<FeedbackResponse, BotError> {

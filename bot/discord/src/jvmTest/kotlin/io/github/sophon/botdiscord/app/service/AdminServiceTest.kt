@@ -351,7 +351,8 @@ class AdminServiceTest {
     private class FakeLoadConfigPort(
         private val result: Result<DiscordConfig, BotError>,
     ): LoadConfigPort {
-        override fun load(): Result<DiscordConfig, BotError> = result
+        override suspend fun load(): Result<DiscordConfig, BotError> = result
+        override suspend fun download(): Result<DiscordConfig, BotError> = result
     }
 
     private class FakeRefreshWikiUseCase: RefreshWikiUseCase {
