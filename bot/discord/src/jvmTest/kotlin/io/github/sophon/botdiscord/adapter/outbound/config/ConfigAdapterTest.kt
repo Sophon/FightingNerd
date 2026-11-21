@@ -2,7 +2,6 @@ package io.github.sophon.botdiscord.adapter.outbound.config
 
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import assertk.assertions.isInstanceOf
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.network.HttpClientFactory
 import io.github.sophon.discord.adapter.outbound.config.ConfigAdapter
@@ -20,102 +19,58 @@ import kotlin.test.AfterTest
 import kotlin.test.Test
 
 class ConfigAdapterTest {
-    private val bundledConfigFile: File = createTempFile(suffix = ".json").toFile()
-        .apply { writeText(json.encodeToString(bundledConfig)) }
+    private val configFile: File = createTempFile(suffix = ".json")
+        .toFile()
+        .apply { writeText(json.encodeToString(fileConfig)) }
 
     @AfterTest
     fun tearDown() {
-        bundledConfigFile.delete()
+        configFile.delete()
     }
 
     @Test
-    fun `refresh returns the remote config`() = runTest {
+    fun `download returns the remote config`() = runTest {
         // given
         val expected = Result.Success(remoteConfig)
         val adapter = configAdapter(remote = FakeRemote(isAvailable = true))
 
         // when
-        val result = adapter.refresh()
+        val result = adapter.download()
 
         // then
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun `refreshed config is cached`() = runTest {
-        // given
-        val expected = Result.Success(remoteConfig)
-        val adapter = configAdapter(remote = FakeRemote(isAvailable = true))
-        adapter.refresh()
-
-        // when
-        val result = adapter.load()
-
-        // then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `failed refresh keeps the cached config`() = runTest {
+    fun `failed download falls back to the cached config`() = runTest {
         // given
         val expected = Result.Success(remoteConfig)
         val remote = FakeRemote(isAvailable = true)
         val adapter = configAdapter(remote = remote)
-        adapter.refresh()
+        adapter.download()
         remote.isAvailable = false
 
         // when
-        val result = adapter.refresh()
+        val result = adapter.download()
 
         // then
         assertThat(result).isEqualTo(expected)
     }
 
     @Test
-    fun `failed refresh falls back to the bundled config`() = runTest {
+    fun `failed download without a cache falls back to the config file`() = runTest {
         // given
-        val expected = Result.Success(bundledConfig)
+        val expected = Result.Success(fileConfig)
         val adapter = configAdapter(remote = FakeRemote(isAvailable = false))
 
         // when
-        val result = adapter.refresh()
-
-        // then
-        assertThat(result).isEqualTo(expected)
-    }
-
-    @Test
-    fun `failed refresh without a bundled config is an error`() = runTest {
-        // given
-        val adapter = configAdapter(
-            remote = FakeRemote(isAvailable = false),
-            bundledConfigPath = "res/missingConfig.json",
-        )
-
-        // when
-        val result = adapter.refresh()
-
-        // then
-        assertThat(result).isInstanceOf<Result.Error<*>>()
-    }
-
-    @Test
-    fun `load reads the bundled config before any refresh`() = runTest {
-        // given
-        val expected = Result.Success(bundledConfig)
-        val adapter = configAdapter(remote = FakeRemote(isAvailable = true))
-
-        // when
-        val result = adapter.load()
+        val result = adapter.download()
 
         // then
         assertThat(result).isEqualTo(expected)
     }
 
 
-    /**
-     * Serves [remoteConfig] as `text/plain` like raw.githubusercontent.com; a 503 while unavailable.
-     */
     private class FakeRemote(var isAvailable: Boolean) {
         val engine = MockEngine {
             if (isAvailable) {
@@ -130,15 +85,11 @@ class ConfigAdapterTest {
         }
     }
 
-    private fun configAdapter(
-        remote: FakeRemote,
-        bundledConfigPath: String = bundledConfigFile.path,
-    ): ConfigAdapter {
+    private fun configAdapter(remote: FakeRemote): ConfigAdapter {
         val adapter = ConfigAdapter(
             httpClient = HttpClientFactory.create(remote.engine, json),
             json = json,
-            remoteConfigUrl = REMOTE_CONFIG_URL,
-            bundledConfigPath = bundledConfigPath,
+            configPath = configFile.path,
         )
         return adapter
     }
@@ -160,10 +111,8 @@ private val remoteConfig = DiscordConfig(
     statsConfig = DiscordConfig.StatsConfig(isEnabled = true, statsChannelIdList = listOf("1480723668039503994")),
 )
 
-private val bundledConfig = remoteConfig.copy(
+private val fileConfig = remoteConfig.copy(
     featureList = listOf(
         DiscordConfig.Feature(name = "Wavu Wiki", isEnabled = true, supportedGames = listOf("Tekken_8")),
     ),
 )
-
-private const val REMOTE_CONFIG_URL = "https://raw.githubusercontent.com/Sophon/FightingNerd/dev/res/discordConfig.json"
