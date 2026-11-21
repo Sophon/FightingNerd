@@ -10,7 +10,7 @@ import io.github.sophon.wiki.model.Character
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.model.Move
 import io.github.sophon.wiki.model.MoveGameProperties
-import io.github.sophon.wiki.model.WavuFilters
+import io.github.sophon.wiki.model.game.WavuFilters
 import io.github.sophon.wiki.model.game.AVLMoveProperties
 import io.github.sophon.wiki.model.game.BBMoveProperties
 import io.github.sophon.wiki.model.game.COTWMoveProperties

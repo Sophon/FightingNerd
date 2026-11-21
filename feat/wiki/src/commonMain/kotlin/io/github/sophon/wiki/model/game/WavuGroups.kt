@@ -1,7 +1,8 @@
-package io.github.sophon.wiki.model
+package io.github.sophon.wiki.model.game
 
 import io.github.sophon.core.util.equalsIgnoreCase
-import io.github.sophon.wiki.model.game.WavuMoveProperties
+import io.github.sophon.wiki.model.Group
+import io.github.sophon.wiki.model.Move
 
 object WavuGroups {
     object Heat: Group {
