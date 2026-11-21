@@ -83,7 +83,7 @@ kotlin {
     }
 }
 
-val featureVersion = "2.7.0"
+val featureVersion = "3.0.0"
 buildkonfig {
     packageName = "io.github.sophon.wiki"
 

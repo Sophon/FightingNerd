@@ -21,6 +21,7 @@ import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.outPort.FeatureInfoPort
 import io.github.sophon.discord.app.service.CoreBotServiceImpl
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.time.Duration.Companion.seconds
 
@@ -125,7 +126,7 @@ class CoreBotServiceTest {
 
     //region createModulesResponse
     @Test
-    fun `bot module comes first, followed by each enabled module once`() {
+    fun `bot module comes first, followed by each enabled module once`() = runTest {
         // given
         val expected = Result.Success(
             ModulesResponse(
@@ -148,7 +149,7 @@ class CoreBotServiceTest {
     }
 
     @Test
-    fun `disabled feature isn't listed`() {
+    fun `disabled feature isn't listed`() = runTest {
         // given
         val expected = Result.Success(
             ModulesResponse(moduleList = listOf(botModule, wikiModule), dataSource = BOT_DATA_SOURCE),
@@ -167,7 +168,7 @@ class CoreBotServiceTest {
     }
 
     @Test
-    fun `feature without a module isn't listed`() {
+    fun `feature without a module isn't listed`() = runTest {
         // given
         val expected = Result.Success(ModulesResponse(moduleList = listOf(botModule), dataSource = BOT_DATA_SOURCE))
         val service = coreBotService(featureList = listOf(feature(name = "Tekken Warehouse")))
@@ -180,7 +181,7 @@ class CoreBotServiceTest {
     }
 
     @Test
-    fun `failed config load is returned`() {
+    fun `failed config load is returned`() = runTest {
         // given
         val expected = Result.Error(BotError.FileError("discordConfig.json"))
         val service = CoreBotServiceImpl(

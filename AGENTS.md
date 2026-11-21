@@ -86,7 +86,7 @@ On Play Store and Apple Store.
 - data 
   - `SQLDelight` + `DataStore<Preferences>`
   - enabling a feature starts data verifying data presence and then potentially download
-  - disabling a feature calls Wiki feature's `clearCache()`
+  - every wiki configure deletes the data of all disabled games
   - feature config requires confirm for that reason
 
 ## Bot

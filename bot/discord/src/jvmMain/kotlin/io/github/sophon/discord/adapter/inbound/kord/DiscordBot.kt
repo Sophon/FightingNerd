@@ -31,7 +31,6 @@ import io.github.sophon.discord.app.model.discord.ButtonEvent
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.discord.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.app.model.discord.DiscordCommandInteraction
-import io.github.sophon.discord.app.model.discord.DiscordConfig
 import io.github.sophon.discord.app.model.discord.Message
 import io.github.sophon.discord.app.model.response.AliasResponse
 import io.github.sophon.discord.app.model.response.BanResponse
@@ -40,14 +39,15 @@ import io.github.sophon.discord.app.model.response.CoreResponse
 import io.github.sophon.discord.app.model.response.EwgfResponse
 import io.github.sophon.discord.app.model.response.FeedbackResponse
 import io.github.sophon.discord.app.model.response.GlossaryResponse
-import io.github.sophon.discord.app.model.response.MediaResponse
 import io.github.sophon.discord.app.model.response.ListResponse
+import io.github.sophon.discord.app.model.response.MediaResponse
 import io.github.sophon.discord.app.model.response.ModulesResponse
 import io.github.sophon.discord.app.model.response.MoveResponse
 import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.ReplyResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.response.UnbanResponse
+import io.github.sophon.discord.app.service.AdminService
 import io.github.sophon.discord.app.util.kordRestCall
 import io.github.sophon.discord.inPort.ProcessButtonEventUseCase
 import io.github.sophon.discord.inPort.ProcessUserInputUseCase
@@ -59,21 +59,19 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.launch
 import java.lang.management.ManagementFactory
 import kotlin.time.Duration.Companion.hours
-import kotlin.uuid.ExperimentalUuidApi
 
 internal interface DiscordBot {
     suspend fun startSession()
 }
 
-@OptIn(ExperimentalUuidApi::class)
 internal class DiscordBotImpl(
     private val kord: Kord,
-    private val adminConfig: DiscordConfig.AdminConfig,
     private val coroutineScope: CoroutineScope,
     private val scheduler: Scheduler,
     private val commandRegistry: CommandRegistry,
 
     private val kordResponder: KordResponder,
+    private val adminService: AdminService,
     private val startFeaturesUseCase: StartFeaturesUseCase,
     private val processUserInputUseCase: ProcessUserInputUseCase,
     private val processButtonEventUseCase: ProcessButtonEventUseCase,
@@ -90,18 +88,21 @@ internal class DiscordBotImpl(
     }
 
 
-    private fun startFeatures() {
-        coroutineScope.launch {
-            startFeaturesUseCase()
-                .onError { error -> Napier.e(tag = TAG) { "Feature start failed: $error" } }
-        }
+    private suspend fun startFeatures() {
+        startFeaturesUseCase()
+            .onError { error -> Napier.e(tag = TAG) { "Feature start failed: $error" } }
     }
 
     private suspend fun startKord() {
-        cleanOldGuildCommands(kord)
+        val adminConfigResult = adminService.getAdminConfig()
+            .onError { error -> Napier.e(tag = TAG) { "Admin config load failed: $error" } }
+
+        adminConfigResult.onSuccess { adminConfig -> cleanOldGuildCommands(kord, adminConfig.adminServerId) }
         createGlobalCommands()
-        createAdminCommands()
-//        createCommandsForTestServer()
+        adminConfigResult.onSuccess { adminConfig ->
+            createAdminCommands(adminConfig.adminServerId)
+//            createCommandsForTestServer(adminConfig.adminServerId)
+        }
 
         monitorGatewayHealth()
 
@@ -606,8 +607,8 @@ internal class DiscordBotImpl(
         }
     }
 
-    private suspend fun cleanOldGuildCommands(kord: Kord) = try {
-        val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
+    private suspend fun cleanOldGuildCommands(kord: Kord, adminServerId: String) = try {
+        val testGuildSnowFlake = Snowflake(adminServerId)
         kord.getGuildApplicationCommands(testGuildSnowFlake).collect { command ->
             try {
                 command.delete()
@@ -620,8 +621,8 @@ internal class DiscordBotImpl(
     }
 
     @Suppress("UnusedPrivateMember")
-    private suspend fun createCommandsForTestServer() {
-        val testGuildSnowFlake = Snowflake(adminConfig.adminServerId)
+    private suspend fun createCommandsForTestServer(adminServerId: String) {
+        val testGuildSnowFlake = Snowflake(adminServerId)
         kord.createGuildApplicationCommands(testGuildSnowFlake) {
             Command.entries
                 .forEach { supportedCommand ->
@@ -674,9 +675,9 @@ internal class DiscordBotImpl(
         }
     }
 
-    private suspend fun createAdminCommands() {
+    private suspend fun createAdminCommands(adminServerId: String) {
         try {
-            val adminGuildSnowFlake = Snowflake(adminConfig.adminServerId)
+            val adminGuildSnowFlake = Snowflake(adminServerId)
             kord.createGuildApplicationCommands(adminGuildSnowFlake) {
                 adminCommands.forEach { command ->
                     input(

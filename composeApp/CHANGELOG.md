@@ -1,12 +1,15 @@
 # APP CHANGELOG
 
-## [v5.4.0] - TODO
+## [v5.5.0] - TODO
+- `wiki` - deletes data for all disabled games
+
+## [v5.4.0] - 2026-11-15
 - fixed text padding in the character matrix
 - added 
   - BBTag
   - GGXrd Rev 2
 
-## [v5.3.1] - 2026-11-15
+## [v5.3.1] - 2026-11-14
 - fixed character lists for some games
 - migrated to AGP 9
 

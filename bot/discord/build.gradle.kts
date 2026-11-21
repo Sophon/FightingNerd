@@ -44,6 +44,7 @@ kotlin {
             implementation(libs.kotlin.testJunit)
             implementation(libs.test.assertk)
             implementation(libs.kotlinx.coroutines.test)
+            implementation(libs.ktor.mock)
         }
     }
 }
