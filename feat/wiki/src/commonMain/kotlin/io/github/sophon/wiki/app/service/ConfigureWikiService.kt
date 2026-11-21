@@ -11,22 +11,18 @@ import io.github.sophon.wiki.ConfigureWikiUseCase
 import io.github.sophon.wiki.app.model.toWikiError
 import io.github.sophon.wiki.app.outPort.DeleteCharacterListPort
 import io.github.sophon.wiki.app.outPort.DeleteMoveListPort
-import io.github.sophon.wiki.app.outPort.LoadWikiConfigPort
 import io.github.sophon.wiki.app.outPort.SaveWikiConfigPort
 import io.github.sophon.wiki.model.WikiConfig
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.wiki.Game
-import kotlinx.coroutines.flow.first
 
 internal class ConfigureWikiService(
-    private val loadWikiConfigPort: LoadWikiConfigPort,
     private val saveWikiConfigPort: SaveWikiConfigPort,
     private val deleteMoveListPort: DeleteMoveListPort,
     private val deleteCharacterListPort: DeleteCharacterListPort,
 ) : ConfigureWikiUseCase {
     override suspend fun invoke(wikiConfig: WikiConfig): EmptyResult<WikiError> {
-        val previousConfig = loadWikiConfigPort.subscribe().first()
-        val disabledGameSet = previousConfig?.enabledGameSet.orEmpty() - wikiConfig.enabledGameSet
+        val disabledGameSet = (Game.entries.toSet() - wikiConfig.enabledGameSet)
 
         val result = saveWikiConfigPort.save(wikiConfig)
             .flatMap { deleteDataFor(disabledGameSet) }

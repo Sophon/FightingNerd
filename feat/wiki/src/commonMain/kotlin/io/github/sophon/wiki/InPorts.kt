@@ -8,18 +8,15 @@ import io.github.sophon.wiki.model.Default
 import io.github.sophon.wiki.model.Filter
 import io.github.sophon.wiki.model.Group
 import io.github.sophon.wiki.model.Move
-import io.github.sophon.wiki.model.WikiEvent
 import io.github.sophon.wiki.model.WikiConfig
+import io.github.sophon.wiki.model.WikiEvent
 import io.github.sophon.wiki.model.WikiError
 import io.github.sophon.wiki.model.wiki.Game
 import kotlinx.coroutines.flow.Flow
 import kotlin.time.Instant
 
 /**
- * Applies the host's [WikiConfig]. Games that were enabled before and aren't in the new config get their
- * characters and moves deleted. The first call has no previous config, so nothing gets deleted.
- *
- * The config is applied even if a delete fails - an error only means some data was left behind.
+ * Applies the host's [WikiConfig]. Every game that isn't enabled gets its data deleted.
  */
 interface ConfigureWikiUseCase {
     suspend operator fun invoke(wikiConfig: WikiConfig): EmptyResult<WikiError>

@@ -1,5 +1,8 @@
 # BOT CHANGELOG
 
+## [v17.11.0] - TODO
+- `wiki` - deletes data for all disabled games
+
 ## [v17.10.0] - 2026-11-20
 - display non-hitbox image if hitbox images missing
 - keep the Media button after expanding the move embed

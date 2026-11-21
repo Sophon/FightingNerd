@@ -25,6 +25,8 @@ import kotlin.time.Duration.Companion.seconds
 internal interface AdminService {
     fun isAdmin(userId: String): Result<Boolean, BotError>
 
+    suspend fun getAdminConfig(): Result<DiscordConfig.AdminConfig, BotError>
+
     suspend fun forwardFeedback(
         query: String,
         source: UserRequest.Source?,
@@ -50,6 +52,12 @@ internal class AdminServiceImpl(
 ): AdminService {
     override fun isAdmin(userId: String): Result<Boolean, BotError> {
         return adminPort.isUserAdmin(userId)
+    }
+
+    override suspend fun getAdminConfig(): Result<DiscordConfig.AdminConfig, BotError> {
+        val result = loadConfigPort.load()
+            .map { discordConfig -> discordConfig.adminConfig }
+        return result
     }
 
     override suspend fun forwardFeedback(

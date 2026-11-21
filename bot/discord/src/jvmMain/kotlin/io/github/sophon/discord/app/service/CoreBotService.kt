@@ -35,7 +35,7 @@ internal interface CoreBotService {
 
     fun createInviteResponse(): Result<PlainTextResponse, BotError>
 
-    fun createModulesResponse(): Result<ModulesResponse, BotError>
+    suspend fun createModulesResponse(): Result<ModulesResponse, BotError>
 
     fun createSteamLobbyResponse(
         query: String,
@@ -93,7 +93,7 @@ internal class CoreBotServiceImpl(
         return Result.Success(response)
     }
 
-    override fun createModulesResponse(): Result<ModulesResponse, BotError> {
+    override suspend fun createModulesResponse(): Result<ModulesResponse, BotError> {
         val result = loadConfigPort.load()
             .map { discordConfig ->
                 val enabledModuleList = discordConfig.featureList

@@ -6,23 +6,28 @@ sealed class BotError(private vararg val inputs: String) : Error {
     class InvalidCommand(val command: String): BotError(command)
     class NotImplemented(command: String): BotError(command)
     class InvalidQuery(input: String) : BotError(input)
-    class UnknownCharacter(input: String) : BotError(input)
-    class UnknownMove(vararg inputs: String) : BotError(*inputs)
-    class GlossaryTermNotFound(input: String) : BotError(input)
-    class EmptyGlossary : BotError()
-    class DownloadError(input: String) : BotError(input)
-    class BotLogicError(vararg inputs: String) : BotError(*inputs)
-    class UnsupportedGame(vararg inputs: String): BotError(*inputs)
-    class Kord(error: String): BotError(error)
     class InvalidSteamLobbyUrl(steamLobbyUrl: String): BotError(steamLobbyUrl)
-    class SyntaxError(input: String): BotError(input)
-    class PlayerNotRegistered : BotError()
+    class BotLogicError(vararg inputs: String) : BotError(*inputs)
+    class Kord(error: String): BotError(error)
+
+    class ConfigError(error: String): BotError(error)
+
+    class AdminError(error: String): BotError(error)
     class PermissionDenied : BotError()
     class UserBanned(userId: String) : BotError(userId)
 
     class WikiError(error: String): BotError(error)
-    class AdminError(error: String): BotError(error)
+    class UnknownCharacter(input: String) : BotError(input)
+    class UnknownMove(vararg inputs: String) : BotError(*inputs)
+    class UnsupportedGame(vararg inputs: String): BotError(*inputs)
 
+    class GlossaryTermNotFound(input: String) : BotError(input)
+    class EmptyGlossary : BotError()
+
+    class PlayerNotRegistered : BotError()
+    class SyntaxError(input: String): BotError(input)
+
+    class DownloadError(input: String) : BotError(input)
     class FileError(vararg errors: String) : BotError(*errors)
     class DatabaseError : BotError()
 
