@@ -188,9 +188,7 @@ internal fun dcBotModule(kord: Kord) = module {
     //endregion
 
     //region Config
-    singleOf(::ConfigAdapter) {
-        bind<LoadConfigPort>()
-    }
+    single { ConfigAdapter(httpClient = get(), json = get()) }.bind<LoadConfigPort>()
     singleOf(::FeatureInfoAdapter).bind<FeatureInfoPort>()
     //endregion
 

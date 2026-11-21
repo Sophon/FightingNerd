@@ -19,6 +19,7 @@ import java.io.File
 internal class ConfigAdapter(
     private val httpClient: HttpClient,
     private val json: Json,
+    private val configPath: String = CONFIG_PATH,
 ): LoadConfigPort {
     private var discordConfig: DiscordConfig? = null
 
@@ -61,7 +62,7 @@ internal class ConfigAdapter(
                 try {
                     Result.Success(json.decodeFromString<DiscordConfig>(configText))
                 } catch (e: Exception) {
-                    Result.Error(BotError.FileError(e.toErrorMessage(CONFIG_PATH)))
+                    Result.Error(BotError.FileError(e.toErrorMessage(configPath)))
                 }
             }
         return result
@@ -69,9 +70,9 @@ internal class ConfigAdapter(
 
     private fun readConfigFile(): Result<String, BotError> {
         val result = try {
-            Result.Success(File(CONFIG_PATH).readText())
+            Result.Success(File(configPath).readText())
         } catch (e: Exception) {
-            Result.Error(BotError.FileError(e.toErrorMessage(CONFIG_PATH)))
+            Result.Error(BotError.FileError(e.toErrorMessage(configPath)))
         }
         return result
     }
