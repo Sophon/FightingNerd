@@ -88,11 +88,9 @@ internal class DiscordBotImpl(
     }
 
 
-    private fun startFeatures() {
-        coroutineScope.launch {
-            startFeaturesUseCase()
-                .onError { error -> Napier.e(tag = TAG) { "Feature start failed: $error" } }
-        }
+    private suspend fun startFeatures() {
+        startFeaturesUseCase()
+            .onError { error -> Napier.e(tag = TAG) { "Feature start failed: $error" } }
     }
 
     private suspend fun startKord() {
