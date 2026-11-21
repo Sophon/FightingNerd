@@ -47,7 +47,6 @@ import io.github.sophon.discord.app.outPort.GlossaryPort
 import io.github.sophon.discord.app.outPort.LoadConfigPort
 import io.github.sophon.discord.app.outPort.NormalizeMoveInputPort
 import io.github.sophon.discord.app.outPort.PostReportPort
-import io.github.sophon.discord.app.outPort.ReadFilePort
 import io.github.sophon.discord.app.outPort.RefreshGlossaryPort
 import io.github.sophon.discord.app.outPort.RefreshWikiPort
 import io.github.sophon.discord.app.outPort.StatsPort
@@ -190,16 +189,9 @@ internal fun dcBotModule(kord: Kord) = module {
 
     //region Config
     singleOf(::ConfigAdapter) {
-        bind<ReadFilePort>()
         bind<LoadConfigPort>()
     }
     singleOf(::FeatureInfoAdapter).bind<FeatureInfoPort>()
-    single<DiscordConfig.AdminConfig> {
-        when (val result = get<LoadConfigPort>().load()) {
-            is Result.Success -> result.data.adminConfig
-            is Result.Error -> error("Failed to load config: ${result.error}")
-        }
-    }
     //endregion
 
     //region Stats

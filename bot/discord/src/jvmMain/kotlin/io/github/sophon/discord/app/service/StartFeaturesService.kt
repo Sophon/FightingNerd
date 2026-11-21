@@ -22,7 +22,7 @@ internal class StartFeaturesService(
         statsPort.configure()
             .onError { error -> Napier.e(tag = TAG) { "Stats configuration failed: $error" } }
 
-        val result = loadConfigPort.load()
+        val result = loadConfigPort.download()
             .flatMap { discordJsonConfig ->
                 Napier.i(tag = TAG) { "JSON config: $discordJsonConfig" }
                 val startResult = configureAdminPort.configure(discordJsonConfig)

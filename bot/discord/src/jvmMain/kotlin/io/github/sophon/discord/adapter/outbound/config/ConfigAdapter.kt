@@ -1,32 +1,32 @@
 package io.github.sophon.discord.adapter.outbound.config
 
+import io.github.aakira.napier.Napier
 import io.github.sophon.core.architecture.Result
 import io.github.sophon.core.architecture.flatMap
+import io.github.sophon.core.architecture.map
+import io.github.sophon.core.architecture.mapError
+import io.github.sophon.core.architecture.onError
 import io.github.sophon.core.architecture.onSuccess
+import io.github.sophon.core.network.safeCall
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.discord.DiscordConfig
 import io.github.sophon.discord.app.outPort.LoadConfigPort
-import io.github.sophon.discord.app.outPort.ReadFilePort
+import io.ktor.client.HttpClient
+import io.ktor.client.request.get
 import kotlinx.serialization.json.Json
 import java.io.File
 
 internal class ConfigAdapter(
+    private val httpClient: HttpClient,
     private val json: Json,
-): ReadFilePort, LoadConfigPort {
+): LoadConfigPort {
     private var discordConfig: DiscordConfig? = null
 
-    override fun read(path: String): Result<String, BotError> {
-        val result = try {
-            Result.Success(File(path).readText())
-        } catch (e: Exception) {
-            Result.Error(BotError.FileError(e.toErrorMessage(path)))
-        }
-        return result
-    }
-
-    override fun load(): Result<DiscordConfig, BotError> {
+    override suspend fun load(): Result<DiscordConfig, BotError> {
         val cachedConfig = discordConfig
-        val result = if (cachedConfig != null) {
+        val result = if (cachedConfig == null) {
+            Result.Error(BotError.ConfigError("Config not downloaded yet"))
+        } else {
             Result.Success(cachedConfig)
         }
         return result
