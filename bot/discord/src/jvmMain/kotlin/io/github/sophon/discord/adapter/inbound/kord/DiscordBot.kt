@@ -4,10 +4,8 @@ import dev.kord.common.entity.Permission
 import dev.kord.common.entity.Permissions
 import dev.kord.common.entity.Snowflake
 import dev.kord.core.Kord
-import dev.kord.core.behavior.interaction.response.PublicMessageInteractionResponseBehavior
 import dev.kord.core.behavior.interaction.suggestString
 import dev.kord.core.entity.interaction.AutoCompleteInteraction
-import dev.kord.core.entity.interaction.ButtonInteraction
 import dev.kord.core.entity.interaction.GuildChatInputCommandInteraction
 import dev.kord.core.event.gateway.DisconnectEvent
 import dev.kord.core.event.gateway.ResumedEvent
@@ -28,7 +26,6 @@ import io.github.sophon.discord.adapter.inbound.kord.ui.moveListEmbed
 import io.github.sophon.discord.adapter.inbound.scheduler.Scheduler
 import io.github.sophon.discord.app.model.BotError
 import io.github.sophon.discord.app.model.adminCommands
-import io.github.sophon.discord.app.model.discord.ButtonEvent
 import io.github.sophon.discord.app.model.discord.Command
 import io.github.sophon.discord.app.model.discord.Command.Argument.AutoCompleteType
 import io.github.sophon.discord.app.model.discord.DiscordCommandInteraction
@@ -50,14 +47,12 @@ import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.response.UnbanResponse
 import io.github.sophon.discord.app.service.AdminService
 import io.github.sophon.discord.app.util.kordRestCall
-import io.github.sophon.discord.inPort.ProcessButtonEventUseCase
 import io.github.sophon.discord.inPort.ProcessUserInputUseCase
 import io.github.sophon.discord.inPort.ProduceAutoCompleteUseCase
 import io.github.sophon.discord.inPort.StartFeaturesUseCase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.launch
 import java.lang.management.ManagementFactory
 import kotlin.time.Duration.Companion.hours
 
@@ -75,7 +70,7 @@ internal class DiscordBotImpl(
     private val adminService: AdminService,
     private val startFeaturesUseCase: StartFeaturesUseCase,
     private val processUserInputUseCase: ProcessUserInputUseCase,
-    private val processButtonEventUseCase: ProcessButtonEventUseCase,
+    private val discordButtonHandler: DiscordButtonHandler,
     private val produceAutoCompleteUseCase: ProduceAutoCompleteUseCase,
 ) : DiscordBot {
     override suspend fun startSession() {
@@ -116,7 +111,7 @@ internal class DiscordBotImpl(
         }
 
         kord.on<ButtonInteractionCreateEvent> {
-            processButtonEvent(interaction)
+            discordButtonHandler.process(interaction)
         }
 
         kord.on<AutoCompleteInteractionCreateEvent> {
@@ -142,12 +137,7 @@ internal class DiscordBotImpl(
 
     //TODO: need to extract this somewhere
     private suspend fun processMessage(message: dev.kord.core.entity.Message) {
-        kordRestCall(
-            tag = TAG,
-            onForbidden = { errorMessage ->
-                message.author?.let { author -> kordResponder.whisper(user = author, errorMessage = errorMessage) }
-            },
-        ) {
+        kordRestCall(TAG) {
             val userMessage = Message(
                 serverName = message.getGuildOrNull()?.name.orEmpty(),
                 channelId = message.channelId.toString(),
@@ -462,159 +452,6 @@ internal class DiscordBotImpl(
             interaction = interaction,
             botError = botError,
         )
-    }
-
-    private suspend fun processButtonEvent(interaction: ButtonInteraction) {
-        val buttonEvent = decodeToButtonEvent(
-            buttonId = interaction.componentId,
-            sourceChannelId = interaction.message.channelId.toString(),
-            sourceMessageId = interaction.message.id.toString(),
-        )
-        if (buttonEvent == null) {
-            Napier.w(tag = TAG) { "Unknown button: ${interaction.componentId}" }
-            return
-        }
-
-        kordRestCall(TAG) {
-            val deferredResponse = interaction.deferPublicMessageUpdate()
-            respondToButtonEvent(
-                interaction = interaction,
-                buttonEvent = buttonEvent,
-                deferredResponse = deferredResponse,
-            )
-        }
-    }
-
-    /**
-     * The button's message is authored by the bot, so the whisper goes to the clicker as an ephemeral followup.
-     */
-    @Suppress("CyclomaticComplexMethod")
-    private suspend fun respondToButtonEvent(
-        interaction: ButtonInteraction,
-        buttonEvent: ButtonEvent,
-        deferredResponse: PublicMessageInteractionResponseBehavior,
-    ) {
-        kordRestCall(
-            tag = TAG,
-            onForbidden = { errorMessage ->
-                kordResponder.whisper(response = deferredResponse, errorMessage = errorMessage)
-            },
-        ) {
-            processButtonEventUseCase(buttonEvent)
-                .onSuccess { response ->
-                    when (buttonEvent) {
-                        is ButtonEvent.Expand -> {
-                            if (response is MoveResponse) {
-                                kordResponder.edit(
-                                    message = interaction.message,
-                                    embedBuilder = moveEmbed(response),
-                                    imageList = response.hitboxImageList,
-                                    isExpanded = response.forceExpand,
-                                    buttonSet = response.buttonSet,
-                                )
-                            }
-                        }
-
-                        is ButtonEvent.Query -> {
-                            if (response is MoveResponse) {
-                                kordResponder.respond(
-                                    message = interaction.message,
-                                    embedBuilder = moveEmbed(response),
-                                    imageList = response.hitboxImageList,
-                                    isExpanded = response.forceExpand,
-                                    buttonSet = response.buttonSet,
-                                    mentionedUser = interaction.user,
-                                )
-                            }
-                        }
-
-                        is ButtonEvent.Command -> {
-                            when (response) {
-                                is MoveResponse -> {
-                                    kordResponder.respond(
-                                        message = interaction.message,
-                                        embedBuilder = moveEmbed(response),
-                                        imageList = response.hitboxImageList,
-                                        isExpanded = response.forceExpand,
-                                        buttonSet = response.buttonSet,
-                                        mentionedUser = interaction.user,
-                                    )
-                                }
-
-                                is ListResponse -> {
-                                    kordResponder.respond(
-                                        message = interaction.message,
-                                        embedBuilder = moveListEmbed(response),
-                                        imageList = emptyList(),
-                                        isExpanded = false,
-                                        buttonSet = response.buttonSet,
-                                        mentionedUser = interaction.user,
-                                    )
-                                }
-
-                                is CharacterResponse -> {
-                                    kordResponder.respond(
-                                        message = interaction.message,
-                                        embedBuilder = characterEmbed(response),
-                                        imageList = emptyList(),
-                                        isExpanded = false,
-                                        buttonSet = null,
-                                        mentionedUser = interaction.user,
-                                    )
-                                }
-
-                                is CoreResponse -> {
-                                    kordResponder.respond(
-                                        message = interaction.message,
-                                        coreResponse = response,
-                                        mentionedUser = interaction.user,
-                                    )
-                                }
-
-                                is ModulesResponse -> {
-                                    kordResponder.respond(
-                                        message = interaction.message,
-                                        modulesResponse = response,
-                                        mentionedUser = interaction.user,
-                                    )
-                                }
-
-                                is AliasResponse -> {
-                                    kordResponder.respond(
-                                        message = interaction.message,
-                                        aliasResponse = response,
-                                        mentionedUser = interaction.user,
-                                    )
-                                }
-
-                                is MediaResponse -> {
-                                    kordResponder.respond(
-                                        message = interaction.message,
-                                        mediaResponse = response,
-                                        mentionedUser = interaction.user,
-                                    )
-                                }
-
-                                else -> {}
-                            }
-                        }
-
-                        is ButtonEvent.Text -> {
-                            if (response is PlainTextResponse) {
-                                kordResponder.respondText(
-                                    response = deferredResponse,
-                                    mention = interaction.user.mention,
-                                    text = response.text,
-                                )
-                            }
-                        }
-
-                        // already posted by the service
-                        is ButtonEvent.Forward -> {}
-                    }
-                }
-                .onError { error -> Napier.e(tag = TAG) { "Button event failed: $error" } }
-        }
     }
 
     private suspend fun processAutoComplete(interaction: AutoCompleteInteraction) {

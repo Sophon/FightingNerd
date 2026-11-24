@@ -17,6 +17,7 @@ import io.github.sophon.discord.adapter.inbound.kord.CommandRegistry
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBot
 import io.github.sophon.discord.adapter.inbound.kord.DiscordBotImpl
 import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonBuilder
+import io.github.sophon.discord.adapter.inbound.kord.DiscordButtonHandler
 import io.github.sophon.discord.adapter.inbound.kord.KordResponder
 import io.github.sophon.discord.adapter.inbound.scheduler.GlossaryScheduler
 import io.github.sophon.discord.adapter.inbound.scheduler.ReportScheduler
@@ -158,6 +159,7 @@ internal fun dcBotModule(kord: Kord) = module {
     //region Kord
     singleOf(::DiscordBotImpl).bind<DiscordBot>()
     singleOf(::KordResponder)
+    singleOf(::DiscordButtonHandler)
     //endregion
 
     //region Services
