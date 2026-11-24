@@ -286,7 +286,9 @@ internal class DiscordBotImpl(
     private suspend fun processInteraction(interaction: GuildChatInputCommandInteraction) {
         kordRestCall(
             tag = TAG,
-            onForbidden = { errorMessage -> kordResponder.whisper(interaction = interaction, errorMessage = errorMessage) },
+            onForbidden = { errorMessage ->
+                kordResponder.whisper(interaction = interaction, errorMessage = errorMessage)
+            },
         ) {
             val discordCommandInteraction = DiscordCommandInteraction(
                 username = interaction.user.username,
