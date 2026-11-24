@@ -58,11 +58,17 @@ internal fun errorEmbed(
 }
 
 internal fun missingPermissionsEmbed(errorMessage: String?): EmbedBuilder.() -> Unit = {
-    title = "⚠️ Error"
+    title = "⚠️ $errorMessage"
     color = Color(YELLOW)
     mandatoryField(
         name = "",
-        value = errorMessage,
+        value = "For full functionality, **I need** these perms:\n" +
+                "- **View Channels**\n" +
+                "- **Send Messages**\n" +
+                "- **Embed Links**\n" +
+                "- **Read Message History**\n\n" +
+                "Highly recommended:\n" +
+                "- Use External Emojis",
     )
 }
 
