@@ -1,6 +1,9 @@
 # BOT CHANGELOG
 
-## [v17.11.0] - TODO
+## [v17.12.0] - 2026-11-24
+- missing permissions - bot whispers to the user with permissions it needs
+
+## [v17.11.0] - 2026-11-21
 - `wiki` - deletes data for all disabled games
 
 ## [v17.10.0] - 2026-11-20

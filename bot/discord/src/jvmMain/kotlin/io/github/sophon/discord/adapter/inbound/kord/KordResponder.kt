@@ -5,8 +5,11 @@ import dev.kord.core.Kord
 import dev.kord.core.behavior.channel.MessageChannelBehavior
 import dev.kord.core.behavior.channel.createMessage
 import dev.kord.core.behavior.edit
+import dev.kord.core.behavior.interaction.ActionInteractionBehavior
+import dev.kord.core.behavior.interaction.respondEphemeral
 import dev.kord.core.behavior.interaction.respondPublic
 import dev.kord.core.behavior.interaction.response.FollowupPermittingInteractionResponseBehavior
+import dev.kord.core.behavior.interaction.response.createEphemeralFollowup
 import dev.kord.core.behavior.interaction.response.createPublicFollowup
 import dev.kord.core.entity.Message
 import dev.kord.core.entity.User
@@ -17,11 +20,9 @@ import dev.kord.rest.builder.message.EmbedBuilder
 import dev.kord.rest.builder.message.MessageBuilder
 import dev.kord.rest.builder.message.allowedMentions
 import dev.kord.rest.builder.message.embed
-import dev.kord.rest.request.RestRequestException
 import io.github.sophon.core.architecture.EmptyResult
 import io.github.sophon.core.architecture.ExcludeFromCoverage
 import io.github.sophon.core.architecture.Result
-import io.github.sophon.core.architecture.onSuccess
 import io.github.sophon.core.util.rollChance
 import io.github.sophon.discord.RNG_DONATION_PCT_COMMAND
 import io.github.sophon.discord.adapter.inbound.kord.ui.aliasResponseEmbed
@@ -55,10 +56,8 @@ import io.github.sophon.discord.app.model.response.PlainTextResponse
 import io.github.sophon.discord.app.model.response.ReplyResponse
 import io.github.sophon.discord.app.model.response.SteamLobbyResponse
 import io.github.sophon.discord.app.model.response.UnbanResponse
-import kotlin.uuid.ExperimentalUuidApi
 
 //TODO: need to split this. Maybe slash vs tag split?
-@OptIn(ExperimentalUuidApi::class)
 @ExcludeFromCoverage("UI")
 internal class KordResponder(
     private val discordButtonBuilder: DiscordButtonBuilder,
@@ -71,33 +70,19 @@ internal class KordResponder(
         isExpanded: Boolean,
         buttonSet: BotResponse.ButtonSet?,
         mentionedUser: User? = null,
-    ): EmptyResult<BotError> {
-        val result = try {
-            message.channel.createMessage {
-                messageReference = message.id
-                moveContent(
-                    embedBuilder = embedBuilder,
-                    imageList = imageList,
-                    isExpanded = isExpanded,
-                    buttonSet = buttonSet,
-                )
-                mention(user = mentionedUser)
-            }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            if (e.status.code == HTTP_FORBIDDEN) {
-                message.channel.createMessage {
-                    embed(missingPermissionsEmbed(errorMessage = e.message))
-                }
-            }
-
-            Result.Error(BotError.Kord(e.toString()))
+    ) {
+        message.channel.createMessage {
+            messageReference = message.id
+            moveContent(
+                embedBuilder = embedBuilder,
+                imageList = imageList,
+                isExpanded = isExpanded,
+                buttonSet = buttonSet,
+            )
+            mention(user = mentionedUser)
         }
 
-        result.onSuccess { rollForPromo(message.channel) }
-
-        return result
+        rollForPromo(message.channel)
     }
 
     suspend fun respond(
@@ -106,39 +91,25 @@ internal class KordResponder(
         imageList: List<String>,
         isExpanded: Boolean,
         buttonSet: BotResponse.ButtonSet?,
-    ): EmptyResult<BotError> {
-        val result = try {
-            interaction.respondPublic {
-                moveContent(
-                    embedBuilder = embedBuilder,
-                    imageList = imageList,
-                    isExpanded = isExpanded,
-                    buttonSet = buttonSet,
-                )
-            }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            if (e.status.code == HTTP_FORBIDDEN) {
-                interaction.respondPublic {
-                    embed(missingPermissionsEmbed(errorMessage = e.message))
-                }
-            }
-
-            Result.Error(BotError.Kord(e.toString()))
+    ) {
+        interaction.respondPublic {
+            moveContent(
+                embedBuilder = embedBuilder,
+                imageList = imageList,
+                isExpanded = isExpanded,
+                buttonSet = buttonSet,
+            )
         }
 
-        result.onSuccess { rollForPromo(interaction.channel) }
-
-        return result
+        rollForPromo(interaction.channel)
     }
 
     suspend fun respond(
         message: Message,
         coreResponse: CoreResponse,
         mentionedUser: User? = null,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             message = message,
             embedBuilder = coreEmbed(coreResponse = coreResponse, commandRegistry = commandRegistry),
             imageList = emptyList(),
@@ -146,29 +117,27 @@ internal class KordResponder(
             buttonSet = coreResponse.buttonSet,
             mentionedUser = mentionedUser,
         )
-        return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         coreResponse: CoreResponse,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             interaction = interaction,
             embedBuilder = coreEmbed(coreResponse = coreResponse, commandRegistry = commandRegistry),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = coreResponse.buttonSet,
         )
-        return result
     }
 
     suspend fun respond(
         message: Message,
         modulesResponse: ModulesResponse,
         mentionedUser: User? = null,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             message = message,
             embedBuilder = modulesEmbed(modulesResponse),
             imageList = emptyList(),
@@ -176,57 +145,53 @@ internal class KordResponder(
             buttonSet = null,
             mentionedUser = mentionedUser,
         )
-        return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         modulesResponse: ModulesResponse,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             interaction = interaction,
             embedBuilder = modulesEmbed(modulesResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
         )
-        return result
     }
 
     suspend fun respond(
         message: Message,
         steamLobby: SteamLobbyResponse,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             message = message,
             embedBuilder = steamLobbyEmbed(steamLobby),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = steamLobby.buttonSet,
         )
-        return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         steamLobby: SteamLobbyResponse,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             interaction = interaction,
             embedBuilder = steamLobbyEmbed(steamLobby),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = steamLobby.buttonSet,
         )
-        return result
     }
 
     suspend fun respond(
         message: Message,
         aliasResponse: AliasResponse,
         mentionedUser: User? = null,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             message = message,
             embedBuilder = aliasResponseEmbed(aliasResponse),
             imageList = emptyList(),
@@ -234,85 +199,79 @@ internal class KordResponder(
             buttonSet = (aliasResponse as? AliasResponse.GamePrompt)?.buttonSet,
             mentionedUser = mentionedUser,
         )
-        return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         aliasResponse: AliasResponse,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             interaction = interaction,
             embedBuilder = aliasResponseEmbed(aliasResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = (aliasResponse as? AliasResponse.GamePrompt)?.buttonSet,
         )
-        return result
     }
 
     suspend fun respond(
         message: Message,
         ewgfResponse: EwgfResponse,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             message = message,
             embedBuilder = ewgfResponseEmbed(ewgfResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
         )
-        return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         ewgfResponse: EwgfResponse,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             interaction = interaction,
             embedBuilder = ewgfResponseEmbed(ewgfResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
         )
-        return result
     }
 
     suspend fun respond(
         message: Message,
         glossaryResponse: GlossaryResponse,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             message = message,
             embedBuilder = glossaryEmbed(glossaryResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
         )
-        return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         glossaryResponse: GlossaryResponse,
-    ): EmptyResult<BotError> {
-        val result = respond(
+    ) {
+        respond(
             interaction = interaction,
             embedBuilder = glossaryEmbed(glossaryResponse),
             imageList = emptyList(),
             isExpanded = false,
             buttonSet = null,
         )
-        return result
     }
 
     suspend fun respond(
         message: Message,
         mediaResponse: MediaResponse,
         mentionedUser: User? = null,
-    ): EmptyResult<BotError> {
-        val result = when (mediaResponse) {
+    ) {
+        when (mediaResponse) {
             is MediaResponse.ImagesMediaResponse -> respond(
                 message = message,
                 embedBuilder = imagesMediaEmbed(mediaResponse),
@@ -334,14 +293,13 @@ internal class KordResponder(
                 mentionedUser = mentionedUser,
             )
         }
-        return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         mediaResponse: MediaResponse,
-    ): EmptyResult<BotError> {
-        val result = when (mediaResponse) {
+    ) {
+        when (mediaResponse) {
             is MediaResponse.ImagesMediaResponse -> respond(
                 interaction = interaction,
                 embedBuilder = imagesMediaEmbed(mediaResponse),
@@ -360,7 +318,6 @@ internal class KordResponder(
                 plainText = PlainTextResponse(text = NO_MEDIA),
             )
         }
-        return result
     }
 
     /**
@@ -369,21 +326,13 @@ internal class KordResponder(
     suspend fun respond(
         message: Message,
         feedback: FeedbackResponse,
-    ): EmptyResult<BotError> {
-        val result = try {
-            postFeedback(kord = message.kord, feedback = feedback)
-            message.channel.createMessage {
-                messageReference = message.id
-                allowedMentions { repliedUser = false }
-                content = FEEDBACK_SENT
-            }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+    ) {
+        postFeedback(kord = message.kord, feedback = feedback)
+        message.channel.createMessage {
+            messageReference = message.id
+            allowedMentions { repliedUser = false }
+            content = FEEDBACK_SENT
         }
-
-        return result
     }
 
     /**
@@ -392,19 +341,11 @@ internal class KordResponder(
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         feedback: FeedbackResponse,
-    ): EmptyResult<BotError> {
-        val result = try {
-            postFeedback(kord = interaction.kord, feedback = feedback)
-            interaction.respondPublic {
-                content = FEEDBACK_SENT
-            }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+    ) {
+        postFeedback(kord = interaction.kord, feedback = feedback)
+        interaction.respondPublic {
+            content = FEEDBACK_SENT
         }
-
-        return result
     }
 
     suspend fun respond(
@@ -483,73 +424,41 @@ internal class KordResponder(
         message: Message,
         plainText: PlainTextResponse,
         mentionedUser: User? = null,
-    ): EmptyResult<BotError> {
-        val result = try {
-            message.channel.createMessage {
-                messageReference = message.id
-                textContent(plainText)
-                mention(user = mentionedUser)
-            }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+    ) {
+        message.channel.createMessage {
+            messageReference = message.id
+            textContent(plainText)
+            mention(user = mentionedUser)
         }
-
-        return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         plainText: PlainTextResponse,
-    ): EmptyResult<BotError> {
-        val result = try {
-            interaction.respondPublic {
-                textContent(plainText)
-            }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+    ) {
+        interaction.respondPublic {
+            textContent(plainText)
         }
-
-        return result
     }
 
     suspend fun respond(
         message: Message,
         botError: BotError,
-    ): EmptyResult<BotError> {
-        val result = try {
-            message.channel.createMessage {
-                messageReference = message.id
-                allowedMentions { repliedUser = false }
-                embed(errorEmbed(error = botError, commandRegistry = commandRegistry))
-            }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+    ) {
+        message.channel.createMessage {
+            messageReference = message.id
+            allowedMentions { repliedUser = false }
+            embed(errorEmbed(error = botError, commandRegistry = commandRegistry))
         }
-
-        return result
     }
 
     suspend fun respond(
         interaction: GuildChatInputCommandInteraction,
         botError: BotError,
-    ): EmptyResult<BotError> {
-        val result = try {
-            interaction.respondPublic {
-                embed(errorEmbed(error = botError, commandRegistry = commandRegistry))
-            }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+    ) {
+        interaction.respondPublic {
+            embed(errorEmbed(error = botError, commandRegistry = commandRegistry))
         }
-
-        return result
     }
 
     /**
@@ -561,46 +470,48 @@ internal class KordResponder(
         imageList: List<String>,
         isExpanded: Boolean,
         buttonSet: BotResponse.ButtonSet?,
-    ): EmptyResult<BotError> {
-        val result = try {
-            message.edit {
-                embeds = mutableListOf()
-                components = mutableListOf()
-                moveContent(
-                    embedBuilder = embedBuilder,
-                    imageList = imageList,
-                    isExpanded = isExpanded,
-                    buttonSet = buttonSet,
-                )
-            }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+    ) {
+        message.edit {
+            embeds = mutableListOf()
+            components = mutableListOf()
+            moveContent(
+                embedBuilder = embedBuilder,
+                imageList = imageList,
+                isExpanded = isExpanded,
+                buttonSet = buttonSet,
+            )
         }
-
-        return result
     }
 
     suspend fun respondText(
         response: FollowupPermittingInteractionResponseBehavior,
         mention: String,
         text: String,
-    ): EmptyResult<BotError> {
-        val result = try {
-            response.createPublicFollowup {
-                content = buildString {
-                    appendLine(mention)
-                    append(text)
-                }
+    ) {
+        response.createPublicFollowup {
+            content = buildString {
+                appendLine(mention)
+                append(text)
             }
-
-            Result.Success(Unit)
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
         }
+    }
 
-        return result
+    suspend fun whisper(
+        interaction: ActionInteractionBehavior,
+        errorMessage: String?,
+    ) {
+        interaction.respondEphemeral {
+            embed(missingPermissionsEmbed(errorMessage = errorMessage))
+        }
+    }
+
+    suspend fun whisper(
+        response: FollowupPermittingInteractionResponseBehavior,
+        errorMessage: String?,
+    ) {
+        response.createEphemeralFollowup {
+            embed(missingPermissionsEmbed(errorMessage = errorMessage))
+        }
     }
 
 
@@ -652,20 +563,14 @@ internal class KordResponder(
         recipient: UserRequest.Source,
         embedBuilder: EmbedBuilder.() -> Unit,
     ): EmptyResult<BotError> {
-        val result = try {
-            val postResult = postToRecipient(kord = message.kord, recipient = recipient, embedBuilder = embedBuilder)
-            message.channel.createMessage {
-                messageReference = message.id
-                allowedMentions { repliedUser = false }
-                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
-            }
-
-            postResult
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+        val postResult = postToRecipient(kord = message.kord, recipient = recipient, embedBuilder = embedBuilder)
+        message.channel.createMessage {
+            messageReference = message.id
+            allowedMentions { repliedUser = false }
+            content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
         }
 
-        return result
+        return postResult
     }
 
     /**
@@ -676,18 +581,12 @@ internal class KordResponder(
         recipient: UserRequest.Source,
         embedBuilder: EmbedBuilder.() -> Unit,
     ): EmptyResult<BotError> {
-        val result = try {
-            val postResult = postToRecipient(kord = interaction.kord, recipient = recipient, embedBuilder = embedBuilder)
-            interaction.respondPublic {
-                content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
-            }
-
-            postResult
-        } catch (e: RestRequestException) {
-            Result.Error(BotError.Kord(e.toString()))
+        val postResult = postToRecipient(kord = interaction.kord, recipient = recipient, embedBuilder = embedBuilder)
+        interaction.respondPublic {
+            content = if (postResult is Result.Success) REPLY_SENT else REPLY_FAILED
         }
 
-        return result
+        return postResult
     }
 
     private suspend fun postToRecipient(
@@ -736,7 +635,6 @@ internal class KordResponder(
 
 
     private companion object {
-        const val HTTP_FORBIDDEN = 403
         const val FEEDBACK_SENT = "Feedback sent successfully!"
         const val REPLY_SENT = "Reply sent successfully!"
         const val REPLY_FAILED = "Failed to send"
